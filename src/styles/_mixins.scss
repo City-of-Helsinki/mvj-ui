@@ -1,0 +1,30 @@
+@mixin placeholder($color: $light-gray) {
+  ::-webkit-input-placeholder {
+    color: $color;
+    font-weight: 300;
+  }
+  ::-moz-placeholder {
+    color: $color;
+    font-weight: 300;
+  }
+  :-ms-input-placeholder {
+    color: $color;
+    font-weight: 300;
+  }
+}
+
+@mixin transform($args...) {
+  -webkit-transform: $args;
+  -moz-transform: $args;
+  -ms-transform: $args;
+  -o-transform: $args;
+  transform: $args;
+}
+
+@mixin rotation( $deg: 0deg ) {
+  @include transform(rotate($deg));
+}
+
+@mixin scale( $ratio: 1 ) {
+  @include transform(scale($ratio));
+}

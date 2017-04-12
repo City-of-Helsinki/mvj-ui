@@ -1,0 +1,48 @@
+@import 'styles/variables';
+@import '~foundation-sites/scss/foundation';
+@import '~font-awesome/scss/font-awesome';
+@import 'styles/mixins';
+
+@import '~react-datepicker/dist/react-datepicker.min.css';
+
+@include foundation-everything(true);
+
+@import 'styles/buttons';
+@import './api/api';
+@import './app/app';
+@import './errorPage/error-page';
+
+::selection {
+  background: $primary-color;
+  color: #fff;
+  text-shadow: 0 0 0;
+}
+
+::-moz-selection {
+  background: $primary-color;
+  color: #fff;
+  text-shadow: 0 0 0;
+}
+
+::-webkit-selection {
+  background: $primary-color;
+  color: #fff;
+  text-shadow: 0 0 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+}
+
+body {
+  overflow-y: auto;
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}

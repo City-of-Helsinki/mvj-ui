@@ -1,0 +1,36 @@
+/// @type Map
+$foundation-palette: (
+  primary: #1779ba,
+  secondary: #767676,
+  success: #3adb76,
+  warning: #ffae00,
+  alert: #cc4b37,
+);
+
+$fa-font-path: "~font-awesome/fonts";
+$font-family-helsinki-avoin-sans: HelsinkiAvoinSans, sans-serif;
+$body-font-family: $font-family-helsinki-avoin-sans;
+
+@font-face {
+  font-family: HelsinkiAvoinSans;
+  src: url('../assets/fonts/HelsinkiAvoinSans-Regular.otf') format("opentype");
+}
+
+@font-face {
+  font-family: HelsinkiAvoinSans;
+  font-weight: bold;
+  src: url('../assets/fonts/HelsinkiAvoinSans-Bold.otf') format("opentype");
+}
+
+@font-face {
+  font-family: HelsinkiAvoinSans;
+  font-style: italic;
+  src: url('../assets/fonts/HelsinkiAvoinSans-Italic.otf') format("opentype");
+}
+
+@font-face {
+  font-family: HelsinkiAvoinSans;
+  font-weight: bold;
+  font-style: italic;
+  src: url('../assets/fonts/HelsinkiAvoinSans-BoldItalic.otf') format("opentype");
+}
