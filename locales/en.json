@@ -5,5 +5,8 @@
   "roles": {
     "title": "Ground rental system prototype",
     "subtitle": "Choose a user role"
+  },
+  "validation": {
+    "required": "Field is required"
   }
 }
