@@ -29,4 +29,4 @@ export const BaseValidator = (fields, customConditions, requiredTexts = {}) => {
   }
 
   return errors;
-}
+};
