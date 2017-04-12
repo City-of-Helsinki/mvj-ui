@@ -1,36 +1,47 @@
+$fa-font-path: "~font-awesome/fonts";
+$font-family-helsinki-grotesk: HelsinkiGrotesk, sans-serif;
+
 /// @type Map
 $foundation-palette: (
-  primary: #1779ba,
+  primary: #0072C6,
   secondary: #767676,
   success: #3adb76,
   warning: #ffae00,
   alert: #cc4b37,
 );
 
-$fa-font-path: "~font-awesome/fonts";
-$font-family-helsinki-avoin-sans: HelsinkiAvoinSans, sans-serif;
-$body-font-family: $font-family-helsinki-avoin-sans;
+/// @type Color
+$mvj-text-color: #4A4A4A;
 
-@font-face {
-  font-family: HelsinkiAvoinSans;
-  src: url('../assets/fonts/HelsinkiAvoinSans-Regular.otf') format("opentype");
-}
+/// @type Color
+$light-gray: #eeeeee !default;
 
-@font-face {
-  font-family: HelsinkiAvoinSans;
-  font-weight: bold;
-  src: url('../assets/fonts/HelsinkiAvoinSans-Bold.otf') format("opentype");
-}
+/// @type Color
+$medium-gray: #cacaca !default;
 
-@font-face {
-  font-family: HelsinkiAvoinSans;
-  font-style: italic;
-  src: url('../assets/fonts/HelsinkiAvoinSans-Italic.otf') format("opentype");
-}
+/// @type Color
+$dark-gray: #8a8a8a !default;
 
-@font-face {
-  font-family: HelsinkiAvoinSans;
-  font-weight: bold;
-  font-style: italic;
-  src: url('../assets/fonts/HelsinkiAvoinSans-BoldItalic.otf') format("opentype");
-}
+/// @type Color
+$black: #0a0a0a !default;
+
+/// @type Color
+$white: #fefefe !default;
+
+/// @type Number
+$global-font-size: 100% !default;
+
+/// @type Number
+$global-width: rem-calc(1200) !default;
+
+/// @type Number
+$global-lineheight: 1.5 !default;
+
+/// @type Color
+$body-background: $white !default;
+
+/// @type Color
+$body-font-color: $mvj-text-color !default;
+
+/// @type Font
+$body-font-family: $font-family-helsinki-grotesk;

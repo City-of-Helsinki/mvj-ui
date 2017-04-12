@@ -1,4 +1,5 @@
-@import 'styles/variables';
+@import './styles/fonts';
+@import './styles/variables';
 @import '~foundation-sites/scss/foundation';
 @import '~font-awesome/scss/font-awesome';
 @import 'styles/mixins';
@@ -7,7 +8,8 @@
 
 @include foundation-everything(true);
 
-@import 'styles/buttons';
+@import "./app/topNavigation/top-navigation";
+@import "app/topNavigation/languageSwitcher/language-switcher";
 @import './api/api';
 @import './app/app';
 @import './errorPage/error-page';
