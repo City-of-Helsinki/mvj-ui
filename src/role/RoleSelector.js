@@ -10,15 +10,15 @@ import {Roles} from '../constants';
 
 type Props = {
   t: Function,
-  changeRole: Function
+  changeUser: Function
 };
 
 class RoleSelector extends Component {
   props: Props;
 
   handleRoleClick = (role) => {
-    const {changeRole} = this.props;
-    changeRole(role);
+    const {changeUser} = this.props;
+    changeUser(role);
     return displayUIMessage({
       title: role.label,
       body: `${role.name}`,

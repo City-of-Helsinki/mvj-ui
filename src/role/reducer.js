@@ -2,10 +2,10 @@
 
 import {handleActions} from 'redux-actions';
 
-import type {ChangeRoleAction, User} from './types';
+import type {ChangeUserAction, User} from './types';
 
 export default handleActions({
-  ['mvj/user/CHANGE_ROLE']: (state: User, {payload: user}: ChangeRoleAction) => {
+  ['mvj/user/CHANGE_USER']: (state: User, {payload: user}: ChangeUserAction) => {
     return Object.assign({}, state, user);
   },
 }, {});
