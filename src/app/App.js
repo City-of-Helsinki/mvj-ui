@@ -12,7 +12,6 @@ import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
 import ReduxToastr from 'react-redux-toastr';
-import Footer from './footer/Footer';
 import {isAllowedLanguage} from '../helpers';
 import {Languages} from '../constants';
 
@@ -59,12 +58,11 @@ class App extends Component {
     const {apiError, children} = this.props;
 
     return (
-      <div className="app">
+      <section className="app">
         <TopNavigation/>
-        <div className="app__content">
+        <section className="app__content">
           {children}
-        </div>
-        <Footer/>
+        </section>
         <ReduxToastr
           timeOut={4000}
           newestOnTop={true}
@@ -78,7 +76,7 @@ class App extends Component {
                        data={apiError}
                        isOpen={Boolean(apiError)}
                        handleDismiss={this.handleDismissErrorModal}/>
-      </div>
+      </section>
     );
   }
 }

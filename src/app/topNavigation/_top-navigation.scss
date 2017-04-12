@@ -1,0 +1,14 @@
+.top-navigation {
+  display: flex;
+  font-size: rem-calc(16px);
+  padding: rem-calc(12px);
+  border-bottom: 1px solid $light-gray;
+
+  .title {
+    flex: 1;
+
+    a {
+      color: $mvj-text-color;
+    }
+  }
+}

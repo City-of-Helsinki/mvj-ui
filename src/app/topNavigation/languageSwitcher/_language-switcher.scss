@@ -1,0 +1,67 @@
+.mvj-language-switcher {
+  margin: 0 0 0 22px;
+  position: relative;
+  display: inline-block;
+
+  @include breakpoint(medium down) {
+    display: none;
+  }
+
+  .title {
+    font-size: 15px;
+    line-height: 15px;
+    letter-spacing: 0.5px;
+    color: $mvj-text-color;
+    vertical-align: middle;
+    margin: 0 4px 0 7px;
+    text-transform: uppercase;
+  }
+
+  i {
+    font-size: 12px;
+    color: $mvj-text-color;
+  }
+
+  &-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin: 13px 0 0 0;
+    background-color: $white;
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.3);
+    padding: 15px 20px;
+    display: none;
+
+    &--open {
+      display: block;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      display: block;
+      padding: 8px 0;
+    }
+
+    &__link {
+      font-size: 15px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: 1.33;
+      letter-spacing: normal;
+      text-align: right;
+      color: $mvj-text-color;
+      display: block;
+
+      &--active {
+        font-weight: bold;
+        color: $mvj-text-color;
+      }
+    }
+  }
+}

@@ -1,13 +1,11 @@
 export const AvailableLanguages = [
   'en',
   'fi',
-  'sv',
 ];
 
 export const FallbackLanguage = 'en';
 
-export const Languages = {
-  EN: 'en',
-  FI: 'fi',
-  SV: 'sv',
-};
+export const Languages = [
+  {text: 'EN', key: 'en'},
+  {text: 'FI', key: 'fi'},
+];
