@@ -4,15 +4,19 @@
 @import '~font-awesome/scss/font-awesome';
 @import 'styles/mixins';
 
-@import '~react-datepicker/dist/react-datepicker.min.css';
-
 @include foundation-everything(true);
 
-@import "./app/topNavigation/top-navigation";
-@import "app/topNavigation/languageSwitcher/language-switcher";
+// Vendor
+@import '~react-redux-toastr/src/styles/index';
+@import '~react-datepicker/dist/react-datepicker.min.css';
+
 @import './api/api';
 @import './app/app';
 @import './errorPage/error-page';
+@import "./app/topNavigation/top-navigation";
+@import "./app/topNavigation/languageSwitcher/language-switcher";
+@import "role/role-selector";
+
 
 ::selection {
   background: $primary-color;

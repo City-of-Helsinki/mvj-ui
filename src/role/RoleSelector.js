@@ -20,8 +20,8 @@ class RoleSelector extends Component {
     const {changeRole} = this.props;
     changeRole(role);
     return displayUIMessage({
-      title: 'Rooli',
-      body: `Rooli vaihdettu: ${role.label}`
+      title: role.label,
+      body: `${role.name}`,
     });
   };
 

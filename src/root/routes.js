@@ -7,7 +7,7 @@ import ErrorPage from '../errorPage/ErrorPage';
 import App from '../app/App';
 import i18n from './i18n';
 
-import RoleSelector from '../roleSelector/RoleSelector';
+import RoleSelector from '../role/RoleSelector';
 import ApplicationList from '../application/ApplicationList';
 
 export default
