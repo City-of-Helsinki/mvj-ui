@@ -5,7 +5,7 @@ import flowRight from 'lodash/flowRight';
 
 import {displayUIMessage} from '../helpers';
 
-import {changeRole} from './actions';
+import {changeUser} from './actions';
 import {Roles} from '../constants';
 
 type Props = {
@@ -44,7 +44,7 @@ class RoleSelector extends Component {
 }
 
 export default flowRight(
-  connect(null, {changeRole}),
+  connect(null, {changeUser}),
   translate(['common', 'roles']),
 )(RoleSelector);
 

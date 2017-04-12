@@ -2,8 +2,8 @@
 
 import type {Action} from '../types';
 
-export type UsetState = User;
+export type UserState = User;
 
 export type User = Object;
 
-export type ChangeRoleAction = Action<'mvj/user/CHANGE_ROLE', User>;
+export type ChangeUserAction = Action<'mvj/user/CHANGE_USER', User>;

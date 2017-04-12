@@ -2,7 +2,7 @@
 
 import {createAction} from 'redux-actions';
 
-import type {Role, ChangeRoleAction} from './types';
+import type {User, ChangeUserAction} from './types';
 
-export const changeRole = (role: Role): ChangeRoleAction =>
-  createAction('mvj/user/CHANGE_ROLE')(role);
+export const changeUser = (role: User): ChangeUserAction =>
+  createAction('mvj/user/CHANGE_USER')(role);
