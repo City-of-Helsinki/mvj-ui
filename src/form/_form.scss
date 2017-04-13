@@ -1,0 +1,55 @@
+.form-field {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0;
+
+  &__label {
+    color: $mvj-text-color;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    font-weight: 500;
+  }
+
+  &__input {
+    transition: none;
+    color: $black;
+    border: 2px solid $medium-gray;
+    padding: .75rem 1rem;
+    height: auto;
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    margin: .5rem 0;
+
+    &.has-error {
+      transition: none;
+      border: 2px solid $alert-color;
+    }
+    &:focus {
+      border: 2px solid $medium-gray;
+      outline: none !important;
+      box-shadow: 0 0 0 4px $mvj-focus-color;
+    }
+  }
+
+  &__hint {
+    color: $dark-gray;
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+
+  &__error-block {
+    color: $alert-color;
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+
+// Transition
+.error-block-appear {
+  opacity: 0;
+}
+
+.error-block-appear.error-block-appear-active {
+  @include transition(.5s);
+  opacity: 1;
+}

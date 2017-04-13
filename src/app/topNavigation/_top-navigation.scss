@@ -16,5 +16,11 @@
     .title {
       text-transform: capitalize;
     }
+
+    .fa-user {
+      background: $light-gray;
+      padding: 0.3rem .4rem;
+      border-radius: 50%;
+    }
   }
 }

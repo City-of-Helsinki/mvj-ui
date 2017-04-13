@@ -13,7 +13,7 @@
   }
 }
 
-@mixin transition($property:all, $speed:300ms, $ease:ease-out, $delay:null) {
+@mixin transition($speed:300ms, $property:all, $ease:ease-out, $delay:null) {
   $transition: none;
 
   @if length($property) > 1 {

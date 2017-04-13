@@ -5,5 +5,8 @@
   "roles": {
     "title": "Maanvuokrausjärjestelmä-prototyyppi",
     "subtitle": "Valitse käyttäjärooli"
+  },
+  "validation": {
+    "required": "Vaadittu kenttä"
   }
 }

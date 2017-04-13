@@ -7,11 +7,12 @@ $foundation-palette: (
   secondary: #767676,
   success: #3adb76,
   warning: #ffae00,
-  alert: #cc4b37,
+  alert: #EB1414,
 );
 
 /// @type Color
 $mvj-text-color: #4A4A4A;
+$mvj-focus-color: #9BDCFB;
 
 /// @type Color
 $light-gray: #eeeeee !default;
@@ -20,7 +21,7 @@ $light-gray: #eeeeee !default;
 $medium-gray: #cacaca !default;
 
 /// @type Color
-$dark-gray: #8a8a8a !default;
+$dark-gray: #757575 !default;
 
 /// @type Color
 $black: #0a0a0a !default;

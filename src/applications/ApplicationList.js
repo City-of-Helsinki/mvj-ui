@@ -1,12 +1,13 @@
+// @flow
 import React, {Component} from 'react';
 
 class ApplicationList extends Component {
-  static propTypes = {};
 
   render() {
+    console.log(this.props);
     return (
       <div className="section__container">
-        <p>Applicationlist</p>
+        <p>ApplicationList</p>
       </div>
     );
   }
