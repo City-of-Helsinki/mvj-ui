@@ -8,8 +8,8 @@ import App from '../app/App';
 import i18n from './i18n';
 
 import RoleSelector from '../role/RoleSelector';
-import ApplicationList from '../application/ApplicationList';
-import CreateApplication from '../application/CreateApplication';
+import ApplicationList from '../applications/ApplicationList';
+import CreateApplication from '../applications/CreateApplication';
 
 export default
 <Route path="/" component={App}>

@@ -1,8 +1,19 @@
 // @flow
-import React from 'react';
+import React, {createElement} from 'react';
 import classNames from 'classnames';
 
+import FieldTypeBasic from './FieldTypeBasic';
+import FieldTypeTextarea from './FieldTypeTextarea';
 import ErrorBlock from './error-block';
+
+const FieldTypes = {
+  'text': FieldTypeBasic,
+  'number': FieldTypeBasic,
+  'email': FieldTypeBasic,
+  'textarea': FieldTypeTextarea,
+};
+
+const resolveFieldType = (type) => FieldTypes[type] || FieldTypeBasic;
 
 type Props = {
   className: String,
@@ -17,28 +28,25 @@ type Props = {
   type: String,
 }
 
-const FieldTextInput = ({input, placeholder, type, label, meta, ErrorComponent, className, disabled, required, hint}: Props) => {
+const FormField = ({input, placeholder, type, label, meta, ErrorComponent, className, disabled, required, hint}: Props) => {
   const displayError = meta.error && meta.touched;
+  const fieldComponent = resolveFieldType(type);
+
   return (
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name}>{label}{required && ' *'}</label>}
       {hint && <span className="form-field__hint">{hint}</span>}
-      <input className={classNames('form-field__input', {'has-error': displayError})}
-             id={input.name}
-             type={type}
-             disabled={disabled}
-             placeholder={placeholder}
-             {...input}
-      />
+      {createElement(fieldComponent, {input, type, displayError, disabled, placeholder})}
       {displayError && <ErrorComponent {...meta}/>}
     </div>
 
   );
 };
 
-FieldTextInput.defaultProps = {
+FormField.defaultProps = {
+  disabled: false,
   ErrorComponent: ErrorBlock,
   required: true,
 };
 
-export default FieldTextInput;
+export default FormField;
