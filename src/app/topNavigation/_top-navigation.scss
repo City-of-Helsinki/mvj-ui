@@ -11,4 +11,10 @@
       color: $mvj-text-color;
     }
   }
+
+  .user-switcher {
+    .title {
+      text-transform: capitalize;
+    }
+  }
 }

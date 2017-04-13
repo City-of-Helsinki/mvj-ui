@@ -7,12 +7,12 @@ export const AvailableLanguages = [
 export const FallbackLanguage = 'en';
 
 export const Languages = [
-  {text: 'EN', key: 'en'},
-  {text: 'FI', key: 'fi'},
+  {id: 'en', label: 'EN'},
+  {id: 'fi', label: 'FI'},
 ];
 
-// Roles
-export const Roles = [
+// Users
+export const Users = [
   {id: 1, label: 'Hakija', name: 'Ville Hakija'},
   {id: 2, label: 'Hakemuksen käsittelijä', name: 'Ville Hakemuskäsittelijä'},
   {id: 3, label: 'Valmistelija', name: 'Ville Valmistelija'},

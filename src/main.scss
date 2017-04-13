@@ -16,7 +16,7 @@
 @import './errorPage/error-page';
 @import './form/form';
 @import "./app/topNavigation/top-navigation";
-@import "./app/topNavigation/languageSwitcher/language-switcher";
+@import "dropdown/dropdown";
 @import "role/role-selector";
 
 ::selection {
