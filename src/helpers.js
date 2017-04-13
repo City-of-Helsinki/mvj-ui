@@ -1,6 +1,8 @@
 import {Languages} from './constants';
 import find from 'lodash/find';
+import forEach from 'lodash/forEach';
 import {toastr} from 'react-redux-toastr';
+import i18n from './root/i18n';
 
 /**
  *
@@ -42,6 +44,20 @@ export const isAllowedLanguage = (language) => {
   return !!find(Languages, (item) => {
     return language === item;
   });
+};
+
+export const getActiveLanguage = () => {
+  const {language} = i18n;
+  let active = null;
+
+  forEach(Languages, (item) => {
+    if (item.id === language) {
+      active = item;
+      return false;
+    }
+  });
+
+  return active;
 };
 
 /**
