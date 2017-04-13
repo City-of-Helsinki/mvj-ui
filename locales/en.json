@@ -1,6 +1,9 @@
 {
   "common": {
-    "appName": "Land Lease System",
-    "dummyPage": "Dummypage"
+    "appName": "Ground rental system"
+  },
+  "roles": {
+    "title": "Ground rental system prototype",
+    "subtitle": "Choose a user role"
   }
 }

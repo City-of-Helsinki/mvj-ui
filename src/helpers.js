@@ -1,6 +1,13 @@
 import {Languages} from './constants';
 import find from 'lodash/find';
+import forEach from 'lodash/forEach';
+import {toastr} from 'react-redux-toastr';
+import i18n from './root/i18n';
 
+/**
+ *
+ * @returns {number}
+ */
 export const getDocumentWidth = () => {
   return Math.max(
     document.documentElement['clientWidth'],
@@ -11,6 +18,10 @@ export const getDocumentWidth = () => {
   );
 };
 
+/**
+ *
+ * @returns {*}
+ */
 export const getFoundationBreakpoint = () => {
   const width = getDocumentWidth();
   if (width < 640)
@@ -24,12 +35,45 @@ export const getFoundationBreakpoint = () => {
   return 'xxlarge';
 };
 
+/**
+ *
+ * @param language
+ * @returns {boolean}
+ */
 export const isAllowedLanguage = (language) => {
   return !!find(Languages, (item) => {
     return language === item;
   });
 };
 
+export const getActiveLanguage = () => {
+  const {language} = i18n;
+  let active = null;
+
+  forEach(Languages, (item) => {
+    if (item.id === language) {
+      active = item;
+      return false;
+    }
+  });
+
+  return active;
+};
+
+/**
+ *
+ * @param title
+ */
 export const setPageTitle = (title) => {
   document.title = `${title}`;
 };
+
+/**
+ * Display message in UI
+ * @param message
+ * @param opts
+ */
+export function displayUIMessage(message, opts = {type: 'success'}) {
+  const {title, body} = message;
+  return toastr[opts.type](title, body, opts);
+}

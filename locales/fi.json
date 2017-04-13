@@ -1,6 +1,9 @@
 {
   "common": {
-    "appName": "Maanvuokrausjärjestelmä",
-    "dummyPage": "Lorem Ipsum"
+    "appName": "Maanvuokrausjärjestelmä"
+  },
+  "roles": {
+    "title": "Maanvuokrausjärjestelmä-prototyyppi",
+    "subtitle": "Valitse käyttäjärooli"
   }
 }

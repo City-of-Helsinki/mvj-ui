@@ -13,6 +13,65 @@
   }
 }
 
+@mixin transition($property:all, $speed:300ms, $ease:ease-out, $delay:null) {
+  $transition: none;
+
+  @if length($property) > 1 {
+
+    @each $transition_list in $property {
+
+      @for $i from 1 through length($transition_list) {
+
+        @if $i == 1 {
+          $_property: nth($transition_list, $i);
+        }
+
+        @if length($transition_list) > 1 {
+          @if $i == 2 {
+            $_speed: nth($transition_list, $i);
+          }
+        } @else {
+          $_speed: $speed;
+        }
+
+        @if length($transition_list) > 2 {
+          @if $i == 3 {
+            $_ease: nth($transition_list, $i);
+          }
+        } @else {
+          $_ease: $ease;
+        }
+
+        @if length($transition_list) > 3 {
+          @if $i == 4 {
+            $_delay: nth($transition_list, $i);
+          }
+        } @else {
+          $_delay: $delay;
+        }
+      }
+
+      @if $transition == none {
+        $transition: $_property $_speed $_ease $_delay;
+      } @else {
+        $transition: $transition, $_property $_speed $_ease $_delay;
+      }
+    }
+  } @else {
+
+    @each $prop in $property {
+
+      @if $transition == none {
+        $transition: $prop $speed $ease $delay;
+      } @else {
+        $transition: $transition, $prop $speed $ease $delay;
+      }
+    }
+  }
+
+  transition: $transition;
+}
+
 @mixin transform($args...) {
   -webkit-transform: $args;
   -moz-transform: $args;
