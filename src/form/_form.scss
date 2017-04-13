@@ -43,3 +43,13 @@
     line-height: 1.5rem;
   }
 }
+
+// Transition
+.error-block-appear {
+  opacity: 0;
+}
+
+.error-block-appear.error-block-appear-active {
+  @include transition(.5s);
+  opacity: 1;
+}
