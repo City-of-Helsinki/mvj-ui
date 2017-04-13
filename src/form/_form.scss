@@ -20,7 +20,8 @@
     line-height: 1.5rem;
     margin: .5rem 0;
 
-    &.error {
+    &.has-error {
+      transition: none;
       border: 2px solid $alert-color;
     }
     &:focus {

@@ -23,7 +23,7 @@ const FieldTextInput = ({input, placeholder, type, label, meta, ErrorComponent, 
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name}>{label}{required && ' *'}</label>}
       {hint && <span className="form-field__hint">{hint}</span>}
-      <input className={classNames('form-field__input', {'error': displayError})}
+      <input className={classNames('form-field__input', {'has-error': displayError})}
              id={input.name}
              type={type}
              disabled={disabled}
