@@ -9,6 +9,7 @@ import i18n from './i18n';
 
 import RoleSelector from '../role/RoleSelector';
 import ApplicationList from '../application/ApplicationList';
+import CreateApplication from '../application/CreateApplication';
 
 export default
 <Route path="/" component={App}>
@@ -21,7 +22,10 @@ export default
     <IndexRoute component={(props) => {
       return <RoleSelector {...props} path={`/${i18n.language}`}/>;
     }}/>
-    <Route path="applications" component={ApplicationList}/>
+    <Route path="applications">
+      <IndexRoute component={ApplicationList}/>
+      <Route path="create" component={CreateApplication}/>
+    </Route>
     <Route path="*" component={ErrorPage}/>
   </Route>
 
