@@ -3,10 +3,8 @@ import {connect} from 'react-redux';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 
-import {displayUIMessage} from '../helpers';
-
 import {changeUser} from './actions';
-import {Roles} from '../constants';
+import {Users} from '../constants';
 
 type Props = {
   t: Function,
@@ -19,10 +17,6 @@ class RoleSelector extends Component {
   handleRoleClick = (role) => {
     const {changeUser} = this.props;
     changeUser(role);
-    return displayUIMessage({
-      title: role.label,
-      body: `${role.name}`,
-    });
   };
 
   render() {
@@ -34,7 +28,7 @@ class RoleSelector extends Component {
         <h2>{t('subtitle')}</h2>
 
         <ul className="role-selector__list">
-          {Roles.map((role) =>
+          {Users.map((role) =>
             <li key={role.id} onClick={() => this.handleRoleClick(role)}>{role.label}</li>
           )}
         </ul>
