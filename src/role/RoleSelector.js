@@ -1,14 +1,19 @@
 import React, {Component} from 'react';
+import {withRouter, Link} from 'react-router';
 import {connect} from 'react-redux';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import {changeUser} from './actions';
 import {Users} from '../constants';
+import {getUser} from './selectors';
 
 type Props = {
+  changeUser: Function,
+  currentUser: Object,
+  params: Object,
   t: Function,
-  changeUser: Function
 };
 
 class RoleSelector extends Component {
@@ -20,7 +25,7 @@ class RoleSelector extends Component {
   };
 
   render() {
-    const {t} = this.props;
+    const {currentUser, t, params: {language}} = this.props;
 
     return (
       <div className="section__container role-selector">
@@ -32,13 +37,25 @@ class RoleSelector extends Component {
             <li key={role.id} onClick={() => this.handleRoleClick(role)}>{role.label}</li>
           )}
         </ul>
+
+        {!isEmpty(currentUser) &&
+        <Link className="button primary"
+              to={`${language}/applications`}>
+          {t('goToApplications')} <i className="fa fachevron-right"/>
+        </Link>
+        }
       </div>
     );
   }
 }
 
 export default flowRight(
-  connect(null, {changeUser}),
+  connect((state) => {
+    return {
+      currentUser: getUser(state),
+    };
+  }, {changeUser}),
   translate(['common', 'roles']),
+  withRouter,
 )(RoleSelector);
 

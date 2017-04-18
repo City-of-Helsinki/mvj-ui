@@ -4,7 +4,8 @@
   },
   "roles": {
     "title": "Maanvuokrausjärjestelmä-prototyyppi",
-    "subtitle": "Valitse käyttäjärooli"
+    "subtitle": "Valitse käyttäjärooli",
+    "goToApplications": "Näytä hakemukset"
   },
   "applications": {
     "title": "Hakemukset",

@@ -1,5 +1,4 @@
 // @flow
-
 import flowRight from 'lodash/flowRight';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
