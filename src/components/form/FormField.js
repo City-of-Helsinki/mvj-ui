@@ -1,4 +1,3 @@
-// @flow
 import React, {createElement} from 'react';
 import classNames from 'classnames';
 
@@ -13,8 +12,6 @@ const FieldTypes = {
   'textarea': FieldTypeTextarea,
 };
 
-const resolveFieldType = (type) => FieldTypes[type] || FieldTypeBasic;
-
 type Props = {
   className: String,
   disabled: Boolean,
@@ -27,6 +24,8 @@ type Props = {
   required: Boolean,
   type: String,
 }
+
+const resolveFieldType = (type: String): Object => FieldTypes.hasOwnProperty(type) ? FieldTypes[type] : FieldTypeBasic;
 
 const FormField = ({input, placeholder, type, label, meta, ErrorComponent, className, disabled, required, hint}: Props) => {
   const displayError = meta.error && meta.touched;
