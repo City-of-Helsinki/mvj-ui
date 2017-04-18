@@ -30,7 +30,7 @@ class Table extends Component {
         {data.map((row) => (
           <tr key={row.id} onClick={() => onRowClick(row.id)}>
             {Object.keys(row.data).map((tr, cellIndex) => (
-              <td key={cellIndex}>{row.data[tr]} {cellIndex}</td>
+              <td key={cellIndex}>{row.data[tr]}</td>
             ))}
           </tr>
         ))}
