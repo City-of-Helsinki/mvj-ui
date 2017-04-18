@@ -6,6 +6,9 @@
     "title": "Maanvuokrausjärjestelmä-prototyyppi",
     "subtitle": "Valitse käyttäjärooli"
   },
+  "applications": {
+    "title": "Hakemukset"
+  },
   "validation": {
     "required": "Vaadittu kenttä"
   }

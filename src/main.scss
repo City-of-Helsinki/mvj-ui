@@ -10,14 +10,16 @@
 @import '~react-redux-toastr/src/styles/index';
 @import '~react-datepicker/dist/react-datepicker.min.css';
 
+// Components
+@import 'components/form/form';
+@import "components/topNavigation/top-navigation";
+@import "components/dropdown/dropdown";
 // App
-@import './api/api';
-@import './app/app';
-@import './errorPage/error-page';
-@import './form/form';
-@import "./app/topNavigation/top-navigation";
-@import "dropdown/dropdown";
-@import "role/role-selector";
+@import "./api/api";
+@import "./app/app";
+@import "./applications/application-list";
+@import "./errorPage/error-page";
+@import "./role/role-selector";
 
 ::selection {
   background: $primary-color;

@@ -17,7 +17,7 @@ import {Languages} from '../constants';
 
 import type {ApiError} from '../api/types';
 import type {RootState} from '../root/types';
-import TopNavigation from './topNavigation/TopNavigation';
+import TopNavigation from '../components/topNavigation/TopNavigation';
 
 type Props = {
   apiError: ApiError,

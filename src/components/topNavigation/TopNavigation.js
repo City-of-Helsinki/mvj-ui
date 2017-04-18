@@ -7,7 +7,7 @@ import {translate} from 'react-i18next';
 import i18n from '../../root/i18n';
 import flowRight from 'lodash/flowRight';
 
-import DropDown from '../../dropdown/DropDown';
+import DropDown from '../dropdown/DropDown';
 import {changeUser} from '../../role/actions';
 import {getUser} from '../../role/selectors';
 import {Languages, Users} from '../../constants';
@@ -54,14 +54,9 @@ class TopNavigation extends Component {
         <div className="title">
           <Link to="/">{t('appName')}</Link>
         </div>
-        <DropDown className="language-switcher"
-                  active={getActiveLanguage()}
-                  items={Languages}
-                  icon={<i className="fa fa-globe"/>}
-                  onItemClick={this.handleLanguageMenuItemClick}/>
 
         <DropDown className="user-switcher"
-                  placeholder="Valitse käyttäjä"
+                  placeholder={t('roles:subtitle')}
                   active={currentUser}
                   activeLabel={'name'}
                   icon={<i className="fa fa-user"/>}
@@ -69,6 +64,13 @@ class TopNavigation extends Component {
                   displayCaret={false}
                   items={Users}
                   onItemClick={this.handleUserMenuItemClick}/>
+
+        <DropDown className="language-switcher"
+                  active={getActiveLanguage()}
+                  items={Languages}
+                  icon={<i className="fa fa-globe"/>}
+                  onItemClick={this.handleLanguageMenuItemClick}/>
+
       </section>
     );
   }
@@ -81,5 +83,5 @@ export default flowRight(
     };
   }, {changeUser}),
   withRouter,
-  translate(['common'])
+  translate(['common', 'roles'])
 )(TopNavigation);

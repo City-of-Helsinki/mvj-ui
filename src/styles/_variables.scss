@@ -18,7 +18,7 @@ $mvj-focus-color: #9BDCFB;
 $light-gray: #eeeeee !default;
 
 /// @type Color
-$medium-gray: #cacaca !default;
+$medium-gray: #cccccc !default;
 
 /// @type Color
 $dark-gray: #757575 !default;
@@ -46,3 +46,9 @@ $body-font-color: $mvj-text-color !default;
 
 /// @type Font
 $body-font-family: $font-family-helsinki-grotesk;
+
+/// Tables
+$table-head-background: transparent !default;
+$table-stripe: odd !default;
+$table-head-font-color: $dark-gray !default;
+$table-head-row-hover: inherit !important !default;
