@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import FieldTypeBasic from './FieldTypeBasic';
 import FieldTypeTextarea from './FieldTypeTextarea';
-import ErrorBlock from './error-block';
+import ErrorBlock from './ErrorBlock';
 
 const FieldTypes = {
   'text': FieldTypeBasic,

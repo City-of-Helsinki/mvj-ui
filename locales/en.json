@@ -7,7 +7,8 @@
     "subtitle": "Choose a user role"
   },
   "applications": {
-    "title": "Hakemukset"
+    "title": "Applications",
+    "single": "Application"
   },
   "validation": {
     "required": "Field is required"

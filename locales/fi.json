@@ -7,7 +7,8 @@
     "subtitle": "Valitse käyttäjärooli"
   },
   "applications": {
-    "title": "Hakemukset"
+    "title": "Hakemukset",
+    "single": "Hakemus"
   },
   "validation": {
     "required": "Vaadittu kenttä"
