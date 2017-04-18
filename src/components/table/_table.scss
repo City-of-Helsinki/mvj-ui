@@ -1,0 +1,12 @@
+table {
+  //@include table-hover;
+  border-spacing: 0;
+
+  thead,
+  tfoot {
+    th,
+    td {
+      font-weight: $global-weight-normal;
+    }
+  }
+}
