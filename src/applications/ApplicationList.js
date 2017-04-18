@@ -2,7 +2,9 @@
 import React, {Component, PropTypes} from 'react';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
+import classNames from 'classnames';
 
+import ApplicationForm from './ApplicationForm';
 import Table from '../components/table/Table';
 
 import {getActiveLanguage} from '../helpers';
@@ -16,6 +18,7 @@ const tableData = [
 ];
 
 type Props = {
+  params: Object,
   t: Function,
 };
 
@@ -36,19 +39,28 @@ class ApplicationList extends Component {
   };
 
   render() {
-    const {t} = this.props;
-
+    const {t, params: {applicationId}} = this.props;
     return (
-      <div className="application-list">
-        <h2>{t('applications:title')}</h2>
-        <div className="table-scroll">
-          <Table
-            data={tableData}
-            horizontalScroll={true}
-            onRowClick={(id) => this.handleRowClick(id)}
-            headers={['Data 1', 'Data 2', 'Data 4']}
-          />
+      <div className={classNames('applications', {'applications--form-open': !!applicationId})}>
+
+        <div className="applications__list">
+          <h2>{t('applications:title')}</h2>
+          <div className="table-scroll">
+            <Table
+              data={tableData}
+              horizontalScroll={true}
+              onRowClick={(id) => this.handleRowClick(id)}
+              headers={['Data 1', 'Data 2', 'Data 4']}
+            />
+          </div>
         </div>
+
+        {applicationId &&
+        <ApplicationForm
+          applicationId={applicationId}
+        />
+        }
+
       </div>
     );
   }
