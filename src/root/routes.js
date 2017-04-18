@@ -25,6 +25,7 @@ export default
     <Route path="applications">
       <IndexRoute component={ApplicationList}/>
       <Route path="create" component={CreateApplication}/>
+      <Route path=":id" component={ApplicationList}/>
     </Route>
     <Route path="*" component={ErrorPage}/>
   </Route>

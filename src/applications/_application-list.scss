@@ -1,0 +1,44 @@
+.application-list {
+  flex: 1;
+  background: $light-gray;
+
+  h2 {
+    margin: 1rem .5rem;
+    font-size: rem-calc(24px);
+    color: $dark-gray;
+  }
+
+  table {
+    @include -zf-table-unstripe();
+    width: 100%;
+
+    thead,
+    tbody,
+    tfoot {
+      background: transparent;
+
+      > tr {
+        background: transparent;
+      }
+    }
+
+    tbody {
+      tr {
+        > td {
+          border-top: 2px solid $medium-gray;
+        }
+
+        &:hover > td {
+          @include transition();
+          cursor: pointer;
+          background: $white;
+          color: $primary-color;
+        }
+
+        &:last-child > td {
+          border-bottom: 2px solid $medium-gray;
+        }
+      }
+    }
+  }
+}

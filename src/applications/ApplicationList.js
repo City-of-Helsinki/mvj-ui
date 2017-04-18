@@ -1,16 +1,59 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
+import {translate} from 'react-i18next';
+import flowRight from 'lodash/flowRight';
+
+import Table from '../components/table/Table';
+
+import {getActiveLanguage} from '../helpers';
+
+const tableData = [
+  {id: 'id1', data: {data1: 'Data 1 content', data2: 'Data 2 content', data3: 'Data 3 content'}},
+  {id: 'id2', data: {data1: 'Data 1 content', data2: 'Data 2 content', data3: 'Data 3 content'}},
+  {id: 'id3', data: {data1: 'Data 1 content', data2: 'Data 2 content', data3: 'Data 3 content'}},
+  {id: 'id4', data: {data1: 'Data 1 content', data2: 'Data 2 content', data3: 'Data 3 content'}},
+  {id: 'id5', data: {data1: 'Data 1 content', data2: 'Data 2 content', data3: 'Data 3 content'}},
+];
+
+type Props = {
+  t: Function,
+};
 
 class ApplicationList extends Component {
+  props: Props;
+
+  static contextTypes = {
+    router: PropTypes.object,
+  };
+
+  handleRowClick = (applicationId) => {
+    const {router} = this.context;
+    const lang = getActiveLanguage().id;
+
+    return router.push({
+      pathname: `/${lang}/applications/${applicationId}`,
+    });
+  };
 
   render() {
-    console.log(this.props);
+    const {t} = this.props;
+
     return (
-      <div className="section__container">
-        <p>ApplicationList</p>
+      <div className="application-list">
+        <h2>{t('applications:title')}</h2>
+        <div className="table-scroll">
+          <Table
+            data={tableData}
+            horizontalScroll={true}
+            onRowClick={(id) => this.handleRowClick(id)}
+            headers={['Data 1', 'Data 2', 'Data 4']}
+          />
+        </div>
       </div>
     );
   }
 }
 
-export default ApplicationList;
+export default flowRight(
+  translate(['applications'])
+)(ApplicationList);
