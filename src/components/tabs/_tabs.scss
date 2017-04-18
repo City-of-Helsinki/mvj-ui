@@ -1,0 +1,21 @@
+.mvj__tabs {
+  @include tabs-container(0, $secondary-color, transparent);
+  border: none;
+
+  > li {
+    @include tabs-title(
+        rem-calc(15px),
+        rem-calc(18px),
+        $white,
+        $primary-color,
+        $white,
+        $white
+    );
+    margin-right: rem-calc(5px);
+    background: darken($secondary-color, 5%);
+
+    > a {
+      @include transition();
+    }
+  }
+}
