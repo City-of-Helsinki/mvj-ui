@@ -1,0 +1,18 @@
+.applications__form {
+  width: 66%;
+
+  .hero {
+    background: $secondary-color;
+    padding: rem-calc(30px 30px 0 30px);
+
+    h2 {
+      color: $white;
+      font-size: rem-calc(32px);
+      margin: rem-calc(0 0 30px 0);
+    }
+  }
+
+  .tab-content {
+    padding: rem-calc(30px);
+  }
+}

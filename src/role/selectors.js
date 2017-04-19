@@ -1,7 +1,7 @@
 // @flow
 
 import type {Selector} from '../types';
-import type {User} from './types';
+import type {User, UserState} from './types';
 
-export const getUser: Selector<User, { user: User }> = (state): User =>
+export const getUser: Selector<User, void> = (state): UserState =>
   state.user;

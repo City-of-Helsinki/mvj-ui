@@ -3,8 +3,8 @@ import React, {Component} from 'react';
 import {reduxForm, Field} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
-import FormField from '../form/FormField';
-import {BaseValidator} from '../form/validation';
+import FormField from '../components/form/FormField';
+import {BaseValidator} from '../components/form/validation';
 
 type Props = {
   handleSubmit: Function,
@@ -39,7 +39,7 @@ class CreateApplication extends Component {
         <form className="test-form" onSubmit={handleSubmit(this.save)}>
 
           <Field
-            type="textarea"
+            type="text"
             name="test"
             placeholder="Test placeholder"
             component={FormField}

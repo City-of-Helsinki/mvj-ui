@@ -4,7 +4,12 @@
   },
   "roles": {
     "title": "Ground rental system prototype",
-    "subtitle": "Choose a user role"
+    "subtitle": "Choose a user role",
+    "goToApplications": "Show applications"
+  },
+  "applications": {
+    "title": "Applications",
+    "single": "Application"
   },
   "validation": {
     "required": "Field is required"
