@@ -80,7 +80,7 @@
   transform: $args;
 }
 
-@mixin rotation( $deg: 0deg ) {
+@mixin rotate( $deg: 0deg ) {
   @include transform(rotate($deg));
 }
 

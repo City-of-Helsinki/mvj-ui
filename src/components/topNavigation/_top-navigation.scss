@@ -2,23 +2,31 @@
   display: flex;
   font-size: rem-calc(16px);
   padding: rem-calc(12px);
-  border-bottom: 1px solid $light-gray;
+  background: $primary-color;
+  border-bottom: 1px solid $primary-color;
 
   .title {
     flex: 1;
 
     a {
-      color: $mvj-text-color;
+      color: $white;
+    }
+  }
+
+  .language-switcher {
+    .title, i {
+      color: $white;
     }
   }
 
   .user-switcher {
     .title {
+      color: $white;
       text-transform: capitalize;
     }
 
     .fa-user {
-      background: $light-gray;
+      background: $white;
       padding: 0.3rem .4rem;
       border-radius: 50%;
     }
