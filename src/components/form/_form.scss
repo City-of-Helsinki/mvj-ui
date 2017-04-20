@@ -31,6 +31,35 @@
     }
   }
 
+  &__select {
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    transition: none;
+    color: $black;
+    border: 2px solid $medium-gray;
+    padding-top: .75rem;
+    padding-bottom: .75rem;
+    height: auto;
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    margin: .5rem 0;
+
+    &.has-error {
+      transition: none;
+      border: 2px solid $alert-color;
+    }
+    &:focus {
+      border: 2px solid $medium-gray;
+      outline: none !important;
+      box-shadow: 0 0 0 4px $mvj-focus-color;
+    }
+  }
+
+  &__checkbox {
+  }
+  &__radio {
+  }
+
   &__hint {
     color: $dark-gray;
     font-size: 1rem;

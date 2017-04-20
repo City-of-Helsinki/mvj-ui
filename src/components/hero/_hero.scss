@@ -1,0 +1,25 @@
+.mvj-hero {
+  background: transparent;
+  padding: rem-calc(30px 0);
+  border-bottom: 1px solid $light-gray;
+
+  &__content {
+    @include mvj-container();
+  }
+
+  h1 {
+    font-size: rem-calc(32px);
+    margin: 0;
+    padding: 0;
+  }
+
+  h2 {
+    font-size: rem-calc(28px);
+    margin: 0;
+    padding: 0;
+  }
+
+  p.subtitle {
+    margin: rem-calc(30px 0 0 0);
+  }
+}
