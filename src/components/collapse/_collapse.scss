@@ -1,0 +1,20 @@
+.collapse {
+
+  &.open {
+    .collapse__header i {
+      @include rotate(45deg);
+    }
+
+    .collapse__content {
+    }
+  }
+
+  .collapse__header {
+    i {
+      @include transition();
+    }
+  }
+
+  &__content {
+  }
+}
