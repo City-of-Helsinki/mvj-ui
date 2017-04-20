@@ -11,6 +11,14 @@
     "title": "Hakemukset",
     "single": "Hakemus"
   },
+  "applicationForm": {
+    "heroTitle": "Hakemus",
+    "basicInfo": {
+      "sectionTitle": "Vuokrattavan kohteen tiedot",
+      "type": "Valitse kiinteistön tyyppi",
+      "openApplication": "Avoin haku"
+    }
+  },
   "validation": {
     "required": "Vaadittu kenttä"
   }
