@@ -1,3 +1,8 @@
+@mixin mvj-container() {
+  @include grid-row();
+  padding: 0 1rem;
+}
+
 @mixin placeholder($color: $light-gray) {
   ::-webkit-input-placeholder {
     color: $color;
