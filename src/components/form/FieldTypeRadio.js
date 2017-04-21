@@ -3,12 +3,12 @@ import React from 'react';
 import classNames from 'classnames';
 
 type Props = {
-  className: String,
+  className: string,
   disabled: Boolean,
   displayError: Boolean,
   input: Object,
-  options: ?Array,
-  type: String,
+  options: ?Array<any>,
+  type: string,
 }
 
 const FieldTypeRadio = ({input, displayError, disabled, options, type}: Props) => {
@@ -20,7 +20,7 @@ const FieldTypeRadio = ({input, displayError, disabled, options, type}: Props) =
       className={classNames(`form-field__${type}`, {'has-error': displayError})}
       disabled={disabled}
     >
-      {options.map((label, index) =>
+      {options && options.map((label, index) =>
         <label key={index}>
           <input
             name={name}

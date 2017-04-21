@@ -1,3 +1,36 @@
+.mvj-form {
+  &__actions {
+    margin-top: rem-calc(30px);
+
+    button {
+      @include button();
+      @include transition();
+
+      font-size: rem-calc(18px);
+      line-height: 24px;
+      color: $white;
+      font-weight: 600;
+
+      i {
+        @include transition();
+        position: relative;
+        margin: 0 .85rem;
+      }
+
+      &[disabled] {
+        opacity: 0.25;
+        cursor: not-allowed;
+      }
+
+      &:hover(:not(:disabled)) {
+        i {
+          @include rotate(60deg);
+        }
+      }
+    }
+  }
+}
+
 .form-field {
   display: flex;
   flex-direction: column;
@@ -13,6 +46,7 @@
   &__input {
     transition: none;
     color: $black;
+    background: $lightest-gray;
     border: 2px solid $medium-gray;
     padding: .75rem 1rem;
     height: auto;
@@ -31,11 +65,34 @@
     }
   }
 
+  &__textarea {
+    transition: none;
+    color: $black;
+    background: $lightest-gray;
+    border: 2px solid $medium-gray;
+    padding: .75rem 1rem;
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    margin: .5rem 0;
+    min-height: rem-calc(150px);
+
+    &.has-error {
+      transition: none;
+      border: 2px solid $alert-color;
+    }
+    &:focus {
+      border: 2px solid $medium-gray;
+      outline: none !important;
+      box-shadow: 0 0 0 4px $mvj-focus-color;
+    }
+  }
+
   &__select {
     -webkit-appearance: none !important;
     -moz-appearance: none !important;
     transition: none;
     color: $black;
+    background-color: $lightest-gray;
     border: 2px solid $medium-gray;
     padding-top: .75rem;
     padding-bottom: .75rem;

@@ -7,7 +7,7 @@ type Props = {
   disabled: Boolean,
   displayError: Boolean,
   input: Object,
-  options: ?Array,
+  options: ?Array<any>,
   placeholder: String,
 }
 
@@ -16,10 +16,10 @@ const FieldTypeSelect = ({input, displayError, disabled, options, placeholder}: 
     <select
       id={input.name}
       disabled={disabled}
-      placeholder={placeholder}
       className={classNames('form-field__select', {'has-error': displayError})}
       {...input}>
-      {options.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
+      <option value=''>{placeholder}</option>
+      {options && options.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
     </select>
   );
 };
