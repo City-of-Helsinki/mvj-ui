@@ -1,26 +1,25 @@
 // @flow
 import React, {Component} from 'react';
-import {reduxForm} from 'redux-form';
+import {connect} from 'react-redux';
+import {reduxForm, formValueSelector} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
-import {BaseValidator} from '../components/form/validation';
 import Collapse from '../components/collapse/Collapse';
 import Hero from '../components/hero/Hero';
 
-import BasicInfo from './form-section/BasicInfo';
-import ApplicantInfo from './form-section/ApplicantInfo';
+import BasicInfo from './form/BasicInfo';
+import ApplicantInfo from './form/ApplicantInfo';
+import FormActions from './form/FormActions';
+import validate from './form/ApplicationValidator';
 
 type Props = {
   handleSubmit: Function,
   invalid: Boolean,
+  isOpenApplication: String,
   onCancel: Function,
   onSave: Function,
   pristine: Boolean,
   submitting: Boolean,
-};
-
-const validate = ({basic, applicant}) => {
-  return BaseValidator({basic, applicant}, {});
 };
 
 class CreateApplication extends Component {
@@ -36,7 +35,16 @@ class CreateApplication extends Component {
       invalid,
       pristine,
       submitting,
+      isOpenApplication,
     } = this.props;
+
+    const formActionProps = {
+      invalid,
+      pristine,
+      submitting,
+      icon: <i className="fa fa-paper-plane-o"/>,
+      label: 'Lähetä hakemus',
+    };
 
     return (
       <div className="full__width">
@@ -45,26 +53,20 @@ class CreateApplication extends Component {
           <h1>Hakemus y</h1>
         </Hero>
 
-        <form className="test-form" onSubmit={handleSubmit(this.save)}>
+        <form className="test-form mvj-form" onSubmit={handleSubmit(this.save)}>
 
           <Collapse
-            header="Kohteen tiedot"
-            defaultOpen={true}>
-            <BasicInfo/>
+            header="Kohteen tiedot">
+            <BasicInfo isOpenApplication={!!isOpenApplication}/>
           </Collapse>
 
           <Collapse
-            header="Hakijan tiedot"
-            defaultOpen={false}>
+            header="Hakijan tiedot">
             <ApplicantInfo/>
           </Collapse>
 
-          <button
-            type="submit"
-            className="button"
-            disabled={invalid || submitting || pristine}>
-            Submit-label
-          </button>
+          <FormActions {...formActionProps}/>
+
         </form>
       </div>
     );
@@ -76,4 +78,14 @@ export default flowRight(
     form: 'application-form',
     validate,
   }),
+  connect(
+    state => {
+      const selector = formValueSelector('application-form');
+      const isOpenApplication = selector(state, 'open_application');
+
+      return {
+        isOpenApplication,
+      };
+    }
+  )
 )(CreateApplication);
