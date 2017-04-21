@@ -11,9 +11,14 @@
     align-items: center;
     justify-content: space-between;
 
+    &:hover {
+      background: $lightest-gray;
+    }
+
     > span {
       flex: 1;
     }
+
     i {
       @include transition(.1s);
     }
@@ -27,7 +32,8 @@
   // Opened stage
   &.open {
     .collapse__header {
-      color: $primary-color;
+      color: $secondary-color;
+      background: $lightest-gray;
 
       i {
         @include rotate(45deg);

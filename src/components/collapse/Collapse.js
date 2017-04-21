@@ -9,8 +9,13 @@ type Props = {
   header: string,
 }
 
+type State = {
+  isOpen: boolean,
+}
+
 class Collapse extends Component {
   props: Props;
+  state: State;
 
   static defaultProps = {
     defaulOpen: false,
