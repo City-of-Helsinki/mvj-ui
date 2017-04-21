@@ -3,8 +3,8 @@ import React from 'react';
 import classNames from 'classnames';
 
 type Props = {
-  className: ?string,
-  children: Object,
+  className?: String,
+  children?: Object,
 };
 
 const Hero = ({className, children}: Props) => (
