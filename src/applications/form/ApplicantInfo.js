@@ -55,6 +55,15 @@ const ApplicantInfo = () => (
 
     <GroupTitle text="Laskutustiedot"/>
 
+    <Column medium={12}>
+      <Field
+        type="text"
+        name="billing_info"
+        label="Laskutustieto"
+        component={FormField}
+      />
+    </Column>
+
     <GroupTitle text="Yhteyshenkilö"/>
 
     <Column medium={12}>
