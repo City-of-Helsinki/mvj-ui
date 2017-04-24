@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
+import classNames from 'classnames';
 
 import {changeUser} from './actions';
 import {Users} from '../constants';
@@ -24,8 +25,21 @@ class RoleSelector extends Component {
     changeUser(role);
   };
 
+  getRoleLink = () => {
+    const {t, currentUser, params: {language}} = this.props;
+    const link = currentUser.id !== 1 ? `${language}/applications` : `${language}/applications/create`;
+    const linkText = currentUser.id !== 1 ? t('goToApplications') : t('createApplication');
+
+    return (
+      <Link className="button primary"
+            to={link}>
+        {linkText} <i className="mi mi-chevron-right"/>
+      </Link>
+    );
+  };
+
   render() {
-    const {currentUser, t, params: {language}} = this.props;
+    const {currentUser, t} = this.props;
 
     return (
       <div className="section__container role-selector">
@@ -34,16 +48,15 @@ class RoleSelector extends Component {
 
         <ul className="role-selector__list">
           {Users.map((role) =>
-            <li key={role.id} onClick={() => this.handleRoleClick(role)}>{role.label}</li>
+            <li key={role.id}
+                className={classNames({'active': currentUser && currentUser.id === role.id})}
+                onClick={() => this.handleRoleClick(role)}>
+              {role.label}
+            </li>
           )}
         </ul>
 
-        {!isEmpty(currentUser) &&
-        <Link className="button primary"
-              to={`${language}/applications`}>
-          {t('goToApplications')} <i className="mi mi-chevron-right"/>
-        </Link>
-        }
+        {!isEmpty(currentUser) && this.getRoleLink()}
       </div>
     );
   }
