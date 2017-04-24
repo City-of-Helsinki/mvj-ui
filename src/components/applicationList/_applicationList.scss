@@ -2,7 +2,6 @@
   list-style-type: none;
   margin: 0;
   padding: 0;
-  background: $lightest-gray;
 
   &__item {
     @include transition();
@@ -10,8 +9,8 @@
     border-bottom: 1px solid $light-gray;
     cursor: pointer;
 
-    &:nth-child(odd) {
-      background: $white;
+    &:nth-child(even) {
+      background: $lightest-gray;
     }
 
     &:hover {

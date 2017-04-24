@@ -11,7 +11,7 @@
   &__list {
     @include grid-row();
     flex: 1;
-    background: $lightest-gray;
+    //background: $lightest-gray;
 
     .applications--form-open & {
       width: 33%;
