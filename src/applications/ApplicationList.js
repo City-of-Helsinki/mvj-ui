@@ -5,16 +5,21 @@ import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 
 import ApplicationForm from './ApplicationForm';
-import Table from '../components/table/Table';
+import {default as List} from '../components/applicationList/ApplicationList';
 
-import {getActiveLanguage} from '../helpers';
+import {getActiveLanguage, formatUnix} from '../helpers';
 
-const tableData = [
-  {id: 'id1', data: {data1: 'Data 1 content', data2: 'Data 2 content', data3: 'Data 3 content'}},
-  {id: 'id2', data: {data1: 'Data 1 content', data2: 'Data 2 content', data3: 'Data 3 content'}},
-  {id: 'id3', data: {data1: 'Data 1 content', data2: 'Data 2 content', data3: 'Data 3 content'}},
-  {id: 'id4', data: {data1: 'Data 1 content', data2: 'Data 2 content', data3: 'Data 3 content'}},
-  {id: 'id5', data: {data1: 'Data 1 content', data2: 'Data 2 content', data3: 'Data 3 content'}},
+const applicationData = [
+  {id: 'id1', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
+  {id: 'id2', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
+  {id: 'id3', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
+  {id: 'id4', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
+  {id: 'id5', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
+  {id: 'id6', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
+  {id: 'id7', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
+  {id: 'id8', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
+  {id: 'id9', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
+  {id: 'id10', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
 ];
 
 type Props = {
@@ -29,7 +34,7 @@ class ApplicationList extends Component {
     router: PropTypes.object,
   };
 
-  handleRowClick = (applicationId) => {
+  handleItemClick = (applicationId) => {
     const {router} = this.context;
     const lang = getActiveLanguage().id;
 
@@ -45,14 +50,8 @@ class ApplicationList extends Component {
 
         <div className="applications__list">
           <h2>{t('applications:title')}</h2>
-          <div className="table-scroll">
-            <Table
-              data={tableData}
-              horizontalScroll={true}
-              onRowClick={(id) => this.handleRowClick(id)}
-              headers={['Data 1', 'Data 2', 'Data 4']}
-            />
-          </div>
+          <List handleItemClick={this.handleItemClick}
+                data={applicationData}/>
         </div>
 
         {applicationId &&
