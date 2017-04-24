@@ -1,0 +1,56 @@
+.mvj-application-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  &__item {
+    @include transition();
+    padding: rem-calc(20px);
+    border-bottom: 1px solid $light-gray;
+    cursor: pointer;
+
+    &:nth-child(odd) {
+      background: $white;
+    }
+
+    &:hover {
+      background: darken($lightest-gray, 5%);
+    }
+
+    &--header {
+      display: flex;
+
+      > span {
+        flex: 1;
+        font-size: 1rem;
+        line-height: rem-calc(24px);
+        margin-bottom: rem-calc(10px);
+      }
+
+      .header--id {
+
+      }
+
+      .header--date {
+        text-align: right;
+      }
+    }
+
+    &--content {
+      font-weight: 600;
+
+      > span {
+        font-size: 1rem;
+        line-height: rem-calc(24px);
+      }
+
+      .content--company {
+        color: $primary-color;
+        display: block;
+      }
+
+      .content--name {
+      }
+    }
+  }
+}

@@ -41,7 +41,7 @@ class RoleSelector extends Component {
         {!isEmpty(currentUser) &&
         <Link className="button primary"
               to={`${language}/applications`}>
-          {t('goToApplications')} <i className="mi mi-keyboard-arrow-down"/>
+          {t('goToApplications')} <i className="mi mi-chevron-right"/>
         </Link>
         }
       </div>

@@ -2,6 +2,7 @@ import {Languages} from './constants';
 import find from 'lodash/find';
 import forEach from 'lodash/forEach';
 import {toastr} from 'react-redux-toastr';
+import moment from 'moment';
 import i18n from './root/i18n';
 
 /**
@@ -73,7 +74,17 @@ export const setPageTitle = (title) => {
  * @param message
  * @param opts
  */
-export function displayUIMessage(message, opts = {type: 'success'}) {
+export const displayUIMessage = (message, opts = {type: 'success'}) => {
   const {title, body} = message;
   return toastr[opts.type](title, body, opts);
-}
+};
+
+/**
+ *
+ * @param unix
+ * @param format
+ * @returns {string}
+ */
+export const formatUnix = (unix, format = 'DD.MM.YYYY HH:mm') => {
+  return moment(unix).format(format);
+};

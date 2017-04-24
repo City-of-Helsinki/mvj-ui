@@ -1,13 +1,22 @@
 .applications {
   display: flex;
   width: 100%;
+  background: $lightest-gray;
+
+  .form-field__input {
+    margin-bottom: 0;
+    background: $white;
+    border-width: 1px;
+  }
 
   &__list {
+    @include grid-row();
     flex: 1;
-    background: $light-gray;
 
     .applications--form-open & {
       width: 33%;
+      max-height: calc(100vh - 50px);
+      overflow: auto;
     }
 
     h2 {
