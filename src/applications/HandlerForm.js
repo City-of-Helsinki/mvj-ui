@@ -11,7 +11,8 @@ import Hero from '../components/hero/Hero';
 import BasicInfo from './form/BasicInfo';
 import ApplicantInfo from './form/ApplicantInfo';
 import FormActions from './form/FormActions';
-import validate from './form/ApplicationValidator';
+import validate from './form/NewApplicationValidator';
+import {getActiveLanguage} from '../helpers';
 
 type Props = {
   handleSubmit: Function,
@@ -24,8 +25,31 @@ type Props = {
   submitting: Boolean,
 };
 
-class CreateApplication extends Component {
+class HandlerForm extends Component {
   props: Props;
+
+  static contextTypes = {
+    router: PropTypes.object,
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {};
+  }
+
+  componentWillMount() {
+  }
+
+  // Just for demo...
+  goBack = () => {
+    const {router} = this.context;
+    const lang = getActiveLanguage().id;
+
+    return router.push({
+      pathname: `/${lang}/applications`,
+    });
+  };
 
   save = (values) => {
     console.log('saving', values);
@@ -33,6 +57,7 @@ class CreateApplication extends Component {
 
   render() {
     const {
+      applicationId,
       handleSubmit,
       invalid,
       isOpenApplication,
@@ -53,10 +78,10 @@ class CreateApplication extends Component {
       <div className="full__width">
 
         <Hero>
-          <h1>{t('applications:createNew')}</h1>
+          <h2 onClick={this.goBack}>{t('applications:createNew')}</h2>
         </Hero>
 
-        <form className="test-form mvj-form" onSubmit={handleSubmit(this.save)}>
+        <form className="mvj-form" onSubmit={handleSubmit(this.save)}>
 
           <Collapse
             header="Kohteen tiedot">
@@ -92,4 +117,4 @@ export default flowRight(
     }
   ),
   translate(['common', 'applications'])
-)(CreateApplication);
+)(HandlerForm);

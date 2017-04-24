@@ -4,16 +4,16 @@ import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 
-import ApplicationForm from './ApplicationForm';
+import CreateApplicationForm from './CreateApplicationForm';
 import {default as List} from '../components/applicationList/ApplicationList';
 
 import {getActiveLanguage, formatUnix} from '../helpers';
 
 const applicationData = [
-  {id: 'id1', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
-  {id: 'id2', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
-  {id: 'id3', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
-  {id: 'id4', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
+  {id: 'id1', date: formatUnix(Date.now()), company: 'Eka Oy', name: 'Ville Hakija'},
+  {id: 'id2', date: formatUnix(Date.now()), company: 'Toka Oy', name: 'Ville Hakija'},
+  {id: 'id3', date: formatUnix(Date.now()), company: 'Kolmas Oy', name: 'Ville Hakija'},
+  {id: 'id4', date: formatUnix(Date.now()), company: 'Neljäs Oy', name: 'Ville Hakija'},
   {id: 'id5', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
   {id: 'id6', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
   {id: 'id7', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
@@ -27,7 +27,7 @@ type Props = {
   t: Function,
 };
 
-class ApplicationList extends Component {
+class ApplicationsList extends Component {
   props: Props;
 
   static contextTypes = {
@@ -55,9 +55,11 @@ class ApplicationList extends Component {
         </div>
 
         {applicationId &&
-        <ApplicationForm
-          applicationId={applicationId}
-        />
+        <div className="applications__form">
+          <CreateApplicationForm
+            applicationId={applicationId}
+          />
+        </div>
         }
 
       </div>
@@ -67,4 +69,4 @@ class ApplicationList extends Component {
 
 export default flowRight(
   translate(['applications'])
-)(ApplicationList);
+)(ApplicationsList);
