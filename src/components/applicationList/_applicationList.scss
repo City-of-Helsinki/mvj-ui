@@ -9,8 +9,8 @@
     border-bottom: 1px solid $light-gray;
     cursor: pointer;
 
-    &:nth-child(odd) {
-      background: $white;
+    &:nth-child(even) {
+      background: $lightest-gray;
     }
 
     &:hover {

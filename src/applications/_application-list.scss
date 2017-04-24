@@ -1,7 +1,6 @@
 .applications {
   display: flex;
   width: 100%;
-  background: $lightest-gray;
 
   .form-field__input {
     margin-bottom: 0;
@@ -12,6 +11,7 @@
   &__list {
     @include grid-row();
     flex: 1;
+    //background: $lightest-gray;
 
     .applications--form-open & {
       width: 33%;

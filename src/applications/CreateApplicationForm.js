@@ -11,7 +11,7 @@ import Hero from '../components/hero/Hero';
 import BasicInfo from './form/BasicInfo';
 import ApplicantInfo from './form/ApplicantInfo';
 import FormActions from './form/FormActions';
-import validate from './form/ApplicationValidator';
+import validate from './form/NewApplicationValidator';
 
 type Props = {
   handleSubmit: Function,
@@ -24,7 +24,7 @@ type Props = {
   submitting: Boolean,
 };
 
-class CreateApplication extends Component {
+class CreateApplicationForm extends Component {
   props: Props;
 
   save = (values) => {
@@ -56,7 +56,7 @@ class CreateApplication extends Component {
           <h1>{t('applications:createNew')}</h1>
         </Hero>
 
-        <form className="test-form mvj-form" onSubmit={handleSubmit(this.save)}>
+        <form className="mvj-form" onSubmit={handleSubmit(this.save)}>
 
           <Collapse
             header="Kohteen tiedot">
@@ -92,4 +92,4 @@ export default flowRight(
     }
   ),
   translate(['common', 'applications'])
-)(CreateApplication);
+)(CreateApplicationForm);
