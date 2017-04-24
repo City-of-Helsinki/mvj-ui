@@ -29,6 +29,11 @@
       font-weight: 500;
       color: $primary-color;
       cursor: pointer;
+      border: 1px solid transparent;
+
+      &.active {
+        border: 1px solid $primary-color;
+      }
 
       &:hover {
         background: darken($light-gray, 5%);

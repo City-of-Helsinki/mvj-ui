@@ -80,7 +80,7 @@ class ApplicationList extends Component {
     return (
       <div>
         <input type="text"
-               className="form-field__input"
+               className="form-field__input form-field__input--search"
                placeholder="Hae..."
                onChange={this.handleSearch}
         />
