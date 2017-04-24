@@ -80,7 +80,7 @@ class DropDown extends Component {
           {icon && iconPlacement === 'left' && icon}
           {isEmpty(active) && placeholder && <span className="title">{placeholder}</span>}
           {!isEmpty(active) && <span className="title">{active[activeLabel]}</span>}
-          {displayCaret && <i className="fa fa-caret-down" aria-hidden="true"/>}
+          {displayCaret && <i className="mi mi-keyboard-arrow-down" aria-hidden="true"/>}
           {icon && iconPlacement === 'right' && icon}
         </a>
         <DropDownMenu

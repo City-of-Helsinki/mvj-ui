@@ -49,7 +49,7 @@ class Collapse extends Component {
     return (
       <div className={classNames('collapse', {'open': isOpen})}>
         <div className="collapse__header" onClick={this.handleToggle}>
-          <span>{header}</span> <i className="fa fa-plus"/>
+          <span>{header}</span> <i className="mi mi-add"/>
         </div>
         <div className="collapse__content">
           {children}
