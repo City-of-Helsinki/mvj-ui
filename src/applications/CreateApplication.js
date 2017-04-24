@@ -53,7 +53,7 @@ class CreateApplication extends Component {
       <div className="full__width">
 
         <Hero>
-          <h1>{t('applications:single')}</h1>
+          <h1>{t('applications:createNew')}</h1>
         </Hero>
 
         <form className="test-form mvj-form" onSubmit={handleSubmit(this.save)}>
