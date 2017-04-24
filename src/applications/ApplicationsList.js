@@ -4,8 +4,8 @@ import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 
-import CreateApplicationForm from './CreateApplicationForm';
-import {default as List} from '../components/applicationList/ApplicationList';
+import HandlerForm from './HandlerForm';
+import ApplicationList from '../components/applicationList/ApplicationList';
 
 import {getActiveLanguage, formatUnix} from '../helpers';
 
@@ -50,13 +50,14 @@ class ApplicationsList extends Component {
 
         <div className="applications__list">
           <h2>{t('applications:title')}</h2>
-          <List handleItemClick={this.handleItemClick}
-                data={applicationData}/>
+          <ApplicationList
+            handleItemClick={this.handleItemClick}
+            data={applicationData}/>
         </div>
 
         {applicationId &&
         <div className="applications__form">
-          <CreateApplicationForm
+          <HandlerForm
             applicationId={applicationId}
           />
         </div>

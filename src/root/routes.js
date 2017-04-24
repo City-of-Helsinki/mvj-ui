@@ -8,8 +8,8 @@ import App from '../app/App';
 import i18n from './i18n';
 
 import RoleSelector from '../role/RoleSelector';
-import ApplicationList from '../applications/ApplicationList';
-import CreateApplication from '../applications/CreateApplication';
+import ApplicationsList from '../applications/ApplicationsList';
+import CreateApplicationForm from '../applications/CreateApplicationForm';
 
 export default
 <Route path="/" component={App}>
@@ -23,9 +23,9 @@ export default
       return <RoleSelector {...props} path={`/${i18n.language}`}/>;
     }}/>
     <Route path="applications">
-      <IndexRoute component={ApplicationList}/>
-      <Route path="create" component={CreateApplication}/>
-      <Route path=":applicationId" component={ApplicationList}/>
+      <IndexRoute component={ApplicationsList}/>
+      <Route path="create" component={CreateApplicationForm}/>
+      <Route path=":applicationId" component={ApplicationsList}/>
     </Route>
     <Route path="*" component={ErrorPage}/>
   </Route>

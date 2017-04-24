@@ -24,7 +24,7 @@ type Props = {
   submitting: Boolean,
 };
 
-class CreateApplication extends Component {
+class CreateApplicationForm extends Component {
   props: Props;
 
   save = (values) => {
@@ -92,4 +92,4 @@ export default flowRight(
     }
   ),
   translate(['common', 'applications'])
-)(CreateApplication);
+)(CreateApplicationForm);

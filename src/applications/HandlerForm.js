@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {reduxForm, formValueSelector} from 'redux-form';
 import {translate} from 'react-i18next';
@@ -15,6 +15,7 @@ import validate from './form/NewApplicationValidator';
 import {getActiveLanguage} from '../helpers';
 
 type Props = {
+  applicationId: String,
   handleSubmit: Function,
   invalid: Boolean,
   isOpenApplication: String,
@@ -31,12 +32,6 @@ class HandlerForm extends Component {
   static contextTypes = {
     router: PropTypes.object,
   };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {};
-  }
 
   componentWillMount() {
   }
@@ -78,7 +73,7 @@ class HandlerForm extends Component {
       <div className="full__width">
 
         <Hero>
-          <h2 onClick={this.goBack}>{t('applications:createNew')}</h2>
+          <h2 onClick={this.goBack}>{t('applications:single')} {applicationId}</h2>
         </Hero>
 
         <form className="mvj-form" onSubmit={handleSubmit(this.save)}>
@@ -103,12 +98,12 @@ class HandlerForm extends Component {
 
 export default flowRight(
   reduxForm({
-    form: 'application-form',
+    form: 'handler-form',
     validate,
   }),
   connect(
     state => {
-      const selector = formValueSelector('application-form');
+      const selector = formValueSelector('handler-form');
       const isOpenApplication = selector(state, 'open_application');
 
       return {
