@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {reduxForm, formValueSelector} from 'redux-form';
+import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 
 import Collapse from '../components/collapse/Collapse';
@@ -19,6 +20,7 @@ type Props = {
   onCancel: Function,
   onSave: Function,
   pristine: Boolean,
+  t: Function,
   submitting: Boolean,
 };
 
@@ -33,9 +35,10 @@ class CreateApplication extends Component {
     const {
       handleSubmit,
       invalid,
+      isOpenApplication,
       pristine,
       submitting,
-      isOpenApplication,
+      t,
     } = this.props;
 
     const formActionProps = {
@@ -50,7 +53,7 @@ class CreateApplication extends Component {
       <div className="full__width">
 
         <Hero>
-          <h1>Hakemus y</h1>
+          <h1>{t('applications:single')}</h1>
         </Hero>
 
         <form className="test-form mvj-form" onSubmit={handleSubmit(this.save)}>
@@ -87,5 +90,6 @@ export default flowRight(
         isOpenApplication,
       };
     }
-  )
+  ),
+  translate(['common', 'applications'])
 )(CreateApplication);
