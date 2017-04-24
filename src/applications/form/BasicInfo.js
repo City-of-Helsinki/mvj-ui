@@ -11,9 +11,9 @@ type Props = {
 };
 
 const TYPES = [
-  {id: 1, label: 'Eka'},
-  {id: 2, label: 'Toka'},
-  {id: 3, label: 'Kolmas'},
+  {id: 1, label: 'Tyyppi 1'},
+  {id: 2, label: 'Tyyppi 2'},
+  {id: 3, label: 'Tyyppi 3'},
 ];
 
 const BasicInfo = (props: Props) => {
