@@ -59,7 +59,7 @@ class TopNavigation extends Component {
                   placeholder={t('roles:subtitle')}
                   active={currentUser}
                   activeLabel={'name'}
-                  icon={<i className="fa fa-user"/>}
+                  icon={<i className="mi mi-account-circle"/>}
                   iconPlacement="right"
                   displayCaret={false}
                   items={Users}

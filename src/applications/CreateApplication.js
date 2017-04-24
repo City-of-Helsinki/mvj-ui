@@ -45,7 +45,7 @@ class CreateApplication extends Component {
       invalid,
       pristine,
       submitting,
-      icon: <i className="fa fa-paper-plane-o"/>,
+      icon: <i className="mi mi-send"/>,
       label: 'Lähetä hakemus',
     };
 
