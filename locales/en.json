@@ -5,7 +5,8 @@
   "roles": {
     "title": "Ground rental system prototype",
     "subtitle": "Choose a user role",
-    "goToApplications": "Show applications"
+    "goToApplications": "Show applications",
+    "createApplication": "Create application"
   },
   "applications": {
     "title": "Applications",
