@@ -9,7 +9,16 @@
   },
   "applications": {
     "title": "Hakemukset",
-    "single": "Hakemus"
+    "single": "Hakemus",
+    "createNew": "Tee hakemus"
+  },
+  "applicationForm": {
+    "heroTitle": "Hakemus",
+    "basicInfo": {
+      "sectionTitle": "Vuokrattavan kohteen tiedot",
+      "type": "Valitse kiinteistön tyyppi",
+      "openApplication": "Avoin haku"
+    }
   },
   "validation": {
     "required": "Vaadittu kenttä"

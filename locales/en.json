@@ -9,7 +9,8 @@
   },
   "applications": {
     "title": "Applications",
-    "single": "Application"
+    "single": "Application",
+    "createNew": "Create application"
   },
   "validation": {
     "required": "Field is required"

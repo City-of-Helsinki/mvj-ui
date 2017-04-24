@@ -3,6 +3,9 @@ import classNames from 'classnames';
 
 import FieldTypeBasic from './FieldTypeBasic';
 import FieldTypeTextarea from './FieldTypeTextarea';
+import FieldTypeSelect from './FieldTypeSelect';
+import FieldTypeCheckbox from './FieldTypeCheckbox';
+import FieldTypeRadio from './FieldTypeRadio';
 import ErrorBlock from './ErrorBlock';
 
 const FieldTypes = {
@@ -10,6 +13,9 @@ const FieldTypes = {
   'number': FieldTypeBasic,
   'email': FieldTypeBasic,
   'textarea': FieldTypeTextarea,
+  'select': FieldTypeSelect,
+  'checkbox': FieldTypeCheckbox,
+  'radio': FieldTypeRadio,
 };
 
 type Props = {
@@ -20,6 +26,7 @@ type Props = {
   input: Object,
   label: String,
   meta: Object,
+  options: ?Array,
   placeholder: String,
   required: Boolean,
   type: String,
@@ -27,7 +34,20 @@ type Props = {
 
 const resolveFieldType = (type: String): Object => FieldTypes.hasOwnProperty(type) ? FieldTypes[type] : FieldTypeBasic;
 
-const FormField = ({input, placeholder, type, label, meta, ErrorComponent, className, disabled, required, hint}: Props) => {
+const FormField = ({
+                     className,
+                     disabled,
+                     ErrorComponent,
+                     hint,
+                     input,
+                     label,
+                     meta,
+                     placeholder,
+                     required,
+                     type,
+                     options,
+                   }: Props) => {
+
   const displayError = meta.error && meta.touched;
   const fieldComponent = resolveFieldType(type);
 
@@ -35,7 +55,7 @@ const FormField = ({input, placeholder, type, label, meta, ErrorComponent, class
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name}>{label}{required && ' *'}</label>}
       {hint && <span className="form-field__hint">{hint}</span>}
-      {createElement(fieldComponent, {input, type, displayError, disabled, placeholder})}
+      {createElement(fieldComponent, {input, type, displayError, disabled, placeholder, options})}
       {displayError && <ErrorComponent {...meta}/>}
     </div>
 

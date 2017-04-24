@@ -16,3 +16,12 @@
     padding: rem-calc(30px);
   }
 }
+
+.mvj-form {
+  &__group-title {
+    margin: rem-calc(40px 0);
+    font-size: rem-calc(18px);
+    line-height: rem-calc(24px);
+    color: $dark-gray;
+  }
+}

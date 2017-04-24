@@ -11,11 +11,13 @@
 @import '~react-datepicker/dist/react-datepicker.min.css';
 
 // Components
-@import 'components/form/form';
-@import "components/topNavigation/top-navigation";
 @import "components/dropdown/dropdown";
+@import "components/hero/hero";
 @import "components/table/table";
 @import "components/tabs/tabs";
+@import "components/topNavigation/top-navigation";
+@import 'components/collapse/collapse';
+@import 'components/form/form';
 
 // App
 @import "./api/api";

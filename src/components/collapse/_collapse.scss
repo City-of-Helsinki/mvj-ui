@@ -1,0 +1,47 @@
+.collapse {
+  border-bottom: 1px solid $light-gray;
+
+  .collapse__header {
+    @include transition(.1s);
+    @include mvj-container();
+    padding: 2rem 1rem;
+    font-size: rem-calc(20px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &:hover {
+      background: $lightest-gray;
+    }
+
+    > span {
+      flex: 1;
+    }
+
+    i {
+      @include transition(.1s);
+    }
+  }
+
+  &__content {
+    @include mvj-container();
+    display: none;
+  }
+
+  // Opened stage
+  &.open {
+    .collapse__header {
+      color: $secondary-color;
+      background: $lightest-gray;
+
+      i {
+        @include rotate(45deg);
+      }
+    }
+
+    .collapse__content {
+      display: block;
+    }
+  }
+}

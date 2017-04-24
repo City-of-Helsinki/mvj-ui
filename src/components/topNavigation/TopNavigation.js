@@ -68,7 +68,6 @@ class TopNavigation extends Component {
         <DropDown className="language-switcher"
                   active={getActiveLanguage()}
                   items={Languages}
-                  icon={<i className="fa fa-globe"/>}
                   onItemClick={this.handleLanguageMenuItemClick}/>
 
       </section>
