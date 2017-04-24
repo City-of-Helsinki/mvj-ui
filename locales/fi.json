@@ -9,7 +9,8 @@
   },
   "applications": {
     "title": "Hakemukset",
-    "single": "Hakemus"
+    "single": "Hakemus",
+    "createNew": "Tee hakemus"
   },
   "applicationForm": {
     "heroTitle": "Hakemus",
