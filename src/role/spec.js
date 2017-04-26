@@ -14,8 +14,15 @@ describe('User (Role) module', () => {
           label: 'Foo',
           name: 'Bar',
         };
+
+        const newState = {
+          current: dummyUser,
+          isFetching: false,
+          list: [],
+        };
+
         const state = userReducer({}, changeUser(dummyUser));
-        expect(state).to.deep.equal(dummyUser);
+        expect(state).to.deep.equal(newState);
       });
 
     });
