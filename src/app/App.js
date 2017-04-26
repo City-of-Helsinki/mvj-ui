@@ -11,7 +11,7 @@ import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
 import ReduxToastr from 'react-redux-toastr';
-import {isAllowedLanguage} from '../helpers';
+import {isAllowedLanguage} from '../util/helpers';
 import {Languages} from '../constants';
 
 import type {ApiError} from '../api/types';

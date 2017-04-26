@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import HandlerForm from './HandlerForm';
 import ApplicationList from '../components/applicationList/ApplicationList';
 
-import {getActiveLanguage, formatUnix} from '../helpers';
+import {getActiveLanguage, formatUnix} from '../util/helpers';
 
 const applicationData = [
   {id: 'id1', date: formatUnix(Date.now()), company: 'Eka Oy', name: 'Ville Hakija'},

@@ -12,7 +12,7 @@ import BasicInfo from './form/BasicInfo';
 import ApplicantInfo from './form/ApplicantInfo';
 import FormActions from './form/FormActions';
 import validate from './form/NewApplicationValidator';
-import {getActiveLanguage} from '../helpers';
+import {getActiveLanguage} from '../util/helpers';
 import GroupTitle from '../components/form/GroupTitle';
 
 // Dummy-values for handlerForm
