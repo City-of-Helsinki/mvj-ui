@@ -20,8 +20,9 @@ const DropdownMenu = ({items, open = false, active, onItemClick = defaultOnItemC
       {items.map((item, i) => <li key={i}>
         <a className={classNames('mvj-dropdown-menu__link', {
           'mvj-dropdown-menu__link--active': active === item.id,
-        })} onClick={() => {
-          onItemClick(item);
+        })} onClick={(e) => {
+          e.preventDefault();
+          return onItemClick(item);
         }}>{item.label}</a>
       </li>)}
     </ul>

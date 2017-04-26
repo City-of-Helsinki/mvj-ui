@@ -1,7 +1,13 @@
 // @flow
 
 import type {Selector} from '../types';
-import type {User, UserState} from './types';
+import type {CurrentUser, UserState} from './types';
 
-export const getUser: Selector<User, void> = (state): UserState =>
-  state.user;
+export const getIsFetching: Selector<CurrentUser, void> = (state): UserState =>
+  state.user.isFetching;
+
+export const getUserList: Selector<CurrentUser, void> = (state): UserState =>
+  state.user.list;
+
+export const getUser: Selector<CurrentUser, void> = (state): UserState =>
+  state.user.current;

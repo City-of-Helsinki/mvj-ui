@@ -9,8 +9,8 @@ import flowRight from 'lodash/flowRight';
 
 import DropDown from '../dropdown/DropDown';
 import {changeUser} from '../../role/actions';
-import {getUser} from '../../role/selectors';
-import {Languages, Users} from '../../constants';
+import {getUser, getUserList} from '../../role/selectors';
+import {Languages} from '../../constants';
 import {getActiveLanguage} from '../../helpers';
 
 type Props = {
@@ -20,6 +20,7 @@ type Props = {
   location: Object,
   router: Object,
   t: Function,
+  userList: Array<any>,
 }
 
 class TopNavigation extends Component {
@@ -32,12 +33,12 @@ class TopNavigation extends Component {
     return `${pathArr.join('/')}${search}${hash}`;
   };
 
-  handleLanguageMenuItemClick = (item) => {
-    const {router, location} = this.props;
-    if (item.id !== i18n.language) {
-      const newLocation = this.getLocationForNewLanguage(location, item.id);
-      i18n.changeLanguage(item.id);
-      router.push(newLocation);
+  handleLanguageMenuItemClick = ({id}) => {
+    // const {router, location} = this.props;
+    if (id !== i18n.language) {
+      return i18n.changeLanguage(id, () => {
+        // return router.push(newLocation);
+      });
     }
   };
 
@@ -47,7 +48,7 @@ class TopNavigation extends Component {
   };
 
   render() {
-    const {currentUser, t} = this.props;
+    const {currentUser, userList, t} = this.props;
 
     return (
       <section className="top-navigation">
@@ -58,11 +59,10 @@ class TopNavigation extends Component {
         <DropDown className="user-switcher"
                   placeholder={t('roles:subtitle')}
                   active={currentUser}
-                  activeLabel={'name'}
                   icon={<i className="mi mi-account-circle"/>}
                   iconPlacement="right"
                   displayCaret={false}
-                  items={Users}
+                  items={userList}
                   onItemClick={this.handleUserMenuItemClick}/>
 
         <DropDown className="language-switcher"
@@ -79,6 +79,7 @@ export default flowRight(
   connect((state) => {
     return {
       currentUser: getUser(state),
+      userList: getUserList(state),
     };
   }, {changeUser}),
   withRouter,
