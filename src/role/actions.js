@@ -2,7 +2,23 @@
 
 import {createAction} from 'redux-actions';
 
-import type {User, ChangeUserAction} from './types';
+import type {
+  ChangeUserAction,
+  CurrentUser,
+  UserList,
+  FetchUsersAction,
+  ReceiveUsersAction,
+  UserNotFoundAction,
+} from './types';
 
-export const changeUser = (role: User): ChangeUserAction =>
-  createAction('mvj/user/CHANGE_USER')(role);
+export const fetchUsers = (): FetchUsersAction =>
+  createAction('mvj/user/FETCH')();
+
+export const receiveUsers = (users: UserList): ReceiveUsersAction =>
+  createAction('mvj/user/RECEIVE')(users);
+
+export const notFound = (): UserNotFoundAction =>
+  createAction('mvj/user/NOT_FOUND')();
+
+export const changeUser = (user: CurrentUser): ChangeUserAction =>
+  createAction('mvj/user/CHANGE')(user);

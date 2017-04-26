@@ -7,28 +7,28 @@ import isEmpty from 'lodash/isEmpty';
 import classNames from 'classnames';
 
 import {changeUser} from './actions';
-import {Users} from '../constants';
-import {getUser} from './selectors';
+import {getIsFetching, getUser, getUserList} from './selectors';
 
 type Props = {
   changeUser: Function,
   currentUser: Object,
   params: Object,
   t: Function,
+  userList: Array<any>,
 };
 
 class RoleSelector extends Component {
   props: Props;
 
-  handleRoleClick = (role) => {
+  handleUserClick = (user) => {
     const {changeUser} = this.props;
-    changeUser(role);
+    changeUser(user);
   };
 
   getRoleLink = () => {
     const {t, currentUser, params: {language}} = this.props;
-    const link = currentUser.id !== 1 ? `${language}/applications` : `${language}/applications/create`;
-    const linkText = currentUser.id !== 1 ? t('goToApplications') : t('createApplication');
+    const link = currentUser.id === 'applicant' ? `${language}/applications/create` : `${language}/applications`;
+    const linkText = currentUser.id === 'applicant' ? t('createApplication') : t('goToApplications');
 
     return (
       <Link className="button primary"
@@ -39,22 +39,24 @@ class RoleSelector extends Component {
   };
 
   render() {
-    const {currentUser, t} = this.props;
+    const {currentUser, userList, isFetching, t} = this.props;
 
     return (
       <div className="section__container role-selector">
         <h1>{t('title')}</h1>
         <h2>{t('subtitle')}</h2>
 
+        {!isFetching &&
         <ul className="role-selector__list">
-          {Users.map((role) =>
-            <li key={role.id}
-                className={classNames({'active': currentUser && currentUser.id === role.id})}
-                onClick={() => this.handleRoleClick(role)}>
-              {role.label}
+          {userList.map((user, i) =>
+            <li key={i}
+                className={classNames({'active': currentUser && currentUser.id === user.id})}
+                onClick={() => this.handleUserClick(user)}>
+              {user.label}
             </li>
           )}
         </ul>
+        }
 
         {!isEmpty(currentUser) && this.getRoleLink()}
       </div>
@@ -65,7 +67,9 @@ class RoleSelector extends Component {
 export default flowRight(
   connect((state) => {
     return {
+      userList: getUserList(state),
       currentUser: getUser(state),
+      isFetching: getIsFetching(state),
     };
   }, {changeUser}),
   translate(['common', 'roles']),
