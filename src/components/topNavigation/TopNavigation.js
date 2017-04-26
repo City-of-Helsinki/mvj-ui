@@ -33,12 +33,12 @@ class TopNavigation extends Component {
     return `${pathArr.join('/')}${search}${hash}`;
   };
 
-  handleLanguageMenuItemClick = (item) => {
-    const {router, location} = this.props;
-    if (item.id !== i18n.language) {
-      const newLocation = this.getLocationForNewLanguage(location, item.id);
-      i18n.changeLanguage(item.id);
-      router.push(newLocation);
+  handleLanguageMenuItemClick = ({id}) => {
+    // const {router, location} = this.props;
+    if (id !== i18n.language) {
+      return i18n.changeLanguage(id, () => {
+        // return router.push(newLocation);
+      });
     }
   };
 
