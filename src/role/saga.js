@@ -13,10 +13,10 @@ function* fetchUsersSaga(): Generator<> {
 
     switch (statusCode) {
       case 200:
-        const users = bodyAsJson.map(user => ({
+        const users = bodyAsJson.map(({username, first_name, last_name}, ...user) => ({
           ...user,
-          id: user.username,
-          label: `${user.first_name} ${user.last_name}`,
+          id: username,
+          label: `${first_name} ${last_name}`,
         }));
         yield put(receiveUsers(users));
         break;
