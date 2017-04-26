@@ -2,13 +2,12 @@
 
 import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
+
 import {receiveUsers, notFound} from './actions';
 import {fetchUsers} from './requests';
-
-import type {FetchUsersAction} from './types';
 import {receiveError} from '../api/actions';
 
-function* fetchUsersSaga({payload: path}: FetchUsersAction): Generator<> {
+function* fetchUsersSaga(): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchUsers);
 

@@ -12,6 +12,7 @@ import {getIsFetching, getUser, getUserList} from './selectors';
 type Props = {
   changeUser: Function,
   currentUser: Object,
+  isFetching: boolean,
   params: Object,
   t: Function,
   userList: Array<any>,
