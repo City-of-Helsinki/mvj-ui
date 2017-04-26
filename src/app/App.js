@@ -17,12 +17,14 @@ import {Languages} from '../constants';
 import type {ApiError} from '../api/types';
 import type {RootState} from '../root/types';
 import TopNavigation from '../components/topNavigation/TopNavigation';
+import {fetchUsers} from '../role/actions';
 
 type Props = {
   apiError: ApiError,
-  closeReveal: Function,
-  clearError: typeof clearError,
   children: any,
+  clearError: typeof clearError,
+  closeReveal: Function,
+  fetchUsers: Function,
   params: Object,
   route: Object,
 };
@@ -36,6 +38,7 @@ class App extends Component {
 
   componentDidMount() {
     const {
+      fetchUsers,
       params: {language},
     } = this.props;
 
@@ -46,6 +49,8 @@ class App extends Component {
         i18n.changeLanguage(Languages.EN);
       }
     }
+
+    fetchUsers();
   }
 
   handleDismissErrorModal = () => {
@@ -87,6 +92,7 @@ export default flowRight(
       apiError: getError(state),
     }),
     {
+      fetchUsers,
       clearError,
     },
   ),
