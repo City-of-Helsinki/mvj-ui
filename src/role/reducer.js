@@ -5,6 +5,8 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {CurrentUser, UserList, ChangeUserAction, ReceiveUsersAction} from './types';
 
+import {setStorageItem} from '../util/storage';
+
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/user/FETCH': () => true,
   'mvj/user/RECEIVE': () => false,
@@ -12,10 +14,13 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 }, false);
 
 const currentUserReducer: Reducer<CurrentUser> = handleActions({
-  ['mvj/user/CHANGE']: (state: CurrentUser, {payload: user}: ChangeUserAction) => ({
-    ...state,
-    ...user,
-  }),
+  ['mvj/user/CHANGE']: (state: CurrentUser, {payload: user}: ChangeUserAction) => {
+    setStorageItem('TOKEN', user.id);
+    return {
+      ...state,
+      ...user,
+    };
+  },
 }, {});
 
 const userListReducer: Reducer<UserList> = handleActions({
