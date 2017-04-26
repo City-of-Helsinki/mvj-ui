@@ -14,6 +14,14 @@ import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 const context = path.resolve(__dirname, '..');
 const extractStylesPlugin = new ExtractTextPlugin('[name].[hash].css');
 
+// TODO: Make this better
+const getEnvValues = {
+  ['API_URL']: process.env.API_URL,
+  ['STORAGE_PREFIX']: process.env.STORAGE_PREFIX,
+  ['process.env.NODE_ENV']: 'production',
+  ...readDotenv({...context, silent: true}),
+};
+
 export default createConfig({
   context,
   devtool: 'source-map',
@@ -43,10 +51,7 @@ export default createConfig({
   },
   plugins: [
     new CleanPlugin(['./dist/*'], {root: context}),
-    new webpack.DefinePlugin(mapValues({
-      ...readDotenv(context),
-      ['process.env.NODE_ENV']: 'production',
-    }, (v) => JSON.stringify(v))),
+    new webpack.DefinePlugin(mapValues(getEnvValues, (v) => JSON.stringify(v))),
     new HtmlWebpackPlugin({
       inject: 'body',
       template: 'src/index.html',
