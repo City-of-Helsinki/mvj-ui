@@ -2,13 +2,14 @@
 
 import {call, put} from 'redux-saga/effects';
 import {receiveError} from './actions';
+import {getStorageItem} from '../util/storage';
 
-const accessToken = 'DUMMY';
+const accessToken = getStorageItem('TOKEN');
 
 function* callApi(request: Request): Generator<> {
 
   if (accessToken) {
-    request.headers.set('authorization', `Bearer ${accessToken}`);
+    request.headers.set('Authorization', `Token ${accessToken}`);
   }
 
   const response = yield call(fetch, request);
