@@ -1,9 +1,9 @@
-import {Languages} from './constants';
+import {Languages} from '../constants';
 import find from 'lodash/find';
 import forEach from 'lodash/forEach';
 import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
-import i18n from './root/i18n';
+import i18n from '../root/i18n';
 
 /**
  *
