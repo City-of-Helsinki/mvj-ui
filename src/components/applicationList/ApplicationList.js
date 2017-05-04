@@ -12,14 +12,15 @@ const fuseOptions = {
   // maxPatternLength: 32,
   minMatchCharLength: 3,
   keys: [
-    'name',
-    'company',
+    'contact_name',
+    'organization_name',
   ],
 };
 
 type Props = {
   className?: String,
   handleItemClick: Function,
+  isFetching: boolean,
   data: Array<any>,
 };
 
@@ -75,7 +76,11 @@ class ApplicationList extends Component {
 
   render() {
     const {items} = this.state;
-    const {className, handleItemClick} = this.props;
+    const {className, handleItemClick, isFetching} = this.props;
+
+    if (isFetching) {
+      return <p>Loading...</p>;
+    }
 
     return (
       <div>

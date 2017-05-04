@@ -85,6 +85,6 @@ export const displayUIMessage = (message, opts = {type: 'success'}) => {
  * @param format
  * @returns {string}
  */
-export const formatUnix = (unix, format = 'DD.MM.YYYY HH:mm') => {
+export const formatDateObj = (unix, format = 'DD.MM.YYYY HH:mm') => {
   return moment(unix).format(format);
 };
