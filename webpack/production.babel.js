@@ -1,5 +1,3 @@
-// @flow
-
 import path from 'path';
 import mapValues from 'lodash/mapValues';
 import createConfig from './createConfig';
