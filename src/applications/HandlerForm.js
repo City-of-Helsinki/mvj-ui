@@ -14,6 +14,8 @@ import FormActions from './form/FormActions';
 import validate from './form/NewApplicationValidator';
 import {getActiveLanguage} from '../util/helpers';
 import GroupTitle from '../components/form/GroupTitle';
+import {fetchSingleApplication} from './actions';
+import {getCurrentApplication, getIsFetching} from './selectors';
 
 // Dummy-values for handlerForm
 const initialValues = {
@@ -39,14 +41,16 @@ const initialValues = {
 
 type Props = {
   applicationId: String,
+  fetchSingleApplication: Function,
   handleSubmit: Function,
   invalid: Boolean,
+  isFetching: boolean,
   isOpenApplication: String,
   onCancel: Function,
   onSave: Function,
   pristine: Boolean,
-  t: Function,
   submitting: Boolean,
+  t: Function,
 };
 
 class HandlerForm extends Component {
@@ -57,6 +61,17 @@ class HandlerForm extends Component {
   };
 
   componentWillMount() {
+    const {applicationId, fetchSingleApplication} = this.props;
+
+    fetchSingleApplication(applicationId);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {applicationId, fetchSingleApplication} = nextProps;
+
+    if (applicationId !== this.props.applicationId) {
+      fetchSingleApplication(applicationId);
+    }
   }
 
   // Just for demo...
@@ -79,6 +94,7 @@ class HandlerForm extends Component {
       handleSubmit,
       invalid,
       isOpenApplication,
+      isFetching,
       pristine,
       submitting,
       t,
@@ -91,6 +107,10 @@ class HandlerForm extends Component {
       icon: <i className="mi mi-send"/>,
       label: 'Lähetä hakemus',
     };
+
+    if (isFetching) {
+      return <p>Loading...</p>;
+    }
 
     return (
       <div className="full__width">
@@ -128,15 +148,18 @@ class HandlerForm extends Component {
 
 export default flowRight(
   connect(
-    state => {
+    (state) => {
       const selector = formValueSelector('handler-form');
       const isOpenApplication = selector(state, 'open_application');
 
       return {
         isOpenApplication,
         initialValues,
+        application: getCurrentApplication(state),
+        isFetching: getIsFetching(state),
       };
-    }
+    },
+    {fetchSingleApplication}
   ),
   reduxForm({
     form: 'handler-form',

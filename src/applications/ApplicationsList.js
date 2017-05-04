@@ -1,28 +1,22 @@
 // @flow
 import React, {Component, PropTypes} from 'react';
+import {connect} from 'react-redux';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 
+import {fetchApplications} from './actions';
+
 import HandlerForm from './HandlerForm';
 import ApplicationList from '../components/applicationList/ApplicationList';
 
-import {getActiveLanguage, formatUnix} from '../util/helpers';
-
-const applicationData = [
-  {id: 'id1', date: formatUnix(Date.now()), company: 'Eka Oy', name: 'Ville Hakija'},
-  {id: 'id2', date: formatUnix(Date.now()), company: 'Toka Oy', name: 'Ville Hakija'},
-  {id: 'id3', date: formatUnix(Date.now()), company: 'Kolmas Oy', name: 'Ville Hakija'},
-  {id: 'id4', date: formatUnix(Date.now()), company: 'Neljäs Oy', name: 'Ville Hakija'},
-  {id: 'id5', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
-  {id: 'id6', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
-  {id: 'id7', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
-  {id: 'id8', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
-  {id: 'id9', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
-  {id: 'id10', date: formatUnix(Date.now()), company: 'Yritys Oy', name: 'Ville Hakija'},
-];
+import {getActiveLanguage} from '../util/helpers';
+import {getApplicationsList, getIsFetching} from './selectors';
 
 type Props = {
+  applications: Array<any>,
+  fetchApplications: Function,
+  isFetching: boolean,
   params: Object,
   t: Function,
 };
@@ -34,6 +28,12 @@ class ApplicationsList extends Component {
     router: PropTypes.object,
   };
 
+  componentWillMount() {
+    const {fetchApplications} = this.props;
+
+    fetchApplications();
+  }
+
   handleItemClick = (applicationId) => {
     const {router} = this.context;
     const lang = getActiveLanguage().id;
@@ -44,15 +44,18 @@ class ApplicationsList extends Component {
   };
 
   render() {
-    const {t, params: {applicationId}} = this.props;
+    const {applications, isFetching, t, params: {applicationId}} = this.props;
+
     return (
       <div className={classNames('applications', {'applications--form-open': !!applicationId})}>
 
         <div className="applications__list">
           <h2>{t('applications:title')}</h2>
           <ApplicationList
+            data={applications}
             handleItemClick={this.handleItemClick}
-            data={applicationData}/>
+            isFetching={isFetching}
+          />
         </div>
 
         {applicationId &&
@@ -69,5 +72,16 @@ class ApplicationsList extends Component {
 }
 
 export default flowRight(
+  connect(
+    (state) => {
+      return {
+        applications: getApplicationsList(state),
+        isFetching: getIsFetching(state),
+      };
+    },
+    {
+      fetchApplications,
+    },
+  ),
   translate(['applications'])
 )(ApplicationsList);
