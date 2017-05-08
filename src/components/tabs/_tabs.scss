@@ -1,6 +1,10 @@
 .mvj__tabs {
-  @include tabs-container(0, $secondary-color, transparent);
+  @include tabs-container(0, $primary-color, transparent);
   border: none;
+  margin-top: rem-calc(15px);
+  text-align: center;
+  position: relative;
+  bottom: rem-calc(-30px);
 
   > li {
     @include tabs-title(
@@ -11,8 +15,10 @@
         $white,
         $white
     );
+    float: none;
     margin-right: rem-calc(5px);
-    background: darken($secondary-color, 5%);
+    background: darken($primary-color, 5%);
+    display: inline-block;
 
     > a {
       @include transition();

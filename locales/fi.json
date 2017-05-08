@@ -11,7 +11,12 @@
   "applications": {
     "title": "Hakemukset",
     "single": "Hakemus",
-    "createNew": "Tee hakemus"
+    "createNew": "Tee hakemus",
+    "types": {
+      "detached_house": "Omakotitalo",
+      "real_property_unit": "Kiinteistö",
+      "other": "Muu"
+    }
   },
   "applicationForm": {
     "heroTitle": "Hakemus",
