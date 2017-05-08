@@ -11,6 +11,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/applications/FETCH_SINGLE': () => true,
   'mvj/applications/RECEIVE_SINGLE': () => false,
   'mvj/applications/NOT_FOUND': () => false,
+  'mvj/applications/CREATE': () => true,
 }, false);
 
 const applicationsListReducer: Reducer<ApplicationsList> = handleActions({

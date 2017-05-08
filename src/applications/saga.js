@@ -2,9 +2,10 @@
 
 import {takeLatest, takeEvery} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
+import {SubmissionError} from 'redux-form';
 
 import {receiveApplications, notFound, receiveSingleApplication} from './actions';
-import {fetchApplications, fetchSingleApplication} from './requests';
+import {fetchApplications, fetchSingleApplication, sendApplication} from './requests';
 import {receiveError} from '../api/actions';
 
 function* fetchApplicationsSaga(): Generator<> {
@@ -50,11 +51,36 @@ function* fetchSingleApplicationSaga({payload: id}): Generator<> {
   }
 }
 
+function* sendApplicationSaga({payload: application}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(sendApplication, application);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSingleApplication(bodyAsJson));
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson, _error: 'Virhe'})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to send application with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
       yield takeLatest('mvj/applications/FETCH_ALL', fetchApplicationsSaga);
       yield takeEvery('mvj/applications/FETCH_SINGLE', fetchSingleApplicationSaga);
+      yield takeLatest('mvj/applications/CREATE', sendApplicationSaga);
     }),
   ];
 }

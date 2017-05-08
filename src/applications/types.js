@@ -14,4 +14,6 @@ export type ReceiveApplicationsAction = Action<'mvj/applications/RECEIVE_ALL', A
 export type FetchSingleApplicationAction = Action<'mvj/applications/FETCH_SINGLE', ApplicationId>;
 export type ReceiveSingleApplicationAction = Action<'mvj/applications/RECEIVE_SINGLE', Application>;
 
+export type CreateApplicationAction = Action<'mvj/applications/CREATE', Application>;
+
 export type ApplicationNotFoundAction = Action<'mvj/applications/NOT_FOUND', void>;
