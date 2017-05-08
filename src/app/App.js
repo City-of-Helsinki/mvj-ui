@@ -18,12 +18,14 @@ import type {ApiError} from '../api/types';
 import type {RootState} from '../root/types';
 import TopNavigation from '../components/topNavigation/TopNavigation';
 import {fetchUsers} from '../role/actions';
+// import {fetchAttributes} from '../attributes/actions';
 
 type Props = {
   apiError: ApiError,
   children: any,
   clearError: typeof clearError,
   closeReveal: Function,
+  fetchAttributes: Function,
   fetchUsers: Function,
   params: Object,
   route: Object,
@@ -38,7 +40,6 @@ class App extends Component {
 
   componentDidMount() {
     const {
-      fetchUsers,
       params: {language},
     } = this.props;
 
@@ -50,8 +51,13 @@ class App extends Component {
       }
     }
 
-    fetchUsers();
+    this.doInitialLoad();
   }
+
+  doInitialLoad = () => {
+    const {fetchUsers} = this.props;
+    fetchUsers();
+  };
 
   handleDismissErrorModal = () => {
     this.props.closeReveal('apiError');

@@ -6,6 +6,7 @@ import {reducer as toastrReducer} from 'react-redux-toastr';
 import {routerReducer} from 'react-router-redux';
 import apiReducer from '../api/reducer';
 import roleReducer from '../role/reducer';
+import attributesReducer from '../attributes/reducer';
 import applicationsReducer from '../applications/reducer';
 
 import type {Reducer} from '../types';
@@ -15,6 +16,7 @@ export default (): Reducer<RootState> =>
   combineReducers({
     api: apiReducer,
     applications: applicationsReducer,
+    attributes: attributesReducer,
     user: roleReducer,
     form: formReducer,
     routing: routerReducer,

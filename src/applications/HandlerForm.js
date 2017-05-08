@@ -21,9 +21,11 @@ import validate from './form/NewApplicationValidator';
 import {getActiveLanguage} from '../util/helpers';
 import {fetchSingleApplication} from './actions';
 import {getCurrentApplication, getIsFetching} from './selectors';
+import {fetchAttributes} from '../attributes/actions';
 
 type Props = {
   applicationId: String,
+  fetchAttributes: Function,
   fetchSingleApplication: Function,
   handleSubmit: Function,
   invalid: Boolean,
@@ -61,12 +63,13 @@ class HandlerForm extends Component {
   }
 
   componentWillMount() {
-    const {applicationId, fetchSingleApplication, location} = this.props;
+    const {applicationId, fetchSingleApplication, location, fetchAttributes} = this.props;
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
     }
 
+    fetchAttributes();
     fetchSingleApplication(applicationId);
   }
 
@@ -224,7 +227,10 @@ export default flowRight(
         isFetching: getIsFetching(state),
       };
     },
-    {fetchSingleApplication}
+    {
+      fetchAttributes,
+      fetchSingleApplication,
+    }
   ),
   reduxForm({
     form: 'handler-form',

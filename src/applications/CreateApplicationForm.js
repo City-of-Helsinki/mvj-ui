@@ -12,8 +12,10 @@ import BasicInfo from './form/BasicInfo';
 import ApplicantInfo from './form/ApplicantInfo';
 import FormActions from './form/FormActions';
 import validate from './form/NewApplicationValidator';
+import {fetchAttributes} from '../attributes/actions';
 
 type Props = {
+  fetchAttributes: Function,
   handleSubmit: Function,
   invalid: Boolean,
   isOpenApplication: String,
@@ -26,6 +28,11 @@ type Props = {
 
 class CreateApplicationForm extends Component {
   props: Props;
+
+  componentWillMount() {
+    const {fetchAttributes} = this.props;
+    fetchAttributes();
+  }
 
   save = (values) => {
     console.log('saving', values);
@@ -89,7 +96,8 @@ export default flowRight(
       return {
         isOpenApplication,
       };
-    }
+    },
+    {fetchAttributes}
   ),
   translate(['common', 'applications'])
 )(CreateApplicationForm);
