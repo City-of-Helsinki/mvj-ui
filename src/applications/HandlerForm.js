@@ -8,53 +8,19 @@ import flowRight from 'lodash/flowRight';
 import find from 'lodash/find';
 
 import Tabs from '../components/tabs/Tabs';
-import Collapse from '../components/collapse/Collapse';
 import Hero from '../components/hero/Hero';
 
-import BasicInfo from './form/BasicInfo';
 import ApplicantInfo from './form/ApplicantInfo';
+import BasicInfo from './form/BasicInfo';
+import Billing from './form/Billing';
+import Lease from './form/Lease';
+import Summary from './form/Summary';
+
 import FormActions from './form/FormActions';
 import validate from './form/NewApplicationValidator';
 import {getActiveLanguage} from '../util/helpers';
-import GroupTitle from '../components/form/GroupTitle';
 import {fetchSingleApplication} from './actions';
 import {getCurrentApplication, getIsFetching} from './selectors';
-
-// Dummy-values for handlerForm
-const initialValues = {
-  type: 1,
-  arguments: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores, temporibus...',
-  location: 'Uotila',
-  address: 'Uotilantie 56',
-  map_link: 'http://maps.google.com',
-  usage: 'Yritystoiminta',
-  area: '100',
-  start: '24.12.2010',
-  stop: '24.12.2020',
-  organisation: 'Oy Yritys Ab',
-  company_code: 'ABC-123',
-  organisation_street: 'Yrityskatu 47',
-  zip: '00100',
-  value: '100 000 000',
-  billing_info: 'Laskutustieto',
-  name: 'Jarkko Jäppinen',
-  phone: '050-123 1234',
-  email: 'jarkko.jappinen@yritys.com',
-};
-
-const tab1Content = () => <p>Tab 1 content</p>;
-const tab2Content = () => <p>Tab 2 content</p>;
-const tab3Content = () => <p>Tab 3 content</p>;
-const tab4Content = () => <p>Tab 4 content</p>;
-
-const tabs = [
-  {id: 'first', label: 'Tab 1', component: tab1Content},
-  {id: 'second', label: 'Tab 2', component: tab2Content},
-  {id: 'third', label: 'Tab 3', component: tab3Content},
-  {id: 'fourth', label: 'Tab 4', component: tab4Content},
-];
-
-const getActiveTab = (id: string): Object => find(tabs, {id});
 
 type Props = {
   applicationId: String,
@@ -75,9 +41,12 @@ type State = {
   activeTab: string,
 };
 
+type TabsType = Array<any>;
+
 class HandlerForm extends Component {
   props: Props;
   state: State;
+  tabs: TabsType;
 
   static contextTypes = {
     router: PropTypes.object,
@@ -87,7 +56,7 @@ class HandlerForm extends Component {
     super(props);
 
     this.state = {
-      activeTab: tabs[0].id,
+      activeTab: '',
     };
   }
 
@@ -107,7 +76,54 @@ class HandlerForm extends Component {
     if (applicationId !== this.props.applicationId) {
       fetchSingleApplication(applicationId);
     }
+
+    this.setTabs();
   }
+
+  setTabs = () => {
+    const {isOpenApplication} = this.props;
+
+    this.tabs = [
+      {
+        id: 'yhteenveto',
+        label: 'Yhteenveto',
+        component: Summary,
+      },
+      {
+        id: 'vuokralaiset',
+        label: 'Vuokralaiset',
+        component: ApplicantInfo,
+      },
+      {
+        id: 'kohde',
+        label: 'Kohde',
+        component: BasicInfo,
+        props: {
+          isOpenApplication: !!isOpenApplication,
+        },
+      },
+      {
+        id: 'vuokra',
+        label: 'Vuokra',
+        component: Lease,
+      },
+      {
+        id: 'laskutus',
+        label: 'Laskutus',
+        component: Billing,
+      },
+    ];
+
+    if (!this.state.activeTab) {
+      const {id} = this.tabs[0];
+      this.setState({
+        activeTab: id,
+      });
+    }
+
+  };
+
+  getActiveTab = (id) => find(this.tabs, {id});
 
   handleTabClick = (tabId) => {
     const {router} = this.context;
@@ -121,11 +137,11 @@ class HandlerForm extends Component {
     });
   };
 
-  renderTabContent = (): Object => {
+  renderTabContent = () => {
     const {activeTab} = this.state;
-    const tab = getActiveTab(activeTab);
+    const tab = this.getActiveTab(activeTab);
 
-    return createElement(tab.component, {});
+    return createElement(tab.component, tab.props);
   };
 
   // Just for demo...
@@ -149,7 +165,6 @@ class HandlerForm extends Component {
       applicationId,
       handleSubmit,
       invalid,
-      isOpenApplication,
       isFetching,
       pristine,
       submitting,
@@ -164,7 +179,7 @@ class HandlerForm extends Component {
       label: 'Lähetä hakemus',
     };
 
-    if (isFetching) {
+    if (isFetching || !activeTab) {
       return <p>Loading...</p>;
     }
 
@@ -176,37 +191,19 @@ class HandlerForm extends Component {
             <span onClick={this.goBack} style={{cursor: 'pointer'}}>
               <i className="mi mi-keyboard-backspace"/>
             </span> {t('applications:single')} {applicationId}</h2>
-          <p className="subtitle">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum deleniti error, in
-            incidunt ut voluptatum? Ab assumenda corporis doloremque eum exercitationem, incidunt itaque maiores maxime
-            nihil praesentium quisquam sed totam?</p>
 
           <Tabs
             active={activeTab}
             className="hero__navigation"
-            items={tabs}
+            items={this.tabs}
             onTabClick={(id) => this.handleTabClick(id)}
           />
         </Hero>
 
-        <div className="tab-content">
-          {this.renderTabContent()}
-        </div>
-
         <form className="mvj-form" onSubmit={handleSubmit(this.save)}>
+          {this.renderTabContent()}
 
-          <Collapse
-            header="Hakijan tiedot">
-            <ApplicantInfo/>
-          </Collapse>
-
-          <Collapse
-            header="Kohteen tiedot">
-            <BasicInfo isOpenApplication={!!isOpenApplication}/>
-          </Collapse>
-
-          <GroupTitle text="Lähetä varausehdotus tms. aputeksti"/>
           <FormActions {...formActionProps}/>
-
         </form>
       </div>
     );
@@ -222,7 +219,7 @@ export default flowRight(
 
       return {
         isOpenApplication,
-        initialValues,
+        initialValues: getCurrentApplication(state),
         application: getCurrentApplication(state),
         isFetching: getIsFetching(state),
       };

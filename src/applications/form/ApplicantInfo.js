@@ -12,34 +12,25 @@ const ApplicantInfo = () => (
     <Column medium={6}>
       <Field
         type="text"
-        name="organisation"
+        name="organization_name"
         label="Organisaatio"
-        placeholder="Organisaatio"
         component={FormField}
       />
     </Column>
     <Column medium={6}>
       <Field
         type="text"
-        name="company_code"
+        name="organization_id"
         label="Y-tunnus"
         component={FormField}
       />
     </Column>
 
-    <Column medium={6}>
+    <Column medium={12}>
       <Field
-        type="text"
-        name="organisation_street"
+        type="textarea"
+        name="contact_address"
         label="Katuosoite"
-        component={FormField}
-      />
-    </Column>
-    <Column medium={6}>
-      <Field
-        type="number"
-        name="zip"
-        label="Postinumero"
         component={FormField}
       />
     </Column>
@@ -47,7 +38,7 @@ const ApplicantInfo = () => (
     <Column medium={12}>
       <Field
         type="text"
-        name="value"
+        name="organization_revenue"
         label="Liikevaihto €"
         component={FormField}
       />
@@ -57,9 +48,17 @@ const ApplicantInfo = () => (
 
     <Column medium={12}>
       <Field
+        type="textarea"
+        name="contact_billing_address"
+        label="Laskutusosoite"
+        component={FormField}
+      />
+    </Column>
+    <Column medium={12}>
+      <Field
         type="text"
-        name="billing_info"
-        label="Laskutustieto"
+        name="contact_electronic_billing"
+        label="Sähköinen laskutusosoite"
         component={FormField}
       />
     </Column>
@@ -69,7 +68,7 @@ const ApplicantInfo = () => (
     <Column medium={12}>
       <Field
         type="text"
-        name="name"
+        name="contact_name"
         label="Nimi"
         component={FormField}
       />
@@ -78,7 +77,7 @@ const ApplicantInfo = () => (
     <Column medium={6}>
       <Field
         type="text"
-        name="phone"
+        name="contact_phone"
         label="Puhelinnumero"
         component={FormField}
       />
@@ -86,7 +85,7 @@ const ApplicantInfo = () => (
     <Column medium={6}>
       <Field
         type="email"
-        name="email"
+        name="contact_email"
         label="Sähköpostiosoite"
         component={FormField}
       />

@@ -17,6 +17,7 @@ const TYPES = [
 ];
 
 const BasicInfo = (props: Props) => {
+
   return (
     <Row>
 
