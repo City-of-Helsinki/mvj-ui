@@ -81,7 +81,7 @@ const ProppertyUnit = () => {
       <GroupTitle text="KTJ-dokumentit"/>
 
       <Column medium={12}>
-        <ul className="inline__list">
+        <ul className="bordered__list">
           {links.map((link, i) => (
             <li key={i}>{link}
               <div className="links">
@@ -91,6 +91,22 @@ const ProppertyUnit = () => {
             </li>
           ))}
         </ul>
+      </Column>
+
+      <GroupTitle text="Ehdot"/>
+      <Column medium={12}>
+        <ul className="bordered__list full-width">
+          <li>Tontille rakennettava 10m2</li>
+        </ul>
+        <a onClick={null}>Lisää ehto</a>
+      </Column>
+
+      <GroupTitle text="Kohteen kiinteistöt"/>
+      <Column medium={12}>
+        <ul className="bordered__list full-width">
+          <li>Tontille rakennettava 10m2</li>
+        </ul>
+        <a onClick={null}>Lisää ehto</a>
       </Column>
     </div>
   );

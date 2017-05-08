@@ -11,7 +11,7 @@ import isEmpty from 'lodash/isEmpty';
 import Tabs from '../components/tabs/Tabs';
 import Hero from '../components/hero/Hero';
 
-import ApplicantInfo from './form/ApplicantInfo';
+// import ApplicantInfo from './form/ApplicantInfo';
 // import BasicInfo from './form/BasicInfo';
 import Billing from './form/Billing';
 import PropertyUnit from './form/PropertyUnit';
@@ -25,6 +25,7 @@ import {fetchSingleApplication} from './actions';
 import {getCurrentApplication, getIsFetching} from './selectors';
 import {fetchAttributes} from '../attributes/actions';
 import {getAttributes} from '../attributes/selectors';
+import GroupTitle from '../components/form/GroupTitle';
 
 type Props = {
   applicationId: String,
@@ -99,7 +100,7 @@ class PreparerForm extends Component {
       {
         id: 'vuokralaiset',
         label: 'Vuokralaiset',
-        component: ApplicantInfo,
+        component: () => <div><GroupTitle text="Vuokralaiset"/></div>,
       },
       {
         id: 'kohde',
