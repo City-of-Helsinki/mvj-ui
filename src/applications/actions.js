@@ -7,6 +7,7 @@ import type {
   ApplicationId,
   ApplicationNotFoundAction,
   ApplicationsList,
+  CreateApplicationAction,
   FetchApplicationsAction,
   FetchSingleApplicationAction,
   ReceiveApplicationsAction,
@@ -24,6 +25,9 @@ export const fetchSingleApplication = (id: ApplicationId): FetchSingleApplicatio
 
 export const receiveSingleApplication = (application: Application): ReceiveSingleApplicationAction =>
   createAction('mvj/applications/RECEIVE_SINGLE')(application);
+
+export const sendApplication = (application: Application): CreateApplicationAction =>
+  createAction('mvj/applications/CREATE')(application);
 
 export const notFound = (): ApplicationNotFoundAction =>
   createAction('mvj/applications/NOT_FOUND')();

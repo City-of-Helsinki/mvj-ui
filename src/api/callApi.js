@@ -11,6 +11,10 @@ function* callApi(request: Request): Generator<> {
     request.headers.set('Authorization', `Token ${accessToken}`);
   }
 
+  if (request.method === 'POST') {
+    request.headers.set('Content-Type', 'application/json');
+  }
+
   const response = yield call(fetch, request);
   const bodyAsJson = yield call([response, response.json]);
 
