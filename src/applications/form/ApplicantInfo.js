@@ -12,6 +12,7 @@ const ApplicantInfo = () => (
     <Column medium={6}>
       <Field
         type="text"
+        required={false}
         name="organization_name"
         label="Organisaatio"
         component={FormField}
@@ -20,6 +21,7 @@ const ApplicantInfo = () => (
     <Column medium={6}>
       <Field
         type="text"
+        required={false}
         name="organization_id"
         label="Y-tunnus"
         component={FormField}
@@ -29,6 +31,7 @@ const ApplicantInfo = () => (
     <Column medium={12}>
       <Field
         type="textarea"
+        required={false}
         name="contact_address"
         label="Katuosoite"
         component={FormField}
@@ -38,6 +41,7 @@ const ApplicantInfo = () => (
     <Column medium={12}>
       <Field
         type="text"
+        required={false}
         name="organization_revenue"
         label="Liikevaihto €"
         component={FormField}
@@ -49,6 +53,7 @@ const ApplicantInfo = () => (
     <Column medium={12}>
       <Field
         type="textarea"
+        required={false}
         name="contact_billing_address"
         label="Laskutusosoite"
         component={FormField}
@@ -57,6 +62,7 @@ const ApplicantInfo = () => (
     <Column medium={12}>
       <Field
         type="text"
+        required={false}
         name="contact_electronic_billing"
         label="Sähköinen laskutusosoite"
         component={FormField}

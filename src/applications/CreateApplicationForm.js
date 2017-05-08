@@ -4,6 +4,9 @@ import {connect} from 'react-redux';
 import {reduxForm, formValueSelector} from 'redux-form';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
+
+import {Column} from 'react-foundation';
 
 import Collapse from '../components/collapse/Collapse';
 import Hero from '../components/hero/Hero';
@@ -13,8 +16,11 @@ import ApplicantInfo from './form/ApplicantInfo';
 import FormActions from './form/FormActions';
 import validate from './form/NewApplicationValidator';
 import {fetchAttributes} from '../attributes/actions';
+import {getAttributes} from '../attributes/selectors';
+import {sendApplication} from './actions';
 
 type Props = {
+  attributes: Object,
   fetchAttributes: Function,
   handleSubmit: Function,
   invalid: Boolean,
@@ -24,6 +30,8 @@ type Props = {
   pristine: Boolean,
   t: Function,
   submitting: Boolean,
+  submitSucceeded: Boolean,
+  sendApplication: Function,
 };
 
 class CreateApplicationForm extends Component {
@@ -35,16 +43,30 @@ class CreateApplicationForm extends Component {
   }
 
   save = (values) => {
-    console.log('saving', values);
+    const {sendApplication} = this.props;
+
+    const newValues = {
+      building_footprints: [
+        {
+          area: Number(values.area),
+          use: values.use,
+        },
+      ],
+      ...values,
+    };
+
+    return sendApplication(newValues);
   };
 
   render() {
     const {
+      attributes,
       handleSubmit,
       invalid,
       isOpenApplication,
       pristine,
       submitting,
+      submitSucceeded,
       t,
     } = this.props;
 
@@ -56,6 +78,11 @@ class CreateApplicationForm extends Component {
       label: 'Lähetä hakemus',
     };
 
+    // TODO: Refactor
+    if (isEmpty(attributes)) {
+      return null;
+    }
+
     return (
       <div className="full__width">
 
@@ -63,21 +90,29 @@ class CreateApplicationForm extends Component {
           <h1>{t('applications:createNew')}</h1>
         </Hero>
 
-        <form className="mvj-form" onSubmit={handleSubmit(this.save)}>
+        {!submitSucceeded ?
+          <form className="mvj-form" onSubmit={handleSubmit(this.save)}>
 
-          <Collapse
-            header="Kohteen tiedot">
-            <BasicInfo isOpenApplication={!!isOpenApplication}/>
-          </Collapse>
+            <Collapse
+              header="Kohteen tiedot">
+              <BasicInfo
+                attributes={attributes}
+                isOpenApplication={!!isOpenApplication}/>
+            </Collapse>
 
-          <Collapse
-            header="Hakijan tiedot">
-            <ApplicantInfo/>
-          </Collapse>
+            <Collapse
+              header="Hakijan tiedot">
+              <ApplicantInfo/>
+            </Collapse>
 
-          <FormActions {...formActionProps}/>
+            <FormActions {...formActionProps}/>
 
-        </form>
+          </form> :
+          <Column medium={12}>
+            <p className="lead">Kiitokset hakemuksestasi & Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+              Beatae dolorum id inventore ipsam maiores omnis pariatur quos sapiente tempora voluptatum.</p>
+          </Column>
+        }
       </div>
     );
   }
@@ -91,13 +126,14 @@ export default flowRight(
   connect(
     state => {
       const selector = formValueSelector('application-form');
-      const isOpenApplication = selector(state, 'open_application');
+      const isOpenApplication = selector(state, 'is_open');
 
       return {
         isOpenApplication,
+        attributes: getAttributes(state),
       };
     },
-    {fetchAttributes}
+    {fetchAttributes, sendApplication}
   ),
   translate(['common', 'applications'])
 )(CreateApplicationForm);

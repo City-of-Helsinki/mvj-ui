@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {translate} from 'react-i18next';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
@@ -7,16 +8,17 @@ import FormField from '../../components/form/FormField';
 import GroupTitle from '../../components/form/GroupTitle';
 
 type Props = {
+  attributes: Object,
   isOpenApplication: boolean,
+  t: Function,
 };
 
-const TYPES = [
-  {id: 1, label: 'Tyyppi 1'},
-  {id: 2, label: 'Tyyppi 2'},
-  {id: 3, label: 'Tyyppi 3'},
-];
-
 const BasicInfo = (props: Props) => {
+
+  const typeOptions = props.attributes.type.choices.map(choice => ({
+    id: choice.value,
+    label: props.t(`types.${choice.value}`),
+  }));
 
   return (
     <Row>
@@ -28,7 +30,7 @@ const BasicInfo = (props: Props) => {
           name="type"
           label="Tyyppi"
           placeholder="Valitse listalta..."
-          options={TYPES}
+          options={typeOptions}
           component={FormField}
         />
       </Column>
@@ -37,7 +39,7 @@ const BasicInfo = (props: Props) => {
       <Column medium={12}>
         <Field
           type="checkbox"
-          name="open_application"
+          name="is_open"
           options={[
             'Avoin haku',
           ]}
@@ -48,7 +50,8 @@ const BasicInfo = (props: Props) => {
       <Column medium={12}>
         <Field
           type="textarea"
-          name="arguments"
+          name="reasons"
+          required={false}
           label="Hakemuksen perustelut"
           component={FormField}
         />
@@ -56,10 +59,11 @@ const BasicInfo = (props: Props) => {
 
       <GroupTitle text="Tontin sijainti"/>
 
-      <Column medium={12}>
+      <Column medium={6}>
         <Field
           type="text"
-          name="location"
+          required={false}
+          name="land_address"
           label="Alue"
           placeholder="Alue"
           component={FormField}
@@ -69,16 +73,8 @@ const BasicInfo = (props: Props) => {
       <Column medium={6}>
         <Field
           type="text"
-          name="address"
-          label="Osoite"
-          placeholder="Osoite"
-          component={FormField}
-        />
-      </Column>
-      <Column medium={6}>
-        <Field
-          type="text"
-          name="map_link"
+          required={false}
+          name="map_map_link"
           label="Karttalinkki"
           component={FormField}
         />
@@ -89,15 +85,14 @@ const BasicInfo = (props: Props) => {
       <Column medium={6}>
         <Field
           type="text"
-          name="usage"
+          name="use"
           label="Käyttötarkoitus"
-          placeholder="Käyttötarkoitus"
           component={FormField}
         />
       </Column>
       <Column medium={6}>
         <Field
-          type="text"
+          type="number"
           name="area"
           label="Ala (km²)"
           component={FormField}
@@ -109,14 +104,20 @@ const BasicInfo = (props: Props) => {
       <Column medium={6}>
         <Field
           type="text"
-          name="start"
+          label="Alkaa"
+          required={false}
+          placeholder="01.01.2015"
+          name="lease_start_date"
           component={FormField}
         />
       </Column>
       <Column medium={6}>
         <Field
           type="text"
-          name="stop"
+          label="loppuu"
+          required={false}
+          placeholder="01.01.2020"
+          name="lease_end_date"
           component={FormField}
         />
       </Column>
@@ -125,4 +126,4 @@ const BasicInfo = (props: Props) => {
   );
 };
 
-export default BasicInfo;
+export default translate(['applications'])(BasicInfo);
