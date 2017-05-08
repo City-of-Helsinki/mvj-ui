@@ -4,9 +4,8 @@ import {call, put} from 'redux-saga/effects';
 import {receiveError} from './actions';
 import {getStorageItem} from '../util/storage';
 
-const accessToken = getStorageItem('TOKEN');
-
 function* callApi(request: Request): Generator<> {
+  const accessToken = getStorageItem('TOKEN');
 
   if (accessToken) {
     request.headers.set('Authorization', `Token ${accessToken}`);
