@@ -9,8 +9,7 @@ import FormField from '../../components/form/FormField';
 const Summary = () => {
 
   return (
-    <div>
-
+    <div className="tab__content">
       <section className="summary__header">
         <Row>
           <Column medium={6}>
@@ -54,6 +53,12 @@ const Summary = () => {
 
             <button className="button expanded">Tallenna hakemus valmisteltavaksi</button>
           </Column>
+        </Row>
+      </section>
+
+      <section className="summary__body">
+        <Row>
+
         </Row>
       </section>
 

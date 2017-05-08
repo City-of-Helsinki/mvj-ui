@@ -12,8 +12,9 @@ import Tabs from '../components/tabs/Tabs';
 import Hero from '../components/hero/Hero';
 
 import ApplicantInfo from './form/ApplicantInfo';
-import BasicInfo from './form/BasicInfo';
+// import BasicInfo from './form/BasicInfo';
 import Billing from './form/Billing';
+import PropertyUnit from './form/PropertyUnit';
 import Lease from './form/Lease';
 import Summary from './form/Summary';
 
@@ -87,7 +88,7 @@ class PreparerForm extends Component {
   }
 
   setTabs = () => {
-    const {isOpenApplication, attributes} = this.props;
+    // const {isOpenApplication, attributes} = this.props;
 
     this.tabs = [
       {
@@ -103,11 +104,7 @@ class PreparerForm extends Component {
       {
         id: 'kohde',
         label: 'Kohde',
-        component: BasicInfo,
-        props: {
-          attributes,
-          isOpenApplication: !!isOpenApplication,
-        },
+        component: PropertyUnit,
       },
       {
         id: 'vuokra',

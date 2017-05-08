@@ -1,7 +1,8 @@
 .summary__header {
   border: 1px solid $success-color;
-  margin: rem-calc(10px);
+  margin: rem-calc(20px 0);
   padding: rem-calc(30px 15px);
+  background: #F3FFFD;
 
   h2 {
     font-size: rem-calc(24px);
@@ -19,6 +20,8 @@
 
   button {
     border-radius: rem-calc(4px);
+    text-transform: uppercase;
+    font-weight: 600;
   }
 
   .lease__code {
