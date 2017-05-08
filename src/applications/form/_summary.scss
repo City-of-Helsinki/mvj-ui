@@ -1,0 +1,36 @@
+.summary__header {
+  border: 1px solid $success-color;
+  margin: rem-calc(10px);
+  padding: rem-calc(30px 15px);
+
+  h2 {
+    font-size: rem-calc(24px);
+    font-weight: 400;
+    margin-bottom: rem-calc(25px);
+  }
+
+  p {
+    font-size: rem-calc(18px);
+  }
+
+  label {
+    font-size: rem-calc(16px);
+  }
+
+  button {
+    border-radius: rem-calc(4px);
+  }
+
+  .lease__code {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-bottom: rem-calc(20px);
+
+    .form-field {
+      flex: 1;
+      margin: rem-calc(0 2px);
+      padding: 0;
+    }
+  }
+}
