@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import {fetchApplications} from './actions';
 
-import HandlerForm from './HandlerForm';
+import HandlerForm from './PreparerForm';
 import ApplicationList from '../components/applicationList/ApplicationList';
 
 import {getActiveLanguage} from '../util/helpers';

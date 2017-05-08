@@ -6,6 +6,7 @@ import {reduxForm, formValueSelector} from 'redux-form';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import find from 'lodash/find';
+import isEmpty from 'lodash/isEmpty';
 
 import Tabs from '../components/tabs/Tabs';
 import Hero from '../components/hero/Hero';
@@ -16,15 +17,17 @@ import Billing from './form/Billing';
 import Lease from './form/Lease';
 import Summary from './form/Summary';
 
-import FormActions from './form/FormActions';
+// import FormActions from './form/FormActions';
 import validate from './form/NewApplicationValidator';
 import {getActiveLanguage} from '../util/helpers';
 import {fetchSingleApplication} from './actions';
 import {getCurrentApplication, getIsFetching} from './selectors';
 import {fetchAttributes} from '../attributes/actions';
+import {getAttributes} from '../attributes/selectors';
 
 type Props = {
   applicationId: String,
+  attributes: Object,
   fetchAttributes: Function,
   fetchSingleApplication: Function,
   handleSubmit: Function,
@@ -45,7 +48,7 @@ type State = {
 
 type TabsType = Array<any>;
 
-class HandlerForm extends Component {
+class PreparerForm extends Component {
   props: Props;
   state: State;
   tabs: TabsType;
@@ -84,7 +87,7 @@ class HandlerForm extends Component {
   }
 
   setTabs = () => {
-    const {isOpenApplication} = this.props;
+    const {isOpenApplication, attributes} = this.props;
 
     this.tabs = [
       {
@@ -102,6 +105,7 @@ class HandlerForm extends Component {
         label: 'Kohde',
         component: BasicInfo,
         props: {
+          attributes,
           isOpenApplication: !!isOpenApplication,
         },
       },
@@ -165,24 +169,25 @@ class HandlerForm extends Component {
     const {activeTab} = this.state;
 
     const {
+      attributes,
       applicationId,
       handleSubmit,
-      invalid,
+      // invalid,
       isFetching,
-      pristine,
-      submitting,
+      // pristine,
+      // submitting,
       t,
     } = this.props;
 
-    const formActionProps = {
-      invalid,
-      pristine,
-      submitting,
-      icon: <i className="mi mi-send"/>,
-      label: 'Lähetä hakemus',
-    };
+    // const formActionProps = {
+    //   invalid,
+    //   pristine,
+    //   submitting,
+    //   icon: <i className="mi mi-send"/>,
+    //   label: 'Lähetä hakemus',
+    // };
 
-    if (isFetching || !activeTab) {
+    if (isFetching || !activeTab || isEmpty(attributes)) {
       return <p>Loading...</p>;
     }
 
@@ -205,8 +210,6 @@ class HandlerForm extends Component {
 
         <form className="mvj-form" onSubmit={handleSubmit(this.save)}>
           {this.renderTabContent()}
-
-          <FormActions {...formActionProps}/>
         </form>
       </div>
     );
@@ -221,10 +224,11 @@ export default flowRight(
       const isOpenApplication = selector(state, 'open_application');
 
       return {
-        isOpenApplication,
-        initialValues: getCurrentApplication(state),
         application: getCurrentApplication(state),
+        attributes: getAttributes(state),
+        initialValues: getCurrentApplication(state),
         isFetching: getIsFetching(state),
+        isOpenApplication,
       };
     },
     {
@@ -233,8 +237,10 @@ export default flowRight(
     }
   ),
   reduxForm({
-    form: 'handler-form',
+    form: 'preparer-form',
     validate,
+    destroyOnUnmount: false,
+    forceUnregisterOnUnmount: false,
   }),
   translate(['common', 'applications'])
-)(HandlerForm);
+)(PreparerForm);
