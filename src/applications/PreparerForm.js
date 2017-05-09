@@ -17,6 +17,7 @@ import Billing from './form/Billing';
 import PropertyUnit from './form/PropertyUnit';
 import Lease from './form/Lease';
 import Summary from './form/Summary';
+import Tenants from './form/Tenants';
 
 // import FormActions from './form/FormActions';
 import validate from './form/NewApplicationValidator';
@@ -25,9 +26,10 @@ import {fetchSingleApplication} from './actions';
 import {getCurrentApplication, getIsFetching} from './selectors';
 import {fetchAttributes} from '../attributes/actions';
 import {getAttributes} from '../attributes/selectors';
-import GroupTitle from '../components/form/GroupTitle';
+// import GroupTitle from '../components/form/GroupTitle';
 
 type Props = {
+  application: Object,
   applicationId: String,
   attributes: Object,
   fetchAttributes: Function,
@@ -89,7 +91,7 @@ class PreparerForm extends Component {
   }
 
   setTabs = () => {
-    // const {isOpenApplication, attributes} = this.props;
+    const {application} = this.props;
 
     this.tabs = [
       {
@@ -100,7 +102,8 @@ class PreparerForm extends Component {
       {
         id: 'vuokralaiset',
         label: 'Vuokralaiset',
-        component: () => <div><GroupTitle text="Vuokralaiset"/></div>,
+        component: Tenants,
+        props: application,
       },
       {
         id: 'kohde',
