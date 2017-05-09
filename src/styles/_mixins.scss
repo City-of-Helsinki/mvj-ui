@@ -3,6 +3,14 @@
   padding: 0 1rem;
 }
 
+@mixin lightButton($background: #F7FCFF) {
+  @include button(true);
+  background: $background;
+  border-color: darken($background, 5%);
+  color: $primary-color;
+  text-transform: uppercase;
+}
+
 @mixin placeholder($color: $light-gray) {
   ::-webkit-input-placeholder {
     color: $color;

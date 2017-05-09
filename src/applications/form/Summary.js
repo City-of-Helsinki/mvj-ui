@@ -10,58 +10,62 @@ const Summary = () => {
 
   return (
     <div className="tab__content">
-      <section className="summary__header">
-        <Row>
-          <Column medium={6}>
-            <h2>Tallenna hakemus valmisteltavaksi</h2>
-            <p>Tarkista hakijan tiedot ja määritä hakijalle sopiva kohde. Luo vuokraustunnus ja tallenna hakemus
-              valmisteltavaksi.</p>
-          </Column>
+      <Row>
+        <Column medium={12}>
+          <section className="summary__header">
+            <Row>
+              <Column medium={6}>
+                <h2>Tallenna hakemus valmisteltavaksi</h2>
+                <p>Tarkista hakijan tiedot ja määritä hakijalle sopiva kohde. Luo vuokraustunnus ja tallenna hakemus
+                  valmisteltavaksi.</p>
+              </Column>
 
-          <Column medium={6} className="lease">
-            <label>Vuokraustunnus</label>
-            <div className="lease__code">
-              <Field
-                type="text"
-                required={false}
-                name="a1"
-                placeholder="A1"
-                component={FormField}
-              />
-              <Field
-                type="text"
-                required={false}
-                name="b1"
-                placeholder="B1"
-                component={FormField}
-              />
-              <Field
-                type="text"
-                required={false}
-                name="c1"
-                placeholder="C1"
-                component={FormField}
-              />
-              <Field
-                type="text"
-                required={false}
-                name="d1"
-                placeholder="D1"
-                component={FormField}
-              />
-            </div>
+              <Column medium={6} className="lease">
+                <label>Vuokraustunnus</label>
+                <div className="lease__code">
+                  <Field
+                    type="text"
+                    required={false}
+                    name="a1"
+                    placeholder="A1"
+                    component={FormField}
+                  />
+                  <Field
+                    type="text"
+                    required={false}
+                    name="b1"
+                    placeholder="B1"
+                    component={FormField}
+                  />
+                  <Field
+                    type="text"
+                    required={false}
+                    name="c1"
+                    placeholder="C1"
+                    component={FormField}
+                  />
+                  <Field
+                    type="text"
+                    required={false}
+                    name="d1"
+                    placeholder="D1"
+                    component={FormField}
+                  />
+                </div>
 
-            <button className="button expanded">Tallenna hakemus valmisteltavaksi</button>
-          </Column>
-        </Row>
-      </section>
+                <button className="button expanded">Tallenna hakemus valmisteltavaksi</button>
+              </Column>
+            </Row>
+          </section>
 
-      <section className="summary__body">
-        <Row>
+          <section className="summary__body">
+            <Row>
 
-        </Row>
-      </section>
+            </Row>
+          </section>
 
+        </Column>
+      </Row>
     </div>
   );
 };
