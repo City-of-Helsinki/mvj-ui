@@ -4,16 +4,18 @@ import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import FormField from '../../components/form/FormField';
-// type Props = {};
+import {formatDateObj} from '../../util/helpers';
+type Props = Object;
 
-const Summary = () => {
+const Summary = (props: Props) => {
 
   return (
     <div className="tab__content">
       <Row>
-        <Column medium={12}>
+        <Column medium={12} className="summary">
           <section className="summary__header">
             <Row>
+
               <Column medium={6}>
                 <h2>Tallenna hakemus valmisteltavaksi</h2>
                 <p>Tarkista hakijan tiedot ja määritä hakijalle sopiva kohde. Luo vuokraustunnus ja tallenna hakemus
@@ -60,7 +62,25 @@ const Summary = () => {
 
           <section className="summary__body">
             <Row>
+              <Column medium={6}>
+                <h2>Yhteenveto</h2>
+                <strong>Vuokralaiset</strong>
+                <strong>Kohde</strong>
+                <strong>Vuokra</strong>
+                <strong>Laskutus</strong>
+              </Column>
 
+              <Column medium={6}>
+                <strong>Hakemuksen tila</strong>
+
+                <ul className="application__state">
+                  <li className="active">
+                    <span>Hakemus vastaanotettu <span>{formatDateObj(props.created_at)}</span></span></li>
+                  <li><span>Vuokrauksen valmistelu</span></li>
+                  <li><span>Vuokrausehdotus</span></li>
+                  <li><span>Vuokrauspäätös</span></li>
+                </ul>
+              </Column>
             </Row>
           </section>
 

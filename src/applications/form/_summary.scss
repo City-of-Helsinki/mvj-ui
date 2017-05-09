@@ -1,39 +1,122 @@
-.summary__header {
-  border: 1px solid $success-color;
-  margin: rem-calc(20px 0);
-  padding: rem-calc(30px 15px);
-  background: #F3FFFD;
+.summary {
+  &__header {
+    border: 1px solid $success-color;
+    margin: rem-calc(20px 0);
+    padding: rem-calc(30px 15px);
+    background: #F3FFFD;
 
-  h2 {
-    font-size: rem-calc(24px);
-    font-weight: 400;
-    margin-bottom: rem-calc(25px);
+    h2 {
+      font-size: rem-calc(24px);
+      font-weight: 400;
+      margin-bottom: rem-calc(25px);
+    }
+
+    p {
+      font-size: rem-calc(18px);
+    }
+
+    label {
+      font-size: rem-calc(16px);
+    }
+
+    button {
+      border-radius: rem-calc(4px);
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .lease__code {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-bottom: rem-calc(20px);
+
+      .form-field {
+        flex: 1;
+        margin: rem-calc(0 2px);
+        padding: 0;
+      }
+    }
   }
 
-  p {
-    font-size: rem-calc(18px);
+  &__body {
+    strong {
+      display: block;
+      color: $dark-gray;
+      font-weight: 500;
+      font-size: rem-calc(18px);;
+    }
   }
+  .application__state {
+    margin: rem-calc(30px 0 0 0);
+    padding: 0;
+    list-style-type: none;
 
-  label {
-    font-size: rem-calc(16px);
-  }
+    > li {
+      position: relative;
+      margin: rem-calc(10px 0);
+      padding: rem-calc(5px 0);
+      color: $dark-gray;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      padding-left: 15px;
 
-  button {
-    border-radius: rem-calc(4px);
-    text-transform: uppercase;
-    font-weight: 600;
-  }
+      &:before {
+        content: "";
+        display: block;
+        width: 15px;
+        height: 15px;
+        background: $medium-gray;
+        margin-right: 10px;
+        border-radius: 2px;
+      }
 
-  .lease__code {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    margin-bottom: rem-calc(20px);
+      &:after {
+        position: absolute;
+        left: 22px;
+        top: 100%;
+        content: "";
+        display: block;
+        width: 1px;
+        height: 20px;
+        background: $medium-gray;
+        margin: -5px 0 0 0;
+      }
 
-    .form-field {
-      flex: 1;
-      margin: rem-calc(0 2px);
-      padding: 0;
+      span {
+        flex: 1;
+
+        > span {
+          display: block;
+          margin-left: 0;
+        }
+      }
+
+      &.active {
+        padding-left: 0;
+        font-size: rem-calc(18px);
+
+        span {
+          color: $primary-color;
+
+          > span {
+            color: $dark-gray;
+          }
+        }
+
+        &:before {
+          width: 45px;
+          height: 45px;
+          background: $primary-color;
+        }
+      }
+
+      &:last-child {
+        &:after {
+          display: none;
+        }
+      }
     }
   }
 }

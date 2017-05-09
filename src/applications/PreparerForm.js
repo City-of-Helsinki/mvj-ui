@@ -98,6 +98,7 @@ class PreparerForm extends Component {
         id: 'yhteenveto',
         label: 'Yhteenveto',
         component: Summary,
+        props: application,
       },
       {
         id: 'vuokralaiset',
