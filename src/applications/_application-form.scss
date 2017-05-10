@@ -1,5 +1,7 @@
 .applications__form {
   width: 66%;
+  position: relative;
+  flex: 1 0 33%;
 
   .applications--form-open & {
     max-height: calc(100vh - 50px);

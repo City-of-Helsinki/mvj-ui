@@ -15,6 +15,7 @@ import PropertyUnit from './form/PropertyUnit';
 import Lease from './form/Lease';
 import Summary from './form/Summary';
 import Tenants from './form/Tenants';
+import MapContainer from '../components/map/Map';
 
 import validate from './form/NewApplicationValidator';
 import {getActiveLanguage} from '../util/helpers';
@@ -24,6 +25,7 @@ import {fetchAttributes} from '../attributes/actions';
 import {getAttributes} from '../attributes/selectors';
 import TabPane from '../components/tabs/TabPane';
 import TabContent from '../components/tabs/TabContent';
+import {defaultCoordinates, defaultZoom} from '../constants';
 
 type Props = {
   application: Object,
@@ -132,7 +134,7 @@ class PreparerForm extends Component {
     }
 
     return (
-      <div className="full__width">
+      <div className="full__width flex">
 
         <Hero>
           <h2>
@@ -149,6 +151,7 @@ class PreparerForm extends Component {
               'Kohde',
               'Vuokra',
               'Laskutus',
+              'Kartta',
             ]}
             onTabClick={(id) => this.handleTabClick(id)}
           />
@@ -161,7 +164,7 @@ class PreparerForm extends Component {
           <TabPane className="tenants">
             <Tenants {...application}/>
           </TabPane>
-          <TabPane className="property-unit">
+          <TabPane className="property-unit row--flex">
             <PropertyUnit/>
           </TabPane>
           <TabPane className="lease">
@@ -170,8 +173,14 @@ class PreparerForm extends Component {
           <TabPane className="billing">
             <Billing/>
           </TabPane>
+          <TabPane className="map">
+            <div className="map">
+              <MapContainer center={defaultCoordinates}
+                            zoom={defaultZoom}
+              />
+            </div>
+          </TabPane>
         </TabContent>
-
       </div>
     );
   }

@@ -16,5 +16,18 @@
 
   .full__width {
     width: 100%;
+    height: 100%;
+
+    &.flex {
+      display: flex;
+      flex-flow: row wrap;
+      flex-direction: column;
+      //align-items: baseline;
+      height: 100%;
+    }
+
+    .row--flex {
+      flex: 1;
+    }
   }
 }

@@ -10,7 +10,7 @@ type Props = Object;
 const Summary = (props: Props) => {
 
   return (
-    <Row>
+    <Row className={props.className}>
       <Column medium={12} className="summary">
         <section className="summary__header">
           <Row>
