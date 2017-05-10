@@ -18,6 +18,7 @@ const fuseOptions = {
 };
 
 type Props = {
+  active: number,
   className?: String,
   handleItemClick: Function,
   isFetching: boolean,
@@ -76,7 +77,7 @@ class ApplicationList extends Component {
 
   render() {
     const {items} = this.state;
-    const {className, handleItemClick, isFetching} = this.props;
+    const {active, className, handleItemClick, isFetching} = this.props;
 
     if (isFetching) {
       return <p>Loading...</p>;
@@ -91,7 +92,8 @@ class ApplicationList extends Component {
         />
         <ul className={classNames('mvj-application-list', className)}>
           {items.map((itemData, index) => (
-            <ApplicationListItem key={index}
+            <ApplicationListItem active={Number(active) === itemData.id}
+                                 key={index}
                                  data={itemData}
                                  onItemClick={handleItemClick}
             />

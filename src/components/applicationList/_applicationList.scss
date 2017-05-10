@@ -17,6 +17,10 @@
       background: darken($lightest-gray, 5%);
     }
 
+    &.active {
+      background: darken($lightest-gray, 15%);
+    }
+
     &--header {
       display: flex;
 
