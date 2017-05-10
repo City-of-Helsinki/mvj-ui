@@ -1,13 +1,13 @@
-@import './styles/fonts';
-@import './styles/variables';
-@import '~foundation-sites/scss/foundation';
-@import 'styles/mixins';
+@import "./styles/fonts";
+@import "./styles/variables";
+@import "~foundation-sites/scss/foundation";
+@import "styles/mixins";
 
 @include foundation-everything(true);
 
 // Vendor
-@import '~react-redux-toastr/src/styles/index';
-@import '~react-datepicker/dist/react-datepicker.min.css';
+@import "~react-redux-toastr/src/styles/index";
+@import "components/map/leaflet";
 
 // Components
 @import "components/applicationList/applicationList";
@@ -16,8 +16,9 @@
 @import "components/table/table";
 @import "components/tabs/tabs";
 @import "components/topNavigation/top-navigation";
-@import 'components/collapse/collapse';
-@import 'components/form/form';
+@import "components/collapse/collapse";
+@import "components/form/form";
+@import "components/map/map";
 
 // App
 @import "./api/api";
