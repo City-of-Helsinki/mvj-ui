@@ -11,7 +11,12 @@
   "applications": {
     "title": "Applications",
     "single": "Application",
-    "createNew": "Create application"
+    "createNew": "Create application",
+    "types": {
+      "detached_house": "Detached house",
+      "real_property_unit": "Real property unit",
+      "other": "Other"
+    }
   },
   "validation": {
     "required": "Field is required"
