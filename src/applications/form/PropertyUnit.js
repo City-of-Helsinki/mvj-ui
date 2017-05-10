@@ -21,62 +21,62 @@ const links = [
   'Muodostajaselvitys',
 ];
 
-const ProppertyUnit = () => {
+type Props = Object;
+
+const ProppertyUnit = (props: Props) => {
 
   return (
-    <div className="tab__content">
-      <Row>
-        <Column medium={12}>
-          <h2 className="tab__content--title">Kohde</h2>
-        </Column>
 
-        <Column medium={6}>
-          <Field
-            type="text"
-            required={false}
-            label="Tonttitunnus"
-            name="tonttitunnus"
-            component={FormField}
-          />
-        </Column>
-        <Column medium={6}>
-          <Field
-            type="text"
-            required={false}
-            label="Asemakaava"
-            name="asemakaava"
-            component={FormField}
-          />
-        </Column>
-        <Column medium={6}>
-          <Field
-            type="text"
-            required={false}
-            label="Alue"
-            name="alue"
-            component={FormField}
-          />
-        </Column>
-        <Column medium={6}>
-          <Field
-            type="text"
-            required={false}
-            label="Asemakaava"
-            name="asemakaava"
-            component={FormField}
-          />
-        </Column>
-        <Column medium={6}>
-          <Field
-            type="text"
-            required={false}
-            label="Kaavoitettu m2"
-            name="kaavoitettu"
-            component={FormField}
-          />
-        </Column>
+    <Row className={props.className}>
+      <Column medium={12}>
+        <h2 className="tab__content--title">Kohde</h2>
+      </Column>
 
-      </Row>
+      <Column medium={6}>
+        <Field
+          type="text"
+          required={false}
+          label="Tonttitunnus"
+          name="tonttitunnus"
+          component={FormField}
+        />
+      </Column>
+      <Column medium={6}>
+        <Field
+          type="text"
+          required={false}
+          label="Asemakaava"
+          name="asemakaava"
+          component={FormField}
+        />
+      </Column>
+      <Column medium={6}>
+        <Field
+          type="text"
+          required={false}
+          label="Alue"
+          name="alue"
+          component={FormField}
+        />
+      </Column>
+      <Column medium={6}>
+        <Field
+          type="text"
+          required={false}
+          label="Asemakaava"
+          name="asemakaava"
+          component={FormField}
+        />
+      </Column>
+      <Column medium={6}>
+        <Field
+          type="text"
+          required={false}
+          label="Kaavoitettu m2"
+          name="kaavoitettu"
+          component={FormField}
+        />
+      </Column>
 
       <GroupTitle text="KTJ-dokumentit"/>
 
@@ -108,7 +108,9 @@ const ProppertyUnit = () => {
         </ul>
         <a onClick={null}>Lisää ehto</a>
       </Column>
-    </div>
+
+    </Row>
+
   );
 };
 

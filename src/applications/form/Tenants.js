@@ -11,7 +11,7 @@ type Props = Object;
 const Tenants = (props: Props) => {
 
   return (
-    <Row>
+    <Row className={props.className}>
       <Column medium={12}>
         <h2 className="tab__content--title">Vuokralaiset</h2>
       </Column>
