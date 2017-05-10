@@ -11,54 +11,52 @@ type Props = Object;
 const Tenants = (props: Props) => {
 
   return (
-    <div className="tab__content">
-      <Row>
-        <Column medium={12}>
-          <h2 className="tab__content--title">Vuokralaiset</h2>
-        </Column>
+    <Row>
+      <Column medium={12}>
+        <h2 className="tab__content--title">Vuokralaiset</h2>
+      </Column>
 
-        <Column medium={12}>
-          <section className="tenants">
-            <div className="tenant">
-              <h3 className="tenant__title">Korporaatio Oy</h3>
+      <Column medium={12}>
+        <section className="tenants">
+          <div className="tenant">
+            <h3 className="tenant__title">Korporaatio Oy</h3>
 
-              <div className="tenant__section">
-                <h4>Hakija</h4>
-                <p className="tenant__section--primary">Korporaation Yritys Oy</p>
-                <p>12345678-9</p>
-                <p>
-                  Mannerheimintie 12 <br/>
-                  00100 Helsinki <br/>
-                </p>
-                <p>1 000 000 €</p>
-              </div>
-
-              <div className="tenant__section">
-                <h4>Laskutustiedot</h4>
-                <p className="tenant__section--primary">John Doe</p>
-                <p>
-                  Mannerheimintie 12 <br/>
-                  00100 Helsinki <br/>
-                </p>
-                <p>Basware</p>
-              </div>
-
-              <div className="tenant__section">
-                <h4>Yhteyshenkilö</h4>
-                <p className="tenant__section--primary">{props.contact_name}</p>
-                <p>{props.contact_email}</p>
-                <p>{props.contact_phone}</p>
-              </div>
-
-              <a onClick={null} className="tenant__edit">Muokkaa vuokralaisen tietoja</a>
+            <div className="tenant__section">
+              <h4>Hakija</h4>
+              <p className="tenant__section--primary">Korporaation Yritys Oy</p>
+              <p>12345678-9</p>
+              <p>
+                Mannerheimintie 12 <br/>
+                00100 Helsinki <br/>
+              </p>
+              <p>1 000 000 €</p>
             </div>
 
-            <button onClick={null}>Lisää Vuokralainen</button>
+            <div className="tenant__section">
+              <h4>Laskutustiedot</h4>
+              <p className="tenant__section--primary">John Doe</p>
+              <p>
+                Mannerheimintie 12 <br/>
+                00100 Helsinki <br/>
+              </p>
+              <p>Basware</p>
+            </div>
 
-          </section>
-        </Column>
-      </Row>
-    </div>
+            <div className="tenant__section">
+              <h4>Yhteyshenkilö</h4>
+              <p className="tenant__section--primary">{props.contact_name}</p>
+              <p>{props.contact_email}</p>
+              <p>{props.contact_phone}</p>
+            </div>
+
+            <a onClick={null} className="tenant__edit">Muokkaa vuokralaisen tietoja</a>
+          </div>
+
+          <button onClick={null}>Lisää Vuokralainen</button>
+
+        </section>
+      </Column>
+    </Row>
   );
 };
 
