@@ -1,9 +1,8 @@
 // @flow
-import React from 'react';
-import classnames from 'classnames';
+import {cloneElement} from 'react';
 
 type Props = Object;
 
-const TabPane = (props: Props) => <div className={classnames('tab__content', props.className)}>{props.children}</div>;
+const TabPane = (props: Props) => cloneElement(props.children, {className: props.className});
 
 export default TabPane;
