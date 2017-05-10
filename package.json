@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "autoprefixer": "^6.6.1",
-    "axios": "^0.15.3",
     "babel-core": "^6.21.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.10",
@@ -52,10 +51,6 @@
     "node-sass": "^4.5.0",
     "normalize.css": "^5.0.0",
     "offline-plugin": "^4.5.3",
-    "passport": "^0.3.2",
-    "passport-facebook": "^2.1.1",
-    "passport-google-oauth20": "^1.0.0",
-    "passport-helsinki": "git+https://github.com/City-of-Helsinki/passport-helsinki.git",
     "react": "^15.4.1",
     "react-datepicker": "^0.44.0",
     "react-dom": "^15.4.1",

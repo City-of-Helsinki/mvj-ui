@@ -32,7 +32,7 @@ export default {
         loader: 'url-loader?prefix=font/&limit=5000&mimetype=application/octet-stream',
       },
       {
-        test: /\.(eot|svg)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        test: /\.(eot|svg|png|jpe?g)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'file-loader',
       },
     ],
