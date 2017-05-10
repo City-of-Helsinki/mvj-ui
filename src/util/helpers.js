@@ -71,7 +71,7 @@ export const setPageTitle = (title) => {
 
 /**
  * Generate formData from fields
- * @param formData
+ * @param formDataf
  * @param data
  * @param previousKey
  * @returns {*}

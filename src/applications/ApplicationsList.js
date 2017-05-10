@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import {fetchApplications} from './actions';
 
-import HandlerForm from './HandlerForm';
+import HandlerForm from './PreparerForm';
 import ApplicationList from '../components/applicationList/ApplicationList';
 
 import {getActiveLanguage} from '../util/helpers';
@@ -18,6 +18,7 @@ type Props = {
   fetchApplications: Function,
   isFetching: boolean,
   params: Object,
+  router: Object,
   t: Function,
 };
 
@@ -36,10 +37,12 @@ class ApplicationsList extends Component {
 
   handleItemClick = (applicationId) => {
     const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
     const lang = getActiveLanguage().id;
 
     return router.push({
       pathname: `/${lang}/applications/${applicationId}`,
+      query,
     });
   };
 
@@ -52,6 +55,7 @@ class ApplicationsList extends Component {
         <div className="applications__list">
           <h2>{t('applications:title')}</h2>
           <ApplicationList
+            active={applicationId}
             data={applications}
             handleItemClick={this.handleItemClick}
             isFetching={isFetching}

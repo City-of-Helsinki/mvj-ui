@@ -7,15 +7,16 @@ import classNames from 'classnames';
 import {formatDateObj} from '../../util/helpers';
 
 type Props = {
-  className?: string,
+  active: ?boolean,
+  className: ?string,
   data: Object,
   onItemClick: Function,
   t: Function,
 };
 
-const ApplicationListItem = ({className, data, onItemClick, t}: Props) => {
+const ApplicationListItem = ({active, className, data, onItemClick, t}: Props) => {
   return (
-    <li className={classNames('mvj-application-list__item', className)}
+    <li className={classNames('mvj-application-list__item', className, {'active': active})}
         onClick={() => onItemClick(data.id)}>
       <div className="mvj-application-list__item--header">
         <span className="header--id">Hakemus {data.id}: {t(`types.${data.type}`)}</span>

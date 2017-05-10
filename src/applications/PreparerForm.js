@@ -1,30 +1,34 @@
 // @flow
-import React, {createElement, Component, PropTypes} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import {reduxForm, formValueSelector} from 'redux-form';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
-import find from 'lodash/find';
+import isEmpty from 'lodash/isEmpty';
 
 import Tabs from '../components/tabs/Tabs';
 import Hero from '../components/hero/Hero';
 
-import ApplicantInfo from './form/ApplicantInfo';
-import BasicInfo from './form/BasicInfo';
 import Billing from './form/Billing';
+import PropertyUnit from './form/PropertyUnit';
 import Lease from './form/Lease';
 import Summary from './form/Summary';
+import Tenants from './form/Tenants';
 
-import FormActions from './form/FormActions';
 import validate from './form/NewApplicationValidator';
 import {getActiveLanguage} from '../util/helpers';
 import {fetchSingleApplication} from './actions';
 import {getCurrentApplication, getIsFetching} from './selectors';
 import {fetchAttributes} from '../attributes/actions';
+import {getAttributes} from '../attributes/selectors';
+import TabPane from '../components/tabs/TabPane';
+import TabContent from '../components/tabs/TabContent';
 
 type Props = {
+  application: Object,
   applicationId: String,
+  attributes: Object,
   fetchAttributes: Function,
   fetchSingleApplication: Function,
   handleSubmit: Function,
@@ -40,12 +44,12 @@ type Props = {
 };
 
 type State = {
-  activeTab: string,
+  activeTab: number,
 };
 
 type TabsType = Array<any>;
 
-class HandlerForm extends Component {
+class PreparerForm extends Component {
   props: Props;
   state: State;
   tabs: TabsType;
@@ -58,7 +62,7 @@ class HandlerForm extends Component {
     super(props);
 
     this.state = {
-      activeTab: '',
+      activeTab: 0,
     };
   }
 
@@ -74,59 +78,17 @@ class HandlerForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {applicationId, fetchSingleApplication} = nextProps;
+    const {fetchSingleApplication} = this.props;
+    const {applicationId, location} = nextProps;
 
     if (applicationId !== this.props.applicationId) {
       fetchSingleApplication(applicationId);
     }
 
-    this.setTabs();
-  }
-
-  setTabs = () => {
-    const {isOpenApplication} = this.props;
-
-    this.tabs = [
-      {
-        id: 'yhteenveto',
-        label: 'Yhteenveto',
-        component: Summary,
-      },
-      {
-        id: 'vuokralaiset',
-        label: 'Vuokralaiset',
-        component: ApplicantInfo,
-      },
-      {
-        id: 'kohde',
-        label: 'Kohde',
-        component: BasicInfo,
-        props: {
-          isOpenApplication: !!isOpenApplication,
-        },
-      },
-      {
-        id: 'vuokra',
-        label: 'Vuokra',
-        component: Lease,
-      },
-      {
-        id: 'laskutus',
-        label: 'Laskutus',
-        component: Billing,
-      },
-    ];
-
-    if (!this.state.activeTab) {
-      const {id} = this.tabs[0];
-      this.setState({
-        activeTab: id,
-      });
+    if (location.query.tab) {
+      this.setState({activeTab: location.query.tab});
     }
-
-  };
-
-  getActiveTab = (id) => find(this.tabs, {id});
+  }
 
   handleTabClick = (tabId) => {
     const {router} = this.context;
@@ -138,13 +100,6 @@ class HandlerForm extends Component {
         query: {tab: tabId},
       });
     });
-  };
-
-  renderTabContent = () => {
-    const {activeTab} = this.state;
-    const tab = this.getActiveTab(activeTab);
-
-    return createElement(tab.component, tab.props);
   };
 
   // Just for demo...
@@ -165,24 +120,14 @@ class HandlerForm extends Component {
     const {activeTab} = this.state;
 
     const {
+      application,
       applicationId,
-      handleSubmit,
-      invalid,
+      attributes,
       isFetching,
-      pristine,
-      submitting,
       t,
     } = this.props;
 
-    const formActionProps = {
-      invalid,
-      pristine,
-      submitting,
-      icon: <i className="mi mi-send"/>,
-      label: 'Lähetä hakemus',
-    };
-
-    if (isFetching || !activeTab) {
+    if (isFetching || isEmpty(attributes)) {
       return <p>Loading...</p>;
     }
 
@@ -198,16 +143,35 @@ class HandlerForm extends Component {
           <Tabs
             active={activeTab}
             className="hero__navigation"
-            items={this.tabs}
+            tabs={[
+              'Yhteenveto',
+              'Vuokralaiset',
+              'Kohde',
+              'Vuokra',
+              'Laskutus',
+            ]}
             onTabClick={(id) => this.handleTabClick(id)}
           />
         </Hero>
 
-        <form className="mvj-form" onSubmit={handleSubmit(this.save)}>
-          {this.renderTabContent()}
+        <TabContent active={activeTab}>
+          <TabPane className="summary">
+            <Summary {...application}/>
+          </TabPane>
+          <TabPane className="tenants">
+            <Tenants {...application}/>
+          </TabPane>
+          <TabPane className="property-unit">
+            <PropertyUnit/>
+          </TabPane>
+          <TabPane className="lease">
+            <Lease/>
+          </TabPane>
+          <TabPane className="billing">
+            <Billing/>
+          </TabPane>
+        </TabContent>
 
-          <FormActions {...formActionProps}/>
-        </form>
       </div>
     );
   }
@@ -221,10 +185,11 @@ export default flowRight(
       const isOpenApplication = selector(state, 'open_application');
 
       return {
-        isOpenApplication,
-        initialValues: getCurrentApplication(state),
         application: getCurrentApplication(state),
+        attributes: getAttributes(state),
+        initialValues: getCurrentApplication(state),
         isFetching: getIsFetching(state),
+        isOpenApplication,
       };
     },
     {
@@ -233,8 +198,10 @@ export default flowRight(
     }
   ),
   reduxForm({
-    form: 'handler-form',
+    form: 'preparer-form',
     validate,
+    destroyOnUnmount: false,
+    forceUnregisterOnUnmount: false,
   }),
   translate(['common', 'applications'])
-)(HandlerForm);
+)(PreparerForm);
