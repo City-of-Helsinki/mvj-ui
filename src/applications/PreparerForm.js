@@ -132,7 +132,7 @@ class PreparerForm extends Component {
     }
 
     return (
-      <div className="full__width">
+      <div className="full__width flex">
 
         <Hero>
           <h2>
@@ -161,7 +161,7 @@ class PreparerForm extends Component {
           <TabPane className="tenants">
             <Tenants {...application}/>
           </TabPane>
-          <TabPane className="property-unit">
+          <TabPane className="property-unit row--flex">
             <PropertyUnit/>
           </TabPane>
           <TabPane className="lease">
