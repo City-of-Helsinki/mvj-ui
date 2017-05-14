@@ -6,6 +6,7 @@ import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
 import i18n from '../root/i18n';
 import {withRouter} from 'react-router';
+import isEmpty from 'lodash/isEmpty';
 
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
@@ -17,14 +18,18 @@ import {Languages} from '../constants';
 import type {ApiError} from '../api/types';
 import type {RootState} from '../root/types';
 import TopNavigation from '../components/topNavigation/TopNavigation';
-import {fetchUsers} from '../role/actions';
+import {changeUser, fetchUsers} from '../role/actions';
+import {getStorageItem} from '../util/storage';
+import {getUser, getUserList} from '../role/selectors';
 // import {fetchAttributes} from '../attributes/actions';
 
 type Props = {
   apiError: ApiError,
+  changeUser: Function,
   children: any,
   clearError: typeof clearError,
   closeReveal: Function,
+  currentUser: Object,
   fetchAttributes: Function,
   fetchUsers: Function,
   params: Object,
@@ -52,6 +57,21 @@ class App extends Component {
     }
 
     this.doInitialLoad();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const {userList} = nextProps;
+    const {changeUser, currentUser} = this.props;
+    const token = getStorageItem('TOKEN');
+
+    if (token) {
+      if (userList.length && isEmpty(currentUser)) {
+        const user = userList.find(({id}) => id === token);
+        changeUser(user);
+      }
+    } else {
+      // TODO: Do something if there's no token in localStorage
+    }
   }
 
   doInitialLoad = () => {
@@ -96,9 +116,12 @@ export default flowRight(
   connect(
     (state: RootState) => ({
       apiError: getError(state),
+      userList: getUserList(state),
+      currentUser: getUser(state),
     }),
     {
       fetchUsers,
+      changeUser,
       clearError,
     },
   ),
