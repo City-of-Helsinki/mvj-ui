@@ -5,13 +5,13 @@ import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 
-import {fetchApplications} from './actions';
+import {fetchApplications} from '../actions';
 
 import HandlerForm from './PreparerForm';
-import ApplicationList from '../components/applicationList/ApplicationList';
+import ApplicationList from '../../components/applicationList/ApplicationList';
 
-import {getActiveLanguage} from '../util/helpers';
-import {getApplicationsList, getIsFetching} from './selectors';
+import {getActiveLanguage} from '../../util/helpers';
+import {getApplicationsList, getIsFetching} from '../selectors';
 
 type Props = {
   applications: Array<any>,

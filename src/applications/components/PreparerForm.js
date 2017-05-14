@@ -7,25 +7,25 @@ import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import Tabs from '../components/tabs/Tabs';
-import Hero from '../components/hero/Hero';
+import Tabs from '../../components/tabs/Tabs';
+import Hero from '../../components/hero/Hero';
 
-import Billing from './form/Billing';
-import PropertyUnit from './form/PropertyUnit';
-import Lease from './form/Lease';
-import Summary from './form/Summary';
-import Tenants from './form/Tenants';
-import MapContainer from '../components/map/Map';
+import Billing from '../form/Billing';
+import PropertyUnit from '../form/PropertyUnit';
+import Lease from '../form/Lease';
+import Summary from '../form/Summary';
+import Tenants from '../form/Tenants';
+import MapContainer from '../../components/map/Map';
 
-import validate from './form/NewApplicationValidator';
-import {getActiveLanguage} from '../util/helpers';
-import {fetchSingleApplication} from './actions';
-import {getCurrentApplication, getIsFetching} from './selectors';
-import {fetchAttributes} from '../attributes/actions';
-import {getAttributes} from '../attributes/selectors';
-import TabPane from '../components/tabs/TabPane';
-import TabContent from '../components/tabs/TabContent';
-import {defaultCoordinates, defaultZoom} from '../constants';
+import validate from '../form/NewApplicationValidator';
+import {getActiveLanguage} from '../../util/helpers';
+import {fetchSingleApplication} from '../actions';
+import {getCurrentApplication, getIsFetching} from '../selectors';
+import {fetchAttributes} from '../../attributes/actions';
+import {getAttributes} from '../../attributes/selectors';
+import TabPane from '../../components/tabs/TabPane';
+import TabContent from '../../components/tabs/TabContent';
+import {defaultCoordinates, defaultZoom} from '../../constants';
 
 type Props = {
   application: Object,
