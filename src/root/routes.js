@@ -9,7 +9,7 @@ import i18n from './i18n';
 
 import RoleSelector from '../role/RoleSelector';
 import ApplicationsList from '../applications/ApplicationsList';
-import CreateApplicationForm from '../applications/CreateApplicationForm';
+import CreateApplicationForm from '../applications/NewApplicationForm';
 
 export default
 <Route path="/" component={App}>
