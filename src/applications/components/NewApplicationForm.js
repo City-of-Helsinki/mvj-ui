@@ -11,10 +11,10 @@ import {Column} from 'react-foundation';
 import Collapse from '../../components/collapse/Collapse';
 import Hero from '../../components/hero/Hero';
 
-import BasicInfo from '../form/BasicInfo';
-import ApplicantInfo from '../form/ApplicantInfo';
-import FormActions from '../form/FormActions';
-import validate from '../form/NewApplicationValidator';
+import BasicInfo from './form/BasicInfo';
+import ApplicantInfo from './form/ApplicantInfo';
+import FormActions from './form/FormActions';
+import validate from './form/NewApplicationValidator';
 import {fetchAttributes} from '../../attributes/actions';
 import {getAttributes} from '../../attributes/selectors';
 import {sendApplication} from '../actions';

@@ -3,8 +3,8 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import FormField from '../../components/form/FormField';
-import {formatDateObj} from '../../util/helpers';
+import FormField from '../../../components/form/FormField';
+import {formatDateObj} from '../../../util/helpers';
 type Props = Object;
 
 const Summary = (props: Props) => {

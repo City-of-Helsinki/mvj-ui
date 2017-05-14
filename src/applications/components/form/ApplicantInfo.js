@@ -2,8 +2,8 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import FormField from '../../components/form/FormField';
-import GroupTitle from '../../components/form/GroupTitle';
+import FormField from '../../../components/form/FormField';
+import GroupTitle from '../../../components/form/GroupTitle';
 
 
 const ApplicantInfo = () => (

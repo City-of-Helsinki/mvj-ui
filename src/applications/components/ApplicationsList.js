@@ -12,6 +12,7 @@ import ApplicationList from '../../components/applicationList/ApplicationList';
 
 import {getActiveLanguage} from '../../util/helpers';
 import {getApplicationsList, getIsFetching} from '../selectors';
+import Hero from '../../components/hero/Hero';
 
 type Props = {
   applications: Array<any>,
@@ -51,9 +52,10 @@ class ApplicationsList extends Component {
 
     return (
       <div className={classNames('applications', {'applications--form-open': !!applicationId})}>
-
         <div className="applications__list">
-          <h2>{t('applications:title')}</h2>
+          <Hero className="hero--secondary">
+            <h1>{t('applications:title')}</h1>
+          </Hero>
           <ApplicationList
             active={applicationId}
             data={applications}

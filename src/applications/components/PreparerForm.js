@@ -10,14 +10,14 @@ import isEmpty from 'lodash/isEmpty';
 import Tabs from '../../components/tabs/Tabs';
 import Hero from '../../components/hero/Hero';
 
-import Billing from '../form/Billing';
-import PropertyUnit from '../form/PropertyUnit';
-import Lease from '../form/Lease';
-import Summary from '../form/Summary';
-import Tenants from '../form/Tenants';
+import Billing from './form/Billing';
+import PropertyUnit from './form/PropertyUnit';
+import Lease from './form/Lease';
+import Summary from './form/Summary';
+import Tenants from './form/Tenants';
 import MapContainer from '../../components/map/Map';
 
-import validate from '../form/NewApplicationValidator';
+import validate from './form/NewApplicationValidator';
 import {getActiveLanguage} from '../../util/helpers';
 import {fetchSingleApplication} from '../actions';
 import {getCurrentApplication, getIsFetching} from '../selectors';

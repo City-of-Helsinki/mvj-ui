@@ -1,4 +1,4 @@
-import {BaseValidator} from '../../components/form/validation';
+import {BaseValidator} from '../../../components/form/validation';
 
 export default ({
                   type,
