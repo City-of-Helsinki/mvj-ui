@@ -24,6 +24,7 @@ const FieldTypeSelect = ({input, displayError, disabled, options, placeholder, t
       options={options}
       placeholder={placeholder}
       noResultsText={t('noResultsFound')}
+      valueKey="id"
       {...input}
     />
   );
