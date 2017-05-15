@@ -148,6 +148,7 @@ class PreparerForm extends Component {
             tabs={[
               'Yhteenveto',
               'Vuokralaiset',
+              'Ehdot',
               'Kohde',
               'Vuokra',
               'Laskutus',
@@ -163,6 +164,9 @@ class PreparerForm extends Component {
           </TabPane>
           <TabPane className="tenants">
             <Tenants {...application}/>
+          </TabPane>
+          <TabPane className="conditions">
+            <p>Ehdot</p>
           </TabPane>
           <TabPane className="property-unit row--flex">
             <PropertyUnit/>
