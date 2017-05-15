@@ -93,14 +93,6 @@ const ProppertyUnit = (props: Props) => {
         </ul>
       </Column>
 
-      <GroupTitle text="Ehdot"/>
-      <Column medium={12}>
-        <ul className="bordered__list full-width">
-          <li>Tontille rakennettava 10m2</li>
-        </ul>
-        <a onClick={null}>Lisää ehto</a>
-      </Column>
-
       <GroupTitle text="Kohteen kiinteistöt"/>
       <Column medium={12}>
         <ul className="bordered__list full-width">
