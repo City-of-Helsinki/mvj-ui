@@ -6,12 +6,10 @@ import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 
 import {fetchApplications} from '../actions';
-
-import HandlerForm from './PreparerForm';
-import ApplicationList from '../../components/applicationList/ApplicationList';
-
-import {getActiveLanguage} from '../../util/helpers';
 import {getApplicationsList, getIsFetching} from '../selectors';
+import {getActiveLanguage} from '../../util/helpers';
+
+import ApplicationList from '../../components/applicationList/ApplicationList';
 import Hero from '../../components/hero/Hero';
 
 type Props = {
@@ -63,15 +61,6 @@ class ApplicationsList extends Component {
             isFetching={isFetching}
           />
         </div>
-
-        {applicationId &&
-        <div className="applications__form">
-          <HandlerForm
-            applicationId={applicationId}
-          />
-        </div>
-        }
-
       </div>
     );
   }

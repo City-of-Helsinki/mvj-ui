@@ -59,7 +59,7 @@ class App extends Component {
     this.doInitialLoad();
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: Object) {
     const {userList} = nextProps;
     const {changeUser, currentUser} = this.props;
     const token = getStorageItem('TOKEN');

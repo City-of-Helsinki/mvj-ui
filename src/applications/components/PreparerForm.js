@@ -40,6 +40,7 @@ type Props = {
   location: Object,
   onCancel: Function,
   onSave: Function,
+  params: Object,
   pristine: Boolean,
   submitting: Boolean,
   t: Function,
@@ -69,7 +70,7 @@ class PreparerForm extends Component {
   }
 
   componentWillMount() {
-    const {applicationId, fetchSingleApplication, location, fetchAttributes} = this.props;
+    const {fetchSingleApplication, location, fetchAttributes, params: {applicationId}} = this.props;
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
@@ -81,9 +82,9 @@ class PreparerForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {fetchSingleApplication} = this.props;
-    const {applicationId, location} = nextProps;
+    const {params: {applicationId}, location} = nextProps;
 
-    if (applicationId !== this.props.applicationId) {
+    if (applicationId !== this.props.params.applicationId) {
       fetchSingleApplication(applicationId);
     }
 
@@ -148,10 +149,10 @@ class PreparerForm extends Component {
             tabs={[
               'Yhteenveto',
               'Vuokralaiset',
-              'Ehdot',
               'Kohde',
               'Vuokra',
               'Laskutus',
+              'Ehdot',
               'Kartta',
             ]}
             onTabClick={(id) => this.handleTabClick(id)}
@@ -162,13 +163,10 @@ class PreparerForm extends Component {
           <TabPane className="summary">
             <Summary {...application}/>
           </TabPane>
-          <TabPane className="tenants">
+          <TabPane className="tenants tab__content">
             <Tenants {...application}/>
           </TabPane>
-          <TabPane className="conditions">
-            <p>Ehdot</p>
-          </TabPane>
-          <TabPane className="property-unit row--flex">
+          <TabPane className="property-unit tab__content row--flex">
             <PropertyUnit/>
           </TabPane>
           <TabPane className="lease">
@@ -176,6 +174,9 @@ class PreparerForm extends Component {
           </TabPane>
           <TabPane className="billing">
             <Billing/>
+          </TabPane>
+          <TabPane className="conditions">
+            <p>Ehdot</p>
           </TabPane>
           <TabPane className="map">
             <div className="map">
