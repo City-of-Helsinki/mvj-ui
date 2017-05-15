@@ -53,7 +53,7 @@ class ApplicationsList extends Component {
     return (
       <div className={classNames('applications', {'applications--form-open': !!applicationId})}>
         <div className="applications__list">
-          <Hero className="hero--secondary">
+          <Hero>
             <h1>{t('applications:title')}</h1>
           </Hero>
           <ApplicationList
