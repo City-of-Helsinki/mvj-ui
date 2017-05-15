@@ -27,6 +27,7 @@
     }
   },
   "validation": {
-    "required": "Vaadittu kenttä"
+    "required": "Vaadittu kenttä",
+    "noResultsFound": "Ei hakutuloksia"
   }
 }

@@ -19,6 +19,7 @@
     }
   },
   "validation": {
-    "required": "Field is required"
+    "required": "Field is required",
+    "noResultsFound": "No results found"
   }
 }
