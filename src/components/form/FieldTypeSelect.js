@@ -18,12 +18,13 @@ const FieldTypeSelect = ({input, displayError, disabled, options, placeholder, t
   return (
     <Select
       autoBlur={true}
-      id={input.name}
-      disabled={disabled}
       className={classNames('form-field__select', {'has-error': displayError})}
+      clearable={false}
+      disabled={disabled}
+      id={input.name}
+      noResultsText={t('noResultsFound')}
       options={options}
       placeholder={placeholder}
-      noResultsText={t('noResultsFound')}
       valueKey="id"
       {...input}
     />

@@ -119,6 +119,11 @@
           padding: 0;
         }
       }
+
+      .Select-option.is-selected {
+      }
+      .Select-option.is-focused {
+      }
     }
 
     &.has-error .Select-control {
