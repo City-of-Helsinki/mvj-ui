@@ -1,0 +1,47 @@
+.edit-modal {
+  position: relative;
+  padding-top: rem-calc(30px);
+
+  h1 {
+    font-size: rem-calc(32px);
+    padding: rem-calc(0 15px);
+  }
+
+  &__section {
+    border-bottom: 1px solid #eee;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+
+    &:last-child {
+      border: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .mvj-form__group-title {
+      margin: 1rem 0;
+    }
+  }
+
+  &__actions {
+    justify-content: center;
+  }
+
+  &__close {
+    position: absolute;
+    top: 30px;
+    right: 15px;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: $dark-gray;
+    cursor: pointer;
+  }
+
+  &__save {
+    @include button();
+    border-radius: rem-calc(4px);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0;
+  }
+}

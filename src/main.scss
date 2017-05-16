@@ -26,10 +26,11 @@
 @import "./app/app";
 @import "applications/components/application-form";
 @import "applications/components/application-list";
-@import "applications/components/form/summary";
-@import "applications/components/form/property-unit";
-@import "applications/components/form/tenants";
-@import "components/errorPage/error-page";
+@import "applications/components/formSections/editModal";
+@import "applications/components/formSections/summary";
+@import "applications/components/formSections/propertyUnit";
+@import "applications/components/formSections/tenants";
+@import "errorPage/error-page";
 @import "./role/role-selector";
 
 ::selection {
