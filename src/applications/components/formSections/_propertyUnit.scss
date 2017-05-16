@@ -1,3 +1,8 @@
+.add__new {
+  @include lightButton;
+  margin: 0 rem-calc(15px);
+}
+
 .bordered__list {
   margin: rem-calc(0 0 30px 0);
   list-style-type: none;

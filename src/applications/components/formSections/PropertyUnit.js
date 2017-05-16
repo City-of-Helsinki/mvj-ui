@@ -1,12 +1,9 @@
 // @flow
 import React from 'react';
-import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import FormField from '../../../components/form/FormField';
 import GroupTitle from '../../../components/form/GroupTitle';
-
-// type Props = {};
+import Table from '../../../components/table/Table';
 
 const links = [
   'Kiinteistörekisteriote',
@@ -29,54 +26,62 @@ const ProppertyUnit = (props: Props) => {
 
     <Row className={props.className}>
       <Column medium={12}>
-        <h2 className="tab__content--title">Kohde</h2>
+        <h1 className="tab__content--title">Kiinteistöt</h1>
       </Column>
 
-      <Column medium={6}>
-        <Field
-          type="text"
-          required={false}
-          label="Tonttitunnus"
-          name="tonttitunnus"
-          component={FormField}
-        />
-      </Column>
-      <Column medium={6}>
-        <Field
-          type="text"
-          required={false}
-          label="Asemakaava"
-          name="asemakaava"
-          component={FormField}
-        />
-      </Column>
-      <Column medium={6}>
-        <Field
-          type="text"
-          required={false}
-          label="Alue"
-          name="alue"
-          component={FormField}
-        />
-      </Column>
-      <Column medium={6}>
-        <Field
-          type="text"
-          required={false}
-          label="Asemakaava"
-          name="asemakaava"
-          component={FormField}
-        />
-      </Column>
-      <Column medium={6}>
-        <Field
-          type="text"
-          required={false}
-          label="Kaavoitettu m2"
-          name="kaavoitettu"
-          component={FormField}
-        />
-      </Column>
+      <section className="data-box">
+        <div className="data-box__header">
+          <h2>091-002-0096-0032-M601 <span className="identifier">Tarkentava tieto</span></h2>
+          <div className="data-box__header--item">
+            <span className="identifier">Rekisteröity</span>
+            3.3.2017
+          </div>
+          <div className="data-box__header--item">
+            <span className="identifier">Pinta-ala</span>
+            8413m<sup>2</sup>
+          </div>
+        </div>
+
+        <div className="data-box__content">
+          <div className="data-box__content--section">
+            <h3>Tonttijako</h3>
+
+            <Table
+              headers={[
+                'Tunnus',
+                'Laji',
+                'Hyväksytty',
+                'Vaihe',
+              ]}
+              data={[
+                {id: 1, data: {tunnus: '11077', laji: 'Perustava tonttijako', approved: '3.3.2017', state: 'Voimassa'}},
+              ]}
+            />
+          </div>
+
+          <div className="data-box__content--section">
+            <h3>Asemakaava</h3>
+
+            <Table
+              headers={[
+                'Tunnus',
+                'Laji',
+                'Hyväksytty',
+                'Vaihe',
+              ]}
+              data={[
+                {id: 1, data: {tunnus: '11077', laji: 'Perustava tonttijako', approved: '3.3.2017', state: 'Voimassa'}},
+              ]}
+            />
+          </div>
+
+          <div className="data-box__controls">
+            <span className="edit">Muokkaa</span>
+          </div>
+        </div>
+      </section>
+
+      <button className="add__new">Lisää kiinteistö</button>
 
       <GroupTitle text="KTJ-dokumentit"/>
 
@@ -91,14 +96,6 @@ const ProppertyUnit = (props: Props) => {
             </li>
           ))}
         </ul>
-      </Column>
-
-      <GroupTitle text="Kohteen kiinteistöt"/>
-      <Column medium={12}>
-        <ul className="bordered__list full-width">
-          <li>Tontille rakennettava 10m2</li>
-        </ul>
-        <a onClick={null}>Lisää ehto</a>
       </Column>
 
     </Row>
