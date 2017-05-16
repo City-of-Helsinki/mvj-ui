@@ -20,14 +20,17 @@ import Hero from '../../components/hero/Hero';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
 
-import Billing from './form/Billing';
-import PropertyUnit from './form/PropertyUnit';
-import Lease from './form/Lease';
-import Summary from './form/Summary';
-import Tenants from './form/Tenants';
+import Billing from './formSections/Billing';
+import PropertyUnit from './formSections/PropertyUnit';
+import Lease from './formSections/Lease';
+import Summary from './formSections/Summary';
+import Tenants from './formSections/Tenants';
 import MapContainer from '../../components/map/Map';
+import validate from './formSections/NewApplicationValidator';
+import EditModal from './formSections/editModal';
 
-import validate from './form/NewApplicationValidator';
+import {revealContext} from '../../foundation/reveal';
+import {Sizes} from '../../foundation/enums';
 
 import {defaultCoordinates, defaultZoom} from '../../constants';
 import {getIdentifiers} from '../../lease/selectors';
@@ -36,6 +39,7 @@ type Props = {
   application: Object,
   applicationId: String,
   attributes: Object,
+  closeReveal: Function,
   fetchAttributes: Function,
   fetchIdentifiers: Function,
   fetchSingleApplication: Function,
@@ -55,6 +59,8 @@ type Props = {
 
 type State = {
   activeTab: number,
+  isEditingSection: boolean,
+  editingComponent: Object | null,
 };
 
 type TabsType = Array<any>;
@@ -73,6 +79,8 @@ class PreparerForm extends Component {
 
     this.state = {
       activeTab: 0,
+      isEditingSection: false,
+      editingComponent: null,
     };
   }
 
@@ -127,6 +135,22 @@ class PreparerForm extends Component {
     console.log('saving', values);
   };
 
+  handleEditSection = (component) => {
+    this.setState({
+      isEditingSection: true,
+      editingComponent: component,
+    });
+  };
+
+  handleEditSave = (values) => {
+    console.log(values);
+    this.setState({isEditingSection: false}, () => this.props.closeReveal('editModal'));
+  };
+
+  handleDismissEditModal = () => {
+    this.setState({isEditingSection: false}, () => this.props.closeReveal('editModal'));
+  };
+
   render() {
     const {activeTab} = this.state;
 
@@ -170,23 +194,35 @@ class PreparerForm extends Component {
 
         <TabContent active={activeTab}>
           <TabPane className="summary">
-            <Summary {...application} {...identifiers}/>
+            <Summary
+              {...application}
+              {...identifiers}
+            />
           </TabPane>
+
           <TabPane className="tenants tab__content">
-            <Tenants {...application}/>
+            <Tenants
+              onEdit={this.handleEditSection}
+              {...application}
+            />
           </TabPane>
+
           <TabPane className="property-unit tab__content row--flex">
             <PropertyUnit/>
           </TabPane>
+
           <TabPane className="lease">
             <Lease/>
           </TabPane>
+
           <TabPane className="billing">
             <Billing/>
           </TabPane>
+
           <TabPane className="conditions">
             <p>Ehdot</p>
           </TabPane>
+
           <TabPane className="map">
             <div className="map">
               <MapContainer center={defaultCoordinates}
@@ -195,6 +231,13 @@ class PreparerForm extends Component {
             </div>
           </TabPane>
         </TabContent>
+
+        <EditModal size={Sizes.LARGE}
+                   isOpen={this.state.isEditingSection}
+                   component={this.state.editingComponent}
+                   handleSave={this.handleEditSave}
+                   handleDismiss={this.handleDismissEditModal}
+        />
       </div>
     );
   }
@@ -225,8 +268,7 @@ export default flowRight(
   reduxForm({
     form: 'preparer-form',
     validate,
-    destroyOnUnmount: false,
-    forceUnregisterOnUnmount: false,
   }),
-  translate(['common', 'applications'])
+  translate(['common', 'applications']),
+  revealContext(),
 )(PreparerForm);

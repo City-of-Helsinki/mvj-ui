@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 // import FormField from '../../components/form/FormField';
 // import GroupTitle from '../../components/form/GroupTitle';
+import TenantsEdit from './TenantsEdit';
 
 type Props = Object;
 
@@ -49,10 +50,10 @@ const Tenants = (props: Props) => {
               <p>{props.contact_phone}</p>
             </div>
 
-            <a onClick={null} className="tenant__edit">Muokkaa vuokralaisen tietoja</a>
+            <a onClick={() => props.onEdit(TenantsEdit)} className="tenant__edit">Muokkaa vuokralaisen tietoja</a>
           </div>
 
-          <button onClick={null}>Lisää Vuokralainen</button>
+          <button onClick={() => props.onEdit(TenantsEdit)}>Lisää Vuokralainen</button>
 
         </section>
       </Column>
