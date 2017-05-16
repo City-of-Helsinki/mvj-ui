@@ -22,6 +22,7 @@
 
   &-menu {
     position: absolute;
+    z-index: 1;
     top: 100%;
     right: 0;
     margin: rem-calc(13px 0 0 0);
