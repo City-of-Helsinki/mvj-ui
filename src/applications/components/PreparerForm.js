@@ -211,7 +211,7 @@ class PreparerForm extends Component {
             <PropertyUnit/>
           </TabPane>
 
-          <TabPane className="lease">
+          <TabPane className="lease tab__content">
             <Lease/>
           </TabPane>
 
