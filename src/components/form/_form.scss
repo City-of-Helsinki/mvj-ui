@@ -119,10 +119,21 @@
           padding: 0;
         }
       }
+    }
 
-      .Select-option.is-selected {
+    .Select-option {
+      @include transition(.1s);
+      &.is-selected {
+        background: $secondary-color;
+        color: $white;
       }
-      .Select-option.is-focused {
+      &.is-focused {
+        background: $secondary-color;
+        color: $white;
+      }
+      &:hover {
+        background: $secondary-color;
+        color: $white;
       }
     }
 

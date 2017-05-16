@@ -7,6 +7,8 @@ import FormField from '../../../components/form/FormField';
 import {formatDateObj} from '../../../util/helpers';
 type Props = Object;
 
+const getOptions = (field) => field.map(({value, display_name}) => ({id: value, label: display_name}));
+
 const Summary = (props: Props) => {
 
   return (
@@ -25,33 +27,35 @@ const Summary = (props: Props) => {
               <label>Vuokraustunnus</label>
               <div className="lease__code">
                 <Field
-                  type="text"
+                  name="identifier_type"
+                  placeholder="Tyyppi"
                   required={false}
-                  name="a1"
-                  placeholder="A1"
+                  type="select"
+                  options={getOptions(props.type)}
                   component={FormField}
                 />
                 <Field
-                  type="text"
+                  name="identifier_municipality"
+                  placeholder="Kunta"
                   required={false}
-                  name="b1"
-                  placeholder="B1"
+                  type="select"
+                  options={getOptions(props.municipality)}
                   component={FormField}
                 />
                 <Field
-                  type="text"
+                  name="identifier_district"
+                  placeholder="Alue"
                   required={false}
-                  name="c1"
-                  placeholder="C1"
+                  type="select"
+                  options={getOptions(props.district)}
                   component={FormField}
                 />
-                <Field
-                  type="text"
-                  required={false}
-                  name="d1"
-                  placeholder="D1"
-                  component={FormField}
-                />
+                {/*<Field*/}
+                  {/*type="text"*/}
+                  {/*required={false}*/}
+                  {/*name="identifier_code"*/}
+                  {/*component={FormField}*/}
+                {/*/>*/}
               </div>
 
               <button className="button expanded">Tallenna hakemus valmisteltavaksi</button>

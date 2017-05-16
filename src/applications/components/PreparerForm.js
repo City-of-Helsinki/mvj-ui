@@ -30,6 +30,7 @@ import MapContainer from '../../components/map/Map';
 import validate from './form/NewApplicationValidator';
 
 import {defaultCoordinates, defaultZoom} from '../../constants';
+import {getIdentifiers} from '../../lease/selectors';
 
 type Props = {
   application: Object,
@@ -39,6 +40,7 @@ type Props = {
   fetchIdentifiers: Function,
   fetchSingleApplication: Function,
   handleSubmit: Function,
+  identifiers: Object,
   invalid: Boolean,
   isFetching: boolean,
   isOpenApplication: String,
@@ -130,6 +132,7 @@ class PreparerForm extends Component {
 
     const {
       application,
+      identifiers,
       params: {applicationId},
       attributes,
       isFetching,
@@ -167,7 +170,7 @@ class PreparerForm extends Component {
 
         <TabContent active={activeTab}>
           <TabPane className="summary">
-            <Summary {...application}/>
+            <Summary {...application} {...identifiers}/>
           </TabPane>
           <TabPane className="tenants tab__content">
             <Tenants {...application}/>
@@ -207,6 +210,7 @@ export default flowRight(
       return {
         application: getCurrentApplication(state),
         attributes: getAttributes(state),
+        identifiers: getIdentifiers(state),
         initialValues: getCurrentApplication(state),
         isFetching: getIsFetching(state),
         isOpenApplication,
