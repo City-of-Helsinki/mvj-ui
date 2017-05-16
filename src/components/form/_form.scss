@@ -90,23 +90,58 @@
   }
 
   &__select {
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    transition: none;
-    color: $black;
-    background-color: $lightest-gray;
-    border: 2px solid $medium-gray;
-    padding-top: .75rem;
-    padding-bottom: .75rem;
-    height: auto;
-    font-size: 1.125rem;
-    line-height: 1.5rem;
     margin: .5rem 0;
 
-    &.has-error {
+    .Select-control {
+      //-webkit-appearance: none !important;
+      //-moz-appearance: none !important;
+      //transition: none;
+      color: $black;
+      background-color: $lightest-gray;
+      border-radius: 0;
+      border: 2px solid $medium-gray;
+      padding-top: .75rem;
+      padding-bottom: .75rem;
+      height: auto;
+      font-size: 1.125rem;
+      line-height: 1.5rem;
+
+      .Select-placeholder,
+      .Select-value {
+        line-height: 1.5rem !important;
+        top: .75rem !important;
+      }
+
+      .Select-input {
+        height: 1.5rem;
+
+        > input {
+          padding: 0;
+        }
+      }
+    }
+
+    .Select-option {
+      @include transition(.1s);
+      &.is-selected {
+        background: $secondary-color;
+        color: $white;
+      }
+      &.is-focused {
+        background: $secondary-color;
+        color: $white;
+      }
+      &:hover {
+        background: $secondary-color;
+        color: $white;
+      }
+    }
+
+    &.has-error .Select-control {
       transition: none;
       border: 2px solid $alert-color;
     }
+
     &:focus {
       border: 2px solid $medium-gray;
       outline: none !important;

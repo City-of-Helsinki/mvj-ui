@@ -1,6 +1,8 @@
 {
   "common": {
-    "appName": "Ground rental system"
+    "appName": "Ground rental system",
+    "close": "Close",
+    "save": "Save"
   },
   "roles": {
     "title": "Ground rental system prototype",
@@ -18,7 +20,16 @@
       "other": "Other"
     }
   },
+  "applicationForm": {
+    "heroTitle": "Application",
+    "basicInfo": {
+      "sectionTitle": "Property information",
+      "type": "Choose type",
+      "openApplication": "Open application"
+    }
+  },
   "validation": {
-    "required": "Field is required"
+    "required": "Field is required",
+    "noResultsFound": "No results found"
   }
 }

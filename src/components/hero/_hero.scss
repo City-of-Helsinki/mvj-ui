@@ -1,8 +1,11 @@
 .mvj-hero {
   width: 100%;
 
-  .flex & {
+  &.hero--secondary {
+    background: $secondary-color;
+  }
 
+  .flex & {
     .mvj-hero__content {
     }
   }

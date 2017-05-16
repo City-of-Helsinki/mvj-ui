@@ -1,4 +1,8 @@
 .summary {
+  .row {
+    flex-direction: row !important;
+  }
+
   &__header {
     border: 1px solid $success-color;
     margin: rem-calc(20px 0);

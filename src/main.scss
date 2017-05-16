@@ -7,6 +7,7 @@
 
 // Vendor
 @import "~react-redux-toastr/src/styles/index";
+@import "~react-select/dist/react-select.css";
 @import "components/map/leaflet";
 
 // Components
@@ -23,12 +24,14 @@
 // App
 @import "./api/api";
 @import "./app/app";
-@import "./applications/application-form";
-@import "./applications/application-list";
-@import "./applications/form/summary";
-@import "./applications/form/property-unit";
-@import "./applications/form/tenants";
-@import "./errorPage/error-page";
+@import "applications/components/application-form";
+@import "applications/components/application-list";
+@import "applications/components/formSections/editModal";
+@import "applications/components/formSections/summary";
+@import "applications/components/formSections/propertyUnit";
+@import "applications/components/formSections/tenants";
+@import "applications/components/formSections/dataBox";
+@import "errorPage/error-page";
 @import "./role/role-selector";
 
 ::selection {

@@ -7,39 +7,52 @@ import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import Tabs from '../components/tabs/Tabs';
-import Hero from '../components/hero/Hero';
+import {getActiveLanguage} from '../../util/helpers';
+import {fetchSingleApplication} from '../actions';
+import {getCurrentApplication, getIsFetching} from '../selectors';
 
-import Billing from './form/Billing';
-import PropertyUnit from './form/PropertyUnit';
-import Lease from './form/Lease';
-import Summary from './form/Summary';
-import Tenants from './form/Tenants';
-import MapContainer from '../components/map/Map';
+import {fetchIdentifiers} from '../../lease/actions';
+import {fetchAttributes} from '../../attributes/actions';
+import {getAttributes} from '../../attributes/selectors';
 
-import validate from './form/NewApplicationValidator';
-import {getActiveLanguage} from '../util/helpers';
-import {fetchSingleApplication} from './actions';
-import {getCurrentApplication, getIsFetching} from './selectors';
-import {fetchAttributes} from '../attributes/actions';
-import {getAttributes} from '../attributes/selectors';
-import TabPane from '../components/tabs/TabPane';
-import TabContent from '../components/tabs/TabContent';
-import {defaultCoordinates, defaultZoom} from '../constants';
+import Tabs from '../../components/tabs/Tabs';
+import Hero from '../../components/hero/Hero';
+import TabPane from '../../components/tabs/TabPane';
+import TabContent from '../../components/tabs/TabContent';
+
+import Billing from './formSections/Billing';
+import PropertyUnit from './formSections/PropertyUnit';
+import Lease from './formSections/Lease';
+import Summary from './formSections/Summary';
+import Tenants from './formSections/Tenants';
+import Conditions from './formSections/Conditions';
+import MapContainer from '../../components/map/Map';
+import validate from './formSections/NewApplicationValidator';
+import EditModal from './formSections/editModal';
+
+import {revealContext} from '../../foundation/reveal';
+import {Sizes} from '../../foundation/enums';
+
+import {defaultCoordinates, defaultZoom} from '../../constants';
+import {getIdentifiers} from '../../lease/selectors';
 
 type Props = {
   application: Object,
   applicationId: String,
   attributes: Object,
+  closeReveal: Function,
   fetchAttributes: Function,
+  fetchIdentifiers: Function,
   fetchSingleApplication: Function,
   handleSubmit: Function,
+  identifiers: Object,
   invalid: Boolean,
   isFetching: boolean,
   isOpenApplication: String,
   location: Object,
   onCancel: Function,
   onSave: Function,
+  params: Object,
   pristine: Boolean,
   submitting: Boolean,
   t: Function,
@@ -47,6 +60,8 @@ type Props = {
 
 type State = {
   activeTab: number,
+  isEditingSection: boolean,
+  editingComponent: Object | null,
 };
 
 type TabsType = Array<any>;
@@ -65,25 +80,28 @@ class PreparerForm extends Component {
 
     this.state = {
       activeTab: 0,
+      isEditingSection: false,
+      editingComponent: null,
     };
   }
 
   componentWillMount() {
-    const {applicationId, fetchSingleApplication, location, fetchAttributes} = this.props;
+    const {fetchSingleApplication, fetchIdentifiers, location, fetchAttributes, params: {applicationId}} = this.props;
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
     }
 
     fetchAttributes();
+    fetchIdentifiers();
     fetchSingleApplication(applicationId);
   }
 
   componentWillReceiveProps(nextProps) {
     const {fetchSingleApplication} = this.props;
-    const {applicationId, location} = nextProps;
+    const {params: {applicationId}, location} = nextProps;
 
-    if (applicationId !== this.props.applicationId) {
+    if (applicationId !== this.props.params.applicationId) {
       fetchSingleApplication(applicationId);
     }
 
@@ -118,12 +136,29 @@ class PreparerForm extends Component {
     console.log('saving', values);
   };
 
+  handleEditSection = (component) => {
+    this.setState({
+      isEditingSection: true,
+      editingComponent: component,
+    });
+  };
+
+  handleEditSave = (values) => {
+    console.log(values);
+    this.setState({isEditingSection: false}, () => this.props.closeReveal('editModal'));
+  };
+
+  handleDismissEditModal = () => {
+    this.setState({isEditingSection: false}, () => this.props.closeReveal('editModal'));
+  };
+
   render() {
     const {activeTab} = this.state;
 
     const {
       application,
-      applicationId,
+      identifiers,
+      params: {applicationId},
       attributes,
       isFetching,
       t,
@@ -151,6 +186,7 @@ class PreparerForm extends Component {
               'Kohde',
               'Vuokra',
               'Laskutus',
+              'Ehdot',
               'Kartta',
             ]}
             onTabClick={(id) => this.handleTabClick(id)}
@@ -159,20 +195,35 @@ class PreparerForm extends Component {
 
         <TabContent active={activeTab}>
           <TabPane className="summary">
-            <Summary {...application}/>
+            <Summary
+              {...application}
+              {...identifiers}
+            />
           </TabPane>
-          <TabPane className="tenants">
-            <Tenants {...application}/>
+
+          <TabPane className="tenants tab__content">
+            <Tenants
+              onEdit={this.handleEditSection}
+              {...application}
+            />
           </TabPane>
-          <TabPane className="property-unit row--flex">
+
+          <TabPane className="property-unit tab__content">
             <PropertyUnit/>
           </TabPane>
-          <TabPane className="lease">
+
+          <TabPane className="lease tab__content">
             <Lease/>
           </TabPane>
-          <TabPane className="billing">
+
+          <TabPane className="billing tab__content">
             <Billing/>
           </TabPane>
+
+          <TabPane className="conditions tab__content">
+            <Conditions/>
+          </TabPane>
+
           <TabPane className="map">
             <div className="map">
               <MapContainer center={defaultCoordinates}
@@ -181,6 +232,13 @@ class PreparerForm extends Component {
             </div>
           </TabPane>
         </TabContent>
+
+        <EditModal size={Sizes.LARGE}
+                   isOpen={this.state.isEditingSection}
+                   component={this.state.editingComponent}
+                   handleSave={this.handleEditSave}
+                   handleDismiss={this.handleDismissEditModal}
+        />
       </div>
     );
   }
@@ -196,6 +254,7 @@ export default flowRight(
       return {
         application: getCurrentApplication(state),
         attributes: getAttributes(state),
+        identifiers: getIdentifiers(state),
         initialValues: getCurrentApplication(state),
         isFetching: getIsFetching(state),
         isOpenApplication,
@@ -204,13 +263,13 @@ export default flowRight(
     {
       fetchAttributes,
       fetchSingleApplication,
+      fetchIdentifiers,
     }
   ),
   reduxForm({
     form: 'preparer-form',
     validate,
-    destroyOnUnmount: false,
-    forceUnregisterOnUnmount: false,
   }),
-  translate(['common', 'applications'])
+  translate(['common', 'applications']),
+  revealContext(),
 )(PreparerForm);

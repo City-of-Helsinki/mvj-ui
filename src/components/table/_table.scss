@@ -1,6 +1,17 @@
 table {
-  //@include table-hover;
+  @include table(none);
+
   border-spacing: 0;
+
+  thead th, thead td {
+    border-bottom: 1px solid #eee;
+    font-size: .8rem;
+    padding-bottom: .3rem;
+  }
+
+  tbody th, tbody td {
+    border-bottom: 1px solid #eee;
+  }
 
   thead,
   tfoot {

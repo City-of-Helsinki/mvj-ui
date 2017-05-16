@@ -5,13 +5,12 @@ import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 
-import {fetchApplications} from './actions';
+import {fetchApplications} from '../actions';
+import {getApplicationsList, getIsFetching} from '../selectors';
+import {getActiveLanguage} from '../../util/helpers';
 
-import HandlerForm from './PreparerForm';
-import ApplicationList from '../components/applicationList/ApplicationList';
-
-import {getActiveLanguage} from '../util/helpers';
-import {getApplicationsList, getIsFetching} from './selectors';
+import ApplicationList from '../../components/applicationList/ApplicationList';
+import Hero from '../../components/hero/Hero';
 
 type Props = {
   applications: Array<any>,
@@ -51,9 +50,10 @@ class ApplicationsList extends Component {
 
     return (
       <div className={classNames('applications', {'applications--form-open': !!applicationId})}>
-
         <div className="applications__list">
-          <h2>{t('applications:title')}</h2>
+          <Hero>
+            <h1>{t('applications:title')}</h1>
+          </Hero>
           <ApplicationList
             active={applicationId}
             data={applications}
@@ -61,15 +61,6 @@ class ApplicationsList extends Component {
             isFetching={isFetching}
           />
         </div>
-
-        {applicationId &&
-        <div className="applications__form">
-          <HandlerForm
-            applicationId={applicationId}
-          />
-        </div>
-        }
-
       </div>
     );
   }

@@ -2,11 +2,11 @@
 
 import type {Action} from '../types';
 
+export type ApplicationState = Object;
+
 export type Application = Object;
 export type ApplicationId = number;
 export type ApplicationsList = Array<any>;
-
-export type ApplicationState = Object;
 
 export type FetchApplicationsAction = Action<'mvj/applications/FETCH_ALL', void>;
 export type ReceiveApplicationsAction = Action<'mvj/applications/RECEIVE_ALL', ApplicationsList>;

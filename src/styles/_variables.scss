@@ -51,6 +51,6 @@ $body-font-family: $font-family-helsinki-grotesk;
 
 /// Tables
 $table-head-background: transparent !default;
-$table-stripe: odd !default;
+$table-stripe: inherit !default;
 $table-head-font-color: $dark-gray !default;
 $table-head-row-hover: inherit !important !default;
