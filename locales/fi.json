@@ -1,6 +1,8 @@
 {
   "common": {
-    "appName": "Maanvuokrausjärjestelmä"
+    "appName": "Maanvuokrausjärjestelmä",
+    "close": "Sulje",
+    "save": "Tallenna"
   },
   "roles": {
     "title": "Maanvuokrausjärjestelmä-prototyyppi",

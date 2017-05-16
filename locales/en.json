@@ -1,6 +1,8 @@
 {
   "common": {
-    "appName": "Ground rental system"
+    "appName": "Ground rental system",
+    "close": "Close",
+    "save": "Save"
   },
   "roles": {
     "title": "Ground rental system prototype",
@@ -16,6 +18,14 @@
       "detached_house": "Detached house",
       "real_property_unit": "Real property unit",
       "other": "Other"
+    }
+  },
+  "applicationForm": {
+    "heroTitle": "Application",
+    "basicInfo": {
+      "sectionTitle": "Property information",
+      "type": "Choose type",
+      "openApplication": "Open application"
     }
   },
   "validation": {
