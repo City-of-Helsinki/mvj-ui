@@ -3,7 +3,7 @@
 import React from 'react';
 import {Route, IndexRoute} from 'react-router';
 
-import ErrorPage from '../errorPage/ErrorPage';
+import ErrorPage from '../components/errorPage/ErrorPage';
 import App from '../app/App';
 import i18n from './i18n';
 

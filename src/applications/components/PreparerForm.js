@@ -7,8 +7,18 @@ import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import {getActiveLanguage} from '../../util/helpers';
+import {fetchSingleApplication} from '../actions';
+import {getCurrentApplication, getIsFetching} from '../selectors';
+
+import {fetchIdentifiers} from '../../lease/actions';
+import {fetchAttributes} from '../../attributes/actions';
+import {getAttributes} from '../../attributes/selectors';
+
 import Tabs from '../../components/tabs/Tabs';
 import Hero from '../../components/hero/Hero';
+import TabPane from '../../components/tabs/TabPane';
+import TabContent from '../../components/tabs/TabContent';
 
 import Billing from './form/Billing';
 import PropertyUnit from './form/PropertyUnit';
@@ -18,13 +28,7 @@ import Tenants from './form/Tenants';
 import MapContainer from '../../components/map/Map';
 
 import validate from './form/NewApplicationValidator';
-import {getActiveLanguage} from '../../util/helpers';
-import {fetchSingleApplication} from '../actions';
-import {getCurrentApplication, getIsFetching} from '../selectors';
-import {fetchAttributes} from '../../attributes/actions';
-import {getAttributes} from '../../attributes/selectors';
-import TabPane from '../../components/tabs/TabPane';
-import TabContent from '../../components/tabs/TabContent';
+
 import {defaultCoordinates, defaultZoom} from '../../constants';
 
 type Props = {
@@ -32,6 +36,7 @@ type Props = {
   applicationId: String,
   attributes: Object,
   fetchAttributes: Function,
+  fetchIdentifiers: Function,
   fetchSingleApplication: Function,
   handleSubmit: Function,
   invalid: Boolean,
@@ -70,13 +75,14 @@ class PreparerForm extends Component {
   }
 
   componentWillMount() {
-    const {fetchSingleApplication, location, fetchAttributes, params: {applicationId}} = this.props;
+    const {fetchSingleApplication, fetchIdentifiers, location, fetchAttributes, params: {applicationId}} = this.props;
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
     }
 
     fetchAttributes();
+    fetchIdentifiers();
     fetchSingleApplication(applicationId);
   }
 
@@ -124,7 +130,7 @@ class PreparerForm extends Component {
 
     const {
       application,
-      applicationId,
+      params: {applicationId},
       attributes,
       isFetching,
       t,
@@ -209,6 +215,7 @@ export default flowRight(
     {
       fetchAttributes,
       fetchSingleApplication,
+      fetchIdentifiers,
     }
   ),
   reduxForm({

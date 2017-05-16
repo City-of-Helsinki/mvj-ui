@@ -8,6 +8,7 @@ import apiReducer from '../api/reducer';
 import roleReducer from '../role/reducer';
 import attributesReducer from '../attributes/reducer';
 import applicationsReducer from '../applications/reducer';
+import leaseReducer from '../lease/reducer';
 
 import type {Reducer} from '../types';
 import type {RootState} from './types';
@@ -17,6 +18,7 @@ export default (): Reducer<RootState> =>
     api: apiReducer,
     applications: applicationsReducer,
     attributes: attributesReducer,
+    lease: leaseReducer,
     user: roleReducer,
     form: formReducer,
     routing: routerReducer,
