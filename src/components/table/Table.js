@@ -4,8 +4,8 @@ import classnames from 'classnames';
 import kebabCase from 'lodash/kebabCase';
 
 type Props = {
-  className: string,
-  onRowClick: Function | null,
+  className?: string,
+  onRowClick?: Function,
   data: Array<any>,
   headers: Array<any>,
 };

@@ -25,6 +25,7 @@ import PropertyUnit from './formSections/PropertyUnit';
 import Lease from './formSections/Lease';
 import Summary from './formSections/Summary';
 import Tenants from './formSections/Tenants';
+import Conditions from './formSections/Conditions';
 import MapContainer from '../../components/map/Map';
 import validate from './formSections/NewApplicationValidator';
 import EditModal from './formSections/editModal';
@@ -207,7 +208,7 @@ class PreparerForm extends Component {
             />
           </TabPane>
 
-          <TabPane className="property-unit tab__content row--flex">
+          <TabPane className="property-unit tab__content">
             <PropertyUnit/>
           </TabPane>
 
@@ -215,12 +216,12 @@ class PreparerForm extends Component {
             <Lease/>
           </TabPane>
 
-          <TabPane className="billing">
+          <TabPane className="billing tab__content">
             <Billing/>
           </TabPane>
 
-          <TabPane className="conditions">
-            <p>Ehdot</p>
+          <TabPane className="conditions tab__content">
+            <Conditions/>
           </TabPane>
 
           <TabPane className="map">

@@ -52,7 +52,11 @@ const Lease = (props: Props) => {
         </div>
       </section>
 
-      <button className="add-new-button">Lisää vuokra</button>
+      <Row className="section__controls">
+        <Column medium={12}>
+          <button className="add-new-button">Lisää vuokra</button>
+        </Column>
+      </Row>
     </Row>
   );
 };

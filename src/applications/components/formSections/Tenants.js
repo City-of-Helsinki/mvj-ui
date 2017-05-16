@@ -52,10 +52,11 @@ const Tenants = (props: Props) => {
 
             <a onClick={() => props.onEdit(TenantsEdit)} className="tenant__edit">Muokkaa vuokralaisen tietoja</a>
           </div>
-
-          <button onClick={() => props.onEdit(TenantsEdit)}>Lisää Vuokralainen</button>
-
         </section>
+      </Column>
+
+      <Column medium={12} className="section__controls">
+        <button className="add-new-button" onClick={() => props.onEdit(TenantsEdit)}>Lisää Vuokralainen</button>
       </Column>
     </Row>
   );

@@ -13,7 +13,7 @@ const Summary = (props: Props) => {
 
   return (
     <Row className={props.className}>
-      <Column medium={12} className="summary">
+      <Column medium={12}>
         <section className="summary__header">
           <Row>
 

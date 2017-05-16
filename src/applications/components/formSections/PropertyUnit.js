@@ -81,7 +81,11 @@ const ProppertyUnit = (props: Props) => {
         </div>
       </section>
 
-      <button className="add-new-button">Lisää kiinteistö</button>
+      <Row className="section__controls">
+        <Column medium={12}>
+          <button className="add-new-button">Lisää kiinteistö</button>
+        </Column>
+      </Row>
 
       <GroupTitle text="KTJ-dokumentit"/>
 

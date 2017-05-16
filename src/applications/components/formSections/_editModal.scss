@@ -1,4 +1,8 @@
 .edit-modal {
+  .row {
+    flex-direction: row !important;
+  }
+
   position: relative;
   padding-top: rem-calc(30px);
 
