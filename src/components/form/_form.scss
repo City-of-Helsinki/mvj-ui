@@ -169,6 +169,30 @@
   }
 }
 
+// Multi-field
+.multi-container {
+  &__row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    .form-field {
+      flex: 1;
+      margin-right: rem-calc(15px);
+    }
+  }
+
+  &__remove {
+    @include button(false, $background: $input-error-color, $background-hover: darken($input-error-color, 10%), $color: $white);
+    margin-top: rem-calc(38px);
+  }
+
+  &__add {
+    @include button();
+    float: right;
+  }
+}
+
 // Transition
 .error-block-appear {
   opacity: 0;
