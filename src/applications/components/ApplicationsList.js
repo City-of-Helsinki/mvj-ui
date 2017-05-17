@@ -3,64 +3,110 @@ import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
-import classNames from 'classnames';
+import orderBy from 'lodash/orderBy';
 
 import {fetchApplications} from '../actions';
 import {getApplicationsList, getIsFetching} from '../selectors';
-import {getActiveLanguage} from '../../util/helpers';
+// import {getActiveLanguage} from '../../util/helpers';
 
 import ApplicationList from '../../components/applicationList/ApplicationList';
-import Hero from '../../components/hero/Hero';
+
+import EditModal from './formSections/editModal';
+import ApplicationEditForm from './ApplicationEditForm';
+import {revealContext} from '../../foundation/reveal';
+import {Sizes} from '../../foundation/enums';
+import {fetchAttributes} from '../../attributes/actions';
+import {editApplication} from '../actions';
 
 type Props = {
   applications: Array<any>,
+  closeReveal: Function,
+  editApplication: Function,
   fetchApplications: Function,
+  fetchAttributes: Function,
   isFetching: boolean,
   params: Object,
   router: Object,
   t: Function,
 };
 
+type State = {
+  isEditingApplication: boolean,
+  applicationId: number | null,
+  editingComponent: Object | null,
+};
+
 class ApplicationsList extends Component {
   props: Props;
+  state: State;
 
   static contextTypes = {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
-    const {fetchApplications} = this.props;
+  constructor(props) {
+    super(props);
 
+    this.state = {
+      isEditingApplication: false,
+      applicationId: null,
+      editingComponent: null,
+    };
+  }
+
+  componentWillMount() {
+    const {fetchAttributes, fetchApplications} = this.props;
+
+    fetchAttributes();
     fetchApplications();
   }
 
   handleItemClick = (applicationId) => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
-    const lang = getActiveLanguage().id;
+    // const {router} = this.context;
+    // const {router: {location: {query}}} = this.props;
+    // const lang = getActiveLanguage().id;
+    //
+    // return router.push({
+    //   pathname: `/${lang}/applications/${applicationId}`,
+    //   query,
+    // });
+    this.setState({isEditingApplication: true, applicationId});
+  };
 
-    return router.push({
-      pathname: `/${lang}/applications/${applicationId}`,
-      query,
+  handleEditSave = (values) => {
+    const {editApplication} = this.props;
+    editApplication(values);
+    this.handleDismissEditModal(true);
+  };
+
+  handleDismissEditModal = () => {
+    this.setState({isEditingApplication: false}, () => {
+      const {closeReveal} = this.props;
+      closeReveal('editModal');
     });
   };
 
   render() {
-    const {applications, isFetching, t, params: {applicationId}} = this.props;
+    const {applications, isFetching} = this.props;
+    const orderedApplications = orderBy(applications, ['id'], ['asc']);
 
     return (
-      <div className={classNames('applications', {'applications--form-open': !!applicationId})}>
-        <div className="applications__list">
-          <Hero>
-            <h1>{t('applications:title')}</h1>
-          </Hero>
-          <ApplicationList
-            active={applicationId}
-            data={applications}
-            handleItemClick={this.handleItemClick}
-            isFetching={isFetching}
-          />
-        </div>
+      <div className="applications">
+        <ApplicationList
+          data={orderedApplications}
+          handleItemClick={this.handleItemClick}
+          isFetching={isFetching}
+        />
+
+        {this.state.isEditingApplication &&
+        <EditModal size={Sizes.LARGE}
+                   isOpen={this.state.isEditingApplication}
+                   component={ApplicationEditForm}
+                   handleSave={this.handleEditSave}
+                   applicationId={this.state.applicationId}
+                   handleDismiss={this.handleDismissEditModal}
+        />
+        }
       </div>
     );
   }
@@ -76,7 +122,10 @@ export default flowRight(
     },
     {
       fetchApplications,
+      fetchAttributes,
+      editApplication,
     },
   ),
-  translate(['applications'])
+  translate(['applications']),
+  revealContext(),
 )(ApplicationsList);
