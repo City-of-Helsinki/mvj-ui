@@ -2,13 +2,14 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import {Field, reduxForm} from 'redux-form';
+import {Field, FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import {translate} from 'react-i18next';
 import GroupTitle from '../../components/form/GroupTitle';
 import FormField from '../../components/form/FormField';
+import FieldTypeMulti from '../../components/form/FieldTypeMulti';
 import {BaseValidator} from '../../components/form/validation';
-import {getCurrentApplication, getIsFetching} from '../selectors';
+import {getCurrentApplication} from '../selectors';
 import {fetchSingleApplication} from '../actions';
 import {formatDateObj} from '../../util/helpers';
 import {getAttributes} from '../../attributes/selectors';
@@ -22,7 +23,6 @@ type Props = {
   handleSave: Function,
   handleSubmit: Function,
   invalid: Boolean,
-  isFetching: Boolean,
   isOpenApplication: Boolean,
   pristine: Boolean,
   submitSucceeded: Boolean,
@@ -31,9 +31,7 @@ type Props = {
 };
 
 const validate = ({organization, organization_id, name, email, phone, contact_name, contact_email, contact_phone}) => {
-
   const customConditions = {};
-
   return BaseValidator({
     organization, organization_id, name, email, phone, contact_name, contact_email, contact_phone,
   }, customConditions);
@@ -58,21 +56,21 @@ class ApplicationEdit extends Component {
       handleSave,
       handleSubmit,
       invalid,
-      isFetching,
       pristine,
       submitSucceeded,
       submitting,
       t,
     } = this.props;
 
-    const typeOptions = attributes.type.choices.map(choice => ({
-      id: choice.value,
-      label: t(`types.${choice.value}`),
+    const typeOptions = attributes.type.choices.map(({value}) => ({
+      value,
+      label: t(`types.${value}`),
     }));
 
-
-// ▶building_footprints(pin): […]
-// land_area(pin): null
+    const reasonOptions = attributes.lease_short_term_reason.choices.map(({value}) => ({
+      value,
+      label: t(`types.${value}`),
+    }));
 
     const fields = {
       application: [
@@ -83,6 +81,7 @@ class ApplicationEdit extends Component {
         {name: 'land_map_link', type: 'text', label: 'Karttalinkki', required: false, cols: 3},
         {name: 'land_area', type: 'text', label: 'Ala (km2)', required: false, cols: 3},
       ],
+
       lease: [
         {name: 'lease_start_date', type: 'text', label: 'Alkaa', required: false, cols: 6},
         {name: 'lease_end_date', type: 'text', label: 'Loppuu', required: false, cols: 6},
@@ -94,9 +93,30 @@ class ApplicationEdit extends Component {
           cols: 4,
           options: [true],
         },
-        // {name: 'lease_is_short_term', type: 'checkbox', label: 'Loppuu', required: false, cols: 4},
-        // {name: 'lease_is_long_term', type: 'checkbox', label: 'Loppuu', required: false, cols: 4},
-        {name: 'lease_short_term_reason', type: 'textarea', label: 'Syy lyhytaikaisuuteen', required: false, cols: 12},
+        {
+          name: 'lease_is_short_term',
+          type: 'checkbox',
+          label: 'Varaus on lyhytaikainen',
+          required: false,
+          cols: 4,
+          options: [true],
+        },
+        {
+          name: 'lease_is_long_term',
+          type: 'checkbox',
+          label: 'Varaus on pitkäaikainen',
+          required: false,
+          cols: 4,
+          options: [true],
+        },
+        {
+          name: 'lease_short_term_reason',
+          type: 'select',
+          label: 'Syy lyhytaikaisuuteen',
+          required: false,
+          cols: 12,
+          options: reasonOptions,
+        },
       ],
       contact: [
         {name: 'contact_name', type: 'text', label: 'Nimi', required: true},
@@ -120,11 +140,6 @@ class ApplicationEdit extends Component {
       ],
     };
 
-
-    if (isFetching) {
-      return <p>Loading...</p>;
-    }
-
     return (
       <form className="mvj-form" onSubmit={handleSubmit(handleSave)}>
         <div className="edit-modal__content">
@@ -144,6 +159,19 @@ class ApplicationEdit extends Component {
                 />
               </Column>
             ))}
+          </Row>
+
+          <Row className="edit-modal__section">
+            <GroupTitle text="Rakennettavat alat"/>
+            <Column medium={12}>
+              <FieldArray name="building_footprints"
+                          title="Rakennettavat alat"
+                          fieldValues={[
+                            {name: 'use', label: 'Käyttötarkoitus', type: 'text', required: true},
+                            {name: 'area', label: 'Neliömäärä', type: 'number', required: true},
+                          ]}
+                          component={FieldTypeMulti}/>
+            </Column>
           </Row>
 
           <Row className="edit-modal__section">
@@ -217,7 +245,6 @@ export default flowRight(
         application: getCurrentApplication(state),
         attributes: getAttributes(state),
         initialValues: getCurrentApplication(state),
-        isFetching: getIsFetching(state),
       };
     },
     {
