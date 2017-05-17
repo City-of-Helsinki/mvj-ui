@@ -17,6 +17,7 @@ import {revealContext} from '../../foundation/reveal';
 import {Sizes} from '../../foundation/enums';
 import {fetchAttributes} from '../../attributes/actions';
 import {editApplication} from '../actions';
+import Loader from '../../components/loader/Loader';
 
 type Props = {
   applications: Array<any>,
@@ -92,13 +93,14 @@ class ApplicationsList extends Component {
 
     return (
       <div className="applications">
+        <Loader isLoading={isFetching}/>
         <ApplicationList
           data={orderedApplications}
           handleItemClick={this.handleItemClick}
           isFetching={isFetching}
         />
 
-        {this.state.isEditingApplication &&
+        {this.state.isEditingApplication && !isFetching &&
         <EditModal size={Sizes.LARGE}
                    isOpen={this.state.isEditingApplication}
                    component={ApplicationEditForm}
