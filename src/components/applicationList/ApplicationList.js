@@ -2,8 +2,12 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
 import Fuse from 'fuse.js';
+import flowRight from 'lodash/flowRight';
+import {translate} from 'react-i18next';
+import classnames from 'classnames';
 
 import ApplicationListItem from './ApplicationListItem';
+import Hero from '../hero/Hero';
 
 const fuseOptions = {
   shouldSort: true,
@@ -18,11 +22,11 @@ const fuseOptions = {
 };
 
 type Props = {
-  active: number,
   className?: String,
   handleItemClick: Function,
   isFetching: boolean,
   data: Array<any>,
+  t: Function,
 };
 
 type State = {
@@ -77,23 +81,21 @@ class ApplicationList extends Component {
 
   render() {
     const {items} = this.state;
-    const {active, className, handleItemClick, isFetching} = this.props;
-
-    if (isFetching) {
-      return <p>Loading...</p>;
-    }
+    const {className, handleItemClick, isFetching, t} = this.props;
 
     return (
-      <div>
-        <input type="text"
-               className="form-field__input form-field__input--search"
-               placeholder="Hae..."
-               onChange={this.handleSearch}
-        />
+      <div className={classnames('applications__list', {'loading': isFetching})}>
+        <Hero className="hero--secondary">
+          <h1>{t('applications:title')}</h1>
+          <input type="text"
+                 className="form-field__input form-field__input--search"
+                 placeholder="Hae..."
+                 onChange={this.handleSearch}
+          />
+        </Hero>
         <ul className={classNames('mvj-application-list', className)}>
           {items.map((itemData, index) => (
-            <ApplicationListItem active={Number(active) === itemData.id}
-                                 key={index}
+            <ApplicationListItem key={index}
                                  data={itemData}
                                  onItemClick={handleItemClick}
             />
@@ -104,4 +106,6 @@ class ApplicationList extends Component {
   }
 }
 
-export default ApplicationList;
+export default flowRight(
+  translate(['applications'])
+)(ApplicationList);

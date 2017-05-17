@@ -15,7 +15,7 @@ type Props = {
 }
 
 const FieldTypeSelect = ({input, displayError, disabled, options, placeholder, t}: Props) => {
-  const {name, onChange, value} = input;
+  const {onChange} = input;
 
   return (
     <Select
