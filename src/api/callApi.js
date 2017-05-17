@@ -11,7 +11,7 @@ function* callApi(request: Request): Generator<> {
     request.headers.set('Authorization', `Token ${accessToken}`);
   }
 
-  if (request.method === 'POST') {
+  if (request.method === 'POST' || request.method === 'PUT') {
     request.headers.set('Content-Type', 'application/json');
   }
 

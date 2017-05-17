@@ -13,11 +13,21 @@ export const fetchSingleApplication = (id: ApplicationId): Generator<> => {
   return callApi(new Request(createUrl(`application/${id}`)));
 };
 
-export const sendApplication = (application: Application): Generator<> => {
+export const createApplication = (application: Application): Generator<> => {
   const body = JSON.stringify(application);
 
   return callApi(new Request(createUrl(`application/`), {
     method: 'POST',
+    body,
+  }));
+};
+
+export const editApplication = (application: Application): Generator<> => {
+  const {id} = application;
+  const body = JSON.stringify(application);
+
+  return callApi(new Request(createUrl(`application/${id}`), {
+    method: 'PUT',
     body,
   }));
 };
