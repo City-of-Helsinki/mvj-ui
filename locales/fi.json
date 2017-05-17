@@ -2,7 +2,10 @@
   "common": {
     "appName": "Maanvuokrausjärjestelmä",
     "close": "Sulje",
-    "save": "Tallenna"
+    "save": "Tallenna",
+    "remove": "Poista",
+    "add": "Lisää uusi",
+    "search": "Hae..."
   },
   "roles": {
     "title": "Maanvuokrausjärjestelmä-prototyyppi",
@@ -17,7 +20,9 @@
     "types": {
       "detached_house": "Omakotitalo",
       "real_property_unit": "Kiinteistö",
-      "other": "Muu"
+      "other": "Muu",
+      "earthworks": "Maanrakennustyöt",
+      "building_permit": "Rakennuslupa"
     }
   },
   "applicationForm": {
