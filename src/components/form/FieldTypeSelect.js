@@ -15,6 +15,8 @@ type Props = {
 }
 
 const FieldTypeSelect = ({input, displayError, disabled, options, placeholder, t}: Props) => {
+  const {name, onChange, value} = input;
+
   return (
     <Select
       autoBlur={true}
@@ -27,6 +29,7 @@ const FieldTypeSelect = ({input, displayError, disabled, options, placeholder, t
       placeholder={placeholder}
       valueKey="id"
       {...input}
+      onChange={({id}) => onChange(id)}
     />
   );
 };

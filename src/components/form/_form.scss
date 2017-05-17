@@ -128,11 +128,13 @@
         color: $white;
       }
       &.is-focused {
-        background: $secondary-color;
-        color: $white;
+        //background: $secondary-color;
+        //color: $white;
+        background: transparent;
+        color: inherit;
       }
       &:hover {
-        background: $secondary-color;
+        background: lighten($secondary-color, 30%);
         color: $white;
       }
     }
