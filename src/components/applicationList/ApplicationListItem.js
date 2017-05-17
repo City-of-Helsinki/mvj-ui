@@ -26,7 +26,7 @@ const ApplicationListItem = ({active, className, data, onItemClick, t}: Props) =
       </div>
       <div className="mvj-application-list__item--actions">
         <button onClick={() => onItemClick(data.id)}>Muokkaa</button>
-        <button onClick={null}>Luo vuokraus (tms.)</button>
+        {/*<button onClick={null}>Luo vuokraus (tms.)</button>*/}
       </div>
     </li>
   );
