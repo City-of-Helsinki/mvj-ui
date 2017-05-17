@@ -12,10 +12,10 @@ type Props = {
   t: Function,
 };
 
-const EditModal = ({component, handleDismiss, handleSave, t}: Props) => (
+const EditModal = ({component, handleDismiss, handleSave, t, ...rest}: Props) => (
   <div className="edit-modal">
     <span className="edit-modal__close" onClick={handleDismiss}>{t('close')}</span>
-    {component && createElement(component, {handleSave})}
+    {component && createElement(component, {handleSave, ...rest})}
   </div>
 );
 

@@ -40,8 +40,9 @@ const BasicInfo = (props: Props) => {
         <Field
           type="checkbox"
           name="is_open"
+          label="Avoin haku"
           options={[
-            'Avoin haku',
+            true,
           ]}
           component={FormField}
         />
