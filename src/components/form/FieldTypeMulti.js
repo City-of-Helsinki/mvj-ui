@@ -26,6 +26,7 @@ const FieldTypeMulti = ({className, fields, fieldValues, t}: Props) => {
                 name={`${row}.${name}`}
                 required={required}
                 type={type}
+                {...rest}
               />
             ))}
             <button

@@ -15,9 +15,9 @@ type Props = {
 
 const BasicInfo = (props: Props) => {
 
-  const typeOptions = props.attributes.type.choices.map(choice => ({
-    id: choice.value,
-    label: props.t(`types.${choice.value}`),
+  const typeOptions = props.attributes.type.choices.map(({value}) => ({
+    value,
+    label: props.t(`types.${value}`),
   }));
 
   return (

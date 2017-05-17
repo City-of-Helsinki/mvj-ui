@@ -86,10 +86,9 @@ class ApplicationList extends Component {
     return (
       <div className={classnames('applications__list', {'loading': isFetching})}>
         <Hero className="hero--secondary">
-          <h1>{t('applications:title')}</h1>
           <input type="text"
                  className="form-field__input form-field__input--search"
-                 placeholder="Hae..."
+                 placeholder={t('search')}
                  onChange={this.handleSearch}
           />
         </Hero>
@@ -107,5 +106,5 @@ class ApplicationList extends Component {
 }
 
 export default flowRight(
-  translate(['applications'])
+  translate(['common', 'applications'])
 )(ApplicationList);
