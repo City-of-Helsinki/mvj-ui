@@ -3,7 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 type Props = {
-  className?: String,
+  className?: string,
   children?: Object,
 };
 
