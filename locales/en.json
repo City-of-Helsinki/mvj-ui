@@ -5,7 +5,8 @@
     "save": "Save",
     "remove": "Remove",
     "add": "Add new",
-    "search": "Search"
+    "search": "Search",
+    "edit": "Edit"
   },
   "roles": {
     "title": "Ground rental system prototype",
