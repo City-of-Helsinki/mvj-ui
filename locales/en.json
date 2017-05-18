@@ -6,7 +6,8 @@
     "remove": "Remove",
     "add": "Add new",
     "search": "Search",
-    "edit": "Edit"
+    "edit": "Edit",
+    "createLease": "Create lease"
   },
   "roles": {
     "title": "Ground rental system prototype",

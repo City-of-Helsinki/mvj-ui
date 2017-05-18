@@ -6,7 +6,8 @@
     "remove": "Poista",
     "add": "Lisää uusi",
     "edit": "Muokkaa",
-    "search": "Haku"
+    "search": "Haku",
+    "createLease": "Luo vuokraus"
   },
   "roles": {
     "title": "Maanvuokrausjärjestelmä-prototyyppi",
