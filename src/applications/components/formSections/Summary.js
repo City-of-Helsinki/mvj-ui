@@ -7,7 +7,7 @@ import FormField from '../../../components/form/FormField';
 import {formatDateObj} from '../../../util/helpers';
 type Props = Object;
 
-const getOptions = (field) => field.map(({value, display_name}) => ({id: value, label: display_name}));
+const getOptions = (field) => field.map(({value, display_name}) => ({value, label: display_name}));
 
 const Summary = (props: Props) => {
 
