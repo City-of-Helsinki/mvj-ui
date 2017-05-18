@@ -8,6 +8,7 @@ import classnames from 'classnames';
 
 import ApplicationListItem from './ApplicationListItem';
 import Hero from '../hero/Hero';
+import {Column} from 'react-foundation';
 
 const fuseOptions = {
   shouldSort: true,
@@ -86,11 +87,14 @@ class ApplicationList extends Component {
     return (
       <div className={classnames('applications__list', {'loading': isFetching})}>
         <Hero className="hero--secondary">
-          <input type="text"
-                 className="form-field__input form-field__input--search"
-                 placeholder={t('search')}
-                 onChange={this.handleSearch}
-          />
+          <Column medium={6} className="applications__search">
+            <label htmlFor="search">{t('search')}</label>
+            <input type="text"
+                   id="search"
+                   className="form-field__input form-field__input--search"
+                   onChange={this.handleSearch}
+            />
+          </Column>
         </Hero>
         <ul className={classNames('mvj-application-list', className)}>
           {items.map((itemData, index) => (
