@@ -9,7 +9,7 @@ import i18n from './i18n';
 
 import RoleSelector from '../role/RoleSelector';
 import ApplicationsList from '../applications/components/ApplicationsList';
-import PreparerForm from '../applications/components/PreparerForm';
+import PreparerForm from '../lease/PreparerForm';
 import CreateApplicationForm from '../applications/components/NewApplicationForm';
 
 export default
