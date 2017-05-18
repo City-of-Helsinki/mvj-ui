@@ -40,8 +40,14 @@ const Lease = (props: Props) => {
                 'Määrä',
                 'Voimassa',
               ]}
+              dataKeys={[
+                'tunnus',
+                'kommentti',
+                'maara',
+                'state',
+              ]}
               data={[
-                {id: 1, data: {tunnus: 'Alennus', kommentti: 'ARAVA-alennus', maara: '30%', state: '31.1.2017 - 31.12.2018'}},
+                {id: 1, tunnus: 'Alennus', kommentti: 'ARAVA-alennus', maara: '30%', state: '31.1.2017 - 31.12.2018'},
               ]}
             />
           </div>

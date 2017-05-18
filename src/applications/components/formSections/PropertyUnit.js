@@ -53,8 +53,14 @@ const ProppertyUnit = (props: Props) => {
                 'Hyväksytty',
                 'Vaihe',
               ]}
+              dataKeys={[
+                'tunnus',
+                'laji',
+                'approved',
+                'state',
+              ]}
               data={[
-                {id: 1, data: {tunnus: '11077', laji: 'Perustava tonttijako', approved: '3.3.2017', state: 'Voimassa'}},
+                {id: 1, tunnus: '11077', laji: 'Perustava tonttijako', approved: '3.3.2017', state: 'Voimassa'},
               ]}
             />
           </div>
@@ -69,8 +75,14 @@ const ProppertyUnit = (props: Props) => {
                 'Hyväksytty',
                 'Vaihe',
               ]}
+              dataKeys={[
+                'tunnus',
+                'laji',
+                'approved',
+                'state',
+              ]}
               data={[
-                {id: 1, data: {tunnus: '11077', laji: 'Perustava tonttijako', approved: '3.3.2017', state: 'Voimassa'}},
+                {id: 1, tunnus: '11077', laji: 'Perustava tonttijako', approved: '3.3.2017', state: 'Voimassa'},
               ]}
             />
           </div>
