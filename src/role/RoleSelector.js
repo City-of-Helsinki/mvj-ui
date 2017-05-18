@@ -27,15 +27,23 @@ class RoleSelector extends Component {
   };
 
   getRoleLink = () => {
-    const {t, currentUser, params: {language}} = this.props;
-    const link = currentUser.id === 'applicant' ? `${language}/applications/create` : `${language}/applications`;
-    const linkText = currentUser.id === 'applicant' ? t('createApplication') : t('goToApplications');
+    const {t, currentUser: {id}, params: {language}} = this.props;
+    const link = id === 'applicant' ? `${language}/applications/create` : `${language}/applications`;
+    const linkText = id === 'applicant' ? t('createApplication') : t('goToApplications');
 
     return (
-      <Link className="button primary"
-            to={link}>
-        {linkText} <i className="mi mi-chevron-right"/>
-      </Link>
+      <div>
+        <Link className="button primary"
+              to={link}>
+          {linkText} <i className="mi mi-chevron-right"/>
+        </Link>
+        {id !== 'applicant' &&
+        <Link className="button primary"
+              to={`${language}/leases`}>
+          {t('goToLeases')} <i className="mi mi-chevron-right"/>
+        </Link>
+        }
+      </div>
     );
   };
 
