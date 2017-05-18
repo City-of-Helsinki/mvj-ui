@@ -15,18 +15,20 @@ type Props = {
 }
 
 const FieldTypeSelect = ({input, displayError, disabled, options, placeholder, t}: Props) => {
+  const {onChange, name} = input;
+
   return (
     <Select
       autoBlur={true}
       className={classNames('form-field__select', {'has-error': displayError})}
       clearable={false}
       disabled={disabled}
-      id={input.name}
+      id={name}
       noResultsText={t('noResultsFound')}
       options={options}
       placeholder={placeholder}
-      valueKey="id"
       {...input}
+      onChange={({value}) => onChange(value)}
     />
   );
 };

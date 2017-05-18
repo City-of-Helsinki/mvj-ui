@@ -4,7 +4,7 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
 type Props = {
-  className?: String,
+  className?: string,
   icon?: Object,
   invalid: Boolean,
   submitting: Boolean,

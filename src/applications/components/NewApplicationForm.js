@@ -17,7 +17,7 @@ import FormActions from './formSections/FormActions';
 import validate from './formSections/NewApplicationValidator';
 import {fetchAttributes} from '../../attributes/actions';
 import {getAttributes} from '../../attributes/selectors';
-import {sendApplication} from '../actions';
+import {createApplication} from '../actions';
 
 type Props = {
   attributes: Object,
@@ -31,7 +31,7 @@ type Props = {
   t: Function,
   submitting: Boolean,
   submitSucceeded: Boolean,
-  sendApplication: Function,
+  createApplication: Function,
 };
 
 class CreateApplicationForm extends Component {
@@ -43,7 +43,7 @@ class CreateApplicationForm extends Component {
   }
 
   save = (values) => {
-    const {sendApplication} = this.props;
+    const {createApplication} = this.props;
 
     const newValues = {
       building_footprints: [
@@ -55,7 +55,7 @@ class CreateApplicationForm extends Component {
       ...values,
     };
 
-    return sendApplication(newValues);
+    return createApplication(newValues);
   };
 
   render() {
@@ -133,7 +133,7 @@ export default flowRight(
         attributes: getAttributes(state),
       };
     },
-    {fetchAttributes, sendApplication}
+    {fetchAttributes, createApplication}
   ),
   translate(['common', 'applications'])
 )(CreateApplicationForm);

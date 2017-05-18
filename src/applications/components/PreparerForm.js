@@ -169,7 +169,7 @@ class PreparerForm extends Component {
     }
 
     return (
-      <div className="full__width flex">
+      <div className="full__width flex tabs">
 
         <Hero>
           <h2>

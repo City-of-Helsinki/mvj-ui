@@ -27,7 +27,7 @@ const FieldTypeCheckbox = ({input, displayError, disabled, options, type}: Props
           <input type={type}
                  name={hasMultipleValues ? `${name}[${index}]` : name}
                  value={label}
-                 checked={value.indexOf(label) !== -1}
+                 checked={hasMultipleValues ? value.indexOf(label) !== -1 : !!value }
                  onChange={(event) => {
 
                    if (hasMultipleValues) {
@@ -40,7 +40,7 @@ const FieldTypeCheckbox = ({input, displayError, disabled, options, type}: Props
                      return onChange(newValue);
                    }
 
-                   return onChange(value === event.target.value ? null : event.target.value);
+                   return onChange(value === event.target.value ? false : event.target.value);
                  }}/>
           {label}
         </label>

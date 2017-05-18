@@ -58,7 +58,6 @@ const FormField = ({
       {createElement(fieldComponent, {input, type, displayError, disabled, placeholder, options})}
       {displayError && <ErrorComponent {...meta}/>}
     </div>
-
   );
 };
 
