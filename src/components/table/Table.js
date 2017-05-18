@@ -29,6 +29,7 @@ class Table extends Component {
         <thead>
         <tr>
           {dataKeys.map(({key, label}, i) => <th key={i} className={classnames(kebabCase(key))}>{label}</th>)}
+          {injectedControls && <th/>}
         </tr>
         </thead>
         }
@@ -38,11 +39,11 @@ class Table extends Component {
             {dataKeys.map(({key}, cellIndex) => (
               <td key={cellIndex}>{get(row, key)}</td>
             ))}
-            {injectedControls && injectedControls.map(({className, onClick, text}, injectIndex) =>
-              <td key={injectIndex}>
-                {createElement('button', {className, onClick: () => onClick(row)}, text)}
-              </td>
-            )}
+            <td className="controls">
+              {injectedControls && injectedControls.map(({className, onClick, text}, i) =>
+                createElement('button', {key: i, className, onClick: () => onClick(row)}, text)
+              )}
+            </td>
           </tr>
         ))}
         </tbody>

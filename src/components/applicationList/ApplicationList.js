@@ -100,12 +100,13 @@ class ApplicationList extends Component {
           dataKeys={[
             {key: 'id', label: 'ID'},
             {key: 'contact_name', label: 'Nimi'},
-            {key: 'created_at', label: 'Luotu'},
+            {key: 'contact_phone', label: 'Puhelin'},
+            {key: 'contact_email', label: 'Sähköposti'},
           ]}
           data={items}
           injectedControls={[
             {onClick: handleEditClick, className: 'applications__list--edit', text: t('edit')},
-            {onClick: handleCreateLeaseClick, className: 'applications__list--edit', text: t('add')},
+            {onClick: handleCreateLeaseClick, className: 'applications__list--add', text: t('createLease')},
           ]}
         />
       </div>
