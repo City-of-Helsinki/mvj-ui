@@ -47,17 +47,11 @@ const ProppertyUnit = (props: Props) => {
             <h3>Tonttijako</h3>
 
             <Table
-              headers={[
-                'Tunnus',
-                'Laji',
-                'Hyväksytty',
-                'Vaihe',
-              ]}
               dataKeys={[
-                'tunnus',
-                'laji',
-                'approved',
-                'state',
+                {key: 'tunnus', label: 'Tunnus'},
+                {key: 'laji', label: 'Laji'},
+                {key: 'approved', label: 'Hyväksytty'},
+                {key: 'state', label: 'Vaihe'},
               ]}
               data={[
                 {id: 1, tunnus: '11077', laji: 'Perustava tonttijako', approved: '3.3.2017', state: 'Voimassa'},
@@ -69,17 +63,11 @@ const ProppertyUnit = (props: Props) => {
             <h3>Asemakaava</h3>
 
             <Table
-              headers={[
-                'Tunnus',
-                'Laji',
-                'Hyväksytty',
-                'Vaihe',
-              ]}
               dataKeys={[
-                'tunnus',
-                'laji',
-                'approved',
-                'state',
+                {key: 'tunnus', label: 'Tunnus'},
+                {key: 'laji', label: 'Laji'},
+                {key: 'approved', label: 'Hyväksytty'},
+                {key: 'state', label: 'Vaihe'},
               ]}
               data={[
                 {id: 1, tunnus: '11077', laji: 'Perustava tonttijako', approved: '3.3.2017', state: 'Voimassa'},

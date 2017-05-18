@@ -34,17 +34,11 @@ const Lease = (props: Props) => {
             <h3>Alennukset ja korotukset</h3>
 
             <Table
-              headers={[
-                'Tunnus',
-                'Kommentti',
-                'Määrä',
-                'Voimassa',
-              ]}
               dataKeys={[
-                'tunnus',
-                'kommentti',
-                'maara',
-                'state',
+                {key: 'tunnus', label: 'Tunnus'},
+                {key: 'kommentti', label: 'Kommentti'},
+                {key: 'maara', label: 'Määrä'},
+                {key: 'state', label: 'Voimassa'},
               ]}
               data={[
                 {id: 1, tunnus: 'Alennus', kommentti: 'ARAVA-alennus', maara: '30%', state: '31.1.2017 - 31.12.2018'},

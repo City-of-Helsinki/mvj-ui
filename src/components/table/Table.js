@@ -1,42 +1,48 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Component, createElement} from 'react';
 import classnames from 'classnames';
 import get from 'lodash/get';
 import kebabCase from 'lodash/kebabCase';
 
 type Props = {
   className?: string,
-  onRowClick?: Function,
   data: Array<any>,
   dataKeys: Array<any>,
-  headers: Array<any>,
+  displayHeaders: boolean,
+  injectedControls?: Array<any>,
+  onRowClick?: Function,
 };
 
 class Table extends Component {
   props: Props;
 
   static defaultProps = {
-    headers: [],
+    displayHeaders: true,
   };
 
   render() {
-    const {className, data, dataKeys, headers, onRowClick} = this.props;
+    const {className, data, dataKeys, displayHeaders, onRowClick, injectedControls} = this.props;
 
     return (
       <table className={classnames(className)}>
-        {!!headers.length &&
+        {displayHeaders &&
         <thead>
         <tr>
-          {headers.map((header, i) => <th key={i} className={classnames(kebabCase(header))}>{header}</th>)}
+          {dataKeys.map(({key, label}, i) => <th key={i} className={classnames(kebabCase(key))}>{label}</th>)}
         </tr>
         </thead>
         }
         <tbody>
         {data.map((row, rowIndex) => (
           <tr key={rowIndex} onClick={() => onRowClick && onRowClick(row.id)}>
-            {dataKeys.map((key, cellIndex) => (
+            {dataKeys.map(({key}, cellIndex) => (
               <td key={cellIndex}>{get(row, key)}</td>
             ))}
+            {injectedControls && injectedControls.map(({className, onClick, text}, injectIndex) =>
+              <td key={injectIndex}>
+                {createElement('button', {className, onClick: () => onClick(row)}, text)}
+              </td>
+            )}
           </tr>
         ))}
         </tbody>

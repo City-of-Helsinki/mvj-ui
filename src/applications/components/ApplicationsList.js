@@ -62,7 +62,7 @@ class ApplicationsList extends Component {
     fetchApplications();
   }
 
-  handleItemClick = (applicationId) => {
+  handleEditClick = ({id}) => {
     // const {router} = this.context;
     // const {router: {location: {query}}} = this.props;
     // const lang = getActiveLanguage().id;
@@ -71,7 +71,7 @@ class ApplicationsList extends Component {
     //   pathname: `/${lang}/applications/${applicationId}`,
     //   query,
     // });
-    this.setState({isEditingApplication: true, applicationId});
+    this.setState({isEditingApplication: true, applicationId: id});
   };
 
   handleEditSave = (values) => {
@@ -96,7 +96,8 @@ class ApplicationsList extends Component {
         <Loader isLoading={isFetching}/>
         <ApplicationList
           data={orderedApplications}
-          handleItemClick={this.handleItemClick}
+          handleEditClick={this.handleEditClick}
+          handleCreateLeaseClick={() => console.log('create lease')}
           isFetching={isFetching}
         />
 
