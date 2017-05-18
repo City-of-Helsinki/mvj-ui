@@ -11,7 +11,7 @@
 @import "components/map/leaflet";
 
 // Components
-@import "components/applicationList/applicationList";
+@import "components/filterableList/filterableList";
 @import "components/dropdown/dropdown";
 @import "components/hero/hero";
 @import "components/table/table";
@@ -21,19 +21,20 @@
 @import "components/form/form";
 @import "components/map/map";
 @import "components/loader/loader";
+@import "components/editModal/editModal";
 
 // App
-@import "./api/api";
-@import "./app/app";
+@import "api/api";
+@import "app/app";
 @import "applications/components/application-form";
 @import "applications/components/application-list";
-@import "applications/components/formSections/editModal";
-@import "applications/components/formSections/summary";
-@import "applications/components/formSections/propertyUnit";
-@import "applications/components/formSections/tenants";
-@import "applications/components/formSections/dataBox";
+@import "leases/components/lease-list";
+@import "leases/components/formSections/summary";
+@import "leases/components/formSections/propertyUnit";
+@import "leases/components/formSections/tenants";
+@import "leases/components/formSections/dataBox";
 @import "errorPage/error-page";
-@import "./role/role-selector";
+@import "role/role-selector";
 
 ::selection {
   background: $primary-color;

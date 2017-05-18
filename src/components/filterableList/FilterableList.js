@@ -24,9 +24,10 @@ const fuseOptions = {
 type Props = {
   className?: String,
   data: Array<any>,
-  handleCreateLeaseClick: Function,
-  handleEditClick: Function,
+  dataKeys: Array<any>,
+  injectedControls?: Array<any>,
   isFetching: boolean,
+  onRowClick: Function,
   t: Function,
 };
 
