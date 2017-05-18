@@ -38,37 +38,47 @@
     }
 
     table {
-      @include -zf-table-unstripe();
       width: 100%;
 
-      thead,
-      tbody,
-      tfoot {
-        background: transparent;
-
+      thead {
         > tr {
-          background: transparent;
+          background: darken($secondary-color, 5%);
+          color: $white;
+
+          > th {
+            font-size: inherit;
+            font-weight: 600;
+            padding: .625rem .8rem;
+          }
         }
       }
 
       tbody {
         tr {
-          > td {
-            border-top: 2px solid $medium-gray;
-          }
-
           &:hover > td {
             @include transition();
-            cursor: pointer;
+            //cursor: pointer;
             background: $white;
             color: $primary-color;
           }
-
-          &:last-child > td {
-            border-bottom: 2px solid $medium-gray;
-          }
         }
       }
+    }
+
+    .controls {
+      text-align: right;
+    }
+
+    &--edit {
+      @extend .button;
+      @extend .tiny;
+      margin: 0 0 0 rem-calc(5px);
+    }
+
+    &--add {
+      @extend .button;
+      @extend .tiny;
+      margin: 0 0 0 rem-calc(5px);
     }
   }
 }

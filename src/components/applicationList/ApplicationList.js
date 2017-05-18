@@ -1,14 +1,13 @@
 // @flow
 import React, {Component} from 'react';
-import classNames from 'classnames';
+import classnames from 'classnames';
 import Fuse from 'fuse.js';
 import flowRight from 'lodash/flowRight';
 import {translate} from 'react-i18next';
-import classnames from 'classnames';
 
-import ApplicationListItem from './ApplicationListItem';
 import Hero from '../hero/Hero';
 import {Column} from 'react-foundation';
+import Table from '../table/Table';
 
 const fuseOptions = {
   shouldSort: true,
@@ -24,9 +23,10 @@ const fuseOptions = {
 
 type Props = {
   className?: String,
-  handleItemClick: Function,
-  isFetching: boolean,
   data: Array<any>,
+  handleCreateLeaseClick: Function,
+  handleEditClick: Function,
+  isFetching: boolean,
   t: Function,
 };
 
@@ -82,10 +82,10 @@ class ApplicationList extends Component {
 
   render() {
     const {items} = this.state;
-    const {className, handleItemClick, isFetching, t} = this.props;
+    const {className, handleEditClick, handleCreateLeaseClick, isFetching, t} = this.props;
 
     return (
-      <div className={classnames('applications__list', {'loading': isFetching})}>
+      <div className={classnames('applications__list', className, {'loading': isFetching})}>
         <Hero className="hero--secondary">
           <Column medium={6} className="applications__search">
             <label htmlFor="search">{t('search')}</label>
@@ -96,14 +96,19 @@ class ApplicationList extends Component {
             />
           </Column>
         </Hero>
-        <ul className={classNames('mvj-application-list', className)}>
-          {items.map((itemData, index) => (
-            <ApplicationListItem key={index}
-                                 data={itemData}
-                                 onItemClick={handleItemClick}
-            />
-          ))}
-        </ul>
+        <Table
+          dataKeys={[
+            {key: 'id', label: 'ID'},
+            {key: 'contact_name', label: 'Nimi'},
+            {key: 'contact_phone', label: 'Puhelin'},
+            {key: 'contact_email', label: 'Sähköposti'},
+          ]}
+          data={items}
+          injectedControls={[
+            {onClick: handleEditClick, className: 'applications__list--edit', text: t('edit')},
+            {onClick: handleCreateLeaseClick, className: 'applications__list--add', text: t('createLease')},
+          ]}
+        />
       </div>
     );
   }

@@ -7,34 +7,34 @@ import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import {getActiveLanguage} from '../../util/helpers';
-import {fetchSingleApplication} from '../actions';
-import {getCurrentApplication, getIsFetching} from '../selectors';
+import {getActiveLanguage} from '../util/helpers';
+import {fetchSingleApplication} from '../applications/actions';
+import {getCurrentApplication, getIsFetching} from '../applications/selectors';
 
-import {fetchIdentifiers} from '../../lease/actions';
-import {fetchAttributes} from '../../attributes/actions';
-import {getAttributes} from '../../attributes/selectors';
+import {fetchIdentifiers} from './actions';
+import {fetchAttributes} from '../attributes/actions';
+import {getAttributes} from '../attributes/selectors';
 
-import Tabs from '../../components/tabs/Tabs';
-import Hero from '../../components/hero/Hero';
-import TabPane from '../../components/tabs/TabPane';
-import TabContent from '../../components/tabs/TabContent';
+import Tabs from '../components/tabs/Tabs';
+import Hero from '../components/hero/Hero';
+import TabPane from '../components/tabs/TabPane';
+import TabContent from '../components/tabs/TabContent';
 
-import Billing from './formSections/Billing';
-import PropertyUnit from './formSections/PropertyUnit';
-import Lease from './formSections/Lease';
-import Summary from './formSections/Summary';
-import Tenants from './formSections/Tenants';
-import Conditions from './formSections/Conditions';
-import MapContainer from '../../components/map/Map';
-import validate from './formSections/NewApplicationValidator';
-import EditModal from './formSections/editModal';
+import Billing from '../applications/components/formSections/Billing';
+import PropertyUnit from '../applications/components/formSections/PropertyUnit';
+import Lease from '../applications/components/formSections/Lease';
+import Summary from '../applications/components/formSections/Summary';
+import Tenants from '../applications/components/formSections/Tenants';
+import Conditions from '../applications/components/formSections/Conditions';
+import MapContainer from '../components/map/Map';
+import validate from '../applications/components/formSections/NewApplicationValidator';
+import EditModal from '../applications/components/formSections/editModal';
 
-import {revealContext} from '../../foundation/reveal';
-import {Sizes} from '../../foundation/enums';
+import {revealContext} from '../foundation/reveal';
+import {Sizes} from '../foundation/enums';
 
-import {defaultCoordinates, defaultZoom} from '../../constants';
-import {getIdentifiers} from '../../lease/selectors';
+import {defaultCoordinates, defaultZoom} from '../constants';
+import {getIdentifiers} from './selectors';
 
 type Props = {
   application: Object,
