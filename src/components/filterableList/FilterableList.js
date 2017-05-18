@@ -82,7 +82,7 @@ class ApplicationList extends Component {
 
   render() {
     const {items} = this.state;
-    const {className, handleEditClick, handleCreateLeaseClick, isFetching, t} = this.props;
+    const {className, dataKeys, injectedControls, isFetching, onRowClick, t} = this.props;
 
     return (
       <div className={classnames('applications__list', className, {'loading': isFetching})}>
@@ -97,17 +97,10 @@ class ApplicationList extends Component {
           </Column>
         </Hero>
         <Table
-          dataKeys={[
-            {key: 'id', label: 'ID'},
-            {key: 'contact_name', label: 'Nimi'},
-            {key: 'contact_phone', label: 'Puhelin'},
-            {key: 'contact_email', label: 'Sähköposti'},
-          ]}
+          onRowClick={onRowClick}
+          dataKeys={dataKeys}
           data={items}
-          injectedControls={[
-            {onClick: handleEditClick, className: 'applications__list--edit', text: t('edit')},
-            {onClick: handleCreateLeaseClick, className: 'applications__list--add', text: t('createLease')},
-          ]}
+          injectedControls={injectedControls}
         />
       </div>
     );

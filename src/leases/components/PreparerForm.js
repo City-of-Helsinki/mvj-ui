@@ -20,15 +20,15 @@ import Hero from '../components/hero/Hero';
 import TabPane from '../components/tabs/TabPane';
 import TabContent from '../components/tabs/TabContent';
 
-import Billing from '../applications/components/formSections/Billing';
-import PropertyUnit from '../applications/components/formSections/PropertyUnit';
-import Lease from '../applications/components/formSections/Lease';
-import Summary from '../applications/components/formSections/Summary';
-import Tenants from '../applications/components/formSections/Tenants';
-import Conditions from '../applications/components/formSections/Conditions';
+import Billing from './components/formSections/Billing';
+import PropertyUnit from './components/formSections/PropertyUnit';
+import Lease from './components/formSections/Lease';
+import Summary from './components/formSections/Summary';
+import Tenants from './components/formSections/Tenants';
+import Conditions from './components/formSections/Conditions';
 import MapContainer from '../components/map/Map';
-import validate from '../applications/components/formSections/NewApplicationValidator';
-import EditModal from '../applications/components/formSections/editModal';
+import validate from './components/formSections/NewApplicationValidator';
+import EditModal from '../components/editModal/editModal';
 
 import {revealContext} from '../foundation/reveal';
 import {Sizes} from '../foundation/enums';
