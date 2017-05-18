@@ -6,13 +6,13 @@
     "remove": "Remove",
     "add": "Add new",
     "search": "Search",
-    "edit": "Edit",
-    "createLease": "Create lease"
+    "edit": "Edit"
   },
   "roles": {
     "title": "Ground rental system prototype",
     "subtitle": "Choose a user role",
     "goToApplications": "Show applications",
+    "goToLeases": "Show leases",
     "createApplication": "Create application"
   },
   "applications": {
@@ -26,6 +26,11 @@
       "earthworks": "Earth works",
       "building_permit": "Building permit"
     }
+  },
+  "leases": {
+    "title": "Leases",
+    "single": "Lease",
+    "createNew": "Create a lease"
   },
   "applicationForm": {
     "heroTitle": "Application",

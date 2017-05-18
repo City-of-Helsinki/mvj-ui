@@ -8,3 +8,10 @@ export const getIsFetching: Selector<Lease, void> = (state: Object): LeaseState 
 
 export const getIdentifiers: Selector<Identifiers, void> = (state: Object): LeaseState =>
   state.lease.identifiers;
+
+export const getLeasesList: Selector<Lease, void> = (state: Object): LeaseState =>
+  state.lease.list;
+
+export const getCurrentLease: Selector<Lease, void> = (state: Object): LeaseState =>
+  state.lease.current;
+

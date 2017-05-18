@@ -8,9 +8,12 @@ import App from '../app/App';
 import i18n from './i18n';
 
 import RoleSelector from '../role/RoleSelector';
+
 import ApplicationsList from '../applications/components/ApplicationsList';
-import PreparerForm from '../leases/PreparerForm';
 import CreateApplicationForm from '../applications/components/NewApplicationForm';
+
+import LeaseList from '../leases/components/LeaseList';
+import PreparerForm from '../leases/components/PreparerForm';
 
 export default
 <Route path="/" component={App}>
@@ -26,7 +29,10 @@ export default
     <Route path="applications">
       <IndexRoute component={ApplicationsList}/>
       <Route path="create" component={CreateApplicationForm}/>
-      <Route path=":applicationId" component={PreparerForm}/>
+    </Route>
+    <Route path="leases">
+      <IndexRoute component={LeaseList}/>
+      <Route path=":leaseId" component={PreparerForm}/>
     </Route>
     <Route path="*" component={ErrorPage}/>
   </Route>

@@ -7,43 +7,44 @@ import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import {getActiveLanguage} from '../util/helpers';
-import {fetchSingleApplication} from '../applications/actions';
-import {getCurrentApplication, getIsFetching} from '../applications/selectors';
+import {getActiveLanguage} from '../../util/helpers';
+import {fetchSingleLease} from '../actions';
+import {getCurrentLease, getIsFetching} from '../selectors';
 
-import {fetchIdentifiers} from './actions';
-import {fetchAttributes} from '../attributes/actions';
-import {getAttributes} from '../attributes/selectors';
+import {fetchIdentifiers} from '../actions';
+import {fetchAttributes} from '../../attributes/actions';
+import {getAttributes} from '../../attributes/selectors';
 
-import Tabs from '../components/tabs/Tabs';
-import Hero from '../components/hero/Hero';
-import TabPane from '../components/tabs/TabPane';
-import TabContent from '../components/tabs/TabContent';
+import Tabs from '../../components/tabs/Tabs';
+import Hero from '../../components/hero/Hero';
+import TabPane from '../../components/tabs/TabPane';
+import TabContent from '../../components/tabs/TabContent';
 
-import Billing from './components/formSections/Billing';
-import PropertyUnit from './components/formSections/PropertyUnit';
-import Lease from './components/formSections/Lease';
-import Summary from './components/formSections/Summary';
-import Tenants from './components/formSections/Tenants';
-import Conditions from './components/formSections/Conditions';
-import MapContainer from '../components/map/Map';
-import validate from './components/formSections/NewApplicationValidator';
-import EditModal from '../components/editModal/editModal';
+import Billing from './formSections/Billing';
+import PropertyUnit from './formSections/PropertyUnit';
+import Lease from './formSections/Lease';
+import Summary from './formSections/Summary';
+import Tenants from './formSections/Tenants';
+import Conditions from './formSections/Conditions';
+import MapContainer from '../../components/map/Map';
+import validate from './formSections/NewApplicationValidator';
+import EditModal from '../../components/editModal/editModal';
 
-import {revealContext} from '../foundation/reveal';
-import {Sizes} from '../foundation/enums';
+import {revealContext} from '../../foundation/reveal';
+import {Sizes} from '../../foundation/enums';
 
-import {defaultCoordinates, defaultZoom} from '../constants';
-import {getIdentifiers} from './selectors';
+import {defaultCoordinates, defaultZoom} from '../../constants';
+import {getIdentifiers} from '../selectors';
+import Loader from '../../components/loader/Loader';
 
 type Props = {
-  application: Object,
-  applicationId: String,
+  lease: Object,
+  leaseId: String,
   attributes: Object,
   closeReveal: Function,
   fetchAttributes: Function,
   fetchIdentifiers: Function,
-  fetchSingleApplication: Function,
+  fetchSingleLease: Function,
   handleSubmit: Function,
   identifiers: Object,
   invalid: Boolean,
@@ -86,7 +87,7 @@ class PreparerForm extends Component {
   }
 
   componentWillMount() {
-    const {fetchSingleApplication, fetchIdentifiers, location, fetchAttributes, params: {applicationId}} = this.props;
+    const {fetchSingleLease, fetchIdentifiers, location, fetchAttributes, params: {leaseId}} = this.props;
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
@@ -94,15 +95,15 @@ class PreparerForm extends Component {
 
     fetchAttributes();
     fetchIdentifiers();
-    fetchSingleApplication(applicationId);
+    fetchSingleLease(leaseId);
   }
 
   componentWillReceiveProps(nextProps) {
-    const {fetchSingleApplication} = this.props;
-    const {params: {applicationId}, location} = nextProps;
+    const {fetchSingleLease} = this.props;
+    const {params: {leaseId}, location} = nextProps;
 
-    if (applicationId !== this.props.params.applicationId) {
-      fetchSingleApplication(applicationId);
+    if (leaseId !== this.props.params.leaseId) {
+      fetchSingleLease(leaseId);
     }
 
     if (location.query.tab) {
@@ -128,7 +129,7 @@ class PreparerForm extends Component {
     const lang = getActiveLanguage().id;
 
     return router.push({
-      pathname: `/${lang}/applications`,
+      pathname: `/${lang}/leases`,
     });
   };
 
@@ -156,26 +157,24 @@ class PreparerForm extends Component {
     const {activeTab} = this.state;
 
     const {
-      application,
+      lease,
       identifiers,
-      params: {applicationId},
-      attributes,
+      params: {leaseId},
       isFetching,
       t,
     } = this.props;
 
-    if (isFetching || isEmpty(attributes)) {
-      return <p>Loading...</p>;
+    if (isFetching || isEmpty(identifiers)) {
+      return <Loader isLoading={isFetching}/>;
     }
 
     return (
       <div className="full__width flex tabs">
-
         <Hero>
           <h2>
             <span onClick={this.goBack} style={{cursor: 'pointer'}}>
               <i className="mi mi-keyboard-backspace"/>
-            </span> {t('applications:single')} {applicationId}</h2>
+            </span> {t('leases:single')} {leaseId}</h2>
 
           <Tabs
             active={activeTab}
@@ -196,7 +195,7 @@ class PreparerForm extends Component {
         <TabContent active={activeTab}>
           <TabPane className="summary">
             <Summary
-              {...application}
+              {...lease}
               {...identifiers}
             />
           </TabPane>
@@ -204,7 +203,7 @@ class PreparerForm extends Component {
           <TabPane className="tenants tab__content">
             <Tenants
               onEdit={this.handleEditSection}
-              {...application}
+              {...lease}
             />
           </TabPane>
 
@@ -249,20 +248,20 @@ export default flowRight(
   connect(
     (state) => {
       const selector = formValueSelector('handler-form');
-      const isOpenApplication = selector(state, 'open_application');
+      const isOpenApplication = selector(state, 'open_lease');
 
       return {
-        application: getCurrentApplication(state),
+        lease: getCurrentLease(state),
         attributes: getAttributes(state),
         identifiers: getIdentifiers(state),
-        initialValues: getCurrentApplication(state),
+        initialValues: getCurrentLease(state),
         isFetching: getIsFetching(state),
         isOpenApplication,
       };
     },
     {
       fetchAttributes,
-      fetchSingleApplication,
+      fetchSingleLease,
       fetchIdentifiers,
     }
   ),
@@ -270,6 +269,6 @@ export default flowRight(
     form: 'preparer-form',
     validate,
   }),
-  translate(['common', 'applications']),
+  translate(['common', 'leases']),
   revealContext(),
 )(PreparerForm);
