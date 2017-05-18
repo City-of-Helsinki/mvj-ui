@@ -8,7 +8,7 @@ import apiReducer from '../api/reducer';
 import roleReducer from '../role/reducer';
 import attributesReducer from '../attributes/reducer';
 import applicationsReducer from '../applications/reducer';
-import leaseReducer from '../lease/reducer';
+import leaseReducer from '../leases/reducer';
 
 import type {Reducer} from '../types';
 import type {RootState} from './types';
