@@ -20,4 +20,16 @@ table {
       font-weight: $global-weight-normal;
     }
   }
+  &.clickable-row {
+    tbody {
+      tr {
+        &:hover > td {
+          @include transition();
+          cursor: pointer;
+          background: $light-gray !important;
+          color: $primary-color;
+        }
+      }
+    }
+  }
 }

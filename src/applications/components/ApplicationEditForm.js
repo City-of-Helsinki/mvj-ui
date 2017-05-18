@@ -13,7 +13,7 @@ import {getCurrentApplication} from '../selectors';
 import {fetchSingleApplication} from '../actions';
 import {formatDateObj} from '../../util/helpers';
 import {getAttributes} from '../../attributes/selectors';
-import FormActions from './formSections/FormActions';
+import FormActions from '../../leases/components/formSections/FormActions';
 
 type Props = {
   application: Object,

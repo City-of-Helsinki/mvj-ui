@@ -2,7 +2,9 @@
 import React, {Component, createElement} from 'react';
 import classnames from 'classnames';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import kebabCase from 'lodash/kebabCase';
+import startCase from 'lodash/startCase';
 
 type Props = {
   className?: string,
@@ -24,7 +26,7 @@ class Table extends Component {
     const {className, data, dataKeys, displayHeaders, onRowClick, injectedControls} = this.props;
 
     return (
-      <table className={classnames(className)}>
+      <table className={classnames(className, {'clickable-row': !!onRowClick})}>
         {displayHeaders &&
         <thead>
         <tr>
@@ -37,13 +39,15 @@ class Table extends Component {
         {data.map((row, rowIndex) => (
           <tr key={rowIndex} onClick={() => onRowClick && onRowClick(row.id)}>
             {dataKeys.map(({key}, cellIndex) => (
-              <td key={cellIndex}>{get(row, key)}</td>
+              <td key={cellIndex}>{isArray(key) ? startCase(key.map(item => get(row, item))) : get(row, key, '-')}</td>
             ))}
+            {injectedControls &&
             <td className="controls">
-              {injectedControls && injectedControls.map(({className, onClick, text}, i) =>
+              {injectedControls.map(({className, onClick, text}, i) =>
                 createElement('button', {key: i, className, onClick: () => onClick(row)}, text)
               )}
             </td>
+            }
           </tr>
         ))}
         </tbody>
