@@ -8,7 +8,7 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import {getActiveLanguage} from '../../util/helpers';
-import {fetchSingleLease} from '../actions';
+import {editLease, fetchSingleLease} from '../actions';
 import {getCurrentLease, getIsFetching} from '../selectors';
 
 import {fetchAttributes as fetchLeaseAttributes} from '../actions';
@@ -34,30 +34,31 @@ import {getAttributes as getLeaseAttributes} from '../selectors';
 import Loader from '../../components/loader/Loader';
 
 type Props = {
+  applicationAttributes: Object,
+  attributes: Object,
   attributes: Object,
   closeReveal: Function,
+  editLease: Function,
   fetchApplicationAttributes: Function,
   fetchLeaseAttributes: Function,
   fetchSingleLease: Function,
   handleSubmit: Function,
-  attributes: Object,
   invalid: Boolean,
   isFetching: boolean,
   isOpenApplication: String,
   lease: Object,
-  rents: Object,
+  leaseAttributes: Object,
   leaseId: String,
   location: Object,
   onCancel: Function,
   onSave: Function,
   params: Object,
   pristine: Boolean,
+  real_property_units: Array<any>,
+  rents: Object,
   submitting: Boolean,
   t: Function,
   tenants: Array<any>,
-  applicationAttributes: Object,
-  leaseAttributes: Object,
-  real_property_units: Array<any>,
 };
 
 type State = {
@@ -131,7 +132,9 @@ class PreparerForm extends Component {
   };
 
   save = (values) => {
-    console.log('saving', values);
+    const {editLease} = this.props;
+    editLease(values);
+    // console.log('saving', values);
   };
 
   render() {
@@ -248,6 +251,7 @@ export default flowRight(
       fetchApplicationAttributes,
       fetchSingleLease,
       fetchLeaseAttributes,
+      editLease,
     }
   ),
   reduxForm({

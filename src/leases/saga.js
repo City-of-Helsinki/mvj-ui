@@ -84,9 +84,9 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<> {
   }
 }
 
-function* createLeaseSaga({payload: application}): Generator<> {
+function* createLeaseSaga({payload: lease}): Generator<> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(createLease, application);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createLease, lease);
 
     switch (statusCode) {
       case 200:
@@ -102,15 +102,15 @@ function* createLeaseSaga({payload: application}): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to create application with error "%s"', error);
+    console.error('Failed to create lease with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
 }
 
-function* editLeaseSaga({payload: application}): Generator<> {
+function* editLeaseSaga({payload: lease}): Generator<> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editLease, application);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editLease, lease);
 
     switch (statusCode) {
       case 200:
@@ -127,7 +127,7 @@ function* editLeaseSaga({payload: application}): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to edit application with error "%s"', error);
+    console.error('Failed to edit lease with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
