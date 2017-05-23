@@ -10,8 +10,6 @@ import {Row, Column} from 'react-foundation';
 import {revealContext} from '../../../foundation/reveal';
 import {Sizes} from '../../../foundation/enums';
 
-// import FormField from '../../components/form/FormField';
-// import GroupTitle from '../../components/form/GroupTitle';
 import EditModal from '../../../components/editModal/editModal';
 import TenantsEdit from './TenantsEdit';
 
