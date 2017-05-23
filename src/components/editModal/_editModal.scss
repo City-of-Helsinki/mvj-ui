@@ -49,4 +49,12 @@
     font-weight: 600;
     margin-bottom: 0;
   }
+
+  &__delete {
+    @include button(false, $alert-color, darken($alert-color, 10%));
+    border-radius: rem-calc(4px);
+    text-transform: uppercase;
+    font-weight: 600;
+    margin: 0 1rem 0 0;
+  }
 }
