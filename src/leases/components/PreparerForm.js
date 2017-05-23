@@ -32,6 +32,7 @@ import validate from './formSections/NewApplicationValidator';
 import {defaultCoordinates, defaultZoom} from '../../constants';
 import {getAttributes as getLeaseAttributes} from '../selectors';
 import Loader from '../../components/loader/Loader';
+import {Column, Row} from 'react-foundation';
 
 type Props = {
   applicationAttributes: Object,
@@ -43,10 +44,10 @@ type Props = {
   fetchLeaseAttributes: Function,
   fetchSingleLease: Function,
   handleSubmit: Function,
+  initialValues: Object,
   invalid: Boolean,
   isFetching: boolean,
   isOpenApplication: String,
-  lease: Object,
   leaseAttributes: Object,
   leaseId: String,
   location: Object,
@@ -141,10 +142,10 @@ class PreparerForm extends Component {
     const {activeTab} = this.state;
 
     const {
-      lease,
       leaseAttributes,
       params: {leaseId},
       isFetching,
+      initialValues,
       tenants,
       real_property_units,
       rents,
@@ -157,15 +158,13 @@ class PreparerForm extends Component {
     }
 
     return (
-      <div className="full__width flex tabs">
-        <Hero>
+      <div className="full__width flex tabs preparer-form">
+        <Hero className="preparer-form__hero">
           <h2>
             <span onClick={this.goBack} style={{cursor: 'pointer'}}>
               <i className="mi mi-keyboard-backspace"/>
-            </span> {t('leases:single')} {leaseId}</h2>
-
-          <button className="button" onClick={handleSubmit(this.save)}>Save</button>
-
+            </span> {t('leases:single')} {leaseId}
+          </h2>
           <Tabs
             active={activeTab}
             className="hero__navigation"
@@ -185,7 +184,7 @@ class PreparerForm extends Component {
         <TabContent active={activeTab}>
           <TabPane className="summary">
             <Summary
-              {...lease}
+              {...initialValues}
               {...leaseAttributes.identifiers}
             />
           </TabPane>
@@ -223,6 +222,14 @@ class PreparerForm extends Component {
             </div>
           </TabPane>
         </TabContent>
+
+        {activeTab === 0 &&
+        <Row>
+          <Column medium={12}>
+            <button className="button" onClick={handleSubmit(this.save)}>{t('save')}</button>
+          </Column>
+        </Row>
+        }
       </div>
     );
   }

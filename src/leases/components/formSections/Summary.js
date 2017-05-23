@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import get from 'lodash/get';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
@@ -51,14 +52,17 @@ const Summary = (props: Props) => {
                   component={FormField}
                 />
                 {/*<Field*/}
-                  {/*type="text"*/}
-                  {/*required={false}*/}
-                  {/*name="identifier_code"*/}
-                  {/*component={FormField}*/}
+                {/*type="text"*/}
+                {/*required={false}*/}
+                {/*name="identifier_code"*/}
+                {/*component={FormField}*/}
                 {/*/>*/}
               </div>
 
-              <button className="button expanded">Tallenna hakemus valmisteltavaksi</button>
+              <span className="summary__header__identifier">
+                {get(props, 'identifier_type')} {get(props, 'identifier_municipality')} {get(props, 'identifier_district')}
+                </span>
+              {/*<button className="button expanded">Tallenna hakemus valmisteltavaksi</button>*/}
             </Column>
           </Row>
         </section>
