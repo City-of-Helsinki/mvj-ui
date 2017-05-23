@@ -30,7 +30,18 @@
   "leases": {
     "title": "Leases",
     "single": "Lease",
-    "createNew": "Create a lease"
+    "createNew": "Create a lease",
+    "tenants": {
+      "title": "Tenants",
+      "applicant": "Applicant",
+      "billingInformation": "Billing information",
+      "contactPerson": "Contact person",
+      "editTenant": "Edit tenant",
+      "addTenant": "Add new tenant"
+    },
+    "state": {
+      "draft": "Draft"
+    }
   },
   "applicationForm": {
     "heroTitle": "Application",

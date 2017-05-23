@@ -31,6 +31,14 @@
     "title": "Vuokraukset",
     "single": "Vuokraus",
     "createNew": "Luo vuokraus",
+    "tenants": {
+      "title": "Vuokralaiset",
+      "applicant": "Hakija",
+      "billingInformation": "Laskutustiedot",
+      "contactPerson": "Yhteyshenkilö",
+      "editTenant": "Muokkaa vuokralaisen tietoja",
+      "addTenant": "Lisää uusi vuokralainen"
+    },
     "state": {
       "draft": "Luonnos"
     }
