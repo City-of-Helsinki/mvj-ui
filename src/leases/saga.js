@@ -18,10 +18,10 @@ import {receiveError} from '../api/actions';
 function* fetchIdentifiersSaga(): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchIdentifiers);
-    const identifiers = bodyAsJson.actions && {
-      type: get(bodyAsJson.actions.POST, 'identifier_type.choices'),
-      municipality: get(bodyAsJson.actions.POST, 'identifier_municipality.choices'),
-      district: get(bodyAsJson.actions.POST, 'identifier_district.choices'),
+    const identifiers = bodyAsJson.fields && {
+      type: get(bodyAsJson.fields, 'identifier_type.choices'),
+      municipality: get(bodyAsJson.fields, 'identifier_municipality.choices'),
+      district: get(bodyAsJson.fields, 'identifier_district.choices'),
     };
 
     switch (statusCode) {
