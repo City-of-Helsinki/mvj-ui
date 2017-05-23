@@ -13,8 +13,8 @@ import type {
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
-  'mvj/leases/FETCH_IDENTIFIERS': () => true,
-  'mvj/leases/RECEIVE_IDENTIFIERS': () => false,
+  // 'mvj/leases/FETCH_IDENTIFIERS': () => true,
+  // 'mvj/leases/RECEIVE_IDENTIFIERS': () => false,
   'mvj/leases/FETCH_ALL': () => true,
   'mvj/leases/RECEIVE_ALL': () => false,
   'mvj/leases/FETCH_SINGLE': () => true,
