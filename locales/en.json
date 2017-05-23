@@ -39,6 +39,19 @@
       "editTenant": "Edit tenant",
       "addTenant": "Add new tenant"
     },
+    "leases": {
+      "title": "Leases",
+      "single": "Lease",
+      "editLease": "Edit lease",
+      "addLease": "Add new lease",
+      "types": {
+        "fixed": "Fixed sum",
+        "index": "Index-linked",
+        "one_time": "One time",
+        "free": "Free",
+        "manual": "Manual"
+      }
+    },
     "state": {
       "draft": "Draft"
     }

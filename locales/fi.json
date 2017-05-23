@@ -39,6 +39,19 @@
       "editTenant": "Muokkaa vuokralaisen tietoja",
       "addTenant": "Lisää uusi vuokralainen"
     },
+    "leases": {
+      "title": "Vuokrat",
+      "single": "Vuokra",
+      "editLease": "Muokkaa vuokraa",
+      "addLease": "Lisää uusi vuokra",
+      "types": {
+        "fixed": "Kiinteä summa",
+        "index": "Sidottu indeksiin",
+        "one_time": "Kertamaksu",
+        "free": "Ilmainen",
+        "manual": "Manuaalinen"
+      }
+    },
     "state": {
       "draft": "Luonnos"
     }
