@@ -3,9 +3,9 @@
 import {createAction} from 'redux-actions';
 
 import type {
-  FetchIdentifiersAction,
-  Identifiers,
-  ReceiveIdentifiersAction,
+  FetchAttributesAction,
+  Attributes,
+  ReceiveAttributesAction,
   Lease,
   LeaseId,
   LeaseNotFoundAction,
@@ -18,11 +18,11 @@ import type {
   ReceiveSingleLeaseAction,
 } from './types';
 
-export const fetchIdentifiers = (): FetchIdentifiersAction =>
-  createAction('mvj/leases/FETCH_IDENTIFIERS')();
+export const fetchAttributes = (): FetchAttributesAction =>
+  createAction('mvj/leases/FETCH_ATTRIBUTES')();
 
-export const receiveIdentifiers = (identifiers: Identifiers): ReceiveIdentifiersAction =>
-  createAction('mvj/leases/RECEIVE_IDENTIFIERS')(identifiers);
+export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAction =>
+  createAction('mvj/leases/RECEIVE_ATTRIBUTES')(identifiers);
 
 export const fetchLeases = (): FetchLeasesAction =>
   createAction('mvj/leases/FETCH_ALL')();

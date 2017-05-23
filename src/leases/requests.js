@@ -5,7 +5,7 @@ import createUrl from '../api/createUrl';
 
 import type {LeaseId, Lease} from './types';
 
-export const fetchIdentifiers = () => {
+export const fetchAttributes = () => {
   return callApi(new Request(createUrl('lease/'), {method: 'OPTIONS'}));
 };
 

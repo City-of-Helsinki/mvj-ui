@@ -9,24 +9,27 @@ import {
   receiveLeases,
   notFound,
   receiveSingleLease,
-  receiveIdentifiers,
+  receiveAttributes,
   fetchLeases as fetchLeasesAction,
 } from './actions';
-import {fetchLeases, fetchSingleLease, createLease, editLease, fetchIdentifiers} from './requests';
+import {fetchLeases, fetchSingleLease, createLease, editLease, fetchAttributes} from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchIdentifiersSaga(): Generator<> {
+function* fetchAttributesSaga(): Generator<> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchIdentifiers);
-    const identifiers = bodyAsJson.fields && {
-      type: get(bodyAsJson.fields, 'identifier_type.choices'),
-      municipality: get(bodyAsJson.fields, 'identifier_municipality.choices'),
-      district: get(bodyAsJson.fields, 'identifier_district.choices'),
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
+    const attributes = bodyAsJson.fields && {
+      identifiers: {
+        type: get(bodyAsJson.fields, 'identifier_type.choices'),
+        municipality: get(bodyAsJson.fields, 'identifier_municipality.choices'),
+        district: get(bodyAsJson.fields, 'identifier_district.choices'),
+      },
+      ...bodyAsJson.fields,
     };
 
     switch (statusCode) {
       case 200:
-        yield put(receiveIdentifiers(identifiers));
+        yield put(receiveAttributes(attributes));
         break;
       case 404:
       case 500:
@@ -133,7 +136,7 @@ function* editLeaseSaga({payload: application}): Generator<> {
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
-      yield takeLatest('mvj/leases/FETCH_IDENTIFIERS', fetchIdentifiersSaga);
+      yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeEvery('mvj/leases/FETCH_ALL', fetchLeasesSaga);
       yield takeEvery('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);

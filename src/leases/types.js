@@ -6,10 +6,10 @@ export type LeaseState = Object;
 
 export type Lease = Object;
 export type LeaseId = number;
-export type Identifiers = Object;
+export type Attributes = Object;
 
-export type FetchIdentifiersAction = Action<'mvj/leases/FETCH_IDENTIFIERS', void>;
-export type ReceiveIdentifiersAction = Action<'mvj/leases/RECEIVE_IDENTIFIERS', Identifiers>;
+export type FetchAttributesAction = Action<'mvj/leases/FETCH_ATTRIBUTES', void>;
+export type ReceiveAttributesAction = Action<'mvj/leases/RECEIVE_ATTRIBUTES', Attributes>;
 
 export type LeasesList = Array<any>;
 

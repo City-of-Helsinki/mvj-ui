@@ -4,8 +4,8 @@ import {handleActions} from 'redux-actions';
 
 import type {Reducer} from '../types';
 import type {
-  Identifiers,
-  ReceiveIdentifiersAction,
+  Attributes,
+  ReceiveAttributesAction,
   Lease,
   LeasesList,
   ReceiveLeasesAction,
@@ -14,7 +14,7 @@ import type {
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   // 'mvj/leases/FETCH_IDENTIFIERS': () => true,
-  // 'mvj/leases/RECEIVE_IDENTIFIERS': () => false,
+  // 'mvj/leases/RECEIVE_ATTRIBUTES': () => false,
   'mvj/leases/FETCH_ALL': () => true,
   'mvj/leases/RECEIVE_ALL': () => false,
   'mvj/leases/FETCH_SINGLE': () => true,
@@ -24,9 +24,9 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/EDIT': () => true,
 }, false);
 
-const identifiersReducer: Reducer<Identifiers> = handleActions({
-  ['mvj/leases/RECEIVE_IDENTIFIERS']: (state: Identifiers, {payload: identifiers}: ReceiveIdentifiersAction) => {
-    return identifiers;
+const attributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/leases/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
+    return attributes;
   },
 }, {});
 
@@ -43,7 +43,7 @@ const currentLeaseReducer: Reducer<Lease> = handleActions({
 }, {});
 
 export default combineReducers({
-  identifiers: identifiersReducer,
+  attributes: attributesReducer,
   current: currentLeaseReducer,
   list: leasesListReducer,
   isFetching: isFetchingReducer,
