@@ -9,7 +9,7 @@ import {fetchAttributes} from '../../attributes/actions';
 import {editLease, fetchLeases} from '../actions';
 import Loader from '../../components/loader/Loader';
 import {getIsFetching, getLeasesList} from '../selectors';
-import FilterbaleList from '../../components/filterableList/FilterableList';
+import FilterableList from '../../components/filterableList/FilterableList';
 import {getActiveLanguage} from '../../util/helpers';
 
 type Props = {
@@ -56,11 +56,12 @@ class LeaseList extends Component {
     return (
       <div className="leases">
         <Loader isLoading={isFetching}/>
-        <FilterbaleList
+        <FilterableList
           data={orderedLeases}
           isFetching={isFetching}
           dataKeys={[
             {key: 'id', label: 'ID'},
+            {key: ['identifier_type', 'identifier_municipality', 'identifier_district'], label: 'Vuokraustunnus'},
             {key: 'tenants.length', label: 'Vuokralaiset'},
             {key: ['preparer.first_name', 'preparer.last_name'], label: 'Valmistelija'},
             {key: 'state', label: 'Tila'},
