@@ -9,9 +9,9 @@ import {fetchApplications} from '../actions';
 import {getApplicationsList, getIsFetching} from '../selectors';
 // import {getActiveLanguage} from '../../util/helpers';
 
-import ApplicationList from '../../components/applicationList/ApplicationList';
+import ApplicationList from '../../components/filterableList/FilterableList';
 
-import EditModal from './formSections/editModal';
+import EditModal from '../../components/editModal/editModal';
 import ApplicationEditForm from './ApplicationEditForm';
 import {revealContext} from '../../foundation/reveal';
 import {Sizes} from '../../foundation/enums';
@@ -88,7 +88,7 @@ class ApplicationsList extends Component {
   };
 
   render() {
-    const {applications, isFetching} = this.props;
+    const {applications, isFetching, t} = this.props;
     const orderedApplications = orderBy(applications, ['id'], ['asc']);
 
     return (
@@ -96,9 +96,21 @@ class ApplicationsList extends Component {
         <Loader isLoading={isFetching}/>
         <ApplicationList
           data={orderedApplications}
-          handleEditClick={this.handleEditClick}
-          handleCreateLeaseClick={() => console.log('create lease')}
           isFetching={isFetching}
+          dataKeys={[
+            {key: 'id', label: 'ID'},
+            {key: 'contact_name', label: 'Nimi'},
+            {key: 'contact_phone', label: 'Puhelin'},
+            {key: 'contact_email', label: 'Sähköposti'},
+          ]}
+          injectedControls={[
+            {onClick: this.handleEditClick, className: 'applications__list--edit', text: t('edit')},
+            {
+              onClick: () => console.log('create lease'),
+              className: 'applications__list--add',
+              text: t('leases:createNew'),
+            },
+          ]}
         />
 
         {this.state.isEditingApplication && !isFetching &&
@@ -129,6 +141,6 @@ export default flowRight(
       editApplication,
     },
   ),
-  translate(['applications']),
+  translate(['applications', 'leases', 'common']),
   revealContext(),
 )(ApplicationsList);

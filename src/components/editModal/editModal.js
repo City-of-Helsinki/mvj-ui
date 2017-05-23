@@ -3,7 +3,7 @@
 import React, {createElement} from 'react';
 import flowRight from 'lodash/flowRight';
 import {translate} from 'react-i18next';
-import {reveal} from '../../../foundation/reveal';
+import {reveal} from '../../foundation/reveal';
 
 type Props = {
   component: Object,

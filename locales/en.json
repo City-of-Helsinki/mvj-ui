@@ -6,13 +6,13 @@
     "remove": "Remove",
     "add": "Add new",
     "search": "Search",
-    "edit": "Edit",
-    "createLease": "Create lease"
+    "edit": "Edit"
   },
   "roles": {
     "title": "Ground rental system prototype",
     "subtitle": "Choose a user role",
     "goToApplications": "Show applications",
+    "goToLeases": "Show leases",
     "createApplication": "Create application"
   },
   "applications": {
@@ -25,6 +25,35 @@
       "other": "Other",
       "earthworks": "Earth works",
       "building_permit": "Building permit"
+    }
+  },
+  "leases": {
+    "title": "Leases",
+    "single": "Lease",
+    "createNew": "Create a lease",
+    "tenants": {
+      "title": "Tenants",
+      "applicant": "Applicant",
+      "billingInformation": "Billing information",
+      "contactPerson": "Contact person",
+      "editTenant": "Edit tenant",
+      "addTenant": "Add new tenant"
+    },
+    "leases": {
+      "title": "Leases",
+      "single": "Lease",
+      "editLease": "Edit lease",
+      "addLease": "Add new lease",
+      "types": {
+        "fixed": "Fixed sum",
+        "index": "Index-linked",
+        "one_time": "One time",
+        "free": "Free",
+        "manual": "Manual"
+      }
+    },
+    "state": {
+      "draft": "Draft"
     }
   },
   "applicationForm": {

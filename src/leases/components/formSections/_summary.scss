@@ -29,6 +29,12 @@
       font-weight: 600;
     }
 
+    &__identifier {
+      font-size: rem-calc(18px);
+      text-align: center;
+      margin: rem-calc(15px 0);
+    }
+
     .lease__code {
       display: flex;
       flex-direction: row;

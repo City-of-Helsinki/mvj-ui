@@ -1,0 +1,9 @@
+.preparer-form {
+  &__hero {
+  }
+
+  &__save-button {
+    @include lightButton;
+    margin: 0 rem-calc(15px);
+  }
+}

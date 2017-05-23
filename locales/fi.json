@@ -6,13 +6,13 @@
     "remove": "Poista",
     "add": "Lisää uusi",
     "edit": "Muokkaa",
-    "search": "Haku",
-    "createLease": "Luo vuokraus"
+    "search": "Haku"
   },
   "roles": {
     "title": "Maanvuokrausjärjestelmä-prototyyppi",
     "subtitle": "Valitse käyttäjärooli",
     "goToApplications": "Näytä hakemukset",
+    "goToLeases": "Näytä vuokraukset",
     "createApplication": "Luo uusi hakemus"
   },
   "applications": {
@@ -25,6 +25,35 @@
       "other": "Muu",
       "earthworks": "Maanrakennustyöt",
       "building_permit": "Rakennuslupa"
+    }
+  },
+  "leases": {
+    "title": "Vuokraukset",
+    "single": "Vuokraus",
+    "createNew": "Luo vuokraus",
+    "tenants": {
+      "title": "Vuokralaiset",
+      "applicant": "Hakija",
+      "billingInformation": "Laskutustiedot",
+      "contactPerson": "Yhteyshenkilö",
+      "editTenant": "Muokkaa vuokralaisen tietoja",
+      "addTenant": "Lisää uusi vuokralainen"
+    },
+    "leases": {
+      "title": "Vuokrat",
+      "single": "Vuokra",
+      "editLease": "Muokkaa vuokraa",
+      "addLease": "Lisää uusi vuokra",
+      "types": {
+        "fixed": "Kiinteä summa",
+        "index": "Sidottu indeksiin",
+        "one_time": "Kertamaksu",
+        "free": "Ilmainen",
+        "manual": "Manuaalinen"
+      }
+    },
+    "state": {
+      "draft": "Luonnos"
     }
   },
   "applicationForm": {

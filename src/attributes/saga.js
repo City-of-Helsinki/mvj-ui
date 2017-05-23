@@ -10,7 +10,7 @@ import {receiveError} from '../api/actions';
 function* fetchAttributesSaga(): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
-    const types = bodyAsJson.actions && bodyAsJson.actions.POST;
+    const types = bodyAsJson.fields;
 
     switch (statusCode) {
       case 200:
