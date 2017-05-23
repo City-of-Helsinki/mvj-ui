@@ -6,7 +6,10 @@
     "remove": "Remove",
     "add": "Add new",
     "search": "Search",
-    "edit": "Edit"
+    "noResultsFound": "No results",
+    "preparer": "Preparer",
+    "select": "Select...",
+    "state": "State"
   },
   "roles": {
     "title": "Ground rental system prototype",

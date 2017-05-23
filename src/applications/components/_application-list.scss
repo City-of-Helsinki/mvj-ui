@@ -18,10 +18,33 @@
       border: 1px solid rgba(255, 255, 255, .18);
       color: $white;
     }
+
+    .form-field__select {
+      margin: 0;
+      color: $white;
+
+      .Select-control {
+        background: rgba(255, 255, 255, .07);
+        border: 1px solid rgba(255, 255, 255, .18);
+      }
+
+      .Select-placeholder,
+      .Select-input > input {
+        color: $white;
+      }
+
+      .Select-arrow {
+        border-color: $white transparent transparent;
+      }
+
+      .Select-value-label,
+      .Select-clear {
+        color: $white !important;
+      }
+    }
   }
 
   &__list {
-    @include grid-row();
     flex: 1;
     //background: $lightest-gray;
 
@@ -38,6 +61,7 @@
     }
 
     table {
+      @include grid-row();
       width: 100%;
 
       thead {

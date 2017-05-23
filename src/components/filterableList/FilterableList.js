@@ -3,10 +3,13 @@ import React, {Component} from 'react';
 import classnames from 'classnames';
 import Fuse from 'fuse.js';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
+import filter from 'lodash/filter';
 import {translate} from 'react-i18next';
+import {Column, Row} from 'react-foundation';
+import Select from 'react-select';
 
 import Hero from '../hero/Hero';
-import {Column} from 'react-foundation';
 import Table from '../table/Table';
 
 const fuseOptions = {
@@ -34,6 +37,7 @@ type Props = {
 type State = {
   items: Array<any>,
   search: string,
+  filters: Object,
 };
 
 type FuseType = Object;
@@ -49,6 +53,7 @@ class ApplicationList extends Component {
     this.fuse = new Fuse([], fuseOptions);
 
     this.state = {
+      filters: {},
       items: [],
       search: '',
     };
@@ -81,21 +86,84 @@ class ApplicationList extends Component {
     });
   };
 
+  handleFilterChange = (item, filterKey) => {
+    const {items, filters} = this.state;
+    const {data} = this.props;
+    const newFilters = Object.assign(filters, {[filterKey]: item ? item.value : ''});
+
+    if (item && item.value) {
+      const filteredItems = filter(items, (itemObj) => {
+        const needles = Object.keys(newFilters).map(singleFilter => get(itemObj, singleFilter));
+        return needles.indexOf(item.value) !== -1;
+      });
+
+      return this.setState({
+        search: '',
+        filters: newFilters,
+        items: filteredItems,
+      });
+    }
+
+    return this.setState({
+      search: '',
+      filters: newFilters,
+      items: data,
+    });
+  };
+
   render() {
-    const {items} = this.state;
+    const {items, filters, search} = this.state;
     const {className, dataKeys, injectedControls, isFetching, onRowClick, t} = this.props;
 
     return (
       <div className={classnames('applications__list', className, {'loading': isFetching})}>
         <Hero className="hero--secondary">
-          <Column medium={6} className="applications__search">
-            <label htmlFor="search">{t('search')}</label>
-            <input type="text"
-                   id="search"
-                   className="form-field__input form-field__input--search"
-                   onChange={this.handleSearch}
-            />
-          </Column>
+          <Row>
+            <Column medium={6} className="applications__search">
+              <label htmlFor="search">{t('search')}</label>
+              <input type="text"
+                     id="search"
+                     value={search}
+                     className="form-field__input form-field__input--search"
+                     onChange={this.handleSearch}
+              />
+            </Column>
+            <Column medium={3} className="applications__search">
+              <label htmlFor="search">{t('preparer')}</label>
+              <Select
+                value={get(filters, 'preparer.username')}
+                autoBlur={true}
+                className="form-field__select"
+                clearable={true}
+                noResultsText={t('noResultsFound')}
+                placeholder={t('select')}
+                options={[
+                  {value: 'preparer', label: 'Vanttu Valmistelija'},
+                  {value: 'admin', label: 'Pasi Pääkäyttäjä'},
+                ]}
+                onChange={(item) => this.handleFilterChange(item, 'preparer.username')}
+              />
+            </Column>
+
+            <Column medium={3} className="applications__search">
+              <label htmlFor="search">{t('state')}</label>
+              <Select
+                value={get(filters, 'state')}
+                autoBlur={true}
+                className="form-field__select"
+                clearable={true}
+                noResultsText={t('noResultsFound')}
+                placeholder={t('select')}
+                options={[
+                  {value: 'draft', label: 'Luonnos'},
+                  {value: 'approved', label: 'Hyväksytty'},
+                  {value: 'sent', label: 'Lähetetty'},
+                  {value: 'archived', label: 'Arkistoitu'},
+                ]}
+                onChange={(item) => this.handleFilterChange(item, 'state')}
+              />
+            </Column>
+          </Row>
         </Hero>
         <Table
           onRowClick={onRowClick}
