@@ -9,95 +9,139 @@ import FormField from '../../../components/form/FormField';
 import {BaseValidator} from '../../../components/form/validation';
 
 type Props = {
+  activeTenant: number,
+  handleEdit?: Function,
+  handleCreate?: Function,
   handleSubmit: Function,
-  handleSave: Function,
+  handleDelete: Function,
   t: Function,
 };
 
-const validate = ({organization, organization_id, name, email, phone, contact_name, contact_email, contact_phone}) => {
-
+const validate = ({tenants}) => {
   const customConditions = {};
 
   return BaseValidator({
-    organization, organization_id, name, email, phone, contact_name, contact_email, contact_phone,
+    tenants,
   }, customConditions);
 };
 
+const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, activeTenant}: Props) => {
+  const isEditing = activeTenant !== null;
+  const tenant = isEditing ? activeTenant : 'NEW';
+  const saveMethod = isEditing ? handleEdit : handleCreate;
+  const buttonText = isEditing ? 'save' : 'add';
 
-const fields = {
-  organization: [
-    {name: 'organization', label: 'Organisaatio', required: true},
-    {name: 'organization_id', label: 'Y-tunnus', required: true},
-    {name: 'value', label: 'Liikevaihto', required: false},
-    {name: 'address', label: 'Osoite', required: false},
-    {name: 'city', label: 'Paikkakunta', required: false},
-    {name: 'zip', label: 'Postinumero', required: false},
-  ],
-  billing: [
-    {name: 'name', label: 'Nimi', required: true},
-    {name: 'email', label: 'Sähköpostiosoite', required: true},
-    {name: 'phone', label: 'Puhelinnumero', required: true},
-  ],
-  contact: [
-    {name: 'contact_name', label: 'Nimi', required: true},
-    {name: 'contact_email', label: 'Sähköpostiosoite', required: true},
-    {name: 'contact_phone', label: 'Puhelinnumero', required: true},
-  ],
-};
-
-const TenantsEdit = ({handleSubmit, handleSave, t}: Props) => {
   return (
-    <form onSubmit={handleSubmit(handleSave)}>
+    <form onSubmit={handleSubmit(saveMethod)}>
       <div className="edit-modal__content">
-        <h1>Korporaatio Yritys Oy</h1>
 
         <Row className="edit-modal__section">
           <GroupTitle text="Organisaatio"/>
-          {fields.organization.map(({name, label, required}, i) => (
-            <Column key={i} medium={4}>
-              <Field
-                label={label}
-                name={name}
-                required={required}
-                type="text"
-                component={FormField}
-              />
-            </Column>
-          ))}
+          <Column medium={6}>
+            <Field
+              label="Yrityksen nimi"
+              name={`tenants[${tenant}].contact.organization_name`}
+              required={true}
+              type="text"
+              component={FormField}
+            />
+          </Column>
+          <Column medium={6}>
+            <Field
+              label="Y-tunnus"
+              name={`tenants[${tenant}].contact.organization_id`}
+              required={true}
+              type="text"
+              component={FormField}
+            />
+          </Column>
+          <Column medium={6}>
+            <Field
+              label="Liikevaihto (€)"
+              name={`tenants[${tenant}].contact.organization_revenue`}
+              required={true}
+              type="text"
+              component={FormField}
+            />
+          </Column>
+          <Column medium={6}>
+            <Field
+              label="Osoite"
+              name={`tenants[${tenant}].contact.organization_address`}
+              required={true}
+              type="textarea"
+              component={FormField}
+            />
+          </Column>
         </Row>
 
-        <Row className="edit-modal__section">
+        <Row>
+          <GroupTitle text="Yhteyshenkilö"/>
+          <Column medium={4}>
+            <Field
+              label="Nimi"
+              name={`tenants[${tenant}].contact.name`}
+              required={true}
+              type="text"
+              component={FormField}
+            />
+          </Column>
+          <Column medium={4}>
+            <Field
+              label="Sähköposti"
+              name={`tenants[${tenant}].contact.email`}
+              required={true}
+              type="text"
+              component={FormField}
+            />
+          </Column>
+          <Column medium={4}>
+            <Field
+              label="Puhelinnumero"
+              name={`tenants[${tenant}].contact.phone`}
+              required={true}
+              type="text"
+              component={FormField}
+            />
+          </Column>
+        </Row>
+
+        <Row>
           <GroupTitle text="Laskutustiedot"/>
-          {fields.billing.map(({name, label, required}, i) => (
-            <Column key={i} medium={4}>
-              <Field
-                label={label}
-                name={name}
-                required={required}
-                type="text"
-                component={FormField}
-              />
-            </Column>
-          ))}
-        </Row>
-
-        <Row className="edit-modal__section">
-          <GroupTitle text="Yhteystiedot"/>
-          {fields.contact.map(({name, label, required}, i) => (
-            <Column key={i} medium={4}>
-              <Field
-                label={label}
-                name={name}
-                required={required}
-                type="text"
-                component={FormField}
-              />
-            </Column>
-          ))}
+          <Column medium={4}>
+            <Field
+              label="Yhteyshenkilö"
+              name={`tenants[${tenant}].billing_contact`}
+              required={true}
+              type="text"
+              component={FormField}
+            />
+          </Column>
+          <Column medium={4}>
+            <Field
+              label="Laskutusosoite"
+              name={`tenants[${tenant}].billing_address`}
+              required={true}
+              type="textarea"
+              component={FormField}
+            />
+          </Column>
+          <Column medium={4}>
+            <Field
+              label="Sähköinen laskutusosoite"
+              name={`tenants[${tenant}].contact.electronic_billing_details`}
+              required={true}
+              type="text"
+              component={FormField}
+            />
+          </Column>
         </Row>
 
         <Row className="edit-modal__section edit-modal__actions">
-          <button className="edit-modal__save">{t('save')}</button>
+          {isEditing &&
+          <a className="edit-modal__delete" onClick={handleDelete}>{t('remove')}</a>
+          }
+          <button className="edit-modal__save">{t(buttonText)}</button>
         </Row>
       </div>
     </form>
@@ -106,7 +150,8 @@ const TenantsEdit = ({handleSubmit, handleSave, t}: Props) => {
 
 export default flowRight(
   reduxForm({
-    form: 'tenants-edit-form',
+    form: 'preparer-form',
+    destroyOnUnmount: false,
     validate,
   }),
   translate(['common']),

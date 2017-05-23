@@ -28,18 +28,12 @@ import Tenants from './formSections/Tenants';
 import Conditions from './formSections/Conditions';
 import MapContainer from '../../components/map/Map';
 import validate from './formSections/NewApplicationValidator';
-import EditModal from '../../components/editModal/editModal';
-
-import {revealContext} from '../../foundation/reveal';
-import {Sizes} from '../../foundation/enums';
 
 import {defaultCoordinates, defaultZoom} from '../../constants';
 import {getIdentifiers} from '../selectors';
 import Loader from '../../components/loader/Loader';
 
 type Props = {
-  lease: Object,
-  leaseId: String,
   attributes: Object,
   closeReveal: Function,
   fetchAttributes: Function,
@@ -50,6 +44,8 @@ type Props = {
   invalid: Boolean,
   isFetching: boolean,
   isOpenApplication: String,
+  lease: Object,
+  leaseId: String,
   location: Object,
   onCancel: Function,
   onSave: Function,
@@ -57,12 +53,12 @@ type Props = {
   pristine: Boolean,
   submitting: Boolean,
   t: Function,
+  tenants: Array<any>,
+  real_property_units: Array<any>,
 };
 
 type State = {
   activeTab: number,
-  isEditingSection: boolean,
-  editingComponent: Object | null,
 };
 
 type TabsType = Array<any>;
@@ -81,8 +77,6 @@ class PreparerForm extends Component {
 
     this.state = {
       activeTab: 0,
-      isEditingSection: false,
-      editingComponent: null,
     };
   }
 
@@ -137,22 +131,6 @@ class PreparerForm extends Component {
     console.log('saving', values);
   };
 
-  handleEditSection = (component) => {
-    this.setState({
-      isEditingSection: true,
-      editingComponent: component,
-    });
-  };
-
-  handleEditSave = (values) => {
-    console.log(values);
-    this.setState({isEditingSection: false}, () => this.props.closeReveal('editModal'));
-  };
-
-  handleDismissEditModal = () => {
-    this.setState({isEditingSection: false}, () => this.props.closeReveal('editModal'));
-  };
-
   render() {
     const {activeTab} = this.state;
 
@@ -161,6 +139,8 @@ class PreparerForm extends Component {
       identifiers,
       params: {leaseId},
       isFetching,
+      tenants,
+      real_property_units,
       t,
     } = this.props;
 
@@ -202,13 +182,14 @@ class PreparerForm extends Component {
 
           <TabPane className="tenants tab__content">
             <Tenants
-              onEdit={this.handleEditSection}
-              {...lease}
+              tenants={tenants}
             />
           </TabPane>
 
           <TabPane className="property-unit tab__content">
-            <PropertyUnit/>
+            <PropertyUnit
+              real_property_units={real_property_units}
+            />
           </TabPane>
 
           <TabPane className="lease tab__content">
@@ -231,13 +212,6 @@ class PreparerForm extends Component {
             </div>
           </TabPane>
         </TabContent>
-
-        <EditModal size={Sizes.LARGE}
-                   isOpen={this.state.isEditingSection}
-                   component={this.state.editingComponent}
-                   handleSave={this.handleEditSave}
-                   handleDismiss={this.handleDismissEditModal}
-        />
       </div>
     );
   }
@@ -247,16 +221,17 @@ export default flowRight(
   withRouter,
   connect(
     (state) => {
-      const selector = formValueSelector('handler-form');
-      const isOpenApplication = selector(state, 'open_lease');
+      const selector = formValueSelector('preparer-form');
+      const tenants = selector(state, 'tenants');
+      const real_property_units = selector(state, 'real_property_units');
 
       return {
-        lease: getCurrentLease(state),
         attributes: getAttributes(state),
         identifiers: getIdentifiers(state),
         initialValues: getCurrentLease(state),
         isFetching: getIsFetching(state),
-        isOpenApplication,
+        tenants,
+        real_property_units,
       };
     },
     {
@@ -267,8 +242,9 @@ export default flowRight(
   ),
   reduxForm({
     form: 'preparer-form',
+    destroyOnUnmount: false,
+    enableReinitialize: true,
     validate,
   }),
   translate(['common', 'leases']),
-  revealContext(),
 )(PreparerForm);
