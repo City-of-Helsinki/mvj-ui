@@ -11,9 +11,9 @@ import {getActiveLanguage} from '../../util/helpers';
 import {fetchSingleLease} from '../actions';
 import {getCurrentLease, getIsFetching} from '../selectors';
 
-import {fetchIdentifiers} from '../actions';
-import {fetchAttributes} from '../../attributes/actions';
-import {getAttributes} from '../../attributes/selectors';
+import {fetchAttributes as fetchLeaseAttributes} from '../actions';
+import {fetchAttributes as fetchApplicationAttributes} from '../../attributes/actions';
+import {getAttributes as getApplicationAttributes} from '../../attributes/selectors';
 
 import Tabs from '../../components/tabs/Tabs';
 import Hero from '../../components/hero/Hero';
@@ -21,8 +21,8 @@ import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
 
 import Billing from './formSections/Billing';
-import PropertyUnit from './formSections/PropertyUnit';
-import Lease from './formSections/Lease';
+import PropertyUnits from './formSections/PropertyUnits';
+import Leases from './formSections/Leases';
 import Summary from './formSections/Summary';
 import Tenants from './formSections/Tenants';
 import Conditions from './formSections/Conditions';
@@ -30,21 +30,22 @@ import MapContainer from '../../components/map/Map';
 import validate from './formSections/NewApplicationValidator';
 
 import {defaultCoordinates, defaultZoom} from '../../constants';
-import {getIdentifiers} from '../selectors';
+import {getAttributes as getLeaseAttributes} from '../selectors';
 import Loader from '../../components/loader/Loader';
 
 type Props = {
   attributes: Object,
   closeReveal: Function,
-  fetchAttributes: Function,
-  fetchIdentifiers: Function,
+  fetchApplicationAttributes: Function,
+  fetchLeaseAttributes: Function,
   fetchSingleLease: Function,
   handleSubmit: Function,
-  identifiers: Object,
+  attributes: Object,
   invalid: Boolean,
   isFetching: boolean,
   isOpenApplication: String,
   lease: Object,
+  rents: Object,
   leaseId: String,
   location: Object,
   onCancel: Function,
@@ -54,6 +55,8 @@ type Props = {
   submitting: Boolean,
   t: Function,
   tenants: Array<any>,
+  applicationAttributes: Object,
+  leaseAttributes: Object,
   real_property_units: Array<any>,
 };
 
@@ -81,14 +84,14 @@ class PreparerForm extends Component {
   }
 
   componentWillMount() {
-    const {fetchSingleLease, fetchIdentifiers, location, fetchAttributes, params: {leaseId}} = this.props;
+    const {fetchSingleLease, fetchApplicationAttributes, location, fetchLeaseAttributes, params: {leaseId}} = this.props;
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
     }
 
-    fetchAttributes();
-    fetchIdentifiers();
+    fetchApplicationAttributes();
+    fetchLeaseAttributes();
     fetchSingleLease(leaseId);
   }
 
@@ -136,15 +139,17 @@ class PreparerForm extends Component {
 
     const {
       lease,
-      identifiers,
+      leaseAttributes,
       params: {leaseId},
       isFetching,
       tenants,
       real_property_units,
+      rents,
+      handleSubmit,
       t,
     } = this.props;
 
-    if (isFetching || isEmpty(identifiers)) {
+    if (isFetching || isEmpty(leaseAttributes)) {
       return <Loader isLoading={isFetching}/>;
     }
 
@@ -155,6 +160,8 @@ class PreparerForm extends Component {
             <span onClick={this.goBack} style={{cursor: 'pointer'}}>
               <i className="mi mi-keyboard-backspace"/>
             </span> {t('leases:single')} {leaseId}</h2>
+
+          <button className="button" onClick={handleSubmit(this.save)}>Save</button>
 
           <Tabs
             active={activeTab}
@@ -176,7 +183,7 @@ class PreparerForm extends Component {
           <TabPane className="summary">
             <Summary
               {...lease}
-              {...identifiers}
+              {...leaseAttributes.identifiers}
             />
           </TabPane>
 
@@ -187,13 +194,14 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="property-unit tab__content">
-            <PropertyUnit
+            <PropertyUnits
               real_property_units={real_property_units}
             />
           </TabPane>
 
           <TabPane className="lease tab__content">
-            <Lease/>
+            <Leases attributes={leaseAttributes}
+                    rents={rents}/>
           </TabPane>
 
           <TabPane className="billing tab__content">
@@ -224,20 +232,22 @@ export default flowRight(
       const selector = formValueSelector('preparer-form');
       const tenants = selector(state, 'tenants');
       const real_property_units = selector(state, 'real_property_units');
+      const rents = selector(state, 'rents');
 
       return {
-        attributes: getAttributes(state),
-        identifiers: getIdentifiers(state),
+        applicationAttributes: getApplicationAttributes(state),
+        leaseAttributes: getLeaseAttributes(state),
         initialValues: getCurrentLease(state),
         isFetching: getIsFetching(state),
         tenants,
         real_property_units,
+        rents,
       };
     },
     {
-      fetchAttributes,
+      fetchApplicationAttributes,
       fetchSingleLease,
-      fetchIdentifiers,
+      fetchLeaseAttributes,
     }
   ),
   reduxForm({

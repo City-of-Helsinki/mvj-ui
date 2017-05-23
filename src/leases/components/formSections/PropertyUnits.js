@@ -14,7 +14,7 @@ import GroupTitle from '../../../components/form/GroupTitle';
 import Table from '../../../components/table/Table';
 
 import EditModal from '../../../components/editModal/editModal';
-import PropertyUnitEdit from './PropertyUnitEdit';
+import PropertyUnitEdit from './PropertyUnitEdits';
 
 const links = [
   'Kiinteistörekisteriote',
@@ -81,7 +81,7 @@ class RealProperyUnits extends Component {
   handleCreateNew = ({real_property_units: {NEW}}) => {
     const {array} = this.props;
     array.push('real_property_units', NEW);
-    this.setState({isEditing: false, activeTenant: null}, () => this.props.closeReveal('editModal'));
+    this.setState({isEditing: false, activePropertyUnit: null}, () => this.props.closeReveal('editModal'));
   };
 
   handleDelete = () => {
