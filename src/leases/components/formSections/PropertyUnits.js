@@ -18,6 +18,7 @@ import Table from '../../../components/table/Table';
 
 import EditModal from '../../../components/editModal/editModal';
 import PropertyUnitEdit from './PropertyUnitEdits';
+import {getKtjLink} from '../../../util/helpers';
 
 type Props = Object;
 
@@ -152,16 +153,18 @@ class RealProperyUnits extends Component {
               <GroupTitle text="KTJ-dokumentit"/>
 
               <Column medium={12}>
+                {get(property, 'identification_number') &&
                 <ul className="bordered__list">
-                  {links.map((link, i) => (
-                    <li key={i}>{link}
+                  {ktjDataSets.map(({key, label}, i) => (
+                    <li key={i}>{label}
                       <div className="links">
-                        <a href="#" target="_blank">fi</a>
-                        <a href="#" target="_blank">se</a>
+                        <a href={getKtjLink(get(property, 'identification_number'), key)} target="_blank">fi</a>
+                        <a href={getKtjLink(get(property, 'identification_number'), key, 'sv')} target="_blank">se</a>
                       </div>
                     </li>
                   ))}
                 </ul>
+                }
               </Column>
 
               <div className="data-box__controls">
