@@ -118,3 +118,16 @@ export const displayUIMessage = (message, opts = {type: 'success'}) => {
 export const formatDateObj = (unix, format = 'DD.MM.YYYY HH:mm') => {
   return moment(unix).format(format);
 };
+
+/**
+ * Proxied KTJ-link
+ * @param id
+ * @param key
+ * @param lang
+ * @returns {string}
+ */
+export const getKtjLink = (id, key, lang = 'fi') => {
+  /* global API_URL */
+  const apiUrlWithOutVersionSuffix = API_URL.split('/v1')[0];
+  return `${apiUrlWithOutVersionSuffix}/ktjkir/tuloste/${key}/pdf?kohdetunnus=${id}&lang=${lang}`;
+};
