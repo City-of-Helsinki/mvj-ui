@@ -10,24 +10,14 @@ import {Row, Column} from 'react-foundation';
 import {revealContext} from '../../../foundation/reveal';
 import {Sizes} from '../../../foundation/enums';
 
+import {ktjDataSets} from '../../../constants';
+
+
 import GroupTitle from '../../../components/form/GroupTitle';
 import Table from '../../../components/table/Table';
 
 import EditModal from '../../../components/editModal/editModal';
 import PropertyUnitEdit from './PropertyUnitEdits';
-
-const links = [
-  'Kiinteistörekisteriote',
-  'Muodostumisketju eteenpäin',
-  'Lainhuutotodistus',
-  'Muodostumisketju taaksepäin',
-  'Kiinteistörekisterin karttaote',
-  'Voimassa olevat muodostuneet',
-  'Rasitustodistus',
-  'Muodostajarekisteriyksiköt ajankohtana',
-  'Omistajien yhteystiedot',
-  'Muodostajaselvitys',
-];
 
 type Props = Object;
 

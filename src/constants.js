@@ -23,6 +23,22 @@ export const Languages = [
 ];
 
 /**
+ * KTJ-links & datasets
+ * @type {[*]}
+ */
+export const ktjDataSets = [
+  {key: 'karttaote', label: 'Kiinteistörekisterin karttaote'},
+  {key: 'kiinteistorekisteriote', label: 'Kiinteistörekisteriote'},
+  {key: 'lainhuutotodistus', label: 'Lainhuutotodistus'},
+  {key: 'muodostajarekisteriyksikot_ajankohtana', label: 'Muodostajarekisteriyksiköt ajankohtana'},
+  {key: 'muodostajaselvitys', label: 'Muodostajaselvitys'},
+  {key: 'muodostumisketju_taaksepain', label: 'Muodostumisketju taaksepäin'},
+  {key: 'yhteystiedot', label: 'Omistajien yhteystiedot'},
+  {key: 'rasitustodistus', label: 'Rasitustodistus'},
+  {key: 'voimassa_olevat_muodostuneet', label: 'Voimassa olevat muodostuneet'},
+];
+
+/**
  * TileLayer
  * @type {string}
  */
