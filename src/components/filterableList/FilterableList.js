@@ -42,7 +42,7 @@ type State = {
 
 type FuseType = Object;
 
-class ApplicationList extends Component {
+class FilterableList extends Component {
   props: Props;
   state: State;
   fuse: FuseType;
@@ -165,6 +165,7 @@ class ApplicationList extends Component {
             </Column>
           </Row>
         </Hero>
+
         <Table
           onRowClick={onRowClick}
           dataKeys={dataKeys}
@@ -178,4 +179,4 @@ class ApplicationList extends Component {
 
 export default flowRight(
   translate(['common', 'applications'])
-)(ApplicationList);
+)(FilterableList);
