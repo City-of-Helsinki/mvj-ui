@@ -19,8 +19,7 @@ const fuseOptions = {
   // maxPatternLength: 32,
   minMatchCharLength: 3,
   keys: [
-    'contact_name',
-    'organization_name',
+    'identifier',
   ],
 };
 
