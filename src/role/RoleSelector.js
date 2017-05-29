@@ -33,12 +33,12 @@ class RoleSelector extends Component {
 
     return (
       <div>
-        <Link className="button primary"
+        <Link className="button primary role__action-button"
               to={link}>
           {linkText} <i className="mi mi-chevron-right"/>
         </Link>
         {id !== 'applicant' &&
-        <Link className="button primary"
+        <Link className="button primary role__action-button"
               to={`${language}/leases`}>
           {t('goToLeases')} <i className="mi mi-chevron-right"/>
         </Link>
