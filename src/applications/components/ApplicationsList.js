@@ -9,7 +9,7 @@ import {fetchApplications} from '../actions';
 import {getApplicationsList, getIsFetching} from '../selectors';
 // import {getActiveLanguage} from '../../util/helpers';
 
-import ApplicationList from '../../components/filterableList/FilterableList';
+import FilterableList from '../../components/filterableList/FilterableList';
 
 import EditModal from '../../components/editModal/editModal';
 import ApplicationEditForm from './ApplicationEditForm';
@@ -94,9 +94,10 @@ class ApplicationsList extends Component {
     return (
       <div className="applications">
         <Loader isLoading={isFetching}/>
-        <ApplicationList
+        <FilterableList
           data={orderedApplications}
           isFetching={isFetching}
+          displayFilters={false}
           dataKeys={[
             {key: 'id', label: 'ID'},
             {key: 'type', label: 'Tyyppi', renderer: (val) => t(`types.${val}`)},

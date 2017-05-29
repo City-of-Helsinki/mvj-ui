@@ -27,6 +27,7 @@ type Props = {
   className?: String,
   data: Array<any>,
   dataKeys: Array<any>,
+  displayFilters?: boolean,
   injectedControls?: Array<any>,
   isFetching: boolean,
   onRowClick: Function,
@@ -112,7 +113,7 @@ class FilterableList extends Component {
 
   render() {
     const {items, filters, search} = this.state;
-    const {className, dataKeys, injectedControls, isFetching, onRowClick, t} = this.props;
+    const {className, dataKeys, displayFilters, injectedControls, isFetching, onRowClick, t} = this.props;
 
     return (
       <div className={classnames('applications__list', className, {'loading': isFetching})}>
@@ -127,6 +128,7 @@ class FilterableList extends Component {
                      onChange={this.handleSearch}
               />
             </Column>
+            {displayFilters &&
             <Column medium={3} className="applications__search">
               <label htmlFor="search">{t('preparer')}</label>
               <Select
@@ -143,7 +145,8 @@ class FilterableList extends Component {
                 onChange={(item) => this.handleFilterChange(item, 'preparer.username')}
               />
             </Column>
-
+            }
+            {displayFilters &&
             <Column medium={3} className="applications__search">
               <label htmlFor="search">{t('state')}</label>
               <Select
@@ -162,6 +165,7 @@ class FilterableList extends Component {
                 onChange={(item) => this.handleFilterChange(item, 'state')}
               />
             </Column>
+            }
           </Row>
         </Hero>
 

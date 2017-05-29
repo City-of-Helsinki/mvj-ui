@@ -58,6 +58,7 @@ class LeaseList extends Component {
         <Loader isLoading={isFetching}/>
         <FilterableList
           data={orderedLeases}
+          displayFilters={true}
           isFetching={isFetching}
           dataKeys={[
             {key: 'id', label: 'ID'},
