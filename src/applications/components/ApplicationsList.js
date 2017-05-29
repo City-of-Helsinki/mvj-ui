@@ -99,17 +99,13 @@ class ApplicationsList extends Component {
           isFetching={isFetching}
           dataKeys={[
             {key: 'id', label: 'ID'},
+            {key: 'type', label: 'Tyyppi', renderer: (val) => t(`types.${val}`)},
             {key: 'contact_name', label: 'Nimi'},
             {key: 'contact_phone', label: 'Puhelin'},
             {key: 'contact_email', label: 'Sähköposti'},
           ]}
           injectedControls={[
             {onClick: this.handleEditClick, className: 'applications__list--edit', text: t('edit')},
-            {
-              onClick: () => console.log('create lease'),
-              className: 'applications__list--add',
-              text: t('leases:createNew'),
-            },
           ]}
         />
 

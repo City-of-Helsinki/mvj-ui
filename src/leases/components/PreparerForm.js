@@ -190,15 +190,11 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="tenants tab__content">
-            <Tenants
-              tenants={tenants}
-            />
+            <Tenants tenants={tenants}/>
           </TabPane>
 
           <TabPane className="property-unit tab__content">
-            <PropertyUnits
-              real_property_units={real_property_units}
-            />
+            <PropertyUnits real_property_units={real_property_units}/>
           </TabPane>
 
           <TabPane className="lease tab__content">
@@ -223,13 +219,12 @@ class PreparerForm extends Component {
           </TabPane>
         </TabContent>
 
-        {activeTab === 0 &&
         <Row>
           <Column medium={12}>
             <button className="button" onClick={handleSubmit(this.save)}>{t('save')}</button>
           </Column>
         </Row>
-        }
+
       </div>
     );
   }
