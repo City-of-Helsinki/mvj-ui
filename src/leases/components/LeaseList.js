@@ -50,7 +50,7 @@ class LeaseList extends Component {
   };
 
   render() {
-    const {leases, isFetching} = this.props;
+    const {leases, isFetching, t} = this.props;
     const orderedLeases = orderBy(leases, ['id'], ['asc']);
 
     return (
@@ -58,13 +58,15 @@ class LeaseList extends Component {
         <Loader isLoading={isFetching}/>
         <FilterableList
           data={orderedLeases}
+          displayFilters={true}
           isFetching={isFetching}
           dataKeys={[
             {key: 'id', label: 'ID'},
-            {key: ['identifier_type', 'identifier_municipality', 'identifier_district'], label: 'Vuokraustunnus'},
+            {key: 'identifier', label: 'Vuokraustunnus'},
+            {key: 'application.type', label: 'Tyyppi', renderer: (val) => t(`types.${val}`)},
             {key: 'tenants.length', label: 'Vuokralaiset'},
-            {key: ['preparer.first_name', 'preparer.last_name'], label: 'Valmistelija'},
-            {key: 'state', label: 'Tila'},
+            {key: ['preparer.first_name', 'preparer.last_name'], label: 'Valmistelija', renderer: (val) => `${val} `},
+            {key: 'state', label: 'Tila', renderer: (val) => t(`state.${val}`)},
           ]}
           onRowClick={this.handleEditClick}
         />
@@ -87,5 +89,5 @@ export default flowRight(
       editLease,
     },
   ),
-  translate(['common', 'leases']),
+  translate(['common', 'leases', 'applications']),
 )(LeaseList);

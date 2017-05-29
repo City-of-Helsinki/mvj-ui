@@ -9,7 +9,7 @@ import {fetchApplications} from '../actions';
 import {getApplicationsList, getIsFetching} from '../selectors';
 // import {getActiveLanguage} from '../../util/helpers';
 
-import ApplicationList from '../../components/filterableList/FilterableList';
+import FilterableList from '../../components/filterableList/FilterableList';
 
 import EditModal from '../../components/editModal/editModal';
 import ApplicationEditForm from './ApplicationEditForm';
@@ -94,22 +94,19 @@ class ApplicationsList extends Component {
     return (
       <div className="applications">
         <Loader isLoading={isFetching}/>
-        <ApplicationList
+        <FilterableList
           data={orderedApplications}
           isFetching={isFetching}
+          displayFilters={false}
           dataKeys={[
             {key: 'id', label: 'ID'},
+            {key: 'type', label: 'Tyyppi', renderer: (val) => t(`types.${val}`)},
             {key: 'contact_name', label: 'Nimi'},
             {key: 'contact_phone', label: 'Puhelin'},
             {key: 'contact_email', label: 'Sähköposti'},
           ]}
           injectedControls={[
             {onClick: this.handleEditClick, className: 'applications__list--edit', text: t('edit')},
-            {
-              onClick: () => console.log('create lease'),
-              className: 'applications__list--add',
-              text: t('leases:createNew'),
-            },
           ]}
         />
 

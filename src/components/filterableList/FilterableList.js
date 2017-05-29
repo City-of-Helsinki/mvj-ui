@@ -19,8 +19,7 @@ const fuseOptions = {
   // maxPatternLength: 32,
   minMatchCharLength: 3,
   keys: [
-    'contact_name',
-    'organization_name',
+    'identifier',
   ],
 };
 
@@ -28,6 +27,7 @@ type Props = {
   className?: String,
   data: Array<any>,
   dataKeys: Array<any>,
+  displayFilters?: boolean,
   injectedControls?: Array<any>,
   isFetching: boolean,
   onRowClick: Function,
@@ -42,7 +42,7 @@ type State = {
 
 type FuseType = Object;
 
-class ApplicationList extends Component {
+class FilterableList extends Component {
   props: Props;
   state: State;
   fuse: FuseType;
@@ -113,7 +113,7 @@ class ApplicationList extends Component {
 
   render() {
     const {items, filters, search} = this.state;
-    const {className, dataKeys, injectedControls, isFetching, onRowClick, t} = this.props;
+    const {className, dataKeys, displayFilters, injectedControls, isFetching, onRowClick, t} = this.props;
 
     return (
       <div className={classnames('applications__list', className, {'loading': isFetching})}>
@@ -128,6 +128,7 @@ class ApplicationList extends Component {
                      onChange={this.handleSearch}
               />
             </Column>
+            {displayFilters &&
             <Column medium={3} className="applications__search">
               <label htmlFor="search">{t('preparer')}</label>
               <Select
@@ -144,7 +145,8 @@ class ApplicationList extends Component {
                 onChange={(item) => this.handleFilterChange(item, 'preparer.username')}
               />
             </Column>
-
+            }
+            {displayFilters &&
             <Column medium={3} className="applications__search">
               <label htmlFor="search">{t('state')}</label>
               <Select
@@ -163,8 +165,10 @@ class ApplicationList extends Component {
                 onChange={(item) => this.handleFilterChange(item, 'state')}
               />
             </Column>
+            }
           </Row>
         </Hero>
+
         <Table
           onRowClick={onRowClick}
           dataKeys={dataKeys}
@@ -178,4 +182,4 @@ class ApplicationList extends Component {
 
 export default flowRight(
   translate(['common', 'applications'])
-)(ApplicationList);
+)(FilterableList);

@@ -89,21 +89,21 @@ class Tenants extends Component {
           <section className="tenants">
             {tenants && tenants.map((tenant, i) => (
               <div key={i} className="tenant">
-                <h3 className="tenant__title">{get(tenant, 'contact.organization_name')}</h3>
+                <h3 className="tenant__title">{get(tenant, 'contact_contact.organization_name')}</h3>
 
                 <div className="tenant__section">
                   <h4>{t('tenants.applicant')}</h4>
-                  <p className="tenant__section--primary">{get(tenant, 'contact.organization_name') || ' - '}</p>
-                  <p>{get(tenant, 'contact.organization_id') || ' - '}</p>
-                  <p>{get(tenant, 'contact.organization_address') || ' - '}</p>
-                  <p>{get(tenant, 'contact.organization_revenue') || ' - '}</p>
+                  <p className="tenant__section--primary">{get(tenant, 'contact_contact.organization_name') || ' - '}</p>
+                  <p>{get(tenant, 'contact_contact.organization_id') || ' - '}</p>
+                  <p>{get(tenant, 'contact_contact.organization_address') || ' - '}</p>
+                  <p>{get(tenant, 'contact_contact.organization_revenue') || ' - '}</p>
                 </div>
 
                 <div className="tenant__section">
                   <h4>{t('tenants.billingInformation')}</h4>
-                  <p className="tenant__section--primary">{get(tenant, 'billing_contact', '-') || ' - '}</p>
-                  <p>{get(tenant, 'billing_address') || ' - '}</p>
-                  <p>{get(tenant, 'contact.electronic_billing_details') || ' - '}</p>
+                  <p className="tenant__section--primary">{get(tenant, 'billing_contact.name', '-') || ' - '}</p>
+                  <p>{get(tenant, 'billing_contact.address') || ' - '}</p>
+                  <p>{get(tenant, 'billing_contact.electronic_billing_details') || ' - '}</p>
                 </div>
 
                 <div className="tenant__section">

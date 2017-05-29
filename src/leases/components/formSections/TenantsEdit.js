@@ -80,7 +80,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Nimi"
-              name={`tenants[${tenant}].contact.name`}
+              name={`tenants[${tenant}].contact_contact.name`}
               required={true}
               type="text"
               component={FormField}
@@ -89,7 +89,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Sähköposti"
-              name={`tenants[${tenant}].contact.email`}
+              name={`tenants[${tenant}].contact_contact.email`}
               required={true}
               type="text"
               component={FormField}
@@ -98,7 +98,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Puhelinnumero"
-              name={`tenants[${tenant}].contact.phone`}
+              name={`tenants[${tenant}].contact_contact.phone`}
               required={true}
               type="text"
               component={FormField}
@@ -111,7 +111,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Yhteyshenkilö"
-              name={`tenants[${tenant}].billing_contact`}
+              name={`tenants[${tenant}].billing_contact.name`}
               required={true}
               type="text"
               component={FormField}
@@ -120,7 +120,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Laskutusosoite"
-              name={`tenants[${tenant}].billing_address`}
+              name={`tenants[${tenant}].billing_contact.billing_address`}
               required={true}
               type="textarea"
               component={FormField}
@@ -129,7 +129,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Sähköinen laskutusosoite"
-              name={`tenants[${tenant}].contact.electronic_billing_details`}
+              name={`tenants[${tenant}].billing_contact.electronic_billing_details`}
               required={true}
               type="text"
               component={FormField}

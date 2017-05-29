@@ -57,7 +57,10 @@
       }
     },
     "state": {
-      "draft": "Luonnos"
+      "draft": "Luonnos",
+      "archived": "Arkistoitu",
+      "sent": "Lähetetty",
+      "approved": "Hyväksytty"
     }
   },
   "applicationForm": {

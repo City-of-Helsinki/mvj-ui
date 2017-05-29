@@ -56,7 +56,10 @@
       }
     },
     "state": {
-      "draft": "Draft"
+      "draft": "Draft",
+      "archived": "Archived",
+      "sent": "Sent",
+      "approved": "Approved"
     }
   },
   "applicationForm": {
