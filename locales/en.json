@@ -55,6 +55,19 @@
         "manual": "Manual"
       }
     },
+    "conditions": {
+      "title": "Conditions",
+      "single": "Condition",
+      "editCondition": "Edit condition",
+      "addCondition": "Add condition",
+      "types": {
+        "special_condition": "Special condition",
+        "hitas": "Hitas",
+        "aso": "ASO",
+        "kalasatama": "Kalasatama",
+        "other": "Other"
+      }
+    },
     "state": {
       "draft": "Draft",
       "archived": "Archived",
