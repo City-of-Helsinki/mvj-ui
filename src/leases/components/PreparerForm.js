@@ -39,6 +39,7 @@ type Props = {
   attributes: Object,
   attributes: Object,
   closeReveal: Function,
+  conditions: Array<any>,
   editLease: Function,
   fetchApplicationAttributes: Function,
   fetchLeaseAttributes: Function,
@@ -135,13 +136,13 @@ class PreparerForm extends Component {
   save = (values) => {
     const {editLease} = this.props;
     editLease(values);
-    // console.log('saving', values);
   };
 
   render() {
     const {activeTab} = this.state;
 
     const {
+      conditions,
       leaseAttributes,
       params: {leaseId},
       isFetching,
@@ -207,7 +208,8 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="conditions tab__content">
-            <Conditions/>
+            <Conditions attributes={leaseAttributes}
+                        conditions={conditions}/>
           </TabPane>
 
           <TabPane className="map">
@@ -238,6 +240,7 @@ export default flowRight(
       const tenants = selector(state, 'tenants');
       const real_property_units = selector(state, 'real_property_units');
       const rents = selector(state, 'rents');
+      const conditions = selector(state, 'conditions');
 
       return {
         applicationAttributes: getApplicationAttributes(state),
@@ -247,6 +250,7 @@ export default flowRight(
         tenants,
         real_property_units,
         rents,
+        conditions,
       };
     },
     {
