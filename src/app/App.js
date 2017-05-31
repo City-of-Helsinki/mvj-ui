@@ -66,7 +66,7 @@ class App extends Component {
 
     if (token) {
       if (userList.length && isEmpty(currentUser)) {
-        const user = userList.find(({id}) => id === token);
+        const user = userList.find(({username}) => username === token);
         changeUser(user);
       }
     } else {
