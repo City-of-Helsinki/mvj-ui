@@ -45,6 +45,7 @@ type Props = {
   fetchLeaseAttributes: Function,
   fetchSingleLease: Function,
   handleSubmit: Function,
+  identifier: string,
   initialValues: Object,
   invalid: Boolean,
   isFetching: boolean,
@@ -143,15 +144,16 @@ class PreparerForm extends Component {
 
     const {
       conditions,
+      handleSubmit,
+      initialValues,
+      isFetching,
+      identifier,
       leaseAttributes,
       params: {leaseId},
-      isFetching,
-      initialValues,
-      tenants,
       real_property_units,
       rents,
-      handleSubmit,
       t,
+      tenants,
     } = this.props;
 
     if (isFetching || isEmpty(leaseAttributes)) {
@@ -161,11 +163,17 @@ class PreparerForm extends Component {
     return (
       <div className="full__width flex tabs preparer-form">
         <Hero className="preparer-form__hero">
-          <h2>
-            <span onClick={this.goBack} style={{cursor: 'pointer'}}>
-              <i className="mi mi-keyboard-backspace"/>
-            </span> {t('leases:single')} {leaseId}
-          </h2>
+
+          <div className="controls">
+            <h2>
+              <span onClick={this.goBack} style={{cursor: 'pointer'}}>
+                <i className="mi mi-keyboard-backspace"/>
+              </span> {identifier ? identifier : `${t('leases:single')} ${leaseId}`}
+            </h2>
+
+            <button className="display-notes" onClick={this.toggleSidebar}/>
+          </div>
+
           <Tabs
             active={activeTab}
             className="hero__navigation"
@@ -237,6 +245,7 @@ export default flowRight(
   connect(
     (state) => {
       const selector = formValueSelector('preparer-form');
+      const identifier = selector(state, 'identifier');
       const tenants = selector(state, 'tenants');
       const real_property_units = selector(state, 'real_property_units');
       const rents = selector(state, 'rents');
@@ -248,6 +257,7 @@ export default flowRight(
         initialValues: getCurrentLease(state),
         isFetching: getIsFetching(state),
         tenants,
+        identifier,
         real_property_units,
         rents,
         conditions,
