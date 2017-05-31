@@ -16,7 +16,8 @@ import TenantsEdit from './TenantsEdit';
 type Props = Object;
 type State = {
   isEditing: boolean,
-  activeTenant: number | null,
+  activeTenant: Object | null,
+  activeIndex: number | null,
   tenants: Object | null,
 }
 
@@ -30,6 +31,7 @@ class Tenants extends Component {
     this.state = {
       isEditing: false,
       activeTenant: null,
+      activeIndex: null,
       tenants: null,
     };
   }
@@ -41,38 +43,46 @@ class Tenants extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {tenants} = nextProps;
-    if (this.props.tenants && this.props.tenants.length !== tenants.length) {
-      this.setState({tenants});
-    }
+    this.setState({tenants});
   }
 
-  displayEditModal = (id = null) => {
+  displayEditModal = (activeTenant = null, activeIndex = null) => {
     this.setState({
       isEditing: true,
-      activeTenant: id,
+      activeTenant,
+      activeIndex,
     });
   };
 
-  handleEditSave = ({tenants}) => {
-    this.setState({isEditing: false, activeTenant: null, tenants}, () => this.props.closeReveal('editModal'));
+  handleEditSave = (values) => {
+    const {array} = this.props;
+    const {activeIndex} = this.state;
+
+    array.splice('tenants', activeIndex, 1, values);
+    this.setState({isEditing: false, activeTenant: null, activeIndex: null}, () => this.props.closeReveal('editModal'));
   };
 
-  handleCreateNew = ({tenants: {NEW}}) => {
+  handleCreateNew = (values) => {
     const {array} = this.props;
-    array.push('tenants', NEW);
-    this.setState({isEditing: false, activeTenant: null}, () => this.props.closeReveal('editModal'));
+    array.push('tenants', values);
+    this.setState({isEditing: false, activeTenant: null, activeIndex: null}, () => this.props.closeReveal('editModal'));
   };
 
   handleDelete = () => {
     const {array} = this.props;
-    const {activeTenant} = this.state;
-    array.remove('tenants', activeTenant);
-    this.setState({isEditing: false, activeTenant: null}, () => this.props.closeReveal('editModal'));
+    const {activeIndex} = this.state;
+    array.remove('tenants', activeIndex);
+    this.setState({isEditing: false, activeTenant: null, activeIndex: null}, () => this.props.closeReveal('editModal'));
   };
 
   handleDismissEditModal = () => {
     const {initialValues: {tenants}} = this.props;
-    this.setState({isEditing: false, activeTenant: null, tenants}, () => this.props.closeReveal('editModal'));
+    this.setState({
+      isEditing: false,
+      activeTenant: null,
+      activeIndex: null,
+      tenants,
+    }, () => this.props.closeReveal('editModal'));
   };
 
   render() {
@@ -113,7 +123,7 @@ class Tenants extends Component {
                   <p>{get(tenant, 'contact.phone')}</p>
                 </div>
 
-                <a onClick={() => this.displayEditModal(i)} className="tenant__edit">
+                <a onClick={() => this.displayEditModal(tenant, i)} className="tenant__edit">
                   {t('tenants.editTenant')}
                 </a>
 

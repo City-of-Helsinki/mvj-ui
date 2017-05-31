@@ -7,6 +7,7 @@ import {Row, Column} from 'react-foundation';
 import {translate} from 'react-i18next';
 import FormField from '../../../components/form/FormField';
 import {BaseValidator} from '../../../components/form/validation';
+import {connect} from 'react-redux';
 
 type Props = {
   activeRent: number,
@@ -26,9 +27,8 @@ const validate = ({rents}) => {
   }, customConditions);
 };
 
-const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, activeRent, attributes}: Props) => {
+const LeasesEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, activeRent, attributes}: Props) => {
   const isEditing = activeRent !== null;
-  const rent = isEditing ? activeRent : 'NEW';
   const saveMethod = isEditing ? handleEdit : handleCreate;
   const buttonText = isEditing ? 'save' : 'add';
   const getOptions = (field) => field.map(({value}) => ({value, label: t(`leases.types.${value}`)}));
@@ -42,7 +42,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={6}>
             <Field
               label="Tyyppi"
-              name={`rents[${rent}].type`}
+              name="type"
               required={true}
               type="select"
               options={typeOpts}
@@ -52,7 +52,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={6}>
             <Field
               label="Käyttötarkoitus"
-              name={`rents[${rent}].use`}
+              name="use"
               required={true}
               type="text"
               component={FormField}
@@ -61,7 +61,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={12}>
             <Field
               label="Summa"
-              name={`rents[${rent}].amount`}
+              name="amount"
               required={true}
               type="number"
               component={FormField}
@@ -81,10 +81,14 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
 };
 
 export default flowRight(
+  connect(
+    (state, {activeRent}) => ({
+      initialValues: activeRent,
+    })
+  ),
   reduxForm({
-    form: 'preparer-form',
-    destroyOnUnmount: false,
+    form: 'rentsEditForm',
     validate,
   }),
   translate(['common', 'leases']),
-)(TenantsEdit);
+)(LeasesEdit);

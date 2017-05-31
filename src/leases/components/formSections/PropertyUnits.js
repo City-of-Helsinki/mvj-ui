@@ -24,7 +24,8 @@ type Props = Object;
 
 type State = {
   isEditing: boolean,
-  activePropertyUnit: number | null,
+  activePropertyUnit: Object | null,
+  activeIndex: number | null,
   real_property_units: Array<any> | null,
 }
 
@@ -37,6 +38,7 @@ class RealProperyUnits extends Component {
     this.state = {
       isEditing: false,
       activePropertyUnit: null,
+      activeIndex: null,
       real_property_units: null,
     };
   }
@@ -48,38 +50,49 @@ class RealProperyUnits extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {real_property_units} = nextProps;
-    if (this.props.real_property_units && this.props.real_property_units.length !== real_property_units.length) {
-      this.setState({real_property_units});
-    }
+    this.setState({real_property_units});
   }
 
-  displayEditModal = (id = null) => {
+  displayEditModal = (activePropertyUnit = null, activeIndex = null) => {
     this.setState({
       isEditing: true,
-      activePropertyUnit: id,
+      activePropertyUnit,
+      activeIndex,
     });
   };
 
-  handleEditSave = ({real_property_units}) => {
+  handleEditSave = (values) => {
+    const {array} = this.props;
+    const {activeIndex} = this.state;
+
+    array.splice('real_property_units', activeIndex, 1, values);
     this.setState({
       isEditing: false,
       activePropertyUnit: null,
-      real_property_units,
+      activeIndex: null,
     }, () => this.props.closeReveal('editModal'));
   };
 
 
-  handleCreateNew = ({real_property_units: {NEW}}) => {
+  handleCreateNew = (values) => {
     const {array} = this.props;
-    array.push('real_property_units', NEW);
-    this.setState({isEditing: false, activePropertyUnit: null}, () => this.props.closeReveal('editModal'));
+    array.push('real_property_units', values);
+    this.setState({
+      isEditing: false,
+      activePropertyUnit: null,
+      activeIndex: null,
+    }, () => this.props.closeReveal('editModal'));
   };
 
   handleDelete = () => {
     const {array} = this.props;
-    const {activePropertyUnit} = this.state;
-    array.remove('real_property_units', activePropertyUnit);
-    this.setState({isEditing: false, activePropertyUnit: null}, () => this.props.closeReveal('editModal'));
+    const {activeIndex} = this.state;
+    array.remove('real_property_units', activeIndex);
+    this.setState({
+      isEditing: false,
+      activePropertyUnit: null,
+      activeIndex: null,
+    }, () => this.props.closeReveal('editModal'));
   };
 
   handleDismissEditModal = () => {
@@ -87,6 +100,7 @@ class RealProperyUnits extends Component {
     this.setState({
       isEditing: false,
       activePropertyUnit: null,
+      activeIndex: null,
       real_property_units,
     }, () => this.props.closeReveal('editModal'));
   };
@@ -168,7 +182,7 @@ class RealProperyUnits extends Component {
               </Column>
 
               <div className="data-box__controls">
-                <span onClick={() => this.displayEditModal(i)} className="edit">Muokkaa</span>
+                <span onClick={() => this.displayEditModal(property, i)} className="edit">Muokkaa</span>
               </div>
             </div>
           </section>

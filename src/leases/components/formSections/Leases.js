@@ -18,7 +18,8 @@ import Table from '../../../components/table/Table';
 type Props = Object;
 type State = {
   isEditing: boolean,
-  activeRent: number | null,
+  activeRent: Object | null,
+  activeIndex: number | null,
   rents: Object | null,
 }
 
@@ -32,6 +33,7 @@ class Leases extends Component {
     this.state = {
       isEditing: false,
       activeRent: null,
+      activeIndex: null,
       rents: null,
     };
   }
@@ -43,38 +45,46 @@ class Leases extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {rents} = nextProps;
-    if (this.props.rents && this.props.rents.length !== rents.length) {
-      this.setState({rents});
-    }
+    this.setState({rents});
   }
 
-  displayEditModal = (id = null) => {
+  displayEditModal = (activeRent = null, activeIndex = null) => {
     this.setState({
       isEditing: true,
-      activeRent: id,
+      activeRent,
+      activeIndex,
     });
   };
 
-  handleEditSave = ({rents}) => {
-    this.setState({isEditing: false, activeRent: null, rents}, () => this.props.closeReveal('editModal'));
+  handleEditSave = (values) => {
+    const {array} = this.props;
+    const {activeIndex} = this.state;
+
+    array.splice('rents', activeIndex, 1, values);
+    this.setState({isEditing: false, activeRent: null, activeIndex: null}, () => this.props.closeReveal('editModal'));
   };
 
-  handleCreateNew = ({rents: {NEW}}) => {
+  handleCreateNew = (values) => {
     const {array} = this.props;
-    array.push('rents', NEW);
-    this.setState({isEditing: false, activeRent: null}, () => this.props.closeReveal('editModal'));
+    array.push('rents', values);
+    this.setState({isEditing: false, activeRent: null, activeIndex: null}, () => this.props.closeReveal('editModal'));
   };
 
   handleDelete = () => {
     const {array} = this.props;
-    const {activeRent} = this.state;
-    array.remove('rents', activeRent);
-    this.setState({isEditing: false, activeRent: null}, () => this.props.closeReveal('editModal'));
+    const {activeIndex} = this.state;
+    array.remove('rents', activeIndex);
+    this.setState({isEditing: false, activeRent: null, activeIndex: null}, () => this.props.closeReveal('editModal'));
   };
 
   handleDismissEditModal = () => {
     const {initialValues: {rents}} = this.props;
-    this.setState({isEditing: false, activeRent: null, rents}, () => this.props.closeReveal('editModal'));
+    this.setState({
+      isEditing: false,
+      activeRent: null,
+      activeIndex: null,
+      rents,
+    }, () => this.props.closeReveal('editModal'));
   };
 
   render() {
@@ -90,7 +100,8 @@ class Leases extends Component {
         {rents && rents.map((rent, i) => (
           <section key={i} className="data-box">
             <div className="data-box__header">
-              <h2>{t('single')} {i+1} <span className="identifier">{t(`leases.types.${get(rent, 'type')}`)}</span></h2>
+              <h2>{t('single')} {i + 1} <span className="identifier">{t(`leases.types.${get(rent, 'type')}`)}</span>
+              </h2>
               <div className="data-box__header--item">
                 <span className="identifier">Käyttötarkoitus</span>
                 {get(rent, 'use') || ' - '}
@@ -125,7 +136,7 @@ class Leases extends Component {
               </div>
 
               <div className="data-box__controls">
-                <span onClick={() => this.displayEditModal(i)} className="edit">{t('leases.editLease')}</span>
+                <span onClick={() => this.displayEditModal(rent, i)} className="edit">{t('leases.editLease')}</span>
               </div>
             </div>
           </section>
