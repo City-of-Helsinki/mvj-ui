@@ -19,6 +19,7 @@ import Tabs from '../../components/tabs/Tabs';
 import Hero from '../../components/hero/Hero';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
+import Sidebar from '../../components/sidebar/Sidebar';
 
 import Billing from './formSections/Billing';
 import PropertyUnits from './formSections/PropertyUnits';
@@ -26,6 +27,7 @@ import Leases from './formSections/Leases';
 import Summary from './formSections/Summary';
 import Tenants from './formSections/Tenants';
 import Conditions from './formSections/Conditions';
+import Notes from './formSections/Notes';
 import MapContainer from '../../components/map/Map';
 import validate from './formSections/NewApplicationValidator';
 
@@ -53,6 +55,7 @@ type Props = {
   leaseAttributes: Object,
   leaseId: String,
   location: Object,
+  notes: Array<any>,
   onCancel: Function,
   onSave: Function,
   params: Object,
@@ -66,6 +69,7 @@ type Props = {
 
 type State = {
   activeTab: number,
+  displaySidebar: boolean,
 };
 
 type TabsType = Array<any>;
@@ -84,6 +88,7 @@ class PreparerForm extends Component {
 
     this.state = {
       activeTab: 0,
+      displaySidebar: false,
     };
   }
 
@@ -111,6 +116,14 @@ class PreparerForm extends Component {
       this.setState({activeTab: location.query.tab});
     }
   }
+
+  toggleSidebar = () => {
+    const {displaySidebar} = this.state;
+
+    return this.setState({
+      displaySidebar: !displaySidebar,
+    });
+  };
 
   handleTabClick = (tabId) => {
     const {router} = this.context;
@@ -149,6 +162,7 @@ class PreparerForm extends Component {
       isFetching,
       identifier,
       leaseAttributes,
+      notes,
       params: {leaseId},
       real_property_units,
       rents,
@@ -229,6 +243,15 @@ class PreparerForm extends Component {
           </TabPane>
         </TabContent>
 
+        <Sidebar
+          className="notes__sidebar"
+          isOpen={this.state.displaySidebar}
+          component={Notes}
+          notes={notes}
+          position="right"
+          handleClose={this.toggleSidebar}
+        />
+
         <Row>
           <Column medium={12}>
             <button className="button" onClick={handleSubmit(this.save)}>{t('save')}</button>
@@ -250,6 +273,7 @@ export default flowRight(
       const real_property_units = selector(state, 'real_property_units');
       const rents = selector(state, 'rents');
       const conditions = selector(state, 'conditions');
+      const notes = selector(state, 'notes');
 
       return {
         applicationAttributes: getApplicationAttributes(state),
@@ -261,6 +285,7 @@ export default flowRight(
         real_property_units,
         rents,
         conditions,
+        notes,
       };
     },
     {
