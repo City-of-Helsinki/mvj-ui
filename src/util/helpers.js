@@ -1,6 +1,7 @@
 import {Languages} from '../constants';
 import find from 'lodash/find';
 import forEach from 'lodash/forEach';
+import findIndex from 'lodash/findIndex';
 import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
 import i18n from '../root/i18n';
@@ -130,4 +131,14 @@ export const getKtjLink = (id, key, lang = 'fi') => {
   /* global API_URL */
   const apiUrlWithOutVersionSuffix = API_URL.split('/v1')[0];
   return `${apiUrlWithOutVersionSuffix}/ktjkir/tuloste/${key}/pdf?kohdetunnus=${id}&lang=${lang}`;
+};
+
+/**
+ * Find from collection with ID
+ * @param collection
+ * @param id
+ * @returns {*}
+ */
+export const findIndexOfArrayfield = (collection, id) => {
+  return findIndex(collection, {id});
 };

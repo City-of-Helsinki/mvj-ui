@@ -7,6 +7,7 @@ import {Row, Column} from 'react-foundation';
 import {translate} from 'react-i18next';
 import FormField from '../../../components/form/FormField';
 import {BaseValidator} from '../../../components/form/validation';
+import {connect} from 'react-redux';
 
 type Props = {
   activeCondition: number,
@@ -26,9 +27,8 @@ const validate = ({conditions}) => {
   }, customConditions);
 };
 
-const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, activeCondition, attributes}: Props) => {
+const ConditionsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, activeCondition, attributes}: Props) => {
   const isEditing = activeCondition !== null;
-  const condition = isEditing ? activeCondition : 'NEW';
   const saveMethod = isEditing ? handleEdit : handleCreate;
   const buttonText = isEditing ? 'save' : 'add';
   const getOptions = (field) => field.map(({value}) => ({value, label: t(`leases:conditions.types.${value}`)}));
@@ -42,7 +42,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={6}>
             <Field
               label={t('common:type')}
-              name={`conditions[${condition}].type`}
+              name="type"
               required={true}
               type="select"
               options={typeOpts}
@@ -52,7 +52,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={6}>
             <Field
               label={t('common:description')}
-              name={`conditions[${condition}].description`}
+              name="description"
               required={true}
               type="text"
               component={FormField}
@@ -72,10 +72,14 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
 };
 
 export default flowRight(
+  connect(
+    (state, {activeCondition}) => ({
+      initialValues: activeCondition,
+    })
+  ),
   reduxForm({
-    form: 'preparer-form',
-    destroyOnUnmount: false,
+    form: 'conditionsEditForm',
     validate,
   }),
-  translate(['common', 'leases']),
-)(TenantsEdit);
+  translate(['common']),
+)(ConditionsEdit);

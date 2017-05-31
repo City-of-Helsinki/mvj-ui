@@ -16,7 +16,8 @@ type Props = Object;
 
 type State = {
   isEditing: boolean,
-  activeCondition: number | null,
+  activeCondition: Object | null,
+  activeIndex: number | null,
   conditions: Object | null,
 }
 
@@ -29,6 +30,7 @@ class Conditions extends Component {
     this.state = {
       isEditing: false,
       activeCondition: null,
+      activeIndex: null,
       conditions: null,
     };
   }
@@ -40,38 +42,60 @@ class Conditions extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {conditions} = nextProps;
-    if (this.props.conditions && this.props.conditions.length !== conditions.length) {
-      this.setState({conditions});
-    }
+    this.setState({conditions});
   }
 
-  displayEditModal = (id = null) => {
+  displayEditModal = (activeCondition = null, activeIndex = null) => {
     this.setState({
       isEditing: true,
-      activeCondition: id,
+      activeCondition,
+      activeIndex,
     });
   };
 
-  handleEditSave = ({conditions}) => {
-    this.setState({isEditing: false, activeCondition: null, conditions}, () => this.props.closeReveal('editModal'));
+  handleEditSave = (values) => {
+    const {array} = this.props;
+    const {activeIndex} = this.state;
+
+    array.splice('conditions', activeIndex, 1, values);
+
+    this.setState({
+      isEditing: false,
+      activeCondition: null,
+      activeIndex: null,
+    }, () => this.props.closeReveal('editModal'));
   };
 
-  handleCreateNew = ({conditions: {NEW}}) => {
+  handleCreateNew = (values) => {
     const {array} = this.props;
-    array.push('conditions', NEW);
-    this.setState({isEditing: false, activeCondition: null}, () => this.props.closeReveal('editModal'));
+    array.push('conditions', values);
+
+    this.setState({
+      isEditing: false,
+      activeCondition: null,
+      activeIndex: null,
+    }, () => this.props.closeReveal('editModal'));
   };
 
   handleDelete = () => {
     const {array} = this.props;
-    const {activeCondition} = this.state;
-    array.remove('conditions', activeCondition);
-    this.setState({isEditing: false, activeCondition: null}, () => this.props.closeReveal('editModal'));
+    const {activeIndex} = this.state;
+    array.remove('conditions', activeIndex);
+    this.setState({
+      isEditing: false,
+      activeCondition: null,
+      activeIndex: null,
+    }, () => this.props.closeReveal('editModal'));
   };
 
   handleDismissEditModal = () => {
     const {initialValues: {conditions}} = this.props;
-    this.setState({isEditing: false, activeCondition: null, conditions}, () => this.props.closeReveal('editModal'));
+    this.setState({
+      isEditing: false,
+      activeCondition: null,
+      activeIndex: null,
+      conditions,
+    }, () => this.props.closeReveal('editModal'));
   };
 
   render() {
@@ -83,19 +107,22 @@ class Conditions extends Component {
           <h1 className="tab__content--title">{t('conditions.title')}</h1>
         </Column>
 
-        {conditions && conditions.map(({description, type}, i) =>
+        {conditions && conditions.map((condition, i) =>
           <section key={i} className="data-box">
             <div className="data-box__header">
-              <h2>{t(`leases:conditions.types.${type}`)} <span className="identifier">{description}</span></h2>
+              <h2>{t(`leases:conditions.types.${condition.type}`)} <span
+                className="identifier">{condition.description}</span></h2>
             </div>
             <div className="data-box__controls">
-              <span onClick={() => this.displayEditModal(i)} className="edit">{t('conditions.editCondition')}</span>
+              <span onClick={() => this.displayEditModal(condition, i)}
+                    className="edit">{t('conditions.editCondition')}</span>
             </div>
           </section>
         )}
         <Row className="section__controls">
           <Column medium={12}>
-            <button className="add-new-button" onClick={() => this.displayEditModal()}>{t('conditions.addCondition')}</button>
+            <button className="add-new-button"
+                    onClick={() => this.displayEditModal()}>{t('conditions.addCondition')}</button>
           </Column>
         </Row>
 

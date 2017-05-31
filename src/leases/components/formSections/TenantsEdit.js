@@ -2,6 +2,7 @@
 import React from 'react';
 import flowRight from 'lodash/flowRight';
 import {Field, reduxForm} from 'redux-form';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {translate} from 'react-i18next';
 import GroupTitle from '../../../components/form/GroupTitle';
@@ -27,7 +28,6 @@ const validate = ({tenants}) => {
 
 const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, activeTenant}: Props) => {
   const isEditing = activeTenant !== null;
-  const tenant = isEditing ? activeTenant : 'NEW';
   const saveMethod = isEditing ? handleEdit : handleCreate;
   const buttonText = isEditing ? 'save' : 'add';
 
@@ -40,7 +40,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={6}>
             <Field
               label="Yrityksen nimi"
-              name={`tenants[${tenant}].contact.organization_name`}
+              name="contact.organization_name"
               required={true}
               type="text"
               component={FormField}
@@ -49,7 +49,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={6}>
             <Field
               label="Y-tunnus"
-              name={`tenants[${tenant}].contact.organization_id`}
+              name="contact.organization_id"
               required={true}
               type="text"
               component={FormField}
@@ -58,7 +58,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={6}>
             <Field
               label="Liikevaihto (€)"
-              name={`tenants[${tenant}].contact.organization_revenue`}
+              name="contact.organization_revenue"
               required={true}
               type="text"
               component={FormField}
@@ -67,7 +67,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={6}>
             <Field
               label="Osoite"
-              name={`tenants[${tenant}].contact.organization_address`}
+              name="contact.organization_address"
               required={true}
               type="textarea"
               component={FormField}
@@ -80,7 +80,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Nimi"
-              name={`tenants[${tenant}].contact.name`}
+              name="contact.name"
               required={true}
               type="text"
               component={FormField}
@@ -89,7 +89,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Sähköposti"
-              name={`tenants[${tenant}].contact.email`}
+              name="contact.email"
               required={true}
               type="text"
               component={FormField}
@@ -98,7 +98,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Puhelinnumero"
-              name={`tenants[${tenant}].contact.phone`}
+              name="contact.phone"
               required={true}
               type="text"
               component={FormField}
@@ -111,7 +111,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Yhteyshenkilö"
-              name={`tenants[${tenant}].billing_contact.name`}
+              name="billing_contact.name"
               required={true}
               type="text"
               component={FormField}
@@ -120,7 +120,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Laskutusosoite"
-              name={`tenants[${tenant}].billing_contact.billing_address`}
+              name="billing_contact.billing_address"
               required={true}
               type="textarea"
               component={FormField}
@@ -129,7 +129,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Sähköinen laskutusosoite"
-              name={`tenants[${tenant}].billing_contact.electronic_billing_details`}
+              name="billing_contact.electronic_billing_details"
               required={true}
               type="text"
               component={FormField}
@@ -149,9 +149,13 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
 };
 
 export default flowRight(
+  connect(
+    (state, {activeTenant}) => ({
+      initialValues: activeTenant,
+    })
+  ),
   reduxForm({
-    form: 'preparer-form',
-    destroyOnUnmount: false,
+    form: 'tenantsEditForm',
     validate,
   }),
   translate(['common']),
