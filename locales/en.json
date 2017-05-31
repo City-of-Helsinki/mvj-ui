@@ -73,6 +73,11 @@
       "archived": "Archived",
       "sent": "Sent",
       "approved": "Approved"
+    },
+    "notes": {
+      "title": "Notes",
+      "new": "New note",
+      "single": "Note"
     }
   },
   "applicationForm": {

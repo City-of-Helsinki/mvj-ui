@@ -76,6 +76,11 @@
       "archived": "Arkistoitu",
       "sent": "Lähetetty",
       "approved": "Hyväksytty"
+    },
+    "notes": {
+      "title": "Muistiinpanot",
+      "new": "Uusi muistiinpano",
+      "single": "Muistiinpano"
     }
   },
   "applicationForm": {
