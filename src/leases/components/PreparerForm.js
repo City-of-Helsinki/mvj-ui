@@ -19,6 +19,7 @@ import Tabs from '../../components/tabs/Tabs';
 import Hero from '../../components/hero/Hero';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
+import Sidebar from '../../components/sidebar/Sidebar';
 
 import Billing from './formSections/Billing';
 import PropertyUnits from './formSections/PropertyUnits';
@@ -26,6 +27,7 @@ import Leases from './formSections/Leases';
 import Summary from './formSections/Summary';
 import Tenants from './formSections/Tenants';
 import Conditions from './formSections/Conditions';
+import Notes from './formSections/Notes';
 import MapContainer from '../../components/map/Map';
 import validate from './formSections/NewApplicationValidator';
 
@@ -39,11 +41,13 @@ type Props = {
   attributes: Object,
   attributes: Object,
   closeReveal: Function,
+  conditions: Array<any>,
   editLease: Function,
   fetchApplicationAttributes: Function,
   fetchLeaseAttributes: Function,
   fetchSingleLease: Function,
   handleSubmit: Function,
+  identifier: string,
   initialValues: Object,
   invalid: Boolean,
   isFetching: boolean,
@@ -51,6 +55,7 @@ type Props = {
   leaseAttributes: Object,
   leaseId: String,
   location: Object,
+  notes: Array<any>,
   onCancel: Function,
   onSave: Function,
   params: Object,
@@ -64,6 +69,7 @@ type Props = {
 
 type State = {
   activeTab: number,
+  displaySidebar: boolean,
 };
 
 type TabsType = Array<any>;
@@ -82,6 +88,7 @@ class PreparerForm extends Component {
 
     this.state = {
       activeTab: 0,
+      displaySidebar: false,
     };
   }
 
@@ -110,6 +117,14 @@ class PreparerForm extends Component {
     }
   }
 
+  toggleSidebar = () => {
+    const {displaySidebar} = this.state;
+
+    return this.setState({
+      displaySidebar: !displaySidebar,
+    });
+  };
+
   handleTabClick = (tabId) => {
     const {router} = this.context;
     const {location} = this.props;
@@ -135,22 +150,24 @@ class PreparerForm extends Component {
   save = (values) => {
     const {editLease} = this.props;
     editLease(values);
-    // console.log('saving', values);
   };
 
   render() {
     const {activeTab} = this.state;
 
     const {
-      leaseAttributes,
-      params: {leaseId},
-      isFetching,
+      conditions,
+      handleSubmit,
       initialValues,
-      tenants,
+      isFetching,
+      identifier,
+      leaseAttributes,
+      notes,
+      params: {leaseId},
       real_property_units,
       rents,
-      handleSubmit,
       t,
+      tenants,
     } = this.props;
 
     if (isFetching || isEmpty(leaseAttributes)) {
@@ -160,11 +177,17 @@ class PreparerForm extends Component {
     return (
       <div className="full__width flex tabs preparer-form">
         <Hero className="preparer-form__hero">
-          <h2>
-            <span onClick={this.goBack} style={{cursor: 'pointer'}}>
-              <i className="mi mi-keyboard-backspace"/>
-            </span> {t('leases:single')} {leaseId}
-          </h2>
+
+          <div className="controls">
+            <h2>
+              <span onClick={this.goBack} style={{cursor: 'pointer'}}>
+                <i className="mi mi-keyboard-backspace"/>
+              </span> {identifier ? identifier : `${t('leases:single')} ${leaseId}`}
+            </h2>
+
+            <button className="display-notes" onClick={this.toggleSidebar}/>
+          </div>
+
           <Tabs
             active={activeTab}
             className="hero__navigation"
@@ -207,7 +230,8 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="conditions tab__content">
-            <Conditions/>
+            <Conditions attributes={leaseAttributes}
+                        conditions={conditions}/>
           </TabPane>
 
           <TabPane className="map">
@@ -218,6 +242,15 @@ class PreparerForm extends Component {
             </div>
           </TabPane>
         </TabContent>
+
+        <Sidebar
+          className="notes__sidebar"
+          isOpen={this.state.displaySidebar}
+          component={Notes}
+          notes={notes}
+          position="right"
+          handleClose={this.toggleSidebar}
+        />
 
         <Row>
           <Column medium={12}>
@@ -235,9 +268,12 @@ export default flowRight(
   connect(
     (state) => {
       const selector = formValueSelector('preparer-form');
+      const identifier = selector(state, 'identifier');
       const tenants = selector(state, 'tenants');
       const real_property_units = selector(state, 'real_property_units');
       const rents = selector(state, 'rents');
+      const conditions = selector(state, 'conditions');
+      const notes = selector(state, 'notes');
 
       return {
         applicationAttributes: getApplicationAttributes(state),
@@ -245,8 +281,11 @@ export default flowRight(
         initialValues: getCurrentLease(state),
         isFetching: getIsFetching(state),
         tenants,
+        identifier,
         real_property_units,
         rents,
+        conditions,
+        notes,
       };
     },
     {

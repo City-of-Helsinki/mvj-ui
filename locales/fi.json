@@ -10,7 +10,9 @@
     "noResultsFound": "Ei tuloksia",
     "preparer": "Valmistelija",
     "select": "Valitse...",
-    "state": "Tila"
+    "state": "Tila",
+    "description": "Kuvaus",
+    "type": "Tyyppi"
   },
   "roles": {
     "title": "Maanvuokrausjärjestelmä-prototyyppi",
@@ -56,11 +58,29 @@
         "manual": "Manuaalinen"
       }
     },
+    "conditions": {
+      "title": "Ehdot",
+      "single": "Ehto",
+      "editCondition": "Muokkaa ehtoa",
+      "addCondition": "Lisää uusi ehto",
+      "types": {
+        "special_condition": "Erikoisehto",
+        "hitas": "Hitas",
+        "aso": "ASO",
+        "kalasatama": "Kalasatama",
+        "other": "Muu"
+      }
+    },
     "state": {
       "draft": "Luonnos",
       "archived": "Arkistoitu",
       "sent": "Lähetetty",
       "approved": "Hyväksytty"
+    },
+    "notes": {
+      "title": "Muistiinpanot",
+      "new": "Uusi muistiinpano",
+      "single": "Muistiinpano"
     }
   },
   "applicationForm": {

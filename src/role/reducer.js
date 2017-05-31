@@ -15,7 +15,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 
 const currentUserReducer: Reducer<CurrentUser> = handleActions({
   ['mvj/user/CHANGE']: (state: CurrentUser, {payload: user}: ChangeUserAction) => {
-    setStorageItem('TOKEN', user.id);
+    setStorageItem('TOKEN', user.username);
     return {
       ...state,
       ...user,

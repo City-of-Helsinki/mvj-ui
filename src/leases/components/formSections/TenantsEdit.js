@@ -80,7 +80,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Nimi"
-              name={`tenants[${tenant}].contact_contact.name`}
+              name={`tenants[${tenant}].contact.name`}
               required={true}
               type="text"
               component={FormField}
@@ -89,7 +89,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Sähköposti"
-              name={`tenants[${tenant}].contact_contact.email`}
+              name={`tenants[${tenant}].contact.email`}
               required={true}
               type="text"
               component={FormField}
@@ -98,7 +98,7 @@ const TenantsEdit = ({handleSubmit, handleEdit, handleCreate, handleDelete, t, a
           <Column medium={4}>
             <Field
               label="Puhelinnumero"
-              name={`tenants[${tenant}].contact_contact.phone`}
+              name={`tenants[${tenant}].contact.phone`}
               required={true}
               type="text"
               component={FormField}
