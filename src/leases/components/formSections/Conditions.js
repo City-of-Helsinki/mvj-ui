@@ -1,5 +1,6 @@
 // @flow
 import React, {Component} from 'react';
+import get from 'lodash/get';
 import flowRight from 'lodash/flowRight';
 import {translate} from 'react-i18next';
 import {Column, Row} from 'react-foundation';
@@ -110,8 +111,8 @@ class Conditions extends Component {
         {conditions && conditions.map((condition, i) =>
           <section key={i} className="data-box">
             <div className="data-box__header">
-              <h2>{t(`leases:conditions.types.${condition.type}`)} <span
-                className="identifier">{condition.description}</span></h2>
+              <h2>{t(`leases:conditions.types.${get(condition, 'type')}`)} <span
+                className="identifier">{get(condition, 'description')}</span></h2>
             </div>
             <div className="data-box__controls">
               <span onClick={() => this.displayEditModal(condition, i)}
