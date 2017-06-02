@@ -13,6 +13,10 @@ export const fetchLeases = () => {
   return callApi(new Request(createUrl('lease/')));
 };
 
+export const fetchInvoices = (lease: LeaseId): Generator<> => {
+  return callApi(new Request(createUrl('invoice', {lease})));
+};
+
 export const fetchSingleLease = (id: LeaseId): Generator<> => {
   return callApi(new Request(createUrl(`lease/${id}`)));
 };
