@@ -1,6 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import {translate} from 'react-i18next';
@@ -18,6 +19,10 @@ import TabContent from '../../../components/tabs/TabContent';
 import GroupTitle from '../../../components/form/GroupTitle';
 
 import BillingEdit from './BillingEdit';
+import {fetchInvoices} from '../../actions';
+import {getInvoices} from '../../selectors';
+import FilterableList from '../../../components/filterableList/FilterableList';
+import {formatDateObj} from '../../../util/helpers';
 
 const getFullRent = (rents) => rents.reduce((total, {amount}) => parseFloat(amount) + total, 0);
 const getFractionFromFloat = (float) => new Fraction(float).toFraction(true);
@@ -29,12 +34,15 @@ type Props = {
   array: Object,
   bills_per_year: number,
   className: string,
-  initialValues: Object,
-  is_biling_enabled: boolean,
-  rents: Array<any>,
-  tenants: Array<any>,
-  t: Function,
   closeReveal: Function,
+  fetchInvoices: Function,
+  initialValues: Object,
+  invoices: Array<any>,
+  is_biling_enabled: boolean,
+  params: Object,
+  rents: Array<any>,
+  t: Function,
+  tenants: Array<any>,
 };
 
 type State = {
@@ -62,8 +70,9 @@ class Billing extends Component {
   }
 
   componentWillMount() {
-    const {tenants} = this.props;
+    const {tenants, fetchInvoices, params: {leaseId}} = this.props;
     this.setState({tenants});
+    fetchInvoices(leaseId);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -110,6 +119,10 @@ class Billing extends Component {
     }, () => this.props.closeReveal('editModal'));
   };
 
+  handleInvoiceClick = (invoiceId) => {
+    return invoiceId;
+  };
+
   handleTabClick = (tabId) => {
     return this.setState({activeTab: tabId});
   };
@@ -117,6 +130,7 @@ class Billing extends Component {
   render() {
     const {
       className,
+      invoices,
       is_biling_enabled,
       rents,
       t,
@@ -236,7 +250,18 @@ class Billing extends Component {
           </TabPane>
 
           <TabPane className="billing__list">
-            <p>Billing list</p>
+            <FilterableList
+              data={invoices}
+              displayFilters={true}
+              isFetching={false}
+              dataKeys={[
+                {key: 'reference_number', label: 'Laskunumero'},
+                {key: 'modified_at', label: 'Päiväys', renderer: (val) => formatDateObj(val)},
+                {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
+                {key: 'state', label: 'Tila', renderer: (val) => t(`state.${val}`)},
+              ]}
+              onRowClick={this.handleInvoiceClick}
+            />
           </TabPane>
         </TabContent>
 
@@ -261,14 +286,19 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        invoices: getInvoices(state),
         initialValues: getFormInitialValues('preparer-form')(state),
       };
     },
+    {
+      fetchInvoices,
+    }
   ),
   reduxForm({
     form: 'preparer-form',
     destroyOnUnmount: false,
   }),
+  withRouter,
   translate(['common, leases']),
   revealContext(),
 )(Billing);
