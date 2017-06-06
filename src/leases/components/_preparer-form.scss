@@ -4,6 +4,21 @@
     justify-content: space-between;
   }
 
+  .display-application {
+    @include transition();
+    padding: rem-calc(0 20px 0 45px);
+    height: 50px;
+    background: darken($primary-color, 5%) url('../assets/icons/icon-loop.svg') 1rem center no-repeat;
+    background-size: 20px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+    color: $white;
+
+    &:hover {
+      background-color: darken($primary-color, 15%);
+    }
+  }
+
   .display-notes {
     @include transition();
     width: 50px;
