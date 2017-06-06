@@ -14,8 +14,8 @@ import {fetchAreas} from '../../actions';
 import {connect} from 'react-redux';
 import {getAreas} from '../../selectors';
 
-type Props = Object;
 
+type Props = Object;
 type State = {
   displaySidebar: boolean,
 };
