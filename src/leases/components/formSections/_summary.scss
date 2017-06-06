@@ -129,4 +129,34 @@
       }
     }
   }
+
+  .summary__body {
+    h2 {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .cards {
+    &__title {
+      font-size: rem-calc(14px);
+      font-weight: 500;
+      margin: 2rem 0 1rem 1rem;
+      color: #9b9b9b;
+      text-transform: uppercase;
+    }
+
+    &__item {
+      padding: 1rem;
+      border: 1px solid #eee;
+      border-radius: 2px;
+      margin: 0 0 1rem 0;
+
+      &--main {
+        display: block;
+        font-size: rem-calc(16px);
+        color: $mvj-text-color;
+        font-weight: 500;
+      }
+    }
+  }
 }

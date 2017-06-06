@@ -1,10 +1,11 @@
 // @flow
 import React from 'react';
 import {Field} from 'redux-form';
+import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
 import FormField from '../../../components/form/FormField';
-import {formatDateObj} from '../../../util/helpers';
+import {formatDateObj, getTenantsYearlyShare} from '../../../util/helpers';
 type Props = Object;
 
 const getOptions = (field) => field.map(({value, display_name}) => ({value, label: display_name}));
@@ -65,10 +66,48 @@ const Summary = (props: Props) => {
           <Row>
             <Column medium={6}>
               <h2>Yhteenveto</h2>
-              <strong>Vuokralaiset</strong>
-              <strong>Kohde</strong>
-              <strong>Vuokra</strong>
-              <strong>Laskutus</strong>
+              <div className="cards">
+                <div className="cards__title">Vuokralaiset</div>
+                {props.tenants && props.tenants.map((tenant, i) =>
+                  <div key={i} className="cards__item">
+                    <span className="cards__item--main">
+                      {get(tenant, 'contact.organization_name') || get(tenant, 'contact.name')}
+                    </span>
+                    {get(tenant, 'contact.organization_id')}
+                  </div>
+                )}
+
+                <div className="cards__title">Kohteet</div>
+                {props.real_property_units && props.real_property_units.map((unit, i) =>
+                  <div key={i} className="cards__item">
+                    <span className="cards__item--main">
+                      {get(unit, 'identification_number')}
+                    </span>
+                    {get(unit, 'name')}
+                  </div>
+                )}
+
+                <div className="cards__title">Vuokrat</div>
+                {props.rents && props.rents.map((rent, i) =>
+                  <div key={i} className="cards__item">
+                    <span className="cards__item--main">
+                      {get(rent, 'use')}
+                    </span>
+                    {get(rent, 'amount')}€/v
+                  </div>
+                )}
+
+                <div className="cards__title">Laskutus</div>
+                {props.tenants && props.tenants.map((tenant, i) =>
+                  <div key={i} className="cards__item">
+                    <span className="cards__item--main">
+                      {get(tenant, 'contact.organization_name') || get(tenant, 'contact.name')}
+                    </span>
+                    {getTenantsYearlyShare(tenant, props.rents)}€/v
+                  </div>
+                )}
+
+              </div>
             </Column>
 
             <Column medium={6}>
