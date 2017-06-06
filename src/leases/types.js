@@ -10,12 +10,16 @@ export type Attributes = Object;
 
 export type LeasesList = Array<any>;
 export type Invoices = Array<any>;
+export type Areas = Array<any>;
 
 export type FetchAttributesAction = Action<'mvj/leases/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/leases/RECEIVE_ATTRIBUTES', Attributes>;
 
 export type FetchInvoicesAction = Action<'mvj/leases/FETCH_INVOICES', LeaseId>;
 export type ReceiveInvoicesAction = Action<'mvj/leases/RECEIVE_INVOICES', Invoices>;
+
+export type FetchAreasAction = Action<'mvj/leases/FETCH_AREAS', void>;
+export type ReceiveAreasAction = Action<'mvj/leases/RECEIVE_AREAS', Areas>;
 
 export type FetchLeasesAction = Action<'mvj/leases/FETCH_ALL', void>;
 export type ReceiveLeasesAction = Action<'mvj/leases/RECEIVE_ALL', LeasesList>;

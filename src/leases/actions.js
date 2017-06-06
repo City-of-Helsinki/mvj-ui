@@ -3,11 +3,14 @@
 import {createAction} from 'redux-actions';
 
 import type {
+  Areas,
   FetchAttributesAction,
   FetchInvoicesAction,
+  FetchAreasAction,
   Attributes,
   ReceiveAttributesAction,
   ReceiveInvoicesAction,
+  ReceiveAreasAction,
   Lease,
   Invoices,
   LeaseId,
@@ -32,6 +35,12 @@ export const fetchInvoices = (lease: LeaseId): FetchInvoicesAction =>
 
 export const receiveInvoices = (invoices: Invoices): ReceiveInvoicesAction =>
   createAction('mvj/leases/RECEIVE_INVOICES')(invoices);
+
+export const fetchAreas = (): FetchAreasAction =>
+  createAction('mvj/leases/FETCH_AREAS')();
+
+export const receiveAreas = (areas: Areas): ReceiveAreasAction =>
+  createAction('mvj/leases/RECEIVE_AREAS')(areas);
 
 export const fetchLeases = (): FetchLeasesAction =>
   createAction('mvj/leases/FETCH_ALL')();

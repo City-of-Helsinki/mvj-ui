@@ -10,6 +10,7 @@ import {
   notFound,
   receiveSingleLease,
   receiveAttributes,
+  receiveAreas,
   receiveInvoices,
   fetchLeases as fetchLeasesAction,
 } from './actions';
@@ -20,6 +21,7 @@ import {
   createLease,
   editLease,
   fetchAttributes,
+  fetchAreas,
   fetchInvoices,
 } from './requests';
 
@@ -47,6 +49,24 @@ function* fetchAttributesSaga(): Generator<> {
     }
   } catch (error) {
     console.error('Failed to fetch identifiers with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchAreasSaga(): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAreas);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveAreas(bodyAsJson));
+        break;
+      case 404:
+      case 500:
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch areas with error "%s"', error);
     yield put(receiveError(error));
   }
 }
@@ -165,6 +185,7 @@ export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
       yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
+      yield takeLatest('mvj/leases/FETCH_AREAS', fetchAreasSaga);
       yield takeLatest('mvj/leases/FETCH_INVOICES', fetchInvoicesSaga);
       yield takeEvery('mvj/leases/FETCH_ALL', fetchLeasesSaga);
       yield takeEvery('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
