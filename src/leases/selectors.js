@@ -17,3 +17,6 @@ export const getCurrentLease: Selector<Lease, void> = (state: Object): LeaseStat
 
 export const getInvoices: Selector<Object, void> = (state: Object): LeaseState =>
   state.lease.invoices;
+
+export const getAreas: Selector<Object, void> = (state: Object): LeaseState =>
+  state.lease.areas;

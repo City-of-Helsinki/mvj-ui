@@ -6,9 +6,11 @@ import type {Reducer} from '../types';
 import type {
   Attributes,
   Invoices,
+  Areas,
   Lease,
   LeasesList,
   ReceiveAttributesAction,
+  ReceiveAreasAction,
   ReceiveInvoicesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
@@ -38,6 +40,12 @@ const invoicesReducer: Reducer<Invoices> = handleActions({
   },
 }, []);
 
+const areasReducer: Reducer<Areas> = handleActions({
+  ['mvj/leases/RECEIVE_AREAS']: (state: Areas, {payload: areas}: ReceiveAreasAction) => {
+    return areas;
+  },
+}, []);
+
 const leasesListReducer: Reducer<LeasesList> = handleActions({
   ['mvj/leases/RECEIVE_ALL']: (state: LeasesList, {payload: leases}: ReceiveLeasesAction) => {
     return leases;
@@ -52,6 +60,7 @@ const currentLeaseReducer: Reducer<Lease> = handleActions({
 
 export default combineReducers({
   attributes: attributesReducer,
+  areas: areasReducer,
   current: currentLeaseReducer,
   invoices: invoicesReducer,
   isFetching: isFetchingReducer,
