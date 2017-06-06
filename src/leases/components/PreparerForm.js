@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {reduxForm, formValueSelector} from 'redux-form';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import {getActiveLanguage} from '../../util/helpers';
@@ -33,10 +34,9 @@ import Summary from './formSections/Summary';
 import Tenants from './formSections/Tenants';
 import Conditions from './formSections/Conditions';
 import Notes from './formSections/Notes';
-import MapContainer from '../../components/map/Map';
+import Map from './formSections/Map';
 import validate from './formSections/NewApplicationValidator';
 
-import {defaultCoordinates, defaultZoom} from '../../constants';
 import {getAttributes as getLeaseAttributes} from '../selectors';
 import Loader from '../../components/loader/Loader';
 import {Column, Row} from 'react-foundation';
@@ -95,6 +95,7 @@ class PreparerForm extends Component {
 
     this.state = {
       activeTab: 0,
+      displayApplication: false,
       displaySidebar: false,
     };
   }
@@ -208,7 +209,8 @@ class PreparerForm extends Component {
               </span> {identifier ? identifier : `${t('leases:single')} ${leaseId}`}
             </h2>
 
-            <button className="display-application" onClick={this.handleDisplayApplication}>Alkuperäinen hakemus</button>
+            <button className="display-application" onClick={this.handleDisplayApplication}>Alkuperäinen hakemus
+            </button>
             <button className="display-notes" onClick={this.toggleSidebar}/>
           </div>
 
@@ -261,11 +263,7 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="map">
-            <div className="map">
-              <MapContainer center={defaultCoordinates}
-                            zoom={defaultZoom}
-              />
-            </div>
+            <Map areas={get(initialValues, 'areas')}/>
           </TabPane>
         </TabContent>
 
