@@ -75,7 +75,8 @@
       "draft": "Luonnos",
       "archived": "Arkistoitu",
       "sent": "Lähetetty",
-      "approved": "Hyväksytty"
+      "approved": "Hyväksytty",
+      "pending": "Odottaa"
     },
     "notes": {
       "title": "Muistiinpanot",
