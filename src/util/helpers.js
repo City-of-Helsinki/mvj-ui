@@ -4,6 +4,7 @@ import forEach from 'lodash/forEach';
 import findIndex from 'lodash/findIndex';
 import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
+import Fraction from 'fraction.js';
 import i18n from '../root/i18n';
 
 /**
@@ -142,3 +143,23 @@ export const getKtjLink = (id, key, lang = 'fi') => {
 export const findIndexOfArrayfield = (collection, id) => {
   return findIndex(collection, {id});
 };
+
+/**
+ * Get full amount of rent
+ * @param rents
+ */
+export const getFullRent = (rents) => rents.reduce((total, {amount}) => parseFloat(amount) + total, 0);
+
+/**
+ * Generate a fraction from float
+ * @param float
+ */
+export const getFractionFromFloat = (float) => new Fraction(float).toFraction(true);
+
+/**
+ * Get tenants yearly share
+ * @param share
+ * @param rents
+ */
+// TODO: Only if the rent-type is fixed (monthly)
+export const getTenantsYearlyShare = ({share}, rents) => (getFullRent(rents) * 12) * parseFloat(share);

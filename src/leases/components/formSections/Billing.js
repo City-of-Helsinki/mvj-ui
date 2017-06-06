@@ -9,7 +9,6 @@ import {Column, Row} from 'react-foundation';
 import {revealContext} from '../../../foundation/reveal';
 import {getFormInitialValues, reduxForm} from 'redux-form';
 import numeral from 'numeral';
-import Fraction from 'fraction.js';
 
 import {Sizes} from 'react-foundation';
 import EditModal from '../../../components/editModal/editModal';
@@ -22,13 +21,12 @@ import BillingEdit from './BillingEdit';
 import {fetchInvoices} from '../../actions';
 import {getInvoices} from '../../selectors';
 import FilterableList from '../../../components/filterableList/FilterableList';
-import {formatDateObj} from '../../../util/helpers';
-
-const getFullRent = (rents) => rents.reduce((total, {amount}) => parseFloat(amount) + total, 0);
-const getFractionFromFloat = (float) => new Fraction(float).toFraction(true);
-
-// TODO: Only if the rent-type is fixed (monthly)
-const getTenantsYearlyShare = ({share}, rents) => (getFullRent(rents) * 12) * parseFloat(share);
+import {
+  formatDateObj,
+  getFractionFromFloat,
+  getFullRent,
+  getTenantsYearlyShare,
+} from '../../../util/helpers';
 
 type Props = {
   array: Object,
