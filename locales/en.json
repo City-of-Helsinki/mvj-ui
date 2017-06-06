@@ -72,7 +72,8 @@
       "draft": "Draft",
       "archived": "Archived",
       "sent": "Sent",
-      "approved": "Approved"
+      "approved": "Approved",
+      "pending": "Pending"
     },
     "notes": {
       "title": "Notes",

@@ -5,9 +5,11 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {
   Attributes,
-  ReceiveAttributesAction,
+  Invoices,
   Lease,
   LeasesList,
+  ReceiveAttributesAction,
+  ReceiveInvoicesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
 } from './types';
@@ -15,13 +17,13 @@ import type {
 const isFetchingReducer: Reducer<boolean> = handleActions({
   // 'mvj/leases/FETCH_IDENTIFIERS': () => true,
   // 'mvj/leases/RECEIVE_ATTRIBUTES': () => false,
-  'mvj/leases/FETCH_ALL': () => true,
-  'mvj/leases/RECEIVE_ALL': () => false,
-  'mvj/leases/FETCH_SINGLE': () => true,
-  'mvj/leases/RECEIVE_SINGLE': () => false,
-  'mvj/leases/NOT_FOUND': () => false,
   'mvj/leases/CREATE': () => true,
   'mvj/leases/EDIT': () => true,
+  'mvj/leases/FETCH_ALL': () => true,
+  'mvj/leases/FETCH_SINGLE': () => true,
+  'mvj/leases/NOT_FOUND': () => false,
+  'mvj/leases/RECEIVE_ALL': () => false,
+  'mvj/leases/RECEIVE_SINGLE': () => false,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -29,6 +31,12 @@ const attributesReducer: Reducer<Attributes> = handleActions({
     return attributes;
   },
 }, {});
+
+const invoicesReducer: Reducer<Invoices> = handleActions({
+  ['mvj/leases/RECEIVE_INVOICES']: (state: Invoices, {payload: invoices}: ReceiveInvoicesAction) => {
+    return invoices;
+  },
+}, []);
 
 const leasesListReducer: Reducer<LeasesList> = handleActions({
   ['mvj/leases/RECEIVE_ALL']: (state: LeasesList, {payload: leases}: ReceiveLeasesAction) => {
@@ -45,6 +53,7 @@ const currentLeaseReducer: Reducer<Lease> = handleActions({
 export default combineReducers({
   attributes: attributesReducer,
   current: currentLeaseReducer,
-  list: leasesListReducer,
+  invoices: invoicesReducer,
   isFetching: isFetchingReducer,
+  list: leasesListReducer,
 });

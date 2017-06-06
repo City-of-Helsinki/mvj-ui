@@ -16,9 +16,9 @@ import {fetchAttributes as fetchApplicationAttributes} from '../../attributes/ac
 import {getAttributes as getApplicationAttributes} from '../../attributes/selectors';
 
 import Tabs from '../../components/tabs/Tabs';
-import Hero from '../../components/hero/Hero';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
+import Hero from '../../components/hero/Hero';
 import Sidebar from '../../components/sidebar/Sidebar';
 
 import Billing from './formSections/Billing';
@@ -40,6 +40,7 @@ type Props = {
   applicationAttributes: Object,
   attributes: Object,
   attributes: Object,
+  billing: Object,
   closeReveal: Function,
   conditions: Array<any>,
   editLease: Function,
@@ -156,6 +157,7 @@ class PreparerForm extends Component {
     const {activeTab} = this.state;
 
     const {
+      billing,
       conditions,
       handleSubmit,
       initialValues,
@@ -226,7 +228,9 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="billing tab__content">
-            <Billing/>
+            <Billing tenants={tenants}
+                     rents={rents}
+                     {...billing}/>
           </TabPane>
 
           <TabPane className="conditions tab__content">
@@ -274,18 +278,20 @@ export default flowRight(
       const rents = selector(state, 'rents');
       const conditions = selector(state, 'conditions');
       const notes = selector(state, 'notes');
+      const billing = selector(state, 'is_billing_enabled', 'bills_per_year');
 
       return {
         applicationAttributes: getApplicationAttributes(state),
-        leaseAttributes: getLeaseAttributes(state),
         initialValues: getCurrentLease(state),
         isFetching: getIsFetching(state),
-        tenants,
+        leaseAttributes: getLeaseAttributes(state),
+        billing,
+        conditions,
         identifier,
+        notes,
         real_property_units,
         rents,
-        conditions,
-        notes,
+        tenants,
       };
     },
     {
