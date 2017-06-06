@@ -42,9 +42,8 @@ export const ktjDataSets = [
  * TileLayer
  * @type {string}
  */
-// export const tileLayer = 'http://kartta.hel.fi/ws/geoserver/gwc/service/tms/1.0.0/kanslia_palvelukartta:Karttasarja@ETRS-GK25@gif/{z}/{x}/{y}.gif';
-// export const tileLayer = 'https://geoserver.hel.fi/mapproxy/wmts/osm-sm-hq/etrs_tm35fin_hq/{z}/{x}/{y}.png';
-export const tileLayer = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+// export const tileLayer = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+export const tileLayer = 'https://geoserver.hel.fi/mapproxy/wmts/osm-lite-hq/etrs_tm35fin_hq/{z}/{x}/{y}.png';
 
 /**
  * Default coordinates for Map (helsinki centrum)

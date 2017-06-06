@@ -1,5 +1,7 @@
 .mvj__sidebar {
   color: $white;
+  z-index: 9999 !important;
+  cursor: default !important;
 
   &__close {
     @include transition();

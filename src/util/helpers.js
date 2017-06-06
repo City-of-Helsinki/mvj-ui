@@ -1,5 +1,6 @@
 import {Languages} from '../constants';
 import find from 'lodash/find';
+import get from 'lodash/get';
 import forEach from 'lodash/forEach';
 import findIndex from 'lodash/findIndex';
 import {toastr} from 'react-redux-toastr';
@@ -143,6 +144,12 @@ export const getKtjLink = (id, key, lang = 'fi') => {
 export const findIndexOfArrayfield = (collection, id) => {
   return findIndex(collection, {id});
 };
+
+/**
+ *
+ * @param area
+ */
+export const getAreaCoordinates = (area) => area && get(area, 'mpoly.coordinates.0.0');
 
 /**
  * Get full amount of rent
