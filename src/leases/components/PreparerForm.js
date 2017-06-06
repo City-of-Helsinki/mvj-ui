@@ -15,6 +15,11 @@ import {fetchAttributes as fetchLeaseAttributes} from '../actions';
 import {fetchAttributes as fetchApplicationAttributes} from '../../attributes/actions';
 import {getAttributes as getApplicationAttributes} from '../../attributes/selectors';
 
+import {Sizes} from '../../foundation/enums';
+import EditModal from '../../components/editModal/editModal';
+import ApplicationEditForm from '../../applications/components/ApplicationEditForm';
+import {revealContext} from '../../foundation/reveal';
+
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
@@ -70,6 +75,7 @@ type Props = {
 
 type State = {
   activeTab: number,
+  displayApplication: boolean,
   displaySidebar: boolean,
 };
 
@@ -123,6 +129,21 @@ class PreparerForm extends Component {
 
     return this.setState({
       displaySidebar: !displaySidebar,
+    });
+  };
+
+  handleDisplayApplication = () => {
+    this.setState({displayApplication: true});
+  };
+
+  handleEditSave = () => {
+    return null;
+  };
+
+  handleDismissEditModal = () => {
+    this.setState({displayApplication: false}, () => {
+      const {closeReveal} = this.props;
+      closeReveal('editModal');
     });
   };
 
@@ -187,6 +208,7 @@ class PreparerForm extends Component {
               </span> {identifier ? identifier : `${t('leases:single')} ${leaseId}`}
             </h2>
 
+            <button className="display-application" onClick={this.handleDisplayApplication}>Alkuperäinen hakemus</button>
             <button className="display-notes" onClick={this.toggleSidebar}/>
           </div>
 
@@ -262,6 +284,16 @@ class PreparerForm extends Component {
           </Column>
         </Row>
 
+        {this.state.displayApplication && !isFetching &&
+        <EditModal size={Sizes.LARGE}
+                   isOpen={this.state.displayApplication}
+                   component={ApplicationEditForm}
+                   handleSave={this.handleEditSave}
+                   applicationId={initialValues.application.id}
+                   handleDismiss={this.handleDismissEditModal}
+        />
+        }
+
       </div>
     );
   }
@@ -308,4 +340,5 @@ export default flowRight(
     validate,
   }),
   translate(['common', 'leases']),
+  revealContext(),
 )(PreparerForm);
