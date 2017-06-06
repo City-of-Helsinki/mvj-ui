@@ -24,13 +24,13 @@ const FieldTypeSelect = ({input, displayError, disabled, options, placeholder, t
       clearable={false}
       disabled={disabled}
       id={name}
-      noResultsText={t('noResultsFound')}
+      noResultsText={t('validation:noResultsFound')}
       options={options}
-      placeholder={placeholder}
+      placeholder={placeholder || t('common:select')}
       {...input}
       onChange={({value}) => onChange(value)}
     />
   );
 };
 
-export default translate(['validation'])(FieldTypeSelect);
+export default translate(['common, validation'])(FieldTypeSelect);
