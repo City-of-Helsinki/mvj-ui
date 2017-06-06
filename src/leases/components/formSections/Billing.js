@@ -258,7 +258,7 @@ class Billing extends Component {
                 {key: 'reference_number', label: 'Laskunumero'},
                 {key: 'modified_at', label: 'Päiväys', renderer: (val) => formatDateObj(val)},
                 {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
-                {key: 'state', label: 'Tila', renderer: (val) => t(`state.${val}`)},
+                {key: 'state', label: 'Tila', renderer: (val) => t(`leases:state.${val}`)},
               ]}
               onRowClick={this.handleInvoiceClick}
             />

@@ -106,3 +106,9 @@
     }
   }
 }
+
+.billing__list {
+  .row {
+    flex-direction: row !important;
+  }
+}
