@@ -1,7 +1,9 @@
-// @flow
 import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
-// import {Polygon} from 'react-leaflet';
+import get from 'lodash/get';
+import differenceWith from 'lodash/differenceWith';
+import isEqual from 'lodash/isEqual';
+import {Polygon, Tooltip} from 'react-leaflet';
 
 import MapContainer from '../../../components/map/Map';
 import Sidebar from '../../../components/sidebar/Sidebar';
@@ -9,15 +11,17 @@ import Control from '../../../components/map/Control';
 import MapSidebar from './MapSidebar';
 
 import {defaultCoordinates, defaultZoom} from '../../../constants';
-// import {getAreaCoordinates} from '../../../util/helpers';
+import {getAreaCoordinates} from '../../../util/helpers';
 import {fetchAreas} from '../../actions';
 import {connect} from 'react-redux';
 import {getAreas} from '../../selectors';
+import {getFormInitialValues} from 'redux-form';
 
 
 type Props = Object;
 type State = {
   displaySidebar: boolean,
+  displayFreeAreas: boolean,
 };
 
 class Map extends Component {
@@ -29,6 +33,7 @@ class Map extends Component {
 
     this.state = {
       displaySidebar: false,
+      displayFreeAreas: false,
     };
   }
 
@@ -44,8 +49,25 @@ class Map extends Component {
     });
   };
 
+  toggleFreeAreasVisibility = () => {
+    const {displayFreeAreas} = this.state;
+    return this.setState({
+      displayFreeAreas: !displayFreeAreas,
+    });
+  };
+
+  handleAreaClick = (area) => {
+    console.log(area);
+  };
+
   render() {
-    // const {areas} = this.props;
+    const {
+      availableAreas,
+      initialValues: {areas},
+    } = this.props;
+
+    const freeAreas = differenceWith(availableAreas, areas, isEqual);
+    const {displayFreeAreas} = this.state;
 
     return (
       <div className="map">
@@ -53,16 +75,40 @@ class Map extends Component {
                       zoom={defaultZoom}
         >
           <Control className="list-control"
-                   position="topright"
+                   position="topleft"
+                   title="Näytä listaus"
                    onClick={this.toggleSidebar}>
             <i className="mi mi-list"/>
           </Control>
 
-          {/*{areas && areas.map((area, i) => {*/}
-          {/*return (*/}
-          {/*<Polygon key={i} color="blue" positions={getAreaCoordinates(area)}/>*/}
-          {/*);*/}
-          {/*})}*/}
+          <Control className="area-control"
+                   position="topleft"
+                   title="Näytä kaikki alueet"
+                   onClick={this.toggleFreeAreasVisibility}>
+            <i className="mi mi-layers"/>
+          </Control>
+
+          {areas && areas.map((area, i) =>
+            <Polygon key={i}
+                     color="#0072C6" // $main-blue
+                     positions={getAreaCoordinates(area)}
+                     onClick={() => this.handleAreaClick(area)}>
+              <Tooltip sticky="true">
+                <span>{get(area, 'name')}</span>
+              </Tooltip>
+            </Polygon>
+          )}
+
+          {displayFreeAreas && freeAreas && freeAreas.map((area, i) =>
+            <Polygon key={i}
+                     color="green"
+                     positions={getAreaCoordinates(area)}
+                     onClick={() => this.handleAreaClick(area)}>
+              <Tooltip sticky="true">
+                <span>{get(area, 'name')}</span>
+              </Tooltip>
+            </Polygon>
+          )}
 
           <Sidebar
             className="map__sidebar"
@@ -80,7 +126,8 @@ class Map extends Component {
 export default flowRight(
   connect(
     (state) => ({
-      areas: getAreas(state),
+      initialValues: getFormInitialValues('preparer-form')(state),
+      availableAreas: getAreas(state),
     }), {
       fetchAreas,
     })
