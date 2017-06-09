@@ -29,6 +29,11 @@
     }
   }
 
+  .edit-modal .tenant {
+    display: flex;
+    border: none;
+  }
+
   .tenant {
     display: inherit;
 
