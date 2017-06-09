@@ -17,6 +17,7 @@ import TabPane from '../../../components/tabs/TabPane';
 import TabContent from '../../../components/tabs/TabContent';
 import GroupTitle from '../../../components/form/GroupTitle';
 
+import SingleInvoice from './SingleInvoice';
 import BillingEdit from './BillingEdit';
 import {fetchInvoices} from '../../actions';
 import {getInvoices} from '../../selectors';
@@ -47,6 +48,7 @@ type State = {
   activeIndex: number | null,
   activeTab: number,
   activeTenant: Object | null,
+  displayInvoice: boolean,
   isEditing: boolean,
   tenants: Array<any> | null,
 };
@@ -62,6 +64,7 @@ class Billing extends Component {
       activeIndex: null,
       activeTab: 0,
       activeTenant: null,
+      displayInvoice: false,
       isEditing: false,
       tenants: null,
     };
@@ -117,8 +120,12 @@ class Billing extends Component {
     }, () => this.props.closeReveal('editModal'));
   };
 
-  handleInvoiceClick = (invoiceId) => {
-    return invoiceId;
+  handleInvoiceClick = () => {
+    return this.setState({displayInvoice: true});
+  };
+
+  handleDismissInvoiceModal = () => {
+    return this.setState({displayInvoice: false});
   };
 
   handleTabClick = (tabId) => {
@@ -272,6 +279,14 @@ class Billing extends Component {
                    handleDelete={this.handleDelete}
                    handleDismiss={this.handleDismissEditModal}
                    activeTenant={this.state.activeTenant}
+        />
+        }
+
+        {this.state.displayInvoice &&
+        <EditModal size={Sizes.LARGE}
+                   isOpen={this.state.displayInvoice}
+                   handleDismiss={this.handleDismissInvoiceModal}
+                   component={SingleInvoice}
         />
         }
 

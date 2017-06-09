@@ -4,7 +4,7 @@ import {MapControl} from 'react-leaflet';
 
 export default class Control extends MapControl {
   componentWillMount() {
-    const {className, children} = this.props;
+    const {className, children, title} = this.props;
 
     const control = L.control({
       position: this.props.position || 'bottomright',
@@ -13,8 +13,9 @@ export default class Control extends MapControl {
     control.handleClick = this.handleClick;
 
     control.onAdd = function () {
-      let div = L.DomUtil.create('div', `leaflet-control ${className}`);
-      let link = L.DomUtil.create('a', 'leaflet-control-button', div);
+      const div = L.DomUtil.create('div', `leaflet-control mvj-control ${className}`);
+      const link = L.DomUtil.create('a', 'leaflet-control-button', div);
+      link.title = title;
 
       L.DomEvent
         .on(link, 'mousedown dblclick', L.DomEvent.stopPropagation)

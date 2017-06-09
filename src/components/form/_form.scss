@@ -30,6 +30,36 @@
       //  }
       //}
     }
+
+    .create-new {
+      @include button(false, $secondary-color, darken($secondary-color, 10%));
+      @include transition();
+
+      margin-left: 1rem;
+      font-size: rem-calc(18px);
+      line-height: 24px;
+      color: $white;
+      font-weight: 600;
+
+      i {
+        @include transition();
+        position: relative;
+        margin: 0 .85rem;
+        top: 0;
+        vertical-align: middle;
+      }
+
+      &[disabled] {
+        opacity: 0.25;
+        cursor: not-allowed;
+      }
+
+      //&:hover(:not(:disabled)) {
+      //  i {
+      //    @include rotate(60deg);
+      //  }
+      //}
+    }
   }
 }
 

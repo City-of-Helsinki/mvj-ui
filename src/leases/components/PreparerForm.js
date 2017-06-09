@@ -193,6 +193,7 @@ class PreparerForm extends Component {
       t,
       tenants,
     } = this.props;
+    const {application} = initialValues;
 
     if (isFetching || isEmpty(leaseAttributes)) {
       return <Loader isLoading={isFetching}/>;
@@ -209,8 +210,11 @@ class PreparerForm extends Component {
               </span> {identifier ? identifier : `${t('leases:single')} ${leaseId}`}
             </h2>
 
-            <button className="display-application" onClick={this.handleDisplayApplication}>Alkuperäinen hakemus
+            {application &&
+            <button className="display-application" onClick={this.handleDisplayApplication}>
+              Alkuperäinen hakemus
             </button>
+            }
             <button className="display-notes" onClick={this.toggleSidebar}/>
           </div>
 
