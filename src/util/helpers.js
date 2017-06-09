@@ -146,10 +146,10 @@ export const findIndexOfArrayfield = (collection, id) => {
 };
 
 /**
- *
+ * Get areas coordinates & invert them
  * @param area
  */
-export const getAreaCoordinates = (area) => area && get(area, 'mpoly.coordinates.0.0');
+export const getAreaCoordinates = (area) => area && get(area, 'mpoly.coordinates.0.0').map(arr => [arr[1], arr[0]]);
 
 /**
  * Get full amount of rent
