@@ -1,3 +1,5 @@
 .leases {
   @extend .applications;
+
+  flex-direction: column;
 }

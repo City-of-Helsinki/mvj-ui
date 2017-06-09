@@ -14,6 +14,9 @@ import {fetchSingleApplication} from '../actions';
 import {formatDateObj} from '../../util/helpers';
 import {getAttributes} from '../../attributes/selectors';
 import FormActions from '../../leases/components/formSections/FormActions';
+import {getUser} from '../../role/selectors';
+import {createLease} from '../../leases/actions';
+import NewLeaseTemplate from '../../leases/components/NewLeaseTemplate';
 
 type Props = {
   application: Object,
@@ -48,6 +51,15 @@ class ApplicationEdit extends Component {
     }
   }
 
+  createLease = () => {
+    const {application, user, createLease} = this.props;
+    const lease = NewLeaseTemplate({
+      preparer: user,
+      application,
+    });
+    return createLease(lease);
+  };
+
   render() {
 
     const {
@@ -57,7 +69,6 @@ class ApplicationEdit extends Component {
       handleSubmit,
       invalid,
       pristine,
-      submitSucceeded,
       submitting,
       t,
     } = this.props;
@@ -221,16 +232,16 @@ class ApplicationEdit extends Component {
             ))}
           </Row>
 
-          {submitSucceeded ?
-            <p>Hakemus tallennettu</p>
-            :
-            <FormActions className="edit-modal__section edit-modal__actions"
-                         label="Tallenna muutokset"
-                         invalid={invalid}
-                         submitting={submitting}
-                         pristine={pristine}
-            />
-          }
+
+          <FormActions className="edit-modal__section edit-modal__actions"
+                       label="Tallenna muutokset"
+                       invalid={invalid}
+                       submitting={submitting}
+                       pristine={pristine}
+                       displayCreateButton={true}
+                       createLabel={t('add')}
+                       onCreateClick={this.createLease}
+          />
 
         </div>
       </form>
@@ -242,6 +253,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        user: getUser(state),
         application: getCurrentApplication(state),
         attributes: getAttributes(state),
         initialValues: getCurrentApplication(state),
@@ -249,6 +261,7 @@ export default flowRight(
     },
     {
       fetchSingleApplication,
+      createLease,
     },
   ),
   reduxForm({
