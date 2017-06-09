@@ -33,13 +33,13 @@ function* fetchAttributesSaga(): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
     const attributes = bodyAsJson.fields && {
-        identifiers: {
-          type: get(bodyAsJson.fields, 'identifier_type.choices'),
-          municipality: get(bodyAsJson.fields, 'identifier_municipality.choices'),
-          district: get(bodyAsJson.fields, 'identifier_district.choices'),
-        },
-        ...bodyAsJson.fields,
-      };
+      identifiers: {
+        type: get(bodyAsJson.fields, 'identifier_type.choices'),
+        municipality: get(bodyAsJson.fields, 'identifier_municipality.choices'),
+        district: get(bodyAsJson.fields, 'identifier_district.choices'),
+      },
+      ...bodyAsJson.fields,
+    };
 
     switch (statusCode) {
       case 200:
