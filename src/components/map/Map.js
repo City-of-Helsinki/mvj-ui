@@ -22,12 +22,13 @@ type Props = {
   areas: Array<any>,
 };
 
-const MapContainer = ({center, zoom, children}: Props) => {
+const MapContainer = ({center, zoom, children, ...rest}: Props) => {
   return (
     <Map
       center={center}
       zoom={zoom}
       crs={TM35CRS}
+      {...rest}
     >
       <TileLayer
         attribution={null}
