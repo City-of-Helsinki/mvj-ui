@@ -22,6 +22,7 @@ type Props = {
   application: Object,
   applicationId: Number,
   attributes: Object,
+  createLease: Function,
   fetchSingleApplication: Function,
   handleSave: Function,
   handleSubmit: Function,
@@ -31,6 +32,7 @@ type Props = {
   submitSucceeded: Boolean,
   submitting: Boolean,
   t: Function,
+  user: Object,
 };
 
 const validate = ({organization, organization_id, name, email, phone, contact_name, contact_email, contact_phone}) => {
