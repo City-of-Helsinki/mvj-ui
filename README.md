@@ -1,3 +1,6 @@
+[![Build status](https://travis-ci.org/City-of-Helsinki/mvj-ui.svg)](https://travis-ci.org/City-of-Helsinki/mvj-ui)
+[![codecov](https://codecov.io/gh/City-of-Helsinki/mvj-ui/branch/master/graph/badge.svg)](https://codecov.io/gh/City-of-Helsinki/mvj-ui)
+
 # MVJ UI 
 City of Helsinki ground rent system UI
 

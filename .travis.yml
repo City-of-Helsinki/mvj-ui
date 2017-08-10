@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "lts/*"
+  - "node"
+
+cache: yarn
+
+install:
+  - yarn
+
+script:
+  - yarn test:coverage
+
+after_success:
+  - codecov < coverage/lcov.info
