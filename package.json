@@ -15,7 +15,9 @@
     "prepush": "npm-run-all test",
     "test": "mocha --compilers js:babel-core/register --require src/test.js --recursive \"src/**/*spec.js\"",
     "test:coverage": "istanbul cover _mocha -- --compilers js:babel-core/register --require src/test.js --recursive \"src/**/*spec.js\"",
-    "test:watch": "npm run test -- --watch"
+    "test:watch": "npm run test -- --watch",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "autoprefixer": "^6.6.1",
@@ -78,7 +80,8 @@
     "url-loader": "^0.5.7",
     "webpack": "^2.2.1",
     "webpack-merge": "^1.1.2",
-    "whatwg-fetch": "^2.0.3"
+    "whatwg-fetch": "^2.0.3",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
@@ -104,5 +107,6 @@
     "webpack-dashboard": "^0.2.0",
     "webpack-dev-server": "^2.3.0",
     "webpack-hot-middleware": "^2.13.2"
-  }
+  },
+  "snyk": true
 }
