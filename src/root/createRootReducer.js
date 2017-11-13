@@ -7,8 +7,8 @@ import {routerReducer} from 'react-router-redux';
 import apiReducer from '../api/reducer';
 import roleReducer from '../role/reducer';
 import attributesReducer from '../attributes/reducer';
-import applicationsReducer from '../applications/reducer';
-import leaseReducer from '../leases/reducer';
+import applicationsReducer from '../applications-alpha/reducer';
+import leaseReducer from '../leases-alpha/reducer';
 
 import type {Reducer} from '../types';
 import type {RootState} from './types';

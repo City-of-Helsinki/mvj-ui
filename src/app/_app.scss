@@ -9,35 +9,4 @@
     flex: 1;
     display: flex;
   }
-
-  .section__container {
-    margin: auto;
-  }
-
-  .full__width {
-    width: 100%;
-    height: 100%;
-
-    &.tabs {
-      .row {
-        flex-direction: column;
-      }
-    }
-
-    .row {
-      width: 100%;
-    }
-
-    &.flex {
-      display: flex;
-      flex-flow: row wrap;
-      flex-direction: column;
-      //align-items: baseline;
-      height: auto;
-    }
-
-    .row--flex {
-      flex: 1;
-    }
-  }
 }

@@ -2538,6 +2538,18 @@ fbjs@^0.8.0-alpha.3, fbjs@^0.8.1, fbjs@^0.8.4:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.9"
 
+fbjs@^0.8.16:
+  version "0.8.16"
+  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.16.tgz#5e67432f550dc41b572bf55847b8aca64e5337db"
+  dependencies:
+    core-js "^1.0.0"
+    isomorphic-fetch "^2.1.1"
+    loose-envify "^1.0.0"
+    object-assign "^4.1.0"
+    promise "^7.1.1"
+    setimmediate "^1.0.5"
+    ua-parser-js "^0.7.9"
+
 fbjs@^0.8.9:
   version "0.8.12"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.12.tgz#10b5d92f76d45575fd63a217d4ea02bea2f8ed04"
@@ -5264,9 +5276,9 @@ proj4@^2.3.14:
     mgrs "1.0.0"
     wkt-parser "^1.1.3"
 
-"proj4leaflet@git://github.com/akx/Proj4Leaflet#es6-module-fix":
-  version "1.0.1"
-  resolved "git://github.com/akx/Proj4Leaflet#a1c61f9e5e57c72ab59a89dc39b78518b538f995"
+"proj4leaflet@https://github.com/kartena/Proj4Leaflet.git":
+  version "1.0.2"
+  resolved "https://github.com/kartena/Proj4Leaflet.git#64ad0e8a7d0c64541b24cf01cf372f2c9f71bdf0"
   dependencies:
     proj4 "^2.3.14"
 
@@ -5288,6 +5300,14 @@ prop-types@^15.5.8:
   dependencies:
     fbjs "^0.8.9"
     loose-envify "^1.3.1"
+
+prop-types@^15.6.0:
+  version "15.6.0"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
+  dependencies:
+    fbjs "^0.8.16"
+    loose-envify "^1.3.1"
+    object-assign "^4.1.1"
 
 proxy-addr@~1.1.3:
   version "1.1.3"

@@ -1,0 +1,44 @@
+.icon-radio-buttons {
+  display:inline-block;
+
+  .label {
+    padding: 0.5rem 0.25rem;
+    background: none;
+    cursor: pointer;
+  }
+
+  .label:first-child {
+    padding-left: 0;
+  }
+
+  .label:last-child {
+    padding-right: 0;
+  }
+
+  .radio {
+    display: none;
+    margin: 0;
+  }
+
+  .option-label {
+    color: $black;
+    text-transform: uppercase;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    display: inline-block;
+    text-align: center;
+    height: 2.25rem;
+    line-height: 2.25rem;
+    border-radius: 0;
+    padding: 0 0.5rem;
+  }
+
+
+  .radio:checked + .option-label {
+    background: transparent;
+    border: none;
+    color: $tram;
+  }
+}
