@@ -16,6 +16,7 @@ const visualizationTypeOptions = [
 ];
 
 type Props = {
+  amount: number,
   documentType: string,
   onDocumentTypeChange: Function,
   visualizationType: string,
@@ -27,13 +28,13 @@ class TableControllers extends Component {
   props: Props
 
   render () {
-    const {documentType, onDocumentTypeChange, visualizationType, onVisualizationTypeChange} = this.props;
+    const {amount, documentType, onDocumentTypeChange, visualizationType, onVisualizationTypeChange} = this.props;
 
     return (
       <div className='table-controllers'>
         <div className='table-info'>
           <div className='amount-wrapper'>
-            <span>Löytyi 32 kpl</span>
+            <span>Löytyi {amount} kpl</span>
           </div>
           <div className='document-type-wrapper'>
             <StyledRadioButtons

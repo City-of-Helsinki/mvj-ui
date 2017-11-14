@@ -1,4 +1,8 @@
-<svg fill="#009246" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M4 14h4v-4H4v4zm0 5h4v-4H4v4zM4 9h4V5H4v4zm5 5h12v-4H9v4zm0 5h12v-4H9v4zM9 5v4h12V5H9z"/>
-    <path d="M0 0h24v24H0z" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 30 30">
+  <defs>
+    <style>
+      .cls-1{fill:#009246;}
+    </style>
+  </defs>
+  <path d="M1.5 3.75h27v22.5h-27V3.75zM3.75 6v4.5h5.63V6zm0 6.75v4.5h5.63v-4.5zm0 6.75V24h5.63v-4.5zM11.62 6v4.5h14.63V6zm0 6.75v4.5h14.63v-4.5zm0 6.75V24h14.63v-4.5z" class="cls-1"/>
 </svg>

@@ -1,6 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
+import {translate} from 'react-i18next';
 import {connect} from 'react-redux';
 import {Row} from 'react-foundation';
 
@@ -10,11 +11,14 @@ import ActionDropdown from '../../components/ActionDropdown';
 import {getIsFetching, getLeasesList} from '../selectors';
 import Search from './Search';
 import TableControllers from './TableControllers';
+import Table from '../../components/Table';
+import * as contentHelpers from '../helpers';
 
 type Props = {
   fetchAttributes: Function,
   fetchLeases: Function,
   isFetching: boolean,
+  t: Function,
   leases: Array<any>,
 }
 
@@ -39,8 +43,18 @@ class LeaseList extends Component {
     fetchLeases();
   }
 
+  handleEditClick = () => {
+    console.log('click');
+  }
+
+
   render() {
     const {documentType, visualizationType} = this.state;
+    const {leases: content, t} = this.props;
+    console.log('content', content);
+    const leases = contentHelpers.getContentLeases(content);
+    console.log(leases);
+
     return (
       <div className='lease-list'>
         <Row>
@@ -60,6 +74,7 @@ class LeaseList extends Component {
         </Row>
         <Row>
           <TableControllers
+            amount={leases.length}
             documentType={documentType}
             onDocumentTypeChange={(value) => {this.setState({documentType: value});}}
             visualizationType={visualizationType}
@@ -68,7 +83,20 @@ class LeaseList extends Component {
         </Row>
         <Row>
           {visualizationType === 'table' && (
-            <h1>Taulukko</h1>
+            <Table
+              amount={leases.length}
+              data={leases}
+              dataKeys={[
+                {key: 'identifier', label: t('leases:identifier')},
+                {key: 'real_property_unit', label: t('applications:types.real_property_unit')},
+                {key: 'tenant', label: t('leases:tenants.single')},
+                {key: 'address', label: t('leases:address')},
+                {key: 'lease_type', label: t('leases:type')},
+                {key: 'start_date', label: t('leases:startDate')},
+                {key: 'end_date', label: t('leases:endDate')},
+              ]}
+              onRowClick={this.handleEditClick}
+            />
           )}
           {visualizationType === 'map' && (
             <h1>Kartta</h1>
@@ -92,4 +120,5 @@ export default flowRight(
       fetchAttributes,
     },
   ),
+  translate(['leases', 'applications']),
 )(LeaseList);
