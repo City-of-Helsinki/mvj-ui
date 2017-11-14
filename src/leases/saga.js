@@ -1,0 +1,72 @@
+// @flow
+
+import {takeLatest} from 'redux-saga';
+import {call, fork, put} from 'redux-saga/effects';
+import get from 'lodash/get';
+
+import {
+  receiveLeases,
+  notFound,
+  receiveAttributes,
+} from './actions';
+
+import {
+  fetchLeases,
+  fetchAttributes,
+} from './requests';
+
+import {receiveError} from '../api/actions';
+
+function* fetchAttributesSaga(): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
+    const attributes = bodyAsJson.fields && {
+      identifiers: {
+        type: get(bodyAsJson.fields, 'identifier_type.choices'),
+        municipality: get(bodyAsJson.fields, 'identifier_municipality.choices'),
+        district: get(bodyAsJson.fields, 'identifier_district.choices'),
+      },
+      ...bodyAsJson.fields,
+    };
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveAttributes(attributes));
+        break;
+      case 404:
+      case 500:
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch identifiers with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchLeasesSaga(): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLeases);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveLeases(bodyAsJson));
+        break;
+      case 404:
+      case 500:
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch leases with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+export default function*(): Generator<> {
+  yield [
+    fork(function*(): Generator<> {
+      yield takeLatest('mvj/leasesbeta/FETCH_ATTRIBUTES', fetchAttributesSaga);
+      yield takeLatest('mvj/leasesbeta/FETCH_ALL', fetchLeasesSaga);
+    }),
+  ];
+}
