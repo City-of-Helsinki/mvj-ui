@@ -9,12 +9,14 @@ import {Row, Column} from 'react-foundation';
 import {getCurrentLease, getIsFetching} from '../selectors';
 import {fetchSingleLease} from '../actions';
 
+import ControlButtons from './ControlButtons';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
 
 type State = {
   activeTab: number,
+  isEditMode: boolean,
 };
 
 type Props = {
@@ -26,6 +28,7 @@ type Props = {
 class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
+    isEditMode: false,
   }
 
   props: Props
@@ -44,10 +47,25 @@ class PreparerForm extends Component {
     fetchSingleLease(leaseId);
   }
 
+  openEditMode = () => {
+    this.setState({isEditMode: true});
+  }
+
+  cancel = () => {
+    this.setState({isEditMode: false});
+  }
+
+  save = () => {
+    this.setState({isEditMode: false});
+  }
+
+  openCommentPanel = () => {
+    alert('open comment panel');
+  }
+
   handleTabClick = (tabId) => {
     const {router} = this.context;
     const {location} = this.props;
-    console.log(location);
 
     this.setState({activeTab: tabId}, () => {
       return router.push({
@@ -58,10 +76,24 @@ class PreparerForm extends Component {
   };
 
   render() {
-    const {activeTab} = this.state;
+    const {activeTab, isEditMode} = this.state;
 
     return (
       <div className='lease-page'>
+        <Row>
+          <Column>
+            <div className='controls'>
+              <ControlButtons
+                isEditMode={isEditMode}
+                onEditClick={this.openEditMode}
+                onCancelClick={this.cancel}
+                onSaveClick={this.save}
+                onCommentClick={this.openCommentPanel}
+              />
+            </div>
+          </Column>
+        </Row>
+
         <Row>
           <Column>
             <Tabs
@@ -81,6 +113,7 @@ class PreparerForm extends Component {
             />
           </Column>
         </Row>
+
         <Row>
           <Column>
             <TabContent active={activeTab}>

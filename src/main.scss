@@ -42,16 +42,18 @@
 @import "role/role-selector";
 
 // Components Beta
-@import "components/topNavigation/top-navigation";
+@import "components/action-dropdown";
+@import "components/button";
 @import "components/icon-radio-buttons";
 @import "components/styled-radio-buttons";
-@import "components/action-dropdown";
-@import "components/text-input";
 @import "components/table";
 @import "components/tabs/tabs";
+@import "components/text-input";
+@import "components/topNavigation/top-navigation";
 
 // App Beta
 @import "app/app";
+@import "leases/components/control-buttons";
 @import "leases/components/lease-list";
 @import "leases/components/lease-page";
 @import "leases/components/search";
