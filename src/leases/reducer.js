@@ -5,9 +5,11 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {
   Attributes,
+  Lease,
   LeasesList,
   ReceiveAttributesAction,
   ReceiveLeasesAction,
+  ReceiveSingleLeaseAction,
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -34,8 +36,15 @@ const leasesListReducer: Reducer<LeasesList> = handleActions({
   },
 }, []);
 
+const currentLeaseReducer: Reducer<Lease> = handleActions({
+  ['mvj/leasesbeta/RECEIVE_SINGLE']: (state: Lease, {payload: lease}: ReceiveSingleLeaseAction) => {
+    return lease;
+  },
+}, {});
+
 export default combineReducers({
   attributes: attributesReducer,
+  current: currentLeaseReducer,
   isFetching: isFetchingReducer,
   list: leasesListReducer,
 });

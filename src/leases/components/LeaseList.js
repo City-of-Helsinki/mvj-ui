@@ -1,5 +1,6 @@
 // @flow
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
 import {translate} from 'react-i18next';
 import {connect} from 'react-redux';
@@ -13,11 +14,13 @@ import Search from './Search';
 import TableControllers from './TableControllers';
 import Table from '../../components/Table';
 import * as contentHelpers from '../helpers';
+import {getActiveLanguage} from '../../util/helpers';
 
 type Props = {
   fetchAttributes: Function,
   fetchLeases: Function,
   isFetching: boolean,
+  router: Object,
   t: Function,
   leases: Array<any>,
 }
@@ -36,6 +39,10 @@ class LeaseList extends Component {
     visualizationType: 'table',
   }
 
+  static contextTypes = {
+    router: PropTypes.object,
+  };
+
   componentWillMount() {
     const {fetchAttributes, fetchLeases} = this.props;
 
@@ -43,17 +50,20 @@ class LeaseList extends Component {
     fetchLeases();
   }
 
-  handleEditClick = () => {
-    console.log('click');
-  }
-
+  handleEditClick = (id) => {
+    const {router} = this.context;
+    // const {router: {location: {query}}} = this.props;
+    const lang = getActiveLanguage().id;
+    return router.push({
+      pathname: `/beta/${lang}/leases/${id}`,
+      // query,
+    });
+  };
 
   render() {
     const {documentType, visualizationType} = this.state;
     const {leases: content, t} = this.props;
-    console.log('content', content);
     const leases = contentHelpers.getContentLeases(content);
-    console.log(leases);
 
     return (
       <div className='lease-list'>

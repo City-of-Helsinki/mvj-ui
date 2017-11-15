@@ -1,0 +1,11 @@
+.lease-page {
+  display: block;
+  width: 100%;
+  margin-top: 2rem;
+
+  &__tab-content {
+    width: 100%;
+    background-color: $white;
+    padding: 1rem;
+  }
+}
