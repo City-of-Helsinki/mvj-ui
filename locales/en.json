@@ -33,6 +33,10 @@
   "leases": {
     "title": "Leases",
     "single": "Lease",
+    "identifier": "Identifier",
+    "real_property_unit": "Real property unit",
+    "type": "Type",
+    "address": "Address",
     "createNew": "Create a lease",
     "startDate": "Start date",
     "endDate": "End date",

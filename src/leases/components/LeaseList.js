@@ -88,7 +88,7 @@ class LeaseList extends Component {
               data={leases}
               dataKeys={[
                 {key: 'identifier', label: t('leases:identifier')},
-                {key: 'real_property_unit', label: t('applications:types.real_property_unit')},
+                {key: 'real_property_unit', label: t('leases:real_property_unit')},
                 {key: 'tenant', label: t('leases:tenants.single')},
                 {key: 'address', label: t('leases:address')},
                 {key: 'lease_type', label: t('leases:type')},

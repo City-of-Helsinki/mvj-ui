@@ -37,6 +37,7 @@
     "title": "Vuokraukset",
     "single": "Vuokraus",
     "identifier": "Vuokratunnus",
+    "real_property_unit": "Kiinteistötunnus",
     "type": "Tyyppi",
     "address": "Osoite",
     "createNew": "Luo vuokraus",
