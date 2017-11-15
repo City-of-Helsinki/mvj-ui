@@ -17,6 +17,7 @@ export const FallbackLanguage = 'en';
  * Languages
  * @type {[*]}
  */
+ 
 export const Languages = [
   {id: 'en', label: 'EN'},
   {id: 'fi', label: 'FI'},

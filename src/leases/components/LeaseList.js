@@ -1,40 +1,40 @@
 // @flow
-import React, {Component, PropTypes} from 'react';
-import {connect} from 'react-redux';
-import {translate} from 'react-i18next';
+import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
-import orderBy from 'lodash/orderBy';
+import {translate} from 'react-i18next';
+import {connect} from 'react-redux';
+import {Row} from 'react-foundation';
 
-import {getUser} from '../../role/selectors';
 import {fetchAttributes} from '../../attributes/actions';
-import {editLease, fetchLeases, createLease} from '../actions';
-import Loader from '../../components/loader/Loader';
+import {fetchLeases} from '../actions';
+import ActionDropdown from '../../components/ActionDropdown';
 import {getIsFetching, getLeasesList} from '../selectors';
-import FilterableList from '../../components/filterableList/FilterableList';
-import {getActiveLanguage} from '../../util/helpers';
-
-import NewLeaseTemplate from './NewLeaseTemplate';
+import Search from './Search';
+import TableControllers from './TableControllers';
+import Table from '../../components/Table';
+import * as contentHelpers from '../helpers';
 
 type Props = {
-  closeReveal: Function,
-  createLease: Function,
-  editLease: Function,
   fetchAttributes: Function,
   fetchLeases: Function,
   isFetching: boolean,
-  leases: Array<any>,
-  params: Object,
-  router: Object,
   t: Function,
-  user: Object,
-};
+  leases: Array<any>,
+}
+
+type State = {
+  documentType: string,
+  visualizationType: string,
+
+}
 
 class LeaseList extends Component {
-  props: Props;
+  props: Props
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
+  state: State = {
+    documentType: 'all',
+    visualizationType: 'table',
+  }
 
   componentWillMount() {
     const {fetchAttributes, fetchLeases} = this.props;
@@ -43,46 +43,65 @@ class LeaseList extends Component {
     fetchLeases();
   }
 
-  handleEditClick = (id) => {
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
-    const lang = getActiveLanguage().id;
+  handleEditClick = () => {
+    console.log('click');
+  }
 
-    return router.push({
-      pathname: `/${lang}/leases/${id}`,
-      query,
-    });
-  };
-
-  handleCreateLease = () => {
-    const {createLease, user} = this.props;
-    const lease = NewLeaseTemplate({preparer: user});
-    return createLease(lease);
-  };
 
   render() {
-    const {leases, isFetching, t} = this.props;
-    const orderedLeases = orderBy(leases, ['id'], ['asc']);
+    const {documentType, visualizationType} = this.state;
+    const {leases: content, t} = this.props;
+    console.log('content', content);
+    const leases = contentHelpers.getContentLeases(content);
+    console.log(leases);
 
     return (
-      <div className="leases">
-        <Loader isLoading={isFetching}/>
-        <FilterableList
-          data={orderedLeases}
-          displayFilters={true}
-          isFetching={isFetching}
-          dataKeys={[
-            {key: 'id', label: 'ID'},
-            {key: 'identifier', label: 'Vuokraustunnus'},
-            {key: 'application.type', label: 'Tyyppi', renderer: (val) => val ? t(`types.${val}`) : ' - '},
-            {key: 'tenants.length', label: 'Vuokralaiset'},
-            {key: ['preparer.first_name', 'preparer.last_name'], label: 'Valmistelija', renderer: (val) => `${val} `},
-            {key: 'state', label: 'Tila', renderer: (val) => t(`state.${val}`)},
-          ]}
-          onRowClick={this.handleEditClick}
-        />
-
-        <button className="button primary" onClick={this.handleCreateLease}>{t('add')}</button>
+      <div className='lease-list'>
+        <Row>
+          <div className='lease-list__search-wrapper'>
+            <Search />
+          </div>
+          <div className='lease-list__dropdown-wrapper'>
+            <ActionDropdown
+              title={'Luo uusi'}
+              options={[
+                {value: 'application', label: 'Hakemus'},
+                {value: 'lease', label: 'Vuokraus'},
+                {value: 'area', label: 'Rasitealue'},
+              ]}
+            />
+          </div>
+        </Row>
+        <Row>
+          <TableControllers
+            amount={leases.length}
+            documentType={documentType}
+            onDocumentTypeChange={(value) => {this.setState({documentType: value});}}
+            visualizationType={visualizationType}
+            onVisualizationTypeChange={(value) => {this.setState({visualizationType: value});}}
+          />
+        </Row>
+        <Row>
+          {visualizationType === 'table' && (
+            <Table
+              amount={leases.length}
+              data={leases}
+              dataKeys={[
+                {key: 'identifier', label: t('leases:identifier')},
+                {key: 'real_property_unit', label: t('leases:real_property_unit')},
+                {key: 'tenant', label: t('leases:tenants.single')},
+                {key: 'address', label: t('leases:address')},
+                {key: 'lease_type', label: t('leases:type')},
+                {key: 'start_date', label: t('leases:startDate')},
+                {key: 'end_date', label: t('leases:endDate')},
+              ]}
+              onRowClick={this.handleEditClick}
+            />
+          )}
+          {visualizationType === 'map' && (
+            <h1>Kartta</h1>
+          )}
+        </Row>
       </div>
     );
   }
@@ -92,7 +111,6 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        user: getUser(state),
         leases: getLeasesList(state),
         isFetching: getIsFetching(state),
       };
@@ -100,9 +118,7 @@ export default flowRight(
     {
       fetchLeases,
       fetchAttributes,
-      editLease,
-      createLease,
     },
   ),
-  translate(['common', 'leases', 'applications']),
+  translate(['leases', 'applications']),
 )(LeaseList);

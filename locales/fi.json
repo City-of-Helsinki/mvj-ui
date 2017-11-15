@@ -36,9 +36,16 @@
   "leases": {
     "title": "Vuokraukset",
     "single": "Vuokraus",
+    "identifier": "Vuokratunnus",
+    "real_property_unit": "Kiinteistötunnus",
+    "type": "Tyyppi",
+    "address": "Osoite",
     "createNew": "Luo vuokraus",
+    "startDate": "Alkupvm",
+    "endDate": "Loppupvm",
     "tenants": {
       "title": "Vuokralaiset",
+      "single": "Vuokralainen",
       "applicant": "Hakija",
       "billingInformation": "Laskutustiedot",
       "contactPerson": "Yhteyshenkilö",

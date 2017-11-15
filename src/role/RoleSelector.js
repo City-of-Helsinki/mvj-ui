@@ -28,18 +28,18 @@ class RoleSelector extends Component {
 
   getRoleLink = () => {
     const {t, currentUser: {username}, params: {language}} = this.props;
-    const link = username === 'applicant' ? `${language}/applications/create` : `${language}/applications`;
+    const link = username === 'applicant' ? `/alpha/${language}/applications/create` : `/alpha/${language}/applications`;
     const linkText = username === 'applicant' ? t('createApplication') : t('goToApplications');
 
     return (
       <div>
         <Link className="button primary role__action-button"
-              to={link}>
+          to={link}>
           {linkText} <i className="mi mi-chevron-right"/>
         </Link>
         {username !== 'applicant' &&
         <Link className="button primary role__action-button"
-              to={`${language}/leases`}>
+          to={`/alpha/${language}/leases`}>
           {t('goToLeases')} <i className="mi mi-chevron-right"/>
         </Link>
         }
@@ -59,8 +59,8 @@ class RoleSelector extends Component {
         <ul className="role-selector__list">
           {userList.map((user, i) =>
             <li key={i}
-                className={classNames({'active': currentUser && currentUser.id === user.id})}
-                onClick={() => this.handleUserClick(user)}>
+              className={classNames({'active': currentUser && currentUser.id === user.id})}
+              onClick={() => this.handleUserClick(user)}>
               {user.label}
             </li>
           )}
@@ -84,4 +84,3 @@ export default flowRight(
   translate(['common', 'roles']),
   withRouter,
 )(RoleSelector);
-

@@ -8,38 +8,53 @@
 // Vendor
 @import "~react-redux-toastr/src/styles/index";
 @import "~react-select/dist/react-select.css";
-@import "components/map/leaflet";
+@import "components-alpha/map/leaflet";
 
 // Components
-@import "components/filterableList/filterableList";
-@import "components/dropdown/dropdown";
-@import "components/hero/hero";
-@import "components/table/table";
-@import "components/tabs/tabs";
-@import "components/topNavigation/top-navigation";
-@import "components/collapse/collapse";
-@import "components/form/form";
-@import "components/map/map";
-@import "components/map/controls";
-@import "components/loader/loader";
-@import "components/editModal/editModal";
-@import "components/sidebar/sidebar";
+@import "components-alpha/filterableList/filterableList";
+@import "components-alpha/dropdown/dropdown";
+@import "components-alpha/hero/hero";
+@import "components-alpha/table/table";
+@import "components-alpha/tabs/tabs";
+@import "components-alpha/topNavigation/top-navigation";
+@import "components-alpha/collapse/collapse";
+@import "components-alpha/form/form";
+@import "components-alpha/map/map";
+@import "components-alpha/map/controls";
+@import "components-alpha/loader/loader";
+@import "components-alpha/editModal/editModal";
+@import "components-alpha/sidebar/sidebar";
 
 // App
 @import "api/api";
-@import "app/app";
-@import "applications/components/application-form";
-@import "applications/components/application-list";
-@import "leases/components/lease-list";
-@import "leases/components/preparer-form";
-@import "leases/components/formSections/summary";
-@import "leases/components/formSections/propertyUnit";
-@import "leases/components/formSections/tenants";
-@import "leases/components/formSections/dataBox";
-@import "leases/components/formSections/notes";
-@import "leases/components/formSections/billing";
+@import "app-alpha/app";
+@import "applications-alpha/components/application-form";
+@import "applications-alpha/components/application-list";
+@import "leases-alpha/components/lease-list";
+@import "leases-alpha/components/preparer-form";
+@import "leases-alpha/components/formSections/summary";
+@import "leases-alpha/components/formSections/propertyUnit";
+@import "leases-alpha/components/formSections/tenants";
+@import "leases-alpha/components/formSections/dataBox";
+@import "leases-alpha/components/formSections/notes";
+@import "leases-alpha/components/formSections/billing";
 @import "errorPage/error-page";
 @import "role/role-selector";
+
+// Components Beta
+@import "components/topNavigation/top-navigation";
+@import "components/icon-radio-buttons";
+@import "components/styled-radio-buttons";
+@import "components/action-dropdown";
+@import "components/text-input";
+@import "components/table";
+
+// App Beta
+@import "app/app";
+@import "leases/components/lease-list";
+@import "leases/components/search";
+@import "leases/components/table-controllers";
+
 
 ::selection {
   background: $primary-color;

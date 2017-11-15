@@ -33,9 +33,17 @@
   "leases": {
     "title": "Leases",
     "single": "Lease",
+    "identifier": "Identifier",
+    "real_property_unit": "Real property unit",
+    "type": "Type",
+    "address": "Address",
     "createNew": "Create a lease",
+    "startDate": "Start date",
+    "endDate": "End date",
+    "tenant": "Tenant",
     "tenants": {
       "title": "Tenants",
+      "single": "Tenant",
       "applicant": "Applicant",
       "billingInformation": "Billing information",
       "contactPerson": "Contact person",
@@ -45,6 +53,9 @@
     "leases": {
       "title": "Leases",
       "single": "Lease",
+      "identifier": "Identifier",
+      "type": "Type",
+      "address": "Address",
       "editLease": "Edit lease",
       "addLease": "Add new lease",
       "types": {

@@ -14,7 +14,7 @@ function* callApi(request: Request): Generator<> {
   if (request.method === 'POST' || request.method === 'PUT') {
     request.headers.set('Content-Type', 'application/json');
   }
-
+  console.log(request);
   const response = yield call(fetch, request);
   const bodyAsJson = yield call([response, response.json]);
 

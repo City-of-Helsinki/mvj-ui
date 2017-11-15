@@ -1,0 +1,30 @@
+.table-controllers {
+  width: 100%;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+
+  .table-info {
+    display: flex;
+
+    .amount-wrapper {
+      flex: 1 1 0%;
+
+      span {
+        line-height: 2.25rem;
+        font-weight: 600;
+        font-size: rem-calc(18px);
+        padding: 0.5rem 0;
+        display: block;
+      }
+    }
+
+    .document-type-wrapper {
+      margin-right: 2rem;
+    }
+
+    .visualization-type-wrapper {
+      text-align: right;
+      width: 207px;
+    }
+  }
+}
