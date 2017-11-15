@@ -3,6 +3,10 @@ import React, {Component} from 'react';
 
 import StyledRadioButtons from '../../components/StyledRadioButtons';
 import IconRadioButtons from '../../components/IconRadioButtons';
+import tableIcon from '../../../assets/icons/table.svg';
+import tableGreenIcon from '../../../assets/icons/table-green.svg';
+import mapIcon from '../../../assets/icons/map.svg';
+import mapGreenIcon from '../../../assets/icons/map-green.svg';
 
 const documentTypeOptions = [
   {value: 'all', label: 'Kaikki'},
@@ -11,8 +15,8 @@ const documentTypeOptions = [
 ];
 
 const visualizationTypeOptions = [
-  {value: 'table', label: 'Taulukko', icon: '../../../assets/icons/table.svg', iconSelected: '../../../assets/icons/table-green.svg'},
-  {value: 'map', label: 'Kartta', icon: '../../../assets/icons/map.svg', iconSelected: '../../../assets/icons/map-green.svg'},
+  {value: 'table', label: 'Taulukko', icon: tableIcon, iconSelected: tableGreenIcon},
+  {value: 'map', label: 'Kartta', icon: mapIcon, iconSelected: mapGreenIcon},
 ];
 
 type Props = {
