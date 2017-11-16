@@ -37,7 +37,7 @@
       tr {
         &:hover > td {
           cursor: pointer;
-          background-color: lighten($engel, 50%) !important;
+          background-color: $engel-lighter !important;
           color: $black !important;
         }
       }

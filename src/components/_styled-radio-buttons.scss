@@ -36,10 +36,15 @@
     padding: 0 1rem;
   }
 
-
   .radio:checked + .option-label {
     background: $tram;
     border: none;
     color: $white;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .document-type-wrapper {
+    display: none;
   }
 }

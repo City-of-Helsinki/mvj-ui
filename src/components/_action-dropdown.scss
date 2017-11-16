@@ -59,7 +59,7 @@
       }
     }
     .option:hover {
-      background-color: lighten($engel, 50%);
+      background-color: $engel-lighter;
     }
   }
 }
