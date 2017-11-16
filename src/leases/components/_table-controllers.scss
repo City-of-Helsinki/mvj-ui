@@ -1,7 +1,7 @@
 .table-controllers {
   width: 100%;
   margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.6rem;
 
   .table-info {
     display: flex;
@@ -10,7 +10,7 @@
       flex: 1 1 0%;
 
       span {
-        line-height: 2.25rem;
+        line-height: rem-calc(30px);
         font-weight: 600;
         font-size: rem-calc(18px);
         padding: 0.5rem 0;

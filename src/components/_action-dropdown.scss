@@ -1,5 +1,5 @@
 .action-dropdown {
-  width: 207px;
+  width: rem-calc(207px);
   position: relative;
 
   &_title-wrapper {
@@ -8,9 +8,9 @@
 
     .title {
       color: $black;
+      height: rem-calc(30px);
       display: block;
-      height: 2.25rem;
-      line-height: 2.25rem;
+      line-height: rem-calc(32px);
       padding: 0 1rem;
       font-size: rem-calc(13px);
       text-transform: uppercase;
@@ -19,21 +19,19 @@
     }
 
     .title::after {
-      background-image: url('../assets/icons/arrow-down.svg');
+      background-image: url('../assets/icons/icon_arrow_down.svg');
       display: block;
       position: absolute;
       content: ' ';
-      top: 0;
-      right: 0;
-      height: 24px;
-      width: 24px;
-      top: 0.4rem;
-      right: 0.5rem;
+      height: rem-calc(16px);
+      width: rem-calc(16px);
+      top: 0.45rem;
+      right: 0.6rem;
     }
   }
 
   .title.isOpen::after {
-    background-image: url('../assets/icons/arrow-up.svg');
+    background-image: url('../assets/icons/icon_arrow_up.svg');
   }
 
   &_option-wrapper {
@@ -49,8 +47,8 @@
     }
 
     .option {
-      height: 2.25rem;
-      line-height: 2.25rem;
+      height: rem-calc(30px);
+      line-height: rem-calc(30px);
       font-size: rem-calc(14px);
       background-color: $white;
 
@@ -61,7 +59,7 @@
       }
     }
     .option:hover {
-      background-color: rgba(255, 233, 119, 0.2);
+      background-color: lighten($engel, 50%);
     }
   }
 }

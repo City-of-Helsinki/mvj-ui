@@ -11,7 +11,9 @@ import mapGreenIcon from '../../../assets/icons/map-green.svg';
 const documentTypeOptions = [
   {value: 'all', label: 'Kaikki'},
   {value: 'application', label: 'Hakemukset'},
+  {value: 'reservation', label: 'Varaukset'},
   {value: 'lease', label: 'Vuokraukset'},
+  {value: 'permission', label: 'Luvat'},
 ];
 
 const visualizationTypeOptions = [
