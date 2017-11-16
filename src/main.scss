@@ -89,4 +89,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100%;
+  font-family: $font-family-source;
+  background: $light-gray;
+  color: $black;
 }
