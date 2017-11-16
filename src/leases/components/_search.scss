@@ -2,9 +2,19 @@
   .readme-link {
     color: $black;
     text-decoration: underline;
+    font-size: rem-calc(14px);
   }
   .tableInfo {
     width: 100%;
     display: flex;
+  }
+  .text-input {
+    height: rem-calc(30px);
+    border: none;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+    &::placeholder {
+      font-size: rem-calc(14px);
+      color: $dark-gray;
+    }
   }
 }

@@ -1,31 +1,56 @@
 .top-navigation {
   display: flex;
-  font-size: rem-calc(16px);
-  padding: rem-calc(12px);
+  align-items: center;
+  justify-content: space-between;
+  height: rem-calc(70px);
+  font-weight: 600;
+  font-size: rem-calc(20px);
+  padding: rem-calc(12px) rem-calc(30px);
+  background: $white;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.06);
   background-color: $white;
 
-  .logo {
-    margin-right: 2rem;
-
-    .logo-image {
-      img {
-        height: 40px;
-      }
-    }
-    .logo-image-sv {
-      img {
-        height: 40px;
-        width: 115px;
-      }
-    }
+  .menuIcon, .userIcon, .flagIcon {
+    width: 27px;
+    height: 27px;
+    fill: $black;
+    cursor: pointer;
   }
+
+  .menuIcon:hover, .userIcon:hover {
+    fill: $tram;
+  }
+
+  .menuIcon {
+    width: rem-calc(25px);
+    height: rem-calc(25px);
+    baseline-shift: rem-calc(10px);
+  }
+
+  .flag {
+    position: relative;
+    margin: 0 rem-calc(70px) 0 0;
+  }
+
   .title {
-    height: 40px;
-    span{
-      line-height: 40px;
-      height: 40px;
-      display: inline-block;
-    }
+    margin-left: rem-calc(30px);
+    font-family: $font-family-helsinki-grotesk;
+    flex-grow: 2;
+  }
+  .username {
+    font-family: $font-family-helsinki-grotesk;
+    font-size: rem-calc(16px);
+    margin-right: rem-calc(15px);
+  }
+  .circle {
+    position: absolute;
+    font-size: rem-calc(13px);
+    padding: 0 rem-calc(4px);
+    color: $white;
+    text-align: center;
+    border-radius: 50%;
+    background-color: $brick;
+    bottom: 0;
+    right: rem-calc(-10px);
   }
 }

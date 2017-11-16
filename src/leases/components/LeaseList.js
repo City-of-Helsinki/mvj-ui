@@ -76,7 +76,9 @@ class LeaseList extends Component {
               title={'Luo uusi'}
               options={[
                 {value: 'application', label: 'Hakemus'},
+                {value: 'reservation', label: 'Varaus'},
                 {value: 'lease', label: 'Vuokraus'},
+                {value: 'permission', label: 'Lupa'},
                 {value: 'area', label: 'Rasitealue'},
               ]}
             />

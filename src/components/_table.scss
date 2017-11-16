@@ -4,19 +4,24 @@
 
   border-spacing: 0;
 
+  thead {
+    border: none;
+  }
+
   thead th, thead td {
     background-color: $engel;
     font-size: rem-calc(14px);
 	  font-weight: 600;
 	  text-align: left;
 	  color: $black;
-    padding: 0.5rem 0.75rem;
+    padding: 0.36rem 0.75rem 0.3rem;
     border: none;
     display: table-cell;
   }
 
   tbody th, tbody td {
     border-bottom: 1px solid $light-gray;
+    padding: 0.36rem 0.75rem 0.3rem;
     font-size: rem-calc(14px);
 	  text-align: left;
 	  color: $black;
@@ -33,7 +38,7 @@
       tr {
         &:hover > td {
           cursor: pointer;
-          background-color: rgba(255, 233, 119, 0.2) !important;
+          background-color: $engel-lighter !important;
           color: $black !important;
         }
       }
