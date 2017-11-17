@@ -13,6 +13,7 @@ import ControlButtons from './ControlButtons';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
+import PropertyUnit from './leaseSections/PropertyUnit';
 
 type State = {
   activeTab: number,
@@ -133,6 +134,7 @@ class PreparerForm extends Component {
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   <h1>Vuokra-alue</h1>
+                  <PropertyUnit />
                 </div>
               </TabPane>
 

@@ -58,25 +58,7 @@
 @import "leases/components/lease-page";
 @import "leases/components/search";
 @import "leases/components/table-controllers";
-
-
-// ::selection {
-//   background: $primary-color;
-//   color: #fff;
-//   text-shadow: 0 0 0;
-// }
-//
-// ::-moz-selection {
-//   background: $primary-color;
-//   color: #fff;
-//   text-shadow: 0 0 0;
-// }
-//
-// ::-webkit-selection {
-//   background: $primary-color;
-//   color: #fff;
-//   text-shadow: 0 0 0;
-// }
+@import "leases/components/leaseSections/property-unit";
 
 html {
   -webkit-font-smoothing: antialiased;
