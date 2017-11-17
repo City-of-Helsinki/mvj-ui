@@ -17,6 +17,10 @@
     cursor: pointer;
   }
 
+  .userIcon {
+    margin-bottom: rem-calc(5px);
+  }
+
   .menuIcon:hover, .userIcon:hover {
     fill: $tram;
   }
@@ -36,11 +40,18 @@
     margin-left: rem-calc(30px);
     font-family: $font-family-helsinki-grotesk;
     flex-grow: 2;
+    a {
+      color: $black;
+      &:hover {
+        color: $black;
+      }
+    }
   }
   .username {
     font-family: $font-family-helsinki-grotesk;
+    font-weight: 500;
     font-size: rem-calc(16px);
-    margin-right: rem-calc(15px);
+    margin-right: rem-calc(14px);
   }
   .circle {
     position: absolute;
