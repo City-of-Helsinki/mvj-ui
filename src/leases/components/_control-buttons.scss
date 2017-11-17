@@ -4,15 +4,26 @@
 
   .comment-button {
     display: inline-block;
-    padding: none;
-    outline: none;
     margin-left: 3rem;
     margin-right: 1rem;
     cursor: pointer;
-
-    img {
-      width: 2.25rem;
-      height: 2.25rem;
-    }
+    position: relative;
+  }
+  .commentIcon {
+    width: rem-calc(33px);
+    height: rem-calc(33px);
+    fill: $black;
+  }
+  .circle {
+    position: absolute;
+    font-size: rem-calc(13px);
+    padding: 0 rem-calc(4px);
+    color: $white;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 50%;
+    background-color: $brick;
+    top: rem-calc(-6px);
+    right: rem-calc(-10px);
   }
 }

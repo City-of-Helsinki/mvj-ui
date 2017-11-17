@@ -1,4 +1,18 @@
 $font-family-helsinki-grotesk: HelsinkiGrotesk, sans-serif;
+$font-family-source: 'Source Sans Pro', sans-serif;
+
+/// @type Font
+$body-font-family: $font-family-source;
+
+/// @type Number
+$global-font-size: 100% !default;
+$global-lineheight: 1.5 !default;
+$font-xsmall: 0.8125rem !default;
+$font-small: 0.875rem !default;
+$font-regular: 1rem !default;
+$font-large: 1.25rem !default;
+$font-xlarge: 1.5rem !default;
+$semibold: 600;
 
 /// @type Map
 $foundation-palette: (
@@ -10,64 +24,23 @@ $foundation-palette: (
 );
 
 /// @type Color
-$mvj-text-color: #4A4A4A;
-$mvj-focus-color: #9BDCFB;
-
-/// @type Color
 $summer: #ffc61e !default;
-
-/// @type Color
 $engel: #ffe977 !default;
-
-/// @type Color
 $tram: #009246 !default;
-
-/// @type Color
-$kelley-green: #009246 !default;
-
-/// @type Color
 $brick: #bd2719 !default;
-
-/// @type Color
 $black: #222222 !default;
-
-/// @type Color
-$medium-gray: #d7d5d5 !default;
-
-/// @type Color
-$light-gray: #f4f4f4 !default;
-
-/// @type Color
 $lightest-gray: #FAFAFA !default;
-
-
-
-
-/// @type Color
+$light-gray: #eeeeee !default;
+$medium-gray: #cccccc !default;
 $dark-gray: #757575 !default;
+$white: #ffffff !default;
 
+$engel-lighter: rgba(255, 233, 119, 0.3);
 
-
-/// @type Color
-$white: #fefefe !default;
-
-/// @type Number
-$global-font-size: 100% !default;
-
-/// @type Number
-//$global-width: rem-calc(1200) !default;
-
-/// @type Number
-$global-lineheight: 1.5 !default;
-
-/// @type Color
-$body-background: $white !default;
-
-/// @type Color
+$mvj-text-color: $black;
+$mvj-focus-color: #9BDCFB;
+$body-background: $light-gray !default;
 $body-font-color: $mvj-text-color !default;
-
-/// @type Font
-$body-font-family: $font-family-helsinki-grotesk;
 
 /// Tables
 $table-head-background: transparent !default;

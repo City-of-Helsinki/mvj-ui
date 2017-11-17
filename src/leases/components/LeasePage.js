@@ -81,7 +81,14 @@ class PreparerForm extends Component {
     return (
       <div className='lease-page'>
         <Row>
-          <Column>
+          <Column className='lease-page__upper-bar'>
+            <div className='lease-info'>
+              <p className='lease-info__label'>Vuokratunnus</p>
+              <p className='lease-info__type'>
+                <span className='lease-info__number'>A1110-345</span>
+                <span className='lease-info__date'>Vuokraus ajalle 01.01.1987 – 31.12.2047</span>
+              </p>
+            </div>
             <div className='controls'>
               <ControlButtons
                 isEditMode={isEditMode}
