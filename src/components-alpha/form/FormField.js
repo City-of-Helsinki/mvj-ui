@@ -35,18 +35,18 @@ type Props = {
 const resolveFieldType = (type: String): Object => FieldTypes.hasOwnProperty(type) ? FieldTypes[type] : FieldTypeBasic;
 
 const FormField = ({
-                     className,
-                     disabled,
-                     ErrorComponent,
-                     hint,
-                     input,
-                     label,
-                     meta,
-                     placeholder,
-                     required,
-                     type,
-                     options,
-                   }: Props) => {
+  className,
+  disabled,
+  ErrorComponent,
+  hint,
+  input,
+  label,
+  meta,
+  placeholder,
+  required,
+  type,
+  options,
+}: Props) => {
 
   const displayError = meta.error && meta.touched;
   const fieldComponent = resolveFieldType(type);
