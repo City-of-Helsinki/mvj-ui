@@ -57,7 +57,12 @@ class FormActionDropdown extends Component {
             <ul>
               {options.map((option, index) => {
                 return (
-                  <li onClick={() => onOptionClick(get(option, 'value'))}className='option' key={index}><a>{get(option, 'label')}</a></li>
+                  <li className='option' key={index}
+                    onClick={() => {
+                      onOptionClick(get(option, 'value'));
+                      this.setState({isOpen: false});
+                    }}
+                  ><a>{get(option, 'label')}</a></li>
                 );
               })}
             </ul>

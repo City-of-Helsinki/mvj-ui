@@ -6,23 +6,8 @@ import {Field, FieldArray, reduxForm, formValueSelector, arrayPush} from 'redux-
 
 import trashIcon from '../../../../assets/icons/trash.svg';
 import FormActionDropdown from '../../../components/FormActionDropdown';
-
-type FieldProps = {
-  input: Object,
-  label: string,
-  type: string,
-  meta: Object,
-}
-
-const renderField = ({input, label, type, meta: {touched, error}}: FieldProps) => (
-  <div>
-    <label>{label}</label>
-    <div>
-      <input {...input} type={type} placeholder={label}/>
-      {touched && error && <span>{error}</span>}
-    </div>
-  </div>
-);
+import FieldTypeSelect from '../../../components/form/FieldTypeSelect';
+import FieldTypeText from '../../../components/form/FieldTypeText';
 
 type PropertyProps = {
   title: string,
@@ -30,6 +15,9 @@ type PropertyProps = {
 }
 
 const renderProperty = ({title, fields}: PropertyProps) => {
+  if(fields.length === 0) {
+    return null;
+  }
   return (
     <div>
       {fields.length > 0 &&
@@ -39,7 +27,7 @@ const renderProperty = ({title, fields}: PropertyProps) => {
           </Column>
         </Row>
       }
-      {fields.map((currentProperty, index) =>
+      {fields.map((property, index) =>
         <div key={index} className='subsection-container'>
           <button
             className='remove-button'
@@ -49,17 +37,65 @@ const renderProperty = ({title, fields}: PropertyProps) => {
             <img src={trashIcon} alt='Poista' />
           </button>
           <Row>
-            <Column>
+            <Column medium={3}>
               <Field
-                name={`${currentProperty}.hoppy`}
+                name={`${property}.identifier`}
                 type="text"
-                component={renderField}
-                label={`Hobby #${index + 1}`}/>
+                component={FieldTypeText}
+                label='Tunnus'
+                placeholder='Tunnus'/>
+            </Column>
+            <Column medium={3}>
+            </Column>
+            <Column medium={3}>
               <Field
-                name={`${currentProperty}.hoppy2`}
+                name={`${property}.totalArea`}
                 type="text"
-                component={renderField}
-                label={'Address'}/>
+                component={FieldTypeText}
+                label='Tunnus'
+                placeholder='Tunnus'/>
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${property}.sectionalArea`}
+                type="text"
+                component={FieldTypeText}
+                label='Tunnus'
+                placeholder='Tunnus'/>
+            </Column>
+          </Row>
+          <Row>
+            <Column medium={4}>
+              <Field
+                name={`${property}.address`}
+                type="text"
+                component={FieldTypeText}
+                label='Osoite'
+                placeholder='Osoite'/>
+            </Column>
+            <Column medium={2}>
+              <Field
+                name={`${property}.postcode`}
+                type="text"
+                component={FieldTypeText}
+                label="Postinumero"
+                placeholder="Postinumero"/>
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${property}.city`}
+                type="text"
+                component={FieldTypeText}
+                label='Kaupunki'
+                placeholder='Kaupunki'/>
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${property}.registrationDate`}
+                type="text"
+                component={FieldTypeText}
+                label='Rekisteröintipäivä'
+                placeholder='Rekisteröintipäivä'/>
             </Column>
           </Row>
         </div>
@@ -74,15 +110,16 @@ type PlanUnitProps = {
 }
 
 const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
+  if(fields.length === 0) {
+    return null;
+  }
   return (
     <div>
-      {fields.length > 0 &&
-        <Row>
-          <Column>
-            <h2>{title}</h2>
-          </Column>
-        </Row>
-      }
+      <Row>
+        <Column>
+          <h2>{title}</h2>
+        </Column>
+      </Row>
       {fields.map((planunit, index) =>
         <div key={index} className='subsection-container'>
           <button
@@ -93,17 +130,102 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
             <img src={trashIcon} alt='Poista' />
           </button>
           <Row>
-            <Column>
+            <Column medium={3}>
               <Field
-                name={`${planunit}.hoppy`}
+                name={`${planunit}.identifier`}
                 type="text"
-                component={renderField}
-                label={`Hobby #${index + 1}`}/>
+                component={FieldTypeText}
+                label='Tunnus'
+                placeholder='Tunnus'/>
+            </Column>
+            <Column medium={3}>
+            </Column>
+            <Column medium={3}>
               <Field
-                name={`${planunit}.hoppy2`}
+                name={`${planunit}.totalArea`}
                 type="text"
-                component={renderField}
-                label={'Address'}/>
+                component={FieldTypeText}
+                label='Kokonaisala'
+                placeholder='Kokonaisala'/>
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${planunit}.sectionalArea`}
+                type="text"
+                component={FieldTypeText}
+                label='Leikkausala'
+                placeholder='Leikkausala'/>
+            </Column>
+          </Row>
+          <Row>
+            <Column medium={4}>
+              <Field
+                name={`${planunit}.address`}
+                type="text"
+                component={FieldTypeText}
+                label='Osoite'
+                placeholder='Osoite'/>
+            </Column>
+            <Column medium={2}>
+              <Field
+                name={`${planunit}.postcode`}
+                type="text"
+                component={FieldTypeText}
+                label='Postinumero'
+                placeholder='Postinumero'/>
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${planunit}.city`}
+                type="text"
+                component={FieldTypeText}
+                label='Kaupunki'
+                placeholder='Kaupunki'/>
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${planunit}.state`}
+                component={FieldTypeSelect}
+                label='Olotila'
+                options={[
+                  {value: 'draft', label: 'Luonnos'},
+                  {value: 'inuse', label: 'Voimassa'},
+                ]}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column medium={3}>
+              <Field
+                name={`${planunit}.subdivisionIdentifier`}
+                type="text"
+                component={FieldTypeText}
+                label='Tonttijaon tunnus'
+                placeholder='Tonttijaon tunnus'/>
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${planunit}.subdivisionDate`}
+                type="text"
+                component={FieldTypeText}
+                label='Tonttijaon hyväksymispvm'
+                placeholder='PP.KK.VVVV'/>
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${planunit}.cityplan`}
+                type="text"
+                component={FieldTypeText}
+                label='Asemakaava'
+                placeholder='Asemakaava'/>
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${planunit}.cityplanDate`}
+                type="text"
+                component={FieldTypeText}
+                label='Asemakaavan vahvistumispvm'
+                placeholder='PP.KK.VVVV'/>
             </Column>
           </Row>
         </div>
@@ -136,34 +258,49 @@ class RenderDistricts extends Component {
                 <img src={trashIcon} alt='Poista' />
               </button>
               <Row>
-                <Column>
+                <Column medium={3}></Column>
+                <Column medium={3}></Column>
+                <Column medium={3}></Column>
+                <Column medium={3}>
                   <Field
-                    name={`${district}.lastName`}
+                    name={`${district}.area`}
                     type="text"
-                    component={renderField}
-                    label="Last Name"/>
+                    component={FieldTypeText}
+                    label="Pinta-ala"
+                    placeholder="Pinta-ala"/>
                 </Column>
               </Row>
               <Row>
-                <Column>
-                  <FieldArray title='Kiinteistöt / määräalat nykyhetkellä' name={`${district}.currentProperties`} component={renderProperty}/>
+                <Column medium={6}>
+                  <Field
+                    name={`${district}.address`}
+                    type="text"
+                    component={FieldTypeText}
+                    label="Osoite"
+                    placeholder="Osoite"/>
+                </Column>
+                <Column medium={3}>
+                  <Field
+                    name={`${district}.postcode`}
+                    type="text"
+                    component={FieldTypeText}
+                    label="Postinumero"
+                    placeholder="Postinumero"/>
+                </Column>
+                <Column medium={3}>
+                  <Field
+                    name={`${district}.city`}
+                    type="text"
+                    component={FieldTypeText}
+                    label="Kaupunki"
+                    placeholder="Kaupunki"/>
                 </Column>
               </Row>
-              <Row>
-                <Column>
-                  <FieldArray title='Kiinteistöt / määräalat sopimushetkellä' name={`${district}.contractProperties`} component={renderProperty}/>
-                </Column>
-              </Row>
-              <Row>
-                <Column>
-                  <FieldArray title='Kaavayksikkö nykyhetkellä' name={`${district}.currentPlanUnits`} component={renderPlanUnit}/>
-                </Column>
-              </Row>
-              <Row>
-                <Column>
-                  <FieldArray title='Kaavayksikkö sopimushetkellä' name={`${district}.contractPlanUnits`} component={renderPlanUnit}/>
-                </Column>
-              </Row>
+
+              <FieldArray title='Kiinteistöt / määräalat nykyhetkellä' name={`${district}.currentProperties`} component={renderProperty}/>
+              <FieldArray title='Kiinteistöt / määräalat sopimushetkellä' name={`${district}.contractProperties`} component={renderProperty}/>
+              <FieldArray title='Kaavayksikkö nykyhetkellä' name={`${district}.currentPlanUnits`} component={renderPlanUnit}/>
+              <FieldArray title='Kaavayksikkö sopimushetkellä' name={`${district}.contractPlanUnits`} component={renderPlanUnit}/>
               <Row>
                 <Column>
                   <FormActionDropdown
