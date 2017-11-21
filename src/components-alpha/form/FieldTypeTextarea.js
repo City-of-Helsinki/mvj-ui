@@ -14,11 +14,11 @@ type Props = {
 const FieldTypeTextarea = ({input, type, displayError, disabled, placeholder}: Props) => {
   return (
     <textarea className={classNames('form-field__textarea', {'has-error': displayError})}
-              id={input.name}
-              type={type}
-              disabled={disabled}
-              placeholder={placeholder}
-              {...input}
+      id={input.name}
+      type={type}
+      disabled={disabled}
+      placeholder={placeholder}
+      {...input}
     />
   );
 };

@@ -234,11 +234,9 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     (state, props) => {
-      return (
-      {
+      return {
         districts: selector(state, props.array),
-      }
-      );
+      };
     }
   ),
   reduxForm({

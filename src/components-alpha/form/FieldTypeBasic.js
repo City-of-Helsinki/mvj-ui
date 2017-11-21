@@ -14,11 +14,11 @@ type Props = {
 const FieldTypeBasic = ({input, type, displayError, disabled, placeholder}: Props) => {
   return (
     <input className={classNames('form-field__input', {'has-error': displayError})}
-           id={input.name}
-           type={type}
-           disabled={disabled}
-           placeholder={placeholder}
-           {...input}
+      id={input.name}
+      type={type}
+      disabled={disabled}
+      placeholder={placeholder}
+      {...input}
     />
   );
 };
