@@ -8,11 +8,13 @@ import flowRight from 'lodash/flowRight';
 import i18n from '../root/i18n';
 import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
+import classnames from 'classnames';
 
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
 import TopNavigation from '../components/topNavigation/TopNavigation';
+import SideMenu from '../components/sideMenu/SideMenu';
 import {isAllowedLanguage} from '../util/helpers';
 import {Languages} from '../constants';
 
@@ -27,8 +29,16 @@ type Props = {
   closeReveal: Function,
 };
 
+type State = {
+  displaySideMenu: boolean,
+};
+
 class App extends Component {
   props: Props
+
+  state: State = {
+    displaySideMenu: false,
+  }
 
   static contextTypes = {
     router: PropTypes.object,
@@ -46,6 +56,13 @@ class App extends Component {
     }
   }
 
+  toggleSideMenu = () => {
+    console.log('toggle');
+    return this.setState({
+      displaySideMenu: !this.state.displaySideMenu,
+    });
+  };
+
   handleDismissErrorModal = () => {
     this.props.closeReveal('apiError');
     this.props.clearError();
@@ -53,11 +70,14 @@ class App extends Component {
 
   render() {
     const {apiError, children} = this.props;
+    const {displaySideMenu} = this.state;
+
     return (
       <div className={'app'}>
-        <TopNavigation />
+        <TopNavigation toggleSideMenu={this.toggleSideMenu}/>
         <section className="app__content">
-          {children}
+          <SideMenu isOpen={displaySideMenu} />
+          <div className={classnames('wrapper', {'is-sidemenu-closed': !displaySideMenu}, {'is-sidemenu-open': displaySideMenu})}>{children}</div>
         </section>
         <ApiErrorModal size={Sizes.LARGE}
           data={apiError}

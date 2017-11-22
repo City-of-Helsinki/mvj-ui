@@ -7,6 +7,7 @@ import * as helpers from '../../helpers';
 
 type Props = {
   t: Function,
+  toggleSideMenu: Function,
 }
 type State = {
   logoClass: string,
@@ -19,11 +20,12 @@ class TopNavigation extends Component {
     logo: helpers.getLogo(),
     logoClass: helpers.getLogoClass(),
   }
+
   render() {
-    const {t} = this.props;
+    const {t, toggleSideMenu} = this.props;
     return (
       <section className="top-navigation">
-        <svg className="menuIcon" viewBox="0 0 27 27">
+        <svg className="menuIcon" viewBox="0 0 27 27" onClick={toggleSideMenu}>
           <path d="M1.5,2.9h27v2.2h-27V2.9z M1.5,11.9h27v2.2h-27V11.9z M1.5,20.9h27v2.2h-27V20.9z"/>
         </svg>
         <div className="title">

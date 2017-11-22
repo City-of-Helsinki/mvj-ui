@@ -1,0 +1,29 @@
+.side-menu {
+  background-color: $tram;
+  width: 200px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: -200px;
+  padding: rem-calc(100px) rem-calc(20px) 0 rem-calc(30px);
+  box-shadow: 2px 0 5px 0 rgba(0, 0, 0, 0.06);
+  transition: .3s ease-in-out;
+  ul {
+    list-style-type: none;
+    margin: 0;
+    color: $white;
+    font-weight: $semibold;
+    line-height: 2;
+    li {
+      cursor: pointer;
+      &:hover {
+        color: $engel;
+      }
+    }
+  }
+
+}
+
+.is-menu-open {
+  transform: translateX(200px)
+}
