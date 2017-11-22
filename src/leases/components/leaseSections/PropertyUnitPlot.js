@@ -3,14 +3,17 @@ import React, {Component} from 'react';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 import PropertyUnitPlotItem from './PropertyUnitPlotItem';
-import PropertyUnitPlanPlotItem from './PropertyUnitPlanPlotItem'
+import PropertyUnitPlanPlotItem from './PropertyUnitPlanPlotItem';
 
 type Props = {
   data: Object,
 }
 
 type State = {
-  isOpen: boolean,
+  isOpenContract: boolean,
+  isOpenPresent: boolean,
+  isOpenPlanContract: boolean,
+  isOpenPlanPresent: boolean,
 }
 
 class PropertyUnitPlot extends Component {

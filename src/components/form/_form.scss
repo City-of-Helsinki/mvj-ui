@@ -1,0 +1,57 @@
+.mvj-form-field {
+  label {
+    font-size: rem-calc(14px);
+    line-height: normal;
+	  text-align: left;
+    color: $dark-gray;
+    margin-bottom: rem-calc(4px);
+  }
+
+  .mvj-form-field {
+    &__text {
+      input {
+        padding: 0 0.5rem;
+        height: rem-calc(30px);
+        line-height: normal;
+        color: $black;
+        width: 100%;
+        margin-bottom: rem-calc(10px);
+      }
+    }
+    &__select {
+      .Select-control {
+        cursor: pointer;
+        height: rem-calc(30px);
+        display: inline-block;
+        border-radius: 0;
+        line-height: rem-calc(28px);
+      }
+      .Select-placeholder {
+        padding-left: 0.5rem !important;
+        line-height: rem-calc(28px);
+        color: #ccc;
+      }
+      .Select-value {
+        padding-left: 0.5rem !important;
+        line-height: rem-calc(30px) !important;
+      }
+      .Select-input {
+        height: rem-calc(30px);
+        input {
+          height: rem-calc(28px);
+          line-height: rem-calc(28px);
+          padding: 0;
+        }
+      }
+      .Select-arrow-zone {
+        position: absolute;
+        top: 0;
+        right: 0;
+        line-height: rem-calc(28px);
+      }
+      .Select-menu-outer {
+        top: 30px;
+      }
+    }
+  }
+}

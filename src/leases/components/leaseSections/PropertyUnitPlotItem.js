@@ -42,7 +42,7 @@ const PropertyUnitPlotItem = (props: Props) => {
         </Column>
       </Row>
     </div>
-  )
-}
+  );
+};
 
 export default PropertyUnitPlotItem;

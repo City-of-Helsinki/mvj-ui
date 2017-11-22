@@ -14,6 +14,7 @@ import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
 import PropertyUnit from './leaseSections/PropertyUnit';
+import PropertyUnitEdit from './leaseSections/PropertyUnitEdit';
 
 import mockData from '../mock-data.json';
 
@@ -137,8 +138,10 @@ class PreparerForm extends Component {
                 <div className='lease-page__tab-content'>
                   <h1>Vuokra-alue</h1>
                   <div className='property-unit'>
-                    {mockData.leases[0].lease_area.map((item) =>
-                    <PropertyUnit item={item}/>)}
+                    {isEditMode
+                      ? <PropertyUnitEdit />
+                      : mockData.leases[0].lease_area.map((item) =>
+                      <PropertyUnit item={item}/>)}
                   </div>
                 </div>
               </TabPane>
