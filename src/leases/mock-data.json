@@ -8,7 +8,7 @@
       "sequence": 2,
       "start_date": "2017-01-01",
       "end_date": "2077-01-01",
-      "lease_area": [
+      "lease_areas": [
         {
           "lease_area_id": 1,
           "municipality": "91",
@@ -64,40 +64,44 @@
               "registration_date": "2017-01-01"
             }
           ],
-          "plan_plot_in_contract": {
-            "plan_plot_in_contract_id": 1,
-            "municipality": "91",
-            "district": "45",
-            "sequence": "123",
-            "use": "Kiinteistö",
-            "full_area": 800,
-            "intersection_area": 800,
-            "address": "Lautatarhankatu 10",
-            "zip_code": "00560",
-            "town": "Helsinki",
-            "state": "voimassa",
-            "plot_division_id": "91-10-5986",
-            "plot_division_approval_date": "2015-05-05",
-            "plan": "91-10-58675",
-            "plan_approval_date": "20015-10-01"
-          },
-          "plan_plot_at_present": {
-            "plan_plot_at_present_id": 1,
-            "municipality": "91",
-            "district": "45",
-            "sequence": "567",
-            "use": "Kiinteistö",
-            "full_area": 800,
-            "intersection_area": 800,
-            "address": "Lautatarhankatu 10",
-            "zip_code": "00560",
-            "town": "Helsinki",
-            "state": "voimassa",
-            "plot_division_id": "91-10-5986",
-            "plot_division_approval_date": "2015-05-05",
-            "plan": "91-10-58675",
-            "plan_approval_date": "20015-10-01"
-          }
+          "plan_plots_in_contract": [
+            {
+              "plan_plot_in_contract_id": 1,
+              "municipality": "91",
+              "district": "45",
+              "sequence": "123",
+              "use": "Kiinteistö",
+              "full_area": 800,
+              "intersection_area": 800,
+              "address": "Lautatarhankatu 10",
+              "zip_code": "00560",
+              "town": "Helsinki",
+              "state": "voimassa",
+              "plot_division_id": "91-10-5986",
+              "plot_division_approval_date": "2015-05-05",
+              "plan": "91-10-58675",
+              "plan_approval_date": "20015-10-01"
+            }
+          ],
+          "plan_plots_at_present": [
+            {
+              "plan_plot_at_present_id": 1,
+              "municipality": "91",
+              "district": "45",
+              "sequence": "567",
+              "use": "Kiinteistö",
+              "full_area": 800,
+              "intersection_area": 800,
+              "address": "Lautatarhankatu 10",
+              "zip_code": "00560",
+              "town": "Helsinki",
+              "state": "voimassa",
+              "plot_division_id": "91-10-5986",
+              "plot_division_approval_date": "2015-05-05",
+              "plan": "91-10-58675",
+              "plan_approval_date": "20015-10-01"
+            }
+          ]
         },
         {
           "lease_area_id": 2,
@@ -140,24 +144,26 @@
             }
           ],
           "plots_at_present": [],
-          "plan_plot_in_contract": {
-            "plan_plot_in_contract_id": 1,
-            "municipality": "91",
-            "district": "45",
-            "sequence": "0998",
-            "use": "Kiinteistö",
-            "full_area": 800,
-            "intersection_area": 800,
-            "address": "Lautatarhankatu 10",
-            "zip_code": "00560",
-            "town": "Helsinki",
-            "state": "voimassa",
-            "plot_division_id": "91-10-5986",
-            "plot_division_approval_date": "2015-05-05",
-            "plan": "91-10-58675",
-            "plan_approval_date": "20015-10-01"
-          },
-          "plan_plot_at_present": null
+          "plan_plots_in_contract": [
+            {
+              "plan_plot_in_contract_id": 1,
+              "municipality": "91",
+              "district": "45",
+              "sequence": "0998",
+              "use": "Kiinteistö",
+              "full_area": 800,
+              "intersection_area": 800,
+              "address": "Lautatarhankatu 10",
+              "zip_code": "00560",
+              "town": "Helsinki",
+              "state": "voimassa",
+              "plot_division_id": "91-10-5986",
+              "plot_division_approval_date": "2015-05-05",
+              "plan": "91-10-58675",
+              "plan_approval_date": "20015-10-01"
+            }
+          ],
+          "plan_plots_at_present": null
         }
       ]
     }

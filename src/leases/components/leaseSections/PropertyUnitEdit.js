@@ -38,30 +38,50 @@ const renderProperty = ({title, fields}: PropertyProps) => {
           </button>
           <Row>
             <Column medium={3}>
-              <Field
-                name={`${property}.identifier`}
-                type="text"
-                component={FieldTypeText}
-                label='Tunnus'
-                placeholder='Tunnus'/>
+              <Row>
+                <Column>
+                  <label className='mvj-form-field-label'>Tunnus</label>
+                </Column>
+              </Row>
+              <Row>
+                <Column small={4}>
+                  <Field
+                    name={`${property}.municipality`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </Column>
+                <Column small={4}>
+                  <Field
+                    name={`${property}.district`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </Column>
+                <Column small={4}>
+                  <Field
+                    name={`${property}.sequence`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </Column>
+              </Row>
+
             </Column>
             <Column medium={3}>
             </Column>
             <Column medium={3}>
               <Field
-                name={`${property}.totalArea`}
+                name={`${property}.full_area`}
                 type="text"
                 component={FieldTypeText}
-                label='Tunnus'
-                placeholder='Tunnus'/>
+                label='Kokonaisala'
+                placeholder='Kokonaisala'/>
             </Column>
             <Column medium={3}>
               <Field
-                name={`${property}.sectionalArea`}
+                name={`${property}.intersection_area`}
                 type="text"
                 component={FieldTypeText}
-                label='Tunnus'
-                placeholder='Tunnus'/>
+                label='Leikkausala'
+                placeholder='Leikkausala'/>
             </Column>
           </Row>
           <Row>
@@ -75,7 +95,7 @@ const renderProperty = ({title, fields}: PropertyProps) => {
             </Column>
             <Column medium={2}>
               <Field
-                name={`${property}.postcode`}
+                name={`${property}.zip_code`}
                 type="text"
                 component={FieldTypeText}
                 label="Postinumero"
@@ -83,7 +103,7 @@ const renderProperty = ({title, fields}: PropertyProps) => {
             </Column>
             <Column medium={3}>
               <Field
-                name={`${property}.city`}
+                name={`${property}.town`}
                 type="text"
                 component={FieldTypeText}
                 label='Kaupunki'
@@ -91,7 +111,7 @@ const renderProperty = ({title, fields}: PropertyProps) => {
             </Column>
             <Column medium={3}>
               <Field
-                name={`${property}.registrationDate`}
+                name={`${property}.registration_date`}
                 type="text"
                 component={FieldTypeText}
                 label='Rekisteröintipäivä'
@@ -131,18 +151,37 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
           </button>
           <Row>
             <Column medium={3}>
-              <Field
-                name={`${planunit}.identifier`}
-                type="text"
-                component={FieldTypeText}
-                label='Tunnus'
-                placeholder='Tunnus'/>
+              <Row>
+                <Column>
+                  <label className='mvj-form-field-label'>Tunnus</label>
+                </Column>
+              </Row>
+              <Row>
+                <Column small={4}>
+                  <Field
+                    name={`${planunit}.municipality`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </Column>
+                <Column small={4}>
+                  <Field
+                    name={`${planunit}.district`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </Column>
+                <Column small={4}>
+                  <Field
+                    name={`${planunit}.sequence`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </Column>
+              </Row>
             </Column>
             <Column medium={3}>
             </Column>
             <Column medium={3}>
               <Field
-                name={`${planunit}.totalArea`}
+                name={`${planunit}.full_area`}
                 type="text"
                 component={FieldTypeText}
                 label='Kokonaisala'
@@ -150,7 +189,7 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
             </Column>
             <Column medium={3}>
               <Field
-                name={`${planunit}.sectionalArea`}
+                name={`${planunit}.intersection_area`}
                 type="text"
                 component={FieldTypeText}
                 label='Leikkausala'
@@ -168,7 +207,7 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
             </Column>
             <Column medium={2}>
               <Field
-                name={`${planunit}.postcode`}
+                name={`${planunit}.zip_code`}
                 type="text"
                 component={FieldTypeText}
                 label='Postinumero'
@@ -176,7 +215,7 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
             </Column>
             <Column medium={3}>
               <Field
-                name={`${planunit}.city`}
+                name={`${planunit}.town`}
                 type="text"
                 component={FieldTypeText}
                 label='Kaupunki'
@@ -197,7 +236,7 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
           <Row>
             <Column medium={3}>
               <Field
-                name={`${planunit}.subdivisionIdentifier`}
+                name={`${planunit}.plot_division_id`}
                 type="text"
                 component={FieldTypeText}
                 label='Tonttijaon tunnus'
@@ -205,7 +244,7 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
             </Column>
             <Column medium={3}>
               <Field
-                name={`${planunit}.subdivisionDate`}
+                name={`${planunit}.plot_division_approval_date`}
                 type="text"
                 component={FieldTypeText}
                 label='Tonttijaon hyväksymispvm'
@@ -213,7 +252,7 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
             </Column>
             <Column medium={3}>
               <Field
-                name={`${planunit}.cityplan`}
+                name={`${planunit}.plan`}
                 type="text"
                 component={FieldTypeText}
                 label='Asemakaava'
@@ -221,7 +260,7 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
             </Column>
             <Column medium={3}>
               <Field
-                name={`${planunit}.cityplanDate`}
+                name={`${planunit}.plan_approval_date`}
                 type="text"
                 component={FieldTypeText}
                 label='Asemakaavan vahvistumispvm'
@@ -258,12 +297,38 @@ class RenderDistricts extends Component {
                 <img src={trashIcon} alt='Poista' />
               </button>
               <Row>
-                <Column medium={3}></Column>
+                <Column medium={3}>
+                  <Row>
+                    <Column>
+                      <label className='mvj-form-field-label'>Kohteen tunnus</label>
+                    </Column>
+                  </Row>
+                  <Row>
+                    <Column medium={4}>
+                      <Field
+                        name={`${district}.municipality`}
+                        type="text"
+                        component={FieldTypeText}/>
+                    </Column>
+                    <Column medium={4}>
+                      <Field
+                        name={`${district}.district`}
+                        type="text"
+                        component={FieldTypeText}/>
+                    </Column>
+                    <Column medium={4}>
+                      <Field
+                        name={`${district}.sequence`}
+                        type="text"
+                        component={FieldTypeText}/>
+                    </Column>
+                  </Row>
+                </Column>
                 <Column medium={3}></Column>
                 <Column medium={3}></Column>
                 <Column medium={3}>
                   <Field
-                    name={`${district}.area`}
+                    name={`${district}.full_area`}
                     type="text"
                     component={FieldTypeText}
                     label="Pinta-ala"
@@ -281,7 +346,7 @@ class RenderDistricts extends Component {
                 </Column>
                 <Column medium={3}>
                   <Field
-                    name={`${district}.postcode`}
+                    name={`${district}.zip_code`}
                     type="text"
                     component={FieldTypeText}
                     label="Postinumero"
@@ -289,7 +354,7 @@ class RenderDistricts extends Component {
                 </Column>
                 <Column medium={3}>
                   <Field
-                    name={`${district}.city`}
+                    name={`${district}.town`}
                     type="text"
                     component={FieldTypeText}
                     label="Kaupunki"
@@ -297,10 +362,10 @@ class RenderDistricts extends Component {
                 </Column>
               </Row>
 
-              <FieldArray title='Kiinteistöt / määräalat nykyhetkellä' name={`${district}.currentProperties`} component={renderProperty}/>
-              <FieldArray title='Kiinteistöt / määräalat sopimushetkellä' name={`${district}.contractProperties`} component={renderProperty}/>
-              <FieldArray title='Kaavayksikkö nykyhetkellä' name={`${district}.currentPlanUnits`} component={renderPlanUnit}/>
-              <FieldArray title='Kaavayksikkö sopimushetkellä' name={`${district}.contractPlanUnits`} component={renderPlanUnit}/>
+              <FieldArray title='Kiinteistöt / määräalat nykyhetkellä' name={`${district}.plots_at_present`} component={renderProperty}/>
+              <FieldArray title='Kiinteistöt / määräalat sopimushetkellä' name={`${district}.plots_in_contract`} component={renderProperty}/>
+              <FieldArray title='Kaavayksikkö nykyhetkellä' name={`${district}.plan_plots_at_present`} component={renderPlanUnit}/>
+              <FieldArray title='Kaavayksikkö sopimushetkellä' name={`${district}.plan_plots_in_contract`} component={renderPlanUnit}/>
               <Row>
                 <Column>
                   <FormActionDropdown
@@ -308,16 +373,16 @@ class RenderDistricts extends Component {
                     onOptionClick={(option) => {
                       switch(option) {
                         case 'contractProperty':
-                          dispatch(arrayPush('property-unit-edit-form', `${district}.contractProperties`, {}));
+                          dispatch(arrayPush('property-unit-edit-form', `${district}.plots_in_contract`, {}));
                           break;
                         case 'currentProperty':
-                          dispatch(arrayPush('property-unit-edit-form', `${district}.currentProperties`, {}));
+                          dispatch(arrayPush('property-unit-edit-form', `${district}.plots_at_present`, {}));
                           break;
                         case 'contractPlanUnit':
-                          dispatch(arrayPush('property-unit-edit-form', `${district}.contractPlanUnits`, {}));
+                          dispatch(arrayPush('property-unit-edit-form', `${district}.plan_plots_in_contract`, {}));
                           break;
                         case 'currentPlanUnit':
-                          dispatch(arrayPush('property-unit-edit-form', `${district}.currentPlanUnits`, {}));
+                          dispatch(arrayPush('property-unit-edit-form', `${district}.plan_plots_at_present`, {}));
                           break;
                       }
                     }}
@@ -344,12 +409,14 @@ class RenderDistricts extends Component {
 }
 
 type Props = {
+  areas: Array<Object>,
   handleSubmit: Function,
   dispatch: Function,
 }
 
 class PropertyUnitEdit extends Component {
   props: Props
+
   render () {
     const {handleSubmit, dispatch} = this.props;
 
@@ -357,7 +424,7 @@ class PropertyUnitEdit extends Component {
       <form onSubmit={handleSubmit} className='property-unit-edit'>
         <Row>
           <Column>
-            <FieldArray name="districts" dispatch={dispatch} component={RenderDistricts}/>
+            <FieldArray name="areas" dispatch={dispatch} component={RenderDistricts}/>
           </Column>
         </Row>
       </form>
@@ -370,9 +437,9 @@ const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
-    (state, props) => {
+    (state) => {
       return {
-        districts: selector(state, props.array),
+        areas: selector(state, 'areas'),
       };
     }
   ),

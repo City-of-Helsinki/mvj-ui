@@ -1,12 +1,14 @@
 // @flow
 import React, {Component} from 'react';
 import classNames from 'classnames';
+import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
+
 import PropertyUnitPlotItem from './PropertyUnitPlotItem';
 import PropertyUnitPlanPlotItem from './PropertyUnitPlanPlotItem';
 
 type Props = {
-  data: Object,
+  area: Object,
 }
 
 type State = {
@@ -24,7 +26,6 @@ class PropertyUnitPlot extends Component {
     isOpenPresent: true,
     isOpenPlanContract: true,
     isOpenPlanPresent: true,
-
   }
 
   toggle = (state: string) => {
@@ -33,11 +34,11 @@ class PropertyUnitPlot extends Component {
 
   render() {
     const {isOpenContract, isOpenPresent, isOpenPlanContract, isOpenPlanPresent} = this.state;
-    const {data} = this.props;
+    const {area} = this.props;
 
     return (
       <div>
-        {data.plots_in_contract && data.plots_in_contract.length > 0 &&
+        {get(area, 'plots_in_contract') && area.plots_in_contract.length > 0 &&
         <Row className='property-unit-premise'>
           <Row>
             <Column medium={12} className='property-unit-premise__title'>
@@ -45,11 +46,12 @@ class PropertyUnitPlot extends Component {
               <p onClick={() => this.toggle('isOpenContract')} className={classNames('arrow-icon', {'isOpen': isOpenContract})}></p>
             </Column>
           </Row>
-          {isOpenContract && data.plots_in_contract.map(item =>
-          <PropertyUnitPlotItem item={item} />)}
+          {isOpenContract && area.plots_in_contract.map((item, index) =>
+            <PropertyUnitPlotItem item={item} key={index}/>)
+          }
         </Row>}
 
-        {data.plots_at_present && data.plots_at_present.length > 0 &&
+        {get(area, 'plots_at_present') && area.plots_at_present.length > 0 &&
         <Row className='property-unit-premise'>
           <Row>
             <Column medium={12} className='property-unit-premise__title'>
@@ -57,11 +59,12 @@ class PropertyUnitPlot extends Component {
               <p onClick={() => this.toggle('isOpenPresent')} className={classNames('arrow-icon', {'isOpen': isOpenPresent})}></p>
             </Column>
           </Row>
-          {isOpenPresent && data.plots_at_present.map(item =>
-          <PropertyUnitPlotItem item={item} />)}
+          {isOpenPresent && area.plots_at_present.map((item, index) =>
+            <PropertyUnitPlotItem item={item} key={index}/>)
+          }
         </Row>}
 
-        {data.plan_plot_in_contract && data.plan_plot_in_contract.length > 0 &&
+        {get(area, 'plan_plots_in_contract') && area.plan_plots_in_contract.length > 0 &&
         <Row className='property-unit-premise'>
           <Row>
             <Column medium={12} className='property-unit-premise__title'>
@@ -69,11 +72,12 @@ class PropertyUnitPlot extends Component {
               <p onClick={() => this.toggle('isOpenPlanContract')} className={classNames('arrow-icon', {'isOpen': isOpenPlanContract})}></p>
             </Column>
           </Row>
-          {isOpenPlanContract &&
-          <PropertyUnitPlanPlotItem item={data.plan_plot_in_contract} />}
+          {isOpenPlanContract && area.plan_plots_in_contract.map((item, index) =>
+            <PropertyUnitPlanPlotItem item={item} key={index}/>
+          )}
         </Row>}
 
-        {data.plan_plot_at_present && data.plan_plot_at_present.length > 0 &&
+        {get(area, 'plan_plots_at_present') && area.plan_plots_at_present.length > 0 &&
         <Row className='property-unit-premise'>
           <Row>
             <Column medium={12} className='property-unit-premise__title'>
@@ -81,8 +85,9 @@ class PropertyUnitPlot extends Component {
               <p onClick={() => this.toggle('isOpenPlanPresent')} className={classNames('arrow-icon', {'isOpen': isOpenPlanPresent})}></p>
             </Column>
           </Row>
-          {isOpenPlanPresent &&
-          <PropertyUnitPlanPlotItem item={data.plan_plot_at_present} />}
+          {isOpenPlanPresent && area.plan_plots_at_present.map((item, index) =>
+            <PropertyUnitPlanPlotItem item={item} key={index}/>
+          )}
         </Row>}
       </div>
     );

@@ -5,6 +5,7 @@ import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import {Row, Column} from 'react-foundation';
+import {formValueSelector} from 'redux-form';
 
 import {getCurrentLease, getIsFetching} from '../selectors';
 import {fetchSingleLease} from '../actions';
@@ -21,18 +22,21 @@ import mockData from '../mock-data.json';
 type State = {
   activeTab: number,
   isEditMode: boolean,
+  areas: Array<Object>,
 };
 
 type Props = {
   fetchSingleLease: Function,
   location: Object,
   params: Object,
+  areasForm: Array<Object>,
 }
 
 class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
     isEditMode: false,
+    areas: [],
   }
 
   props: Props
@@ -42,13 +46,15 @@ class PreparerForm extends Component {
   };
 
   componentWillMount() {
-    const {fetchSingleLease, location, params: {leaseId}} = this.props;
+    // const {fetchSingleLease, location, params: {leaseId}} = this.props;
+    const {location} = this.props;
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
     }
 
-    fetchSingleLease(leaseId);
+    this.setState({areas: mockData.leases[0].lease_areas});
+    // fetchSingleLease(leaseId);
   }
 
   openEditMode = () => {
@@ -60,6 +66,8 @@ class PreparerForm extends Component {
   }
 
   save = () => {
+    const {areasForm} = this.props;
+    this.setState({areas: areasForm});
     this.setState({isEditMode: false});
   }
 
@@ -80,7 +88,7 @@ class PreparerForm extends Component {
   };
 
   render() {
-    const {activeTab, isEditMode} = this.state;
+    const {activeTab, areas, isEditMode} = this.state;
 
     return (
       <div className='lease-page'>
@@ -138,10 +146,12 @@ class PreparerForm extends Component {
                 <div className='lease-page__tab-content'>
                   <h1>Vuokra-alue</h1>
                   <div className='property-unit'>
-                    {isEditMode
-                      ? <PropertyUnitEdit />
-                      : mockData.leases[0].lease_area.map((item) =>
-                      <PropertyUnit item={item}/>)}
+                    {isEditMode && <PropertyUnitEdit initialValues={{areas: areas}}/>}
+                    {!isEditMode && areas && areas.length > 0 &&
+                      areas.map((area, index) =>
+                        <PropertyUnit area={area} key={index}/>
+                      )
+                    }
                   </div>
                 </div>
               </TabPane>
@@ -189,6 +199,9 @@ class PreparerForm extends Component {
   }
 }
 
+const areasFormName = 'property-unit-edit-form';
+const areasFormSelector = formValueSelector(areasFormName);
+
 export default flowRight(
   withRouter,
   connect(
@@ -196,6 +209,7 @@ export default flowRight(
       return {
         initialValues: getCurrentLease(state),
         isFetching: getIsFetching(state),
+        areasForm: areasFormSelector(state, 'areas'),
       };
     },
     {

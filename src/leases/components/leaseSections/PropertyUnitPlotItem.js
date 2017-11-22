@@ -7,7 +7,6 @@ type Props = {
   item: Object,
 }
 
-
 const PropertyUnitPlotItem = (props: Props) => {
   const {item} = props;
 

@@ -1,4 +1,12 @@
 .mvj-form-field {
+  &-label {
+    font-size: rem-calc(14px);
+    line-height: normal;
+	  text-align: left;
+    color: $dark-gray;
+    margin-bottom: rem-calc(4px);
+  }
+
   label {
     font-size: rem-calc(14px);
     line-height: normal;
