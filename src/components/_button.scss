@@ -10,9 +10,8 @@
   text-transform: uppercase;
   cursor: pointer;
   margin: 0 0.5rem;
-
   &:hover {
-    background-color: lighten($summer, 50%);
+    background-color: lighten(#ffc61e, 80%);
   }
   &:focus {
     outline: none;
