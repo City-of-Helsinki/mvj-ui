@@ -12,7 +12,7 @@ const PropertyUnitPlotItem = (props: Props) => {
   const {item} = props;
 
   return (
-    <div className='property-unit-premise__plot' key={item.sequence}>
+    <div className='property-unit-premise__plot'>
       <Row>
         <Column medium={12}>
           <svg className='property-unit-premise__map-icon' viewBox="0 0 30 30">
@@ -36,9 +36,9 @@ const PropertyUnitPlotItem = (props: Props) => {
         </Column>
         <Column medium={4}>
           <p className='property-unit-premise__label'>KTJ-dokumentit</p>
-          <p className='property-unit-premise__text'>Lainhuutotodistus</p>
-          <p className='property-unit-premise__text'>Kiinteistörekisteriote</p>
-          <p className='property-unit-premise__text'>Rasitustodistus</p>
+          <p className='property-unit-premise__text-ktj'>Lainhuutotodistus</p>
+          <p className='property-unit-premise__text-ktj'>Kiinteistörekisteriote</p>
+          <p className='property-unit-premise__text-ktj'>Rasitustodistus</p>
         </Column>
       </Row>
     </div>

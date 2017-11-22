@@ -141,7 +141,7 @@ class PreparerForm extends Component {
                     {isEditMode
                       ? <PropertyUnitEdit />
                       : mockData.leases[0].lease_area.map((item) =>
-                      <PropertyUnit item={item}/>)}
+                      <PropertyUnit item={item} key={item.lease_area_id} />)}
                   </div>
                 </div>
               </TabPane>

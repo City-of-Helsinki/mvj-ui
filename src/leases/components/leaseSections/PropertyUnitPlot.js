@@ -34,7 +34,6 @@ class PropertyUnitPlot extends Component {
   render() {
     const {isOpenContract, isOpenPresent, isOpenPlanContract, isOpenPlanPresent} = this.state;
     const {data} = this.props;
-
     return (
       <div>
         {data.plots_in_contract && data.plots_in_contract.length > 0 &&
@@ -46,7 +45,7 @@ class PropertyUnitPlot extends Component {
             </Column>
           </Row>
           {isOpenContract && data.plots_in_contract.map(item =>
-          <PropertyUnitPlotItem item={item} />)}
+          <PropertyUnitPlotItem item={item} key={item.plots_in_contract_id}/>)}
         </Row>}
 
         {data.plots_at_present && data.plots_at_present.length > 0 &&
@@ -58,10 +57,10 @@ class PropertyUnitPlot extends Component {
             </Column>
           </Row>
           {isOpenPresent && data.plots_at_present.map(item =>
-          <PropertyUnitPlotItem item={item} />)}
+          <PropertyUnitPlotItem item={item} key={item.plots_at_present_id}/>)}
         </Row>}
 
-        {data.plan_plot_in_contract && data.plan_plot_in_contract.length > 0 &&
+        {data.plan_plot_in_contract &&
         <Row className='property-unit-premise'>
           <Row>
             <Column medium={12} className='property-unit-premise__title'>
@@ -73,7 +72,7 @@ class PropertyUnitPlot extends Component {
           <PropertyUnitPlanPlotItem item={data.plan_plot_in_contract} />}
         </Row>}
 
-        {data.plan_plot_at_present && data.plan_plot_at_present.length > 0 &&
+        {data.plan_plot_at_present &&
         <Row className='property-unit-premise'>
           <Row>
             <Column medium={12} className='property-unit-premise__title'>

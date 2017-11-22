@@ -29,7 +29,7 @@ class PropertyUnit extends Component {
     const {item} = this.props;
 
     return (
-        <div key={item.lease_area_id}>
+        <div>
           <Row className='property-unit__summary'>
             <Column medium={4} className='title'>
               <svg className='map-icon' viewBox="0 0 30 30">

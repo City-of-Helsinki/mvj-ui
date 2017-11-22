@@ -11,7 +11,7 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
   const {item} = props;
 
   return (
-    <div className='property-unit-premise__plot' key={item.sequence}>
+    <div className='property-unit-premise__plot'>
       <Row>
         <Column medium={12}>
           <svg className='property-unit-premise__map-icon' viewBox="0 0 30 30">
