@@ -7,12 +7,12 @@ $body-font-family: $font-family-source;
 /// @type Number
 $global-font-size: 100% !default;
 $global-lineheight: 1.5 !default;
-$font-small: rem-calc(13px) !default;
-$font-regular: rem-calc(14px) !default;
-$font-medium: rem-calc(16px) !default;
-$font-large: rem-calc(20px) !default;
-$font-xlarge: rem-calc(24px) !default;
-$font-semibold: 600;
+$font-xsmall: 0.8125rem !default;
+$font-small: 0.875rem !default;
+$font-regular: 1rem !default;
+$font-large: 1.25rem !default;
+$font-xlarge: 1.5rem !default;
+$semibold: 600;
 
 /// @type Map
 $foundation-palette: (
@@ -25,6 +25,7 @@ $foundation-palette: (
 
 /// @type Color
 $summer: #ffc61e !default;
+$kelley-green: #009246 !default;
 $engel: #ffe977 !default;
 $tram: #009246 !default;
 $brick: #bd2719 !default;

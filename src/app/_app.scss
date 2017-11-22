@@ -9,4 +9,18 @@
     flex: 1;
     display: flex;
   }
+  .wrapper {
+    display: flex;
+    margin: 0 0 0 auto;
+    position: relative;
+    transition: .3s ease-in-out;
+  }
+}
+
+.is-sidemenu-closed {
+  width: 100%;
+}
+
+.is-sidemenu-open {
+  width: calc(100% - 200px);
 }
