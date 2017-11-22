@@ -25,23 +25,22 @@ const FieldTypeCheckbox = ({input, displayError, disabled, options, type}: Props
       {options && options.map((label, index) =>
         <label key={index}>
           <input type={type}
-                 name={hasMultipleValues ? `${name}[${index}]` : name}
-                 value={label}
-                 checked={hasMultipleValues ? value.indexOf(label) !== -1 : !!value }
-                 onChange={(event) => {
+            name={hasMultipleValues ? `${name}[${index}]` : name}
+            value={label}
+            checked={hasMultipleValues ? value.indexOf(label) !== -1 : !!value }
+            onChange={(event) => {
+              if (hasMultipleValues) {
+                const newValue = [...value];
+                if (event.target.checked) {
+                  newValue.push(label);
+                } else {
+                  newValue.splice(newValue.indexOf(label), 1);
+                }
+                return onChange(newValue);
+              }
 
-                   if (hasMultipleValues) {
-                     const newValue = [...value];
-                     if (event.target.checked) {
-                       newValue.push(label);
-                     } else {
-                       newValue.splice(newValue.indexOf(label), 1);
-                     }
-                     return onChange(newValue);
-                   }
-
-                   return onChange(value === event.target.value ? false : event.target.value);
-                 }}/>
+              return onChange(value === event.target.value ? false : event.target.value);
+            }}/>
           {label}
         </label>
       )}

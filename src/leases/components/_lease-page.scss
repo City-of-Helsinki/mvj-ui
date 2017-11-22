@@ -1,0 +1,44 @@
+.lease-page {
+  display: block;
+  width: 100%;
+  padding: 2.5rem 1rem 0;
+  &__tab-content {
+    width: 100%;
+    background-color: $white;
+    box-shadow: 0 0 4px 0 rgba(0,0,0,0.07);
+    padding:   2rem 1.25rem;
+    h1 {
+      text-transform: uppercase;
+      font-size: $font-xlarge;
+      font-weight: $semibold;
+    }
+  }
+  &__upper-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    align-items: flex-end;
+  }
+}
+
+.lease-info {
+  margin-top: rem-calc(-3px);
+
+  &__label {
+    font-size: $font-small;
+    color: $dark-gray;
+    margin-bottom: 0;
+  }
+  &__number {
+    font-size: $font-xlarge;
+    font-weight: $semibold;
+    margin-right: 2rem;
+  }
+  &__date {
+    font-weight: $semibold;
+  }
+  &__type {
+    margin-bottom: 0;
+    line-height: 1.2;
+  }
+}

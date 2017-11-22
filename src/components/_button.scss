@@ -1,0 +1,39 @@
+.mvj-button {
+  font-size: rem-calc(13px);
+  font-family: $font-family-source;
+  font-weight: 600;
+  color: $black;
+  background: $summer;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+  height: rem-calc(30px);
+  padding: 0 1rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin: 0 0.5rem;
+  &:hover {
+    background-color: lighten(#ffc61e, 80%);
+  }
+  &:focus {
+    outline: none;
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.button-green {
+    background-color: $tram;
+    color: $white;
+    &:hover {
+      background-color: lighten($tram, 50%);
+    }
+  }
+
+  &.button-red {
+    background-color: $brick;
+    color: $white;
+    &:hover {
+      background-color: lighten($brick, 50%);
+    }
+  }
+}

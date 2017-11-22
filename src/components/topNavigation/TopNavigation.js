@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {translate} from 'react-i18next';
 import flowRight from 'lodash/flowRight';
-
+import {Link} from 'react-router';
 import * as helpers from '../../helpers';
 
 type Props = {
@@ -27,7 +27,7 @@ class TopNavigation extends Component {
           <path d="M1.5,2.9h27v2.2h-27V2.9z M1.5,11.9h27v2.2h-27V11.9z M1.5,20.9h27v2.2h-27V20.9z"/>
         </svg>
         <div className="title">
-          <span>{t('appName')}</span>
+          <Link to="/beta/">{t('appName')}</Link>
         </div>
         <div className="flag">
           <svg className="flagIcon" viewBox="0 0 27 27">

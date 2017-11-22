@@ -42,37 +42,27 @@
 @import "role/role-selector";
 
 // Components Beta
-@import "components/topNavigation/top-navigation";
+@import "components/action-dropdown";
+@import "components/button";
+@import "components/form-action-dropdown";
+@import "components/form/form";
 @import "components/icon-radio-buttons";
 @import "components/styled-radio-buttons";
-@import "components/action-dropdown";
-@import "components/text-input";
 @import "components/table";
+@import "components/tabs/tabs";
+@import "components/text-input";
+@import "components/topNavigation/top-navigation";
 
 // App Beta
 @import "app/app";
+@import "leases/components/control-buttons";
 @import "leases/components/lease-list";
+@import "leases/components/lease-page";
 @import "leases/components/search";
 @import "leases/components/table-controllers";
-
-
-::selection {
-  background: $primary-color;
-  color: #fff;
-  text-shadow: 0 0 0;
-}
-
-::-moz-selection {
-  background: $primary-color;
-  color: #fff;
-  text-shadow: 0 0 0;
-}
-
-::-webkit-selection {
-  background: $primary-color;
-  color: #fff;
-  text-shadow: 0 0 0;
-}
+@import "leases/components/leaseSections/property-unit";
+@import "leases/components/leaseSections/property-unit-plot";
+@import "leases/components/leaseSections/property-unit-edit";
 
 html {
   -webkit-font-smoothing: antialiased;
@@ -83,6 +73,7 @@ html {
 body {
   overflow-y: auto;
   height: 100%;
+  background-color: $light-gray;
 }
 
 #root {

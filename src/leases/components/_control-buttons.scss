@@ -1,0 +1,29 @@
+.control-buttons {
+  display: flex;
+  float: right;
+
+  .comment-button {
+    display: inline-block;
+    margin-left: 3rem;
+    margin-right: 1rem;
+    cursor: pointer;
+    position: relative;
+  }
+  .commentIcon {
+    width: rem-calc(33px);
+    height: rem-calc(33px);
+    fill: $black;
+  }
+  .circle {
+    position: absolute;
+    font-size: rem-calc(13px);
+    padding: 0 rem-calc(4px);
+    color: $white;
+    font-weight: 600;
+    text-align: center;
+    border-radius: 50%;
+    background-color: $brick;
+    top: rem-calc(-6px);
+    right: rem-calc(-10px);
+  }
+}
