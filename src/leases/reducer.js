@@ -32,6 +32,7 @@ const attributesReducer: Reducer<Attributes> = handleActions({
 
 const leasesListReducer: Reducer<LeasesList> = handleActions({
   ['mvj/leasesbeta/RECEIVE_ALL']: (state: LeasesList, {payload: leases}: ReceiveLeasesAction) => {
+    console.log(leases);
     return leases;
   },
 }, []);

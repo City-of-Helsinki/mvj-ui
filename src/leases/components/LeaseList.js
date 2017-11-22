@@ -2,7 +2,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
-import {translate} from 'react-i18next';
 import {connect} from 'react-redux';
 import {Row} from 'react-foundation';
 
@@ -21,7 +20,6 @@ type Props = {
   fetchLeases: Function,
   isFetching: boolean,
   router: Object,
-  t: Function,
   leases: Array<any>,
 }
 
@@ -44,9 +42,9 @@ class LeaseList extends Component {
   };
 
   componentWillMount() {
-    const {fetchAttributes, fetchLeases} = this.props;
-
-    fetchAttributes();
+    // const {fetchAttributes, fetchLeases} = this.props;
+    const {fetchLeases} = this.props;
+    // fetchAttributes();
     fetchLeases();
   }
 
@@ -62,7 +60,7 @@ class LeaseList extends Component {
 
   render() {
     const {documentType, visualizationType} = this.state;
-    const {leases: content, t} = this.props;
+    const {leases: content} = this.props;
     const leases = contentHelpers.getContentLeases(content);
 
     return (
@@ -99,13 +97,13 @@ class LeaseList extends Component {
               amount={leases.length}
               data={leases}
               dataKeys={[
-                {key: 'identifier', label: t('leases:identifier')},
-                {key: 'real_property_unit', label: t('leases:real_property_unit')},
-                {key: 'tenant', label: t('leases:tenants.single')},
-                {key: 'address', label: t('leases:address')},
-                {key: 'lease_type', label: t('leases:type')},
-                {key: 'start_date', label: t('leases:startDate')},
-                {key: 'end_date', label: t('leases:endDate')},
+                {key: 'identifier', label: 'Vuokratunnus'},
+                {key: 'real_property_unit', label: 'Kiinteistötunnus'},
+                {key: 'tenant', label: 'Asiakas'},
+                {key: 'address', label: 'Osoite'},
+                {key: 'lease_type', label: 'Tyyppi'},
+                {key: 'start_date', label: 'Alkupvm'},
+                {key: 'end_date', label: 'Loppupvm'},
               ]}
               onRowClick={this.handleEditClick}
             />
@@ -132,5 +130,4 @@ export default flowRight(
       fetchAttributes,
     },
   ),
-  translate(['leases', 'applications']),
 )(LeaseList);

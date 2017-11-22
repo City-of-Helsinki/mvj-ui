@@ -66,6 +66,15 @@ const renderProperty = ({title, fields}: PropertyProps) => {
 
             </Column>
             <Column medium={3}>
+              <Field
+                name={`${property}.explanation`}
+                component={FieldTypeSelect}
+                label='Selite'
+                options={[
+                  {value: 'kiinteistö', label: 'Kiinteistö'},
+                  {value: 'määräala', label: 'Määräala'},
+                ]}
+              />
             </Column>
             <Column medium={3}>
               <Field
@@ -178,6 +187,15 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
               </Row>
             </Column>
             <Column medium={3}>
+              <Field
+                name={`${planunit}.use`}
+                component={FieldTypeSelect}
+                label='Käyttötarkoitus'
+                options={[
+                  {value: 'kiinteistö', label: 'Kiinteistö'},
+                  {value: 'määräala', label: 'Määräala'},
+                ]}
+              />
             </Column>
             <Column medium={3}>
               <Field
@@ -227,8 +245,8 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
                 component={FieldTypeSelect}
                 label='Olotila'
                 options={[
-                  {value: 'draft', label: 'Luonnos'},
-                  {value: 'inuse', label: 'Voimassa'},
+                  {value: 'luonnos', label: 'Luonnos'},
+                  {value: 'voimassa', label: 'Voimassa'},
                 ]}
               />
             </Column>
@@ -324,8 +342,27 @@ class RenderDistricts extends Component {
                     </Column>
                   </Row>
                 </Column>
-                <Column medium={3}></Column>
-                <Column medium={3}></Column>
+                <Column medium={3}>
+                  <Field
+                    name={`${district}.explanation`}
+                    component={FieldTypeSelect}
+                    label='Selite'
+                    options={[
+                      {value: 'kaavayksikkö', label: 'Kaavayksikkö'},
+                    ]}
+                  />
+                </Column>
+                <Column medium={3}>
+                  <Field
+                    name={`${district}.part_or_whole`}
+                    component={FieldTypeSelect}
+                    label='Osa/koko'
+                    options={[
+                      {value: 'koko', label: 'Koko'},
+                      {value: 'osa', label: 'Osa'},
+                    ]}
+                  />
+                </Column>
                 <Column medium={3}>
                   <Field
                     name={`${district}.full_area`}

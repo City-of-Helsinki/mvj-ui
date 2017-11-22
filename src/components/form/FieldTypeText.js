@@ -12,7 +12,7 @@ type Props = {
 
 const FieldTypeText = ({input, label, placeholder, type = 'text', meta: {touched, error}}: Props) => (
   <div className='mvj-form-field'>
-    <label>{label}</label>
+    {label && <label>{label}</label>}
     <div className='mvj-form-field__text'>
       <input {...input} type={type} placeholder={placeholder}/>
       {touched && error && <span>{error}</span>}
