@@ -1,10 +1,8 @@
-.property-unit {
-  margin: 2rem rem-calc(16px) 1rem;
-  .row {
-    border-top: 1.5px dashed $tram;
-    align-items: baseline;
-    padding-top: 0.6rem;
-  }
+.row .property-unit__summary {
+  margin: 1.5rem 0 0;
+  border-top: 1.5px dashed $tram;
+  align-items: baseline;
+  padding-top: 0.6rem;
   p {
     margin: 0;
   }
@@ -19,7 +17,7 @@
     fill: $black;
     width: 25px;
     height: 25px;
-    margin: 0 rem-calc(20px) rem-calc(-5px) 0;
+    margin: 0 rem-calc(16px) rem-calc(-5px) 0;
     align-self: center;
     &:hover {
       fill: $tram;
@@ -47,7 +45,7 @@
     height: rem-calc(20px);
     width: rem-calc(20px);
     top: 0.2rem;
-    right: 0;
+    right: 0.7rem;
   }
   .arrow-icon.isOpen::after {
     background-image: url('../assets/icons/icon_arrow_up.svg');
