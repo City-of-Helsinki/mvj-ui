@@ -1,17 +1,16 @@
-.action-dropdown {
-  width: rem-calc(207px);
+.form-action-dropdown {
+  width: 100%;
   position: relative;
 
   &_title-wrapper {
-    background: $summer;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 146, 70, 0.2);
 
     .title {
-      color: $black;
+      color: $kelley-green;
       height: rem-calc(30px);
       display: block;
       line-height: rem-calc(32px);
-      padding: 0 1rem;
+      padding: 0 1rem !important;
       font-size: rem-calc(13px);
       text-transform: uppercase;
       font-weight: 600;
@@ -35,31 +34,31 @@
   }
 
   &_option-wrapper {
-    position: absolute;
-    right: 1px;
-    left: 1px;
+    position: relative;
+    right: 0;
+    left: 0;
     background: #fff;
+    z-index: 1;
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
-      box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1), 0 2px 5px 0 rgba(0, 0, 0, 0.15);
     }
 
     .option {
       height: rem-calc(30px);
       line-height: rem-calc(30px);
       font-size: rem-calc(14px);
-      background-color: $white;
+      background-color: rgba(0, 146, 70, 0.1);
 
       a {
         padding: 0 1rem;
-        color: $black;
+        color: $kelley-green;
         display: block;
       }
     }
     .option:hover {
-      background-color: $engel-lighter;
+      background-color: rgba(0, 146, 70, 0.15);
     }
   }
 }

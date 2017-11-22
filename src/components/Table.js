@@ -22,7 +22,6 @@ class Table extends Component {
 
   render() {
     const {className, data, dataKeys, displayHeaders, onRowClick} = this.props;
-    console.log(data);
 
     return (
       <table className={classnames(className, 'table', {'clickable-row': !!onRowClick})}>

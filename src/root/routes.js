@@ -14,9 +14,9 @@ import ApplicationsList from '../applications-alpha/components/ApplicationsList'
 import CreateApplicationForm from '../applications-alpha/components/NewApplicationForm';
 
 import LeaseListAlpha from '../leases-alpha/components/LeaseList';
-import LeaseList from '../leases/components/LeaseList';
-
 import PreparerForm from '../leases-alpha/components/PreparerForm';
+import LeaseList from '../leases/components/LeaseList';
+import LeasePage from '../leases/components/LeasePage';
 
 export default
 <Route path="/">
@@ -49,6 +49,7 @@ export default
       }}/>
       <Route path="leases">
         <IndexRoute component={LeaseList}/>
+        <Route path=":leaseId" component={LeasePage}/>
       </Route>
     </Route>
   </Route>

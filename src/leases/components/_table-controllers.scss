@@ -1,7 +1,7 @@
 .table-controllers {
   width: 100%;
   margin-top: 2rem;
-  margin-bottom: 0.6rem;
+  margin-bottom: 1rem;
 
   .table-info {
     display: flex;
@@ -19,7 +19,7 @@
     }
 
     .document-type-wrapper {
-      margin-right: 2rem;
+      margin-right: rem-calc(24px);
     }
 
     .visualization-type-wrapper {

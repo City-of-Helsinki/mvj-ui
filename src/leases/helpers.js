@@ -12,8 +12,14 @@ export const formatDate = (date: string) => {
   return d.format('D.M.YYYY');
 };
 
+export const getContentLeaseIdentifier = (item:Object) => {
+  console.log(item);
+  const unit = `${get(item, 'type')}${get(item, 'municipality')}${get(item, 'district')}-${get(item, 'sequence')}`;
+  return unit;
+};
+
 export const getContentRealPropertyUnit = (item:Object) => {
-  const unit = get(item, 'real_property_units[0].identification_number');
+  const unit = `${get(item, 'lease_areas[0].municipality')}-${get(item, 'lease_areas[0].district')}-${get(item, 'lease_areas[0].sequence')}`;
   return unit;
 };
 
@@ -24,11 +30,12 @@ export const getContentLeaseTenant = (item:Object) => {
 
 export const getContentLeaseItem = (item:Object) => {
   return {
-    id: get(item, 'id'),
-    identifier: get(item, 'identifier'),
+    id: get(item, 'lease_id'),
+    identifier: getContentLeaseIdentifier(item),
     real_property_unit: getContentRealPropertyUnit(item),
     tenant: getContentLeaseTenant(item),
-    lease_type: get(item, 'application.type'),
+    address: get(item, 'lease_areas[0].address'),
+    lease_type: get(item, 'loremipsum'),
     start_date: formatDate(get(item, 'start_date')),
     end_date: formatDate(get(item, 'end_date')),
   };

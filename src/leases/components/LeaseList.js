@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
-import {translate} from 'react-i18next';
 import {connect} from 'react-redux';
 import {Row} from 'react-foundation';
 
@@ -13,12 +13,13 @@ import Search from './Search';
 import TableControllers from './TableControllers';
 import Table from '../../components/Table';
 import * as contentHelpers from '../helpers';
+import {getActiveLanguage} from '../../util/helpers';
 
 type Props = {
   fetchAttributes: Function,
   fetchLeases: Function,
   isFetching: boolean,
-  t: Function,
+  router: Object,
   leases: Array<any>,
 }
 
@@ -36,24 +37,31 @@ class LeaseList extends Component {
     visualizationType: 'table',
   }
 
-  componentWillMount() {
-    const {fetchAttributes, fetchLeases} = this.props;
+  static contextTypes = {
+    router: PropTypes.object,
+  };
 
-    fetchAttributes();
+  componentWillMount() {
+    // const {fetchAttributes, fetchLeases} = this.props;
+    const {fetchLeases} = this.props;
+    // fetchAttributes();
     fetchLeases();
   }
 
-  handleEditClick = () => {
-    console.log('click');
-  }
-
+  handleEditClick = (id) => {
+    const {router} = this.context;
+    // const {router: {location: {query}}} = this.props;
+    const lang = getActiveLanguage().id;
+    return router.push({
+      pathname: `/beta/${lang}/leases/${id}`,
+      // query,
+    });
+  };
 
   render() {
     const {documentType, visualizationType} = this.state;
-    const {leases: content, t} = this.props;
-    console.log('content', content);
+    const {leases: content} = this.props;
     const leases = contentHelpers.getContentLeases(content);
-    console.log(leases);
 
     return (
       <div className='lease-list'>
@@ -89,13 +97,13 @@ class LeaseList extends Component {
               amount={leases.length}
               data={leases}
               dataKeys={[
-                {key: 'identifier', label: t('leases:identifier')},
-                {key: 'real_property_unit', label: t('leases:real_property_unit')},
-                {key: 'tenant', label: t('leases:tenants.single')},
-                {key: 'address', label: t('leases:address')},
-                {key: 'lease_type', label: t('leases:type')},
-                {key: 'start_date', label: t('leases:startDate')},
-                {key: 'end_date', label: t('leases:endDate')},
+                {key: 'identifier', label: 'Vuokratunnus'},
+                {key: 'real_property_unit', label: 'Kiinteistötunnus'},
+                {key: 'tenant', label: 'Asiakas'},
+                {key: 'address', label: 'Osoite'},
+                {key: 'lease_type', label: 'Tyyppi'},
+                {key: 'start_date', label: 'Alkupvm'},
+                {key: 'end_date', label: 'Loppupvm'},
               ]}
               onRowClick={this.handleEditClick}
             />
@@ -122,5 +130,4 @@ export default flowRight(
       fetchAttributes,
     },
   ),
-  translate(['leases', 'applications']),
 )(LeaseList);
