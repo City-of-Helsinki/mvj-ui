@@ -77,7 +77,7 @@ class LeaseList extends Component {
                 {value: 'reservation', label: 'Varaus'},
                 {value: 'lease', label: 'Vuokraus'},
                 {value: 'permission', label: 'Lupa'},
-                {value: 'area', label: 'Rasitealue'},
+                {value: 'area', label: 'Muistettavat ehdot'},
               ]}
             />
           </div>
@@ -98,8 +98,9 @@ class LeaseList extends Component {
               data={leases}
               dataKeys={[
                 {key: 'identifier', label: 'Vuokratunnus'},
-                {key: 'real_property_unit', label: 'Kiinteistötunnus'},
-                {key: 'tenant', label: 'Asiakas'},
+                {key: 'real_property_unit', label: 'Vuokrakohde'},
+                {key: 'tenant', label: 'Vuokralainen'},
+                {key: 'person', label: 'Vuokranantaja'},
                 {key: 'address', label: 'Osoite'},
                 {key: 'lease_type', label: 'Tyyppi'},
                 {key: 'start_date', label: 'Alkupvm'},

@@ -16,6 +16,7 @@ import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
 import PropertyUnit from './leaseSections/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/PropertyUnitEdit';
+import TenantTab from './leaseSections/TenantTab';
 
 import mockData from '../mock-data.json';
 
@@ -159,6 +160,9 @@ class PreparerForm extends Component {
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   <h1>Vuokralaiset</h1>
+                  <div>
+                    {!isEditMode && <TenantTab />}
+                  </div>
                 </div>
               </TabPane>
 
