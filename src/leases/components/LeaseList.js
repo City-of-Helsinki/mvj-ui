@@ -13,7 +13,6 @@ import Search from './Search';
 import TableControllers from './TableControllers';
 import Table from '../../components/Table';
 import * as contentHelpers from '../helpers';
-import {getActiveLanguage} from '../../util/helpers';
 
 type Props = {
   fetchAttributes: Function,
@@ -50,10 +49,8 @@ class LeaseList extends Component {
 
   handleEditClick = (id) => {
     const {router} = this.context;
-    // const {router: {location: {query}}} = this.props;
-    const lang = getActiveLanguage().id;
     return router.push({
-      pathname: `/beta/${lang}/leases/${id}`,
+      pathname: `/beta/leases/${id}`,
       // query,
     });
   };
