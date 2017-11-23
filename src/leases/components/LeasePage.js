@@ -24,6 +24,8 @@ type State = {
   activeTab: number,
   isEditMode: boolean,
   areas: Array<Object>,
+  tenants: Array<Object>,
+  oldTenants: Array<Object>,
 };
 
 type Props = {
@@ -38,6 +40,8 @@ class PreparerForm extends Component {
     activeTab: 0,
     isEditMode: false,
     areas: [],
+    tenants: [],
+    oldTenants: [],
   }
 
   props: Props
@@ -54,7 +58,11 @@ class PreparerForm extends Component {
       this.setState({activeTab: location.query.tab});
     }
 
-    this.setState({areas: mockData.leases[0].lease_areas});
+    this.setState({
+      areas: mockData.leases[0].lease_areas,
+      tenants: mockData.leases[0].tenants,
+      oldTenants: mockData.leases[0].tenants_old,
+    });
     // fetchSingleLease(leaseId);
   }
 
@@ -89,7 +97,7 @@ class PreparerForm extends Component {
   };
 
   render() {
-    const {activeTab, areas, isEditMode} = this.state;
+    const {activeTab, areas, tenants, oldTenants, isEditMode} = this.state;
 
     return (
       <div className='lease-page'>
@@ -161,7 +169,7 @@ class PreparerForm extends Component {
                 <div className='lease-page__tab-content'>
                   <h1>Vuokralaiset</h1>
                   <div>
-                    {!isEditMode && <TenantTab />}
+                    {!isEditMode && <TenantTab tenants={tenants} oldTenants={oldTenants}/>}
                   </div>
                 </div>
               </TabPane>

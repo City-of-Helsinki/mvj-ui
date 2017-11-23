@@ -47,11 +47,11 @@ class Collapse extends Component {
     const {children, header} = this.props;
 
     return (
-      <div className={classNames('collapse-alpha', {'open': isOpen})}>
-        <div className="collapse-alpha__header" onClick={this.handleToggle}>
-          <span>{header}</span> <i className="mi mi-add"/>
+      <div className={classNames('collapse', {'open': isOpen})}>
+        <div className="collapse__header" onClick={this.handleToggle}>
+          <span>{header}</span> <i className="arrow-icon"/>
         </div>
-        <div className="collapse-alpha__content">
+        <div className="collapse__content">
           {children}
         </div>
       </div>
