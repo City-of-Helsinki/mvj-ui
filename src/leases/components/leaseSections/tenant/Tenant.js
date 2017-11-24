@@ -13,6 +13,8 @@ type Props = {
 }
 
 const Tenant = ({tenant}: Props) => {
+  const {other_persons} = tenant;
+
   return (
     <div>
       <Collapse
@@ -26,26 +28,38 @@ const Tenant = ({tenant}: Props) => {
       >
         <TenantItem customer={get(tenant, 'tenant')} />
       </Collapse>
-      <Collapse
-        className='collapse__secondary'
-        defaultOpen={true}
-        header={
-          <Row>
-            <Column small={6}><span className='collapse__header-title'>Laskunsaaja</span></Column>
-          </Row>
-        }>
-        <InvoiceRecipientItem customer={get(tenant, 'invoice_recipient')} />
-      </Collapse>
-      <Collapse
-        className='collapse__secondary'
-        defaultOpen={true}
-        header={
-          <Row>
-            <Column small={6}><span className='collapse__header-title'>Yhteyshenkilö</span></Column>
-          </Row>
-        }>
-        <ContactPersonItem customer={get(tenant, 'contact_person')} />
-      </Collapse>
+      {other_persons && other_persons.length && other_persons.map((person, index) => {
+        switch(person.type) {
+          case 'invoice_recipient':
+            return (
+              <Collapse
+                key={index}
+                className='collapse__secondary'
+                defaultOpen={true}
+                header={
+                  <Row>
+                    <Column small={6}><span className='collapse__header-title'>Laskunsaaja</span></Column>
+                  </Row>
+                }>
+                <InvoiceRecipientItem customer={person} />
+              </Collapse>
+            );
+          case 'contact_person':
+            return (
+              <Collapse
+                key={index}
+                className='collapse__secondary'
+                defaultOpen={true}
+                header={
+                  <Row>
+                    <Column small={6}><span className='collapse__header-title'>Yhteyshenkilö</span></Column>
+                  </Row>
+                }>
+                <ContactPersonItem customer={person} />
+              </Collapse>
+            );
+        }
+      })}
     </div>
   );
 };

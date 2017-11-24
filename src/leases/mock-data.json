@@ -30,36 +30,40 @@
             "town": "Helsinki",
             "zip_code": "00560"
           },
-          "invoice_recipient": {
-            "customer_id": "456733783",
-            "address": "Sörnäisten Rantatie 12 A",
-            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-            "email": "vappu@pappila.fi",
-            "language": "Suomi",
-            "name": "Vappu Pappila",
-            "phone": "+358 46 9877652",
-            "protection_order": true,
-            "SAP_customer_id": "3576168",
-            "social_security_number": "200587-345X",
-            "start_date": "1989-12-13",
-            "town": "Helsinki",
-            "zip_code": "00560"
-          },
-          "contact_person": {
-            "customer_id": "456733783",
-            "address": "Sörnäisten Rantatie 12 A",
-            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-            "email": "vappu@pappila.fi",
-            "language": "Suomi",
-            "name": "Vappu Pappila",
-            "phone": "+358 46 9877652",
-            "protection_order": true,
-            "SAP_customer_id": "3576168",
-            "social_security_number": "200587-345X",
-            "start_date": "1989-12-13",
-            "town": "Helsinki",
-            "zip_code": "00560"
-          }
+          "other_persons": [
+            {
+              "type": "invoice_recipient",
+              "customer_id": "456733783",
+              "address": "Sörnäisten Rantatie 12 A",
+              "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
+              "email": "vappu@pappila.fi",
+              "language": "Suomi",
+              "name": "Vappu Pappila",
+              "phone": "+358 46 9877652",
+              "protection_order": true,
+              "SAP_customer_id": "3576168",
+              "social_security_number": "200587-345X",
+              "start_date": "1989-12-13",
+              "town": "Helsinki",
+              "zip_code": "00560"
+            },
+            {
+              "type": "contact_person",
+              "customer_id": "456733783",
+              "address": "Sörnäisten Rantatie 12 A",
+              "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
+              "email": "vappu@pappila.fi",
+              "language": "Suomi",
+              "name": "Vappu Pappila",
+              "phone": "+358 46 9877652",
+              "protection_order": true,
+              "SAP_customer_id": "3576168",
+              "social_security_number": "200587-345X",
+              "start_date": "1989-12-13",
+              "town": "Helsinki",
+              "zip_code": "00560"
+            }
+          ]
         },
         {
           "tenant": {
