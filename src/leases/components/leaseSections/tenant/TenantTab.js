@@ -2,7 +2,8 @@
 import React from 'react';
 import get from 'lodash/get';
 
-import Collapse from '../../../components/Collapse';
+import Collapse from '../../../../components/Collapse';
+import Tenant from './Tenant';
 import {Row, Column} from 'react-foundation';
 
 type Props = {
@@ -12,17 +13,17 @@ type Props = {
 const TenantTab = ({tenants, oldTenants}: Props) => {
   console.log(oldTenants);
   return (
-    <div className='tenants.tab'>
+    <div className='tenant-tab'>
       {tenants && tenants.length > 0 && tenants.map((tenant, index) =>
         <Collapse key={index}
           header={
             <Row>
-              <Column small={6}><span className='collapse__header-title'>{get(tenant, 'tenant.name')}</span></Column>
-              <Column small={6}><span className='collapse__header-subtitle'>{index + 1}/{tenants.length}</span></Column>
+              <Column small={5}><span className='collapse__header-title'>{get(tenant, 'tenant.name')}</span></Column>
+              <Column small={7}><span className='collapse__header-subtitle'>{index + 1}/{tenants.length}</span></Column>
             </Row>
           }
         >
-          <h1>TenantTabContent</h1>
+          <Tenant tenant={tenant} />
         </Collapse>
       )}
       {oldTenants && oldTenants.length > 0 &&

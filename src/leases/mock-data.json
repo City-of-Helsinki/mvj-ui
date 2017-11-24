@@ -26,7 +26,7 @@
             "share": 1,
             "share_divider": 2,
             "social_security_number": "200587-345X",
-            "start_date": "31.01.1989",
+            "start_date": "1989-01-30",
             "town": "Helsinki",
             "zip_code": "00560"
           },
@@ -41,7 +41,7 @@
             "protection_order": true,
             "SAP_customer_id": "3576168",
             "social_security_number": "200587-345X",
-            "start_date": "13.12.1987",
+            "start_date": "1989-12-13",
             "town": "Helsinki",
             "zip_code": "00560"
           },
@@ -56,7 +56,7 @@
             "protection_order": true,
             "SAP_customer_id": "3576168",
             "social_security_number": "200587-345X",
-            "start_date": "13.12.1987",
+            "start_date": "1989-12-13",
             "town": "Helsinki",
             "zip_code": "00560"
           }
@@ -72,13 +72,13 @@
             "ovt_identifier": "4578ghj",
             "partner_code": "348576928",
             "phone": "+358 46 9877652",
-            "protection_order": true,
+            "protection_order": false,
             "reference": "4396750342358345756",
             "SAP_customer_id": "3576168",
             "share": 1,
             "share_divider": 2,
             "social_security_number": "200587-123Y",
-            "start_date": "31.01.1989",
+            "start_date": "1989-01-31",
             "town": "Helsinki",
             "zip_code": "00560"
           },
@@ -93,7 +93,7 @@
             "protection_order": true,
             "SAP_customer_id": "3576168",
             "social_security_number": "200587-123Y",
-            "start_date": "13.12.1987",
+            "start_date": "1987-12-13",
             "town": "Helsinki",
             "zip_code": "00560"
           },
@@ -108,7 +108,7 @@
             "protection_order": true,
             "SAP_customer_id": "3576168",
             "social_security_number": "200587-123Y",
-            "start_date": "13.12.1987",
+            "start_date": "1989-12-13",
             "town": "Helsinki",
             "zip_code": "00560"
           }

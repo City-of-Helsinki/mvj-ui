@@ -16,7 +16,7 @@ import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
 import PropertyUnit from './leaseSections/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/PropertyUnitEdit';
-import TenantTab from './leaseSections/TenantTab';
+import TenantTab from './leaseSections/tenant/TenantTab';
 
 import mockData from '../mock-data.json';
 

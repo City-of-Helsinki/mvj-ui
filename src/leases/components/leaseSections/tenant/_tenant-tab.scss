@@ -1,0 +1,57 @@
+.tenant-tab {
+  .tenant-item {
+    p.subtitle {
+      font-size: rem-calc(16px);
+	    font-weight: 600;
+	    text-align: left;
+	    color: $black;
+      margin-bottom: rem-calc(5px);
+	  }
+    .contact {
+      margin-bottom: rem-calc(10px);
+      p {
+        font-size: $font-regular;
+        text-align: left;
+        color: $black;
+        margin-bottom: rem-calc(0px);
+        line-height: 1.2;
+      }
+    }
+    p.comment {
+      font-size: $font-regular;
+      text-align: left;
+      color: $black;
+      margin-bottom: rem-calc(0px);
+      font-style: italic;
+    }
+    
+    .alert {
+      i {
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        background-image: url(../assets/icons/icon-alert.svg);
+        display: inline-block;
+      }
+      span {
+        float: left;
+        line-height: rem-calc(20px);
+        margin-right: rem-calc(5px);
+      }
+      color: #bd2719;
+      margin-bottom: 0;
+    }
+
+    label {
+      font-size: $font-small;
+      text-align: left;
+      color: $dark-gray;
+      line-height: 1;
+    }
+    p {
+      font-size: $font-regular;
+      text-align: left;
+      color: $black;
+      margin-bottom: rem-calc(10px);
+    }
+  }
+}

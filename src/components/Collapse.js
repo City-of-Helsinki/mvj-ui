@@ -5,6 +5,7 @@ import classNames from 'classnames';
 
 type Props = {
   children: Object,
+  className?: string,
   defaultOpen: boolean,
   header: string,
 }
@@ -44,10 +45,10 @@ class Collapse extends Component {
 
   render() {
     const {isOpen} = this.state;
-    const {children, header} = this.props;
+    const {children, className, header} = this.props;
 
     return (
-      <div className={classNames('collapse', {'open': isOpen})}>
+      <div className={classNames('collapse', className, {'open': isOpen})}>
         <div className="collapse__header" onClick={this.handleToggle}>
           <span>{header}</span> <i className="arrow-icon"/>
         </div>

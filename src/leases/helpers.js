@@ -7,13 +7,20 @@ export const formatDate = (date: string) => {
   if (!date) {
     return '';
   }
-  const d = isNumber(date) ? moment.unix(date) : moment(date);
 
+  const d = isNumber(date) ? moment.unix(date) : moment(date);
   return d.format('D.M.YYYY');
 };
 
+export const getFullAddress = (item: Object) => {
+  if(!get(item, 'zip_code') && !get(item, 'town')) {
+    return get(item, 'address');
+  }
+
+  return `${get(item, 'address')}, ${get(item, 'zip_code')} ${get(item, 'town')}`;
+};
+
 export const getContentLeaseIdentifier = (item:Object) => {
-  console.log(item);
   const unit = `${get(item, 'type')}${get(item, 'municipality')}${get(item, 'district')}-${get(item, 'sequence')}`;
   return unit;
 };
