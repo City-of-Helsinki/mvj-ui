@@ -18,7 +18,7 @@ const TenantTab = ({tenants, oldTenants}: Props) => {
         <Collapse key={index}
           header={
             <Row>
-              <Column small={5}><span className='collapse__header-title'>{get(tenant, 'tenant.name')}</span></Column>
+              <Column small={5}><span className='collapse__header-title'>{get(tenant, 'tenant.firstname')} {get(tenant, 'tenant.lastname')}</span></Column>
               <Column small={7}><span className='collapse__header-subtitle'>{index + 1}/{tenants.length}</span></Column>
             </Row>
           }

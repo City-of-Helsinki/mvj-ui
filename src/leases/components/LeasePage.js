@@ -16,6 +16,7 @@ import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
 import PropertyUnit from './leaseSections/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/PropertyUnitEdit';
+import TenantEdit from './leaseSections/tenant/TenantEdit';
 import TenantTab from './leaseSections/tenant/TenantTab';
 
 import mockData from '../mock-data.json';
@@ -170,6 +171,7 @@ class PreparerForm extends Component {
                   <h1>Vuokralaiset</h1>
                   <div>
                     {!isEditMode && <TenantTab tenants={tenants} oldTenants={oldTenants}/>}
+                    {isEditMode && <TenantEdit initialValues={{tenants: tenants}}/>}
                   </div>
                 </div>
               </TabPane>
