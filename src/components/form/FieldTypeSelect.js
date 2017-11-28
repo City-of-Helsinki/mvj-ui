@@ -19,7 +19,7 @@ const FieldTypeSelect = ({label, input, displayError, disabled, options, placeho
 
   return (
     <div className='mvj-form-field'>
-      <label>{label}</label>
+      <label className='title'>{label}</label>
       <div className={classNames('mvj-form-field__select', {'has-error': displayError})}>
         <Select
           autoBlur={true}
