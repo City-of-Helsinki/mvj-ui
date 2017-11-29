@@ -14,7 +14,7 @@ const TenantItem = ({customer}: Props) => {
   const fullAddress = helpers.getFullAddress(customer);
 
   return (
-    <div className='tenant-item'>
+    <div className='section-item'>
       <Row>
         <Column medium={5}>
           <Row>
@@ -26,7 +26,7 @@ const TenantItem = ({customer}: Props) => {
                 <p>{get(customer, 'email')}</p>
               </div>
               <p>{get(customer, 'social_security_number')}</p>
-              {get(customer, 'protection_order') && <p className='alert'><span>Turvakielto</span><i/></p>}
+              {get(customer, 'protection_order') && <p className='alert'><i/><span>Turvakielto</span></p>}
 
               <p className='comment'>{get(customer, 'comment')}</p>
             </Column>

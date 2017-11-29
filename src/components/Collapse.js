@@ -16,19 +16,14 @@ type State = {
 
 class Collapse extends Component {
   props: Props;
-  state: State;
+
+  state: State = {
+    isOpen: false,
+  };
 
   static defaultProps = {
     defaulOpen: false,
   };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isOpen: false,
-    };
-  }
 
   componentWillMount() {
     const {defaultOpen} = this.props;

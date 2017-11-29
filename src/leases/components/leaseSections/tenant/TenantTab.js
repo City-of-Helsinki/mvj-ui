@@ -12,7 +12,7 @@ type Props = {
 }
 const TenantTab = ({tenants, oldTenants}: Props) => {
   return (
-    <div className='tenant-tab'>
+    <div className='lease-section'>
       {tenants && tenants.length > 0 && tenants.map((tenant, index) =>
         <Collapse key={index}
           header={

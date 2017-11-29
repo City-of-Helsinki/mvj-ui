@@ -63,11 +63,10 @@
 @import "leases/components/lease-page";
 @import "leases/components/search";
 @import "leases/components/table-controllers";
-@import "leases/components/leaseSections/property-unit";
-@import "leases/components/leaseSections/property-unit-plot";
 @import "leases/components/leaseSections/property-unit-edit";
 @import "leases/components/leaseSections/tenant/tenant-edit";
-@import "leases/components/leaseSections/tenant/tenant-tab";
+@import "leases/components/leaseSections/lease-section";
+
 
 html {
   -webkit-font-smoothing: antialiased;
