@@ -15,8 +15,9 @@
     display: block;
     height: auto;
     font-size: $font-regular;
-    line-height: $font-regular;
-    padding: rem-calc(5px) rem-calc(10px);
+    line-height: 1.5;
+    padding: rem-calc(3px) rem-calc(10px);
+    min-height: rem-calc(30px);
     border: none;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 

@@ -20,8 +20,20 @@ export const getFullAddress = (item: Object) => {
   return `${get(item, 'address')}, ${get(item, 'zip_code')} ${get(item, 'town')}`;
 };
 
+export const formatSequenceNumber = (value: number) => {
+  var length = value.toString().length;
+  if (length < 4) {
+    var prefix = '';
+    for (var i = 1; i <= 4 - length; i++) {
+      prefix += '0';
+    }
+    return prefix + value.toString();
+  }
+  return  value.toString();
+};
+
 export const getContentLeaseIdentifier = (item:Object) => {
-  const unit = `${get(item, 'type')}${get(item, 'municipality')}${get(item, 'district')}-${get(item, 'sequence')}`;
+  const unit = `${get(item, 'type')}${get(item, 'municipality')}${get(item, 'district')}-${formatSequenceNumber(get(item, 'sequence'))}`;
   return unit;
 };
 
@@ -37,12 +49,8 @@ export const getContentLeaseTenant = (item:Object) => {
 
 export const getContentLeaseItem = (item:Object) => {
   return {
-    id: get(item, 'lease_id'),
+    id: get(item, 'id'),
     identifier: getContentLeaseIdentifier(item),
-    real_property_unit: getContentRealPropertyUnit(item),
-    tenant: getContentLeaseTenant(item),
-    address: get(item, 'lease_areas[0].address'),
-    lease_type: get(item, 'loremipsum'),
     start_date: formatDate(get(item, 'start_date')),
     end_date: formatDate(get(item, 'end_date')),
   };

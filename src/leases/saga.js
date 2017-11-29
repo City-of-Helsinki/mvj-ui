@@ -3,7 +3,7 @@
 import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
 import get from 'lodash/get';
-import mockData from './mock-data.json';
+// import mockData from './mock-data.json';
 
 import {
   receiveLeases,
@@ -13,7 +13,7 @@ import {
 } from './actions';
 
 import {
-  // fetchLeases,
+  fetchLeases,
   fetchSingleLease,
   fetchAttributes,
 } from './requests';
@@ -48,17 +48,17 @@ function* fetchAttributesSaga(): Generator<> {
 
 function* fetchLeasesSaga(): Generator<> {
   try {
-    // const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLeases);
-    // switch (statusCode) {
-    //   case 200:
-    //     yield put(receiveLeases(bodyAsJson));
-    //     break;
-    //   case 404:
-    //   case 500:
-    //     yield put(notFound());
-    //     break;
-    // }
-    yield put(receiveLeases(mockData.leases));
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLeases);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveLeases(bodyAsJson));
+        break;
+      case 404:
+      case 500:
+        yield put(notFound());
+        break;
+    }
+    // yield put(receiveLeases(mockData.leases));
   } catch (error) {
     console.error('Failed to fetch leases with error "%s"', error);
     yield put(notFound());
