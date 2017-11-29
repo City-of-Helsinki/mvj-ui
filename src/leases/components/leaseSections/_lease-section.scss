@@ -24,23 +24,28 @@
       margin-bottom: rem-calc(0px);
       font-style: italic;
     }
-
     .alert {
       i {
         height: rem-calc(20px);
         width: rem-calc(20px);
         background-image: url(../assets/icons/icon-alert.svg);
         display: inline-block;
+        vertical-align: sub;
+        margin-right: 0.4rem;
       }
-      span {
-        float: left;
-        line-height: rem-calc(20px);
-        margin-right: rem-calc(5px);
-      }
-      color: #bd2719;
-      margin-bottom: 0;
+      color: $brick;
     }
-
+    .success {
+      i {
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        background-image: url(../assets/icons/icon_checked.svg);
+        display: inline-block;
+        vertical-align: sub;
+        margin-right: 0.4rem;
+      }
+      color: $tram;
+    }
     label {
       font-size: $font-small;
       text-align: left;
@@ -50,9 +55,24 @@
     p {
       font-size: $font-regular;
       text-align: left;
+      line-height: 1.8;
       color: $black;
       margin-bottom: rem-calc(10px);
     }
+    .text-no-margin {
+      margin-bottom: 0;
+    }
+    .text-no-margin + .text-no-margin {
+      line-height: 1.3;
+    }
+    .multiple-textrows {
+      margin-bottom: rem-calc(10px);
+    }
+  }
+  .section-item:not(:first-child) {
+    border-top: 1px dashed $tram;
+    padding-top: 1.2rem;
+    margin-top: 0.4rem;
   }
   .doc-icon {
     fill: $black;

@@ -16,6 +16,7 @@ const Contracts = ({contracts}: Props) => {
     <div className='lease-section'>
       {contracts && contracts.length > 0 && contracts.map((contract, index) =>
         <Collapse key={index}
+          defaultOpen={false}
           header={
             <Row>
               <Column small={4}>

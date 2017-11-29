@@ -1,7 +1,7 @@
 .collapse {
   border-top: 1.5px dashed $tram;
   // align-items: baseline;
-  padding: 0.3rem 0 1.6rem;
+  padding: 0.6rem 0 1.6rem;
 
   &:first-child {
     margin: 1.5rem 0 0;
@@ -104,7 +104,7 @@
 
       .collapse__content {
         display: block;
-        padding: 0 rem-calc(20px) rem-calc(10px);
+        padding: rem-calc(10px) rem-calc(20px) rem-calc(10px);
       }
     }
   }

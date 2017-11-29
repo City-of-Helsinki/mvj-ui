@@ -28,6 +28,24 @@
               "pledge_book_number": 478356767,
               "pledge_book_date": "2012-03-01"
             }
+          ],
+          "modifications": [
+            {
+              "modification_signing_date": "2016-10-02",
+              "to_be_signed_by": "2017-05-01",
+              "first_call_sent": "2015-01-01",
+              "second_call_sent": null,
+              "third_call_sent": null,
+              "modification_description": "Hinnan muutos."
+            },
+            {
+              "modification_signing_date": "2017-10-02",
+              "to_be_signed_by": null,
+              "first_call_sent": "2017-01-01",
+              "second_call_sent": null,
+              "third_call-sent": null,
+              "modification_description": null
+            }
           ]
         },
         {
@@ -64,7 +82,7 @@
             },
             {
               "term_purpose": "Sopimussakko",
-              "supervision_date": null,
+              "supervision_date": "2018-10-09",
               "supervised_date": null,
               "term_description": "Sopimussaakko enintään 50.000 euroa."
             }
