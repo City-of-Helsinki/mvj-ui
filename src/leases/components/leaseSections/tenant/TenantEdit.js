@@ -14,7 +14,6 @@ type OtherPersonProps = {
 }
 
 const renderOtherPersons = ({fields}: OtherPersonProps) => {
-  console.log(fields);
   return (
 
     <div>
@@ -213,6 +212,30 @@ const renderTenants = ({fields}: TenantProps) => {
                 />
               </Column>
               <Column medium={3}>
+                <Row>
+                  <Column>
+                    <label className='mvj-form-field-label'>Osuus murtolukuna</label>
+                  </Column>
+                </Row>
+                <Row>
+                  <Column>
+                    <Field
+                      isInline={true}
+                      inputStyle={{width: '3rem', marginRight: '5px'}}
+                      name={`${tenant}.tenant.share`}
+                      component={FieldTypeText}
+                    />
+                    <span>/</span>
+                    <Field
+                      isInline={true}
+                      inputStyle={{width: '3rem', marginLeft: '5px'}}
+                      name={`${tenant}.tenant.share_divider`}
+                      component={FieldTypeText}
+                    />
+                  </Column>
+                </Row>
+              </Column>
+              <Column medium={3}>
                 <Field
                   name={`${tenant}.roles`}
                   className='checkbox-inline'
@@ -390,6 +413,7 @@ class TenantEdit extends Component {
 
   render () {
     const {dispatch, handleSubmit} = this.props;
+    console.log(this.props);
 
     return (
       <form onSubmit={handleSubmit}className='tenant-edit'>
@@ -409,7 +433,6 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     (state) => {
-      console.log(state);
       return {
         tenants: selector(state, 'tenants'),
       };

@@ -1,8 +1,11 @@
 // @flow
 import React from 'react';
+import classnames from 'classnames';
 
 type Props = {
   input: Object,
+  isInline?: boolean,
+  inputStyle: Object,
   showLabel: boolean,
   label: string,
   placeholder: string,
@@ -10,10 +13,10 @@ type Props = {
   meta: Object,
 }
 
-const FieldTypeText = ({input, label, placeholder, type = 'text', meta: {touched, error}}: Props) => (
-  <div className='mvj-form-field'>
+const FieldTypeText = ({input, isInline, inputStyle, label, placeholder, type = 'text', meta: {touched, error}}: Props) => (
+  <div className={classnames('mvj-form-field', {'inline': isInline})}>
     {label && <label className='title'>{label}</label>}
-    <div className='mvj-form-field__text'>
+    <div className='mvj-form-field__text' style={inputStyle}>
       <input {...input} type={type} placeholder={placeholder}/>
       {touched && error && <span>{error}</span>}
     </div>

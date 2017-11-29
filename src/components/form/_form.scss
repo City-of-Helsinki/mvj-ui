@@ -1,4 +1,7 @@
 .mvj-form-field {
+  &.inline {
+    display: inline-block;
+  }
   &-label {
     font-size: rem-calc(14px);
     line-height: normal;
