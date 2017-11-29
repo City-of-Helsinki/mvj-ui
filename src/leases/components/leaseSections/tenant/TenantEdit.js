@@ -413,7 +413,6 @@ class TenantEdit extends Component {
 
   render () {
     const {dispatch, handleSubmit} = this.props;
-    console.log(this.props);
 
     return (
       <form onSubmit={handleSubmit}className='tenant-edit'>
