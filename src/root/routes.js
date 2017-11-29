@@ -21,7 +21,7 @@ import LeasePage from '../leases/components/LeasePage';
 export default
 <Route path="/">
   <IndexRoute onEnter={(nextState, replace) => {
-    replace(`/alpha/${i18n.language}`);
+    replace(`/beta`);
   }}/>
   <Route path="/alpha" component={AppAlpha}>
     <Route path=":language">
@@ -41,16 +41,11 @@ export default
   </Route>
   <Route path="/beta" component={App}>
     <IndexRoute onEnter={(nextState, replace) => {
-      replace(`/beta/${i18n.language}`);
+      replace(`/beta/leases`);
     }}/>
-    <Route path=":language">
-      <IndexRoute onEnter={(nextState, replace) => {
-        replace(`/beta/${i18n.language}/leases`);
-      }}/>
-      <Route path="leases">
-        <IndexRoute component={LeaseList}/>
-        <Route path=":leaseId" component={LeasePage}/>
-      </Route>
+    <Route path="leases">
+      <IndexRoute component={LeaseList}/>
+      <Route path=":leaseId" component={LeasePage}/>
     </Route>
   </Route>
 </Route>;

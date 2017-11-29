@@ -1,3 +1,4 @@
+// @flow
 import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
@@ -11,7 +12,7 @@ import FieldTypeText from '../../../components/form/FieldTypeText';
 
 type PropertyProps = {
   title: string,
-  fields: Array<Object>,
+  fields: any,
 }
 
 const renderProperty = ({title, fields}: PropertyProps) => {
@@ -135,7 +136,7 @@ const renderProperty = ({title, fields}: PropertyProps) => {
 
 type PlanUnitProps = {
   title: string,
-  fields: Array<Object>,
+  fields: any,
 }
 
 const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
@@ -149,7 +150,7 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
           <h2>{title}</h2>
         </Column>
       </Row>
-      {fields.map((planunit, index) =>
+      {fields && fields.length > 0 && fields.map((planunit, index) =>
         <div key={index} className='subsection-container'>
           <button
             className='remove-button'
@@ -292,7 +293,7 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
 };
 
 type DistrictsProps = {
-  fields: Array<Object>,
+  fields: any,
   dispatch: Function,
 }
 
@@ -304,7 +305,7 @@ class RenderDistricts extends Component {
 
     return (
       <div>
-        {fields.map((district, index) => {
+        {fields && fields.length > 0 && fields.map((district, index) => {
           return (
             <div key={index} className='property-unit'>
               <button

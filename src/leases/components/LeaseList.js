@@ -13,7 +13,6 @@ import Search from './Search';
 import TableControllers from './TableControllers';
 import Table from '../../components/Table';
 import * as contentHelpers from '../helpers';
-import {getActiveLanguage} from '../../util/helpers';
 
 type Props = {
   fetchAttributes: Function,
@@ -50,10 +49,8 @@ class LeaseList extends Component {
 
   handleEditClick = (id) => {
     const {router} = this.context;
-    // const {router: {location: {query}}} = this.props;
-    const lang = getActiveLanguage().id;
     return router.push({
-      pathname: `/beta/${lang}/leases/${id}`,
+      pathname: `/beta/leases/${id}`,
       // query,
     });
   };
@@ -77,7 +74,7 @@ class LeaseList extends Component {
                 {value: 'reservation', label: 'Varaus'},
                 {value: 'lease', label: 'Vuokraus'},
                 {value: 'permission', label: 'Lupa'},
-                {value: 'area', label: 'Rasitealue'},
+                {value: 'area', label: 'Muistettavat ehdot'},
               ]}
             />
           </div>
@@ -98,8 +95,9 @@ class LeaseList extends Component {
               data={leases}
               dataKeys={[
                 {key: 'identifier', label: 'Vuokratunnus'},
-                {key: 'real_property_unit', label: 'Kiinteistötunnus'},
-                {key: 'tenant', label: 'Asiakas'},
+                {key: 'real_property_unit', label: 'Vuokrakohde'},
+                {key: 'tenant', label: 'Vuokralainen'},
+                {key: 'person', label: 'Vuokranantaja'},
                 {key: 'address', label: 'Osoite'},
                 {key: 'lease_type', label: 'Tyyppi'},
                 {key: 'start_date', label: 'Alkupvm'},

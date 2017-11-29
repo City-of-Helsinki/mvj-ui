@@ -44,6 +44,7 @@
 // Components Beta
 @import "components/action-dropdown";
 @import "components/button";
+@import "components/collapse";
 @import "components/form-action-dropdown";
 @import "components/form/form";
 @import "components/icon-radio-buttons";
@@ -65,6 +66,8 @@
 @import "leases/components/leaseSections/property-unit";
 @import "leases/components/leaseSections/property-unit-plot";
 @import "leases/components/leaseSections/property-unit-edit";
+@import "leases/components/leaseSections/tenant/tenant-edit";
+@import "leases/components/leaseSections/tenant/tenant-tab";
 
 html {
   -webkit-font-smoothing: antialiased;
@@ -79,8 +82,7 @@ body {
 }
 
 #root {
-  display: flex;
-  flex-direction: column;
+  display: block;
   min-height: 100%;
   font-family: $font-family-source;
   background: $light-gray;

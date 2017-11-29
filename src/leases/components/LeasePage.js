@@ -16,6 +16,8 @@ import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
 import PropertyUnit from './leaseSections/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/PropertyUnitEdit';
+import TenantEdit from './leaseSections/tenant/TenantEdit';
+import TenantTab from './leaseSections/tenant/TenantTab';
 
 import mockData from '../mock-data.json';
 
@@ -23,6 +25,8 @@ type State = {
   activeTab: number,
   isEditMode: boolean,
   areas: Array<Object>,
+  tenants: Array<Object>,
+  oldTenants: Array<Object>,
 };
 
 type Props = {
@@ -30,6 +34,7 @@ type Props = {
   location: Object,
   params: Object,
   areasForm: Array<Object>,
+  tenantsForm: Array<Object>,
 }
 
 class PreparerForm extends Component {
@@ -37,6 +42,8 @@ class PreparerForm extends Component {
     activeTab: 0,
     isEditMode: false,
     areas: [],
+    tenants: [],
+    oldTenants: [],
   }
 
   props: Props
@@ -53,7 +60,11 @@ class PreparerForm extends Component {
       this.setState({activeTab: location.query.tab});
     }
 
-    this.setState({areas: mockData.leases[0].lease_areas});
+    this.setState({
+      areas: mockData.leases[0].lease_areas,
+      tenants: mockData.leases[0].tenants,
+      oldTenants: mockData.leases[0].tenants_old,
+    });
     // fetchSingleLease(leaseId);
   }
 
@@ -66,8 +77,9 @@ class PreparerForm extends Component {
   }
 
   save = () => {
-    const {areasForm} = this.props;
+    const {areasForm, tenantsForm} = this.props;
     this.setState({areas: areasForm});
+    this.setState({tenants: tenantsForm});
     this.setState({isEditMode: false});
   }
 
@@ -88,7 +100,7 @@ class PreparerForm extends Component {
   };
 
   render() {
-    const {activeTab, areas, isEditMode} = this.state;
+    const {activeTab, areas, tenants, oldTenants, isEditMode} = this.state;
 
     return (
       <div className='lease-page'>
@@ -159,6 +171,10 @@ class PreparerForm extends Component {
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   <h1>Vuokralaiset</h1>
+                  <div>
+                    {!isEditMode && <TenantTab tenants={tenants} oldTenants={oldTenants}/>}
+                    {isEditMode && <TenantEdit initialValues={{tenants: tenants}}/>}
+                  </div>
                 </div>
               </TabPane>
 
@@ -202,6 +218,9 @@ class PreparerForm extends Component {
 const areasFormName = 'property-unit-edit-form';
 const areasFormSelector = formValueSelector(areasFormName);
 
+const tenantFormName = 'tenant-edit-form';
+const tenantFormSelector = formValueSelector(tenantFormName);
+
 export default flowRight(
   withRouter,
   connect(
@@ -210,6 +229,7 @@ export default flowRight(
         initialValues: getCurrentLease(state),
         isFetching: getIsFetching(state),
         areasForm: areasFormSelector(state, 'areas'),
+        tenantsForm: tenantFormSelector(state, 'tenants'),
       };
     },
     {

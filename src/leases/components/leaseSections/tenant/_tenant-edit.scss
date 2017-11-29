@@ -1,0 +1,92 @@
+.tenant-edit {
+  .add-button {
+    font-size: rem-calc(13px);
+    font-family: $font-family-source;
+    font-weight: 600;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+    height: rem-calc(30px);
+    padding: 0 1rem;
+    margin: 0;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    outline: none;
+
+    background-color: $tram;
+    color: $white;
+    &:hover {
+      background-color: lighten($tram, 5%);
+    }
+  }
+  .add-button-secondary {
+    font-size: rem-calc(15px);
+    font-family: $font-family-source;
+    font-weight: 600;
+    margin: 0;
+    float: left;
+    cursor: pointer;
+
+    i {
+      background-image: url(../assets/icons/plus-green.svg);
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      display: inline-block;
+      margin-right: rem-calc(5px);
+      float: left;
+      line-height: 1;
+    }
+
+    color: $tram;
+
+    &:hover {
+      color: lighten($tram, 5%);
+    }
+  }
+
+  .tenant {
+    border: none;
+    display: block;
+    border-top: 1.5px dashed $tram;
+    align-items: baseline;
+    padding: 0;
+    padding-top: 0.6rem;
+    margin: 0 0 1rem;
+    position: relative;
+
+    .remove-button {
+      position: absolute;
+      top: rem-calc(5px);
+      right: rem-calc(5px);
+      cursor: pointer;
+
+      img {
+        height: 22px;
+        width: 22px;
+      }
+      &:hover {
+        opacity: 0.85;
+      }
+    }
+  }
+  .other-person {
+    position: relative;
+    background-color: rgba(0, 146, 70, 0.1);
+    padding: 1rem;
+    margin-bottom: 1rem;
+
+    .remove-button {
+      position: absolute;
+      top: rem-calc(5px);
+      right: rem-calc(5px);
+      cursor: pointer;
+
+      img {
+        height: 22px;
+        width: 22px;
+      }
+      &:hover {
+        opacity: 0.85;
+      }
+    }
+  }
+}

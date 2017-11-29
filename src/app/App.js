@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import i18n from '../root/i18n';
 import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
 import classnames from 'classnames';
@@ -15,8 +14,6 @@ import {getError} from '../api/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
 import TopNavigation from '../components/topNavigation/TopNavigation';
 import SideMenu from '../components/sideMenu/SideMenu';
-import {isAllowedLanguage} from '../util/helpers';
-import {Languages} from '../constants';
 
 import type {ApiError} from '../api/types';
 import type {RootState} from '../root/types';
@@ -44,20 +41,7 @@ class App extends Component {
     router: PropTypes.object,
   };
 
-  componentDidMount() {
-    const {params: {language}} = this.props;
-
-    if (language !== i18n.language) {
-      if (isAllowedLanguage(language)) {
-        i18n.changeLanguage(language);
-      } else {
-        i18n.changeLanguage(Languages.EN);
-      }
-    }
-  }
-
   toggleSideMenu = () => {
-    console.log('toggle');
     return this.setState({
       displaySideMenu: !this.state.displaySideMenu,
     });

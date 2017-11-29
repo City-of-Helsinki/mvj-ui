@@ -12,12 +12,15 @@
     display: flex;
   }
   .text-input {
-    height: rem-calc(30px);
-    line-height: rem-calc(30px);
+    display: block;
+    height: auto;
+    font-size: $font-regular;
+    line-height: $font-regular;
+    padding: rem-calc(5px) rem-calc(10px);
     border: none;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+
     &::placeholder {
-      font-size: rem-calc(14px);
       color: $dark-gray;
     }
   }

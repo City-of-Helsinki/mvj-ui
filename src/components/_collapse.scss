@@ -1,0 +1,109 @@
+.collapse {
+  border-top: 1.5px dashed $tram;
+  align-items: baseline;
+  padding: 0.6rem 0;
+
+  &:first-child {
+    margin: 1.5rem 0 0;
+  }
+
+  .collapse__header {
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+
+    &-title {
+      font-size: $font-large;
+      font-weight: $semibold;
+      line-height: 1.6;
+      display: inline-block;
+    }
+
+    &-subtitle {
+      font-size: $font-regular;
+      line-height: rem-calc(32px);
+      height: rem-calc(32px);
+      display: inline-block;
+    }
+
+    > span {
+      flex: 1;
+    }
+
+    i.arrow-icon {
+      background-image: url('../assets/icons/icon_arrow_down.svg');
+      display: block;
+      position: absolute;
+      content: ' ';
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      top: calc(50% - 10px);
+      right: rem-calc(10px);
+    }
+  }
+
+  &__content {
+    display: none;
+  }
+
+  // Opened stage
+  &.open {
+    .collapse__header {
+      i.arrow-icon {
+        background-image: url('../assets/icons/icon_arrow_up.svg');
+      }
+    }
+
+    .collapse__content {
+      display: block;
+    }
+  }
+
+  &.collapse__secondary {
+    background-color: rgba(0, 146, 70, 0.15);
+    border-top: none;
+    margin: 0.6rem 0;
+    align-items: baseline;
+    padding: 0;
+
+    .collapse__header {
+      padding: rem-calc(6px) rem-calc(20px);
+      &-title {
+        color: $tram;
+        font-weight: $semibold;
+        font-size: $font-regular;
+        text-transform: uppercase;
+      }
+      i.arrow-icon {
+        background-image: url('../assets/icons/icon_arrow_down-green.svg');
+        display: block;
+        position: absolute;
+        content: ' ';
+        height: rem-calc(16px);
+        width: rem-calc(16px);
+        top: calc(50% - 8px);
+        right: rem-calc(12px);
+      }
+    }
+
+    .collapse__content {
+      display: none;
+    }
+
+    &.open {
+      .collapse__header {
+        i.arrow-icon {
+          background-image: url('../assets/icons/icon_arrow_up-green.svg');
+        }
+      }
+
+      .collapse__content {
+        display: block;
+        padding: 0 rem-calc(20px) rem-calc(10px);
+      }
+    }
+  }
+}

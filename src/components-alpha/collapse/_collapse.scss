@@ -1,7 +1,7 @@
-.collapse {
+.collapse-alpha {
   border-bottom: 1px solid $light-gray;
 
-  .collapse__header {
+  .collapse-alpha__header {
     @include transition(.1s);
     @include mvj-container();
     padding: 2rem 1rem;
@@ -40,7 +40,7 @@
       }
     }
 
-    .collapse__content {
+    .collapse-alpha__content {
       display: block;
     }
   }

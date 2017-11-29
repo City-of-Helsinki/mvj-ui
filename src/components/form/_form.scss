@@ -1,4 +1,7 @@
 .mvj-form-field {
+  &.inline {
+    display: inline-block;
+  }
   &-label {
     font-size: rem-calc(14px);
     line-height: normal;
@@ -7,7 +10,7 @@
     margin-bottom: rem-calc(4px);
   }
 
-  label {
+  label.title {
     font-size: rem-calc(14px);
     line-height: normal;
 	  text-align: left;
@@ -25,6 +28,21 @@
         width: 100%;
         margin-bottom: rem-calc(10px);
       }
+    }
+    &__checkbox {
+      &.checkbox-inline {
+        .option-label {
+          display: inline-block;
+          font-size: rem-calc(14px);
+          line-height: rem-calc(30px);
+          height: rem-calc(30px);
+          margin-right: rem-calc(10px);
+        }
+        .option-label::last-child {
+          margin-right: 0;
+        }
+      }
+
     }
     &__select {
       .Select-control {
