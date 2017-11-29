@@ -25,4 +25,41 @@
       color: $dark-gray;
     }
   }
+  .advanced-search-row-wrapper {
+    display: flex;
+
+    .column-50 {
+      flex: 0 0 50%;
+      display: flex;
+    }
+
+    label {
+      display: inline-block;
+      color: $dark-gray;
+      line-height: rem-calc(30px);
+      margin-right: rem-calc(10px);
+    }
+    label.label-long {
+      min-width: 5rem;
+    }
+
+    label.label-medium {
+      min-width: 3rem;
+      text-align: right;
+    }
+
+    .text-input {
+      max-height: rem-calc(30px);
+      margin-right: rem-calc(10px);
+    }
+    .short-input {
+      width: rem-calc(70px);
+      min-width: rem-calc(70px);
+      margin-right: rem-calc(10px);
+    }
+    .nomargin-input {
+      margin-right: 0;
+      width: 100%;
+    }
+  }
 }

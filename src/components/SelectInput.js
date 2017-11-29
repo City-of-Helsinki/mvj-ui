@@ -29,6 +29,7 @@ const SelectInput = ({
       <Select
         arrowRenderer={arrowRenderer}
         backspaceRemoves={false}
+        clearAllText={'Poista valinnat'}
         multi={multi}
         onChange={onChange}
         options={options}

@@ -16,7 +16,6 @@ export const getFullAddress = (item: Object) => {
   if(!get(item, 'zip_code') && !get(item, 'town')) {
     return get(item, 'address');
   }
-
   return `${get(item, 'address')}, ${get(item, 'zip_code')} ${get(item, 'town')}`;
 };
 
