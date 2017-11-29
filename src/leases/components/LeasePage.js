@@ -170,11 +170,7 @@ class PreparerForm extends Component {
                   <h1>Vuokra-alue</h1>
                   <div className='property-unit'>
                     {isEditMode && <PropertyUnitEdit initialValues={{areas: areas}}/>}
-                    {!isEditMode && areas && areas.length > 0 &&
-                      areas.map((area, index) =>
-                        <PropertyUnit area={area} key={index}/>
-                      )
-                    }
+                    {!isEditMode && <PropertyUnit areas={areas}/>}
                   </div>
                 </div>
               </TabPane>

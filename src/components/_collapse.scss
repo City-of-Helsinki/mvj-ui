@@ -1,14 +1,14 @@
 .collapse {
-  border-top: 1.5px dashed $tram;
-  // align-items: baseline;
-  padding: 0.6rem 0 1.6rem;
+  border-top: 1px dashed $tram;
+  align-items: baseline;
+  padding: 0.6rem 0 1rem;
 
   &:first-child {
     margin: 1.5rem 0 0;
   }
 
   .collapse__header {
-    padding: 0;
+    padding: 0 0 0.6rem;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -28,7 +28,6 @@
       line-height: rem-calc(32px);
       height: rem-calc(32px);
       display: inline-block;
-      text-transform: capitalize;
     }
 
     > span {
@@ -42,7 +41,7 @@
       content: ' ';
       height: rem-calc(20px);
       width: rem-calc(20px);
-      top: calc(50% - 10px);
+      top: calc(50% - 15px);
       right: rem-calc(10px);
     }
   }

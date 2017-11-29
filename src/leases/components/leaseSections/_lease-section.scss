@@ -1,5 +1,10 @@
 .lease-section {
   .section-item {
+    &__subtitle {
+      font-weight: $semibold;
+      display: inline-block;
+      margin: 0;
+    }
     p.subtitle {
       font-size: rem-calc(16px);
 	    font-weight: 600;
@@ -74,14 +79,19 @@
     padding-top: 1.2rem;
     margin-top: 0.4rem;
   }
-  .doc-icon {
-    fill: $black;
-    vertical-align: sub;
-    width: 24px;
-    height: 24px;
-    margin-right: 1rem;
-    &:hover {
-      fill: $tram;
-    }
+}
+
+.doc-icon, .map-icon {
+  fill: $black;
+  vertical-align: sub;
+  width: 24px;
+  height: 24px;
+  margin-right: 0.8rem;
+  &:hover {
+    fill: $tram;
   }
+}
+.map-icon {
+  width: 25px;
+  height: 25px;
 }
