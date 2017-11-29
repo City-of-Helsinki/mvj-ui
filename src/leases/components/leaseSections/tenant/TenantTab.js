@@ -11,7 +11,6 @@ type Props = {
   oldTenants: Array<Object>,
 }
 const TenantTab = ({tenants, oldTenants}: Props) => {
-  console.log(oldTenants);
   return (
     <div className='tenant-tab'>
       {tenants && tenants.length > 0 && tenants.map((tenant, index) =>

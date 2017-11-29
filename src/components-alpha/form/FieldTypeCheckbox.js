@@ -11,7 +11,7 @@ type Props = {
   type: string,
 }
 
-const FieldTypeCheckbox = ({input, displayError, disabled, options, type}: Props) => {
+const FieldTypeCheckbox = ({input, displayError, disabled, options, type = 'checkbox'}: Props) => {
 
   const {name, onChange, value} = input;
   const hasMultipleValues = options && options.length > 1;

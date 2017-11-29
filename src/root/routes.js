@@ -21,7 +21,7 @@ import LeasePage from '../leases/components/LeasePage';
 export default
 <Route path="/">
   <IndexRoute onEnter={(nextState, replace) => {
-    replace(`/alpha/${i18n.language}`);
+    replace(`/beta`);
   }}/>
   <Route path="/alpha" component={AppAlpha}>
     <Route path=":language">

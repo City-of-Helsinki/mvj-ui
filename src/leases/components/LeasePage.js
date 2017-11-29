@@ -40,6 +40,7 @@ type Props = {
   location: Object,
   params: Object,
   areasForm: Array<Object>,
+  tenantsForm: Array<Object>,
 }
 
 class PreparerForm extends Component {
@@ -87,8 +88,9 @@ class PreparerForm extends Component {
   }
 
   save = () => {
-    const {areasForm} = this.props;
+    const {areasForm, tenantsForm} = this.props;
     this.setState({areas: areasForm});
+    this.setState({tenants: tenantsForm});
     this.setState({isEditMode: false});
   }
 
@@ -236,6 +238,9 @@ class PreparerForm extends Component {
 const areasFormName = 'property-unit-edit-form';
 const areasFormSelector = formValueSelector(areasFormName);
 
+const tenantFormName = 'tenant-edit-form';
+const tenantFormSelector = formValueSelector(tenantFormName);
+
 export default flowRight(
   withRouter,
   connect(
@@ -244,6 +249,7 @@ export default flowRight(
         initialValues: getCurrentLease(state),
         isFetching: getIsFetching(state),
         areasForm: areasFormSelector(state, 'areas'),
+        tenantsForm: tenantFormSelector(state, 'tenants'),
       };
     },
     {

@@ -7,13 +7,13 @@ import {Row, Column} from 'react-foundation';
 
 import trashIcon from '../../../../../assets/icons/trash.svg';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
+import FieldTypeCheckbox from '../../../../components/form/FieldTypeCheckbox';
 
 type OtherPersonProps = {
   fields: any,
 }
 
 const renderOtherPersons = ({fields}: OtherPersonProps) => {
-  console.log(fields);
   return (
 
     <div>
@@ -42,6 +42,18 @@ const renderOtherPersons = ({fields}: OtherPersonProps) => {
                   label='Sukunimi'
                 />
               </Column>
+              <Column medium={3}>
+                <Field
+                  name={`${person}.roles`}
+                  className='checkbox-inline'
+                  component={FieldTypeCheckbox}
+                  options= {[
+                    {value: 'laskunsaaja', label: 'Laskunsaaja'},
+                    {value: 'yhteyshenkilö', label: 'Yhteyshenkilö'},
+                  ]}
+                  label='Rooli'
+                />
+              </Column>
             </Row>
 
             <Row>
@@ -61,7 +73,7 @@ const renderOtherPersons = ({fields}: OtherPersonProps) => {
               </Column>
               <Column medium={3}>
                 <Field
-                  name={`${person}.city`}
+                  name={`${person}.town`}
                   component={FieldTypeText}
                   label='Kaupunki'
                 />
@@ -110,15 +122,23 @@ const renderOtherPersons = ({fields}: OtherPersonProps) => {
                       label='Kieli'
                     />
                   </Column>
-                  <Column medium={3}>
+                  <Column medium={4}>
                     <Field
                       name={`${person}.social_security_number`}
                       component={FieldTypeText}
                       label='Henkilötunnus'
                     />
                   </Column>
-                  <Column medium={5}>
-
+                  <Column medium={4}>
+                    <Field
+                      name={`${person}.protection_order`}
+                      className='checkbox-inline'
+                      component={FieldTypeCheckbox}
+                      options= {[
+                        {value: 'true', label: 'Turvakielto'},
+                      ]}
+                      label='Turvakielto'
+                    />
                   </Column>
                 </Row>
               </Column>
@@ -191,6 +211,42 @@ const renderTenants = ({fields}: TenantProps) => {
                   label='Sukunimi'
                 />
               </Column>
+              <Column medium={3}>
+                <Row>
+                  <Column>
+                    <label className='mvj-form-field-label'>Osuus murtolukuna</label>
+                  </Column>
+                </Row>
+                <Row>
+                  <Column>
+                    <Field
+                      isInline={true}
+                      inputStyle={{width: '3rem', marginRight: '5px'}}
+                      name={`${tenant}.tenant.share`}
+                      component={FieldTypeText}
+                    />
+                    <span>/</span>
+                    <Field
+                      isInline={true}
+                      inputStyle={{width: '3rem', marginLeft: '5px'}}
+                      name={`${tenant}.tenant.share_divider`}
+                      component={FieldTypeText}
+                    />
+                  </Column>
+                </Row>
+              </Column>
+              <Column medium={3}>
+                <Field
+                  name={`${tenant}.roles`}
+                  className='checkbox-inline'
+                  component={FieldTypeCheckbox}
+                  options= {[
+                    {value: 'laskunsaaja', label: 'Laskunsaaja'},
+                    {value: 'yhteyshenkilö', label: 'Yhteyshenkilö'},
+                  ]}
+                  label='Rooli'
+                />
+              </Column>
             </Row>
 
             <Row>
@@ -210,7 +266,7 @@ const renderTenants = ({fields}: TenantProps) => {
               </Column>
               <Column medium={3}>
                 <Field
-                  name={`${tenant}.tenant.city`}
+                  name={`${tenant}.tenant.town`}
                   component={FieldTypeText}
                   label='Kaupunki'
                 />
@@ -259,14 +315,23 @@ const renderTenants = ({fields}: TenantProps) => {
                       label='Kieli'
                     />
                   </Column>
-                  <Column medium={3}>
+                  <Column medium={4}>
                     <Field
                       name={`${tenant}.tenant.social_security_number`}
                       component={FieldTypeText}
                       label='Henkilötunnus'
                     />
                   </Column>
-                  <Column medium={5}>
+                  <Column medium={4}>
+                    <Field
+                      name={`${tenant}.tenant.protection_order`}
+                      className='checkbox-inline'
+                      component={FieldTypeCheckbox}
+                      options= {[
+                        {value: 'true', label: 'Turvakielto'},
+                      ]}
+                      label='Turvakielto'
+                    />
 
                   </Column>
                 </Row>

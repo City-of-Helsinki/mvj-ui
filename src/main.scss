@@ -84,8 +84,7 @@ body {
 }
 
 #root {
-  display: flex;
-  flex-direction: column;
+  display: block;
   min-height: 100%;
   font-family: $font-family-source;
   background: $light-gray;
