@@ -5,10 +5,10 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {Field, FieldArray, reduxForm, formValueSelector, arrayPush} from 'redux-form';
 
-import trashIcon from '../../../../assets/icons/trash.svg';
-import FormActionDropdown from '../../../components/FormActionDropdown';
-import FieldTypeSelect from '../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../components/form/FieldTypeText';
+import trashIcon from '../../../../../assets/icons/trash.svg';
+import FormActionDropdown from '../../../../components/FormActionDropdown';
+import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
+import FieldTypeText from '../../../../components/form/FieldTypeText';
 
 type PropertyProps = {
   title: string,

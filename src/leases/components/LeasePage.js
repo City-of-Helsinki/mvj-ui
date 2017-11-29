@@ -14,10 +14,14 @@ import ControlButtons from './ControlButtons';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
-import PropertyUnit from './leaseSections/PropertyUnit';
-import PropertyUnitEdit from './leaseSections/PropertyUnitEdit';
+import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
+import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import TenantEdit from './leaseSections/tenant/TenantEdit';
 import TenantTab from './leaseSections/tenant/TenantTab';
+import ContractEdit from './leaseSections/contract/ContractEdit';
+import Contracts from './leaseSections/contract/Contracts';
+import RuleEdit from './leaseSections/contract/RuleEdit';
+import Rules from './leaseSections/contract/Rules';
 
 import mockData from '../mock-data.json';
 
@@ -26,6 +30,8 @@ type State = {
   isEditMode: boolean,
   areas: Array<Object>,
   tenants: Array<Object>,
+  contracts: Array<Object>,
+  rules: Array<Object>,
   oldTenants: Array<Object>,
 };
 
@@ -43,6 +49,9 @@ class PreparerForm extends Component {
     areas: [],
     tenants: [],
     oldTenants: [],
+    contracts: [],
+    terms: [],
+    rules: [],
   }
 
   props: Props
@@ -63,6 +72,8 @@ class PreparerForm extends Component {
       areas: mockData.leases[0].lease_areas,
       tenants: mockData.leases[0].tenants,
       oldTenants: mockData.leases[0].tenants_old,
+      contracts: mockData.leases[0].contracts,
+      rules: mockData.leases[0].rules,
     });
     // fetchSingleLease(leaseId);
   }
@@ -98,7 +109,7 @@ class PreparerForm extends Component {
   };
 
   render() {
-    const {activeTab, areas, tenants, oldTenants, isEditMode} = this.state;
+    const {activeTab, areas, tenants, oldTenants, isEditMode, contracts, rules} = this.state;
 
     return (
       <div className='lease-page'>
@@ -184,7 +195,16 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Päätökset ja sopimukset</h1>
+                  <h1>Sopimukset</h1>
+                  <div>
+                    {!isEditMode && <Contracts contracts={contracts}/>}
+                    {isEditMode && <ContractEdit initialValues={{contracts: contracts}}/>}
+                  </div>
+                  <h1>Päätökset</h1>
+                  <div>
+                    {!isEditMode && <Rules rules={rules}/>}
+                    {isEditMode && <RuleEdit initialValues={{rules: rules}}/>}
+                  </div>
                 </div>
               </TabPane>
 

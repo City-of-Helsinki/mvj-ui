@@ -6,11 +6,14 @@
     width: 100%;
     background-color: $white;
     box-shadow: 0 0 4px 0 rgba(0,0,0,0.07);
-    padding:   2rem 1.25rem;
+    padding: 2rem 1.25rem;
     h1 {
       text-transform: uppercase;
       font-size: $font-xlarge;
       font-weight: $semibold;
+    }
+    h1:not(:first-child) {
+      margin-top: 2.5rem;
     }
   }
   &__upper-bar {
