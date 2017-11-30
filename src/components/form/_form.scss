@@ -22,11 +22,15 @@
     &__text {
       input {
         padding: 0 0.5rem;
-        height: rem-calc(30px);
-        line-height: normal;
+        height: rem-calc(26px);
         color: $black;
         width: 100%;
         margin-bottom: rem-calc(10px);
+        font-size: $font-small;
+        box-shadow: none;
+        &:focus {
+          border: 1px solid $tram;
+        }
       }
     }
     &__checkbox {
@@ -47,7 +51,7 @@
     &__select {
       .Select-control {
         cursor: pointer;
-        height: rem-calc(30px);
+        height: rem-calc(26px);
         display: inline-block;
         border-radius: 0;
         line-height: rem-calc(28px);

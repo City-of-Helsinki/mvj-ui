@@ -237,6 +237,9 @@ const areasFormSelector = formValueSelector(areasFormName);
 const tenantFormName = 'tenant-edit-form';
 const tenantFormSelector = formValueSelector(tenantFormName);
 
+const contractFormName = 'contract-edit-form';
+const contractFormSelector = formValueSelector(contractFormName);
+
 export default flowRight(
   withRouter,
   connect(
@@ -246,6 +249,7 @@ export default flowRight(
         isFetching: getIsFetching(state),
         areasForm: areasFormSelector(state, 'areas'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
+        contractsForm: contractFormSelector(state, 'contracts'),
       };
     },
     {
