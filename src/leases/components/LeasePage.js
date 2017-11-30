@@ -22,6 +22,7 @@ import ContractEdit from './leaseSections/contract/ContractEdit';
 import Contracts from './leaseSections/contract/Contracts';
 import RuleEdit from './leaseSections/contract/RuleEdit';
 import Rules from './leaseSections/contract/Rules';
+import * as contentHelpers from '../helpers';
 
 import mockData from '../mock-data.json';
 
@@ -36,10 +37,12 @@ type State = {
 };
 
 type Props = {
+  areasForm: Array<Object>,
+  currentLease: Object,
   fetchSingleLease: Function,
+  isFetching: boolean,
   location: Object,
   params: Object,
-  areasForm: Array<Object>,
   tenantsForm: Array<Object>,
 }
 
@@ -62,8 +65,7 @@ class PreparerForm extends Component {
   };
 
   componentWillMount() {
-    // const {fetchSingleLease, location, params: {leaseId}} = this.props;
-    const {location} = this.props;
+    const {fetchSingleLease, location, params: {leaseId}} = this.props;
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
@@ -76,7 +78,7 @@ class PreparerForm extends Component {
       contracts: mockData.leases[0].contracts,
       rules: mockData.leases[0].rules,
     });
-    // fetchSingleLease(leaseId);
+    fetchSingleLease(leaseId);
   }
 
   openEditMode = () => {
@@ -111,7 +113,26 @@ class PreparerForm extends Component {
   };
 
   render() {
-    const {activeTab, areas, tenants, oldTenants, isEditMode, contracts, rules} = this.state;
+    const {
+      activeTab,
+      areas,
+      contracts,
+      isEditMode,
+      oldTenants,
+      tenants,
+      rules,
+    } = this.state;
+    const {
+      currentLease,
+      isFetching,
+    } = this.props;
+
+    const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
+    const leaseDateRange = contentHelpers.getContentLeaseDateRange(currentLease);
+
+    if(isFetching) {
+      return null;
+    }
 
     return (
       <div className='lease-page'>
@@ -120,8 +141,8 @@ class PreparerForm extends Component {
             <div className='lease-info'>
               <p className='lease-info__label'>Vuokratunnus</p>
               <p className='lease-info__type'>
-                <span className='lease-info__number'>A1110-345</span>
-                <span className='lease-info__date'>Vuokraus ajalle 01.01.1987 – 31.12.2047</span>
+                <span className='lease-info__number'>{leaseIdentifier}</span>
+                <span className='lease-info__date'>Vuokraus ajalle {leaseDateRange}</span>
               </p>
             </div>
             <div className='controls'>
@@ -242,7 +263,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        initialValues: getCurrentLease(state),
+        currentLease: getCurrentLease(state),
         isFetching: getIsFetching(state),
         areasForm: areasFormSelector(state, 'areas'),
         tenantsForm: tenantFormSelector(state, 'tenants'),

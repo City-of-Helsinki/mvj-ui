@@ -1,5 +1,6 @@
 // @flow
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import isNumber from 'lodash/isNumber';
 import moment from 'moment';
 
@@ -9,20 +10,36 @@ export const formatDate = (date: string) => {
   }
 
   const d = isNumber(date) ? moment.unix(date) : moment(date);
-  return d.format('D.M.YYYY');
+  return d.format('DD.MM.YYYY');
 };
 
-export const getFullAddress = (item: Object) => {
-  if(!get(item, 'zip_code') && !get(item, 'town')) {
-    return get(item, 'address');
+export const formatDateRange = (startDate: any, endDate: any) => {
+  if (!startDate && !endDate) {
+    return '';
   }
-  return `${get(item, 'address')}, ${get(item, 'zip_code')} ${get(item, 'town')}`;
+
+  const start = isNumber(startDate) ? moment.unix(startDate) : moment(startDate),
+    end = isNumber(endDate) ? moment.unix(endDate) : moment(endDate);
+
+  const dateFormat = 'DD.MM.YYYY';
+  if(!startDate) {
+    return `- ${end.format(dateFormat)}`;
+  }
+  if(!endDate) {
+    return `${start.format(dateFormat)} -`;
+  }
+
+  return `${start.format(dateFormat)} - ${end.format(dateFormat)}`;
+
 };
 
 export const formatSequenceNumber = (value: number) => {
-  var length = value.toString().length;
+  if(!value) {
+    return '';
+  }
+  const length = value.toString().length;
   if (length < 4) {
-    var prefix = '';
+    let prefix = '';
     for (var i = 1; i <= 4 - length; i++) {
       prefix += '0';
     }
@@ -32,8 +49,22 @@ export const formatSequenceNumber = (value: number) => {
 };
 
 export const getContentLeaseIdentifier = (item:Object) => {
+  if(isEmpty(item)) {
+    return null;
+  }
   const unit = `${get(item, 'type')}${get(item, 'municipality')}${get(item, 'district')}-${formatSequenceNumber(get(item, 'sequence'))}`;
   return unit;
+};
+
+export const getContentLeaseDateRange = (item: Object) => {
+  return formatDateRange(get(item, 'start_date'), get(item, 'end_date'));
+};
+
+export const getFullAddress = (item: Object) => {
+  if(!get(item, 'zip_code') && !get(item, 'town')) {
+    return get(item, 'address');
+  }
+  return `${get(item, 'address')}, ${get(item, 'zip_code')} ${get(item, 'town')}`;
 };
 
 export const getContentRealPropertyUnit = (item:Object) => {
