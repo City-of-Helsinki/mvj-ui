@@ -46,12 +46,32 @@
   .item {
     border: none;
     display: block;
-    border-top: 1.5px dashed $tram;
+    border-top: 1px dashed $tram;
     align-items: baseline;
-    padding: 0;
-    padding-top: 0.6rem;
+    padding: 1rem 0 0 0;
     margin: 0 0 1rem;
     position: relative;
+
+    .remove-button {
+      position: absolute;
+      top: 1rem;
+      right: rem-calc(5px);
+      cursor: pointer;
+
+      img {
+        height: 22px;
+        width: 22px;
+      }
+      &:hover {
+        opacity: 0.85;
+      }
+    }
+  }
+  .item-box {
+    position: relative;
+    background-color: rgba(0, 146, 70, 0.1);
+    padding: 1rem;
+    margin-bottom: 1rem;
 
     .remove-button {
       position: absolute;

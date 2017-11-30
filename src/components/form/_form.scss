@@ -7,7 +7,7 @@
     line-height: normal;
 	  text-align: left;
     color: $dark-gray;
-    margin-bottom: rem-calc(4px);
+    margin-bottom: rem-calc(3px);
   }
 
   label.title {
@@ -15,7 +15,7 @@
     line-height: normal;
 	  text-align: left;
     color: $dark-gray;
-    margin-bottom: rem-calc(4px);
+    margin-bottom: rem-calc(2px);
   }
 
   .mvj-form-field {
@@ -24,6 +24,7 @@
         padding: 0 0.5rem;
         height: rem-calc(26px);
         color: $black;
+        border: 1px solid $medium-gray;
         width: 100%;
         margin-bottom: rem-calc(10px);
         font-size: $font-small;
@@ -42,46 +43,68 @@
           height: rem-calc(30px);
           margin-right: rem-calc(10px);
         }
-        .option-label::last-child {
+        .option-label:last-child {
           margin-right: 0;
         }
       }
 
     }
     &__select {
+      .Select {
+        font-size: $font-small;
+        &:focus, &:focus {
+          border: 1px solid $medium-gray;
+        }
+      }
       .Select-control {
         cursor: pointer;
         height: rem-calc(26px);
         display: inline-block;
         border-radius: 0;
-        line-height: rem-calc(28px);
       }
       .Select-placeholder {
         padding-left: 0.5rem !important;
-        line-height: rem-calc(28px);
+        line-height: 1.8;
         color: #ccc;
       }
       .Select-value {
         padding-left: 0.5rem !important;
-        line-height: rem-calc(30px) !important;
+        line-height: 1.8 !important;
       }
       .Select-input {
-        height: rem-calc(30px);
         input {
-          height: rem-calc(28px);
-          line-height: rem-calc(28px);
           padding: 0;
         }
       }
       .Select-arrow-zone {
         position: absolute;
-        top: 0;
+        top: 2px;
         right: 0;
-        line-height: rem-calc(28px);
       }
       .Select-menu-outer {
-        top: 30px;
+        top: 26px;
+      }
+      .Select-menu {
+        height: auto;
+      }
+      .Select-option {
+        padding-top: 0.2rem;
+        padding-bottom: 0.2rem;
+        &:hover, &:focus, &:active {
+          background: lighten($tram, 50%);
+        }
+        .is-focused {
+          background: red !important;
+        }
+      }
+      .Select-option.is-focused {
+        background-color: lighten($tram, 50%) !important;
       }
     }
   }
+}
+
+.is-focused:not(.is-open) > .Select-control {
+  border: 1px solid $medium-gray !important;
+  box-shadow: none !important;
 }
