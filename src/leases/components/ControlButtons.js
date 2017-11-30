@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import Button from '../../components/button';
+import Button from '../../components/Button';
 
 type Props = {
   isEditMode: boolean,
