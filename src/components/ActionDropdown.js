@@ -22,23 +22,23 @@ class ActionDropdown extends Component {
     isMounted: true,
   }
 
-  isMounted: boolean
+  _isMounted: boolean
 
   componentWillMount() {
-    this.isMounted = true;
+    this._isMounted = true;
     document.addEventListener('click', this.onDocumentClick);
   }
 
   componentWillUnmount() {
-    this.isMounted = false;
+    this._isMounted = false;
     document.removeEventListener('click', this.onDocumentClick);
   }
 
   onDocumentClick = (event: any) => {
-    if(!this.isMounted) {
+    if(!this._isMounted) {
       return;
     }
-    
+
     const target = event.target,
       el = ReactDOM.findDOMNode(this);
 

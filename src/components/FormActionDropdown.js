@@ -21,20 +21,20 @@ class FormActionDropdown extends Component {
     isOpen: false,
   }
 
-  isMounted: boolean
+  _isMounted: boolean
 
   componentWillMount() {
-    this.isMounted = true;
+    this._isMounted = true;
     window.addEventListener('click', this.onDocumentClick);
   }
 
   componentWillUnmount() {
-    this.isMounted = false;
+    this._isMounted = false;
     window.removeEventListener('click', this.onDocumentClick);
   }
 
   onDocumentClick = (event: any) => {
-    if(!this.isMounted) {
+    if(!this._isMounted) {
       return;
     }
 
