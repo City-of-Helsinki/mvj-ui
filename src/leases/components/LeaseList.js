@@ -25,7 +25,6 @@ type Props = {
 type State = {
   documentType: string,
   visualizationType: string,
-
 }
 
 class LeaseList extends Component {

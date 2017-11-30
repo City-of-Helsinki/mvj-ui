@@ -1,0 +1,38 @@
+.select-input {
+  width: 100%;
+  margin-bottom: 5px;
+
+  .Select {
+    .select-input__arrow-renderer {
+      display: block;
+      background-image: url('../assets/icons/icon_arrow_down.svg');
+      height: rem-calc(16px);
+      width: rem-calc(16px);
+    }
+    &.is-open {
+      .select-input__arrow-renderer {
+        background-image: url('../assets/icons/icon_arrow_up.svg');
+      }
+    }
+    .Select-control {
+      height: 30px;
+      border-radius: 0;
+      border: none;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+      outline: none;
+
+      .Select-placeholder {
+        line-height: 30px;
+      }
+
+      .Select-input {
+        height: 30px;
+      }
+
+      .Select-value {
+        margin-top: 2px;
+      }
+    }
+  }
+
+}

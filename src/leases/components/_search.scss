@@ -15,13 +15,106 @@
     display: block;
     height: auto;
     font-size: $font-regular;
-    line-height: $font-regular;
-    padding: rem-calc(5px) rem-calc(10px);
+    line-height: 1.5;
+    padding: rem-calc(3px) rem-calc(10px);
+    min-height: rem-calc(30px);
     border: none;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 
     &::placeholder {
       color: $dark-gray;
+    }
+  }
+  .advanced-search-row-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+
+    .column-text-input-first {
+      flex: 0 0 45%;
+      display: flex;
+    }
+
+    .column-checkbox {
+      flex: 0 0 20%;
+      display: flex;
+    }
+
+    .column-select {
+      flex: 0 0 35%;
+      display: flex;
+    }
+
+    .column-text-input-second {
+      flex: 0 0 55%;
+      display: flex;
+    }
+
+    label {
+      display: inline-block;
+      color: $dark-gray;
+      line-height: rem-calc(30px);
+      margin-right: rem-calc(10px);
+    }
+
+    label.label-long {
+      min-width: 5rem;
+      text-align: left;
+    }
+
+    label.label-medium {
+      min-width: 3rem;
+      text-align: right;
+    }
+
+    label.label-small {
+      min-width: 3rem;
+      text-align: left;
+    }
+
+    @include breakpoint(large down) {
+      //display: none;
+      .column-text-input-first {
+        flex: 0 0 60%;
+        display: flex;
+      }
+
+      .column-checkbox {
+        flex: 0 0 40%;
+        display: flex;
+      }
+
+      .column-select {
+        flex: 0 0 100%;
+        display: flex;
+      }
+
+      .column-text-input-second {
+        flex: 0 0 40%;
+        display: flex;
+      }
+
+      label.label-medium {
+        min-width: 5rem;
+        text-align: left;
+      }
+      label.label-small {
+        min-width: 3rem;
+        text-align: left;
+      }
+    }
+
+    .text-input {
+      max-height: rem-calc(30px);
+      margin-right: rem-calc(10px);
+    }
+    .short-input {
+      width: rem-calc(70px);
+      min-width: rem-calc(70px);
+      margin-right: rem-calc(10px);
+    }
+    .nomargin-input {
+      margin-right: 0;
+      width: 100%;
     }
   }
 }
