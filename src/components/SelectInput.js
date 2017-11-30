@@ -6,6 +6,7 @@ type Props = {
   multi?: boolean,
   onChange: Function,
   options: Array<Object>,
+  placeholder?: string,
   searchable?: boolean,
   value: any,
 
@@ -21,6 +22,7 @@ const SelectInput = ({
   multi = false,
   onChange,
   options,
+  placeholder = 'Valitse ...',
   searchable = true,
   value,
 }: Props) => {
@@ -33,6 +35,7 @@ const SelectInput = ({
         multi={multi}
         onChange={onChange}
         options={options}
+        placeholder={placeholder}
         searchable={searchable}
         value={value}
       />

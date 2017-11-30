@@ -5,17 +5,21 @@ import get from 'lodash/get';
 
 import TextInput from '../../components/TextInput';
 import SelectInput from '../../components/SelectInput';
+import SingleCheckboxInput from '../../components/SingleCheckboxInput';
 
 type State = {
   isBasicSearch: boolean,
   keyword: string,
   customer: string,
   roles: Array<string>,
+  oldCustomer: boolean,
   types: Array<string>,
   leaseType: string,
   leaseMunicipality: string,
   leaseDistrict: string,
   leaseSequence: string,
+  inEffect: boolean,
+  finished: boolean,
   propertyType: string,
   propertyMunicipality: string,
   propertyDistrict: string,
@@ -31,11 +35,14 @@ class Search extends Component {
     keyword: '',
     customer: '',
     roles: [],
+    oldCustomer: false,
     types: [],
     leaseType: '',
     leaseMunicipality: '',
     leaseDistrict: '',
     leaseSequence: '',
+    inEffect: false,
+    finished: false,
     propertyType: '',
     propertyMunicipality: '',
     propertyDistrict: '',
@@ -48,8 +55,8 @@ class Search extends Component {
     this.setState({[id]: e.target.value});
   }
 
-  handleSelectInputChange = (selectedOption: Object, id: string) => {
-    this.setState({[id]: get(selectedOption, 'value', '')});
+  handleCheckboxChange = (id:string) => {
+    this.setState({[id]: !this.state[id]});
   }
 
   handleMultiSelectInputChange = (selectedOptions: Array<Object>, id: string) => {
@@ -70,12 +77,15 @@ class Search extends Component {
       isBasicSearch,
       keyword,
       customer,
+      oldCustomer,
       roles,
       types,
       leaseType,
       leaseMunicipality,
       leaseDistrict,
       leaseSequence,
+      inEffect,
+      finished,
       propertyType,
       propertyMunicipality,
       propertyDistrict,
@@ -99,11 +109,18 @@ class Search extends Component {
             <Row>
               <Column large={12}>
                 <div className='advanced-search-row-wrapper'>
-                  <div className='column-50'>
+                  <div className='column-text-input-first'>
                     <label className='label-long'>Vuokralainen</label>
                     <TextInput placeholder={'Vuokralainen'} onChange={(e) => this.handleTextInputChange(e, 'customer')} value={customer}/>
                   </div>
-                  <div className='column-50'>
+                  <div className='column-checkbox'>
+                    <SingleCheckboxInput
+                      isChecked={oldCustomer}
+                      onChange={() => this.handleCheckboxChange('oldCustomer')}
+                      label='Vain vanhat asiakkaat'
+                    />
+                  </div>
+                  <div className='column-select'>
                     <label className='label-medium'>Rooli</label>
                     <SelectInput
                       multi={true}
@@ -123,7 +140,7 @@ class Search extends Component {
             <Row>
               <Column large={12}>
                 <div className='advanced-search-row-wrapper'>
-                  <div className='column-50'>
+                  <div className='column-text-input-first'>
                     <label className='label-long'>Vuokraus</label>
                     <div className='short-input'>
                       <TextInput onChange={(e) => this.handleTextInputChange(e, 'leaseType')} value={leaseType}/>
@@ -138,7 +155,19 @@ class Search extends Component {
                       <TextInput onChange={(e) => this.handleTextInputChange(e, 'leaseSequence')} value={leaseSequence}/>
                     </div>
                   </div>
-                  <div className='column-50'>
+                  <div className='column-checkbox'>
+                    <SingleCheckboxInput
+                      isChecked={inEffect}
+                      onChange={() => this.handleCheckboxChange('inEffect')}
+                      label='Voimassa'
+                    />
+                    <SingleCheckboxInput
+                      isChecked={finished}
+                      onChange={() => this.handleCheckboxChange('finished')}
+                      label='Päättyneet'
+                    />
+                  </div>
+                  <div className='column-select'>
                     <label className='label-medium'>Tyyppi</label>
                     <SelectInput
                       multi={true}
@@ -160,7 +189,7 @@ class Search extends Component {
             <Row>
               <Column large={12}>
                 <div className='advanced-search-row-wrapper'>
-                  <div className='column-50'>
+                  <div className='column-text-input-first'>
                     <label className='label-long'>Kiinteistö</label>
                     <div className='short-input'>
                       <TextInput onChange={(e) => this.handleTextInputChange(e, 'propertyType')} value={propertyType}/>
@@ -175,8 +204,8 @@ class Search extends Component {
                       <TextInput onChange={(e) => this.handleTextInputChange(e, 'propertySequence')} value={propertySequence}/>
                     </div>
                   </div>
-                  <div className='column-50'>
-                    <label className='label-medium'>Osoite</label>
+                  <div className='column-text-input-second'>
+                    <label className='label-small'>Osoite</label>
                     <div className='nomargin-input'>
                       <TextInput placeholder={'Osoite'} onChange={(e) => this.handleTextInputChange(e, 'address')} value={address}/>
                     </div>
