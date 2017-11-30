@@ -11,6 +11,7 @@ type Props = {
 
 type State = {
   isOpen: boolean,
+  isMounted: boolean,
 }
 
 class ActionDropdown extends Component {
@@ -18,17 +19,26 @@ class ActionDropdown extends Component {
 
   state: State = {
     isOpen: false,
+    isMounted: true,
   }
 
+  isMounted: boolean
+
   componentWillMount() {
+    this.isMounted = true;
     document.addEventListener('click', this.onDocumentClick);
   }
 
   componentWillUnmount() {
+    this.isMounted = false;
     document.removeEventListener('click', this.onDocumentClick);
   }
 
   onDocumentClick = (event: any) => {
+    if(!this.isMounted) {
+      return;
+    }
+    
     const target = event.target,
       el = ReactDOM.findDOMNode(this);
 

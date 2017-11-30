@@ -21,15 +21,23 @@ class FormActionDropdown extends Component {
     isOpen: false,
   }
 
+  isMounted: boolean
+
   componentWillMount() {
-    document.addEventListener('click', this.onDocumentClick);
+    this.isMounted = true;
+    window.addEventListener('click', this.onDocumentClick);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.onDocumentClick);
+    this.isMounted = false;
+    window.removeEventListener('click', this.onDocumentClick);
   }
 
   onDocumentClick = (event: any) => {
+    if(!this.isMounted) {
+      return;
+    }
+
     const target = event.target,
       el = ReactDOM.findDOMNode(this);
 
