@@ -23,25 +23,3 @@
     align-items: flex-end;
   }
 }
-
-.lease-info {
-  margin-top: rem-calc(-3px);
-
-  &__label {
-    font-size: $font-small;
-    color: $dark-gray;
-    margin-bottom: 0;
-  }
-  &__number {
-    font-size: $font-xlarge;
-    font-weight: $semibold;
-    margin-right: 2rem;
-  }
-  &__date {
-    font-weight: $semibold;
-  }
-  &__type {
-    margin-bottom: 0;
-    line-height: 1.2;
-  }
-}

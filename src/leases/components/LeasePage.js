@@ -1,28 +1,32 @@
 // @flow
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {withRouter} from 'react-router';
-import {connect} from 'react-redux';
-import flowRight from 'lodash/flowRight';
 import {Row, Column} from 'react-foundation';
 import {formValueSelector} from 'redux-form';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
+import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
+import moment from 'moment';
 
 import {getCurrentLease, getIsFetching} from '../selectors';
 import {fetchSingleLease} from '../actions';
+import * as contentHelpers from '../helpers';
 
+import ContractEdit from './leaseSections/contract/ContractEdit';
+import Contracts from './leaseSections/contract/Contracts';
 import ControlButtons from './ControlButtons';
+import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
+import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
+import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
+import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
+import RuleEdit from './leaseSections/contract/RuleEdit';
+import Rules from './leaseSections/contract/Rules';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
-import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
-import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import TenantEdit from './leaseSections/tenant/TenantEdit';
 import TenantTab from './leaseSections/tenant/TenantTab';
-import ContractEdit from './leaseSections/contract/ContractEdit';
-import Contracts from './leaseSections/contract/Contracts';
-import RuleEdit from './leaseSections/contract/RuleEdit';
-import Rules from './leaseSections/contract/Rules';
-import * as contentHelpers from '../helpers';
 
 import mockData from '../mock-data.json';
 
@@ -128,7 +132,6 @@ class PreparerForm extends Component {
     } = this.props;
 
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
-    const leaseDateRange = contentHelpers.getContentLeaseDateRange(currentLease);
 
     if(isFetching) {
       return null;
@@ -138,13 +141,22 @@ class PreparerForm extends Component {
       <div className='lease-page'>
         <Row>
           <Column className='lease-page__upper-bar'>
-            <div className='lease-info'>
-              <p className='lease-info__label'>Vuokratunnus</p>
-              <p className='lease-info__type'>
-                <span className='lease-info__number'>{leaseIdentifier}</span>
-                <span className='lease-info__date'>Vuokraus ajalle {leaseDateRange}</span>
-              </p>
-            </div>
+            {!isEditMode &&
+              <LeaseInfo
+                identifier={leaseIdentifier}
+                startDate={get(currentLease, 'start_date')}
+                endDate={get(currentLease, 'end_date')}
+              />
+            }
+            {isEditMode &&
+              <LeaseInfoEdit
+                identifier={leaseIdentifier}
+                initialValues={{
+                  start_date: currentLease.start_date ? moment(currentLease.start_date) : null,
+                  end_date: currentLease.start_date ? moment(currentLease.end_date) : null,
+                }}
+              />
+            }
             <div className='controls'>
               <ControlButtons
                 isEditMode={isEditMode}
