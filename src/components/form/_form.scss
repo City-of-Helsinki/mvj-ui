@@ -91,14 +91,11 @@
         padding-top: 0.2rem;
         padding-bottom: 0.2rem;
         &:hover, &:focus, &:active {
-          background: lighten($tram, 50%);
-        }
-        .is-focused {
-          background: red !important;
+          background: $engel-lighter;
         }
       }
-      .Select-option.is-focused {
-        background-color: lighten($tram, 50%) !important;
+      .Select-option.is-focused, .Select-option.is-selected {
+        background-color: $engel-lighter !important;
       }
     }
   }

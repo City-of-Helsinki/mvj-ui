@@ -15,7 +15,7 @@
     background-color: $tram;
     color: $white;
     &:hover {
-      background-color: lighten($tram, 5%);
+      background-color: $tram-lighter;
     }
   }
   .add-button-secondary {
@@ -39,7 +39,7 @@
     color: $tram;
 
     &:hover {
-      color: lighten($tram, 5%);
+      color: $tram-lighter;
     }
   }
 
@@ -49,8 +49,35 @@
     border-top: 1px dashed $tram;
     align-items: baseline;
     padding: 1rem 0 0 0;
-    margin: 0 0 1rem;
+    margin: 1rem 0 1rem;
     position: relative;
+
+    > .row {
+      padding-right: 3rem;
+    }
+
+    h2 {
+      font-size: rem-calc(15px);
+      font-weight: $semibold;
+      text-transform: uppercase;
+      text-align: left;
+      color: #009246;
+      color: $tram;
+    }
+
+    .add-column {
+      align-self: flex-end;
+      a {
+        margin-bottom: 0.6rem;
+      }
+      .add-button-secondary {
+        font-size: $font-small;
+        i {
+          height: 1.1rem;
+          width: 1.1rem;
+        }
+      }
+    }
 
     .remove-button {
       position: absolute;
@@ -67,24 +94,46 @@
       }
     }
   }
-  .item-box {
-    position: relative;
+  .green-box {
     background-color: rgba(0, 146, 70, 0.1);
-    padding: 1rem;
-    margin-bottom: 1rem;
+    padding: 0.6rem 1rem;
+    margin: 1rem 0 1.6rem;
+    }
 
+    .green-box-item + .green-box-item {
+      border-top: 1px dashed $tram;
+    }
+
+    .green-box-item {
+      position: relative;
+      padding: 1rem 2rem 0.8rem 0;
+
+      .remove-button {
+        position: absolute;
+        top: 1rem;
+        right: -0.6rem;
+        cursor: pointer;
+
+        img {
+          height: 19px;
+          width: 19px;
+        }
+
+        &:hover {
+          opacity: 0.85;
+        }
+    }
+  }
+
+  .pledge-book {
+    position: relative;
     .remove-button {
-      position: absolute;
-      top: rem-calc(5px);
-      right: rem-calc(5px);
-      cursor: pointer;
+      top: 1.4rem;
+      right: -1rem;
 
       img {
-        height: 22px;
-        width: 22px;
-      }
-      &:hover {
-        opacity: 0.85;
+        height: 19px;
+        width: 19px;
       }
     }
   }

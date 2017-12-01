@@ -10,31 +10,38 @@ import FieldTypeText from '../../../../components/form/FieldTypeText';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 
 type ContractModificationsProps = {
+  title: string,
   fields: any,
 }
 
-const renderContractModifications = ({fields}: ContractModificationsProps) => {
+const renderContractModifications = ({title, fields}: ContractModificationsProps) => {
   return(
-    <div>
-      {fields && fields.length > 0 && fields.map((modification, index) => {
+    fields.length > 0 &&
+    <div className='green-box'>
+        <Row>
+          <Column>
+            <h2>{title}</h2>
+          </Column>
+        </Row>
+      {fields.map((modification, index) => {
         return (
-          <div key={index} className='item-box'>
+          <div key={index} className='green-box-item'>
             <button
               className='remove-button'
               type="button"
-              title="Poista henkilö"
+              title="Poista sopimuksen muutos"
               onClick={() => fields.remove(index)}>
               <img src={trashIcon} alt='Poista' />
             </button>
             <Row>
-              <Column medium={2}>
+              <Column medium={3}>
                 <Field
                   name={`${modification}.modification_signing_date`}
                   component={FieldTypeText}
                   label='Allekirjoituspäivä'
                 />
               </Column>
-              <Column medium={2}>
+              <Column medium={3}>
                 <Field
                   name={`${modification}.to_be_signed_by`}
                   component={FieldTypeText}
@@ -64,6 +71,13 @@ const renderContractModifications = ({fields}: ContractModificationsProps) => {
               </Column>
             </Row>
             <Row>
+              <Column medium={8}>
+                <Field
+                  name={`${modification}.modification_description`}
+                  component={FieldTypeText}
+                  label='Selite'
+                />
+              </Column>
               <Column medium={4}>
                 <Field
                   name={`${modification}.linked_rule`}
@@ -75,9 +89,54 @@ const renderContractModifications = ({fields}: ContractModificationsProps) => {
           </div>
         );
       })}
+      <Row>
+        <Column>
+          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää sopimuksen muutos</span></a>
+        </Column>
+      </Row>
     </div>
-  )
+  );
+};
+
+type PledgeBookProps = {
+  fields: any,
 }
+
+const renderPledgeBooks = ({fields}: PledgeBookProps) => {
+  return(
+    <Row>
+      {fields && fields.length > 0 && fields.map((pledge_book, index) =>
+      <Column key={index} medium={12} className='pledge-book'>
+        <button
+          className='remove-button'
+          type="button"
+          title="Poista panttikirja"
+          onClick={() => fields.remove(index)}>
+          <img src={trashIcon} alt='Poista' />
+        </button>
+        <Row>
+          <Column medium={6}>
+            <Field
+              name={`${pledge_book}.pledge_book_number`}
+              component={FieldTypeText}
+              label='Panttikirjan numero'
+            />
+          </Column>
+          <Column medium={6}>
+            <Field
+              name={`${pledge_book}.pledge_book_date`}
+              component={FieldTypeText}
+              label='Panttikirjan päivämäärä'
+            />
+          </Column>
+        </Row>
+      </Column>)}
+      <Column medium={4} className='add-column'>
+        <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää panttikirja</span></a>
+      </Column>
+    </Row>
+  );
+};
 
 type ContractProps = {
   fields: any,
@@ -99,7 +158,7 @@ const renderContracts = ({fields}: ContractProps) => {
             <Row>
               <Column medium={4}>
                 <Field
-                  name={`${contract}.contract.contract_type`}
+                  name={`${contract}.contract_type`}
                   component={FieldTypeSelect}
                   label='Sopimuksen tyyppi'
                   options={[
@@ -109,32 +168,32 @@ const renderContracts = ({fields}: ContractProps) => {
                   ]}
                 />
               </Column>
-              <Column medium={2}>
+              <Column medium={3}>
                 <Field
-                  name={`${contract}.contract.contract_type`}
+                  name={`${contract}.contract_type`}
                   component={FieldTypeText}
                   label='Sopimusnumero'
                 />
               </Column>
               <Column medium={2}>
                 <Field
-                  name={`${contract}.contract.signing_date`}
+                  name={`${contract}.signing_date`}
                   component={FieldTypeText}
                   label='Allekirjoituspäivämäärä'
                 />
               </Column>
-              <Column medium={2}>
+              <Column medium={3}>
                 <Field
-                  name={`${contract}.contract.administration_number`}
+                  name={`${contract}.administration_number`}
                   component={FieldTypeText}
                   label='Laitostunnus'
                 />
               </Column>
             </Row>
             <Row>
-              <Column medium={4}>
+              <Column medium={5}>
                 <Field
-                  name={`${contract}.contract.setup_decision`}
+                  name={`${contract}.setup_decision`}
                   component={FieldTypeSelect}
                   label='Järjestelypäätös'
                   options={[
@@ -142,53 +201,42 @@ const renderContracts = ({fields}: ContractProps) => {
                   ]}
                 />
               </Column>
-              <Column medium={2}>
+              <Column medium={3}>
                 <Field
-                  name={`${contract}.contract.lease_deposit_numer`}
+                  name={`${contract}.lease_deposit_numer`}
                   component={FieldTypeText}
                   label='Vuokravakuusnumero'
                 />
               </Column>
               <Column medium={2}>
                 <Field
-                  name={`${contract}.contract.lease_deposit_starting_date`}
+                  name={`${contract}.lease_deposit_starting_date`}
                   component={FieldTypeText}
                   label='Vuokravakuus alkupvm'
                 />
               </Column>
               <Column medium={2}>
                 <Field
-                  name={`${contract}.contract.lease_deposit_ending_date`}
+                  name={`${contract}.lease_deposit_ending_date`}
                   component={FieldTypeText}
                   label='Vuokravakuus loppupvm'
                 />
               </Column>
             </Row>
             <Row>
-              <Column medium={3}>
-                <Field
-                  name={`${contract}.contract.pledge_book_number`}
-                  component={FieldTypeText}
-                  label='Panttikirjan numero'
-                />
+              <Column medium={7}>
+                <FieldArray name={`${contract}.pledge_books`} component={renderPledgeBooks} />
               </Column>
-              <Column medium={3}>
+              <Column medium={4} offsetOnMedium={1}>
                 <Field
-                  name={`${contract}.contract.pledge_book_date`}
-                  component={FieldTypeText}
-                  label='Panttikirjan päivämäärä'
-                />
-              </Column>
-              <Column medium={4}>
-                <Field
-                  name={`${contract}.contract.linked_rule`}
+                  name={`${contract}.linked_rule`}
                   component={FieldTypeSelect}
                   label='Päätös'
                   options={[]}
                 />
               </Column>
             </Row>
-            <FieldArray name={`${contract}.modifications`} component={renderContractModifications}/>
+            <FieldArray title='Sopimuksen muutokset' name={`${contract}.modifications`} component={renderContractModifications}/>
           </div>
         );
       })}
