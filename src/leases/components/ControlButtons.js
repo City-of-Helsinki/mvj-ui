@@ -4,19 +4,20 @@ import Button from '../../components/Button';
 
 type Props = {
   isEditMode: boolean,
+  isValid: boolean,
   onEditClick: Function,
   onCancelClick: Function,
   onSaveClick: Function,
   onCommentClick: Function,
 }
 
-const ControlButtons = ({isEditMode, onCancelClick, onEditClick, onSaveClick, onCommentClick}: Props) => {
+const ControlButtons = ({isEditMode, isValid, onCancelClick, onEditClick, onSaveClick, onCommentClick}: Props) => {
   return (
     <div className='control-buttons'>
       {isEditMode ?
         <div className='left-buttons'>
           <Button className='button-red' text='Kumoa' onClick={onCancelClick}/>
-          <Button className='button-green' text='Tallenna' onClick={onSaveClick}/>
+          <Button disabled={isValid} className='button-green' text='Tallenna' onClick={onSaveClick}/>
         </div>
         :
         <div className='left-buttons'>

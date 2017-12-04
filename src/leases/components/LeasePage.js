@@ -9,7 +9,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import moment from 'moment';
 
-import {getCurrentLease, getIsFetching} from '../selectors';
+import {getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchSingleLease} from '../actions';
 import * as contentHelpers from '../helpers';
 
@@ -46,6 +46,7 @@ type Props = {
   end_date: ?Moment,
   areasForm: Array<Object>,
   currentLease: Object,
+  leaseInfoErrors: Object,
   editLease: Function,
   fetchSingleLease: Function,
   isFetching: boolean,
@@ -116,6 +117,11 @@ class PreparerForm extends Component {
     alert('open comment panel');
   }
 
+  validateForms = () => {
+    const {leaseInfoErrors} = this.props;
+    return leaseInfoErrors ? true : false;
+  }
+
   handleTabClick = (tabId) => {
     const {router} = this.context;
     const {location} = this.props;
@@ -142,6 +148,8 @@ class PreparerForm extends Component {
       currentLease,
       isFetching,
     } = this.props;
+
+    const areFormsValid = this.validateForms();
 
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
 
@@ -174,6 +182,7 @@ class PreparerForm extends Component {
             <div className='controls'>
               <ControlButtons
                 isEditMode={isEditMode}
+                isValid={areFormsValid}
                 onEditClick={this.openEditMode}
                 onCancelClick={this.cancel}
                 onSaveClick={this.save}
@@ -291,11 +300,13 @@ export default flowRight(
   withRouter,
   connect(
     (state) => {
+      console.log(state);
       return {
         start_date: leaseInfoFormSelector(state, 'start_date'),
         end_date: leaseInfoFormSelector(state, 'end_date'),
         currentLease: getCurrentLease(state),
         isFetching: getIsFetching(state),
+        leaseInfoErrors: getLeaseInfoErrors(state),
         areasForm: areasFormSelector(state, 'areas'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
       };
