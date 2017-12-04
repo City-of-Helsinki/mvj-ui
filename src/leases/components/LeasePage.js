@@ -175,7 +175,7 @@ class PreparerForm extends Component {
                   identifier={leaseIdentifier}
                   initialValues={{
                     start_date: currentLease.start_date ? moment(currentLease.start_date) : null,
-                    end_date: currentLease.start_date ? moment(currentLease.end_date) : null,
+                    end_date: currentLease.end_date ? moment(currentLease.end_date) : null,
                   }}
                 />
               }
