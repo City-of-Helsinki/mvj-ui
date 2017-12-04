@@ -20,6 +20,9 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 2.5rem;
-    align-items: flex-end;
+
+    .lease-info-wrapper {
+      flex: 1 1 0%;
+    }
   }
 }

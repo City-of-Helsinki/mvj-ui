@@ -3,7 +3,7 @@
 import callApi from '../api/callApi';
 import createUrl from '../api/createUrl';
 
-import type {LeaseId} from './types';
+import type {LeaseId, Lease} from './types';
 
 export const fetchAttributes = () => {
   return callApi(new Request(createUrl('lease/'), {method: 'OPTIONS'}));
@@ -15,4 +15,14 @@ export const fetchLeases = () => {
 
 export const fetchSingleLease = (id: LeaseId): Generator<> => {
   return callApi(new Request(createUrl(`lease/${id}`)));
+};
+
+export const editLease = (lease: Lease): Generator<> => {
+  const {id} = lease;
+  const body = JSON.stringify(lease);
+
+  return callApi(new Request(createUrl(`lease/${id}/`), {
+    method: 'PUT',
+    body,
+  }));
 };

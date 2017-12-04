@@ -19,6 +19,24 @@
   }
 
   .mvj-form-field {
+    &__datepicker {
+      input {
+        padding: 0 0.5rem;
+        height: rem-calc(30px);
+        line-height: normal;
+        color: $black;
+        width: 100%;
+        margin-bottom: rem-calc(10px);
+      }
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
+      }
+    }
     &__text {
       input {
         padding: 0 0.5rem;
@@ -42,7 +60,6 @@
           margin-right: 0;
         }
       }
-
     }
     &__select {
       .Select-control {

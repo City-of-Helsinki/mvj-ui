@@ -3,6 +3,7 @@
 import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
 import get from 'lodash/get';
+import {SubmissionError} from 'redux-form';
 // import mockData from './mock-data.json';
 
 import {
@@ -15,6 +16,7 @@ import {
 import {
   fetchLeases,
   fetchSingleLease,
+  editLease,
   fetchAttributes,
 } from './requests';
 
@@ -89,12 +91,37 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<> {
   }
 }
 
+function* editLeaseSaga({payload: lease}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editLease, lease);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSingleLease(bodyAsJson));
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson, _error: 'Virhe'})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
       yield takeLatest('mvj/leasesbeta/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/leasesbeta/FETCH_ALL', fetchLeasesSaga);
       yield takeLatest('mvj/leasesbeta/FETCH_SINGLE', fetchSingleLeaseSaga);
+      yield takeLatest('mvj/leasesbeta/EDIT', editLeaseSaga);
     }),
   ];
 }
