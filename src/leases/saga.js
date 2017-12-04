@@ -4,6 +4,7 @@ import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
 import get from 'lodash/get';
 import {SubmissionError} from 'redux-form';
+import {displayUIMessage} from '../util/helpers';
 // import mockData from './mock-data.json';
 
 import {
@@ -98,6 +99,7 @@ function* editLeaseSaga({payload: lease}): Generator<> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
+        displayUIMessage({title: 'Vuokraus tallennettu', body: 'Vuokraus on tallennettu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
