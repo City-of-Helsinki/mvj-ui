@@ -18,6 +18,7 @@ import Contracts from './leaseSections/contract/Contracts';
 import ControlButtons from './ControlButtons';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
+import Loader from '../../components/loader/Loader';
 import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import RuleEdit from './leaseSections/contract/RuleEdit';
@@ -104,8 +105,6 @@ class PreparerForm extends Component {
     payload.start_date = start_date ? moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
     payload.end_date = end_date ? moment(end_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
 
-    console.log(payload);
-
     editLease(payload);
 
     this.setState({areas: areasForm});
@@ -154,7 +153,9 @@ class PreparerForm extends Component {
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
 
     if(isFetching) {
-      return null;
+      return (
+        <div className='lease-page'><Loader isLoading={true} /></div>
+      );
     }
 
     return (

@@ -3,11 +3,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
-import {Row} from 'react-foundation';
+import {Row, Column} from 'react-foundation';
 
 import {fetchAttributes} from '../../attributes/actions';
 import {fetchLeases} from '../actions';
 import ActionDropdown from '../../components/ActionDropdown';
+import Loader from '../../components/loader/Loader';
 import {getIsFetching, getLeasesList} from '../selectors';
 import Search from './Search';
 import TableControllers from './TableControllers';
@@ -56,7 +57,7 @@ class LeaseList extends Component {
 
   render() {
     const {documentType, visualizationType} = this.state;
-    const {leases: content} = this.props;
+    const {leases: content, isFetching} = this.props;
     const leases = contentHelpers.getContentLeases(content);
 
     return (
@@ -87,28 +88,31 @@ class LeaseList extends Component {
             onVisualizationTypeChange={(value) => {this.setState({visualizationType: value});}}
           />
         </Row>
-        <Row>
-          {visualizationType === 'table' && (
-            <Table
-              amount={leases.length}
-              data={leases}
-              dataKeys={[
-                {key: 'identifier', label: 'Vuokratunnus'},
-                {key: 'real_property_unit', label: 'Vuokrakohde'},
-                {key: 'tenant', label: 'Vuokralainen'},
-                {key: 'person', label: 'Vuokranantaja'},
-                {key: 'address', label: 'Osoite'},
-                {key: 'lease_type', label: 'Tyyppi'},
-                {key: 'start_date', label: 'Alkupvm'},
-                {key: 'end_date', label: 'Loppupvm'},
-              ]}
-              onRowClick={this.handleEditClick}
-            />
-          )}
-          {visualizationType === 'map' && (
-            <h1>Kartta</h1>
-          )}
-        </Row>
+        {isFetching && <Row><Column><div className='loader__wrapper'><Loader isLoading={isFetching} /></div></Column></Row>}
+        {!isFetching &&
+          <Row>
+            {visualizationType === 'table' && (
+              <Table
+                amount={leases.length}
+                data={leases}
+                dataKeys={[
+                  {key: 'identifier', label: 'Vuokratunnus'},
+                  {key: 'real_property_unit', label: 'Vuokrakohde'},
+                  {key: 'tenant', label: 'Vuokralainen'},
+                  {key: 'person', label: 'Vuokranantaja'},
+                  {key: 'address', label: 'Osoite'},
+                  {key: 'lease_type', label: 'Tyyppi'},
+                  {key: 'start_date', label: 'Alkupvm'},
+                  {key: 'end_date', label: 'Loppupvm'},
+                ]}
+                onRowClick={this.handleEditClick}
+              />
+            )}
+            {visualizationType === 'map' && (
+              <h1>Kartta</h1>
+            )}
+          </Row>
+        }
       </div>
     );
   }
