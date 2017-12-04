@@ -5,7 +5,7 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import {fetchAttributes, fetchLeases} from '../actions';
+import {createLease, fetchAttributes, fetchLeases} from '../actions';
 import ActionDropdown from '../../components/ActionDropdown';
 import Loader from '../../components/loader/Loader';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
@@ -18,6 +18,7 @@ import * as contentHelpers from '../helpers';
 
 type Props = {
   attributes: Object,
+  createLease: Function,
   fetchAttributes: Function,
   fetchLeases: Function,
   isFetching: boolean,
@@ -75,7 +76,7 @@ class LeaseList extends Component {
 
   render() {
     const {documentType, isCreateLeaseIdentifierModalOpen, visualizationType} = this.state;
-    const {attributes, leases: content, isFetching} = this.props;
+    const {attributes, createLease, leases: content, isFetching} = this.props;
     const leases = contentHelpers.getContentLeases(content);
     const districtOptions = contentHelpers.getDistrictOptions(attributes);
     const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
@@ -90,6 +91,7 @@ class LeaseList extends Component {
         >
           <CreateLease
             districtOptions={districtOptions}
+            onSubmit={(lease) => createLease(lease)}
             municipalityOptions={municipalityOptions}
             typeOptions={typeOptions}
           />
@@ -160,6 +162,7 @@ export default flowRight(
       };
     },
     {
+      createLease,
       fetchLeases,
       fetchAttributes,
     },

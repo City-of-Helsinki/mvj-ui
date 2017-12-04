@@ -2,6 +2,7 @@
 
 import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
+import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 import {displayUIMessage} from '../util/helpers';
 // import mockData from './mock-data.json';
@@ -16,6 +17,7 @@ import {
 import {
   fetchLeases,
   fetchSingleLease,
+  createLease,
   editLease,
   fetchAttributes,
 } from './requests';
@@ -84,6 +86,32 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<> {
   }
 }
 
+function* createLeaseSaga({payload: lease}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createLease, lease);
+
+
+    switch (statusCode) {
+      case 201:
+        yield put(push(`/beta/leases/${bodyAsJson.id}`));
+        displayUIMessage({title: 'Vuorkatunnus luotu', body: 'Vuokrautunnus on tallennettu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson, _error: 'Virhe'})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 function* editLeaseSaga({payload: lease}): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(editLease, lease);
@@ -115,6 +143,7 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leasesbeta/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/leasesbeta/FETCH_ALL', fetchLeasesSaga);
       yield takeLatest('mvj/leasesbeta/FETCH_SINGLE', fetchSingleLeaseSaga);
+      yield takeLatest('mvj/leasesbeta/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leasesbeta/EDIT', editLeaseSaga);
     }),
   ];
