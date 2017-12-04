@@ -17,6 +17,14 @@ type Props = {
 const FieldTypeSelect = ({label, input, displayError, disabled, options, placeholder, meta: {touched, error}}: Props) => {
   const {onChange, name} = input;
 
+  const handleBlur = () => {
+    console.log('BLUR');
+  };
+
+  const handleChange = (value) => {
+    onChange(value);
+  };
+
   return (
     <div className='mvj-form-field'>
       <label className='title'>{label}</label>
@@ -29,7 +37,8 @@ const FieldTypeSelect = ({label, input, displayError, disabled, options, placeho
           options={options}
           placeholder={placeholder || 'Valitse'}
           {...input}
-          onChange={({value}) => onChange(value)}
+          onBlur={(value) => handleBlur(value)}
+          onChange={({value}) => handleChange(value)}
         />
         {touched && error && <span>{error}</span>}
       </div>

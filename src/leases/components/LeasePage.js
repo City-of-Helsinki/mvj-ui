@@ -301,7 +301,6 @@ export default flowRight(
   withRouter,
   connect(
     (state) => {
-      console.log(state);
       return {
         start_date: leaseInfoFormSelector(state, 'start_date'),
         end_date: leaseInfoFormSelector(state, 'end_date'),
