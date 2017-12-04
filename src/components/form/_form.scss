@@ -62,38 +62,46 @@
       }
     }
     &__select {
-      .Select-control {
-        cursor: pointer;
-        height: rem-calc(30px);
-        display: inline-block;
-        border-radius: 0;
-        line-height: rem-calc(28px);
-      }
-      .Select-placeholder {
-        padding-left: 0.5rem !important;
-        line-height: rem-calc(28px);
-        color: #ccc;
-      }
-      .Select-value {
-        padding-left: 0.5rem !important;
-        line-height: rem-calc(30px) !important;
-      }
-      .Select-input {
-        height: rem-calc(30px);
-        input {
-          height: rem-calc(28px);
-          line-height: rem-calc(28px);
-          padding: 0;
+      width: 100%;
+      margin-bottom: 5px;
+
+      .Select {
+        .select-input__arrow-renderer {
+          display: block;
+          background-image: url('../assets/icons/icon_arrow_down.svg');
+          height: rem-calc(16px);
+          width: rem-calc(16px);
         }
-      }
-      .Select-arrow-zone {
-        position: absolute;
-        top: 0;
-        right: 0;
-        line-height: rem-calc(28px);
-      }
-      .Select-menu-outer {
-        top: 30px;
+        &.is-open {
+          .select-input__arrow-renderer {
+            background-image: url('../assets/icons/icon_arrow_up.svg');
+          }
+        }
+        .Select-control {
+          height: rem-calc(28px);
+          border-radius: 0;
+          border: none;
+          border: 1px solid #cccccc;
+          outline: none;
+
+          .Select-placeholder {
+            line-height: rem-calc(28px);
+          }
+
+          .Select-input {
+            height: rem-calc(28px);
+
+            input {
+              height: rem-calc(28px);
+              padding: 0;
+            }
+          }
+
+          .Select-value {
+            line-height: rem-calc(28px);
+            margin-top: 0px;
+          }
+        }
       }
     }
   }
