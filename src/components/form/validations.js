@@ -4,6 +4,12 @@ import moment from 'moment';
 
 export const required = (value: any, error?: string) => (value ? undefined : (error ? error : 'Pakollinen kenttä'));
 
+export const integer = (value: any, error?: string) => (Number.isInteger(Number(value)) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
+
+export const min = (value: any, min: number, error?: string) => ((Number(value) >= min) ? undefined : (error ? error : `Arvon tulee olla vähintään ${min}`));
+
+export const max = (value: any, max: number, error?: string) => ((Number(value) <= max) ? undefined : (error ? error : `Arvon tulee olla vähintään ${max}`));
+
 export const dateGreaterOrEqual = (date: ?Moment, otherDate: ?Moment, error?: string) => {
   if(!date || !otherDate) {
     return undefined;

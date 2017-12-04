@@ -14,7 +14,7 @@
   }
 
   &__header {
-    padding: rem-calc(35px) rem-calc(35px);
+    padding: rem-calc(35px) rem-calc(35px) 0;
     h1.title {
       font-family: $font-family-source;
 	    font-size: rem-calc(24px);

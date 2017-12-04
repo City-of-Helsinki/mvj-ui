@@ -18,7 +18,7 @@ const FieldTypeText = ({input, isInline, inputStyle, label, placeholder, type = 
     {label && <label className='title'>{label}</label>}
     <div className='mvj-form-field__text' style={inputStyle}>
       <input {...input} type={type} placeholder={placeholder}/>
-      {touched && error && <span>{error}</span>}
+      {touched && error && <span className='error'>{error}</span>}
     </div>
   </div>
 );

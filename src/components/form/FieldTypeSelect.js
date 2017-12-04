@@ -19,7 +19,7 @@ const arrowRenderer = () => {
   );
 };
 
-const FieldTypeSelect = ({label, input, displayError, disabled, options, placeholder, meta: {touched, error}}: Props) => {
+const FieldTypeSelect = ({label, input, displayError, disabled, options, placeholder, meta: {visited, error}}: Props) => {
   const {onChange, name} = input;
 
   const handleBlur = () => {
@@ -47,7 +47,7 @@ const FieldTypeSelect = ({label, input, displayError, disabled, options, placeho
           onChange={({value}) => handleChange(value)}
           resetValue={''}
         />
-        {touched && error && <span>{error}</span>}
+        {visited && error && <span className={'error'}>{error}</span>}
       </div>
     </div>
 

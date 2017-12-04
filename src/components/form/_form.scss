@@ -46,6 +46,14 @@
         width: 100%;
         margin-bottom: rem-calc(10px);
       }
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
+      }
     }
     &__checkbox {
       &.checkbox-inline {
@@ -65,7 +73,17 @@
       width: 100%;
       margin-bottom: 5px;
 
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
+      }
+
       .Select {
+        margin-bottom: rem-calc(10px);
+        
         .select-input__arrow-renderer {
           display: block;
           background-image: url('../assets/icons/icon_arrow_down.svg');
