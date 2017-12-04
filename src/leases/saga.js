@@ -2,7 +2,6 @@
 
 import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
-import get from 'lodash/get';
 import {SubmissionError} from 'redux-form';
 import {displayUIMessage} from '../util/helpers';
 // import mockData from './mock-data.json';
@@ -26,14 +25,7 @@ import {receiveError} from '../api/actions';
 function* fetchAttributesSaga(): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
-    const attributes = bodyAsJson.fields && {
-      identifiers: {
-        type: get(bodyAsJson.fields, 'identifier_type.choices'),
-        municipality: get(bodyAsJson.fields, 'identifier_municipality.choices'),
-        district: get(bodyAsJson.fields, 'identifier_district.choices'),
-      },
-      ...bodyAsJson.fields,
-    };
+    const attributes = bodyAsJson.fields;
 
     switch (statusCode) {
       case 200:

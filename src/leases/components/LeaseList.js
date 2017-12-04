@@ -5,17 +5,19 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import {fetchAttributes} from '../../attributes/actions';
-import {fetchLeases} from '../actions';
+import {fetchAttributes, fetchLeases} from '../actions';
 import ActionDropdown from '../../components/ActionDropdown';
 import Loader from '../../components/loader/Loader';
-import {getIsFetching, getLeasesList} from '../selectors';
+import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
+import Modal from '../../components/Modal';
 import Search from './Search';
+import CreateLease from '../components/leaseSections/CreateLease';
 import TableControllers from './TableControllers';
 import Table from '../../components/Table';
 import * as contentHelpers from '../helpers';
 
 type Props = {
+  attributes: Object,
   fetchAttributes: Function,
   fetchLeases: Function,
   isFetching: boolean,
@@ -25,6 +27,7 @@ type Props = {
 
 type State = {
   documentType: string,
+  isCreateLeaseIdentifierModalOpen: boolean,
   visualizationType: string,
 }
 
@@ -33,6 +36,7 @@ class LeaseList extends Component {
 
   state: State = {
     documentType: 'all',
+    isCreateLeaseIdentifierModalOpen: false,
     visualizationType: 'table',
   }
 
@@ -41,10 +45,24 @@ class LeaseList extends Component {
   };
 
   componentWillMount() {
-    // const {fetchAttributes, fetchLeases} = this.props;
-    const {fetchLeases} = this.props;
-    // fetchAttributes();
+    const {fetchAttributes, fetchLeases} = this.props;
+    // const {fetchLeases} = this.props;
+    fetchAttributes();
     fetchLeases();
+  }
+
+  showModal = (modalName: string) => {
+    const modalVisibilityKey = `is${modalName}ModalOpen`;
+    this.setState({
+      [modalVisibilityKey]: true,
+    });
+  }
+
+  hideModal = (modalName: string) => {
+    const modalVisibilityKey = `is${modalName}ModalOpen`;
+    this.setState({
+      [modalVisibilityKey]: false,
+    });
   }
 
   handleEditClick = (id) => {
@@ -56,12 +74,26 @@ class LeaseList extends Component {
   };
 
   render() {
-    const {documentType, visualizationType} = this.state;
-    const {leases: content, isFetching} = this.props;
+    const {documentType, isCreateLeaseIdentifierModalOpen, visualizationType} = this.state;
+    const {attributes, leases: content, isFetching} = this.props;
     const leases = contentHelpers.getContentLeases(content);
+    const districtOptions = contentHelpers.getDistrictOptions(attributes);
+    const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
+    const typeOptions = contentHelpers.getTypeOptions(attributes);
 
     return (
       <div className='lease-list'>
+        <Modal
+          title='Luo vuokratunnus'
+          isOpen={isCreateLeaseIdentifierModalOpen}
+          onClose={() => this.hideModal('CreateLeaseIdentifier')}
+        >
+          <CreateLease
+            districtOptions={districtOptions}
+            municipalityOptions={municipalityOptions}
+            typeOptions={typeOptions}
+          />
+        </Modal>
         <Row>
           <div className='lease-list__search-wrapper'>
             <Search />
@@ -72,7 +104,7 @@ class LeaseList extends Component {
               options={[
                 {value: 'application', label: 'Hakemus'},
                 {value: 'reservation', label: 'Varaus'},
-                {value: 'lease', label: 'Vuokraus'},
+                {value: 'lease', label: 'Vuokraus', action: () => this.showModal('CreateLeaseIdentifier')},
                 {value: 'permission', label: 'Lupa'},
                 {value: 'area', label: 'Muistettavat ehdot'},
               ]}
@@ -122,6 +154,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        attributes: getAttributes(state),
         leases: getLeasesList(state),
         isFetching: getIsFetching(state),
       };

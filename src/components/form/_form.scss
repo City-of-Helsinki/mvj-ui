@@ -85,6 +85,7 @@
           outline: none;
 
           .Select-placeholder {
+            font-size: $font-small;
             line-height: rem-calc(28px);
           }
 
@@ -98,8 +99,16 @@
           }
 
           .Select-value {
+            font-size: $font-small;
+            padding-right: 2.4rem;
             line-height: rem-calc(28px);
             margin-top: 0px;
+          }
+        }
+        .Select-menu-outer {
+          .Select-option {
+            font-size: $font-small;
+            padding: 6px 10px;
           }
         }
       }

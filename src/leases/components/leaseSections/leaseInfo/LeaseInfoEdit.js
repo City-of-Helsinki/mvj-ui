@@ -9,7 +9,7 @@ import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker
 import {dateGreaterOrEqual} from '../../../../components/form/validations';
 
 type Props = {
-  error: string, 
+  error: string,
   start_date: ?Moment,
   end_date: ?Moment,
   identifier: ?string,
@@ -19,11 +19,10 @@ class LeaseInfoEdit extends Component {
   props: Props
 
   render () {
-    const {error, start_date, identifier} = this.props;
+    const {start_date, identifier} = this.props;
 
     return (
       <form className='lease-info-edit'>
-        {error && <span>{error}</span>}
         <div className='lease-info-edit__column'>
           <p className='lease-info-edit__label'>Vuokratunnus</p>
           <span className='lease-info-edit__number'>{identifier}</span>

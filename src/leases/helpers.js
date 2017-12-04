@@ -98,3 +98,51 @@ export const getContentLeases = (content:Array<Object>) => {
   }
   return items;
 };
+
+export const getDistrictOptions = (attributes: Object) => {
+  const choices = get(attributes, 'district.choices', []);
+  return choices.map((choice) => {
+    return {
+      value: get(choice, 'value'),
+      label: `${get(choice, 'value')} ${get(choice, 'display_name')}`,
+    };
+  }).sort(function(a, b){
+    const keyA = a.value,
+      keyB = b.value;
+    if(keyA < keyB) return -1;
+    if(keyA > keyB) return 1;
+    return 0;
+  });
+};
+
+export const getMunicipalityOptions = (attributes: Object) => {
+  const choices = get(attributes, 'municipality.choices', []);
+  return choices.map((choice) => {
+    return {
+      value: get(choice, 'value'),
+      label: `${get(choice, 'value')} ${get(choice, 'display_name')}`,
+    };
+  }).sort(function(a, b){
+    const keyA = a.value,
+      keyB = b.value;
+    if(keyA < keyB) return -1;
+    if(keyA > keyB) return 1;
+    return 0;
+  });
+};
+
+export const getTypeOptions = (attributes: Object) => {
+  const choices = get(attributes, 'type.choices', []);
+  return choices.map((choice) => {
+    return {
+      value: get(choice, 'value'),
+      label: `${get(choice, 'value')} ${get(choice, 'display_name')}`,
+    };
+  }).sort(function(a, b){
+    const keyA = a.value,
+      keyB = b.value;
+    if(keyA < keyB) return -1;
+    if(keyA > keyB) return 1;
+    return 0;
+  });
+};
