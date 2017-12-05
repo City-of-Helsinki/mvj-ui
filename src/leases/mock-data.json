@@ -87,6 +87,21 @@
               "term_description": "Sopimussaakko enintään 50.000 euroa."
             }
           ]
+        },
+        {
+          "rule_maker": "Asuntolautakunta",
+          "rule_date": "2013-09-08",
+          "rule_clause": 45,
+          "rule_type": "Vuokraus (indeksi)",
+          "rule_description": "Tontin lyhytaikainen vuokraus.",
+          "terms": [
+            {
+              "term_purpose": "Alennusehto",
+              "supervision_date": "2018-10-09",
+              "supervised_date": "2017-04-05",
+              "term_description": "Ajalta 01.01.2015 – 30.12-2015 ei peritä vuokraa."
+            }
+          ]
         }
       ],
       "tenants": [

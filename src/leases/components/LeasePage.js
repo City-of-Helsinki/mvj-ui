@@ -240,6 +240,9 @@ const tenantFormSelector = formValueSelector(tenantFormName);
 const contractFormName = 'contract-edit-form';
 const contractFormSelector = formValueSelector(contractFormName);
 
+const ruleFormName = 'rule-edit-form';
+const ruleFormSelector = formValueSelector(ruleFormName);
+
 export default flowRight(
   withRouter,
   connect(
@@ -250,6 +253,7 @@ export default flowRight(
         areasForm: areasFormSelector(state, 'areas'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
         contractsForm: contractFormSelector(state, 'contracts'),
+        rulesForm: ruleFormSelector(state, 'rules'),
       };
     },
     {
