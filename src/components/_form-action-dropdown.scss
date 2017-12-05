@@ -3,10 +3,10 @@
   position: relative;
 
   &_title-wrapper {
-    background-color: rgba(0, 146, 70, 0.2);
+    background-color: rgba(0,146,70, 0.3);
 
     .title {
-      color: $kelley-green;
+      color: $tram;
       height: rem-calc(30px);
       display: block;
       line-height: rem-calc(32px);
@@ -49,11 +49,11 @@
       height: rem-calc(30px);
       line-height: rem-calc(30px);
       font-size: rem-calc(14px);
-      background-color: rgba(0, 146, 70, 0.1);
+      background-color: $tram-lightest;
 
       a {
         padding: 0 1rem;
-        color: $kelley-green;
+        color: $tram;
         display: block;
       }
     }

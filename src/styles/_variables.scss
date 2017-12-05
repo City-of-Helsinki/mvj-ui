@@ -25,7 +25,6 @@ $foundation-palette: (
 
 /// @type Color
 $summer: #ffc61e !default;
-$kelley-green: #009246 !default;
 $engel: #ffe977 !default;
 $tram: #009246 !default;
 $brick: #bd2719 !default;
@@ -33,10 +32,15 @@ $black: #222222 !default;
 $lightest-gray: #FAFAFA !default;
 $light-gray: #eeeeee !default;
 $medium-gray: #cccccc !default;
-$dark-gray: #757575 !default;
+$dark-gray: #666666 !default;
 $white: #ffffff !default;
 
+$summer-lighter: rgba(255,198,30,0.8);
 $engel-lighter: rgba(255, 233, 119, 0.3);
+$tram-lighter: rgba(0,146,70, 0.8);
+$brick-lighter: rgba(189,39,25, 0.8);
+$tram-lightest: rgba(0,146,70, 0.2);
+
 
 $mvj-text-color: $black;
 $mvj-focus-color: #9BDCFB;

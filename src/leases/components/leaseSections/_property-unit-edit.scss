@@ -15,7 +15,7 @@
     background-color: $tram;
     color: $white;
     &:hover {
-      background-color: lighten($tram, 5%);
+      background-color: $tram-lighter;
     }
   }
 

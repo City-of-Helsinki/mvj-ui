@@ -415,7 +415,7 @@ class TenantEdit extends Component {
     const {dispatch, handleSubmit} = this.props;
 
     return (
-      <form onSubmit={handleSubmit}className='tenant-edit'>
+      <form onSubmit={handleSubmit} className='tenant-edit'>
         <Row>
           <Column>
             <FieldArray name="tenants" dispatch={dispatch} component={renderTenants}/>

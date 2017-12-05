@@ -7,7 +7,7 @@
     line-height: normal;
 	  text-align: left;
     color: $dark-gray;
-    margin-bottom: rem-calc(4px);
+    margin-bottom: rem-calc(3px);
   }
 
   label.title {
@@ -15,44 +15,23 @@
     line-height: normal;
 	  text-align: left;
     color: $dark-gray;
-    margin-bottom: rem-calc(4px);
+    margin-bottom: rem-calc(2px);
   }
 
   .mvj-form-field {
-    &__datepicker {
-      input {
-        padding: 0 0.5rem;
-        height: rem-calc(30px);
-        line-height: normal;
-        color: $black;
-        width: 100%;
-        margin-bottom: rem-calc(10px);
-      }
-
-      .error {
-        color: $brick;
-        display: block;
-        font-size: $font-small;
-        line-height: normal;
-        margin-bottom: rem-calc(5px);
-      }
-    }
     &__text {
       input {
         padding: 0 0.5rem;
-        height: rem-calc(30px);
-        line-height: normal;
+        height: rem-calc(26px);
         color: $black;
+        border: 1px solid $medium-gray;
         width: 100%;
         margin-bottom: rem-calc(10px);
-      }
-
-      .error {
-        color: $brick;
-        display: block;
         font-size: $font-small;
-        line-height: normal;
-        margin-bottom: rem-calc(5px);
+        box-shadow: none;
+        &:focus {
+          border: 1px solid $tram;
+        }
       }
     }
     &__checkbox {
@@ -64,72 +43,66 @@
           height: rem-calc(30px);
           margin-right: rem-calc(10px);
         }
-        .option-label::last-child {
+        .option-label:last-child {
           margin-right: 0;
         }
       }
+
     }
     &__select {
-      width: 100%;
-      margin-bottom: 5px;
-
-      .error {
-        color: $brick;
-        display: block;
-        font-size: $font-small;
-        line-height: normal;
-        margin-bottom: rem-calc(5px);
-      }
-
       .Select {
-        margin-bottom: rem-calc(10px);
-        
-        .select-input__arrow-renderer {
-          display: block;
-          background-image: url('../assets/icons/icon_arrow_down.svg');
-          height: rem-calc(16px);
-          width: rem-calc(16px);
+        font-size: $font-small;
+        &:focus, &:focus {
+          border: 1px solid $medium-gray;
         }
-        &.is-open {
-          .select-input__arrow-renderer {
-            background-image: url('../assets/icons/icon_arrow_up.svg');
-          }
+      }
+      .Select-control {
+        cursor: pointer;
+        height: rem-calc(26px);
+        display: inline-block;
+        border-radius: 0;
+      }
+      .Select-placeholder {
+        padding-left: 0.5rem !important;
+        line-height: 1.8;
+        color: #ccc;
+      }
+      .Select-value {
+        padding-left: 0.5rem !important;
+        line-height: 1.8 !important;
+      }
+      .Select-input {
+        input {
+          padding: 0;
         }
-        .Select-control {
-          height: rem-calc(28px);
-          border-radius: 0;
-          border: none;
-          border: 1px solid #cccccc;
-          outline: none;
-
-          .Select-placeholder {
-            font-size: $font-small;
-            line-height: rem-calc(28px);
-          }
-
-          .Select-input {
-            height: rem-calc(28px);
-
-            input {
-              height: rem-calc(28px);
-              padding: 0;
-            }
-          }
-
-          .Select-value {
-            font-size: $font-small;
-            padding-right: 2.4rem;
-            line-height: rem-calc(28px);
-            margin-top: 0px;
-          }
+      }
+      .Select-arrow-zone {
+        position: absolute;
+        top: 2px;
+        right: 0;
+      }
+      .Select-menu-outer {
+        top: 26px;
+      }
+      .Select-menu {
+        height: auto;
+      }
+      .Select-option {
+        padding-top: 0.2rem;
+        padding-bottom: 0.2rem;
+        &:hover, &:focus, &:active {
+          background: $engel-lighter;
         }
-        .Select-menu-outer {
-          .Select-option {
-            font-size: $font-small;
-            padding: 6px 10px;
-          }
-        }
+      }
+      .Select-option.is-focused, .Select-option.is-selected {
+        background-color: $engel-lighter !important;
       }
     }
   }
 }
+
+.is-focused:not(.is-open) > .Select-control {
+  border: 1px solid $medium-gray !important;
+  box-shadow: none !important;
+}
+
