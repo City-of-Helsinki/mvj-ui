@@ -16,14 +16,14 @@ type RuleTermsProps = {
 
 const renderRuleTerms = ({title, fields}: RuleTermsProps) => {
   return(
-    fields.length > 0 &&
     <div className='green-box'>
+      {fields.length > 0 &&
       <Row>
         <Column>
           <h2>{title}</h2>
         </Column>
-      </Row>
-      {fields.map((term, index) =>
+      </Row>}
+      {fields && fields.length > 0 && fields.map((term, index) =>
         <div key={index} className='green-box-item'>
           <button
             className='remove-button'
@@ -43,14 +43,14 @@ const renderRuleTerms = ({title, fields}: RuleTermsProps) => {
                 ]}
               />
             </Column>
-            <Column medium={2}>
+            <Column medium={3}>
               <Field
                 name={`${term}.supervision_date`}
                 component={FieldTypeText}
                 label='Valvonta päivämäärä'
               />
             </Column>
-            <Column medium={2}>
+            <Column medium={3}>
               <Field
                 name={`${term}.supervised_date`}
                 component={FieldTypeText}

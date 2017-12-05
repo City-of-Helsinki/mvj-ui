@@ -16,14 +16,14 @@ type ContractModificationsProps = {
 
 const renderContractModifications = ({title, fields}: ContractModificationsProps) => {
   return(
-    fields.length > 0 &&
     <div className='green-box'>
+        {fields.length > 0 &&
         <Row>
           <Column>
             <h2>{title}</h2>
           </Column>
-        </Row>
-      {fields.map((modification, index) => {
+        </Row>}
+      {fields && fields.length > 0 && fields.map((modification, index) => {
         return (
           <div key={index} className='green-box-item'>
             <button
