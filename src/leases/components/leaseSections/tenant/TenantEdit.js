@@ -16,7 +16,7 @@ type OtherPersonProps = {
 const renderOtherPersons = ({fields}: OtherPersonProps) => {
   return (
 
-    <div>
+    <div className='other-person-wrapper'>
       {fields && fields.length > 0 && fields.map((person, index) => {
         return (
           <div key={index} className='other-person'>
