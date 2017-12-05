@@ -8,6 +8,7 @@ import flowRight from 'lodash/flowRight';
 import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
 import classnames from 'classnames';
+import ReduxToastr from 'react-redux-toastr';
 
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
@@ -63,6 +64,15 @@ class App extends Component {
           <SideMenu isOpen={displaySideMenu} />
           <div className={classnames('wrapper', {'is-sidemenu-closed': !displaySideMenu}, {'is-sidemenu-open': displaySideMenu})}>{children}</div>
         </section>
+        <ReduxToastr
+          timeOut={4000}
+          newestOnTop={true}
+          preventDuplicates={true}
+          position='top-right'
+          transitionIn='fadeIn'
+          transitionOut='bounceOutUp'
+          progressBar={true}
+        />
         <ApiErrorModal size={Sizes.LARGE}
           data={apiError}
           isOpen={Boolean(apiError)}

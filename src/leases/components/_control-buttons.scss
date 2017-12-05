@@ -1,6 +1,7 @@
 .control-buttons {
   display: flex;
   float: right;
+  padding-top: rem-calc(22px);
 
   .comment-button {
     display: inline-block;

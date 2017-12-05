@@ -1,0 +1,47 @@
+.lease-info {
+
+  &__label {
+    font-size: $font-small;
+    color: $dark-gray;
+    line-height: normal;
+    margin-bottom: rem-calc(5px);
+  }
+  &__number {
+    font-size: $font-xlarge;
+    font-weight: $semibold;
+    line-height: rem-calc(30px);
+    margin-right: 2rem;
+    margin-bottom: rem-calc(5px);
+  }
+  &__date {
+    font-weight: $semibold;
+    margin-bottom: rem-calc(5px);
+  }
+  &__type {
+    margin-bottom: 0;
+    line-height: 1.2;
+  }
+}
+
+.lease-info-edit {
+  display: flex;
+
+  &__column {
+    flex: 0 0 25%;
+    display: block;
+  }
+
+  &__label {
+    font-size: $font-small;
+    line-height: normal;
+    color: $dark-gray;
+    margin-bottom: rem-calc(5px);
+  }
+
+  &__number {
+    font-size: $font-xlarge;
+    font-weight: $semibold;
+    margin-right: 2rem;
+    line-height: rem-calc(30px);
+  }
+}

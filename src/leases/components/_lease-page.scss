@@ -1,4 +1,5 @@
 .lease-page {
+  min-height: calc(100vh - 70px);
   display: block;
   width: 100%;
   padding: 2.5rem 1rem 0;
@@ -20,28 +21,9 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 2.5rem;
-    align-items: flex-end;
-  }
-}
 
-.lease-info {
-  margin-top: rem-calc(-3px);
-
-  &__label {
-    font-size: $font-small;
-    color: $dark-gray;
-    margin-bottom: 0;
-  }
-  &__number {
-    font-size: $font-xlarge;
-    font-weight: $semibold;
-    margin-right: 2rem;
-  }
-  &__date {
-    font-weight: $semibold;
-  }
-  &__type {
-    margin-bottom: 0;
-    line-height: 1.2;
+    .lease-info-wrapper {
+      flex: 1 1 0%;
+    }
   }
 }

@@ -36,4 +36,10 @@
       background-color: $brick-lighter;
     }
   }
+  &.no-margin {
+    margin: 0;
+  }
+  &.full-width {
+    width: 100%;
+  }
 }

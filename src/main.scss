@@ -48,7 +48,11 @@
 @import "components/form-action-dropdown";
 @import "components/form/form";
 @import "components/icon-radio-buttons";
+@import "components/loader/loader";
+@import "components/modal";
+@import "components/select-input";
 @import "components/sideMenu/side-menu";
+@import "components/single-checkbox-input";
 @import "components/styled-radio-buttons";
 @import "components/table";
 @import "components/tabs/tabs";
@@ -63,6 +67,8 @@
 @import "leases/components/lease-page";
 @import "leases/components/search";
 @import "leases/components/table-controllers";
+@import "leases/components/leaseSections/create-lease";
+@import "leases/components/leaseSections/leaseInfo/lease-info";
 @import "leases/components/leaseSections/property-unit-edit";
 @import "leases/components/leaseSections/tenant/tenant-edit";
 @import "leases/components/leaseSections/lease-section";

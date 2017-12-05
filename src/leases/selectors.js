@@ -1,6 +1,7 @@
 // @flow
 
 import type {Selector} from '../types';
+import get from 'lodash/get';
 import type {Attributes, Lease, LeaseState} from './types';
 
 export const getIsFetching: Selector<Lease, void> = (state: Object): LeaseState =>
@@ -11,6 +12,9 @@ export const getAttributes: Selector<Attributes, void> = (state: Object): LeaseS
 
 export const getLeasesList: Selector<Lease, void> = (state: Object): LeaseState =>
   state.leasebeta.list;
+
+export const getLeaseInfoErrors: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.lease-info-edit-form.syncErrors');
 
 export const getCurrentLease: Selector<Lease, void> = (state: Object): LeaseState =>
   state.leasebeta.current;
