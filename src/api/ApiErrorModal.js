@@ -2,44 +2,60 @@
 
 import flowRight from 'lodash/flowRight';
 import React from 'react';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import toArray from 'lodash/toArray';
 import {Button} from 'react-foundation';
 import {reveal} from '../foundation/reveal';
 import {Sizes} from '../foundation/enums';
 
-const ApiErrorModal = ({data, handleDismiss}) => (
-  <div className="api-error-modal">
-    {data ? <ApiErrorContent data={data}/> : null}
-    <Button className="api-error-modal__close" size={Sizes.LARGE} onClick={handleDismiss}>Dismiss</Button>
-  </div>
-);
+const ApiErrorModal = ({data, handleDismiss}) => {
+  return (
+    <div className="api-error-modal">
+      {data ? <ApiErrorContent data={data}/> : null}
+      <Button className="api-error-modal__close" size={Sizes.LARGE} onClick={handleDismiss}>Sulje</Button>
+    </div>
+  )
+};
 
-const ApiErrorStackTrace = ({trace}) => (
-  <div className="api-error-modal__trace">
-    <h5 className="api-error-modal__trace-heading">Trace</h5>
-    <ol className="api-error-modal__trace-nav">
-      {trace.filter((item) => item.file).map((item, index) => (
-        <li className="api-error-modal__trace-item" key={index}>
-            <span className="api-error-modal__trace-source">
-              {item.file}({item.line})
-            </span>
-          &nbsp;
-          <span className="api-error-modal__trace-function">
-              {item.class ? `${item.class}::${item.function}` : item.function}
-            </span>
-        </li>
-      ))}
-    </ol>
-  </div>
-);
+const ApiErrorList = ({errors}) => {
+  return (
+    <div className="api-error-modal__trace">
+      <ol className="api-error-modal__trace-nav">
+        {errors.length > 0 && errors.map((error, index) => {
+          return (
+            <li key={index}>{error}</li>
+          )
+        })}
+      </ol>
+    </div>
+  )
+};
 
-const ApiErrorContent = ({data}) => (
-  <div className="api-error-modal__content">
-    <h2 className="api-error-modal__title">Server error <small>{data.exception}</small></h2>
-    <div className="api-error-modal__message">{data.message}</div>
-    <div className="api-error-modal__source">{data.source}</div>
-    {data.trace ? <ApiErrorStackTrace trace={data.trace}/> : null}
-  </div>
-);
+const getErrorArray = (errors: Object) => {
+  const tempErrors = toArray(errors),
+    errorArray = [];
+  for(let i = 0; i < tempErrors.length; i++) {
+    if(isArray(tempErrors[i])) {
+      for(let j = 0; j < tempErrors[i].length; j++) {
+        errorArray.push(tempErrors[i][j]);
+      }
+    } else {
+      errorArray.push(tempErrors[i]);
+    }
+  }
+  return errorArray;
+}
+
+const ApiErrorContent = ({data}) => {
+  const errors = getErrorArray(get(data, 'errors'));
+  return (
+    <div className="api-error-modal__content">
+      <h2 className="api-error-modal__title">Palvelinvirhe<small>{data.exception}</small></h2>
+      {errors ? <ApiErrorList errors={errors}/> : null}
+    </div>
+  )
+};
 
 export default flowRight(
   reveal({name: 'apiError'}),

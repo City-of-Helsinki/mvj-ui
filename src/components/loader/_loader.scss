@@ -6,10 +6,10 @@
   left: 50%;
   margin: -20px 0 0 -20px;
   text-indent: -9999em;
-  border-top: 5px solid lighten($primary-color, 50%);
-  border-right: 5px solid lighten($primary-color, 50%);
-  border-bottom: 5px solid lighten($primary-color, 50%);
-  border-left: 5px solid $primary-color;
+  border-top: 5px solid lighten($tram, 50%);
+  border-right: 5px solid lighten($tram, 50%);
+  border-bottom: 5px solid lighten($tram, 50%);
+  border-left: 5px solid $tram;
   -webkit-transform: translateZ(0);
   -ms-transform: translateZ(0);
   transform: translateZ(0);

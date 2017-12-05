@@ -1,10 +1,10 @@
 // @flow
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Row, Column} from 'react-foundation';
-import {formValueSelector} from 'redux-form';
 import {connect} from 'react-redux';
+import {destroy, formValueSelector, reduxForm, reset} from 'redux-form';
 import {withRouter} from 'react-router';
+import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import moment from 'moment';
@@ -34,38 +34,41 @@ import mockData from '../mock-data.json';
 
 type State = {
   activeTab: number,
-  isEditMode: boolean,
   areas: Array<Object>,
-  tenants: Array<Object>,
   contracts: Array<Object>,
-  rules: Array<Object>,
+  isEditMode: boolean,
   oldTenants: Array<Object>,
+  rules: Array<Object>,
+  tenants: Array<Object>,
 };
 
 type Props = {
-  start_date: ?Moment,
-  end_date: ?Moment,
   areasForm: Array<Object>,
+  contractsForm: Array<Object>,
   currentLease: Object,
-  leaseInfoErrors: Object,
+  dispatch: Function,
   editLease: Function,
+  end_date: ?Moment,
   fetchSingleLease: Function,
   isFetching: boolean,
+  leaseInfoErrors: Object,
   location: Object,
   params: Object,
+  rulesForm: Array<Object>,
+  start_date: ?Moment,
   tenantsForm: Array<Object>,
 }
 
 class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
-    isEditMode: false,
     areas: [],
-    tenants: [],
-    oldTenants: [],
     contracts: [],
-    terms: [],
+    isEditMode: false,
+    oldTenants: [],
     rules: [],
+    tenants: [],
+    terms: [],
   }
 
   props: Props
@@ -75,7 +78,14 @@ class PreparerForm extends Component {
   };
 
   componentWillMount() {
-    const {fetchSingleLease, location, params: {leaseId}} = this.props;
+    const {dispatch, fetchSingleLease, location, params: {leaseId}} = this.props;
+
+    // Destroy forms to initialize new values when data is fetched
+    dispatch(destroy('lease-info-edit-form'));
+    dispatch(destroy('property-unit-edit-form'));
+    dispatch(destroy('tenant-edit-form'));
+    dispatch(destroy('contract-edit-form'));
+    dispatch(destroy('rule-edit-form'));
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
@@ -96,19 +106,38 @@ class PreparerForm extends Component {
   }
 
   cancel = () => {
+    const {dispatch} = this.props;
     this.setState({isEditMode: false});
+    dispatch(reset('lease-info-edit-form'));
+    dispatch(reset('property-unit-edit-form'));
+    dispatch(reset('tenant-edit-form'));
+    dispatch(reset('contract-edit-form'));
+    dispatch(reset('rule-edit-form'));
   }
 
   save = () => {
-    const {editLease, areasForm, currentLease, tenantsForm, start_date, end_date} = this.props;
+    const {areasForm, contractsForm, currentLease, editLease, end_date, rulesForm, start_date, tenantsForm} = this.props;
+
     const payload = currentLease;
     payload.start_date = start_date ? moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
     payload.end_date = end_date ? moment(end_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
 
     editLease(payload);
 
-    this.setState({areas: areasForm});
-    this.setState({tenants: tenantsForm});
+    // TODO: Temporarily save changes to state. Replace with api call when end points are ready
+    if(areasForm !== undefined) {
+      this.setState({areas: areasForm});
+    }
+    if(contractsForm !== undefined) {
+      this.setState({contracts: contractsForm});
+    }
+    if(rulesForm !== undefined) {
+      this.setState({rules: rulesForm});
+    }
+    if(tenantsForm !== undefined) {
+      this.setState({tenants: tenantsForm});
+    }
+
     this.setState({isEditMode: false});
   }
 
@@ -288,35 +317,29 @@ class PreparerForm extends Component {
   }
 }
 
-const leaseInfoFormName = 'lease-info-edit-form';
-const leaseInfoFormSelector = formValueSelector(leaseInfoFormName);
-
-const areasFormName = 'property-unit-edit-form';
-const areasFormSelector = formValueSelector(areasFormName);
-
-const tenantFormName = 'tenant-edit-form';
-const tenantFormSelector = formValueSelector(tenantFormName);
-
-const contractFormName = 'contract-edit-form';
-const contractFormSelector = formValueSelector(contractFormName);
-
-const ruleFormName = 'rule-edit-form';
-const ruleFormSelector = formValueSelector(ruleFormName);
+const leaseInfoFormSelector = formValueSelector('lease-info-edit-form');
+const areasFormSelector = formValueSelector('property-unit-edit-form');
+const tenantFormSelector = formValueSelector('tenant-edit-form');
+const contractFormSelector = formValueSelector('contract-edit-form');
+const ruleFormSelector = formValueSelector('rule-edit-form');
 
 export default flowRight(
   withRouter,
+  reduxForm({
+    form: 'lease-main-page-form',
+  }),
   connect(
     (state) => {
       return {
-        start_date: leaseInfoFormSelector(state, 'start_date'),
-        end_date: leaseInfoFormSelector(state, 'end_date'),
+        areasForm: areasFormSelector(state, 'areas'),
+        contractsForm: contractFormSelector(state, 'contracts'),
         currentLease: getCurrentLease(state),
+        end_date: leaseInfoFormSelector(state, 'end_date'),
         isFetching: getIsFetching(state),
         leaseInfoErrors: getLeaseInfoErrors(state),
-        areasForm: areasFormSelector(state, 'areas'),
-        tenantsForm: tenantFormSelector(state, 'tenants'),
-        contractsForm: contractFormSelector(state, 'contracts'),
         rulesForm: ruleFormSelector(state, 'rules'),
+        start_date: leaseInfoFormSelector(state, 'start_date'),
+        tenantsForm: tenantFormSelector(state, 'tenants'),
       };
     },
     {
