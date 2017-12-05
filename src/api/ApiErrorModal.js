@@ -10,7 +10,6 @@ import {reveal} from '../foundation/reveal';
 import {Sizes} from '../foundation/enums';
 
 const ApiErrorModal = ({data, handleDismiss}) => {
-  console.log(data);
   return (
     <div className="api-error-modal">
       {data ? <ApiErrorContent data={data}/> : null}
