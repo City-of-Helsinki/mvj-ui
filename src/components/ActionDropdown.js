@@ -56,6 +56,7 @@ class ActionDropdown extends Component {
   render () {
     const {title, options} = this.props;
     const {isOpen} = this.state;
+    const {toggle} = this;
     return (
       <div className='action-dropdown'>
         <div className='action-dropdown_title-wrapper'>
@@ -66,7 +67,16 @@ class ActionDropdown extends Component {
             <ul>
               {options.map((option, index) => {
                 return (
-                  <li className='option' key={index}><a>{get(option, 'label')}</a></li>
+                  <li className='option' key={index} onClick={() => {
+                    const {action} = option;
+                    if(action) {
+                      action();
+                      toggle();
+                    } else {
+                      console.log('Link action');
+                      toggle();
+                    }
+                  }}><a>{get(option, 'label')}</a></li>
                 );
               })}
             </ul>

@@ -19,6 +19,24 @@
   }
 
   .mvj-form-field {
+    &__datepicker {
+      input {
+        padding: 0 0.5rem;
+        height: rem-calc(30px);
+        line-height: normal;
+        color: $black;
+        width: 100%;
+        margin-bottom: rem-calc(10px);
+      }
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
+      }
+    }
     &__text {
       input {
         padding: 0 0.5rem;
@@ -27,6 +45,14 @@
         color: $black;
         width: 100%;
         margin-bottom: rem-calc(10px);
+      }
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
       }
     }
     &__checkbox {
@@ -42,41 +68,67 @@
           margin-right: 0;
         }
       }
-
     }
     &__select {
-      .Select-control {
-        cursor: pointer;
-        height: rem-calc(30px);
-        display: inline-block;
-        border-radius: 0;
-        line-height: rem-calc(28px);
+      width: 100%;
+      margin-bottom: 5px;
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
       }
-      .Select-placeholder {
-        padding-left: 0.5rem !important;
-        line-height: rem-calc(28px);
-        color: #ccc;
-      }
-      .Select-value {
-        padding-left: 0.5rem !important;
-        line-height: rem-calc(30px) !important;
-      }
-      .Select-input {
-        height: rem-calc(30px);
-        input {
-          height: rem-calc(28px);
-          line-height: rem-calc(28px);
-          padding: 0;
+
+      .Select {
+        margin-bottom: rem-calc(10px);
+        
+        .select-input__arrow-renderer {
+          display: block;
+          background-image: url('../assets/icons/icon_arrow_down.svg');
+          height: rem-calc(16px);
+          width: rem-calc(16px);
         }
-      }
-      .Select-arrow-zone {
-        position: absolute;
-        top: 0;
-        right: 0;
-        line-height: rem-calc(28px);
-      }
-      .Select-menu-outer {
-        top: 30px;
+        &.is-open {
+          .select-input__arrow-renderer {
+            background-image: url('../assets/icons/icon_arrow_up.svg');
+          }
+        }
+        .Select-control {
+          height: rem-calc(28px);
+          border-radius: 0;
+          border: none;
+          border: 1px solid #cccccc;
+          outline: none;
+
+          .Select-placeholder {
+            font-size: $font-small;
+            line-height: rem-calc(28px);
+          }
+
+          .Select-input {
+            height: rem-calc(28px);
+
+            input {
+              height: rem-calc(28px);
+              padding: 0;
+            }
+          }
+
+          .Select-value {
+            font-size: $font-small;
+            padding-right: 2.4rem;
+            line-height: rem-calc(28px);
+            margin-top: 0px;
+          }
+        }
+        .Select-menu-outer {
+          .Select-option {
+            font-size: $font-small;
+            padding: 6px 10px;
+          }
+        }
       }
     }
   }

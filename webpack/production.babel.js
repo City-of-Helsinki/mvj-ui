@@ -39,7 +39,10 @@ export default createConfig({
   module: {
     rules: [
       {
-        test: /\.scss$/,
+        test: [
+          /\.scss$/,
+          /\.css$/,
+        ],
         loader: extractStylesPlugin.extract({
           fallback: 'style-loader',
           use: 'css-loader!sass-loader?sourceMaps',

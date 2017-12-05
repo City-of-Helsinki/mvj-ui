@@ -1,28 +1,34 @@
 // @flow
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {withRouter} from 'react-router';
-import {connect} from 'react-redux';
-import flowRight from 'lodash/flowRight';
 import {Row, Column} from 'react-foundation';
 import {formValueSelector} from 'redux-form';
+import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
+import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
+import moment from 'moment';
 
-import {getCurrentLease, getIsFetching} from '../selectors';
-import {fetchSingleLease} from '../actions';
+import {getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
+import {editLease, fetchSingleLease} from '../actions';
+import * as contentHelpers from '../helpers';
 
+import ContractEdit from './leaseSections/contract/ContractEdit';
+import Contracts from './leaseSections/contract/Contracts';
 import ControlButtons from './ControlButtons';
+import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
+import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
+import Loader from '../../components/loader/Loader';
+import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
+import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
+import RuleEdit from './leaseSections/contract/RuleEdit';
+import Rules from './leaseSections/contract/Rules';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
-import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
-import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import TenantEdit from './leaseSections/tenant/TenantEdit';
 import TenantTab from './leaseSections/tenant/TenantTab';
-import ContractEdit from './leaseSections/contract/ContractEdit';
-import Contracts from './leaseSections/contract/Contracts';
-import RuleEdit from './leaseSections/contract/RuleEdit';
-import Rules from './leaseSections/contract/Rules';
-import * as contentHelpers from '../helpers';
+import type Moment from 'moment';
 
 import mockData from '../mock-data.json';
 
@@ -37,8 +43,12 @@ type State = {
 };
 
 type Props = {
+  start_date: ?Moment,
+  end_date: ?Moment,
   areasForm: Array<Object>,
   currentLease: Object,
+  leaseInfoErrors: Object,
+  editLease: Function,
   fetchSingleLease: Function,
   isFetching: boolean,
   location: Object,
@@ -90,7 +100,13 @@ class PreparerForm extends Component {
   }
 
   save = () => {
-    const {areasForm, tenantsForm} = this.props;
+    const {editLease, areasForm, currentLease, tenantsForm, start_date, end_date} = this.props;
+    const payload = currentLease;
+    payload.start_date = start_date ? moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
+    payload.end_date = end_date ? moment(end_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
+
+    editLease(payload);
+
     this.setState({areas: areasForm});
     this.setState({tenants: tenantsForm});
     this.setState({isEditMode: false});
@@ -98,6 +114,11 @@ class PreparerForm extends Component {
 
   openCommentPanel = () => {
     alert('open comment panel');
+  }
+
+  validateForms = () => {
+    const {leaseInfoErrors} = this.props;
+    return leaseInfoErrors ? true : false;
   }
 
   handleTabClick = (tabId) => {
@@ -127,27 +148,42 @@ class PreparerForm extends Component {
       isFetching,
     } = this.props;
 
+    const areFormsValid = this.validateForms();
+
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
-    const leaseDateRange = contentHelpers.getContentLeaseDateRange(currentLease);
 
     if(isFetching) {
-      return null;
+      return (
+        <div className='lease-page'><Loader isLoading={true} /></div>
+      );
     }
 
     return (
       <div className='lease-page'>
         <Row>
           <Column className='lease-page__upper-bar'>
-            <div className='lease-info'>
-              <p className='lease-info__label'>Vuokratunnus</p>
-              <p className='lease-info__type'>
-                <span className='lease-info__number'>{leaseIdentifier}</span>
-                <span className='lease-info__date'>Vuokraus ajalle {leaseDateRange}</span>
-              </p>
+            <div className="lease-info-wrapper">
+              {!isEditMode &&
+                <LeaseInfo
+                  identifier={leaseIdentifier}
+                  startDate={get(currentLease, 'start_date')}
+                  endDate={get(currentLease, 'end_date')}
+                />
+              }
+              {isEditMode &&
+                <LeaseInfoEdit
+                  identifier={leaseIdentifier}
+                  initialValues={{
+                    start_date: currentLease.start_date ? moment(currentLease.start_date) : null,
+                    end_date: currentLease.end_date ? moment(currentLease.end_date) : null,
+                  }}
+                />
+              }
             </div>
             <div className='controls'>
               <ControlButtons
                 isEditMode={isEditMode}
+                isValid={areFormsValid}
                 onEditClick={this.openEditMode}
                 onCancelClick={this.cancel}
                 onSaveClick={this.save}
@@ -252,6 +288,9 @@ class PreparerForm extends Component {
   }
 }
 
+const leaseInfoFormName = 'lease-info-edit-form';
+const leaseInfoFormSelector = formValueSelector(leaseInfoFormName);
+
 const areasFormName = 'property-unit-edit-form';
 const areasFormSelector = formValueSelector(areasFormName);
 
@@ -263,13 +302,17 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        start_date: leaseInfoFormSelector(state, 'start_date'),
+        end_date: leaseInfoFormSelector(state, 'end_date'),
         currentLease: getCurrentLease(state),
         isFetching: getIsFetching(state),
+        leaseInfoErrors: getLeaseInfoErrors(state),
         areasForm: areasFormSelector(state, 'areas'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
       };
     },
     {
+      editLease,
       fetchSingleLease,
     }
   ),
