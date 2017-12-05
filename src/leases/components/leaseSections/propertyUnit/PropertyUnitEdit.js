@@ -3,10 +3,9 @@ import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Field, FieldArray, reduxForm, formValueSelector, arrayPush} from 'redux-form';
+import {Field, FieldArray, reduxForm, formValueSelector} from 'redux-form';
 
 import trashIcon from '../../../../../assets/icons/trash.svg';
-import FormActionDropdown from '../../../../components/FormActionDropdown';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 
@@ -16,11 +15,8 @@ type PropertyProps = {
 }
 
 const renderProperty = ({title, fields}: PropertyProps) => {
-  if(fields.length === 0) {
-    return null;
-  }
   return (
-    <div>
+    <div className='green-box'>
       {fields.length > 0 &&
         <Row>
           <Column>
@@ -28,8 +24,8 @@ const renderProperty = ({title, fields}: PropertyProps) => {
           </Column>
         </Row>
       }
-      {fields.map((property, index) =>
-        <div key={index} className='subsection-container'>
+      {fields.length > 0 && fields.map((property, index) =>
+        <div key={index} className='green-box-item'>
           <button
             className='remove-button'
             type="button"
@@ -130,6 +126,16 @@ const renderProperty = ({title, fields}: PropertyProps) => {
           </Row>
         </div>
       )}
+      <Row>
+        {title === 'Kiinteistöt / määräalat sopimushetkellä' &&
+        <Column>
+          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää kiinteistö /määräala sopimushetkellä</span></a>
+        </Column>}
+        {title === 'Kiinteistöt / määräalat nykyhetkellä' &&
+        <Column>
+          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää kiinteistö /määräala nykyhetkellä</span></a>
+        </Column>}
+      </Row>
     </div>
   );
 };
@@ -140,18 +146,16 @@ type PlanUnitProps = {
 }
 
 const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
-  if(fields.length === 0) {
-    return null;
-  }
   return (
-    <div>
+    <div className='green-box'>
+      {fields.length > 0 &&
       <Row>
         <Column>
           <h2>{title}</h2>
         </Column>
-      </Row>
+      </Row>}
       {fields && fields.length > 0 && fields.map((planunit, index) =>
-        <div key={index} className='subsection-container'>
+        <div key={index} className='green-box-item'>
           <button
             className='remove-button'
             type="button"
@@ -288,6 +292,16 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
           </Row>
         </div>
       )}
+      <Row>
+        {title === 'Kaavayksiköt sopimushetkellä' &&
+        <Column>
+          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Kaavayksiköt sopimushetkellä</span></a>
+        </Column>}
+        {title === 'Kaavayksiköt nykyhetkellä' &&
+        <Column>
+          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Kaavayksiköt nykyhetkellä</span></a>
+        </Column>}
+      </Row>
     </div>
   );
 };
@@ -301,13 +315,13 @@ class RenderDistricts extends Component {
   props: DistrictsProps
 
   render () {
-    const {dispatch, fields} = this.props;
+    const {fields} = this.props;
 
     return (
       <div>
         {fields && fields.length > 0 && fields.map((district, index) => {
           return (
-            <div key={index} className='property-unit'>
+            <div key={index} className='item'>
               <button
                 className='remove-button'
                 type="button"
@@ -400,39 +414,10 @@ class RenderDistricts extends Component {
                 </Column>
               </Row>
 
-              <FieldArray title='Kiinteistöt / määräalat nykyhetkellä' name={`${district}.plots_at_present`} component={renderProperty}/>
               <FieldArray title='Kiinteistöt / määräalat sopimushetkellä' name={`${district}.plots_in_contract`} component={renderProperty}/>
-              <FieldArray title='Kaavayksikkö nykyhetkellä' name={`${district}.plan_plots_at_present`} component={renderPlanUnit}/>
-              <FieldArray title='Kaavayksikkö sopimushetkellä' name={`${district}.plan_plots_in_contract`} component={renderPlanUnit}/>
-              <Row>
-                <Column>
-                  <FormActionDropdown
-                    title={'Lisää uusi'}
-                    onOptionClick={(option) => {
-                      switch(option) {
-                        case 'contractProperty':
-                          dispatch(arrayPush('property-unit-edit-form', `${district}.plots_in_contract`, {}));
-                          break;
-                        case 'currentProperty':
-                          dispatch(arrayPush('property-unit-edit-form', `${district}.plots_at_present`, {}));
-                          break;
-                        case 'contractPlanUnit':
-                          dispatch(arrayPush('property-unit-edit-form', `${district}.plan_plots_in_contract`, {}));
-                          break;
-                        case 'currentPlanUnit':
-                          dispatch(arrayPush('property-unit-edit-form', `${district}.plan_plots_at_present`, {}));
-                          break;
-                      }
-                    }}
-                    options={[
-                      {value: 'currentProperty', label: 'Kiinteistö / määräala nykyhetkellä'},
-                      {value: 'contractProperty', label: 'Kiinteistö / määräala sopimushetkellä'},
-                      {value: 'currentPlanUnit', label: 'Kaavayksikkö nykyhetkellä'},
-                      {value: 'contractPlanUnit', label: 'Kaavayksikkö sopimushetkellä'},
-                    ]}
-                  />
-                </Column>
-              </Row>
+              <FieldArray title='Kiinteistöt / määräalat nykyhetkellä' name={`${district}.plots_at_present`} component={renderProperty}/>
+              <FieldArray title='Kaavayksiköt sopimushetkellä' name={`${district}.plan_plots_in_contract`} component={renderPlanUnit}/>
+              <FieldArray title='Kaavayksiköt nykyhetkellä' name={`${district}.plan_plots_at_present`} component={renderPlanUnit}/>
             </div>
           );
         })}
@@ -459,7 +444,7 @@ class PropertyUnitEdit extends Component {
     const {handleSubmit, dispatch} = this.props;
 
     return (
-      <form onSubmit={handleSubmit} className='property-unit-edit'>
+      <form onSubmit={handleSubmit} className='lease-section-edit'>
         <Row>
           <Column>
             <FieldArray name="areas" dispatch={dispatch} component={RenderDistricts}/>

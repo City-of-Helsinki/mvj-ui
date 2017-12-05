@@ -23,7 +23,7 @@ const FieldTypeSelect = ({label, input, displayError, disabled, options, placeho
   const {onChange, name} = input;
 
   const handleBlur = () => {
-    console.log('BLUR');
+    
   };
 
   const handleChange = (value) => {

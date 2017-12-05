@@ -16,10 +16,10 @@ type OtherPersonProps = {
 const renderOtherPersons = ({fields}: OtherPersonProps) => {
   return (
 
-    <div className='other-person-wrapper'>
+    <div className='green-box'>
       {fields && fields.length > 0 && fields.map((person, index) => {
         return (
-          <div key={index} className='other-person'>
+          <div key={index} className='green-box-item'>
             <button
               className='remove-button'
               type="button"
@@ -188,7 +188,7 @@ const renderTenants = ({fields}: TenantProps) => {
     <div>
       {fields && fields.length > 0 && fields.map((tenant, index) => {
         return (
-          <div key={index} className='tenant'>
+          <div key={index} className='item'>
             <button
               className='remove-button'
               type="button"
@@ -415,7 +415,7 @@ class TenantEdit extends Component {
     const {dispatch, handleSubmit} = this.props;
 
     return (
-      <form onSubmit={handleSubmit} className='tenant-edit'>
+      <form onSubmit={handleSubmit} className='lease-section-edit'>
         <Row>
           <Column>
             <FieldArray name="tenants" dispatch={dispatch} component={renderTenants}/>

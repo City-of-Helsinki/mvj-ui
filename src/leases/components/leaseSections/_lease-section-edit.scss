@@ -22,7 +22,7 @@
     font-size: rem-calc(15px);
     font-family: $font-family-source;
     font-weight: 600;
-    margin: 0;
+    margin: 0.1rem 0 0;
     float: left;
     cursor: pointer;
 
@@ -97,7 +97,7 @@
   .green-box {
     background-color: rgba(0, 146, 70, 0.1);
     padding: 0.6rem 1rem;
-    margin: 1rem 0 1.6rem;
+    margin: 0.6rem 0;
     }
 
     .green-box-item + .green-box-item {
@@ -123,6 +123,9 @@
           opacity: 0.85;
         }
     }
+  }
+  .green-box:last-of-type {
+    margin-bottom: 1.6rem;
   }
 
   .pledge-book {

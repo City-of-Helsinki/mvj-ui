@@ -73,7 +73,6 @@ class ActionDropdown extends Component {
                       action();
                       toggle();
                     } else {
-                      console.log('Link action');
                       toggle();
                     }
                   }}><a>{get(option, 'label')}</a></li>

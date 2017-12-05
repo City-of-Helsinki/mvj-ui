@@ -7,7 +7,7 @@
     line-height: normal;
 	  text-align: left;
     color: $dark-gray;
-    margin-bottom: rem-calc(3px);
+    margin-bottom: rem-calc(2px);
   }
 
   label.title {
@@ -66,8 +66,8 @@
         .option-label {
           display: inline-block;
           font-size: rem-calc(14px);
-          line-height: rem-calc(30px);
-          height: rem-calc(30px);
+          line-height: rem-calc(26px);
+          height: rem-calc(26px);
           margin-right: rem-calc(10px);
         }
         .option-label:last-child {
