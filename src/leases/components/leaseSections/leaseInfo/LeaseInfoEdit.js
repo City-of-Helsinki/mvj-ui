@@ -19,7 +19,6 @@ class LeaseInfoEdit extends Component {
   props: Props
 
   render () {
-    console.log(this.props);
     const {start_date, identifier} = this.props;
 
     return (
