@@ -73,7 +73,8 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<> {
         break;
       case 404:
         yield put(notFound());
-        yield put(receiveError(new Error(`404: ${bodyAsJson.detail}`)));
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        // yield put(receiveError(new Error(`404: ${bodyAsJson.detail}`)));
         break;
       case 500:
         yield put(notFound());
@@ -90,7 +91,6 @@ function* createLeaseSaga({payload: lease}): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(createLease, lease);
 
-
     switch (statusCode) {
       case 201:
         yield put(push(`/beta/leases/${bodyAsJson.id}`));
@@ -98,7 +98,7 @@ function* createLeaseSaga({payload: lease}): Generator<> {
         break;
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({...bodyAsJson, _error: 'Virhe'})));
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
       case 500:
         yield put(notFound());
@@ -123,7 +123,7 @@ function* editLeaseSaga({payload: lease}): Generator<> {
         break;
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({...bodyAsJson, _error: 'Virhe'})));
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
       case 500:
         yield put(notFound());
