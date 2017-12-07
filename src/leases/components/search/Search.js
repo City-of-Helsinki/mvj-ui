@@ -60,10 +60,10 @@ class Search extends Component {
 
   initialize = (query: Object) => {
     this.setState({
-      district: query.district ? query.district.toUpperCase() : '',
+      district: query.district ? query.district : '',
       municipality: query.municipality ? query.municipality : '',
       sequence: query.sequence ? query.sequence : '',
-      type: query.type ? query.type : '',
+      type: query.type ? query.type.toUpperCase() : '',
     });
 
     if(toArray(query).length > 0 && !query.keyword) {
@@ -86,7 +86,7 @@ class Search extends Component {
       filters.type = type ? type.toUpperCase() : undefined;
     }
     onSearch(filters);
-  }, 200);
+  }, 300);
 
   handleTextInputChange = (e: any, id: string) => {
     this.setState({[id]: e.target.value});

@@ -50,10 +50,10 @@ class LeaseList extends Component {
 
   componentWillMount() {
     const {fetchAttributes, fetchLeases} = this.props;
-    const {router: {location: {search}}} = this.props;
+    const {router: {location: {query}}} = this.props;
 
     fetchAttributes();
-    fetchLeases(search);
+    fetchLeases(getSearchQuery(query));
   }
 
   componentDidMount = () => {
@@ -79,9 +79,8 @@ class LeaseList extends Component {
     const {fetchLeases} = this.props;
     const {router} = this.context;
     const search = getSearchQuery(query);
-
     fetchLeases(search);
-    
+
     return router.push({
       pathname: `/leases`,
       query,

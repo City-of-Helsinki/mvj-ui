@@ -20,6 +20,11 @@ export const getSearchQuery = (filters) => {
         return;
       }
 
+      if (key === 'type') {
+        query.push(`${key}=${encodeURIComponent(filter.toUpperCase())}`);
+        return;
+      }
+
       query.push(`${key}=${isArray(filter) ? filter.join(',') : encodeURIComponent(filter)}`);
     }
   });
