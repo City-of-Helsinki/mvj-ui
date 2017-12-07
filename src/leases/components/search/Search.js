@@ -2,12 +2,16 @@
 import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import toArray from 'lodash/toArray';
 import debounce from 'lodash/debounce';
 
-import {getSearchQuery} from './helpers';
 import SelectInput from '../../../components/SelectInput';
 import SingleCheckboxInput from '../../../components/SingleCheckboxInput';
 import TextInput from '../../../components/TextInput';
+
+type Props = {
+  onSearch: Function,
+}
 
 type State = {
   address: string,
@@ -31,6 +35,8 @@ type State = {
 }
 
 class Search extends Component {
+  props: Props
+
   state: State = {
     address: '',
     customer: '',
@@ -52,20 +58,31 @@ class Search extends Component {
     types: [],
   }
 
-  onSearchChange = debounce(() => {
-    this.search();
-  }, 500);
+  initialize = (query: Object) => {
+    this.setState({
+      district: query.district ? query.district : '',
+      municipality: query.municipality ? query.municipality : '',
+      sequence: query.sequence ? query.sequence : '',
+      type: query.type ? query.type : '',
+    });
 
-  search = () => {
+    if(toArray(query).length > 0 && !query.keyword) {
+      this.setState({
+        isBasicSearch: false,
+      });
+    }
+  }
+
+  onSearchChange = debounce(() => {
+    const {onSearch} = this.props;
     const {district, municipality, sequence, type} = this.state;
     const filters = {};
-    filters.district = district ? district : '';
-    filters.municipality = municipality ? municipality : '';
-    filters.sequence = sequence ? sequence : '';
-    filters.type = type ? type : '';
-    const query = getSearchQuery(filters);
-    console.log(query);
-  }
+    filters.district = district ? district : undefined;
+    filters.municipality = municipality ? municipality : undefined;
+    filters.sequence = sequence ? sequence : undefined;
+    filters.type = type ? type : undefined;
+    onSearch(filters);
+  }, 500);
 
   handleTextInputChange = (e: any, id: string) => {
     this.setState({[id]: e.target.value});
@@ -163,16 +180,16 @@ class Search extends Component {
                   <div className='column-text-input-first'>
                     <label className='label-long'>Vuokraus</label>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'leaseType')} value={type}/>
+                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'type')} value={type}/>
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'leaseMunicipality')} value={municipality}/>
+                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'municipality')} value={municipality}/>
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'leaseDistrict')} value={district}/>
+                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'district')} value={district}/>
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'leaseSequence')} value={sequence}/>
+                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'sequence')} value={sequence}/>
                     </div>
                   </div>
                   <div className='column-checkbox'>

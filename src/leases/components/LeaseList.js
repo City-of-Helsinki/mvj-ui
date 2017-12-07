@@ -41,15 +41,21 @@ class LeaseList extends Component {
     visualizationType: 'table',
   }
 
+  search: any
+
   static contextTypes = {
     router: PropTypes.object,
   };
 
   componentWillMount() {
     const {fetchAttributes, fetchLeases} = this.props;
-    // const {fetchLeases} = this.props;
     fetchAttributes();
     fetchLeases();
+  }
+
+  componentDidMount = () => {
+    const {router: {location: {query}}} = this.props;
+    this.search.initialize(query);
   }
 
   showModal = (modalName: string) => {
@@ -67,14 +73,19 @@ class LeaseList extends Component {
   }
 
   handleSearchChange = (query) => {
-    console.log(query);
+    const {router} = this.context;
+    return router.push({
+      pathname: `/leases`,
+      query,
+    });
   }
 
   handleEditClick = (id) => {
     const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
     return router.push({
       pathname: `/leases/${id}`,
-      // query,
+      query,
     });
   };
 
@@ -102,7 +113,10 @@ class LeaseList extends Component {
         </Modal>
         <Row>
           <div className='lease-list__search-wrapper'>
-            <Search />
+            <Search
+              ref={(input) => { this.search = input; }}
+              onSearch={(query) => this.handleSearchChange(query)}
+            />
           </div>
           <div className='lease-list__dropdown-wrapper'>
             <ActionDropdown
