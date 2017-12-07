@@ -8,18 +8,13 @@ import LeaseList from '../leases/components/LeaseList';
 import LeasePage from '../leases/components/LeasePage';
 
 export default
-<Route path="/">
+<Route path="/" component={App}>
   <IndexRoute onEnter={(nextState, replace) => {
-    replace(`/beta`);
+    replace(`/leases`);
   }}/>
-  <Route path="/beta" component={App}>
-    <IndexRoute onEnter={(nextState, replace) => {
-      replace(`/beta/leases`);
-    }}/>
-    <Route path="leases">
-      <IndexRoute component={LeaseList}/>
-      <Route path=":leaseId" component={LeasePage}/>
-    </Route>
-    <Route path="*" component={ErrorPage}/>
+  <Route path="leases">
+    <IndexRoute component={LeaseList}/>
+    <Route path=":leaseId" component={LeasePage}/>
   </Route>
+  <Route path="*" component={ErrorPage}/>
 </Route>;

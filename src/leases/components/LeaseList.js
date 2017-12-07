@@ -69,7 +69,7 @@ class LeaseList extends Component {
   handleEditClick = (id) => {
     const {router} = this.context;
     return router.push({
-      pathname: `/beta/leases/${id}`,
+      pathname: `/leases/${id}`,
       // query,
     });
   };
