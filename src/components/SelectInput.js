@@ -3,6 +3,7 @@ import React from 'react';
 import Select from 'react-select';
 
 type Props = {
+  disabled?: boolean,
   multi?: boolean,
   onChange: Function,
   options: Array<Object>,
@@ -19,6 +20,7 @@ const arrowRenderer = () => {
 };
 
 const SelectInput = ({
+  disabled = false,
   multi = false,
   onChange,
   options,
@@ -32,6 +34,7 @@ const SelectInput = ({
         arrowRenderer={arrowRenderer}
         backspaceRemoves={false}
         clearAllText={'Poista valinnat'}
+        disabled={disabled}
         multi={multi}
         onChange={onChange}
         options={options}

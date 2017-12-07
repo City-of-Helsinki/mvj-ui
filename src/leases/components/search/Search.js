@@ -60,7 +60,7 @@ class Search extends Component {
 
   initialize = (query: Object) => {
     this.setState({
-      district: query.district ? query.district : '',
+      district: query.district ? query.district.toUpperCase() : '',
       municipality: query.municipality ? query.municipality : '',
       sequence: query.sequence ? query.sequence : '',
       type: query.type ? query.type : '',
@@ -83,10 +83,10 @@ class Search extends Component {
       filters.district = district ? district : undefined;
       filters.municipality = municipality ? municipality : undefined;
       filters.sequence = sequence ? sequence : undefined;
-      filters.type = type ? type : undefined;
+      filters.type = type ? type.toUpperCase() : undefined;
     }
     onSearch(filters);
-  }, 500);
+  }, 200);
 
   handleTextInputChange = (e: any, id: string) => {
     this.setState({[id]: e.target.value});
@@ -140,7 +140,7 @@ class Search extends Component {
           <div>
             <Row>
               <Column  className='search-box' large={12}>
-                <TextInput placeholder={'Hae hakusanalla'} onChange={(e) => this.handleTextInputChange(e, 'keyword')} value={keyword}/>
+                <TextInput disabled placeholder={'Hae hakusanalla'} onChange={(e) => this.handleTextInputChange(e, 'keyword')} value={keyword}/>
               </Column>
             </Row>
           </div>
@@ -165,6 +165,7 @@ class Search extends Component {
                   <div className='column-select'>
                     <label className='label-medium'>Rooli</label>
                     <SelectInput
+                      disabled
                       multi={true}
                       onChange={(e) => this.handleMultiSelectInputChange(e, 'roles')}
                       options={[
@@ -214,6 +215,7 @@ class Search extends Component {
                   <div className='column-select'>
                     <label className='label-medium'>Tyyppi</label>
                     <SelectInput
+                      disabled
                       multi={true}
                       onChange={(e) => this.handleMultiSelectInputChange(e, 'types')}
                       options={[

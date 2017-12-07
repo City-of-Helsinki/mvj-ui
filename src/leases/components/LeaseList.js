@@ -81,7 +81,7 @@ class LeaseList extends Component {
     const search = getSearchQuery(query);
 
     fetchLeases(search);
-
+    
     return router.push({
       pathname: `/leases`,
       query,
