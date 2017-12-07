@@ -75,12 +75,16 @@ class Search extends Component {
 
   onSearchChange = debounce(() => {
     const {onSearch} = this.props;
-    const {district, municipality, sequence, type} = this.state;
+    const {district, isBasicSearch, municipality, sequence, type} = this.state;
     const filters = {};
-    filters.district = district ? district : undefined;
-    filters.municipality = municipality ? municipality : undefined;
-    filters.sequence = sequence ? sequence : undefined;
-    filters.type = type ? type : undefined;
+    if(isBasicSearch) {
+      console.log('Basic search');
+    } else {
+      filters.district = district ? district : undefined;
+      filters.municipality = municipality ? municipality : undefined;
+      filters.sequence = sequence ? sequence : undefined;
+      filters.type = type ? type : undefined;
+    }
     onSearch(filters);
   }, 500);
 
@@ -105,6 +109,7 @@ class Search extends Component {
   }
 
   toggleSearchType = () => {
+    this.onSearchChange();
     this.setState({isBasicSearch: !this.state.isBasicSearch});
   }
 

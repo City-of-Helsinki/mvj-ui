@@ -21,7 +21,7 @@ export type ReceiveInvoicesAction = Action<'mvj/leasesbeta/RECEIVE_INVOICES', In
 export type FetchAreasAction = Action<'mvj/leasesbeta/FETCH_AREAS', void>;
 export type ReceiveAreasAction = Action<'mvj/leasesbeta/RECEIVE_AREAS', Areas>;
 
-export type FetchLeasesAction = Action<'mvj/leasesbeta/FETCH_ALL', void>;
+export type FetchLeasesAction = Action<'mvj/leasesbeta/FETCH_ALL', string>;
 export type ReceiveLeasesAction = Action<'mvj/leasesbeta/RECEIVE_ALL', LeasesList>;
 
 export type FetchSingleLeaseAction = Action<'mvj/leasesbeta/FETCH_SINGLE', LeaseId>;

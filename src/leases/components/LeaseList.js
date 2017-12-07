@@ -15,6 +15,7 @@ import CreateLease from '../components/leaseSections/CreateLease';
 import TableControllers from './TableControllers';
 import Table from '../../components/Table';
 import * as contentHelpers from '../helpers';
+import {getSearchQuery} from './search/helpers';
 
 type Props = {
   attributes: Object,
@@ -49,8 +50,10 @@ class LeaseList extends Component {
 
   componentWillMount() {
     const {fetchAttributes, fetchLeases} = this.props;
+    const {router: {location: {search}}} = this.props;
+
     fetchAttributes();
-    fetchLeases();
+    fetchLeases(search);
   }
 
   componentDidMount = () => {
@@ -73,7 +76,12 @@ class LeaseList extends Component {
   }
 
   handleSearchChange = (query) => {
+    const {fetchLeases} = this.props;
     const {router} = this.context;
+    const search = getSearchQuery(query);
+
+    fetchLeases(search);
+
     return router.push({
       pathname: `/leases`,
       query,

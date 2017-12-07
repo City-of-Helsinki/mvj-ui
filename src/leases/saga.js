@@ -43,9 +43,9 @@ function* fetchAttributesSaga(): Generator<> {
   }
 }
 
-function* fetchLeasesSaga(): Generator<> {
+function* fetchLeasesSaga({payload: search}): Generator<> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLeases);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLeases, search);
     switch (statusCode) {
       case 200:
         yield put(receiveLeases(bodyAsJson));
@@ -55,6 +55,7 @@ function* fetchLeasesSaga(): Generator<> {
         yield put(notFound());
         break;
     }
+
     // yield put(receiveLeases(mockData.leases));
   } catch (error) {
     console.error('Failed to fetch leases with error "%s"', error);
