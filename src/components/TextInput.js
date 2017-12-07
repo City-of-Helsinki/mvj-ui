@@ -2,20 +2,22 @@
 import React from 'react';
 
 type Props = {
-  value: string,
+  disabled?: boolean,
   onChange: Function,
   placeholder?: string,
   type?: string,
+  value: string,
 }
 
-const TextInput = ({value = '', onChange, placeholder = '', type = 'text'}: Props) => {
+const TextInput = ({disabled, onChange, placeholder = '', type = 'text', value = ''}: Props) => {
   return (
     <input
       className='text-input'
-      value={value}
+      disabled={disabled}
       onChange={onChange}
-      type={type}
       placeholder={placeholder}
+      type={type}
+      value={value}
     />
   );
 };

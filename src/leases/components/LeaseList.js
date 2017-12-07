@@ -10,7 +10,7 @@ import ActionDropdown from '../../components/ActionDropdown';
 import Loader from '../../components/loader/Loader';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
 import Modal from '../../components/Modal';
-import Search from './Search';
+import Search from './search/Search';
 import CreateLease from '../components/leaseSections/CreateLease';
 import TableControllers from './TableControllers';
 import Table from '../../components/Table';
@@ -64,6 +64,10 @@ class LeaseList extends Component {
     this.setState({
       [modalVisibilityKey]: false,
     });
+  }
+
+  handleSearchChange = (query) => {
+    console.log(query);
   }
 
   handleEditClick = (id) => {
