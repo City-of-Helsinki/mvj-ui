@@ -74,6 +74,7 @@ class Search extends Component {
 
   handleCheckboxChange = (id:string) => {
     this.setState({[id]: !this.state[id]});
+    this.onSearchChange();
   }
 
   handleMultiSelectInputChange = (selectedOptions: Array<Object>, id: string) => {
@@ -83,6 +84,7 @@ class Search extends Component {
       );
     });
     this.setState({[id]: options});
+    this.onSearchChange();
   }
 
   toggleSearchType = () => {
