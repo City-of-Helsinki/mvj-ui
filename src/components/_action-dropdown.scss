@@ -63,3 +63,25 @@
     }
   }
 }
+
+.action-dropdown-transition-enter {
+  max-height: 0px;
+  transition: max-height 0.3s ease;
+  overflow: hidden;
+}
+
+.action-dropdown-transition-enter.action-dropdown-transition-enter-active {
+  height: auto;
+  max-height: 250px;
+}
+
+.action-dropdown-transition-leave {
+  height: auto;
+  max-height: 250px;
+  transition:  max-height 0.3s ease-out;
+}
+
+.action-dropdown-transition-leave.action-dropdown-transition-leave-active {
+  max-height: 0px;
+  overflow: hidden;
+}

@@ -57,6 +57,7 @@
     "proj4leaflet": "https://github.com/kartena/Proj4Leaflet.git",
     "prop-types": "^15.6.0",
     "react": "^15.6.2",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-datepicker": "^0.44.0",
     "react-dom": "^15.6.2",
     "react-foundation": "^0.7.0",
