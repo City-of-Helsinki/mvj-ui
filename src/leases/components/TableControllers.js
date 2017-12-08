@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 
-import StyledRadioButtons from '../../components/StyledRadioButtons';
+import StyledCheckboxButtons from '../../components/StyledCheckboxButtons';
 import IconRadioButtons from '../../components/IconRadioButtons';
 import tableIcon from '../../../assets/icons/table.svg';
 import tableGreenIcon from '../../../assets/icons/table-green.svg';
@@ -9,7 +9,6 @@ import mapIcon from '../../../assets/icons/map.svg';
 import mapGreenIcon from '../../../assets/icons/map-green.svg';
 
 const documentTypeOptions = [
-  {value: 'all', label: 'Kaikki'},
   {value: 'application', label: 'Hakemukset'},
   {value: 'reservation', label: 'Varaukset'},
   {value: 'lease', label: 'Vuokraukset'},
@@ -23,7 +22,7 @@ const visualizationTypeOptions = [
 
 type Props = {
   amount: number,
-  documentType: string,
+  documentType: Array<string>,
   onDocumentTypeChange: Function,
   visualizationType: string,
   onVisualizationTypeChange: Function,
@@ -43,11 +42,13 @@ class TableControllers extends Component {
             <span>Löytyi {amount} kpl</span>
           </div>
           <div className='document-type-wrapper'>
-            <StyledRadioButtons
-              options={documentTypeOptions}
-              radioName='radio-buttons-document-type'
-              value={documentType}
+            <StyledCheckboxButtons
+              checkboxName='checkbox-buttons-document-type'
               onChange={(value) => onDocumentTypeChange(value)}
+              options={documentTypeOptions}
+              selectAllButton
+              selectAllButtonLabel='Kaikki'
+              value={documentType}
             />
           </div>
           <div className='visualization-type-wrapper'>
