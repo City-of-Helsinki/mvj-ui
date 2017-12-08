@@ -1,6 +1,5 @@
 // @flow
 import React, {Component} from 'react';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import {get} from 'lodash';
@@ -54,40 +53,10 @@ class ActionDropdown extends Component {
     this.setState({isOpen: !this.state.isOpen});
   }
 
-  getItems = () => {
-    const {options} = this.props;
+  render () {
+    const {options, title} = this.props;
     const {isOpen} = this.state;
     const {toggle} = this;
-
-    if(!isOpen) {
-      return '';
-    }
-    return (
-      <ul>
-        {options.map((option, index) => {
-          return (
-            <li className='option' key={index} onClick={() => {
-              const {action} = option;
-              if(action) {
-                action();
-                toggle();
-              } else {
-                toggle();
-              }
-            }}>
-              <a>{get(option, 'label')}</a>
-            </li>
-          );
-        }
-        )}
-      </ul>
-    );
-  }
-
-  render () {
-    const {title} = this.props;
-    const {isOpen} = this.state;
-    const items = this.getItems();
 
     return (
       <div className='action-dropdown'>
@@ -95,13 +64,24 @@ class ActionDropdown extends Component {
           <a onClick={this.toggle} className={classNames('title', {'isOpen': isOpen})}>{title}</a>
         </div>
         <div className={'action-dropdown_option-wrapper'}>
-          <ReactCSSTransitionGroup
-            transitionName='action-dropdown-transition'
-            transitionEnterTimeout={300}
-            transitionLeaveTimeout={300}
-          >
-            {items}
-          </ReactCSSTransitionGroup>
+          <ul className={classNames({'is-open': isOpen})}>
+            {options.map((option, index) => {
+              return (
+                <li className='option' key={index} onClick={() => {
+                  const {action} = option;
+                  if(action) {
+                    action();
+                    toggle();
+                  } else {
+                    toggle();
+                  }
+                }}>
+                  <a>{get(option, 'label')}</a>
+                </li>
+              );
+            }
+            )}
+          </ul>
         </div>
       </div>
     );

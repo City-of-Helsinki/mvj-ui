@@ -39,11 +39,20 @@
     right: 1px;
     left: 1px;
     background: #fff;
+
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
       box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1), 0 2px 5px 0 rgba(0, 0, 0, 0.15);
+      max-height: 0px;
+      transition: max-height 0.3s ease;
+      overflow: hidden;
+
+      &.is-open {
+        height: auto;
+        max-height: 250px;
+      }
     }
 
     .option {
@@ -62,26 +71,4 @@
       background-color: $engel-lighter;
     }
   }
-}
-
-.action-dropdown-transition-enter {
-  max-height: 0px;
-  transition: max-height 0.3s ease;
-  overflow: hidden;
-}
-
-.action-dropdown-transition-enter.action-dropdown-transition-enter-active {
-  height: auto;
-  max-height: 250px;
-}
-
-.action-dropdown-transition-leave {
-  height: auto;
-  max-height: 250px;
-  transition:  max-height 0.3s ease-out;
-}
-
-.action-dropdown-transition-leave.action-dropdown-transition-leave-active {
-  max-height: 0px;
-  overflow: hidden;
 }
