@@ -42,8 +42,8 @@ export const fetchAreas = (): FetchAreasAction =>
 export const receiveAreas = (areas: Areas): ReceiveAreasAction =>
   createAction('mvj/leasesbeta/RECEIVE_AREAS')(areas);
 
-export const fetchLeases = (): FetchLeasesAction =>
-  createAction('mvj/leasesbeta/FETCH_ALL')();
+export const fetchLeases = (search: string): FetchLeasesAction =>
+  createAction('mvj/leasesbeta/FETCH_ALL')(search);
 
 export const receiveLeases = (leases: LeasesList): ReceiveLeasesAction =>
   createAction('mvj/leasesbeta/RECEIVE_ALL')(leases);

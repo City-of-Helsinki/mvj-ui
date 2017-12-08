@@ -63,15 +63,14 @@
 // App Beta
 @import "app/app";
 @import "leases/components/control-buttons";
-@import "leases/components/lease-list";
-@import "leases/components/lease-page";
-@import "leases/components/search";
-@import "leases/components/table-controllers";
 @import "leases/components/leaseSections/create-lease";
 @import "leases/components/leaseSections/leaseInfo/lease-info";
 @import "leases/components/leaseSections/lease-section";
 @import "leases/components/leaseSections/lease-section-edit";
-
+@import "leases/components/lease-list";
+@import "leases/components/lease-page";
+@import "leases/components/search/search";
+@import "leases/components/table-controllers";
 
 
 html {
