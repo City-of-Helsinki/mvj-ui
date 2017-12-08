@@ -1,6 +1,6 @@
 // @flow
-
 import React from 'react';
+import classnames from 'classnames';
 
 type Props = {
   children?: any,
@@ -15,12 +15,10 @@ const Modal = ({
   onClose,
   title,
 }: Props) => {
-  if(!isOpen) {
-    return null;
-  }
+
   return (
-    <div className='modal'>
-      <div className='modal__backdrop'></div>
+    <div className={classnames('modal', {'modal-open': isOpen})}>
+      <div className='modal__overlay'></div>
       <div className='modal__wrapper'>
 
         <div className='modal__header'>

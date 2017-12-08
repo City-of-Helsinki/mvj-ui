@@ -48,7 +48,9 @@ class Collapse extends Component {
           <span>{header}</span> <i className="arrow-icon"/>
         </div>
         <div className="collapse__content">
-          {children}
+          <div className="collapse__content-wrapper">
+            {children}
+          </div>
         </div>
       </div>
     );

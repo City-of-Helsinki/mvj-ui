@@ -47,7 +47,9 @@
   }
 
   &__content {
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
   }
 
   // Opened stage
@@ -59,7 +61,9 @@
     }
 
     .collapse__content {
-      display: block;
+      height: auto;
+      max-height: 2000px;
+      transition: max-height 0.4s ease;
     }
   }
 
@@ -91,7 +95,13 @@
     }
 
     .collapse__content {
-      display: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s ease;
+    }
+
+    .collapse__content-wrapper {
+      padding: rem-calc(10px) rem-calc(20px) rem-calc(10px);
     }
 
     &.open {
@@ -102,8 +112,8 @@
       }
 
       .collapse__content {
-        display: block;
-        padding: rem-calc(10px) rem-calc(20px) rem-calc(10px);
+        max-height: 500px;
+        transition: max-height 0.4s ease;
       }
     }
   }
