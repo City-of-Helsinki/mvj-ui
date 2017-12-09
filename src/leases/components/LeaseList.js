@@ -24,7 +24,7 @@ type Props = {
   fetchLeases: Function,
   isFetching: boolean,
   router: Object,
-  leases: Array<any>,
+  leases: Object,
 }
 
 type State = {
