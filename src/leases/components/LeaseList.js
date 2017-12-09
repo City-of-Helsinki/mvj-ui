@@ -28,7 +28,7 @@ type Props = {
 }
 
 type State = {
-  documentType: string,
+  documentType: Array<string>,
   isCreateLeaseIdentifierModalOpen: boolean,
   visualizationType: string,
 }
@@ -37,7 +37,7 @@ class LeaseList extends Component {
   props: Props
 
   state: State = {
-    documentType: 'all',
+    documentType: [],
     isCreateLeaseIdentifierModalOpen: false,
     visualizationType: 'table',
   }
