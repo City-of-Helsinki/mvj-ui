@@ -28,6 +28,8 @@ import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
 import TenantEdit from './leaseSections/tenant/TenantEdit';
 import TenantTab from './leaseSections/tenant/TenantTab';
+import ConstructionEligibilityTab from './leaseSections/constructionEligibility/ConstructionEligibilityTab';
+import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
 import type Moment from 'moment';
 
 import mockData from '../mock-data.json';
@@ -44,6 +46,7 @@ type State = {
 
 type Props = {
   areasForm: Array<Object>,
+  eligibilityForm: Array<Object>,
   contractsForm: Array<Object>,
   currentLease: Object,
   dispatch: Function,
@@ -57,6 +60,8 @@ type Props = {
   rulesForm: Array<Object>,
   start_date: ?Moment,
   tenantsForm: Array<Object>,
+  contractsForm: Array<Object>,
+  rulesForm: Array<Object>,
 }
 
 class PreparerForm extends Component {
@@ -116,13 +121,18 @@ class PreparerForm extends Component {
   }
 
   save = () => {
-    const {areasForm, contractsForm, currentLease, editLease, end_date, rulesForm, start_date, tenantsForm} = this.props;
-
+    const {editLease, areasForm, currentLease, tenantsForm, start_date, end_date, rulesForm, contractsForm, eligibilityForm} = this.props;
     const payload = currentLease;
     payload.start_date = start_date ? moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
     payload.end_date = end_date ? moment(end_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
 
     editLease(payload);
+
+    this.setState({areas: areasForm});
+    this.setState({areas: eligibilityForm});
+    this.setState({tenants: tenantsForm});
+    this.setState({rules: rulesForm});
+    this.setState({contracts: contractsForm});
 
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
     if(areasForm !== undefined) {
@@ -295,6 +305,10 @@ class PreparerForm extends Component {
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   <h1>Rakentamiskelpoisuus</h1>
+                  <div>
+                    {!isEditMode && <ConstructionEligibilityTab areas={areas}/>}
+                    {isEditMode && <ConstructionEligibilityEdit areas={areas} initialValues={{areas: areas}}/>}
+                  </div>
                 </div>
               </TabPane>
 
@@ -323,6 +337,9 @@ const tenantFormSelector = formValueSelector('tenant-edit-form');
 const contractFormSelector = formValueSelector('contract-edit-form');
 const ruleFormSelector = formValueSelector('rule-edit-form');
 
+const eligibilityFormName = 'eligibility-edit-form';
+const eligibilityFormSelector = formValueSelector(eligibilityFormName);
+
 export default flowRight(
   withRouter,
   reduxForm({
@@ -337,6 +354,10 @@ export default flowRight(
         end_date: leaseInfoFormSelector(state, 'end_date'),
         isFetching: getIsFetching(state),
         leaseInfoErrors: getLeaseInfoErrors(state),
+        areasForm: areasFormSelector(state, 'areas'),
+        eligibilityForm: eligibilityFormSelector(state, 'areas'),
+        tenantsForm: tenantFormSelector(state, 'tenants'),
+        contractsForm: contractFormSelector(state, 'contracts'),=======
         rulesForm: ruleFormSelector(state, 'rules'),
         start_date: leaseInfoFormSelector(state, 'start_date'),
         tenantsForm: tenantFormSelector(state, 'tenants'),

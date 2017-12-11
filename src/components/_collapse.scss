@@ -3,10 +3,6 @@
   align-items: baseline;
   padding: 0.6rem 0 1rem;
 
-  &:first-child {
-    margin: 1.5rem 0 0;
-  }
-
   .collapse__header {
     padding: 0 0 0.6rem;
     cursor: pointer;
@@ -28,6 +24,45 @@
       line-height: rem-calc(32px);
       height: rem-calc(32px);
       display: inline-block;
+    }
+
+    &-neutral {
+      color: $dark-gray;
+      font-size: $font-small;
+      i {
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        vertical-align: text-bottom;
+        background-image: url(../assets/icons/icon_minus.svg);
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
+    }
+
+    &-alert {
+      color: $brick;
+      font-size: $font-small;
+      i {
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        vertical-align: text-bottom;
+        background-image: url(../assets/icons/icon-alert.svg);
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
+    }
+
+    &-success {
+      color: $tram;
+      font-size: $font-small;
+      i {
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        vertical-align: text-bottom;
+        background-image: url(../assets/icons/icon_checked.svg);
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
     }
 
     > span {
