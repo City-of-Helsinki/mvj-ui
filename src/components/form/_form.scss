@@ -20,6 +20,10 @@
 
   .mvj-form-field {
     &__datepicker {
+      .react-datepicker__input-container {
+        width: 100%;
+      }
+
       input {
         padding: 0 0.5rem;
         height: rem-calc(30px);
@@ -77,7 +81,6 @@
 
     }
     &__select {
-
       .error {
         color: $brick;
         display: block;
@@ -160,6 +163,79 @@
       }
       .Select-option.is-focused, .Select-option.is-selected {
         background-color: $engel-lighter !important;
+      }
+
+      &.height-medium {
+        .Select {
+          font-size: $font-regular;
+          line-height: 1;
+
+          &:focus, &:focus {
+            border: 1px solid $medium-gray;
+          }
+
+          .select-input__arrow-renderer {
+            display: block;
+            background-image: url('../assets/icons/icon_arrow_down.svg');
+            height: rem-calc(14px);
+            width: rem-calc(14px);
+          }
+
+          &.is-open {
+            .select-input__arrow-renderer {
+              background-image: url('../assets/icons/icon_arrow_up.svg');
+            }
+          }
+        }
+
+        .Select-control {
+          cursor: pointer;
+          height: rem-calc(30px);
+          display: inline-block;
+          border-radius: 0;
+
+          .Select-value {
+            padding-right: 2.1rem;
+          }
+        }
+
+        .Select-placeholder {
+          padding-left: 0.5rem !important;
+          line-height: rem-calc(28px);
+          color: #ccc;
+        }
+
+        .Select-value {
+          padding-left: 0.5rem !important;
+          padding-right: 2.1rem;
+          line-height: rem-calc(28px) !important;
+        }
+
+        .Select-input {
+          height: rem-calc(30px);
+
+          input {
+            padding: 4px 0 12px;
+          }
+        }
+
+        .Select-arrow-zone {
+          padding: 0;
+          width: rem-calc(20px);
+          position: absolute;
+          top: rem-calc(7px);
+          right: 0;
+        }
+
+        .Select-clear-zone {
+          position: absolute;
+          right: rem-calc(20px);
+          top: rem-calc(5px);
+        }
+
+        .Select-menu-outer {
+          top: 30px;
+        }
       }
     }
   }

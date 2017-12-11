@@ -9,8 +9,8 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import moment from 'moment';
 
-import {getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
-import {editLease, fetchSingleLease} from '../actions';
+import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
+import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
 import * as contentHelpers from '../helpers';
 
 import ContractEdit from './leaseSections/contract/ContractEdit';
@@ -44,11 +44,13 @@ type State = {
 
 type Props = {
   areasForm: Array<Object>,
+  attributes: Object,
   contractsForm: Array<Object>,
   currentLease: Object,
   dispatch: Function,
   editLease: Function,
   end_date: ?Moment,
+  fetchAttributes: Function,
   fetchSingleLease: Function,
   isFetching: boolean,
   leaseInfoErrors: Object,
@@ -56,6 +58,7 @@ type Props = {
   params: Object,
   rulesForm: Array<Object>,
   start_date: ?Moment,
+  status: string,
   tenantsForm: Array<Object>,
 }
 
@@ -78,7 +81,7 @@ class PreparerForm extends Component {
   };
 
   componentWillMount() {
-    const {dispatch, fetchSingleLease, location, params: {leaseId}} = this.props;
+    const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}} = this.props;
 
     // Destroy forms to initialize new values when data is fetched
     dispatch(destroy('lease-info-edit-form'));
@@ -98,6 +101,7 @@ class PreparerForm extends Component {
       contracts: mockData.leases[0].contracts,
       rules: mockData.leases[0].rules,
     });
+    fetchAttributes();
     fetchSingleLease(leaseId);
   }
 
@@ -116,9 +120,10 @@ class PreparerForm extends Component {
   }
 
   save = () => {
-    const {areasForm, contractsForm, currentLease, editLease, end_date, rulesForm, start_date, tenantsForm} = this.props;
+    const {areasForm, contractsForm, currentLease, editLease, end_date, rulesForm, start_date, status, tenantsForm} = this.props;
 
     const payload = currentLease;
+    payload.status = status;
     payload.start_date = start_date ? moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
     payload.end_date = end_date ? moment(end_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
 
@@ -173,13 +178,14 @@ class PreparerForm extends Component {
       rules,
     } = this.state;
     const {
+      attributes,
       currentLease,
       isFetching,
     } = this.props;
 
     const areFormsValid = this.validateForms();
-
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
+    const statusOptions = contentHelpers.getStatusOptions(attributes);
 
     if(isFetching) {
       return (
@@ -203,9 +209,11 @@ class PreparerForm extends Component {
                 <LeaseInfoEdit
                   identifier={leaseIdentifier}
                   initialValues={{
+                    status: currentLease.status ? currentLease.status : null,
                     start_date: currentLease.start_date ? moment(currentLease.start_date) : null,
                     end_date: currentLease.end_date ? moment(currentLease.end_date) : null,
                   }}
+                  statusOptions={statusOptions}
                 />
               }
             </div>
@@ -332,6 +340,7 @@ export default flowRight(
     (state) => {
       return {
         areasForm: areasFormSelector(state, 'areas'),
+        attributes: getAttributes(state),
         contractsForm: contractFormSelector(state, 'contracts'),
         currentLease: getCurrentLease(state),
         end_date: leaseInfoFormSelector(state, 'end_date'),
@@ -339,11 +348,13 @@ export default flowRight(
         leaseInfoErrors: getLeaseInfoErrors(state),
         rulesForm: ruleFormSelector(state, 'rules'),
         start_date: leaseInfoFormSelector(state, 'start_date'),
+        status: leaseInfoFormSelector(state, 'status'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
       };
     },
     {
       editLease,
+      fetchAttributes,
       fetchSingleLease,
     }
   ),
