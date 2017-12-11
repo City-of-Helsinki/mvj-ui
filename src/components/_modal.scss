@@ -7,7 +7,7 @@
     position: fixed;
     top: -100%;
     left: 50%;
-    transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-30%);
     transition: top .5s ease;
 
     @include breakpoint(small only){
@@ -28,6 +28,14 @@
 
   &__content {
     padding: rem-calc(35px) rem-calc(35px);
+    height: 18rem;
+  }
+
+  .close-button svg {
+    width: 22px;
+    height: 22px;
+    margin-top: 0.6rem;
+    fill: $black;
   }
 
   .modal__overlay {
