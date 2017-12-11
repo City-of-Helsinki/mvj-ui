@@ -29,7 +29,10 @@
   &__column {
     flex: 0 0 25%;
     display: block;
-    padding-right: 10px;
+
+    &-wrapper {
+      padding-right: 10px;
+    }
   }
 
   &__label {
