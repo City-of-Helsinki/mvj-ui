@@ -94,7 +94,7 @@ function* createLeaseSaga({payload: lease}): Generator<> {
 
     switch (statusCode) {
       case 201:
-        yield put(push(`/beta/leases/${bodyAsJson.id}`));
+        yield put(push(`/leases/${bodyAsJson.id}`));
         displayUIMessage({title: 'Vuorkatunnus luotu', body: 'Vuokrautunnus on tallennettu onnistuneesti'});
         break;
       case 400:
