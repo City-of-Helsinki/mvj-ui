@@ -49,20 +49,11 @@
     border-top: 1px dashed $tram;
     align-items: baseline;
     padding: 1rem 0 0 0;
-    margin: 1rem 0 1rem;
+    margin: 0 0 1rem;
     position: relative;
 
     > .row {
       padding-right: 3rem;
-    }
-
-    h2 {
-      font-size: rem-calc(15px);
-      font-weight: $semibold;
-      text-transform: uppercase;
-      text-align: left;
-      color: #009246;
-      color: $tram;
     }
 
     .add-column {
@@ -98,6 +89,15 @@
     background-color: rgba(0, 146, 70, 0.1);
     padding: 0.6rem 1rem;
     margin: 0.6rem 0;
+    }
+
+    h2 {
+      font-size: rem-calc(15px);
+      font-weight: $semibold;
+      text-transform: uppercase;
+      text-align: left;
+      color: #009246;
+      color: $tram;
     }
 
     .green-box-item + .green-box-item {

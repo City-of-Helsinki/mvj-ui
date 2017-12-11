@@ -443,6 +443,10 @@
               "research_state": "Tarkistamatta",
               "comments": []
             },
+            "other": {
+              "research_state": "Tarkistamatta",
+              "comments": []
+            },
             "contamination": {
               "rent_conditions": "Kysytty",
               "rent_condition_date": "2017-06-05",
@@ -589,6 +593,10 @@
               "report_author": "Petra Selvittäjä",
               "research_state": "Valmis",
               "geotechnical_number": "495874698",
+              "comments": []
+            },
+            "other": {
+              "research_state": "Tarkistamatta",
               "comments": []
             }
           }

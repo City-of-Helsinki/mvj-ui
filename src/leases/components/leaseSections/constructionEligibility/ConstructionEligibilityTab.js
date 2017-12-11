@@ -9,7 +9,6 @@ type Props = {
   areas: Array<Object>,
 }
 const ConstructionEligibilityTab = ({areas}: Props) => {
-  console.log(areas);
   return (
     <div className='lease-section'>
       {areas && areas.length > 0 && areas.map((area, index) =>

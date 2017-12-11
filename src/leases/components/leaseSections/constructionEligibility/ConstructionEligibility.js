@@ -10,7 +10,6 @@ type Props = {
 }
 
 const ConstructionEligibility = ({eligibility}: Props) => {
-
   return (
     <div>
       <Collapse
@@ -24,8 +23,8 @@ const ConstructionEligibility = ({eligibility}: Props) => {
         }
       >
         {eligibility.preconstruction.comments.length > 0 && eligibility.preconstruction.comments.map((comment, index) =>
-          <div className='section-item'>
-            <Row key={index}>
+          <div className='section-item' key={index}>
+            <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
                 <p><strong>{get(comment, 'comment_author', '')}</strong>, {get(comment, 'comment_date', '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
@@ -52,8 +51,8 @@ const ConstructionEligibility = ({eligibility}: Props) => {
         }
       >
         {eligibility.demolition.comments.length > 0 && eligibility.demolition.comments.map((comment, index) =>
-          <div className='section-item'>
-            <Row key={index}>
+          <div className='section-item'  key={index}>
+            <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
                 <p><strong>{get(comment, 'comment_author', '')}</strong>, {get(comment, 'comment_date', '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
@@ -99,8 +98,8 @@ const ConstructionEligibility = ({eligibility}: Props) => {
           </Row>
         </div>
         {eligibility.contamination.comments.length > 0 && eligibility.contamination.comments.map((comment, index) =>
-          <div className='section-item'>
-            <Row key={index}>
+          <div className='section-item' key={index}>
+            <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
                 <p><strong>{get(comment, 'comment_author', '')}</strong>, {get(comment, 'comment_date', '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
@@ -139,8 +138,8 @@ const ConstructionEligibility = ({eligibility}: Props) => {
           </Row>
         </div>
         {eligibility.construction_investigation.comments.length > 0 && eligibility.construction_investigation.comments.map((comment, index) =>
-          <div className='section-item'>
-            <Row key={index}>
+          <div className='section-item' key={index}>
+            <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
                 <p><strong>{get(comment, 'comment_author', '')}</strong>, {get(comment, 'comment_date', '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
@@ -148,6 +147,33 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             </Row>
           </div>
         )}
+      </Collapse>
+
+      <Collapse
+        className='collapse__secondary'
+        defaultOpen={false}
+        header={
+          <Row>
+            <Column small={8}><span className='collapse__header-title'>Muut</span></Column>
+            <Column small={4}><span className={classNames({'collapse__header-neutral': eligibility.other.research_state === 'Tarkistamatta'}, {'collapse__header-alert': eligibility.other.research_state === 'Vaati toimenpiteitä'}, {'collapse__header-success': eligibility.other.research_state === 'Valmis'})}><i/>{get(eligibility.other, 'research_state')}</span></Column>
+          </Row>
+        }
+      >
+        {eligibility.other.comments.length > 0 && eligibility.other.comments.map((comment, index) =>
+          <div className='section-item'  key={index}>
+            <Row>
+              <Column medium={12} className='explanation'>
+                <p>{get(comment, 'comment', '')}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {get(comment, 'comment_date', '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+              </Column>
+            </Row>
+          </div>
+        )}
+        {eligibility.other.comments.length === 0 &&
+          <div className='section-item'>
+            <p><em>Ei ole vielä selityksiä.</em></p>
+          </div>
+        }
       </Collapse>
     </div>
   );

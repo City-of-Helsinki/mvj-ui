@@ -29,6 +29,7 @@ import TabContent from '../../components/tabs/TabContent';
 import TenantEdit from './leaseSections/tenant/TenantEdit';
 import TenantTab from './leaseSections/tenant/TenantTab';
 import ConstructionEligibilityTab from './leaseSections/constructionEligibility/ConstructionEligibilityTab';
+import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
 import type Moment from 'moment';
 
 import mockData from '../mock-data.json';
@@ -47,6 +48,7 @@ type Props = {
   start_date: ?Moment,
   end_date: ?Moment,
   areasForm: Array<Object>,
+  eligibilityForm: Array<Object>,
   currentLease: Object,
   leaseInfoErrors: Object,
   editLease: Function,
@@ -55,6 +57,8 @@ type Props = {
   location: Object,
   params: Object,
   tenantsForm: Array<Object>,
+  contractsForm: Array<Object>,
+  rulesForm: Array<Object>,
 }
 
 class PreparerForm extends Component {
@@ -101,7 +105,7 @@ class PreparerForm extends Component {
   }
 
   save = () => {
-    const {editLease, areasForm, currentLease, tenantsForm, start_date, end_date} = this.props;
+    const {editLease, areasForm, currentLease, tenantsForm, start_date, end_date, rulesForm, contractsForm, eligibilityForm} = this.props;
     const payload = currentLease;
     payload.start_date = start_date ? moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
     payload.end_date = end_date ? moment(end_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
@@ -109,7 +113,10 @@ class PreparerForm extends Component {
     editLease(payload);
 
     this.setState({areas: areasForm});
+    this.setState({areas: eligibilityForm});
     this.setState({tenants: tenantsForm});
+    this.setState({rules: rulesForm});
+    this.setState({contracts: contractsForm});
     this.setState({isEditMode: false});
   }
 
@@ -269,6 +276,7 @@ class PreparerForm extends Component {
                   <h1>Rakentamiskelpoisuus</h1>
                   <div>
                     {!isEditMode && <ConstructionEligibilityTab areas={areas}/>}
+                    {isEditMode && <ConstructionEligibilityEdit areas={areas} initialValues={{areas: areas}}/>}
                   </div>
                 </div>
               </TabPane>
@@ -307,6 +315,9 @@ const contractFormSelector = formValueSelector(contractFormName);
 const ruleFormName = 'rule-edit-form';
 const ruleFormSelector = formValueSelector(ruleFormName);
 
+const eligibilityFormName = 'eligibility-edit-form';
+const eligibilityFormSelector = formValueSelector(eligibilityFormName);
+
 export default flowRight(
   withRouter,
   connect(
@@ -318,6 +329,7 @@ export default flowRight(
         isFetching: getIsFetching(state),
         leaseInfoErrors: getLeaseInfoErrors(state),
         areasForm: areasFormSelector(state, 'areas'),
+        eligibilityForm: eligibilityFormSelector(state, 'areas'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
         contractsForm: contractFormSelector(state, 'contracts'),
         rulesForm: ruleFormSelector(state, 'rules'),
