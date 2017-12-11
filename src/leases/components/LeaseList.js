@@ -123,6 +123,9 @@ class LeaseList extends Component {
           <div className='lease-list__search-wrapper'>
             <Search
               ref={(input) => { this.search = input; }}
+              districtOptions={districtOptions}
+              municipalityOptions={municipalityOptions}
+              typeOptions={typeOptions}
               onSearch={(query) => this.handleSearchChange(query)}
             />
           </div>

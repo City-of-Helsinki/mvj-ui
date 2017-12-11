@@ -10,6 +10,9 @@ import SingleCheckboxInput from '../../../components/SingleCheckboxInput';
 import TextInput from '../../../components/TextInput';
 
 type Props = {
+  districtOptions: Array<Object>,
+  municipalityOptions: Array<Object>,
+  typeOptions: Array<Object>,
   onSearch: Function,
 }
 
@@ -98,6 +101,11 @@ class Search extends Component {
     this.onSearchChange();
   }
 
+  handleSelectInputChange = (selectedOption: Object, id: string) => {
+    this.setState({[id]: get(selectedOption, 'value')});
+    this.onSearchChange();
+  }
+
   handleMultiSelectInputChange = (selectedOptions: Array<Object>, id: string) => {
     const options = selectedOptions.map((option) => {
       return (
@@ -114,6 +122,11 @@ class Search extends Component {
   }
 
   render () {
+    const {
+      districtOptions,
+      municipalityOptions,
+      typeOptions,
+    } = this.props;
     const {
       address,
       customer,
@@ -186,13 +199,34 @@ class Search extends Component {
                   <div className='column-text-input-first'>
                     <label className='label-long'>Vuokraus</label>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'type')} value={type}/>
+                      <SelectInput
+                        multi={false}
+                        onChange={(e) => this.handleSelectInputChange(e, 'type')}
+                        options={typeOptions}
+                        placeholder=''
+                        searchable={true}
+                        value={type}
+                      />
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'municipality')} value={municipality}/>
+                      <SelectInput
+                        multi={false}
+                        onChange={(e) => this.handleSelectInputChange(e, 'municipality')}
+                        options={municipalityOptions}
+                        placeholder=''
+                        searchable={true}
+                        value={municipality}
+                      />
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'district')} value={district}/>
+                      <SelectInput
+                        multi={false}
+                        onChange={(e) => this.handleSelectInputChange(e, 'district')}
+                        options={districtOptions}
+                        placeholder=''
+                        searchable={true}
+                        value={district}
+                      />
                     </div>
                     <div className='short-input'>
                       <TextInput onChange={(e) => this.handleTextInputChange(e, 'sequence')} value={sequence}/>
