@@ -16,7 +16,7 @@ const FieldTypeCheckbox = ({label, className, input, displayError, disabled, opt
 
   const {name, onChange, value} = input;
   const hasMultipleValues = options && options.length > 1;
-  console.log(classNames(`mvj-form-field__${type}`, className, {'has-error': displayError}));
+
   return (
     <div className='mvj-form-field'>
       {label && <label className='title'>{label}</label>}

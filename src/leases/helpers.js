@@ -86,14 +86,16 @@ export const getContentLeaseItem = (item:Object) => {
   };
 };
 
-export const getContentLeases = (content:Array<Object>) => {
+export const getContentLeases = (content:Object) => {
   const items = [];
-  if(!content) {
+  const {results} = content;
+
+  if(!results) {
     return [];
   }
 
-  for(let i = 0; i < content.length; i++) {
-    const item = getContentLeaseItem(content[i]);
+  for(let i = 0; i < results.length; i++) {
+    const item = getContentLeaseItem(results[i]);
     items.push(item);
   }
   return items;

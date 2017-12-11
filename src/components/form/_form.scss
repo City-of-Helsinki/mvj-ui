@@ -7,7 +7,7 @@
     line-height: normal;
 	  text-align: left;
     color: $dark-gray;
-    margin-bottom: rem-calc(3px);
+    margin-bottom: rem-calc(2px);
   }
 
   label.title {
@@ -19,6 +19,25 @@
   }
 
   .mvj-form-field {
+    &__datepicker {
+      input {
+        padding: 0 0.5rem;
+        height: rem-calc(30px);
+        line-height: normal;
+        color: $black;
+        width: 100%;
+        margin-bottom: 0;
+      }
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
+      }
+    }
+
     &__text {
       input {
         padding: 0 0.5rem;
@@ -26,12 +45,20 @@
         color: $black;
         border: 1px solid $medium-gray;
         width: 100%;
-        margin-bottom: rem-calc(10px);
+        margin-bottom: 0;
         font-size: $font-small;
         box-shadow: none;
         &:focus {
           border: 1px solid $tram;
         }
+      }
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
       }
     }
     &__checkbox {
@@ -39,8 +66,8 @@
         .option-label {
           display: inline-block;
           font-size: rem-calc(14px);
-          line-height: rem-calc(30px);
-          height: rem-calc(30px);
+          line-height: rem-calc(26px);
+          height: rem-calc(26px);
           margin-right: rem-calc(10px);
         }
         .option-label:last-child {
@@ -50,10 +77,33 @@
 
     }
     &__select {
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
+      }
+
       .Select {
         font-size: $font-small;
+        line-height: 1;
+
         &:focus, &:focus {
           border: 1px solid $medium-gray;
+        }
+
+        .select-input__arrow-renderer {
+          display: block;
+          background-image: url('../assets/icons/icon_arrow_down.svg');
+          height: rem-calc(14px);
+          width: rem-calc(14px);
+        }
+        &.is-open {
+          .select-input__arrow-renderer {
+            background-image: url('../assets/icons/icon_arrow_up.svg');
+          }
         }
       }
       .Select-control {
@@ -61,6 +111,10 @@
         height: rem-calc(26px);
         display: inline-block;
         border-radius: 0;
+
+        .Select-value {
+          padding-right: 2.1rem;
+        }
       }
       .Select-placeholder {
         padding-left: 0.5rem !important;
@@ -69,17 +123,27 @@
       }
       .Select-value {
         padding-left: 0.5rem !important;
+        padding-right: 2.1rem;
         line-height: 1.8 !important;
       }
       .Select-input {
+        height: rem-calc(26px);
+
         input {
           padding: 0;
         }
       }
       .Select-arrow-zone {
+        padding: 0;
+        width: rem-calc(20px);
         position: absolute;
-        top: 2px;
+        top: rem-calc(5px);
         right: 0;
+      }
+      .Select-clear-zone {
+        position: absolute;
+        right: rem-calc(20px);
+        top: rem-calc(2px);
       }
       .Select-menu-outer {
         top: 26px;
@@ -105,4 +169,3 @@
   border: 1px solid $medium-gray !important;
   box-shadow: none !important;
 }
-

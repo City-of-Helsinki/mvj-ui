@@ -17,7 +17,7 @@ type ContractModificationsProps = {
 const renderContractModifications = ({title, fields}: ContractModificationsProps) => {
   return(
     <div className='green-box'>
-        {fields.length > 0 &&
+      {fields.length > 0 &&
         <Row>
           <Column>
             <h2>{title}</h2>
@@ -106,31 +106,32 @@ const renderPledgeBooks = ({fields}: PledgeBookProps) => {
   return(
     <Row>
       {fields && fields.length > 0 && fields.map((pledge_book, index) =>
-      <Column key={index} medium={12} className='pledge-book'>
-        <button
-          className='remove-button'
-          type="button"
-          title="Poista panttikirja"
-          onClick={() => fields.remove(index)}>
-          <img src={trashIcon} alt='Poista' />
-        </button>
-        <Row>
-          <Column medium={6}>
-            <Field
-              name={`${pledge_book}.pledge_book_number`}
-              component={FieldTypeText}
-              label='Panttikirjan numero'
-            />
-          </Column>
-          <Column medium={6}>
-            <Field
-              name={`${pledge_book}.pledge_book_date`}
-              component={FieldTypeText}
-              label='Panttikirjan päivämäärä'
-            />
-          </Column>
-        </Row>
-      </Column>)}
+        <Column key={index} medium={12} className='pledge-book'>
+          <button
+            className='remove-button'
+            type="button"
+            title="Poista panttikirja"
+            onClick={() => fields.remove(index)}>
+            <img src={trashIcon} alt='Poista' />
+          </button>
+          <Row>
+            <Column medium={6}>
+              <Field
+                name={`${pledge_book}.pledge_book_number`}
+                component={FieldTypeText}
+                label='Panttikirjan numero'
+              />
+            </Column>
+            <Column medium={6}>
+              <Field
+                name={`${pledge_book}.pledge_book_date`}
+                component={FieldTypeText}
+                label='Panttikirjan päivämäärä'
+              />
+            </Column>
+          </Row>
+        </Column>)
+      }
       <Column medium={4} className='add-column'>
         <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää panttikirja</span></a>
       </Column>
@@ -280,5 +281,6 @@ export default flowRight(
   ),
   reduxForm({
     form: formName,
+    destroyOnUnmount: false,
   }),
 )(ContractEdit);

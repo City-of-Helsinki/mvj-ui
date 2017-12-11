@@ -1,18 +1,19 @@
 .modal {
-  &__wrapper {
-    position: fixed;
-    top: 20%;
-    left: calc(50% - 400px);
-    width: rem-calc(800px);
-    max-width: 100%;
+  .modal__wrapper {
     z-index: 1001;
     background-color: $white;
+    width: rem-calc(800px);
+    max-width: 100%;
+    position: fixed;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    transition: top .5s ease;
 
     @include breakpoint(small only){
       left: 0;
     }
   }
-
   &__header {
     padding: rem-calc(35px) rem-calc(35px) 0;
     h1.title {
@@ -29,13 +30,27 @@
     padding: rem-calc(35px) rem-calc(35px);
   }
 
-  &__backdrop {
-    z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.65);
+  .modal__overlay {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.65);
+    opacity: 0;
+    visibility: hidden;
+    transition: all .5s ease;
+  }
+
+  &.modal-open {
+    .modal__wrapper {
+      top: 20%;
+    }
+
+    .modal__overlay {
+      opacity: 1;
+      visibility: visible;
+    }
   }
 }

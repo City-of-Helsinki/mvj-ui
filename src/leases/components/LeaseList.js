@@ -10,11 +10,12 @@ import ActionDropdown from '../../components/ActionDropdown';
 import Loader from '../../components/loader/Loader';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
 import Modal from '../../components/Modal';
-import Search from './Search';
+import Search from './search/Search';
 import CreateLease from '../components/leaseSections/CreateLease';
 import TableControllers from './TableControllers';
 import Table from '../../components/Table';
 import * as contentHelpers from '../helpers';
+import {getSearchQuery} from './search/helpers';
 
 type Props = {
   attributes: Object,
@@ -23,11 +24,11 @@ type Props = {
   fetchLeases: Function,
   isFetching: boolean,
   router: Object,
-  leases: Array<any>,
+  leases: Object,
 }
 
 type State = {
-  documentType: string,
+  documentType: Array<string>,
   isCreateLeaseIdentifierModalOpen: boolean,
   visualizationType: string,
 }
@@ -36,10 +37,12 @@ class LeaseList extends Component {
   props: Props
 
   state: State = {
-    documentType: 'all',
+    documentType: [],
     isCreateLeaseIdentifierModalOpen: false,
     visualizationType: 'table',
   }
+
+  search: any
 
   static contextTypes = {
     router: PropTypes.object,
@@ -47,9 +50,15 @@ class LeaseList extends Component {
 
   componentWillMount() {
     const {fetchAttributes, fetchLeases} = this.props;
-    // const {fetchLeases} = this.props;
+    const {router: {location: {query}}} = this.props;
+
     fetchAttributes();
-    fetchLeases();
+    fetchLeases(getSearchQuery(query));
+  }
+
+  componentDidMount = () => {
+    const {router: {location: {query}}} = this.props;
+    this.search.initialize(query);
   }
 
   showModal = (modalName: string) => {
@@ -66,11 +75,24 @@ class LeaseList extends Component {
     });
   }
 
+  handleSearchChange = (query) => {
+    const {fetchLeases} = this.props;
+    const {router} = this.context;
+    const search = getSearchQuery(query);
+    fetchLeases(search);
+
+    return router.push({
+      pathname: `/leases`,
+      query,
+    });
+  }
+
   handleEditClick = (id) => {
     const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
     return router.push({
-      pathname: `/beta/leases/${id}`,
-      // query,
+      pathname: `/leases/${id}`,
+      query,
     });
   };
 
@@ -98,7 +120,10 @@ class LeaseList extends Component {
         </Modal>
         <Row>
           <div className='lease-list__search-wrapper'>
-            <Search />
+            <Search
+              ref={(input) => { this.search = input; }}
+              onSearch={(query) => this.handleSearchChange(query)}
+            />
           </div>
           <div className='lease-list__dropdown-wrapper'>
             <ActionDropdown

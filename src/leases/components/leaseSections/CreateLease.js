@@ -93,7 +93,7 @@ class CreateLease extends Component {
           <Column medium={2} style={{padding: '0'}}>
             <div className='button-wrapper'>
               <Button
-                className={'button-green no-margin full-width'}
+                className={'button-green button-xs no-margin full-width'}
                 disabled={!valid}
                 text={'Luo tunnus'}
                 onClick={() => onSubmit({

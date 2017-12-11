@@ -471,5 +471,6 @@ export default flowRight(
   ),
   reduxForm({
     form: formName,
+    destroyOnUnmount: false,
   }),
 )(PropertyUnitEdit);

@@ -26,7 +26,7 @@ class TopNavigation extends Component {
           <path d="M1.5,2.9h27v2.2h-27V2.9z M1.5,11.9h27v2.2h-27V11.9z M1.5,20.9h27v2.2h-27V20.9z"/>
         </svg>
         <div className="title">
-          <Link to="/beta/">Maavuokrausjärjestelmä</Link>
+          <Link to="/">Maavuokrausjärjestelmä</Link>
         </div>
         <div className="flag">
           <svg className="flagIcon" viewBox="0 0 27 27">

@@ -36,6 +36,11 @@
       background-color: $brick-lighter;
     }
   }
+
+  &.button-xs {
+    height: rem-calc(26px);
+  }
+
   &.no-margin {
     margin: 0;
   }

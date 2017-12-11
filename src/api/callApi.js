@@ -2,14 +2,14 @@
 
 import {call, put} from 'redux-saga/effects';
 import {receiveError} from './actions';
-import {getStorageItem} from '../util/storage';
+// import {getStorageItem} from '../util/storage';
 
 function* callApi(request: Request): Generator<> {
-  const accessToken = getStorageItem('TOKEN');
-
-  if (accessToken) {
-    request.headers.set('Authorization', `Token ${accessToken}`);
-  }
+  // const accessToken = getStorageItem('TOKEN');
+  //
+  // if (accessToken) {
+  //   request.headers.set('Authorization', `Token ${accessToken}`);
+  // }
 
   if (request.method === 'POST' || request.method === 'PUT') {
     request.headers.set('Content-Type', 'application/json');

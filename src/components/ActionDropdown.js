@@ -54,34 +54,35 @@ class ActionDropdown extends Component {
   }
 
   render () {
-    const {title, options} = this.props;
+    const {options, title} = this.props;
     const {isOpen} = this.state;
     const {toggle} = this;
+
     return (
       <div className='action-dropdown'>
         <div className='action-dropdown_title-wrapper'>
           <a onClick={this.toggle} className={classNames('title', {'isOpen': isOpen})}>{title}</a>
         </div>
-        {isOpen && (
-          <div className={'action-dropdown_option-wrapper'}>
-            <ul>
-              {options.map((option, index) => {
-                return (
-                  <li className='option' key={index} onClick={() => {
-                    const {action} = option;
-                    if(action) {
-                      action();
-                      toggle();
-                    } else {
-                      console.log('Link action');
-                      toggle();
-                    }
-                  }}><a>{get(option, 'label')}</a></li>
-                );
-              })}
-            </ul>
-          </div>
-        )}
+        <div className={'action-dropdown_option-wrapper'}>
+          <ul className={classNames({'is-open': isOpen})}>
+            {options.map((option, index) => {
+              return (
+                <li className='option' key={index} onClick={() => {
+                  const {action} = option;
+                  if(action) {
+                    action();
+                    toggle();
+                  } else {
+                    toggle();
+                  }
+                }}>
+                  <a>{get(option, 'label')}</a>
+                </li>
+              );
+            }
+            )}
+          </ul>
+        </div>
       </div>
     );
   }

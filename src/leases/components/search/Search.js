@@ -2,61 +2,100 @@
 import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import toArray from 'lodash/toArray';
+import debounce from 'lodash/debounce';
 
-import TextInput from '../../components/TextInput';
-import SelectInput from '../../components/SelectInput';
-import SingleCheckboxInput from '../../components/SingleCheckboxInput';
+import SelectInput from '../../../components/SelectInput';
+import SingleCheckboxInput from '../../../components/SingleCheckboxInput';
+import TextInput from '../../../components/TextInput';
 
-type State = {
-  isBasicSearch: boolean,
-  keyword: string,
-  customer: string,
-  roles: Array<string>,
-  oldCustomer: boolean,
-  types: Array<string>,
-  leaseType: string,
-  leaseMunicipality: string,
-  leaseDistrict: string,
-  leaseSequence: string,
-  inEffect: boolean,
-  finished: boolean,
-  propertyType: string,
-  propertyMunicipality: string,
-  propertyDistrict: string,
-  propertySequence: string,
-  address: string,
-  documentType: string,
+type Props = {
+  onSearch: Function,
 }
 
+type State = {
+  address: string,
+  customer: string,
+  district: string,
+  documentType: string,
+  finished: boolean,
+  inEffect: boolean,
+  isBasicSearch: boolean,
+  keyword: string,
+  municipality: string,
+  oldCustomer: boolean,
+  propertyDistrict: string,
+  propertyMunicipality: string,
+  propertySequence: string,
+  propertyType: string,
+  roles: Array<string>,
+  sequence: string,
+  type: string,
+  types: Array<string>,
+}
 
 class Search extends Component {
+  props: Props
+
   state: State = {
+    address: '',
+    customer: '',
+    district: '',
+    documentType: 'all',
+    finished: false,
+    inEffect: false,
     isBasicSearch: true,
     keyword: '',
-    customer: '',
-    roles: [],
+    municipality: '',
     oldCustomer: false,
-    types: [],
-    leaseType: '',
-    leaseMunicipality: '',
-    leaseDistrict: '',
-    leaseSequence: '',
-    inEffect: false,
-    finished: false,
-    propertyType: '',
-    propertyMunicipality: '',
     propertyDistrict: '',
+    propertyMunicipality: '',
     propertySequence: '',
-    address: '',
-    documentType: 'all',
+    propertyType: '',
+    roles: [],
+    sequence: '',
+    type: '',
+    types: [],
   }
+
+  initialize = (query: Object) => {
+    this.setState({
+      district: query.district ? query.district : '',
+      municipality: query.municipality ? query.municipality : '',
+      sequence: query.sequence ? query.sequence : '',
+      type: query.type ? query.type.toUpperCase() : '',
+    });
+
+    if(toArray(query).length > 0 && !query.keyword) {
+      this.setState({
+        isBasicSearch: false,
+      });
+    }
+  }
+
+  onSearchChange = debounce(() => {
+    const {onSearch} = this.props;
+    const {district, isBasicSearch, municipality, sequence, type} = this.state;
+    const filters = {};
+    if(isBasicSearch) {
+      console.log('Basic search');
+    } else {
+      filters.district = district ? district : undefined;
+      filters.municipality = municipality ? municipality : undefined;
+      filters.sequence = sequence ? sequence : undefined;
+      filters.type = type ? type.toUpperCase() : undefined;
+    }
+    onSearch(filters);
+  }, 300);
 
   handleTextInputChange = (e: any, id: string) => {
     this.setState({[id]: e.target.value});
+    this.onSearchChange();
   }
 
   handleCheckboxChange = (id:string) => {
     this.setState({[id]: !this.state[id]});
+    this.onSearchChange();
   }
 
   handleMultiSelectInputChange = (selectedOptions: Array<Object>, id: string) => {
@@ -66,31 +105,33 @@ class Search extends Component {
       );
     });
     this.setState({[id]: options});
+    this.onSearchChange();
   }
 
   toggleSearchType = () => {
+    this.onSearchChange();
     this.setState({isBasicSearch: !this.state.isBasicSearch});
   }
 
   render () {
     const {
+      address,
+      customer,
+      district,
+      finished,
+      inEffect,
       isBasicSearch,
       keyword,
-      customer,
+      municipality,
       oldCustomer,
-      roles,
-      types,
-      leaseType,
-      leaseMunicipality,
-      leaseDistrict,
-      leaseSequence,
-      inEffect,
-      finished,
-      propertyType,
-      propertyMunicipality,
       propertyDistrict,
+      propertyMunicipality,
       propertySequence,
-      address,
+      propertyType,
+      roles,
+      sequence,
+      type,
+      types,
     } = this.state;
 
     return (
@@ -99,7 +140,7 @@ class Search extends Component {
           <div>
             <Row>
               <Column  className='search-box' large={12}>
-                <TextInput placeholder={'Hae hakusanalla'} onChange={(e) => this.handleTextInputChange(e, 'keyword')} value={keyword}/>
+                <TextInput disabled placeholder={'Hae hakusanalla'} onChange={(e) => this.handleTextInputChange(e, 'keyword')} value={keyword}/>
               </Column>
             </Row>
           </div>
@@ -111,10 +152,11 @@ class Search extends Component {
                 <div className='advanced-search-row-wrapper'>
                   <div className='column-text-input-first'>
                     <label className='label-long'>Vuokralainen</label>
-                    <TextInput placeholder={'Vuokralainen'} onChange={(e) => this.handleTextInputChange(e, 'customer')} value={customer}/>
+                    <TextInput disabled placeholder={'Vuokralainen'} onChange={(e) => this.handleTextInputChange(e, 'customer')} value={customer}/>
                   </div>
                   <div className='column-checkbox'>
                     <SingleCheckboxInput
+                      disabled
                       isChecked={oldCustomer}
                       onChange={() => this.handleCheckboxChange('oldCustomer')}
                       label='Vain vanhat asiakkaat'
@@ -123,6 +165,7 @@ class Search extends Component {
                   <div className='column-select'>
                     <label className='label-medium'>Rooli</label>
                     <SelectInput
+                      disabled
                       multi={true}
                       onChange={(e) => this.handleMultiSelectInputChange(e, 'roles')}
                       options={[
@@ -143,25 +186,27 @@ class Search extends Component {
                   <div className='column-text-input-first'>
                     <label className='label-long'>Vuokraus</label>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'leaseType')} value={leaseType}/>
+                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'type')} value={type}/>
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'leaseMunicipality')} value={leaseMunicipality}/>
+                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'municipality')} value={municipality}/>
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'leaseDistrict')} value={leaseDistrict}/>
+                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'district')} value={district}/>
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'leaseSequence')} value={leaseSequence}/>
+                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'sequence')} value={sequence}/>
                     </div>
                   </div>
                   <div className='column-checkbox'>
                     <SingleCheckboxInput
+                      disabled
                       isChecked={inEffect}
                       onChange={() => this.handleCheckboxChange('inEffect')}
                       label='Voimassa'
                     />
                     <SingleCheckboxInput
+                      disabled
                       isChecked={finished}
                       onChange={() => this.handleCheckboxChange('finished')}
                       label='Päättyneet'
@@ -170,6 +215,7 @@ class Search extends Component {
                   <div className='column-select'>
                     <label className='label-medium'>Tyyppi</label>
                     <SelectInput
+                      disabled
                       multi={true}
                       onChange={(e) => this.handleMultiSelectInputChange(e, 'types')}
                       options={[
@@ -192,22 +238,22 @@ class Search extends Component {
                   <div className='column-text-input-first'>
                     <label className='label-long'>Kiinteistö</label>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'propertyType')} value={propertyType}/>
+                      <TextInput disabled onChange={(e) => this.handleTextInputChange(e, 'propertyType')} value={propertyType}/>
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'propertyMunicipality')} value={propertyMunicipality}/>
+                      <TextInput disabled onChange={(e) => this.handleTextInputChange(e, 'propertyMunicipality')} value={propertyMunicipality}/>
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'propertyDistrict')} value={propertyDistrict}/>
+                      <TextInput disabled onChange={(e) => this.handleTextInputChange(e, 'propertyDistrict')} value={propertyDistrict}/>
                     </div>
                     <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'propertySequence')} value={propertySequence}/>
+                      <TextInput disabled onChange={(e) => this.handleTextInputChange(e, 'propertySequence')} value={propertySequence}/>
                     </div>
                   </div>
                   <div className='column-text-input-second'>
                     <label className='label-small'>Osoite</label>
                     <div className='nomargin-input'>
-                      <TextInput placeholder={'Osoite'} onChange={(e) => this.handleTextInputChange(e, 'address')} value={address}/>
+                      <TextInput disabled placeholder={'Osoite'} onChange={(e) => this.handleTextInputChange(e, 'address')} value={address}/>
                     </div>
                   </div>
                 </div>

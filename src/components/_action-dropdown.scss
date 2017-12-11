@@ -39,11 +39,20 @@
     right: 1px;
     left: 1px;
     background: #fff;
+
     ul {
       list-style: none;
       padding: 0;
       margin: 0;
       box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1), 0 2px 5px 0 rgba(0, 0, 0, 0.15);
+      max-height: 0px;
+      transition: max-height 0.3s ease;
+      overflow: hidden;
+
+      &.is-open {
+        height: auto;
+        max-height: 250px;
+      }
     }
 
     .option {
