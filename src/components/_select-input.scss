@@ -14,6 +14,7 @@
         background-image: url('../assets/icons/icon_arrow_up.svg');
       }
     }
+
     .Select-control {
       height: 30px;
       border-radius: 0;
@@ -28,10 +29,44 @@
       .Select-input {
         height: 30px;
       }
+      .Select-input > input {
+        padding: 4px 0 12px;
+      }
 
       .Select-value {
-        margin-top: 2px;
+        margin-top: 0px;
+        line-height: 28px;
+        padding-right: 20px;
       }
+    }
+    &.Select--multi {
+      .Select-control {
+        .Select-value {
+          margin-top: 1px;
+          line-height: 22px;
+          padding-right: 10px;
+        }
+      }
+    }
+    .Select-menu-outer {
+      font-size: $font-small;
+      line-height: 1;
+      min-width: 200px;
+    }
+
+    .Select-menu {
+      height: auto;
+    }
+    .Select-option {
+      padding-top: 0.2rem;
+      padding-bottom: 0.2rem;
+
+      &:hover, &:focus, &:active {
+        background: $engel-lighter;
+      }
+    }
+    .Select-option.is-focused, .Select-option.is-selected {
+      background-color: $engel-lighter !important;
     }
   }
 

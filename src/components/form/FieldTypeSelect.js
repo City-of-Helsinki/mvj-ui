@@ -19,11 +19,11 @@ const arrowRenderer = () => {
   );
 };
 
-const FieldTypeSelect = ({label, input, displayError, disabled, options, placeholder, meta: {visited, error}}: Props) => {
+const FieldTypeSelect = ({className, disabled, displayError, input, label, meta: {visited, error}, options, placeholder}: Props) => {
   const {onChange, name} = input;
 
   const handleBlur = () => {
-    
+
   };
 
   const handleChange = (value) => {
@@ -33,7 +33,7 @@ const FieldTypeSelect = ({label, input, displayError, disabled, options, placeho
   return (
     <div className='mvj-form-field'>
       <label className='title'>{label}</label>
-      <div className={classNames('mvj-form-field__select', {'has-error': displayError})}>
+      <div className={classNames('mvj-form-field__select', className, {'has-error': displayError})}>
         <Select
           arrowRenderer={arrowRenderer}
           autoBlur={true}

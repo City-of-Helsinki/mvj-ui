@@ -99,7 +99,7 @@ class LeaseList extends Component {
   render() {
     const {documentType, isCreateLeaseIdentifierModalOpen, visualizationType} = this.state;
     const {attributes, createLease, leases: content, isFetching} = this.props;
-    const leases = contentHelpers.getContentLeases(content);
+    const leases = contentHelpers.getContentLeases(content, attributes);
     const districtOptions = contentHelpers.getDistrictOptions(attributes);
     const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
     const typeOptions = contentHelpers.getTypeOptions(attributes);
@@ -122,6 +122,9 @@ class LeaseList extends Component {
           <div className='lease-list__search-wrapper'>
             <Search
               ref={(input) => { this.search = input; }}
+              districtOptions={districtOptions}
+              municipalityOptions={municipalityOptions}
+              typeOptions={typeOptions}
               onSearch={(query) => this.handleSearchChange(query)}
             />
           </div>
@@ -160,7 +163,7 @@ class LeaseList extends Component {
                   {key: 'tenant', label: 'Vuokralainen'},
                   {key: 'person', label: 'Vuokranantaja'},
                   {key: 'address', label: 'Osoite'},
-                  {key: 'lease_type', label: 'Tyyppi'},
+                  {key: 'status', label: 'Tyyppi'},
                   {key: 'start_date', label: 'Alkupvm'},
                   {key: 'end_date', label: 'Loppupvm'},
                 ]}

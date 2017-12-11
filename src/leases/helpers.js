@@ -60,6 +60,50 @@ export const getContentLeaseDateRange = (item: Object) => {
   return formatDateRange(get(item, 'start_date'), get(item, 'end_date'));
 };
 
+export const getContentRealPropertyUnit = (item: Object) => {
+  const {assets} = item;
+  if(isEmpty(assets)) {
+    return null;
+  }
+  let realPropertyUnit = '';
+  for(let i = 0; i < assets.length; i++) {
+    //TODO: get real property unit when it's available at the end point
+    console.log(assets[i]);
+  }
+
+  return realPropertyUnit;
+};
+
+export const getContentLeaseAddress = (item:Object) => {
+  const {assets} = item;
+  if(isEmpty(assets)) {
+    return null;
+  }
+  let address = '';
+  for(let i = 0; i < assets.length; i++) {
+    if(get(assets[i], 'address')) {
+      address = get(assets[i], 'address');
+      return address;
+    }
+  }
+
+  return address;
+};
+
+export const getContentLeaseStatus = (item: Object, options: Array<Object>) => {
+  const {status} = item;
+  if(!status) {
+    return null;
+  }
+
+  for(let i = 0; i < options.length; i++) {
+    if(options[i].value === status) {
+      return get(options[i], 'label');
+    }
+  }
+  return status;
+};
+
 export const getFullAddress = (item: Object) => {
   if(!get(item, 'zip_code') && !get(item, 'town')) {
     return get(item, 'address');
@@ -67,35 +111,34 @@ export const getFullAddress = (item: Object) => {
   return `${get(item, 'address')}, ${get(item, 'zip_code')} ${get(item, 'town')}`;
 };
 
-export const getContentRealPropertyUnit = (item:Object) => {
-  const unit = `${get(item, 'lease_areas[0].municipality')}-${get(item, 'lease_areas[0].district')}-${get(item, 'lease_areas[0].sequence')}`;
-  return unit;
-};
-
 export const getContentLeaseTenant = (item:Object) => {
   const tenant = get(item, 'tenants[0].contact.name');
   return tenant;
 };
 
-export const getContentLeaseItem = (item:Object) => {
+export const getContentLeaseItem = (item:Object, statusOptions: Array<Object>) => {
   return {
     id: get(item, 'id'),
+    real_property_unit: getContentRealPropertyUnit(item),
     identifier: getContentLeaseIdentifier(item),
+    address: getContentLeaseAddress(item),
+    status: getContentLeaseStatus(item, statusOptions),
     start_date: formatDate(get(item, 'start_date')),
     end_date: formatDate(get(item, 'end_date')),
   };
 };
 
-export const getContentLeases = (content:Object) => {
+export const getContentLeases = (content:Object, attributes: Object) => {
   const items = [];
   const {results} = content;
+  const statusOptions = getStatusOptions(attributes);
 
   if(!results) {
     return [];
   }
 
   for(let i = 0; i < results.length; i++) {
-    const item = getContentLeaseItem(results[i]);
+    const item = getContentLeaseItem(results[i], statusOptions);
     items.push(item);
   }
   return items;
@@ -130,6 +173,16 @@ export const getMunicipalityOptions = (attributes: Object) => {
     if(keyA < keyB) return -1;
     if(keyA > keyB) return 1;
     return 0;
+  });
+};
+
+export const getStatusOptions = (attributes: Object) => {
+  const choices = get(attributes, 'status.choices', []);
+  return choices.map((choice) => {
+    return {
+      value: get(choice, 'value'),
+      label: `${get(choice, 'display_name')}`,
+    };
   });
 };
 
