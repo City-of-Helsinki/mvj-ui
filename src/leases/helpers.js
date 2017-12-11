@@ -123,6 +123,7 @@ export const getContentLeaseItem = (item:Object, statusOptions: Array<Object>) =
     identifier: getContentLeaseIdentifier(item),
     address: getContentLeaseAddress(item),
     status: getContentLeaseStatus(item, statusOptions),
+    status_code: get(item, 'status'),
     start_date: formatDate(get(item, 'start_date')),
     end_date: formatDate(get(item, 'end_date')),
   };
@@ -142,6 +143,16 @@ export const getContentLeases = (content:Object, attributes: Object) => {
     items.push(item);
   }
   return items;
+};
+
+export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>) => {
+  if(!documentTypes || documentTypes.length === 0) {
+    return items;
+  }
+  return items.filter((item) => {
+    return documentTypes.indexOf(item.status_code) !== -1;
+  });
+
 };
 
 export const getDistrictOptions = (attributes: Object) => {

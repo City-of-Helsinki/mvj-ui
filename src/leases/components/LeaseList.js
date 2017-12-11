@@ -115,6 +115,8 @@ class LeaseList extends Component {
     const districtOptions = contentHelpers.getDistrictOptions(attributes);
     const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
     const typeOptions = contentHelpers.getTypeOptions(attributes);
+    //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
+    const filteredLeases = contentHelpers.getLeasesFilteredByDocumentType(leases, documentType);
 
     return (
       <div className='lease-list'>
@@ -156,7 +158,7 @@ class LeaseList extends Component {
         </Row>
         <Row>
           <TableControllers
-            amount={leases.length}
+            amount={filteredLeases.length}
             documentType={documentType}
             onDocumentTypeChange={(value) => {this.setState({documentType: value});}}
             visualizationType={visualizationType}
@@ -168,8 +170,8 @@ class LeaseList extends Component {
           <Row>
             {visualizationType === 'table' && (
               <Table
-                amount={leases.length}
-                data={leases}
+                amount={filteredLeases.length}
+                data={filteredLeases}
                 dataKeys={[
                   {key: 'identifier', label: 'Vuokratunnus'},
                   {key: 'real_property_unit', label: 'Vuokrakohde'},

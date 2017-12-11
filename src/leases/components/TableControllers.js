@@ -9,10 +9,10 @@ import mapIcon from '../../../assets/icons/map.svg';
 import mapGreenIcon from '../../../assets/icons/map-green.svg';
 
 const documentTypeOptions = [
-  {value: 'application', label: 'Hakemukset'},
-  {value: 'reservation', label: 'Varaukset'},
-  {value: 'lease', label: 'Vuokraukset'},
-  {value: 'permission', label: 'Luvat'},
+  {value: 'H', label: 'Hakemukset'},
+  {value: 'R', label: 'Varaukset'},
+  {value: 'V', label: 'Vuokraukset'},
+  {value: 'L', label: 'Luvat'},
 ];
 
 const visualizationTypeOptions = [
