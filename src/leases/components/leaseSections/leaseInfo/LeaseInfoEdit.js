@@ -30,34 +30,40 @@ class LeaseInfoEdit extends Component {
           <span className='lease-info-edit__number'>{identifier}</span>
         </div>
         <div className='lease-info-edit__column'>
-          <Field
-            className='height-medium'
-            component={FieldTypeSelect}
-            label='Tyyppi'
-            name={'status'}
-            options={statusOptions}
-            validate={[
-              (value) => required(value, 'Tyyppi on pakollinen'),
-            ]}
-          />
+          <div className='lease-info-edit__column-wrapper'>
+            <Field
+              className='height-medium'
+              component={FieldTypeSelect}
+              label='Tyyppi'
+              name={'status'}
+              options={statusOptions}
+              validate={[
+                (value) => required(value, 'Tyyppi on pakollinen'),
+              ]}
+            />
+          </div>
         </div>
         <div className='lease-info-edit__column'>
-          <Field
-            label='Alkupäivämäärä'
-            name={'start_date'}
-            type="text"
-            component={FieldTypeDatePicker}/>
+          <div className='lease-info-edit__column-wrapper'>
+            <Field
+              label='Alkupäivämäärä'
+              name={'start_date'}
+              type="text"
+              component={FieldTypeDatePicker}/>
+          </div>
         </div>
         <div className='lease-info-edit__column'>
-          <Field
-            label='Loppupäivämäärä'
-            name={'end_date'}
-            type="text"
-            disableTouched
-            validate={[
-              (value) => dateGreaterOrEqual(value, start_date),
-            ]}
-            component={FieldTypeDatePicker}/>
+          <div className='lease-info-edit__column-wrapper'>
+            <Field
+              label='Loppupäivämäärä'
+              name={'end_date'}
+              type="text"
+              disableTouched
+              validate={[
+                (value) => dateGreaterOrEqual(value, start_date),
+              ]}
+              component={FieldTypeDatePicker}/>
+          </div>
         </div>
       </form>
     );
