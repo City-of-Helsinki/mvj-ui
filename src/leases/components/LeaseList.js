@@ -104,7 +104,6 @@ class LeaseList extends Component {
     const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
     const typeOptions = contentHelpers.getTypeOptions(attributes);
 
-    console.log(leases);
     return (
       <div className='lease-list'>
         <Modal
