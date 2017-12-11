@@ -420,7 +420,65 @@
               "plan": "91-10-58675",
               "plan_approval_date": "20015-10-01"
             }
-          ]
+          ],
+          "construction_eligibility": {
+            "preconstruction": {
+              "research_state": "Vaati toimenpiteitä",
+              "comments": [
+                {
+                  "comment": "Sähköjohdot siirretään.",
+                  "comment_date": "2017-09-10",
+                  "comment_author": "Katri Valmistelja",
+                  "AHJO_number": "HEL-10248556"
+                },
+                {
+                  "comment": "Kaasuputket siirretään.",
+                  "comment_date": "2017-09-10",
+                  "comment_author": "Katri Valmistelja",
+                  "AHJO_number": ""
+                }
+              ]
+            },
+            "demolition": {
+              "research_state": "Tarkistamatta",
+              "comments": []
+            },
+            "other": {
+              "research_state": "Tarkistamatta",
+              "comments": []
+            },
+            "contamination": {
+              "rent_conditions": "Kysytty",
+              "rent_condition_date": "2017-06-05",
+              "contamination_author": "Kati Valkama",
+              "research_state": "Valmis",
+              "projectwise_number": "495874698",
+              "matti_report": "847568796",
+              "comments": [
+                {
+                  "comment": "Kaikki rakennukset puretaan",
+                  "comment_date": "2017-09-10",
+                  "comment_author": "Katri Valmistelja",
+                  "AHJO_number": ""
+                }
+              ]
+            },
+            "construction_investigation": {
+              "report": "Tilattu",
+              "signing_date": "2017-06-05",
+              "report_author": "Petra Selvittäjä",
+              "research_state": "Valmis",
+              "geotechnical_number": "495874698",
+              "comments": [
+                {
+                  "comment": "Kaikki rakennukset puretaan",
+                  "comment_date": "2017-09-10",
+                  "comment_author": "Katri Valmistelja",
+                  "AHJO_number": ""
+                }
+              ]
+            }
+          }
         },
         {
           "lease_area_id": 2,
@@ -483,7 +541,65 @@
               "plan_approval_date": "20015-10-01"
             }
           ],
-          "plan_plots_at_present": null
+          "plan_plots_at_present": null,
+          "construction_eligibility": {
+            "preconstruction": {
+              "research_state": "Tarkistamatta",
+              "comments": [
+                {
+                  "comment": "Se käyttää 200 latinalaisen sanan sanakirjaa, johon on yhdistetty kourallinen mallilauseiden rakenteita luoden Lorem Ipsumin, joka näyttää järjelliseltä.",
+                  "comment_date": "2017-09-10",
+                  "comment_author": "Katri Valmistelja",
+                  "AHJO_number": "HEL-10248556"
+                },
+                {
+                  "comment": "On todistettu, että lukijaa häiritsee sivun ulkoasu lukiessaan sivua. ",
+                  "comment_date": "2017-09-10",
+                  "comment_author": "Katri Valmistelja",
+                  "AHJO_number": ""
+                }
+              ]
+            },
+            "demolition": {
+              "research_state": "Valmis",
+              "comments": [
+                {
+                  "comment": "Kaikki rakennukset puretaan",
+                  "comment_date": "2017-09-10",
+                  "comment_author": "Katri Valmistelja",
+                  "AHJO_number": ""
+                }
+              ]
+            },
+            "contamination": {
+              "rent_conditions": "Kysytty",
+              "rent_condition_date": "2017-06-05",
+              "contamination_author": "Kati Valkama",
+              "research_state": "Valmis",
+              "projectwise_number": "495874698",
+              "matti_report": "847568796",
+              "comments": [
+                {
+                  "comment": "Kaikki rakennukset puretaan",
+                  "comment_date": "2017-09-10",
+                  "comment_author": "Katri Valmistelja",
+                  "AHJO_number": ""
+                }
+              ]
+            },
+            "construction_investigation": {
+              "report": "Tilattu",
+              "signing_date": "2017-06-05",
+              "report_author": "Petra Selvittäjä",
+              "research_state": "Valmis",
+              "geotechnical_number": "495874698",
+              "comments": []
+            },
+            "other": {
+              "research_state": "Tarkistamatta",
+              "comments": []
+            }
+          }
         }
       ]
     }

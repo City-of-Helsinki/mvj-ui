@@ -364,6 +364,9 @@ class RenderDistricts extends Component {
                     label='Selite'
                     options={[
                       {value: 'kaavayksikkö', label: 'Kaavayksikkö'},
+                      {value: 'kiinteistö', label: 'Kiinteisto'},
+                      {value: 'määräala', label: 'Määräala'},
+                      {value: 'muu', label: 'Muu'},
                     ]}
                   />
                 </Column>
