@@ -125,7 +125,7 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             </Column>
             <Column medium={4}>
               <label>PIMA valmistelija</label>
-              <p>{get(contamination, 'rent_condition_date', '–')}</p>
+              <p>{contamination.rent_condition_date ? formatDate(contamination.rent_condition_date) : '–'}</p>
             </Column>
           </Row>
         </div>

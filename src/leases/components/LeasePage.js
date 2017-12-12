@@ -269,12 +269,13 @@ class PreparerForm extends Component {
             </div>
             <div className='controls'>
               <ControlButtons
+                commentAmount={comments ? comments.length : 0}
                 isEditMode={isEditMode}
                 isValid={areFormsValid}
-                onEditClick={this.openEditMode}
                 onCancelClick={this.cancel}
-                onSaveClick={this.save}
                 onCommentClick={this.toggleCommentPanel}
+                onEditClick={this.openEditMode}
+                onSaveClick={this.save}
               />
             </div>
           </Column>
@@ -340,7 +341,7 @@ class PreparerForm extends Component {
                   <h1>Sopimukset</h1>
                   <div>
                     {!isEditMode && <Contracts contracts={contracts}/>}
-                    {isEditMode && <ContractEdit initialValues={{contracts: contracts}}/>}
+                    {isEditMode && <ContractEdit rules={rules} initialValues={{contracts: contracts}}/>}
                   </div>
                   <h1>Päätökset</h1>
                   <div>

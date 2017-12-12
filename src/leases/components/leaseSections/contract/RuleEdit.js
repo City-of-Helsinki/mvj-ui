@@ -96,13 +96,6 @@ const renderRules = ({fields}: RuleProps) => {
             <img src={trashIcon} alt='Poista' />
           </button>
           <Row>
-            <Column medium={2}>
-              <Field
-                name={`${rule}.rule_date`}
-                component={FieldTypeText}
-                label='Päätöspäivämäärä'
-              />
-            </Column>
             <Column medium={4}>
               <Field
                 name={`${rule}.rule_maker`}
@@ -111,6 +104,13 @@ const renderRules = ({fields}: RuleProps) => {
                 options={[
                   {value: 'rent-contract', label: 'To be filled'},
                 ]}
+              />
+            </Column>
+            <Column medium={2}>
+              <Field
+                name={`${rule}.rule_date`}
+                component={FieldTypeText}
+                label='Päätöspäivämäärä'
               />
             </Column>
             <Column medium={2}>
