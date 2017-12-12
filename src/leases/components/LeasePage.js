@@ -301,7 +301,7 @@ class PreparerForm extends Component {
                   <h1>Sopimukset</h1>
                   <div>
                     {!isEditMode && <Contracts contracts={contracts}/>}
-                    {isEditMode && <ContractEdit initialValues={{contracts: contracts}}/>}
+                    {isEditMode && <ContractEdit rules={rules} initialValues={{contracts: contracts}}/>}
                   </div>
                   <h1>Päätökset</h1>
                   <div>

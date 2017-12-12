@@ -4,6 +4,7 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import * as helpers from '../../../helpers';
 
 import trashIcon from '../../../../../assets/icons/trash.svg';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
@@ -141,9 +142,16 @@ const renderPledgeBooks = ({fields}: PledgeBookProps) => {
 
 type ContractProps = {
   fields: any,
+  rules: Array<Object>,
 }
 
-const renderContracts = ({fields}: ContractProps) => {
+const renderContracts = ({fields, rules}: ContractProps) => {
+  let ruleOptions = [];
+  if (rules) {
+    rules.map(rule =>
+      ruleOptions.push({value: rule.rule_clause, label: `${rule.rule_maker}, ${helpers.formatDate(rule.rule_date)}, ${rule.rule_clause}`})
+    );
+  }
   return (
     <div>
       {fields && fields.length > 0 && fields.map((contract, index) => {
@@ -233,7 +241,7 @@ const renderContracts = ({fields}: ContractProps) => {
                   name={`${contract}.linked_rule`}
                   component={FieldTypeSelect}
                   label='Päätös'
-                  options={[]}
+                  options={ruleOptions}
                 />
               </Column>
             </Row>
@@ -248,19 +256,19 @@ const renderContracts = ({fields}: ContractProps) => {
 type Props = {
   handleSubmit: Function,
   dispatch: Function,
+  rules: Array<Object>,
 }
 
 class ContractEdit extends Component {
   props: Props
 
   render() {
-    const {dispatch, handleSubmit} = this.props;
-
+    const {dispatch, handleSubmit, rules} = this.props;
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit'>
         <Row>
           <Column>
-            <FieldArray name="contracts" dispatch={dispatch} component={renderContracts}/>
+            <FieldArray name="contracts" rules={rules} dispatch={dispatch} component={renderContracts}/>
           </Column>
         </Row>
       </form>

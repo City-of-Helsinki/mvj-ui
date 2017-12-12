@@ -26,12 +26,12 @@ const Rule = ({rule}: Props) => {
         <div className='section-item'>
           <Row>
             <Column medium={4}>
-              <label>Päätöspäivämäärä</label>
-              <p>{rule.rule_number ? get(rule, 'rule_date', '–') : '–'}</p>
-            </Column>
-            <Column medium={4}>
               <label>Päättäjä</label>
               <p>{rule.rule_maker ? get(rule, 'rule_maker', '–') : '–'}</p>
+            </Column>
+            <Column medium={4}>
+              <label>Päätöspäivämäärä</label>
+              <p>{rule.rule_number ? get(rule, 'rule_date', '–') : '–'}</p>
             </Column>
             <Column medium={4}>
               <label>Pykälä</label>

@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 import Collapse from '../../../../components/Collapse';
+import * as helpers from '../../../helpers';
 
 type Props = {
   eligibility: Object,
@@ -27,7 +28,7 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
-                <p><strong>{get(comment, 'comment_author', '')}</strong>, {get(comment, 'comment_date', '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {helpers.formatDate(get(comment, 'comment_date'), '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
               </Column>
             </Row>
           </div>
@@ -55,7 +56,7 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
-                <p><strong>{get(comment, 'comment_author', '')}</strong>, {get(comment, 'comment_date', '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {helpers.formatDate(get(comment, 'comment_date'), '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
               </Column>
             </Row>
           </div>
@@ -87,13 +88,13 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             </Column>
             <Column medium={4}>
               <label>Päivämäärä</label>
-              <p>{eligibility.contamination.rent_condition_date ? get(eligibility.contamination, 'rent_condition_date', '–') : '–'}</p>
+              <p>{eligibility.contamination.rent_condition_date ? helpers.formatDate(get(eligibility.contamination, 'rent_condition_date', '–')) : '–'}</p>
               <label>Matti raportti</label>
               <p>{eligibility.contamination.contamination_author ? get(eligibility.contamination, 'contamination_author', '–') : '–'}</p>
             </Column>
             <Column medium={4}>
               <label>PIMA valmistelija</label>
-              <p>{eligibility.contamination.rent_condition_date ? get(eligibility.contamination, 'rent_condition_date', '–') : '–'}</p>
+              <p>{eligibility.contamination.rent_condition_date ? helpers.formatDate(get(eligibility.contamination, 'rent_condition_date', '–')) : '–'}</p>
             </Column>
           </Row>
         </div>
@@ -102,7 +103,7 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
-                <p><strong>{get(comment, 'comment_author', '')}</strong>, {get(comment, 'comment_date', '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {helpers.formatDate(get(comment, 'comment_date', ''))}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
               </Column>
             </Row>
           </div>
@@ -129,7 +130,7 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             </Column>
             <Column medium={4}>
               <label>Allekirjoituspäivämäärä</label>
-              <p>{eligibility.construction_investigation.signing_date ? get(eligibility.construction_investigation, 'signing_date', '–') : '–'}</p>
+              <p>{eligibility.construction_investigation.signing_date ? helpers.formatDate(get(eligibility.construction_investigation, 'signing_date', '–')) : '–'}</p>
             </Column>
             <Column medium={4}>
               <label>Selvityksen tekijä</label>
@@ -142,7 +143,7 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
-                <p><strong>{get(comment, 'comment_author', '')}</strong>, {get(comment, 'comment_date', '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {helpers.formatDate(get(comment, 'comment_date', ''))}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
               </Column>
             </Row>
           </div>
@@ -164,7 +165,7 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
-                <p><strong>{get(comment, 'comment_author', '')}</strong>, {get(comment, 'comment_date', '')}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {helpers.formatDate(get(comment, 'comment_date', ''))}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
               </Column>
             </Row>
           </div>
