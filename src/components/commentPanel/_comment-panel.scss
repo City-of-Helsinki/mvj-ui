@@ -13,6 +13,7 @@
   &__title-row {
     display: flex;
     flex: row nowrap;
+    margin-bottom: 2rem;
 
     .title {
       flex: 1 1 0%;
@@ -32,6 +33,35 @@
         width: 20px;
         display: block;
         cursor: pointer;
+      }
+    }
+  }
+
+  &__textarea-container {
+    margin-bottom: 1rem;
+  }
+
+  &__comments {
+    margin-top: 2rem;
+    max-height: calc(100vh - 23rem);
+    overflow: auto;
+
+    .comment-text {
+      font-size: $font-regular;
+      margin-bottom: rem-calc(5px);
+      line-height: 1.25;
+    }
+
+    .comment-info {
+      font-size: $font-small;
+      margin-bottom: rem-calc(15px);
+
+      .user {
+        font-weight: $semibold;
+      }
+
+      .date {
+
       }
     }
   }

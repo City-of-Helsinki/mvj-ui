@@ -38,6 +38,7 @@ import mockData from '../mock-data.json';
 type State = {
   activeTab: number,
   areas: Array<Object>,
+  comments: Array<Object>,
   contracts: Array<Object>,
   isEditMode: boolean,
   isCommentPanelOpen: boolean,
@@ -73,6 +74,7 @@ class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
     areas: [],
+    comments: mockData.leases[0].comments,
     contracts: [],
     isCommentPanelOpen: false,
     isEditMode: false,
@@ -186,6 +188,7 @@ class PreparerForm extends Component {
     const {
       activeTab,
       areas,
+      comments,
       contracts,
       isEditMode,
       isCommentPanelOpen,
@@ -212,7 +215,9 @@ class PreparerForm extends Component {
     return (
       <div className='lease-page'>
         <CommentPanel
+          comments={comments}
           isOpen={isCommentPanelOpen}
+          onAddComment={(comment) => alert(comment)}
           onClose={this.toggleCommentPanel}
         />
         <Row>
