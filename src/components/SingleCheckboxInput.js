@@ -8,14 +8,14 @@ type Props = {
 }
 const SingleCheckboxInput = ({disabled, isChecked, label, onChange}: Props) => {
   return (
-    <label className='single-checkbox-input'>
-      <input type="checkbox"
+    <div className='single-checkbox-input'>
+      <input type="checkbox" className="styled-checkbox"
         checked={isChecked}
         disabled={disabled}
         onChange={onChange}
       />
-      {label}
-    </label>
+      <label>{label}</label>
+    </div>
   );
 };
 

@@ -29,6 +29,7 @@
   .advanced-search-row-wrapper {
     display: flex;
     flex-flow: row wrap;
+    justify-content: space-between;
 
     .column-text-input-first {
       flex: 0 0 45%;
@@ -41,13 +42,42 @@
     }
 
     .column-select {
-      flex: 0 0 35%;
+      flex: 0 0 32%;
       display: flex;
     }
 
     .column-text-input-second {
       flex: 0 0 55%;
       display: flex;
+    }
+
+    .Select {
+      position: relative;
+    }
+
+    .Select-menu-outer {
+      width: 270px;
+      max-height: 150px;
+      position: absolute;
+      margin-top: 0.25rem;
+    }
+
+    .Select-menu {
+    	max-height: 148px;
+    }
+
+    .Select-menu::-webkit-scrollbar-track {
+    	border: none;
+    	background-color: none;
+    }
+
+    .Select-menu::-webkit-scrollbar {
+    	width: 10px;
+    	background-color: $white;
+    }
+
+    .Select-menu::-webkit-scrollbar-thumb {
+    	background-color: $medium-gray;
     }
 
     label {
