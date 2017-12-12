@@ -1,0 +1,16 @@
+.comment-panel {
+  background-color: $engel-lighter;
+  z-index: 0;
+  width: rem-calc(500px);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  right: rem-calc(-500px);
+  padding: rem-calc(100px) rem-calc(20px) 0 rem-calc(30px);
+  box-shadow: 2px 0 5px 0 rgba(0, 0, 0, 0.06);
+  transition: .3s ease-in-out;
+
+  &.is-panel-open {
+    right: 0;
+  }
+}

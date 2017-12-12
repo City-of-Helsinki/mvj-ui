@@ -13,6 +13,7 @@ import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from 
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
 import * as contentHelpers from '../helpers';
 
+import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ContractEdit from './leaseSections/contract/ContractEdit';
 import Contracts from './leaseSections/contract/Contracts';
 import ControlButtons from './ControlButtons';
@@ -39,6 +40,7 @@ type State = {
   areas: Array<Object>,
   contracts: Array<Object>,
   isEditMode: boolean,
+  isCommentPanelOpen: boolean,
   oldTenants: Array<Object>,
   rules: Array<Object>,
   tenants: Array<Object>,
@@ -72,6 +74,7 @@ class PreparerForm extends Component {
     activeTab: 0,
     areas: [],
     contracts: [],
+    isCommentPanelOpen: false,
     isEditMode: false,
     oldTenants: [],
     rules: [],
@@ -157,10 +160,6 @@ class PreparerForm extends Component {
     this.setState({isEditMode: false});
   }
 
-  openCommentPanel = () => {
-    alert('open comment panel');
-  }
-
   validateForms = () => {
     const {leaseInfoErrors} = this.props;
     return leaseInfoErrors ? true : false;
@@ -178,12 +177,18 @@ class PreparerForm extends Component {
     });
   };
 
+  toggleCommentPanel = () => {
+    const {isCommentPanelOpen} = this.state;
+    this.setState({isCommentPanelOpen: !isCommentPanelOpen});
+  }
+
   render() {
     const {
       activeTab,
       areas,
       contracts,
       isEditMode,
+      isCommentPanelOpen,
       oldTenants,
       tenants,
       rules,
@@ -206,6 +211,9 @@ class PreparerForm extends Component {
 
     return (
       <div className='lease-page'>
+        <CommentPanel
+          isOpen={isCommentPanelOpen}
+        />
         <Row>
           <Column className='lease-page__upper-bar'>
             <div className="lease-info-wrapper">
@@ -235,7 +243,7 @@ class PreparerForm extends Component {
                 onEditClick={this.openEditMode}
                 onCancelClick={this.cancel}
                 onSaveClick={this.save}
-                onCommentClick={this.openCommentPanel}
+                onCommentClick={this.toggleCommentPanel}
               />
             </div>
           </Column>
