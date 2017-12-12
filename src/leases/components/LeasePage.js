@@ -86,6 +86,8 @@ class PreparerForm extends Component {
 
   props: Props
 
+  commentPanel: any
+
   static contextTypes = {
     router: PropTypes.object,
   };
@@ -167,6 +169,28 @@ class PreparerForm extends Component {
     return leaseInfoErrors ? true : false;
   }
 
+  addComment = (comment: string) => {
+    const {comments} = this.state;
+    comments.push({
+      text: comment,
+      date: moment().format('YYYY-MM-DD'),
+      user: 'Katja Immonen',
+    });
+    this.setState({comments: comments});
+    this.commentPanel.resetField();
+  }
+
+  getComments = () => {
+    const {comments} = this.state;
+    return comments.sort(function(a, b){
+      const keyA = a.date,
+        keyB = b.date;
+      if(moment(keyA).isAfter(keyB)) return -1;
+      if(moment(keyB).isAfter(keyA)) return 1;
+      return 0;
+    });
+  }
+
   handleTabClick = (tabId) => {
     const {router} = this.context;
     const {location} = this.props;
@@ -188,7 +212,6 @@ class PreparerForm extends Component {
     const {
       activeTab,
       areas,
-      comments,
       contracts,
       isEditMode,
       isCommentPanelOpen,
@@ -202,6 +225,7 @@ class PreparerForm extends Component {
       isFetching,
     } = this.props;
 
+    const comments = this.getComments();
     const areFormsValid = this.validateForms();
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
     const statusOptions = contentHelpers.getStatusOptions(attributes);
@@ -215,9 +239,10 @@ class PreparerForm extends Component {
     return (
       <div className='lease-page'>
         <CommentPanel
+          ref={(input) => {this.commentPanel = input;}}
           comments={comments}
           isOpen={isCommentPanelOpen}
-          onAddComment={(comment) => alert(comment)}
+          onAddComment={(comment) => this.addComment(comment)}
           onClose={this.toggleCommentPanel}
         />
         <Row>

@@ -139,7 +139,6 @@ export const formatDateRange = (startDate: any, endDate: any) => {
   }
 
   return `${start.format(dateFormat)} - ${end.format(dateFormat)}`;
-
 };
 
 /**

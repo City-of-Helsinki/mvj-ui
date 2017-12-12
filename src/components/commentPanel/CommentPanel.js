@@ -24,6 +24,10 @@ class CommentPanel extends Component {
     comment: '',
   }
 
+  resetField = () => {
+    this.setState({comment: ''});
+  }
+
   render () {
     const {comments, isOpen, onAddComment, onClose} = this.props;
     const {comment} = this.state;
