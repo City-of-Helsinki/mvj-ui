@@ -8,6 +8,23 @@
       "sequence": 2,
       "start_date": "2017-01-01",
       "end_date": "2077-01-01",
+      "comments": [
+        {
+          "text": "Vilu mulle virttä virkkoi, sae saatteli runoja. Virttä toista tuulet toivat, meren aaltoset ajoivat. Linnut liitteli sanoja, puien latvat lausehia.",
+          "date": "2017-10-20",
+          "user": "Kati Valkama"
+        },
+        {
+          "text": "Vilu mulle virttä virkkoi, sae saatteli runoja. Virttä toista tuulet toivat, meren aaltoset ajoivat. Linnut liitteli sanoja, puien latvat lausehia.",
+          "date": "2017-9-20",
+          "user": "Kati Valkama"
+        },
+        {
+          "text": "Vilu mulle virttä virkkoi, sae saatteli runoja. Virttä toista tuulet toivat, meren aaltoset ajoivat. Linnut liitteli sanoja, puien latvat lausehia.",
+          "date": "2017-8-20",
+          "user": "Kati Valkama"
+        }
+      ],
       "contracts": [
         {
           "contract_type": "vuokrasopimus",

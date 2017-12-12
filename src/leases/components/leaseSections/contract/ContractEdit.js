@@ -4,7 +4,7 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import * as helpers from '../../../helpers';
+import {formatDate} from '../../../../util/helpers';
 
 import trashIcon from '../../../../../assets/icons/trash.svg';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
@@ -149,7 +149,7 @@ const renderContracts = ({fields, rules}: ContractProps) => {
   let ruleOptions = [];
   if (rules) {
     rules.map(rule =>
-      ruleOptions.push({value: rule.rule_clause, label: `${rule.rule_maker}, ${helpers.formatDate(rule.rule_date)}, ${rule.rule_clause}`})
+      ruleOptions.push({value: rule.rule_clause, label: `${rule.rule_maker}, ${formatDate(rule.rule_date)}, ${rule.rule_clause}`})
     );
   }
   return (

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-import * as contentHelpers from '../../../helpers';
+import * as utilHelpers from '../../../../util/helpers';
 
 type Props = {
   startDate: ?string,
@@ -13,7 +13,7 @@ const LeaseInfo = ({startDate, endDate, identifier}: Props) => {
   if(!identifier) {
     return null;
   }
-  const dateRange = contentHelpers.formatDateRange(startDate, endDate);
+  const dateRange = utilHelpers.formatDateRange(startDate, endDate);
   return (
     <div className='lease-info'>
       <p className='lease-info__label'>Vuokratunnus</p>

@@ -3,6 +3,8 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import {capitalize} from 'lodash';
 
+import {formatDate} from '../../../../util/helpers';
+
 type Props = {
   item: Object,
 }
@@ -27,7 +29,7 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
           <label>Tonttijaon tunnus</label>
           <p>{item.plot_division_id}</p>
           <label>Tonttijaon hyväksymispäivämäärä</label>
-          <p>{item.plot_division_approval_date}</p>
+          <p>{formatDate(item.plot_division_approval_date)}</p>
         </Column>
         <Column medium={4}>
           <label>Kokonaisala</label>

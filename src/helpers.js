@@ -1,3 +1,4 @@
+// @flow
 export const getLogo = () => {
   return require(`../assets/images/logo.svg`);
 };

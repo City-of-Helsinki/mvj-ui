@@ -4,13 +4,14 @@ import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
 import * as helpers from '../../../helpers';
+import * as utilHelpers from '../../../../util/helpers';
 
 type Props = {
   customer: Object,
 };
 
 const ContactPersonItem = ({customer}: Props) => {
-  const formatedDate = helpers.formatDate(get(customer, 'start_date', ''));
+  const formatedDate = utilHelpers.formatDate(get(customer, 'start_date', ''));
   const fullAddress = helpers.getFullAddress(customer);
 
   return (

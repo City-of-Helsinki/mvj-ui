@@ -45,6 +45,7 @@
 @import "components/action-dropdown";
 @import "components/button";
 @import "components/collapse";
+@import "components/commentPanel/comment-panel";
 @import "components/form-action-dropdown";
 @import "components/form/form";
 @import "components/icon-radio-buttons";
@@ -59,7 +60,6 @@
 @import "components/tabs/tabs";
 @import "components/text-input";
 @import "components/topNavigation/top-navigation";
-
 
 // App Beta
 @import "app/app";
@@ -82,13 +82,13 @@ html {
 
 body {
   overflow-y: auto;
-  height: 100%;
+  height: calc(100% - 70px);
   background-color: $light-gray;
 }
 
 #root {
   display: block;
-  min-height: 100%;
+  height: 100%;
   font-family: $font-family-source;
   background: $light-gray;
   color: $black;

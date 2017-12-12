@@ -3,6 +3,7 @@ import find from 'lodash/find';
 import get from 'lodash/get';
 import forEach from 'lodash/forEach';
 import findIndex from 'lodash/findIndex';
+import isNumber from 'lodash/isNumber';
 import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
 import Fraction from 'fraction.js';
@@ -110,6 +111,34 @@ export const generateFormData = (formData, data, previousKey) => {
 export const displayUIMessage = (message, opts = {type: 'success'}) => {
   const {title, body} = message;
   return toastr[opts.type](title, body, opts);
+};
+
+export const formatDate = (date: string) => {
+  if (!date) {
+    return '';
+  }
+
+  const d = isNumber(date) ? moment.unix(date) : moment(date);
+  return d.format('DD.MM.YYYY');
+};
+
+export const formatDateRange = (startDate: any, endDate: any) => {
+  if (!startDate && !endDate) {
+    return '';
+  }
+
+  const start = isNumber(startDate) ? moment.unix(startDate) : moment(startDate),
+    end = isNumber(endDate) ? moment.unix(endDate) : moment(endDate);
+
+  const dateFormat = 'DD.MM.YYYY';
+  if(!startDate) {
+    return `- ${end.format(dateFormat)}`;
+  }
+  if(!endDate) {
+    return `${start.format(dateFormat)} -`;
+  }
+
+  return `${start.format(dateFormat)} - ${end.format(dateFormat)}`;
 };
 
 /**

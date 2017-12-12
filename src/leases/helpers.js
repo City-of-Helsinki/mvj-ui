@@ -1,37 +1,8 @@
 // @flow
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import isNumber from 'lodash/isNumber';
-import moment from 'moment';
 
-export const formatDate = (date: string) => {
-  if (!date) {
-    return '';
-  }
-
-  const d = isNumber(date) ? moment.unix(date) : moment(date);
-  return d.format('DD.MM.YYYY');
-};
-
-export const formatDateRange = (startDate: any, endDate: any) => {
-  if (!startDate && !endDate) {
-    return '';
-  }
-
-  const start = isNumber(startDate) ? moment.unix(startDate) : moment(startDate),
-    end = isNumber(endDate) ? moment.unix(endDate) : moment(endDate);
-
-  const dateFormat = 'DD.MM.YYYY';
-  if(!startDate) {
-    return `- ${end.format(dateFormat)}`;
-  }
-  if(!endDate) {
-    return `${start.format(dateFormat)} -`;
-  }
-
-  return `${start.format(dateFormat)} - ${end.format(dateFormat)}`;
-
-};
+import {formatDate, formatDateRange} from '../util/helpers';
 
 export const formatSequenceNumber = (value: number) => {
   if(!value) {
