@@ -29,7 +29,7 @@
       background-color: $medium-gray;
       top: 0;
       right: -5px;
-      height: 100%;
+      height: rem-calc(30px);
       width: 12px;
       transform: skewX(15deg);
     }

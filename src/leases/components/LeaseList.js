@@ -30,6 +30,8 @@ type Props = {
 type State = {
   documentType: Array<string>,
   isCreateLeaseIdentifierModalOpen: boolean,
+  newLeaseStatus: string,
+  newLeaseTitle: string,
   visualizationType: string,
 }
 
@@ -39,6 +41,8 @@ class LeaseList extends Component {
   state: State = {
     documentType: [],
     isCreateLeaseIdentifierModalOpen: false,
+    newLeaseStatus: '',
+    newLeaseTitle: '',
     visualizationType: 'table',
   }
 
@@ -96,23 +100,34 @@ class LeaseList extends Component {
     });
   };
 
+  openCreateLeaseModal = (status: string, title: string) => {
+    this.setState({
+      newLeaseStatus: status,
+      newLeaseTitle: title,
+    });
+    this.showModal('CreateLeaseIdentifier');
+  }
+
   render() {
-    const {documentType, isCreateLeaseIdentifierModalOpen, visualizationType} = this.state;
+    const {documentType, isCreateLeaseIdentifierModalOpen, newLeaseStatus, newLeaseTitle, visualizationType} = this.state;
     const {attributes, createLease, leases: content, isFetching} = this.props;
     const leases = contentHelpers.getContentLeases(content, attributes);
     const districtOptions = contentHelpers.getDistrictOptions(attributes);
     const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
     const typeOptions = contentHelpers.getTypeOptions(attributes);
+    //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
+    const filteredLeases = contentHelpers.getLeasesFilteredByDocumentType(leases, documentType);
 
     return (
       <div className='lease-list'>
         <Modal
-          title='Luo vuokratunnus'
+          title={newLeaseTitle ? newLeaseTitle : 'Luo vuokratunnus'}
           isOpen={isCreateLeaseIdentifierModalOpen}
           onClose={() => this.hideModal('CreateLeaseIdentifier')}
         >
           <CreateLease
             districtOptions={districtOptions}
+            status={newLeaseStatus}
             onSubmit={(lease) => createLease(lease)}
             municipalityOptions={municipalityOptions}
             typeOptions={typeOptions}
@@ -132,10 +147,10 @@ class LeaseList extends Component {
             <ActionDropdown
               title={'Luo uusi'}
               options={[
-                {value: 'application', label: 'Hakemus'},
-                {value: 'reservation', label: 'Varaus'},
-                {value: 'lease', label: 'Vuokraus', action: () => this.showModal('CreateLeaseIdentifier')},
-                {value: 'permission', label: 'Lupa'},
+                {value: 'application', label: 'Hakemus', action: () => this.openCreateLeaseModal('H', 'Luo hakemus')},
+                {value: 'reservation', label: 'Varaus', action: () => this.openCreateLeaseModal('R', 'Luo varaus')},
+                {value: 'lease', label: 'Vuokraus', action: () => this.openCreateLeaseModal('V', 'Luo vuokraus')},
+                {value: 'permission', label: 'Lupa', action: () => this.openCreateLeaseModal('L', 'Luo lupa')},
                 {value: 'area', label: 'Muistettavat ehdot'},
               ]}
             />
@@ -143,7 +158,7 @@ class LeaseList extends Component {
         </Row>
         <Row>
           <TableControllers
-            amount={leases.length}
+            amount={filteredLeases.length}
             documentType={documentType}
             onDocumentTypeChange={(value) => {this.setState({documentType: value});}}
             visualizationType={visualizationType}
@@ -155,8 +170,8 @@ class LeaseList extends Component {
           <Row>
             {visualizationType === 'table' && (
               <Table
-                amount={leases.length}
-                data={leases}
+                amount={filteredLeases.length}
+                data={filteredLeases}
                 dataKeys={[
                   {key: 'identifier', label: 'Vuokratunnus'},
                   {key: 'real_property_unit', label: 'Vuokrakohde'},

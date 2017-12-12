@@ -12,14 +12,15 @@ import {integer, min, max, required} from '../../../components/form/validations'
 
 
 type Props = {
-  type: string,
-  municipality: string,
   district: string,
-  sequence: number,
   districtOptions: Array<Object>,
+  municipality: string,
   municipalityOptions: Array<Object>,
-  typeOptions: Array<Object>,
   onSubmit: Function,
+  sequence: number,
+  status: string,
+  type: string,
+  typeOptions: Array<Object>,
   valid: boolean,
 }
 
@@ -35,6 +36,7 @@ class CreateLease extends Component {
       districtOptions,
       municipalityOptions,
       onSubmit,
+      status,
       typeOptions,
       valid,
     } = this.props;
@@ -102,6 +104,7 @@ class CreateLease extends Component {
                   district: district,
                   sequence: Number(sequence),
                   start_date: null,
+                  status: status,
                   end_date: null,
                 })}
               >
