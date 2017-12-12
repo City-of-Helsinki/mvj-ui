@@ -1,5 +1,5 @@
 .comment-panel {
-  background-color: $engel-lighter;
+  background-color: $engel-light;
   z-index: 0;
   width: rem-calc(500px);
   height: 100vh;
@@ -10,7 +10,34 @@
   box-shadow: 2px 0 5px 0 rgba(0, 0, 0, 0.06);
   transition: .3s ease-in-out;
 
+  &__title-row {
+    display: flex;
+    flex: row nowrap;
+
+    .title {
+      flex: 1 1 0%;
+
+      h1 {
+        font-family: $font-family-source;
+	      font-size: $font-xlarge;
+	      font-weight: $semibold;
+        margin: 0;
+      }
+    }
+    .close-button-container {
+      align-self: center;
+      a {
+        background-image: url(../assets/icons/icon_close.svg);
+        height: 20px;
+        width: 20px;
+        display: block;
+        cursor: pointer;
+      }
+    }
+  }
+
   &.is-panel-open {
     right: 0;
+    z-index: 2;
   }
 }

@@ -213,6 +213,7 @@ class PreparerForm extends Component {
       <div className='lease-page'>
         <CommentPanel
           isOpen={isCommentPanelOpen}
+          onClose={this.toggleCommentPanel}
         />
         <Row>
           <Column className='lease-page__upper-bar'>
