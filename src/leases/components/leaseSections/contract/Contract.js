@@ -2,7 +2,7 @@
 import React from 'react';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
-import * as helpers from '../../../helpers';
+import * as helpers from '../../../../util/helpers';
 
 import Collapse from '../../../../components/Collapse';
 
@@ -75,37 +75,38 @@ const Contract = ({contract}: Props) => {
         }
       >
         {contract.modifications && contract.modifications.map((modification, index) =>
-        <div className='section-item' key={index}>
-          <Row>
-            <Column medium={4}>
-              <label>Allekirjoituspäivämäärä</label>
-              <p>{modification.modification_signing_date ? helpers.formatDate(get(modification, 'modification_signing_date', '–')) : '–'}</p>
+          <div className='section-item' key={index}>
+            <Row>
+              <Column medium={4}>
+                <label>Allekirjoituspäivämäärä</label>
+                <p>{modification.modification_signing_date ? helpers.formatDate(get(modification, 'modification_signing_date', '–')) : '–'}</p>
 
-              <label>1. kutsu lähetetty</label>
-              <p>{modification.first_call_sent ? helpers.formatDate(get(modification, 'first_call_sent', '–')) : '–'}</p>
-            </Column>
-            <Column medium={4}>
-              <label>Allekirjoitettava mennessä</label>
-              <p>{modification.to_be_signed_by ? helpers.formatDate(get(modification, 'to_be_signed_by', '–')) : '–'}</p>
+                <label>1. kutsu lähetetty</label>
+                <p>{modification.first_call_sent ? helpers.formatDate(get(modification, 'first_call_sent', '–')) : '–'}</p>
+              </Column>
+              <Column medium={4}>
+                <label>Allekirjoitettava mennessä</label>
+                <p>{modification.to_be_signed_by ? helpers.formatDate(get(modification, 'to_be_signed_by', '–')) : '–'}</p>
 
-              <label>2. kutsu lähetetty</label>
-              <p>{modification.second_call_sent ? helpers.formatDate(get(modification, 'second_call_sent', '–')) : '–'}</p>
-            </Column>
-            <Column medium={4}>
-              <label>Päätös</label>
-              <p>–</p>
+                <label>2. kutsu lähetetty</label>
+                <p>{modification.second_call_sent ? helpers.formatDate(get(modification, 'second_call_sent', '–')) : '–'}</p>
+              </Column>
+              <Column medium={4}>
+                <label>Päätös</label>
+                <p>–</p>
 
-              <label>3. kutsu lähetetty</label>
-              <p>{modification.third_call_sent ? helpers.formatDate(get(modification, 'third_call_sent', '–')) : '–'}</p>
-            </Column>
-          </Row>
-          <Row>
-            <Column medium={12}>
-              <label>Selite</label>
-              <p>{modification.modification_description ? get(modification, 'modification_description', '–') : '–'}</p>
-            </Column>
-          </Row>
-        </div>)}
+                <label>3. kutsu lähetetty</label>
+                <p>{modification.third_call_sent ? helpers.formatDate(get(modification, 'third_call_sent', '–')) : '–'}</p>
+              </Column>
+            </Row>
+            <Row>
+              <Column medium={12}>
+                <label>Selite</label>
+                <p>{modification.modification_description ? get(modification, 'modification_description', '–') : '–'}</p>
+              </Column>
+            </Row>
+          </div>)
+        }
       </Collapse>}
     </div>
   );

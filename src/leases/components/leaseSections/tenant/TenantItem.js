@@ -3,15 +3,16 @@ import React from 'react';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
-import * as helpers from '../../../helpers';
+import {formatDate} from '../../../../util/helpers';
+import {getFullAddress} from '../../../helpers';
 
 type Props = {
   customer: Object,
 };
 
 const TenantItem = ({customer}: Props) => {
-  const formatedDate = helpers.formatDate(get(customer, 'start_date', ''));
-  const fullAddress = helpers.getFullAddress(customer);
+  const formatedDate = formatDate(get(customer, 'start_date', ''));
+  const fullAddress = getFullAddress(customer);
 
   return (
     <div className='section-item'>

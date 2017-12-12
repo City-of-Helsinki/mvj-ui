@@ -3,6 +3,8 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import {capitalize} from 'lodash';
 
+import {formatDate} from '../../../../util/helpers';
+
 type Props = {
   item: Object,
 }
@@ -25,7 +27,7 @@ const PropertyUnitPlotItem = (props: Props) => {
           <label>Osoite</label>
           <p>{`${capitalize(item.address)}, ${item.zip_code} ${item.town}`}</p>
           <label>Rekisteröintipäivä</label>
-          <p>{item.registration_date}</p>
+          <p>{formatDate(item.registration_date)}</p>
         </Column>
         <Column medium={4}>
           <label>Kokonaisala</label>

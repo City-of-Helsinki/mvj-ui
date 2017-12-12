@@ -17,7 +17,6 @@ const TextAreaInput = ({disabled, onChange, placeholder = '', rows = 3, value = 
       onChange={onChange}
       placeholder={placeholder}
       rows={rows}
-      resize={false}
       value={value}
     />
   );

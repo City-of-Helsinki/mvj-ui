@@ -3,7 +3,7 @@ import React from 'react';
 import get from 'lodash/get';
 
 import Collapse from '../../../../components/Collapse';
-import * as helpers from '../../../helpers';
+import * as helpers from '../../../../util/helpers';
 import Rule from './Rule';
 import {Row, Column} from 'react-foundation';
 

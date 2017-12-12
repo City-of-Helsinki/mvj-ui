@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import Button from '../Button';
 import TextAreaInput from '../TextAreaInput';
-import {formatDate} from '../../helpers';
+import {formatDate} from '../../util/helpers';
 
 type Props = {
   comments: Array<Object>,
