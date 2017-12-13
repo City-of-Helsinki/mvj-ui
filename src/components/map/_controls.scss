@@ -1,0 +1,17 @@
+.mvj-control {
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+
+  > a {
+    background-color: #fff;
+    //border: 1px solid #ccc;
+    width: 30px;
+    height: 30px;
+    line-height: 34px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    font-size: 22px;
+  }
+}

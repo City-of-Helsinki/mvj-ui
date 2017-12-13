@@ -1,3 +1,5 @@
+import L from 'leaflet';
+
 /**
  * Avalable languages
  * @type {[*]}
@@ -17,7 +19,7 @@ export const FallbackLanguage = 'en';
  * Languages
  * @type {[*]}
  */
- 
+
 export const Languages = [
   {id: 'en', label: 'EN'},
   {id: 'fi', label: 'FI'},
@@ -44,7 +46,9 @@ export const ktjDataSets = [
  * @type {string}
  */
 // export const tileLayer = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
-export const tileLayer = 'https://geoserver.hel.fi/mapproxy/wmts/osm-lite-hq/etrs_tm35fin_hq/{z}/{x}/{y}.png';
+// export const tileLayer = 'https://geoserver.hel.fi/mapproxy/wmts/osm-lite-hq/etrs_tm35fin_hq/{z}/{x}/{y}.png';
+// export const tileLayer = 'https://kartta.hel.fi/ws/geoserver/avoindata/wms?helsinki/{z}/{x}/{y}.png';
+export const tileLayer = L.tileLayer.wms('http://kartta.hel.fi/ws/geoserver/helsinki/wms?helsinki', {layers: 'helsinki:Kaupunkikartta'});
 
 /**
  * Default coordinates for Map (helsinki centrum)

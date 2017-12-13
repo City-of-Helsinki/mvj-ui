@@ -11,6 +11,7 @@ import Loader from '../../components/loader/Loader';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
 import Modal from '../../components/Modal';
 import Search from './search/Search';
+import Map from './Map';
 import CreateLease from '../components/leaseSections/CreateLease';
 import TableControllers from './TableControllers';
 import Table from '../../components/Table';
@@ -186,7 +187,7 @@ class LeaseList extends Component {
               />
             )}
             {visualizationType === 'map' && (
-              <h1>Kartta</h1>
+              <Map/>
             )}
           </Row>
         }
