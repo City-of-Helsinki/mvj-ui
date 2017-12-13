@@ -2,29 +2,33 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
+import ReduxToastr from 'react-redux-toastr';
+import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
 import classnames from 'classnames';
-import ReduxToastr from 'react-redux-toastr';
 
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
-import TopNavigation from '../components/topNavigation/TopNavigation';
+import LoginPage from '../auth/components/LoginPage';
+import {loggedInUser} from '../auth/selectors';
 import SideMenu from '../components/sideMenu/SideMenu';
+import TopNavigation from '../components/topNavigation/TopNavigation';
 
 import type {ApiError} from '../api/types';
 import type {RootState} from '../root/types';
 
 type Props = {
   apiError: ApiError,
-  clearError: typeof clearError,
   children: any,
-  params: Object,
+  clearError: typeof clearError,
   closeReveal: Function,
+  location: Object,
+  params: Object,
+  user: Object,
 };
 
 type State = {
@@ -54,8 +58,12 @@ class App extends Component {
   };
 
   render() {
-    const {apiError, children} = this.props;
+    const {apiError, children, location, user} = this.props;
     const {displaySideMenu} = this.state;
+
+    if (location.pathname !== '/callback' && !user) {
+      return <LoginPage />;
+    }
 
     return (
       <div className={'app'}>
@@ -82,12 +90,24 @@ class App extends Component {
   }
 }
 
+const mapStateToProps = (state: RootState) => {
+  const user = loggedInUser(state);
+  if (!user || user.expired) {
+    return {user: null};
+  }
+  return {
+    apiError: getError(state),
+    user,
+    // entries: state.data.entry,
+    // tasks: state.data.task,
+    // apiToken: state.apiToken
+  };
+};
+
 export default flowRight(
   withRouter,
   connect(
-    (state: RootState) => ({
-      apiError: getError(state),
-    }),
+    mapStateToProps,
     {
       clearError,
     },

@@ -3,9 +3,10 @@
 import React from 'react';
 import {Provider} from 'react-redux';
 import {Router} from 'react-router';
-import {I18nextProvider} from 'react-i18next';
+import {OidcProvider} from 'redux-oidc';
+
+import userManager from '../auth/util/user-manager';
 import routes from './routes';
-import i18n from './i18n';
 
 export type RootProps = {
   history: any,
@@ -13,10 +14,10 @@ export type RootProps = {
 };
 
 const Root = ({history, store}: RootProps) =>
-  <I18nextProvider i18n={i18n}>
-    <Provider store={store}>
+  <Provider store={store}>
+    <OidcProvider store={store} userManager={userManager}>
       <Router history={history} routes={routes} key={Math.random()}/>
-    </Provider>
-  </I18nextProvider>;
+    </OidcProvider>
+  </Provider>;
 
 export default Root;

@@ -2,6 +2,7 @@
 
 import {combineReducers} from 'redux';
 import {reducer as formReducer} from 'redux-form';
+import {reducer as oidc} from 'redux-oidc';
 import {reducer as toastrReducer} from 'react-redux-toastr';
 import {routerReducer} from 'react-router-redux';
 import apiReducer from '../api/reducer';
@@ -19,10 +20,11 @@ export default (): Reducer<RootState> =>
     api: apiReducer,
     applications: applicationsReducer,
     attributes: attributesReducer,
+    form: formReducer,
     lease: leaseReducer,
     leasebeta: leaseReducerBeta,
-    user: roleReducer,
-    form: formReducer,
+    oidc,
     routing: routerReducer,
     toastr: toastrReducer,
+    user: roleReducer,
   });
