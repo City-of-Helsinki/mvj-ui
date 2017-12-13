@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import ReduxToastr from 'react-redux-toastr';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
 import classnames from 'classnames';
@@ -64,10 +65,13 @@ class App extends Component {
     if (location.pathname !== '/callback' && !user) {
       return <LoginPage />;
     }
-
+    
     return (
       <div className={'app'}>
-        <TopNavigation toggleSideMenu={this.toggleSideMenu}/>
+        <TopNavigation
+          toggleSideMenu={this.toggleSideMenu}
+          userProfile={get(user, 'profile')}
+        />
         <section className="app__content">
           <SideMenu isOpen={displaySideMenu} />
           <div className={classnames('wrapper', {'is-sidemenu-closed': !displaySideMenu}, {'is-sidemenu-open': displaySideMenu})}>{children}</div>

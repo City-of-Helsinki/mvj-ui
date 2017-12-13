@@ -13,7 +13,7 @@ export default
 <Route path="/" component={App}>
   <IndexRedirect to="leases" />
   <Route path="leases" components={LeaseList} />
-  <Route path="leases:leaseId" component={LeasePage}/>
+  <Route path="leases/:leaseId" component={LeasePage}/>
   <Route path="logout" components={LoginPage} />
   <Route path="callback" components={CallbackPage} />
   <Route path="*" component={ErrorPage}/>
