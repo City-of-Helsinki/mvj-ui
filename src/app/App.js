@@ -18,6 +18,7 @@ import LoginPage from '../auth/components/LoginPage';
 import {loggedInUser} from '../auth/selectors';
 import SideMenu from '../components/sideMenu/SideMenu';
 import TopNavigation from '../components/topNavigation/TopNavigation';
+import userManager from '../auth/util/user-manager';
 
 import type {ApiError} from '../api/types';
 import type {RootState} from '../root/types';
@@ -47,6 +48,10 @@ class App extends Component {
     router: PropTypes.object,
   };
 
+  logOut() {
+    userManager.removeUser();
+  }
+
   toggleSideMenu = () => {
     return this.setState({
       displaySideMenu: !this.state.displaySideMenu,
@@ -65,10 +70,11 @@ class App extends Component {
     if (location.pathname !== '/callback' && !user) {
       return <LoginPage />;
     }
-    
+
     return (
       <div className={'app'}>
         <TopNavigation
+          onLogout={this.logOut}
           toggleSideMenu={this.toggleSideMenu}
           userProfile={get(user, 'profile')}
         />
