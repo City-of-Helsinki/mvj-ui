@@ -2,29 +2,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {CallbackComponent} from 'redux-oidc';
 
-import Loader from '../../components/loader/Loader';
 import userManager from '../util/user-manager';
 
 class CallbackPage extends React.Component {
+  static contextTypes = {
+    router: PropTypes.object,
+  };
+
   // just redirect to '/' in both cases
-  errorCallback = () => {
-    this.context.router.push('/');
-  }
   successCallback = () => {
     this.context.router.push('/');
   }
-  render() {
 
+  render() {
     return (
-      <CallbackComponent userManager={userManager} successCallback={this.successCallback} errorCallback={this.errorCallback}>
-        <Loader isLoading={true} />
-      </CallbackComponent>
+      <CallbackComponent userManager={userManager} successCallback={this.successCallback} errorCallback={this.successCallback}><div></div></CallbackComponent>
     );
   }
 }
-
-CallbackPage.contextTypes = {
-  router: PropTypes.object,
-};
 
 export default CallbackPage;

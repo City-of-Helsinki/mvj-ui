@@ -1,7 +1,6 @@
 // @flow
 
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ReduxToastr from 'react-redux-toastr';
 import {withRouter} from 'react-router';
@@ -16,7 +15,7 @@ import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
 import {fetchApiToken} from '../auth/actions';
-import {loggedInUser} from '../auth/selectors';
+import {getApiToken, getApiTokenLoading, getLoggedInUser} from '../auth/selectors';
 import LoginPage from '../auth/components/LoginPage';
 import userManager from '../auth/util/user-manager';
 import Loader from '../components/loader/Loader';
@@ -30,6 +29,7 @@ import type {RootState} from '../root/types';
 type Props = {
   apiError: ApiError,
   apiToken: ApiToken,
+  apiTokenLoading: boolean,
   children: any,
   clearError: typeof clearError,
   closeReveal: Function,
@@ -51,12 +51,11 @@ class App extends Component {
     displaySideMenu: false,
   }
 
-  static contextTypes = {
-    router: PropTypes.object,
-  };
-
   componentWillReceiveProps(nextProps) {
-    const {fetchApiToken} = this.props;
+    const {apiError, fetchApiToken} = this.props;
+    if(apiError) {
+      return;
+    }
     if(nextProps.user !== null && nextProps.user.access_token !== null && isEmpty(nextProps.apiToken)) {
       fetchApiToken(nextProps.user.access_token);
       return;
@@ -79,20 +78,42 @@ class App extends Component {
   };
 
   render() {
-    const {apiError, apiToken, children, location, user} = this.props;
+    const {apiError, apiToken, apiTokenLoading, children, location, user} = this.props;
     const {displaySideMenu} = this.state;
 
-    if (location.pathname !== '/callback' && !user) {
-      return <LoginPage />;
+    if (isEmpty(user) || isEmpty(apiToken)) {
+      return (
+        <div className={'app'}>
+          <ApiErrorModal size={Sizes.MEDIUM}
+            data={apiError}
+            isOpen={Boolean(apiError)}
+            handleDismiss={this.handleDismissErrorModal}/>
+          <LoginPage buttonDisabled={Boolean(apiTokenLoading)}/>
+          <Loader isLoading={Boolean(apiTokenLoading)} />
+
+          {location.pathname === '/callback' &&
+            children
+          }
+        </div>
+      );
     }
-    if (location.pathname === '/callback') {
-      return <div className={'app'}>{children}</div>;
-    }
-    if(isEmpty(apiToken)) {
-      return <div className={'app'}><Loader isLoading={true} /></div>;
-    }
+
     return (
       <div className={'app'}>
+        <ApiErrorModal size={Sizes.LARGE}
+          data={apiError}
+          isOpen={Boolean(apiError)}
+          handleDismiss={this.handleDismissErrorModal}/>
+        <ReduxToastr
+          newestOnTop={true}
+          position='top-right'
+          preventDuplicates={true}
+          progressBar={true}
+          timeOut={4000}
+          transitionIn='fadeIn'
+          transitionOut='bounceOutUp'
+        />
+
         <TopNavigation
           onLogout={this.logOut}
           toggleSideMenu={this.toggleSideMenu}
@@ -100,34 +121,24 @@ class App extends Component {
         />
         <section className="app__content">
           <SideMenu isOpen={displaySideMenu} />
-          <div className={classnames('wrapper', {'is-sidemenu-closed': !displaySideMenu}, {'is-sidemenu-open': displaySideMenu})}>{children}</div>
+          <div className={classnames('wrapper', {'is-sidemenu-closed': !displaySideMenu}, {'is-sidemenu-open': displaySideMenu})}>
+            {children}
+          </div>
         </section>
-        <ReduxToastr
-          timeOut={4000}
-          newestOnTop={true}
-          preventDuplicates={true}
-          position='top-right'
-          transitionIn='fadeIn'
-          transitionOut='bounceOutUp'
-          progressBar={true}
-        />
-        <ApiErrorModal size={Sizes.LARGE}
-          data={apiError}
-          isOpen={Boolean(apiError)}
-          handleDismiss={this.handleDismissErrorModal}/>
       </div>
     );
   }
 }
 
 const mapStateToProps = (state: RootState) => {
-  const user = loggedInUser(state);
+  const user = getLoggedInUser(state);
   if (!user || user.expired) {
     return {user: null};
   }
   return {
     apiError: getError(state),
-    apiToken: state.apiToken,
+    apiToken: getApiToken(state),
+    apiTokenLoading: getApiTokenLoading(state),
     user,
   };
 };

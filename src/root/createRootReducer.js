@@ -19,7 +19,7 @@ import type {RootState} from './types';
 export default (): Reducer<RootState> =>
   combineReducers({
     api: apiReducer,
-    apiToken: authReducer,
+    auth: authReducer,
     applications: applicationsReducer,
     attributes: attributesReducer,
     form: formReducer,
