@@ -13,6 +13,7 @@ import classnames from 'classnames';
 
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
+import {fetchApiToken} from '../auth/actions';
 import ApiErrorModal from '../api/ApiErrorModal';
 import LoginPage from '../auth/components/LoginPage';
 import {loggedInUser} from '../auth/selectors';
@@ -28,8 +29,10 @@ type Props = {
   children: any,
   clearError: typeof clearError,
   closeReveal: Function,
+  fetchApiToken: Function,
   location: Object,
   params: Object,
+  apiToken: string,
   user: Object,
 };
 
@@ -47,6 +50,15 @@ class App extends Component {
   static contextTypes = {
     router: PropTypes.object,
   };
+
+  componentWillReceiveProps(nextProps) {
+    const {fetchApiToken} = this.props;
+
+    if(nextProps.user !== null && nextProps.user.access_token !== null && !nextProps.apiToken) {
+      fetchApiToken(nextProps.user.access_token);
+      return;
+    }
+  }
 
   logOut() {
     userManager.removeUser();
@@ -120,6 +132,7 @@ export default flowRight(
     mapStateToProps,
     {
       clearError,
+      fetchApiToken,
     },
   ),
   revealContext(),
