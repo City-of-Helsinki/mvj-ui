@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import ReduxToastr from 'react-redux-toastr';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
 import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
@@ -13,19 +14,22 @@ import classnames from 'classnames';
 
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
-import {fetchApiToken} from '../auth/actions';
 import ApiErrorModal from '../api/ApiErrorModal';
-import LoginPage from '../auth/components/LoginPage';
+import {fetchApiToken} from '../auth/actions';
 import {loggedInUser} from '../auth/selectors';
+import LoginPage from '../auth/components/LoginPage';
+import userManager from '../auth/util/user-manager';
+import Loader from '../components/loader/Loader';
 import SideMenu from '../components/sideMenu/SideMenu';
 import TopNavigation from '../components/topNavigation/TopNavigation';
-import userManager from '../auth/util/user-manager';
 
 import type {ApiError} from '../api/types';
+import type {ApiToken} from '../auth/types';
 import type {RootState} from '../root/types';
 
 type Props = {
   apiError: ApiError,
+  apiToken: ApiToken,
   children: any,
   clearError: typeof clearError,
   closeReveal: Function,
@@ -53,8 +57,7 @@ class App extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {fetchApiToken} = this.props;
-
-    if(nextProps.user !== null && nextProps.user.access_token !== null && !nextProps.apiToken) {
+    if(nextProps.user !== null && nextProps.user.access_token !== null && isEmpty(nextProps.apiToken)) {
       fetchApiToken(nextProps.user.access_token);
       return;
     }
@@ -76,13 +79,18 @@ class App extends Component {
   };
 
   render() {
-    const {apiError, children, location, user} = this.props;
+    const {apiError, apiToken, children, location, user} = this.props;
     const {displaySideMenu} = this.state;
 
     if (location.pathname !== '/callback' && !user) {
       return <LoginPage />;
     }
-
+    if (location.pathname === '/callback') {
+      return <div className={'app'}>{children}</div>;
+    }
+    if(isEmpty(apiToken)) {
+      return <div className={'app'}><Loader isLoading={true} /></div>;
+    }
     return (
       <div className={'app'}>
         <TopNavigation
@@ -119,10 +127,8 @@ const mapStateToProps = (state: RootState) => {
   }
   return {
     apiError: getError(state),
+    apiToken: state.apiToken,
     user,
-    // entries: state.data.entry,
-    // tasks: state.data.task,
-    // apiToken: state.apiToken
   };
 };
 

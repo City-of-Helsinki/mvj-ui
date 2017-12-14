@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {CallbackComponent} from 'redux-oidc';
 
+import Loader from '../../components/loader/Loader';
 import userManager from '../util/user-manager';
 
 class CallbackPage extends React.Component {
@@ -16,9 +17,7 @@ class CallbackPage extends React.Component {
 
     return (
       <CallbackComponent userManager={userManager} successCallback={this.successCallback} errorCallback={this.errorCallback}>
-        <div>
-          Redirecting...
-        </div>
+        <Loader isLoading={true} />
       </CallbackComponent>
     );
   }
