@@ -38,9 +38,9 @@ export default createConfig({
   output: {
     path: path.join(context, 'dist'),
     publicPath: '/',
-    filename: '[name].js',
+    filename: '[name].[hash].js',
     sourceMapFilename: '[file].map',
-    chunkFilename: '[id].js',
+    chunkFilename: '[id].[hash].js',
   },
   module: {
     rules: [
