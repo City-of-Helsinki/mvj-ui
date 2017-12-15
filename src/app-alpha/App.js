@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
-import i18n from '../root/i18n';
+// import i18n from '../root/i18n';
 import {withRouter} from 'react-router';
 import isEmpty from 'lodash/isEmpty';
 
@@ -13,8 +13,6 @@ import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
 import ReduxToastr from 'react-redux-toastr';
-import {isAllowedLanguage} from '../util/helpers';
-import {Languages} from '../constants';
 
 import type {ApiError} from '../api/types';
 import type {RootState} from '../root/types';
@@ -48,17 +46,17 @@ class App extends Component {
   };
 
   componentDidMount() {
-    const {
-      params: {language},
-    } = this.props;
+    // const {
+    //   params: {language},
+    // } = this.props;
 
-    if (language !== i18n.language) {
-      if (isAllowedLanguage(language)) {
-        i18n.changeLanguage(language);
-      } else {
-        i18n.changeLanguage(Languages.EN);
-      }
-    }
+    // if (language !== i18n.language) {
+    //   if (isAllowedLanguage(language)) {
+    //     i18n.changeLanguage(language);
+    //   } else {
+    //     i18n.changeLanguage(Languages.EN);
+    //   }
+    // }
 
     this.doInitialLoad();
   }

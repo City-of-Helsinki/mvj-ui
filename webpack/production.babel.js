@@ -23,18 +23,24 @@ const getEnvValues = {
 export default createConfig({
   context,
   devtool: 'source-map',
-  entry: [
-    'whatwg-fetch',
-    'babel-polyfill',
-    './src/index.js',
-    './src/main.scss',
-  ],
+  entry: {
+    'app': [
+      'whatwg-fetch',
+      'react-hot-loader/patch',
+      'babel-polyfill',
+      './src/index.js',
+      './src/main.scss',
+    ],
+    'silent_renew': [
+      './src/silent_renew',
+    ],
+  },
   output: {
     path: path.join(context, 'dist'),
     publicPath: '/',
-    filename: '[name].[hash].js',
+    filename: '[name].js',
     sourceMapFilename: '[file].map',
-    chunkFilename: '[id].[hash].js',
+    chunkFilename: '[id].js',
   },
   module: {
     rules: [

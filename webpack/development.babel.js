@@ -14,13 +14,18 @@ const context = path.resolve(__dirname, '..');
 export default createConfig({
   context,
   devtool: 'inline-source-map',
-  entry: [
-    'whatwg-fetch',
-    'react-hot-loader/patch',
-    'babel-polyfill',
-    './src/index.js',
-    './src/main.scss',
-  ],
+  entry: {
+    'app': [
+      'whatwg-fetch',
+      'react-hot-loader/patch',
+      'babel-polyfill',
+      './src/index.js',
+      './src/main.scss',
+    ],
+    'silent_renew': [
+      './src/silent_renew',
+    ],
+  },
   output: {
     path: path.join(context, 'dist'),
     publicPath: '/',

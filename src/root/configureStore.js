@@ -6,6 +6,8 @@ import {routerMiddleware as createRouterMiddleware} from 'react-router-redux';
 import createRootReducer from './createRootReducer';
 import createSagaMiddleware from 'redux-saga';
 import createRootSaga from './createRootSaga';
+import {loadUser} from 'redux-oidc';
+import userManager from '../auth/util/user-manager';
 
 export default () => {
   const rootReducer = createRootReducer();
@@ -19,6 +21,7 @@ export default () => {
   );
 
   const store = createStore(rootReducer, enhancer);
+  loadUser(store, userManager);
 
   sagaMiddleware.run(rootSaga);
 

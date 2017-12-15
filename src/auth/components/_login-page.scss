@@ -1,0 +1,50 @@
+.login-page {
+  display: block;
+  margin: auto;
+  margin-top: 2rem;
+  width: 600px;
+  max-width: calc(100% - 1rem);
+  background-color: $engel;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+
+  &__content {
+    text-align: center;
+    padding: 2rem 2rem 3rem;
+
+    .helsinki-logo {
+      background: url(../assets/images/logo.svg);
+      background-size: contain;
+      background-repeat: no-repeat;
+      height: 48px;
+      margin-bottom: rem-calc(40px);
+      width: 100%;
+      background-position: right;
+    }
+
+    h3 {
+      font-size: $font-xlarge;
+      font-weight: $semibold;
+    }
+
+    button {
+      background-color: transparent;
+      color: $black;
+      border: 2px solid $black;;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+    }
+  }
+
+  .login-koro {
+    @include rotate(180deg);
+    height: rem-calc(14px);
+    background: url(../assets/images/basic-wave-koro.svg);
+  }
+  .login-footer {
+    height: rem-calc(40px);
+    width: 100%;
+    background-color: $summer;
+  }
+
+
+}

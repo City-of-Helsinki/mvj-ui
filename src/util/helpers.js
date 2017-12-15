@@ -1,13 +1,12 @@
 import {Languages} from '../constants';
 import find from 'lodash/find';
 import get from 'lodash/get';
-import forEach from 'lodash/forEach';
 import findIndex from 'lodash/findIndex';
 import isNumber from 'lodash/isNumber';
 import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
 import Fraction from 'fraction.js';
-import i18n from '../root/i18n';
+// import i18n from '../root/i18n';
 
 /**
  *
@@ -52,17 +51,17 @@ export const isAllowedLanguage = (language) => {
 };
 
 export const getActiveLanguage = () => {
-  const {language} = i18n;
-  let active = null;
-
-  forEach(Languages, (item) => {
-    if (item.id === language) {
-      active = item;
-      return false;
-    }
-  });
-
-  return active;
+  // const {language} = i18n;
+  // let active = null;
+  //
+  // forEach(Languages, (item) => {
+  //   if (item.id === language) {
+  //     active = item;
+  //     return false;
+  //   }
+  // });
+  //
+  // return active;
 };
 
 /**

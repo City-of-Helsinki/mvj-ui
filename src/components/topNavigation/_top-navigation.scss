@@ -70,4 +70,12 @@
     bottom: 0;
     right: rem-calc(-10px);
   }
+
+  .logout-link {
+    color: $black;
+    font-family: $font-family-helsinki-grotesk;
+    font-weight: 500;
+    font-size: rem-calc(16px);
+    margin-left: rem-calc(20px);
+  }
 }

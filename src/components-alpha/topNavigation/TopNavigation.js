@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router';
 import {withRouter} from 'react-router';
 import {translate} from 'react-i18next';
-import i18n from '../../root/i18n';
+// import i18n from '../../root/i18n';
 import flowRight from 'lodash/flowRight';
 
 import DropDown from '../dropdown/DropDown';
@@ -34,12 +34,13 @@ class TopNavigation extends Component {
   };
 
   handleLanguageMenuItemClick = ({id}) => {
+    console.log(id);
     // const {router, location} = this.props;
-    if (id !== i18n.language) {
-      return i18n.changeLanguage(id, () => {
-        // return router.push(newLocation);
-      });
-    }
+    // if (id !== i18n.language) {
+    //   return i18n.changeLanguage(id, () => {
+    //     // return router.push(newLocation);
+    //   });
+    // }
   };
 
   handleUserMenuItemClick = (user) => {
