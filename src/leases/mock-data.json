@@ -367,7 +367,13 @@
               "address": "Lautatarhankatu 10",
               "zip_code": "00560",
               "town": "Helsinki",
-              "registration_date": "2017-01-01"
+              "registration_date": "2017-01-01",
+              "coordinates": [
+                [60.19, 24.924],
+                [60.19, 24.926],
+                [60.194, 24.929],
+                [60.196, 24.924]
+              ]
             },
             {
               "plots_in_contract_id": 2,
@@ -380,7 +386,13 @@
               "address": "Sörnäistenkatu 6",
               "zip_code": "00560",
               "town": "Helsinki",
-              "registration_date": "2017-01-01"
+              "registration_date": "2017-01-01",
+              "coordinates": [
+                [60.18, 24.924],
+                [60.18, 24.926],
+                [60.184, 24.926],
+                [60.184, 24.924]
+              ]
             }
           ],
           "plots_at_present": [

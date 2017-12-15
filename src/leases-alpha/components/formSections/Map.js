@@ -90,7 +90,7 @@ class Map extends Component {
 
           {areas && areas.map((area, i) =>
             <Polygon key={i}
-              color="#0072C6" // $main-blue
+              color="#009246" // $main-blue
               positions={getAreaCoordinates(area)}
               onClick={() => this.handleAreaClick(area)}>
               <Tooltip sticky="true">

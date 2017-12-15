@@ -31,6 +31,7 @@ import TenantEdit from './leaseSections/tenant/TenantEdit';
 import TenantTab from './leaseSections/tenant/TenantTab';
 import ConstructionEligibilityTab from './leaseSections/constructionEligibility/ConstructionEligibilityTab';
 import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
+import MapLeasePage from './leaseSections/MapLeasePage';
 import type Moment from 'moment';
 
 import mockData from '../mock-data.json';
@@ -369,7 +370,7 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Kartta</h1>
+                  <MapLeasePage areas={areas}/>
                 </div>
               </TabPane>
             </TabContent>
