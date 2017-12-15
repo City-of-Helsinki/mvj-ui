@@ -15,6 +15,7 @@ const extractStylesPlugin = new ExtractTextPlugin('[name].[hash].css');
 // TODO: Make this better
 const getEnvValues = {
   ['API_URL']: process.env.API_URL,
+  ['OPENID_CONNECT_CLIENT_ID']: process.env.OPENID_CONNECT_CLIENT_ID,
   ['STORAGE_PREFIX']: process.env.STORAGE_PREFIX,
   ['process.env.NODE_ENV']: 'production',
   ...readDotenv({...context, silent: true}),
