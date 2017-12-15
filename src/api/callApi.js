@@ -1,14 +1,16 @@
 // @flow
 
+// import {call, put, select} from 'redux-saga/effects';
 import {call, put} from 'redux-saga/effects';
 import {receiveError} from './actions';
-// import {getStorageItem} from '../util/storage';
+
+// export const getApiToken = (state: any) => state.auth.apiToken['https://api.hel.fi/auth/mvj'];
 
 function* callApi(request: Request): Generator<> {
-  // const accessToken = getStorageItem('TOKEN');
-  //
-  // if (accessToken) {
-  //   request.headers.set('Authorization', `Token ${accessToken}`);
+  // TODO: Inject api token to all requests when authentication is implemented to the API
+  // const apiToken = yield select(getApiToken);
+  // if (apiToken) {
+  //   request.headers.set('Authorization', `Token ${apiToken}`);
   // }
 
   if (request.method === 'POST' || request.method === 'PUT') {
