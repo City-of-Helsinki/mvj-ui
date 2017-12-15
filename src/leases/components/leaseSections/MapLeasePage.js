@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Polygon, Tooltip} from 'react-leaflet';
+import {Polygon, Tooltip, ScaleControl} from 'react-leaflet';
 import MapContainer from '../../../components/map/Map';
 import {defaultCoordinates, defaultZoom} from '../../../constants';
 
@@ -21,6 +21,7 @@ class Map extends Component {
         <MapContainer center={defaultCoordinates}
           zoom={defaultZoom}
         >
+          <ScaleControl imperial={false} />
 
           <Polygon
             color="#009246" // tram green
