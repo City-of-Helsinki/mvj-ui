@@ -1,17 +1,16 @@
 // @ flow
 import React from 'react';
 import {Map, WMSTileLayer} from 'react-leaflet';
-// import {tileLayer} from '../../constants';
 import L from 'leaflet';
 import 'proj4leaflet';
 
-const bounds = L.bounds(L.point(-548576, 6291456), L.point(1548576, 8388608));
-const originNw = [bounds.min.x, bounds.max.y];
-const TM35CRS = new L.Proj.CRS(
-  'EPSG:3067',
-  '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs', {
-    resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125],
-    transformation: new L.Transformation(1, -originNw[0], -1, originNw[1]),
+const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
+// const originNw = [bounds.min.x, bounds.max.y];
+const CRS = new L.Proj.CRS(
+  'EPSG:3879',
+  '+proj=tmerc +lat_0=0 +lon_0=25 +k=1 +x_0=25500000 +y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs', {
+    resolutions: [256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.0625, 0.03125],
+    // transformation: new L.Transformation(1, -originNw[0], -1, originNw[1]),
     bounds,
   });
 
@@ -27,14 +26,14 @@ const MapContainer = ({center, zoom, children, ...rest}: Props) => {
     <Map
       center={center}
       zoom={zoom}
-      crs={TM35CRS}
+      crs={CRS}
       {...rest}
     >
       <WMSTileLayer
         url={'https://kartta.hel.fi/ws/geoserver/avoindata/wms?'}
         layers={'avoindata:Karttasarja'}
-        // format={'image/png'}
-        // transparent={true}
+        format={'image/png'}
+        transparent={true}
         onTileerror={console.warn}
         onLoading={console.log}
         onLoad={console.log}

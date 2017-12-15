@@ -1,7 +1,15 @@
 .map {
   flex: 1;
-  height: 1000px;
+  height: 70vh;
   .leaflet-container {
     height: 100%;
+  }
+  .leaflet-tooltip {
+    border-radius: 0;
+    border: none;
+    span {
+      font-family: $font-family-source;
+      font-size: $font-xsmall;
+    }
   }
 }
