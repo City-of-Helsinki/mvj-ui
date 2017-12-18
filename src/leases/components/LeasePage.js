@@ -24,6 +24,8 @@ import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import RuleEdit from './leaseSections/contract/RuleEdit';
 import Rules from './leaseSections/contract/Rules';
+import Inspections from './leaseSections/contract/Inspections';
+import InspectionEdit from './leaseSections/contract/InspectionEdit';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
@@ -45,6 +47,7 @@ type State = {
   isCommentPanelOpen: boolean,
   oldTenants: Array<Object>,
   rules: Array<Object>,
+  inspections: Array<Object>,
   tenants: Array<Object>,
 };
 
@@ -64,6 +67,7 @@ type Props = {
   location: Object,
   params: Object,
   rulesForm: Array<Object>,
+  inspectionsForm: Array<Object>,
   start_date: ?Moment,
   status: string,
   tenantsForm: Array<Object>,
@@ -83,6 +87,7 @@ class PreparerForm extends Component {
     rules: [],
     tenants: [],
     terms: [],
+    inspections: [],
   }
 
   props: Props
@@ -102,6 +107,7 @@ class PreparerForm extends Component {
     dispatch(destroy('tenant-edit-form'));
     dispatch(destroy('contract-edit-form'));
     dispatch(destroy('rule-edit-form'));
+    dispatch(destroy('inspections-edit-form'));
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
@@ -113,6 +119,7 @@ class PreparerForm extends Component {
       oldTenants: mockData.leases[0].tenants_old,
       contracts: mockData.leases[0].contracts,
       rules: mockData.leases[0].rules,
+      inspections: mockData.leases[0].inspections,
     });
     fetchAttributes();
     fetchSingleLease(leaseId);
@@ -130,10 +137,11 @@ class PreparerForm extends Component {
     dispatch(reset('tenant-edit-form'));
     dispatch(reset('contract-edit-form'));
     dispatch(reset('rule-edit-form'));
+    dispatch(reset('inspection-edit-form'));
   }
 
   save = () => {
-    const {areasForm, contractsForm, currentLease, editLease, eligibilityForm, end_date, rulesForm, start_date, status, tenantsForm} = this.props;
+    const {areasForm, contractsForm, inspectionsForm, currentLease, editLease, eligibilityForm, end_date, rulesForm, start_date, status, tenantsForm} = this.props;
 
     const payload = currentLease;
     payload.status = status;
@@ -147,6 +155,7 @@ class PreparerForm extends Component {
     this.setState({tenants: tenantsForm});
     this.setState({rules: rulesForm});
     this.setState({contracts: contractsForm});
+    this.setState({inspections: inspectionsForm});
 
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
     if(areasForm !== undefined) {
@@ -161,7 +170,9 @@ class PreparerForm extends Component {
     if(tenantsForm !== undefined) {
       this.setState({tenants: tenantsForm});
     }
-
+    if(inspectionsForm !== undefined) {
+      this.setState({inspections: inspectionsForm});
+    }
     this.setState({isEditMode: false});
   }
 
@@ -219,6 +230,7 @@ class PreparerForm extends Component {
       oldTenants,
       tenants,
       rules,
+      inspections,
     } = this.state;
     const {
       attributes,
@@ -349,6 +361,11 @@ class PreparerForm extends Component {
                     {!isEditMode && <Rules rules={rules}/>}
                     {isEditMode && <RuleEdit initialValues={{rules: rules}}/>}
                   </div>
+                  <h1>Tarkastukset ja huomautukset</h1>
+                  <div>
+                    {!isEditMode && <Inspections inspections={inspections}/>}
+                    {isEditMode && <InspectionEdit initialValues={{inspections: inspections}}/>}
+                  </div>
                 </div>
               </TabPane>
 
@@ -386,6 +403,7 @@ const areasFormSelector = formValueSelector('property-unit-edit-form');
 const tenantFormSelector = formValueSelector('tenant-edit-form');
 const contractFormSelector = formValueSelector('contract-edit-form');
 const ruleFormSelector = formValueSelector('rule-edit-form');
+const inspectionFormSelector = formValueSelector('inspection-edit-form');
 
 const eligibilityFormName = 'eligibility-edit-form';
 const eligibilityFormSelector = formValueSelector(eligibilityFormName);
@@ -407,6 +425,7 @@ export default flowRight(
         isFetching: getIsFetching(state),
         leaseInfoErrors: getLeaseInfoErrors(state),
         rulesForm: ruleFormSelector(state, 'rules'),
+        inspectionsForm: inspectionFormSelector(state, 'inspections'),
         start_date: leaseInfoFormSelector(state, 'start_date'),
         status: leaseInfoFormSelector(state, 'status'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
