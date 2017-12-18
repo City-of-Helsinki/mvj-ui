@@ -2,7 +2,10 @@
 
 import {createAction} from 'redux-actions';
 
-import type {FetchApiTokenAction, ReceiveApiTokenAction, TokenNotFoundAction} from './types';
+import type {ClearApiTokenAction, FetchApiTokenAction, ReceiveApiTokenAction, TokenNotFoundAction} from './types';
+
+export const clearApiToken = (): ClearApiTokenAction =>
+  createAction('mvj/auth/CLEAR_API_TOKEN')();
 
 export const fetchApiToken = (accessToken: string): FetchApiTokenAction =>
   createAction('mvj/auth/FETCH_API_TOKEN')(accessToken);

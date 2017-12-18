@@ -37,11 +37,20 @@ function* fetchApiTokenSaga({payload: token}): Generator<> {
   }
 }
 
+function* clearApiTokenSaga(): Generator<> {
+  try {
+    yield put(receiveApiToken({}));
+  } catch (error) {
+    console.log('Clearing API token failed');
+  }
+}
+
 
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
       yield takeLatest('mvj/auth/FETCH_API_TOKEN', fetchApiTokenSaga);
+      yield takeLatest('mvj/auth/CLEAR_API_TOKEN', clearApiTokenSaga);
     }),
   ];
 }
