@@ -63,4 +63,16 @@ export const defaultCoordinates = {
  * Default zoom
  * @type {number}
  */
-export const defaultZoom = 9;
+export const defaultZoom = 5;
+
+/**
+ * Min zoom
+ * @type {number}
+ */
+export const minZoom = 2;
+
+/**
+ * Max zoom
+ * @type {number}
+ */
+export const maxZoom = 13;
