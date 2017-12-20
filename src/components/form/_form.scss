@@ -87,6 +87,10 @@
           line-height: rem-calc(26px);
           height: rem-calc(26px);
           margin-right: rem-calc(10px);
+
+          span.is-dirty {
+            background-color: $engel;
+          }
         }
         .option-label:last-child {
           margin-right: 0;
@@ -249,6 +253,14 @@
 
         .Select-menu-outer {
           top: 30px;
+        }
+      }
+      &.is-dirty {
+        .Select {
+          .Select-control {
+            border-color: $engel !important;
+            background-color: $engel-lighter !important;
+          }
         }
       }
     }
