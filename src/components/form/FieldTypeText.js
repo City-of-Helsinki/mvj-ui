@@ -18,7 +18,7 @@ const FieldTypeText = ({
   inputStyle,
   isInline,
   label,
-  meta: {dirty, touched, error},
+  meta: {dirty, error, touched},
   placeholder,
   type = 'text',
 }: Props) => (
