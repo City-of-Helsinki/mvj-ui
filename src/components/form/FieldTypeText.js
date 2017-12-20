@@ -4,19 +4,27 @@ import classnames from 'classnames';
 
 type Props = {
   input: Object,
-  isInline?: boolean,
   inputStyle: Object,
-  showLabel: boolean,
+  isInline?: boolean,
   label: string,
-  placeholder: string,
-  type: string,
   meta: Object,
+  placeholder: string,
+  showLabel: boolean,
+  type: string,
 }
 
-const FieldTypeText = ({input, isInline, inputStyle, label, placeholder, type = 'text', meta: {touched, error}}: Props) => (
+const FieldTypeText = ({
+  input,
+  inputStyle,
+  isInline,
+  label,
+  meta: {dirty, error, touched},
+  placeholder,
+  type = 'text',
+}: Props) => (
   <div className={classnames('mvj-form-field', {'inline': isInline})}>
     {label && <label className='title'>{label}</label>}
-    <div className='mvj-form-field__text' style={inputStyle}>
+    <div className={classnames('mvj-form-field__text', {'is-dirty': dirty})} style={inputStyle}>
       <input {...input} type={type} placeholder={placeholder}/>
       {touched && error && <span className='error'>{error}</span>}
     </div>

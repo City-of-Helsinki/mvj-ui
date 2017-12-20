@@ -33,6 +33,13 @@
         margin-bottom: 0;
       }
 
+      &.is-dirty {
+        input {
+          border-color: $engel;
+          background-color: $engel-lighter;
+        }
+      }
+
       .error {
         color: $brick;
         display: block;
@@ -57,6 +64,13 @@
         }
       }
 
+      &.is-dirty {
+        input {
+          border-color: $engel;
+          background-color: $engel-lighter;
+        }
+      }
+
       .error {
         color: $brick;
         display: block;
@@ -78,7 +92,13 @@
           margin-right: 0;
         }
       }
-
+      &.is-dirty {
+        .option-label {
+          span {
+            background-color: $engel;
+          }
+        }
+      }
     }
     &__select {
       .error {
@@ -235,6 +255,14 @@
 
         .Select-menu-outer {
           top: 30px;
+        }
+      }
+      &.is-dirty {
+        .Select {
+          .Select-control {
+            border-color: $engel !important;
+            background-color: $engel-lighter !important;
+          }
         }
       }
     }
