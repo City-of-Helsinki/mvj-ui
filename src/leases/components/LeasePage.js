@@ -13,6 +13,7 @@ import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from 
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
 import * as contentHelpers from '../helpers';
 
+import Button from '../../components/Button';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ContractEdit from './leaseSections/contract/ContractEdit';
 import Contracts from './leaseSections/contract/Contracts';
@@ -20,6 +21,7 @@ import ControlButtons from './ControlButtons';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '../../components/loader/Loader';
+import Modal from '../../components/Modal';
 import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import RuleEdit from './leaseSections/contract/RuleEdit';
@@ -45,6 +47,7 @@ type State = {
   contracts: Array<Object>,
   isEditMode: boolean,
   isCommentPanelOpen: boolean,
+  isSaveLeaseModalOpen: boolean,
   oldTenants: Array<Object>,
   rules: Array<Object>,
   inspections: Array<Object>,
@@ -83,6 +86,7 @@ class PreparerForm extends Component {
     contracts: [],
     isCommentPanelOpen: false,
     isEditMode: false,
+    isSaveLeaseModalOpen: false,
     oldTenants: [],
     rules: [],
     tenants: [],
@@ -127,6 +131,20 @@ class PreparerForm extends Component {
 
   openEditMode = () => {
     this.setState({isEditMode: true});
+  }
+
+  showModal = (modalName: string) => {
+    const modalVisibilityKey = `is${modalName}ModalOpen`;
+    this.setState({
+      [modalVisibilityKey]: true,
+    });
+  }
+
+  hideModal = (modalName: string) => {
+    const modalVisibilityKey = `is${modalName}ModalOpen`;
+    this.setState({
+      [modalVisibilityKey]: false,
+    });
   }
 
   cancel = () => {
@@ -174,6 +192,7 @@ class PreparerForm extends Component {
       this.setState({inspections: inspectionsForm});
     }
     this.setState({isEditMode: false});
+    this.hideModal('SaveLease');
   }
 
   validateForms = () => {
@@ -227,6 +246,7 @@ class PreparerForm extends Component {
       contracts,
       isEditMode,
       isCommentPanelOpen,
+      isSaveLeaseModalOpen,
       oldTenants,
       tenants,
       rules,
@@ -251,6 +271,18 @@ class PreparerForm extends Component {
 
     return (
       <div className='lease-page'>
+        <Modal
+          className='modal-small modal-autoheight modal-center'
+          title='Tallenna'
+          isOpen={isSaveLeaseModalOpen}
+          onClose={() => this.hideModal('SaveLease')}
+        >
+          <p>Haluatko varmasti tallentaa muutokset?</p>
+          <div style={{textAlign: 'center', marginTop: '2.5rem'}}>
+            <Button className='button-red' text='Peruuta' onClick={() => this.hideModal('SaveLease')}/>
+            <Button className='button-green' text='Tallenna' onClick={this.save}/>
+          </div>
+        </Modal>
         <CommentPanel
           ref={(input) => {this.commentPanel = input;}}
           comments={comments}
@@ -288,7 +320,7 @@ class PreparerForm extends Component {
                 onCancelClick={this.cancel}
                 onCommentClick={this.toggleCommentPanel}
                 onEditClick={this.openEditMode}
-                onSaveClick={this.save}
+                onSaveClick={() => this.showModal('SaveLease')}
               />
             </div>
           </Column>
