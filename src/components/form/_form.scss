@@ -33,6 +33,13 @@
         margin-bottom: 0;
       }
 
+      &.is-dirty {
+        input {
+          border-color: $engel;
+          background-color: $engel-lighter;
+        }
+      }
+
       .error {
         color: $brick;
         display: block;
@@ -54,6 +61,13 @@
         box-shadow: none;
         &:focus {
           border: 1px solid $tram;
+        }
+      }
+
+      &.is-dirty {
+        input {
+          border-color: $engel;
+          background-color: $engel-lighter;
         }
       }
 
