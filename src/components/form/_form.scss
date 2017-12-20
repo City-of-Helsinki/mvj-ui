@@ -87,16 +87,18 @@
           line-height: rem-calc(26px);
           height: rem-calc(26px);
           margin-right: rem-calc(10px);
-
-          span.is-dirty {
-            background-color: $engel;
-          }
         }
         .option-label:last-child {
           margin-right: 0;
         }
       }
-
+      &.is-dirty {
+        .option-label {
+          span {
+            background-color: $engel;
+          }
+        }
+      }
     }
     &__select {
       .error {
