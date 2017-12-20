@@ -13,15 +13,14 @@ import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from 
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
 import * as contentHelpers from '../helpers';
 
-import Button from '../../components/Button';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
+import ConfirmationModal from '../../components/ConfirmationModal';
 import ContractEdit from './leaseSections/contract/ContractEdit';
 import Contracts from './leaseSections/contract/Contracts';
 import ControlButtons from './ControlButtons';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '../../components/loader/Loader';
-import Modal from '../../components/Modal';
 import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import RuleEdit from './leaseSections/contract/RuleEdit';
@@ -271,18 +270,14 @@ class PreparerForm extends Component {
 
     return (
       <div className='lease-page'>
-        <Modal
-          className='modal-small modal-autoheight modal-center'
+        <ConfirmationModal
           title='Tallenna'
           isOpen={isSaveLeaseModalOpen}
+          label='Haluatko varmasti tallentaa muutokset?'
+          onCancel={() => this.hideModal('SaveLease')}
           onClose={() => this.hideModal('SaveLease')}
-        >
-          <p>Haluatko varmasti tallentaa muutokset?</p>
-          <div style={{textAlign: 'center', marginTop: '2.5rem'}}>
-            <Button className='button-red' text='Peruuta' onClick={() => this.hideModal('SaveLease')}/>
-            <Button className='button-green' text='Tallenna' onClick={this.save}/>
-          </div>
-        </Modal>
+          onSave={this.save}
+        />
         <CommentPanel
           ref={(input) => {this.commentPanel = input;}}
           comments={comments}
