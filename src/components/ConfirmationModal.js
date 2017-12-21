@@ -10,6 +10,7 @@ type Props = {
   onCancel: Function,
   onClose: Function,
   onSave: Function,
+  saveButtonLabel?: string,
   title: string,
 }
 
@@ -19,6 +20,7 @@ const ConfirmationModal = ({
   onCancel,
   onClose,
   onSave,
+  saveButtonLabel,
   title,
 }: Props) => (
   <div className='confirmation-modal'>
@@ -31,7 +33,7 @@ const ConfirmationModal = ({
       <p>{label}</p>
       <div className='confirmation-modal__footer'>
         <Button className='button-red' text='Peruuta' onClick={onCancel}/>
-        <Button className='button-green' text='Tallenna' onClick={onSave}/>
+        <Button className='button-green' text={saveButtonLabel || 'Tallenna'} onClick={onSave}/>
       </div>
     </Modal>
   </div>
