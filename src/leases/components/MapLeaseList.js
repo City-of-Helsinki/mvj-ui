@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import L from 'leaflet';
 import {Polygon, Tooltip, FeatureGroup} from 'react-leaflet';
 import MapContainer from '../../components/map/Map';
+import L from 'leaflet';
 import {EditControl} from 'react-leaflet-draw';
 import {defaultCoordinates, defaultZoom} from '../../constants';
 

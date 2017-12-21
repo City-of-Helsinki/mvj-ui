@@ -24,7 +24,6 @@ type Props = {
 };
 
 const MapContainer = ({center, zoom, children, ...rest}: Props) => {
-  console.log(zoom);
   return (
     <Map
       center={center}
