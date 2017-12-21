@@ -2,6 +2,7 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
+import classnames from 'classnames';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -24,24 +25,22 @@ const FieldDatePicker = ({
   disableTouched = false,
   input,
   label,
-  meta: {touched, error},
+  meta: {dirty, error, touched},
   placeholder,
-}: Props) => {
-  return (
-    <div className='mvj-form-field'>
-      {label && <label className='title'>{label}</label>}
-      <div className='mvj-form-field__datepicker'>
-        <DatePicker
-          {...input}
-          placeholder={placeholder}
-          dateFormat="DD.MM.YYYY"
-          disabledKeyboardNavigation
-          selected={input.value ? getFormatedDate(input.value) : null}
-        />
-        {(touched || disableTouched) && error && <span className={'error'}>{error}</span>}
-      </div>
+}: Props) => (
+  <div className='mvj-form-field'>
+    {label && <label className='title'>{label}</label>}
+    <div className={classnames('mvj-form-field__datepicker', {'is-dirty': dirty})}>
+      <DatePicker
+        {...input}
+        placeholder={placeholder}
+        dateFormat="DD.MM.YYYY"
+        disabledKeyboardNavigation
+        selected={input.value ? getFormatedDate(input.value) : null}
+      />
+      {(touched || disableTouched) && error && <span className={'error'}>{error}</span>}
     </div>
-  );
-};
+  </div>
+);
 
 export default FieldDatePicker;

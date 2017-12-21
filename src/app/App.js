@@ -14,7 +14,7 @@ import classnames from 'classnames';
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
-import {fetchApiToken} from '../auth/actions';
+import {clearApiToken, fetchApiToken} from '../auth/actions';
 import {getApiToken, getApiTokenLoading, getLoggedInUser} from '../auth/selectors';
 import LoginPage from '../auth/components/LoginPage';
 import userManager from '../auth/util/user-manager';
@@ -31,6 +31,7 @@ type Props = {
   apiToken: ApiToken,
   apiTokenLoading: boolean,
   children: any,
+  clearApiToken: Function,
   clearError: typeof clearError,
   closeReveal: Function,
   fetchApiToken: Function,
@@ -52,17 +53,22 @@ class App extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {apiError, fetchApiToken} = this.props;
+    const {apiError, clearApiToken, fetchApiToken} = this.props;
     if(apiError) {
       return;
     }
+    // Fetch api token if user info is received but Api token is empty
     if(nextProps.user !== null && nextProps.user.access_token !== null && isEmpty(nextProps.apiToken)) {
       fetchApiToken(nextProps.user.access_token);
       return;
     }
+    // Clear API token when user has logged out
+    if(!nextProps.user && !isEmpty(nextProps.apiToken)) {
+      clearApiToken();
+    }
   }
 
-  logOut() {
+  logOut = () => {
     userManager.removeUser();
   }
 
@@ -132,9 +138,14 @@ class App extends Component {
 
 const mapStateToProps = (state: RootState) => {
   const user = getLoggedInUser(state);
+
   if (!user || user.expired) {
-    return {user: null};
+    return {
+      user: null,
+      apiToken: getApiToken(state),
+    };
   }
+
   return {
     apiError: getError(state),
     apiToken: getApiToken(state),
@@ -149,6 +160,7 @@ export default flowRight(
     mapStateToProps,
     {
       clearError,
+      clearApiToken,
       fetchApiToken,
     },
   ),

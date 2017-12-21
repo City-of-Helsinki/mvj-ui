@@ -32,16 +32,16 @@ export default createConfig({
       './src/index.js',
       './src/main.scss',
     ],
-    'silent_renew': [
+    'assets/silent_renew': [
       './src/silent_renew',
     ],
   },
   output: {
     path: path.join(context, 'dist'),
     publicPath: '/',
-    filename: '[name].js',
+    filename: '[name].[hash].js',
     sourceMapFilename: '[file].map',
-    chunkFilename: '[id].js',
+    chunkFilename: '[id].[hash].js',
   },
   module: {
     rules: [
@@ -63,6 +63,13 @@ export default createConfig({
     new HtmlWebpackPlugin({
       inject: 'body',
       template: 'src/index.html',
+      chunks: ['app'],
+    }),
+    new HtmlWebpackPlugin({
+      inject: 'body',
+      template: 'src/silent_renew.html',
+      filename: 'silent_renew.html',
+      chunks: ['assets/silent_renew'],
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,

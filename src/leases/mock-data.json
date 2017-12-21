@@ -121,6 +121,20 @@
           ]
         }
       ],
+      "inspections": [
+        {
+          "supervision_date": "2018-10-09",
+          "supervised_date": "2017-04-05",
+          "inspector": "Mikko Tarkastaja",
+          "inspection_description": "Ajalta 01.01.2015 – 30.12-2015 ei peritä vuokraa."
+        },
+        {
+          "supervision_date": "2018-10-09",
+          "supervised_date": "2017-04-05",
+          "inspector": "Mikko Tarkastaja",
+          "inspection_description": "Ajalta 01.01.2015 – 30.12-2015 ei peritä vuokraa."
+        }
+      ],
       "tenants": [
         {
           "tenant": {
@@ -136,6 +150,7 @@
             "phone": "+358 46 9877652",
             "protection_order": true,
             "reference": "4396750342358345756",
+            "roles": [],
             "SAP_customer_id": "3576168",
             "share": 1,
             "share_divider": 2,
@@ -156,6 +171,7 @@
               "lastname": "Pappila",
               "phone": "+358 46 9877652",
               "protection_order": true,
+              "roles": [],
               "SAP_customer_id": "3576168",
               "social_security_number": "200587-345X",
               "start_date": "1989-12-13",
@@ -173,6 +189,7 @@
               "firstname": "Pappila",
               "phone": "+358 46 9877652",
               "protection_order": true,
+              "roles": [],
               "SAP_customer_id": "3576168",
               "social_security_number": "200587-345X",
               "start_date": "1989-12-13",
@@ -195,6 +212,7 @@
             "phone": "+358 46 9877652",
             "protection_order": false,
             "reference": "4396750342358345756",
+            "roles": [],
             "SAP_customer_id": "3576168",
             "share": 1,
             "share_divider": 2,
@@ -212,6 +230,7 @@
             "name": "Mikko koskinen",
             "phone": "+358 46 9877652",
             "protection_order": true,
+            "roles": [],
             "SAP_customer_id": "3576168",
             "social_security_number": "200587-123Y",
             "start_date": "1987-12-13",
@@ -227,6 +246,7 @@
             "name": "Mikko Koskinen",
             "phone": "+358 46 9877652",
             "protection_order": true,
+            "roles": [],
             "SAP_customer_id": "3576168",
             "social_security_number": "200587-123Y",
             "start_date": "1989-12-13",
@@ -249,6 +269,7 @@
             "phone": "+358 46 9877652",
             "protection_order": true,
             "reference": "4396750342358345756",
+            "roles": [],
             "SAP_customer_id": "3576168",
             "share": 1,
             "share_divider": 2,
@@ -266,6 +287,7 @@
             "name": "Vappu Pappila",
             "phone": "+358 46 9877652",
             "protection_order": true,
+            "roles": [],
             "SAP_customer_id": "3576168",
             "social_security_number": "200587-345X",
             "start_date": "13.12.1987",
@@ -281,6 +303,7 @@
             "name": "Vappu Pappila",
             "phone": "+358 46 9877652",
             "protection_order": true,
+            "roles": [],
             "SAP_customer_id": "3576168",
             "social_security_number": "200587-345X",
             "start_date": "13.12.1987",
@@ -301,6 +324,7 @@
             "phone": "+358 46 9877652",
             "protection_order": true,
             "reference": "4396750342358345756",
+            "roles": [],
             "SAP_customer_id": "3576168",
             "share": 1,
             "share_divider": 2,
@@ -318,6 +342,7 @@
             "name": "Mikko koskinen",
             "phone": "+358 46 9877652",
             "protection_order": true,
+            "roles": [],
             "SAP_customer_id": "3576168",
             "social_security_number": "200587-123Y",
             "start_date": "13.12.1987",
@@ -333,6 +358,7 @@
             "name": "Mikko Koskinen",
             "phone": "+358 46 9877652",
             "protection_order": true,
+            "roles": [],
             "SAP_customer_id": "3576168",
             "social_security_number": "200587-123Y",
             "start_date": "13.12.1987",

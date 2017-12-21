@@ -16,7 +16,9 @@ class CallbackPage extends React.Component {
 
   render() {
     return (
-      <CallbackComponent userManager={userManager} successCallback={this.successCallback} errorCallback={this.successCallback}><div></div></CallbackComponent>
+      <CallbackComponent userManager={userManager} successCallback={this.successCallback} errorCallback={this.successCallback}>
+        <div></div>
+      </CallbackComponent>
     );
   }
 }

@@ -4,6 +4,8 @@ import {Map, WMSTileLayer} from 'react-leaflet';
 import L from 'leaflet';
 import 'proj4leaflet';
 
+import {minZoom, maxZoom} from '../../constants';
+
 const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
 // const originNw = [bounds.min.x, bounds.max.y];
 const CRS = new L.Proj.CRS(
@@ -22,9 +24,12 @@ type Props = {
 };
 
 const MapContainer = ({center, zoom, children, ...rest}: Props) => {
+  console.log(zoom);
   return (
     <Map
       center={center}
+      minZoom={minZoom}
+      maxZoom={maxZoom}
       zoom={zoom}
       crs={CRS}
       {...rest}

@@ -4,53 +4,62 @@ import classNames from 'classnames';
 import Select from 'react-select';
 
 type Props = {
-  label: string,
   className: String,
   disabled: Boolean,
   displayError: Boolean,
   input: Object,
+  label: string,
+  meta: Object,
   options: ?Array<any>,
   placeholder: String,
-  meta: Object,
 }
-const arrowRenderer = () => {
-  return (
-    <i className='select-input__arrow-renderer'/>
-  );
-};
 
-const FieldTypeSelect = ({className, disabled, displayError, input, label, meta: {visited, error}, options, placeholder}: Props) => {
-  const {onChange, name} = input;
-
-  const handleBlur = () => {
-
+const FieldTypeSelect = ({
+  className,
+  disabled,
+  displayError,
+  input,
+  input: {name, onBlur, onChange},
+  label,
+  meta: {dirty, error, touched},
+  options,
+  placeholder,
+}: Props) => {
+  const arrowRenderer = () => {
+    return (
+      <i className='select-input__arrow-renderer'/>
+    );
   };
 
-  const handleChange = (value) => {
+  const handleBlur = (value: string) => {
+    onBlur(value || '');
+  };
+
+  const handleChange = (value: string) => {
     onChange(value || '');
   };
 
   return (
     <div className='mvj-form-field'>
       <label className='title'>{label}</label>
-      <div className={classNames('mvj-form-field__select', className, {'has-error': displayError})}>
+      <div className={classNames('mvj-form-field__select', className, {'has-error': displayError}, {'is-dirty': dirty})}>
         <Select
+          {...input}
           arrowRenderer={arrowRenderer}
           autoBlur={true}
           clearable={true}
           disabled={disabled}
           id={name}
           options={options}
-          placeholder={placeholder || 'Valitse'}
-          {...input}
           onBlur={(value) => handleBlur(value)}
+          onBlurResetsInput={false}
           onChange={({value}) => handleChange(value)}
+          placeholder={placeholder || 'Valitse'}
           resetValue={''}
         />
-        {visited && error && <span className={'error'}>{error}</span>}
+        {touched && error && <span className={'error'}>{error}</span>}
       </div>
     </div>
-
   );
 };
 
