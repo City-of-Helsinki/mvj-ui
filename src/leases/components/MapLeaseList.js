@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Polygon, Tooltip, FeatureGroup} from 'react-leaflet';
+import {FeatureGroup, Polygon, ScaleControl, Tooltip} from 'react-leaflet';
 import MapContainer from '../../components/map/Map';
 import L from 'leaflet';
 import {EditControl} from 'react-leaflet-draw';
@@ -81,6 +81,7 @@ class Map extends Component {
               }}
             />
           </FeatureGroup>
+          <ScaleControl imperial={false} />
         </MapContainer>
       </div>
     );

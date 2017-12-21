@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {FeatureGroup, Polygon, Tooltip, ScaleControl} from 'react-leaflet';
+import {FeatureGroup, Polygon, ScaleControl, Tooltip} from 'react-leaflet';
 import {EditControl} from 'react-leaflet-draw';
 import L from 'leaflet';
 import MapContainer from '../../../components/map/Map';
@@ -56,7 +56,7 @@ class Map extends Component {
         <MapContainer center={defaultCoordinates}
           zoom={defaultZoom}
         >
-          <ScaleControl imperial={false} />
+
           <FeatureGroup>
             <EditControl
               position='topright'
@@ -81,6 +81,7 @@ class Map extends Component {
               <span>teksti tähän!</span>
             </Tooltip>
           </Polygon>
+          <ScaleControl imperial={false} />
         </MapContainer>
       </div>
     );
