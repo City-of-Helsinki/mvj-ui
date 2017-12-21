@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 type Props = {
   children?: any,
+  className?: string,
   isOpen: boolean,
   onClose: Function,
   title: string,
@@ -11,13 +12,14 @@ type Props = {
 
 const Modal = ({
   children,
+  className,
   isOpen,
   onClose,
   title,
 }: Props) => {
 
   return (
-    <div className={classnames('modal', {'modal-open': isOpen})}>
+    <div className={classnames('modal', className, {'modal-open': isOpen})}>
       <div className='modal__overlay'></div>
       <div className='modal__wrapper'>
 
