@@ -116,18 +116,25 @@ const renderPledgeBooks = ({fields}: PledgeBookProps) => {
             <img src={trashIcon} alt='Poista' />
           </button>
           <Row>
-            <Column medium={6}>
+            <Column medium={2}>
               <Field
                 name={`${pledge_book}.pledge_book_number`}
                 component={FieldTypeText}
                 label='Panttikirjan numero'
               />
             </Column>
-            <Column medium={6}>
+            <Column medium={2}>
               <Field
                 name={`${pledge_book}.pledge_book_date`}
                 component={FieldTypeText}
                 label='Panttikirjan päivämäärä'
+              />
+            </Column>
+            <Column medium={8}>
+              <Field
+                name={`${pledge_book}.pledge_book_comment`}
+                component={FieldTypeText}
+                label='Panttikirjan kommentti'
               />
             </Column>
           </Row>
@@ -165,7 +172,7 @@ const renderContracts = ({fields, rules}: ContractProps) => {
               <img src={trashIcon} alt='Poista' />
             </button>
             <Row>
-              <Column medium={4}>
+              <Column medium={2}>
                 <Field
                   name={`${contract}.contract_type`}
                   component={FieldTypeSelect}
@@ -177,7 +184,7 @@ const renderContracts = ({fields, rules}: ContractProps) => {
                   ]}
                 />
               </Column>
-              <Column medium={3}>
+              <Column medium={2}>
                 <Field
                   name={`${contract}.contract_type`}
                   component={FieldTypeText}
@@ -191,16 +198,16 @@ const renderContracts = ({fields, rules}: ContractProps) => {
                   label='Allekirjoituspäivämäärä'
                 />
               </Column>
-              <Column medium={3}>
+              <Column medium={6}>
                 <Field
-                  name={`${contract}.administration_number`}
+                  name={`${contract}.signing_date_comment`}
                   component={FieldTypeText}
-                  label='Laitostunnus'
+                  label='Kommentti allekirjoitukselle'
                 />
               </Column>
             </Row>
             <Row>
-              <Column medium={5}>
+              <Column medium={4}>
                 <Field
                   name={`${contract}.setup_decision`}
                   component={FieldTypeSelect}
@@ -210,7 +217,24 @@ const renderContracts = ({fields, rules}: ContractProps) => {
                   ]}
                 />
               </Column>
-              <Column medium={3}>
+              <Column medium={4}>
+                <Field
+                  name={`${contract}.linked_rule`}
+                  component={FieldTypeSelect}
+                  label='Päätös'
+                  options={ruleOptions}
+                />
+              </Column>
+              <Column medium={4}>
+                <Field
+                  // add KTJ integration
+                  component={FieldTypeText}
+                  label='KTJ vuokraoikeustodistuksen linkki'
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column medium={2}>
                 <Field
                   name={`${contract}.lease_deposit_numer`}
                   component={FieldTypeText}
@@ -231,17 +255,23 @@ const renderContracts = ({fields, rules}: ContractProps) => {
                   label='Vuokravakuus loppupvm'
                 />
               </Column>
+              <Column medium={6}>
+                <Field
+                  name={`${contract}.lease_deposit_comment`}
+                  component={FieldTypeText}
+                  label='Vuokravakuus kommentti'
+                />
+              </Column>
             </Row>
             <Row>
-              <Column medium={7}>
+              <Column medium={9}>
                 <FieldArray name={`${contract}.pledge_books`} component={renderPledgeBooks} />
               </Column>
-              <Column medium={4} offsetOnMedium={1}>
+              <Column medium={2} offsetOnMedium={1}>
                 <Field
-                  name={`${contract}.linked_rule`}
-                  component={FieldTypeSelect}
-                  label='Päätös'
-                  options={ruleOptions}
+                  name={`${contract}.administration_number`}
+                  component={FieldTypeText}
+                  label='Laitostunnus'
                 />
               </Column>
             </Row>

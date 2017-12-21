@@ -27,40 +27,75 @@ const Contract = ({contract}: Props) => {
             <Column medium={4}>
               <label>Sopimusnumero</label>
               <p>{contract.contract_number ? get(contract, 'contract_number', '–') : '–'}</p>
-
-              <label>Järjestelypäätös</label>
-              <p>{contract.setup_decision ? get(contract, 'setup_decision', '–') : '–'}</p>
-
-              <div className='multiple-textrows'>
-                <label>Panttikirjat (numero ja päivämäärä)</label>
-                {contract.pledge_books.map((pledge_book) =>
-                  <p className='text-no-margin' key={get(pledge_book, 'pledge_book_number', '')}>{get(pledge_book, 'pledge_book_number', '')}, {helpers.formatDate(get(pledge_book, 'pledge_book_date', ''))}</p>
-                )}
-              </div>
             </Column>
             <Column medium={4}>
               <label>Allekirjoituspäivämäärä</label>
               <p>{contract.signing_date ? helpers.formatDate(get(contract, 'signing_date', '–')) : '–'}</p>
-
-              <label>Vuokravakuusnumero</label>
-              <p>{contract.lease_deposit_number ? get(contract, 'lease_deposit_number', '–') : '–'}</p>
-
-              <label>KTJ dokumentti</label>
-              {/* link to KTJ */}
-              <p>Vuokraoikeustodistus</p>
             </Column>
             <Column medium={4}>
-              <label>Laitostunnus</label>
-              <p>{contract.administration_number ? get(contract, 'administration_number', '–') : '–'}</p>
-
-              <label>Vuokravakuus alku- ja loppupäivämäärä</label>
-              <p>{helpers.formatDate(get(contract, 'lease_deposit_starting_date', '–'))} – {helpers.formatDate(get(contract, 'lease_deposit_ending_date', '–'))}</p>
-
+              <label>Kommentti allekirjoitukselle</label>
+              <p>{contract.signing_date_comment ? get(contract, 'signing_date_comment', '–') : '–'}</p>
+            </Column>
+          </Row>
+          <Row>
+            <Column medium={4}>
+              <label>Järjestelypäätös</label>
+              <p>{contract.setup_decision ? get(contract, 'setup_decision', '–') : '–'}</p>
+            </Column>
+            <Column medium={4}>
               <label>Päätös</label>
               {/* link to chosen rule */}
               <p>–</p>
             </Column>
+            <Column medium={4}>
+              <label>KTJ dokumentti</label>
+              {/* link to KTJ */}
+              <p>Vuokraoikeustodistus</p>
+            </Column>
           </Row>
+          <Row>
+            <Column medium={4}>
+              <label>Vuokravakuusnumero</label>
+              <p>{contract.lease_deposit_number ? get(contract, 'lease_deposit_number', '–') : '–'}</p>
+            </Column>
+            <Column medium={4}>
+              <label>Vuokravakuus alku- ja loppupäivämäärä</label>
+              <p>{helpers.formatDate(get(contract, 'lease_deposit_starting_date', '–'))} – {helpers.formatDate(get(contract, 'lease_deposit_ending_date', '–'))}</p>
+            </Column>
+            <Column medium={4}>
+              <label>Kommentti</label>
+              <p>{contract.lease_deposit_comment ? get(contract, 'lease_deposit_comment', '–') : '–'}</p>
+            </Column>
+          </Row>
+          <Row>
+            <Column medium={4}>
+              <label>Laitostunnus</label>
+              <p>{contract.administration_number ? get(contract, 'administration_number', '–') : '–'}</p>
+            </Column>
+          </Row>
+          {contract.pledge_books.length > 0 &&
+          <Row>
+            <Column>
+              <p className='green-subtitle'>Panttikirjat</p>
+            </Column>
+          </Row>
+          }
+          {contract.pledge_books.length > 0 && contract.pledge_books.map((pledge_book, index) =>
+            <Row key={index}>
+              <Column medium={4}>
+                <label>Panttikirjan numero</label>
+                <p>{pledge_book.pledge_book_number ? get(pledge_book, 'pledge_book_number', '–') : '–'}</p>
+              </Column>
+              <Column medium={4}>
+                <label>Panttikirjan päivämäärä</label>
+                <p>{pledge_book.pledge_book_date ? helpers.formatDate(get(pledge_book, 'pledge_book_date', '–')) : '–'}</p>
+              </Column>
+              <Column medium={4}>
+                <label>Panttikirjan kommentti</label>
+                <p>{pledge_book.pledge_book_comment ? get(pledge_book, 'pledge_book_comment', '–') : '–'}</p>
+              </Column>
+            </Row>
+          )}
         </div>
       </Collapse>
 
