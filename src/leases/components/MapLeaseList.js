@@ -1,7 +1,10 @@
 import React, {Component} from 'react';
-import {Polygon, Tooltip} from 'react-leaflet';
+import {Polygon, Tooltip, FeatureGroup} from 'react-leaflet';
 import MapContainer from '../../components/map/Map';
+import {EditControl} from 'react-leaflet-draw';
 import {defaultCoordinates, defaultZoom} from '../../constants';
+
+import '../../../node_modules/leaflet-draw/dist/leaflet.draw.css';
 
 type Props = {
   mockData: Array<Object>,
@@ -15,7 +18,6 @@ class Map extends Component {
   };
 
   render() {
-    console.log(this.props.mockData);
     return (
       <div className='map'>
         <MapContainer center={defaultCoordinates}
@@ -36,6 +38,14 @@ class Map extends Component {
               <span>teksti tähän!</span>
             </Tooltip>
           </Polygon>
+          <FeatureGroup>
+            <EditControl
+              position='topright'
+              draw={{
+                rectangle: false,
+              }}
+            />
+          </FeatureGroup>
         </MapContainer>
       </div>
     );
