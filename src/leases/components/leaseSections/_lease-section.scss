@@ -29,6 +29,12 @@
       margin-bottom: rem-calc(0px);
       font-style: italic;
     }
+    .green-subtitle {
+      color: $tram;
+      font-weight: $semibold;
+      margin-top: 1rem;
+      margin-bottom: 0.8rem;
+    }
     .explanation p:first-of-type {
       margin: -0.4rem 0 0;
     }
@@ -66,9 +72,10 @@
     p {
       font-size: $font-regular;
       text-align: left;
-      line-height: 1.8;
       color: $black;
       margin-bottom: rem-calc(10px);
+      line-height: 1.3;
+      margin-top: 0.25rem;
     }
     .text-no-margin {
       margin-bottom: 0;

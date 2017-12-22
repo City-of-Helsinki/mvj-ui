@@ -31,19 +31,23 @@
           "active": true,
           "contract_number": 24489,
           "signing_date": "2017-10-31",
+          "signing_date_comment": "A mesmerizing portrait of 1950s hypocrisy and unexpected love.",
           "administration_number": 3987549863,
           "setup_decision": "järjestelylain mukainen järjestelypäätös",
           "lease_deposit_numer": 93486559486,
           "lease_deposit_starting_date": "2002-07-06",
           "lease_deposit_ending_date": "2010-07-06",
+          "lease_deposit_comment": null,
           "pledge_books": [
             {
               "pledge_book_number": 493857986,
-              "pledge_book_date": "2010-09-09"
+              "pledge_book_date": "2010-09-09",
+              "pledge_book_comment": null
             },
             {
               "pledge_book_number": 478356767,
-              "pledge_book_date": "2012-03-01"
+              "pledge_book_date": "2012-03-01",
+              "pledge_book_comment": null
             }
           ],
           "modifications": [
@@ -62,23 +66,6 @@
               "second_call_sent": null,
               "third_call-sent": null,
               "modification_description": null
-            }
-          ]
-        },
-        {
-          "contract_type": "vuokrasopimus",
-          "active": false,
-          "constract_number": 24489,
-          "signing_date": "1977-10-31",
-          "administration_number": 3987549863,
-          "setup_decision": "järjestelylain mukainen järjestelypäätös",
-          "lease_deposit_numer": 93486559486,
-          "lease_deposit_starting_date": "1975-07-06",
-          "lease_deposit_ending_date": "1999-07-06",
-          "pledge_books": [
-            {
-              "pledge_book_number": 493857986,
-              "pledge_book_date": "1978-09-09"
             }
           ]
         }
