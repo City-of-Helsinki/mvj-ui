@@ -1,6 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {Field, FieldArray, reduxForm, formValueSelector} from 'redux-form';
@@ -10,11 +11,12 @@ import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 
 type PropertyProps = {
-  title: string,
+  areas: Array<Object>,
   fields: any,
+  title: string,
 }
 
-const renderProperty = ({title, fields}: PropertyProps) => {
+const renderProperty = ({areas, fields, title}: PropertyProps) => {
   return (
     <div className='green-box'>
       {fields.length > 0 &&
@@ -34,35 +36,48 @@ const renderProperty = ({title, fields}: PropertyProps) => {
             <img src={trashIcon} alt='Poista' />
           </button>
           <Row>
-            <Column medium={3}>
+            <Column medium={4} style={{paddingRight: '30px'}}>
               <Row>
                 <Column>
                   <label className='mvj-form-field-label'>Tunnus</label>
                 </Column>
               </Row>
               <Row>
-                <Column small={4}>
+                <div className='identifier-column'>
                   <Field
                     name={`${property}.municipality`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
-                <Column small={4}>
+                </div>
+                <div className='identifier-column'>
                   <Field
                     name={`${property}.district`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
-                <Column small={4}>
+                </div>
+                <div className='identifier-column'>
                   <Field
-                    name={`${property}.sequence`}
+                    name={`${property}.group_number`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
+                </div>
+                <div className='identifier-column'>
+                  <Field
+                    name={`${property}.unit_number`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </div>
+                {get({areas: areas}, `${property}.explanation`) === 'määräala' &&
+                <div className='identifier-column'>
+                  <Field
+                    name={`${property}.unseparate_parcel_number`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </div>
+                }
               </Row>
-
             </Column>
-            <Column medium={3}>
+            <Column medium={2}>
               <Field
                 name={`${property}.explanation`}
                 component={FieldTypeSelect}
@@ -171,21 +186,27 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
                 </Column>
               </Row>
               <Row>
-                <Column small={4}>
+                <Column small={3} style={{paddingRight: '0'}}>
                   <Field
                     name={`${planunit}.municipality`}
                     type="text"
                     component={FieldTypeText}/>
                 </Column>
-                <Column small={4}>
+                <Column small={3} style={{paddingRight: '0'}}>
                   <Field
                     name={`${planunit}.district`}
                     type="text"
                     component={FieldTypeText}/>
                 </Column>
-                <Column small={4}>
+                <Column small={3} style={{paddingRight: '0'}}>
                   <Field
-                    name={`${planunit}.sequence`}
+                    name={`${planunit}.group_number`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </Column>
+                <Column small={3} style={{paddingRight: '0'}}>
+                  <Field
+                    name={`${planunit}.unit_number`}
                     type="text"
                     component={FieldTypeText}/>
                 </Column>
@@ -307,6 +328,7 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
 };
 
 type DistrictsProps = {
+  areas: Array<Object>,
   fields: any,
   dispatch: Function,
 }
@@ -315,7 +337,7 @@ class RenderDistricts extends Component {
   props: DistrictsProps
 
   render () {
-    const {fields} = this.props;
+    const {areas, fields} = this.props;
 
     return (
       <div>
@@ -337,21 +359,27 @@ class RenderDistricts extends Component {
                     </Column>
                   </Row>
                   <Row>
-                    <Column medium={4}>
+                    <Column medium={3} style={{paddingRight: '0'}}>
                       <Field
                         name={`${district}.municipality`}
                         type="text"
                         component={FieldTypeText}/>
                     </Column>
-                    <Column medium={4}>
+                    <Column medium={3} style={{paddingRight: '0'}}>
                       <Field
                         name={`${district}.district`}
                         type="text"
                         component={FieldTypeText}/>
                     </Column>
-                    <Column medium={4}>
+                    <Column medium={3} style={{paddingRight: '0'}}>
                       <Field
-                        name={`${district}.sequence`}
+                        name={`${district}.group_number`}
+                        type="text"
+                        component={FieldTypeText}/>
+                    </Column>
+                    <Column medium={3} style={{paddingRight: '0'}}>
+                      <Field
+                        name={`${district}.unit_number`}
                         type="text"
                         component={FieldTypeText}/>
                     </Column>
@@ -417,8 +445,8 @@ class RenderDistricts extends Component {
                 </Column>
               </Row>
 
-              <FieldArray title='Kiinteistöt / määräalat sopimushetkellä' name={`${district}.plots_in_contract`} component={renderProperty}/>
-              <FieldArray title='Kiinteistöt / määräalat nykyhetkellä' name={`${district}.plots_at_present`} component={renderProperty}/>
+              <FieldArray title='Kiinteistöt / määräalat sopimushetkellä' areas={areas} name={`${district}.plots_in_contract`} component={renderProperty}/>
+              <FieldArray title='Kiinteistöt / määräalat nykyhetkellä' areas={areas} name={`${district}.plots_at_present`} component={renderProperty}/>
               <FieldArray title='Kaavayksiköt sopimushetkellä' name={`${district}.plan_plots_in_contract`} component={renderPlanUnit}/>
               <FieldArray title='Kaavayksiköt nykyhetkellä' name={`${district}.plan_plots_at_present`} component={renderPlanUnit}/>
             </div>
@@ -444,13 +472,13 @@ class PropertyUnitEdit extends Component {
   props: Props
 
   render () {
-    const {handleSubmit, dispatch} = this.props;
+    const {areas, dispatch, handleSubmit} = this.props;
 
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit'>
         <Row>
           <Column>
-            <FieldArray name="areas" dispatch={dispatch} component={RenderDistricts}/>
+            <FieldArray name="areas" areas={areas} dispatch={dispatch} component={RenderDistricts}/>
           </Column>
         </Row>
       </form>
