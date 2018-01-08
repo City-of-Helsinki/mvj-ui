@@ -20,7 +20,7 @@ const ConstructionEligibility = ({eligibility}: Props) => {
         defaultOpen={false}
         header={
           <Row>
-            <Column small={8}><span className='collapse__header-title'>Esirakentaminen ja johtosiirrot</span></Column>
+            <Column small={8}><span className='collapse__header-title'>ESIRAKENTAMINEN, JOHTOSIIRROT JA KUNNALLISTEKNIIKKA</span></Column>
             <Column small={4}>
               <span className={
                 classNames(
@@ -121,11 +121,11 @@ const ConstructionEligibility = ({eligibility}: Props) => {
               <label>Päivämäärä</label>
               <p>{contamination.rent_condition_date ? formatDate(contamination.rent_condition_date) : '–'}</p>
               <label>Matti raportti</label>
-              <p>{get(contamination, 'contamination_author', '–')}</p>
+              <p>{get(contamination, 'matti_report', '–')}</p>
             </Column>
             <Column medium={4}>
               <label>PIMA valmistelija</label>
-              <p>{contamination.rent_condition_date ? formatDate(contamination.rent_condition_date) : '–'}</p>
+              <p>{contamination.contamination_author ? contamination.contamination_author : '–'}</p>
             </Column>
           </Row>
         </div>
@@ -174,7 +174,7 @@ const ConstructionEligibility = ({eligibility}: Props) => {
               <p>{construction_investigation.signing_date ? formatDate(construction_investigation.signing_date) : '–'}</p>
             </Column>
             <Column medium={4}>
-              <label>Selvityksen tekijä</label>
+              <label>Allekirjoittaja</label>
               <p>{get(eligibility.construction_investigation, 'report_author', '–')}</p>
             </Column>
           </Row>
