@@ -90,7 +90,7 @@ const renderArea = ({fields, areas}: AreaProps) => {
               <div className='green-box'>
                 <Row>
                   <Column>
-                    <h2>Esirakentaminen ja johtosiirrot</h2>
+                    <h2>ESIRAKENTAMINEN, JOHTOSIIRROT JA KUNNALLISTEKNIIKKA</h2>
                   </Column>
                 </Row>
                 <Row>
@@ -140,33 +140,6 @@ const renderArea = ({fields, areas}: AreaProps) => {
                 <Row>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.construction_eligibility.contamination.rent_conditions`}
-                      component={FieldTypeSelect}
-                      label='Vuokraehdot'
-                      options={[
-                        {value: 'kysytty', label: 'Kysytty'},
-                        {value: 'valmis', label: 'Valmis'},
-                      ]}
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      label='Päivämäärä'
-                      name={`${area}.construction_eligibility.contamination.rent_condition_date`}
-                      type="text"
-                      component={FieldTypeText}/>
-                  </Column>
-                  <Column medium={6}>
-                    <Field
-                      label='PIMA valmistelija'
-                      name={`${area}.construction_eligibility.contamination.contamination_author`}
-                      type="text"
-                      component={FieldTypeText}/>
-                  </Column>
-                </Row>
-                <Row>
-                  <Column medium={3}>
-                    <Field
                       name={`${area}.construction_eligibility.contamination.research_state`}
                       component={FieldTypeSelect}
                       label='Selvitysaste'
@@ -192,39 +165,39 @@ const renderArea = ({fields, areas}: AreaProps) => {
                       component={FieldTypeText}/>
                   </Column>
                 </Row>
-                <FieldArray name={`${area}.construction_eligibility.contamination.comments`} component={renderComments}/>
-              </div>
-              <div className='green-box'>
-                <Row>
-                  <Column>
-                    <h2>Rakennettavuusselvitys</h2>
-                  </Column>
-                </Row>
                 <Row>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.construction_eligibility.construction_investigation.report`}
+                      name={`${area}.construction_eligibility.contamination.rent_conditions`}
                       component={FieldTypeSelect}
                       label='Vuokraehdot'
                       options={[
-                        {value: 'tilattu', label: 'Tilattu'},
+                        {value: 'kysytty', label: 'Kysytty'},
                         {value: 'valmis', label: 'Valmis'},
                       ]}
                     />
                   </Column>
                   <Column medium={3}>
                     <Field
-                      label='Allekirjoituspäivämäärä'
-                      name={`${area}.construction_eligibility.construction_investigation.signing_date`}
+                      label='Päivämäärä'
+                      name={`${area}.construction_eligibility.contamination.rent_condition_date`}
                       type="text"
                       component={FieldTypeText}/>
                   </Column>
-                  <Column medium={6}>
+                  <Column medium={3}>
                     <Field
-                      label='Selvityksen tekijä'
-                      name={`${area}.construction_eligibility.construction_investigation.report_author`}
+                      label='PIMA valmistelija'
+                      name={`${area}.construction_eligibility.contamination.contamination_author`}
                       type="text"
                       component={FieldTypeText}/>
+                  </Column>
+                </Row>
+                <FieldArray name={`${area}.construction_eligibility.contamination.comments`} component={renderComments}/>
+              </div>
+              <div className='green-box'>
+                <Row>
+                  <Column>
+                    <h2>Rakennettavuusselvitys</h2>
                   </Column>
                 </Row>
                 <Row>
@@ -244,6 +217,34 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <Field
                       label='Geotekninen palvelun tiedosto'
                       name={`${area}.construction_eligibility.construction_investigation.geotechnical_number`}
+                      type="text"
+                      component={FieldTypeText}/>
+                  </Column>
+                </Row>
+                <Row>
+                  <Column medium={3}>
+                    <Field
+                      name={`${area}.construction_eligibility.construction_investigation.report`}
+                      component={FieldTypeSelect}
+                      label='Selvitys'
+                      options={[
+                        {value: 'not-needed', label: 'Ei tarvita'},
+                        {value: 'in-progress', label: 'Tekeillä'},
+                        {value: 'done', label: 'Valmis'},
+                      ]}
+                    />
+                  </Column>
+                  <Column medium={3}>
+                    <Field
+                      label='Allekirjoituspäivämäärä'
+                      name={`${area}.construction_eligibility.construction_investigation.signing_date`}
+                      type="text"
+                      component={FieldTypeText}/>
+                  </Column>
+                  <Column medium={3}>
+                    <Field
+                      label='Allekirjoittaja'
+                      name={`${area}.construction_eligibility.construction_investigation.report_author`}
                       type="text"
                       component={FieldTypeText}/>
                   </Column>
