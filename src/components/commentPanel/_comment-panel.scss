@@ -42,20 +42,22 @@
   }
 
   &__comments {
+    margin-top: rem-calc(20px);
+    max-height: calc(100vh - 23rem);
+    overflow: auto;
     .comments-title {
-      margin-top: rem-calc(50px);
+      margin-top: rem-calc(30px);
       font-size: 20px;
       font-weight: 600;
       color: $black;
 
       &.archived {
+        margin-top: rem-calc(50px);
         color: $dark-gray;
       }
     }
     .comment {
-      margin-top: rem-calc(20px);
-      max-height: calc(100vh - 23rem);
-      overflow: auto;
+
       position: relative;
 
       .archive-icon {
