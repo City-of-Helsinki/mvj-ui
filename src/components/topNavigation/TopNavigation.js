@@ -1,15 +1,20 @@
 // @flow
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {Link} from 'react-router';
+
 import * as helpers from '../../helpers';
+import SearchInput from '../SearchInput';
 
 type Props = {
   onLogout: Function,
+  showSearch: boolean,
   toggleSideMenu: Function,
   userProfile: Object,
 }
 
 type State = {
+  keyword: string,
   logoClass: string,
   logo: string,
 }
@@ -17,12 +22,40 @@ type State = {
 class TopNavigation extends Component {
   props: Props
   state: State = {
+    keyword: '',
     logo: helpers.getLogo(),
     logoClass: helpers.getLogoClass(),
   }
 
+  static contextTypes = {
+    router: PropTypes.object,
+  };
+
+  search = () => {
+    const {keyword} = this.state;
+    const {router} = this.context;
+    if(keyword) {
+      const query = {keyword: keyword};
+      return router.push({
+        pathname: `/leases`,
+        query,
+      });
+    }
+  }
+
+  handleSearchChange = (e: any) => {
+    this.setState({keyword: e.target.value});
+  }
+
+  onKeyUp = (e: any) => {
+    if(e.key === 'Enter'){
+      this.search();
+    }
+  }
+
   render() {
-    const {onLogout, toggleSideMenu, userProfile} = this.props;
+    const {onLogout, showSearch, toggleSideMenu, userProfile} = this.props;
+    const {keyword} = this.state;
     return (
       <section className="top-navigation">
         <svg className="menuIcon" viewBox="0 0 27 27" onClick={toggleSideMenu}>
@@ -31,6 +64,17 @@ class TopNavigation extends Component {
         <div className="title">
           <Link to="/">Maavuokrausjärjestelmä</Link>
         </div>
+        {showSearch &&
+          <div className="search">
+            <SearchInput
+              onChange={this.handleSearchChange}
+              onKeyUp={this.onKeyUp}
+              onSubmit={this.search}
+              value={keyword}
+            />
+          </div>
+        }
+
         <div className="flag">
           <svg className="flagIcon" viewBox="0 0 27 27">
             <path d="M2.62 1.5h13.5v15.75H4.88V28.5H2.62v-27zm14.63 3.38h10.13v15.74H17.25z"/>
