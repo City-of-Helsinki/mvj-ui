@@ -42,28 +42,60 @@
   }
 
   &__comments {
-    margin-top: 2rem;
-    max-height: calc(100vh - 23rem);
-    overflow: auto;
+    .comments-title {
+      margin-top: rem-calc(50px);
+      font-size: 20px;
+      font-weight: 600;
+      color: $black;
 
-    .comment-text {
-      font-size: $font-regular;
-      margin-bottom: rem-calc(5px);
-      line-height: 1.25;
-    }
-
-    .comment-info {
-      font-size: $font-small;
-      margin-bottom: rem-calc(15px);
-
-      .user {
-        font-weight: $semibold;
-      }
-
-      .date {
-
+      &.archived {
+        color: $dark-gray;
       }
     }
+    .comment {
+      margin-top: rem-calc(20px);
+      max-height: calc(100vh - 23rem);
+      overflow: auto;
+      position: relative;
+
+      .archive-icon {
+        position: absolute;
+        background-image: url(../assets/icons/icon-archive.svg);
+        background-size: contain;
+        top: 0;
+        right: 0;
+        height: 20px;
+        width: 20px;
+        cursor: pointer;
+      }
+
+      .comment-text {
+        font-size: $font-regular;
+        margin-bottom: rem-calc(5px);
+        line-height: 1.25;
+      }
+
+      .comment-info {
+        font-size: $font-small;
+        margin-bottom: rem-calc(0px);
+
+        .user {
+          font-weight: $semibold;
+        }
+
+        .date {
+
+        }
+      }
+      &.comment-archived {
+        color: $dark-gray;
+
+        .archive-icon {
+          background-image: url(../assets/icons/icon-unarchive.svg);
+        }
+      }
+    }
+
   }
 
   &.is-panel-open {

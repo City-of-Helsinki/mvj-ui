@@ -6,6 +6,7 @@ import {destroy, formValueSelector, reduxForm, reset} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
+import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import moment from 'moment';
 
@@ -222,8 +223,9 @@ class PreparerForm extends Component {
   addComment = (comment: string) => {
     const {comments} = this.state;
     comments.push({
-      text: comment,
+      archived: false,
       date: moment().format('YYYY-MM-DD'),
+      text: comment,
       user: 'Katja Immonen',
     });
     this.setState({comments: comments});
@@ -239,6 +241,14 @@ class PreparerForm extends Component {
       if(moment(keyB).isAfter(keyA)) return 1;
       return 0;
     });
+  }
+
+  getNotArchivedComments = (comments: Array<Object>) => {
+    return comments.filter((comments) => {return comments.archived !== true;});
+  }
+
+  getArchivedComments = (comments: Array<Object>) => {
+    return comments.filter((comments) => {return comments.archived === true;});
   }
 
   handleTabClick = (tabId) => {
@@ -272,6 +282,30 @@ class PreparerForm extends Component {
     return areasTouched || contractsTouched || eligibilityTouched || inspectionTouched || leaseInfoTouched || rulesTouched ||tenantsTouched;
   }
 
+  archiveComment = (comment: Object) => {
+    const {comments} = this.state;
+    const newComments = [];
+    forEach(comments, (com) => {
+      if(com === comment) {
+        com.archived = true;
+      }
+      newComments.push(com);
+    });
+    this.setState({comments: newComments});
+  }
+
+  unarchiveComment = (comment: Object) => {
+    const {comments} = this.state;
+    const newComments = [];
+    forEach(comments, (com) => {
+      if(com === comment) {
+        com.archived = false;
+      }
+      newComments.push(com);
+    });
+    this.setState({comments: newComments});
+  }
+
   render() {
     const {
       activeTab,
@@ -295,6 +329,8 @@ class PreparerForm extends Component {
 
     const areFormsValid = this.validateForms();
     const comments = this.getComments();
+    const commentsNotArchived = this.getNotArchivedComments(comments);
+    const commentsArchived = this.getArchivedComments(comments);
     const isAnyFormTouched = this.isAnyFormTouched();
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
     const statusOptions = contentHelpers.getStatusOptions(attributes);
@@ -326,10 +362,13 @@ class PreparerForm extends Component {
         />
         <CommentPanel
           ref={(input) => {this.commentPanel = input;}}
-          comments={comments}
+          commentsNotArchived={commentsNotArchived}
+          commentsArchived={commentsArchived}
           isOpen={isCommentPanelOpen}
           onAddComment={(comment) => this.addComment(comment)}
+          onArchive={(comment) => this.archiveComment(comment)}
           onClose={this.toggleCommentPanel}
+          onUnarchive={(comment) => this.unarchiveComment(comment)}
         />
         <Row>
           <Column className='lease-page__upper-bar'>
@@ -355,7 +394,7 @@ class PreparerForm extends Component {
             </div>
             <div className='controls'>
               <ControlButtons
-                commentAmount={comments ? comments.length : 0}
+                commentAmount={commentsNotArchived ? commentsNotArchived.length : 0}
                 isEditMode={isEditMode}
                 isValid={areFormsValid}
                 onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
