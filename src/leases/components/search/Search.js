@@ -64,6 +64,7 @@ class Search extends Component {
   initialize = (query: Object) => {
     this.setState({
       district: query.district ? query.district : '',
+      keyword: query.keyword ? query.keyword : '',
       municipality: query.municipality ? query.municipality : '',
       sequence: query.sequence ? query.sequence : '',
       type: query.type ? query.type.toUpperCase() : '',
@@ -78,10 +79,22 @@ class Search extends Component {
 
   onSearchChange = debounce(() => {
     const {onSearch} = this.props;
-    const {district, isBasicSearch, municipality, sequence, type} = this.state;
+    const {
+      district,
+      isBasicSearch,
+      // keyword,
+      municipality,
+      sequence,
+      type} = this.state;
+
     const filters = {};
     if(isBasicSearch) {
       console.log('Basic search');
+      //TODO: Uncomment when backend is implemented
+      // if(keyword) {
+      //   filters.keyword = keyword ? keyword : undefined;
+      // }
+
     } else {
       filters.district = district ? district : undefined;
       filters.municipality = municipality ? municipality : undefined;
