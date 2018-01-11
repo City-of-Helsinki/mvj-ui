@@ -1,6 +1,6 @@
 .comment-panel {
   background-color: $engel-lighter-opaque;
-  z-index: 0;
+  z-index: 1001;
   width: rem-calc(500px);
   height: 100vh;
   position: fixed;
@@ -106,6 +106,5 @@
 
   &.is-panel-open {
     right: 0;
-    z-index: 2;
   }
 }
