@@ -7,10 +7,13 @@ import TextAreaInput from '../TextAreaInput';
 import {formatDate} from '../../util/helpers';
 
 type Props = {
-  comments: Array<Object>,
+  commentsArchived: Array<Object>,
+  commentsNotArchived: Array<Object>,
   isOpen: boolean,
-  onClose: Function,
   onAddComment: Function,
+  onArchive: Function,
+  onClose: Function,
+  onUnarchive: Function,
 }
 
 type State = {
@@ -29,7 +32,7 @@ class CommentPanel extends Component {
   }
 
   render () {
-    const {comments, isOpen, onAddComment, onClose} = this.props;
+    const {commentsArchived, commentsNotArchived, isOpen, onAddComment, onArchive, onClose, onUnarchive} = this.props;
     const {comment} = this.state;
 
     return (
@@ -59,9 +62,28 @@ class CommentPanel extends Component {
           />
         </div>
         <div className='comment-panel__comments'>
-          {comments && comments.length > 0 && comments.map((comment, index) => {
+          <h2 className="comments-title">Ajankohtaiset</h2>
+          {commentsNotArchived && commentsNotArchived.length === 0 && <p>Ei ajankohtaisia kommentteja</p>}
+          {commentsNotArchived && commentsNotArchived.length > 0 && commentsNotArchived.map((comment, index) => {
             return (
               <div key={index} className='comment'>
+                <span className="archive-icon" onClick={() => onArchive(comment)}></span>
+                <p className='comment-text'>
+                  {comment.text}
+                </p>
+                <p className='comment-info'>
+                  <span className='user'>{comment.user}, </span><span className='date'>{formatDate(comment.date)}</span>
+                </p>
+
+              </div>
+            );
+          })}
+          <h2 className="comments-title archived">Arkistoidut</h2>
+          {commentsArchived && commentsArchived.length === 0 && <p>Ei arkistoituja kommentteja</p>}
+          {commentsArchived && commentsArchived.length > 0 && commentsArchived.map((comment, index) => {
+            return (
+              <div key={index} className='comment comment-archived'>
+                <span className="archive-icon" onClick={() => onUnarchive(comment)}></span>
                 <p className='comment-text'>
                   {comment.text}
                 </p>
