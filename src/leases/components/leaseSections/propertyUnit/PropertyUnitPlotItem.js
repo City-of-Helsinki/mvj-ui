@@ -30,24 +30,26 @@ const PropertyUnitPlotItem = (props: Props) => {
         </Column>
       </Row>
       <Row>
-        <Column medium={4}>
+        <Column medium={6}>
           <label>Osoite</label>
           <p>{`${capitalize(item.address)}, ${item.zip_code} ${item.town}`}</p>
           <label>Rekisteröintipäivä</label>
           <p>{formatDate(item.registration_date)}</p>
         </Column>
-        <Column medium={4}>
+        <Column medium={6}>
           <label>Kokonaisala</label>
           <p>{item.full_area}</p>
           <label>Leikkausala</label>
           <p>{item.intersection_area}</p>
         </Column>
-        <Column medium={4}>
+        <Column medium={12}>
           <label>KTJ-dokumentit</label>
           <div className='multiple-textrows'>
-            <p className='text-no-margin'>Lainhuutotodistus</p>
-            <p className='text-no-margin'>Kiinteistörekisteriote</p>
-            <p className='text-no-margin'>Rasitustodistus</p>
+            <p className='text-no-margin'>
+              <a>Lainhuutotodistus</a> /&nbsp;
+              <a>Kiinteistörekisteriote</a> /&nbsp;
+              <a>Rasitustodistus</a>
+            </p>
           </div>
         </Column>
       </Row>

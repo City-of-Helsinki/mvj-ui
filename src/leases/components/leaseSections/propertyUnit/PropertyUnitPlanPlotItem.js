@@ -23,13 +23,17 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
         </Column>
       </Row>
       <Row>
-        <Column medium={4}>
+        <Column medium={8}>
           <label>Osoite</label>
           <p>{`${capitalize(item.address)}, ${item.zip_code} ${item.town}`}</p>
           <label>Tonttijaon tunnus</label>
           <p>{item.plot_division_id}</p>
           <label>Tonttijaon hyväksymispäivämäärä</label>
           <p>{formatDate(item.plot_division_approval_date)}</p>
+          <label>Asemakaava</label>
+          <p>{item.plan}</p>
+          <label>Asemakaavan vahvistumispäivämäärä</label>
+          <p>{item.plan_approval_date}</p>
         </Column>
         <Column medium={4}>
           <label>Kokonaisala</label>
@@ -38,14 +42,8 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
           <p>{item.intersection_area}</p>
           <label>Olotila</label>
           <p>{item.state}</p>
-        </Column>
-        <Column medium={4}>
           <label>Käyttötarkoitus</label>
           <p>{item.use}</p>
-          <label>Asemakaava</label>
-          <p>{item.plan}</p>
-          <label>Asemakaavan vahvistumispäivämäärä</label>
-          <p>{item.plan_approval_date}</p>
         </Column>
       </Row>
     </div>
