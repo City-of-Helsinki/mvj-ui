@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
-import {capitalize} from 'lodash';
+import capitalize from 'lodash/capitalize';
+import get from 'lodash/get';
 
 import {formatDate} from '../../../../util/helpers';
 
@@ -19,7 +20,7 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
           <svg className='map-icon-smaller' viewBox="0 0 30 30">
             <path d="M28.5 2.06v21.52l-.7.28-7.88 3.37-.42.22-.42-.15-8.58-3.23-7.45 3.16-1.55.71V6.42l.7-.28 7.88-3.37.42-.22.42.15 8.58 3.23L27 2.77zM9.38 5.44L3.75 7.83v16.73l5.63-2.39zm2.24-.07V22.1l6.76 2.53V7.9zm14.63.07l-5.63 2.39v16.73l5.63-2.39z"/>
           </svg>
-          <p className='section-item__subtitle'>{`${capitalize(item.explanation)} ${item.municipality}-${item.district}-${item.group_number}-${item.unit_number}`}</p>
+          <p className='section-item__subtitle'>{`${capitalize(get(item, 'explanation', ''))} ${get(item, 'municipality', '')}-${get(item, 'district', '')}-${get(item, 'group_number', '')}-${get(item, 'unit_number', '')}`}</p>
         </Column>
       </Row>
       <Row>
