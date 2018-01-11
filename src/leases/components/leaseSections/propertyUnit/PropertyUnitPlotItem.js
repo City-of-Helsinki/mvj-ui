@@ -35,7 +35,7 @@ const PropertyUnitPlotItem = (props: Props) => {
           <label>Osoite</label>
           <p>{`${capitalize(item.address)}, ${item.zip_code} ${item.town}`}</p>
           <label>Rekisteröintipäivä</label>
-          <p>{item.registration_date ? formatDate(item.registration_date) : ''}</p>
+          <p>{item.registration_date ? formatDate(item.registration_date) : '-'}</p>
         </Column>
         <Column medium={6}>
           <label>Kokonaisala</label>

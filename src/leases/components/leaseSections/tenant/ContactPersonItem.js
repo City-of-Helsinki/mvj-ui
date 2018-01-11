@@ -11,7 +11,7 @@ type Props = {
 };
 
 const ContactPersonItem = ({customer}: Props) => {
-  const formatedDate = utilHelpers.formatDate(get(customer, 'start_date', ''));
+  const formatedDate = utilHelpers.formatDate(customer.start_date);
   const fullAddress = helpers.getFullAddress(customer);
 
   return (

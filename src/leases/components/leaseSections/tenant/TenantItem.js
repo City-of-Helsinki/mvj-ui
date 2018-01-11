@@ -11,7 +11,7 @@ type Props = {
 };
 
 const TenantItem = ({customer}: Props) => {
-  const formatedDate = formatDate(get(customer, 'start_date', ''));
+  const formatedDate = formatDate(customer.start_date);
   const fullAddress = getFullAddress(customer);
 
   return (

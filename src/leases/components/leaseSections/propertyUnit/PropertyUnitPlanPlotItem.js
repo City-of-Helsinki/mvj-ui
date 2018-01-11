@@ -34,7 +34,7 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
           <label>Asemakaava</label>
           <p>{item.plan}</p>
           <label>Asemakaavan vahvistumispäivämäärä</label>
-          <p>{item.plan_approval_date}</p>
+          <p>{formatDate(item.plan_approval_date)}</p>
         </Column>
         <Column medium={4}>
           <label>Kokonaisala</label>
