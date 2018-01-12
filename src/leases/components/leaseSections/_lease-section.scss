@@ -98,6 +98,41 @@
     align-items: baseline;
     padding: 1.25rem 1.25rem 0.3rem;
   }
+  .subsection-title {
+    font-size: 1.125rem;
+    font-weight: $semibold;
+    color: $tram;
+    text-transform: uppercase;
+    margin-top: rem-calc(30px);
+  }
+
+  .subsection-title:first-child {
+    margin-top: rem-calc(10px);
+  }
+
+  .subsection-column {
+    padding: 0 rem-calc(10px);
+  }
+
+  .subsection-content {
+    padding-bottom: rem-calc(10px);
+  }
+
+  .subsection-item {
+    background-color: rgba(0, 146, 70, 0.10);
+    padding: rem-calc(10px) rem-calc(20px);
+    height: 100%;
+
+    .title {
+      font-size: $font-regular;
+	    font-weight: $semibold;
+	    color: $tram;
+      margin-bottom: 0.6rem;
+    }
+  }
+  .text-no-margin {
+    margin-bottom: 0;
+  }
 }
 
 .doc-icon, .map-icon, .map-icon-smaller {

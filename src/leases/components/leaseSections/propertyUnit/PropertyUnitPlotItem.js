@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
-import {capitalize} from 'lodash';
+import capitalize from 'lodash/capitalize';
+import get from 'lodash/get';
 
 import {formatDate} from '../../../../util/helpers';
 
@@ -14,9 +15,9 @@ const PropertyUnitPlotItem = (props: Props) => {
 
   const getIdentifier = () => {
     if(item.explanation === 'määräala') {
-      return `${capitalize(item.explanation)} ${item.municipality}-${item.district}-${item.group_number}-${item.unit_number}-M${item.unseparate_parcel_number}`;
+      return `${capitalize(get(item, 'explanation', ''))} ${get(item, 'municipality', '')}-${get(item, 'district', '')}-${get(item, 'group_number', '')}-${get(item, 'unit_number', '')}-M${get(item, 'unseparate_parcel_number', '')}`;
     }
-    return `${capitalize(item.explanation)} ${item.municipality}-${item.district}-${item.group_number}-${item.unit_number}`;
+    return `${capitalize(get(item, 'explanation', ''))} ${get(item, 'municipality', '')}-${get(item, 'district', '')}-${get(item, 'group_number', '')}-${get(item, 'unit_number', '')}`;
   };
 
   return (
@@ -30,24 +31,26 @@ const PropertyUnitPlotItem = (props: Props) => {
         </Column>
       </Row>
       <Row>
-        <Column medium={4}>
+        <Column medium={6}>
           <label>Osoite</label>
           <p>{`${capitalize(item.address)}, ${item.zip_code} ${item.town}`}</p>
           <label>Rekisteröintipäivä</label>
-          <p>{formatDate(item.registration_date)}</p>
+          <p>{item.registration_date ? formatDate(item.registration_date) : '-'}</p>
         </Column>
-        <Column medium={4}>
+        <Column medium={6}>
           <label>Kokonaisala</label>
           <p>{item.full_area}</p>
           <label>Leikkausala</label>
           <p>{item.intersection_area}</p>
         </Column>
-        <Column medium={4}>
+        <Column medium={12}>
           <label>KTJ-dokumentit</label>
           <div className='multiple-textrows'>
-            <p className='text-no-margin'>Lainhuutotodistus</p>
-            <p className='text-no-margin'>Kiinteistörekisteriote</p>
-            <p className='text-no-margin'>Rasitustodistus</p>
+            <p className='text-no-margin'>
+              <a>Lainhuutotodistus</a> /&nbsp;
+              <a>Kiinteistörekisteriote</a> /&nbsp;
+              <a>Rasitustodistus</a>
+            </p>
           </div>
         </Column>
       </Row>

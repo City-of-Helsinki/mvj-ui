@@ -24,11 +24,11 @@ const Inspections = ({inspections}: Props) => {
               </Column>
               <Column medium={4}>
                 <label>Valvonta päivämäärä</label>
-                {inspection.supervision_date ? <p className={classNames({'alert': inspection.supervision_date && !inspection.supervised_date})}><i/>{formatDate(get(inspection, 'supervision_date', '–'))} </p> : <p>–</p>}
+                {inspection.supervision_date ? <p className={classNames({'alert': inspection.supervision_date && !inspection.supervised_date})}><i/>{formatDate(inspection.supervision_date)} </p> : <p>–</p>}
               </Column>
               <Column medium={4}>
                 <label>Valvottu päivämäärä</label>
-                {inspection.supervised_date ? <p className={classNames({'success': inspection.supervised_date})}><i/>{inspection.supervised_date ? formatDate(get(inspection, 'supervised_date', '–')) : '–'}</p> : <p>–</p>}
+                {inspection.supervised_date ? <p className={classNames({'success': inspection.supervised_date})}><i/>{formatDate(inspection.supervised_date)}</p> : <p>–</p>}
               </Column>
             </Row>
             <Row>

@@ -95,8 +95,8 @@ export const getContentLeaseItem = (item:Object, statusOptions: Array<Object>) =
     address: getContentLeaseAddress(item),
     status: getContentLeaseStatus(item, statusOptions),
     status_code: get(item, 'status'),
-    start_date: formatDate(get(item, 'start_date')),
-    end_date: formatDate(get(item, 'end_date')),
+    start_date: formatDate(item.start_date),
+    end_date: formatDate(item.end_date),
   };
 };
 
