@@ -75,4 +75,4 @@ export const minZoom = 2;
  * Max zoom
  * @type {number}
  */
-export const maxZoom = 13;
+export const maxZoom = 12;
