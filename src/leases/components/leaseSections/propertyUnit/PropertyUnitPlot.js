@@ -15,62 +15,70 @@ class PropertyUnitPlot extends Component {
   render() {
     const {area} = this.props;
     return (
-      <div>
+      <div className="subsection-content">
         <h2 className="subsection-title">Kiinteistöt ja määräalat</h2>
         <Row>
-          <Column medium={6}>
+          <Column medium={6} className="subsection-column">
             <div className="subsection-item">
               <Row>
-                <Column small={12}><span className='title'>Kiinteistöt / määräalat sopimushetkellä</span></Column>
+                <Column small={12} className='title'><span>Kiinteistöt / määräalat sopimushetkellä</span></Column>
               </Row>
-              {area.plots_in_contract && area.plots_in_contract.length > 0 ? (
-                area.plots_in_contract.map((item, index) =>
-                  <PropertyUnitPlotItem item={item} key={index}/>)
-              ) : (
-                <p className="text-no-margin">Ei kiinteistöjä / määräaloja sopimushetkellä</p>
-              )}
+              <div>
+                {area.plots_in_contract && area.plots_in_contract.length > 0 ? (
+                  area.plots_in_contract.map((item, index) =>
+                    <PropertyUnitPlotItem item={item} key={index}/>)
+                ) : (
+                  <p className="text-no-margin">Ei kiinteistöjä / määräaloja sopimushetkellä</p>
+                )}
+              </div>
             </div>
           </Column>
-          <Column medium={6}>
+          <Column medium={6} className="subsection-column">
             <div className="subsection-item">
               <Row>
                 <Column small={12}><span className='title'>Kiinteistöt / määräalat nykyhetkellä</span></Column>
               </Row>
-              {area.plots_at_present && area.plots_at_present.length > 0 ? (
-                area.plots_at_present.map((item, index) =>
-                  <PropertyUnitPlotItem item={item} key={index}/>)
-              ) : (
-                <p className="text-no-margin">Ei kiinteistöjä / määräaloja nykyhetkellä</p>
-              )}
+              <div>
+                {area.plots_at_present && area.plots_at_present.length > 0 ? (
+                  area.plots_at_present.map((item, index) =>
+                    <PropertyUnitPlotItem item={item} key={index}/>)
+                ) : (
+                  <p className="text-no-margin">Ei kiinteistöjä / määräaloja nykyhetkellä</p>
+                )}
+              </div>
             </div>
           </Column>
         </Row>
         <h2 className="subsection-title">Kaavayksiköt</h2>
         <Row>
-          <Column medium={6}>
+          <Column medium={6} className="subsection-column">
             <div className="subsection-item">
               <Row>
                 <Column small={12}><span className='title'>Kaavayksiköt sopimushetkellä</span></Column>
               </Row>
-              {area.plan_plots_in_contract && area.plan_plots_in_contract.length > 0 ? (
-                area.plan_plots_in_contract.map((item, index) =>
-                  <PropertyUnitPlanPlotItem item={item} key={index}/>)
-              ) : (
-                <p className="text-no-margin">Ei kaavayksiköitä sopimushetkellä</p>
-              )}
+              <div>
+                {area.plan_plots_in_contract && area.plan_plots_in_contract.length > 0 ? (
+                  area.plan_plots_in_contract.map((item, index) =>
+                    <PropertyUnitPlanPlotItem item={item} key={index}/>)
+                ) : (
+                  <p className="text-no-margin">Ei kaavayksiköitä sopimushetkellä</p>
+                )}
+              </div>
             </div>
           </Column>
-          <Column medium={6}>
+          <Column medium={6} className="subsection-column">
             <div className="subsection-item">
               <Row>
                 <Column small={12}><span className='title'>Kaavayksiköt nykyhetkellä</span></Column>
               </Row>
-              {area.plan_plots_at_present && area.plan_plots_at_present.length > 0 ? (
-                area.plan_plots_at_present.map((item, index) =>
-                <PropertyUnitPlanPlotItem item={item} key={index}/>)
-              ) : (
-                <p className="text-no-margin">Ei kaavayksiköitä nykyhetkellä</p>
-              )}
+              <div>
+                {area.plan_plots_at_present && area.plan_plots_at_present.length > 0 ? (
+                  area.plan_plots_at_present.map((item, index) =>
+                  <PropertyUnitPlanPlotItem item={item} key={index}/>)
+                ) : (
+                  <p className="text-no-margin">Ei kaavayksiköitä nykyhetkellä</p>
+                )}
+              </div>
             </div>
           </Column>
         </Row>
