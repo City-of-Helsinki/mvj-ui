@@ -1,6 +1,6 @@
 .modal {
   .modal__wrapper {
-    z-index: 1001;
+    z-index: 1003;
     background-color: $white;
     width: rem-calc(800px);
     max-width: 100%;
@@ -9,6 +9,7 @@
     left: 50%;
     transform: translateX(-50%) translateY(-30%);
     transition: top .5s ease;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
 
     @include breakpoint(small only){
       left: 0;
