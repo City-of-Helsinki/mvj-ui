@@ -158,9 +158,10 @@ const renderProperty = ({areas, fields, title}: PropertyProps) => {
 type PlanUnitProps = {
   title: string,
   fields: any,
+  areas: Array<Object>,
 }
 
-const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
+const renderPlanUnit = ({areas, title, fields}: PlanUnitProps) => {
   return (
     <div className='green-box'>
       {fields.length > 0 &&
@@ -179,40 +180,48 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
             <img src={trashIcon} alt='Poista' />
           </button>
           <Row>
-            <Column medium={3}>
+            <Column medium={4}>
               <Row>
                 <Column>
                   <label className='mvj-form-field-label'>Tunnus</label>
                 </Column>
               </Row>
               <Row>
-                <Column small={3} style={{paddingRight: '0'}}>
+                <div className='identifier-column'>
                   <Field
                     name={`${planunit}.municipality`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
-                <Column small={3} style={{paddingRight: '0'}}>
+                </div>
+                <div className='identifier-column'>
                   <Field
                     name={`${planunit}.district`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
-                <Column small={3} style={{paddingRight: '0'}}>
+                </div>
+                <div className='identifier-column'>
                   <Field
                     name={`${planunit}.group_number`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
-                <Column small={3} style={{paddingRight: '0'}}>
+                </div>
+                <div className='identifier-column'>
                   <Field
                     name={`${planunit}.unit_number`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
+                </div>
+                {get({areas: areas}, `${planunit}.use`) === 'määräala' &&
+                <div className='identifier-column'>
+                  <Field
+                    name={`${planunit}.unseparate_parcel_number`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </div>
+                }
               </Row>
             </Column>
-            <Column medium={3}>
+            <Column medium={2}>
               <Field
                 name={`${planunit}.use`}
                 component={FieldTypeSelect}
@@ -352,40 +361,48 @@ class RenderDistricts extends Component {
                 <img src={trashIcon} alt='Poista' />
               </button>
               <Row>
-                <Column medium={3}>
+                <Column medium={4}>
                   <Row>
                     <Column>
                       <label className='mvj-form-field-label'>Kohteen tunnus</label>
                     </Column>
                   </Row>
                   <Row>
-                    <Column medium={3} style={{paddingRight: '0'}}>
+                    <div className='identifier-column'>
                       <Field
                         name={`${district}.municipality`}
                         type="text"
                         component={FieldTypeText}/>
-                    </Column>
-                    <Column medium={3} style={{paddingRight: '0'}}>
+                    </div>
+                    <div className='identifier-column'>
                       <Field
                         name={`${district}.district`}
                         type="text"
                         component={FieldTypeText}/>
-                    </Column>
-                    <Column medium={3} style={{paddingRight: '0'}}>
+                    </div>
+                    <div className='identifier-column'>
                       <Field
                         name={`${district}.group_number`}
                         type="text"
                         component={FieldTypeText}/>
-                    </Column>
-                    <Column medium={3} style={{paddingRight: '0'}}>
+                    </div>
+                    <div className='identifier-column'>
                       <Field
                         name={`${district}.unit_number`}
                         type="text"
                         component={FieldTypeText}/>
-                    </Column>
+                    </div>
+                    {get({areas: areas}, `${district}.explanation`) === 'määräala' &&
+                    <div className='identifier-column'>
+                      <Field
+                        name={`${district}.unseparate_parcel_number`}
+                        type="text"
+                        component={FieldTypeText}/>
+                    </div>
+                    }
                   </Row>
                 </Column>
-                <Column medium={3}>
+                <Column medium={2}>
                   <Field
                     name={`${district}.explanation`}
                     component={FieldTypeSelect}
@@ -398,7 +415,7 @@ class RenderDistricts extends Component {
                     ]}
                   />
                 </Column>
-                <Column medium={3}>
+                <Column medium={2}>
                   <Field
                     name={`${district}.part_or_whole`}
                     component={FieldTypeSelect}
@@ -409,13 +426,24 @@ class RenderDistricts extends Component {
                     ]}
                   />
                 </Column>
-                <Column medium={3}>
+                <Column medium={2}>
                   <Field
                     name={`${district}.full_area`}
                     type="text"
                     component={FieldTypeText}
                     label="Pinta-ala"
                     placeholder="Pinta-ala"/>
+                </Column>
+                <Column medium={2}>
+                  <Field
+                    name={`${district}.position`}
+                    component={FieldTypeSelect}
+                    label='Sijainti'
+                    options={[
+                      {value: 'aboveground', label: 'Maanpäällinen'},
+                      {value: 'underground', label: 'Maanalainen'},
+                    ]}
+                  />
                 </Column>
               </Row>
               <Row>
