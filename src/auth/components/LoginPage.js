@@ -27,7 +27,7 @@ class LoginPage extends React.Component {
       <div className="login-page">
         <div className="login-page__content">
           <div className="helsinki-logo" />
-          <h3>Tervetuloa Helsingin maavuokrausjärjestelmään</h3>
+          <h3>Tervetuloa Helsingin maanvuokrausjärjestelmään</h3>
           <p>Kirjaudu sisään jatkaaksesi</p>
           <button className="btn btn-default" disabled={buttonDisabled} onClick={this.onLoginButtonClick}>Kirjaudu</button>
         </div>

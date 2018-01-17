@@ -62,7 +62,7 @@ class TopNavigation extends Component {
           <path d="M1.5,2.9h27v2.2h-27V2.9z M1.5,11.9h27v2.2h-27V11.9z M1.5,20.9h27v2.2h-27V20.9z"/>
         </svg>
         <div className="title">
-          <Link to="/">Maavuokrausjärjestelmä</Link>
+          <Link to="/">Maanvuokrausjärjestelmä</Link>
         </div>
         {showSearch &&
           <div className="search">
