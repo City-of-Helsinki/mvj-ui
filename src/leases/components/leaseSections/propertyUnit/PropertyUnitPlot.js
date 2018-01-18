@@ -36,7 +36,7 @@ class PropertyUnitPlot extends Component {
           <Column medium={6} className="subsection-column">
             <div className="subsection-item">
               <Row>
-                <Column small={12}><span className='title'>Kiinteistöt / määräalat nykyhetkellä</span></Column>
+                <Column small={12} className='title'><span>Kiinteistöt / määräalat nykyhetkellä</span></Column>
               </Row>
               <div>
                 {area.plots_at_present && area.plots_at_present.length > 0 ? (
@@ -54,7 +54,7 @@ class PropertyUnitPlot extends Component {
           <Column medium={6} className="subsection-column">
             <div className="subsection-item">
               <Row>
-                <Column small={12}><span className='title'>Kaavayksiköt sopimushetkellä</span></Column>
+                <Column small={12} className='title'><span>Kaavayksiköt sopimushetkellä</span></Column>
               </Row>
               <div>
                 {area.plan_plots_in_contract && area.plan_plots_in_contract.length > 0 ? (
@@ -69,7 +69,7 @@ class PropertyUnitPlot extends Component {
           <Column medium={6} className="subsection-column">
             <div className="subsection-item">
               <Row>
-                <Column small={12}><span className='title'>Kaavayksiköt nykyhetkellä</span></Column>
+                <Column small={12} className='title'><span>Kaavayksiköt nykyhetkellä</span></Column>
               </Row>
               <div>
                 {area.plan_plots_at_present && area.plan_plots_at_present.length > 0 ? (

@@ -366,9 +366,10 @@
           "unit_number": "17",
           "explanation": "kaavayksikkö",
           "position": "Maanpäällinen",
-          "part_or_whole": "koko",
           "full_area": 800,
           "intersection_area": 800,
+          "planplot_type": "Tonttirekisteritontti",
+          "planplot_condition": "Voimassa",
           "address": "Sörnäisten rantatie 10",
           "zip_code": "00560",
           "town": "Helsinki",
@@ -387,6 +388,7 @@
               "zip_code": "00560",
               "town": "Helsinki",
               "registration_date": "2017-01-01",
+              "abolishment_date": "",
               "coordinates": [
                 [60.19, 24.924],
                 [60.19, 24.926],
@@ -408,6 +410,7 @@
               "zip_code": "00560",
               "town": "Helsinki",
               "registration_date": "2017-01-01",
+              "abolishment_date": "2015-03-15",
               "coordinates": [
                 [60.18, 24.924],
                 [60.18, 24.926],
@@ -429,7 +432,8 @@
               "address": "Lautatarhankatu 10",
               "zip_code": "00560",
               "town": "Helsinki",
-              "registration_date": "2017-01-01"
+              "registration_date": "2017-01-01",
+              "abolishment_date": ""
             }
           ],
           "plan_plots_in_contract": [
@@ -443,6 +447,8 @@
               "use": "kiinteistö",
               "full_area": 800,
               "intersection_area": 800,
+              "planplot_type": "Rekisteröity yleinen alue",
+              "planplot_condition": "Vireillä",
               "address": "Lautatarhankatu 10",
               "zip_code": "00560",
               "town": "Helsinki",
@@ -464,6 +470,8 @@
               "use": "määräala",
               "full_area": 800,
               "intersection_area": 800,
+              "planplot_type": "Ohjeellinen kaavatontti",
+              "planplot_condition": "Vireillä",
               "address": "Lautatarhankatu 10",
               "zip_code": "00560",
               "town": "Helsinki",
@@ -541,7 +549,6 @@
           "unit_number": "32",
           "explanation": "kaavayksikkö",
           "position": "Maanpäällinen",
-          "part_or_whole": "koko",
           "full_area": 1200,
           "intersection_area": 800,
           "address": "Lautatarhankatu 10",
@@ -560,7 +567,8 @@
               "address": "Lautatarhankatu 10",
               "zip_code": "00560",
               "town": "Helsinki",
-              "registration_date": "2017-01-01"
+              "registration_date": "2017-01-01",
+              "abolishment_date": ""
             },
             {
               "plots_in_contract_id": 2,
@@ -575,7 +583,8 @@
               "address": "Lautatarhankatu 10",
               "zip_code": "00560",
               "town": "Helsinki",
-              "registration_date": "2017-01-01"
+              "registration_date": "2017-01-01",
+              "abolishment_date": ""
             }
           ],
           "plots_at_present": [],
@@ -590,6 +599,8 @@
               "use": "kiinteistö",
               "full_area": 800,
               "intersection_area": 800,
+              "planplot_type": "Tonttirekisteritontti",
+              "planplot_condition": "Voimassa",
               "address": "Lautatarhankatu 10",
               "zip_code": "00560",
               "town": "Helsinki",

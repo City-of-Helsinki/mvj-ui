@@ -320,6 +320,40 @@ const renderPlanUnit = ({areas, title, fields}: PlanUnitProps) => {
                 placeholder='PP.KK.VVVV'/>
             </Column>
           </Row>
+          <Row>
+            <Column medium={6}>
+              <Field
+                name={`${planunit}.planplot_type`}
+                component={FieldTypeSelect}
+                label='Kaavayksikön laji'
+                options={[
+                  {value: 'rekisteröity yleinen alue', label: 'Rekisteröity yleinen alue'},
+                  {value: 'ohjeellinen kaavatontti', label: 'Ohjeellinen kaavatontti'},
+                  {value: 'vireillä olevan tonttijaon/-muutoksen mukainen tontti', label: 'Vireillä olevan tonttijaon/-muutoksen mukainen tontti'},
+                  {value: 'vireillä olevan tonttijaonmuutoksen mukainen tontti', label: 'Vireillä olevan tonttijaonmuutoksen mukainen tontti'},
+                  {value: 'hyväksytyn tonttijaon mukainen tontti', label: 'Hyväksytyn tonttijaon mukainen tontti'},
+                  {value: 'muodostusluetteloon merkitty tontti', label: 'Muodostusluetteloon merkitty tontti'},
+                  {value: 'tonttirekisteritontti', label: 'Tonttirekisteritontti'},
+                  {value: 'muun kuin korttelialueen yksikkö', label: 'Muun kuin korttelialueen yksikkö'},
+                  {value: 'keinoyksikkö (maarekisterialue)', label: 'Keinoyksikkö (maarekisterialue)'},
+                  {value: 'keinokaavayksikkö (yleisen alueen lisäosa)', label: 'Keinokaavayksikkö (yleisen alueen lisäosa)'},
+                ]}
+              />
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${planunit}.planplot_condition`}
+                component={FieldTypeSelect}
+                label='Kaavayksikön olotila'
+                options={[
+                  {value: 'numeronvaraus', label: 'Numeronvaraus'},
+                  {value: 'vireillä', label: 'Vireillä'},
+                  {value: 'voimassa', label: 'Voimassa'},
+                  {value: 'kumottu', label: 'Kumottu'},
+                ]}
+              />
+            </Column>
+          </Row>
         </div>
       )}
       <Row>
@@ -415,18 +449,7 @@ class RenderDistricts extends Component {
                     ]}
                   />
                 </Column>
-                <Column medium={2}>
-                  <Field
-                    name={`${district}.part_or_whole`}
-                    component={FieldTypeSelect}
-                    label='Osa/koko'
-                    options={[
-                      {value: 'koko', label: 'Koko'},
-                      {value: 'osa', label: 'Osa'},
-                    ]}
-                  />
-                </Column>
-                <Column medium={2}>
+                <Column medium={3}>
                   <Field
                     name={`${district}.full_area`}
                     type="text"
@@ -434,7 +457,7 @@ class RenderDistricts extends Component {
                     label="Pinta-ala"
                     placeholder="Pinta-ala"/>
                 </Column>
-                <Column medium={2}>
+                <Column medium={3}>
                   <Field
                     name={`${district}.position`}
                     component={FieldTypeSelect}

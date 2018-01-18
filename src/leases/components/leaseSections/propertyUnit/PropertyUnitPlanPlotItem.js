@@ -35,6 +35,8 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
           <p>{item.plan}</p>
           <label>Asemakaavan vahvistumispäivämäärä</label>
           <p>{formatDate(item.plan_approval_date)}</p>
+          <label>Kaavayksikön laji</label>
+          <p>{item.planplot_type}</p>
         </Column>
         <Column medium={4}>
           <label>Kokonaisala</label>
@@ -45,6 +47,8 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
           <p>{item.state}</p>
           <label>Käyttötarkoitus</label>
           <p>{item.use}</p>
+          <label>Kaavayksikön olotila</label>
+          <p>{item.planplot_condition}</p>
         </Column>
       </Row>
     </div>

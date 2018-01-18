@@ -28,7 +28,7 @@ const PropertyUnit = ({areas}: Props) => {
                 <span>{`${capitalize(area.address)}, ${area.zip_code} ${capitalize(area.town)}`}</span>
               </Column>
               <Column medium={4} className='collapse__header-subtitle'>
-                <span>{area.full_area} m<sup>2</sup> ({area.part_or_whole})&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{capitalize(area.position)}</span>
+                <span>{area.full_area} m<sup>2</sup> / {capitalize(area.position)}</span>
               </Column>
             </Row>
           }

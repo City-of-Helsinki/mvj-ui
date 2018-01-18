@@ -36,22 +36,20 @@ const PropertyUnitPlotItem = (props: Props) => {
           <p>{`${capitalize(item.address)}, ${item.zip_code} ${item.town}`}</p>
           <label>Rekisteröintipäivä</label>
           <p>{item.registration_date ? formatDate(item.registration_date) : '-'}</p>
+          <label>KTJ-dokumentit</label>
+          <div className='multiple-textrows'>
+            <p className='text-no-margin'>Lainhuutotodistus</p>
+            <p className='text-no-margin'>Kiinteistörekisteriote</p>
+            <p className='text-no-margin'>Rasitustodistus</p>
+          </div>
         </Column>
         <Column medium={6}>
           <label>Kokonaisala</label>
           <p>{item.full_area}</p>
           <label>Leikkausala</label>
           <p>{item.intersection_area}</p>
-        </Column>
-        <Column medium={12}>
-          <label>KTJ-dokumentit</label>
-          <div className='multiple-textrows'>
-            <p className='text-no-margin'>
-              <a>Lainhuutotodistus</a> /&nbsp;
-              <a>Kiinteistörekisteriote</a> /&nbsp;
-              <a>Rasitustodistus</a>
-            </p>
-          </div>
+          <label>Kumoamispäivä</label>
+          <p>{item.abolishment_date ? formatDate(item.abolishment_date) : '-'}</p>
         </Column>
       </Row>
     </div>
