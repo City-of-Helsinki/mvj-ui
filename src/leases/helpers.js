@@ -75,6 +75,24 @@ export const getContentLeaseStatus = (item: Object, options: Array<Object>) => {
   return status;
 };
 
+export const getContentSummary = (lease: Object) => {
+  return {
+    financing_method: get(lease, 'financing_method'),
+    hitas: get(lease, 'hitas'),
+    lease_statistical_use: get(lease, 'lease_statistical_use'),
+    lease_use: get(lease, 'lease_use'),
+    lease_use_description: get(lease, 'lease_use_description'),
+    lessor: get(lease, 'lessor'),
+    management_method: get(lease, 'management_method'),
+    notice_period: get(lease, 'notice_period'),
+    notice_period_description: get(lease, 'notice_period_description'),
+    regulatory: get(lease, 'regulatory'),
+    regulatory_method: get(lease, 'regulatory_method'),
+    special_apartments: get(lease, 'special_apartments'),
+    transfer_right: get(lease, 'transfer_right'),
+  };
+};
+
 export const getFullAddress = (item: Object) => {
   if(!get(item, 'zip_code') && !get(item, 'town')) {
     return get(item, 'address');

@@ -94,39 +94,43 @@
     background-color: rgba(0, 146, 70, 0.1);
     padding: 0.6rem 1rem;
     margin: 0.6rem 0;
+
+    &.no-margin {
+      margin: 0;
     }
+  }
 
-    h2 {
-      font-size: rem-calc(15px);
-      font-weight: $semibold;
-      text-transform: uppercase;
-      text-align: left;
-      color: #009246;
-      color: $tram;
-    }
+  h2 {
+    font-size: rem-calc(15px);
+    font-weight: $semibold;
+    text-transform: uppercase;
+    text-align: left;
+    color: #009246;
+    color: $tram;
+  }
 
-    .green-box-item + .green-box-item {
-      border-top: 1px dashed $tram;
-    }
+  .green-box-item + .green-box-item {
+    border-top: 1px dashed $tram;
+  }
 
-    .green-box-item {
-      position: relative;
-      padding: 1rem 2rem 0.8rem 0;
+  .green-box-item {
+    position: relative;
+    padding: 1rem 2rem 0.8rem 0;
 
-      .remove-button {
-        position: absolute;
-        top: 1rem;
-        right: -0.6rem;
-        cursor: pointer;
+    .remove-button {
+      position: absolute;
+      top: 1rem;
+      right: -0.6rem;
+      cursor: pointer;
 
-        img {
-          height: 19px;
-          width: 19px;
-        }
+      img {
+        height: 19px;
+        width: 19px;
+      }
 
-        &:hover {
-          opacity: 0.85;
-        }
+      &:hover {
+        opacity: 0.85;
+      }
     }
   }
   .green-box:last-of-type {

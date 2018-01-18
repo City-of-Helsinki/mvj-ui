@@ -1,6 +1,7 @@
 .lease-history {
   &__component {
     border-left: rem-calc(2px) solid #9b9b9b;
+    height: 100%;
   }
   &__item {
     position: relative;

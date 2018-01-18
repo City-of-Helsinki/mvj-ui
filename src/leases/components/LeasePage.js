@@ -48,13 +48,14 @@ type State = {
   comments: Array<Object>,
   contracts: Array<Object>,
   history: Array<Object>,
+  inspections: Array<Object>,
   isEditMode: boolean,
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
   isSaveLeaseModalOpen: boolean,
   oldTenants: Array<Object>,
   rules: Array<Object>,
-  inspections: Array<Object>,
+  summary: Object,
   tenants: Array<Object>,
 };
 
@@ -91,15 +92,16 @@ class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
     areas: [],
-    comments: mockData.leases[0].comments,
+    comments: [],
     contracts: [],
-    history: mockData.history,
+    history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
     isEditMode: false,
     isSaveLeaseModalOpen: false,
     oldTenants: [],
     rules: [],
+    summary: {},
     tenants: [],
     terms: [],
     inspections: [],
@@ -130,11 +132,14 @@ class PreparerForm extends Component {
 
     this.setState({
       areas: mockData.leases[0].lease_areas,
-      tenants: mockData.leases[0].tenants,
-      oldTenants: mockData.leases[0].tenants_old,
+      comments: mockData.leases[0].comments,
       contracts: mockData.leases[0].contracts,
-      rules: mockData.leases[0].rules,
+      history: mockData.leases[0].history,
       inspections: mockData.leases[0].inspections,
+      oldTenants: mockData.leases[0].tenants_old,
+      rules: mockData.leases[0].rules,
+      summary: contentHelpers.getContentSummary(mockData.leases[0]),
+      tenants: mockData.leases[0].tenants,
     });
     fetchAttributes();
     fetchSingleLease(leaseId);
@@ -323,6 +328,7 @@ class PreparerForm extends Component {
       isSaveLeaseModalOpen,
       oldTenants,
       rules,
+      summary,
       tenants,
     } = this.state;
 
@@ -439,7 +445,7 @@ class PreparerForm extends Component {
                   <h1>Yhteenveto</h1>
                   <Row>
                     <Column medium={9}>
-                      <Summary />
+                      <Summary summary={summary}/>
                     </Column>
                     <Column medium={3}>
                       <LeaseHistory history={history}/>
