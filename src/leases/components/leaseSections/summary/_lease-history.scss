@@ -1,0 +1,39 @@
+.lease-history {
+  &__component {
+    border-left: 2px solid #9b9b9b;
+  }
+  &__item {
+    position: relative;
+
+    &-badge {
+      background-color: #9b9b9b;
+      height: 25px;
+      width: 25px;
+      position: absolute;
+      left: -12.5px;
+      border-radius: 50%;
+
+      &.active {
+        background-color: $tram;
+      }
+    }
+
+    &-info {
+      padding: 0 0 0 rem-calc(20px);
+      margin-bottom: rem-calc(20px);
+
+      p {
+        line-height: 1.2;
+        margin-bottom: 0;
+      }
+
+      .identifier {
+        font-size: 1.125rem;
+        font-weight: $semibold;
+      }
+      .type {
+        font-weight: $semibold;
+      }
+    }
+  }
+}
