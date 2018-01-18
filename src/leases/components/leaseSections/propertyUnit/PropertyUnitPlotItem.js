@@ -45,9 +45,9 @@ const PropertyUnitPlotItem = (props: Props) => {
         </Column>
         <Column medium={6}>
           <label>Kokonaisala</label>
-          <p>{item.full_area}</p>
+          <p>{item.full_area} m<sup>2</sup></p>
           <label>Leikkausala</label>
-          <p>{item.intersection_area}</p>
+          <p>{item.intersection_area} m<sup>2</sup></p>
           <label>Kumoamispäivä</label>
           <p>{item.abolishment_date ? formatDate(item.abolishment_date) : '-'}</p>
         </Column>

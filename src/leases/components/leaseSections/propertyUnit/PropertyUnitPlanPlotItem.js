@@ -40,9 +40,9 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
         </Column>
         <Column medium={4}>
           <label>Kokonaisala</label>
-          <p>{item.full_area}</p>
+          <p>{item.full_area} m<sup>2</sup></p>
           <label>Leikkausala</label>
-          <p>{item.intersection_area}</p>
+          <p>{item.intersection_area} m<sup>2</sup></p>
           <label>Olotila</label>
           <p>{item.state}</p>
           <label>Käyttötarkoitus</label>
