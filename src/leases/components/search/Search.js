@@ -185,7 +185,7 @@ class Search extends Component {
                       disabled
                       isChecked={oldCustomer}
                       onChange={() => this.handleCheckboxChange('oldCustomer')}
-                      label='Vain vanhat asiakkaat'
+                      label='Vain entiset asiakkaat'
                     />
                   </div>
                   <div className='column-select'>

@@ -158,9 +158,10 @@ const renderProperty = ({areas, fields, title}: PropertyProps) => {
 type PlanUnitProps = {
   title: string,
   fields: any,
+  areas: Array<Object>,
 }
 
-const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
+const renderPlanUnit = ({areas, title, fields}: PlanUnitProps) => {
   return (
     <div className='green-box'>
       {fields.length > 0 &&
@@ -179,40 +180,48 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
             <img src={trashIcon} alt='Poista' />
           </button>
           <Row>
-            <Column medium={3}>
+            <Column medium={4}>
               <Row>
                 <Column>
                   <label className='mvj-form-field-label'>Tunnus</label>
                 </Column>
               </Row>
               <Row>
-                <Column small={3} style={{paddingRight: '0'}}>
+                <div className='identifier-column'>
                   <Field
                     name={`${planunit}.municipality`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
-                <Column small={3} style={{paddingRight: '0'}}>
+                </div>
+                <div className='identifier-column'>
                   <Field
                     name={`${planunit}.district`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
-                <Column small={3} style={{paddingRight: '0'}}>
+                </div>
+                <div className='identifier-column'>
                   <Field
                     name={`${planunit}.group_number`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
-                <Column small={3} style={{paddingRight: '0'}}>
+                </div>
+                <div className='identifier-column'>
                   <Field
                     name={`${planunit}.unit_number`}
                     type="text"
                     component={FieldTypeText}/>
-                </Column>
+                </div>
+                {get({areas: areas}, `${planunit}.use`) === 'määräala' &&
+                <div className='identifier-column'>
+                  <Field
+                    name={`${planunit}.unseparate_parcel_number`}
+                    type="text"
+                    component={FieldTypeText}/>
+                </div>
+                }
               </Row>
             </Column>
-            <Column medium={3}>
+            <Column medium={2}>
               <Field
                 name={`${planunit}.use`}
                 component={FieldTypeSelect}
@@ -311,6 +320,40 @@ const renderPlanUnit = ({title, fields}: PlanUnitProps) => {
                 placeholder='PP.KK.VVVV'/>
             </Column>
           </Row>
+          <Row>
+            <Column medium={6}>
+              <Field
+                name={`${planunit}.planplot_type`}
+                component={FieldTypeSelect}
+                label='Kaavayksikön laji'
+                options={[
+                  {value: 'rekisteröity yleinen alue', label: 'Rekisteröity yleinen alue'},
+                  {value: 'ohjeellinen kaavatontti', label: 'Ohjeellinen kaavatontti'},
+                  {value: 'vireillä olevan tonttijaon/-muutoksen mukainen tontti', label: 'Vireillä olevan tonttijaon/-muutoksen mukainen tontti'},
+                  {value: 'vireillä olevan tonttijaonmuutoksen mukainen tontti', label: 'Vireillä olevan tonttijaonmuutoksen mukainen tontti'},
+                  {value: 'hyväksytyn tonttijaon mukainen tontti', label: 'Hyväksytyn tonttijaon mukainen tontti'},
+                  {value: 'muodostusluetteloon merkitty tontti', label: 'Muodostusluetteloon merkitty tontti'},
+                  {value: 'tonttirekisteritontti', label: 'Tonttirekisteritontti'},
+                  {value: 'muun kuin korttelialueen yksikkö', label: 'Muun kuin korttelialueen yksikkö'},
+                  {value: 'keinoyksikkö (maarekisterialue)', label: 'Keinoyksikkö (maarekisterialue)'},
+                  {value: 'keinokaavayksikkö (yleisen alueen lisäosa)', label: 'Keinokaavayksikkö (yleisen alueen lisäosa)'},
+                ]}
+              />
+            </Column>
+            <Column medium={3}>
+              <Field
+                name={`${planunit}.planplot_condition`}
+                component={FieldTypeSelect}
+                label='Kaavayksikön olotila'
+                options={[
+                  {value: 'numeronvaraus', label: 'Numeronvaraus'},
+                  {value: 'vireillä', label: 'Vireillä'},
+                  {value: 'voimassa', label: 'Voimassa'},
+                  {value: 'kumottu', label: 'Kumottu'},
+                ]}
+              />
+            </Column>
+          </Row>
         </div>
       )}
       <Row>
@@ -352,40 +395,48 @@ class RenderDistricts extends Component {
                 <img src={trashIcon} alt='Poista' />
               </button>
               <Row>
-                <Column medium={3}>
+                <Column medium={4}>
                   <Row>
                     <Column>
                       <label className='mvj-form-field-label'>Kohteen tunnus</label>
                     </Column>
                   </Row>
                   <Row>
-                    <Column medium={3} style={{paddingRight: '0'}}>
+                    <div className='identifier-column'>
                       <Field
                         name={`${district}.municipality`}
                         type="text"
                         component={FieldTypeText}/>
-                    </Column>
-                    <Column medium={3} style={{paddingRight: '0'}}>
+                    </div>
+                    <div className='identifier-column'>
                       <Field
                         name={`${district}.district`}
                         type="text"
                         component={FieldTypeText}/>
-                    </Column>
-                    <Column medium={3} style={{paddingRight: '0'}}>
+                    </div>
+                    <div className='identifier-column'>
                       <Field
                         name={`${district}.group_number`}
                         type="text"
                         component={FieldTypeText}/>
-                    </Column>
-                    <Column medium={3} style={{paddingRight: '0'}}>
+                    </div>
+                    <div className='identifier-column'>
                       <Field
                         name={`${district}.unit_number`}
                         type="text"
                         component={FieldTypeText}/>
-                    </Column>
+                    </div>
+                    {get({areas: areas}, `${district}.explanation`) === 'määräala' &&
+                    <div className='identifier-column'>
+                      <Field
+                        name={`${district}.unseparate_parcel_number`}
+                        type="text"
+                        component={FieldTypeText}/>
+                    </div>
+                    }
                   </Row>
                 </Column>
-                <Column medium={3}>
+                <Column medium={2}>
                   <Field
                     name={`${district}.explanation`}
                     component={FieldTypeSelect}
@@ -400,22 +451,22 @@ class RenderDistricts extends Component {
                 </Column>
                 <Column medium={3}>
                   <Field
-                    name={`${district}.part_or_whole`}
-                    component={FieldTypeSelect}
-                    label='Osa/koko'
-                    options={[
-                      {value: 'koko', label: 'Koko'},
-                      {value: 'osa', label: 'Osa'},
-                    ]}
-                  />
-                </Column>
-                <Column medium={3}>
-                  <Field
                     name={`${district}.full_area`}
                     type="text"
                     component={FieldTypeText}
                     label="Pinta-ala"
                     placeholder="Pinta-ala"/>
+                </Column>
+                <Column medium={3}>
+                  <Field
+                    name={`${district}.position`}
+                    component={FieldTypeSelect}
+                    label='Sijainti'
+                    options={[
+                      {value: 'aboveground', label: 'Maanpäällinen'},
+                      {value: 'underground', label: 'Maanalainen'},
+                    ]}
+                  />
                 </Column>
               </Row>
               <Row>

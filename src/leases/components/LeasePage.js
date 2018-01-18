@@ -335,6 +335,11 @@ class PreparerForm extends Component {
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
     const statusOptions = contentHelpers.getStatusOptions(attributes);
 
+    let sum_areas = 0;
+    areas && areas.length > 0 && areas.map((area) =>
+      sum_areas = sum_areas + area.full_area
+    );
+
     if(isFetching) {
       return (
         <div className='lease-page'><Loader isLoading={true} /></div>
@@ -438,6 +443,7 @@ class PreparerForm extends Component {
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   <h1>Vuokra-alue</h1>
+                  <p className="right-subtitle">{sum_areas} m<sup>2</sup></p>
                   <div className='property-unit'>
                     {isEditMode && <PropertyUnitEdit initialValues={{areas: areas}}/>}
                     {!isEditMode && <PropertyUnit areas={areas}/>}

@@ -13,9 +13,18 @@
       font-size: $font-xlarge;
       font-weight: $semibold;
       margin-bottom: 1.6rem;
+      display: inline-block;
+      width: 70%;
     }
     h1:not(:first-child) {
       margin-top: 2rem;
+    }
+    .right-subtitle {
+      display: inline-block;
+      float: right;
+      text-align: right;
+      line-height: 2.4;
+      font-weight: $semibold;
     }
   }
   &__upper-bar {
