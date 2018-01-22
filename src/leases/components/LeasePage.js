@@ -474,7 +474,6 @@ class PreparerForm extends Component {
                             : '-'}
                         </p>
                       }
-
                     </Column>
                   </Row>
                   <Row><Column><div className="separator-line"></div></Column></Row>
