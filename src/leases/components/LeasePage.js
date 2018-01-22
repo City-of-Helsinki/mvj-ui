@@ -12,6 +12,7 @@ import moment from 'moment';
 
 import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
+import {getSummaryPublicityLabel} from './leaseSections/helpers';
 import * as contentHelpers from '../helpers';
 
 import CommentPanel from '../../components/commentPanel/CommentPanel';
@@ -463,7 +464,20 @@ class PreparerForm extends Component {
             <TabContent active={activeTab}>
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Yhteenveto</h1>
+                  <Row>
+                    <Column medium={9}><h1>Yhteenveto</h1></Column>
+                    <Column medium={3}>
+                      {!isEditMode &&
+                        <p className="publicity-label">
+                          {summary.publicity
+                            ? getSummaryPublicityLabel(summary.publicity)
+                            : '-'}
+                        </p>
+                      }
+
+                    </Column>
+                  </Row>
+                  <Row><Column><div className="separator-line"></div></Column></Row>
                   <Row>
                     <Column medium={9}>
                       {!isEditMode && <Summary summary={summary}/>}

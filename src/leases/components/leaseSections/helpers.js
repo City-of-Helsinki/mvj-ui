@@ -8,6 +8,7 @@ import {summaryFinancialMethodOptions,
   summaryLessorOptions,
   summaryManagementMethodOptions,
   summaryNoticePeriodOptions,
+  summaryPublicityOptions,
   summaryRegulatoryOptions,
   summaryRegulatoryMethodOptions,
   summarySpecialApartmentsOptions,
@@ -45,6 +46,11 @@ export const getSummaryManagementMethodLabel = (value: string) => {
 
 export const getSummaryNoticePeriodLabel = (value: string) => {
   const option = summaryNoticePeriodOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getSummaryPublicityLabel = (value: string) => {
+  const option = summaryPublicityOptions.find(x => x.value === value);
   return get(option, 'label', '');
 };
 
