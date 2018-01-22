@@ -135,6 +135,10 @@
   }
   .green-box:last-of-type {
     margin-bottom: 1.6rem;
+
+    &.no-margin {
+      margin: 0;
+    }
   }
 
   .pledge-book {

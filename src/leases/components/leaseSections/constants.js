@@ -29,6 +29,12 @@ export const summaryHitasOptions = [
   {value: '9', label: 'Hintakontrolloitu'},
 ];
 
+export const summaryLeaseStatisticalUseOptions = [
+  {value: '01', label: 'Asuntotontit'},
+  {value: '02', label: 'Yritystontit'},
+  {value: '03', label: 'Muut'},
+];
+
 export const summaryLeaseUseOptions = [
   {value: '100', label: 'Asuminen / yleinen'},
   {value: '101', label: 'Vapaarahoitteisia omistusasuntoja'},
@@ -85,6 +91,32 @@ export const summaryNoticePeriodOptions = [
   {value: '14', label: '30 päivän irtisanomisaika'},
   {value: '15', label: '9 kk:n irtisanomisaika'},
   {value: '16', label: '14 vuorok. irtisanomisaika'},
+];
+
+export const summaryPublicityOptions = [
+  {value: '01', label: 'Julkinen'},
+  {value: '02', label: 'Salainen'},
+  {value: '03', label: 'Sisäinen'},
+];
+
+export const summaryRegulatoryOptions = [
+  {value: '01', label: 'Säännelty'},
+  {value: '02', label: 'Sääntelemätön'},
+];
+
+export const summaryRegulatoryMethodOptions = [
+  {value: '01', label: 'ARA'},
+  {value: '02', label: 'ASO'},
+  {value: '03', label: 'Hitas'},
+  {value: '04', label: 'Puoli Hitas'},
+];
+
+export const summarySpecialApartmentsOptions = [
+  {value: '01', label: 'Nuorisotalot'},
+  {value: '02', label: 'Opiskelijatalot'},
+  {value: '03', label: 'Senioritalot'},
+  {value: '04', label: 'Omakotitalot'},
+  {value: '05', label: 'Muut erityisryhmät'},
 ];
 
 export const summaryTransferRightOptions = [

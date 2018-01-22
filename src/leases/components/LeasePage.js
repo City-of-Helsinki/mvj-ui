@@ -30,6 +30,7 @@ import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import RuleEdit from './leaseSections/contract/RuleEdit';
 import Rules from './leaseSections/contract/Rules';
 import Summary from './leaseSections/summary/Summary';
+import SummaryEdit from './leaseSections/summary/SummaryEdit';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
@@ -445,13 +446,13 @@ class PreparerForm extends Component {
                   <h1>Yhteenveto</h1>
                   <Row>
                     <Column medium={9}>
-                      <Summary summary={summary}/>
+                      {!isEditMode && <Summary summary={summary}/>}
+                      {isEditMode && <SummaryEdit initialValues={{summary: summary}}/>}
                     </Column>
                     <Column medium={3}>
                       <LeaseHistory history={history}/>
                     </Column>
                   </Row>
-
                 </div>
               </TabPane>
 

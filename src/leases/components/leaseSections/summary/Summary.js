@@ -27,11 +27,11 @@ const Summary = ({summary}: Props) => {
             </Column>
             <Column medium={4}>
               <label>Erityisasunnot</label>
-              <p>{summary.special_apartments ? summary.special_apartments : '-'}</p>
+              <p>{summary.special_apartments ? helpers.getSummarySpecialApartmentsLabel(summary.special_apartments) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Tilastollinen pääkäyttötarkoitus</label>
-              <p>{summary.lease_statistical_use ? summary.lease_statistical_use : '-'}</p>
+              <p>{summary.lease_statistical_use ? helpers.getSummaryLeaseStatisticalUseLabel(summary.lease_statistical_use) : '-'}</p>
             </Column>
           </Row>
           <Row>
@@ -57,11 +57,11 @@ const Summary = ({summary}: Props) => {
           <Row>
             <Column medium={4}>
               <label>Sääntely</label>
-              <p>{summary.regulatory ? summary.regulatory : '-'}</p>
+              <p>{summary.regulatory ? helpers.getSummaryRegulatoryLabel(summary.regulatory) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Sääntelymuoto</label>
-              <p>{summary.regulatory_method ? summary.regulatory_method : '-'}</p>
+              <p>{summary.regulatory_method ? helpers.getSummaryRegulatoryMethodLabel(summary.regulatory_method) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Hitas</label>
@@ -73,7 +73,7 @@ const Summary = ({summary}: Props) => {
               <label>Irtisanomisaika</label>
               <p>{summary.notice_period ? helpers.getSummaryNoticePeriodLabel(summary.notice_period) : '-'}</p>
             </Column>
-            <Column medium={4}>
+            <Column medium={8}>
               <label>Irtisanomisajan selite</label>
               <p>{summary.notice_period_description ? summary.notice_period_description : '-'}</p>
             </Column>
