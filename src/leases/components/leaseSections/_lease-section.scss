@@ -97,6 +97,10 @@
     margin: 0.6rem 0;
     align-items: baseline;
     padding: 1.25rem 1.25rem 0.3rem;
+
+    &.no-margin {
+      margin: 0;
+    }
   }
   .subsection-title {
     font-size: 1.125rem;

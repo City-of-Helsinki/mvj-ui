@@ -19,6 +19,9 @@ import ConfirmationModal from '../../components/ConfirmationModal';
 import ContractEdit from './leaseSections/contract/ContractEdit';
 import Contracts from './leaseSections/contract/Contracts';
 import ControlButtons from './ControlButtons';
+import Inspections from './leaseSections/contract/Inspections';
+import InspectionEdit from './leaseSections/contract/InspectionEdit';
+import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '../../components/loader/Loader';
@@ -26,8 +29,7 @@ import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import RuleEdit from './leaseSections/contract/RuleEdit';
 import Rules from './leaseSections/contract/Rules';
-import Inspections from './leaseSections/contract/Inspections';
-import InspectionEdit from './leaseSections/contract/InspectionEdit';
+import Summary from './leaseSections/summary/Summary';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
@@ -45,13 +47,15 @@ type State = {
   areas: Array<Object>,
   comments: Array<Object>,
   contracts: Array<Object>,
+  history: Array<Object>,
+  inspections: Array<Object>,
   isEditMode: boolean,
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
   isSaveLeaseModalOpen: boolean,
   oldTenants: Array<Object>,
   rules: Array<Object>,
-  inspections: Array<Object>,
+  summary: Object,
   tenants: Array<Object>,
 };
 
@@ -88,14 +92,16 @@ class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
     areas: [],
-    comments: mockData.leases[0].comments,
+    comments: [],
     contracts: [],
+    history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
     isEditMode: false,
     isSaveLeaseModalOpen: false,
     oldTenants: [],
     rules: [],
+    summary: {},
     tenants: [],
     terms: [],
     inspections: [],
@@ -126,11 +132,14 @@ class PreparerForm extends Component {
 
     this.setState({
       areas: mockData.leases[0].lease_areas,
-      tenants: mockData.leases[0].tenants,
-      oldTenants: mockData.leases[0].tenants_old,
+      comments: mockData.leases[0].comments,
       contracts: mockData.leases[0].contracts,
-      rules: mockData.leases[0].rules,
+      history: mockData.leases[0].history,
       inspections: mockData.leases[0].inspections,
+      oldTenants: mockData.leases[0].tenants_old,
+      rules: mockData.leases[0].rules,
+      summary: contentHelpers.getContentSummary(mockData.leases[0]),
+      tenants: mockData.leases[0].tenants,
     });
     fetchAttributes();
     fetchSingleLease(leaseId);
@@ -311,6 +320,7 @@ class PreparerForm extends Component {
       activeTab,
       areas,
       contracts,
+      history,
       inspections,
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
@@ -318,6 +328,7 @@ class PreparerForm extends Component {
       isSaveLeaseModalOpen,
       oldTenants,
       rules,
+      summary,
       tenants,
     } = this.state;
 
@@ -437,6 +448,15 @@ class PreparerForm extends Component {
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   <h1>Yhteenveto</h1>
+                  <Row>
+                    <Column medium={9}>
+                      <Summary summary={summary}/>
+                    </Column>
+                    <Column medium={3}>
+                      <LeaseHistory history={history}/>
+                    </Column>
+                  </Row>
+
                 </div>
               </TabPane>
 
