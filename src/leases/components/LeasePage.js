@@ -12,6 +12,7 @@ import moment from 'moment';
 
 import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
+import {getSummaryPublicityLabel} from './leaseSections/helpers';
 import * as contentHelpers from '../helpers';
 
 import CommentPanel from '../../components/commentPanel/CommentPanel';
@@ -30,6 +31,7 @@ import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import RuleEdit from './leaseSections/contract/RuleEdit';
 import Rules from './leaseSections/contract/Rules';
 import Summary from './leaseSections/summary/Summary';
+import SummaryEdit from './leaseSections/summary/SummaryEdit';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
@@ -84,6 +86,8 @@ type Props = {
   rulesTouched: boolean,
   start_date: ?Moment,
   status: string,
+  summaryForm: Object,
+  summaryTouched: boolean,
   tenantsForm: Array<Object>,
   tenantsTouched: boolean,
 }
@@ -119,12 +123,13 @@ class PreparerForm extends Component {
     const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}} = this.props;
 
     // Destroy forms to initialize new values when data is fetched
+    dispatch(destroy('contract-edit-form'));
+    dispatch(destroy('inspections-edit-form'));
     dispatch(destroy('lease-info-edit-form'));
     dispatch(destroy('property-unit-edit-form'));
-    dispatch(destroy('tenant-edit-form'));
-    dispatch(destroy('contract-edit-form'));
     dispatch(destroy('rule-edit-form'));
-    dispatch(destroy('inspections-edit-form'));
+    dispatch(destroy('summary-edit-form'));
+    dispatch(destroy('tenant-edit-form'));
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
@@ -164,15 +169,8 @@ class PreparerForm extends Component {
   }
 
   cancel = () => {
-    const {dispatch} = this.props;
     this.setState({isEditMode: false});
-    dispatch(reset('lease-info-edit-form'));
-    dispatch(reset('property-unit-edit-form'));
-    dispatch(reset('tenant-edit-form'));
-    dispatch(reset('contract-edit-form'));
-    dispatch(reset('rule-edit-form'));
-    dispatch(reset('inspection-edit-form'));
-
+    this.resetAllForms();
     this.hideModal('CancelLease');
   }
 
@@ -188,6 +186,7 @@ class PreparerForm extends Component {
       rulesForm,
       start_date,
       status,
+      summaryForm,
       tenantsForm} = this.props;
 
     const payload = currentLease;
@@ -197,31 +196,54 @@ class PreparerForm extends Component {
 
     editLease(payload);
 
-    this.setState({areas: areasForm});
-    this.setState({areas: eligibilityForm});
-    this.setState({tenants: tenantsForm});
-    this.setState({rules: rulesForm});
-    this.setState({contracts: contractsForm});
-    this.setState({inspections: inspectionsForm});
-
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
     if(areasForm !== undefined) {
       this.setState({areas: areasForm});
     }
+    if(eligibilityForm !== undefined) {
+      this.setState({areas: eligibilityForm});
+    }
     if(contractsForm !== undefined) {
       this.setState({contracts: contractsForm});
-    }
-    if(rulesForm !== undefined) {
-      this.setState({rules: rulesForm});
-    }
-    if(tenantsForm !== undefined) {
-      this.setState({tenants: tenantsForm});
     }
     if(inspectionsForm !== undefined) {
       this.setState({inspections: inspectionsForm});
     }
+    if(rulesForm !== undefined) {
+      this.setState({rules: rulesForm});
+    }
+    if(summaryForm !== undefined) {
+      this.setState({summary: summaryForm});
+    }
+    if(tenantsForm !== undefined) {
+      this.setState({tenants: tenantsForm});
+    }
+
     this.setState({isEditMode: false});
     this.hideModal('SaveLease');
+    this.destroyAllForms();
+  }
+
+  destroyAllForms = () => {
+    const {dispatch} = this.props;
+    dispatch(destroy('contract-edit-form'));
+    dispatch(destroy('inspection-edit-form'));
+    dispatch(destroy('lease-info-edit-form'));
+    dispatch(destroy('property-unit-edit-form'));
+    dispatch(destroy('rule-edit-form'));
+    dispatch(destroy('summary-edit-form'));
+    dispatch(destroy('tenant-edit-form'));
+  }
+
+  resetAllForms = () => {
+    const {dispatch} = this.props;
+    dispatch(reset('contract-edit-form'));
+    dispatch(reset('inspection-edit-form'));
+    dispatch(reset('lease-info-edit-form'));
+    dispatch(reset('property-unit-edit-form'));
+    dispatch(reset('rule-edit-form'));
+    dispatch(reset('summary-edit-form'));
+    dispatch(reset('tenant-edit-form'));
   }
 
   validateForms = () => {
@@ -447,16 +469,28 @@ class PreparerForm extends Component {
             <TabContent active={activeTab}>
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Yhteenveto</h1>
+                  <Row>
+                    <Column medium={9}><h1>Yhteenveto</h1></Column>
+                    <Column medium={3}>
+                      {!isEditMode &&
+                        <p className="publicity-label">
+                          {summary.publicity
+                            ? getSummaryPublicityLabel(summary.publicity)
+                            : '-'}
+                        </p>
+                      }
+                    </Column>
+                  </Row>
+                  <Row><Column><div className="separator-line"></div></Column></Row>
                   <Row>
                     <Column medium={9}>
-                      <Summary summary={summary}/>
+                      {!isEditMode && <Summary summary={summary}/>}
+                      {isEditMode && <SummaryEdit initialValues={{summary: summary}}/>}
                     </Column>
                     <Column medium={3}>
                       <LeaseHistory history={history}/>
                     </Column>
                   </Row>
-
                 </div>
               </TabPane>
 
@@ -542,6 +576,7 @@ const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const inspectionFormSelector = formValueSelector('inspection-edit-form');
 const leaseInfoFormSelector = formValueSelector('lease-info-edit-form');
 const ruleFormSelector = formValueSelector('rule-edit-form');
+const summaryFormSelector = formValueSelector('summary-edit-form');
 const tenantFormSelector = formValueSelector('tenant-edit-form');
 
 export default flowRight(
@@ -570,6 +605,8 @@ export default flowRight(
         rulesTouched: get(state, 'form.rule-edit-form.anyTouched'),
         start_date: leaseInfoFormSelector(state, 'start_date'),
         status: leaseInfoFormSelector(state, 'status'),
+        summaryForm: summaryFormSelector(state, 'summary'),
+        summaryTouched: get(state, 'form.summary-edit-form.anyTouched'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
         tenantsTouched: get(state, 'form.tenant-edit-form.anyTouched'),
       };

@@ -3,6 +3,8 @@ import React from 'react';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 
+import * as helpers from '../helpers';
+
 type Props = {
   summary: Object,
 }
@@ -15,21 +17,21 @@ const Summary = ({summary}: Props) => {
           <Row>
             <Column>
               <label>Vuokranantaja</label>
-              <p>{summary.lessor ? summary.lessor : ''}</p>
+              <p>{summary.lessor ? helpers.getSummaryLessorLabel(summary.lessor) : ''}</p>
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
               <label>Vuokrauksen käyttötarkoitus</label>
-              <p>{summary.lease_use ? summary.lease_use : '-'}</p>
+              <p>{summary.lease_use ? helpers.getSummaryLeaseUseLabel(summary.lease_use) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Erityisasunnot</label>
-              <p>{summary.special_apartments ? summary.special_apartments : '-'}</p>
+              <p>{summary.special_apartments ? helpers.getSummarySpecialApartmentsLabel(summary.special_apartments) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Tilastollinen pääkäyttötarkoitus</label>
-              <p>{summary.lease_statistical_use ? summary.lease_statistical_use : '-'}</p>
+              <p>{summary.lease_statistical_use ? helpers.getSummaryLeaseStatisticalUseLabel(summary.lease_statistical_use) : '-'}</p>
             </Column>
           </Row>
           <Row>
@@ -41,37 +43,37 @@ const Summary = ({summary}: Props) => {
           <Row>
             <Column medium={4}>
               <label>Rahoitusmuoto</label>
-              <p>{summary.financing_method ? summary.financing_method : '-'}</p>
+              <p>{summary.financing_method ? helpers.getSummaryFinancialMethodLabel(summary.financing_method) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Hallintamuoto</label>
-              <p>{summary.management_method ? summary.management_method : '-'}</p>
+              <p>{summary.management_method ? helpers.getSummaryManagementMethodLabel(summary.management_method) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Siirto-oikeus</label>
-              <p>{summary.transfer_right ? summary.transfer_right : '-'}</p>
+              <p>{summary.transfer_right ? helpers.getSummaryTransferRightLabel(summary.transfer_right) : '-'}</p>
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
               <label>Sääntely</label>
-              <p>{summary.regulatory ? summary.regulatory : '-'}</p>
+              <p>{summary.regulatory ? helpers.getSummaryRegulatoryLabel(summary.regulatory) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Sääntelymuoto</label>
-              <p>{summary.regulatory_method ? summary.regulatory_method : '-'}</p>
+              <p>{summary.regulatory_method ? helpers.getSummaryRegulatoryMethodLabel(summary.regulatory_method) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Hitas</label>
-              <p>{summary.hitas ? summary.hitas : '-'}</p>
+              <p>{summary.hitas ? helpers.getSummaryHitasLabel(summary.hitas) : '-'}</p>
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
               <label>Irtisanomisaika</label>
-              <p>{summary.notice_period ? summary.notice_period : '-'}</p>
+              <p>{summary.notice_period ? helpers.getSummaryNoticePeriodLabel(summary.notice_period) : '-'}</p>
             </Column>
-            <Column medium={4}>
+            <Column medium={8}>
               <label>Irtisanomisajan selite</label>
               <p>{summary.notice_period_description ? summary.notice_period_description : '-'}</p>
             </Column>

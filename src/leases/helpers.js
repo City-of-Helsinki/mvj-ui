@@ -86,6 +86,7 @@ export const getContentSummary = (lease: Object) => {
     management_method: get(lease, 'management_method'),
     notice_period: get(lease, 'notice_period'),
     notice_period_description: get(lease, 'notice_period_description'),
+    publicity: get(lease, 'publicity'),
     regulatory: get(lease, 'regulatory'),
     regulatory_method: get(lease, 'regulatory_method'),
     special_apartments: get(lease, 'special_apartments'),
