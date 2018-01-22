@@ -168,21 +168,12 @@ class PreparerForm extends Component {
   }
 
   cancel = () => {
-    const {dispatch} = this.props;
     this.setState({isEditMode: false});
-    dispatch(reset('contract-edit-form'));
-    dispatch(reset('inspection-edit-form'));
-    dispatch(reset('lease-info-edit-form'));
-    dispatch(reset('property-unit-edit-form'));
-    dispatch(reset('rule-edit-form'));
-    dispatch(reset('summary-edit-form'));
-    dispatch(reset('tenant-edit-form'));
-
+    this.resetAllForms();
     this.hideModal('CancelLease');
   }
 
   save = () => {
-    const {dispatch} = this.props;
     const {
       areasForm,
       contractsForm,
@@ -229,6 +220,11 @@ class PreparerForm extends Component {
 
     this.setState({isEditMode: false});
     this.hideModal('SaveLease');
+    this.destroyAllForms();
+  }
+
+  destroyAllForms = () => {
+    const {dispatch} = this.props;
     dispatch(destroy('contract-edit-form'));
     dispatch(destroy('inspection-edit-form'));
     dispatch(destroy('lease-info-edit-form'));
@@ -236,6 +232,17 @@ class PreparerForm extends Component {
     dispatch(destroy('rule-edit-form'));
     dispatch(destroy('summary-edit-form'));
     dispatch(destroy('tenant-edit-form'));
+  }
+
+  resetAllForms = () => {
+    const {dispatch} = this.props;
+    dispatch(reset('contract-edit-form'));
+    dispatch(reset('inspection-edit-form'));
+    dispatch(reset('lease-info-edit-form'));
+    dispatch(reset('property-unit-edit-form'));
+    dispatch(reset('rule-edit-form'));
+    dispatch(reset('summary-edit-form'));
+    dispatch(reset('tenant-edit-form'));
   }
 
   validateForms = () => {
