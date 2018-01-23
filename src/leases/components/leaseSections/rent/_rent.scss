@@ -1,0 +1,64 @@
+.rent-section {
+  table.rent-table {
+    thead {
+      tr {
+        th {
+          border: none;
+          border-top: solid 1px #d7d5d5;
+          padding: 0.3rem 0.5rem;
+        }
+
+        th:first-child {
+          border-left: solid 1px #d7d5d5;
+        }
+
+        th:nth-last-child(2) {
+          border-right: solid 1px #d7d5d5;
+        }
+
+        th:last-child {
+          border-top: none;
+          width: rem-calc(90px);
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          border: none;
+          padding: 0.3rem 0.5rem;
+
+          button {
+            vertical-align: middle;
+          }
+        }
+
+        td:last-child {
+          padding-right: 0;
+        }
+      }
+
+      tr:last-child {
+        td {
+          border-bottom: solid 1px #d7d5d5;
+          background-color: rgba(0, 146, 70, 0.1);
+
+        }
+
+        td:first-child {
+          border-left: solid 1px #d7d5d5;
+        }
+
+        td:nth-last-child(2) {
+          border-right: solid 1px #d7d5d5;
+        }
+
+        td:last-child {
+          border-bottom: none;
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}

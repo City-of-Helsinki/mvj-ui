@@ -2,14 +2,16 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
+import RentCriteria from './RentCriteria';
 import RentBasicInfo from './RentBasicInfo';
 
 const Rent = () => {
   return (
-    <div className="lease-section">
+    <div className="lease-section rent-section">
       <Row><Column><h1>Vuokra</h1></Column></Row>
       <Row><Column><div className="separator-line no-margin"></div></Column></Row>
       <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
+      <Row><Column><RentCriteria /> </Column></Row>
       <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
       <Row><Column><h2>Vuokran perustiedot</h2></Column></Row>
       <Row>
