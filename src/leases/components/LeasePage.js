@@ -28,6 +28,7 @@ import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '../../components/loader/Loader';
 import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
+import Rent from './leaseSections/rent/Rent';
 import RuleEdit from './leaseSections/contract/RuleEdit';
 import Rules from './leaseSections/contract/Rules';
 import Summary from './leaseSections/summary/Summary';
@@ -517,7 +518,7 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Vuokra</h1>
+                  {!isEditMode && <Rent />}
                 </div>
               </TabPane>
 
