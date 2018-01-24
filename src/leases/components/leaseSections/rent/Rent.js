@@ -3,6 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
+import ContractRent from './ContractRent';
 import RentCriteria from './RentCriteria';
 import RentCharged from './RentCharged';
 import RentIndexAdjusted from './RentIndexAdjusted';
@@ -29,6 +30,7 @@ const Rent = ({rents}: Props) => {
         </Column>
       </Row>
       <Row><Column><h2>Sopimusvuokra</h2></Column></Row>
+      <Row><Column><ContractRent contractRents={get(rents, 'contract_rents', [])} /></Column></Row>
       <Row>
         <Column medium={6}>
           <h2>Indeksitarkistettu vuokra</h2>

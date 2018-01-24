@@ -4,7 +4,7 @@
       tr {
         th {
           border: none;
-          border-top: solid 1px #d7d5d5;
+          border-top: 1px solid #d7d5d5;
           padding: 0.3rem 0.5rem;
         }
 
@@ -28,7 +28,6 @@
         td {
           border: none;
           padding: 0.3rem 0.5rem;
-          background-color: rgba(0, 146, 70, 0.1);
 
           button {
             vertical-align: middle;
@@ -48,6 +47,15 @@
         }
       }
 
+      tr:hover {
+        td {
+          background-color: rgba(0, 146, 70, 0.1);
+        }
+        td:last-child {
+          background-color: transparent;
+        }
+      }
+
       tr:last-child {
         td {
           border-bottom: solid 1px #d7d5d5;
@@ -56,6 +64,32 @@
         td:last-child {
           border-bottom: none;
         }
+      }
+    }
+  }
+  table.contract-rent-table {
+    border: 1px solid #d7d5d5;
+
+    thead {
+      tr {
+        th {
+          border: none;
+          padding: 0.3rem 0.5rem;
+          border-bottom: 1px solid $light_gray;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          border: none;
+          padding: 0.3rem 0.5rem;
+        }
+      }
+
+      tr:hover {
+        background-color: rgba(0, 146, 70, 0.1);
       }
     }
   }

@@ -170,6 +170,22 @@
             "start_date": "2010/01/01"
           }
         ],
+        "contract_rents": [
+          {
+            "basic_rent": 6296.96,
+            "contract_rent": 2098.99,
+            "end_date": null,
+            "purpose": "Asunto",
+            "start_date": "1980/01/01"
+          },
+          {
+            "basic_rent": 7861.19,
+            "contract_rent": 2623.73,
+            "end_date": "1980/01/01",
+            "purpose": "Asunto",
+            "start_date": "1960/01/01"
+          }
+        ],
         "index_adjusted_rents": [
           {
             "calculation_factor": 4.57,
