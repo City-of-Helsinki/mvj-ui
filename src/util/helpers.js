@@ -121,6 +121,10 @@ export const formatDate = (date: string) => {
   return d.format('DD.MM.YYYY');
 };
 
+export const formatNumberWithThousandSeparator = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+};
+
 export const formatDateRange = (startDate: any, endDate: any) => {
   if (!startDate && !endDate) {
     return '';

@@ -1,17 +1,24 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import RentCriteria from './RentCriteria';
 import RentBasicInfo from './RentBasicInfo';
 
-const Rent = () => {
+type Props = {
+  rents: Object,
+}
+
+const Rent = ({rents}: Props) => {
   return (
     <div className="lease-section rent-section">
       <Row><Column><h1>Vuokra</h1></Column></Row>
       <Row><Column><div className="separator-line no-margin"></div></Column></Row>
       <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
-      <Row><Column><RentCriteria /> </Column></Row>
+      <Row><Column><RentCriteria
+        criterias={get(rents, 'criterias', {})}
+      /> </Column></Row>
       <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
       <Row><Column><h2>Vuokran perustiedot</h2></Column></Row>
       <Row>

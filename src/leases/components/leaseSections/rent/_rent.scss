@@ -28,24 +28,12 @@
         td {
           border: none;
           padding: 0.3rem 0.5rem;
+          background-color: rgba(0, 146, 70, 0.1);
 
           button {
             vertical-align: middle;
           }
         }
-
-        td:last-child {
-          padding-right: 0;
-        }
-      }
-
-      tr:last-child {
-        td {
-          border-bottom: solid 1px #d7d5d5;
-          background-color: rgba(0, 146, 70, 0.1);
-
-        }
-
         td:first-child {
           border-left: solid 1px #d7d5d5;
         }
@@ -55,8 +43,18 @@
         }
 
         td:last-child {
-          border-bottom: none;
+          padding-right: 0;
           background-color: transparent;
+        }
+      }
+
+      tr:last-child {
+        td {
+          border-bottom: solid 1px #d7d5d5;
+        }
+
+        td:last-child {
+          border-bottom: none;
         }
       }
     }
