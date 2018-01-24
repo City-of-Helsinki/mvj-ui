@@ -19,9 +19,9 @@ const ContractRent = ({contractRents}: Props) => {
         </tr>
       </thead>
       <tbody>
-        {contractRents && contractRents.length > 0 && contractRents.map((rent) => {
+        {contractRents && contractRents.length > 0 && contractRents.map((rent, index) => {
           return (
-            <tr>
+            <tr key={index}>
               <td>{rent.contract_rent ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(rent.contract_rent), '.')} / v` : '-'}</td>
               <td>{rent.purpose ? rent.purpose : '-'}</td>
               <td>{rent.basic_rent ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(rent.basic_rent), '.')} /v pv` : '-'}</td>
