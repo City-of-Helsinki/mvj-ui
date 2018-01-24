@@ -112,9 +112,67 @@
             "start_rent": 2876
           }
         ],
+        "charged_rents": [
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2017/12/31",
+            "rent": 36387.65,
+            "start_date": "2017/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2016/12/31",
+            "rent": 36387.65,
+            "start_date": "2016/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2015/12/31",
+            "rent": 36387.65,
+            "start_date": "2015/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2014/12/31",
+            "rent": 36387.65,
+            "start_date": "2014/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2013/12/31",
+            "rent": 36387.65,
+            "start_date": "2013/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2012/12/31",
+            "rent": 36387.65,
+            "start_date": "2012/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2011/12/31",
+            "rent": 36387.65,
+            "start_date": "2011/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": null,
+            "end_date": "2010/12/31",
+            "rent": 36387.65,
+            "start_date": "2010/01/01"
+          }
+        ],
         "index_adjusted_rents": [
           {
-            "calculation_factor": 4,
+            "calculation_factor": 4.57,
             "end_date": "2017/12/31",
             "rent": 36387.65,
             "purpose": "Asunto",

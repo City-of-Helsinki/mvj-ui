@@ -4,6 +4,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import RentCriteria from './RentCriteria';
+import RentCharged from './RentCharged';
 import RentIndexAdjusted from './RentIndexAdjusted';
 import RentBasicInfo from './RentBasicInfo';
 
@@ -35,6 +36,7 @@ const Rent = ({rents}: Props) => {
         </Column>
         <Column medium={6}>
           <h2>Perittävä vuokra</h2>
+          <RentCharged chargedRents={get(rents, 'charged_rents', [])} />
         </Column>
       </Row>
     </div>
