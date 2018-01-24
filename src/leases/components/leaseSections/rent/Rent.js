@@ -4,6 +4,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import RentCriteria from './RentCriteria';
+import RentIndexAdjusted from './RentIndexAdjusted';
 import RentBasicInfo from './RentBasicInfo';
 
 type Props = {
@@ -30,6 +31,7 @@ const Rent = ({rents}: Props) => {
       <Row>
         <Column medium={6}>
           <h2>Indeksitarkistettu vuokra</h2>
+          <RentIndexAdjusted indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}/>
         </Column>
         <Column medium={6}>
           <h2>Perittävä vuokra</h2>

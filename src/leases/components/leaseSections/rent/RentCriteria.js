@@ -8,7 +8,6 @@ type Props = {
   criterias: Array<Object>,
 }
 const RentCriteria = ({criterias}: Props) => {
-  console.log(criterias);
   return (
     <div>
       <table className="rent-table">
