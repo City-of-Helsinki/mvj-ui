@@ -34,7 +34,7 @@ const RentCriteria = ({criterias, onCriteriaAgree}: Props) => {
                 <td>{criteria.index ? formatNumberWithThousandSeparator(criteria.index) : '-'}</td>
                 <td>{criteria.ekm2ind100 ? formatNumberWithThousandSeparator(criteria.ekm2ind100) : '-'}</td>
                 <td>{criteria.ekm2ind ? formatNumberWithThousandSeparator(criteria.ekm2ind) : '-'}</td>
-                <td>{criteria.percentage ? formatNumberWithThousandSeparator(criteria.percentage) + '%' : '-'}</td>
+                <td>{criteria.percentage ? `${formatNumberWithThousandSeparator(criteria.percentage)} %` : '-'}</td>
                 <td>{criteria.basic_rent ? formatNumberWithThousandSeparator(criteria.basic_rent) : '-'}</td>
                 <td>{criteria.start_rent ? formatNumberWithThousandSeparator(criteria.start_rent) : '-'}</td>
                 <td>
