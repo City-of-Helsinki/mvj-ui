@@ -87,6 +87,206 @@
           ]
         }
       ],
+      "rents": {
+        "basic_info": {
+          "adjustment_start_date": "2000/01/01",
+          "adjustment_end_date": "2001/01/01",
+          "basic_index": 418,
+          "basic_index_rounding": 0,
+          "due_dates": [
+            "01.03",
+            "15.04",
+            "15.07",
+            "15.10"
+          ],
+          "fidex_initial_year_rents": [
+            {
+              "comment": "Lorem ipsum",
+              "end_date": null,
+              "rent": 3489.90,
+              "start_date": "1962/01/01"
+            },
+            {
+              "comment": null,
+              "end_date": "1962/01/01",
+              "rent": 3234.12,
+              "start_date": "1960/01/01"
+            }
+          ],
+          "index_type": 3,
+          "index_calculation_type": 1,
+          "rental_period": "1.1. – 31.12.",
+          "type": "Indeksi",
+          "y_value": 1044,
+          "y_value_start": 812,
+          "x_value": 812
+        },
+        "criterias": [
+          {
+            "agreed": false,
+            "purpose": "Asunto",
+            "km2": 120,
+            "index": 1880,
+            "ekm2ind100": 18,
+            "ekm2ind": 39,
+            "percentage": 4,
+            "basic_rent": 2356,
+            "start_rent": 2876
+          }
+        ],
+        "charged_rents": [
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2017/12/31",
+            "rent": 36387.65,
+            "start_date": "2017/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2016/12/31",
+            "rent": 36387.65,
+            "start_date": "2016/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2015/12/31",
+            "rent": 36387.65,
+            "start_date": "2015/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2014/12/31",
+            "rent": 36387.65,
+            "start_date": "2014/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2013/12/31",
+            "rent": 36387.65,
+            "start_date": "2013/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2012/12/31",
+            "rent": 36387.65,
+            "start_date": "2012/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2011/12/31",
+            "rent": 36387.65,
+            "start_date": "2011/01/01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": null,
+            "end_date": "2010/12/31",
+            "rent": 36387.65,
+            "start_date": "2010/01/01"
+          }
+        ],
+        "contract_rents": [
+          {
+            "basic_rent": 6296.96,
+            "contract_rent": 2098.99,
+            "end_date": null,
+            "purpose": "Asunto",
+            "start_date": "1980/01/01"
+          },
+          {
+            "basic_rent": 7861.19,
+            "contract_rent": 2623.73,
+            "end_date": "1980/01/01",
+            "purpose": "Asunto",
+            "start_date": "1960/01/01"
+          }
+        ],
+        "discounts": [
+          {
+            "amount": 15,
+            "comment": "Talouskasvu tuo valtion kassaan lähes kolme miljardia lisää rahaa. Lisäraha menee pitkälti velanoton vähentämiseen.",
+            "end_date": "1980/12/31",
+            "purpose": "Asunto",
+            "rule": null,
+            "start_date": "1960/01/01",
+            "type": "Alennus"
+          },
+          {
+            "amount": 10,
+            "comment": "Talouskasvu tuo valtion kassaan lähes kolme miljardia lisää rahaa. Lisäraha menee pitkälti velanoton vähentämiseen.",
+            "end_date": "2020/12/31",
+            "purpose": "Asunto",
+            "rule": "ALK, 36, 14.07.2017",
+            "start_date": "1981/01/01",
+            "type": "Alennus"
+          }
+        ],
+        "index_adjusted_rents": [
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2017/12/31",
+            "purpose": "Asunto",
+            "rent": 36387.65,
+            "start_date": "2017/01/01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2016/12/31",
+            "rent": 36387.65,
+            "purpose": "Asunto",
+            "start_date": "2016/01/01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2015/12/31",
+            "rent": 36387.65,
+            "purpose": "Asunto",
+            "start_date": "2015/01/01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2014/12/31",
+            "rent": 36387.65,
+            "purpose": "Asunto",
+            "start_date": "2014/01/01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2013/12/31",
+            "rent": 36387.65,
+            "purpose": "Asunto",
+            "start_date": "2013/01/01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2012/12/31",
+            "rent": 36387.65,
+            "purpose": "Asunto",
+            "start_date": "2012/01/01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2011/12/31",
+            "rent": 36387.65,
+            "purpose": "Asunto",
+            "start_date": "2011/01/01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2010/12/31",
+            "rent": 36387.65,
+            "purpose": "Asunto",
+            "start_date": "2010/01/01"
+          }
+        ]
+      },
       "rules": [
         {
           "rule_maker": "Asuntolautakunta",

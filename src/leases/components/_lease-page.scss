@@ -19,6 +19,13 @@
     h1:not(:first-child) {
       margin-top: 2rem;
     }
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: $tram;
+      text-transform: uppercase;
+      margin: 1rem 0 0.5rem;
+    }
     .right-subtitle {
       display: inline-block;
       float: right;
@@ -40,6 +47,10 @@
     width: 100%;
     border-top: 1px dashed $tram;
     margin-bottom: 1rem;
+
+    &.no-margin {
+      margin: 0;
+    }
   }
   .publicity-label {
     text-align: right;

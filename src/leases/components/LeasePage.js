@@ -14,6 +14,7 @@ import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from 
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
 import {getSummaryPublicityLabel} from './leaseSections/helpers';
 import * as contentHelpers from '../helpers';
+import {displayUIMessage} from '../../util/helpers';
 
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/ConfirmationModal';
@@ -28,6 +29,7 @@ import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '../../components/loader/Loader';
 import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
+import Rent from './leaseSections/rent/Rent';
 import RuleEdit from './leaseSections/contract/RuleEdit';
 import Rules from './leaseSections/contract/Rules';
 import Summary from './leaseSections/summary/Summary';
@@ -56,6 +58,7 @@ type State = {
   isCommentPanelOpen: boolean,
   isSaveLeaseModalOpen: boolean,
   oldTenants: Array<Object>,
+  rents: Object,
   rules: Array<Object>,
   summary: Object,
   tenants: Array<Object>,
@@ -104,6 +107,7 @@ class PreparerForm extends Component {
     isEditMode: false,
     isSaveLeaseModalOpen: false,
     oldTenants: [],
+    rents: {},
     rules: [],
     summary: {},
     tenants: [],
@@ -142,6 +146,7 @@ class PreparerForm extends Component {
       history: mockData.leases[0].history,
       inspections: mockData.leases[0].inspections,
       oldTenants: mockData.leases[0].tenants_old,
+      rents: mockData.leases[0].rents,
       rules: mockData.leases[0].rules,
       summary: contentHelpers.getContentSummary(mockData.leases[0]),
       tenants: mockData.leases[0].tenants,
@@ -222,6 +227,17 @@ class PreparerForm extends Component {
     this.setState({isEditMode: false});
     this.hideModal('SaveLease');
     this.destroyAllForms();
+  }
+
+  agreeCriteria = (criteria: Object) => {
+    const {rents, rents: {criterias}} = this.state;
+    forEach(criterias, (x) => {
+      if(x === criteria) {
+        x.agreed = true;
+      }
+    });
+    this.setState({rents: rents});
+    displayUIMessage({title: 'Vuokranperuste hyväksytty', body: 'Vuokranperuste on hyväksytty onnistuneesti'});
   }
 
   destroyAllForms = () => {
@@ -349,6 +365,7 @@ class PreparerForm extends Component {
       isEditMode,
       isSaveLeaseModalOpen,
       oldTenants,
+      rents,
       rules,
       summary,
       tenants,
@@ -517,7 +534,8 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Vuokra</h1>
+                  {!isEditMode && <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>}
+                  {isEditMode && <div><h1>Vuokra</h1></div>}
                 </div>
               </TabPane>
 

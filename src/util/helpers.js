@@ -121,6 +121,14 @@ export const formatDate = (date: string) => {
   return d.format('DD.MM.YYYY');
 };
 
+export const formatDecimalNumbers = (x) => {
+  return x.toFixed(2).toString().replace('.', ',');
+};
+
+export const formatNumberWithThousandSeparator = (x, separator = ' ') => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+};
+
 export const formatDateRange = (startDate: any, endDate: any) => {
   if (!startDate && !endDate) {
     return '';
