@@ -186,12 +186,32 @@
             "start_date": "1960/01/01"
           }
         ],
+        "discounts": [
+          {
+            "amount": 15,
+            "comment": "Talouskasvu tuo valtion kassaan lähes kolme miljardia lisää rahaa. Lisäraha menee pitkälti velanoton vähentämiseen.",
+            "end_date": "1980/12/31",
+            "purpose": "Asunto",
+            "rule": null,
+            "start_date": "1960/01/01",
+            "type": "Alennus"
+          },
+          {
+            "amount": 10,
+            "comment": "Talouskasvu tuo valtion kassaan lähes kolme miljardia lisää rahaa. Lisäraha menee pitkälti velanoton vähentämiseen.",
+            "end_date": "2020/12/31",
+            "purpose": "Asunto",
+            "rule": "ALK, 36, 14.07.2017",
+            "start_date": "1981/01/01",
+            "type": "Alennus"
+          }
+        ],
         "index_adjusted_rents": [
           {
             "calculation_factor": 4.57,
             "end_date": "2017/12/31",
-            "rent": 36387.65,
             "purpose": "Asunto",
+            "rent": 36387.65,
             "start_date": "2017/01/01"
           },
           {

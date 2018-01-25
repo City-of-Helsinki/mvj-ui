@@ -4,6 +4,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import ContractRent from './ContractRent';
+import Discounts from './Discounts';
 import RentCriteria from './RentCriteria';
 import RentCharged from './RentCharged';
 import RentIndexAdjusted from './RentIndexAdjusted';
@@ -23,6 +24,7 @@ const Rent = ({rents}: Props) => {
         criterias={get(rents, 'criterias', {})}
       /> </Column></Row>
       <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
+      <Row><Column><Discounts discounts={get(rents, 'discounts', [])}/></Column></Row>
       <Row><Column><h2>Vuokran perustiedot</h2></Column></Row>
       <Row>
         <Column>
