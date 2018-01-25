@@ -105,7 +105,14 @@
       color: $tram;
 
       .link-icon {
-
+        background-image: url(../assets/icons/icon_link_green.svg);
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        margin-left: rem-calc(8px);
+        display: inline-block;
+        background-position: 0 rem-calc(9px);
+        background-size: contain;
+        background-repeat: no-repeat
       }
     }
   }

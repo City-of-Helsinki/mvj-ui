@@ -41,7 +41,7 @@ const Discounts = ({discounts}: Props) => {
                       </Column>
                       <Column small={6}>
                         <label>Päätös</label>
-                        <p>{discount.rule ? <a>{discount.rule}<span className="link-icon"/></a> : '-'}</p>
+                        {discount.rule ? <a>{discount.rule}<span className="link-icon"/></a> : '-'}
                       </Column>
                     </Row>
                   </Column>
