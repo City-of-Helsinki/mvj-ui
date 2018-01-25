@@ -13,9 +13,9 @@ const Discounts = ({discounts}: Props) => {
     <div className="green-box no-margin">
       <div className="section-item">
         {discounts && discounts.length > 0 &&
-          discounts.map((discount) => {
+          discounts.map((discount, index) => {
             return (
-              <div className="discount-item">
+              <div className="discount-item" key={index}>
                 <Row>
                   <Column medium={6}>
                     <Row>

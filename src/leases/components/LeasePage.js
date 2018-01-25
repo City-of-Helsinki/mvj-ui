@@ -14,6 +14,7 @@ import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from 
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
 import {getSummaryPublicityLabel} from './leaseSections/helpers';
 import * as contentHelpers from '../helpers';
+import {displayUIMessage} from '../../util/helpers';
 
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/ConfirmationModal';
@@ -226,6 +227,17 @@ class PreparerForm extends Component {
     this.setState({isEditMode: false});
     this.hideModal('SaveLease');
     this.destroyAllForms();
+  }
+
+  agreeCriteria = (criteria: Object) => {
+    const {rents, rents: {criterias}} = this.state;
+    forEach(criterias, (x) => {
+      if(x === criteria) {
+        x.agreed = true;
+      }
+    });
+    this.setState({rents: rents});
+    displayUIMessage({title: 'Vuokranperuste hyväksytty', body: 'Vuokranperuste on hyväksytty onnistuneesti'});
   }
 
   destroyAllForms = () => {
@@ -522,7 +534,7 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  {!isEditMode && <Rent rents={rents}/>}
+                  {!isEditMode && <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>}
                 </div>
               </TabPane>
 

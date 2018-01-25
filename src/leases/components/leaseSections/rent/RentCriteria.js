@@ -6,8 +6,9 @@ import Button from '../../../../components/Button';
 
 type Props = {
   criterias: Array<Object>,
+  onCriteriaAgree: Function,
 }
-const RentCriteria = ({criterias}: Props) => {
+const RentCriteria = ({criterias, onCriteriaAgree}: Props) => {
   return (
     <div>
       <table className="rent-table">
@@ -37,10 +38,10 @@ const RentCriteria = ({criterias}: Props) => {
                 <td>{criteria.basic_rent ? formatNumberWithThousandSeparator(criteria.basic_rent) : '-'}</td>
                 <td>{criteria.start_rent ? formatNumberWithThousandSeparator(criteria.start_rent) : '-'}</td>
                 <td>
-                  {criteria.agreed &&
+                  {!criteria.agreed &&
                     <Button
                       className="button-green button-xs no-margin"
-                      onClick={() => alert('TODO: Hyväksy vuokranperuste')}
+                      onClick={() => onCriteriaAgree(criteria)}
                       text="Hyväksy"
                     />
                   }

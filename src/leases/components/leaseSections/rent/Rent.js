@@ -11,18 +11,22 @@ import RentIndexAdjusted from './RentIndexAdjusted';
 import RentBasicInfo from './RentBasicInfo';
 
 type Props = {
+  onCriteriaAgree: Function,
   rents: Object,
 }
 
-const Rent = ({rents}: Props) => {
+const Rent = ({onCriteriaAgree, rents}: Props) => {
   return (
     <div className="lease-section rent-section">
       <Row><Column><h1>Vuokra</h1></Column></Row>
       <Row><Column><div className="separator-line no-margin"></div></Column></Row>
       <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
-      <Row><Column><RentCriteria
-        criterias={get(rents, 'criterias', {})}
-      /> </Column></Row>
+      <Row><Column>
+        <RentCriteria
+          criterias={get(rents, 'criterias', {})}
+          onCriteriaAgree={(criteria) => onCriteriaAgree(criteria)}
+        />
+      </Column></Row>
       <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
       <Row><Column><Discounts discounts={get(rents, 'discounts', [])}/></Column></Row>
       <Row><Column><h2>Vuokran perustiedot</h2></Column></Row>

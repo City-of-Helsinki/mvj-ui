@@ -99,17 +99,6 @@
             "percentage": 4,
             "basic_rent": 2356,
             "start_rent": 2876
-          },
-          {
-            "agreed": true,
-            "purpose": "Asunto",
-            "km2": 120,
-            "index": 1880,
-            "ekm2ind100": 18,
-            "ekm2ind": 39,
-            "percentage": 4,
-            "basic_rent": 2356,
-            "start_rent": 2876
           }
         ],
         "charged_rents": [
