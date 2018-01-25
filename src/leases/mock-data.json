@@ -88,6 +88,39 @@
         }
       ],
       "rents": {
+        "basic_info": {
+          "adjustment_start_date": "2000/01/01",
+          "adjustment_end_date": "2001/01/01",
+          "basic_index": 418,
+          "basic_index_rounding": 0,
+          "due_dates": [
+            "01.03",
+            "15.04",
+            "15.07",
+            "15.10"
+          ],
+          "fidex_initial_year_rents": [
+            {
+              "comment": "Lorem ipsum",
+              "end_date": null,
+              "rent": 3489.90,
+              "start_date": "1962/01/01"
+            },
+            {
+              "comment": null,
+              "end_date": "1962/01/01",
+              "rent": 3234.12,
+              "start_date": "1960/01/01"
+            }
+          ],
+          "index_type": 3,
+          "index_calculation_type": 1,
+          "rental_period": "1.1. – 31.12.",
+          "type": "Indeksi",
+          "y_value": 1044,
+          "y_value_start": 812,
+          "x_value": 812
+        },
         "criterias": [
           {
             "agreed": false,

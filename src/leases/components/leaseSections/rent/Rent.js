@@ -28,23 +28,37 @@ const Rent = ({onCriteriaAgree, rents}: Props) => {
         />
       </Column></Row>
       <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
-      <Row><Column><Discounts discounts={get(rents, 'discounts', [])}/></Column></Row>
+      <Row><Column>
+        <Discounts
+          discounts={get(rents, 'discounts', [])}
+        />
+      </Column></Row>
       <Row><Column><h2>Vuokran perustiedot</h2></Column></Row>
       <Row>
         <Column>
-          <RentBasicInfo />
+          <RentBasicInfo
+            basicInfo={get(rents, 'basic_info', {})}
+          />
         </Column>
       </Row>
       <Row><Column><h2>Sopimusvuokra</h2></Column></Row>
-      <Row><Column><ContractRent contractRents={get(rents, 'contract_rents', [])} /></Column></Row>
+      <Row><Column>
+        <ContractRent
+          contractRents={get(rents, 'contract_rents', [])}
+        />
+      </Column></Row>
       <Row>
         <Column medium={6}>
           <h2>Indeksitarkistettu vuokra</h2>
-          <RentIndexAdjusted indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}/>
+          <RentIndexAdjusted
+            indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}
+          />
         </Column>
         <Column medium={6}>
           <h2>Perittävä vuokra</h2>
-          <RentCharged chargedRents={get(rents, 'charged_rents', [])} />
+          <RentCharged
+            chargedRents={get(rents, 'charged_rents', [])}
+          />
         </Column>
       </Row>
     </div>
