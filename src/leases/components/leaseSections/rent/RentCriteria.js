@@ -8,6 +8,7 @@ type Props = {
   criterias: Array<Object>,
   onCriteriaAgree: Function,
 }
+
 const RentCriteria = ({criterias, onCriteriaAgree}: Props) => {
   return (
     <div>
@@ -47,8 +48,8 @@ const RentCriteria = ({criterias, onCriteriaAgree}: Props) => {
                   }
                 </td>
               </tr>
-            );})
-          }
+            );
+          })}
         </tbody>
       </table>
     </div>

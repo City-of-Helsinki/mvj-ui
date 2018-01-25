@@ -82,20 +82,16 @@ const RentBasicInfo = ({basicInfo}: Props) => {
                       </Column>
                     </Row>
                   );
-                })
-              }
-            </div>
+                })}
+              </div>
             }
-
           </Column>
           <Column medium={2}>
             <label>Eräpäivät</label>
             {due_dates && due_dates.length > 0
               ? (due_dates.map((due_date, index) => {
                 return <p style={{marginBottom: '0'}} key={index}>{due_date}</p>;
-              })
-
-              )
+              }))
               : <p>Ei eräpäiviä</p>
             }
           </Column>
