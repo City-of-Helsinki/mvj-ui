@@ -20,7 +20,7 @@ const ContactPersonItem = ({customer}: Props) => {
         <Column medium={5}>
           <Row>
             <Column>
-              <p className='subtitle'>{get(customer, 'name')}</p>
+              <p className='subtitle'>{get(customer, 'lastname')} {get(customer, 'firstname')}</p>
               <div className='contact'>
                 <p>{fullAddress}</p>
                 <p>{get(customer, 'phone')}</p>
@@ -41,7 +41,7 @@ const ContactPersonItem = ({customer}: Props) => {
                   <label>Kieli</label>
                   <p>{get(customer, 'language', '')}</p>
 
-                  <label>Aika</label>
+                  <label>Alkupäivämäärä</label>
                   <p>{formatedDate}</p>
                 </Column>
               </Row>

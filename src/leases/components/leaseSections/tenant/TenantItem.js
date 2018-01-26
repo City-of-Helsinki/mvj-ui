@@ -42,10 +42,13 @@ const TenantItem = ({customer}: Props) => {
                   <label>Osuus murtolukuina</label>
                   <p>{get(customer, 'share', '')}/{get(customer, 'share_divider', '')}</p>
 
+                  <label>Laskun hallintaosuus</label>
+                  <p>{get(customer, 'bill_share', '')} %</p>
+
                   <label>Kieli</label>
                   <p>{get(customer, 'language', '')}</p>
 
-                  <label>Aika</label>
+                  <label>Alkupäivämäärä</label>
                   <p>{formatedDate}</p>
 
                   <label>Viite</label>

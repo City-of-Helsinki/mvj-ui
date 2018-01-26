@@ -116,7 +116,14 @@
         font-weight: $semibold;
         font-size: $font-regular;
         text-transform: uppercase;
+        &-nocap {
+          color: $tram;
+          font-weight: $semibold;
+          font-size: $font-regular;
+          text-transform: none;
+        }
       }
+      
       i.arrow-icon {
         background-image: url('../assets/icons/icon_arrow_down-green.svg');
         display: block;
