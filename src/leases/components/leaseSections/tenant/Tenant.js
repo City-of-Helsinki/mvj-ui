@@ -38,7 +38,7 @@ const Tenant = ({tenant}: Props) => {
                 defaultOpen={true}
                 header={
                   <Row>
-                    <Column small={6}><span className='collapse__header-title'>Laskunsaaja</span></Column>
+                    <Column small={6}><span className='collapse__header-title-nocap'>Laskunsaaja</span></Column>
                   </Row>
                 }>
                 <InvoiceRecipientItem customer={person} />
@@ -52,7 +52,7 @@ const Tenant = ({tenant}: Props) => {
                 defaultOpen={true}
                 header={
                   <Row>
-                    <Column small={6}><span className='collapse__header-title'>Yhteyshenkilö</span></Column>
+                    <Column small={6}><span className='collapse__header-title-nocap'>Yhteyshenkilö</span></Column>
                   </Row>
                 }>
                 <ContactPersonItem customer={person} />
@@ -65,3 +65,4 @@ const Tenant = ({tenant}: Props) => {
 };
 
 export default Tenant;
+

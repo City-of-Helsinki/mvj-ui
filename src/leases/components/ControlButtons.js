@@ -17,7 +17,7 @@ const ControlButtons = ({commentAmount, isEditMode, isValid, onCancelClick, onCo
     <div className='control-buttons'>
       {isEditMode ?
         <div className='left-buttons'>
-          <Button className='button-red' text='Peruuta' onClick={onCancelClick}/>
+          <Button className='button-red' text='Hylkää muutokset' onClick={onCancelClick}/>
           <Button disabled={isValid} className='button-green' text='Tallenna' onClick={onSaveClick}/>
         </div>
         :
