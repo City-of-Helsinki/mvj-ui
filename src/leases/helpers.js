@@ -95,6 +95,24 @@ export const getContentSummary = (lease: Object) => {
   };
 };
 
+export const getContentRentBasicInfo = (basicInfoData: Object) => {
+  return {
+    adjustment_start_date: basicInfoData.adjustment_start_date ? moment(basicInfoData.adjustment_start_date) : null,
+    adjustment_end_date: basicInfoData.adjustment_end_date ? moment(basicInfoData.adjustment_end_date) : null,
+    basic_index: get(basicInfoData, 'basic_index'),
+    basic_index_rounding: get(basicInfoData, 'basic_index_rounding'),
+    due_dates: get(basicInfoData, 'due_dates', []),
+    fidex_initial_year_rents: get(basicInfoData, 'fidex_initial_year_rents', []),
+    index_type: get(basicInfoData, 'index_type'),
+    index_calculation_type: get(basicInfoData, 'index_calculation_type'),
+    rental_period: get(basicInfoData, 'rental_period'),
+    type: get(basicInfoData, 'type'),
+    y_value: get(basicInfoData, 'y_value'),
+    y_value_start: get(basicInfoData, 'y_value_start'),
+    x_value: get(basicInfoData, 'x_value'),
+  };
+};
+
 export const getContentRentDiscount = (discountData: Object) => {
   return discountData.map((discount) => {
     return (
@@ -112,9 +130,70 @@ export const getContentRentDiscount = (discountData: Object) => {
   });
 };
 
+export const getContentRentCriteria = (criteriaData: Object) => {
+  return criteriaData.map((criteria) => {
+    return (
+    {
+      agreed: get(criteria, 'agreed', false),
+      purpose: get(criteria, 'purpose'),
+      km2: get(criteria, 'km2'),
+      index: get(criteria, 'index'),
+      ekm2ind100: get(criteria, 'ekm2ind100'),
+      ekm2ind: get(criteria, 'ekm2ind'),
+      percentage: get(criteria, 'percentage'),
+      basic_rent: get(criteria, 'basic_rent'),
+      start_rent: get(criteria, 'start_rent'),
+    });
+  });
+};
+
+export const getContentRentChargedRents = (chargedRentsData: Object) => {
+  return chargedRentsData.map((rent) => {
+    return (
+    {
+      calendar_year_rent: get(rent, 'calendar_year_rent'),
+      difference: get(rent, 'difference'),
+      end_date: rent.end_date ? moment(rent.end_date) : null,
+      rent: get(rent, 'rent'),
+      start_date: rent.start_date ? moment(rent.start_date) : null,
+    });
+  });
+};
+
+export const getContentRentContractRents = (contractRentsData: Object) => {
+  return contractRentsData.map((rent) => {
+    return (
+    {
+      basic_rent: get(rent, 'basic_rent'),
+      contract_rent: get(rent, 'contract_rent'),
+      end_date: rent.end_date ? moment(rent.end_date) : null,
+      purpose: get(rent, 'purpose'),
+      start_date: rent.start_date ? moment(rent.start_date) : null,
+    });
+  });
+};
+
+export const getContentRentIndexAdjustedRents = (indexAdjustedRentsData: Object) => {
+  return indexAdjustedRentsData.map((rent) => {
+    return (
+    {
+      calculation_factor: get(rent, 'calculation_factor'),
+      end_date: rent.end_date ? moment(rent.end_date) : null,
+      purpose: get(rent, 'purpose'),
+      rent: get(rent, 'rent'),
+      start_date: rent.start_date ? moment(rent.start_date) : null,
+    });
+  });
+};
+
 export const getContentRents = (lease: Object) => {
   return {
+    basic_info: getContentRentBasicInfo(get(lease, 'rents.basic_info', [])),
+    charged_rents: getContentRentChargedRents(get(lease, 'rents.charged_rents', [])),
+    contract_rents: getContentRentContractRents(get(lease, 'rents.contract_rents', [])),
+    criterias: getContentRentCriteria(get(lease, 'rents.criterias', [])),
     discounts: getContentRentDiscount(get(lease, 'rents.discounts', [])),
+    index_adjusted_rents: getContentRentIndexAdjustedRents(get(lease, 'rents.index_adjusted_rents', [])),
   };
 };
 
