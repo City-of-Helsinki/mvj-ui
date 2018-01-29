@@ -1,6 +1,7 @@
 // @flow
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
+import moment from 'moment';
 
 import {formatDate, formatDateRange} from '../util/helpers';
 
@@ -93,6 +94,30 @@ export const getContentSummary = (lease: Object) => {
     transfer_right: get(lease, 'transfer_right'),
   };
 };
+
+export const getContentRentDiscount = (discountData: Object) => {
+  return discountData.map((discount) => {
+    return (
+    {
+      amount: get(discount, 'amount', ''),
+      amount_left: get(discount, 'amount_left', ''),
+      amount_type: get(discount, 'amount_type', ''),
+      comment: get(discount, 'comment', ''),
+      end_date: discount.end_date ? moment(discount.end_date) : null,
+      purpose: get(discount, 'purpose', ''),
+      rule: get(discount, 'rule', ''),
+      start_date: discount.start_date ? moment(discount.start_date) : null,
+      type: get(discount, 'type', ''),
+    });
+  });
+};
+
+export const getContentRents = (lease: Object) => {
+  return {
+    discounts: getContentRentDiscount(get(lease, 'rents.discounts', [])),
+  };
+};
+
 
 export const getFullAddress = (item: Object) => {
   if(!get(item, 'zip_code') && !get(item, 'town')) {

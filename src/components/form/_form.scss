@@ -26,11 +26,17 @@
 
       input {
         padding: 0 0.5rem;
-        height: rem-calc(30px);
+        height: rem-calc(26px);
         line-height: normal;
         color: $black;
         width: 100%;
         margin-bottom: 0;
+      }
+
+      &.height-medium {
+        input {
+          height: rem-calc(30px);
+        }
       }
 
       &.is-dirty {

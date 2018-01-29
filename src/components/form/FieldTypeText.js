@@ -3,6 +3,7 @@ import React from 'react';
 import classnames from 'classnames';
 
 type Props = {
+  disabled: boolean,
   input: Object,
   inputStyle: Object,
   isInline?: boolean,
@@ -14,6 +15,7 @@ type Props = {
 }
 
 const FieldTypeText = ({
+  disabled = false,
   input,
   inputStyle,
   isInline,
@@ -25,7 +27,7 @@ const FieldTypeText = ({
   <div className={classnames('mvj-form-field', {'inline': isInline})}>
     {label && <label className='title'>{label}</label>}
     <div className={classnames('mvj-form-field__text', {'is-dirty': dirty})} style={inputStyle}>
-      <input {...input} type={type} placeholder={placeholder}/>
+      <input {...input} disabled={disabled} type={type} placeholder={placeholder}/>
       {touched && error && <span className='error'>{error}</span>}
     </div>
   </div>

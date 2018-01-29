@@ -41,7 +41,7 @@ const FieldTypeSelect = ({
 
   return (
     <div className='mvj-form-field'>
-      <label className='title'>{label}</label>
+      {label && <label className='title'>{label}</label>}
       <div className={classNames('mvj-form-field__select', className, {'has-error': displayError}, {'is-dirty': dirty})}>
         <Select
           {...input}

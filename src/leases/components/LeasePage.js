@@ -30,6 +30,7 @@ import Loader from '../../components/loader/Loader';
 import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import Rent from './leaseSections/rent/Rent';
+import RentEdit from './leaseSections/rent/RentEdit';
 import RuleEdit from './leaseSections/contract/RuleEdit';
 import Rules from './leaseSections/contract/Rules';
 import Summary from './leaseSections/summary/Summary';
@@ -146,7 +147,7 @@ class PreparerForm extends Component {
       history: mockData.leases[0].history,
       inspections: mockData.leases[0].inspections,
       oldTenants: mockData.leases[0].tenants_old,
-      rents: mockData.leases[0].rents,
+      rents: contentHelpers.getContentRents(mockData.leases[0]),
       rules: mockData.leases[0].rules,
       summary: contentHelpers.getContentSummary(mockData.leases[0]),
       tenants: mockData.leases[0].tenants,
@@ -535,7 +536,7 @@ class PreparerForm extends Component {
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   {!isEditMode && <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>}
-                  {isEditMode && <div><h1>Vuokra</h1></div>}
+                  {isEditMode && <RentEdit  initialValues={{rents: rents}}/>}
                 </div>
               </TabPane>
 

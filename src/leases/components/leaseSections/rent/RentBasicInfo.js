@@ -68,9 +68,9 @@ const RentBasicInfo = ({basicInfo}: Props) => {
                     <label>Kommentti</label>
                   </Column>
                 </Row>
-                {basicInfo.fidex_initial_year_rents.map((rent) => {
+                {basicInfo.fidex_initial_year_rents.map((rent, index) => {
                   return (
-                    <Row>
+                    <Row key={index}>
                       <Column medium={3}>
                         <p style={{marginBottom: '0'}}>{rent.rent ? formatNumberWithThousandSeparator(formatDecimalNumbers(rent.rent), '.') : '-'}</p>
                       </Column>
