@@ -165,10 +165,12 @@ export const getContentRentContractRents = (contractRentsData: Object) => {
     return (
     {
       basic_rent: get(rent, 'basic_rent'),
+      basic_rent_type: get(rent, 'basic_rent_type'),
       contract_rent: get(rent, 'contract_rent'),
       end_date: rent.end_date ? moment(rent.end_date) : null,
       purpose: get(rent, 'purpose'),
       start_date: rent.start_date ? moment(rent.start_date) : null,
+      type: get(rent, 'type'),
     });
   });
 };

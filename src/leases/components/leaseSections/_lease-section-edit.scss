@@ -105,6 +105,17 @@
     }
   }
 
+  .bordered-box {
+    background-color: $white;
+    border: 1px solid #d7d5d5;
+    padding: 0.6rem 1rem;
+    margin: 0.6rem 0;
+
+    &.no-margin {
+      margin: 0;
+    }
+  }
+
   h2 {
     font-size: rem-calc(15px);
     font-weight: $semibold;

@@ -3,6 +3,8 @@
     display: inline-block;
   }
   &-label {
+    white-space: nowrap;
+    text-overflow: ellipsis;
     font-size: rem-calc(14px);
     line-height: normal;
 	  text-align: left;

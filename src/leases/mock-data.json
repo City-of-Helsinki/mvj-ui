@@ -196,17 +196,21 @@
         "contract_rents": [
           {
             "basic_rent": 6296.96,
+            "basic_rent_type": "0",
             "contract_rent": 2098.99,
             "end_date": null,
-            "purpose": "Asunto",
-            "start_date": "1980/01/01"
+            "purpose": "100",
+            "start_date": "1980/01/01",
+            "type": "0"
           },
           {
             "basic_rent": 7861.19,
+            "basic_rent_type": "0",
             "contract_rent": 2623.73,
             "end_date": "1980/01/01",
-            "purpose": "Asunto",
-            "start_date": "1960/01/01"
+            "purpose": "100",
+            "start_date": "1960/01/01",
+            "type": "0"
           }
         ],
         "discounts": [
