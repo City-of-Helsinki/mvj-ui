@@ -4,6 +4,10 @@ import {Row, Column} from 'react-foundation';
 
 import {formatDateRange, formatDecimalNumbers, formatNumberWithThousandSeparator} from '../../../../util/helpers';
 
+import {getBasicInfoIndexTypeLabel,
+  getBasicInfoRentalPeriodLabel,
+  getBasicInfoTypeLabel} from '../helpers';
+
 type Props = {
   basicInfo: Object,
 }
@@ -18,15 +22,15 @@ const RentBasicInfo = ({basicInfo}: Props) => {
             <Row>
               <Column medium={3}>
                 <label>Vuokralaji</label>
-                <p>{basicInfo.type ? basicInfo.type : '-'}</p>
+                <p>{basicInfo.type ? getBasicInfoTypeLabel(basicInfo.type) : '-'}</p>
               </Column>
               <Column medium={3}>
                 <label>Vuokrakausi</label>
-                <p>{basicInfo.rental_period ? basicInfo.rental_period : '-'}</p>
+                <p>{basicInfo.rental_period ? getBasicInfoRentalPeriodLabel(basicInfo.rental_period) : '-'}</p>
               </Column>
               <Column medium={6}>
                 <label>Indeksin tunnusnumero (laskentalaji)</label>
-                <p>{basicInfo.index_type ? basicInfo.index_type : '-'} ({basicInfo.index_calculation_type ? basicInfo.index_calculation_type : '-'})</p>
+                <p>{basicInfo.index_type ? getBasicInfoIndexTypeLabel(basicInfo.index_type) : '-'}</p>
               </Column>
             </Row>
             <Row>
@@ -64,9 +68,6 @@ const RentBasicInfo = ({basicInfo}: Props) => {
                   <Column medium={3}>
                     <label>Alkuvuosivuokra-aika</label>
                   </Column>
-                  <Column medium={6}>
-                    <label>Kommentti</label>
-                  </Column>
                 </Row>
                 {basicInfo.fidex_initial_year_rents.map((rent, index) => {
                   return (
@@ -78,13 +79,18 @@ const RentBasicInfo = ({basicInfo}: Props) => {
                         <p style={{marginBottom: '0'}}>{formatDateRange(rent.start_date, rent.end_date)}</p>
                       </Column>
                       <Column medium={6}>
-                        <p style={{marginBottom: '0'}}>{rent.comment ? rent.comment : '-'}</p>
                       </Column>
                     </Row>
                   );
                 })}
               </div>
             }
+            <Row>
+              <Column>
+                <label>Kommentti</label>
+                <p style={{marginBottom: '0'}}>{basicInfo.comment ? basicInfo.comment : '-'}</p>
+              </Column>
+            </Row>
           </Column>
           <Column medium={2}>
             <label>Eräpäivät</label>

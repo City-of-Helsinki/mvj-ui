@@ -1,7 +1,10 @@
 // @flow
 import get from 'lodash/get';
 
-import {rentContractRentPurposeOptions,
+import {rentBasicInfoIndexTypeOptions,
+  rentBasicInfoRentalPeriodOptions,
+  rentBasicInfoTypeOptions,
+  rentContractRentPurposeOptions,
   rentContractRentTypeOptions,
   rentDiscountDecisionOptions,
   rentDiscountPurposeOptions,
@@ -18,6 +21,21 @@ import {rentContractRentPurposeOptions,
   summaryRegulatoryMethodOptions,
   summarySpecialApartmentsOptions,
   summaryTransferRightOptions} from './constants';
+
+export const getBasicInfoIndexTypeLabel = (value: string) => {
+  const option = rentBasicInfoIndexTypeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getBasicInfoRentalPeriodLabel = (value: string) => {
+  const option = rentBasicInfoRentalPeriodOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getBasicInfoTypeLabel = (value: string) => {
+  const option = rentBasicInfoTypeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
 
 export const getRentContractRentPurposeLabel = (value: string) => {
   const option = rentContractRentPurposeOptions.find(x => x.value=== value);

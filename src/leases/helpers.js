@@ -94,6 +94,15 @@ export const getContentSummary = (lease: Object) => {
     transfer_right: get(lease, 'transfer_right'),
   };
 };
+export const getContentFixedInitialYearRentItems = (items: Object) => {
+  return items.map((item) => {
+    return {
+      end_date: item.end_date ? moment(item.end_date) : null,
+      rent: get(item, 'rent'),
+      start_date: item.start_date ? moment(item.start_date) : null,
+    };
+  });
+};
 
 export const getContentRentBasicInfo = (basicInfoData: Object) => {
   return {
@@ -101,10 +110,10 @@ export const getContentRentBasicInfo = (basicInfoData: Object) => {
     adjustment_end_date: basicInfoData.adjustment_end_date ? moment(basicInfoData.adjustment_end_date) : null,
     basic_index: get(basicInfoData, 'basic_index'),
     basic_index_rounding: get(basicInfoData, 'basic_index_rounding'),
+    comment: get(basicInfoData, 'comment', ''),
     due_dates: get(basicInfoData, 'due_dates', []),
-    fidex_initial_year_rents: get(basicInfoData, 'fidex_initial_year_rents', []),
+    fidex_initial_year_rents: getContentFixedInitialYearRentItems(get(basicInfoData, 'fidex_initial_year_rents', [])),
     index_type: get(basicInfoData, 'index_type'),
-    index_calculation_type: get(basicInfoData, 'index_calculation_type'),
     rental_period: get(basicInfoData, 'rental_period'),
     type: get(basicInfoData, 'type'),
     y_value: get(basicInfoData, 'y_value'),

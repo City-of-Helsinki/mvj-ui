@@ -48,6 +48,20 @@
     padding-left: 0.9375rem;
   }
 
+  .remove-button {
+    cursor: pointer;
+    position: relative;
+    top: rem-calc(-1px);
+
+    img {
+      height: 22px;
+      width: 22px;
+    }
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
   .item {
     border: none;
     display: block;

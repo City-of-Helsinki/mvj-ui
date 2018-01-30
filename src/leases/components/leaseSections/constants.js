@@ -1,3 +1,26 @@
+export const rentBasicInfoIndexTypeOptions = [
+  {value: '1', label: '1 (1)'},
+  {value: '2', label: '2 (1)'},
+  {value: '3', label: '3 (1)'},
+  {value: '4', label: '4 (1)'},
+  {value: '5', label: '5 (1)'},
+  {value: '6', label: '6 (1)'},
+  {value: '7', label: '7 (1)'},
+];
+
+export const rentBasicInfoRentalPeriodOptions = [
+  {value: '0', label: '1.1 - 31.12'},
+  {value: '1', label: '1.4 - 31.3'},
+];
+
+export const rentBasicInfoTypeOptions = [
+  {value: '0', label: 'Indeksi'},
+  {value: '1', label: 'Kertakaikkinen'},
+  {value: '2', label: 'Kiinteä'},
+  {value: '3', label: 'Korvauksetta'},
+  {value: '4', label: 'Käsinlaskenta'},
+];
+
 export const rentContractRentPurposeOptions = [
   {value: '100', label: 'Asuminen / yleinen'},
   {value: '101', label: 'Vapaarahoitteisia omistusasuntoja'},
