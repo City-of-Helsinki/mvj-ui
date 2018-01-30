@@ -1,4 +1,30 @@
 .rent-section {
+  .alert {
+    color: $brick;
+    text-align: right;
+    line-height: rem-calc(33px);
+    i {
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      vertical-align: text-bottom;
+      background-image: url(../assets/icons/icon-alert.svg);
+      display: inline-block;
+      margin-left: 0.4rem;
+    }
+  }
+  .success {
+    color: $tram;
+    text-align: right;
+    line-height: rem-calc(33px);
+    i {
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      vertical-align: text-bottom;
+      background-image: url(../assets/icons/icon_checked.svg);
+      display: inline-block;
+      margin-left: 0.4rem;
+    }
+  }
   table.rent-table {
     thead {
       tr {

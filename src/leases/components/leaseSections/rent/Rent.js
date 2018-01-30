@@ -18,7 +18,15 @@ type Props = {
 const Rent = ({onCriteriaAgree, rents}: Props) => {
   return (
     <div className="lease-section rent-section">
-      <Row><Column><h1>Vuokra</h1></Column></Row>
+      <Row>
+        <Column medium={9}><h1>Vuokra</h1></Column>
+        <Column medium={3}>
+          {rents.rent_info_ok
+            ? (<p className="success">Vuokratiedot kunnossa<i /></p>)
+            : (<p className="alert">Vaatii toimenpiteitä<i /></p>)
+          }
+        </Column>
+      </Row>
       <Row><Column><div className="separator-line no-margin"></div></Column></Row>
       <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
       <Row><Column>

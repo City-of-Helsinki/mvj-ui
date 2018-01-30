@@ -188,6 +188,7 @@ export const getContentRentIndexAdjustedRents = (indexAdjustedRentsData: Object)
 
 export const getContentRents = (lease: Object) => {
   return {
+    rent_info_ok: get(lease, 'rents.rent_info_ok', false),
     basic_info: getContentRentBasicInfo(get(lease, 'rents.basic_info', [])),
     charged_rents: getContentRentChargedRents(get(lease, 'rents.charged_rents', [])),
     contract_rents: getContentRentContractRents(get(lease, 'rents.contract_rents', [])),
