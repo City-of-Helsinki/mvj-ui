@@ -8,6 +8,7 @@ import flowRight from 'lodash/flowRight';
 import trashIcon from '../../../../../assets/icons/trash.svg';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
+import FieldTypeSwitch from '../../../../components/form/FieldTypeSwitch';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import {rentDiscountAmountTypeOptions, rentDiscountDecisionOptions, rentDiscountPurposeOptions, rentDiscountTypeOptions} from '../constants';
 
@@ -143,7 +144,17 @@ class RentEdit extends Component {
 
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <Row><Column><h1>Vuokra</h1></Column></Row>
+        <Row>
+          <Column medium={9}><h1>Vuokra</h1></Column>
+          <Column medium={3}>
+            <Field
+              component={FieldTypeSwitch}
+              name="rents.rent_info_ok"
+              optionLabel="Vuokratiedot kunnossa"
+            />
+          </Column>
+        </Row>
+        <Row><Column><div className="separator-line no-margin"></div></Column></Row>
         <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
         <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
         <Row>
