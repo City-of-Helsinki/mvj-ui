@@ -5,7 +5,7 @@ import type {ApiToken, AuthState} from './types';
 
 // Helper functions to select state
 export const getApiToken: Selector<ApiToken, void> = (state: Object): AuthState =>
-  state.auth.apiToken;
+  state.auth.apiToken['https://api.hel.fi/auth/mvj'];
 
 export const getApiTokenLoading: Selector<ApiToken, void> = (state: Object): AuthState =>
   state.auth.isLoading;
