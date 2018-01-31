@@ -72,6 +72,10 @@
         margin-right: rem-calc(5px);
         line-height: rem-calc(20px);
 	      color: $tram;
+
+        &.label-off {
+          color: $brick;
+        }
       }
       .switch {
         position: relative;
@@ -94,7 +98,7 @@
         right: 0;
         bottom: 0;
         background-color: $brick;
-        transition: .4s;
+        @include transition(0.2s);
       }
       input:checked + .slider {
         background-color: $tram;
@@ -107,8 +111,7 @@
         left: rem-calc(1px);
         bottom: rem-calc(1px);
         background-color: white;
-        -webkit-transition: .4s;
-        transition: .4s;
+        @include transition(0.2s);
       }
       input:checked + .slider:before {
         transform: translateX(rem-calc(23px));
