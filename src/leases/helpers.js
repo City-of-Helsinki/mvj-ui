@@ -110,6 +110,8 @@ export const getContentRentBasicInfo = (basicInfoData: Object) => {
     adjustment_end_date: basicInfoData.adjustment_end_date ? moment(basicInfoData.adjustment_end_date) : null,
     basic_index: get(basicInfoData, 'basic_index'),
     basic_index_rounding: get(basicInfoData, 'basic_index_rounding'),
+    bill_amount: get(basicInfoData, 'bill_amount'),
+    billing_type: get(basicInfoData, 'billing_type'),
     comment: get(basicInfoData, 'comment', ''),
     due_dates: get(basicInfoData, 'due_dates', []),
     fidex_initial_year_rents: getContentFixedInitialYearRentItems(get(basicInfoData, 'fidex_initial_year_rents', [])),

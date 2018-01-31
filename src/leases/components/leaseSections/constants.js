@@ -1,3 +1,8 @@
+export const rentBasicInfoBillingTypeOptions = [
+  {value: '0', label: 'Eräpäivät'},
+  {value: '1', label: 'Laskut'},
+];
+
 export const rentBasicInfoIndexTypeOptions = [
   {value: '1', label: '1 (1)'},
   {value: '2', label: '2 (1)'},

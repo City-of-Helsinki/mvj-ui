@@ -94,6 +94,7 @@
           "adjustment_end_date": "2001/01/01",
           "basic_index": 418,
           "basic_index_rounding": 0,
+          "billing_type": "0",
           "comment": "Lorem ipsum",
           "due_dates": [
             "01.03",

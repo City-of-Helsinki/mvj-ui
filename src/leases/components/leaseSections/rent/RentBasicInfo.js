@@ -13,7 +13,7 @@ type Props = {
 }
 
 const RentBasicInfo = ({basicInfo}: Props) => {
-  const {due_dates} = basicInfo;
+  const {billing_type, due_dates} = basicInfo;
   return (
     <div className={'green-box no-margin'}>
       <div className="section-item">
@@ -94,7 +94,7 @@ const RentBasicInfo = ({basicInfo}: Props) => {
           </Column>
           <Column medium={2}>
             <label>Eräpäivät</label>
-            {due_dates && due_dates.length > 0
+            {billing_type === '0' && due_dates && due_dates.length > 0
               ? (due_dates.map((due_date, index) => {
                 return <p style={{marginBottom: '0'}} key={index}>{due_date}</p>;
               }))
