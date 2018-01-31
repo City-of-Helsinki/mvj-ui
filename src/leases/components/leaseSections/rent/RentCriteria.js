@@ -4,6 +4,8 @@ import React from 'react';
 import {formatNumberWithThousandSeparator} from '../../../../util/helpers';
 import Button from '../../../../components/Button';
 
+import {getRentCriteriaPurposeLabel} from '../helpers';
+
 type Props = {
   criterias: Array<Object>,
   onCriteriaAgree: Function,
@@ -30,8 +32,8 @@ const RentCriteria = ({criterias, onCriteriaAgree}: Props) => {
           {criterias && criterias.length > 0 && criterias.map((criteria, index) => {
             return (
               <tr key={index}>
-                <td>{criteria.purpose ? criteria.purpose : ''}</td>
-                <td>{criteria.km2 ? formatNumberWithThousandSeparator(criteria.km2) : ''}</td>
+                <td>{criteria.purpose ? getRentCriteriaPurposeLabel(criteria.purpose) : '-'}</td>
+                <td>{criteria.km2 ? formatNumberWithThousandSeparator(criteria.km2) : '-'}</td>
                 <td>{criteria.index ? formatNumberWithThousandSeparator(criteria.index) : '-'}</td>
                 <td>{criteria.ekm2ind100 ? formatNumberWithThousandSeparator(criteria.ekm2ind100) : '-'}</td>
                 <td>{criteria.ekm2ind ? formatNumberWithThousandSeparator(criteria.ekm2ind) : '-'}</td>

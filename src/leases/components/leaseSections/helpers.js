@@ -6,6 +6,7 @@ import {rentBasicInfoIndexTypeOptions,
   rentBasicInfoTypeOptions,
   rentContractRentPurposeOptions,
   rentContractRentTypeOptions,
+  rentCriteriaPurposeOptions,
   rentDiscountDecisionOptions,
   rentDiscountPurposeOptions,
   rentDiscountTypeOptions,
@@ -44,6 +45,11 @@ export const getRentContractRentPurposeLabel = (value: string) => {
 
 export const getRentContractRentTypeLabel = (value: string) => {
   const option = rentContractRentTypeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getRentCriteriaPurposeLabel = (value: string) => {
+  const option = rentCriteriaPurposeOptions.find(x => x.value=== value);
   return get(option, 'label', '');
 };
 

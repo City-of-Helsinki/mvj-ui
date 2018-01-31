@@ -17,116 +17,222 @@ import {rentBasicInfoBillingTypeOptions,
   rentBasicInfoTypeOptions,
   rentContractRentPurposeOptions,
   rentContractRentTypeOptions,
+  rentCriteriaPurposeOptions,
   rentDiscountAmountTypeOptions,
   rentDiscountDecisionOptions,
   rentDiscountPurposeOptions,
   rentDiscountTypeOptions,
 } from '../constants';
 
-type DueDatesProps = {
+type DiscountProps = {
   fields: any,
 }
 
-const renderDueDates = ({fields}: DueDatesProps) => {
+const renderDiscounts = ({fields}: DiscountProps) => {
   return (
-    <div>
-      <Row>
-        <Column>
-          <label className="mvj-form-field-label">Eräpäivät</label>
-        </Column>
-      </Row>
-      {fields && fields.length > 0 && fields.map((due_date, index) => {
+    <div className='green-box'>
+      {fields && fields.length > 0 && fields.map((discount, index) => {
         return (
-          <Row key={index}>
-            <Column medium={9}>
-              <Field
-                component={FieldTypeText}
-                name={`${due_date}`}
-              />
-            </Column>
-            <Column medium={3}>
-              <button
-                className='remove-button'
-                type="button"
-                title="Poista eräpäivä"
-                onClick={() => fields.remove(index)}>
-                <img src={trashIcon} alt='Poista' />
-              </button>
-            </Column>
-          </Row>
+          <div key={index} className='item'>
+            <button
+              className='remove-button'
+              type="button"
+              title="Poista alennus/korotus"
+              onClick={() => fields.remove(index)}>
+              <img src={trashIcon} alt='Poista' />
+            </button>
+            <Row>
+              <Column medium={6}>
+                <Row>
+                  <Column small={3}>
+                    <Field
+                      component={FieldTypeSelect}
+                      label='Tyyppi'
+                      name={`${discount}.type`}
+                      options={rentDiscountTypeOptions}
+                    />
+                  </Column>
+                  <Column small={4}>
+                    <Field
+                      component={FieldTypeSelect}
+                      label='Käyttötarkoitus'
+                      name={`${discount}.purpose`}
+                      options={rentDiscountPurposeOptions}
+                    />
+                  </Column>
+                  <Column small={5}>
+                    <Row>
+                      <Column small={6} style={{paddingRight: '0'}}>
+                        <Field
+                          component={FieldTypeDatePicker}
+                          label='Alkupvm'
+                          name={`${discount}.start_date`}
+                        />
+                      </Column>
+                      <Column small={6} style={{paddingRight: '0'}}>
+                        <Field
+                          component={FieldTypeDatePicker}
+                          label='Loppupvm'
+                          name={`${discount}.end_date`}
+                        />
+                      </Column>
+                    </Row>
+                  </Column>
+                </Row>
+              </Column>
+              <Column medium={6}>
+                <Row>
+                  <Column small={6}>
+                    <Row>
+                      <Column><label className="mvj-form-field-label">Kokonaismäärä</label></Column>
+                    </Row>
+                    <Row>
+                      <Column small={6} style={{paddingRight: '0'}}>
+                        <Field
+                          component={FieldTypeText}
+                          name={`${discount}.amount`}
+                        />
+                      </Column>
+                      <Column small={6} style={{paddingRight: '0'}}>
+                        <Field
+                          component={FieldTypeSelect}
+                          name={`${discount}.amount_type`}
+                          options={rentDiscountAmountTypeOptions}
+                        />
+                      </Column>
+                    </Row>
+                  </Column>
+                  <Column small={3}>
+                    <Field
+                      component={FieldTypeText}
+                      disabled={true}
+                      label="Jäljellä (€)"
+                      name={`${discount}.amount_left`}
+                    />
+                  </Column>
+                  <Column small={3}>
+                    <Field
+                      clearable={true}
+                      component={FieldTypeSelect}
+                      label="Päätös"
+                      name={`${discount}.rule`}
+                      options={rentDiscountDecisionOptions}
+                    />
+                  </Column>
+                </Row>
+              </Column>
+            </Row>
+            <Row>
+              <Column medium={12}>
+                <Field
+                  name={`${discount}.comment`}
+                  component={FieldTypeText}
+                  label='Kommentti'
+                />
+              </Column>
+            </Row>
+          </div>
         );
       })}
-      <Row style={{paddingBottom: '0.5rem'}}>
+      <Row>
         <Column>
-          <a onClick={() => fields.push('')} className='add-button-secondary'><i /><span>Lisää eräpäivä</span></a>
+          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää sopimuksen muutos</span></a>
         </Column>
       </Row>
     </div>
   );
 };
 
-type FixedInitialYearRentsProps = {
+type CriteriaProps = {
   fields: any,
 }
 
-const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
+const renderCriterias = ({fields}: CriteriaProps) => {
   return (
-    <div>
-      {fields && fields.length > 0 &&
-        <Row>
-          <Column medium={2}><label className="mvj-form-field-label">Kiinteä alkuvuosivuokra</label></Column>
-          <Column medium={4}>
-            <Row>
-              <Column small={6}><label className="mvj-form-field-label">Alkupvm</label></Column>
-              <Column small={6}><label className="mvj-form-field-label">Loppupvm</label></Column>
-            </Row>
-          </Column>
-
-        </Row>
-      }
-      {fields && fields.length > 0 && fields.map((rent, index) => {
+    <div className="bordered-box">
+      {fields && fields.length > 0 && fields.map((item, index) => {
         return (
-          <div key={index}>
+          <div key={index} className='item'>
+            <button
+              className='remove-button'
+              type="button"
+              title="Poista vuokranperuste"
+              onClick={() => fields.remove(index)}>
+              <img src={trashIcon} alt='Poista' />
+            </button>
             <Row>
-              <Column medium={2}>
-                <Field
-                  component={FieldTypeText}
-                  name={`${rent}.rent`}
-                />
-              </Column>
-              <Column medium={4}>
+              <Column medium={5}>
                 <Row>
-                  <Column small={6}>
+                  <Column small={4}>
                     <Field
-                      component={FieldTypeDatePicker}
-                      name={`${rent}.start_date`}
+                      component={FieldTypeSelect}
+                      label="Käyttötarkoitus"
+                      name={`${item}.purpose`}
+                      options={rentCriteriaPurposeOptions}
                     />
                   </Column>
-                  <Column small={6}>
+                  <Column small={2}>
                     <Field
-                      component={FieldTypeDatePicker}
-                      name={`${rent}.end_date`}
+                      component={FieldTypeText}
+                      label="K-m2"
+                      name={`${item}.km2`}
+                    />
+                  </Column>
+                  <Column small={3}>
+                    <Field
+                      component={FieldTypeText}
+                      label="Indeksi"
+                      name={`${item}.index`}
+                    />
+                  </Column>
+                  <Column small={3}>
+                    <Field
+                      component={FieldTypeText}
+                      label="€ / k-m2 (ind 100)"
+                      name={`${item}.ekm2ind100`}
                     />
                   </Column>
                 </Row>
-
               </Column>
-              <Column>
-                <button
-                  className='remove-button'
-                  type="button"
-                  title="Poista alennus/korotus"
-                  onClick={() => fields.remove(index)}>
-                  <img src={trashIcon} alt='Poista' />
-                </button>
+              <Column medium={7}>
+                <Row>
+                  <Column small={2}>
+                    <Field
+                      component={FieldTypeText}
+                      label="€ / k-m2 (ind)"
+                      name={`${item}.ekm2ind`}
+                    />
+                  </Column>
+                  <Column small={2}>
+                    <Field
+                      component={FieldTypeText}
+                      label="Prosenttia"
+                      name={`${item}.percentage`}
+                    />
+                  </Column>
+                  <Column small={4}>
+                    <Field
+                      component={FieldTypeText}
+                      label="Perusvuosivuokra €/v (ind 100)"
+                      name={`${item}.basic_rent`}
+                    />
+                  </Column>
+                  <Column small={4}>
+                    <Field
+                      component={FieldTypeText}
+                      label="Perusvuosivuokra €/v (ind)"
+                      name={`${item}.start_rent`}
+                    />
+                  </Column>
+                </Row>
               </Column>
             </Row>
           </div>
         );
       })}
-      <Row style={{paddingBottom: '0.5rem'}}>
+      <Row>
         <Column>
-          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää kiinteä alkuvuosivuokra</span></a>
+          <a onClick={() => fields.push({agreed: false, index: 1880})} className='add-button-secondary'><i /><span>Lisää vuokranperuste</span></a>
         </Column>
       </Row>
     </div>
@@ -315,6 +421,116 @@ const BasicInfo = ({basicInfo}: BasicInfoProps) => {
   );
 };
 
+type DueDatesProps = {
+  fields: any,
+}
+
+const renderDueDates = ({fields}: DueDatesProps) => {
+  return (
+    <div>
+      <Row>
+        <Column>
+          <label className="mvj-form-field-label">Eräpäivät</label>
+        </Column>
+      </Row>
+      {fields && fields.length > 0 && fields.map((due_date, index) => {
+        return (
+          <Row key={index}>
+            <Column medium={9}>
+              <Field
+                component={FieldTypeText}
+                name={`${due_date}`}
+              />
+            </Column>
+            <Column medium={3}>
+              <button
+                className='remove-button'
+                type="button"
+                title="Poista eräpäivä"
+                onClick={() => fields.remove(index)}>
+                <img src={trashIcon} alt='Poista' />
+              </button>
+            </Column>
+          </Row>
+        );
+      })}
+      <Row style={{paddingBottom: '0.5rem'}}>
+        <Column>
+          <a onClick={() => fields.push('')} className='add-button-secondary'><i /><span>Lisää eräpäivä</span></a>
+        </Column>
+      </Row>
+    </div>
+  );
+};
+
+type FixedInitialYearRentsProps = {
+  fields: any,
+}
+
+const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
+  return (
+    <div>
+      {fields && fields.length > 0 &&
+        <Row>
+          <Column medium={2}><label className="mvj-form-field-label">Kiinteä alkuvuosivuokra</label></Column>
+          <Column medium={4}>
+            <Row>
+              <Column small={6}><label className="mvj-form-field-label">Alkupvm</label></Column>
+              <Column small={6}><label className="mvj-form-field-label">Loppupvm</label></Column>
+            </Row>
+          </Column>
+
+        </Row>
+      }
+      {fields && fields.length > 0 && fields.map((rent, index) => {
+        return (
+          <div key={index}>
+            <Row>
+              <Column medium={2}>
+                <Field
+                  component={FieldTypeText}
+                  name={`${rent}.rent`}
+                />
+              </Column>
+              <Column medium={4}>
+                <Row>
+                  <Column small={6}>
+                    <Field
+                      component={FieldTypeDatePicker}
+                      name={`${rent}.start_date`}
+                    />
+                  </Column>
+                  <Column small={6}>
+                    <Field
+                      component={FieldTypeDatePicker}
+                      name={`${rent}.end_date`}
+                    />
+                  </Column>
+                </Row>
+
+              </Column>
+              <Column>
+                <button
+                  className='remove-button'
+                  type="button"
+                  title="Poista alennus/korotus"
+                  onClick={() => fields.remove(index)}>
+                  <img src={trashIcon} alt='Poista' />
+                </button>
+              </Column>
+            </Row>
+          </div>
+        );
+      })}
+      <Row style={{paddingBottom: '0.5rem'}}>
+        <Column>
+          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää kiinteä alkuvuosivuokra</span></a>
+        </Column>
+      </Row>
+    </div>
+  );
+};
+
 type ContractRentProps = {
   fields: any,
 }
@@ -413,125 +629,6 @@ const renderContractRents = ({fields}: ContractRentProps) => {
   );
 };
 
-type DiscountProps = {
-  fields: any,
-}
-
-const renderDiscounts = ({fields}: DiscountProps) => {
-  return (
-    <div className='green-box'>
-      {fields && fields.length > 0 && fields.map((discount, index) => {
-        return(
-          <div key={index} className='item'>
-            <button
-              className='remove-button'
-              type="button"
-              title="Poista alennus/korotus"
-              onClick={() => fields.remove(index)}>
-              <img src={trashIcon} alt='Poista' />
-            </button>
-            <Row>
-              <Column medium={6}>
-                <Row>
-                  <Column small={3}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Tyyppi'
-                      name={`${discount}.type`}
-                      options={rentDiscountTypeOptions}
-                    />
-                  </Column>
-                  <Column small={4}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Käyttötarkoitus'
-                      name={`${discount}.purpose`}
-                      options={rentDiscountPurposeOptions}
-                    />
-                  </Column>
-                  <Column small={5}>
-                    <Row>
-                      <Column small={6} style={{paddingRight: '0'}}>
-                        <Field
-                          component={FieldTypeDatePicker}
-                          label='Alkupvm'
-                          name={`${discount}.start_date`}
-                        />
-                      </Column>
-                      <Column small={6} style={{paddingRight: '0'}}>
-                        <Field
-                          component={FieldTypeDatePicker}
-                          label='Loppupvm'
-                          name={`${discount}.end_date`}
-                        />
-                      </Column>
-                    </Row>
-                  </Column>
-                </Row>
-              </Column>
-              <Column medium={6}>
-                <Row>
-                  <Column small={6}>
-                    <Row>
-                      <Column><label className="mvj-form-field-label">Kokonaismäärä</label></Column>
-                    </Row>
-                    <Row>
-                      <Column small={6} style={{paddingRight: '0'}}>
-                        <Field
-                          component={FieldTypeText}
-                          name={`${discount}.amount`}
-                        />
-                      </Column>
-                      <Column small={6} style={{paddingRight: '0'}}>
-                        <Field
-                          component={FieldTypeSelect}
-                          name={`${discount}.amount_type`}
-                          options={rentDiscountAmountTypeOptions}
-                        />
-                      </Column>
-                    </Row>
-                  </Column>
-                  <Column small={3}>
-                    <Field
-                      component={FieldTypeText}
-                      disabled={true}
-                      label="Jäljellä (€)"
-                      name={`${discount}.amount_left`}
-                    />
-                  </Column>
-                  <Column small={3}>
-                    <Field
-                      clearable={true}
-                      component={FieldTypeSelect}
-                      label="Päätös"
-                      name={`${discount}.rule`}
-                      options={rentDiscountDecisionOptions}
-                    />
-                  </Column>
-                </Row>
-              </Column>
-            </Row>
-            <Row>
-              <Column medium={12}>
-                <Field
-                  name={`${discount}.comment`}
-                  component={FieldTypeText}
-                  label='Kommentti'
-                />
-              </Column>
-            </Row>
-          </div>
-        );
-      })}
-      <Row>
-        <Column>
-          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää sopimuksen muutos</span></a>
-        </Column>
-      </Row>
-    </div>
-  );
-};
-
 type Props = {
   handleSubmit: Function,
   rents: Object,
@@ -557,6 +654,11 @@ class RentEdit extends Component {
         </Row>
         <Row><Column><div className="separator-line no-margin"></div></Column></Row>
         <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
+        <Row>
+          <Column>
+            <FieldArray name="rents.criterias" component={renderCriterias}/>
+          </Column>
+        </Row>
 
         <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
         <Row>
