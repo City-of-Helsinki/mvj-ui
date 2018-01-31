@@ -86,6 +86,8 @@ type Props = {
   leaseInfoTouched: boolean,
   location: Object,
   params: Object,
+  rentsForm: Object,
+  rentsTouched: boolean,
   rulesForm: Array<Object>,
   rulesTouched: boolean,
   start_date: ?Moment,
@@ -132,6 +134,7 @@ class PreparerForm extends Component {
     dispatch(destroy('inspections-edit-form'));
     dispatch(destroy('lease-info-edit-form'));
     dispatch(destroy('property-unit-edit-form'));
+    dispatch(destroy('rent-edit-form'));
     dispatch(destroy('rule-edit-form'));
     dispatch(destroy('summary-edit-form'));
     dispatch(destroy('tenant-edit-form'));
@@ -189,6 +192,7 @@ class PreparerForm extends Component {
       eligibilityForm,
       end_date,
       inspectionsForm,
+      rentsForm,
       rulesForm,
       start_date,
       status,
@@ -214,6 +218,9 @@ class PreparerForm extends Component {
     }
     if(inspectionsForm !== undefined) {
       this.setState({inspections: inspectionsForm});
+    }
+    if(rentsForm !== undefined) {
+      this.setState({rents: rentsForm});
     }
     if(rulesForm !== undefined) {
       this.setState({rules: rulesForm});
@@ -247,6 +254,7 @@ class PreparerForm extends Component {
     dispatch(destroy('inspection-edit-form'));
     dispatch(destroy('lease-info-edit-form'));
     dispatch(destroy('property-unit-edit-form'));
+    dispatch(destroy('rent-edit-form'));
     dispatch(destroy('rule-edit-form'));
     dispatch(destroy('summary-edit-form'));
     dispatch(destroy('tenant-edit-form'));
@@ -258,6 +266,7 @@ class PreparerForm extends Component {
     dispatch(reset('inspection-edit-form'));
     dispatch(reset('lease-info-edit-form'));
     dispatch(reset('property-unit-edit-form'));
+    dispatch(reset('rent-edit-form'));
     dispatch(reset('rule-edit-form'));
     dispatch(reset('summary-edit-form'));
     dispatch(reset('tenant-edit-form'));
@@ -323,11 +332,19 @@ class PreparerForm extends Component {
       eligibilityTouched,
       inspectionTouched,
       leaseInfoTouched,
+      rentsTouched,
       rulesTouched,
       tenantsTouched,
     } = this.props;
 
-    return areasTouched || contractsTouched || eligibilityTouched || inspectionTouched || leaseInfoTouched || rulesTouched ||tenantsTouched;
+    return areasTouched ||
+      contractsTouched ||
+      eligibilityTouched ||
+      inspectionTouched ||
+      leaseInfoTouched ||
+      rentsTouched ||
+      rulesTouched ||
+      tenantsTouched;
   }
 
   archiveComment = (comment: Object) => {
@@ -594,6 +611,7 @@ const contractFormSelector = formValueSelector('contract-edit-form');
 const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const inspectionFormSelector = formValueSelector('inspection-edit-form');
 const leaseInfoFormSelector = formValueSelector('lease-info-edit-form');
+const rentFormSelector = formValueSelector('rent-edit-form');
 const ruleFormSelector = formValueSelector('rule-edit-form');
 const summaryFormSelector = formValueSelector('summary-edit-form');
 const tenantFormSelector = formValueSelector('tenant-edit-form');
@@ -620,6 +638,8 @@ export default flowRight(
         isFetching: getIsFetching(state),
         leaseInfoErrors: getLeaseInfoErrors(state),
         leaseInfoTouched: get(state, 'form.lease-info-edit-form.anyTouched'),
+        rentsForm: rentFormSelector(state, 'rents'),
+        rentsTouched: get(state, 'form.rent-edit-form.anyTouched'),
         rulesForm: ruleFormSelector(state, 'rules'),
         rulesTouched: get(state, 'form.rule-edit-form.anyTouched'),
         start_date: leaseInfoFormSelector(state, 'start_date'),

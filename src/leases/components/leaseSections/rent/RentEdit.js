@@ -536,7 +536,7 @@ class RentEdit extends Component {
                 />
               }
               {get(rents, 'basic_info.billing_type') === '1' &&
-                <FieldArray
+                <Field
                   component={FieldTypeText}
                   label="Laskut kpl / vuodessa"
                   name="rents.basic_info.bill_amount"
