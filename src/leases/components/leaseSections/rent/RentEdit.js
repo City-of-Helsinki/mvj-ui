@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {formValueSelector, reduxForm, Field, FieldArray} from 'redux-form';
+import {formValueSelector, reduxForm, Field, FieldArray, FormSection} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -127,6 +127,188 @@ const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
       <Row style={{paddingBottom: '0.5rem'}}>
         <Column>
           <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää kiinteä alkuvuosivuokra</span></a>
+        </Column>
+      </Row>
+    </div>
+  );
+};
+
+type BasicInfoProps = {
+  basicInfo: Object,
+}
+
+const BasicInfo = ({basicInfo}: BasicInfoProps) => {
+  return (
+    <div className="green-box">
+      <Row>
+        <Column medium={10}>
+          <Row>
+            <Column medium={3}>
+              <Field
+                component={FieldTypeSelect}
+                label="Vuokralaji"
+                name="type"
+                options={rentBasicInfoTypeOptions}
+              />
+            </Column>
+            {basicInfo.type === '0' &&
+              <Column medium={3}>
+                <Field
+                  component={FieldTypeSelect}
+                  label="Vuokrakausi"
+                  name="rental_period"
+                  options={rentBasicInfoRentalPeriodOptions}
+                />
+              </Column>
+            }
+            {basicInfo.type === '0' &&
+              <Column medium={3}>
+                <Field
+                  component={FieldTypeSelect}
+                  label="Indeksin tunnusnumero (laskentalaji)"
+                  name="index_type"
+                  options={rentBasicInfoIndexTypeOptions}
+                />
+              </Column>
+            }
+            {basicInfo.type === '1' &&
+              <Column medium={3}>
+                <Field
+                  component={FieldTypeText}
+                  label="Kertakaikkinen vuokra"
+                  name="rent_amount"
+                  options={rentBasicInfoIndexTypeOptions}
+                />
+              </Column>
+            }
+            {basicInfo.type === '2' &&
+              <Column medium={3}>
+                <Field
+                  component={FieldTypeText}
+                  label="Kiinteä vuokra"
+                  name="rent_amount"
+                  options={rentBasicInfoIndexTypeOptions}
+                />
+              </Column>
+            }
+            {basicInfo.type === '2' &&
+              <Column medium={3}></Column>
+            }
+            {basicInfo.type === '4' &&
+              <Column medium={6}></Column>
+            }
+            {(basicInfo.type === '0' || basicInfo.type === '2' || basicInfo.type === '4') &&
+              <Column medium={3}>
+                <Field
+                  component={FieldTypeSelect}
+                  label="Laskutusjako"
+                  name="billing_type"
+                  options={rentBasicInfoBillingTypeOptions}
+                />
+              </Column>
+            }
+          </Row>
+          {basicInfo.type === '0' &&
+            <Row>
+              <Column medium={3}>
+                <Row>
+                  <Column small={6} style={{paddingRight: '0'}}>
+                    <Field
+                      component={FieldTypeText}
+                      label="Perusindeksi"
+                      name="basic_index"
+                    />
+                  </Column>
+                  <Column small={6}>
+                    <Field
+                      component={FieldTypeText}
+                      label="Pyöristys"
+                      name="basic_index_rounding"
+                    />
+                  </Column>
+                </Row>
+              </Column>
+              <Column medium={3}>
+                <Row>
+                  <Column small={4}>
+                    <Field
+                      component={FieldTypeText}
+                      label="X-luku"
+                      name="x_value"
+                    />
+                  </Column>
+                  <Column small={4}>
+                    <Field
+                      component={FieldTypeText}
+                      label="Y-luku"
+                      name="y_value"
+                    />
+                  </Column>
+                  <Column small={4}>
+                    <Field
+                      component={FieldTypeText}
+                      label="Y-alkaen"
+                      name="y_value_start"
+                    />
+                  </Column>
+                </Row>
+              </Column>
+              <Column medium={4}>
+                <Row>
+                  <Column small={6}>
+                    <Field
+                      component={FieldTypeDatePicker}
+                      label="Tasaus alkupvm"
+                      name="adjustment_start_date"
+                    />
+                  </Column>
+                  <Column small={6}>
+                    <Field
+                      component={FieldTypeDatePicker}
+                      label="Tasaus loppupvm"
+                      name="adjustment_end_date"
+                    />
+                  </Column>
+                </Row>
+              </Column>
+            </Row>
+          }
+          {basicInfo.type === '0' &&
+            <Row>
+              <Column>
+                <FieldArray
+                  name="fidex_initial_year_rents"
+                  component={renderFixedInitialYearRents}
+                />
+              </Column>
+            </Row>
+          }
+        </Column>
+        {(basicInfo.type === '0' || basicInfo.type === '2' || basicInfo.type === '4') &&
+        <Column medium={2}>
+          {basicInfo.billing_type === '0' &&
+            <FieldArray
+              component={renderDueDates}
+              name="rents.basic_info.due_dates"
+            />
+          }
+          {basicInfo.billing_type === '1' &&
+            <Field
+              component={FieldTypeText}
+              label="Laskut kpl / vuodessa"
+              name="bill_amount"
+            />
+          }
+        </Column>
+        }
+      </Row>
+      <Row>
+        <Column>
+          <Field
+            component={FieldTypeText}
+            label="Kommentti"
+            name="comment"
+          />
         </Column>
       </Row>
     </div>
@@ -375,192 +557,26 @@ class RentEdit extends Component {
         </Row>
         <Row><Column><div className="separator-line no-margin"></div></Column></Row>
         <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
+
         <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
         <Row>
           <Column>
             <FieldArray name="rents.discounts" component={renderDiscounts}/>
           </Column>
         </Row>
+
         <Row><Column><h2>Vuokran perustiedot</h2></Column></Row>
-        <div className="green-box">
-          <Row>
-            <Column medium={10}>
-              <Row>
-                <Column medium={3}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Vuokralaji"
-                    name="rents.basic_info.type"
-                    options={rentBasicInfoTypeOptions}
-                  />
-                </Column>
-                {get(rents, 'basic_info.type') === '0' &&
-                  <Column medium={3}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label="Vuokrakausi"
-                      name="rents.basic_info.rental_period"
-                      options={rentBasicInfoRentalPeriodOptions}
-                    />
-                  </Column>
-                }
-                {get(rents, 'basic_info.type') === '0' &&
-                  <Column medium={3}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label="Indeksin tunnusnumero (laskentalaji)"
-                      name="rents.basic_info.index_type"
-                      options={rentBasicInfoIndexTypeOptions}
-                    />
-                  </Column>
-                }
-                {get(rents, 'basic_info.type') === '1' &&
-                  <Column medium={3}>
-                    <Field
-                      component={FieldTypeText}
-                      label="Kertakaikkinen vuokra"
-                      name="rents.basic_info.rent_amount"
-                      options={rentBasicInfoIndexTypeOptions}
-                    />
-                  </Column>
-                }
-                {get(rents, 'basic_info.type') === '2' &&
-                  <Column medium={3}>
-                    <Field
-                      component={FieldTypeText}
-                      label="Kiinteä vuokra"
-                      name="rents.basic_info.rent_amount"
-                      options={rentBasicInfoIndexTypeOptions}
-                    />
-                  </Column>
-                }
-                {(get(rents, 'basic_info.type') === '2') &&
-                  <Column medium={3}></Column>
-                }
-                {(get(rents, 'basic_info.type') === '4') &&
-                  <Column medium={6}></Column>
-                }
-                {(get(rents, 'basic_info.type') === '0' || get(rents, 'basic_info.type') === '2' || get(rents, 'basic_info.type') === '4') &&
-                  <Column medium={3}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label="Laskutusjako"
-                      name="rents.basic_info.billing_type"
-                      options={rentBasicInfoBillingTypeOptions}
-                    />
-                  </Column>
-                }
-              </Row>
-              {get(rents, 'basic_info.type') === '0' &&
-                <Row>
-                  <Column medium={3}>
-                    <Row>
-                      <Column small={6} style={{paddingRight: '0'}}>
-                        <Field
-                          component={FieldTypeText}
-                          label="Perusindeksi"
-                          name="rents.basic_info.basic_index"
-                        />
-                      </Column>
-                      <Column small={6}>
-                        <Field
-                          component={FieldTypeText}
-                          label="Pyöristys"
-                          name="rents.basic_info.basic_index_rounding"
-                        />
-                      </Column>
-                    </Row>
-                  </Column>
-                  <Column medium={3}>
-                    <Row>
-                      <Column small={4}>
-                        <Field
-                          component={FieldTypeText}
-                          label="X-luku"
-                          name="rents.basic_info.x_value"
-                        />
-                      </Column>
-                      <Column small={4}>
-                        <Field
-                          component={FieldTypeText}
-                          label="Y-luku"
-                          name="rents.basic_info.y_value"
-                        />
-                      </Column>
-                      <Column small={4}>
-                        <Field
-                          component={FieldTypeText}
-                          label="Y-alkaen"
-                          name="rents.basic_info.y_value_start"
-                        />
-                      </Column>
-                    </Row>
-                  </Column>
-                  <Column medium={4}>
-                    <Row>
-                      <Column small={6}>
-                        <Field
-                          component={FieldTypeDatePicker}
-                          label="Tasaus alkupvm"
-                          name="rents.basic_info.adjustment_start_date"
-                        />
-                      </Column>
-                      <Column small={6}>
-                        <Field
-                          component={FieldTypeDatePicker}
-                          label="Tasaus loppupvm"
-                          name="rents.basic_info.adjustment_end_date"
-                        />
-                      </Column>
-                    </Row>
-                  </Column>
-                </Row>
-              }
-              {get(rents, 'basic_info.type') === '0' &&
-                <Row>
-                  <Column>
-                    <FieldArray
-                      name="rents.basic_info.fidex_initial_year_rents"
-                      component={renderFixedInitialYearRents}
-                    />
-                  </Column>
-                </Row>
-              }
-            </Column>
-            {(get(rents, 'basic_info.type') === '0' || get(rents, 'basic_info.type') === '2' || get(rents, 'basic_info.type') === '4') &&
-            <Column medium={2}>
-              {get(rents, 'basic_info.billing_type') === '0' &&
-                <FieldArray
-                  component={renderDueDates}
-                  name="rents.basic_info.due_dates"
-                />
-              }
-              {get(rents, 'basic_info.billing_type') === '1' &&
-                <Field
-                  component={FieldTypeText}
-                  label="Laskut kpl / vuodessa"
-                  name="rents.basic_info.bill_amount"
-                />
-              }
-            </Column>
-            }
-          </Row>
-          <Row>
-            <Column>
-              <Field
-                component={FieldTypeText}
-                label="Kommentti"
-                name="rents.basic_info.comment"
-              />
-            </Column>
-          </Row>
-        </div>
+        <FormSection name="rents.basic_info">
+          <BasicInfo basicInfo={get(rents, 'basic_info', {})} />
+        </FormSection>
+
         <Row><Column><h2>Sopimusvuokra</h2></Column></Row>
         <Row>
           <Column>
             <FieldArray name="rents.contract_rents" component={renderContractRents}/>
           </Column>
         </Row>
+
         <Row>
           <Column medium={6}><h2>Indeksitarkistettu vuokra</h2></Column>
           <Column medium={6}><h2>Perittävä vuokra</h2></Column>
