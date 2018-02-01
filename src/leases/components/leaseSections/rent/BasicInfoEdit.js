@@ -279,7 +279,7 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
           {basicInfo.billing_type === '0' &&
             <FieldArray
               component={renderDueDates}
-              name="rents.basic_info.due_dates"
+              name="due_dates"
             />
           }
           {basicInfo.billing_type === '1' &&
