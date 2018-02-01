@@ -1,4 +1,34 @@
 .rent-section {
+  .alert {
+    color: $brick;
+    text-align: right;
+    line-height: rem-calc(33px);
+
+    i {
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      vertical-align: text-bottom;
+      background-image: url(../assets/icons/icon-alert.svg);
+      display: inline-block;
+      margin-left: 0.4rem;
+    }
+  }
+
+  .success {
+    color: $tram;
+    text-align: right;
+    line-height: rem-calc(33px);
+
+    i {
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      vertical-align: text-bottom;
+      background-image: url(../assets/icons/icon_checked.svg);
+      display: inline-block;
+      margin-left: 0.4rem;
+    }
+  }
+
   table.rent-table {
     thead {
       tr {
@@ -7,6 +37,9 @@
           border-top: 1px solid #d7d5d5;
           border-bottom: 1px solid $light-gray;
           padding: 0.3rem 0.5rem;
+          font-size: $font-xsmall;
+          font-weight: $semibold;
+          color: $black;
         }
 
         th:first-child {
@@ -35,6 +68,7 @@
             vertical-align: middle;
           }
         }
+
         td:first-child {
           border-left: solid 1px #d7d5d5;
         }
@@ -53,6 +87,7 @@
         td {
           background-color: rgba(0, 146, 70, 0.1);
         }
+
         td:last-child {
           background-color: transparent;
         }
@@ -69,6 +104,7 @@
       }
     }
   }
+
   table.contract-rent-table {
     border: 1px solid #d7d5d5;
 
@@ -76,8 +112,11 @@
       tr {
         th {
           border: none;
+          border-bottom: 1px solid $light-gray;
           padding: 0.3rem 0.5rem;
-          border-bottom: 1px solid $light_gray;
+          font-size: $font-xsmall;
+          font-weight: $semibold;
+          color: $black;
         }
       }
     }
@@ -116,6 +155,7 @@
       }
     }
   }
+
   .discount-item:first-child {
     margin: 0;
     padding: 0;

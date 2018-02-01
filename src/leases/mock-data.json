@@ -88,11 +88,14 @@
         }
       ],
       "rents": {
+        "rent_info_ok": true,
         "basic_info": {
           "adjustment_start_date": "2000/01/01",
           "adjustment_end_date": "2001/01/01",
           "basic_index": 418,
           "basic_index_rounding": 0,
+          "billing_type": "0",
+          "comment": "Lorem ipsum",
           "due_dates": [
             "01.03",
             "15.04",
@@ -101,22 +104,19 @@
           ],
           "fidex_initial_year_rents": [
             {
-              "comment": "Lorem ipsum",
               "end_date": null,
               "rent": 3489.90,
               "start_date": "1962/01/01"
             },
             {
-              "comment": null,
               "end_date": "1962/01/01",
               "rent": 3234.12,
               "start_date": "1960/01/01"
             }
           ],
-          "index_type": 3,
-          "index_calculation_type": 1,
-          "rental_period": "1.1. – 31.12.",
-          "type": "Indeksi",
+          "index_type": "3",
+          "rental_period": "0",
+          "type": "0",
           "y_value": 1044,
           "y_value_start": 812,
           "x_value": 812
@@ -124,7 +124,7 @@
         "criterias": [
           {
             "agreed": false,
-            "purpose": "Asunto",
+            "purpose": "100",
             "km2": 120,
             "index": 1880,
             "ekm2ind100": 18,
@@ -195,44 +195,51 @@
         "contract_rents": [
           {
             "basic_rent": 6296.96,
+            "basic_rent_type": "0",
             "contract_rent": 2098.99,
             "end_date": null,
-            "purpose": "Asunto",
-            "start_date": "1980/01/01"
+            "purpose": "100",
+            "start_date": "1980/01/01",
+            "type": "0"
           },
           {
             "basic_rent": 7861.19,
+            "basic_rent_type": "0",
             "contract_rent": 2623.73,
             "end_date": "1980/01/01",
-            "purpose": "Asunto",
-            "start_date": "1960/01/01"
+            "purpose": "100",
+            "start_date": "1960/01/01",
+            "type": "0"
           }
         ],
         "discounts": [
           {
-            "amount": 15,
+            "amount": 100000,
+            "amount_left": 75000,
+            "amount_type": "3",
             "comment": "Talouskasvu tuo valtion kassaan lähes kolme miljardia lisää rahaa. Lisäraha menee pitkälti velanoton vähentämiseen.",
             "end_date": "1980/12/31",
-            "purpose": "Asunto",
+            "purpose": "100",
             "rule": null,
             "start_date": "1960/01/01",
-            "type": "Alennus"
+            "type": "0"
           },
           {
             "amount": 10,
+            "amount_type": "1",
             "comment": "Talouskasvu tuo valtion kassaan lähes kolme miljardia lisää rahaa. Lisäraha menee pitkälti velanoton vähentämiseen.",
             "end_date": "2020/12/31",
-            "purpose": "Asunto",
-            "rule": "ALK, 36, 14.07.2017",
+            "purpose": "100",
+            "rule": "0",
             "start_date": "1981/01/01",
-            "type": "Alennus"
+            "type": "0"
           }
         ],
         "index_adjusted_rents": [
           {
             "calculation_factor": 4.57,
             "end_date": "2017/12/31",
-            "purpose": "Asunto",
+            "purpose": "100",
             "rent": 36387.65,
             "start_date": "2017/01/01"
           },
@@ -240,49 +247,49 @@
             "calculation_factor": 4.57,
             "end_date": "2016/12/31",
             "rent": 36387.65,
-            "purpose": "Asunto",
+            "purpose": "100",
             "start_date": "2016/01/01"
           },
           {
             "calculation_factor": 4.57,
             "end_date": "2015/12/31",
             "rent": 36387.65,
-            "purpose": "Asunto",
+            "purpose": "100",
             "start_date": "2015/01/01"
           },
           {
             "calculation_factor": 4.57,
             "end_date": "2014/12/31",
             "rent": 36387.65,
-            "purpose": "Asunto",
+            "purpose": "100",
             "start_date": "2014/01/01"
           },
           {
             "calculation_factor": 4.57,
             "end_date": "2013/12/31",
             "rent": 36387.65,
-            "purpose": "Asunto",
+            "purpose": "100",
             "start_date": "2013/01/01"
           },
           {
             "calculation_factor": 4.57,
             "end_date": "2012/12/31",
             "rent": 36387.65,
-            "purpose": "Asunto",
+            "purpose": "100",
             "start_date": "2012/01/01"
           },
           {
             "calculation_factor": 4.57,
             "end_date": "2011/12/31",
             "rent": 36387.65,
-            "purpose": "Asunto",
+            "purpose": "100",
             "start_date": "2011/01/01"
           },
           {
             "calculation_factor": 4.57,
             "end_date": "2010/12/31",
             "rent": 36387.65,
-            "purpose": "Asunto",
+            "purpose": "100",
             "start_date": "2010/01/01"
           }
         ]

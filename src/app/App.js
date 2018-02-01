@@ -133,7 +133,10 @@ class App extends Component {
           userProfile={get(user, 'profile')}
         />
         <section className="app__content">
-          <SideMenu isOpen={displaySideMenu} />
+          <SideMenu
+            isOpen={displaySideMenu}
+            onLinkClick={this.toggleSideMenu}
+          />
           <div className={classnames('wrapper', {'is-sidemenu-closed': !displaySideMenu}, {'is-sidemenu-open': displaySideMenu})}>
             {children}
           </div>

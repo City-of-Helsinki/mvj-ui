@@ -1,3 +1,100 @@
+export const rentBasicInfoBillingTypeOptions = [
+  {value: '0', label: 'Eräpäivät'},
+  {value: '1', label: 'Laskut'},
+];
+
+export const rentBasicInfoIndexTypeOptions = [
+  {value: '1', label: '1 (1)'},
+  {value: '2', label: '2 (1)'},
+  {value: '3', label: '3 (1)'},
+  {value: '4', label: '4 (1)'},
+  {value: '5', label: '5 (1)'},
+  {value: '6', label: '6 (1)'},
+  {value: '7', label: '7 (1)'},
+];
+
+export const rentBasicInfoRentalPeriodOptions = [
+  {value: '0', label: '1.1 - 31.12'},
+  {value: '1', label: '1.4 - 31.3'},
+];
+
+export const rentBasicInfoTypeOptions = [
+  {value: '0', label: 'Indeksi'},
+  {value: '1', label: 'Kertakaikkinen'},
+  {value: '2', label: 'Kiinteä'},
+  {value: '3', label: 'Korvauksetta'},
+  {value: '4', label: 'Käsinlaskenta'},
+];
+
+export const rentContractRentPurposeOptions = [
+  {value: '100', label: 'Asuminen / yleinen'},
+  {value: '101', label: 'Vapaarahoitteisia omistusasuntoja'},
+  {value: '102', label: 'Aravaomistusasuntoja'},
+  {value: '103', label: 'Vapaarahoitteisia vuokra-asuntoja'},
+  {value: '104', label: 'Aravavuokrataloja'},
+  {value: '105', label: 'Peruskorjattuja arava-vuokrataloja'},
+  {value: '106', label: 'Omakotitalo'},
+  {value: '107', label: 'Paritalo'},
+  {value: '108', label: 'Sekatalo'},
+  {value: '109', label: 'Asumisoikeusasuntoja'},
+  {value: '110', label: 'Opiskelija-asuntoja'},
+  {value: '111', label: 'Vanhusten asuntoja'},
+  {value: '112', label: 'Palvelutalo/hoitokoti'},
+];
+
+export const rentContractRentTypeOptions = [
+  {value: '0', label: '€ / v'},
+  {value: '1', label: '€ / kk'},
+];
+
+export const rentCriteriaPurposeOptions = [
+  {value: '100', label: 'Asuminen / yleinen'},
+  {value: '101', label: 'Vapaarahoitteisia omistusasuntoja'},
+  {value: '102', label: 'Aravaomistusasuntoja'},
+  {value: '103', label: 'Vapaarahoitteisia vuokra-asuntoja'},
+  {value: '104', label: 'Aravavuokrataloja'},
+  {value: '105', label: 'Peruskorjattuja arava-vuokrataloja'},
+  {value: '106', label: 'Omakotitalo'},
+  {value: '107', label: 'Paritalo'},
+  {value: '108', label: 'Sekatalo'},
+  {value: '109', label: 'Asumisoikeusasuntoja'},
+  {value: '110', label: 'Opiskelija-asuntoja'},
+  {value: '111', label: 'Vanhusten asuntoja'},
+  {value: '112', label: 'Palvelutalo/hoitokoti'},
+];
+
+export const rentDiscountAmountTypeOptions = [
+  {value: '0', label: '% vuodessa'},
+  {value: '1', label: '% yhteensä'},
+  {value: '2', label: '€ vuodessa'},
+  {value: '3', label: '€ yhteensä'},
+];
+
+export const rentDiscountDecisionOptions = [
+  {value: '0', label: 'ALK, 36, 14.07.2017'},
+];
+
+export const rentDiscountPurposeOptions = [
+  {value: '100', label: 'Asuminen / yleinen'},
+  {value: '101', label: 'Vapaarahoitteisia omistusasuntoja'},
+  {value: '102', label: 'Aravaomistusasuntoja'},
+  {value: '103', label: 'Vapaarahoitteisia vuokra-asuntoja'},
+  {value: '104', label: 'Aravavuokrataloja'},
+  {value: '105', label: 'Peruskorjattuja arava-vuokrataloja'},
+  {value: '106', label: 'Omakotitalo'},
+  {value: '107', label: 'Paritalo'},
+  {value: '108', label: 'Sekatalo'},
+  {value: '109', label: 'Asumisoikeusasuntoja'},
+  {value: '110', label: 'Opiskelija-asuntoja'},
+  {value: '111', label: 'Vanhusten asuntoja'},
+  {value: '112', label: 'Palvelutalo/hoitokoti'},
+];
+
+export const rentDiscountTypeOptions = [
+  {value: '0', label: 'Alennus'},
+  {value: '1', label: 'Korotus'},
+];
+
 export const summaryFinancialMethodOptions = [
   {value: 'A', label: 'Korkotuki yht. pitkä'},
   {value: 'B', label: 'Korkotuki yht. lyhyt'},
@@ -27,6 +124,22 @@ export const summaryHitasOptions = [
   {value: '7', label: 'Hitas II (loikkari)'},
   {value: '8', label: 'Hitas (vapautettu)'},
   {value: '9', label: 'Hintakontrolloitu'},
+];
+
+export const rentIndexAdjustedRentPurposeOptions = [
+  {value: '100', label: 'Asuminen / yleinen'},
+  {value: '101', label: 'Vapaarahoitteisia omistusasuntoja'},
+  {value: '102', label: 'Aravaomistusasuntoja'},
+  {value: '103', label: 'Vapaarahoitteisia vuokra-asuntoja'},
+  {value: '104', label: 'Aravavuokrataloja'},
+  {value: '105', label: 'Peruskorjattuja arava-vuokrataloja'},
+  {value: '106', label: 'Omakotitalo'},
+  {value: '107', label: 'Paritalo'},
+  {value: '108', label: 'Sekatalo'},
+  {value: '109', label: 'Asumisoikeusasuntoja'},
+  {value: '110', label: 'Opiskelija-asuntoja'},
+  {value: '111', label: 'Vanhusten asuntoja'},
+  {value: '112', label: 'Palvelutalo/hoitokoti'},
 ];
 
 export const summaryLeaseStatisticalUseOptions = [

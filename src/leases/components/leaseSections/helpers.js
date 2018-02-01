@@ -1,7 +1,17 @@
 // @flow
 import get from 'lodash/get';
 
-import {summaryFinancialMethodOptions,
+import {rentBasicInfoIndexTypeOptions,
+  rentBasicInfoRentalPeriodOptions,
+  rentBasicInfoTypeOptions,
+  rentContractRentPurposeOptions,
+  rentContractRentTypeOptions,
+  rentCriteriaPurposeOptions,
+  rentDiscountDecisionOptions,
+  rentDiscountPurposeOptions,
+  rentDiscountTypeOptions,
+  rentIndexAdjustedRentPurposeOptions,
+  summaryFinancialMethodOptions,
   summaryHitasOptions,
   summaryLeaseStatisticalUseOptions,
   summaryLeaseUseOptions,
@@ -13,6 +23,56 @@ import {summaryFinancialMethodOptions,
   summaryRegulatoryMethodOptions,
   summarySpecialApartmentsOptions,
   summaryTransferRightOptions} from './constants';
+
+export const getBasicInfoIndexTypeLabel = (value: string) => {
+  const option = rentBasicInfoIndexTypeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getBasicInfoRentalPeriodLabel = (value: string) => {
+  const option = rentBasicInfoRentalPeriodOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getBasicInfoTypeLabel = (value: string) => {
+  const option = rentBasicInfoTypeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getRentContractRentPurposeLabel = (value: string) => {
+  const option = rentContractRentPurposeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getRentContractRentTypeLabel = (value: string) => {
+  const option = rentContractRentTypeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getRentCriteriaPurposeLabel = (value: string) => {
+  const option = rentCriteriaPurposeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getRentDiscountDecisionLabel = (value: string) => {
+  const option = rentDiscountDecisionOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getRentDiscountPurposeLabel = (value: string) => {
+  const option = rentDiscountPurposeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getRentDiscountTypeLabel = (value: string) => {
+  const option = rentDiscountTypeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getRentIndexAdjustedRentPurposeLabel = (value: string) => {
+  const option = rentIndexAdjustedRentPurposeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
 
 export const getSummaryFinancialMethodLabel = (value: string) => {
   const option = summaryFinancialMethodOptions.find(x => x.value=== value);

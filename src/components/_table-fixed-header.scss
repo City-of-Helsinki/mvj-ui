@@ -35,7 +35,7 @@
           top: 0;
           margin-left: 0;
           line-height: rem-calc(30px);
-          font-size: $font-small;
+          font-size: $font-xsmall;
           font-weight: $semibold;
           color: $black;
         }
@@ -43,16 +43,18 @@
     }
 
     tbody {
-      tr {
-        td {
-          border-bottom: none;
-        }
-      }
       tr:hover {
         background-color: rgba(0, 146, 70, 0.1);
       }
       td {
+        border-bottom: none;
         padding: 0.3rem 0.5rem;
+
+        div.text-container {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
       }
     }
   }

@@ -122,7 +122,7 @@ export const formatDate = (date: string) => {
 };
 
 export const formatDecimalNumbers = (x) => {
-  return x.toFixed(2).toString().replace('.', ',');
+  return parseFloat(x).toFixed(2).toString().replace('.', ',');
 };
 
 export const formatNumberWithThousandSeparator = (x, separator = ' ') => {

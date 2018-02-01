@@ -41,7 +41,7 @@ const FieldTypeCheckbox = ({
 
   return (
     <div className='mvj-form-field'>
-      {label && <label className='title'>{label}</label>}
+      {label && <label className='mvj-form-field-label'>{label}</label>}
       <fieldset
         id={name}
         className={classNames(`mvj-form-field__${type}`, className, {'has-error': displayError}, {'is-dirty': dirty})}

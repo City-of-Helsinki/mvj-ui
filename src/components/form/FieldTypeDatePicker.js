@@ -7,6 +7,7 @@ import classnames from 'classnames';
 import 'react-datepicker/dist/react-datepicker.css';
 
 type Props = {
+  className?: string,
   disableTouched: boolean,
   input: Object,
   label: string,
@@ -22,6 +23,7 @@ const getFormatedDate = (value: any) => {
 };
 
 const FieldDatePicker = ({
+  className,
   disableTouched = false,
   input,
   label,
@@ -29,8 +31,8 @@ const FieldDatePicker = ({
   placeholder,
 }: Props) => (
   <div className='mvj-form-field'>
-    {label && <label className='title'>{label}</label>}
-    <div className={classnames('mvj-form-field__datepicker', {'is-dirty': dirty})}>
+    {label && <label className='mvj-form-field-label'>{label}</label>}
+    <div className={classnames('mvj-form-field__datepicker', className, {'is-dirty': dirty})}>
       <DatePicker
         {...input}
         placeholder={placeholder}

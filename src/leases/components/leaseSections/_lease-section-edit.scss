@@ -48,6 +48,20 @@
     padding-left: 0.9375rem;
   }
 
+  .remove-button {
+    cursor: pointer;
+    position: relative;
+    top: rem-calc(-1px);
+
+    img {
+      height: 22px;
+      width: 22px;
+    }
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
   .item {
     border: none;
     display: block;
@@ -90,6 +104,11 @@
       }
     }
   }
+
+  .item:first-child {
+    border-top: none;
+  }
+
   .green-box {
     background-color: rgba(0, 146, 70, 0.1);
     padding: 0.6rem 1rem;
@@ -97,6 +116,23 @@
 
     &.no-margin {
       margin: 0;
+    }
+  }
+
+  .bordered-box {
+    background-color: $white;
+    border: 1px solid #d7d5d5;
+    padding: 0.6rem 1rem;
+    margin: 0.6rem 0;
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    .mvj-form-field-label {
+      font-size: $font-xsmall;
+      font-weight: $semibold;
+      color: $black;
     }
   }
 

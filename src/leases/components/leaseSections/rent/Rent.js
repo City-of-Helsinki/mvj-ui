@@ -3,11 +3,11 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
-import ContractRent from './ContractRent';
+import ContractRents from './ContractRents';
 import Discounts from './Discounts';
-import RentCriteria from './RentCriteria';
-import RentCharged from './RentCharged';
-import RentIndexAdjusted from './RentIndexAdjusted';
+import Criterias from './Criterias';
+import ChargedRents from './ChargedRents';
+import IndexAdjustedRents from './IndexAdjustedRents';
 import RentBasicInfo from './RentBasicInfo';
 
 type Props = {
@@ -18,11 +18,19 @@ type Props = {
 const Rent = ({onCriteriaAgree, rents}: Props) => {
   return (
     <div className="lease-section rent-section">
-      <Row><Column><h1>Vuokra</h1></Column></Row>
+      <Row>
+        <Column medium={9}><h1>Vuokra</h1></Column>
+        <Column medium={3}>
+          {rents.rent_info_ok
+            ? (<p className="success">Vuokratiedot kunnossa<i /></p>)
+            : (<p className="alert">Vaatii toimenpiteitä<i /></p>)
+          }
+        </Column>
+      </Row>
       <Row><Column><div className="separator-line no-margin"></div></Column></Row>
       <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
       <Row><Column>
-        <RentCriteria
+        <Criterias
           criterias={get(rents, 'criterias', {})}
           onCriteriaAgree={(criteria) => onCriteriaAgree(criteria)}
         />
@@ -43,20 +51,20 @@ const Rent = ({onCriteriaAgree, rents}: Props) => {
       </Row>
       <Row><Column><h2>Sopimusvuokra</h2></Column></Row>
       <Row><Column>
-        <ContractRent
+        <ContractRents
           contractRents={get(rents, 'contract_rents', [])}
         />
       </Column></Row>
       <Row>
         <Column medium={6}>
           <h2>Indeksitarkistettu vuokra</h2>
-          <RentIndexAdjusted
+          <IndexAdjustedRents
             indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}
           />
         </Column>
         <Column medium={6}>
           <h2>Perittävä vuokra</h2>
-          <RentCharged
+          <ChargedRents
             chargedRents={get(rents, 'charged_rents', [])}
           />
         </Column>

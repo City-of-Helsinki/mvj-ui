@@ -46,15 +46,19 @@ class LeaseInfoEdit extends Component {
         <div className='lease-info-edit__column'>
           <div className='lease-info-edit__column-wrapper'>
             <Field
+              className="height-medium"
+              component={FieldTypeDatePicker}
               label='Alkupäivämäärä'
               name={'start_date'}
               type="text"
-              component={FieldTypeDatePicker}/>
+            />
           </div>
         </div>
         <div className='lease-info-edit__column'>
           <div className='lease-info-edit__column-wrapper'>
             <Field
+              className="height-medium"
+              component={FieldTypeDatePicker}
               label='Loppupäivämäärä'
               name={'end_date'}
               type="text"
@@ -62,7 +66,7 @@ class LeaseInfoEdit extends Component {
               validate={[
                 (value) => dateGreaterOrEqual(value, start_date),
               ]}
-              component={FieldTypeDatePicker}/>
+            />
           </div>
         </div>
       </form>

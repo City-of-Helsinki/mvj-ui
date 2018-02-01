@@ -3,6 +3,10 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 
 import {formatDateRange} from '../../../../util/helpers';
+import {getRentDiscountDecisionLabel,
+  getRentDiscountPurposeLabel,
+  getRentDiscountTypeLabel,
+} from '../helpers';
 
 type Props = {
   discounts: Array<Object>,
@@ -21,11 +25,11 @@ const Discounts = ({discounts}: Props) => {
                     <Row>
                       <Column small={3}>
                         <label>Tyyppi</label>
-                        <p>{discount.type ? discount.type : '-'}</p>
+                        <p>{discount.type ? getRentDiscountTypeLabel(discount.type) : '-'}</p>
                       </Column>
                       <Column small={3}>
                         <label>Käyttötarkoitus</label>
-                        <p>{discount.purpose ? discount.purpose : '-'}</p>
+                        <p>{discount.purpose ? getRentDiscountPurposeLabel(discount.purpose) : '-'}</p>
                       </Column>
                       <Column small={6}>
                         <label>Voimassaoloaika</label>
@@ -37,11 +41,17 @@ const Discounts = ({discounts}: Props) => {
                     <Row>
                       <Column small={6}>
                         <label>Määrä</label>
-                        <p>{discount.amount ? `${discount.amount} %` : '-'}</p>
+                        <p>
+                          {discount.amount ? `${discount.amount} ` : '-'}
+                          {discount.amount_type === '0' && <span>%/v</span>}
+                          {discount.amount_type === '1' && <span>%</span>}
+                          {discount.amount_type === '2' && <span>€/v</span>}
+                          {discount.amount_type === '3' && <span>€</span>}
+                        </p>
                       </Column>
                       <Column small={6}>
                         <label>Päätös</label>
-                        {discount.rule ? <a>{discount.rule}<span className="link-icon"/></a> : '-'}
+                        {discount.rule ? <a>{getRentDiscountDecisionLabel(discount.rule)}<span className="link-icon"/></a> : '-'}
                       </Column>
                     </Row>
                   </Column>
