@@ -49,7 +49,6 @@ const ContractRentsEdit = ({fields}: Props) => {
       {fields && fields.length > 0 && fields.map((rent, index) => {
         return(
           <div key={index}>
-
             <Row>
               <Column small={11}>
                 <Row>
@@ -122,7 +121,6 @@ const ContractRentsEdit = ({fields}: Props) => {
                 </button>
               </Column>
             </Row>
-
           </div>
         );
       })}

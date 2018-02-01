@@ -76,9 +76,7 @@ const ChargedRentsEdit = ({fields}: Props) => {
           'Nousu %',
           'Kalenterivuosivuokra',
         ]}
-        body={
-          getTableBody(fields)
-        }
+        body={getTableBody(fields)}
       />
     </div>
   );

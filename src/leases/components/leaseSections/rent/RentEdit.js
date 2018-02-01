@@ -37,7 +37,9 @@ class RentEdit extends Component {
             />
           </Column>
         </Row>
+
         <Row><Column><div className="separator-line no-margin"></div></Column></Row>
+
         <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
         <Row>
           <Column>
@@ -72,6 +74,7 @@ class RentEdit extends Component {
               name="rents.index_adjusted_rents"
             />
           </Column>
+
           <Column medium={6}>
             <h2>Perittävä vuokra</h2>
             <FieldArray

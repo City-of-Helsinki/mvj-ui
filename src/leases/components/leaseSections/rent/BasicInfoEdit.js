@@ -70,8 +70,7 @@ const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
               <Column small={6}><label className="mvj-form-field-label">Alkupvm</label></Column>
               <Column small={6}><label className="mvj-form-field-label">Loppupvm</label></Column>
             </Row>
-          </Column>
-
+          </Column> d
         </Row>
       }
       {fields && fields.length > 0 && fields.map((rent, index) => {
@@ -99,7 +98,6 @@ const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
                     />
                   </Column>
                 </Row>
-
               </Column>
               <Column>
                 <button
@@ -123,10 +121,10 @@ const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
   );
 };
 
-
 type Props = {
   basicInfo: Object,
 }
+
 const BasicInfoEdit = ({basicInfo}: Props) => {
   return (
     <div className="green-box">

@@ -123,7 +123,6 @@ const BasicInfoIndex = ({basicInfo}: Props) => {
             <p>{bill_amount ? bill_amount : '-'}</p>
           </Column>
         }
-
       </Row>
     </div>
   );
@@ -133,6 +132,7 @@ const BasicInfoUtter = ({basicInfo}: Props) => {
   const {comment,
     rent_amount,
     type} = basicInfo;
+
   return (
     <div className="section-item">
       <Row>
@@ -162,6 +162,7 @@ const BasicInfoFixed = ({basicInfo}: Props) => {
     due_dates,
     rent_amount,
     type} = basicInfo;
+
   return (
     <div className="section-item">
       <Row>
@@ -204,6 +205,7 @@ const BasicInfoFixed = ({basicInfo}: Props) => {
 const BasicInfoFree = ({basicInfo}: Props) => {
   const {comment,
     type} = basicInfo;
+
   return (
     <div className="section-item">
       <Row>
@@ -228,6 +230,7 @@ const BasicInfoCalculated = ({basicInfo}: Props) => {
     comment,
     due_dates,
     type} = basicInfo;
+
   return (
     <div className="section-item">
       <Row>
