@@ -66,12 +66,12 @@
 
       &-option-label {
         font-size: $font-regular;
-	      font-weight: $semibold;
-	      text-align: left;
+        font-weight: $semibold;
+        text-align: left;
         display: inline-block;
         margin-right: rem-calc(5px);
         line-height: rem-calc(20px);
-	      color: $tram;
+        color: $tram;
 
         &.label-off {
           color: $brick;
