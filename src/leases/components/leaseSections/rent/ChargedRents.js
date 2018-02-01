@@ -26,7 +26,7 @@ const getTableBody = (chargedRents: Array<Object>) => {
   }
 };
 
-const RentCharged = ({chargedRents}: Props) => {
+const ChargedRents = ({chargedRents}: Props) => {
   return (
     <TableFixedHeader
       headers={[
@@ -40,4 +40,4 @@ const RentCharged = ({chargedRents}: Props) => {
   );
 };
 
-export default RentCharged;
+export default ChargedRents;

@@ -26,7 +26,7 @@ const getTableBody = (indexAdjustedRents: Array<Object>) => {
   }
 };
 
-const RentIndexAdjusted = ({indexAdjustedRents}: Props) => {
+const IndexAdjustedRents = ({indexAdjustedRents}: Props) => {
   return (
     <TableFixedHeader
       headers={[
@@ -40,4 +40,4 @@ const RentIndexAdjusted = ({indexAdjustedRents}: Props) => {
   );
 };
 
-export default RentIndexAdjusted;
+export default IndexAdjustedRents;

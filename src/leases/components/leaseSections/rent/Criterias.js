@@ -11,7 +11,7 @@ type Props = {
   onCriteriaAgree: Function,
 }
 
-const RentCriteria = ({criterias, onCriteriaAgree}: Props) => {
+const Criterias = ({criterias, onCriteriaAgree}: Props) => {
   return (
     <div>
       <table className="rent-table">
@@ -58,4 +58,4 @@ const RentCriteria = ({criterias, onCriteriaAgree}: Props) => {
   );
 };
 
-export default RentCriteria;
+export default Criterias;

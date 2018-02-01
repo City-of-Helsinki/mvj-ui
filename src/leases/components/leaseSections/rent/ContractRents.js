@@ -9,7 +9,7 @@ type Props = {
   contractRents: Array<Object>,
 }
 
-const ContractRent = ({contractRents}: Props) => {
+const ContractRents = ({contractRents}: Props) => {
   return (
     <table className="contract-rent-table">
       <thead>
@@ -37,4 +37,4 @@ const ContractRent = ({contractRents}: Props) => {
   );
 };
 
-export default ContractRent;
+export default ContractRents;
