@@ -14,7 +14,7 @@ export const fetchLeases = (search: string): Generator<> => {
 };
 
 export const fetchSingleLease = (id: LeaseId): Generator<> => {
-  return callApi(new Request(createUrl(`lease/${id}`)));
+  return callApi(new Request(createUrl(`lease/${id}/`)));
 };
 
 export const createLease = (lease: Lease): Generator<> => {
