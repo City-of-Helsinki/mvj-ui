@@ -15,7 +15,8 @@
     color: $white;
     font-weight: $semibold;
     line-height: 2;
-    li {
+    li a {
+      color: $white;
       cursor: pointer;
       &:hover {
         color: $engel;
