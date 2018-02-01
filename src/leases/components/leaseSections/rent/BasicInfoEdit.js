@@ -70,7 +70,7 @@ const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
               <Column small={6}><label className="mvj-form-field-label">Alkupvm</label></Column>
               <Column small={6}><label className="mvj-form-field-label">Loppupvm</label></Column>
             </Row>
-          </Column> d
+          </Column>
         </Row>
       }
       {fields && fields.length > 0 && fields.map((rent, index) => {
