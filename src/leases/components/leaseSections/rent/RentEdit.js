@@ -8,6 +8,7 @@ import get from 'lodash/get';
 
 import BasicInfoEdit from './BasicInfoEdit';
 import ContractRentsEdit from './ContractRentsEdit';
+import ChargedRentsEdit from './ChargedRentsEdit';
 import CriteriasEdit from './CriteriasEdit';
 import DiscountsEdit from './DiscountsEdit';
 import IndexAdjustedRentsEdit from './IndexAdjustedRentsEdit';
@@ -69,10 +70,15 @@ class RentEdit extends Component {
             <FieldArray
               component={IndexAdjustedRentsEdit}
               name="rents.index_adjusted_rents"
-              optionLabel="Vuokratiedot kunnossa"
             />
           </Column>
-          <Column medium={6}><h2>Perittävä vuokra</h2></Column>
+          <Column medium={6}>
+            <h2>Perittävä vuokra</h2>
+            <FieldArray
+              component={ChargedRentsEdit}
+              name="rents.charged_rents"
+            />
+          </Column>
         </Row>
       </form>
     );

@@ -4,10 +4,8 @@ import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import TableFixedHeader from '../../../../components/TableFixedHeader';
-import {rentIndexAdjustedRentPurposeOptions} from '../constants';
 
 
 const getTableBody = (fields) => {
@@ -21,14 +19,6 @@ const getTableBody = (fields) => {
                 component={FieldTypeText}
                 inputClassName="no-margin"
                 name={`${item}.rent`}
-              />
-            </td>
-            <td style={{width: '140px'}}>
-              <Field
-                component={FieldTypeSelect}
-                className="no-margin"
-                name={`${item}.purpose`}
-                options={rentIndexAdjustedRentPurposeOptions}
               />
             </td>
             <td style={{width: '202px'}}>
@@ -51,7 +41,14 @@ const getTableBody = (fields) => {
               <Field
                 component={FieldTypeText}
                 inputClassName="no-margin"
-                name={`${item}.calculation_factor`}
+                name={`${item}.difference`}
+              />
+            </td>
+            <td>
+              <Field
+                component={FieldTypeText}
+                inputClassName="no-margin"
+                name={`${item}.calendar_year_rent`}
               />
             </td>
           </tr>
@@ -70,15 +67,15 @@ type Props = {
   fields: any,
 }
 
-const IndexAdjustedRentsEdit = ({fields}: Props) => {
+const ChargedRentsEdit = ({fields}: Props) => {
   return (
     <div>
       <TableFixedHeader
         headers={[
-          'Ind. tark. vuokra (€)',
-          'Käyttötarkoitus',
+          'Perittävä vuokra (€)',
           'Voimassaoloaika',
-          'Laskentak.',
+          'Nousu %',
+          'Kalenterivuosivuokra',
         ]}
         body={
           getTableBody(fields)
@@ -88,4 +85,4 @@ const IndexAdjustedRentsEdit = ({fields}: Props) => {
   );
 };
 
-export default IndexAdjustedRentsEdit;
+export default ChargedRentsEdit;
