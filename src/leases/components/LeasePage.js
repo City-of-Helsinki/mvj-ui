@@ -553,7 +553,7 @@ class PreparerForm extends Component {
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   {!isEditMode && <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>}
-                  {isEditMode && <RentEdit  initialValues={{rents: rents}}/>}
+                  {isEditMode && <RentEdit initialValues={{rents: rents}}/>}
                 </div>
               </TabPane>
 

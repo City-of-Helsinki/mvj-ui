@@ -19,7 +19,7 @@ const TableFixedHeader = ({body, headers}: Props) => {
               </tr>
             }
           </thead>
-          <tbody>{body}</tbody>
+          {body}
         </table>
       </div>
     </div>

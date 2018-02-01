@@ -126,6 +126,22 @@ export const summaryHitasOptions = [
   {value: '9', label: 'Hintakontrolloitu'},
 ];
 
+export const rentIndexAdjustedRentPurposeOptions = [
+  {value: '100', label: 'Asuminen / yleinen'},
+  {value: '101', label: 'Vapaarahoitteisia omistusasuntoja'},
+  {value: '102', label: 'Aravaomistusasuntoja'},
+  {value: '103', label: 'Vapaarahoitteisia vuokra-asuntoja'},
+  {value: '104', label: 'Aravavuokrataloja'},
+  {value: '105', label: 'Peruskorjattuja arava-vuokrataloja'},
+  {value: '106', label: 'Omakotitalo'},
+  {value: '107', label: 'Paritalo'},
+  {value: '108', label: 'Sekatalo'},
+  {value: '109', label: 'Asumisoikeusasuntoja'},
+  {value: '110', label: 'Opiskelija-asuntoja'},
+  {value: '111', label: 'Vanhusten asuntoja'},
+  {value: '112', label: 'Palvelutalo/hoitokoti'},
+];
+
 export const summaryLeaseStatisticalUseOptions = [
   {value: '01', label: 'Asuntotontit'},
   {value: '02', label: 'Yritystontit'},

@@ -10,6 +10,7 @@ import {rentBasicInfoIndexTypeOptions,
   rentDiscountDecisionOptions,
   rentDiscountPurposeOptions,
   rentDiscountTypeOptions,
+  rentIndexAdjustedRentPurposeOptions,
   summaryFinancialMethodOptions,
   summaryHitasOptions,
   summaryLeaseStatisticalUseOptions,
@@ -65,6 +66,11 @@ export const getRentDiscountPurposeLabel = (value: string) => {
 
 export const getRentDiscountTypeLabel = (value: string) => {
   const option = rentDiscountTypeOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getRentIndexAdjustedRentPurposeLabel = (value: string) => {
+  const option = rentIndexAdjustedRentPurposeOptions.find(x => x.value=== value);
   return get(option, 'label', '');
 };
 

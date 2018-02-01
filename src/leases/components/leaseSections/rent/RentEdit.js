@@ -10,6 +10,7 @@ import BasicInfoEdit from './BasicInfoEdit';
 import ContractRentsEdit from './ContractRentsEdit';
 import CriteriasEdit from './CriteriasEdit';
 import DiscountsEdit from './DiscountsEdit';
+import IndexAdjustedRentsEdit from './IndexAdjustedRentsEdit';
 import FieldTypeSwitch from '../../../../components/form/FieldTypeSwitch';
 
 type Props = {
@@ -63,7 +64,14 @@ class RentEdit extends Component {
         </Row>
 
         <Row>
-          <Column medium={6}><h2>Indeksitarkistettu vuokra</h2></Column>
+          <Column medium={6}>
+            <h2>Indeksitarkistettu vuokra</h2>
+            <FieldArray
+              component={IndexAdjustedRentsEdit}
+              name="rents.index_adjusted_rents"
+              optionLabel="Vuokratiedot kunnossa"
+            />
+          </Column>
           <Column medium={6}><h2>Perittävä vuokra</h2></Column>
         </Row>
       </form>

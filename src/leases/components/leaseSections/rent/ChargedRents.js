@@ -10,19 +10,21 @@ type Props = {
 
 const getTableBody = (chargedRents: Array<Object>) => {
   if(chargedRents && chargedRents.length > 0) {
-    return chargedRents.map((rent, index) => {
-      return (
-        <tr key={index}>
-          <td>{rent.rent !== null ? formatNumberWithThousandSeparator(formatDecimalNumbers(rent.rent), '.') : '-'}</td>
-          <td>{formatDateRange(rent.start_date, rent.end_date)}</td>
-          <td>{rent.difference !== null ? formatDecimalNumbers(rent.difference) : '-'}</td>
-          <td>{rent.calendar_year_rent !==null ? formatNumberWithThousandSeparator(formatDecimalNumbers(rent.calendar_year_rent), '.') : '-'}</td>
-        </tr>
-      );
-    });
+    return (
+      <tbody>
+        {chargedRents.map((rent, index) => (
+          <tr key={index}>
+            <td>{rent.rent !== null ? formatNumberWithThousandSeparator(formatDecimalNumbers(rent.rent), '.') : '-'}</td>
+            <td>{formatDateRange(rent.start_date, rent.end_date)}</td>
+            <td>{rent.difference !== null ? formatDecimalNumbers(rent.difference) : '-'}</td>
+            <td>{rent.calendar_year_rent !==null ? formatNumberWithThousandSeparator(formatDecimalNumbers(rent.calendar_year_rent), '.') : '-'}</td>
+          </tr>
+        ))}
+      </tbody>
+    );
   }
   else {
-    return null;
+    return <tbody></tbody>;
   }
 };
 

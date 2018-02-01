@@ -133,6 +133,12 @@
         }
       }
 
+      &.no-margin {
+        input {
+          margin: 0;
+        }
+      }
+
       &.is-dirty {
         input {
           border-color: $engel;
@@ -171,6 +177,11 @@
     }
     &__select {
       margin-bottom: 0.625rem;
+
+      &.no-margin {
+        margin: 0;
+      }
+
       .error {
         color: $brick;
         display: block;
@@ -224,6 +235,7 @@
 
         input {
           padding: 0;
+          margin-top: 2px;
         }
       }
       .Select-arrow-zone {
