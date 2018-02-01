@@ -27,7 +27,7 @@ const FieldTypeText = ({
   type = 'text',
 }: Props) => (
   <div className={classnames('mvj-form-field', {'inline': isInline})}>
-    {label && <label className='title'>{label}</label>}
+    {label && <label className='mvj-form-field-label'>{label}</label>}
     <div className={classnames('mvj-form-field__text', inputClassName, {'is-dirty': dirty})} style={inputStyle}>
       <input {...input} disabled={disabled} type={type} placeholder={placeholder}/>
       {touched && error && <span className='error'>{error}</span>}

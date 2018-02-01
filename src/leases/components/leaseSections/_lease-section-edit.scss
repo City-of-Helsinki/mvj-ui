@@ -128,6 +128,12 @@
     &.no-margin {
       margin: 0;
     }
+
+    .mvj-form-field-label {
+      font-size: $font-xsmall;
+      font-weight: $semibold;
+      color: $black;
+    }
   }
 
   h2 {

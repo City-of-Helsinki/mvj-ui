@@ -7,7 +7,6 @@ import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import TableFixedHeader from '../../../../components/TableFixedHeader';
 
-
 const getTableBody = (fields) => {
   if(fields && fields.length > 0) {
     return (

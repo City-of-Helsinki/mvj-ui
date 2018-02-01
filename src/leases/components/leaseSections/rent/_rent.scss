@@ -33,7 +33,11 @@
           border-top: 1px solid #d7d5d5;
           border-bottom: 1px solid $light-gray;
           padding: 0.3rem 0.5rem;
+          font-size: $font-xsmall;
+          font-weight: $semibold;
+          color: $black;
         }
+
 
         th:first-child {
           border-left: solid 1px #d7d5d5;
@@ -102,8 +106,11 @@
       tr {
         th {
           border: none;
+          border-bottom: 1px solid $light-gray;
           padding: 0.3rem 0.5rem;
-          border-bottom: 1px solid $light_gray;
+          font-size: $font-xsmall;
+          font-weight: $semibold;
+          color: $black;
         }
       }
     }

@@ -25,7 +25,7 @@ const FieldTypeSwitch = ({
 
   return (
     <div className='mvj-form-field'>
-      {label && <label className='title'>{label}</label>}
+      {label && <label className='mvj-form-field-label'>{label}</label>}
       <div className={classNames(`mvj-form-field__switch`, {'has-error': displayError}, {'is-dirty': dirty})}>
         {optionLabel && <label className={classNames('mvj-form-field__switch-option-label', {'label-off': !value})}>{optionLabel}</label>}
         <div className="switch">

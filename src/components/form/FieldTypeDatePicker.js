@@ -31,7 +31,7 @@ const FieldDatePicker = ({
   placeholder,
 }: Props) => (
   <div className='mvj-form-field'>
-    {label && <label className='title'>{label}</label>}
+    {label && <label className='mvj-form-field-label'>{label}</label>}
     <div className={classnames('mvj-form-field__datepicker', className, {'is-dirty': dirty})}>
       <DatePicker
         {...input}
