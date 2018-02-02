@@ -104,6 +104,53 @@ export const getContentFixedInitialYearRentItems = (items: Object) => {
   });
 };
 
+export const getContentContractModification = (modifications: Array<Object>) => {
+  return modifications.map((modification) => {
+    return ({
+      first_call_sent: modification.first_call_sent ? moment(modification.first_call_sent) : null,
+      modification_description: get(modification, 'modification_description'),
+      modification_signing_date: modification.modification_signing_date ? moment(modification.modification_signing_date) : null,
+      second_call_sent: modification.second_call_sent ? moment(modification.second_call_sent) : null,
+      third_call_sent: modification.third_call_sent ? moment(modification.third_call_sent) : null,
+      to_be_signed_by: modification.to_be_signed_by ? moment(modification.to_be_signed_by) : null,
+    });
+  });
+};
+
+export const getContentContractPledgeBooks = (pledgeBooks: Array<Object>) => {
+  return pledgeBooks.map((book) => {
+    return ({
+      pledge_book_comment: get(book, 'pledge_book_comment'),
+      pledge_book_number: get(book, 'pledge_book_number'),
+      pledge_book_date: book.pledge_book_date ? moment(book.pledge_book_date) : null,
+    });
+  });
+};
+
+export const getContentContractItem = (contract: Object) => {
+  return {
+    active: get(contract, 'active'),
+    administration_number: get(contract, 'administration_number'),
+    contract_number: get(contract, 'contract_number'),
+    contract_type: get(contract, 'contract_type'),
+    lease_deposit_comment: get(contract, 'lease_deposit_comment'),
+    lease_deposit_ending_date: contract.lease_deposit_ending_date ? moment(contract.lease_deposit_ending_date) : null,
+    lease_deposit_number: get(contract, 'lease_deposit_number'),
+    lease_deposit_starting_date: contract.lease_deposit_starting_date ? moment(contract.lease_deposit_starting_date) : null,
+    pledge_books: getContentContractPledgeBooks(get(contract, 'pledge_books', [])),
+    setup_decision: get(contract, 'setup_decision'),
+    signing_date: contract.signing_date ? moment(contract.signing_date) : null,
+    signing_date_comment: get(contract, 'signing_date_comment'),
+  };
+};
+
+export const getContentContracts = (lease: Object) => {
+  const contracts = get(lease, 'contracts', []);
+  return contracts.map((contract) =>
+    getContentContractItem(contract)
+  );
+};
+
 export const getContentRentBasicInfo = (basicInfoData: Object) => {
   return {
     adjustment_start_date: basicInfoData.adjustment_start_date ? moment(basicInfoData.adjustment_start_date) : null,

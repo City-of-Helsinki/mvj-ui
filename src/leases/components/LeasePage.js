@@ -142,7 +142,7 @@ class PreparerForm extends Component {
     this.setState({
       areas: mockData.leases[0].lease_areas,
       comments: mockData.leases[0].comments,
-      contracts: mockData.leases[0].contracts,
+      contracts: contentHelpers.getContentContracts(mockData.leases[0]),
       history: mockData.leases[0].history,
       inspections: mockData.leases[0].inspections,
       oldTenants: mockData.leases[0].tenants_old,
@@ -445,8 +445,8 @@ class PreparerForm extends Component {
               {!isEditMode &&
                 <LeaseInfo
                   identifier={leaseIdentifier}
-                  startDate={get(currentLease, 'start_date')}
-                  endDate={get(currentLease, 'end_date')}
+                  startDate={currentLease.start_date ? moment(currentLease.start_date) : null}
+                  endDate={currentLease.end_date ? moment(currentLease.end_date) : null}
                 />
               }
               {isEditMode &&
@@ -454,8 +454,8 @@ class PreparerForm extends Component {
                   identifier={leaseIdentifier}
                   initialValues={{
                     status: currentLease.status ? currentLease.status : null,
-                    start_date: currentLease.start_date ? moment(currentLease.start_date) : null,
-                    end_date: currentLease.end_date ? moment(currentLease.end_date) : null,
+                    startDate: currentLease.start_date ? moment(currentLease.start_date, 'DD.MM.YYYY') : null,
+                    endDate: currentLease.end_date ? moment(currentLease.end_date, 'DD.MM.YYYY') : null,
                   }}
                   statusOptions={statusOptions}
                 />

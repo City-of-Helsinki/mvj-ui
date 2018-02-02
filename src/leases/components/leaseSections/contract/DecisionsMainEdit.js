@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-import ContractEdit from './ContractEdit';
+import ContractsEdit from './ContractsEdit';
 import InspectionEdit from './InspectionEdit';
 import RuleEdit from './RuleEdit';
 
@@ -19,7 +19,7 @@ const DecisionsMainEdit = ({
     <div>
       <h1>Sopimukset</h1>
       <div>
-        <ContractEdit rules={rules} initialValues={{contracts: contracts}}/>
+        <ContractsEdit rules={rules} initialValues={{contracts: contracts}}/>
       </div>
       <h1>Päätökset</h1>
       <div>
