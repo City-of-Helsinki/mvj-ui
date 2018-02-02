@@ -13,7 +13,6 @@ const LeaseInfo = ({startDate, endDate, identifier}: Props) => {
   if(!identifier) {
     return null;
   }
-  console.log(endDate);
   const dateRange = utilHelpers.formatDateRange(startDate, endDate);
   return (
     <div className='lease-info'>
