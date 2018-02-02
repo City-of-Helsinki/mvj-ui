@@ -18,11 +18,9 @@ import {displayUIMessage} from '../../util/helpers';
 
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import ContractEdit from './leaseSections/contract/ContractEdit';
-import Contracts from './leaseSections/contract/Contracts';
 import ControlButtons from './ControlButtons';
-import Inspections from './leaseSections/contract/Inspections';
-import InspectionEdit from './leaseSections/contract/InspectionEdit';
+import DecisionsMain from './leaseSections/contract/DecisionsMain';
+import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
 import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
@@ -31,8 +29,6 @@ import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import Rent from './leaseSections/rent/Rent';
 import RentEdit from './leaseSections/rent/RentEdit';
-import RuleEdit from './leaseSections/contract/RuleEdit';
-import Rules from './leaseSections/contract/Rules';
 import Summary from './leaseSections/summary/Summary';
 import SummaryEdit from './leaseSections/summary/SummaryEdit';
 import Tabs from '../../components/tabs/Tabs';
@@ -559,21 +555,20 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Sopimukset</h1>
-                  <div>
-                    {!isEditMode && <Contracts contracts={contracts}/>}
-                    {isEditMode && <ContractEdit rules={rules} initialValues={{contracts: contracts}}/>}
-                  </div>
-                  <h1>Päätökset</h1>
-                  <div>
-                    {!isEditMode && <Rules rules={rules}/>}
-                    {isEditMode && <RuleEdit initialValues={{rules: rules}}/>}
-                  </div>
-                  <h1>Tarkastukset ja huomautukset</h1>
-                  <div>
-                    {!isEditMode && <Inspections inspections={inspections}/>}
-                    {isEditMode && <InspectionEdit initialValues={{inspections: inspections}}/>}
-                  </div>
+                  {!isEditMode &&
+                    <DecisionsMain
+                      contracts={contracts}
+                      inspections={inspections}
+                      rules={rules}
+                    />
+                  }
+                  {isEditMode &&
+                    <DecisionsMainEdit
+                      contracts={contracts}
+                      inspections={inspections}
+                      rules={rules}
+                    />
+                  }
                 </div>
               </TabPane>
 
