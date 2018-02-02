@@ -137,6 +137,7 @@ export const getContentContractItem = (contract: Object) => {
     lease_deposit_ending_date: contract.lease_deposit_ending_date ? moment(contract.lease_deposit_ending_date) : null,
     lease_deposit_number: get(contract, 'lease_deposit_number'),
     lease_deposit_starting_date: contract.lease_deposit_starting_date ? moment(contract.lease_deposit_starting_date) : null,
+    modifications: getContentContractModification(get(contract, 'modifications', [])),
     pledge_books: getContentContractPledgeBooks(get(contract, 'pledge_books', [])),
     setup_decision: get(contract, 'setup_decision'),
     signing_date: contract.signing_date ? moment(contract.signing_date) : null,
