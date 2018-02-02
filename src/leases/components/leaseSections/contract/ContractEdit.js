@@ -279,6 +279,11 @@ const renderContracts = ({fields, rules}: ContractProps) => {
           </div>
         );
       })}
+      <Row>
+        <Column>
+          <button type="button" onClick={() => fields.push({})} className='add-button'>Lisää uusi sopimus</button>
+        </Column>
+      </Row>
     </div>
   );
 };

@@ -143,6 +143,11 @@ const renderRules = ({fields}: RuleProps) => {
           <FieldArray title='Ehdot' name={`${rule}.terms`} component={renderRuleTerms}/>
         </div>
       )}
+      <Row>
+        <Column>
+          <button type="button" onClick={() => fields.push({})} className='add-button'>Lisää uusi päätös</button>
+        </Column>
+      </Row>
     </div>
   );
 };
