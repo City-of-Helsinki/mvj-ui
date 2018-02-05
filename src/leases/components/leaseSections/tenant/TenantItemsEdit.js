@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import trashIcon from '../../../../../assets/icons/trash.svg';
 import FieldTypeCheckbox from '../../../../components/form/FieldTypeCheckbox';
+import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import OtherPersonItemsEdit from './OtherPersonItemsEdit';
 import {tenantsRolesOptions} from '../constants';
@@ -103,14 +104,14 @@ const TenantItemsEdit = ({fields}: Props) => {
                   <Column medium={6}>
                     <Field
                       name={`${tenant}.tenant.start_date`}
-                      component={FieldTypeText}
+                      component={FieldTypeDatePicker}
                       label='Alkupvm'
                     />
                   </Column>
                   <Column medium={6}>
                     <Field
                       name={`${tenant}.tenant.end_date`}
-                      component={FieldTypeText}
+                      component={FieldTypeDatePicker}
                       label='Loppupvm'
                     />
                   </Column>

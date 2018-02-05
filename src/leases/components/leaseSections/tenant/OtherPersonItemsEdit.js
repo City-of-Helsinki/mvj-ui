@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import trashIcon from '../../../../../assets/icons/trash.svg';
 import FieldTypeCheckbox from '../../../../components/form/FieldTypeCheckbox';
+import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 
 import {tenantsRolesOptions} from '../constants';
@@ -42,7 +43,7 @@ const OtherPersonItemsEdit = ({fields}: Props) => {
                   label='Sukunimi'
                 />
               </Column>
-              <Column medium={3}>
+              <Column medium={3} offsetOnMedium={3}>
                 <Field
                   name={`${person}.roles`}
                   className='checkbox-inline'
@@ -80,14 +81,14 @@ const OtherPersonItemsEdit = ({fields}: Props) => {
                   <Column medium={6}>
                     <Field
                       name={`${person}.start_date`}
-                      component={FieldTypeText}
+                      component={FieldTypeDatePicker}
                       label='Alkupvm'
                     />
                   </Column>
                   <Column medium={6}>
                     <Field
                       name={`${person}.end_date`}
-                      component={FieldTypeText}
+                      component={FieldTypeDatePicker}
                       label='Loppupvm'
                     />
                   </Column>
