@@ -8,6 +8,7 @@ import Collapse from '../../../../components/Collapse';
 import {Row, Column} from 'react-foundation';
 
 import trashIcon from '../../../../../assets/icons/trash.svg';
+import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 
@@ -183,7 +184,7 @@ const renderArea = ({fields, areas}: AreaProps) => {
                       label='Päivämäärä'
                       name={`${area}.construction_eligibility.contamination.rent_condition_date`}
                       type="text"
-                      component={FieldTypeText}/>
+                      component={FieldTypeDatePicker}/>
                   </Column>
                   <Column medium={3}>
                     <Field
@@ -240,7 +241,7 @@ const renderArea = ({fields, areas}: AreaProps) => {
                       label='Allekirjoituspäivämäärä'
                       name={`${area}.construction_eligibility.construction_investigation.signing_date`}
                       type="text"
-                      component={FieldTypeText}/>
+                      component={FieldTypeDatePicker}/>
                   </Column>
                   <Column medium={3}>
                     <Field
