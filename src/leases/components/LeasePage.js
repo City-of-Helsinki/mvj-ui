@@ -144,7 +144,7 @@ class PreparerForm extends Component {
       comments: mockData.leases[0].comments,
       contracts: contentHelpers.getContentContracts(mockData.leases[0]),
       history: mockData.leases[0].history,
-      inspections: mockData.leases[0].inspections,
+      inspections: contentHelpers.getContentInspections(mockData.leases[0]),
       oldTenants: mockData.leases[0].tenants_old,
       rents: contentHelpers.getContentRents(mockData.leases[0]),
       rules: contentHelpers.getContentRules(mockData.leases[0]),

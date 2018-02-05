@@ -152,6 +152,22 @@ export const getContentContracts = (lease: Object) => {
   );
 };
 
+export const getContentInspectionItem = (inspection: Object) => {
+  return {
+    inspection_description: get(inspection, 'inspection_description'),
+    inspector: get(inspection, 'inspector'),
+    supervision_date: inspection.supervision_date ? moment(inspection.supervision_date) : null,
+    supervised_date: inspection.supervised_date ? moment(inspection.supervised_date) : null,
+  };
+};
+
+export const getContentInspections = (lease: Object) => {
+  const inspections = get(lease, 'inspections', []);
+  return inspections.map((inspection) =>
+    getContentInspectionItem(inspection)
+  );
+};
+
 export const getContentRentBasicInfo = (basicInfoData: Object) => {
   return {
     adjustment_start_date: basicInfoData.adjustment_start_date ? moment(basicInfoData.adjustment_start_date) : null,

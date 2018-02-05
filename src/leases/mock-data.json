@@ -357,16 +357,16 @@
       ],
       "inspections": [
         {
-          "supervision_date": "2018-10-09",
-          "supervised_date": "2017-04-05",
+          "inspection_description": "Ajalta 01.01.2015 – 30.12-2015 ei peritä vuokraa.",
           "inspector": "Mikko Tarkastaja",
-          "inspection_description": "Ajalta 01.01.2015 – 30.12-2015 ei peritä vuokraa."
+          "supervision_date": "2018-10-09",
+          "supervised_date": "2017-04-05"
         },
         {
-          "supervision_date": "2018-10-09",
-          "supervised_date": "2017-04-05",
+          "inspection_description": "Ajalta 01.01.2015 – 30.12-2015 ei peritä vuokraa.",
           "inspector": "Mikko Tarkastaja",
-          "inspection_description": "Ajalta 01.01.2015 – 30.12-2015 ei peritä vuokraa."
+          "supervision_date": "2018-10-09",
+          "supervised_date": "2017-04-05"
         }
       ],
       "tenants": [

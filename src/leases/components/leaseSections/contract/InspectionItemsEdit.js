@@ -1,18 +1,17 @@
 // @flow
-import React, {Component} from 'react';
-import flowRight from 'lodash/flowRight';
-import {connect} from 'react-redux';
-import {formValueSelector, reduxForm, Field, FieldArray} from 'redux-form';
+import React from 'react';
+import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import trashIcon from '../../../../../assets/icons/trash.svg';
+import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 
-type InspectionsProps = {
+type Props = {
   fields: any,
 }
 
-const renderInspections = ({fields}: InspectionsProps) => {
+const InspectionItemsEdit = ({fields}: Props) => {
   return(
     <div className='green-box'>
       {fields && fields.length > 0 && fields.map((inspection, index) =>
@@ -35,14 +34,14 @@ const renderInspections = ({fields}: InspectionsProps) => {
             <Column medium={4}>
               <Field
                 name={`${inspection}.supervision_date`}
-                component={FieldTypeText}
+                component={FieldTypeDatePicker}
                 label='Valvonta päivämäärä'
               />
             </Column>
             <Column medium={4}>
               <Field
                 name={`${inspection}.supervised_date`}
-                component={FieldTypeText}
+                component={FieldTypeDatePicker}
                 label='Valvottu päivämäärä'
               />
             </Column>
@@ -67,42 +66,4 @@ const renderInspections = ({fields}: InspectionsProps) => {
   );
 };
 
-type Props = {
-  handleSubmit: Function,
-  dispatch: Function,
-}
-
-class InspectionEdit extends Component {
-  props: Props
-
-  render() {
-    const {dispatch, handleSubmit} = this.props;
-
-    return (
-      <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <Row>
-          <Column>
-            <FieldArray name="inspections" dispatch={dispatch} component={renderInspections}/>
-          </Column>
-        </Row>
-      </form>
-    );
-  }
-}
-
-const formName = 'inspection-edit-form';
-const selector = formValueSelector(formName);
-
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        rules: selector(state, 'inspections'),
-      };
-    }
-  ),
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-  }),
-)(InspectionEdit);
+export default InspectionItemsEdit;

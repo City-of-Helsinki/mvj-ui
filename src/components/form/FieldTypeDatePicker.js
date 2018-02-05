@@ -22,7 +22,7 @@ const getFormatedDate = (value: any) => {
   return null;
 };
 
-const FieldDatePicker = ({
+const FieldTypeDatePicker = ({
   className,
   disableTouched = false,
   input,
@@ -45,4 +45,4 @@ const FieldDatePicker = ({
   </div>
 );
 
-export default FieldDatePicker;
+export default FieldTypeDatePicker;

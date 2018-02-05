@@ -2,7 +2,7 @@
 import React from 'react';
 
 import ContractsEdit from './ContractsEdit';
-import InspectionEdit from './InspectionEdit';
+import InspectionsEdit from './InspectionsEdit';
 import RuleEdit from './RuleEdit';
 
 type Props = {
@@ -27,7 +27,7 @@ const DecisionsMainEdit = ({
       </div>
       <h1>Tarkastukset ja huomautukset</h1>
       <div>
-        <InspectionEdit initialValues={{inspections: inspections}}/>
+        <InspectionsEdit initialValues={{inspections: inspections}}/>
       </div>
     </div>
   );
