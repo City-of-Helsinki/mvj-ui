@@ -449,7 +449,7 @@ class PreparerForm extends Component {
               {!isEditMode &&
                 <LeaseInfo
                   identifier={leaseIdentifier}
-                  startDate={currentLease.start_date ? moment(currentLease.start_date) : null}
+                  startDate={currentLease.start_date ?currentLease.start_date : null}
                   endDate={currentLease.end_date ? moment(currentLease.end_date) : null}
                 />
               }
@@ -458,8 +458,8 @@ class PreparerForm extends Component {
                   identifier={leaseIdentifier}
                   initialValues={{
                     status: currentLease.status ? currentLease.status : null,
-                    startDate: currentLease.start_date ? moment(currentLease.start_date, 'DD.MM.YYYY') : null,
-                    endDate: currentLease.end_date ? moment(currentLease.end_date, 'DD.MM.YYYY') : null,
+                    start_date: currentLease.start_date ? moment(currentLease.start_date) : null,
+                    end_date: currentLease.end_date ? moment(currentLease.end_date) : null,
                   }}
                   statusOptions={statusOptions}
                 />
