@@ -407,12 +407,11 @@
               "lastname": "Pappila",
               "phone": "+358 46 9877652",
               "protection_order": true,
-              "roles": [],
+              "roles": ["1", "2"],
               "SAP_customer_id": "3576168",
               "social_security_number": "200587-345X",
               "start_date": "1989-12-13",
               "town": "Helsinki",
-              "type": "invoice_recipient",
               "zip_code": "00560"
             },
             {
@@ -426,12 +425,11 @@
               "lastname": "Pappila",
               "phone": "+358 46 9877652",
               "protection_order": true,
-              "roles": [],
+              "roles": ["2"],
               "SAP_customer_id": "3576168",
               "social_security_number": "200587-345X",
               "start_date": "1989-12-13",
               "town": "Helsinki",
-              "type": "contact_person",
               "zip_code": "00560"
             }
           ]
@@ -473,12 +471,11 @@
               "lastname": "Koskinen",
               "phone": "+358 46 9877652",
               "protection_order": true,
-              "roles": [],
+              "roles": ["1"],
               "SAP_customer_id": "3576168",
               "social_security_number": "200587-123Y",
               "start_date": "1987-12-13",
               "town": "Helsinki",
-              "type": "invoice_recipient",
               "zip_code": "00560"
             },
             {
@@ -492,12 +489,11 @@
               "lastname": "Koskinen",
               "phone": "+358 46 9877652",
               "protection_order": true,
-              "roles": [],
+              "roles": ["2"],
               "SAP_customer_id": "3576168",
               "social_security_number": "200587-123Y",
               "start_date": "1989-12-13",
               "town": "Helsinki",
-              "type": "contact_person",
               "zip_code": "00560"
             }
           ]

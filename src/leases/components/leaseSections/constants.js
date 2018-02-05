@@ -236,3 +236,8 @@ export const summaryTransferRightOptions = [
   {value: 'K', label: 'Kyllä'},
   {value: 'E', label: 'Ei'},
 ];
+
+export const tenantsRolesOptions = [
+  {value: '1', label: 'Laskunsaaja'},
+  {value: '2', label: 'Vuokralainen'},
+];

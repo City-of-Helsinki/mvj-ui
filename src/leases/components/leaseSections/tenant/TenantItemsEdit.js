@@ -7,6 +7,7 @@ import trashIcon from '../../../../../assets/icons/trash.svg';
 import FieldTypeCheckbox from '../../../../components/form/FieldTypeCheckbox';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import OtherPersonItemsEdit from './OtherPersonItemsEdit';
+import {tenantsRolesOptions} from '../constants';
 
 type Props = {
   fields: any,
@@ -69,10 +70,7 @@ const TenantItemsEdit = ({fields}: Props) => {
                   name={`${tenant}.roles`}
                   className='checkbox-inline'
                   component={FieldTypeCheckbox}
-                  options= {[
-                    {value: 'laskunsaaja', label: 'Laskunsaaja'},
-                    {value: 'yhteyshenkilö', label: 'Yhteyshenkilö'},
-                  ]}
+                  options= {tenantsRolesOptions}
                   label='Rooli'
                 />
               </Column>

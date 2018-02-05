@@ -10,7 +10,7 @@ type Props = {
   customer: Object,
 };
 
-const InvoiceRecipientItem = ({customer}: Props) => {
+const OtherPersonItem = ({customer}: Props) => {
   const formatedDate = formatDate(customer.start_date);
   const fullAddress = getFullAddress(customer);
 
@@ -65,4 +65,4 @@ const InvoiceRecipientItem = ({customer}: Props) => {
   );
 };
 
-export default InvoiceRecipientItem;
+export default OtherPersonItem;
