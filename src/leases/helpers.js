@@ -188,6 +188,65 @@ export const getContentInspections = (lease: Object) => {
   );
 };
 
+export const getContentLeaseAreaConstructionEligibilityComments = (comments: Array<Object>) => {
+  if(!comments || comments.length === 0) {
+    return [];
+  }
+
+  return comments.map((comment) => {
+    return {
+      AHJO_number: get(comment, 'AHJO_number'),
+      comment: get(comment, 'comment'),
+      comment_author: get(comment, 'comment_author'),
+      comment_date: comment.comment_date ? moment(comment.comment_date) : null,
+    };
+  });
+};
+
+export const getContentLeaseAreaConstructionEligibilityInvestigationItem = (item: Object) => {
+  return {
+    comments: getContentLeaseAreaConstructionEligibilityComments(get(item, 'comments', [])),
+    geotechnical_number: get(item, 'geotechnical_number'),
+    report: get(item, 'report'),
+    report_author: get(item, 'report_author'),
+    research_state: get(item, 'research_state'),
+    signing_date: item.signing_date ? moment(item.signing_date) : null,
+  };
+};
+
+export const getContentLeaseAreaConstructionEligibilityPIMAItem = (item: Object) => {
+  return {
+    comments: getContentLeaseAreaConstructionEligibilityComments(get(item, 'comments', [])),
+    contamination_author: get(item, 'contamination_author'),
+    matti_report: get(item, 'matti_report'),
+    projectwise_number: get(item, 'projectwise_number'),
+    rent_conditions: get(item, 'rent_conditions'),
+    rent_condition_date: item.rent_condition_date ? moment(item.rent_condition_date) : null,
+    research_state: get(item, 'research_state'),
+  };
+};
+
+export const getContentLeaseAreaConstructionEligibilityItem = (item: Object) => {
+  return {
+    comments: getContentLeaseAreaConstructionEligibilityComments(get(item, 'comments', [])),
+    research_state: get(item, 'research_state'),
+  };
+};
+
+export const getContentLeaseAreaConstructionEligibility = (item: Object) => {
+  if(!item) {
+    return {};
+  }
+
+  return {
+    construction_investigation: getContentLeaseAreaConstructionEligibilityInvestigationItem(get(item, 'construction_investigation')),
+    contamination: getContentLeaseAreaConstructionEligibilityPIMAItem(get(item, 'contamination')),
+    demolition: getContentLeaseAreaConstructionEligibilityItem(get(item, 'demolition')),
+    other: getContentLeaseAreaConstructionEligibilityItem(get(item, 'other')),
+    preconstruction: getContentLeaseAreaConstructionEligibilityItem(get(item, 'preconstruction')),
+  };
+};
+
 export const getContentLeaseAreaPlotItems = (plots: Array<Object>) => {
   if(!plots || plots.length === 0) {
     return [];
@@ -260,6 +319,7 @@ export const getContentLeaseAreaItem = (area: Object) => {
     town: get(area, 'town'),
     unit_number: get(area, 'unit_number'),
     zip_code: get(area, 'zip_code'),
+    construction_eligibility: getContentLeaseAreaConstructionEligibility(get(area, 'construction_eligibility')),
     plan_plots_at_present: getContentLeaseAreaPlanPlotItems(get(area, 'plan_plots_at_present', [])),
     plan_plots_in_contract: getContentLeaseAreaPlanPlotItems(get(area, 'plan_plots_in_contract', [])),
     plots_at_present: getContentLeaseAreaPlotItems((get(area, 'plots_at_present', []))),

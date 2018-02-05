@@ -733,59 +733,68 @@
           ],
 
           "construction_eligibility": {
-            "preconstruction": {
-              "research_state": "Vaati toimenpiteitä",
-              "comments": [
-                {
-                  "comment": "Sähköjohdot siirretään.",
-                  "comment_date": "2017-09-10",
-                  "comment_author": "Katri Valmistelja",
-                  "AHJO_number": "HEL-10248556"
-                },
-                {
-                  "comment": "Kaasuputket siirretään.",
-                  "comment_date": "2017-09-10",
-                  "comment_author": "Katri Valmistelja",
-                  "AHJO_number": ""
-                }
-              ]
-            },
-            "demolition": {
-              "research_state": "Tarkistamatta",
-              "comments": []
-            },
-            "other": {
-              "research_state": "Tarkistamatta",
-              "comments": []
-            },
-            "contamination": {
-              "rent_conditions": "Kysytty",
-              "rent_condition_date": "2017-06-05",
-              "contamination_author": "Kati Valkama",
-              "research_state": "Valmis",
-              "projectwise_number": "495874698",
-              "matti_report": "847568796",
-              "comments": [
-                {
-                  "comment": "Kaikki rakennukset puretaan",
-                  "comment_date": "2017-09-10",
-                  "comment_author": "Katri Valmistelja",
-                  "AHJO_number": ""
-                }
-              ]
-            },
             "construction_investigation": {
+              "geotechnical_number": "495874698",
               "report": "Tilattu",
-              "signing_date": "2017-06-05",
               "report_author": "Petra Selvittäjä",
               "research_state": "Valmis",
-              "geotechnical_number": "495874698",
+              "signing_date": "2017-06-05",
+
               "comments": [
                 {
                   "comment": "Kaikki rakennukset puretaan",
                   "comment_date": "2017-09-10",
                   "comment_author": "Katri Valmistelja",
                   "AHJO_number": ""
+                }
+              ]
+            },
+
+            "contamination": {
+              "contamination_author": "Kati Valkama",
+              "matti_report": "847568796",
+              "projectwise_number": "495874698",
+              "rent_conditions": "Kysytty",
+              "rent_condition_date": "2017-06-05",
+              "research_state": "Valmis",
+
+              "comments": [
+                {
+                  "AHJO_number": "",
+                  "comment": "Kaikki rakennukset puretaan",
+                  "comment_author": "Katri Valmistelja",
+                  "comment_date": "2017-09-10"
+                }
+              ]
+            },
+
+            "demolition": {
+              "research_state": "Tarkistamatta",
+
+              "comments": []
+            },
+
+            "other": {
+              "research_state": "Tarkistamatta",
+
+              "comments": []
+            },
+
+            "preconstruction": {
+              "research_state": "Vaati toimenpiteitä",
+
+              "comments": [
+                {
+                  "AHJO_number": "HEL-10248556",
+                  "comment": "Sähköjohdot siirretään.",
+                  "comment_author": "Katri Valmistelja",
+                  "comment_date": "2017-09-10"
+                },
+                {
+                  "AHJO_number": "",
+                  "comment": "Kaasuputket siirretään.",
+                  "comment_author": "Katri Valmistelja",
+                  "comment_date": "2017-09-10"
                 }
               ]
             }
@@ -868,61 +877,70 @@
           ],
 
           "construction_eligibility": {
-            "preconstruction": {
-              "research_state": "Tarkistamatta",
-              "comments": [
-                {
-                  "comment": "Se käyttää 200 latinalaisen sanan sanakirjaa, johon on yhdistetty kourallinen mallilauseiden rakenteita luoden Lorem Ipsumin, joka näyttää järjelliseltä.",
-                  "comment_date": "2017-09-10",
-                  "comment_author": "Katri Valmistelja",
-                  "AHJO_number": "HEL-10248556"
-                },
-                {
-                  "comment": "On todistettu, että lukijaa häiritsee sivun ulkoasu lukiessaan sivua. ",
-                  "comment_date": "2017-09-10",
-                  "comment_author": "Katri Valmistelja",
-                  "AHJO_number": ""
-                }
-              ]
-            },
             "demolition": {
               "research_state": "Valmis",
+
               "comments": [
                 {
+                  "AHJO_number": "",
                   "comment": "Kaikki rakennukset puretaan",
-                  "comment_date": "2017-09-10",
                   "comment_author": "Katri Valmistelja",
-                  "AHJO_number": ""
+                  "comment_date": "2017-09-10"
                 }
               ]
             },
-            "contamination": {
-              "rent_conditions": "Kysytty",
-              "rent_condition_date": "2017-06-05",
-              "contamination_author": "Kati Valkama",
-              "research_state": "Valmis",
-              "projectwise_number": "495874698",
-              "matti_report": "847568796",
-              "comments": [
-                {
-                  "comment": "Kaikki rakennukset puretaan",
-                  "comment_date": "2017-09-10",
-                  "comment_author": "Katri Valmistelja",
-                  "AHJO_number": ""
-                }
-              ]
-            },
+
             "construction_investigation": {
+              "geotechnical_number": "495874698",
               "report": "Tilattu",
-              "signing_date": "2017-06-05",
               "report_author": "Petra Selvittäjä",
               "research_state": "Valmis",
-              "geotechnical_number": "495874698",
+              "signing_date": "2017-06-05",
+
               "comments": []
             },
+
+            "contamination": {
+              "contamination_author": "Kati Valkama",
+              "matti_report": "847568796",
+              "projectwise_number": "495874698",
+              "rent_conditions": "Kysytty",
+              "rent_condition_date": "2017-06-05",
+              "research_state": "Valmis",
+
+              "comments": [
+                {
+                  "AHJO_number": "",
+                  "comment": "Kaikki rakennukset puretaan",
+                  "comment_author": "Katri Valmistelja",
+                  "comment_date": "2017-09-10"
+                }
+              ]
+            },
+
             "other": {
               "research_state": "Tarkistamatta",
+
               "comments": []
+            },
+
+            "preconstruction": {
+              "research_state": "Tarkistamatta",
+
+              "comments": [
+                {
+                  "AHJO_number": "HEL-10248556",
+                  "comment": "Se käyttää 200 latinalaisen sanan sanakirjaa, johon on yhdistetty kourallinen mallilauseiden rakenteita luoden Lorem Ipsumin, joka näyttää järjelliseltä.",
+                  "comment_author": "Katri Valmistelja",
+                  "comment_date": "2017-09-10"
+                },
+                {
+                  "AHJO_number": "",
+                  "comment": "On todistettu, että lukijaa häiritsee sivun ulkoasu lukiessaan sivua. ",
+                  "comment_author": "Katri Valmistelja",
+                  "comment_date": "2017-09-10"
+                }
+              ]
             }
           }
         }
