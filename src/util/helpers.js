@@ -117,7 +117,7 @@ export const formatDate = (date: string) => {
     return '';
   }
 
-  const d = isNumber(date) ? moment.unix(date) : moment(date, 'DD.MM.YYYY');
+  const d = isNumber(date) ? moment.unix(date) : moment(date);
   return d.format('DD.MM.YYYY');
 };
 
@@ -134,8 +134,8 @@ export const formatDateRange = (startDate: any, endDate: any) => {
     return '';
   }
 
-  const start = isNumber(startDate) ? moment.unix(startDate) : moment(startDate, 'DD.MM.YYYY'),
-    end = isNumber(endDate) ? moment.unix(endDate) : moment(endDate, 'DD.MM.YYYY');
+  const start = isNumber(startDate) ? moment.unix(startDate) : moment(startDate),
+    end = isNumber(endDate) ? moment.unix(endDate) : moment(endDate);
 
   const dateFormat = 'DD.MM.YYYY';
 

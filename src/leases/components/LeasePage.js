@@ -10,6 +10,7 @@ import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import moment from 'moment';
 
+import {getLoggedInUser} from '../../auth/selectors';
 import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
 import {getSummaryPublicityLabel} from './leaseSections/helpers';
@@ -92,6 +93,7 @@ type Props = {
   summaryTouched: boolean,
   tenantsForm: Array<Object>,
   tenantsTouched: boolean,
+  user: Object,
 }
 
 class PreparerForm extends Component {
@@ -274,12 +276,14 @@ class PreparerForm extends Component {
   }
 
   addComment = (comment: string) => {
+    const {user} = this.props;
     const {comments} = this.state;
+
     comments.push({
       archived: false,
       date: moment().format('YYYY-MM-DD'),
       text: comment,
-      user: 'Katja Immonen',
+      user: get(user, 'profile.name'),
     });
     this.setState({comments: comments});
     this.commentPanel.resetField();
@@ -618,6 +622,7 @@ export default flowRight(
   }),
   connect(
     (state) => {
+      const user = getLoggedInUser(state);
       return {
         areasForm: areasFormSelector(state, 'areas'),
         areasTouched: get(state, 'form.property-unit-edit-form.anyTouched'),
@@ -643,6 +648,7 @@ export default flowRight(
         summaryTouched: get(state, 'form.summary-edit-form.anyTouched'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
         tenantsTouched: get(state, 'form.tenant-edit-form.anyTouched'),
+        user,
       };
     },
     {
