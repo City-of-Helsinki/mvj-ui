@@ -65,4 +65,3 @@ const Tenant = ({tenant}: Props) => {
 };
 
 export default Tenant;
-
