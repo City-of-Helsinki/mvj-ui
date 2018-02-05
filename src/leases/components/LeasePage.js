@@ -140,7 +140,7 @@ class PreparerForm extends Component {
     }
 
     this.setState({
-      areas: mockData.leases[0].lease_areas,
+      areas: contentHelpers.getContentLeaseAreas(mockData.leases[0]),
       comments: mockData.leases[0].comments,
       contracts: contentHelpers.getContentContracts(mockData.leases[0]),
       history: mockData.leases[0].history,

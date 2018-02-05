@@ -168,6 +168,92 @@ export const getContentInspections = (lease: Object) => {
   );
 };
 
+export const getContentLeaseAreaPlotItems = (plots: Array<Object>) => {
+  if(!plots || plots.length === 0) {
+    return [];
+  }
+
+  return plots.map((plot) => {
+    return {
+      abolishment_date: plot.abolishment_date ? moment(plot.abolishment_date) : null,
+      address: get(plot, 'address'),
+      coordinates: get(plot, 'coordinates', []),
+      district: get(plot, 'district'),
+      explanation: get(plot, 'explanation'),
+      full_area: get(plot, 'full_area'),
+      group_number: get(plot, 'group_number'),
+      intersection_area: get(plot, 'intersection_area'),
+      municipality: get(plot, 'municipality'),
+      plot_id: get(plot, 'plot_id'),
+      registration_date: plot.registration_date ? moment(plot.registration_date) : null,
+      town: get(plot, 'town'),
+      unit_number: get(plot, 'unit_number'),
+      unseparate_parcel_number: get(plot, 'unseparate_parcel_number'),
+      zip_code: get(plot, 'zip_code'),
+    };
+  });
+};
+
+export const getContentLeaseAreaPlanPlotItems = (planPlots: Array<Object>) => {
+  if(!planPlots || planPlots.length === 0) {
+    return [];
+  }
+
+  return planPlots.map((planPlot) => {
+    return {
+      address: get(planPlot, 'address'),
+      district: get(planPlot, 'district'),
+      explanation: get(planPlot, 'explanation'),
+      full_area: get(planPlot, 'full_area'),
+      group_number: get(planPlot, 'group_number'),
+      intersection_area: get(planPlot, 'intersection_area'),
+      municipality: get(planPlot, 'municipality'),
+      plan: get(planPlot, 'plan'),
+      plan_approval_date: planPlot.plan_approval_date ? moment(planPlot.plan_approval_date) : null,
+      planplot_condition: get(planPlot, 'planplot_condition'),
+      plan_plot_in_contract_id: get(planPlot, 'plan_plot_in_contract_id'),
+      planplot_type: get(planPlot, 'planplot_type'),
+      plot_division_id: get(planPlot, 'plot_division_id'),
+      plot_division_approval_date: planPlot.plot_division_approval_date ? moment(planPlot.plot_division_approval_date) : null,
+      state: get(planPlot, 'state'),
+      town: get(planPlot, 'town'),
+      unit_number: get(planPlot, 'unit_number'),
+      use: get(planPlot, 'use'),
+      zip_code: get(planPlot, 'zip_code'),
+    };
+  });
+};
+
+export const getContentLeaseAreaItem = (area: Object) => {
+  return {
+    address: get(area, 'address'),
+    district: get(area, 'district'),
+    explanation: get(area, 'explanation'),
+    full_area: get(area, 'full_area'),
+    group_number: get(area, 'group_number'),
+    intersection_area: get(area, 'intersection_area'),
+    lease_area_id: get(area, 'lease_area_id'),
+    municipality: get(area, 'municipality'),
+    planplot_condition: get(area, 'planplot_condition'),
+    planplot_type: get(area, 'planplot_type'),
+    position: get(area, 'position'),
+    town: get(area, 'town'),
+    unit_number: get(area, 'unit_number'),
+    zip_code: get(area, 'zip_code'),
+    plan_plots_at_present: getContentLeaseAreaPlanPlotItems(get(area, 'plan_plots_at_present', [])),
+    plan_plots_in_contract: getContentLeaseAreaPlanPlotItems(get(area, 'plan_plots_in_contract', [])),
+    plots_at_present: getContentLeaseAreaPlotItems((get(area, 'plots_at_present', []))),
+    plots_in_contract: getContentLeaseAreaPlotItems((get(area, 'plots_in_contract', []))),
+  };
+};
+
+export const getContentLeaseAreas = (lease: Object) => {
+  const leaseAreas = get(lease, 'lease_areas');
+  return leaseAreas.map((area) => {
+    return getContentLeaseAreaItem(area);
+  });
+};
+
 export const getContentRentBasicInfo = (basicInfoData: Object) => {
   return {
     adjustment_start_date: basicInfoData.adjustment_start_date ? moment(basicInfoData.adjustment_start_date) : null,

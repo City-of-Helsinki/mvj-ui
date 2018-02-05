@@ -605,129 +605,133 @@
       ],
       "lease_areas": [
         {
+          "address": "Sörnäisten rantatie 10",
+          "district": "403",
+          "explanation": "kaavayksikkö",
+          "full_area": 800,
+          "group_number": "2",
+          "intersection_area": 800,
           "lease_area_id": 1,
           "municipality": "427",
-          "district": "403",
-          "group_number": "2",
-          "unit_number": "17",
-          "explanation": "kaavayksikkö",
           "position": "Maanpäällinen",
-          "full_area": 800,
-          "intersection_area": 800,
-          "planplot_type": "Tonttirekisteritontti",
           "planplot_condition": "Voimassa",
-          "address": "Sörnäisten rantatie 10",
-          "zip_code": "00560",
+          "planplot_type": "Tonttirekisteritontti",
           "town": "Helsinki",
+          "unit_number": "17",
+          "zip_code": "00560",
+
+          "plan_plots_at_present": [
+            {
+              "address": "Lautatarhankatu 10",
+              "district": "403",
+              "explanation": "kaavayksikkö",
+              "full_area": 800,
+              "group_number": "2",
+              "intersection_area": 800,
+              "municipality": "427",
+              "plan": "91-10-58675",
+              "plan_approval_date": "20015-10-01",
+              "plan_plot_id": 1,
+              "planplot_condition": "Vireillä",
+              "planplot_type": "Ohjeellinen kaavatontti",
+              "plot_division_approval_date": "2015-05-05",
+              "plot_division_id": "91-10-5986",
+              "state": "voimassa",
+              "town": "Helsinki",
+              "unit_number": "17",
+              "use": "määräala",
+              "zip_code": "00560"
+            }
+          ],
+
+          "plan_plots_in_contract": [
+            {
+              "address": "Lautatarhankatu 10",
+              "district": "403",
+              "explanation": "kaavayksikkö",
+              "full_area": 800,
+              "group_number": "2",
+              "intersection_area": 800,
+              "municipality": "427",
+              "plan": "91-10-58675",
+              "plan_approval_date": "2015-10-01",
+              "plan_plot_id": 1,
+              "planplot_condition": "Vireillä",
+              "planplot_type": "Rekisteröity yleinen alue",
+              "plot_division_approval_date": "2015-05-05",
+              "plot_division_id": "91-10-5986",
+              "state": "voimassa",
+              "town": "Helsinki",
+              "unit_number": "19",
+              "use": "kiinteistö",
+              "zip_code": "00560"
+            }
+          ],
+
+          "plots_at_present": [
+            {
+              "abolishment_date": "",
+              "address": "Lautatarhankatu 10",
+              "district": "403",
+              "explanation": "kiinteistö",
+              "full_area": 800,
+              "group_number": "2",
+              "intersection_area": 800,
+              "municipality": "427",
+              "plot_id": 1,
+              "registration_date": "2017-01-01",
+              "town": "Helsinki",
+              "unit_number": "18",
+              "zip_code": "00560"
+            }
+          ],
 
           "plots_in_contract": [
             {
-              "plots_in_contract_id": 1,
-              "municipality": "427",
-              "district": "403",
-              "group_number": "2",
-              "unit_number": "17",
-              "explanation": "kiinteistö",
-              "full_area": 800,
-              "intersection_area": 800,
-              "address": "Lautatarhankatu 10",
-              "zip_code": "00560",
-              "town": "Helsinki",
-              "registration_date": "2017-01-01",
               "abolishment_date": "",
+              "address": "Lautatarhankatu 10",
               "coordinates": [
                 [60.19, 24.924],
                 [60.19, 24.926],
                 [60.194, 24.929],
                 [60.196, 24.924]
-              ]
+              ],
+              "district": "403",
+              "explanation": "kiinteistö",
+              "full_area": 800,
+              "group_number": "2",
+              "intersection_area": 800,
+              "municipality": "427",
+              "plot_id": 1,
+              "registration_date": "2017-01-01",
+              "town": "Helsinki",
+              "unit_number": "17",
+              "zip_code": "00560"
             },
             {
-              "plots_in_contract_id": 2,
-              "municipality": "427",
-              "district": "403",
-              "group_number": "2",
-              "unit_number": "17",
-              "unseparate_parcel_number": "111",
-              "explanation": "määräala",
-              "full_area": 800,
-              "intersection_area": 800,
-              "address": "Sörnäistenkatu 6",
-              "zip_code": "00560",
-              "town": "Helsinki",
-              "registration_date": "2017-01-01",
               "abolishment_date": "2015-03-15",
+              "address": "Sörnäistenkatu 6",
               "coordinates": [
                 [60.18, 24.924],
                 [60.18, 24.926],
                 [60.184, 24.926],
                 [60.184, 24.924]
-              ]
-            }
-          ],
-          "plots_at_present": [
-            {
-              "plots_at_present_id": 1,
-              "municipality": "427",
+              ],
               "district": "403",
-              "group_number": "2",
-              "unit_number": "18",
-              "explanation": "kiinteistö",
+              "explanation": "määräala",
               "full_area": 800,
+              "group_number": "2",
               "intersection_area": 800,
-              "address": "Lautatarhankatu 10",
-              "zip_code": "00560",
-              "town": "Helsinki",
+              "municipality": "427",
+              "plot_id": 2,
               "registration_date": "2017-01-01",
-              "abolishment_date": ""
-            }
-          ],
-          "plan_plots_in_contract": [
-            {
-              "plan_plot_in_contract_id": 1,
-              "municipality": "427",
-              "district": "403",
-              "group_number": "2",
-              "unit_number": "19",
-              "explanation": "kaavayksikkö",
-              "use": "kiinteistö",
-              "full_area": 800,
-              "intersection_area": 800,
-              "planplot_type": "Rekisteröity yleinen alue",
-              "planplot_condition": "Vireillä",
-              "address": "Lautatarhankatu 10",
-              "zip_code": "00560",
               "town": "Helsinki",
-              "state": "voimassa",
-              "plot_division_id": "91-10-5986",
-              "plot_division_approval_date": "2015-05-05",
-              "plan": "91-10-58675",
-              "plan_approval_date": "20015-10-01"
-            }
-          ],
-          "plan_plots_at_present": [
-            {
-              "plan_plot_at_present_id": 1,
-              "municipality": "427",
-              "district": "403",
-              "group_number": "2",
               "unit_number": "17",
-              "explanation": "kaavayksikkö",
-              "use": "määräala",
-              "full_area": 800,
-              "intersection_area": 800,
-              "planplot_type": "Ohjeellinen kaavatontti",
-              "planplot_condition": "Vireillä",
-              "address": "Lautatarhankatu 10",
-              "zip_code": "00560",
-              "town": "Helsinki",
-              "state": "voimassa",
-              "plot_division_id": "91-10-5986",
-              "plot_division_approval_date": "2015-05-05",
-              "plan": "91-10-58675",
-              "plan_approval_date": "20015-10-01"
+              "unseparate_parcel_number": "111",
+              "zip_code": "00560"
             }
           ],
+
           "construction_eligibility": {
             "preconstruction": {
               "research_state": "Vaati toimenpiteitä",
@@ -788,76 +792,81 @@
           }
         },
         {
+          "address": "Lautatarhankatu 10",
+          "district": "45",
+          "explanation": "kaavayksikkö",
+          "full_area": 1200,
+          "group_number": "444",
+          "intersection_area": 800,
           "lease_area_id": 2,
           "municipality": "91",
-          "district": "45",
-          "group_number": "444",
-          "unit_number": "32",
-          "explanation": "kaavayksikkö",
           "position": "Maanpäällinen",
-          "full_area": 1200,
-          "intersection_area": 800,
-          "address": "Lautatarhankatu 10",
-          "zip_code": "00560",
           "town": "Helsinki",
-          "plots_in_contract": [
-            {
-              "plots_in_contract_id": 1,
-              "municipality": "91",
-              "district": "45",
-              "group_number": "444",
-              "unit_number": "32",
-              "explanation": "kiinteistö",
-              "full_area": 800,
-              "intersection_area": 800,
-              "address": "Lautatarhankatu 10",
-              "zip_code": "00560",
-              "town": "Helsinki",
-              "registration_date": "2017-01-01",
-              "abolishment_date": ""
-            },
-            {
-              "plots_in_contract_id": 2,
-              "municipality": "91",
-              "district": "45",
-              "group_number": "444",
-              "unit_number": "32",
-              "unseparate_parcel_number": "222",
-              "explanation": "määräala",
-              "full_area": 800,
-              "intersection_area": 800,
-              "address": "Lautatarhankatu 10",
-              "zip_code": "00560",
-              "town": "Helsinki",
-              "registration_date": "2017-01-01",
-              "abolishment_date": ""
-            }
-          ],
-          "plots_at_present": [],
+          "unit_number": "32",
+          "zip_code": "00560",
+
+          "plan_plots_at_present": null,
+
           "plan_plots_in_contract": [
             {
-              "plan_plot_in_contract_id": 1,
-              "municipality": "91",
-              "district": "45",
-              "group_number": "0998",
-              "unit_number": "21",
-              "explanation": "kaavayksikkö",
-              "use": "kiinteistö",
-              "full_area": 800,
-              "intersection_area": 800,
-              "planplot_type": "Tonttirekisteritontti",
-              "planplot_condition": "Voimassa",
               "address": "Lautatarhankatu 10",
-              "zip_code": "00560",
-              "town": "Helsinki",
-              "state": "voimassa",
-              "plot_division_id": "91-10-5986",
-              "plot_division_approval_date": "2015-05-05",
+              "district": "45",
+              "explanation": "kaavayksikkö",
+              "full_area": 800,
+              "group_number": "0998",
+              "intersection_area": 800,
+              "municipality": "91",
               "plan": "91-10-58675",
-              "plan_approval_date": "20015-10-01"
+              "plan_approval_date": "2015-10-01",
+              "planplot_condition": "Voimassa",
+              "plan_plot_id": 1,
+              "planplot_type": "Tonttirekisteritontti",
+              "plot_division_approval_date": "2015-05-05",
+              "plot_division_id": "91-10-5986",
+              "state": "voimassa",
+              "town": "Helsinki",
+              "unit_number": "21",
+              "use": "kiinteistö",
+              "zip_code": "00560"
             }
           ],
-          "plan_plots_at_present": null,
+
+          "plots_at_present": [],
+
+          "plots_in_contract": [
+            {
+              "abolishment_date": "",
+              "address": "Lautatarhankatu 10",
+              "district": "45",
+              "explanation": "kiinteistö",
+              "full_area": 800,
+              "group_number": "444",
+              "intersection_area": 800,
+              "municipality": "91",
+              "plots_in_contract_id": 1,
+              "registration_date": "2017-01-01",
+              "town": "Helsinki",
+              "unit_number": "32",
+              "zip_code": "00560"
+            },
+            {
+              "abolishment_date": "",
+              "address": "Lautatarhankatu 10",
+              "district": "45",
+              "explanation": "määräala",
+              "full_area": 800,
+              "group_number": "444",
+              "intersection_area": 800,
+              "municipality": "91",
+              "plots_in_contract_id": 2,
+              "registration_date": "2017-01-01",
+              "town": "Helsinki",
+              "unit_number": "32",
+              "unseparate_parcel_number": "222",
+              "zip_code": "00560"
+            }
+          ],
+
           "construction_eligibility": {
             "preconstruction": {
               "research_state": "Tarkistamatta",
