@@ -544,6 +544,71 @@ export const getContentLeases = (content:Object, attributes: Object) => {
   return items;
 };
 
+export const getContentTenantOtherPersons = (persons: Array<Object>) => {
+  if(!persons || persons.length === 0) {
+    return [];
+  }
+
+  return persons.map((person) => {
+    return {
+      customer_id: get(person, 'customer_id'),
+      address: get(person, 'address'),
+      comment: get(person, 'comment'),
+      email: get(person, 'email'),
+      end_date: person.end_date ? moment(person.end_date) : null,
+      firstname: get(person, 'firstname'),
+      language: get(person, 'language'),
+      lastname: get(person, 'lastname'),
+      phone: get(person, 'phone'),
+      protection_order: get(person, 'protection_order'),
+      roles: get(person, 'roles'),
+      SAP_customer_id: get(person, 'SAP_customer_id'),
+      social_security_number: get(person, 'social_security_number'),
+      start_date: person.start_date ? moment(person.start_date) : null,
+      town: get(person, 'town'),
+      type: get(person, 'type'),
+      zip_code: get(person, 'zip_code'),
+    };
+  });
+};
+
+export const getContentTenantItem = (tenant: Object) => {
+  return {
+    address: get(tenant, 'address'),
+    bill_share: get(tenant, 'bill_share'),
+    comment: get(tenant, 'comment'),
+    customer_id: get(tenant, 'customer_id'),
+    email: get(tenant, 'email'),
+    end_date: tenant.end_date ? moment(tenant.end_date) : null,
+    firstname: get(tenant, 'firstname'),
+    language: get(tenant, 'language'),
+    lastname: get(tenant, 'lastname'),
+    ovt_identifier: get(tenant, 'ovt_identifier'),
+    partner_code: get(tenant, 'partner_code'),
+    phone: get(tenant, 'phone'),
+    protection_order: get(tenant, 'protection_order'),
+    reference: get(tenant, 'reference'),
+    roles: get(tenant, 'roles'),
+    SAP_customer_id: get(tenant, 'SAP_customer_id'),
+    share: get(tenant, 'share'),
+    share_divider: get(tenant, 'share_divider'),
+    social_security_number: get(tenant, 'social_security_number'),
+    start_date: tenant.start_date ? moment(tenant.start_date) : null,
+    town: get(tenant, 'town'),
+    zip_code: get(tenant, 'zip_code'),
+  };
+};
+
+export const getContentTenants = (lease: Object) => {
+  const tenants = get(lease, 'tenants', []);
+  return tenants.map((tenant) => {
+    return {
+      other_persons: getContentTenantOtherPersons(get(tenant, 'other_persons', [])),
+      tenant: getContentTenantItem(get(tenant, 'tenant')),
+    };
+  });
+};
+
 export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>) => {
   if(!documentTypes || documentTypes.length === 0) {
     return items;

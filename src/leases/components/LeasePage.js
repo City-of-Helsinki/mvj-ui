@@ -149,7 +149,7 @@ class PreparerForm extends Component {
       rents: contentHelpers.getContentRents(mockData.leases[0]),
       rules: contentHelpers.getContentRules(mockData.leases[0]),
       summary: contentHelpers.getContentSummary(mockData.leases[0]),
-      tenants: mockData.leases[0].tenants,
+      tenants: contentHelpers.getContentTenants(mockData.leases[0]),
     });
     fetchAttributes();
     fetchSingleLease(leaseId);
