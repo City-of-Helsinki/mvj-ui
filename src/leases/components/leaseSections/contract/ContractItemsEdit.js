@@ -232,6 +232,7 @@ const ContractItemsEdit = ({fields, contracts}: Props) => {
                   // add KTJ integration
                   component={FieldTypeText}
                   label='KTJ vuokraoikeustodistuksen linkki'
+                  name={`${contract}.ktj_document`}
                 />
               </Column>
             </Row>
