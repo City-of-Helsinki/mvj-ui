@@ -94,7 +94,11 @@ export const getContentSummary = (lease: Object) => {
     transfer_right: get(lease, 'transfer_right'),
   };
 };
-export const getContentFixedInitialYearRentItems = (items: Object) => {
+export const getContentFixedInitialYearRentItems = (items: Array<Object>) => {
+  if(!items || items.length === 0) {
+    return [];
+  }
+
   return items.map((item) => {
     return {
       end_date: item.end_date ? moment(item.end_date) : null,
@@ -105,6 +109,10 @@ export const getContentFixedInitialYearRentItems = (items: Object) => {
 };
 
 export const getContentContractModification = (modifications: Array<Object>) => {
+  if(!modifications || modifications.length === 0) {
+    return [];
+  }
+
   return modifications.map((modification) => {
     return ({
       first_call_sent: modification.first_call_sent ? moment(modification.first_call_sent) : null,
@@ -118,6 +126,10 @@ export const getContentContractModification = (modifications: Array<Object>) => 
 };
 
 export const getContentContractPledgeBooks = (pledgeBooks: Array<Object>) => {
+  if(!pledgeBooks || pledgeBooks.length === 0) {
+    return [];
+  }
+
   return pledgeBooks.map((book) => {
     return ({
       pledge_book_comment: get(book, 'pledge_book_comment'),
@@ -147,6 +159,10 @@ export const getContentContractItem = (contract: Object) => {
 
 export const getContentContracts = (lease: Object) => {
   const contracts = get(lease, 'contracts', []);
+  if(!contracts || contracts.length === 0) {
+    return [];
+  }
+
   return contracts.map((contract) =>
     getContentContractItem(contract)
   );
@@ -163,6 +179,10 @@ export const getContentInspectionItem = (inspection: Object) => {
 
 export const getContentInspections = (lease: Object) => {
   const inspections = get(lease, 'inspections', []);
+  if(!inspections || inspections.length === 0) {
+    return [];
+  }
+
   return inspections.map((inspection) =>
     getContentInspectionItem(inspection)
   );
@@ -248,7 +268,11 @@ export const getContentLeaseAreaItem = (area: Object) => {
 };
 
 export const getContentLeaseAreas = (lease: Object) => {
-  const leaseAreas = get(lease, 'lease_areas');
+  const leaseAreas = get(lease, 'lease_areas', []);
+  if(!leaseAreas || leaseAreas.length === 0) {
+    return [];
+  }
+
   return leaseAreas.map((area) => {
     return getContentLeaseAreaItem(area);
   });
@@ -274,7 +298,11 @@ export const getContentRentBasicInfo = (basicInfoData: Object) => {
   };
 };
 
-export const getContentRentDiscount = (discountData: Object) => {
+export const getContentRentDiscount = (discountData: Array<Object>) => {
+  if(!discountData || discountData.length === 0) {
+    return [];
+  }
+
   return discountData.map((discount) => {
     return (
     {
@@ -291,7 +319,11 @@ export const getContentRentDiscount = (discountData: Object) => {
   });
 };
 
-export const getContentRentCriteria = (criteriaData: Object) => {
+export const getContentRentCriteria = (criteriaData: Array<Object>) => {
+  if(!criteriaData || criteriaData.length === 0) {
+    return [];
+  }
+
   return criteriaData.map((criteria) => {
     return (
     {
@@ -308,7 +340,11 @@ export const getContentRentCriteria = (criteriaData: Object) => {
   });
 };
 
-export const getContentRentChargedRents = (chargedRentsData: Object) => {
+export const getContentRentChargedRents = (chargedRentsData: Array<Object>) => {
+  if(!chargedRentsData || chargedRentsData.length === 0) {
+    return [];
+  }
+
   return chargedRentsData.map((rent) => {
     return (
     {
@@ -321,7 +357,11 @@ export const getContentRentChargedRents = (chargedRentsData: Object) => {
   });
 };
 
-export const getContentRentContractRents = (contractRentsData: Object) => {
+export const getContentRentContractRents = (contractRentsData: Array<Object>) => {
+  if(!contractRentsData || contractRentsData.length === 0) {
+    return [];
+  }
+
   return contractRentsData.map((rent) => {
     return (
     {
@@ -336,7 +376,11 @@ export const getContentRentContractRents = (contractRentsData: Object) => {
   });
 };
 
-export const getContentRentIndexAdjustedRents = (indexAdjustedRentsData: Object) => {
+export const getContentRentIndexAdjustedRents = (indexAdjustedRentsData: Array<Object>) => {
+  if(!indexAdjustedRentsData || indexAdjustedRentsData.length === 0) {
+    return [];
+  }
+
   return indexAdjustedRentsData.map((rent) => {
     return (
     {
@@ -363,6 +407,10 @@ export const getContentRents = (lease: Object) => {
 
 export const getContentRuleTerms = (rule: Object) => {
   const terms = get(rule, 'terms', []);
+  if(!terms || terms.length === 0) {
+    return [];
+  }
+
   return terms.map((term) => {
     return {
       supervision_date: term.supervision_date ? moment(term.supervision_date) : null,
@@ -384,8 +432,12 @@ export const getContentRuleItem = (rule: Object) => {
   };
 };
 
-export const getContentRules = (lease: Array<Object>) => {
+export const getContentRules = (lease: Object) => {
   const rules = get(lease, 'rules', []);
+  if(!rules || rules.length === 0) {
+    return [];
+  }
+
   return rules.map((rule) =>
     getContentRuleItem(rule)
   );
@@ -444,6 +496,10 @@ export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTy
 
 export const getDistrictOptions = (attributes: Object) => {
   const choices = get(attributes, 'district.choices', []);
+  if(!choices || choices.length === 0) {
+    return [];
+  }
+
   return choices.map((choice) => {
     return {
       value: get(choice, 'value'),
@@ -460,6 +516,10 @@ export const getDistrictOptions = (attributes: Object) => {
 
 export const getMunicipalityOptions = (attributes: Object) => {
   const choices = get(attributes, 'municipality.choices', []);
+  if(!choices || choices.length === 0) {
+    return [];
+  }
+
   return choices.map((choice) => {
     return {
       value: get(choice, 'value'),
@@ -476,6 +536,10 @@ export const getMunicipalityOptions = (attributes: Object) => {
 
 export const getStatusOptions = (attributes: Object) => {
   const choices = get(attributes, 'status.choices', []);
+  if(!choices || choices.length) {
+    return [];
+  }
+
   return choices.map((choice) => {
     return {
       value: get(choice, 'value'),
@@ -486,6 +550,10 @@ export const getStatusOptions = (attributes: Object) => {
 
 export const getTypeOptions = (attributes: Object) => {
   const choices = get(attributes, 'type.choices', []);
+  if(!choices || choices.length === 0) {
+    return [];
+  }
+
   return choices.map((choice) => {
     return {
       value: get(choice, 'value'),
