@@ -76,6 +76,23 @@ export const getContentLeaseStatus = (item: Object, options: Array<Object>) => {
   return status;
 };
 
+export const getContentHistory = (lease: Object) => {
+  const historyItems = get(lease, 'history', []);
+  if(!historyItems || historyItems.length === 0) {
+    return [];
+  }
+
+  return historyItems.map((item) => {
+    return {
+      active: get(item, 'active'),
+      end_date: item.end_date ? moment(item.end_date) : null,
+      identifier: get(item, 'identifier'),
+      start_date: item.start_date ? moment(item.start_date) : null,
+      type: get(item, 'type'),
+    };
+  });
+};
+
 export const getContentSummary = (lease: Object) => {
   return {
     financing_method: get(lease, 'financing_method'),
@@ -145,6 +162,7 @@ export const getContentContractItem = (contract: Object) => {
     administration_number: get(contract, 'administration_number'),
     contract_number: get(contract, 'contract_number'),
     contract_type: get(contract, 'contract_type'),
+    ktj_document: get(contract, 'ktj_document'),
     lease_deposit_comment: get(contract, 'lease_deposit_comment'),
     lease_deposit_ending_date: contract.lease_deposit_ending_date ? moment(contract.lease_deposit_ending_date) : null,
     lease_deposit_number: get(contract, 'lease_deposit_number'),
