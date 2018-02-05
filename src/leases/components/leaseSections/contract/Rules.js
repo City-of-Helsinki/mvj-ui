@@ -1,21 +1,22 @@
 // @flow
 import React from 'react';
 import get from 'lodash/get';
-
-import Collapse from '../../../../components/Collapse';
-import * as helpers from '../../../../util/helpers';
-import Rule from './Rule';
 import {Row, Column} from 'react-foundation';
+
+import * as helpers from '../../../../util/helpers';
+import Collapse from '../../../../components/Collapse';
+import RuleItem from './RuleItem';
 
 type Props = {
   rules: Array<Object>,
 }
-const Rules = ({rules}: Props) => {
 
+const Rules = ({rules}: Props) => {
   return (
     <div className='lease-section'>
       {rules && rules.length > 0 && rules.map((rule, index) =>
-        <Collapse key={index}
+        <Collapse
+          key={index}
           defaultOpen={false}
           header={
             <Row>
@@ -31,7 +32,7 @@ const Rules = ({rules}: Props) => {
             </Row>
           }
         >
-          <Rule rule={rule} />
+          <RuleItem rule={rule} />
         </Collapse>
       )}
     </div>

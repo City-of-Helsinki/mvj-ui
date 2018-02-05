@@ -15,7 +15,6 @@ class Map extends Component {
   };
 
   render() {
-    console.log(this.props.mockData);
     return (
       <div className='map'>
         <MapContainer center={defaultCoordinates}

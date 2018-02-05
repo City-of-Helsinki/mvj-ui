@@ -5,23 +5,24 @@ import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import TenantItemsEdit from './TenantItemsEdit';
+import ContractItemsEdit from './ContractItemsEdit';
 
 type Props = {
   handleSubmit: Function,
+  dispatch: Function,
+  rules: Array<Object>,
 }
 
-class TenantEdit extends Component {
+class ContractsEdit extends Component {
   props: Props
 
-  render () {
-    const {handleSubmit} = this.props;
-
+  render() {
+    const {dispatch, handleSubmit, rules} = this.props;
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit'>
         <Row>
           <Column>
-            <FieldArray name="tenants" component={TenantItemsEdit}/>
+            <FieldArray name="contracts" rules={rules} dispatch={dispatch} component={ContractItemsEdit}/>
           </Column>
         </Row>
       </form>
@@ -29,14 +30,14 @@ class TenantEdit extends Component {
   }
 }
 
-const formName = 'tenant-edit-form';
+const formName = 'contract-edit-form';
 const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
     (state) => {
       return {
-        tenants: selector(state, 'tenants'),
+        contracts: selector(state, 'contracts'),
       };
     }
   ),
@@ -44,4 +45,4 @@ export default flowRight(
     form: formName,
     destroyOnUnmount: false,
   }),
-)(TenantEdit);
+)(ContractsEdit);

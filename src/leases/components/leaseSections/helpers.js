@@ -22,7 +22,8 @@ import {rentBasicInfoIndexTypeOptions,
   summaryRegulatoryOptions,
   summaryRegulatoryMethodOptions,
   summarySpecialApartmentsOptions,
-  summaryTransferRightOptions} from './constants';
+  summaryTransferRightOptions,
+  tenantsRolesOptions} from './constants';
 
 export const getBasicInfoIndexTypeLabel = (value: string) => {
   const option = rentBasicInfoIndexTypeOptions.find(x => x.value=== value);
@@ -131,5 +132,10 @@ export const getSummarySpecialApartmentsLabel = (value: string) => {
 
 export const getSummaryTransferRightLabel = (value: string) => {
   const option = summaryTransferRightOptions.find(x => x.value=== value);
+  return get(option, 'label', '');
+};
+
+export const getTenantsRolesLabel = (value: string) => {
+  const option = tenantsRolesOptions.find(x => x.value=== value);
   return get(option, 'label', '');
 };

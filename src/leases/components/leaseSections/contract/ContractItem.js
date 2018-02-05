@@ -9,7 +9,7 @@ type Props = {
   contract: Object,
 }
 
-const Contract = ({contract}: Props) => {
+const ContractItem = ({contract}: Props) => {
   return (
     <div>
       <Collapse
@@ -25,7 +25,7 @@ const Contract = ({contract}: Props) => {
           <Row>
             <Column medium={4}>
               <label>Sopimusnumero</label>
-              <p>{contract.contract_number}</p>
+              <p>{contract.contract_number ? contract.contract_number : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Allekirjoituspäivämäärä</label>
@@ -59,7 +59,7 @@ const Contract = ({contract}: Props) => {
             </Column>
             <Column medium={4}>
               <label>Vuokravakuus alku- ja loppupäivämäärä</label>
-              <p>{helpers.formatDate(contract.lease_deposit_starting_date)} – {helpers.formatDate(contract.lease_deposit_ending_date)}</p>
+              <p>{helpers.formatDateRange(contract.lease_deposit_starting_date, contract.lease_deposit_ending_date)}</p>
             </Column>
             <Column medium={4}>
               <label>Kommentti</label>
@@ -73,27 +73,28 @@ const Contract = ({contract}: Props) => {
             </Column>
           </Row>
           {contract.pledge_books && contract.pledge_books.length > 0 &&
-          <Row>
-            <Column>
-              <p className='green-subtitle'>Panttikirjat</p>
-            </Column>
-          </Row>
-          }
-          {contract.pledge_books && contract.pledge_books.length > 0 && contract.pledge_books.map((pledge_book, index) =>
-            <Row key={index}>
-              <Column medium={4}>
-                <label>Panttikirjan numero</label>
-                <p>{pledge_book.pledge_book_number ? pledge_book.pledge_book_number : '–'}</p>
-              </Column>
-              <Column medium={4}>
-                <label>Panttikirjan päivämäärä</label>
-                <p>{pledge_book.pledge_book_date ? helpers.formatDate(pledge_book.pledge_book_date) : '–'}</p>
-              </Column>
-              <Column medium={4}>
-                <label>Panttikirjan kommentti</label>
-                <p>{pledge_book.pledge_book_comment ? pledge_book.pledge_book_comment : '–'}</p>
+            <Row>
+              <Column>
+                <p className='green-subtitle'>Panttikirjat</p>
               </Column>
             </Row>
+          }
+          {contract.pledge_books && contract.pledge_books.length > 0 &&
+            contract.pledge_books.map((pledge_book, index) =>
+              <Row key={index}>
+                <Column medium={4}>
+                  <label>Panttikirjan numero</label>
+                  <p>{pledge_book.pledge_book_number ? pledge_book.pledge_book_number : '–'}</p>
+                </Column>
+                <Column medium={4}>
+                  <label>Panttikirjan päivämäärä</label>
+                  <p>{pledge_book.pledge_book_date ? helpers.formatDate(pledge_book.pledge_book_date) : '–'}</p>
+                </Column>
+                <Column medium={4}>
+                  <label>Panttikirjan kommentti</label>
+                  <p>{pledge_book.pledge_book_comment ? pledge_book.pledge_book_comment : '–'}</p>
+                </Column>
+              </Row>
           )}
         </div>
       </Collapse>
@@ -146,4 +147,4 @@ const Contract = ({contract}: Props) => {
   );
 };
 
-export default Contract;
+export default ContractItem;

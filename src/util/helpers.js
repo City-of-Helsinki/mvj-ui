@@ -138,6 +138,7 @@ export const formatDateRange = (startDate: any, endDate: any) => {
     end = isNumber(endDate) ? moment.unix(endDate) : moment(endDate);
 
   const dateFormat = 'DD.MM.YYYY';
+
   if(!startDate) {
     return `- ${end.format(dateFormat)}`;
   }

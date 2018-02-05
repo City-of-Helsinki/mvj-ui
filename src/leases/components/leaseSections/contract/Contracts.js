@@ -4,7 +4,7 @@ import get from 'lodash/get';
 
 import Collapse from '../../../../components/Collapse';
 import * as helpers from '../../../../util/helpers';
-import Contract from './Contract';
+import ContractItem from './ContractItem';
 import {Row, Column} from 'react-foundation';
 
 type Props = {
@@ -29,7 +29,7 @@ const Contracts = ({contracts}: Props) => {
             </Row>
           }
         >
-          <Contract contract={contract} />
+          <ContractItem contract={contract} />
         </Collapse>
       )}
     </div>

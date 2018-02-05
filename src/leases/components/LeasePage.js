@@ -10,6 +10,7 @@ import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import moment from 'moment';
 
+import {getLoggedInUser} from '../../auth/selectors';
 import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
 import {getSummaryPublicityLabel} from './leaseSections/helpers';
@@ -18,11 +19,9 @@ import {displayUIMessage} from '../../util/helpers';
 
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import ContractEdit from './leaseSections/contract/ContractEdit';
-import Contracts from './leaseSections/contract/Contracts';
 import ControlButtons from './ControlButtons';
-import Inspections from './leaseSections/contract/Inspections';
-import InspectionEdit from './leaseSections/contract/InspectionEdit';
+import DecisionsMain from './leaseSections/contract/DecisionsMain';
+import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
 import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
@@ -31,8 +30,6 @@ import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import Rent from './leaseSections/rent/Rent';
 import RentEdit from './leaseSections/rent/RentEdit';
-import RuleEdit from './leaseSections/contract/RuleEdit';
-import Rules from './leaseSections/contract/Rules';
 import Summary from './leaseSections/summary/Summary';
 import SummaryEdit from './leaseSections/summary/SummaryEdit';
 import Tabs from '../../components/tabs/Tabs';
@@ -96,6 +93,7 @@ type Props = {
   summaryTouched: boolean,
   tenantsForm: Array<Object>,
   tenantsTouched: boolean,
+  user: Object,
 }
 
 class PreparerForm extends Component {
@@ -144,16 +142,16 @@ class PreparerForm extends Component {
     }
 
     this.setState({
-      areas: mockData.leases[0].lease_areas,
+      areas: contentHelpers.getContentLeaseAreas(mockData.leases[0]),
       comments: mockData.leases[0].comments,
-      contracts: mockData.leases[0].contracts,
-      history: mockData.leases[0].history,
-      inspections: mockData.leases[0].inspections,
+      contracts: contentHelpers.getContentContracts(mockData.leases[0]),
+      history: contentHelpers.getContentHistory(mockData.leases[0]),
+      inspections: contentHelpers.getContentInspections(mockData.leases[0]),
       oldTenants: mockData.leases[0].tenants_old,
       rents: contentHelpers.getContentRents(mockData.leases[0]),
-      rules: mockData.leases[0].rules,
+      rules: contentHelpers.getContentRules(mockData.leases[0]),
       summary: contentHelpers.getContentSummary(mockData.leases[0]),
-      tenants: mockData.leases[0].tenants,
+      tenants: contentHelpers.getContentTenants(mockData.leases[0]),
     });
     fetchAttributes();
     fetchSingleLease(leaseId);
@@ -278,12 +276,14 @@ class PreparerForm extends Component {
   }
 
   addComment = (comment: string) => {
+    const {user} = this.props;
     const {comments} = this.state;
+
     comments.push({
       archived: false,
       date: moment().format('YYYY-MM-DD'),
       text: comment,
-      user: 'Katja Immonen',
+      user: get(user, 'profile.name'),
     });
     this.setState({comments: comments});
     this.commentPanel.resetField();
@@ -449,8 +449,8 @@ class PreparerForm extends Component {
               {!isEditMode &&
                 <LeaseInfo
                   identifier={leaseIdentifier}
-                  startDate={get(currentLease, 'start_date')}
-                  endDate={get(currentLease, 'end_date')}
+                  startDate={currentLease.start_date ?currentLease.start_date : null}
+                  endDate={currentLease.end_date ? moment(currentLease.end_date) : null}
                 />
               }
               {isEditMode &&
@@ -559,21 +559,20 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Sopimukset</h1>
-                  <div>
-                    {!isEditMode && <Contracts contracts={contracts}/>}
-                    {isEditMode && <ContractEdit rules={rules} initialValues={{contracts: contracts}}/>}
-                  </div>
-                  <h1>Päätökset</h1>
-                  <div>
-                    {!isEditMode && <Rules rules={rules}/>}
-                    {isEditMode && <RuleEdit initialValues={{rules: rules}}/>}
-                  </div>
-                  <h1>Tarkastukset ja huomautukset</h1>
-                  <div>
-                    {!isEditMode && <Inspections inspections={inspections}/>}
-                    {isEditMode && <InspectionEdit initialValues={{inspections: inspections}}/>}
-                  </div>
+                  {!isEditMode &&
+                    <DecisionsMain
+                      contracts={contracts}
+                      inspections={inspections}
+                      rules={rules}
+                    />
+                  }
+                  {isEditMode &&
+                    <DecisionsMainEdit
+                      contracts={contracts}
+                      inspections={inspections}
+                      rules={rules}
+                    />
+                  }
                 </div>
               </TabPane>
 
@@ -623,6 +622,7 @@ export default flowRight(
   }),
   connect(
     (state) => {
+      const user = getLoggedInUser(state);
       return {
         areasForm: areasFormSelector(state, 'areas'),
         areasTouched: get(state, 'form.property-unit-edit-form.anyTouched'),
@@ -648,6 +648,7 @@ export default flowRight(
         summaryTouched: get(state, 'form.summary-edit-form.anyTouched'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
         tenantsTouched: get(state, 'form.tenant-edit-form.anyTouched'),
+        user,
       };
     },
     {
