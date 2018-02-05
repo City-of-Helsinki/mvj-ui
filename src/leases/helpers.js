@@ -661,7 +661,7 @@ export const getMunicipalityOptions = (attributes: Object) => {
 
 export const getStatusOptions = (attributes: Object) => {
   const choices = get(attributes, 'status.choices', []);
-  if(!choices || choices.length) {
+  if(!choices || choices.length === 0) {
     return [];
   }
 
