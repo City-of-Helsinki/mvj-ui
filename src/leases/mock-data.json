@@ -296,38 +296,38 @@
       },
       "rules": [
         {
-          "rule_maker": "Asuntolautakunta",
-          "rule_date": "2013-09-08",
           "rule_clause": 69,
-          "rule_type": "Vuokraus (indeksi)",
+          "rule_date": "2013-09-08",
           "rule_description": "Tontin pitkäaikainen vuokraaminen. Vuokran perusteena 400km2",
+          "rule_maker": "Asuntolautakunta",
+          "rule_type": "Vuokraus (indeksi)",
           "terms": [
             {
-              "term_purpose": "Alennusehto",
               "supervision_date": "2018-10-09",
               "supervised_date": "2017-04-05",
-              "term_description": "Ajalta 01.01.2015 – 30.12-2015 ei peritä vuokraa."
+              "term_description": "Ajalta 01.01.2015 – 30.12.2015 ei peritä vuokraa.",
+              "term_purpose": "Alennusehto"
             },
             {
-              "term_purpose": "Sopimussakko",
               "supervision_date": "2018-10-09",
               "supervised_date": null,
-              "term_description": "Sopimussaakko enintään 50.000 euroa."
+              "term_description": "Sopimussaakko enintään 50.000 euroa.",
+              "term_purpose": "Sopimussakko"
             }
           ]
         },
         {
-          "rule_maker": "Asuntolautakunta",
-          "rule_date": "2013-09-08",
           "rule_clause": 45,
-          "rule_type": "Vuokraus (indeksi)",
+          "rule_date": "2013-09-08",
           "rule_description": "Tontin lyhytaikainen vuokraus.",
+          "rule_maker": "Asuntolautakunta",
+          "rule_type": "Vuokraus (indeksi)",
           "terms": [
             {
-              "term_purpose": "Alennusehto",
               "supervision_date": "2018-10-09",
               "supervised_date": "2017-04-05",
-              "term_description": "Ajalta 01.01.2015 – 30.12-2015 ei peritä vuokraa."
+              "term_description": "Ajalta 01.01.2015 – 30.12.2015 ei peritä vuokraa.",
+              "term_purpose": "Alennusehto"
             }
           ]
         }

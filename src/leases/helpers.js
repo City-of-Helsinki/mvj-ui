@@ -259,6 +259,35 @@ export const getContentRents = (lease: Object) => {
   };
 };
 
+export const getContentRuleTerms = (rule: Object) => {
+  const terms = get(rule, 'terms', []);
+  return terms.map((term) => {
+    return {
+      supervision_date: term.supervision_date ? moment(term.supervision_date) : null,
+      supervised_date: term.supervised_date ? moment (term.supervised_date) : null,
+      term_description: get(term, 'term_description'),
+      term_purpose: get(term, 'term_purpose'),
+    };
+  });
+};
+
+export const getContentRuleItem = (rule: Object) => {
+  return {
+    rule_clause: get(rule, 'rule_clause'),
+    rule_date: rule.rule_date ? moment(rule.rule_date) : null,
+    rule_description: get(rule, 'rule_description'),
+    rule_maker: get(rule, 'rule_maker'),
+    rule_type: get(rule, 'rule_type'),
+    terms: getContentRuleTerms(rule),
+  };
+};
+
+export const getContentRules = (lease: Array<Object>) => {
+  const rules = get(lease, 'rules', []);
+  return rules.map((rule) =>
+    getContentRuleItem(rule)
+  );
+};
 
 export const getFullAddress = (item: Object) => {
   if(!get(item, 'zip_code') && !get(item, 'town')) {
