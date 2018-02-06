@@ -24,7 +24,26 @@
       "transfer_right": "K",
 
       "billing": {
-        "billing_started": false
+        "billing_started": false,
+        "bills": [
+          {
+            "bill_number": 39845654,
+            "billing_period_end_date": "2017-12-31",
+            "billing_period_start_date": "2017-01-01",
+            "due_date": "2018-03-18",
+            "informed": true,
+            "invoiced_amount": 2876,
+            "sent_to_SAP_date": "2017-12-31",
+            "status": "Avoin",
+            "tenant": {
+              "bill_share": 50,
+              "firstname": "Mikko",
+              "lastname": "Koskinen"
+            },
+            "type": "Vuokra",
+            "unpaid_amount": 2876
+          }
+        ]
       },
 
       "comments": [

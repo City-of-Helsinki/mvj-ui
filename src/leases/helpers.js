@@ -76,6 +76,36 @@ export const getContentLeaseStatus = (item: Object, options: Array<Object>) => {
   return status;
 };
 
+export const getContentBillingBillTenant = (tenant: Object) => {
+  return {
+    bill_share: get(tenant, 'bill_share'),
+    firstname: get(tenant, 'firstname'),
+    lastname: get(tenant, 'lastname'),
+  };
+};
+
+export const getContentBillingBills = (bills: Array<Object>) => {
+  if(!bills || bills.length === 0) {
+    return [];
+  }
+
+  return bills.map((bill) => {
+    return {
+      bill_number: get(bill, 'bill_number'),
+      billing_period_end_date: bill.billing_period_end_date ? moment(bill.billing_period_end_date) : null,
+      billing_period_start_date: bill.billing_period_start_date ? moment(bill.billing_period_start_date) : null,
+      due_date: bill.due_date ? moment(bill.due_date) : null,
+      informed: get(bill, 'informed'),
+      invoiced_amount: get(bill, 'invoiced_amount'),
+      sent_to_SAP_date: bill.sent_to_SAP_date ? moment(bill.sent_to_SAP_date) : null,
+      status: get(bill, 'status'),
+      tenant: getContentBillingBillTenant(get(bill, 'tenant')),
+      type: get(bill, 'type'),
+      unpaid_amount: get(bill, 'unpaid_amount'),
+    };
+  });
+};
+
 export const getContentBilling = (lease: Object) => {
   const billing = get(lease, 'billing');
   if(!billing) {
@@ -84,6 +114,7 @@ export const getContentBilling = (lease: Object) => {
 
   return {
     billing_started: get(billing, 'billing_started'),
+    bills: getContentBillingBills(get(billing, 'bills')),
   };
 };
 
