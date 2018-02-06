@@ -17,6 +17,7 @@ import {getSummaryPublicityLabel} from './leaseSections/helpers';
 import * as contentHelpers from '../helpers';
 import {displayUIMessage} from '../../util/helpers';
 
+import Billing from './leaseSections/billing/Billing';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import ControlButtons from './ControlButtons';
@@ -47,6 +48,7 @@ import mockData from '../mock-data.json';
 type State = {
   activeTab: number,
   areas: Array<Object>,
+  billing: Object,
   comments: Array<Object>,
   contracts: Array<Object>,
   history: Array<Object>,
@@ -100,6 +102,7 @@ class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
     areas: [],
+    billing: {},
     comments: [],
     contracts: [],
     history: [],
@@ -143,6 +146,7 @@ class PreparerForm extends Component {
 
     this.setState({
       areas: contentHelpers.getContentLeaseAreas(mockData.leases[0]),
+      billing: mockData.leases[0].billing,
       comments: mockData.leases[0].comments,
       contracts: contentHelpers.getContentContracts(mockData.leases[0]),
       history: contentHelpers.getContentHistory(mockData.leases[0]),
@@ -375,6 +379,7 @@ class PreparerForm extends Component {
     const {
       activeTab,
       areas,
+      billing,
       contracts,
       history,
       inspections,
@@ -588,7 +593,7 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Laskutus</h1>
+                  {!isEditMode && <Billing billing={billing}/>}
                 </div>
               </TabPane>
 
