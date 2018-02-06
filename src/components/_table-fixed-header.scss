@@ -6,7 +6,13 @@
 
   &__container {
     overflow-y: auto;
-    height: rem-calc(136px);;
+    height: rem-calc(136px);
+  }
+
+  &.table-fixed-header-high {
+    .table-fixed-header__container {
+      height: rem-calc(450px);
+    }
   }
 
   &__header-border {
