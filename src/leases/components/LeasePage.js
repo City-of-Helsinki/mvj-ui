@@ -129,6 +129,7 @@ class PreparerForm extends Component {
 
   componentWillMount() {
     const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}} = this.props;
+    const lease = mockData.leases[0];
 
     // Destroy forms to initialize new values when data is fetched
     dispatch(destroy('contract-edit-form'));
@@ -145,17 +146,17 @@ class PreparerForm extends Component {
     }
 
     this.setState({
-      areas: contentHelpers.getContentLeaseAreas(mockData.leases[0]),
-      billing: mockData.leases[0].billing,
-      comments: mockData.leases[0].comments,
-      contracts: contentHelpers.getContentContracts(mockData.leases[0]),
-      history: contentHelpers.getContentHistory(mockData.leases[0]),
-      inspections: contentHelpers.getContentInspections(mockData.leases[0]),
-      oldTenants: mockData.leases[0].tenants_old,
-      rents: contentHelpers.getContentRents(mockData.leases[0]),
-      rules: contentHelpers.getContentRules(mockData.leases[0]),
-      summary: contentHelpers.getContentSummary(mockData.leases[0]),
-      tenants: contentHelpers.getContentTenants(mockData.leases[0]),
+      areas: contentHelpers.getContentLeaseAreas(lease),
+      billing: contentHelpers.getContentBilling(lease),
+      comments: lease.comments,
+      contracts: contentHelpers.getContentContracts(lease),
+      history: contentHelpers.getContentHistory(lease),
+      inspections: contentHelpers.getContentInspections(lease),
+      oldTenants: lease.tenants_old,
+      rents: contentHelpers.getContentRents(lease),
+      rules: contentHelpers.getContentRules(lease),
+      summary: contentHelpers.getContentSummary(lease),
+      tenants: contentHelpers.getContentTenants(lease),
     });
     fetchAttributes();
     fetchSingleLease(leaseId);

@@ -76,6 +76,17 @@ export const getContentLeaseStatus = (item: Object, options: Array<Object>) => {
   return status;
 };
 
+export const getContentBilling = (lease: Object) => {
+  const billing = get(lease, 'billing');
+  if(!billing) {
+    return {};
+  }
+
+  return {
+    billing_started: get(billing, 'billing_started'),
+  };
+};
+
 export const getContentHistory = (lease: Object) => {
   const historyItems = get(lease, 'history', []);
   if(!historyItems || historyItems.length === 0) {
