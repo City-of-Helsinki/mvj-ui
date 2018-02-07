@@ -25,6 +25,21 @@
 
       "billing": {
         "billing_started": false,
+
+        "abnormal_debts": [
+          {
+            "amount": 1500,
+            "due_date": "2019-03-18",
+            "end_date": "2019-01-01",
+            "start_date": "2019-12-31",
+            "tenant": {
+              "bill_share": 50,
+              "firstname": "Mikko",
+              "lastname": "Koskinen"
+            }
+          }
+        ],
+
         "bills": [
           {
             "bill_number": 39845654,

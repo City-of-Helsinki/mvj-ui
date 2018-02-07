@@ -28,4 +28,39 @@
       margin-left: 0.4rem;
     }
   }
+
+  table.abnormal-debts-table {
+    border: 1px solid #d7d5d5;
+
+    thead {
+      tr {
+        th {
+          border: none;
+          border-bottom: 1px solid $light-gray;
+          padding: 0.3rem 0.5rem;
+          font-size: $font-xsmall;
+          font-weight: $semibold;
+          color: $black;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          border: none;
+          padding: 0.3rem 0.5rem;
+        }
+      }
+
+      tr:hover {
+        background-color: rgba(0, 146, 70, 0.1);
+      }
+
+      tr.no-data {
+        text-align: center;
+        background-color: $lightest-gray;
+      }
+    }
+  }
 }
