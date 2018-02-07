@@ -2,6 +2,7 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import classNames from 'classnames';
 
 import {formatDate,
   formatDateRange,
@@ -10,17 +11,14 @@ import {formatDate,
 
 type Props = {
   bill: Object,
+  containerHeight: ?number,
   onClose: Function,
   show: boolean,
 }
 
-const BillModal = ({bill, onClose, show}: Props) => {
-  if(!show) {
-    return null;
-  }
-  console.log(bill);
+const BillModal = ({bill, containerHeight, onClose, show}: Props) => {
   return (
-    <div className="bill-modal">
+    <div className={classNames('bill-modal', {'is-open': show})} style={{height: containerHeight}}>
       <div className="bill-modal__container">
         <div className='bill-modal__title-row'>
           <div className='title'>
