@@ -17,6 +17,7 @@ import {getSummaryPublicityLabel} from './leaseSections/helpers';
 import * as contentHelpers from '../helpers';
 import {displayUIMessage} from '../../util/helpers';
 
+import Billing from './leaseSections/billing/Billing';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import ControlButtons from './ControlButtons';
@@ -47,6 +48,7 @@ import mockData from '../mock-data.json';
 type State = {
   activeTab: number,
   areas: Array<Object>,
+  billing: Object,
   comments: Array<Object>,
   contracts: Array<Object>,
   history: Array<Object>,
@@ -100,6 +102,7 @@ class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
     areas: [],
+    billing: {},
     comments: [],
     contracts: [],
     history: [],
@@ -126,6 +129,7 @@ class PreparerForm extends Component {
 
   componentWillMount() {
     const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}} = this.props;
+    const lease = mockData.leases[0];
 
     // Destroy forms to initialize new values when data is fetched
     dispatch(destroy('contract-edit-form'));
@@ -142,16 +146,17 @@ class PreparerForm extends Component {
     }
 
     this.setState({
-      areas: contentHelpers.getContentLeaseAreas(mockData.leases[0]),
-      comments: mockData.leases[0].comments,
-      contracts: contentHelpers.getContentContracts(mockData.leases[0]),
-      history: contentHelpers.getContentHistory(mockData.leases[0]),
-      inspections: contentHelpers.getContentInspections(mockData.leases[0]),
-      oldTenants: mockData.leases[0].tenants_old,
-      rents: contentHelpers.getContentRents(mockData.leases[0]),
-      rules: contentHelpers.getContentRules(mockData.leases[0]),
-      summary: contentHelpers.getContentSummary(mockData.leases[0]),
-      tenants: contentHelpers.getContentTenants(mockData.leases[0]),
+      areas: contentHelpers.getContentLeaseAreas(lease),
+      billing: contentHelpers.getContentBilling(lease),
+      comments: lease.comments,
+      contracts: contentHelpers.getContentContracts(lease),
+      history: contentHelpers.getContentHistory(lease),
+      inspections: contentHelpers.getContentInspections(lease),
+      oldTenants: lease.tenants_old,
+      rents: contentHelpers.getContentRents(lease),
+      rules: contentHelpers.getContentRules(lease),
+      summary: contentHelpers.getContentSummary(lease),
+      tenants: contentHelpers.getContentTenants(lease),
     });
     fetchAttributes();
     fetchSingleLease(leaseId);
@@ -375,6 +380,7 @@ class PreparerForm extends Component {
     const {
       activeTab,
       areas,
+      billing,
       contracts,
       history,
       inspections,
@@ -588,7 +594,7 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Laskutus</h1>
+                  {!isEditMode && <Billing billing={billing}/>}
                 </div>
               </TabPane>
 

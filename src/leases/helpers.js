@@ -76,6 +76,72 @@ export const getContentLeaseStatus = (item: Object, options: Array<Object>) => {
   return status;
 };
 
+export const getContentBillingTenant = (tenant: Object) => {
+  return {
+    bill_share: get(tenant, 'bill_share'),
+    firstname: get(tenant, 'firstname'),
+    lastname: get(tenant, 'lastname'),
+  };
+};
+export const getContentBillingAbnormalDebts = (debts: Array<Object>) => {
+  if(!debts || debts.length === 0) {
+    return [];
+  }
+
+  return debts.map((debt) => {
+    return {
+      amount: get(debt, 'amount'),
+      due_date: debt.due_date ? moment(debt.due_date) : null,
+      end_date: debt.end_date ? moment(debt.end_date) : null,
+      start_date: debt.start_date ? moment(debt.start_date) : null,
+      tenant: getContentBillingTenant(get(debt, 'tenant')),
+    };
+  });
+};
+
+export const getContentBillingBills = (bills: Array<Object>) => {
+  if(!bills || bills.length === 0) {
+    return [];
+  }
+
+  return bills.map((bill) => {
+    return {
+      bill_number: get(bill, 'bill_number'),
+      billing_period_end_date: bill.billing_period_end_date ? moment(bill.billing_period_end_date) : null,
+      billing_period_start_date: bill.billing_period_start_date ? moment(bill.billing_period_start_date) : null,
+      capital_amount: get(bill, 'capital_amount'),
+      demand_date: bill.demand_date ? moment(bill.demand_date) : null,
+      due_date: bill.due_date ? moment(bill.due_date) : null,
+      info: get(bill, 'info'),
+      invoiced_amount: get(bill, 'invoiced_amount'),
+      invoicing_date: bill.invoicing_date ? moment(bill.invoicing_date) : null,
+      invoice_method: get(bill, 'invoice_method'),
+      invoice_type: get(bill, 'invoice_type'),
+      recovery_cost: get(bill, 'recovery_cost'),
+      SAP_number: get(bill, 'SAP_number'),
+      sent_to_SAP_date: bill.sent_to_SAP_date ? moment(bill.sent_to_SAP_date) : null,
+      status: get(bill, 'status'),
+      suspension_date: bill.suspension_date ? moment(bill.suspension_date) : null,
+      tenant: getContentBillingTenant(get(bill, 'tenant')),
+      type: get(bill, 'type'),
+      unpaid_amount: get(bill, 'unpaid_amount'),
+    };
+  });
+};
+
+export const getContentBilling = (lease: Object) => {
+  const billing = get(lease, 'billing');
+  if(!billing) {
+    return {};
+  }
+
+  return {
+    abnormal_debts: getContentBillingAbnormalDebts(get(billing, 'abnormal_debts')),
+    billing_started: get(billing, 'billing_started'),
+    bills: getContentBillingBills(get(billing, 'bills')),
+  };
+};
+
 export const getContentHistory = (lease: Object) => {
   const historyItems = get(lease, 'history', []);
   if(!historyItems || historyItems.length === 0) {

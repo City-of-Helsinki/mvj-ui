@@ -6,7 +6,7 @@
 
   &__container {
     overflow-y: auto;
-    height: rem-calc(136px);;
+    height: rem-calc(136px);
   }
 
   &__header-border {
@@ -55,6 +55,28 @@
           overflow: hidden;
           text-overflow: ellipsis;
         }
+      }
+    }
+  }
+
+  &.billing__bill-table {
+    .table-fixed-header__container {
+      height: 450px;
+      transition: max-height 0.5s ease-in-out;
+      overflow: hidden;
+    }
+
+    &.is-open {
+      .table-fixed-header__container {
+        transition: max-height 0.5s ease-in-out;
+      }
+    }
+
+    table tbody tr {
+      cursor: pointer;
+
+      &.selected {
+        background-color: rgba(0, 146, 70, 0.1);
       }
     }
   }

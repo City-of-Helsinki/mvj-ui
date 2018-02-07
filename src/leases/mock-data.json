@@ -22,6 +22,78 @@
       "regulatory_method": "03",
       "special_apartments": "01",
       "transfer_right": "K",
+
+      "billing": {
+        "billing_started": false,
+
+        "abnormal_debts": [
+          {
+            "amount": 1500,
+            "due_date": "2019-03-18",
+            "end_date": "2019-01-01",
+            "start_date": "2019-12-31",
+            "tenant": {
+              "bill_share": 50,
+              "firstname": "Mikko",
+              "lastname": "Koskinen"
+            }
+          }
+        ],
+
+        "bills": [
+          {
+            "bill_number": 39845654,
+            "billing_period_end_date": "2017-12-31",
+            "billing_period_start_date": "2017-01-01",
+            "capital_amount": 15000,
+            "demand_date": "2018-03-02",
+            "due_date": "2018-03-18",
+            "info": "There are plenty of ready-to-use icons, and they are awesome! But why not to use ready-to-use preloaders as well?",
+            "invoiced_amount": 2876,
+            "invoicing_date": "2018-02-18",
+            "invoice_method": "Paperilasku",
+            "invoice_type": "Veloitus",
+            "recovery_cost": 5,
+            "SAP_number": 49875698,
+            "sent_to_SAP_date": "2017-12-31",
+            "status": "Avoin",
+            "suspension_date": "2018-03-05",
+            "tenant": {
+              "bill_share": 50,
+              "firstname": "Mikko",
+              "lastname": "Koskinen"
+            },
+            "type": "Vuokra",
+            "unpaid_amount": 2876
+          },
+          {
+            "bill_number": 45845654,
+            "billing_period_end_date": "2017-12-31",
+            "billing_period_start_date": "2017-01-01",
+            "capital_amount": 7500,
+            "demand_date": "2018-03-02",
+            "due_date": "2018-03-18",
+            "info": "There are plenty of ready-to-use icons, and they are awesome! But why not to use ready-to-use preloaders as well?",
+            "invoiced_amount": 2876,
+            "invoicing_date": "2018-02-18",
+            "invoice_method": "E-lasku",
+            "invoice_type": "Veloitus",
+            "recovery_cost": 5,
+            "SAP_number": 49879172,
+            "sent_to_SAP_date": "2017-12-31",
+            "status": "Avoin",
+            "suspension_date": "2018-03-05",
+            "tenant": {
+              "bill_share": 50,
+              "firstname": "Vappu",
+              "lastname": "Pappila"
+            },
+            "type": "Vuokra",
+            "unpaid_amount": 0
+          }
+        ]
+      },
+
       "comments": [
         {
           "archived": false,
@@ -42,6 +114,7 @@
           "user": "Kati Valkama"
         }
       ],
+
       "contracts": [
         {
           "active": true,
@@ -87,251 +160,7 @@
           ]
         }
       ],
-      "rents": {
-        "rent_info_ok": true,
-        "basic_info": {
-          "adjustment_start_date": "2000-01-01",
-          "adjustment_end_date": "2001-01-01",
-          "basic_index": 418,
-          "basic_index_rounding": 0,
-          "billing_type": "0",
-          "comment": "Lorem ipsum",
-          "due_dates": [
-            "01.03",
-            "15.04",
-            "15.07",
-            "15.10"
-          ],
-          "fidex_initial_year_rents": [
-            {
-              "end_date": null,
-              "rent": 3489.90,
-              "start_date": "1962-01-01"
-            },
-            {
-              "end_date": "1962-01-01",
-              "rent": 3234.12,
-              "start_date": "1960-01-01"
-            }
-          ],
-          "index_type": "3",
-          "rental_period": "0",
-          "type": "0",
-          "y_value": 1044,
-          "y_value_start": 812,
-          "x_value": 812
-        },
-        "criterias": [
-          {
-            "agreed": false,
-            "purpose": "100",
-            "km2": 120,
-            "index": 1880,
-            "ekm2ind100": 18,
-            "ekm2ind": 39,
-            "percentage": 4,
-            "basic_rent": 2356,
-            "start_rent": 2876
-          }
-        ],
-        "charged_rents": [
-          {
-            "calendar_year_rent": 36543.43,
-            "difference": 0,
-            "end_date": "2017-12-31",
-            "rent": 36387.65,
-            "start_date": "2017-01-01"
-          },
-          {
-            "calendar_year_rent": 36543.43,
-            "difference": 0,
-            "end_date": "2016-12-31",
-            "rent": 36387.65,
-            "start_date": "2016-01-01"
-          },
-          {
-            "calendar_year_rent": 36543.43,
-            "difference": 0,
-            "end_date": "2015-12-31",
-            "rent": 36387.65,
-            "start_date": "2015-01-01"
-          },
-          {
-            "calendar_year_rent": 36543.43,
-            "difference": 0,
-            "end_date": "2014-12-31",
-            "rent": 36387.65,
-            "start_date": "2014-01-01"
-          },
-          {
-            "calendar_year_rent": 36543.43,
-            "difference": 0,
-            "end_date": "2013-12-31",
-            "rent": 36387.65,
-            "start_date": "2013-01-01"
-          },
-          {
-            "calendar_year_rent": 36543.43,
-            "difference": 0,
-            "end_date": "2012-12-31",
-            "rent": 36387.65,
-            "start_date": "2012-01-01"
-          },
-          {
-            "calendar_year_rent": 36543.43,
-            "difference": 0,
-            "end_date": "2011-12-31",
-            "rent": 36387.65,
-            "start_date": "2011-01-01"
-          },
-          {
-            "calendar_year_rent": 36543.43,
-            "difference": null,
-            "end_date": "2010-12-31",
-            "rent": 36387.65,
-            "start_date": "2010-01-01"
-          }
-        ],
-        "contract_rents": [
-          {
-            "basic_rent": 6296.96,
-            "basic_rent_type": "0",
-            "contract_rent": 2098.99,
-            "end_date": null,
-            "purpose": "100",
-            "start_date": "1980-01-01",
-            "type": "0"
-          },
-          {
-            "basic_rent": 7861.19,
-            "basic_rent_type": "0",
-            "contract_rent": 2623.73,
-            "end_date": "1980-01-01",
-            "purpose": "100",
-            "start_date": "1960-01-01",
-            "type": "0"
-          }
-        ],
-        "discounts": [
-          {
-            "amount": 100000,
-            "amount_left": 75000,
-            "amount_type": "3",
-            "comment": "Talouskasvu tuo valtion kassaan lähes kolme miljardia lisää rahaa. Lisäraha menee pitkälti velanoton vähentämiseen.",
-            "end_date": "1980-12-31",
-            "purpose": "100",
-            "rule": null,
-            "start_date": "1960-01-01",
-            "type": "0"
-          },
-          {
-            "amount": 10,
-            "amount_type": "1",
-            "comment": "Talouskasvu tuo valtion kassaan lähes kolme miljardia lisää rahaa. Lisäraha menee pitkälti velanoton vähentämiseen.",
-            "end_date": "2020-12-31",
-            "purpose": "100",
-            "rule": "0",
-            "start_date": "1981-01-01",
-            "type": "0"
-          }
-        ],
-        "index_adjusted_rents": [
-          {
-            "calculation_factor": 4.57,
-            "end_date": "2017-12-31",
-            "purpose": "100",
-            "rent": 36387.65,
-            "start_date": "2017-01-01"
-          },
-          {
-            "calculation_factor": 4.57,
-            "end_date": "2016-12-31",
-            "rent": 36387.65,
-            "purpose": "100",
-            "start_date": "2016-01-01"
-          },
-          {
-            "calculation_factor": 4.57,
-            "end_date": "2015-12-31",
-            "rent": 36387.65,
-            "purpose": "100",
-            "start_date": "2015-01-01"
-          },
-          {
-            "calculation_factor": 4.57,
-            "end_date": "2014-12-31",
-            "rent": 36387.65,
-            "purpose": "100",
-            "start_date": "2014-01-01"
-          },
-          {
-            "calculation_factor": 4.57,
-            "end_date": "2013-12-31",
-            "rent": 36387.65,
-            "purpose": "100",
-            "start_date": "2013-01-01"
-          },
-          {
-            "calculation_factor": 4.57,
-            "end_date": "2012-12-31",
-            "rent": 36387.65,
-            "purpose": "100",
-            "start_date": "2012-01-01"
-          },
-          {
-            "calculation_factor": 4.57,
-            "end_date": "2011-12-31",
-            "rent": 36387.65,
-            "purpose": "100",
-            "start_date": "2011-01-01"
-          },
-          {
-            "calculation_factor": 4.57,
-            "end_date": "2010-12-31",
-            "rent": 36387.65,
-            "purpose": "100",
-            "start_date": "2010-01-01"
-          }
-        ]
-      },
-      "rules": [
-        {
-          "rule_clause": 69,
-          "rule_date": "2013-09-08",
-          "rule_description": "Tontin pitkäaikainen vuokraaminen. Vuokran perusteena 400km2",
-          "rule_maker": "Asuntolautakunta",
-          "rule_type": "Vuokraus (indeksi)",
-          "terms": [
-            {
-              "supervision_date": "2018-10-09",
-              "supervised_date": "2017-04-05",
-              "term_description": "Ajalta 01.01.2015 – 30.12.2015 ei peritä vuokraa.",
-              "term_purpose": "Alennusehto"
-            },
-            {
-              "supervision_date": "2018-10-09",
-              "supervised_date": null,
-              "term_description": "Sopimussaakko enintään 50.000 euroa.",
-              "term_purpose": "Sopimussakko"
-            }
-          ]
-        },
-        {
-          "rule_clause": 45,
-          "rule_date": "2013-09-08",
-          "rule_description": "Tontin lyhytaikainen vuokraus.",
-          "rule_maker": "Asuntolautakunta",
-          "rule_type": "Vuokraus (indeksi)",
-          "terms": [
-            {
-              "supervision_date": "2018-10-09",
-              "supervised_date": "2017-04-05",
-              "term_description": "Ajalta 01.01.2015 – 30.12.2015 ei peritä vuokraa.",
-              "term_purpose": "Alennusehto"
-            }
-          ]
-        }
-      ],
+
       "history": [
         {
           "active": true,
@@ -355,6 +184,7 @@
           "type": "Varaus"
         }
       ],
+
       "inspections": [
         {
           "inspection_description": "Ajalta 01.01.2015 – 30.12-2015 ei peritä vuokraa.",
@@ -369,248 +199,7 @@
           "supervised_date": "2017-04-05"
         }
       ],
-      "tenants": [
-        {
-          "tenant": {
-            "address": "Sörnäisten Rantatie 12 A",
-            "bill_share": 50,
-            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-            "customer_id": "456733783",
-            "email": "vappu@pappila.fi",
-            "end_date": null,
-            "firstname": "Vappu",
-            "language": "Suomi",
-            "lastname": "Pappila",
-            "ovt_identifier": "4578ghj",
-            "partner_code": "348576928",
-            "phone": "+358 46 9877652",
-            "protection_order": true,
-            "reference": "4396750342358345756",
-            "roles": [],
-            "SAP_customer_id": "3576168",
-            "share": 1,
-            "share_divider": 2,
-            "social_security_number": "200587-345X",
-            "start_date": "1989-01-30",
-            "town": "Helsinki",
-            "zip_code": "00560"
-          },
-          "other_persons": [
-            {
-              "customer_id": "456733783",
-              "address": "Kumpulantie 123",
-              "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-              "email": "vappu@pappila.fi",
-              "end_date": null,
-              "firstname": "Mari",
-              "language": "Suomi",
-              "lastname": "Pappila",
-              "phone": "+358 46 9877652",
-              "protection_order": true,
-              "roles": ["1", "2"],
-              "SAP_customer_id": "3576168",
-              "social_security_number": "200587-345X",
-              "start_date": "1989-12-13",
-              "town": "Helsinki",
-              "zip_code": "00560"
-            },
-            {
-              "customer_id": "456733783",
-              "address": "Apollonkatu 56",
-              "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-              "email": "vappu@pappila.fi",
-              "end_date": null,
-              "firstname": "Mikko",
-              "language": "Suomi",
-              "lastname": "Pappila",
-              "phone": "+358 46 9877652",
-              "protection_order": true,
-              "roles": ["2"],
-              "SAP_customer_id": "3576168",
-              "social_security_number": "200587-345X",
-              "start_date": "1989-12-13",
-              "town": "Helsinki",
-              "zip_code": "00560"
-            }
-          ]
-        },
-        {
-          "tenant": {
-            "address": "Sörnäisten Rantatie 12 A",
-            "bill_share": 50,
-            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-            "customer_id": "456733784",
-            "email": "mikko@koskinen.fi",
-            "end_date": null,
-            "firstname": "Mikko",
-            "language": "Suomi",
-            "lastname": "Koskinen",
-            "ovt_identifier": "4578ghj",
-            "partner_code": "348576928",
-            "phone": "+358 46 9877652",
-            "protection_order": false,
-            "reference": "4396750342358345756",
-            "roles": [],
-            "SAP_customer_id": "3576168",
-            "share": 1,
-            "share_divider": 2,
-            "social_security_number": "200587-123Y",
-            "start_date": "1989-01-31",
-            "town": "Helsinki",
-            "zip_code": "00560"
-          },
-          "other_persons": [
-            {
-              "customer_id": "456733784",
-              "address": "Kumpulantie 3",
-              "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-              "email": "mikko@koskinen.fi",
-              "end_date": null,
-              "firstname": "Mikko",
-              "language": "Suomi",
-              "lastname": "Koskinen",
-              "phone": "+358 46 9877652",
-              "protection_order": true,
-              "roles": ["1"],
-              "SAP_customer_id": "3576168",
-              "social_security_number": "200587-123Y",
-              "start_date": "1987-12-13",
-              "town": "Helsinki",
-              "zip_code": "00560"
-            },
-            {
-              "customer_id": "456733784",
-              "address": "Runeberginkatu 12",
-              "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-              "email": "mikko@koskinen.fi",
-              "end_date": null,
-              "firstname": "Mikko",
-              "language": "Suomi",
-              "lastname": "Koskinen",
-              "phone": "+358 46 9877652",
-              "protection_order": true,
-              "roles": ["2"],
-              "SAP_customer_id": "3576168",
-              "social_security_number": "200587-123Y",
-              "start_date": "1989-12-13",
-              "town": "Helsinki",
-              "zip_code": "00560"
-            }
-          ]
-        }
-      ],
-      "tenants_old": [
-        {
-          "tenant": {
-            "customer_id": "456733783",
-            "address": "Sörnäisten Rantatie 12 A",
-            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-            "email": "vappu@pappila.fi",
-            "language": "Suomi",
-            "name": "Vappu Pappila",
-            "ovt_identifier": "4578ghj",
-            "partner_code": "348576928",
-            "phone": "+358 46 9877652",
-            "protection_order": true,
-            "reference": "4396750342358345756",
-            "roles": [],
-            "SAP_customer_id": "3576168",
-            "share": 1,
-            "share_divider": 2,
-            "social_security_number": "200587-345X",
-            "start_date": "1989-01-31",
-            "town": "Helsinki",
-            "zip_code": "00560"
-          },
-          "invoice_recipient": {
-            "customer_id": "456733783",
-            "address": "Sörnäisten Rantatie 12 A",
-            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-            "email": "vappu@pappila.fi",
-            "language": "Suomi",
-            "name": "Vappu Pappila",
-            "phone": "+358 46 9877652",
-            "protection_order": true,
-            "roles": [],
-            "SAP_customer_id": "3576168",
-            "social_security_number": "200587-345X",
-            "start_date": "1987-12-13",
-            "town": "Helsinki",
-            "zip_code": "00560"
-          },
-          "contact_person": {
-            "customer_id": "456733783",
-            "address": "Sörnäisten Rantatie 12 A",
-            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-            "email": "vappu@pappila.fi",
-            "language": "Suomi",
-            "name": "Vappu Pappila",
-            "phone": "+358 46 9877652",
-            "protection_order": true,
-            "roles": [],
-            "SAP_customer_id": "3576168",
-            "social_security_number": "200587-345X",
-            "start_date": "1987-12-13",
-            "town": "Helsinki",
-            "zip_code": "00560"
-          }
-        },
-        {
-          "tenant": {
-            "customer_id": "456733784",
-            "address": "Sörnäisten Rantatie 12 A",
-            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-            "email": "mikko@koskinen.fi",
-            "language": "Suomi",
-            "name": "Mikko Koskinen",
-            "ovt_identifier": "4578ghj",
-            "partner_code": "348576928",
-            "phone": "+358 46 9877652",
-            "protection_order": true,
-            "reference": "4396750342358345756",
-            "roles": [],
-            "SAP_customer_id": "3576168",
-            "share": 1,
-            "share_divider": 2,
-            "social_security_number": "200587-123Y",
-            "start_date": "1989-01-31",
-            "town": "Helsinki",
-            "zip_code": "00560"
-          },
-          "invoice_recipient": {
-            "customer_id": "456733784",
-            "address": "Sörnäisten Rantatie 12 A",
-            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-            "email": "mikko@koskinen.fi",
-            "language": "Suomi",
-            "name": "Mikko koskinen",
-            "phone": "+358 46 9877652",
-            "protection_order": true,
-            "roles": [],
-            "SAP_customer_id": "3576168",
-            "social_security_number": "200587-123Y",
-            "start_date": "1987-12-13",
-            "town": "Helsinki",
-            "zip_code": "00560"
-          },
-          "contact_person": {
-            "customer_id": "456733784",
-            "address": "Sörnäisten Rantatie 12 A",
-            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
-            "email": "mikko@koskinen.fi",
-            "language": "Suomi",
-            "name": "Mikko Koskinen",
-            "phone": "+358 46 9877652",
-            "protection_order": true,
-            "roles": [],
-            "SAP_customer_id": "3576168",
-            "social_security_number": "200587-123Y",
-            "start_date": "1987-12-13",
-            "town": "Helsinki",
-            "zip_code": "00560"
-          }
-        }
-      ],
+
       "lease_areas": [
         {
           "address": "Sörnäisten rantatie 10",
@@ -950,6 +539,421 @@
                 }
               ]
             }
+          }
+        }
+      ],
+
+      "rents": {
+        "rent_info_ok": true,
+
+        "basic_info": {
+          "adjustment_start_date": "2000-01-01",
+          "adjustment_end_date": "2001-01-01",
+          "basic_index": 418,
+          "basic_index_rounding": 0,
+          "billing_type": "0",
+          "comment": "Lorem ipsum",
+
+          "due_dates": [
+            "01.03",
+            "15.04",
+            "15.07",
+            "15.10"
+          ],
+
+          "fidex_initial_year_rents": [
+            {
+              "end_date": null,
+              "rent": 3489.90,
+              "start_date": "1962-01-01"
+            },
+            {
+              "end_date": "1962-01-01",
+              "rent": 3234.12,
+              "start_date": "1960-01-01"
+            }
+          ],
+
+          "index_type": "3",
+          "rental_period": "0",
+          "type": "0",
+          "y_value": 1044,
+          "y_value_start": 812,
+          "x_value": 812
+        },
+
+        "charged_rents": [
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2017-12-31",
+            "rent": 36387.65,
+            "start_date": "2017-01-01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2016-12-31",
+            "rent": 36387.65,
+            "start_date": "2016-01-01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2015-12-31",
+            "rent": 36387.65,
+            "start_date": "2015-01-01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2014-12-31",
+            "rent": 36387.65,
+            "start_date": "2014-01-01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2013-12-31",
+            "rent": 36387.65,
+            "start_date": "2013-01-01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2012-12-31",
+            "rent": 36387.65,
+            "start_date": "2012-01-01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": 0,
+            "end_date": "2011-12-31",
+            "rent": 36387.65,
+            "start_date": "2011-01-01"
+          },
+          {
+            "calendar_year_rent": 36543.43,
+            "difference": null,
+            "end_date": "2010-12-31",
+            "rent": 36387.65,
+            "start_date": "2010-01-01"
+          }
+        ],
+
+        "contract_rents": [
+          {
+            "basic_rent": 6296.96,
+            "basic_rent_type": "0",
+            "contract_rent": 2098.99,
+            "end_date": null,
+            "purpose": "100",
+            "start_date": "1980-01-01",
+            "type": "0"
+          },
+          {
+            "basic_rent": 7861.19,
+            "basic_rent_type": "0",
+            "contract_rent": 2623.73,
+            "end_date": "1980-01-01",
+            "purpose": "100",
+            "start_date": "1960-01-01",
+            "type": "0"
+          }
+        ],
+
+        "criterias": [
+          {
+            "agreed": false,
+            "purpose": "100",
+            "km2": 120,
+            "index": 1880,
+            "ekm2ind100": 18,
+            "ekm2ind": 39,
+            "percentage": 4,
+            "basic_rent": 2356,
+            "start_rent": 2876
+          }
+        ],
+
+        "discounts": [
+          {
+            "amount": 100000,
+            "amount_left": 75000,
+            "amount_type": "3",
+            "comment": "Talouskasvu tuo valtion kassaan lähes kolme miljardia lisää rahaa. Lisäraha menee pitkälti velanoton vähentämiseen.",
+            "end_date": "1980-12-31",
+            "purpose": "100",
+            "rule": null,
+            "start_date": "1960-01-01",
+            "type": "0"
+          },
+          {
+            "amount": 10,
+            "amount_type": "1",
+            "comment": "Talouskasvu tuo valtion kassaan lähes kolme miljardia lisää rahaa. Lisäraha menee pitkälti velanoton vähentämiseen.",
+            "end_date": "2020-12-31",
+            "purpose": "100",
+            "rule": "0",
+            "start_date": "1981-01-01",
+            "type": "0"
+          }
+        ],
+
+        "index_adjusted_rents": [
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2017-12-31",
+            "purpose": "100",
+            "rent": 36387.65,
+            "start_date": "2017-01-01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2016-12-31",
+            "rent": 36387.65,
+            "purpose": "100",
+            "start_date": "2016-01-01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2015-12-31",
+            "rent": 36387.65,
+            "purpose": "100",
+            "start_date": "2015-01-01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2014-12-31",
+            "rent": 36387.65,
+            "purpose": "100",
+            "start_date": "2014-01-01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2013-12-31",
+            "rent": 36387.65,
+            "purpose": "100",
+            "start_date": "2013-01-01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2012-12-31",
+            "rent": 36387.65,
+            "purpose": "100",
+            "start_date": "2012-01-01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2011-12-31",
+            "rent": 36387.65,
+            "purpose": "100",
+            "start_date": "2011-01-01"
+          },
+          {
+            "calculation_factor": 4.57,
+            "end_date": "2010-12-31",
+            "rent": 36387.65,
+            "purpose": "100",
+            "start_date": "2010-01-01"
+          }
+        ]
+      },
+
+      "rules": [
+        {
+          "rule_clause": 69,
+          "rule_date": "2013-09-08",
+          "rule_description": "Tontin pitkäaikainen vuokraaminen. Vuokran perusteena 400km2",
+          "rule_maker": "Asuntolautakunta",
+          "rule_type": "Vuokraus (indeksi)",
+          "terms": [
+            {
+              "supervision_date": "2018-10-09",
+              "supervised_date": "2017-04-05",
+              "term_description": "Ajalta 01.01.2015 – 30.12.2015 ei peritä vuokraa.",
+              "term_purpose": "Alennusehto"
+            },
+            {
+              "supervision_date": "2018-10-09",
+              "supervised_date": null,
+              "term_description": "Sopimussaakko enintään 50.000 euroa.",
+              "term_purpose": "Sopimussakko"
+            }
+          ]
+        },
+        {
+          "rule_clause": 45,
+          "rule_date": "2013-09-08",
+          "rule_description": "Tontin lyhytaikainen vuokraus.",
+          "rule_maker": "Asuntolautakunta",
+          "rule_type": "Vuokraus (indeksi)",
+          "terms": [
+            {
+              "supervision_date": "2018-10-09",
+              "supervised_date": "2017-04-05",
+              "term_description": "Ajalta 01.01.2015 – 30.12.2015 ei peritä vuokraa.",
+              "term_purpose": "Alennusehto"
+            }
+          ]
+        }
+      ],
+
+      "tenants": [
+        {
+          "tenant": {
+            "address": "Sörnäisten Rantatie 12 A",
+            "bill_share": 50,
+            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
+            "customer_id": "456733783",
+            "email": "vappu@pappila.fi",
+            "end_date": null,
+            "firstname": "Vappu",
+            "language": "Suomi",
+            "lastname": "Pappila",
+            "ovt_identifier": "4578ghj",
+            "partner_code": "348576928",
+            "phone": "+358 46 9877652",
+            "protection_order": true,
+            "reference": "4396750342358345756",
+            "roles": [],
+            "SAP_customer_id": "3576168",
+            "share": 1,
+            "share_divider": 2,
+            "social_security_number": "200587-345X",
+            "start_date": "1989-01-30",
+            "town": "Helsinki",
+            "zip_code": "00560"
+          },
+
+          "other_persons": [
+            {
+              "customer_id": "456733783",
+              "address": "Kumpulantie 123",
+              "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
+              "email": "vappu@pappila.fi",
+              "end_date": null,
+              "firstname": "Mari",
+              "language": "Suomi",
+              "lastname": "Pappila",
+              "phone": "+358 46 9877652",
+              "protection_order": true,
+              "roles": ["1", "2"],
+              "SAP_customer_id": "3576168",
+              "social_security_number": "200587-345X",
+              "start_date": "1989-12-13",
+              "town": "Helsinki",
+              "zip_code": "00560"
+            },
+            {
+              "customer_id": "456733783",
+              "address": "Apollonkatu 56",
+              "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
+              "email": "vappu@pappila.fi",
+              "end_date": null,
+              "firstname": "Mikko",
+              "language": "Suomi",
+              "lastname": "Pappila",
+              "phone": "+358 46 9877652",
+              "protection_order": true,
+              "roles": ["2"],
+              "SAP_customer_id": "3576168",
+              "social_security_number": "200587-345X",
+              "start_date": "1989-12-13",
+              "town": "Helsinki",
+              "zip_code": "00560"
+            }
+          ]
+        },
+        {
+          "tenant": {
+            "address": "Sörnäisten Rantatie 12 A",
+            "bill_share": 50,
+            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
+            "customer_id": "456733784",
+            "email": "mikko@koskinen.fi",
+            "end_date": null,
+            "firstname": "Mikko",
+            "language": "Suomi",
+            "lastname": "Koskinen",
+            "ovt_identifier": "4578ghj",
+            "partner_code": "348576928",
+            "phone": "+358 46 9877652",
+            "protection_order": false,
+            "reference": "4396750342358345756",
+            "roles": [],
+            "SAP_customer_id": "3576168",
+            "share": 1,
+            "share_divider": 2,
+            "social_security_number": "200587-123Y",
+            "start_date": "1989-01-31",
+            "town": "Helsinki",
+            "zip_code": "00560"
+          },
+
+          "other_persons": [
+            {
+              "customer_id": "456733784",
+              "address": "Kumpulantie 3",
+              "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
+              "email": "mikko@koskinen.fi",
+              "end_date": null,
+              "firstname": "Mikko",
+              "language": "Suomi",
+              "lastname": "Koskinen",
+              "phone": "+358 46 9877652",
+              "protection_order": true,
+              "roles": ["1"],
+              "SAP_customer_id": "3576168",
+              "social_security_number": "200587-123Y",
+              "start_date": "1987-12-13",
+              "town": "Helsinki",
+              "zip_code": "00560"
+            },
+            {
+              "customer_id": "456733784",
+              "address": "Runeberginkatu 12",
+              "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
+              "email": "mikko@koskinen.fi",
+              "end_date": null,
+              "firstname": "Mikko",
+              "language": "Suomi",
+              "lastname": "Koskinen",
+              "phone": "+358 46 9877652",
+              "protection_order": true,
+              "roles": ["2"],
+              "SAP_customer_id": "3576168",
+              "social_security_number": "200587-123Y",
+              "start_date": "1989-12-13",
+              "town": "Helsinki",
+              "zip_code": "00560"
+            }
+          ]
+        }
+      ],
+
+      "tenants_old": [
+        {
+          "tenant": {
+            "customer_id": "456733783",
+            "address": "Sörnäisten Rantatie 12 A",
+            "comment": "Tänne tulisi kommentti, eli vähän teksti', ehkä jopa kaksi riviä",
+            "email": "vappu@pappila.fi",
+            "language": "Suomi",
+            "name": "Vappu Pappila",
+            "ovt_identifier": "4578ghj",
+            "partner_code": "348576928",
+            "phone": "+358 46 9877652",
+            "protection_order": true,
+            "reference": "4396750342358345756",
+            "roles": [],
+            "SAP_customer_id": "3576168",
+            "share": 1,
+            "share_divider": 2,
+            "social_security_number": "200587-345X",
+            "start_date": "1989-01-31",
+            "town": "Helsinki",
+            "zip_code": "00560"
           }
         }
       ]
