@@ -28,19 +28,6 @@ const Rent = ({onCriteriaAgree, rents}: Props) => {
         </Column>
       </Row>
       <Row><Column><div className="separator-line no-margin"></div></Column></Row>
-      <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
-      <Row><Column>
-        <Criterias
-          criterias={get(rents, 'criterias', {})}
-          onCriteriaAgree={(criteria) => onCriteriaAgree(criteria)}
-        />
-      </Column></Row>
-      <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
-      <Row><Column>
-        <Discounts
-          discounts={get(rents, 'discounts', [])}
-        />
-      </Column></Row>
       <Row><Column><h2>Vuokran perustiedot</h2></Column></Row>
       <Row>
         <Column>
@@ -49,23 +36,49 @@ const Rent = ({onCriteriaAgree, rents}: Props) => {
           />
         </Column>
       </Row>
+
       <Row><Column><h2>Sopimusvuokra</h2></Column></Row>
-      <Row><Column>
-        <ContractRents
-          contractRents={get(rents, 'contract_rents', [])}
-        />
-      </Column></Row>
       <Row>
-        <Column medium={6}>
-          <h2>Indeksitarkistettu vuokra</h2>
+        <Column>
+          <ContractRents
+            contractRents={get(rents, 'contract_rents', [])}
+          />
+        </Column>
+      </Row>
+
+      <Row><Column><h2>Indeksitarkistettu vuokra</h2></Column></Row>
+      <Row>
+        <Column>
           <IndexAdjustedRents
             indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}
           />
         </Column>
-        <Column medium={6}>
-          <h2>Perittävä vuokra</h2>
+      </Row>
+
+      <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
+      <Row>
+        <Column>
+          <Discounts
+            discounts={get(rents, 'discounts', [])}
+          />
+        </Column>
+      </Row>
+
+      <Row><Column><h2>Perittävä vuokra</h2></Column></Row>
+      <Row>
+        <Column>
           <ChargedRents
             chargedRents={get(rents, 'charged_rents', [])}
+          />
+        </Column>
+      </Row>
+
+      <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
+      <Row>
+        <Column>
+          <Criterias
+            criterias={get(rents, 'criterias', {})}
+            onCriteriaAgree={(criteria) => onCriteriaAgree(criteria)}
           />
         </Column>
       </Row>
