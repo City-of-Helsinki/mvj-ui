@@ -139,7 +139,7 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
                 options={rentBasicInfoTypeOptions}
               />
             </Column>
-            {basicInfo.type === '0' &&
+            {(basicInfo.type === '0' || basicInfo.type === '4') &&
               <Column medium={3}>
                 <Field
                   component={FieldTypeSelect}
@@ -149,7 +149,7 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
                 />
               </Column>
             }
-            {basicInfo.type === '0' &&
+            {(basicInfo.type === '0' || basicInfo.type === '4') &&
               <Column medium={3}>
                 <Field
                   component={FieldTypeSelect}
@@ -182,9 +182,6 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
             {basicInfo.type === '2' &&
               <Column medium={3}></Column>
             }
-            {basicInfo.type === '4' &&
-              <Column medium={6}></Column>
-            }
             {(basicInfo.type === '0' || basicInfo.type === '2' || basicInfo.type === '4') &&
               <Column medium={3}>
                 <Field
@@ -196,7 +193,7 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
               </Column>
             }
           </Row>
-          {basicInfo.type === '0' &&
+          {(basicInfo.type === '0' || basicInfo.type === '4') &&
             <Row>
               <Column medium={3}>
                 <Row>
@@ -261,7 +258,7 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
               </Column>
             </Row>
           }
-          {basicInfo.type === '0' &&
+          {(basicInfo.type === '0' || basicInfo.type === '4') &&
             <Row>
               <Column>
                 <FieldArray

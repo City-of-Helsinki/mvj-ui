@@ -13,9 +13,10 @@ import {rentContractRentPurposeOptions,
 
 type Props = {
   fields: any,
+  rentType: string,
 }
 
-const ContractRentsEdit = ({fields}: Props) => {
+const ContractRentsEdit = ({fields, rentType}: Props) => {
   return (
     <div className="bordered-box">
       {fields && fields.length > 0 &&
@@ -33,14 +34,19 @@ const ContractRentsEdit = ({fields}: Props) => {
                 </Row>
               </Column>
               <Column medium={3}>
+                {(rentType === '0' || rentType === '4') &&
                 <Row>
                   <Column><label className="mvj-form-field-label">Vuokranlaskennan perusteena oleva vuokra</label></Column>
                 </Row>
+                }
+
               </Column>
               <Column medium={2}>
-                <Row>
-                  <Column><label className="mvj-form-field-label">Uusi perusvuosi vuokra</label></Column>
-                </Row>
+                {(rentType === '0' || rentType === '4') &&
+                  <Row>
+                    <Column><label className="mvj-form-field-label">Uusi perusvuosi vuokra</label></Column>
+                  </Row>
+                }
               </Column>
               <Column medium={3}>
                 <Row>
@@ -82,27 +88,31 @@ const ContractRentsEdit = ({fields}: Props) => {
                     />
                   </Column>
                   <Column medium={3}>
-                    <Row>
-                      <Column small={7} style={{paddingRight: '0'}}>
-                        <Field
-                          component={FieldTypeText}
-                          name={`${rent}.basic_rent`}
-                        />
-                      </Column>
-                      <Column small={5}>
-                        <Field
-                          component={FieldTypeSelect}
-                          name={`${rent}.basic_rent_type`}
-                          options={rentContractRentTypeOptions}
-                        />
-                      </Column>
-                    </Row>
+                    {(rentType === '0' || rentType === '4') &&
+                      <Row>
+                        <Column small={7} style={{paddingRight: '0'}}>
+                          <Field
+                            component={FieldTypeText}
+                            name={`${rent}.basic_rent`}
+                          />
+                        </Column>
+                        <Column small={5}>
+                          <Field
+                            component={FieldTypeSelect}
+                            name={`${rent}.basic_rent_type`}
+                            options={rentContractRentTypeOptions}
+                          />
+                        </Column>
+                      </Row>
+                    }
                   </Column>
                   <Column medium={2}>
-                    <Field
-                      component={FieldTypeText}
-                      name={`${rent}.basic_rent_new`}
-                    />
+                    {(rentType === '0' || rentType === '4') &&
+                      <Field
+                        component={FieldTypeText}
+                        name={`${rent}.basic_rent_new`}
+                      />
+                    }
                   </Column>
                   <Column medium={3}>
                     <Row>

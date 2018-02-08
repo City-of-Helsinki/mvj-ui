@@ -24,7 +24,7 @@ class RentEdit extends Component {
 
   render() {
     const {handleSubmit, rents} = this.props;
-
+    const rentType = get(rents, 'basic_info.type');
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit'>
         <Row>
@@ -45,46 +45,56 @@ class RentEdit extends Component {
           <BasicInfoEdit basicInfo={get(rents, 'basic_info', {})} />
         </FormSection>
 
-        <Row>
-          <Column>
-            <h2>Sopimusvuokra</h2>
-            <FieldArray name="rents.contract_rents" component={ContractRentsEdit}/>
-          </Column>
-        </Row>
+        {(rentType === '0' || rentType === '2' || rentType === '4') &&
+          <Row>
+            <Column>
+              <h2>Sopimusvuokra</h2>
+              <FieldArray component={ContractRentsEdit} name="rents.contract_rents" rentType={rentType} />
+            </Column>
+          </Row>
+        }
 
-        <Row>
-          <Column>
-            <h2>Indeksitarkistettu vuokra</h2>
-            <FieldArray
-              component={IndexAdjustedRentsEdit}
-              name="rents.index_adjusted_rents"
-            />
-          </Column>
-        </Row>
+        {(rentType === '0' ||rentType === '4') &&
+          <Row>
+            <Column>
+              <h2>Indeksitarkistettu vuokra</h2>
+              <FieldArray
+                component={IndexAdjustedRentsEdit}
+                name="rents.index_adjusted_rents"
+              />
+            </Column>
+          </Row>
+        }
 
-        <Row>
-          <Column>
-            <h2>Alennukset ja korotukset</h2>
-            <FieldArray name="rents.discounts" component={DiscountsEdit}/>
-          </Column>
-        </Row>
+        {(rentType === '0' || rentType === '2' || rentType === '4') &&
+          <Row>
+            <Column>
+              <h2>Alennukset ja korotukset</h2>
+              <FieldArray name="rents.discounts" component={DiscountsEdit}/>
+            </Column>
+          </Row>
+        }
 
-        <Row>
-          <Column>
-            <h2>Perittävä vuokra</h2>
-            <FieldArray
-              component={ChargedRentsEdit}
-              name="rents.charged_rents"
-            />
-          </Column>
-        </Row>
+        {(rentType === '0' || rentType === '2' || rentType === '4') &&
+          <Row>
+            <Column>
+              <h2>Perittävä vuokra</h2>
+              <FieldArray
+                component={ChargedRentsEdit}
+                name="rents.charged_rents"
+              />
+            </Column>
+          </Row>
+        }
 
-        <Row>
-          <Column>
-            <h2>Vuokranperusteet</h2>
-            <FieldArray name="rents.criterias" component={CriteriasEdit}/>
-          </Column>
-        </Row>
+        {(rentType === '0' || rentType === '1' || rentType === '2' || rentType === '4') &&
+          <Row>
+            <Column>
+              <h2>Vuokranperusteet</h2>
+              <FieldArray name="rents.criterias" component={CriteriasEdit}/>
+            </Column>
+          </Row>
+        }
       </form>
     );
   }

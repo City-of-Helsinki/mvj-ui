@@ -21,7 +21,7 @@ const getTableBody = (fields) => {
               />
             </td>
             <td style={{width: '25%'}}>
-              <Row style={{width: '250px;'}}>
+              <Row style={{width: '250px'}}>
                 <Column style={{padding: '0 0.25rem 0 0.9375rem'}}>
                   <Field
                     className='width-small'
