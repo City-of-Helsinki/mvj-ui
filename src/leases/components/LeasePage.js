@@ -18,6 +18,7 @@ import * as contentHelpers from '../helpers';
 import {displayUIMessage} from '../../util/helpers';
 
 import Billing from './leaseSections/billing/Billing';
+import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import ControlButtons from './ControlButtons';
@@ -68,6 +69,8 @@ type Props = {
   areasForm: Array<Object>,
   areasTouched: boolean,
   attributes: Object,
+  billingForm: Object,
+  billingTouched: boolean,
   contractsForm: Array<Object>,
   contractsTouched: boolean,
   currentLease: Object,
@@ -132,6 +135,7 @@ class PreparerForm extends Component {
     const lease = mockData.leases[0];
 
     // Destroy forms to initialize new values when data is fetched
+    dispatch(destroy('billing-edit-form'));
     dispatch(destroy('contract-edit-form'));
     dispatch(destroy('inspections-edit-form'));
     dispatch(destroy('lease-info-edit-form'));
@@ -189,6 +193,7 @@ class PreparerForm extends Component {
   save = () => {
     const {
       areasForm,
+      billingForm,
       contractsForm,
       currentLease,
       editLease,
@@ -212,6 +217,9 @@ class PreparerForm extends Component {
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
     if(areasForm !== undefined) {
       this.setState({areas: areasForm});
+    }
+    if(billingForm !== undefined) {
+      this.setState({billing: billingForm});
     }
     if(eligibilityForm !== undefined) {
       this.setState({areas: eligibilityForm});
@@ -253,6 +261,7 @@ class PreparerForm extends Component {
 
   destroyAllForms = () => {
     const {dispatch} = this.props;
+    dispatch(destroy('billing-edit-form'));
     dispatch(destroy('contract-edit-form'));
     dispatch(destroy('inspection-edit-form'));
     dispatch(destroy('lease-info-edit-form'));
@@ -265,6 +274,7 @@ class PreparerForm extends Component {
 
   resetAllForms = () => {
     const {dispatch} = this.props;
+    dispatch(reset('billing-edit-form'));
     dispatch(reset('contract-edit-form'));
     dispatch(reset('inspection-edit-form'));
     dispatch(reset('lease-info-edit-form'));
@@ -595,6 +605,7 @@ class PreparerForm extends Component {
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   {!isEditMode && <Billing billing={billing}/>}
+                  {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
                 </div>
               </TabPane>
 
@@ -612,6 +623,7 @@ class PreparerForm extends Component {
 }
 
 const areasFormSelector = formValueSelector('property-unit-edit-form');
+const billingFormSelector = formValueSelector('billing-edit-form');
 const contractFormSelector = formValueSelector('contract-edit-form');
 const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const inspectionFormSelector = formValueSelector('inspection-edit-form');
@@ -633,6 +645,8 @@ export default flowRight(
         areasForm: areasFormSelector(state, 'areas'),
         areasTouched: get(state, 'form.property-unit-edit-form.anyTouched'),
         attributes: getAttributes(state),
+        billingForm: billingFormSelector(state, 'billing'),
+        billingTouched: get(state, 'form.billing-edit-form.anyTouched'),
         contractsForm: contractFormSelector(state, 'contracts'),
         contractsTouched: get(state, 'form.contract-edit-form.anyTouched'),
         currentLease: getCurrentLease(state),

@@ -203,6 +203,13 @@
       }
     }
 
+    &__checkbox-single {
+      input {
+        margin: 0;
+        display: flex;
+      }
+    }
+
     &__select {
       margin-bottom: 0.625rem;
 

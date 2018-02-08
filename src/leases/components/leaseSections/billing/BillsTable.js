@@ -96,8 +96,8 @@ class BillsTable extends Component {
                       <td>{formatDateRange(bill.billing_period_start_date, bill.billing_period_end_date)}</td>
                       <td>{bill.type ? bill.type : '-'}</td>
                       <td>{bill.status ? bill.status : '-'}</td>
-                      <td>{bill.invoiced_amount ? formatNumberWithThousandSeparator(formatDecimalNumbers(bill.invoiced_amount)) : '-'}</td>
-                      <td>{bill.unpaid_amount ? formatNumberWithThousandSeparator(formatDecimalNumbers(bill.unpaid_amount)) : '-'}</td>
+                      <td>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.invoiced_amount))} €` : '-'}</td>
+                      <td>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.unpaid_amount))} €` : '-'}</td>
                       <td>{bill.info ? 'Kyllä' : 'Ei'}</td>
                       <td>{bill.sent_to_SAP_date ? formatDate(bill.sent_to_SAP_date) : '-'}</td>
                     </tr>
