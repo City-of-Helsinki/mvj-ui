@@ -13,40 +13,42 @@ const getTableBody = (fields) => {
       <tbody>
         {fields.map((item, index) => (
           <tr key={index}>
-            <td>
+            <td style={{width: '25%'}}>
               <Field
                 component={FieldTypeText}
-                inputClassName="no-margin"
+                inputClassName="width-small no-margin"
                 name={`${item}.rent`}
               />
             </td>
-            <td style={{width: '202px'}}>
-              <Row>
+            <td style={{width: '25%'}}>
+              <Row style={{width: '250px'}}>
                 <Column style={{padding: '0 0.25rem 0 0.9375rem'}}>
                   <Field
+                    className='width-small'
                     component={FieldTypeDatePicker}
                     name={`${item}.start_date`}
                   />
                 </Column>
                 <Column style={{padding: '0 0.9375rem 0 0.25rem'}}>
                   <Field
+                    className='width-small'
                     component={FieldTypeDatePicker}
                     name={`${item}.end_date`}
                   />
                 </Column>
               </Row>
             </td>
-            <td>
+            <td style={{width: '25%'}}>
               <Field
                 component={FieldTypeText}
-                inputClassName="no-margin"
+                inputClassName="width-xsmall no-margin"
                 name={`${item}.difference`}
               />
             </td>
-            <td>
+            <td style={{width: '25%'}}>
               <Field
                 component={FieldTypeText}
-                inputClassName="no-margin"
+                inputClassName="width-small no-margin"
                 name={`${item}.calendar_year_rent`}
               />
             </td>
