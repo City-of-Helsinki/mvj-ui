@@ -16,6 +16,8 @@ type Props = {
 }
 
 const Rent = ({onCriteriaAgree, rents}: Props) => {
+  const rentType = get(rents, 'basic_info.type');
+
   return (
     <div className="lease-section rent-section">
       <Row>
@@ -38,51 +40,62 @@ const Rent = ({onCriteriaAgree, rents}: Props) => {
         </Column>
       </Row>
 
-      <Row>
-        <Column>
-          <h2>Sopimusvuokra</h2>
-          <ContractRents
-            contractRents={get(rents, 'contract_rents', [])}
-          />
-        </Column>
-      </Row>
+      {(rentType === '0' || rentType === '2' || rentType === '4') &&
+        <Row>
+          <Column>
+            <h2>Sopimusvuokra</h2>
+            <ContractRents
+              contractRents={get(rents, 'contract_rents', [])}
+              rentType={rentType}
+            />
+          </Column>
+        </Row>
+      }
 
-      <Row>
-        <Column>
-          <h2>Indeksitarkistettu vuokra</h2>
-          <IndexAdjustedRents
-            indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}
-          />
-        </Column>
-      </Row>
+      {(rentType === '0' || rentType === '4') &&
+        <Row>
+          <Column>
+            <h2>Indeksitarkistettu vuokra</h2>
+            <IndexAdjustedRents
+              indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}
+            />
+          </Column>
+        </Row>
+      }
 
-      <Row>
-        <Column>
-          <h2>Alennukset ja korotukset</h2>
-          <Discounts
-            discounts={get(rents, 'discounts', [])}
-          />
-        </Column>
-      </Row>
+      {(rentType === '0' || rentType === '2' || rentType === '4') &&
+        <Row>
+          <Column>
+            <h2>Alennukset ja korotukset</h2>
+            <Discounts
+              discounts={get(rents, 'discounts', [])}
+            />
+          </Column>
+        </Row>
+      }
 
-      <Row>
-        <Column>
-          <h2>Perittävä vuokra</h2>
-          <ChargedRents
-            chargedRents={get(rents, 'charged_rents', [])}
-          />
-        </Column>
-      </Row>
+      {(rentType === '0' || rentType === '2' || rentType === '4') &&
+        <Row>
+          <Column>
+            <h2>Perittävä vuokra</h2>
+            <ChargedRents
+              chargedRents={get(rents, 'charged_rents', [])}
+            />
+          </Column>
+        </Row>
+      }
 
-      <Row>
-        <Column>
-          <h2>Vuokranperusteet</h2>
-          <Criterias
-            criterias={get(rents, 'criterias', {})}
-            onCriteriaAgree={(criteria) => onCriteriaAgree(criteria)}
-          />
-        </Column>
-      </Row>
+      {(rentType === '0' || rentType === '1' || rentType === '2' || rentType === '4') &&
+        <Row>
+          <Column>
+            <h2>Vuokranperusteet</h2>
+            <Criterias
+              criterias={get(rents, 'criterias', {})}
+              onCriteriaAgree={(criteria) => onCriteriaAgree(criteria)}
+            />
+          </Column>
+        </Row>
+      }
     </div>
   );
 };
