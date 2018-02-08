@@ -40,47 +40,49 @@ class RentEdit extends Component {
 
         <Row><Column><div className="separator-line no-margin"></div></Column></Row>
 
-        <Row><Column><h2>Vuokranperusteet</h2></Column></Row>
-        <Row>
-          <Column>
-            <FieldArray name="rents.criterias" component={CriteriasEdit}/>
-          </Column>
-        </Row>
-
-        <Row><Column><h2>Alennukset ja korotukset</h2></Column></Row>
-        <Row>
-          <Column>
-            <FieldArray name="rents.discounts" component={DiscountsEdit}/>
-          </Column>
-        </Row>
-
-        <Row><Column><h2>Vuokran perustiedot</h2></Column></Row>
         <FormSection name="rents.basic_info">
+          <h2>Vuokran perustiedot</h2>
           <BasicInfoEdit basicInfo={get(rents, 'basic_info', {})} />
         </FormSection>
 
-        <Row><Column><h2>Sopimusvuokra</h2></Column></Row>
         <Row>
           <Column>
+            <h2>Sopimusvuokra</h2>
             <FieldArray name="rents.contract_rents" component={ContractRentsEdit}/>
           </Column>
         </Row>
 
         <Row>
-          <Column medium={6}>
+          <Column>
             <h2>Indeksitarkistettu vuokra</h2>
             <FieldArray
               component={IndexAdjustedRentsEdit}
               name="rents.index_adjusted_rents"
             />
           </Column>
+        </Row>
 
-          <Column medium={6}>
+        <Row>
+          <Column>
+            <h2>Alennukset ja korotukset</h2>
+            <FieldArray name="rents.discounts" component={DiscountsEdit}/>
+          </Column>
+        </Row>
+
+        <Row>
+          <Column>
             <h2>Perittävä vuokra</h2>
             <FieldArray
               component={ChargedRentsEdit}
               name="rents.charged_rents"
             />
+          </Column>
+        </Row>
+
+        <Row>
+          <Column>
+            <h2>Vuokranperusteet</h2>
+            <FieldArray name="rents.criterias" component={CriteriasEdit}/>
           </Column>
         </Row>
       </form>
