@@ -3,6 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
+import Collapse from '../../../../components/Collapse';
 import ContractRents from './ContractRents';
 import Discounts from './Discounts';
 import Criterias from './Criterias';
@@ -31,70 +32,86 @@ const Rent = ({onCriteriaAgree, rents}: Props) => {
       </Row>
       <Row><Column><div className="separator-line no-margin"></div></Column></Row>
 
-      <Row>
-        <Column>
-          <h2>Vuokran perustiedot</h2>
-          <RentBasicInfo
-            basicInfo={get(rents, 'basic_info', {})}
-          />
-        </Column>
-      </Row>
+      <Collapse
+        className='collapse__secondary collapse__rents'
+        defaultOpen={true}
+        header={
+          <Row>
+            <Column small={6}><span className='collapse__header-title'>Vuokran perustiedot</span></Column>
+          </Row>
+        }>
+        <RentBasicInfo basicInfo={get(rents, 'basic_info', {})}/>
+      </Collapse>
 
       {(rentType === '0' || rentType === '2' || rentType === '4') &&
-        <Row>
-          <Column>
-            <h2>Sopimusvuokra</h2>
-            <ContractRents
-              contractRents={get(rents, 'contract_rents', [])}
-              rentType={rentType}
-            />
-          </Column>
-        </Row>
+        <Collapse
+          className='collapse__secondary collapse__rents'
+          defaultOpen={true}
+          header={
+            <Row>
+              <Column small={6}><span className='collapse__header-title'>Sopimusvuokra</span></Column>
+            </Row>
+          }>
+          <ContractRents
+            contractRents={get(rents, 'contract_rents', [])}
+            rentType={rentType}
+          />
+        </Collapse>
       }
 
       {(rentType === '0' || rentType === '4') &&
-        <Row>
-          <Column>
-            <h2>Indeksitarkistettu vuokra</h2>
-            <IndexAdjustedRents
-              indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}
-            />
-          </Column>
-        </Row>
+        <Collapse
+          className='collapse__secondary collapse__rents'
+          defaultOpen={true}
+          header={
+            <Row>
+              <Column small={6}><span className='collapse__header-title'>Indeksitarkistettu vuokra</span></Column>
+            </Row>
+          }>
+          <IndexAdjustedRents indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}/>
+        </Collapse>
       }
 
       {(rentType === '0' || rentType === '2' || rentType === '4') &&
-        <Row>
-          <Column>
-            <h2>Alennukset ja korotukset</h2>
-            <Discounts
-              discounts={get(rents, 'discounts', [])}
-            />
-          </Column>
-        </Row>
+        <Collapse
+          className='collapse__secondary collapse__rents'
+          defaultOpen={true}
+          header={
+            <Row>
+              <Column small={6}><span className='collapse__header-title'>Alennukset ja korotukset</span></Column>
+            </Row>
+          }>
+          <Discounts discounts={get(rents, 'discounts', [])}/>
+        </Collapse>
       }
 
       {(rentType === '0' || rentType === '2' || rentType === '4') &&
-        <Row>
-          <Column>
-            <h2>Perittävä vuokra</h2>
-            <ChargedRents
-              chargedRents={get(rents, 'charged_rents', [])}
-            />
-          </Column>
-        </Row>
+        <Collapse
+          className='collapse__secondary collapse__rents'
+          defaultOpen={true}
+          header={
+            <Row>
+              <Column small={6}><span className='collapse__header-title'>Perittävä vuokra</span></Column>
+            </Row>
+          }>
+          <ChargedRents chargedRents={get(rents, 'charged_rents', [])}/>
+        </Collapse>
       }
 
       {(rentType === '0' || rentType === '1' || rentType === '2' || rentType === '4') &&
-        <Row>
-          <Column>
-            <h2>Vuokranperusteet</h2>
-            <Criterias
-              criterias={get(rents, 'criterias', {})}
-              onCriteriaAgree={(criteria) => onCriteriaAgree(criteria)}
-            />
-          </Column>
-        </Row>
+        <Collapse
+          className='collapse__secondary collapse__rents'
+          defaultOpen={true}
+          header={
+            <Row>
+              <Column small={6}><span className='collapse__header-title'>Vuokranperusteet</span></Column>
+            </Row>
+          }>
+          <Criterias
+            criterias={get(rents, 'criterias', {})}
+            onCriteriaAgree={(criteria) => onCriteriaAgree(criteria)}
+          />
+        </Collapse>
       }
     </div>
   );

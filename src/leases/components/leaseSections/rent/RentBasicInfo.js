@@ -102,7 +102,7 @@ const BasicInfoIndex = ({basicInfo}: Props) => {
           <Row>
             <Column>
               <label>Kommentti</label>
-              <p style={{marginBottom: '0'}}>{comment ? comment : '-'}</p>
+              <p>{comment ? comment : '-'}</p>
             </Column>
           </Row>
         </Column>
