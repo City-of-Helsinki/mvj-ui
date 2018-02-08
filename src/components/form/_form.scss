@@ -43,6 +43,13 @@
         }
       }
 
+      &.width-small {
+        input {
+          max-width: rem-calc(111px);
+        }
+
+      }
+
       &.is-dirty {
         input {
           border-color: $engel;
@@ -142,6 +149,18 @@
       &.no-margin {
         input {
           margin: 0;
+        }
+      }
+
+      &.width-xsmall {
+        input {
+          max-width: rem-calc(89px);
+        }
+      }
+
+      &.width-small {
+        input {
+          max-width: rem-calc(111px);
         }
       }
 
