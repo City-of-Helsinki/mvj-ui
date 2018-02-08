@@ -123,7 +123,7 @@
           text-transform: none;
         }
       }
-      
+
       i.arrow-icon {
         background-image: url('../assets/icons/icon_arrow_down-green.svg');
         display: block;
@@ -156,6 +156,23 @@
       .collapse__content {
         max-height: 500px;
         transition: max-height 0.4s ease;
+      }
+    }
+  }
+
+  &.collapse__rents {
+    background-color: transparent;
+    margin: 0.6rem 0 1rem;
+
+    .collapse__content-wrapper {
+      padding: 0;
+    }
+
+    .collapse__header {
+      padding-left: 0;
+
+      &-title {
+        font-size: 1.125rem;
       }
     }
   }
