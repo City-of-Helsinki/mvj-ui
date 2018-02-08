@@ -17,6 +17,7 @@ const ContractRents = ({contractRents}: Props) => {
           <th>Sopimusvuokra</th>
           <th>Käyttötarkoitus</th>
           <th>Vuokranlaskennan perusteena oleva vuokra</th>
+          <th>Uusi perusvuosi vuokra</th>
           <th>Voimassaoloaika</th>
         </tr>
       </thead>
@@ -27,6 +28,7 @@ const ContractRents = ({contractRents}: Props) => {
               <td>{rent.contract_rent ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(rent.contract_rent), '.')} ${rent.type ? getRentContractRentTypeLabel(rent.type) : ''}` : '-'}</td>
               <td>{rent.purpose ? getRentContractRentPurposeLabel(rent.purpose) : '-'}</td>
               <td>{rent.basic_rent ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(rent.basic_rent), '.')} ${rent.basic_rent_type ? getRentContractRentTypeLabel(rent.basic_rent_type) : ''}` : '-'}</td>
+              <td>{rent.basic_rent_new ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(rent.basic_rent_new), '.')} ${rent.basic_rent_type ? getRentContractRentTypeLabel(rent.basic_rent_type) : ''}` : '-'}</td>
               <td>{formatDateRange(rent.start_date, rent.end_date)}</td>
             </tr>
           );

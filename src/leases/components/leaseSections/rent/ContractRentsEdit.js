@@ -22,12 +22,12 @@ const ContractRentsEdit = ({fields}: Props) => {
         <Row>
           <Column small={11}>
             <Row>
-              <Column medium={3}>
+              <Column medium={2}>
                 <Row>
                   <Column><label className="mvj-form-field-label">Sopimusvuokra</label></Column>
                 </Row>
               </Column>
-              <Column medium={3}>
+              <Column medium={2}>
                 <Row>
                   <Column><label className="mvj-form-field-label">Käyttötarkoitus</label></Column>
                 </Row>
@@ -35,6 +35,11 @@ const ContractRentsEdit = ({fields}: Props) => {
               <Column medium={3}>
                 <Row>
                   <Column><label className="mvj-form-field-label">Vuokranlaskennan perusteena oleva vuokra</label></Column>
+                </Row>
+              </Column>
+              <Column medium={2}>
+                <Row>
+                  <Column><label className="mvj-form-field-label">Uusi perusvuosi vuokra</label></Column>
                 </Row>
               </Column>
               <Column medium={3}>
@@ -52,15 +57,15 @@ const ContractRentsEdit = ({fields}: Props) => {
             <Row>
               <Column small={11}>
                 <Row>
-                  <Column medium={3}>
+                  <Column medium={2}>
                     <Row>
-                      <Column small={7} style={{paddingRight: '0'}}>
+                      <Column small={6} style={{paddingRight: '0'}}>
                         <Field
                           component={FieldTypeText}
                           name={`${rent}.contract_rent`}
                         />
                       </Column>
-                      <Column small={5}>
+                      <Column small={6}>
                         <Field
                           component={FieldTypeSelect}
                           name={`${rent}.type`}
@@ -69,7 +74,7 @@ const ContractRentsEdit = ({fields}: Props) => {
                       </Column>
                     </Row>
                   </Column>
-                  <Column medium={3}>
+                  <Column medium={2}>
                     <Field
                       component={FieldTypeSelect}
                       name={`${rent}.purpose`}
@@ -92,6 +97,12 @@ const ContractRentsEdit = ({fields}: Props) => {
                         />
                       </Column>
                     </Row>
+                  </Column>
+                  <Column medium={2}>
+                    <Field
+                      component={FieldTypeText}
+                      name={`${rent}.basic_rent_new`}
+                    />
                   </Column>
                   <Column medium={3}>
                     <Row>
