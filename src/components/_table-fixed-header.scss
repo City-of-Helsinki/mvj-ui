@@ -62,13 +62,14 @@
   &.billing__bill-table {
     .table-fixed-header__container {
       height: 450px;
-      transition: max-height 0.5s ease-in-out;
       overflow: hidden;
+
+      @include transition(0.5s, max-height, ease-in-out);
     }
 
     &.is-open {
       .table-fixed-header__container {
-        transition: max-height 0.5s ease-in-out;
+        @include transition(0.5s, max-height, ease-in-out);
       }
     }
 

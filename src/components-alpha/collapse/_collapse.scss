@@ -4,6 +4,7 @@
   .collapse-alpha__header {
     @include transition(.1s);
     @include mvj-container();
+
     padding: 2rem 1rem;
     font-size: rem-calc(20px);
     cursor: pointer;

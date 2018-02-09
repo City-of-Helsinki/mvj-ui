@@ -8,8 +8,9 @@
   z-index: 1;
   border: none;
   background-color: $white;
-  transition: 0.5s ease-in-out;
   overflow: hidden;
+
+  @include transition(0.5s, all, ease-in-out);
 
   &__container {
     padding: rem-calc(16px) rem-calc(16px);
@@ -19,8 +20,9 @@
   &.is-open {
     width: 800px;
     height: 100%;
-    transition: 0.5s ease-in-out;
     border-left: 1px solid $medium-gray;
+
+    @include transition(0.5s, all, ease-in-out);
   }
 
   &__title-row {

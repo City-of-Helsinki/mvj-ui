@@ -84,7 +84,8 @@
   &__content {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s ease;
+
+    @include transition(0.5s, max-height, ease);
   }
 
   // Opened stage
@@ -98,7 +99,8 @@
     .collapse__content {
       height: auto;
       max-height: 2000px;
-      transition: max-height 0.4s ease;
+
+      @include transition(0.4s, max-height, ease);
     }
   }
 
@@ -139,7 +141,8 @@
     .collapse__content {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.5s ease;
+
+      @include transition(0.5s, max-height, ease);
     }
 
     .collapse__content-wrapper {
@@ -155,7 +158,8 @@
 
       .collapse__content {
         max-height: 500px;
-        transition: max-height 0.4s ease;
+
+        @include transition(0.4s, max-height, ease);
       }
     }
   }

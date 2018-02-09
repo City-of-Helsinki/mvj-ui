@@ -46,8 +46,9 @@
       margin: 0;
       box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1), 0 2px 5px 0 rgba(0, 0, 0, 0.15);
       max-height: 0px;
-      transition: max-height 0.3s ease;
       overflow: hidden;
+
+      @include transition(0.3s, max-height, ease);
 
       &.is-open {
         height: auto;

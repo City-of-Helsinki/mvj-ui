@@ -13,6 +13,7 @@
 
       i {
         @include transition();
+
         position: relative;
         margin: 0 .85rem;
         top: 0;
@@ -43,6 +44,7 @@
 
       i {
         @include transition();
+
         position: relative;
         margin: 0 .85rem;
         top: 0;
@@ -123,9 +125,6 @@
     margin: .5rem 0;
 
     .Select-control {
-      //-webkit-appearance: none !important;
-      //-moz-appearance: none !important;
-      //transition: none;
       color: $black;
       background-color: $lightest-gray;
       border-radius: 0;
@@ -153,6 +152,7 @@
 
     .Select-option {
       @include transition(.1s);
+
       &.is-selected {
         background: $secondary-color;
         color: $white;
@@ -221,12 +221,12 @@
   }
 }
 
-// Transition
 .error-block-appear {
   opacity: 0;
 }
 
 .error-block-appear.error-block-appear-active {
   @include transition(.5s);
+
   opacity: 1;
 }
