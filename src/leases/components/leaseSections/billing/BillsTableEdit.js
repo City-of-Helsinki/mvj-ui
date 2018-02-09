@@ -75,6 +75,29 @@ class BillsTableEdit extends Component {
     this.calculateHeight();
   }
 
+  componentDidUpdate() {
+    this.calculateHeight();
+  }
+
+  shouldComponentUpdate(nextProps: Object, nextState: Object) {
+    return (
+      this.state.tableHeight !== nextState.tableHeight ||
+      this.state.selectedBill !== nextState.selectedBill ||
+      this.state.showModal !== nextState.showModal ||
+      this.props.bills !== nextProps.bills
+    );
+  }
+
+  showBillModal = (index: number) => {
+    const {bills} = this.props;
+    if(bills && bills.length) {
+      this.setState({
+        selectedBill: bills[index],
+        showModal: true,
+      });
+    }
+  }
+
   render () {
     const {bills, fields, headers} = this.props;
     const {selectedBill, showModal, tableHeight} = this.state;
@@ -110,7 +133,10 @@ class BillsTableEdit extends Component {
                 {fields.map((field, index) => {
                   return (
                     <tr
-                      className={classNames({'selected': bills && bills.length > index && bills[index].isSelected})}
+                      className={classNames(
+                        {'selected': (bills && bills.length > index) && bills[index].isSelected},
+                        {'active': (bills && bills.length > index) && (bills[index] === selectedBill)},
+                      )}
                       key={index}>
                       <td>
                         <Field
@@ -118,57 +144,57 @@ class BillsTableEdit extends Component {
                           name={`${field}.isSelected`}
                         />
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           `${get(bills[index], 'tenant.lastname')} ${get(bills[index], 'tenant.firstname')}`
                         }
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           get(bills[index], 'tenant.bill_share') ? `${get(bills[index], 'tenant.bill_share')} %` : '-'
                         }
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           bills[index].due_date ? formatDate(bills[index].due_date) : '-'
                         }
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           bills[index].bill_number ? bills[index].bill_number : '-'
                         }
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           formatDateRange(bills[index].billing_period_start_date, bills[index].billing_period_end_date)
                         }
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           bills[index].type ? bills[index].type : '-'
                         }
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           bills[index].status ? bills[index].status : '-'
                         }
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           bills[index].invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bills[index].invoiced_amount))} €` : '-'
                         }
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           bills[index].unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bills[index].unpaid_amount))} €` : '-'
                         }
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           bills[index].info ? 'Kyllä' : 'Ei'
                         }
                       </td>
-                      <td>
+                      <td onClick={() => this.showBillModal(index)}>
                         {bills && bills.length > (index) &&
                           bills[index].sent_to_SAP_date ? formatDate(bills[index].sent_to_SAP_date) : '-'
                         }

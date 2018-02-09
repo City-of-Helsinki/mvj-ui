@@ -5,6 +5,8 @@
   }
 
   .display-application {
+    @include transition();
+
     padding: rem-calc(0 20px 0 45px);
     height: 50px;
     background: darken($primary-color, 5%) url('../assets/icons/icon-loop.svg') 1rem center no-repeat;
@@ -13,7 +15,6 @@
     cursor: pointer;
     color: $white;
 
-    @include transition();
     &:hover {
       background-color: darken($primary-color, 15%);
     }
@@ -35,6 +36,7 @@
 
   &__save-button {
     @include lightButton;
+
     margin: 0 rem-calc(15px);
   }
 }
