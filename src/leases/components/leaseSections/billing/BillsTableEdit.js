@@ -94,7 +94,13 @@ class BillsTableEdit extends Component {
             <thead>
               {headers && headers.length > 0 &&
                 <tr>
-                  <th><div><input checked={allSelected} type="checkbox" onClick={this.handleSelectAll}/></div></th>
+                  <th><div>
+                    <input
+                      checked={allSelected}
+                      onClick={this.handleSelectAll}
+                      style={{fontSize: '1rem', margin: '0'}}
+                      type="checkbox" />
+                  </div></th>
                   {headers.map((header, index) => <th key={index}>{header}<div>{header}</div></th>)}
                 </tr>
               }
