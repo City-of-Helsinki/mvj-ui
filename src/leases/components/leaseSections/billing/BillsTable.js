@@ -67,7 +67,7 @@ class BillsTable extends Component {
         <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
           <BillModal
             bill={selectedBill}
-            containerHeight={isNumber(tableHeight) ? tableHeight + 30 : null}
+            containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
             onClose={() => this.setState({selectedBill: {}, showModal: false})}
             show={showModal}
           />

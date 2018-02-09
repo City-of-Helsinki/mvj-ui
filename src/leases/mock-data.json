@@ -53,6 +53,7 @@
             "invoicing_date": "2018-02-18",
             "invoice_method": "Paperilasku",
             "invoice_type": "Veloitus",
+            "payment_demand_list": "???",
             "recovery_cost": 5,
             "SAP_number": 49875698,
             "sent_to_SAP_date": "2017-12-31",
@@ -60,6 +61,7 @@
             "suspension_date": "2018-03-05",
             "tenant": {
               "bill_share": 50,
+              "bill_share_amount": 7500,
               "firstname": "Mikko",
               "lastname": "Koskinen"
             },
@@ -78,6 +80,7 @@
             "invoicing_date": "2018-02-18",
             "invoice_method": "E-lasku",
             "invoice_type": "Veloitus",
+            "payment_demand_list": "???",
             "recovery_cost": 5,
             "SAP_number": 49879172,
             "sent_to_SAP_date": "2017-12-31",
@@ -85,6 +88,7 @@
             "suspension_date": "2018-03-05",
             "tenant": {
               "bill_share": 50,
+              "bill_share_amount": 7500,
               "firstname": "Vappu",
               "lastname": "Pappila"
             },

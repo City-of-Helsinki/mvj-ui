@@ -61,7 +61,7 @@
 
   &.billing__bill-table {
     .table-fixed-header__container {
-      height: 450px;
+      height: 1000px;
       overflow: hidden;
 
       @include transition(0.5s, max-height, ease-in-out);

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {Field, FieldArray, formValueSelector, reduxForm} from 'redux-form';
+import {Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
@@ -32,8 +32,8 @@ const BillingEdit = ({billing, dispatch, handleSubmit}: Props) => {
       <Row><Column><h2>Laskut</h2></Column></Row>
       <Row>
         <Column>
-          <FieldArray
-            name="billing.bills"
+          <FormSection
+            name="billing"
             bills={get(billing, 'bills')}
             component={BillsTableEdit}
             dispatch={dispatch}

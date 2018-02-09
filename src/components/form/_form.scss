@@ -181,6 +181,37 @@
       }
     }
 
+    &__textarea {
+      textarea {
+        padding: 0.25rem 0.5rem;
+        color: $black;
+        border: 1px solid $medium-gray;
+        width: 100%;
+        margin-bottom: 0.625rem;
+        font-size: $font-small;
+        box-shadow: none;
+
+        &:focus {
+          border: 1px solid $tram;
+        }
+      }
+
+      &.is-dirty {
+        textarea {
+          border-color: $engel;
+          background-color: $engel-lighter;
+        }
+      }
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
+      }
+    }
+
     &__checkbox {
       &.checkbox-inline {
         .option-label {

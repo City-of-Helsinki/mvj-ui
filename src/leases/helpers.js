@@ -79,6 +79,7 @@ export const getContentLeaseStatus = (item: Object, options: Array<Object>) => {
 export const getContentBillingTenant = (tenant: Object) => {
   return {
     bill_share: get(tenant, 'bill_share'),
+    bill_share_amount: get(tenant, 'bill_share_amount'),
     firstname: get(tenant, 'firstname'),
     lastname: get(tenant, 'lastname'),
   };
@@ -117,6 +118,7 @@ export const getContentBillingBills = (bills: Array<Object>) => {
       invoicing_date: bill.invoicing_date ? moment(bill.invoicing_date) : null,
       invoice_method: get(bill, 'invoice_method'),
       invoice_type: get(bill, 'invoice_type'),
+      payment_demand_list: get(bill, 'payment_demand_list'),
       recovery_cost: get(bill, 'recovery_cost'),
       SAP_number: get(bill, 'SAP_number'),
       sent_to_SAP_date: bill.sent_to_SAP_date ? moment(bill.sent_to_SAP_date) : null,
