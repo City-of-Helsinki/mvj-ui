@@ -99,7 +99,7 @@ const BillModalEdit = ({
               <Field
                 component={FieldTypeDatePicker}
                 label="Lykkäyspvm"
-                name="bill.invoicing_date"
+                name="bill.suspension_date"
               />
             </Column>
           </Row>

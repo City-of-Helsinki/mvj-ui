@@ -49,7 +49,12 @@
       tr {
         td {
           border: none;
-          padding: 0.3rem 0.5rem;
+          padding: 0.5rem;
+          line-height: 1;
+        }
+
+        td.action-buttons {
+          width: rem-calc(70px);
         }
       }
 
@@ -61,6 +66,25 @@
         text-align: center;
         background-color: $lightest-gray;
       }
+    }
+
+    .action-button {
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      margin: 0 rem-calc(3px);
+      cursor: pointer;
+    }
+
+    .action-button:hover {
+      opacity: 0.85;
+    }
+
+    .button-edit {
+      background-image: url(../assets/icons/icon_edit.svg);
+    }
+
+    .button-delete {
+      background-image: url(../assets/icons/trash.svg);
     }
   }
 }
