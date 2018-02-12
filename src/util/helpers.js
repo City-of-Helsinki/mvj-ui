@@ -121,6 +121,15 @@ export const formatDate = (date: string) => {
   return d.format('DD.MM.YYYY');
 };
 
+export const formatDateDb = (date: string) => {
+  if (!date) {
+    return '';
+  }
+
+  const d = isNumber(date) ? moment.unix(date) : moment(date, 'DD.MM.YYYY');
+  return d.format('YYYY-MM-DD');
+};
+
 export const formatDecimalNumbers = (x) => {
   return parseFloat(x).toFixed(2).toString().replace('.', ',');
 };

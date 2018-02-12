@@ -237,9 +237,21 @@
     }
 
     &__checkbox-single {
+      display: block;
+
+      &.no-label {
+        padding-top: rem-calc(20px);
+      }
+
       input {
         margin: 0;
-        display: flex;
+        display: inline-block;
+      }
+
+      label {
+        margin: 0 0 0 0.5rem;
+        display: inline-block;
+        line-height: 1;
       }
     }
 

@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
-import {formatDate, formatDateRange} from '../util/helpers';
+import {formatDate, formatDateDb, formatDateRange} from '../util/helpers';
 
 export const formatSequenceNumber = (value: number) => {
   if(!value) {
@@ -91,10 +91,10 @@ export const getContentBillingAbnormalDebts = (debts: Array<Object>) => {
 
   return debts.map((debt) => {
     return {
-      amount: get(debt, 'amount'),
+      capital_amount: get(debt, 'capital_amount'),
       due_date: debt.due_date ? moment(debt.due_date) : null,
-      end_date: debt.end_date ? moment(debt.end_date) : null,
-      start_date: debt.start_date ? moment(debt.start_date) : null,
+      billing_period_end_date: debt.billing_period_end_date ? moment(debt.billing_period_end_date) : null,
+      billing_period_start_date: debt.billing_period_start_date ? moment(debt.billing_period_start_date) : null,
       tenant: getContentBillingTenant(get(debt, 'tenant')),
     };
   });
@@ -777,4 +777,25 @@ export const getTypeOptions = (attributes: Object) => {
     if(keyA > keyB) return 1;
     return 0;
   });
+};
+
+const formatBillingNewBillTenant = (tenant: Object) => {
+  return {
+    bill_share: get(tenant, 'bill_share'),
+    firstname: get(tenant, 'firstname'),
+    lastname: get(tenant, 'lastname'),
+  };
+};
+
+export const formatBillingNewBill = (bill: Object) => {
+  return {
+    billing_period_end_date: formatDateDb(get(bill, 'billing_period_end_date')),
+    billing_period_start_date: formatDateDb(get(bill, 'billing_period_start_date')),
+    capital_amount: get(bill, 'capital_amount'),
+    due_date: formatDateDb(get(bill, 'due_date')),
+    info: get(bill, 'info'),
+    is_utter: get(bill, 'is_utter'),
+    tenant: formatBillingNewBillTenant(get(bill, 'tenant', {})),
+    type: get(bill, 'type'),
+  };
 };

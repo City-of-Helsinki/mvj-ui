@@ -101,7 +101,7 @@ const BillModal = ({bill, containerHeight, onClose, show}: Props) => {
             </Column>
             <Column medium={4}>
               <label>Maksukehotus luettelo</label>
-              <p>{bill.payment_demand_list ? formatDate(bill.payment_demand_list) : '-'}</p>
+              <p>{bill.payment_demand_list ? bill.payment_demand_list : '-'}</p>
             </Column>
           </Row>
           <Row>

@@ -152,7 +152,7 @@ class BillsTableEdit extends Component {
       this.state.tableHeight !== nextState.tableHeight ||
       this.state.selectedBill !== nextState.selectedBill ||
       this.state.showModal !== nextState.showModal ||
-      this.props.bills !== nextProps.bills
+      this.props !== nextProps
     );
   }
 

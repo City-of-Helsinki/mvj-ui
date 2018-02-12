@@ -1,24 +1,27 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
+import {change, Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
 import AbnormalDebtsEdit from './AbnormalDebtsEdit';
+import AddBillEdit from './AddBillEdit';
 import BillsTableEdit from './BillsTableEdit';
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import FieldTypeSwitch from '../../../../components/form/FieldTypeSwitch';
+import {displayUIMessage} from '../../../../util/helpers';
+import {formatBillingNewBill} from '../../../helpers';
 
 type Props = {
   billing: Object,
   dispatch: Function,
   handleSubmit: Function,
-  isDeleteAbnormalDebtModalOpen: boolean,
 }
 
 type State = {
+  addBillMode: boolean,
   isDeleteAbnormalDebtModalOpen: boolean,
   selectedDebtIndex: ?number,
 }
@@ -27,6 +30,7 @@ class BillingEdit extends Component {
   props: Props
 
   state: State = {
+    addBillMode: false,
     isDeleteAbnormalDebtModalOpen: false,
     selectedDebtIndex: null,
   }
@@ -47,13 +51,69 @@ class BillingEdit extends Component {
   }
 
   deleteAbnormalDebt = () => {
-    console.log('Delete debt');
+    const {billing, dispatch} = this.props;
+    const selectedDebtIndex = get(this.state, 'selectedDebtIndex', -1);
+    const abnormalDebts = get(billing, 'abnormal_debts');
+
+    if (abnormalDebts &&
+      abnormalDebts.length > selectedDebtIndex &&
+      selectedDebtIndex > -1) {
+      abnormalDebts.splice(selectedDebtIndex, 1);
+    }
+
+    dispatch(change('billing-edit-form', `billing.abnormal_debts`, abnormalDebts));
+    this.hideModal('DeleteAbnormalDebt');
+    displayUIMessage({title: 'Poikkeva perintä poistettu', body: 'Poikkeava perintä on poistettu onnistuneesti'});
+  }
+
+  addAbnormalDebt = (bill: Object) => {
+    const {billing, dispatch} = this.props;
+    const abnormalDebts = get(billing, 'abnormal_debts', []);
+    abnormalDebts.push(bill);
+
+    dispatch(change('billing-edit-form', `billing.abnormal_debts`, abnormalDebts));
+  }
+
+  addBill = (bill: Object) => {
+    const {billing, dispatch} = this.props;
+    const bills = get(billing, 'bills', []);
+    bills.push(bill);
+
+    dispatch(change('billing-edit-form', `billing.bills`, bills));
+  }
+
+  saveNewBill = () => {
+    const {billing} = this.props;
+    const newBill = get(billing, 'new_bill', {});
+    const isAbnormalDebt = get(newBill, 'is_abnormal_debt', false);
+
+    const tenant = get(newBill, 'tenant', {});
+    tenant.bill_share = 50;
+    tenant.firstname = 'Mikko';
+    tenant.lastname = 'Koskinen';
+    newBill.tenant = tenant;
+
+    if(isAbnormalDebt) {
+      this.addAbnormalDebt(formatBillingNewBill(newBill));
+    } else {
+      this.addBill(formatBillingNewBill(newBill));
+    }
+
+    this.setState({addBillMode: false});
+    displayUIMessage({title: 'Lasku tallennettu', body: 'Uusi lasku on tallennettu onnistuneesti'});
+  }
+
+  openAddBillMode = () => {
+    const {dispatch} = this.props;
+
+    dispatch(change('billing-edit-form', `billing.new_bill`, {}));
+    this.setState({addBillMode: true});
   }
 
   render() {
     const {billing, dispatch, handleSubmit} = this.props;
-    const {isDeleteAbnormalDebtModalOpen, selectedDebtIndex} = this.state;
-
+    const {addBillMode, isDeleteAbnormalDebtModalOpen, selectedDebtIndex} = this.state;
+    console.log(billing);
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit billing-section'>
         <ConfirmationModal
@@ -115,14 +175,24 @@ class BillingEdit extends Component {
             />
           </Column>
         </Row>
-        <Row style={{marginTop: '2rem'}}>
-          <Column>
-            <button
-              type="button"
-              onClick={() => console.log({})}
-              className='add-button'>Luo uusi lasku</button>
-          </Column>
-        </Row>
+
+        {!addBillMode &&
+          <Row style={{marginTop: '1rem'}}>
+            <Column>
+              <button
+                type="button"
+                onClick={() => this.openAddBillMode()}
+                className='add-button'>Luo uusi lasku</button>
+            </Column>
+          </Row>
+        }
+        {addBillMode &&
+          <FormSection
+            component={AddBillEdit}
+            name='billing.new_bill'
+            onSave={() => this.saveNewBill()}
+          />
+        }
       </form>
     );
   }

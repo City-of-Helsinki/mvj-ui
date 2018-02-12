@@ -1,12 +1,17 @@
 // @flow
 import React from 'react';
+import classNames from 'classnames';
 
 type Props = {
+  className: ?string,
   input: Object,
+  optionLabel: ?string,
 }
 
 const FieldTypeCheckboxSingle = ({
+  className,
   input: {name, onChange, value},
+  optionLabel,
 }: Props) => {
   const handleChange = () => {
     onChange(value ? false : true);
@@ -14,7 +19,7 @@ const FieldTypeCheckboxSingle = ({
 
   return (
     <div className='mvj-form-field'>
-      <div className={'mvj-form-field__checkbox-single'}>
+      <div className={classNames('mvj-form-field__checkbox-single', className)}>
         <input
           checked={value}
           name={name}
@@ -22,6 +27,7 @@ const FieldTypeCheckboxSingle = ({
           type='checkbox'
           value={value}
         />
+        {optionLabel && <label>{optionLabel}</label>}
       </div>
     </div>
   );
