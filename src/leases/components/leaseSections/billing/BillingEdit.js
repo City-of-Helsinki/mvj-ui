@@ -20,6 +20,7 @@ type Props = {
 
 type State = {
   isDeleteAbnormalDebtModalOpen: boolean,
+  selectedDebtIndex: ?number,
 }
 
 class BillingEdit extends Component {
@@ -27,6 +28,7 @@ class BillingEdit extends Component {
 
   state: State = {
     isDeleteAbnormalDebtModalOpen: false,
+    selectedDebtIndex: null,
   }
 
   showModal = (modalName: string) => {
@@ -40,6 +42,7 @@ class BillingEdit extends Component {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
     this.setState({
       [modalVisibilityKey]: false,
+      selectedDebtIndex: null,
     });
   }
 
@@ -49,7 +52,7 @@ class BillingEdit extends Component {
 
   render() {
     const {billing, dispatch, handleSubmit} = this.props;
-    const {isDeleteAbnormalDebtModalOpen} = this.state;
+    const {isDeleteAbnormalDebtModalOpen, selectedDebtIndex} = this.state;
 
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit billing-section'>
@@ -102,9 +105,13 @@ class BillingEdit extends Component {
           <Column>
             <AbnormalDebtsEdit
               abnormalDebts={get(billing, 'abnormal_debts', [])}
-              onDeleteClick={() => {
-                this.setState({isDeleteAbnormalDebtModalOpen: true});
+              onDeleteClick={(index) => {
+                this.setState({
+                  isDeleteAbnormalDebtModalOpen: true,
+                  selectedDebtIndex: index,
+                });
               }}
+              selectedDebtIndex={selectedDebtIndex}
             />
           </Column>
         </Row>

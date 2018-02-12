@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import get from 'lodash/get';
+import classNames from 'classnames';
 
 import {formatDate,
   formatDateRange,
@@ -10,9 +11,10 @@ import {formatDate,
 type Props = {
   abnormalDebts: Array<Object>,
   onDeleteClick: Function,
+  selectedDebtIndex: ?number,
 }
 
-const AbnormalDebtsEdit = ({abnormalDebts, onDeleteClick}: Props) => {
+const AbnormalDebtsEdit = ({abnormalDebts, onDeleteClick, selectedDebtIndex}: Props) => {
   return (
     <table className="abnormal-debts-table">
       <thead>
@@ -29,7 +31,9 @@ const AbnormalDebtsEdit = ({abnormalDebts, onDeleteClick}: Props) => {
         {abnormalDebts && abnormalDebts
           ? (abnormalDebts.map((debt, index) => {
             return (
-              <tr key={index}>
+              <tr
+                className={classNames({'selected': selectedDebtIndex === index})}
+                key={index}>
                 <td>{`${get(debt, 'tenant.lastname')} ${get(debt, 'tenant.firstname')}`}</td>
                 <td>{get(debt, 'tenant.bill_share') ? `${get(debt, 'tenant.bill_share')} %` : '-'}</td>
                 <td>{debt.due_date ? formatDate(debt.due_date) : '-'}</td>
@@ -40,7 +44,7 @@ const AbnormalDebtsEdit = ({abnormalDebts, onDeleteClick}: Props) => {
                   <button
                     className='action-button button-delete'
                     onClick={() => {
-                      onDeleteClick();
+                      onDeleteClick(index);
                     }}
                   />
                 </td>
