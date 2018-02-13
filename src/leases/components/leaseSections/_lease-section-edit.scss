@@ -24,6 +24,7 @@
       background-color: $tram-lighter;
     }
   }
+
   .add-button-secondary {
     font-size: rem-calc(15px);
     font-family: $font-family-source;
@@ -124,6 +125,23 @@
       }
       &:hover {
         opacity: 0.85;
+      }
+    }
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    &.no-padding {
+      padding: 0;
+
+      > .row {
+        padding-right: 0;
+      }
+
+      .remove-button {
+        top: rem-calc(3px);
+        right: 0;
       }
     }
   }

@@ -88,7 +88,6 @@ class BillingEdit extends Component {
     } else {
       dispatch(change('billing-edit-form', `billing.bills`, [bill]));
     }
-
   }
 
   saveNewBill = () => {
@@ -195,6 +194,7 @@ class BillingEdit extends Component {
           <FormSection
             component={AddBillEdit}
             name='billing.new_bill'
+            onCancel={() => this.setState({addBillMode: false})}
             onSave={() => this.saveNewBill()}
           />
         }

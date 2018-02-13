@@ -13,111 +13,122 @@ import FieldTypeText from '../../../../components/form/FieldTypeText';
 import {dateGreaterOrEqual, decimalNumber, required} from '../../../../components/form/validations';
 import {getBillingAddBillErrors} from '../../../selectors';
 import {billingTypeOptions} from '../constants';
+import trashIcon from '../../../../../assets/icons/trash.svg';
 
 type Props = {
   errors: Object,
+  onCancel: Function,
   onSave: Function,
   start_date: any,
 }
 
-const AddBillEdit = ({errors, onSave, start_date}: Props) => {
+const AddBillEdit = ({errors, onCancel, onSave, start_date}: Props) => {
   return (
     <div>
       <div className='green-box'>
-        <h2>Laskun tiedot</h2>
-        <Row>
-          <Column medium={3}>
-            <label className='mvj-form-field-label required'>Laskutuskausi</label>
-            <Row>
-              <Column small={6} style={{paddingRight: '0.25rem'}}>
-                <Field
-                  component={FieldTypeDatePicker}
-                  name='billing_period_start_date'
-                  validate={[
-                    (value) => required(value, 'Päivämäärä on pakollinen'),
-                  ]}
-                />
-              </Column>
-              <Column small={6} style={{paddingLeft: '0.25rem'}}>
-                <Field
-                  component={FieldTypeDatePicker}
-                  name='billing_period_end_date'
-                  validate={[
-                    (value) => required(value, 'Päivämäärä on pakollinen'),
-                    (value) => dateGreaterOrEqual(value, start_date),
-                  ]}
-                />
-              </Column>
-            </Row>
-          </Column>
-          <Column medium={2}>
-            <Field
-              className='no-label'
-              component={FieldTypeCheckboxSingle}
-              name='is_utter'
-              optionLabel='Kertakaikkinen'
-            />
-          </Column>
-          <Column medium={5}>
-            <Row>
-              <Column medium={4}>
-                <Field
-                  component={FieldTypeText}
-                  label='Laskun pääoma'
-                  labelClassName='required'
-                  name='capital_amount'
-                  validate={[
-                    (value) => decimalNumber(value, 'Laskun pääoma tulee olla numero'),
-                    (value) => required(value, 'Laskun pääoma on pakollinen'),
-                  ]}
-                />
-              </Column>
-              <Column medium={4}>
-                <Field
-                  component={FieldTypeDatePicker}
-                  label='Eräpäivä'
-                  labelClassName='required'
-                  name='due_date'
-                  validate={[
-                    (value) => required(value, 'Laskun eräpäivä on pakollinen'),
-                  ]}
-                />
-              </Column>
-              <Column medium={4}>
-                <Field
-                  component={FieldTypeSelect}
-                  label='Saamislaji'
-                  labelClassName='required'
-                  name='type'
-                  options={billingTypeOptions}
-                  validate={[
-                    (value) => required(value, 'Saamislaji on pakollinen'),
-                  ]}
-                />
-              </Column>
-            </Row>
-          </Column>
+        <div className='item no-margin no-padding'>
+          <h2>Laskun tiedot</h2>
+          <button
+            className='remove-button'
+            type="button"
+            title="Poista ehto"
+            onClick={() => onCancel()}>
+            <img src={trashIcon} alt='Poista' />
+          </button>
+          <Row>
+            <Column medium={3}>
+              <label className='mvj-form-field-label required'>Laskutuskausi</label>
+              <Row>
+                <Column small={6} style={{paddingRight: '0.25rem'}}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    name='billing_period_start_date'
+                    validate={[
+                      (value) => required(value, 'Päivämäärä on pakollinen'),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} style={{paddingLeft: '0.25rem'}}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    name='billing_period_end_date'
+                    validate={[
+                      (value) => required(value, 'Päivämäärä on pakollinen'),
+                      (value) => dateGreaterOrEqual(value, start_date),
+                    ]}
+                  />
+                </Column>
+              </Row>
+            </Column>
+            <Column medium={2}>
+              <Field
+                className='no-label'
+                component={FieldTypeCheckboxSingle}
+                name='is_utter'
+                optionLabel='Kertakaikkinen'
+              />
+            </Column>
+            <Column medium={5}>
+              <Row>
+                <Column medium={4}>
+                  <Field
+                    component={FieldTypeText}
+                    label='Laskun pääoma'
+                    labelClassName='required'
+                    name='capital_amount'
+                    validate={[
+                      (value) => decimalNumber(value, 'Laskun pääoma tulee olla numero'),
+                      (value) => required(value, 'Laskun pääoma on pakollinen'),
+                    ]}
+                  />
+                </Column>
+                <Column medium={4}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    label='Eräpäivä'
+                    labelClassName='required'
+                    name='due_date'
+                    validate={[
+                      (value) => required(value, 'Laskun eräpäivä on pakollinen'),
+                    ]}
+                  />
+                </Column>
+                <Column medium={4}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Saamislaji'
+                    labelClassName='required'
+                    name='type'
+                    options={billingTypeOptions}
+                    validate={[
+                      (value) => required(value, 'Saamislaji on pakollinen'),
+                    ]}
+                  />
+                </Column>
+              </Row>
+            </Column>
 
-          <Column medium={2}>
-            <Field
-              className='no-label'
-              component={FieldTypeCheckboxSingle}
-              name='is_abnormal_debt'
-              optionLabel='Poikkeava perintä'
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <Field
-              component={FieldTypeText}
-              label='Tiedote'
-              name='info'
-            />
-          </Column>
-        </Row>
+            <Column medium={2}>
+              <Field
+                className='no-label'
+                component={FieldTypeCheckboxSingle}
+                name='is_abnormal_debt'
+                optionLabel='Poikkeava perintä'
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <Field
+                component={FieldTypeText}
+                label='Tiedote'
+                name='info'
+              />
+            </Column>
+          </Row>
+        </div>
       </div>
-      <Row style={{marginTop: '1rem'}}>
+      <Row>
         <Column>
           <button
             className='add-button'
