@@ -71,16 +71,24 @@ class BillingEdit extends Component {
 
   addAbnormalDebt = (bill: Object) => {
     const {abnormalDebts, dispatch} = this.props;
-    abnormalDebts.push(bill);
+    if(abnormalDebts && abnormalDebts.length) {
+      abnormalDebts.push(bill);
+      dispatch(change('billing-edit-form', `billing.abnormal_debts`, abnormalDebts));
+    } else {
+      dispatch(change('billing-edit-form', `billing.abnormal_debts`, [bill]));
+    }
 
-    dispatch(change('billing-edit-form', `billing.abnormal_debts`, abnormalDebts));
   }
 
   addBill = (bill: Object) => {
     const {bills, dispatch} = this.props;
-    bills.push(bill);
+    if(bills && bill.length) {
+      bills.push(bill);
+      dispatch(change('billing-edit-form', `billing.bills`, bills));
+    } else {
+      dispatch(change('billing-edit-form', `billing.bills`, [bill]));
+    }
 
-    dispatch(change('billing-edit-form', `billing.bills`, bills));
   }
 
   saveNewBill = () => {
