@@ -36,14 +36,14 @@ const getTableBody = (fields) => {
                 <Column style={{padding: '0 0.25rem 0 0.9375rem'}}>
                   <Field
                     component={FieldTypeDatePicker}
-                    className="width-small"
+                    className="width-small no-margin"
                     name={`${item}.start_date`}
                   />
                 </Column>
                 <Column style={{padding: '0 0.9375rem 0 0.25rem'}}>
                   <Field
                     component={FieldTypeDatePicker}
-                    className="width-small"
+                    className="width-small no-margin"
                     name={`${item}.end_date`}
                   />
                 </Column>

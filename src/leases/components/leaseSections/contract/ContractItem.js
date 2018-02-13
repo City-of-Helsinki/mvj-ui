@@ -87,7 +87,7 @@ const ContractItem = ({contract}: Props) => {
                   <p>{pledge_book.pledge_book_number ? pledge_book.pledge_book_number : '–'}</p>
                 </Column>
                 <Column medium={4}>
-                  <label>Panttikirjan päivämäärä</label>
+                  <label>Panttikirjan pvm</label>
                   <p>{pledge_book.pledge_book_date ? helpers.formatDate(pledge_book.pledge_book_date) : '–'}</p>
                 </Column>
                 <Column medium={4}>

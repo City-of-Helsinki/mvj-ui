@@ -9,6 +9,7 @@ type Props = {
   displayError: Boolean,
   input: Object,
   label: string,
+  labelClassName?: string,
   meta: Object,
   options: ?Array<any>,
   placeholder: String,
@@ -21,6 +22,7 @@ const FieldTypeSelect = ({
   input,
   input: {name, onBlur, onChange},
   label,
+  labelClassName,
   meta: {dirty, error, touched},
   options,
   placeholder,
@@ -41,7 +43,7 @@ const FieldTypeSelect = ({
 
   return (
     <div className='mvj-form-field'>
-      {label && <label className='mvj-form-field-label'>{label}</label>}
+      {label && <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>}
       <div className={classNames('mvj-form-field__select', className, {'has-error': displayError}, {'is-dirty': dirty})}>
         <Select
           {...input}

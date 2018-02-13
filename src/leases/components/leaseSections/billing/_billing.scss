@@ -49,12 +49,12 @@
       tr {
         td {
           border: none;
-          padding: 0.5rem;
-          line-height: 1;
+          padding: 0.3rem 0.5rem;
         }
 
         td.action-buttons {
           width: rem-calc(70px);
+          line-height: 1;
         }
       }
 

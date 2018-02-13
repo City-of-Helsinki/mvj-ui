@@ -6,6 +6,7 @@ type Props = {
   disabled: boolean,
   input: Object,
   label: string,
+  labelClassName?: string,
   meta: Object,
   placeholder: string,
   rows: number,
@@ -15,12 +16,13 @@ const FieldTypeTextArea = ({
   disabled = false,
   input,
   label,
+  labelClassName,
   meta: {dirty, error, touched},
   placeholder,
   rows = 5,
 }: Props) => (
   <div className='mvj-form-field'>
-    {label && <label className='mvj-form-field-label'>{label}</label>}
+    {label && <label className={classnames('mvj-form-field-label', labelClassName)}>{label}</label>}
     <div className={classnames('mvj-form-field__textarea', {'is-dirty': dirty})}>
       <textarea {...input} disabled={disabled} placeholder={placeholder} rows={rows}/>
       {touched && error && <span className='error'>{error}</span>}

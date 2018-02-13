@@ -11,6 +11,7 @@ type Props = {
   disableTouched: boolean,
   input: Object,
   label: string,
+  labelClassName?: string,
   meta: Object,
   placeholder: string,
 }
@@ -27,22 +28,25 @@ const FieldTypeDatePicker = ({
   disableTouched = false,
   input,
   label,
+  labelClassName,
   meta: {dirty, error, touched},
   placeholder,
-}: Props) => (
-  <div className='mvj-form-field'>
-    {label && <label className='mvj-form-field-label'>{label}</label>}
-    <div className={classnames('mvj-form-field__datepicker', className, {'is-dirty': dirty})}>
-      <DatePicker
-        {...input}
-        placeholder={placeholder}
-        dateFormat="DD.MM.YYYY"
-        disabledKeyboardNavigation
-        selected={input.value ? getFormatedDate(input.value) : null}
-      />
-      {(touched || disableTouched) && error && <span className={'error'}>{error}</span>}
+}: Props) => {
+  return (
+    <div className='mvj-form-field'>
+      {label && <label className={classnames('mvj-form-field-label', labelClassName)}>{label}</label>}
+      <div className={classnames('mvj-form-field__datepicker', className, {'is-dirty': dirty})}>
+        <DatePicker
+          {...input}
+          placeholder={placeholder}
+          dateFormat="DD.MM.YYYY"
+          disabledKeyboardNavigation
+          selected={input.value ? getFormatedDate(input.value) : null}
+        />
+        {(touched || disableTouched) && error && <span className={'error'}>{error}</span>}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default FieldTypeDatePicker;

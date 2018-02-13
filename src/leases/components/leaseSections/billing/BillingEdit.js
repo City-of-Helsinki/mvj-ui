@@ -113,7 +113,7 @@ class BillingEdit extends Component {
   render() {
     const {billing, dispatch, handleSubmit} = this.props;
     const {addBillMode, isDeleteAbnormalDebtModalOpen, selectedDebtIndex} = this.state;
-    console.log(billing);
+
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit billing-section'>
         <ConfirmationModal

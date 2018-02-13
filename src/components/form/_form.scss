@@ -11,6 +11,16 @@
 	  text-align: left;
     color: $dark-gray;
     margin-bottom: rem-calc(2px);
+
+    &.required::after {
+      position: relative;
+      content: '*';
+      color: $brick;
+      font-size: rem-calc(20px);
+      line-height: rem-calc(14px);
+      top: rem-calc(6px);
+      margin-left: rem-calc(5px);
+    }
   }
 
   label.mvj-form-field-label {
@@ -20,10 +30,67 @@
 	  text-align: left;
     color: $dark-gray;
     margin-bottom: rem-calc(2px);
+
+    &.required::after {
+      position: relative;
+      content: '*';
+      color: $brick;
+      font-size: rem-calc(20px);
+      line-height: rem-calc(14px);
+      top: rem-calc(6px);
+      margin-left: rem-calc(5px);
+    }
   }
 
   .mvj-form-field {
+    &__checkbox {
+      margin-bottom: 0.625rem;
+
+      &.checkbox-inline {
+        .option-label {
+          display: inline-block;
+          font-size: rem-calc(14px);
+          line-height: rem-calc(26px);
+          height: rem-calc(26px);
+          margin-right: rem-calc(10px);
+        }
+
+        .option-label:last-child {
+          margin-right: 0;
+        }
+      }
+
+      &.is-dirty {
+        .option-label {
+          span {
+            background-color: $engel;
+          }
+        }
+      }
+    }
+
+    &__checkbox-single {
+      display: block;
+
+      &.no-label {
+        padding-top: rem-calc(20px);
+      }
+
+      input {
+        margin: 0;
+        display: inline-block;
+      }
+
+      label {
+        margin: 0 0 0 0.5rem;
+        display: inline-block;
+        line-height: 1;
+      }
+    }
+
     &__datepicker {
+      margin-bottom: 0.625rem;
+
       .react-datepicker__input-container {
         width: 100%;
       }
@@ -54,6 +121,10 @@
           border-color: $engel;
           background-color: $engel-lighter;
         }
+      }
+
+      &.no-margin {
+        margin: 0;
       }
 
       .error {
@@ -132,13 +203,15 @@
     }
 
     &__text {
+      margin-bottom: 0.625rem;
+
       input {
         padding: 0 0.5rem;
         height: rem-calc(26px);
         color: $black;
         border: 1px solid $medium-gray;
         width: 100%;
-        margin-bottom: 0.625rem;
+        margin-bottom: 0;
         font-size: $font-small;
         box-shadow: none;
 
@@ -148,9 +221,7 @@
       }
 
       &.no-margin {
-        input {
-          margin: 0;
-        }
+        margin: 0;
       }
 
       &.width-xsmall {
@@ -182,14 +253,16 @@
     }
 
     &__textarea {
+      margin-bottom: 0.625rem;
+
       textarea {
         padding: 0.25rem 0.5rem;
         color: $black;
         border: 1px solid $medium-gray;
         width: 100%;
-        margin-bottom: 0.625rem;
         font-size: $font-small;
         box-shadow: none;
+        margin-bottom: 0;
 
         &:focus {
           border: 1px solid $tram;
@@ -212,48 +285,7 @@
       }
     }
 
-    &__checkbox {
-      &.checkbox-inline {
-        .option-label {
-          display: inline-block;
-          font-size: rem-calc(14px);
-          line-height: rem-calc(26px);
-          height: rem-calc(26px);
-          margin-right: rem-calc(10px);
-        }
 
-        .option-label:last-child {
-          margin-right: 0;
-        }
-      }
-
-      &.is-dirty {
-        .option-label {
-          span {
-            background-color: $engel;
-          }
-        }
-      }
-    }
-
-    &__checkbox-single {
-      display: block;
-
-      &.no-label {
-        padding-top: rem-calc(20px);
-      }
-
-      input {
-        margin: 0;
-        display: inline-block;
-      }
-
-      label {
-        margin: 0 0 0 0.5rem;
-        display: inline-block;
-        line-height: 1;
-      }
-    }
 
     &__select {
       margin-bottom: 0.625rem;

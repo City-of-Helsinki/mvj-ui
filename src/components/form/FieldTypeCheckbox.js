@@ -8,6 +8,7 @@ type Props = {
   displayError: boolean,
   input: Object,
   label: string,
+  labelClassName?: string,
   meta: Object,
   options?: Array<any>,
   type: string,
@@ -19,6 +20,7 @@ const FieldTypeCheckbox = ({
   displayError,
   input: {name, onBlur, value},
   label,
+  labelClassName,
   meta: {dirty},
   options,
   type = 'checkbox',
@@ -41,7 +43,7 @@ const FieldTypeCheckbox = ({
 
   return (
     <div className='mvj-form-field'>
-      {label && <label className='mvj-form-field-label'>{label}</label>}
+      {label && <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>}
       <fieldset
         id={name}
         className={classNames(`mvj-form-field__${type}`, className, {'has-error': displayError}, {'is-dirty': dirty})}
