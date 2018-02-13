@@ -12,12 +12,15 @@ import BillsTableEdit from './BillsTableEdit';
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import FieldTypeSwitch from '../../../../components/form/FieldTypeSwitch';
 import {displayUIMessage} from '../../../../util/helpers';
-import {formatBillingBillDb, formatBillingNewBill} from '../../../helpers';
+import {formatBillingNewBill} from '../../../helpers';
 
 type Props = {
+  abnormalDebts: Array<Object>,
   billing: Object,
+  bills: Array<Object>,
   dispatch: Function,
   handleSubmit: Function,
+  newBill: Object,
 }
 
 type State = {
@@ -67,42 +70,28 @@ class BillingEdit extends Component {
   }
 
   addAbnormalDebt = (bill: Object) => {
-    const {billing, dispatch} = this.props;
-    const abnormalDebts = get(billing, 'abnormal_debts', []);
+    const {abnormalDebts, dispatch} = this.props;
     abnormalDebts.push(bill);
 
     dispatch(change('billing-edit-form', `billing.abnormal_debts`, abnormalDebts));
   }
 
   addBill = (bill: Object) => {
-    const {billing, dispatch} = this.props;
-    const bills = get(billing, 'bills', []);
+    const {bills, dispatch} = this.props;
     bills.push(bill);
 
     dispatch(change('billing-edit-form', `billing.bills`, bills));
   }
 
-  saveBill = (bill: Object, index: number) => {
-    const {billing, dispatch} = this.props;
-    const bills = get(billing, 'bills', []);
-    if(bills && bills.length > index) {
-      bills[index] = formatBillingBillDb(bill);
-    }
-    dispatch(change('billing-edit-form', `billing.bills`, bills));
-    displayUIMessage({title: 'Lasku tallennettu', body: 'Lasku on tallennettu onnistuneesti'});
-  }
-
   saveNewBill = () => {
-    const {billing} = this.props;
-    const newBill = get(billing, 'new_bill', {});
-    const isAbnormalDebt = get(newBill, 'is_abnormal_debt', false);
-
+    const {newBill} = this.props;
     const tenant = get(newBill, 'tenant', {});
     tenant.bill_share = 50;
     tenant.firstname = 'Mikko';
     tenant.lastname = 'Koskinen';
     newBill.tenant = tenant;
 
+    const isAbnormalDebt = get(newBill, 'is_abnormal_debt', false);
     if(isAbnormalDebt) {
       this.addAbnormalDebt(formatBillingNewBill(newBill));
     } else {
@@ -146,12 +135,10 @@ class BillingEdit extends Component {
           </Column>
         </Row>
         <Row><Column><div className="separator-line"></div></Column></Row>
-        <Row><Column><h2>Laskut</h2></Column></Row>
         <Row>
           <Column>
             <FormSection
               name="billing"
-              bills={get(billing, 'bills')}
               component={BillsTableEdit}
               dispatch={dispatch}
               headers={[
@@ -167,7 +154,6 @@ class BillingEdit extends Component {
                 'Tiedote',
                 'Läh. SAP:iin',
               ]}
-              onSave={(bill, index) => this.saveBill(bill, index)}
             />
           </Column>
         </Row>
@@ -215,7 +201,10 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect((state) => {
     return {
+      abnormalDebts: selector(state, 'abnormal_debts'),
       billing: selector(state, 'billing'),
+      bills: selector(state, 'billing.bills'),
+      newBill: selector(state, 'billing.new_bill'),
     };
   }),
   reduxForm({
