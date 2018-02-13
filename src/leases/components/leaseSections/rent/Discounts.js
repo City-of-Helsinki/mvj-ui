@@ -2,11 +2,10 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import {formatDateRange} from '../../../../util/helpers';
-import {getRentDiscountDecisionLabel,
-  getRentDiscountPurposeLabel,
-  getRentDiscountTypeLabel,
-} from '../helpers';
+import {formatDateRange, getLabelOfOption} from '../../../../util/helpers';
+import {rentDiscountDecisionOptions,
+  rentDiscountPurposeOptions,
+  rentDiscountTypeOptions} from '../constants';
 
 type Props = {
   discounts: Array<Object>,
@@ -25,11 +24,11 @@ const Discounts = ({discounts}: Props) => {
                     <Row>
                       <Column small={3}>
                         <label>Tyyppi</label>
-                        <p>{discount.type ? getRentDiscountTypeLabel(discount.type) : '-'}</p>
+                        <p>{discount.type ? getLabelOfOption(rentDiscountTypeOptions, discount.type) : '-'}</p>
                       </Column>
                       <Column small={3}>
                         <label>Käyttötarkoitus</label>
-                        <p>{discount.purpose ? getRentDiscountPurposeLabel(discount.purpose) : '-'}</p>
+                        <p>{discount.purpose ? getLabelOfOption(rentDiscountPurposeOptions, discount.purpose) : '-'}</p>
                       </Column>
                       <Column small={6}>
                         <label>Voimassaoloaika</label>
@@ -51,7 +50,7 @@ const Discounts = ({discounts}: Props) => {
                       </Column>
                       <Column small={6}>
                         <label>Päätös</label>
-                        {discount.rule ? <a>{getRentDiscountDecisionLabel(discount.rule)}<span className="link-icon"/></a> : '-'}
+                        {discount.rule ? <a>{getLabelOfOption(rentDiscountDecisionOptions, discount.rule)}<span className="link-icon"/></a> : '-'}
                       </Column>
                     </Row>
                   </Column>

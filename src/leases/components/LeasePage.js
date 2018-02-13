@@ -13,9 +13,9 @@ import moment from 'moment';
 import {getLoggedInUser} from '../../auth/selectors';
 import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
-import {getSummaryPublicityLabel} from './leaseSections/helpers';
 import * as contentHelpers from '../helpers';
-import {displayUIMessage} from '../../util/helpers';
+import {displayUIMessage, getLabelOfOption} from '../../util/helpers';
+import {summaryPublicityOptions} from './leaseSections/constants';
 
 import Billing from './leaseSections/billing/Billing';
 import BillingEdit from './leaseSections/billing/BillingEdit';
@@ -526,7 +526,7 @@ class PreparerForm extends Component {
                       {!isEditMode &&
                         <p className="publicity-label">
                           {summary.publicity
-                            ? getSummaryPublicityLabel(summary.publicity)
+                            ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
                             : '-'}
                         </p>
                       }

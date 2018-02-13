@@ -6,7 +6,8 @@ import {Row, Column} from 'react-foundation';
 import Collapse from '../../../../components/Collapse';
 import TenantItem from './TenantItem';
 import OtherPersonItem from './OtherPersonItem';
-import {getTenantsRolesLabel} from '../helpers';
+import {getLabelOfOption} from '../../../../util/helpers';
+import {tenantsRolesOptions} from '../constants';
 
 type Props = {
   tenant: Object,
@@ -42,9 +43,9 @@ const Tenant = ({tenant}: Props) => {
                     {roles && roles.length > 0 &&
                       roles.map((role, index) => {
                         if(index > 0) {
-                          return (<span key={index}>&nbsp;/ {getTenantsRolesLabel(role)}</span>);
+                          return (<span key={index}>&nbsp;/ {getLabelOfOption(tenantsRolesOptions, role)}</span>);
                         }
-                        return (<span key={index}>{getTenantsRolesLabel(role)}</span>);
+                        return (<span key={index}>{getLabelOfOption(tenantsRolesOptions, role)}</span>);
                       })
                     }
                   </span></Column>

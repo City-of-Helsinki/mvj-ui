@@ -2,11 +2,13 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import {formatDateRange, formatDecimalNumbers, formatNumberWithThousandSeparator} from '../../../../util/helpers';
-
-import {getBasicInfoIndexTypeLabel,
-  getBasicInfoRentalPeriodLabel,
-  getBasicInfoTypeLabel} from '../helpers';
+import {formatDateRange,
+  formatDecimalNumbers,
+  formatNumberWithThousandSeparator,
+  getLabelOfOption} from '../../../../util/helpers';
+import {rentBasicInfoIndexTypeOptions,
+  rentBasicInfoRentalPeriodOptions,
+  rentBasicInfoTypeOptions} from '../constants';
 
 type Props = {
   basicInfo: Object,
@@ -36,15 +38,15 @@ const BasicInfoIndex = ({basicInfo}: Props) => {
           <Row>
             <Column medium={3}>
               <label>Vuokralaji</label>
-              <p>{type ? getBasicInfoTypeLabel(type) : '-'}</p>
+              <p>{type ? getLabelOfOption(rentBasicInfoTypeOptions, type) : '-'}</p>
             </Column>
             <Column medium={3}>
               <label>Vuokrakausi</label>
-              <p>{rental_period ? getBasicInfoRentalPeriodLabel(rental_period) : '-'}</p>
+              <p>{rental_period ? getLabelOfOption(rentBasicInfoRentalPeriodOptions, rental_period) : '-'}</p>
             </Column>
             <Column medium={6}>
               <label>Indeksin tunnusnumero (laskentalaji)</label>
-              <p>{index_type ? getBasicInfoIndexTypeLabel(index_type) : '-'}</p>
+              <p>{index_type ? getLabelOfOption(rentBasicInfoIndexTypeOptions, index_type) : '-'}</p>
             </Column>
           </Row>
           <Row>
@@ -138,7 +140,7 @@ const BasicInfoUtter = ({basicInfo}: Props) => {
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
-          <p>{type ? getBasicInfoTypeLabel(type) : '-'}</p>
+          <p>{type ? getLabelOfOption(rentBasicInfoTypeOptions, type) : '-'}</p>
         </Column>
         <Column medium={3}>
           <label>Kertakaikkinen vuokra</label>
@@ -168,7 +170,7 @@ const BasicInfoFixed = ({basicInfo}: Props) => {
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
-          <p>{type ? getBasicInfoTypeLabel(type) : '-'}</p>
+          <p>{type ? getLabelOfOption(rentBasicInfoTypeOptions, type) : '-'}</p>
         </Column>
         <Column medium={3}>
           <label>Kertakaikkinen vuokra</label>
@@ -211,7 +213,7 @@ const BasicInfoFree = ({basicInfo}: Props) => {
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
-          <p>{type ? getBasicInfoTypeLabel(type) : '-'}</p>
+          <p>{type ? getLabelOfOption(rentBasicInfoTypeOptions, type) : '-'}</p>
         </Column>
       </Row>
       <Row>
@@ -236,7 +238,7 @@ const BasicInfoCalculated = ({basicInfo}: Props) => {
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
-          <p>{type ? getBasicInfoTypeLabel(type) : '-'}</p>
+          <p>{type ? getLabelOfOption(rentBasicInfoTypeOptions, type) : '-'}</p>
         </Column>
         {billing_type === '0' &&
           <Column medium={3} offsetOnMedium={6}>
