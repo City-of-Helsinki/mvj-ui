@@ -6,7 +6,7 @@ export const required = (value: any, error?: string) => (value ? undefined : (er
 
 export const integer = (value: any, error?: string) => (Number.isInteger(Number(value)) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
 
-export const decimalNumber = (value: any, error?: string) => (!value || !isNaN(value.toString().replace(',', '.')) ? undefined : (error ? error : 'Arvon tulee olla numero'));
+export const decimalNumber = (value: any, error?: string) => (value === null || value === undefined || !isNaN(value.toString().replace(',', '.')) ? undefined : (error ? error : 'Arvon tulee olla numero'));
 
 export const min = (value: any, min: number, error?: string) => ((Number(value) >= min) ? undefined : (error ? error : `Arvon tulee olla vähintään ${min}`));
 
