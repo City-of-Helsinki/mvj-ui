@@ -6,11 +6,11 @@ import classNames from 'classnames';
 
 import {formatDate,
   formatDateRange,
-  formatDecimalNumbers,
+  formatDecimalNumber,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
 import BillModal from './BillModal';
 import {getLabelOfOption} from '../../../../util/helpers';
-import {billingTypeOptions} from '../constants';
+import {billingStatusOptions, billingTypeOptions} from '../constants';
 
 type Props = {
   bills: Array<Object>,
@@ -97,9 +97,9 @@ class BillsTable extends Component {
                       <td>{bill.bill_number ? bill.bill_number : '-'}</td>
                       <td>{formatDateRange(bill.billing_period_start_date, bill.billing_period_end_date)}</td>
                       <td>{bill.type ? getLabelOfOption(billingTypeOptions, bill.type) : '-'}</td>
-                      <td>{bill.status ? bill.status : '-'}</td>
-                      <td>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.invoiced_amount))} €` : '-'}</td>
-                      <td>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.unpaid_amount))} €` : '-'}</td>
+                      <td>{bill.status ? getLabelOfOption(billingStatusOptions, bill.status) : '-'}</td>
+                      <td>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.invoiced_amount))} €` : '-'}</td>
+                      <td>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</td>
                       <td>{bill.info ? 'Kyllä' : 'Ei'}</td>
                       <td>{bill.sent_to_SAP_date ? formatDate(bill.sent_to_SAP_date) : '-'}</td>
                     </tr>

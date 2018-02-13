@@ -130,7 +130,7 @@ export const formatDateDb = (date: string) => {
   return d.format('YYYY-MM-DD');
 };
 
-export const formatDecimalNumbers = (x) => {
+export const formatDecimalNumber = (x) => {
   return parseFloat(x).toFixed(2).toString().replace('.', ',');
 };
 

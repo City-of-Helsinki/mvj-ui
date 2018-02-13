@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-import {formatDateRange, formatNumberWithThousandSeparator, formatDecimalNumbers} from '../../../../util/helpers';
+import {formatDateRange, formatNumberWithThousandSeparator, formatDecimalNumber} from '../../../../util/helpers';
 import TableFixedHeader from '../../../../components/TableFixedHeader';
 
 type Props = {
@@ -14,10 +14,10 @@ const getTableBody = (chargedRents: Array<Object>) => {
       <tbody>
         {chargedRents.map((rent, index) => (
           <tr key={index}>
-            <td>{rent.rent !== null ? formatNumberWithThousandSeparator(formatDecimalNumbers(rent.rent), '.') : '-'}</td>
+            <td>{rent.rent !== null ? formatNumberWithThousandSeparator(formatDecimalNumber(rent.rent), '.') : '-'}</td>
             <td>{formatDateRange(rent.start_date, rent.end_date)}</td>
-            <td>{rent.difference !== null ? formatDecimalNumbers(rent.difference) : '-'}</td>
-            <td>{rent.calendar_year_rent !==null ? formatNumberWithThousandSeparator(formatDecimalNumbers(rent.calendar_year_rent), '.') : '-'}</td>
+            <td>{rent.difference !== null ? formatDecimalNumber(rent.difference) : '-'}</td>
+            <td>{rent.calendar_year_rent !==null ? formatNumberWithThousandSeparator(formatDecimalNumber(rent.calendar_year_rent), '.') : '-'}</td>
           </tr>
         ))}
       </tbody>

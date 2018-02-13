@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 import {formatDate,
   formatDateRange,
-  formatDecimalNumbers,
+  formatDecimalNumber,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
 
 type Props = {
@@ -37,7 +37,7 @@ const AbnormalDebtsEdit = ({abnormalDebts, onDeleteClick, selectedDebtIndex}: Pr
                 <td>{`${get(debt, 'tenant.lastname')} ${get(debt, 'tenant.firstname')}`}</td>
                 <td>{get(debt, 'tenant.bill_share') ? `${get(debt, 'tenant.bill_share')} %` : '-'}</td>
                 <td>{debt.due_date ? formatDate(debt.due_date) : '-'}</td>
-                <td>{debt.capital_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(debt.capital_amount))} €` : '-'}</td>
+                <td>{debt.capital_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(debt.capital_amount))} €` : '-'}</td>
                 <td>{formatDateRange(debt.billing_period_start_date, debt.billing_period_end_date)}</td>
                 <td className="action-buttons">
                   <button className='action-button button-edit' />

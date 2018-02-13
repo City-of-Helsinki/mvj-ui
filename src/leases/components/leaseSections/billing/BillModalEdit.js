@@ -6,14 +6,18 @@ import get from 'lodash/get';
 import classNames from 'classnames';
 
 import {formatDate,
-  formatDecimalNumbers,
+  formatDecimalNumber,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
+import {billingInvoiceMethodOptions,
+  billingInvoiceTypeOptions,
+  billingStatusOptions,
+  billingTypeOptions} from '../constants';
 import Button from '../../../../components/Button';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import FieldTypeTextArea from '../../../../components/form/FieldTypeTextArea';
-import {billingTypeOptions} from '../constants';
+
 
 type Props = {
   bill: Object,
@@ -76,9 +80,10 @@ const BillModalEdit = ({
           <Row>
             <Column medium={4}>
               <Field
-                component={FieldTypeText}
+                component={FieldTypeSelect}
                 label="Laskun tila"
                 name="bill.status"
+                options={billingStatusOptions}
               />
             </Column>
             <Column medium={4}>
@@ -109,7 +114,7 @@ const BillModalEdit = ({
           <Row>
             <Column medium={4}>
               <label className='mvj-form-field-label'>Laskun pääoma</label>
-              <p>{get(bill, 'capital_amount') ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.capital_amount))} €` : '-'}</p>
+              <p>{get(bill, 'capital_amount') ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.capital_amount))} €` : '-'}</p>
             </Column>
             <Column medium={4}>
               <Field
@@ -161,16 +166,18 @@ const BillModalEdit = ({
           <Row>
             <Column medium={4}>
               <Field
-                component={FieldTypeText}
+                component={FieldTypeSelect}
                 label="E vai paperilasku"
                 name="bill.invoice_method"
+                options={billingInvoiceMethodOptions}
               />
             </Column>
             <Column medium={4}>
               <Field
-                component={FieldTypeText}
+                component={FieldTypeSelect}
                 label="Laskun tyyppi"
                 name="bill.invoice_type"
+                options={billingInvoiceTypeOptions}
               />
             </Column>
           </Row>

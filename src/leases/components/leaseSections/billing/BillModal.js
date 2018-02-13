@@ -6,10 +6,13 @@ import classNames from 'classnames';
 
 import {formatDate,
   formatDateRange,
-  formatDecimalNumbers,
-  formatNumberWithThousandSeparator} from '../../../../util/helpers';
-import {getLabelOfOption} from '../../../../util/helpers';
-import {billingTypeOptions} from '../constants';
+  formatDecimalNumber,
+  formatNumberWithThousandSeparator,
+  getLabelOfOption} from '../../../../util/helpers';
+import {billingInvoiceMethodOptions,
+  billingInvoiceTypeOptions,
+  billingStatusOptions,
+  billingTypeOptions} from '../constants';
 
 type Props = {
   bill: Object,
@@ -61,7 +64,7 @@ const BillModal = ({bill, containerHeight, onClose, show}: Props) => {
           <Row>
             <Column medium={4}>
               <label>Laskun tila</label>
-              <p>{bill.status ? bill.status : '-'}</p>
+              <p>{bill.status ? getLabelOfOption(billingStatusOptions, bill.status) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Laskutuskausi</label>
@@ -75,7 +78,7 @@ const BillModal = ({bill, containerHeight, onClose, show}: Props) => {
           <Row>
             <Column medium={4}>
               <label>Laskun pääoma</label>
-              <p>{bill.capital_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.capital_amount))} €` : '-'}</p>
+              <p>{bill.capital_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.capital_amount))} €` : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Laskun osuus</label>
@@ -85,11 +88,11 @@ const BillModal = ({bill, containerHeight, onClose, show}: Props) => {
           <Row>
             <Column medium={4}>
               <label>Maksamaton määrä</label>
-              <p>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.unpaid_amount))} €` : '-'}</p>
+              <p>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Laskutettu määrä</label>
-              <p>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.invoiced_amount))} €` : '-'}</p>
+              <p>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.invoiced_amount))} €` : '-'}</p>
             </Column>
           </Row>
           <Row>
@@ -99,7 +102,7 @@ const BillModal = ({bill, containerHeight, onClose, show}: Props) => {
             </Column>
             <Column medium={4}>
               <label>Perintäkulu</label>
-              <p>{bill.recovery_cost ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.recovery_cost))} €` : '-'}</p>
+              <p>{bill.recovery_cost ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.recovery_cost))} €` : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Maksukehotus luettelo</label>
@@ -109,11 +112,11 @@ const BillModal = ({bill, containerHeight, onClose, show}: Props) => {
           <Row>
             <Column medium={4}>
               <label>E vai paperilasku</label>
-              <p>{bill.invoice_method ? bill.invoice_method : '-'}</p>
+              <p>{bill.invoice_method ? getLabelOfOption(billingInvoiceMethodOptions, bill.invoice_method) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Laskun tyyppi</label>
-              <p>{bill.invoice_type ? bill.invoice_type : '-'}</p>
+              <p>{bill.invoice_type ? getLabelOfOption(billingInvoiceTypeOptions, bill.invoice_type) : '-'}</p>
             </Column>
           </Row>
           <Row>

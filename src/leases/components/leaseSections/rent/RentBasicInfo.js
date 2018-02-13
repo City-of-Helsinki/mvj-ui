@@ -3,7 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 
 import {formatDateRange,
-  formatDecimalNumbers,
+  formatDecimalNumber,
   formatNumberWithThousandSeparator,
   getLabelOfOption} from '../../../../util/helpers';
 import {rentBasicInfoIndexTypeOptions,
@@ -89,7 +89,7 @@ const BasicInfoIndex = ({basicInfo}: Props) => {
                 return (
                   <Row key={index}>
                     <Column medium={3}>
-                      <p style={{marginBottom: '0'}}>{rent.rent ? formatNumberWithThousandSeparator(formatDecimalNumbers(rent.rent), '.') : '-'}</p>
+                      <p style={{marginBottom: '0'}}>{rent.rent ? formatNumberWithThousandSeparator(formatDecimalNumber(rent.rent), '.') : '-'}</p>
                     </Column>
                     <Column medium={3}>
                       <p style={{marginBottom: '0'}}>{formatDateRange(rent.start_date, rent.end_date)}</p>
@@ -144,7 +144,7 @@ const BasicInfoUtter = ({basicInfo}: Props) => {
         </Column>
         <Column medium={3}>
           <label>Kertakaikkinen vuokra</label>
-          <p>{rent_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(rent_amount))} €` : '-'}</p>
+          <p>{rent_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(rent_amount))} €` : '-'}</p>
         </Column>
       </Row>
       <Row>
@@ -174,7 +174,7 @@ const BasicInfoFixed = ({basicInfo}: Props) => {
         </Column>
         <Column medium={3}>
           <label>Kertakaikkinen vuokra</label>
-          <p>{rent_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(rent_amount))} €` : '-'}</p>
+          <p>{rent_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(rent_amount))} €` : '-'}</p>
         </Column>
         {billing_type === '0' &&
           <Column medium={3} offsetOnMedium={3}>

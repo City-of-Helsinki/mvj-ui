@@ -8,12 +8,12 @@ import classNames from 'classnames';
 
 import {formatDate,
   formatDateRange,
-  formatDecimalNumbers,
+  formatDecimalNumber,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
 import FieldTypeCheckboxSingle from '../../../../components/form/FieldTypeCheckboxSingle';
 import BillModalEdit from './BillModalEdit';
 import {getLabelOfOption} from '../../../../util/helpers';
-import {billingTypeOptions} from '../constants';
+import {billingStatusOptions, billingTypeOptions} from '../constants';
 
 type BillsTableRowsProps = {
   bills: Array<Object>,
@@ -75,17 +75,17 @@ const BillsTableRowsEdit = ({bills, fields, onRowClick, selectedBillIndex}: Bill
             </td>
             <td onClick={() => onRowClick(index)}>
               {bills && bills.length > (index) &&
-                bills[index].status ? bills[index].status : '-'
+                bills[index].status ? getLabelOfOption(billingStatusOptions, bills[index].status) : '-'
               }
             </td>
             <td onClick={() => onRowClick(index)}>
               {bills && bills.length > (index) &&
-                bills[index].invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bills[index].invoiced_amount))} €` : '-'
+                bills[index].invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bills[index].invoiced_amount))} €` : '-'
               }
             </td>
             <td onClick={() => onRowClick(index)}>
               {bills && bills.length > (index) &&
-                bills[index].unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bills[index].unpaid_amount))} €` : '-'
+                bills[index].unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bills[index].unpaid_amount))} €` : '-'
               }
             </td>
             <td onClick={() => onRowClick(index)}>
