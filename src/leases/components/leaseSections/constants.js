@@ -26,6 +26,11 @@ export const rentBasicInfoTypeOptions = [
   {value: '4', label: 'Käsinlaskenta'},
 ];
 
+export const billingTypeOptions = [
+  {value: '0', label: 'Vuokra'},
+  {value: '1', label: 'Korko'},
+];
+
 export const rentContractRentPurposeOptions = [
   {value: '100', label: 'Asuminen / yleinen'},
   {value: '101', label: 'Vapaarahoitteisia omistusasuntoja'},

@@ -8,9 +8,11 @@ import isEmpty from 'lodash/isEmpty';
 
 import FieldTypeCheckboxSingle from '../../../../components/form/FieldTypeCheckboxSingle';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
-import {dateGreaterOrEqual, required} from '../../../../components/form/validations';
+import {dateGreaterOrEqual, decimalNumber, required} from '../../../../components/form/validations';
 import {getBillingAddBillErrors} from '../../../selectors';
+import {billingTypeOptions} from '../constants';
 
 type Props = {
   errors: Object,
@@ -19,7 +21,6 @@ type Props = {
 }
 
 const AddBillEdit = ({errors, onSave, start_date}: Props) => {
-  console.log(errors);
   return (
     <div>
       <div className='green-box'>
@@ -66,6 +67,7 @@ const AddBillEdit = ({errors, onSave, start_date}: Props) => {
                   labelClassName='required'
                   name='capital_amount'
                   validate={[
+                    (value) => decimalNumber(value, 'Laskun pääoma tulee olla numero'),
                     (value) => required(value, 'Laskun pääoma on pakollinen'),
                   ]}
                 />
@@ -83,10 +85,11 @@ const AddBillEdit = ({errors, onSave, start_date}: Props) => {
               </Column>
               <Column medium={4}>
                 <Field
-                  component={FieldTypeText}
+                  component={FieldTypeSelect}
                   label='Saamislaji'
                   labelClassName='required'
                   name='type'
+                  options={billingTypeOptions}
                   validate={[
                     (value) => required(value, 'Saamislaji on pakollinen'),
                   ]}
