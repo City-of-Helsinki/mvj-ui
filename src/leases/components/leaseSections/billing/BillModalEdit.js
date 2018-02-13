@@ -30,6 +30,7 @@ type Props = {
   containerHeight: ?number,
   errors: ?Object,
   onClose: Function,
+  onSave: Function,
   show: boolean,
   start_date: ?Moment,
 }
@@ -39,6 +40,7 @@ const BillModalEdit = ({
   containerHeight,
   errors,
   onClose,
+  onSave,
   show,
   start_date}: Props) => {
   return (
@@ -248,7 +250,7 @@ const BillModalEdit = ({
               <Button
                 className="button-green no-margin"
                 disabled={!isEmpty(errors)}
-                onClick={() => alert('Tallenna lasku')}
+                onClick={() => onSave(bill)}
                 text='Tallenna'
               />
             </Column>
@@ -266,6 +268,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        bill: selector(state, 'billing.bill'),
         errors: getBillingBillModalErrors(state),
         start_date: selector(state, 'billing.bill.billing_period_start_date'),
       };

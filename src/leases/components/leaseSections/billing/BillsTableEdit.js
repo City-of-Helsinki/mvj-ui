@@ -110,6 +110,7 @@ type Props = {
   dispatch: Function,
   fields: any,
   headers: Array<string>,
+  onSave: Function,
 }
 
 type State = {
@@ -196,7 +197,7 @@ class BillsTableEdit extends Component {
   }
 
   render () {
-    const {bills, headers} = this.props;
+    const {bills, headers, onSave} = this.props;
     const {selectedBill, selectedBillIndex, showModal, tableHeight} = this.state;
     const allSelected = this.areAllSelected();
 
@@ -209,6 +210,10 @@ class BillsTableEdit extends Component {
             containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
             name='selected_bill'
             onClose={() => this.setState({selectedBill: null, selectedBillIndex: null, showModal: false})}
+            onSave={(bill) => {
+              onSave(bill, selectedBillIndex);
+              this.setState({selectedBill: null, selectedBillIndex: null, showModal: false});
+            }}
             show={showModal}
           />
           <div className="table-fixed-header__header-border" />

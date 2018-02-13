@@ -779,9 +779,10 @@ export const getTypeOptions = (attributes: Object) => {
   });
 };
 
-const formatBillingNewBillTenant = (tenant: Object) => {
+const formatBillingBillTenant = (tenant: Object) => {
   return {
-    bill_share: get(tenant, 'bill_share'),
+    bill_share: formatDecimalNumberDb(get(tenant, 'bill_share')),
+    bill_share_amount: formatDecimalNumberDb(get(tenant, 'bill_share_amount')),
     firstname: get(tenant, 'firstname'),
     lastname: get(tenant, 'lastname'),
   };
@@ -795,7 +796,32 @@ export const formatBillingNewBill = (bill: Object) => {
     due_date: formatDateDb(get(bill, 'due_date')),
     info: get(bill, 'info'),
     is_utter: get(bill, 'is_utter'),
-    tenant: formatBillingNewBillTenant(get(bill, 'tenant', {})),
+    tenant: formatBillingBillTenant(get(bill, 'tenant', {})),
     type: get(bill, 'type'),
+  };
+};
+
+export const formatBillingBillDb = (bill: Object) => {
+  return {
+    bill_number: formatDecimalNumberDb(get(bill, 'bill_number')),
+    billing_period_end_date: formatDateDb(get(bill, 'billing_period_end_date')),
+    billing_period_start_date: formatDateDb(get(bill, 'billing_period_start_date')),
+    capital_amount: formatDecimalNumberDb(get(bill, 'capital_amount')),
+    demand_date: formatDateDb(get(bill, 'demand_date')),
+    due_date: formatDateDb(get(bill, 'due_date')),
+    info: get(bill, 'info'),
+    invoiced_amount: formatDecimalNumberDb(get(bill, 'invoiced_amount')),
+    invoicing_date: formatDateDb(get(bill, 'invoicing_date')),
+    invoice_method: get(bill, 'invoice_method'),
+    invoice_type: get(bill, 'invoice_type'),
+    payment_demand_list: get(bill, 'payment_demand_list'),
+    recovery_cost: formatDecimalNumberDb(get(bill, 'recovery_cost')),
+    SAP_number: formatDecimalNumberDb(get(bill, 'SAP_number')),
+    sent_to_SAP_date: formatDateDb(get(bill, 'sent_to_SAP_date')),
+    status: get(bill, 'status'),
+    suspension_date: formatDateDb(get(bill, 'suspension_date')),
+    tenant: formatBillingBillTenant(get(bill, 'tenant', {})),
+    type: get(bill, 'type'),
+    unpaid_amount: formatDecimalNumberDb(get(bill, 'unpaid_amount')),
   };
 };

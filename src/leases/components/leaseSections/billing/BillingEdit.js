@@ -12,7 +12,7 @@ import BillsTableEdit from './BillsTableEdit';
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import FieldTypeSwitch from '../../../../components/form/FieldTypeSwitch';
 import {displayUIMessage} from '../../../../util/helpers';
-import {formatBillingNewBill} from '../../../helpers';
+import {formatBillingBillDb, formatBillingNewBill} from '../../../helpers';
 
 type Props = {
   billing: Object,
@@ -80,6 +80,16 @@ class BillingEdit extends Component {
     bills.push(bill);
 
     dispatch(change('billing-edit-form', `billing.bills`, bills));
+  }
+
+  saveBill = (bill: Object, index: number) => {
+    const {billing, dispatch} = this.props;
+    const bills = get(billing, 'bills', []);
+    if(bills && bills.length > index) {
+      bills[index] = formatBillingBillDb(bill);
+    }
+    dispatch(change('billing-edit-form', `billing.bills`, bills));
+    displayUIMessage({title: 'Lasku tallennettu', body: 'Lasku on tallennettu onnistuneesti'});
   }
 
   saveNewBill = () => {
@@ -157,6 +167,7 @@ class BillingEdit extends Component {
                 'Tiedote',
                 'Läh. SAP:iin',
               ]}
+              onSave={(bill, index) => this.saveBill(bill, index)}
             />
           </Column>
         </Row>

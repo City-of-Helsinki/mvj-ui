@@ -135,7 +135,7 @@ export const formatDecimalNumber = (x) => {
 };
 
 export const formatDecimalNumberDb = (x) => {
-  return x ? Number(x.replace(',', '.')): null;
+  return x ? Number(x.toString().replace(',', '.')): null;
 };
 
 export const formatNumberWithThousandSeparator = (x, separator = ' ') => {
