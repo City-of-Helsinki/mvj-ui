@@ -10,8 +10,10 @@ import {formatDate,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
 import Button from '../../../../components/Button';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import FieldTypeTextArea from '../../../../components/form/FieldTypeTextArea';
+import {billingTypeOptions} from '../constants';
 
 type Props = {
   bill: Object,
@@ -64,9 +66,10 @@ const BillModalEdit = ({
             </Column>
             <Column medium={4}>
               <Field
-                component={FieldTypeText}
+                component={FieldTypeSelect}
                 label="Saamislaji"
                 name="bill.type"
+                options={billingTypeOptions}
               />
             </Column>
           </Row>

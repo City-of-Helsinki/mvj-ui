@@ -1,3 +1,8 @@
+export const billingTypeOptions = [
+  {value: '0', label: 'Vuokra'},
+  {value: '1', label: 'Korko'},
+];
+
 export const rentBasicInfoBillingTypeOptions = [
   {value: '0', label: 'Eräpäivät'},
   {value: '1', label: 'Laskut'},
@@ -24,11 +29,6 @@ export const rentBasicInfoTypeOptions = [
   {value: '2', label: 'Kiinteä'},
   {value: '3', label: 'Korvauksetta'},
   {value: '4', label: 'Käsinlaskenta'},
-];
-
-export const billingTypeOptions = [
-  {value: '0', label: 'Vuokra'},
-  {value: '1', label: 'Korko'},
 ];
 
 export const rentContractRentPurposeOptions = [

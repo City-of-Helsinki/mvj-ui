@@ -12,6 +12,8 @@ import {formatDate,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
 import FieldTypeCheckboxSingle from '../../../../components/form/FieldTypeCheckboxSingle';
 import BillModalEdit from './BillModalEdit';
+import {getLabelOfOption} from '../../../../util/helpers';
+import {billingTypeOptions} from '../constants';
 
 type BillsTableRowsProps = {
   bills: Array<Object>,
@@ -68,7 +70,7 @@ const BillsTableRowsEdit = ({bills, fields, onRowClick, selectedBillIndex}: Bill
             </td>
             <td onClick={() => onRowClick(index)}>
               {bills && bills.length > (index) &&
-                bills[index].type ? bills[index].type : '-'
+                bills[index].type ? getLabelOfOption(billingTypeOptions, bills[index].type) : '-'
               }
             </td>
             <td onClick={() => onRowClick(index)}>

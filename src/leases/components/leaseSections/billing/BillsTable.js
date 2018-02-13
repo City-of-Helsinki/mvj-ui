@@ -9,6 +9,8 @@ import {formatDate,
   formatDecimalNumbers,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
 import BillModal from './BillModal';
+import {getLabelOfOption} from '../../../../util/helpers';
+import {billingTypeOptions} from '../constants';
 
 type Props = {
   bills: Array<Object>,
@@ -94,7 +96,7 @@ class BillsTable extends Component {
                       <td>{bill.due_date ? formatDate(bill.due_date) : '-'}</td>
                       <td>{bill.bill_number ? bill.bill_number : '-'}</td>
                       <td>{formatDateRange(bill.billing_period_start_date, bill.billing_period_end_date)}</td>
-                      <td>{bill.type ? bill.type : '-'}</td>
+                      <td>{bill.type ? getLabelOfOption(billingTypeOptions, bill.type) : '-'}</td>
                       <td>{bill.status ? bill.status : '-'}</td>
                       <td>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.invoiced_amount))} €` : '-'}</td>
                       <td>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumbers(bill.unpaid_amount))} €` : '-'}</td>

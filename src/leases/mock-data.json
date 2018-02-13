@@ -65,7 +65,7 @@
               "firstname": "Mikko",
               "lastname": "Koskinen"
             },
-            "type": "Vuokra",
+            "type": "0",
             "unpaid_amount": 2876
           },
           {
@@ -92,7 +92,7 @@
               "firstname": "Vappu",
               "lastname": "Pappila"
             },
-            "type": "Vuokra",
+            "type": "0",
             "unpaid_amount": 0
           }
         ]

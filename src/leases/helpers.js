@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
-import {formatDate, formatDateDb, formatDateRange} from '../util/helpers';
+import {formatDate, formatDateDb, formatDateRange, formatDecimalNumberDb} from '../util/helpers';
 
 export const formatSequenceNumber = (value: number) => {
   if(!value) {
@@ -791,7 +791,7 @@ export const formatBillingNewBill = (bill: Object) => {
   return {
     billing_period_end_date: formatDateDb(get(bill, 'billing_period_end_date')),
     billing_period_start_date: formatDateDb(get(bill, 'billing_period_start_date')),
-    capital_amount: get(bill, 'capital_amount'),
+    capital_amount: formatDecimalNumberDb(get(bill, 'capital_amount')),
     due_date: formatDateDb(get(bill, 'due_date')),
     info: get(bill, 'info'),
     is_utter: get(bill, 'is_utter'),

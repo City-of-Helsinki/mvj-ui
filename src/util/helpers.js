@@ -134,6 +134,10 @@ export const formatDecimalNumbers = (x) => {
   return parseFloat(x).toFixed(2).toString().replace('.', ',');
 };
 
+export const formatDecimalNumberDb = (x) => {
+  return x ? Number(x.replace(',', '.')): null;
+};
+
 export const formatNumberWithThousandSeparator = (x, separator = ' ') => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 };
@@ -189,6 +193,11 @@ export const getKtjLink = (id, key, lang = 'fi') => {
  */
 export const findIndexOfArrayfield = (collection, id) => {
   return findIndex(collection, {id});
+};
+
+export const getLabelOfOption = (options: Array<Object>, value: string) => {
+  const option = options.find(x => x.value=== value);
+  return get(option, 'label', '');
 };
 
 /**

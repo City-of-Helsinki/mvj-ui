@@ -8,6 +8,8 @@ import {formatDate,
   formatDateRange,
   formatDecimalNumbers,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
+import {getLabelOfOption} from '../../../../util/helpers';
+import {billingTypeOptions} from '../constants';
 
 type Props = {
   bill: Object,
@@ -53,7 +55,7 @@ const BillModal = ({bill, containerHeight, onClose, show}: Props) => {
             </Column>
             <Column medium={4}>
               <label>Saamislaji</label>
-              <p>{bill.type ? bill.type : '-'}</p>
+              <p>{bill.type ? getLabelOfOption(billingTypeOptions, bill.type) : '-'}</p>
             </Column>
           </Row>
           <Row>
