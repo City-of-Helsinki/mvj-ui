@@ -42,7 +42,6 @@ import TenantTab from './leaseSections/tenant/TenantTab';
 import ConstructionEligibilityTab from './leaseSections/constructionEligibility/ConstructionEligibilityTab';
 import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
 import MapLeasePage from './leaseSections/MapLeasePage';
-import type Moment from 'moment';
 
 import mockData from '../mock-data.json';
 
@@ -78,7 +77,7 @@ type Props = {
   editLease: Function,
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
-  end_date: ?Moment,
+  end_date: ?string,
   fetchAttributes: Function,
   fetchSingleLease: Function,
   inspectionsForm: Array<Object>,
@@ -92,7 +91,7 @@ type Props = {
   rentsTouched: boolean,
   rulesForm: Array<Object>,
   rulesTouched: boolean,
-  start_date: ?Moment,
+  start_date: ?string,
   status: string,
   summaryForm: Object,
   summaryTouched: boolean,
@@ -209,8 +208,8 @@ class PreparerForm extends Component {
 
     const payload = currentLease;
     payload.status = status;
-    payload.start_date = start_date ? moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
-    payload.end_date = end_date ? moment(end_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
+    payload.start_date = start_date;
+    payload.end_date = end_date;
 
     editLease(payload);
 
@@ -465,17 +464,17 @@ class PreparerForm extends Component {
               {!isEditMode &&
                 <LeaseInfo
                   identifier={leaseIdentifier}
-                  startDate={currentLease.start_date ?currentLease.start_date : null}
-                  endDate={currentLease.end_date ? moment(currentLease.end_date) : null}
+                  startDate={currentLease.start_date}
+                  endDate={currentLease.end_date}
                 />
               }
               {isEditMode &&
                 <LeaseInfoEdit
                   identifier={leaseIdentifier}
                   initialValues={{
-                    status: currentLease.status ? currentLease.status : null,
-                    start_date: currentLease.start_date ? moment(currentLease.start_date) : null,
-                    end_date: currentLease.end_date ? moment(currentLease.end_date) : null,
+                    status: currentLease.status,
+                    start_date: currentLease.start_date,
+                    end_date: currentLease.end_date,
                   }}
                   statusOptions={statusOptions}
                 />

@@ -16,5 +16,5 @@ export const dateGreaterOrEqual = (date: ?Moment, otherDate: ?Moment, error?: st
   if(!date || !otherDate) {
     return undefined;
   }
-  return !moment(otherDate, 'DD.MM.YYYY').isAfter(moment(date, 'DD.MM.YYYY')) ? undefined : (error ? error : 'Loppupäivämäärä on aikaisempi kuin alkupäivämäärää');
+  return !moment(otherDate).isAfter(moment(date)) ? undefined : (error ? error : 'Loppupäivämäärä on aikaisempi kuin alkupäivämäärää');
 };

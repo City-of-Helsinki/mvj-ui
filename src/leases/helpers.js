@@ -92,22 +92,22 @@ export const getContentBillingAbnormalDebts = (debts: Array<Object>) => {
   return debts.map((debt) => {
     return {
       bill_number: get(debt, 'bill_number'),
-      billing_period_end_date: debt.billing_period_end_date ? moment(debt.billing_period_end_date) : null,
-      billing_period_start_date: debt.billing_period_start_date ? moment(debt.billing_period_start_date) : null,
+      billing_period_end_date: get(debt, 'billing_period_end_date'),
+      billing_period_start_date: get(debt, 'billing_period_start_date'),
       capital_amount: get(debt, 'capital_amount'),
-      demand_date: debt.demand_date ? moment(debt.demand_date) : null,
-      due_date: debt.due_date ? moment(debt.due_date) : null,
+      demand_date: get(debt, 'demand_date'),
+      due_date: get(debt, 'due_date'),
       info: get(debt, 'info'),
       invoiced_amount: get(debt, 'invoiced_amount'),
-      invoicing_date: debt.invoicing_date ? moment(debt.invoicing_date) : null,
+      invoicing_date: get(debt, 'invoicing_date'),
       invoice_method: get(debt, 'invoice_method'),
       invoice_type: get(debt, 'invoice_type'),
       payment_demand_list: get(debt, 'payment_demand_list'),
       recovery_cost: get(debt, 'recovery_cost'),
       SAP_number: get(debt, 'SAP_number'),
-      sent_to_SAP_date: debt.sent_to_SAP_date ? moment(debt.sent_to_SAP_date) : null,
+      sent_to_SAP_date: debt.sent_to_SAP_date,
       status: get(debt, 'status'),
-      suspension_date: debt.suspension_date ? moment(debt.suspension_date) : null,
+      suspension_date: debt.suspension_date,
       tenant: getContentBillingTenant(get(debt, 'tenant')),
       type: get(debt, 'type'),
       unpaid_amount: get(debt, 'unpaid_amount'),
@@ -123,22 +123,22 @@ export const getContentBillingBills = (bills: Array<Object>) => {
   return bills.map((bill) => {
     return {
       bill_number: get(bill, 'bill_number'),
-      billing_period_end_date: bill.billing_period_end_date ? moment(bill.billing_period_end_date) : null,
-      billing_period_start_date: bill.billing_period_start_date ? moment(bill.billing_period_start_date) : null,
+      billing_period_end_date: get(bill, 'billing_period_end_date'),
+      billing_period_start_date: get(bill, 'billing_period_start_date'),
       capital_amount: get(bill, 'capital_amount'),
-      demand_date: bill.demand_date ? moment(bill.demand_date) : null,
-      due_date: bill.due_date ? moment(bill.due_date) : null,
+      demand_date: get(bill, 'demand_date'),
+      due_date: get(bill, 'due_date'),
       info: get(bill, 'info'),
       invoiced_amount: get(bill, 'invoiced_amount'),
-      invoicing_date: bill.invoicing_date ? moment(bill.invoicing_date) : null,
+      invoicing_date: get(bill, 'invoicing_date'),
       invoice_method: get(bill, 'invoice_method'),
       invoice_type: get(bill, 'invoice_type'),
       payment_demand_list: get(bill, 'payment_demand_list'),
       recovery_cost: get(bill, 'recovery_cost'),
       SAP_number: get(bill, 'SAP_number'),
-      sent_to_SAP_date: bill.sent_to_SAP_date ? moment(bill.sent_to_SAP_date) : null,
+      sent_to_SAP_date: get(bill, 'sent_to_SAP_date'),
       status: get(bill, 'status'),
-      suspension_date: bill.suspension_date ? moment(bill.suspension_date) : null,
+      suspension_date: get(bill, 'suspension_date'),
       tenant: getContentBillingTenant(get(bill, 'tenant')),
       type: get(bill, 'type'),
       unpaid_amount: get(bill, 'unpaid_amount'),
@@ -168,9 +168,9 @@ export const getContentHistory = (lease: Object) => {
   return historyItems.map((item) => {
     return {
       active: get(item, 'active'),
-      end_date: item.end_date ? moment(item.end_date) : null,
+      end_date: get(item, 'end_date'),
       identifier: get(item, 'identifier'),
-      start_date: item.start_date ? moment(item.start_date) : null,
+      start_date: get(item, 'start_date'),
       type: get(item, 'type'),
     };
   });
@@ -201,9 +201,9 @@ export const getContentFixedInitialYearRentItems = (items: Array<Object>) => {
 
   return items.map((item) => {
     return {
-      end_date: item.end_date ? moment(item.end_date) : null,
+      end_date: get(item, 'end_date'),
       rent: get(item, 'rent'),
-      start_date: item.start_date ? moment(item.start_date) : null,
+      start_date: get(item, 'start_date'),
     };
   });
 };
@@ -215,12 +215,12 @@ export const getContentContractModification = (modifications: Array<Object>) => 
 
   return modifications.map((modification) => {
     return ({
-      first_call_sent: modification.first_call_sent ? moment(modification.first_call_sent) : null,
+      first_call_sent: get(modification, 'first_call_sent'),
       modification_description: get(modification, 'modification_description'),
-      modification_signing_date: modification.modification_signing_date ? moment(modification.modification_signing_date) : null,
-      second_call_sent: modification.second_call_sent ? moment(modification.second_call_sent) : null,
-      third_call_sent: modification.third_call_sent ? moment(modification.third_call_sent) : null,
-      to_be_signed_by: modification.to_be_signed_by ? moment(modification.to_be_signed_by) : null,
+      modification_signing_date: get(modification, 'modification_signing_date'),
+      second_call_sent: get(modification, 'second_call_sent'),
+      third_call_sent: get(modification, 'third_call_sent'),
+      to_be_signed_by: get(modification, 'to_be_signed_by'),
     });
   });
 };
@@ -234,7 +234,7 @@ export const getContentContractPledgeBooks = (pledgeBooks: Array<Object>) => {
     return ({
       pledge_book_comment: get(book, 'pledge_book_comment'),
       pledge_book_number: get(book, 'pledge_book_number'),
-      pledge_book_date: book.pledge_book_date ? moment(book.pledge_book_date) : null,
+      pledge_book_date: get(book, 'pledge_book_date'),
     });
   });
 };
@@ -247,13 +247,13 @@ export const getContentContractItem = (contract: Object) => {
     contract_type: get(contract, 'contract_type'),
     ktj_document: get(contract, 'ktj_document'),
     lease_deposit_comment: get(contract, 'lease_deposit_comment'),
-    lease_deposit_ending_date: contract.lease_deposit_ending_date ? moment(contract.lease_deposit_ending_date) : null,
+    lease_deposit_ending_date: get(contract, 'lease_deposit_ending_date'),
     lease_deposit_number: get(contract, 'lease_deposit_number'),
-    lease_deposit_starting_date: contract.lease_deposit_starting_date ? moment(contract.lease_deposit_starting_date) : null,
+    lease_deposit_starting_date: get(contract, 'lease_deposit_starting_date'),
     modifications: getContentContractModification(get(contract, 'modifications', [])),
     pledge_books: getContentContractPledgeBooks(get(contract, 'pledge_books', [])),
     setup_decision: get(contract, 'setup_decision'),
-    signing_date: contract.signing_date ? moment(contract.signing_date) : null,
+    signing_date: get(contract, 'signing_date'),
     signing_date_comment: get(contract, 'signing_date_comment'),
   };
 };
@@ -273,8 +273,8 @@ export const getContentInspectionItem = (inspection: Object) => {
   return {
     inspection_description: get(inspection, 'inspection_description'),
     inspector: get(inspection, 'inspector'),
-    supervision_date: inspection.supervision_date ? moment(inspection.supervision_date) : null,
-    supervised_date: inspection.supervised_date ? moment(inspection.supervised_date) : null,
+    supervision_date: get(inspection, 'supervision_date'),
+    supervised_date: get(inspection, 'supervised_date'),
   };
 };
 
@@ -299,7 +299,7 @@ export const getContentLeaseAreaConstructionEligibilityComments = (comments: Arr
       AHJO_number: get(comment, 'AHJO_number'),
       comment: get(comment, 'comment'),
       comment_author: get(comment, 'comment_author'),
-      comment_date: comment.comment_date ? moment(comment.comment_date) : null,
+      comment_date: get(comment, 'comment_date'),
     };
   });
 };
@@ -311,7 +311,7 @@ export const getContentLeaseAreaConstructionEligibilityInvestigationItem = (item
     report: get(item, 'report'),
     report_author: get(item, 'report_author'),
     research_state: get(item, 'research_state'),
-    signing_date: item.signing_date ? moment(item.signing_date) : null,
+    signing_date: get(item, 'signing_date'),
   };
 };
 
@@ -322,7 +322,7 @@ export const getContentLeaseAreaConstructionEligibilityPIMAItem = (item: Object)
     matti_report: get(item, 'matti_report'),
     projectwise_number: get(item, 'projectwise_number'),
     rent_conditions: get(item, 'rent_conditions'),
-    rent_condition_date: item.rent_condition_date ? moment(item.rent_condition_date) : null,
+    rent_condition_date: get(item, 'rent_condition_date'),
     research_state: get(item, 'research_state'),
   };
 };
@@ -355,7 +355,7 @@ export const getContentLeaseAreaPlotItems = (plots: Array<Object>) => {
 
   return plots.map((plot) => {
     return {
-      abolishment_date: plot.abolishment_date ? moment(plot.abolishment_date) : null,
+      abolishment_date: get(plot, 'abolishment_date'),
       address: get(plot, 'address'),
       coordinates: get(plot, 'coordinates', []),
       district: get(plot, 'district'),
@@ -365,7 +365,7 @@ export const getContentLeaseAreaPlotItems = (plots: Array<Object>) => {
       intersection_area: get(plot, 'intersection_area'),
       municipality: get(plot, 'municipality'),
       plot_id: get(plot, 'plot_id'),
-      registration_date: plot.registration_date ? moment(plot.registration_date) : null,
+      registration_date: get(plot, 'registration_date'),
       town: get(plot, 'town'),
       unit_number: get(plot, 'unit_number'),
       unseparate_parcel_number: get(plot, 'unseparate_parcel_number'),
@@ -389,12 +389,12 @@ export const getContentLeaseAreaPlanPlotItems = (planPlots: Array<Object>) => {
       intersection_area: get(planPlot, 'intersection_area'),
       municipality: get(planPlot, 'municipality'),
       plan: get(planPlot, 'plan'),
-      plan_approval_date: planPlot.plan_approval_date ? moment(planPlot.plan_approval_date) : null,
+      plan_approval_date: get(planPlot, 'plan_approval_date'),
       planplot_condition: get(planPlot, 'planplot_condition'),
       plan_plot_in_contract_id: get(planPlot, 'plan_plot_in_contract_id'),
       planplot_type: get(planPlot, 'planplot_type'),
       plot_division_id: get(planPlot, 'plot_division_id'),
-      plot_division_approval_date: planPlot.plot_division_approval_date ? moment(planPlot.plot_division_approval_date) : null,
+      plot_division_approval_date: get(planPlot, 'plot_division_approval_date'),
       state: get(planPlot, 'state'),
       town: get(planPlot, 'town'),
       unit_number: get(planPlot, 'unit_number'),
@@ -441,8 +441,8 @@ export const getContentLeaseAreas = (lease: Object) => {
 
 export const getContentRentBasicInfo = (basicInfoData: Object) => {
   return {
-    adjustment_start_date: basicInfoData.adjustment_start_date ? moment(basicInfoData.adjustment_start_date) : null,
-    adjustment_end_date: basicInfoData.adjustment_end_date ? moment(basicInfoData.adjustment_end_date) : null,
+    adjustment_start_date: get(basicInfoData, 'adjustment_start_date'),
+    adjustment_end_date: get(basicInfoData, 'adjustment_end_date'),
     basic_index: get(basicInfoData, 'basic_index'),
     basic_index_rounding: get(basicInfoData, 'basic_index_rounding'),
     bill_amount: get(basicInfoData, 'bill_amount'),
@@ -471,10 +471,10 @@ export const getContentRentDiscount = (discountData: Array<Object>) => {
       amount_left: get(discount, 'amount_left', ''),
       amount_type: get(discount, 'amount_type', ''),
       comment: get(discount, 'comment', ''),
-      end_date: discount.end_date ? moment(discount.end_date) : null,
+      end_date: get(discount, 'end_date'),
       purpose: get(discount, 'purpose', ''),
       rule: get(discount, 'rule', ''),
-      start_date: discount.start_date ? moment(discount.start_date) : null,
+      start_date: get(discount, 'start_date'),
       type: get(discount, 'type', ''),
     });
   });
@@ -511,9 +511,9 @@ export const getContentRentChargedRents = (chargedRentsData: Array<Object>) => {
     {
       calendar_year_rent: get(rent, 'calendar_year_rent'),
       difference: get(rent, 'difference'),
-      end_date: rent.end_date ? moment(rent.end_date) : null,
+      end_date: get(rent, 'end_date'),
       rent: get(rent, 'rent'),
-      start_date: rent.start_date ? moment(rent.start_date) : null,
+      start_date: get(rent, 'start_date'),
     });
   });
 };
@@ -529,9 +529,9 @@ export const getContentRentContractRents = (contractRentsData: Array<Object>) =>
       basic_rent: get(rent, 'basic_rent'),
       basic_rent_type: get(rent, 'basic_rent_type'),
       contract_rent: get(rent, 'contract_rent'),
-      end_date: rent.end_date ? moment(rent.end_date) : null,
+      end_date: get(rent, 'end_date'),
       purpose: get(rent, 'purpose'),
-      start_date: rent.start_date ? moment(rent.start_date) : null,
+      start_date: get(rent, 'start_date'),
       type: get(rent, 'type'),
     });
   });
@@ -546,10 +546,10 @@ export const getContentRentIndexAdjustedRents = (indexAdjustedRentsData: Array<O
     return (
     {
       calculation_factor: get(rent, 'calculation_factor'),
-      end_date: rent.end_date ? moment(rent.end_date) : null,
+      end_date: get(rent, 'end_date'),
       purpose: get(rent, 'purpose'),
       rent: get(rent, 'rent'),
-      start_date: rent.start_date ? moment(rent.start_date) : null,
+      start_date: get(rent, 'start_date'),
     });
   });
 };
@@ -574,8 +574,8 @@ export const getContentRuleTerms = (rule: Object) => {
 
   return terms.map((term) => {
     return {
-      supervision_date: term.supervision_date ? moment(term.supervision_date) : null,
-      supervised_date: term.supervised_date ? moment (term.supervised_date) : null,
+      supervision_date: get(term, 'supervision_date'),
+      supervised_date: get(term, 'supervised_date'),
       term_description: get(term, 'term_description'),
       term_purpose: get(term, 'term_purpose'),
     };
@@ -585,7 +585,7 @@ export const getContentRuleTerms = (rule: Object) => {
 export const getContentRuleItem = (rule: Object) => {
   return {
     rule_clause: get(rule, 'rule_clause'),
-    rule_date: rule.rule_date ? moment(rule.rule_date) : null,
+    rule_date: get(rule, 'rule_date'),
     rule_description: get(rule, 'rule_description'),
     rule_maker: get(rule, 'rule_maker'),
     rule_type: get(rule, 'rule_type'),
@@ -656,7 +656,7 @@ export const getContentTenantOtherPersons = (persons: Array<Object>) => {
       address: get(person, 'address'),
       comment: get(person, 'comment'),
       email: get(person, 'email'),
-      end_date: person.end_date ? moment(person.end_date) : null,
+      end_date: get(person, 'end_date'),
       firstname: get(person, 'firstname'),
       language: get(person, 'language'),
       lastname: get(person, 'lastname'),
@@ -665,7 +665,7 @@ export const getContentTenantOtherPersons = (persons: Array<Object>) => {
       roles: get(person, 'roles'),
       SAP_customer_id: get(person, 'SAP_customer_id'),
       social_security_number: get(person, 'social_security_number'),
-      start_date: person.start_date ? moment(person.start_date) : null,
+      start_date: get(person, 'start_date'),
       town: get(person, 'town'),
       type: get(person, 'type'),
       zip_code: get(person, 'zip_code'),
@@ -680,7 +680,7 @@ export const getContentTenantItem = (tenant: Object) => {
     comment: get(tenant, 'comment'),
     customer_id: get(tenant, 'customer_id'),
     email: get(tenant, 'email'),
-    end_date: tenant.end_date ? moment(tenant.end_date) : null,
+    end_date: get(tenant, 'end_date'),
     firstname: get(tenant, 'firstname'),
     language: get(tenant, 'language'),
     lastname: get(tenant, 'lastname'),
@@ -694,7 +694,7 @@ export const getContentTenantItem = (tenant: Object) => {
     share: get(tenant, 'share'),
     share_divider: get(tenant, 'share_divider'),
     social_security_number: get(tenant, 'social_security_number'),
-    start_date: tenant.start_date ? moment(tenant.start_date) : null,
+    start_date: get(tenant, 'start_date'),
     town: get(tenant, 'town'),
     zip_code: get(tenant, 'zip_code'),
   };
