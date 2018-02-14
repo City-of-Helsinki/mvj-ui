@@ -28,8 +28,8 @@
 
         "abnormal_debts": [
           {
-            "billing_period_end_date": "2019-01-01",
-            "billing_period_start_date": "2019-12-31",
+            "billing_period_end_date": "2019-12-31",
+            "billing_period_start_date": "2019-01-31",
             "capital_amount": 1500,
             "due_date": "2019-03-18",
             "invoiced_amount": 1500,

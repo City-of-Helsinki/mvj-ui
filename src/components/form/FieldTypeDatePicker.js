@@ -19,6 +19,8 @@ type Props = {
 const getFormatedDate = (value: any) => {
   if(moment(value, 'DD.MM.YYYY')._isValid) {
     return moment(value, 'DD.MM.YYYY');
+  } else if(moment(value, 'YYYY-MM-DD')._isValid) {
+    return moment(value, 'YYYY-MM-DD');
   }
   return null;
 };

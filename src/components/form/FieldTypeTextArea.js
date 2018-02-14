@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 type Props = {
   disabled: boolean,
+  disableTouched: boolean,
   input: Object,
   label: string,
   labelClassName?: string,
@@ -14,6 +15,7 @@ type Props = {
 
 const FieldTypeTextArea = ({
   disabled = false,
+  disableTouched = false,
   input,
   label,
   labelClassName,
@@ -25,7 +27,7 @@ const FieldTypeTextArea = ({
     {label && <label className={classnames('mvj-form-field-label', labelClassName)}>{label}</label>}
     <div className={classnames('mvj-form-field__textarea', {'is-dirty': dirty})}>
       <textarea {...input} disabled={disabled} placeholder={placeholder} rows={rows}/>
-      {touched && error && <span className='error'>{error}</span>}
+      {(touched || disableTouched) && error && <span className='error'>{error}</span>}
     </div>
   </div>
 );

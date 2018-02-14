@@ -126,7 +126,7 @@ export const formatDateDb = (date: string) => {
     return '';
   }
 
-  const d = isNumber(date) ? moment.unix(date) : moment(date, 'DD.MM.YYYY');
+  const d = isNumber(date) ? moment.unix(date) : moment(date);
   return d.format('YYYY-MM-DD');
 };
 

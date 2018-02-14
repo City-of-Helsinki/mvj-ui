@@ -12,7 +12,7 @@ import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import {dateGreaterOrEqual, decimalNumber, required} from '../../../../components/form/validations';
 import {getBillingAddBillErrors} from '../../../selectors';
-import {billingTypeOptions} from '../constants';
+import {billingInvoiceMethodOptions, billingStatusOptions, billingTypeOptions} from '../constants';
 import trashIcon from '../../../../../assets/icons/trash.svg';
 
 type Props = {
@@ -84,6 +84,18 @@ const AddBillEdit = ({errors, onCancel, onSave, start_date}: Props) => {
                 </Column>
                 <Column medium={4}>
                   <Field
+                    component={FieldTypeText}
+                    label='Laskun osuus'
+                    labelClassName='required'
+                    name='tenant.bill_share'
+                    validate={[
+                      (value) => decimalNumber(value, 'Laskun osuus tulee olla numero'),
+                      (value) => required(value, 'Laskun osuus on pakollinen'),
+                    ]}
+                  />
+                </Column>
+                <Column medium={4}>
+                  <Field
                     component={FieldTypeDatePicker}
                     label='Eräpäivä'
                     labelClassName='required'
@@ -96,12 +108,36 @@ const AddBillEdit = ({errors, onCancel, onSave, start_date}: Props) => {
                 <Column medium={4}>
                   <Field
                     component={FieldTypeSelect}
+                    label='Laskun tila'
+                    labelClassName='required'
+                    name='status'
+                    options={billingStatusOptions }
+                    validate={[
+                      (value) => required(value, 'Laskun tila on pakollinen'),
+                    ]}
+                  />
+                </Column>
+                <Column medium={4}>
+                  <Field
+                    component={FieldTypeSelect}
                     label='Saamislaji'
                     labelClassName='required'
                     name='type'
                     options={billingTypeOptions}
                     validate={[
                       (value) => required(value, 'Saamislaji on pakollinen'),
+                    ]}
+                  />
+                </Column>
+                <Column medium={4}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='E vai paperilasku'
+                    labelClassName='required'
+                    name='type'
+                    options={billingInvoiceMethodOptions}
+                    validate={[
+                      (value) => required(value, 'Laskutyyppi on pakollinen'),
                     ]}
                   />
                 </Column>

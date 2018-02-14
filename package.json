@@ -73,7 +73,7 @@
     "react-transition-group": "^1.1.1",
     "redux": "^3.6.0",
     "redux-actions": "^1.2.1",
-    "redux-form": "^7.1.2",
+    "redux-form": "^6.5.0",
     "redux-oidc": "^3.0.0-beta.7",
     "redux-saga": "^0.13.0",
     "sass-loader": "^5.0.1",

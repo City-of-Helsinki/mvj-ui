@@ -4,6 +4,7 @@ import classnames from 'classnames';
 
 type Props = {
   disabled: boolean,
+  disableTouched: boolean,
   input: Object,
   inputClassName?: string,
   inputStyle?: Object,
@@ -18,6 +19,7 @@ type Props = {
 
 const FieldTypeText = ({
   disabled = false,
+  disableTouched = false,
   input,
   inputClassName,
   inputStyle,
@@ -32,7 +34,7 @@ const FieldTypeText = ({
     {label && <label className={classnames('mvj-form-field-label', labelClassName)}>{label}</label>}
     <div className={classnames('mvj-form-field__text', inputClassName, {'is-dirty': dirty})} style={inputStyle}>
       <input {...input} disabled={disabled} type={type} placeholder={placeholder}/>
-      {touched && error && <span className='error'>{error}</span>}
+      {(touched || disableTouched) && error && <span className='error'>{error}</span>}
     </div>
   </div>
 );

@@ -43,6 +43,7 @@ const AbnormalDebtModalEdit = ({
   onSave,
   show,
   start_date}: Props) => {
+  console.log(errors);
   return (
     <div className={classNames('bill-modal', {'is-open': show})} style={{height: containerHeight}}>
       <div className="bill-modal__container">

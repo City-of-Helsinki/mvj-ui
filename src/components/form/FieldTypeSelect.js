@@ -5,8 +5,9 @@ import Select from 'react-select';
 
 type Props = {
   className: String,
-  disabled: Boolean,
-  displayError: Boolean,
+  disabled: boolean,
+  disableTouched: boolean,
+  displayError: boolean,
   input: Object,
   label: string,
   labelClassName?: string,
@@ -18,6 +19,7 @@ type Props = {
 const FieldTypeSelect = ({
   className,
   disabled,
+  disableTouched = false,
   displayError,
   input,
   input: {name, onBlur, onChange},
@@ -59,7 +61,7 @@ const FieldTypeSelect = ({
           placeholder={placeholder || 'Valitse'}
           resetValue={''}
         />
-        {touched && error && <span className={'error'}>{error}</span>}
+        {(touched || disableTouched) && error && <span className={'error'}>{error}</span>}
       </div>
     </div>
   );

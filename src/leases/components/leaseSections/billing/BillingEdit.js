@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {change, destroy, Field, FormSection, formValueSelector, initialize, reduxForm} from 'redux-form';
+import {change, Field, FormSection, formValueSelector, initialize, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
@@ -120,9 +120,9 @@ class BillingEdit extends Component {
 
   openAddBillMode = () => {
     const {billing, dispatch} = this.props;
-    billing.new_bill = {};
-    dispatch(destroy('billing-edit-form'));
-    dispatch(initialize('billing-edit-form', {billing: billing}, false, {}));
+    billing.new_bill = {status: '0', tenant: {bill_share: 50}};
+    // dispatch(destroy('billing-edit-form'));
+    dispatch(initialize('billing-edit-form', {billing: billing}));
     this.setState({addBillMode: true});
   }
 
@@ -236,5 +236,6 @@ export default flowRight(
     form: formName,
     destroyOnUnmount: false,
     enableReinitialize: true,
+    keepDirtyOnReinitialize: true,
   }),
 )(BillingEdit);

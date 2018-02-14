@@ -5,7 +5,6 @@ import {connect} from 'react-redux';
 import {change, Field, FieldArray, formValueSelector, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import forEach from 'lodash/forEach';
-import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 
@@ -73,7 +72,8 @@ class BillsTableEdit extends Component {
     const {billing, dispatch} = this.props;
     billing.bill = bill;
 
-    dispatch(initialize('billing-edit-form', {billing: billing}, false, {}));
+    // dispatch(destroy('billing-edit-form'));
+    dispatch(initialize('billing-edit-form', {billing: billing}, true, {}));
   }
 
   showBillModal = (index: number) => {
@@ -145,6 +145,7 @@ class BillsTableEdit extends Component {
     const {bills, dispatch} = this.props;
     if(index !== undefined && index !== null && bills && bills.length > index) {
       bills[index] = formatBillingBillDb(bill);
+
       dispatch(change('billing-edit-form', `billing.bills`, bills));
       displayUIMessage({title: 'Lasku tallennettu', body: 'Lasku on tallennettu onnistuneesti'});
       this.setState({selectedBill: null, selectedBillIndex: null, showModal: false});
@@ -221,7 +222,7 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect((state) => {
     return {
-      billing: get(state, 'form.billing-edit-form.values.billing'),
+      billing: selector(state, 'billing'),
       bills: selector(state, 'billing.bills'),
     };
   }),

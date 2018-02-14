@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
-import {change, Field, formValueSelector, initialize} from 'redux-form';
+import {change, Field, formValueSelector, initialize, startAsyncValidation} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
@@ -74,7 +74,9 @@ class AbnormalDebtsTableEdit extends Component {
   initilizeAbnormalDebtForm = (debt: Object) => {
     const {billing, dispatch} = this.props;
     billing.abnormal_debt = debt;
-    dispatch(initialize('billing-edit-form', {billing: billing}, false, {}));
+
+    dispatch(initialize('billing-edit-form', {billing: billing}));
+    dispatch(startAsyncValidation('billing-edit-form'));
   }
 
   showDebtModal = (index: number) => {
