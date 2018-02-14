@@ -20,10 +20,10 @@ class FieldTypeDatePicker extends Component {
   props: Props
 
   handleChange = (e: any) => {
-    const {input: {onChange}} = this.props;
+    const {input: {onBlur}} = this.props;
     const {target: {value}} = e;
     if(value) {
-      onChange(moment(value, 'DD.MM.YYYY').format('YYYY-MM-DD'));
+      onBlur(moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD'));
     }
   }
 
