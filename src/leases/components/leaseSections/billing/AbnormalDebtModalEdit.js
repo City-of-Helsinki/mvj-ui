@@ -16,7 +16,7 @@ import {billingInvoiceMethodOptions,
   billingInvoiceTypeOptions,
   billingStatusOptions,
   billingTypeOptions} from '../constants';
-import {getBillingBillModalErrors} from '../../../selectors';
+import {getBillingAbnormalDebtModalErrors} from '../../../selectors';
 import {dateGreaterOrEqual, decimalNumber, required} from '../../../../components/form/validations';
 import Button from '../../../../components/Button';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
@@ -26,7 +26,7 @@ import FieldTypeTextArea from '../../../../components/form/FieldTypeTextArea';
 
 
 type Props = {
-  bill: Object,
+  abnormalDebt: Object,
   containerHeight: ?number,
   errors: ?Object,
   onClose: Function,
@@ -35,8 +35,8 @@ type Props = {
   start_date: ?Moment,
 }
 
-const BillModalEdit = ({
-  bill,
+const AbnormalDebtModalEdit = ({
+  abnormalDebt,
   containerHeight,
   errors,
   onClose,
@@ -48,7 +48,7 @@ const BillModalEdit = ({
       <div className="bill-modal__container">
         <div className='bill-modal__title-row'>
           <div className='title'>
-            <h1>Laskun tiedot</h1>
+            <h1>Poikkeavan perinnän tiedot</h1>
           </div>
           <div className='close-button-container'>
             <a onClick={onClose}></a>
@@ -58,27 +58,27 @@ const BillModalEdit = ({
           <Row>
             <Column medium={8}>
               <label className='mvj-form-field-label'>Laskunsaaja</label>
-              {(get(bill, 'tenant.firstname') || get(bill, 'tenant.lastname'))
-                ? <p>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</p>
+              {(get(abnormalDebt, 'tenant.firstname') || get(abnormalDebt, 'tenant.lastname'))
+                ? <p>{`${get(abnormalDebt, 'tenant.lastname')} ${get(abnormalDebt, 'tenant.firstname')}`}</p>
                 : <p>-</p>
               }
             </Column>
             <Column medium={4}>
               <label className='mvj-form-field-label'>Lähetetty SAP:iin</label>
-              <p>{get(bill, 'sent_to_SAP_date') ? formatDate(bill.sent_to_SAP_date) : '-'}</p>
+              <p>{get(abnormalDebt, 'sent_to_SAP_date') ? formatDate(abnormalDebt.sent_to_SAP_date) : '-'}</p>
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
               <label className='mvj-form-field-label'>SAP numero</label>
-              <p>{get(bill, 'SAP_number') ? bill.SAP_number : '-'}</p>
+              <p>{get(abnormalDebt, 'SAP_number') ? abnormalDebt.SAP_number : '-'}</p>
             </Column>
             <Column medium={4}>
               <Field
                 component={FieldTypeDatePicker}
                 label="Laskutuspvm"
                 labelClassName='required'
-                name="bill.invoicing_date"
+                name="abnormal_debt.invoicing_date"
                 validate={[
                   (value) => required(value, 'Laskutuspäivämäärä on pakollinen'),
                 ]}
@@ -89,7 +89,7 @@ const BillModalEdit = ({
                 component={FieldTypeSelect}
                 label="Saamislaji"
                 labelClassName='required'
-                name="bill.type"
+                name="abnormal_debt.type"
                 options={billingTypeOptions}
                 validate={[
                   (value) => required(value, 'Saamislaji on pakollinen'),
@@ -103,7 +103,7 @@ const BillModalEdit = ({
                 component={FieldTypeSelect}
                 label="Laskun tila"
                 labelClassName='required'
-                name="bill.status"
+                name="abnormal_debt.status"
                 options={billingStatusOptions}
                 validate={[
                   (value) => required(value, 'Laskun tila on pakollinen'),
@@ -116,7 +116,7 @@ const BillModalEdit = ({
                 <Column medium={6} style={{paddingRight: '0.25rem'}}>
                   <Field
                     component={FieldTypeDatePicker}
-                    name="bill.billing_period_start_date"
+                    name="abnormal_debt.billing_period_start_date"
                     validate={[
                       (value) => required(value, 'Alkupäivämäärä on pakollinen'),
                     ]}
@@ -125,7 +125,7 @@ const BillModalEdit = ({
                 <Column medium={6} style={{paddingLeft: '0.25rem'}}>
                   <Field
                     component={FieldTypeDatePicker}
-                    name="bill.billing_period_end_date"
+                    name="abnormal_debt.billing_period_end_date"
                     validate={[
                       (value) => required(value, 'Loppupäivämäärä on pakollinen'),
                       (value) => dateGreaterOrEqual(value, start_date),
@@ -138,21 +138,21 @@ const BillModalEdit = ({
               <Field
                 component={FieldTypeDatePicker}
                 label="Lykkäyspvm"
-                name="bill.suspension_date"
+                name="abnormal_debt.suspension_date"
               />
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
               <label className='mvj-form-field-label'>Laskun pääoma</label>
-              <p>{get(bill, 'capital_amount') ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.capital_amount))} €` : '-'}</p>
+              <p>{get(abnormalDebt, 'capital_amount') ? `${formatNumberWithThousandSeparator(formatDecimalNumber(abnormalDebt.capital_amount))} €` : '-'}</p>
             </Column>
             <Column medium={4}>
               <Field
                 component={FieldTypeText}
                 label="Laskun osuus"
                 labelClassName='required'
-                name="bill.tenant.bill_share"
+                name="abnormal_debt.tenant.bill_share"
                 validate={[
                   (value) => required(value, 'Laskun osuus on pakollinen'),
                   (value) => decimalNumber(value, 'Laskun osuuden tulee olla numero'),
@@ -165,7 +165,7 @@ const BillModalEdit = ({
               <Field
                 component={FieldTypeText}
                 label="Maksamaton määrä"
-                name="bill.unpaid_amount"
+                name="abnormal_debt.unpaid_amount"
                 validate={[
                   (value) => decimalNumber(value, 'Maksamattoman määrän tulee olla numero'),
                 ]}
@@ -175,7 +175,7 @@ const BillModalEdit = ({
               <Field
                 component={FieldTypeText}
                 label="Laskutettu määrä"
-                name="bill.invoiced_amount"
+                name="abnormal_debt.invoiced_amount"
                 validate={[
                   (value) => decimalNumber(value, 'Laskutetun määrän tulee olla numero'),
                 ]}
@@ -187,14 +187,14 @@ const BillModalEdit = ({
               <Field
                 component={FieldTypeDatePicker}
                 label="Maksukehotuspvm"
-                name="bill.demand_date"
+                name="abnormal_debt.demand_date"
               />
             </Column>
             <Column medium={4}>
               <Field
                 component={FieldTypeText}
                 label="Perintäkulu"
-                name="bill.recovery_cost"
+                name="abnormal_debt.recovery_cost"
                 validate={[
                   (value) => decimalNumber(value, 'Perintäkulun tulee olla numero'),
                 ]}
@@ -204,7 +204,7 @@ const BillModalEdit = ({
               <Field
                 component={FieldTypeText}
                 label="Maksukehotus luettelo"
-                name="bill.payment_demand_list"
+                name="abnormal_debt.payment_demand_list"
               />
             </Column>
           </Row>
@@ -214,7 +214,7 @@ const BillModalEdit = ({
                 component={FieldTypeSelect}
                 label="E vai paperilasku"
                 labelClassName='required'
-                name="bill.invoice_method"
+                name="abnormal_debt.invoice_method"
                 options={billingInvoiceMethodOptions}
                 validate={[
                   (value) => required(value, 'Valinta on pakollinen'),
@@ -226,7 +226,7 @@ const BillModalEdit = ({
                 component={FieldTypeSelect}
                 label="Laskun tyyppi"
                 labelClassName='required'
-                name="bill.invoice_type"
+                name="abnormal_debt.invoice_type"
                 options={billingInvoiceTypeOptions}
                 validate={[
                   (value) => required(value, 'Laskun tyyppi on pakollinen'),
@@ -239,7 +239,7 @@ const BillModalEdit = ({
               <Field
                 component={FieldTypeTextArea}
                 label="Tiedote"
-                name="bill.info"
+                name="abnormal_debt.info"
                 rows={2}
               />
             </Column>
@@ -250,7 +250,7 @@ const BillModalEdit = ({
               <Button
                 className="button-green no-margin"
                 disabled={!isEmpty(errors)}
-                onClick={() => onSave(bill)}
+                onClick={() => onSave(abnormalDebt)}
                 text='Tallenna'
               />
             </Column>
@@ -268,10 +268,10 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        bill: selector(state, 'billing.bill'),
-        errors: getBillingBillModalErrors(state),
-        start_date: selector(state, 'billing.bill.billing_period_start_date'),
+        abnormalDebt: selector(state, 'billing.abnormal_debt'),
+        errors: getBillingAbnormalDebtModalErrors(state),
+        start_date: selector(state, 'billing.abnormal_debt.billing_period_start_date'),
       };
     }
   ),
-)(BillModalEdit);
+)(AbnormalDebtModalEdit);

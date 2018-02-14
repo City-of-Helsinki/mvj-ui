@@ -40,7 +40,7 @@ const AbnormalDebtsEdit = ({abnormalDebts, onDeleteClick, selectedDebtIndex}: Pr
                 <td>{debt.capital_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(debt.capital_amount))} €` : '-'}</td>
                 <td>{formatDateRange(debt.billing_period_start_date, debt.billing_period_end_date)}</td>
                 <td className="action-buttons">
-                  <button className='action-button button-edit' />
+                  <button className='action-button button-edit'/>
                   <button
                     className='action-button button-delete'
                     onClick={() => {

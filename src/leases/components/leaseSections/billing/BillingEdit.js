@@ -1,12 +1,13 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {change, Field, FormSection, formValueSelector, reduxForm} from 'redux-form';
+import {change, destroy, Field, FormSection, formValueSelector, initialize, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
+import moment from 'moment';
 
-import AbnormalDebtsEdit from './AbnormalDebtsEdit';
+import AbnormalDebtsTableEdit from './AbnormalDebtsTableEdit';
 import AddBillEdit from './AddBillEdit';
 import BillsTableEdit from './BillsTableEdit';
 import ConfirmationModal from '../../../../components/ConfirmationModal';
@@ -73,16 +74,16 @@ class BillingEdit extends Component {
     const {abnormalDebts, dispatch} = this.props;
     if(abnormalDebts && abnormalDebts.length) {
       abnormalDebts.push(bill);
+
       dispatch(change('billing-edit-form', `billing.abnormal_debts`, abnormalDebts));
     } else {
       dispatch(change('billing-edit-form', `billing.abnormal_debts`, [bill]));
     }
-
   }
 
   addBill = (bill: Object) => {
     const {bills, dispatch} = this.props;
-    if(bills && bill.length) {
+    if(bills && bills.length) {
       bills.push(bill);
       dispatch(change('billing-edit-form', `billing.bills`, bills));
     } else {
@@ -98,27 +99,36 @@ class BillingEdit extends Component {
     tenant.lastname = 'Koskinen';
     newBill.tenant = tenant;
 
+    newBill.invoiced_amount = newBill.capital_amount;
+    newBill.invoicing_date = moment();
+    newBill.invoice_method = '1',
+    newBill.invoice_type = '0',
+    newBill.SAP_number = 12345678;
+    newBill.sent_to_SAP_date = moment();
+    newBill.status = '0';
+    newBill.unpaid_amount = newBill.capital_amount;
+
     const isAbnormalDebt = get(newBill, 'is_abnormal_debt', false);
     if(isAbnormalDebt) {
       this.addAbnormalDebt(formatBillingNewBill(newBill));
     } else {
       this.addBill(formatBillingNewBill(newBill));
     }
-
     this.setState({addBillMode: false});
     displayUIMessage({title: 'Lasku tallennettu', body: 'Uusi lasku on tallennettu onnistuneesti'});
   }
 
   openAddBillMode = () => {
-    const {dispatch} = this.props;
-
-    dispatch(change('billing-edit-form', `billing.new_bill`, {}));
+    const {billing, dispatch} = this.props;
+    billing.new_bill = {};
+    dispatch(destroy('billing-edit-form'));
+    dispatch(initialize('billing-edit-form', {billing: billing}, false, {}));
     this.setState({addBillMode: true});
   }
 
   render() {
-    const {billing, dispatch, handleSubmit} = this.props;
-    const {addBillMode, isDeleteAbnormalDebtModalOpen, selectedDebtIndex} = this.state;
+    const {dispatch, handleSubmit} = this.props;
+    const {addBillMode, isDeleteAbnormalDebtModalOpen} = this.state;
 
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit billing-section'>
@@ -164,18 +174,25 @@ class BillingEdit extends Component {
             />
           </Column>
         </Row>
-        <Row><Column><h2>Poikkeavat perinnät</h2></Column></Row>
         <Row>
           <Column>
-            <AbnormalDebtsEdit
-              abnormalDebts={get(billing, 'abnormal_debts', [])}
+            <FormSection
+              name="billing"
+              component={AbnormalDebtsTableEdit}
+              dispatch={dispatch}
+              headers={[
+                'Vuokraaja',
+                'Hallintaosuus',
+                'Eräpäivä',
+                'Määrä',
+                'Aikaväli',
+              ]}
               onDeleteClick={(index) => {
                 this.setState({
                   isDeleteAbnormalDebtModalOpen: true,
                   selectedDebtIndex: index,
                 });
               }}
-              selectedDebtIndex={selectedDebtIndex}
             />
           </Column>
         </Row>
@@ -209,7 +226,7 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect((state) => {
     return {
-      abnormalDebts: selector(state, 'abnormal_debts'),
+      abnormalDebts: selector(state, 'billing.abnormal_debts'),
       billing: selector(state, 'billing'),
       bills: selector(state, 'billing.bills'),
       newBill: selector(state, 'billing.new_bill'),

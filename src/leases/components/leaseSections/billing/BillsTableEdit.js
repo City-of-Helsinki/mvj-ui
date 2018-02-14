@@ -2,9 +2,10 @@
 import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
-import {change, Field, FieldArray, formValueSelector} from 'redux-form';
+import {change, Field, FieldArray, formValueSelector, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import forEach from 'lodash/forEach';
+import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 
@@ -15,6 +16,7 @@ import BillsTableBodyEdit from './BillsTableBodyEdit';
 import Button from '../../../../components/Button';
 
 type Props = {
+  billing: Object,
   bills: Array<Object>,
   dispatch: Function,
   fields: any,
@@ -67,8 +69,15 @@ class BillsTableEdit extends Component {
     this.setState({tableHeight: clientHeight});
   }
 
+  initilizeBillEditForm = (bill: Object) => {
+    const {billing, dispatch} = this.props;
+    billing.bill = bill;
+
+    dispatch(initialize('billing-edit-form', {billing: billing}, false, {}));
+  }
+
   showBillModal = (index: number) => {
-    const {bills, dispatch} = this.props;
+    const {bills} = this.props;
 
     if(bills && bills.length) {
       this.setState({
@@ -76,7 +85,7 @@ class BillsTableEdit extends Component {
         selectedBillIndex: index,
         showModal: true,
       });
-      dispatch(change('billing-edit-form', `billing.bill`, bills[index]));
+      this.initilizeBillEditForm(bills[index]);
     }
   }
 
@@ -212,6 +221,7 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect((state) => {
     return {
+      billing: get(state, 'form.billing-edit-form.values.billing'),
       bills: selector(state, 'billing.bills'),
     };
   }),

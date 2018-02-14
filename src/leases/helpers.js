@@ -91,11 +91,26 @@ export const getContentBillingAbnormalDebts = (debts: Array<Object>) => {
 
   return debts.map((debt) => {
     return {
-      capital_amount: get(debt, 'capital_amount'),
-      due_date: debt.due_date ? moment(debt.due_date) : null,
+      bill_number: get(debt, 'bill_number'),
       billing_period_end_date: debt.billing_period_end_date ? moment(debt.billing_period_end_date) : null,
       billing_period_start_date: debt.billing_period_start_date ? moment(debt.billing_period_start_date) : null,
+      capital_amount: get(debt, 'capital_amount'),
+      demand_date: debt.demand_date ? moment(debt.demand_date) : null,
+      due_date: debt.due_date ? moment(debt.due_date) : null,
+      info: get(debt, 'info'),
+      invoiced_amount: get(debt, 'invoiced_amount'),
+      invoicing_date: debt.invoicing_date ? moment(debt.invoicing_date) : null,
+      invoice_method: get(debt, 'invoice_method'),
+      invoice_type: get(debt, 'invoice_type'),
+      payment_demand_list: get(debt, 'payment_demand_list'),
+      recovery_cost: get(debt, 'recovery_cost'),
+      SAP_number: get(debt, 'SAP_number'),
+      sent_to_SAP_date: debt.sent_to_SAP_date ? moment(debt.sent_to_SAP_date) : null,
+      status: get(debt, 'status'),
+      suspension_date: debt.suspension_date ? moment(debt.suspension_date) : null,
       tenant: getContentBillingTenant(get(debt, 'tenant')),
+      type: get(debt, 'type'),
+      unpaid_amount: get(debt, 'unpaid_amount'),
     };
   });
 };
@@ -795,9 +810,17 @@ export const formatBillingNewBill = (bill: Object) => {
     capital_amount: formatDecimalNumberDb(get(bill, 'capital_amount')),
     due_date: formatDateDb(get(bill, 'due_date')),
     info: get(bill, 'info'),
+    invoiced_amount: formatDecimalNumberDb(get(bill, 'invoiced_amount')),
+    invoicing_date: formatDateDb(get(bill, 'invoicing_date')),
+    invoice_method: get(bill, 'invoice_method'),
+    invoice_type: get(bill, 'invoice_type'),
     is_utter: get(bill, 'is_utter'),
+    SAP_number: formatDecimalNumberDb(get(bill, 'SAP_number')),
+    sent_to_SAP_date: formatDateDb(get(bill, 'sent_to_SAP_date')),
+    status: get(bill, 'status'),
     tenant: formatBillingBillTenant(get(bill, 'tenant', {})),
     type: get(bill, 'type'),
+    unpaid_amount: formatDecimalNumberDb(get(bill, 'unpaid_amount')),
   };
 };
 

@@ -83,6 +83,35 @@
       &.active {
         background-color: rgba(0, 146, 70, 0.2);
       }
+
+      &.no-data {
+        text-align: center;
+        background-color: $lightest-gray;
+      }
+
+      td.action-buttons {
+        width: rem-calc(70px);
+        line-height: 1;
+      }
+
+      .action-button {
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        margin: 0 rem-calc(3px);
+        cursor: pointer;
+      }
+
+      .action-button:hover {
+        opacity: 0.85;
+      }
+
+      .button-edit {
+        background-image: url(../assets/icons/icon_edit.svg);
+      }
+
+      .button-delete {
+        background-image: url(../assets/icons/trash.svg);
+      }
     }
   }
 }

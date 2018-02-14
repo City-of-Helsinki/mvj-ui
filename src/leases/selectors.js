@@ -16,6 +16,9 @@ export const getLeasesList: Selector<Lease, void> = (state: Object): LeaseState 
 export const getLeaseInfoErrors: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.lease-info-edit-form.syncErrors');
 
+export const getBillingAbnormalDebtModalErrors: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.billing-edit-form.syncErrors.billing.abnormal_debt');
+
 export const getBillingAddBillErrors: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.billing-edit-form.syncErrors.billing.new_bill');
 

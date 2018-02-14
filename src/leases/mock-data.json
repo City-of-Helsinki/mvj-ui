@@ -32,11 +32,20 @@
             "billing_period_start_date": "2019-12-31",
             "capital_amount": 1500,
             "due_date": "2019-03-18",
+            "invoiced_amount": 1500,
+            "invoicing_date": "2018-02-18",
+            "invoice_method": "1",
+            "invoice_type": "0",
+            "SAP_number": 49875644,
+            "sent_to_SAP_date": "2018-02-18",
+            "status": "0",
             "tenant": {
               "bill_share": 50,
               "firstname": "Mikko",
               "lastname": "Koskinen"
-            }
+            },
+            "type": "0",
+            "unpaid_amount": 2876
           }
         ],
 
