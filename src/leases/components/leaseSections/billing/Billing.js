@@ -3,7 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
-import AbnormalDebts from './AbnormalDebts';
+import AbnormalDebtsTable from './AbnormalDebtsTable';
 import BillsTable from './BillsTable';
 
 type Props = {
@@ -47,8 +47,15 @@ const Billing = ({billing}: Props) => {
       <Row><Column><h2>Poikkeavat perinnät</h2></Column></Row>
       <Row>
         <Column>
-          <AbnormalDebts
-            abnormalDebts={get(billing, 'abnormal_debts', [])}
+          <AbnormalDebtsTable
+            headers={[
+              'Vuokraaja',
+              'Hallintaosuus',
+              'Eräpäivä',
+              'Määrä',
+              'Aikaväli',
+            ]}
+            debts={get(billing, 'abnormal_debts')}
           />
         </Column>
       </Row>
