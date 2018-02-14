@@ -126,7 +126,7 @@ const renderPledgeBooks = ({fields}: PledgeBookProps) => {
               <Field
                 name={`${pledge_book}.pledge_book_date`}
                 component={FieldTypeDatePicker}
-                label='Panttikirjan päivämäärä'
+                label='Panttikirjan pvm'
               />
             </Column>
             <Column medium={8}>

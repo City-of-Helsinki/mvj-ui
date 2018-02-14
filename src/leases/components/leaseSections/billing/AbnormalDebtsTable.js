@@ -8,28 +8,26 @@ import {formatDate,
   formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
-import BillModal from './BillModal';
-import {getLabelOfOption} from '../../../../util/helpers';
-import {billingStatusOptions, billingTypeOptions} from '../constants';
+import AbnormalDebtModal from './AbnormalDebtModal';
 
 type Props = {
-  bills: Array<Object>,
+  debts: Array<Object>,
   headers: Array<string>,
 }
 
 type State = {
-  selectedBill: Object,
+  selectedDebt: Object,
   showModal: boolean,
   tableHeight: ?number,
 }
 
-class BillsTable extends Component {
+class AbnormalDebtsTable extends Component {
   props: Props
 
   tableElement: any
 
   state: State = {
-    selectedBill: {},
+    selectedDebt: {},
     showModal: false,
     tableHeight: null,
   }
@@ -61,16 +59,16 @@ class BillsTable extends Component {
   }
 
   render () {
-    const {bills, headers} = this.props;
-    const {selectedBill, showModal, tableHeight} = this.state;
+    const {debts, headers} = this.props;
+    const {selectedDebt, showModal, tableHeight} = this.state;
 
     return (
       <div className={classNames('table-fixed-header', 'billing__bill-table', {'is-open': showModal})}>
         <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
-          <BillModal
-            bill={selectedBill}
+          <AbnormalDebtModal
             containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
-            onClose={() => this.setState({selectedBill: {}, showModal: false})}
+            debt={selectedDebt}
+            onClose={() => this.setState({selectedDebt: {}, showModal: false})}
             show={showModal}
           />
           <div className="table-fixed-header__header-border" />
@@ -82,32 +80,26 @@ class BillsTable extends Component {
                 </tr>
               }
             </thead>
-            {bills && bills.length > 0 &&
+            {debts && debts.length > 0 &&
               <tbody>
-                {bills.map((bill, index) => {
+                {debts.map((debt, index) => {
                   return (
                     <tr
-                      className={classNames({'selected': selectedBill === bill})}
+                      className={classNames({'selected': selectedDebt === debt})}
                       key={index}
-                      onClick={() => this.setState({selectedBill: bill, showModal: true})}
+                      onClick={() => this.setState({selectedDebt: debt, showModal: true})}
                       >
-                      <td>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</td>
-                      <td>{get(bill, 'tenant.bill_share') ? `${get(bill, 'tenant.bill_share')} %` : '-'}</td>
-                      <td>{bill.due_date ? formatDate(bill.due_date) : '-'}</td>
-                      <td>{bill.bill_number ? bill.bill_number : '-'}</td>
-                      <td>{formatDateRange(bill.billing_period_start_date, bill.billing_period_end_date)}</td>
-                      <td>{bill.type ? getLabelOfOption(billingTypeOptions, bill.type) : '-'}</td>
-                      <td>{bill.status ? getLabelOfOption(billingStatusOptions, bill.status) : '-'}</td>
-                      <td>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.invoiced_amount))} €` : '-'}</td>
-                      <td>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '0 €'}</td>
-                      <td>{bill.info ? 'Kyllä' : 'Ei'}</td>
-                      <td>{bill.sent_to_SAP_date ? formatDate(bill.sent_to_SAP_date) : '-'}</td>
+                      <td>{`${get(debt, 'tenant.lastname')} ${get(debt, 'tenant.firstname')}`}</td>
+                      <td>{get(debt, 'tenant.bill_share') ? `${get(debt, 'tenant.bill_share')} %` : '-'}</td>
+                      <td>{debt.due_date ? formatDate(debt.due_date) : '-'}</td>
+                      <td>{debt.capital_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(debt.capital_amount))} €` : '-'}</td>
+                      <td>{formatDateRange(debt.billing_period_start_date, debt.billing_period_end_date)}</td>
                     </tr>
                   );
                 })}
               </tbody>
             }
-            {!bills || bills.length === 0 && <tbody></tbody>}
+            {!debts || debts.length === 0 && <tbody><tr><td colSpan={5} className='no-data'>Ei poikkeavia perintöjä</td></tr></tbody>}
           </table>
         </div>
       </div>
@@ -115,4 +107,4 @@ class BillsTable extends Component {
   }
 }
 
-export default BillsTable;
+export default AbnormalDebtsTable;

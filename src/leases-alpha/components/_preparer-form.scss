@@ -6,6 +6,7 @@
 
   .display-application {
     @include transition();
+
     padding: rem-calc(0 20px 0 45px);
     height: 50px;
     background: darken($primary-color, 5%) url('../assets/icons/icon-loop.svg') 1rem center no-repeat;
@@ -21,6 +22,7 @@
 
   .display-notes {
     @include transition();
+
     width: 50px;
     height: 50px;
     background: darken($primary-color, 5%) url('../assets/icons/icon-notes.svg') center center no-repeat;
@@ -34,6 +36,7 @@
 
   &__save-button {
     @include lightButton;
+
     margin: 0 rem-calc(15px);
   }
 }

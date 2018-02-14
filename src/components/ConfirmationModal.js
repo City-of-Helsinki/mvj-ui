@@ -5,22 +5,22 @@ import Button from './Button';
 import Modal from './Modal';
 
 type Props = {
+  confirmButtonLabel?: string,
   isOpen: boolean,
   label: string,
   onCancel: Function,
   onClose: Function,
   onSave: Function,
-  saveButtonLabel?: string,
   title: string,
 }
 
 const ConfirmationModal = ({
+  confirmButtonLabel = 'Tallenna',
   isOpen,
   label,
   onCancel,
   onClose,
   onSave,
-  saveButtonLabel,
   title,
 }: Props) => (
   <div className='confirmation-modal'>
@@ -33,7 +33,7 @@ const ConfirmationModal = ({
       <p>{label}</p>
       <div className='confirmation-modal__footer'>
         <Button className='button-red' text='Peruuta' onClick={onCancel}/>
-        <Button className='button-green' text={saveButtonLabel || 'Tallenna'} onClick={onSave}/>
+        <Button className='button-green' text={confirmButtonLabel} onClick={onSave}/>
       </div>
     </Modal>
   </div>

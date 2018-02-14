@@ -26,7 +26,6 @@
     border: none;
     box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    transition: all 0.2s ease;
     font-weight: 600;
     display: inline-block;
     text-align: center;
@@ -34,6 +33,8 @@
     line-height: rem-calc(30px);
     border-radius: 0;
     padding: 0 1rem;
+
+    @include transition(0.2s, all, ease);
   }
 
   .radio:checked + .option-label {

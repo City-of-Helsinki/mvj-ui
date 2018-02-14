@@ -6,37 +6,30 @@ type Props = {
   disabled: boolean,
   disableTouched: boolean,
   input: Object,
-  inputClassName?: string,
-  inputStyle?: Object,
-  isInline?: boolean,
   label: string,
   labelClassName?: string,
   meta: Object,
   placeholder: string,
-  showLabel: boolean,
-  type: string,
+  rows: number,
 }
 
-const FieldTypeText = ({
+const FieldTypeTextArea = ({
   disabled = false,
   disableTouched = false,
   input,
-  inputClassName,
-  inputStyle,
-  isInline,
   label,
   labelClassName,
   meta: {dirty, error, touched},
   placeholder,
-  type = 'text',
+  rows = 5,
 }: Props) => (
-  <div className={classnames('mvj-form-field', {'inline': isInline})}>
+  <div className='mvj-form-field'>
     {label && <label className={classnames('mvj-form-field-label', labelClassName)}>{label}</label>}
-    <div className={classnames('mvj-form-field__text', inputClassName, {'is-dirty': dirty})} style={inputStyle}>
-      <input {...input} disabled={disabled} type={type} placeholder={placeholder}/>
+    <div className={classnames('mvj-form-field__textarea', {'is-dirty': dirty})}>
+      <textarea {...input} disabled={disabled} placeholder={placeholder} rows={rows}/>
       {(touched || disableTouched) && error && <span className='error'>{error}</span>}
     </div>
   </div>
 );
 
-export default FieldTypeText;
+export default FieldTypeTextArea;

@@ -5,6 +5,7 @@
 
   &__item {
     @include transition();
+
     padding: rem-calc(20px);
     border-bottom: 1px solid $light-gray;
     display: flex;

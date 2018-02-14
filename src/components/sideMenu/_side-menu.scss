@@ -8,7 +8,8 @@
   left: -200px;
   padding: rem-calc(100px) rem-calc(20px) 0 rem-calc(30px);
   box-shadow: 2px 0 5px 0 rgba(0, 0, 0, 0.06);
-  transition: .3s ease-in-out;
+
+  @include transition(0.3s, all, ease-in-out);
   ul {
     list-style-type: none;
     margin: 0;

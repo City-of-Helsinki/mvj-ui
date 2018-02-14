@@ -1,9 +1,12 @@
 // @flow
 import React from 'react';
 
-import {formatDateRange, formatNumberWithThousandSeparator, formatDecimalNumbers} from '../../../../util/helpers';
+import {formatDateRange,
+  formatNumberWithThousandSeparator,
+  formatDecimalNumber,
+  getLabelOfOption} from '../../../../util/helpers';
+import {rentIndexAdjustedRentPurposeOptions} from '../constants';
 import TableFixedHeader from '../../../../components/TableFixedHeader';
-import {getRentIndexAdjustedRentPurposeLabel} from '../helpers';
 
 type Props = {
   indexAdjustedRents: Array<Object>,
@@ -15,13 +18,13 @@ const getTableBody = (indexAdjustedRents: Array<Object>) => {
       <tbody>
         {indexAdjustedRents.map((rent, index) => (
           <tr key={index}>
-            <td>{rent.rent !== null ? formatNumberWithThousandSeparator(formatDecimalNumbers(rent.rent), '.') : '-'}</td>
+            <td>{rent.rent !== null ? formatNumberWithThousandSeparator(formatDecimalNumber(rent.rent), '.') : '-'}</td>
             <td style={{maxWidth: '150px'}}
-              title={rent.purpose ? getRentIndexAdjustedRentPurposeLabel(rent.purpose) : '-'}>
-              <div className="text-container">{rent.purpose ? getRentIndexAdjustedRentPurposeLabel(rent.purpose) : '-'}</div>
+              title={rent.purpose ? getLabelOfOption(rentIndexAdjustedRentPurposeOptions, rent.purpose) : '-'}>
+              <div className="text-container">{rent.purpose ? getLabelOfOption(rentIndexAdjustedRentPurposeOptions, rent.purpose) : '-'}</div>
             </td>
             <td>{formatDateRange(rent.start_date, rent.end_date)}</td>
-            <td>{rent.calculation_factor !== null ? formatDecimalNumbers(rent.calculation_factor) : '-'}</td>
+            <td>{rent.calculation_factor !== null ? formatDecimalNumber(rent.calculation_factor) : '-'}</td>
           </tr>
         ))}
       </tbody>

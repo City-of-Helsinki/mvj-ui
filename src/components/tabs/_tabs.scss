@@ -16,6 +16,7 @@
 
     > a {
       @include transition();
+
       color: $black;
       font-size: rem-calc(13px);
 	    font-weight: 600;

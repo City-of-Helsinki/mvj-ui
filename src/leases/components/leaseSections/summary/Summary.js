@@ -3,7 +3,18 @@ import React from 'react';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 
-import * as helpers from '../helpers';
+import {getLabelOfOption} from '../../../../util/helpers';
+import {summaryFinancialMethodOptions,
+  summaryHitasOptions,
+  summaryLeaseStatisticalUseOptions,
+  summaryLeaseUseOptions,
+  summaryLessorOptions,
+  summaryManagementMethodOptions,
+  summaryNoticePeriodOptions,
+  summaryRegulatoryOptions,
+  summaryRegulatoryMethodOptions,
+  summarySpecialApartmentsOptions,
+  summaryTransferRightOptions} from '../constants';
 
 type Props = {
   summary: Object,
@@ -17,21 +28,21 @@ const Summary = ({summary}: Props) => {
           <Row>
             <Column>
               <label>Vuokranantaja</label>
-              <p>{summary.lessor ? helpers.getSummaryLessorLabel(summary.lessor) : ''}</p>
+              <p>{summary.lessor ? getLabelOfOption(summaryLessorOptions, summary.lessor) : ''}</p>
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
               <label>Vuokrauksen käyttötarkoitus</label>
-              <p>{summary.lease_use ? helpers.getSummaryLeaseUseLabel(summary.lease_use) : '-'}</p>
+              <p>{summary.lease_use ? getLabelOfOption(summaryLeaseUseOptions, summary.lease_use) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Erityisasunnot</label>
-              <p>{summary.special_apartments ? helpers.getSummarySpecialApartmentsLabel(summary.special_apartments) : '-'}</p>
+              <p>{summary.special_apartments ? getLabelOfOption(summarySpecialApartmentsOptions, summary.special_apartments) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Tilastollinen pääkäyttötarkoitus</label>
-              <p>{summary.lease_statistical_use ? helpers.getSummaryLeaseStatisticalUseLabel(summary.lease_statistical_use) : '-'}</p>
+              <p>{summary.lease_statistical_use ? getLabelOfOption(summaryLeaseStatisticalUseOptions, summary.lease_statistical_use) : '-'}</p>
             </Column>
           </Row>
           <Row>
@@ -43,35 +54,35 @@ const Summary = ({summary}: Props) => {
           <Row>
             <Column medium={4}>
               <label>Rahoitusmuoto</label>
-              <p>{summary.financing_method ? helpers.getSummaryFinancialMethodLabel(summary.financing_method) : '-'}</p>
+              <p>{summary.financing_method ? getLabelOfOption(summaryFinancialMethodOptions, summary.financing_method) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Hallintamuoto</label>
-              <p>{summary.management_method ? helpers.getSummaryManagementMethodLabel(summary.management_method) : '-'}</p>
+              <p>{summary.management_method ? getLabelOfOption(summaryManagementMethodOptions, summary.management_method) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Siirto-oikeus</label>
-              <p>{summary.transfer_right ? helpers.getSummaryTransferRightLabel(summary.transfer_right) : '-'}</p>
+              <p>{summary.transfer_right ? getLabelOfOption(summaryTransferRightOptions, summary.transfer_right) : '-'}</p>
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
               <label>Sääntely</label>
-              <p>{summary.regulatory ? helpers.getSummaryRegulatoryLabel(summary.regulatory) : '-'}</p>
+              <p>{summary.regulatory ? getLabelOfOption(summaryRegulatoryOptions, summary.regulatory) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Sääntelymuoto</label>
-              <p>{summary.regulatory_method ? helpers.getSummaryRegulatoryMethodLabel(summary.regulatory_method) : '-'}</p>
+              <p>{summary.regulatory_method ? getLabelOfOption(summaryRegulatoryMethodOptions, summary.regulatory_method) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Hitas</label>
-              <p>{summary.hitas ? helpers.getSummaryHitasLabel(summary.hitas) : '-'}</p>
+              <p>{summary.hitas ? getLabelOfOption(summaryHitasOptions, summary.hitas) : '-'}</p>
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
               <label>Irtisanomisaika</label>
-              <p>{summary.notice_period ? helpers.getSummaryNoticePeriodLabel(summary.notice_period) : '-'}</p>
+              <p>{summary.notice_period ? getLabelOfOption(summaryNoticePeriodOptions, summary.notice_period) : '-'}</p>
             </Column>
             <Column medium={8}>
               <label>Irtisanomisajan selite</label>

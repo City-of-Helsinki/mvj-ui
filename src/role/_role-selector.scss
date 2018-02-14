@@ -21,7 +21,6 @@
     display: flex;
 
     > li {
-      @include transition();
       width: 150px;
       height: 150px;
       background: $light-gray;
@@ -34,6 +33,8 @@
       color: $primary-color;
       cursor: pointer;
       border: 1px solid transparent;
+
+      @include transition();
 
       &.active {
         border: 1px solid $primary-color;

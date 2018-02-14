@@ -1,10 +1,11 @@
 // @flow
 import React from 'react';
 
-import {formatNumberWithThousandSeparator} from '../../../../util/helpers';
+import {formatNumberWithThousandSeparator,
+  getLabelOfOption} from '../../../../util/helpers';
+import {rentCriteriaPurposeOptions} from '../constants';
 import Button from '../../../../components/Button';
 
-import {getRentCriteriaPurposeLabel} from '../helpers';
 
 type Props = {
   criterias: Array<Object>,
@@ -32,7 +33,7 @@ const Criterias = ({criterias, onCriteriaAgree}: Props) => {
           {criterias && criterias.length > 0 && criterias.map((criteria, index) => {
             return (
               <tr key={index}>
-                <td>{criteria.purpose ? getRentCriteriaPurposeLabel(criteria.purpose) : '-'}</td>
+                <td>{criteria.purpose ? getLabelOfOption(rentCriteriaPurposeOptions, criteria.purpose) : '-'}</td>
                 <td>{criteria.km2 ? formatNumberWithThousandSeparator(criteria.km2) : '-'}</td>
                 <td>{criteria.index ? formatNumberWithThousandSeparator(criteria.index) : '-'}</td>
                 <td>{criteria.ekm2ind100 ? formatNumberWithThousandSeparator(criteria.ekm2ind100) : '-'}</td>

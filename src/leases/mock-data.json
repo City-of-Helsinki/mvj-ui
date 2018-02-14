@@ -28,15 +28,24 @@
 
         "abnormal_debts": [
           {
-            "amount": 1500,
+            "billing_period_end_date": "2019-12-31",
+            "billing_period_start_date": "2019-01-31",
+            "capital_amount": 1500,
             "due_date": "2019-03-18",
-            "end_date": "2019-01-01",
-            "start_date": "2019-12-31",
+            "invoiced_amount": 1500,
+            "invoicing_date": "2018-02-18",
+            "invoice_method": "1",
+            "invoice_type": "0",
+            "SAP_number": 49875644,
+            "sent_to_SAP_date": "2018-02-18",
+            "status": "0",
             "tenant": {
               "bill_share": 50,
               "firstname": "Mikko",
               "lastname": "Koskinen"
-            }
+            },
+            "type": "0",
+            "unpaid_amount": 2876
           }
         ],
 
@@ -51,19 +60,21 @@
             "info": "There are plenty of ready-to-use icons, and they are awesome! But why not to use ready-to-use preloaders as well?",
             "invoiced_amount": 2876,
             "invoicing_date": "2018-02-18",
-            "invoice_method": "Paperilasku",
-            "invoice_type": "Veloitus",
+            "invoice_method": "1",
+            "invoice_type": "0",
+            "payment_demand_list": "???",
             "recovery_cost": 5,
             "SAP_number": 49875698,
             "sent_to_SAP_date": "2017-12-31",
-            "status": "Avoin",
+            "status": "0",
             "suspension_date": "2018-03-05",
             "tenant": {
               "bill_share": 50,
+              "bill_share_amount": 7500,
               "firstname": "Mikko",
               "lastname": "Koskinen"
             },
-            "type": "Vuokra",
+            "type": "0",
             "unpaid_amount": 2876
           },
           {
@@ -76,19 +87,21 @@
             "info": "There are plenty of ready-to-use icons, and they are awesome! But why not to use ready-to-use preloaders as well?",
             "invoiced_amount": 2876,
             "invoicing_date": "2018-02-18",
-            "invoice_method": "E-lasku",
-            "invoice_type": "Veloitus",
+            "invoice_method": "0",
+            "invoice_type": "0",
+            "payment_demand_list": "???",
             "recovery_cost": 5,
             "SAP_number": 49879172,
             "sent_to_SAP_date": "2017-12-31",
-            "status": "Avoin",
+            "status": "0",
             "suspension_date": "2018-03-05",
             "tenant": {
               "bill_share": 50,
+              "bill_share_amount": 7500,
               "firstname": "Vappu",
               "lastname": "Pappila"
             },
-            "type": "Vuokra",
+            "type": "0",
             "unpaid_amount": 0
           }
         ]

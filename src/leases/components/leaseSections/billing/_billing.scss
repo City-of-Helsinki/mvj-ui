@@ -51,16 +51,44 @@
           border: none;
           padding: 0.3rem 0.5rem;
         }
+
+        td.action-buttons {
+          width: rem-calc(70px);
+          line-height: 1;
+        }
       }
 
       tr:hover {
         background-color: rgba(0, 146, 70, 0.1);
       }
 
+      tr.selected {
+        background-color: rgba(0, 146, 70, 0.2);
+      }
+
       tr.no-data {
         text-align: center;
         background-color: $lightest-gray;
       }
+    }
+
+    .action-button {
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      margin: 0 rem-calc(3px);
+      cursor: pointer;
+    }
+
+    .action-button:hover {
+      opacity: 0.85;
+    }
+
+    .button-edit {
+      background-image: url(../assets/icons/icon_edit.svg);
+    }
+
+    .button-delete {
+      background-image: url(../assets/icons/trash.svg);
     }
   }
 }

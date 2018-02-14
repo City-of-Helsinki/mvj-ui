@@ -1,3 +1,24 @@
+export const billingInvoiceMethodOptions = [
+  {value: '0', label: 'E-lasku'},
+  {value: '1', label: 'Paperilasku'},
+];
+
+export const billingInvoiceTypeOptions = [
+  {value: '0', label: 'Veloitus'},
+  {value: '1', label: 'Hyvitys'},
+];
+
+export const billingStatusOptions = [
+  {value: '0', label: 'Avoin'},
+  {value: '1', label: 'Suoritettu'},
+  {value: '2', label: 'Hyvitetty'},
+];
+
+export const billingTypeOptions = [
+  {value: '0', label: 'Vuokra'},
+  {value: '1', label: 'Korko'},
+];
+
 export const rentBasicInfoBillingTypeOptions = [
   {value: '0', label: 'Eräpäivät'},
   {value: '1', label: 'Laskut'},

@@ -13,11 +13,12 @@ import moment from 'moment';
 import {getLoggedInUser} from '../../auth/selectors';
 import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
-import {getSummaryPublicityLabel} from './leaseSections/helpers';
 import * as contentHelpers from '../helpers';
-import {displayUIMessage} from '../../util/helpers';
+import {displayUIMessage, getLabelOfOption} from '../../util/helpers';
+import {summaryPublicityOptions} from './leaseSections/constants';
 
 import Billing from './leaseSections/billing/Billing';
+import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/ConfirmationModal';
 import ControlButtons from './ControlButtons';
@@ -41,7 +42,6 @@ import TenantTab from './leaseSections/tenant/TenantTab';
 import ConstructionEligibilityTab from './leaseSections/constructionEligibility/ConstructionEligibilityTab';
 import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
 import MapLeasePage from './leaseSections/MapLeasePage';
-import type Moment from 'moment';
 
 import mockData from '../mock-data.json';
 
@@ -68,6 +68,8 @@ type Props = {
   areasForm: Array<Object>,
   areasTouched: boolean,
   attributes: Object,
+  billingForm: Object,
+  billingTouched: boolean,
   contractsForm: Array<Object>,
   contractsTouched: boolean,
   currentLease: Object,
@@ -75,7 +77,7 @@ type Props = {
   editLease: Function,
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
-  end_date: ?Moment,
+  end_date: ?string,
   fetchAttributes: Function,
   fetchSingleLease: Function,
   inspectionsForm: Array<Object>,
@@ -89,7 +91,7 @@ type Props = {
   rentsTouched: boolean,
   rulesForm: Array<Object>,
   rulesTouched: boolean,
-  start_date: ?Moment,
+  start_date: ?string,
   status: string,
   summaryForm: Object,
   summaryTouched: boolean,
@@ -132,6 +134,7 @@ class PreparerForm extends Component {
     const lease = mockData.leases[0];
 
     // Destroy forms to initialize new values when data is fetched
+    dispatch(destroy('billing-edit-form'));
     dispatch(destroy('contract-edit-form'));
     dispatch(destroy('inspections-edit-form'));
     dispatch(destroy('lease-info-edit-form'));
@@ -189,6 +192,7 @@ class PreparerForm extends Component {
   save = () => {
     const {
       areasForm,
+      billingForm,
       contractsForm,
       currentLease,
       editLease,
@@ -204,14 +208,17 @@ class PreparerForm extends Component {
 
     const payload = currentLease;
     payload.status = status;
-    payload.start_date = start_date ? moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
-    payload.end_date = end_date ? moment(end_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
+    payload.start_date = start_date;
+    payload.end_date = end_date;
 
     editLease(payload);
 
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
     if(areasForm !== undefined) {
       this.setState({areas: areasForm});
+    }
+    if(billingForm !== undefined) {
+      this.setState({billing: billingForm});
     }
     if(eligibilityForm !== undefined) {
       this.setState({areas: eligibilityForm});
@@ -253,6 +260,7 @@ class PreparerForm extends Component {
 
   destroyAllForms = () => {
     const {dispatch} = this.props;
+    dispatch(destroy('billing-edit-form'));
     dispatch(destroy('contract-edit-form'));
     dispatch(destroy('inspection-edit-form'));
     dispatch(destroy('lease-info-edit-form'));
@@ -265,6 +273,7 @@ class PreparerForm extends Component {
 
   resetAllForms = () => {
     const {dispatch} = this.props;
+    dispatch(reset('billing-edit-form'));
     dispatch(reset('contract-edit-form'));
     dispatch(reset('inspection-edit-form'));
     dispatch(reset('lease-info-edit-form'));
@@ -455,17 +464,17 @@ class PreparerForm extends Component {
               {!isEditMode &&
                 <LeaseInfo
                   identifier={leaseIdentifier}
-                  startDate={currentLease.start_date ?currentLease.start_date : null}
-                  endDate={currentLease.end_date ? moment(currentLease.end_date) : null}
+                  startDate={currentLease.start_date}
+                  endDate={currentLease.end_date}
                 />
               }
               {isEditMode &&
                 <LeaseInfoEdit
                   identifier={leaseIdentifier}
                   initialValues={{
-                    status: currentLease.status ? currentLease.status : null,
-                    start_date: currentLease.start_date ? moment(currentLease.start_date) : null,
-                    end_date: currentLease.end_date ? moment(currentLease.end_date) : null,
+                    status: currentLease.status,
+                    start_date: currentLease.start_date,
+                    end_date: currentLease.end_date,
                   }}
                   statusOptions={statusOptions}
                 />
@@ -516,7 +525,7 @@ class PreparerForm extends Component {
                       {!isEditMode &&
                         <p className="publicity-label">
                           {summary.publicity
-                            ? getSummaryPublicityLabel(summary.publicity)
+                            ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
                             : '-'}
                         </p>
                       }
@@ -595,6 +604,7 @@ class PreparerForm extends Component {
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   {!isEditMode && <Billing billing={billing}/>}
+                  {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
                 </div>
               </TabPane>
 
@@ -612,6 +622,7 @@ class PreparerForm extends Component {
 }
 
 const areasFormSelector = formValueSelector('property-unit-edit-form');
+const billingFormSelector = formValueSelector('billing-edit-form');
 const contractFormSelector = formValueSelector('contract-edit-form');
 const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const inspectionFormSelector = formValueSelector('inspection-edit-form');
@@ -633,6 +644,8 @@ export default flowRight(
         areasForm: areasFormSelector(state, 'areas'),
         areasTouched: get(state, 'form.property-unit-edit-form.anyTouched'),
         attributes: getAttributes(state),
+        billingForm: billingFormSelector(state, 'billing'),
+        billingTouched: get(state, 'form.billing-edit-form.anyTouched'),
         contractsForm: contractFormSelector(state, 'contracts'),
         contractsTouched: get(state, 'form.contract-edit-form.anyTouched'),
         currentLease: getCurrentLease(state),
