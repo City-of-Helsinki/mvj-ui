@@ -154,7 +154,7 @@ const renderArea = ({fields, areas}: AreaProps) => {
                   </Column>
                   <Column medium={3}>
                     <Field
-                      label='PrjectWise kohdenumero'
+                      label='ProjectWise kohdenumero'
                       name={`${area}.construction_eligibility.contamination.projectwise_number`}
                       type="text"
                       component={FieldTypeText}/>
