@@ -5,14 +5,13 @@ import get from 'lodash/get';
 import toArray from 'lodash/toArray';
 import debounce from 'lodash/debounce';
 
+import * as contentHelpers from '../../helpers';
 import SelectInput from '../../../components/SelectInput';
 import SingleCheckboxInput from '../../../components/SingleCheckboxInput';
 import TextInput from '../../../components/TextInput';
 
 type Props = {
-  districtOptions: Array<Object>,
-  municipalityOptions: Array<Object>,
-  typeOptions: Array<Object>,
+  attributes: Object,
   onSearch: Function,
 }
 
@@ -135,11 +134,7 @@ class Search extends Component {
   }
 
   render () {
-    const {
-      districtOptions,
-      municipalityOptions,
-      typeOptions,
-    } = this.props;
+    const {attributes} = this.props;
     const {
       address,
       customer,
@@ -159,6 +154,10 @@ class Search extends Component {
       type,
       types,
     } = this.state;
+
+    const districtOptions = contentHelpers.getDistrictOptions(attributes);
+    const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
+    const typeOptions = contentHelpers.getTypeOptions(attributes);
 
     return (
       <div className='search'>

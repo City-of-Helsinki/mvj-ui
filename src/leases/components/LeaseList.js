@@ -6,20 +6,19 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import {createLease, fetchAttributes, fetchLeases} from '../actions';
-import ActionDropdown from '../../components/ActionDropdown';
-import Loader from '../../components/loader/Loader';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
-import Modal from '../../components/Modal';
-import Search from './search/Search';
-import MapLeaseList from './MapLeaseList';
-import CreateLease from '../components/leaseSections/CreateLease';
-import TableControllers from './TableControllers';
-import Table from '../../components/Table';
 import * as contentHelpers from '../helpers';
 import {getSearchQuery} from './search/helpers';
+import Button from '../../components/Button';
+import CreateLease from '../components/leaseSections/CreateLease';
+import Loader from '../../components/loader/Loader';
+import MapLeaseList from './MapLeaseList';
+import Modal from '../../components/Modal';
+import Search from './search/Search';
+import Table from '../../components/Table';
+import TableControllers from './TableControllers';
 
 import mockData from '../mock-data.json';
-
 
 type Props = {
   attributes: Object,
@@ -27,15 +26,13 @@ type Props = {
   fetchAttributes: Function,
   fetchLeases: Function,
   isFetching: boolean,
-  router: Object,
   leases: Object,
+  router: Object,
 }
 
 type State = {
   documentType: Array<string>,
   isCreateLeaseIdentifierModalOpen: boolean,
-  newLeaseStatus: string,
-  newLeaseTitle: string,
   visualizationType: string,
 }
 
@@ -104,94 +101,85 @@ class LeaseList extends Component {
     });
   };
 
-  openCreateLeaseModal = (status: string, title: string) => {
-    this.setState({
-      newLeaseStatus: status,
-      newLeaseTitle: title,
-    });
+  openCreateLeaseModal = () => {
     this.showModal('CreateLeaseIdentifier');
   }
 
   render() {
-    const {documentType, isCreateLeaseIdentifierModalOpen, newLeaseStatus, newLeaseTitle, visualizationType} = this.state;
-    const {attributes, createLease, leases: content, isFetching} = this.props;
+    const {documentType,
+      isCreateLeaseIdentifierModalOpen,
+      visualizationType} = this.state;
+    const {attributes,
+      createLease,
+      leases: content, isFetching} = this.props;
     const leases = contentHelpers.getContentLeases(content, attributes);
-    const districtOptions = contentHelpers.getDistrictOptions(attributes);
-    const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
-    const typeOptions = contentHelpers.getTypeOptions(attributes);
     //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
     const filteredLeases = contentHelpers.getLeasesFilteredByDocumentType(leases, documentType);
 
     return (
       <div className='lease-list'>
         <Modal
-          title={newLeaseTitle ? newLeaseTitle : 'Luo vuokratunnus'}
           isOpen={isCreateLeaseIdentifierModalOpen}
           onClose={() => this.hideModal('CreateLeaseIdentifier')}
+          title={'Luo vuokratunnus'}
         >
           <CreateLease
-            districtOptions={districtOptions}
-            status={newLeaseStatus}
+            attributes={attributes}
             onSubmit={(lease) => createLease(lease)}
-            municipalityOptions={municipalityOptions}
-            typeOptions={typeOptions}
           />
         </Modal>
         <Row>
-          <div className='lease-list__search-wrapper'>
+          <Column small={10}>
             <Search
               ref={(input) => { this.search = input; }}
-              districtOptions={districtOptions}
-              municipalityOptions={municipalityOptions}
-              typeOptions={typeOptions}
+              attributes={attributes}
               onSearch={(query) => this.handleSearchChange(query)}
             />
-          </div>
-          <div className='lease-list__dropdown-wrapper'>
-            <ActionDropdown
-              title={'Luo uusi'}
-              options={[
-                {value: 'application', label: 'Hakemus', action: () => this.openCreateLeaseModal('H', 'Luo hakemus')},
-                {value: 'reservation', label: 'Varaus', action: () => this.openCreateLeaseModal('R', 'Luo varaus')},
-                {value: 'lease', label: 'Vuokraus', action: () => this.openCreateLeaseModal('V', 'Luo vuokraus')},
-                {value: 'permission', label: 'Lupa', action: () => this.openCreateLeaseModal('L', 'Luo lupa')},
-                {value: 'area', label: 'Muistettavat ehdot'},
-              ]}
+          </Column>
+          <Column small={2} style={{paddingLeft: 0}}>
+            <Button
+              className='no-margin'
+              onClick={() => this.showModal('CreateLeaseIdentifier')}
+              text='Luo uusi vuokratunnus'
             />
-          </div>
+          </Column>
         </Row>
         <Row>
-          <TableControllers
-            amount={filteredLeases.length}
-            documentType={documentType}
-            onDocumentTypeChange={(value) => {this.setState({documentType: value});}}
-            visualizationType={visualizationType}
-            onVisualizationTypeChange={(value) => {this.setState({visualizationType: value});}}
-          />
+          <Column>
+            <TableControllers
+              amount={filteredLeases.length}
+              documentType={documentType}
+              onDocumentTypeChange={(value) => {this.setState({documentType: value});}}
+              onVisualizationTypeChange={(value) => {this.setState({visualizationType: value});}}
+              visualizationType={visualizationType}
+            />
+          </Column>
         </Row>
         {isFetching && <Row><Column><div className='loader__wrapper'><Loader isLoading={isFetching} /></div></Column></Row>}
         {!isFetching &&
           <Row>
-            {visualizationType === 'table' && (
-              <Table
-                amount={filteredLeases.length}
-                data={filteredLeases}
-                dataKeys={[
-                  {key: 'identifier', label: 'Vuokratunnus'},
-                  {key: 'real_property_unit', label: 'Vuokrakohde'},
-                  {key: 'tenant', label: 'Vuokralainen'},
-                  {key: 'person', label: 'Vuokranantaja'},
-                  {key: 'address', label: 'Osoite'},
-                  {key: 'status', label: 'Tyyppi'},
-                  {key: 'start_date', label: 'Alkupvm'},
-                  {key: 'end_date', label: 'Loppupvm'},
-                ]}
-                onRowClick={this.handleEditClick}
-              />
-            )}
-            {visualizationType === 'map' && (
-              <MapLeaseList mockData={mockData.leases}/>
-            )}
+            <Column>
+              {visualizationType === 'table' && (
+                <Table
+                  amount={filteredLeases.length}
+                  data={filteredLeases}
+                  dataKeys={[
+                    {key: 'identifier', label: 'Vuokratunnus'},
+                    {key: 'real_property_unit', label: 'Vuokrakohde'},
+                    {key: 'tenant', label: 'Vuokralainen'},
+                    {key: 'person', label: 'Vuokranantaja'},
+                    {key: 'address', label: 'Osoite'},
+                    {key: 'status', label: 'Tyyppi'},
+                    {key: 'start_date', label: 'Alkupvm'},
+                    {key: 'end_date', label: 'Loppupvm'},
+                  ]}
+                  onRowClick={this.handleEditClick}
+                />
+              )}
+              {visualizationType === 'map' && (
+                <MapLeaseList mockData={mockData.leases}/>
+              )}
+            </Column>
           </Row>
         }
       </div>
@@ -204,8 +192,8 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
-        leases: getLeasesList(state),
         isFetching: getIsFetching(state),
+        leases: getLeasesList(state),
       };
     },
     {

@@ -6,7 +6,7 @@ import {defaultCoordinates, defaultZoom} from '../../../constants';
 
 import '../../../../node_modules/leaflet-draw/dist/leaflet.draw.css';
 
-import {localizeMap} from '../../helpers';
+import {localizeMap} from '../../../util/helpers';
 
 localizeMap();
 
