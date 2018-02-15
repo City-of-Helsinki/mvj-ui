@@ -11,14 +11,12 @@ import * as contentHelpers from '../helpers';
 import {getSearchQuery} from './search/helpers';
 import Button from '../../components/Button';
 import CreateLease from '../components/leaseSections/CreateLease';
+import LeaseListMapContainer from './LeaseListMapContainer';
 import Loader from '../../components/loader/Loader';
-import MapLeaseList from './MapLeaseList';
 import Modal from '../../components/Modal';
 import Search from './search/Search';
 import Table from '../../components/Table';
 import TableControllers from './TableControllers';
-
-import mockData from '../mock-data.json';
 
 type Props = {
   attributes: Object,
@@ -177,7 +175,7 @@ class LeaseList extends Component {
                 />
               )}
               {visualizationType === 'map' && (
-                <MapLeaseList mockData={mockData.leases}/>
+                <LeaseListMapContainer />
               )}
             </Column>
           </Row>

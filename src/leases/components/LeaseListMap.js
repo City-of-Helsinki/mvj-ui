@@ -1,25 +1,17 @@
 import React, {Component} from 'react';
 import {FeatureGroup, Polygon, ScaleControl, Tooltip} from 'react-leaflet';
-import MapContainer from '../../components/map/Map';
 import {EditControl} from 'react-leaflet-draw';
+
+import {localizeMap} from '../../util/helpers';
 import {defaultCoordinates, defaultZoom} from '../../constants';
+import MapContainer from '../../components/map/Map';
 
 import '../../../node_modules/leaflet-draw/dist/leaflet.draw.css';
 
-import {localizeMap} from '../../util/helpers';
-
 localizeMap();
 
-type Props = {
-  mockData: Array<Object>,
-}
-
-class Map extends Component {
-  props: Props
-
-  handleAreaClick = () => {
-    console.log('polygon clicked!');
-  };
+class LeaseListMap extends Component {
+  handleAreaClick = () => {console.log('polygon clicked!');};
 
   render() {
     return (
@@ -27,7 +19,6 @@ class Map extends Component {
         <MapContainer center={defaultCoordinates}
           zoom={defaultZoom}
         >
-
           <Polygon
             color="#009246" // tram green
             positions={[
@@ -38,9 +29,7 @@ class Map extends Component {
             ]}
             onClick={() => this.handleAreaClick()}
           >
-            <Tooltip sticky="true">
-              <span>teksti tähän!</span>
-            </Tooltip>
+            <Tooltip sticky="true"><span>teksti tähän!</span></Tooltip>
           </Polygon>
           <FeatureGroup>
             <EditControl
@@ -59,4 +48,4 @@ class Map extends Component {
   }
 }
 
-export default Map;
+export default LeaseListMap;
