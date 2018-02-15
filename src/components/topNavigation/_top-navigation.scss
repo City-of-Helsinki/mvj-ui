@@ -11,7 +11,7 @@
   font-size: rem-calc(20px);
   padding: rem-calc(12px) rem-calc(30px);
   background: $white;
-  z-index: 3;
+  z-index: 1002;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.06);
   background-color: $white;
 
@@ -34,6 +34,10 @@
     width: rem-calc(25px);
     height: rem-calc(25px);
     baseline-shift: rem-calc(10px);
+  }
+
+  .search {
+    margin: 0 rem-calc(70px) 0 0;
   }
 
   .flag {

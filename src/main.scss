@@ -52,12 +52,14 @@
 @import "components/icon-radio-buttons";
 @import "components/loader/loader";
 @import "components/modal";
+@import "components/search-input";
 @import "components/select-input";
 @import "components/sideMenu/side-menu";
 @import "components/single-checkbox-input";
 @import "components/styled-checkbox-buttons";
 @import "components/styled-radio-buttons";
 @import "components/table";
+@import "components/table-fixed-header";
 @import "components/tabs/tabs";
 @import "components/text-input";
 @import "components/topNavigation/top-navigation";
@@ -67,15 +69,18 @@
 @import "app/app";
 @import "auth/components/login-page";
 @import "leases/components/control-buttons";
+@import "leases/components/leaseSections/billing/billing";
+@import "leases/components/leaseSections/billing/bill-modal";
 @import "leases/components/leaseSections/create-lease";
 @import "leases/components/leaseSections/leaseInfo/lease-info";
 @import "leases/components/leaseSections/lease-section";
 @import "leases/components/leaseSections/lease-section-edit";
+@import "leases/components/leaseSections/rent/rent";
+@import "leases/components/leaseSections/summary/lease-history";
 @import "leases/components/lease-list";
 @import "leases/components/lease-page";
 @import "leases/components/search/search";
 @import "leases/components/table-controllers";
-
 
 html {
   -webkit-font-smoothing: antialiased;

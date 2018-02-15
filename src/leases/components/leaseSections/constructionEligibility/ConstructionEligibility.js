@@ -20,32 +20,32 @@ const ConstructionEligibility = ({eligibility}: Props) => {
         defaultOpen={false}
         header={
           <Row>
-            <Column small={8}><span className='collapse__header-title'>Esirakentaminen ja johtosiirrot</span></Column>
+            <Column small={8}><span className='collapse__header-title'>ESIRAKENTAMINEN, JOHTOSIIRROT JA KUNNALLISTEKNIIKKA</span></Column>
             <Column small={4}>
               <span className={
                 classNames(
-                  {'collapse__header-neutral': preconstruction.research_state === 'Tarkistamatta'},
-                  {'collapse__header-alert': preconstruction.research_state === 'Vaati toimenpiteitä'},
-                  {'collapse__header-success': eligibility.preconstruction.research_state === 'Valmis'}
+                  {'collapse__header-neutral': get(preconstruction, 'research_state') === 'Tarkistamatta'},
+                  {'collapse__header-alert': get(preconstruction, 'research_state') === 'Vaati toimenpiteitä'},
+                  {'collapse__header-success': get(eligibility, 'preconstruction.research_state') === 'Valmis'}
                 )
               }>
-                <i/>{get(eligibility.preconstruction, 'research_state')}
+                <i/>{get(preconstruction, 'research_state')}
               </span>
             </Column>
           </Row>
         }
       >
-        {preconstruction.comments && preconstruction.comments.length > 0 && preconstruction.comments.map((comment, index) =>
+        {get(preconstruction, 'comments') && preconstruction.comments.length > 0 && preconstruction.comments.map((comment, index) =>
           <div className='section-item' key={index}>
             <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
-                <p><strong>{get(comment, 'comment_author', '')}</strong>, {comment.comment_date ? formatDate(comment.comment_date) : ''}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {formatDate(comment.comment_date)}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
               </Column>
             </Row>
           </div>
         )}
-        {!preconstruction.comments || preconstruction.comments.length === 0 &&
+        {!get(preconstruction, 'comments') || preconstruction.comments.length === 0 &&
           <div className='section-item'>
             <p><em>Ei ole vielä selityksiä.</em></p>
           </div>
@@ -61,27 +61,27 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             <Column small={4}>
               <span className={
                 classNames(
-                  {'collapse__header-neutral': demolition.research_state === 'Tarkistamatta'},
-                  {'collapse__header-alert': eligibility.demolition.research_state === 'Vaati toimenpiteitä'},
-                  {'collapse__header-success': eligibility.demolition.research_state === 'Valmis'}
+                  {'collapse__header-neutral': get(demolition, 'research_state') === 'Tarkistamatta'},
+                  {'collapse__header-alert': get(demolition, 'research_state') === 'Vaati toimenpiteitä'},
+                  {'collapse__header-success': get(demolition, 'research_state') === 'Valmis'}
                 )}>
-                <i/>{get(eligibility.demolition, 'research_state')}
+                <i/>{get(demolition, 'research_state')}
               </span>
             </Column>
           </Row>
         }
       >
-        {demolition.comments && demolition.comments.length > 0 && demolition.comments.map((comment, index) =>
+        {get(demolition, 'comments') && demolition.comments.length > 0 && demolition.comments.map((comment, index) =>
           <div className='section-item'  key={index}>
             <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
-                <p><strong>{get(comment, 'comment_author', '')}</strong>, {comment.comment_date ? formatDate(comment.comment_date) : ''}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {formatDate(comment.comment_date)}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
               </Column>
             </Row>
           </div>
         )}
-        {!demolition || demolition.comments.length === 0 &&
+        {!get(demolition, 'comments') || demolition.comments.length === 0 &&
           <div className='section-item'>
             <p><em>Ei ole vielä selityksiä.</em></p>
           </div>
@@ -97,9 +97,9 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             <Column small={4}>
               <span className={
                 classNames(
-                  {'collapse__header-neutral': contamination.research_state === 'Tarkistamatta'},
-                  {'collapse__header-alert': contamination.research_state === 'Vaati toimenpiteitä'},
-                  {'collapse__header-success': contamination.research_state === 'Valmis'}
+                  {'collapse__header-neutral': get(contamination, 'research_state') === 'Tarkistamatta'},
+                  {'collapse__header-alert': get(contamination, 'research_state') === 'Vaati toimenpiteitä'},
+                  {'collapse__header-success': get(contamination, 'research_state') === 'Valmis'}
                 )
               }
               >
@@ -119,22 +119,22 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             </Column>
             <Column medium={4}>
               <label>Päivämäärä</label>
-              <p>{contamination.rent_condition_date ? formatDate(contamination.rent_condition_date) : '–'}</p>
+              <p>{get(contamination, 'rent_condition_date') ? formatDate(contamination.rent_condition_date) : '–'}</p>
               <label>Matti raportti</label>
-              <p>{get(contamination, 'contamination_author', '–')}</p>
+              <p>{get(contamination, 'matti_report', '–')}</p>
             </Column>
             <Column medium={4}>
               <label>PIMA valmistelija</label>
-              <p>{contamination.rent_condition_date ? formatDate(contamination.rent_condition_date) : '–'}</p>
+              <p>{get(contamination, 'contamination_author') ? contamination.contamination_author : '–'}</p>
             </Column>
           </Row>
         </div>
-        {contamination.comments && contamination.comments.length > 0 && contamination.comments.map((comment, index) =>
+        {get(contamination, 'comments') && contamination.comments.length > 0 && contamination.comments.map((comment, index) =>
           <div className='section-item' key={index}>
             <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
-                <p><strong>{get(comment, 'comment_author', '')}</strong>, {comment.comment_date ? formatDate(comment.comment_date) : ''}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {formatDate(comment.comment_date)}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
               </Column>
             </Row>
           </div>
@@ -150,9 +150,9 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             <Column small={4}>
               <span className={
                 classNames(
-                  {'collapse__header-neutral': construction_investigation.research_state === 'Tarkistamatta'},
-                  {'collapse__header-alert': construction_investigation.research_state === 'Vaati toimenpiteitä'},
-                  {'collapse__header-success': construction_investigation.research_state === 'Valmis'}
+                  {'collapse__header-neutral': get(construction_investigation, 'research_state') === 'Tarkistamatta'},
+                  {'collapse__header-alert': get(construction_investigation, 'research_state') === 'Vaati toimenpiteitä'},
+                  {'collapse__header-success': get(construction_investigation, 'research_state') === 'Valmis'}
                 )
               }>
                 <i/>{get(eligibility.construction_investigation, 'research_state')}
@@ -171,20 +171,20 @@ const ConstructionEligibility = ({eligibility}: Props) => {
             </Column>
             <Column medium={4}>
               <label>Allekirjoituspäivämäärä</label>
-              <p>{construction_investigation.signing_date ? formatDate(construction_investigation.signing_date) : '–'}</p>
+              <p>{get(construction_investigation, 'signing_date') ? formatDate(construction_investigation.signing_date) : '–'}</p>
             </Column>
             <Column medium={4}>
-              <label>Selvityksen tekijä</label>
+              <label>Allekirjoittaja</label>
               <p>{get(eligibility.construction_investigation, 'report_author', '–')}</p>
             </Column>
           </Row>
         </div>
-        {construction_investigation.comments && construction_investigation.comments.length > 0 && construction_investigation.comments.map((comment, index) =>
+        {get(construction_investigation, 'comments') && construction_investigation.comments.length > 0 && construction_investigation.comments.map((comment, index) =>
           <div className='section-item' key={index}>
             <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
-                <p><strong>{get(comment, 'comment_author', '')}</strong>, {comment.comment_date ? formatDate(comment.comment_date) : ''}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {formatDate(comment.comment_date)}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
               </Column>
             </Row>
           </div>
@@ -201,9 +201,9 @@ const ConstructionEligibility = ({eligibility}: Props) => {
               <span
                 className={
                   classNames(
-                    {'collapse__header-neutral': other.research_state === 'Tarkistamatta'},
-                    {'collapse__header-alert': other.research_state === 'Vaati toimenpiteitä'},
-                    {'collapse__header-success': other.research_state === 'Valmis'}
+                    {'collapse__header-neutral': get(other, 'research_state') === 'Tarkistamatta'},
+                    {'collapse__header-alert': get(other, 'research_state') === 'Vaati toimenpiteitä'},
+                    {'collapse__header-success': get(other, 'research_state') === 'Valmis'}
                   )
                 }
               >
@@ -213,17 +213,17 @@ const ConstructionEligibility = ({eligibility}: Props) => {
           </Row>
         }
       >
-        {other.comments && other.comments.length > 0 && other.comments.map((comment, index) =>
+        {get(other, 'comments') && other.comments.length > 0 && other.comments.map((comment, index) =>
           <div className='section-item'  key={index}>
             <Row>
               <Column medium={12} className='explanation'>
                 <p>{get(comment, 'comment', '')}</p>
-                <p><strong>{get(comment, 'comment_author', '')}</strong>, {comment.comment_date ? formatDate(comment.comment_date) : ''}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
+                <p><strong>{get(comment, 'comment_author', '')}</strong>, {formatDate(comment.comment_date)}{comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}</p>
               </Column>
             </Row>
           </div>
         )}
-        {!other.comments || other.comments.length === 0 &&
+        {!get(other, 'comments') || other.comments.length === 0 &&
           <div className='section-item'>
             <p><em>Ei ole vielä selityksiä.</em></p>
           </div>

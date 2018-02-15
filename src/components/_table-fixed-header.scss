@@ -1,0 +1,117 @@
+.table-fixed-header {
+  position: relative;
+  border: 1px solid #d7d5d5;
+  padding-top: rem-calc(31px);
+  background: $white;
+
+  &__container {
+    overflow-y: auto;
+    height: rem-calc(136px);
+  }
+
+  &__header-border {
+    width: 100%;
+    position: absolute;
+    top: rem-calc(30px);
+    border-bottom: 1px solid $light-gray;
+  }
+
+  table {
+    margin-bottom: 0;
+    thead {
+      th {
+        height: 0;
+        line-height: 0;
+        padding: 0 0.5rem;
+        color: transparent;
+        border: none;
+        white-space: nowrap;
+
+        div{
+          position: absolute;
+          background: transparent;
+          color: #fff;
+          padding: 0;
+          top: 0;
+          margin-left: 0;
+          line-height: rem-calc(30px);
+          font-size: $font-xsmall;
+          font-weight: $semibold;
+          color: $black;
+        }
+      }
+    }
+
+    tbody {
+      tr:hover {
+        background-color: rgba(0, 146, 70, 0.1);
+      }
+      td {
+        border-bottom: none;
+        padding: 0.3rem 0.5rem;
+
+        div.text-container {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+
+  &.billing__bill-table {
+    .table-fixed-header__container {
+      height: 1000px;
+      overflow: hidden;
+
+      @include transition(0.5s, max-height, ease-in-out);
+    }
+
+    &.is-open {
+      .table-fixed-header__container {
+        @include transition(0.5s, max-height, ease-in-out);
+      }
+    }
+
+    table tbody tr {
+      cursor: pointer;
+
+      &.selected {
+        background-color: rgba(0, 146, 70, 0.1);
+      }
+
+      &.active {
+        background-color: rgba(0, 146, 70, 0.2);
+      }
+
+      &.no-data {
+        text-align: center;
+        background-color: $lightest-gray;
+      }
+
+      td.action-buttons {
+        width: rem-calc(70px);
+        line-height: 1;
+      }
+
+      .action-button {
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        margin: 0 rem-calc(3px);
+        cursor: pointer;
+      }
+
+      .action-button:hover {
+        opacity: 0.85;
+      }
+
+      .button-edit {
+        background-image: url(../assets/icons/icon_edit.svg);
+      }
+
+      .button-delete {
+        background-image: url(../assets/icons/trash.svg);
+      }
+    }
+  }
+}

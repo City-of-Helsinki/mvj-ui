@@ -83,9 +83,15 @@ class App extends Component {
     this.props.clearError();
   };
 
+  showTopHeaderSearch = () => {
+    const {location} = this.props;
+    return location.pathname === '/leases' ? false : true;
+  }
+
   render() {
     const {apiError, apiToken, apiTokenLoading, children, location, user} = this.props;
     const {displaySideMenu} = this.state;
+    const showSearch = this.showTopHeaderSearch();
 
     if (isEmpty(user) || isEmpty(apiToken)) {
       return (
@@ -122,11 +128,15 @@ class App extends Component {
 
         <TopNavigation
           onLogout={this.logOut}
+          showSearch={showSearch}
           toggleSideMenu={this.toggleSideMenu}
           userProfile={get(user, 'profile')}
         />
         <section className="app__content">
-          <SideMenu isOpen={displaySideMenu} />
+          <SideMenu
+            isOpen={displaySideMenu}
+            onLinkClick={this.toggleSideMenu}
+          />
           <div className={classnames('wrapper', {'is-sidemenu-closed': !displaySideMenu}, {'is-sidemenu-open': displaySideMenu})}>
             {children}
           </div>

@@ -8,6 +8,7 @@ import Collapse from '../../../../components/Collapse';
 import {Row, Column} from 'react-foundation';
 
 import trashIcon from '../../../../../assets/icons/trash.svg';
+import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 
@@ -76,13 +77,14 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <svg className='map-icon' viewBox="0 0 30 30">
                       <path d="M28.5 2.06v21.52l-.7.28-7.88 3.37-.42.22-.42-.15-8.58-3.23-7.45 3.16-1.55.71V6.42l.7-.28 7.88-3.37.42-.22.42.15 8.58 3.23L27 2.77zM9.38 5.44L3.75 7.83v16.73l5.63-2.39zm2.24-.07V22.1l6.76 2.53V7.9zm14.63.07l-5.63 2.39v16.73l5.63-2.39z"/>
                     </svg>
-                    {areas && areas.length > index && <span>{`${capitalize(areas[index].explanation)} ${areas[index].municipality}-${areas[index].district}-${areas[index].sequence}`}</span>}
+                    {areas && areas.length > index && <span><span>{`${areas[index].municipality}-${areas[index].district}-${areas[index].group_number}-${areas[index].unit_number}`}</span>&nbsp;&nbsp;<span className='collapse__header-subtitle'>{`(${areas[index].explanation})`}</span></span>
+                    }
                   </Column>
                   <Column medium={4} className='collapse__header-subtitle'>
                     {areas && areas.length > index &&  <span>{`${capitalize(areas[index].address)}, ${areas[index].zip_code} ${capitalize(areas[index].town)}`}</span>}
                   </Column>
                   <Column medium={4} className='collapse__header-subtitle'>
-                    {areas && areas.length > index &&  <span>{areas[index].full_area} m<sup>2</sup> ({areas[index].part_or_whole})</span>}
+                    {areas && areas.length > index &&  <span>{areas[index].full_area} m<sup>2</sup> / {capitalize(areas[index].position)}</span>}
                   </Column>
                 </Row>
               }
@@ -90,7 +92,7 @@ const renderArea = ({fields, areas}: AreaProps) => {
               <div className='green-box'>
                 <Row>
                   <Column>
-                    <h2>Esirakentaminen ja johtosiirrot</h2>
+                    <h2>ESIRAKENTAMINEN, JOHTOSIIRROT JA KUNNALLISTEKNIIKKA</h2>
                   </Column>
                 </Row>
                 <Row>
@@ -140,6 +142,34 @@ const renderArea = ({fields, areas}: AreaProps) => {
                 <Row>
                   <Column medium={3}>
                     <Field
+                      name={`${area}.construction_eligibility.contamination.research_state`}
+                      component={FieldTypeSelect}
+                      label='Selvitysaste'
+                      options={[
+                        {value: 'tarkistamatta', label: 'Tarkistamatta'},
+                        {value: 'vaati_toimenpiteita', label: 'Vaati toimenpiteitä'},
+                        {value: 'valmis', label: 'Valmis'},
+                      ]}
+                    />
+                  </Column>
+                  <Column medium={3}>
+                    <Field
+                      label='ProjectWise kohdenumero'
+                      name={`${area}.construction_eligibility.contamination.projectwise_number`}
+                      type="text"
+                      component={FieldTypeText}/>
+                  </Column>
+                  <Column medium={3}>
+                    <Field
+                      label='Matti raportti'
+                      name={`${area}.construction_eligibility.contamination.matti_report`}
+                      type="text"
+                      component={FieldTypeText}/>
+                  </Column>
+                </Row>
+                <Row>
+                  <Column medium={3}>
+                    <Field
                       name={`${area}.construction_eligibility.contamination.rent_conditions`}
                       component={FieldTypeSelect}
                       label='Vuokraehdot'
@@ -154,40 +184,12 @@ const renderArea = ({fields, areas}: AreaProps) => {
                       label='Päivämäärä'
                       name={`${area}.construction_eligibility.contamination.rent_condition_date`}
                       type="text"
-                      component={FieldTypeText}/>
+                      component={FieldTypeDatePicker}/>
                   </Column>
-                  <Column medium={6}>
+                  <Column medium={3}>
                     <Field
                       label='PIMA valmistelija'
                       name={`${area}.construction_eligibility.contamination.contamination_author`}
-                      type="text"
-                      component={FieldTypeText}/>
-                  </Column>
-                </Row>
-                <Row>
-                  <Column medium={3}>
-                    <Field
-                      name={`${area}.construction_eligibility.contamination.research_state`}
-                      component={FieldTypeSelect}
-                      label='Selvitysaste'
-                      options={[
-                        {value: 'tarkistamatta', label: 'Tarkistamatta'},
-                        {value: 'vaati_toimenpiteita', label: 'Vaati toimenpiteitä'},
-                        {value: 'valmis', label: 'Valmis'},
-                      ]}
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      label='PrjectWise kohdenumero'
-                      name={`${area}.construction_eligibility.contamination.projectwise_number`}
-                      type="text"
-                      component={FieldTypeText}/>
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      label='Matti raportti'
-                      name={`${area}.construction_eligibility.contamination.matti_report`}
                       type="text"
                       component={FieldTypeText}/>
                   </Column>
@@ -198,33 +200,6 @@ const renderArea = ({fields, areas}: AreaProps) => {
                 <Row>
                   <Column>
                     <h2>Rakennettavuusselvitys</h2>
-                  </Column>
-                </Row>
-                <Row>
-                  <Column medium={3}>
-                    <Field
-                      name={`${area}.construction_eligibility.construction_investigation.report`}
-                      component={FieldTypeSelect}
-                      label='Vuokraehdot'
-                      options={[
-                        {value: 'tilattu', label: 'Tilattu'},
-                        {value: 'valmis', label: 'Valmis'},
-                      ]}
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      label='Allekirjoituspäivämäärä'
-                      name={`${area}.construction_eligibility.construction_investigation.signing_date`}
-                      type="text"
-                      component={FieldTypeText}/>
-                  </Column>
-                  <Column medium={6}>
-                    <Field
-                      label='Selvityksen tekijä'
-                      name={`${area}.construction_eligibility.construction_investigation.report_author`}
-                      type="text"
-                      component={FieldTypeText}/>
                   </Column>
                 </Row>
                 <Row>
@@ -244,6 +219,34 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <Field
                       label='Geotekninen palvelun tiedosto'
                       name={`${area}.construction_eligibility.construction_investigation.geotechnical_number`}
+                      type="text"
+                      component={FieldTypeText}/>
+                  </Column>
+                </Row>
+                <Row>
+                  <Column medium={3}>
+                    <Field
+                      name={`${area}.construction_eligibility.construction_investigation.report`}
+                      component={FieldTypeSelect}
+                      label='Selvitys'
+                      options={[
+                        {value: 'not-needed', label: 'Ei tarvita'},
+                        {value: 'in-progress', label: 'Tekeillä'},
+                        {value: 'done', label: 'Valmis'},
+                      ]}
+                    />
+                  </Column>
+                  <Column medium={3}>
+                    <Field
+                      label='Allekirjoituspäivämäärä'
+                      name={`${area}.construction_eligibility.construction_investigation.signing_date`}
+                      type="text"
+                      component={FieldTypeDatePicker}/>
+                  </Column>
+                  <Column medium={3}>
+                    <Field
+                      label='Allekirjoittaja'
+                      name={`${area}.construction_eligibility.construction_investigation.report_author`}
                       type="text"
                       component={FieldTypeText}/>
                   </Column>

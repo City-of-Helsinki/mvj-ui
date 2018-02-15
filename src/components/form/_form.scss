@@ -2,84 +2,50 @@
   &.inline {
     display: inline-block;
   }
+
   &-label {
+    white-space: nowrap;
+    text-overflow: ellipsis;
     font-size: rem-calc(14px);
     line-height: normal;
 	  text-align: left;
     color: $dark-gray;
     margin-bottom: rem-calc(2px);
+
+    &.required::after {
+      position: relative;
+      content: '*';
+      color: $brick;
+      font-size: rem-calc(20px);
+      line-height: rem-calc(14px);
+      top: rem-calc(6px);
+      margin-left: rem-calc(5px);
+    }
   }
 
-  label.title {
+  label.mvj-form-field-label {
+    white-space: nowrap;
     font-size: rem-calc(14px);
     line-height: normal;
 	  text-align: left;
     color: $dark-gray;
     margin-bottom: rem-calc(2px);
+
+    &.required::after {
+      position: relative;
+      content: '*';
+      color: $brick;
+      font-size: rem-calc(20px);
+      line-height: rem-calc(14px);
+      top: rem-calc(6px);
+      margin-left: rem-calc(5px);
+    }
   }
 
   .mvj-form-field {
-    &__datepicker {
-      .react-datepicker__input-container {
-        width: 100%;
-      }
-
-      input {
-        padding: 0 0.5rem;
-        height: rem-calc(30px);
-        line-height: normal;
-        color: $black;
-        width: 100%;
-        margin-bottom: 0;
-      }
-
-      &.is-dirty {
-        input {
-          border-color: $engel;
-          background-color: $engel-lighter;
-        }
-      }
-
-      .error {
-        color: $brick;
-        display: block;
-        font-size: $font-small;
-        line-height: normal;
-        margin-bottom: rem-calc(5px);
-      }
-    }
-
-    &__text {
-      input {
-        padding: 0 0.5rem;
-        height: rem-calc(26px);
-        color: $black;
-        border: 1px solid $medium-gray;
-        width: 100%;
-        margin-bottom: 0.625rem;
-        font-size: $font-small;
-        box-shadow: none;
-        &:focus {
-          border: 1px solid $tram;
-        }
-      }
-
-      &.is-dirty {
-        input {
-          border-color: $engel;
-          background-color: $engel-lighter;
-        }
-      }
-
-      .error {
-        color: $brick;
-        display: block;
-        font-size: $font-small;
-        line-height: normal;
-        margin-bottom: rem-calc(5px);
-      }
-    }
     &__checkbox {
+      margin-bottom: 0.625rem;
+
       &.checkbox-inline {
         .option-label {
           display: inline-block;
@@ -88,10 +54,12 @@
           height: rem-calc(26px);
           margin-right: rem-calc(10px);
         }
+
         .option-label:last-child {
           margin-right: 0;
         }
       }
+
       &.is-dirty {
         .option-label {
           span {
@@ -100,7 +68,232 @@
         }
       }
     }
+
+    &__checkbox-single {
+      display: block;
+
+      &.no-label {
+        padding-top: rem-calc(20px);
+      }
+
+      input {
+        margin: 0;
+        display: inline-block;
+      }
+
+      label {
+        margin: 0 0 0 0.5rem;
+        display: inline-block;
+        line-height: 1;
+      }
+    }
+
+    &__datepicker {
+      margin-bottom: 0.625rem;
+
+      .react-datepicker__input-container {
+        width: 100%;
+      }
+
+      input {
+        padding: 0 0.5rem;
+        height: rem-calc(26px);
+        line-height: normal;
+        color: $black;
+        width: 100%;
+        margin-bottom: 0;
+      }
+
+      &.height-medium {
+        input {
+          height: rem-calc(30px);
+        }
+      }
+
+      &.width-small {
+        input {
+          max-width: rem-calc(111px);
+        }
+      }
+
+      &.is-dirty {
+        input {
+          border-color: $engel;
+          background-color: $engel-lighter;
+        }
+      }
+
+      &.no-margin {
+        margin: 0;
+      }
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
+      }
+    }
+
+    &__switch {
+      float: right;
+      display: flex;
+      padding-top: rem-calc(6.5px);
+      margin: 0;
+
+      &-option-label {
+        font-size: $font-regular;
+        font-weight: $semibold;
+        text-align: left;
+        display: inline-block;
+        margin-right: rem-calc(5px);
+        line-height: rem-calc(20px);
+        color: $tram;
+
+        &.label-off {
+          color: $brick;
+        }
+      }
+
+      .switch {
+        position: relative;
+        width: rem-calc(43px);
+        height: rem-calc(20px);
+        display: inline-block;
+      }
+
+      input {
+        display: none;
+      }
+
+      input + .slider {
+        position: absolute;
+        cursor: pointer;
+        height: auto;
+        margin: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: $brick;
+
+        @include transition(0.2s);
+      }
+
+      input:checked + .slider {
+        background-color: $tram;
+      }
+
+      input + .slider:before {
+        position: absolute;
+        content: "";
+        height: rem-calc(18px);
+        width: rem-calc(18px);
+        left: rem-calc(1px);
+        bottom: rem-calc(1px);
+        background-color: white;
+
+        @include transition(0.2s);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(rem-calc(23px));
+      }
+    }
+
+    &__text {
+      margin-bottom: 0.625rem;
+
+      input {
+        padding: 0 0.5rem;
+        height: rem-calc(26px);
+        color: $black;
+        border: 1px solid $medium-gray;
+        width: 100%;
+        margin-bottom: 0;
+        font-size: $font-small;
+        box-shadow: none;
+
+        &:focus {
+          border: 1px solid $tram;
+        }
+      }
+
+      &.no-margin {
+        margin: 0;
+      }
+
+      &.width-xsmall {
+        input {
+          max-width: rem-calc(89px);
+        }
+      }
+
+      &.width-small {
+        input {
+          max-width: rem-calc(111px);
+        }
+      }
+
+      &.is-dirty {
+        input {
+          border-color: $engel;
+          background-color: $engel-lighter;
+        }
+      }
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
+      }
+    }
+
+    &__textarea {
+      margin-bottom: 0.625rem;
+
+      textarea {
+        padding: 0.25rem 0.5rem;
+        color: $black;
+        border: 1px solid $medium-gray;
+        width: 100%;
+        font-size: $font-small;
+        box-shadow: none;
+        margin-bottom: 0;
+
+        &:focus {
+          border: 1px solid $tram;
+        }
+      }
+
+      &.is-dirty {
+        textarea {
+          border-color: $engel;
+          background-color: $engel-lighter;
+        }
+      }
+
+      .error {
+        color: $brick;
+        display: block;
+        font-size: $font-small;
+        line-height: normal;
+        margin-bottom: rem-calc(5px);
+      }
+    }
+
+
+
     &__select {
+      margin-bottom: 0.625rem;
+
+      &.no-margin {
+        margin: 0;
+      }
+
       .error {
         color: $brick;
         display: block;
@@ -123,12 +316,14 @@
           height: rem-calc(14px);
           width: rem-calc(14px);
         }
+
         &.is-open {
           .select-input__arrow-renderer {
             background-image: url('../assets/icons/icon_arrow_up.svg');
           }
         }
       }
+
       .Select-control {
         cursor: pointer;
         height: rem-calc(26px);
@@ -139,23 +334,28 @@
           padding-right: 2.1rem;
         }
       }
+
       .Select-placeholder {
         padding-left: 0.5rem !important;
         line-height: 1.8;
         color: #ccc;
       }
+
       .Select-value {
         padding-left: 0.5rem !important;
         padding-right: 2.1rem;
         line-height: 1.8 !important;
       }
+
       .Select-input {
         height: rem-calc(26px);
 
         input {
           padding: 0;
+          margin-top: 2px;
         }
       }
+
       .Select-arrow-zone {
         padding: 0;
         width: rem-calc(20px);
@@ -163,24 +363,30 @@
         top: rem-calc(5px);
         right: 0;
       }
+
       .Select-clear-zone {
         position: absolute;
         right: rem-calc(20px);
         top: rem-calc(2px);
       }
+
       .Select-menu-outer {
         top: 26px;
       }
+
       .Select-menu {
         height: auto;
       }
+
       .Select-option {
         padding-top: 0.2rem;
         padding-bottom: 0.2rem;
+
         &:hover, &:focus, &:active {
           background: $engel-lighter;
         }
       }
+
       .Select-option.is-focused, .Select-option.is-selected {
         background-color: $engel-lighter !important;
       }
@@ -257,6 +463,7 @@
           top: 30px;
         }
       }
+
       &.is-dirty {
         .Select {
           .Select-control {

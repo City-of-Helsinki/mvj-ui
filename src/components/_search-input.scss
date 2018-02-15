@@ -1,0 +1,21 @@
+.search-input {
+  &__component {
+    position: relative;
+    .search-input {
+      width: rem-calc(230px);
+      margin: 0;
+      height: rem-calc(30px);
+    }
+    .search-icon {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      height: 20px;
+      width: 20px;
+      background-size: cover;
+      background-image: url(../assets/icons/icon-search.svg);
+      cursor: pointer;
+    }
+  }
+
+}

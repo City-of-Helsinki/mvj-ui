@@ -84,7 +84,8 @@
   &__content {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.5s ease;
+
+    @include transition(0.5s, max-height, ease);
   }
 
   // Opened stage
@@ -98,7 +99,8 @@
     .collapse__content {
       height: auto;
       max-height: 2000px;
-      transition: max-height 0.4s ease;
+
+      @include transition(0.4s, max-height, ease);
     }
   }
 
@@ -116,7 +118,14 @@
         font-weight: $semibold;
         font-size: $font-regular;
         text-transform: uppercase;
+        &-nocap {
+          color: $tram;
+          font-weight: $semibold;
+          font-size: $font-regular;
+          text-transform: none;
+        }
       }
+
       i.arrow-icon {
         background-image: url('../assets/icons/icon_arrow_down-green.svg');
         display: block;
@@ -132,7 +141,8 @@
     .collapse__content {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.5s ease;
+
+      @include transition(0.5s, max-height, ease);
     }
 
     .collapse__content-wrapper {
@@ -148,8 +158,38 @@
 
       .collapse__content {
         max-height: 500px;
-        transition: max-height 0.4s ease;
+
+        @include transition(0.4s, max-height, ease);
       }
     }
+  }
+
+  &.collapse__rents {
+    background-color: transparent;
+    margin: 0.6rem 0 1rem;
+
+    .collapse__content-wrapper {
+      padding: 0;
+    }
+
+    .collapse__header {
+      padding-left: 0;
+
+      &-title {
+        font-size: 1.125rem;
+      }
+    }
+  }
+}
+
+.alert {
+  color: $brick;
+  i {
+    height: rem-calc(20px);
+    width: rem-calc(20px);
+    vertical-align: text-bottom;
+    background-image: url(../assets/icons/icon-alert.svg);
+    display: inline-block;
+    margin-right: 0.4rem;
   }
 }

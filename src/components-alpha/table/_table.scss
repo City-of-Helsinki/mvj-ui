@@ -25,6 +25,7 @@ table {
       tr {
         &:hover > td {
           @include transition();
+
           cursor: pointer;
           background: $light-gray !important;
           color: $primary-color;

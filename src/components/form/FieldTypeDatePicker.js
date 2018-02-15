@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Component} from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import classnames from 'classnames';
@@ -7,40 +7,55 @@ import classnames from 'classnames';
 import 'react-datepicker/dist/react-datepicker.css';
 
 type Props = {
+  className?: string,
   disableTouched: boolean,
   input: Object,
   label: string,
+  labelClassName?: string,
   meta: Object,
   placeholder: string,
 }
 
-const getFormatedDate = (value: any) => {
-  if(moment(value, 'DD.MM.YYYY')._isValid) {
-    return moment(value, 'DD.MM.YYYY');
+class FieldTypeDatePicker extends Component {
+  props: Props
+
+  handleChange = (e: any) => {
+    const {input: {onBlur}} = this.props;
+    const {target: {value}} = e;
+    if(value) {
+      onBlur(moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD'));
+    }
   }
-  return null;
-};
 
-const FieldDatePicker = ({
-  disableTouched = false,
-  input,
-  label,
-  meta: {dirty, error, touched},
-  placeholder,
-}: Props) => (
-  <div className='mvj-form-field'>
-    {label && <label className='title'>{label}</label>}
-    <div className={classnames('mvj-form-field__datepicker', {'is-dirty': dirty})}>
-      <DatePicker
-        {...input}
-        placeholder={placeholder}
-        dateFormat="DD.MM.YYYY"
-        disabledKeyboardNavigation
-        selected={input.value ? getFormatedDate(input.value) : null}
-      />
-      {(touched || disableTouched) && error && <span className={'error'}>{error}</span>}
-    </div>
-  </div>
-);
+  render(){
+    const {
+      className,
+      disableTouched = false,
+      input,
+      input: {value},
+      label,
+      labelClassName,
+      meta: {dirty, error, touched},
+      placeholder} = this.props;
 
-export default FieldDatePicker;
+    return (
+      <div className='mvj-form-field'>
+        {label && <label className={classnames('mvj-form-field-label', labelClassName)}>{label}</label>}
+        <div className={classnames('mvj-form-field__datepicker', className, {'is-dirty': dirty})}>
+          <DatePicker
+            {...input}
+            placeholder={placeholder}
+            // dateFormat="YYYY-MM-DD"
+            disabledKeyboardNavigation
+            locale='fi'
+            selected={value ? moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']) : null}
+            onBlur={this.handleChange}
+          />
+          {(touched || disableTouched) && error && <span className={'error'}>{error}</span>}
+        </div>
+      </div>
+    );
+  }
+}
+
+export default FieldTypeDatePicker;

@@ -1,0 +1,60 @@
+.bill-modal {
+  position: absolute;
+  width: 0;
+  max-width: 100%;
+  height: 0;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  border: none;
+  background-color: $white;
+  overflow: hidden;
+
+  @include transition(0.5s, all, ease-in-out);
+
+  &__container {
+    padding: rem-calc(16px) rem-calc(16px);
+    background-color: rgba(0, 146, 70, 0.1);
+    height: 100%;
+  }
+
+  &.is-open {
+    width: 800px;
+    height: 100%;
+    border-left: 1px solid $medium-gray;
+
+    @include transition(0.5s, all, ease-in-out);
+  }
+
+  &__title-row {
+    display: flex;
+    flex: row nowrap;
+    margin-bottom: 1rem;
+
+    .title {
+      flex: 1 1 0%;
+
+      h1 {
+        font-family: $font-family-source;
+	      font-size: $font-large;
+	      font-weight: $semibold;
+        margin: 0;
+        color: $tram;
+      }
+    }
+    .close-button-container {
+      align-self: center;
+      a {
+        background-image: url(../assets/icons/icon_close.svg);
+        height: 20px;
+        width: 20px;
+        display: block;
+        cursor: pointer;
+      }
+    }
+  }
+  .section-item {
+    max-height: calc(100% - 40px);
+    overflow: auto;
+  }
+}

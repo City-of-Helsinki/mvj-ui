@@ -1,0 +1,165 @@
+.rent-section {
+  .alert {
+    color: $brick;
+    text-align: right;
+    line-height: rem-calc(33px);
+
+    i {
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      vertical-align: text-bottom;
+      background-image: url(../assets/icons/icon-alert.svg);
+      display: inline-block;
+      margin-left: 0.4rem;
+    }
+  }
+
+  .success {
+    color: $tram;
+    text-align: right;
+    line-height: rem-calc(33px);
+
+    i {
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      vertical-align: text-bottom;
+      background-image: url(../assets/icons/icon_checked.svg);
+      display: inline-block;
+      margin-left: 0.4rem;
+    }
+  }
+
+  table.rent-table {
+    thead {
+      tr {
+        th {
+          border: none;
+          border-top: 1px solid #d7d5d5;
+          border-bottom: 1px solid $light-gray;
+          padding: 0.3rem 0.5rem;
+          font-size: $font-xsmall;
+          font-weight: $semibold;
+          color: $black;
+        }
+
+        th:first-child {
+          border-left: solid 1px #d7d5d5;
+        }
+
+        th:nth-last-child(2) {
+          border-right: solid 1px #d7d5d5;
+        }
+
+        th:last-child {
+          border-top: none;
+          border-bottom: none;
+          width: rem-calc(90px);
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          border: none;
+          padding: 0.3rem 0.5rem;
+
+          button {
+            vertical-align: middle;
+          }
+        }
+
+        td:first-child {
+          border-left: solid 1px #d7d5d5;
+        }
+
+        td:nth-last-child(2) {
+          border-right: solid 1px #d7d5d5;
+        }
+
+        td:last-child {
+          padding-right: 0;
+          background-color: transparent;
+        }
+      }
+
+      tr:hover {
+        td {
+          background-color: rgba(0, 146, 70, 0.1);
+        }
+
+        td:last-child {
+          background-color: transparent;
+        }
+      }
+
+      tr:last-child {
+        td {
+          border-bottom: solid 1px #d7d5d5;
+        }
+
+        td:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+
+  table.contract-rent-table {
+    border: 1px solid #d7d5d5;
+    margin: 0;
+
+    thead {
+      tr {
+        th {
+          border: none;
+          border-bottom: 1px solid $light-gray;
+          padding: 0.3rem 0.5rem;
+          font-size: $font-xsmall;
+          font-weight: $semibold;
+          color: $black;
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          border: none;
+          padding: 0.3rem 0.5rem;
+        }
+      }
+
+      tr:hover {
+        background-color: rgba(0, 146, 70, 0.1);
+      }
+    }
+  }
+
+  .discount-item {
+    margin-top: 0.5rem;
+    padding: 1rem 0 0;
+    border-top: 1px dashed $tram;
+
+    a {
+      color: $tram;
+
+      .link-icon {
+        background-image: url(../assets/icons/icon_link_green.svg);
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        margin-left: rem-calc(8px);
+        display: inline-block;
+        background-position: 0 rem-calc(9px);
+        background-size: contain;
+        background-repeat: no-repeat
+      }
+    }
+  }
+
+  .discount-item:first-child {
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+}

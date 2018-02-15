@@ -6,27 +6,34 @@ import {destroy, formValueSelector, reduxForm, reset} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
+import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import moment from 'moment';
 
+import {getLoggedInUser} from '../../auth/selectors';
 import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
 import * as contentHelpers from '../helpers';
+import {displayUIMessage, getLabelOfOption} from '../../util/helpers';
+import {summaryPublicityOptions} from './leaseSections/constants';
 
+import Billing from './leaseSections/billing/Billing';
+import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/ConfirmationModal';
-import ContractEdit from './leaseSections/contract/ContractEdit';
-import Contracts from './leaseSections/contract/Contracts';
 import ControlButtons from './ControlButtons';
+import DecisionsMain from './leaseSections/contract/DecisionsMain';
+import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
+import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '../../components/loader/Loader';
 import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
-import RuleEdit from './leaseSections/contract/RuleEdit';
-import Rules from './leaseSections/contract/Rules';
-import Inspections from './leaseSections/contract/Inspections';
-import InspectionEdit from './leaseSections/contract/InspectionEdit';
+import Rent from './leaseSections/rent/Rent';
+import RentEdit from './leaseSections/rent/RentEdit';
+import Summary from './leaseSections/summary/Summary';
+import SummaryEdit from './leaseSections/summary/SummaryEdit';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
@@ -35,22 +42,25 @@ import TenantTab from './leaseSections/tenant/TenantTab';
 import ConstructionEligibilityTab from './leaseSections/constructionEligibility/ConstructionEligibilityTab';
 import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
 import MapLeasePage from './leaseSections/MapLeasePage';
-import type Moment from 'moment';
 
 import mockData from '../mock-data.json';
 
 type State = {
   activeTab: number,
   areas: Array<Object>,
+  billing: Object,
   comments: Array<Object>,
   contracts: Array<Object>,
+  history: Array<Object>,
+  inspections: Array<Object>,
   isEditMode: boolean,
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
   isSaveLeaseModalOpen: boolean,
   oldTenants: Array<Object>,
+  rents: Object,
   rules: Array<Object>,
-  inspections: Array<Object>,
+  summary: Object,
   tenants: Array<Object>,
 };
 
@@ -58,6 +68,8 @@ type Props = {
   areasForm: Array<Object>,
   areasTouched: boolean,
   attributes: Object,
+  billingForm: Object,
+  billingTouched: boolean,
   contractsForm: Array<Object>,
   contractsTouched: boolean,
   currentLease: Object,
@@ -65,7 +77,7 @@ type Props = {
   editLease: Function,
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
-  end_date: ?Moment,
+  end_date: ?string,
   fetchAttributes: Function,
   fetchSingleLease: Function,
   inspectionsForm: Array<Object>,
@@ -75,26 +87,35 @@ type Props = {
   leaseInfoTouched: boolean,
   location: Object,
   params: Object,
+  rentsForm: Object,
+  rentsTouched: boolean,
   rulesForm: Array<Object>,
   rulesTouched: boolean,
-  start_date: ?Moment,
+  start_date: ?string,
   status: string,
+  summaryForm: Object,
+  summaryTouched: boolean,
   tenantsForm: Array<Object>,
   tenantsTouched: boolean,
+  user: Object,
 }
 
 class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
     areas: [],
-    comments: mockData.leases[0].comments,
+    billing: {},
+    comments: [],
     contracts: [],
+    history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
     isEditMode: false,
     isSaveLeaseModalOpen: false,
     oldTenants: [],
+    rents: {},
     rules: [],
+    summary: {},
     tenants: [],
     terms: [],
     inspections: [],
@@ -110,26 +131,35 @@ class PreparerForm extends Component {
 
   componentWillMount() {
     const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}} = this.props;
+    const lease = mockData.leases[0];
 
     // Destroy forms to initialize new values when data is fetched
+    dispatch(destroy('billing-edit-form'));
+    dispatch(destroy('contract-edit-form'));
+    dispatch(destroy('inspections-edit-form'));
     dispatch(destroy('lease-info-edit-form'));
     dispatch(destroy('property-unit-edit-form'));
-    dispatch(destroy('tenant-edit-form'));
-    dispatch(destroy('contract-edit-form'));
+    dispatch(destroy('rent-edit-form'));
     dispatch(destroy('rule-edit-form'));
-    dispatch(destroy('inspections-edit-form'));
+    dispatch(destroy('summary-edit-form'));
+    dispatch(destroy('tenant-edit-form'));
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
     }
 
     this.setState({
-      areas: mockData.leases[0].lease_areas,
-      tenants: mockData.leases[0].tenants,
-      oldTenants: mockData.leases[0].tenants_old,
-      contracts: mockData.leases[0].contracts,
-      rules: mockData.leases[0].rules,
-      inspections: mockData.leases[0].inspections,
+      areas: contentHelpers.getContentLeaseAreas(lease),
+      billing: contentHelpers.getContentBilling(lease),
+      comments: lease.comments,
+      contracts: contentHelpers.getContentContracts(lease),
+      history: contentHelpers.getContentHistory(lease),
+      inspections: contentHelpers.getContentInspections(lease),
+      oldTenants: lease.tenants_old,
+      rents: contentHelpers.getContentRents(lease),
+      rules: contentHelpers.getContentRules(lease),
+      summary: contentHelpers.getContentSummary(lease),
+      tenants: contentHelpers.getContentTenants(lease),
     });
     fetchAttributes();
     fetchSingleLease(leaseId);
@@ -154,64 +184,104 @@ class PreparerForm extends Component {
   }
 
   cancel = () => {
-    const {dispatch} = this.props;
     this.setState({isEditMode: false});
-    dispatch(reset('lease-info-edit-form'));
-    dispatch(reset('property-unit-edit-form'));
-    dispatch(reset('tenant-edit-form'));
-    dispatch(reset('contract-edit-form'));
-    dispatch(reset('rule-edit-form'));
-    dispatch(reset('inspection-edit-form'));
-
+    this.resetAllForms();
     this.hideModal('CancelLease');
   }
 
   save = () => {
     const {
       areasForm,
+      billingForm,
       contractsForm,
       currentLease,
       editLease,
       eligibilityForm,
       end_date,
       inspectionsForm,
+      rentsForm,
       rulesForm,
       start_date,
       status,
+      summaryForm,
       tenantsForm} = this.props;
 
     const payload = currentLease;
     payload.status = status;
-    payload.start_date = start_date ? moment(start_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
-    payload.end_date = end_date ? moment(end_date, 'DD.MM.YYYY').format('YYYY-MM-DD') : null;
+    payload.start_date = start_date;
+    payload.end_date = end_date;
 
     editLease(payload);
-
-    this.setState({areas: areasForm});
-    this.setState({areas: eligibilityForm});
-    this.setState({tenants: tenantsForm});
-    this.setState({rules: rulesForm});
-    this.setState({contracts: contractsForm});
-    this.setState({inspections: inspectionsForm});
 
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
     if(areasForm !== undefined) {
       this.setState({areas: areasForm});
     }
+    if(billingForm !== undefined) {
+      this.setState({billing: billingForm});
+    }
+    if(eligibilityForm !== undefined) {
+      this.setState({areas: eligibilityForm});
+    }
     if(contractsForm !== undefined) {
       this.setState({contracts: contractsForm});
-    }
-    if(rulesForm !== undefined) {
-      this.setState({rules: rulesForm});
-    }
-    if(tenantsForm !== undefined) {
-      this.setState({tenants: tenantsForm});
     }
     if(inspectionsForm !== undefined) {
       this.setState({inspections: inspectionsForm});
     }
+    if(rentsForm !== undefined) {
+      this.setState({rents: rentsForm});
+    }
+    if(rulesForm !== undefined) {
+      this.setState({rules: rulesForm});
+    }
+    if(summaryForm !== undefined) {
+      this.setState({summary: summaryForm});
+    }
+    if(tenantsForm !== undefined) {
+      this.setState({tenants: tenantsForm});
+    }
+
     this.setState({isEditMode: false});
     this.hideModal('SaveLease');
+    this.destroyAllForms();
+  }
+
+  agreeCriteria = (criteria: Object) => {
+    const {rents, rents: {criterias}} = this.state;
+    forEach(criterias, (x) => {
+      if(x === criteria) {
+        x.agreed = true;
+      }
+    });
+    this.setState({rents: rents});
+    displayUIMessage({title: 'Vuokranperuste hyväksytty', body: 'Vuokranperuste on hyväksytty onnistuneesti'});
+  }
+
+  destroyAllForms = () => {
+    const {dispatch} = this.props;
+    dispatch(destroy('billing-edit-form'));
+    dispatch(destroy('contract-edit-form'));
+    dispatch(destroy('inspection-edit-form'));
+    dispatch(destroy('lease-info-edit-form'));
+    dispatch(destroy('property-unit-edit-form'));
+    dispatch(destroy('rent-edit-form'));
+    dispatch(destroy('rule-edit-form'));
+    dispatch(destroy('summary-edit-form'));
+    dispatch(destroy('tenant-edit-form'));
+  }
+
+  resetAllForms = () => {
+    const {dispatch} = this.props;
+    dispatch(reset('billing-edit-form'));
+    dispatch(reset('contract-edit-form'));
+    dispatch(reset('inspection-edit-form'));
+    dispatch(reset('lease-info-edit-form'));
+    dispatch(reset('property-unit-edit-form'));
+    dispatch(reset('rent-edit-form'));
+    dispatch(reset('rule-edit-form'));
+    dispatch(reset('summary-edit-form'));
+    dispatch(reset('tenant-edit-form'));
   }
 
   validateForms = () => {
@@ -220,11 +290,14 @@ class PreparerForm extends Component {
   }
 
   addComment = (comment: string) => {
+    const {user} = this.props;
     const {comments} = this.state;
+
     comments.push({
-      text: comment,
+      archived: false,
       date: moment().format('YYYY-MM-DD'),
-      user: 'Katja Immonen',
+      text: comment,
+      user: get(user, 'profile.name'),
     });
     this.setState({comments: comments});
     this.commentPanel.resetField();
@@ -239,6 +312,14 @@ class PreparerForm extends Component {
       if(moment(keyB).isAfter(keyA)) return 1;
       return 0;
     });
+  }
+
+  getNotArchivedComments = (comments: Array<Object>) => {
+    return comments.filter((comments) => {return comments.archived !== true;});
+  }
+
+  getArchivedComments = (comments: Array<Object>) => {
+    return comments.filter((comments) => {return comments.archived === true;});
   }
 
   handleTabClick = (tabId) => {
@@ -265,25 +346,61 @@ class PreparerForm extends Component {
       eligibilityTouched,
       inspectionTouched,
       leaseInfoTouched,
+      rentsTouched,
       rulesTouched,
       tenantsTouched,
     } = this.props;
 
-    return areasTouched || contractsTouched || eligibilityTouched || inspectionTouched || leaseInfoTouched || rulesTouched ||tenantsTouched;
+    return areasTouched ||
+      contractsTouched ||
+      eligibilityTouched ||
+      inspectionTouched ||
+      leaseInfoTouched ||
+      rentsTouched ||
+      rulesTouched ||
+      tenantsTouched;
+  }
+
+  archiveComment = (comment: Object) => {
+    const {comments} = this.state;
+    const newComments = [];
+    forEach(comments, (com) => {
+      if(com === comment) {
+        com.archived = true;
+      }
+      newComments.push(com);
+    });
+    this.setState({comments: newComments});
+  }
+
+  unarchiveComment = (comment: Object) => {
+    const {comments} = this.state;
+    const newComments = [];
+    forEach(comments, (com) => {
+      if(com === comment) {
+        com.archived = false;
+      }
+      newComments.push(com);
+    });
+    this.setState({comments: newComments});
   }
 
   render() {
     const {
       activeTab,
       areas,
+      billing,
       contracts,
+      history,
       inspections,
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
       isEditMode,
       isSaveLeaseModalOpen,
       oldTenants,
+      rents,
       rules,
+      summary,
       tenants,
     } = this.state;
 
@@ -295,9 +412,16 @@ class PreparerForm extends Component {
 
     const areFormsValid = this.validateForms();
     const comments = this.getComments();
+    const commentsNotArchived = this.getNotArchivedComments(comments);
+    const commentsArchived = this.getArchivedComments(comments);
     const isAnyFormTouched = this.isAnyFormTouched();
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
     const statusOptions = contentHelpers.getStatusOptions(attributes);
+
+    let sum_areas = 0;
+    areas && areas.length > 0 && areas.map((area) =>
+      sum_areas = sum_areas + area.full_area
+    );
 
     if(isFetching) {
       return (
@@ -326,10 +450,13 @@ class PreparerForm extends Component {
         />
         <CommentPanel
           ref={(input) => {this.commentPanel = input;}}
-          comments={comments}
+          commentsNotArchived={commentsNotArchived}
+          commentsArchived={commentsArchived}
           isOpen={isCommentPanelOpen}
           onAddComment={(comment) => this.addComment(comment)}
+          onArchive={(comment) => this.archiveComment(comment)}
           onClose={this.toggleCommentPanel}
+          onUnarchive={(comment) => this.unarchiveComment(comment)}
         />
         <Row>
           <Column className='lease-page__upper-bar'>
@@ -337,17 +464,17 @@ class PreparerForm extends Component {
               {!isEditMode &&
                 <LeaseInfo
                   identifier={leaseIdentifier}
-                  startDate={get(currentLease, 'start_date')}
-                  endDate={get(currentLease, 'end_date')}
+                  startDate={currentLease.start_date}
+                  endDate={currentLease.end_date}
                 />
               }
               {isEditMode &&
                 <LeaseInfoEdit
                   identifier={leaseIdentifier}
                   initialValues={{
-                    status: currentLease.status ? currentLease.status : null,
-                    start_date: currentLease.start_date ? moment(currentLease.start_date) : null,
-                    end_date: currentLease.end_date ? moment(currentLease.end_date) : null,
+                    status: currentLease.status,
+                    start_date: currentLease.start_date,
+                    end_date: currentLease.end_date,
                   }}
                   statusOptions={statusOptions}
                 />
@@ -355,7 +482,7 @@ class PreparerForm extends Component {
             </div>
             <div className='controls'>
               <ControlButtons
-                commentAmount={comments ? comments.length : 0}
+                commentAmount={commentsNotArchived ? commentsNotArchived.length : 0}
                 isEditMode={isEditMode}
                 isValid={areFormsValid}
                 onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
@@ -392,13 +519,35 @@ class PreparerForm extends Component {
             <TabContent active={activeTab}>
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Yhteenveto</h1>
+                  <Row>
+                    <Column medium={9}><h1>Yhteenveto</h1></Column>
+                    <Column medium={3}>
+                      {!isEditMode &&
+                        <p className="publicity-label">
+                          {summary.publicity
+                            ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
+                            : '-'}
+                        </p>
+                      }
+                    </Column>
+                  </Row>
+                  <Row><Column><div className="separator-line"></div></Column></Row>
+                  <Row>
+                    <Column medium={9}>
+                      {!isEditMode && <Summary summary={summary}/>}
+                      {isEditMode && <SummaryEdit initialValues={{summary: summary}}/>}
+                    </Column>
+                    <Column medium={3}>
+                      <LeaseHistory history={history}/>
+                    </Column>
+                  </Row>
                 </div>
               </TabPane>
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
                   <h1>Vuokra-alue</h1>
+                  <p className="right-subtitle">{sum_areas} m<sup>2</sup></p>
                   <div className='property-unit'>
                     {isEditMode && <PropertyUnitEdit initialValues={{areas: areas}}/>}
                     {!isEditMode && <PropertyUnit areas={areas}/>}
@@ -418,27 +567,27 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Vuokra</h1>
+                  {!isEditMode && <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>}
+                  {isEditMode && <RentEdit initialValues={{rents: rents}}/>}
                 </div>
               </TabPane>
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Sopimukset</h1>
-                  <div>
-                    {!isEditMode && <Contracts contracts={contracts}/>}
-                    {isEditMode && <ContractEdit rules={rules} initialValues={{contracts: contracts}}/>}
-                  </div>
-                  <h1>Päätökset</h1>
-                  <div>
-                    {!isEditMode && <Rules rules={rules}/>}
-                    {isEditMode && <RuleEdit initialValues={{rules: rules}}/>}
-                  </div>
-                  <h1>Tarkastukset ja huomautukset</h1>
-                  <div>
-                    {!isEditMode && <Inspections inspections={inspections}/>}
-                    {isEditMode && <InspectionEdit initialValues={{inspections: inspections}}/>}
-                  </div>
+                  {!isEditMode &&
+                    <DecisionsMain
+                      contracts={contracts}
+                      inspections={inspections}
+                      rules={rules}
+                    />
+                  }
+                  {isEditMode &&
+                    <DecisionsMainEdit
+                      contracts={contracts}
+                      inspections={inspections}
+                      rules={rules}
+                    />
+                  }
                 </div>
               </TabPane>
 
@@ -454,7 +603,8 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Laskutus</h1>
+                  {!isEditMode && <Billing billing={billing}/>}
+                  {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
                 </div>
               </TabPane>
 
@@ -472,11 +622,14 @@ class PreparerForm extends Component {
 }
 
 const areasFormSelector = formValueSelector('property-unit-edit-form');
+const billingFormSelector = formValueSelector('billing-edit-form');
 const contractFormSelector = formValueSelector('contract-edit-form');
 const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const inspectionFormSelector = formValueSelector('inspection-edit-form');
 const leaseInfoFormSelector = formValueSelector('lease-info-edit-form');
+const rentFormSelector = formValueSelector('rent-edit-form');
 const ruleFormSelector = formValueSelector('rule-edit-form');
+const summaryFormSelector = formValueSelector('summary-edit-form');
 const tenantFormSelector = formValueSelector('tenant-edit-form');
 
 export default flowRight(
@@ -486,10 +639,13 @@ export default flowRight(
   }),
   connect(
     (state) => {
+      const user = getLoggedInUser(state);
       return {
         areasForm: areasFormSelector(state, 'areas'),
         areasTouched: get(state, 'form.property-unit-edit-form.anyTouched'),
         attributes: getAttributes(state),
+        billingForm: billingFormSelector(state, 'billing'),
+        billingTouched: get(state, 'form.billing-edit-form.anyTouched'),
         contractsForm: contractFormSelector(state, 'contracts'),
         contractsTouched: get(state, 'form.contract-edit-form.anyTouched'),
         currentLease: getCurrentLease(state),
@@ -501,12 +657,17 @@ export default flowRight(
         isFetching: getIsFetching(state),
         leaseInfoErrors: getLeaseInfoErrors(state),
         leaseInfoTouched: get(state, 'form.lease-info-edit-form.anyTouched'),
+        rentsForm: rentFormSelector(state, 'rents'),
+        rentsTouched: get(state, 'form.rent-edit-form.anyTouched'),
         rulesForm: ruleFormSelector(state, 'rules'),
         rulesTouched: get(state, 'form.rule-edit-form.anyTouched'),
         start_date: leaseInfoFormSelector(state, 'start_date'),
         status: leaseInfoFormSelector(state, 'status'),
+        summaryForm: summaryFormSelector(state, 'summary'),
+        summaryTouched: get(state, 'form.summary-edit-form.anyTouched'),
         tenantsForm: tenantFormSelector(state, 'tenants'),
         tenantsTouched: get(state, 'form.tenant-edit-form.anyTouched'),
+        user,
       };
     },
     {

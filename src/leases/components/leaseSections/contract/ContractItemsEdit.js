@@ -1,14 +1,13 @@
 // @flow
-import React, {Component} from 'react';
-import flowRight from 'lodash/flowRight';
-import {connect} from 'react-redux';
-import {formValueSelector, reduxForm, Field, FieldArray} from 'redux-form';
+import React from 'react';
+import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import {formatDate} from '../../../../util/helpers';
 
+import {formatDate} from '../../../../util/helpers';
 import trashIcon from '../../../../../assets/icons/trash.svg';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
+import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
+import FieldTypeText from '../../../../components/form/FieldTypeText';
 
 type ContractModificationsProps = {
   title: string,
@@ -38,35 +37,35 @@ const renderContractModifications = ({title, fields}: ContractModificationsProps
               <Column medium={3}>
                 <Field
                   name={`${modification}.modification_signing_date`}
-                  component={FieldTypeText}
+                  component={FieldTypeDatePicker}
                   label='Allekirjoituspäivä'
                 />
               </Column>
               <Column medium={3}>
                 <Field
                   name={`${modification}.to_be_signed_by`}
-                  component={FieldTypeText}
+                  component={FieldTypeDatePicker}
                   label='Allekirjoitettava mennessä'
                 />
               </Column>
               <Column medium={2}>
                 <Field
                   name={`${modification}.first_call_sent`}
-                  component={FieldTypeText}
+                  component={FieldTypeDatePicker}
                   label='1. kutsu lähetetty'
                 />
               </Column>
               <Column medium={2}>
                 <Field
                   name={`${modification}.second_call_sent`}
-                  component={FieldTypeText}
+                  component={FieldTypeDatePicker}
                   label='2. kutsu lähetetty'
                 />
               </Column>
               <Column medium={2}>
                 <Field
                   name={`${modification}.third_call_sent`}
-                  component={FieldTypeText}
+                  component={FieldTypeDatePicker}
                   label='3. kutsu lähetetty'
                 />
               </Column>
@@ -116,18 +115,25 @@ const renderPledgeBooks = ({fields}: PledgeBookProps) => {
             <img src={trashIcon} alt='Poista' />
           </button>
           <Row>
-            <Column medium={6}>
+            <Column medium={2}>
               <Field
                 name={`${pledge_book}.pledge_book_number`}
                 component={FieldTypeText}
                 label='Panttikirjan numero'
               />
             </Column>
-            <Column medium={6}>
+            <Column medium={2}>
               <Field
                 name={`${pledge_book}.pledge_book_date`}
+                component={FieldTypeDatePicker}
+                label='Panttikirjan pvm'
+              />
+            </Column>
+            <Column medium={8}>
+              <Field
+                name={`${pledge_book}.pledge_book_comment`}
                 component={FieldTypeText}
-                label='Panttikirjan päivämäärä'
+                label='Panttikirjan kommentti'
               />
             </Column>
           </Row>
@@ -140,18 +146,21 @@ const renderPledgeBooks = ({fields}: PledgeBookProps) => {
   );
 };
 
-type ContractProps = {
+type Props = {
   fields: any,
-  rules: Array<Object>,
+  contracts: Array<Object>,
 }
 
-const renderContracts = ({fields, rules}: ContractProps) => {
-  let ruleOptions = [];
-  if (rules) {
-    rules.map(rule =>
-      ruleOptions.push({value: rule.rule_clause, label: `${rule.rule_maker}, ${formatDate(rule.rule_date)}, ${rule.rule_clause}`})
+const ContractItemsEdit = ({fields, contracts}: Props) => {
+  const contractOptions = [];
+  if (contracts) {
+    contracts.map(rule =>
+      contractOptions.push({
+        value: rule.rule_clause,
+        label: `${rule.rule_maker}, ${formatDate(rule.rule_date)}, ${rule.rule_clause}`})
     );
   }
+
   return (
     <div>
       {fields && fields.length > 0 && fields.map((contract, index) => {
@@ -165,7 +174,7 @@ const renderContracts = ({fields, rules}: ContractProps) => {
               <img src={trashIcon} alt='Poista' />
             </button>
             <Row>
-              <Column medium={4}>
+              <Column medium={2}>
                 <Field
                   name={`${contract}.contract_type`}
                   component={FieldTypeSelect}
@@ -177,7 +186,7 @@ const renderContracts = ({fields, rules}: ContractProps) => {
                   ]}
                 />
               </Column>
-              <Column medium={3}>
+              <Column medium={2}>
                 <Field
                   name={`${contract}.contract_type`}
                   component={FieldTypeText}
@@ -187,20 +196,20 @@ const renderContracts = ({fields, rules}: ContractProps) => {
               <Column medium={2}>
                 <Field
                   name={`${contract}.signing_date`}
-                  component={FieldTypeText}
+                  component={FieldTypeDatePicker}
                   label='Allekirjoituspäivämäärä'
                 />
               </Column>
-              <Column medium={3}>
+              <Column medium={6}>
                 <Field
-                  name={`${contract}.administration_number`}
+                  name={`${contract}.signing_date_comment`}
                   component={FieldTypeText}
-                  label='Laitostunnus'
+                  label='Kommentti allekirjoitukselle'
                 />
               </Column>
             </Row>
             <Row>
-              <Column medium={5}>
+              <Column medium={4}>
                 <Field
                   name={`${contract}.setup_decision`}
                   component={FieldTypeSelect}
@@ -210,9 +219,27 @@ const renderContracts = ({fields, rules}: ContractProps) => {
                   ]}
                 />
               </Column>
-              <Column medium={3}>
+              <Column medium={4}>
                 <Field
-                  name={`${contract}.lease_deposit_numer`}
+                  name={`${contract}.linked_rule`}
+                  component={FieldTypeSelect}
+                  label='Päätös'
+                  options={contractOptions}
+                />
+              </Column>
+              <Column medium={4}>
+                <Field
+                  // add KTJ integration
+                  component={FieldTypeText}
+                  label='KTJ vuokraoikeustodistuksen linkki'
+                  name={`${contract}.ktj_document`}
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column medium={2}>
+                <Field
+                  name={`${contract}.lease_deposit_number`}
                   component={FieldTypeText}
                   label='Vuokravakuusnumero'
                 />
@@ -220,28 +247,34 @@ const renderContracts = ({fields, rules}: ContractProps) => {
               <Column medium={2}>
                 <Field
                   name={`${contract}.lease_deposit_starting_date`}
-                  component={FieldTypeText}
+                  component={FieldTypeDatePicker}
                   label='Vuokravakuus alkupvm'
                 />
               </Column>
               <Column medium={2}>
                 <Field
                   name={`${contract}.lease_deposit_ending_date`}
-                  component={FieldTypeText}
+                  component={FieldTypeDatePicker}
                   label='Vuokravakuus loppupvm'
+                />
+              </Column>
+              <Column medium={6}>
+                <Field
+                  name={`${contract}.lease_deposit_comment`}
+                  component={FieldTypeText}
+                  label='Vuokravakuus kommentti'
                 />
               </Column>
             </Row>
             <Row>
-              <Column medium={7}>
+              <Column medium={9}>
                 <FieldArray name={`${contract}.pledge_books`} component={renderPledgeBooks} />
               </Column>
-              <Column medium={4} offsetOnMedium={1}>
+              <Column medium={2} offsetOnMedium={1}>
                 <Field
-                  name={`${contract}.linked_rule`}
-                  component={FieldTypeSelect}
-                  label='Päätös'
-                  options={ruleOptions}
+                  name={`${contract}.administration_number`}
+                  component={FieldTypeText}
+                  label='Laitostunnus'
                 />
               </Column>
             </Row>
@@ -249,46 +282,13 @@ const renderContracts = ({fields, rules}: ContractProps) => {
           </div>
         );
       })}
+      <Row>
+        <Column>
+          <button type="button" onClick={() => fields.push({})} className='add-button'>Lisää uusi sopimus</button>
+        </Column>
+      </Row>
     </div>
   );
 };
 
-type Props = {
-  handleSubmit: Function,
-  dispatch: Function,
-  rules: Array<Object>,
-}
-
-class ContractEdit extends Component {
-  props: Props
-
-  render() {
-    const {dispatch, handleSubmit, rules} = this.props;
-    return (
-      <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <Row>
-          <Column>
-            <FieldArray name="contracts" rules={rules} dispatch={dispatch} component={renderContracts}/>
-          </Column>
-        </Row>
-      </form>
-    );
-  }
-}
-
-const formName = 'contract-edit-form';
-const selector = formValueSelector(formName);
-
-export default flowRight(
-  connect(
-    (state) => {
-      return {
-        contracts: selector(state, 'contracts'),
-      };
-    }
-  ),
-  reduxForm({
-    form: formName,
-    destroyOnUnmount: false,
-  }),
-)(ContractEdit);
+export default ContractItemsEdit;

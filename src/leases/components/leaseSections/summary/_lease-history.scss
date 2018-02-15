@@ -1,0 +1,46 @@
+.lease-history {
+  &__component {
+    border-left: rem-calc(2px) solid #9b9b9b;
+    height: 100%;
+  }
+  &__item {
+    position: relative;
+
+    &-badge {
+      background-color: #9b9b9b;
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      position: absolute;
+      left: rem-calc(-11px);;
+      border-radius: 50%;
+
+      &.active {
+        background-color: $tram;
+        height: rem-calc(25px);
+        width: rem-calc(25px);
+        left: rem-calc(-13.5px);;
+      }
+    }
+
+    &-info {
+      padding: 0 0 0 rem-calc(20px);
+      margin-bottom: rem-calc(20px);
+
+      &.active {
+        padding-top: rem-calc(2.5px);
+      }
+      p {
+        line-height: rem-calc(20px);
+        margin-bottom: 0;
+      }
+
+      .identifier {
+        font-size: 1.125rem;
+        font-weight: $semibold;
+      }
+      .type {
+        font-weight: $semibold;
+      }
+    }
+  }
+}

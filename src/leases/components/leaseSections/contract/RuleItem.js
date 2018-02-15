@@ -44,11 +44,11 @@ const Rule = ({rule}: Props) => {
               </Column>
               <Column medium={4}>
                 <label>Valvonta päivämäärä</label>
-                {term.supervision_date ? <p className={classNames({'alert': term.supervision_date && !term.supervised_date})}><i/>{helpers.formatDate(get(term, 'supervision_date', '–'))} </p> : <p>–</p>}
+                {term.supervision_date ? <p className={classNames({'alert': term.supervision_date && !term.supervised_date})}><i/>{helpers.formatDate(term.supervision_date)} </p> : <p>–</p>}
               </Column>
               <Column medium={4}>
                 <label>Valvottu päivämäärä</label>
-                {term.supervised_date ? <p className={classNames({'success': term.supervised_date})}><i/>{term.supervised_date ? helpers.formatDate(get(term, 'supervised_date', '–')) : '–'}</p> : <p>–</p>}
+                {term.supervised_date ? <p className={classNames({'success': term.supervised_date})}><i/>{helpers.formatDate(term.supervised_date)}</p> : <p>–</p>}
               </Column>
             </Row>
             <Row>

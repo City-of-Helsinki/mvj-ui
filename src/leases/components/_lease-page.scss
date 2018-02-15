@@ -13,9 +13,25 @@
       font-size: $font-xlarge;
       font-weight: $semibold;
       margin-bottom: 1.6rem;
+      display: inline-block;
+      width: 70%;
     }
     h1:not(:first-child) {
       margin-top: 2rem;
+    }
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: $tram;
+      text-transform: uppercase;
+      margin: 1rem 0 0.5rem;
+    }
+    .right-subtitle {
+      display: inline-block;
+      float: right;
+      text-align: right;
+      line-height: 2.4;
+      font-weight: $semibold;
     }
   }
   &__upper-bar {
@@ -26,5 +42,21 @@
     .lease-info-wrapper {
       flex: 1 1 0%;
     }
+  }
+  .separator-line {
+    width: 100%;
+    border-top: 1px dashed $tram;
+    margin-bottom: 1rem;
+
+    &.no-margin {
+      margin: 0;
+    }
+  }
+  .publicity-label {
+    text-align: right;
+    font-size: 16px;
+    line-height: 2.4;
+    font-weight: $semibold;
+    color: $tram;
   }
 }

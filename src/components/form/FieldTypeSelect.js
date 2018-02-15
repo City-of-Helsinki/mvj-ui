@@ -5,10 +5,12 @@ import Select from 'react-select';
 
 type Props = {
   className: String,
-  disabled: Boolean,
-  displayError: Boolean,
+  disabled: boolean,
+  disableTouched: boolean,
+  displayError: boolean,
   input: Object,
   label: string,
+  labelClassName?: string,
   meta: Object,
   options: ?Array<any>,
   placeholder: String,
@@ -17,10 +19,12 @@ type Props = {
 const FieldTypeSelect = ({
   className,
   disabled,
+  disableTouched = false,
   displayError,
   input,
   input: {name, onBlur, onChange},
   label,
+  labelClassName,
   meta: {dirty, error, touched},
   options,
   placeholder,
@@ -41,13 +45,13 @@ const FieldTypeSelect = ({
 
   return (
     <div className='mvj-form-field'>
-      <label className='title'>{label}</label>
+      {label && <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>}
       <div className={classNames('mvj-form-field__select', className, {'has-error': displayError}, {'is-dirty': dirty})}>
         <Select
           {...input}
           arrowRenderer={arrowRenderer}
           autoBlur={true}
-          clearable={true}
+          clearable={false}
           disabled={disabled}
           id={name}
           options={options}
@@ -57,7 +61,7 @@ const FieldTypeSelect = ({
           placeholder={placeholder || 'Valitse'}
           resetValue={''}
         />
-        {touched && error && <span className={'error'}>{error}</span>}
+        {(touched || disableTouched) && error && <span className={'error'}>{error}</span>}
       </div>
     </div>
   );

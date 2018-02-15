@@ -1,6 +1,6 @@
 .modal {
   .modal__wrapper {
-    z-index: 1001;
+    z-index: 1003;
     background-color: $white;
     width: rem-calc(800px);
     max-width: 100%;
@@ -8,8 +8,9 @@
     top: -1000px;
     left: 50%;
     transform: translateX(-50%) translateY(-30%);
-    transition: top .5s ease;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
 
+    @include transition(0.5s, top, ease);
     @include breakpoint(small only){
       left: 0;
     }
@@ -49,7 +50,8 @@
     background-color: rgba(0, 0, 0, 0.65);
     opacity: 0;
     visibility: hidden;
-    transition: all .5s ease;
+
+    @include transition(0.5s, all, ease);
   }
 
   &.modal-open {

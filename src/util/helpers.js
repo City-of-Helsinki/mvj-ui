@@ -121,6 +121,27 @@ export const formatDate = (date: string) => {
   return d.format('DD.MM.YYYY');
 };
 
+export const formatDateDb = (date: string) => {
+  if (!date) {
+    return '';
+  }
+
+  const d = isNumber(date) ? moment.unix(date) : moment(date);
+  return d.format('YYYY-MM-DD');
+};
+
+export const formatDecimalNumber = (x) => {
+  return parseFloat(x).toFixed(2).toString().replace('.', ',');
+};
+
+export const formatDecimalNumberDb = (x) => {
+  return x ? Number(x.toString().replace(',', '.')): null;
+};
+
+export const formatNumberWithThousandSeparator = (x, separator = ' ') => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+};
+
 export const formatDateRange = (startDate: any, endDate: any) => {
   if (!startDate && !endDate) {
     return '';
@@ -130,6 +151,7 @@ export const formatDateRange = (startDate: any, endDate: any) => {
     end = isNumber(endDate) ? moment.unix(endDate) : moment(endDate);
 
   const dateFormat = 'DD.MM.YYYY';
+
   if(!startDate) {
     return `- ${end.format(dateFormat)}`;
   }
@@ -171,6 +193,11 @@ export const getKtjLink = (id, key, lang = 'fi') => {
  */
 export const findIndexOfArrayfield = (collection, id) => {
   return findIndex(collection, {id});
+};
+
+export const getLabelOfOption = (options: Array<Object>, value: string) => {
+  const option = options.find(x => x.value=== value);
+  return get(option, 'label', '');
 };
 
 /**
