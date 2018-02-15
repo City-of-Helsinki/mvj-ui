@@ -41,6 +41,11 @@
           background-color: $engel-lighter !important;
           color: $black !important;
         }
+
+        td.no-data {
+          background-color: $lightest-gray;
+          text-align: center;
+        }
       }
     }
   }

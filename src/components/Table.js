@@ -10,6 +10,7 @@ type Props = {
   data: Array<any>,
   dataKeys: Array<any>,
   displayHeaders: boolean,
+  noDataText: ?string,
   onRowClick?: Function,
 };
 
@@ -21,7 +22,12 @@ class Table extends Component {
   };
 
   render() {
-    const {className, data, dataKeys, displayHeaders, onRowClick} = this.props;
+    const {className,
+      data,
+      dataKeys,
+      displayHeaders,
+      noDataText,
+      onRowClick} = this.props;
 
     return (
       <table className={classnames(className, 'table', {'clickable-row': !!onRowClick})}>
@@ -45,6 +51,9 @@ class Table extends Component {
               ))}
             </tr>
           ))}
+          {!data || !data.length &&
+            <tr><td className='no-data' colSpan={dataKeys.length}>{noDataText ? noDataText : 'Ei tuloksia'}</td></tr>
+          }
         </tbody>
       </table>
     );
