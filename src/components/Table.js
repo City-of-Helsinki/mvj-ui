@@ -10,7 +10,7 @@ type Props = {
   data: Array<any>,
   dataKeys: Array<any>,
   displayHeaders: boolean,
-  noDataText: ?string,
+  noDataText?: string,
   onRowClick?: Function,
 };
 
