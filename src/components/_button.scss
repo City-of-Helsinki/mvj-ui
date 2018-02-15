@@ -47,4 +47,11 @@
   &.full-width {
     width: 100%;
   }
+
+  &.button-map {
+    position: absolute;
+    top: rem-calc(10px);
+    right: rem-calc(10px);
+    z-index: 1001;
+  }
 }

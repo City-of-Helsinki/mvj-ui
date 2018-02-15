@@ -8,7 +8,7 @@
 // Vendor
 @import "~react-redux-toastr/src/styles/index";
 @import "~react-select/dist/react-select.css";
-@import "components-alpha/map/leaflet";
+@import "components/map/leaflet";
 
 // Components
 @import "components-alpha/filterableList/filterableList";
@@ -79,6 +79,7 @@
 @import "leases/components/leaseSections/summary/lease-history";
 @import "leases/components/lease-list";
 @import "leases/components/lease-page";
+@import "leases/components/save-condition-panel";
 @import "leases/components/search/search";
 @import "leases/components/table-controllers";
 

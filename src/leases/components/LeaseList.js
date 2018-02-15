@@ -11,7 +11,7 @@ import * as contentHelpers from '../helpers';
 import {getSearchQuery} from './search/helpers';
 import Button from '../../components/Button';
 import CreateLease from '../components/leaseSections/CreateLease';
-import LeaseListMapContainer from './LeaseListMapContainer';
+import LeaseListMap from './LeaseListMap';
 import Loader from '../../components/loader/Loader';
 import Modal from '../../components/Modal';
 import Search from './search/Search';
@@ -136,7 +136,7 @@ class LeaseList extends Component {
           </Column>
           <Column small={2} style={{paddingLeft: 0}}>
             <Button
-              className='no-margin'
+              className='no-margin full-width'
               onClick={() => this.showModal('CreateLeaseIdentifier')}
               text='Luo uusi vuokratunnus'
             />
@@ -155,30 +155,33 @@ class LeaseList extends Component {
         </Row>
         {isFetching && <Row><Column><div className='loader__wrapper'><Loader isLoading={isFetching} /></div></Column></Row>}
         {!isFetching &&
-          <Row>
-            <Column>
-              {visualizationType === 'table' && (
-                <Table
-                  amount={filteredLeases.length}
-                  data={filteredLeases}
-                  dataKeys={[
-                    {key: 'identifier', label: 'Vuokratunnus'},
-                    {key: 'real_property_unit', label: 'Vuokrakohde'},
-                    {key: 'tenant', label: 'Vuokralainen'},
-                    {key: 'person', label: 'Vuokranantaja'},
-                    {key: 'address', label: 'Osoite'},
-                    {key: 'status', label: 'Tyyppi'},
-                    {key: 'start_date', label: 'Alkupvm'},
-                    {key: 'end_date', label: 'Loppupvm'},
-                  ]}
-                  onRowClick={this.handleEditClick}
-                />
-              )}
-              {visualizationType === 'map' && (
-                <LeaseListMapContainer />
-              )}
-            </Column>
-          </Row>
+          <div>
+            {visualizationType === 'table' && (
+              <Row>
+                <Column>
+                  <Table
+                    amount={filteredLeases.length}
+                    data={filteredLeases}
+                    dataKeys={[
+                      {key: 'identifier', label: 'Vuokratunnus'},
+                      {key: 'real_property_unit', label: 'Vuokrakohde'},
+                      {key: 'tenant', label: 'Vuokralainen'},
+                      {key: 'person', label: 'Vuokranantaja'},
+                      {key: 'address', label: 'Osoite'},
+                      {key: 'status', label: 'Tyyppi'},
+                      {key: 'start_date', label: 'Alkupvm'},
+                      {key: 'end_date', label: 'Loppupvm'},
+                    ]}
+                    onRowClick={this.handleEditClick}
+                  />
+                </Column>
+              </Row>
+
+            )}
+            {visualizationType === 'map' && (
+              <LeaseListMap />
+            )}
+          </div>
         }
       </div>
     );

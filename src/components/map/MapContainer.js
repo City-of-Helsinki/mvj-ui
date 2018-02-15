@@ -1,6 +1,6 @@
 // @ flow
 import React from 'react';
-import {Map, WMSTileLayer} from 'react-leaflet';
+import {Map, WMSTileLayer, ZoomControl} from 'react-leaflet';
 import L from 'leaflet';
 import 'proj4leaflet';
 
@@ -30,9 +30,11 @@ const MapContainer = ({center, zoom, children, ...rest}: Props) => {
       minZoom={minZoom}
       maxZoom={maxZoom}
       zoom={zoom}
+      zoomControl={false}
       crs={CRS}
       {...rest}
     >
+      <ZoomControl position='topright' />
       <WMSTileLayer
         url={'https://kartta.hel.fi/ws/geoserver/avoindata/wms?'}
         layers={'avoindata:Karttasarja'}
