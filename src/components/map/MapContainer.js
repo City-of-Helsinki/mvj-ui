@@ -1,10 +1,12 @@
 // @ flow
 import React from 'react';
 import {Map, WMSTileLayer, ZoomControl} from 'react-leaflet';
+import FullscreenControl from 'react-leaflet-fullscreen';
 import L from 'leaflet';
 import 'proj4leaflet';
 
 import {minZoom, maxZoom} from '../../constants';
+import 'react-leaflet-fullscreen/dist/styles.css';
 
 const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
 // const originNw = [bounds.min.x, bounds.max.y];
@@ -34,6 +36,7 @@ const MapContainer = ({center, zoom, children, ...rest}: Props) => {
       crs={CRS}
       {...rest}
     >
+      <FullscreenControl position="topright" />
       <ZoomControl position='topright' />
       <WMSTileLayer
         url={'https://kartta.hel.fi/ws/geoserver/avoindata/wms?'}

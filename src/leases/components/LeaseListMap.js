@@ -1,3 +1,4 @@
+// @flow
 import React, {Component} from 'react';
 import {FeatureGroup, Polygon, ScaleControl, Tooltip} from 'react-leaflet';
 import {EditControl} from 'react-leaflet-draw';
@@ -31,7 +32,7 @@ class LeaseListMap extends Component {
       id: _leaflet_id,
       data: layer.toGeoJSON(),
     });
-    this.setState(shapes: shapes);
+    this.setState({shapes: shapes});
   }
 
   handleDeleted = (e: Object) => {
