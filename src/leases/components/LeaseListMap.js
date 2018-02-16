@@ -103,7 +103,7 @@ class LeaseListMap extends Component {
               }}
             />
           </FeatureGroup>
-          <SaveConditionPanel show={shapes && shapes.length} />
+          <SaveConditionPanel show={shapes && !!shapes.length} />
 
           <ScaleControl imperial={false} />
 
