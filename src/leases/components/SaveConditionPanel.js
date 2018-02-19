@@ -42,7 +42,7 @@ class SaveConditionPanel extends Component {
                 rows={1}
                 value={comment} />
             </Column>
-            <Column medium={3} style={{paddingRight: 0}}>
+            <Column medium={3} style={{paddingRight: 0, paddingTop: '20px'}}>
               <Button
                 className='button-green no-margin full-width'
                 onClick={() => createCondition(this.state.comment)}

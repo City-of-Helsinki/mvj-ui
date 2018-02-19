@@ -2,13 +2,13 @@
 import React, {Component} from 'react';
 import {FeatureGroup} from 'react-leaflet';
 import {EditControl} from 'react-leaflet-draw';
-import {localizeMap} from '../../util/helpers';
-import {defaultCoordinates, defaultZoom} from '../../constants';
-import MapContainer from '../../components/map/MapContainer';
 import forEach from 'lodash/forEach';
 import isEmpty from 'lodash/isEmpty';
 import 'leaflet-measure-path';
 
+import {displayUIMessage, localizeMap} from '../../util/helpers';
+import {defaultCoordinates, defaultZoom} from '../../constants';
+import MapContainer from '../../components/map/MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
 
 import '../../../node_modules/leaflet-draw/dist/leaflet.draw.css';
@@ -102,7 +102,9 @@ class LeaseListMap extends Component {
     const {rememberableTerms, shapes} = this.state;
 
     shapes.forEach((shape) => {
-      shape.data.properties.comment = comment;
+      if(comment) {
+        shape.data.properties.comment = comment;
+      }
       rememberableTerms.push(shape.data);
       // Delete layers after pushing them to array.
       // TODO: Find better place for this when saving using API is ready
@@ -110,6 +112,7 @@ class LeaseListMap extends Component {
     });
     this.setState({rememberableTerms: rememberableTerms, shapes: []});
     this.saveConditionPanel.clearCommentField();
+    displayUIMessage({title: 'Muistettava ehto tallennetty', body: 'Muistettava ehto on tallennettu onnistuneesti'});
   }
 
   render() {
