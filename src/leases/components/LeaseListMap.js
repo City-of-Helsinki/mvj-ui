@@ -102,7 +102,9 @@ class LeaseListMap extends Component {
     const {rememberableTerms, shapes} = this.state;
 
     shapes.forEach((shape) => {
-      shape.data.properties.comment = comment;
+      if(comment) {
+        shape.data.properties.comment = comment;
+      }
       rememberableTerms.push(shape.data);
       // Delete layers after pushing them to array.
       // TODO: Find better place for this when saving using API is ready
