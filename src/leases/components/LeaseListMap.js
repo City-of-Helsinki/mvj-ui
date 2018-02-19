@@ -1,6 +1,7 @@
 // @ flow
 import React, {Component} from 'react';
-import {FeatureGroup, Polygon, ScaleControl, Tooltip} from 'react-leaflet';
+import {Circle, FeatureGroup, LayerGroup, Polygon, Polyline, ScaleControl, Tooltip} from 'react-leaflet';
+// import PolygonWithMeasurements from '../../components/leaflet/PolygonWithMeasurements';
 import {EditControl} from 'react-leaflet-draw';
 import {localizeMap} from '../../util/helpers';
 import {defaultCoordinates, defaultZoom} from '../../constants';
@@ -12,9 +13,12 @@ import SaveConditionPanel from './SaveConditionPanel';
 
 import '../../../node_modules/leaflet-draw/dist/leaflet.draw.css';
 
+import mockData from '../../components/map/mock-data-map.json';
+
 localizeMap();
 
 type State = {
+  rememberableTerms: Array<Object>,
   shapes: Array<Object>,
 }
 
@@ -23,14 +27,24 @@ class LeaseListMap extends Component {
     shapes: [],
   }
 
+  componentWillMount() {
+    this.setState({rememberableTerms: mockData});
+  }
+
   handleAreaClick = () => {console.log('polygon clicked!');};
 
   handleCreated = (e: Object) => {
     const {shapes} = this.state;
-    const {layer, layer: {_leaflet_id}} = e;
+    const {layer, layer: {_leaflet_id}, layerType} = e;
+
+    let geoJSON = layer.toGeoJSON();
+    if(layerType === 'circle') {
+      const radius = layer.getRadius();
+      geoJSON.properties.radius = radius;
+    }
     shapes.push({
       id: _leaflet_id,
-      data: layer.toGeoJSON(),
+      data: geoJSON,
     });
     this.setState({shapes: shapes});
   }
@@ -61,6 +75,7 @@ class LeaseListMap extends Component {
 
     const editedShapes = [];
     e.layers.eachLayer(layer => {
+      console.log(layer);
       editedShapes.push({
         id: layer._leaflet_id,
         data: layer.toGeoJSON(),
@@ -83,8 +98,56 @@ class LeaseListMap extends Component {
     this.setState({shapes: newShapes});
   };
 
+  getShapeForData = (term: Object, index: number) => {
+    const {geometry, properties} = term;
+
+    switch (geometry.type) {
+      case 'LineString':
+        return (
+          <Polyline
+            color="#D53272"
+            positions={geometry.coordinates}
+            key={index}
+            onClick={() => this.handleAreaClick()}
+          >
+            {properties.comment &&
+              <Tooltip sticky="true"><span>{properties.comment}</span></Tooltip>
+            }
+          </Polyline>
+        );
+      case 'Point':
+        return (
+          <Circle
+            color="#D53272"
+            center={geometry.coordinates}
+            key={index}
+            radius={properties.radius}
+            onClick={() => this.handleAreaClick()}
+          >
+            {properties.comment &&
+              <Tooltip sticky="true"><span>{properties.comment}</span></Tooltip>
+            }
+          </Circle>
+        );
+      case 'Polygon':
+        return (
+          <Polygon
+            color="#D53272"
+            key={index}
+            positions={geometry.coordinates}
+            onClick={() => this.handleAreaClick()}
+          >
+            {properties.comment &&
+              <Tooltip sticky="true"><span>{properties.comment}</span></Tooltip>
+            }
+          </Polygon>
+        );
+    }
+  }
+
   render() {
-    const {shapes} = this.state;
+    const {rememberableTerms, shapes} = this.state;
+    console.log(shapes);
 
     return (
       <div className='map'>
@@ -106,9 +169,18 @@ class LeaseListMap extends Component {
           <SaveConditionPanel show={shapes && !!shapes.length} />
 
           <ScaleControl imperial={false} />
-
-          <Polygon
+          {rememberableTerms && rememberableTerms.length &&
+            <LayerGroup>
+              {rememberableTerms.map((term, index) => {
+                return (
+                  this.getShapeForData(term, index)
+                );
+              })}
+            </LayerGroup>
+          }
+          {/* <PolygonWithMeasurements
             color="#009246" // tram green
+            showOnHover={true}
             positions={[
               [60.19, 24.924],
               [60.19, 24.926],
@@ -118,7 +190,7 @@ class LeaseListMap extends Component {
             onClick={() => this.handleAreaClick()}
           >
             <Tooltip sticky="true"><span>teksti tähän!</span></Tooltip>
-          </Polygon>
+          </PolygonWithMeasurements> */}
         </MapContainer>
       </div>
     );
