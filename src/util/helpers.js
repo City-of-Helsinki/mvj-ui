@@ -74,7 +74,7 @@ export const localizeMap = () => {
   L.drawLocal.draw.handlers.polygon.tooltip.start = 'Aloita alueen piirtäminen klikkaamalla.';
   L.drawLocal.draw.handlers.polygon.tooltip.cont = 'Jatka alueen piirtämistä klikkaamalla';
   L.drawLocal.draw.handlers.polygon.tooltip.end = 'Klikkaa ensimmäistä pistettä kuvion päättämiseksi';
-  L.drawLocal.draw.handlers.polyline.error = '<strong>Virhe:</strong> kuvion reunat ei saa leikata toisuaa!';
+  L.drawLocal.draw.handlers.polyline.error = '<strong>Virhe:</strong> kuvion reunat ei saa leikata toisiaan!';
   L.drawLocal.draw.handlers.polyline.tooltip.start = 'Aloita viivan piirtäminen klikkaamalla.';
   L.drawLocal.draw.handlers.polyline.tooltip.cont = 'Jatka viivan piirtämistä klikkaamalla';
   L.drawLocal.draw.handlers.polyline.tooltip.end = 'Klikkaa viimeistä pistettä viivan päättämiseksi';

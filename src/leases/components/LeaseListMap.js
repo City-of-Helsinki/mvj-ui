@@ -1,13 +1,13 @@
 // @ flow
 import React, {Component} from 'react';
 import {FeatureGroup} from 'react-leaflet';
-// import PolygonWithMeasurements from '../../components/leaflet/PolygonWithMeasurements';
 import {EditControl} from 'react-leaflet-draw';
 import {localizeMap} from '../../util/helpers';
 import {defaultCoordinates, defaultZoom} from '../../constants';
 import MapContainer from '../../components/map/MapContainer';
 import forEach from 'lodash/forEach';
 import isEmpty from 'lodash/isEmpty';
+import 'leaflet-measure-path';
 
 import SaveConditionPanel from './SaveConditionPanel';
 
@@ -46,6 +46,8 @@ class LeaseListMap extends Component {
       id: _leaflet_id,
       data: geoJSON,
     });
+
+    layer.showMeasurements();
     this.setState({shapes: shapes});
   }
 
@@ -118,7 +120,21 @@ class LeaseListMap extends Component {
               draw={{
                 circlemarker: false,
                 marker: false,
-                polyline: true,
+                polyline: {
+                  allowIntersection: false,
+                  drawError: {
+                    color: '#b00b00',
+                    timeout: 1000,
+                  },
+                },
+                polygon: {
+                  allowIntersection: false,
+                  showArea: true,
+                  drawError: {
+                    color: '#b00b00',
+                    timeout: 1000,
+                  },
+                },
               }}
             />
           </FeatureGroup>
