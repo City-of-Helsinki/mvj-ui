@@ -32,8 +32,6 @@ class LeaseListMap extends Component {
     this.setState({rememberableTerms: mockData});
   }
 
-  handleAreaClick = () => {console.log('polygon clicked!');};
-
   handleCreated = (e: Object) => {
     const {shapes} = this.state;
     const {layer, layer: {_leaflet_id}, layerType} = e;
@@ -100,17 +98,18 @@ class LeaseListMap extends Component {
     this.setState({shapes: newShapes});
   };
 
-  createRememberableTerm = () => {
+  createRememberableTerm = (comment: string) => {
     const {rememberableTerms, shapes} = this.state;
 
     shapes.forEach((shape) => {
+      shape.data.properties.comment = comment;
       rememberableTerms.push(shape.data);
       // Delete layers after pushing them to array.
       // TODO: Find better place for this when saving using API is ready
       this.featureGroup.leafletElement.removeLayer(shape.id);
     });
     this.setState({rememberableTerms: rememberableTerms, shapes: []});
-
+    this.saveConditionPanel.clearCommentField();
   }
 
   render() {
@@ -152,7 +151,9 @@ class LeaseListMap extends Component {
               }}
             />
           </FeatureGroup>
-          <SaveConditionPanel createCondition={() => this.createRememberableTerm()} show={shapes && !!shapes.length} />
+          <SaveConditionPanel
+            ref={(input) => {this.saveConditionPanel = input;}}
+            createCondition={(comment) => this.createRememberableTerm(comment)} show={shapes && !!shapes.length} />
         </MapContainer>
       </div>
     );
