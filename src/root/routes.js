@@ -8,12 +8,14 @@ import CallbackPage from '../auth/components/CallbackPage';
 import LeaseList from '../leases/components/LeaseList';
 import LeasePage from '../leases/components/LeasePage';
 import LoginPage from '../auth/components/LoginPage';
+import DrawAreaPage from '../drawAreaPage/components/DrawAreaPage';
 
 export default
 <Route path="/" component={App}>
   <IndexRedirect to="leases" />
   <Route path="leases" components={LeaseList} />
   <Route path="leases/:leaseId" component={LeasePage}/>
+  <Route path="newarea" components={DrawAreaPage} />
   <Route path="logout" components={LoginPage} />
   <Route path="callback" components={CallbackPage} />
   <Route path="*" component={ErrorPage}/>

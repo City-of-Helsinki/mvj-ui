@@ -1,13 +1,14 @@
 import React, {Component} from 'react';
-import {Polygon, Tooltip} from 'react-leaflet';
-import MapContainer from '../../components/map/Map';
+import {Polygon, Tooltip, ScaleControl} from 'react-leaflet';
+
 import {defaultCoordinates, defaultZoom} from '../../constants';
+import MapContainer from '../../components/map/MapContainer';
 
 type Props = {
-  mockData: Array<Object>,
+  areas: Array<Object>,
 }
 
-class Map extends Component {
+class MapDrawAreaPage extends Component {
   props: Props
 
   handleAreaClick = () => {
@@ -20,7 +21,7 @@ class Map extends Component {
         <MapContainer center={defaultCoordinates}
           zoom={defaultZoom}
         >
-
+          <ScaleControl imperial={false} />
           <Polygon
             color="#009246" // tram green
             positions={[
@@ -29,11 +30,8 @@ class Map extends Component {
               [60.194, 24.929],
               [60.196, 24.924],
             ]}
-            onClick={() => this.handleAreaClick()}
-          >
-            <Tooltip sticky="true">
-              <span>teksti tähän!</span>
-            </Tooltip>
+            onClick={() => this.handleAreaClick()}>
+            <Tooltip sticky="true"><span>teksti tähän!</span></Tooltip>
           </Polygon>
         </MapContainer>
       </div>
@@ -41,4 +39,4 @@ class Map extends Component {
   }
 }
 
-export default Map;
+export default MapDrawAreaPage;

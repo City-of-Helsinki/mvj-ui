@@ -1,7 +1,14 @@
 import React, {Component} from 'react';
-import {Polygon, Tooltip, ScaleControl} from 'react-leaflet';
-import MapContainer from '../../../components/map/Map';
+import {FeatureGroup, Polygon, ScaleControl, Tooltip} from 'react-leaflet';
+import {EditControl} from 'react-leaflet-draw';
+import MapContainer from '../../../components/map/MapContainer';
 import {defaultCoordinates, defaultZoom} from '../../../constants';
+
+import '../../../../node_modules/leaflet-draw/dist/leaflet.draw.css';
+
+import {localizeMap} from '../../../util/helpers';
+
+localizeMap();
 
 type Props = {
   areas: Array<Object>,
@@ -15,14 +22,22 @@ class Map extends Component {
   };
 
   render() {
-    console.log(this.props.areas);
     return (
       <div className='map'>
         <MapContainer center={defaultCoordinates}
           zoom={defaultZoom}
         >
-          <ScaleControl imperial={false} />
 
+          <FeatureGroup>
+            <EditControl
+              position='topright'
+              draw={{
+                circlemarker: false,
+                marker: false,
+                polyline: false,
+              }}
+            />
+          </FeatureGroup>
           <Polygon
             color="#009246" // tram green
             positions={[
@@ -37,6 +52,7 @@ class Map extends Component {
               <span>teksti tähän!</span>
             </Tooltip>
           </Polygon>
+          <ScaleControl imperial={false} />
         </MapContainer>
       </div>
     );

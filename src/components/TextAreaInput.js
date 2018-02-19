@@ -1,7 +1,9 @@
 // @flow
 import React from 'react';
+import classNames from 'classnames';
 
 type Props = {
+  className?: string,
   disabled?: boolean,
   onChange: Function,
   placeholder?: string,
@@ -9,10 +11,10 @@ type Props = {
   value: string,
 }
 
-const TextAreaInput = ({disabled, onChange, placeholder = '', rows = 3, value = ''}: Props) => {
+const TextAreaInput = ({className, disabled, onChange, placeholder = '', rows = 3, value = ''}: Props) => {
   return (
     <textarea
-      className='text--area-input'
+      className={classNames('text-area-input', className)}
       disabled={disabled}
       onChange={onChange}
       placeholder={placeholder}

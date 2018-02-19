@@ -1,0 +1,22 @@
+.save-condition-panel {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  max-height: 0;
+  z-index: 1001;
+  background-color: rgba(0,0,0,0.35);
+  box-shadow: -2px 0 5px 0 rgba(0, 0, 0, 0.07);
+
+  @include transition(0.3s, all, ease-in-out);
+
+  &__container {
+    padding: rem-calc(20px);
+    text-align: right;
+  }
+
+  &.is-panel-open {
+    max-height: 100px;
+  }
+}
