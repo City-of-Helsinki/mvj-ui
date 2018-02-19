@@ -1,6 +1,6 @@
 // @ flow
 import React, {Component} from 'react';
-import {Circle, FeatureGroup, LayerGroup, Polygon, Polyline, ScaleControl, Tooltip} from 'react-leaflet';
+import {FeatureGroup} from 'react-leaflet';
 // import PolygonWithMeasurements from '../../components/leaflet/PolygonWithMeasurements';
 import {EditControl} from 'react-leaflet-draw';
 import {localizeMap} from '../../util/helpers';
@@ -98,61 +98,17 @@ class LeaseListMap extends Component {
     this.setState({shapes: newShapes});
   };
 
-  getShapeForData = (term: Object, index: number) => {
-    const {geometry, properties} = term;
-
-    switch (geometry.type) {
-      case 'LineString':
-        return (
-          <Polyline
-            color="#D53272"
-            positions={geometry.coordinates}
-            key={index}
-            onClick={() => this.handleAreaClick()}
-          >
-            {properties.comment &&
-              <Tooltip sticky="true"><span>{properties.comment}</span></Tooltip>
-            }
-          </Polyline>
-        );
-      case 'Point':
-        return (
-          <Circle
-            color="#D53272"
-            center={geometry.coordinates}
-            key={index}
-            radius={properties.radius}
-            onClick={() => this.handleAreaClick()}
-          >
-            {properties.comment &&
-              <Tooltip sticky="true"><span>{properties.comment}</span></Tooltip>
-            }
-          </Circle>
-        );
-      case 'Polygon':
-        return (
-          <Polygon
-            color="#D53272"
-            key={index}
-            positions={geometry.coordinates}
-            onClick={() => this.handleAreaClick()}
-          >
-            {properties.comment &&
-              <Tooltip sticky="true"><span>{properties.comment}</span></Tooltip>
-            }
-          </Polygon>
-        );
-    }
-  }
-
   render() {
     const {rememberableTerms, shapes} = this.state;
     console.log(shapes);
 
     return (
       <div className='map'>
-        <MapContainer center={defaultCoordinates}
-          zoom={defaultZoom}>
+        <MapContainer
+          center={defaultCoordinates}
+          rememberableTerms={rememberableTerms}
+          zoom={defaultZoom}
+          >
           <FeatureGroup>
             <EditControl
               position='topright'
@@ -167,30 +123,6 @@ class LeaseListMap extends Component {
             />
           </FeatureGroup>
           <SaveConditionPanel show={shapes && !!shapes.length} />
-
-          <ScaleControl imperial={false} />
-          {rememberableTerms && rememberableTerms.length &&
-            <LayerGroup>
-              {rememberableTerms.map((term, index) => {
-                return (
-                  this.getShapeForData(term, index)
-                );
-              })}
-            </LayerGroup>
-          }
-          {/* <PolygonWithMeasurements
-            color="#009246" // tram green
-            showOnHover={true}
-            positions={[
-              [60.19, 24.924],
-              [60.19, 24.926],
-              [60.194, 24.929],
-              [60.196, 24.924],
-            ]}
-            onClick={() => this.handleAreaClick()}
-          >
-            <Tooltip sticky="true"><span>teksti tähän!</span></Tooltip>
-          </PolygonWithMeasurements> */}
         </MapContainer>
       </div>
     );

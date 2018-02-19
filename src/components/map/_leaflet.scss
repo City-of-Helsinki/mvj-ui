@@ -278,6 +278,10 @@
   background-repeat: no-repeat;
   display: block;
 }
+.leaflet-control-layers-toggle {
+  background-image: url(../assets/images/layers-2x.png);
+  background-size: 70%;
+}
 .leaflet-bar a:hover {
   background-color: #f4f4f4;
 }
