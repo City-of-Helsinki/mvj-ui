@@ -260,5 +260,5 @@ export const summaryTransferRightOptions = [
 
 export const tenantsRolesOptions = [
   {value: '1', label: 'Laskunsaaja'},
-  {value: '2', label: 'Vuokralainen'},
+  {value: '2', label: 'Yhteyshenkilö'},
 ];
