@@ -12,6 +12,7 @@ import {Circle,
 import FullscreenControl from 'react-leaflet-fullscreen';
 import L from 'leaflet';
 import 'proj4leaflet';
+import {getCircleCenter, getCoordinates, getCoordinatesPolygon} from '../../util/helpers';
 const {BaseLayer, Overlay} = LayersControl;
 
 import {minZoom, maxZoom} from '../../constants';
@@ -43,10 +44,9 @@ const getShapeForData = (term: Object, index: number) => {
       return (
         <Polyline
           color="#D53272"
-          positions={geometry.coordinates}
+          positions={getCoordinates(geometry.coordinates)}
           key={index}
-          onClick={() => this.handleAreaClick()}
-        >
+          onClick={() => console.log('Area click')}>
           {properties.comment && <Tooltip sticky="true"><span>{properties.comment}</span></Tooltip>}
         </Polyline>
       );
@@ -54,11 +54,10 @@ const getShapeForData = (term: Object, index: number) => {
       return (
         <Circle
           color="#D53272"
-          center={geometry.coordinates}
+          center={getCircleCenter(geometry.coordinates)}
           key={index}
           radius={properties.radius}
-          onClick={() => this.handleAreaClick()}
-        >
+          onClick={() => console.log('Area click')}>
           {properties.comment && <Tooltip sticky="true"><span>{properties.comment}</span></Tooltip>}
         </Circle>
       );
@@ -67,9 +66,8 @@ const getShapeForData = (term: Object, index: number) => {
         <Polygon
           color="#D53272"
           key={index}
-          positions={geometry.coordinates}
-          onClick={() => this.handleAreaClick()}
-        >
+          positions={getCoordinatesPolygon(geometry.coordinates)}
+          onClick={() => console.log('Area click')}>
           {properties.comment && <Tooltip sticky="true"><span>{properties.comment}</span></Tooltip>}
         </Polygon>
       );

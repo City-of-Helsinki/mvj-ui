@@ -24,6 +24,7 @@ type State = {
 
 class LeaseListMap extends Component {
   state: State = {
+    rememberableTerms: [],
     shapes: [],
   }
 
@@ -77,7 +78,6 @@ class LeaseListMap extends Component {
 
     const editedShapes = [];
     e.layers.eachLayer(layer => {
-      console.log(layer);
       editedShapes.push({
         id: layer._leaflet_id,
         data: layer.toGeoJSON(),
@@ -100,9 +100,21 @@ class LeaseListMap extends Component {
     this.setState({shapes: newShapes});
   };
 
+  createRememberableTerm = () => {
+    const {rememberableTerms, shapes} = this.state;
+
+    shapes.forEach((shape) => {
+      rememberableTerms.push(shape.data);
+      // Delete layers after pushing them to array.
+      // TODO: Find better place for this when saving using API is ready
+      this.featureGroup.leafletElement.removeLayer(shape.id);
+    });
+    this.setState({rememberableTerms: rememberableTerms, shapes: []});
+
+  }
+
   render() {
     const {rememberableTerms, shapes} = this.state;
-    console.log(shapes);
 
     return (
       <div className='map'>
@@ -111,7 +123,9 @@ class LeaseListMap extends Component {
           rememberableTerms={rememberableTerms}
           zoom={defaultZoom}
           >
-          <FeatureGroup>
+          <FeatureGroup
+            ref={(input) => {this.featureGroup = input;}}
+          >
             <EditControl
               position='topright'
               onCreated={this.handleCreated}
@@ -138,7 +152,7 @@ class LeaseListMap extends Component {
               }}
             />
           </FeatureGroup>
-          <SaveConditionPanel show={shapes && !!shapes.length} />
+          <SaveConditionPanel createCondition={() => this.createRememberableTerm()} show={shapes && !!shapes.length} />
         </MapContainer>
       </div>
     );

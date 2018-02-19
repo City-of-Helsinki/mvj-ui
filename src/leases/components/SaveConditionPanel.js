@@ -5,16 +5,17 @@ import classNames from 'classnames';
 import Button from '../../components/Button';
 
 type Props = {
+  createCondition: Function,
   show: boolean,
 }
 
-const SaveConditionPanel = ({show}: Props) => {
+const SaveConditionPanel = ({createCondition, show}: Props) => {
   return (
     <div className={classNames('save-condition-panel', {'is-panel-open': show})}>
       <div className='save-condition-panel__container'>
         <Button
           className='button-green'
-          onClick={() => console.log()}
+          onClick={() => createCondition()}
           text='Lisää muistettava ehto'
         />
       </div>

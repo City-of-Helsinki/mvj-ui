@@ -254,6 +254,12 @@ export const getLabelOfOption = (options: Array<Object>, value: string) => {
  */
 export const getAreaCoordinates = (area) => area && get(area, 'mpoly.coordinates.0.0').map(arr => [arr[1], arr[0]]);
 
+export const getCircleCenter = (c) => [c[1], c[0]];
+
+export const getCoordinates = (c) => c.map(arr => [arr[1], arr[0]]);
+
+export const getCoordinatesPolygon = (c) => c.map(arr1 => arr1.map(arr2 => [arr2[1], arr2[0]]));
+
 /**
  * Get full amount of rent
  * @param rents
