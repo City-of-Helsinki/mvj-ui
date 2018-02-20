@@ -38,7 +38,7 @@ const FieldTypeCheckbox = ({
 
       return onBlur(newValue);
     }
-    return onBlur(value === event.target.value ? false : event.target.value);
+    return onBlur(value ? false : true);
   };
 
   return (
