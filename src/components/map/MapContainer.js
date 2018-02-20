@@ -92,9 +92,6 @@ const MapContainer = ({center, rememberableTerms, zoom, children, ...rest}: Prop
             layers={'avoindata:Karttasarja'}
             format={'image/png'}
             transparent={true}
-            onTileerror={console.warn}
-            onLoading={console.log}
-            onLoad={console.log}
           />
         </BaseLayer>
 
