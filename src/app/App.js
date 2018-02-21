@@ -9,7 +9,6 @@ import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
 import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
-import classnames from 'classnames';
 
 import {getRouteById} from '../root/routes';
 import {clearError} from '../api/actions';
@@ -138,7 +137,7 @@ class App extends Component {
             isOpen={displaySideMenu}
             onLinkClick={this.toggleSideMenu}
           />
-          <div className={classnames('wrapper', {'is-sidemenu-closed': !displaySideMenu}, {'is-sidemenu-open': displaySideMenu})}>
+          <div className='wrapper'>
             {children}
           </div>
         </section>

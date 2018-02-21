@@ -1,15 +1,16 @@
 .side-menu {
   z-index: 1001;
   background-color: $tram;
-  width: 200px;
+  width: 220px;
   height: 100vh;
   position: fixed;
   top: 0;
-  left: -200px;
+  left: -220px;
   padding: rem-calc(100px) rem-calc(20px) 0 rem-calc(30px);
   box-shadow: 2px 0 5px 0 rgba(0, 0, 0, 0.06);
 
   @include transition(0.3s, all, ease-in-out);
+
   ul {
     list-style-type: none;
     margin: 0;
@@ -28,5 +29,5 @@
 }
 
 .is-menu-open {
-  transform: translateX(200px)
+  left: 0;
 }
