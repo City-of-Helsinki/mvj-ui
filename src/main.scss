@@ -42,28 +42,26 @@
 @import "role/role-selector";
 
 // Components Beta
-@import "components/action-dropdown";
-@import "components/button";
-@import "components/collapse";
+@import "components/button/button";
+@import "components/button/icon-radio-buttons";
+@import "components/button/styled-checkbox-buttons";
+@import "components/collapse/collapse";
 @import "components/commentPanel/comment-panel";
-@import "components/confirmation-modal";
-@import "components/form-action-dropdown";
+@import "components/dropdown/action-dropdown";
 @import "components/form/form";
-@import "components/icon-radio-buttons";
+@import "components/inputs/search-input";
+@import "components/inputs/select-input";
+@import "components/inputs/single-checkbox-input";
+@import "components/inputs/text-area-input";
+@import "components/inputs/text-input";
 @import "components/loader/loader";
-@import "components/modal";
-@import "components/search-input";
-@import "components/select-input";
+@import "components/modal/modal";
+@import "components/modal/confirmation-modal";
 @import "components/sideMenu/side-menu";
-@import "components/single-checkbox-input";
-@import "components/styled-checkbox-buttons";
-@import "components/styled-radio-buttons";
 @import "components/table/table";
 @import "components/table/table-controllers";
-@import "components/table-fixed-header";
+@import "components/table/table-fixed-header";
 @import "components/tabs/tabs";
-@import "components/text-area-input";
-@import "components/text-input";
 @import "components/topNavigation/top-navigation";
 @import "components/map/map";
 

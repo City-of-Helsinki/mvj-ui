@@ -4,7 +4,7 @@ import React from 'react';
 import {formatNumberWithThousandSeparator,
   getLabelOfOption} from '../../../../util/helpers';
 import {rentCriteriaPurposeOptions} from '../constants';
-import Button from '../../../../components/Button';
+import Button from '../../../../components/button/Button';
 
 
 type Props = {

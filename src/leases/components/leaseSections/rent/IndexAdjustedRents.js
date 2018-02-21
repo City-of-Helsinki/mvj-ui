@@ -6,7 +6,7 @@ import {formatDateRange,
   formatDecimalNumber,
   getLabelOfOption} from '../../../../util/helpers';
 import {rentIndexAdjustedRentPurposeOptions} from '../constants';
-import TableFixedHeader from '../../../../components/TableFixedHeader';
+import TableFixedHeader from '../../../../components/table/TableFixedHeader';
 
 type Props = {
   indexAdjustedRents: Array<Object>,

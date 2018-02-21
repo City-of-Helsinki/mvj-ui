@@ -20,7 +20,7 @@ import {summaryPublicityOptions} from './leaseSections/constants';
 import Billing from './leaseSections/billing/Billing';
 import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
-import ConfirmationModal from '../../components/ConfirmationModal';
+import ConfirmationModal from '../../components/modal/ConfirmationModal';
 import ControlButtons from './ControlButtons';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';

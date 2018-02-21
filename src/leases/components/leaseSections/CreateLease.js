@@ -6,7 +6,7 @@ import flowRight from 'lodash/flowRight';
 import {Row, Column} from 'react-foundation';
 
 import * as contentHelpers from '../../helpers';
-import Button from '../../../components/Button';
+import Button from '../../../components/button/Button';
 import FieldTypeSelect from '../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../components/form/FieldTypeText';
 import {integer, min, max, required} from '../../../components/form/validations';

@@ -6,9 +6,9 @@ import toArray from 'lodash/toArray';
 import debounce from 'lodash/debounce';
 
 import * as contentHelpers from '../../helpers';
-import SelectInput from '../../../components/SelectInput';
-import SingleCheckboxInput from '../../../components/SingleCheckboxInput';
-import TextInput from '../../../components/TextInput';
+import SelectInput from '../../../components/inputs/SelectInput';
+import SingleCheckboxInput from '../../../components/inputs/SingleCheckboxInput';
+import TextInput from '../../../components/inputs/TextInput';
 
 type Props = {
   attributes: Object,

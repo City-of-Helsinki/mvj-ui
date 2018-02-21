@@ -3,7 +3,7 @@ import React from 'react';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
-import Collapse from '../../../../components/Collapse';
+import Collapse from '../../../../components/collapse/Collapse';
 
 import {formatDate} from '../../../../util/helpers';
 

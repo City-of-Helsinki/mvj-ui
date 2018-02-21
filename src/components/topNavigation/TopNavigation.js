@@ -5,7 +5,7 @@ import {Link} from 'react-router';
 
 import {getRouteById} from '../../root/routes';
 import * as helpers from '../../helpers';
-import SearchInput from '../SearchInput';
+import SearchInput from '../inputs/SearchInput';
 
 type Props = {
   onLogout: Function,

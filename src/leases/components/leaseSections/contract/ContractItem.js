@@ -3,7 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import * as helpers from '../../../../util/helpers';
 
-import Collapse from '../../../../components/Collapse';
+import Collapse from '../../../../components/collapse/Collapse';
 
 type Props = {
   contract: Object,

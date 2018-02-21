@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
 import * as helpers from '../../../../util/helpers';
-import Collapse from '../../../../components/Collapse';
+import Collapse from '../../../../components/collapse/Collapse';
 import RuleItem from './RuleItem';
 
 type Props = {

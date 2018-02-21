@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import {capitalize} from 'lodash';
-import Collapse from '../../../../components/Collapse';
+import Collapse from '../../../../components/collapse/Collapse';
 import ConstructionEligibility from './ConstructionEligibility';
 import {Row, Column} from 'react-foundation';
 

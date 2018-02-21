@@ -4,7 +4,7 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, Field, FieldArray} from 'redux-form';
 import {capitalize} from 'lodash';
-import Collapse from '../../../../components/Collapse';
+import Collapse from '../../../../components/collapse/Collapse';
 import {Row, Column} from 'react-foundation';
 
 import trashIcon from '../../../../../assets/icons/trash.svg';

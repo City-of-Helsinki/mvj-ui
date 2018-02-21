@@ -5,7 +5,7 @@ import moment from 'moment';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 
-import Collapse from '../../../../components/Collapse';
+import Collapse from '../../../../components/collapse/Collapse';
 import ContractRents from './ContractRents';
 import Discounts from './Discounts';
 import Criterias from './Criterias';

@@ -6,7 +6,7 @@ import {Row, Column} from 'react-foundation';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
-import TableFixedHeader from '../../../../components/TableFixedHeader';
+import TableFixedHeader from '../../../../components/table/TableFixedHeader';
 import {rentIndexAdjustedRentPurposeOptions} from '../constants';
 
 
