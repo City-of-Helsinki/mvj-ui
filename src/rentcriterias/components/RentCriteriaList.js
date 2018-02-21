@@ -11,6 +11,7 @@ import {purposeOptions} from '../constants';
 import Button from '../../components/button/Button';
 import EditableMap from '../../components/map/EditableMap';
 import Loader from '../../components/loader/Loader';
+import Search from './search/Search';
 import Table from '../../components/table/Table';
 import TableControllers from '../../components/table/TableControllers';
 
@@ -50,7 +51,11 @@ class RentCriteriaList extends Component {
         <Row>
           <Column>
             <div className="rent-criteria-list__search-wrapper">
-              <div className="search-container"></div>
+              <div className="search-container">
+                <Search
+                  onSearch={() => console.log('test')}
+                />
+              </div>
               <div className="button-container">
                 <Button
                   className='no-margin'
