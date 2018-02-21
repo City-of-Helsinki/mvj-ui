@@ -24,6 +24,7 @@ import ConfirmationModal from '../../components/modal/ConfirmationModal';
 import ControlButtons from './ControlButtons';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
+import EditableMap from '../../components/map/EditableMap';
 import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
@@ -41,7 +42,7 @@ import TenantEdit from './leaseSections/tenant/TenantEdit';
 import TenantTab from './leaseSections/tenant/TenantTab';
 import ConstructionEligibilityTab from './leaseSections/constructionEligibility/ConstructionEligibilityTab';
 import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
-import LeaseListMap from './LeaseListMap';
+
 
 import mockData from '../mock-data.json';
 
@@ -610,7 +611,7 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <LeaseListMap/>
+                  <EditableMap/>
                 </div>
               </TabPane>
             </TabContent>

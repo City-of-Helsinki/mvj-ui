@@ -55,6 +55,8 @@
 @import "components/inputs/text-area-input";
 @import "components/inputs/text-input";
 @import "components/loader/loader";
+@import "components/map/map";
+@import "components/map/save-condition-panel";
 @import "components/modal/modal";
 @import "components/modal/confirmation-modal";
 @import "components/sideMenu/side-menu";
@@ -63,7 +65,6 @@
 @import "components/table/table-fixed-header";
 @import "components/tabs/tabs";
 @import "components/topNavigation/top-navigation";
-@import "components/map/map";
 
 // App Beta
 @import "app/app";
@@ -79,7 +80,6 @@
 @import "leases/components/leaseSections/summary/lease-history";
 @import "leases/components/lease-list";
 @import "leases/components/lease-page";
-@import "leases/components/save-condition-panel";
 @import "leases/components/search/search";
 @import "rentcriterias/components/rent-criteria-list";
 

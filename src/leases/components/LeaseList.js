@@ -17,7 +17,7 @@ import tableGreenIcon from '../../../assets/icons/table-green.svg';
 import tableIcon from '../../../assets/icons/table.svg';
 import Button from '../../components/button/Button';
 import CreateLease from '../components/leaseSections/CreateLease';
-import LeaseListMap from './LeaseListMap';
+import EditableMap from '../../components/map/EditableMap';
 import Loader from '../../components/loader/Loader';
 import Modal from '../../components/modal/Modal';
 import Search from './search/Search';
@@ -194,7 +194,7 @@ class LeaseList extends Component {
             {visualizationType === 'map' && (
               <Row>
                 <Column>
-                  <LeaseListMap />
+                  <EditableMap />
                 </Column>
               </Row>
             )}
