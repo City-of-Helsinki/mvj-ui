@@ -11,6 +11,7 @@ import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
 import classnames from 'classnames';
 
+import {getRouteById} from '../root/routes';
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
@@ -85,7 +86,7 @@ class App extends Component {
 
   showTopHeaderSearch = () => {
     const {location} = this.props;
-    return location.pathname === '/leases' ? false : true;
+    return location.pathname === getRouteById('leases') ? false : true;
   }
 
   render() {
@@ -103,7 +104,7 @@ class App extends Component {
           <LoginPage buttonDisabled={Boolean(apiTokenLoading)}/>
           <Loader isLoading={Boolean(apiTokenLoading)} />
 
-          {location.pathname === '/callback' &&
+          {location.pathname === getRouteById('callback') &&
             children
           }
         </div>

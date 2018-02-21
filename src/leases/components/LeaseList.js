@@ -5,6 +5,7 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import {getRouteById} from '../../root/routes';
 import {createLease, fetchAttributes, fetchLeases} from '../actions';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
 import * as contentHelpers from '../helpers';
@@ -85,16 +86,17 @@ class LeaseList extends Component {
     fetchLeases(search);
 
     return router.push({
-      pathname: `/leases`,
+      pathname: getRouteById('leases'),
       query,
     });
   }
 
-  handleEditClick = (id) => {
+  handleRowClick = (id) => {
     const {router} = this.context;
     const {router: {location: {query}}} = this.props;
+
     return router.push({
-      pathname: `/leases/${id}`,
+      pathname: `${getRouteById('leases')}/${id}`,
       query,
     });
   };
@@ -172,7 +174,7 @@ class LeaseList extends Component {
                       {key: 'start_date', label: 'Alkupvm'},
                       {key: 'end_date', label: 'Loppupvm'},
                     ]}
-                    onRowClick={this.handleEditClick}
+                    onRowClick={this.handleRowClick}
                   />
                 </Column>
               </Row>

@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 
+import {getRouteById} from '../../root/routes';
 import * as helpers from '../../helpers';
 import SearchInput from '../SearchInput';
 
@@ -37,7 +38,7 @@ class TopNavigation extends Component {
     if(keyword) {
       const query = {keyword: keyword};
       return router.push({
-        pathname: `/leases`,
+        pathname: getRouteById('leases'),
         query,
       });
     }

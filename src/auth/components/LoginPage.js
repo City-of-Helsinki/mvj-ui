@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
+import {getRouteById} from '../../root/routes';
 import userManager from '../util/user-manager';
 
 type Props = {
@@ -16,7 +18,7 @@ class LoginPage extends React.Component {
 
   componentDidMount() {
     const {location} = this.props;
-    if (location && location.pathname == '/logout/') {
+    if (location && location.pathname == getRouteById('logout')) {
       userManager.removeUser();
     }
   }
