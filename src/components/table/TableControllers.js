@@ -17,6 +17,10 @@ type Props = {
 class TableControllers extends Component {
   props: Props
 
+  static defaultProps = {
+    onButtonSelectorChange: (value) => console.log(value),
+  };
+
   render () {
     const {
       buttonSelectorOptions,
