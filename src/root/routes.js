@@ -15,7 +15,7 @@ export const getRouteById = (id: string): string => {
     callback: '/callback',
     leases: '/vuokraukset',
     logout: '/logout',
-    rentcriterias: '/vuokrauksenperusteet',
+    rentcriterias: '/vuokrausperusteet',
   };
   return routes[id] ? routes[id] : '';
 };

@@ -20,7 +20,7 @@ class SideMenu extends Component {
       <div className={classnames('side-menu', {'is-menu-open': isOpen})}>
         <ul>
           <li onClick={onLinkClick}><Link to={getRouteById('leases')}>Vuokraukset</Link></li>
-          <li onClick={onLinkClick}><Link to={getRouteById('rentcriterias')}>Vuokrauksenperusteet</Link></li>
+          <li onClick={onLinkClick}><Link to={getRouteById('rentcriterias')}>Vuokrausperusteet</Link></li>
           <li>Raportointi</li>
           <li>Tietoa palvelusta</li>
         </ul>
