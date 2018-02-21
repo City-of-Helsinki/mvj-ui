@@ -8,6 +8,7 @@ import {fetchRentCriterias} from '../actions';
 import {getIsFetching, getRentCriteriasList} from '../selectors';
 import {formatDateObj, getLabelOfOption} from '../../util/helpers';
 import {purposeOptions} from '../constants';
+import Button from '../../components/button/Button';
 import EditableMap from '../../components/map/EditableMap';
 import Loader from '../../components/loader/Loader';
 import Table from '../../components/table/Table';
@@ -46,6 +47,20 @@ class RentCriteriaList extends Component {
 
     return (
       <div className='rent-criteria-list'>
+        <Row>
+          <Column>
+            <div className="rent-criteria-list__search-wrapper">
+              <div className="search-container"></div>
+              <div className="button-container">
+                <Button
+                  className='no-margin'
+                  onClick={() => alert('TODO: Luo uusi vuokrausperuste')}
+                  text='Luo uusi vuokrausperuste'
+                />
+              </div>
+            </div>
+          </Column>
+        </Row>
         <Row>
           <Column>
             <TableControllers
