@@ -58,7 +58,8 @@
 @import "components/single-checkbox-input";
 @import "components/styled-checkbox-buttons";
 @import "components/styled-radio-buttons";
-@import "components/table";
+@import "components/table/table";
+@import "components/table/table-controllers";
 @import "components/table-fixed-header";
 @import "components/tabs/tabs";
 @import "components/text-area-input";
@@ -82,7 +83,6 @@
 @import "leases/components/lease-page";
 @import "leases/components/save-condition-panel";
 @import "leases/components/search/search";
-@import "leases/components/table-controllers";
 @import "rentcriterias/components/rent-criteria-list";
 
 html {

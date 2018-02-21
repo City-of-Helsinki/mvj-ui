@@ -9,7 +9,7 @@ import {getIsFetching, getRentCriteriasList} from '../selectors';
 import {formatDateObj, getLabelOfOption} from '../../util/helpers';
 import {purposeOptions} from '../constants';
 import Loader from '../../components/loader/Loader';
-import Table from '../../components/Table';
+import Table from '../../components/table/Table';
 
 type Props = {
   fetchRentCriterias: Function,

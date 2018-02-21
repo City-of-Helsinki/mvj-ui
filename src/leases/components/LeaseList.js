@@ -16,8 +16,8 @@ import LeaseListMap from './LeaseListMap';
 import Loader from '../../components/loader/Loader';
 import Modal from '../../components/Modal';
 import Search from './search/Search';
-import Table from '../../components/Table';
-import TableControllers from './TableControllers';
+import Table from '../../components/table/Table';
+import TableControllers from '../../components/table/TableControllers';
 
 type Props = {
   attributes: Object,
