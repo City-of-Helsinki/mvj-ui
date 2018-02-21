@@ -44,9 +44,11 @@ class Search extends Component {
 
     const filters = {};
     if(isBasicSearch) {
-      console.log('Basic search: ', keyword);
-      onSearch(filters);
+      filters.keyword = keyword ? keyword : undefined;
+    } else {
+      console.log('advanced search');
     }
+    onSearch(filters);
   }, 300);
 
   handleTextInputChange = (e: any, id: string) => {
@@ -83,7 +85,7 @@ class Search extends Component {
           <div>
             <Row>
               <Column large={12}>
-                <h1>Tarkennettu haku</h1>
+                <p>TODO: Tarkennettu haku</p>
               </Column>
             </Row>
           </div>

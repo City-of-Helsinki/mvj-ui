@@ -10,7 +10,7 @@ import {createLease, fetchAttributes, fetchLeases} from '../actions';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
 import {leaseTypeOptions} from '../constants';
 import * as contentHelpers from '../helpers';
-import {getSearchQuery} from './search/helpers';
+import {getSearchQuery} from '../../util/helpers';
 import Button from '../../components/button/Button';
 import CreateLease from '../components/leaseSections/CreateLease';
 import EditableMap from '../../components/map/EditableMap';

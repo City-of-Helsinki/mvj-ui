@@ -1,13 +1,15 @@
 // @flow
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 
 import {fetchRentCriterias} from '../actions';
 import {getIsFetching, getRentCriteriasList} from '../selectors';
-import {formatDateObj, getLabelOfOption} from '../../util/helpers';
+import {formatDateObj, getLabelOfOption, getSearchQuery} from '../../util/helpers';
 import {purposeOptions} from '../constants';
+import {getRouteById} from '../../root/routes';
 import Button from '../../components/button/Button';
 import EditableMap from '../../components/map/EditableMap';
 import Loader from '../../components/loader/Loader';
@@ -24,6 +26,7 @@ type Props = {
   fetchRentCriterias: Function,
   isFetching: boolean,
   rentcriterias: Array<Object>,
+  router: Object,
 }
 
 type State = {
@@ -37,9 +40,35 @@ class RentCriteriaList extends Component {
     visualizationType: 'table',
   }
 
+  static contextTypes = {
+    router: PropTypes.object,
+  };
+
+  search: any
+
   componentWillMount() {
     const {fetchRentCriterias} = this.props;
-    fetchRentCriterias();
+    const {router: {location: {query}}} = this.props;
+
+    fetchRentCriterias(getSearchQuery(query));
+  }
+
+  componentDidMount = () => {
+    const {router: {location: {query}}} = this.props;
+    this.search.initialize(query);
+  }
+
+  handleSearchChange = (query) => {
+    const {fetchRentCriterias} = this.props;
+    const {router} = this.context;
+    const search = getSearchQuery(query);
+    fetchRentCriterias(search);
+    console.log(query);
+
+    return router.push({
+      pathname: getRouteById('rentcriterias'),
+      query,
+    });
   }
 
   render() {
@@ -53,7 +82,8 @@ class RentCriteriaList extends Component {
             <div className="rent-criteria-list__search-wrapper">
               <div className="search-container">
                 <Search
-                  onSearch={() => console.log('test')}
+                  ref={(input) => { this.search = input; }}
+                  onSearch={(query) => this.handleSearchChange(query)}
                 />
               </div>
               <div className="button-container">
