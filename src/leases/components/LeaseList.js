@@ -8,8 +8,13 @@ import {Row, Column} from 'react-foundation';
 import {getRouteById} from '../../root/routes';
 import {createLease, fetchAttributes, fetchLeases} from '../actions';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
+import {leaseTypeOptions} from '../constants';
 import * as contentHelpers from '../helpers';
 import {getSearchQuery} from './search/helpers';
+import mapGreenIcon from '../../../assets/icons/map-green.svg';
+import mapIcon from '../../../assets/icons/map.svg';
+import tableGreenIcon from '../../../assets/icons/table-green.svg';
+import tableIcon from '../../../assets/icons/table.svg';
 import Button from '../../components/Button';
 import CreateLease from '../components/leaseSections/CreateLease';
 import LeaseListMap from './LeaseListMap';
@@ -147,11 +152,18 @@ class LeaseList extends Component {
         <Row>
           <Column>
             <TableControllers
-              amount={filteredLeases.length}
-              documentType={documentType}
-              onDocumentTypeChange={(value) => {this.setState({documentType: value});}}
-              onVisualizationTypeChange={(value) => {this.setState({visualizationType: value});}}
-              visualizationType={visualizationType}
+              buttonSelectorOptions={leaseTypeOptions}
+              buttonSelectorValue={documentType}
+              onButtonSelectorChange={(value) => {this.setState({documentType: value});}}
+              iconSelectorOptions={[
+                {value: 'table', label: 'Taulukko', icon: tableIcon, iconSelected: tableGreenIcon},
+                {value: 'map', label: 'Kartta', icon: mapIcon, iconSelected: mapGreenIcon}]
+              }
+              iconSelectorValue={visualizationType}
+              onIconSelectorChange={
+                (value) => this.setState({visualizationType: value})
+              }
+              title={`Löytyi ${filteredLeases.length} kpl`}
             />
           </Column>
         </Row>
