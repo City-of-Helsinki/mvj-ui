@@ -178,7 +178,6 @@ class LeaseList extends Component {
                   />
                 </Column>
               </Row>
-
             )}
             {visualizationType === 'map' && (
               <Row>

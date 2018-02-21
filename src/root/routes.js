@@ -8,7 +8,7 @@ import CallbackPage from '../auth/components/CallbackPage';
 import LeaseList from '../leases/components/LeaseList';
 import LeasePage from '../leases/components/LeasePage';
 import LoginPage from '../auth/components/LoginPage';
-import RentCriteriaList from '../rent-criterias/components/RentCriteriaList';
+import RentCriteriaList from '../rentcriterias/components/RentCriteriaList';
 
 export const getRouteById = (id: string): string => {
   const routes = {

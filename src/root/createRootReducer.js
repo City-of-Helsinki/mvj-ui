@@ -12,6 +12,7 @@ import attributesReducer from '../attributes/reducer';
 import applicationsReducer from '../applications-alpha/reducer';
 import leaseReducer from '../leases-alpha/reducer';
 import leaseReducerBeta from '../leases/reducer';
+import rentCriteriasReducerBeta from '../rentcriterias/reducer';
 
 import type {Reducer} from '../types';
 import type {RootState} from './types';
@@ -26,6 +27,7 @@ export default (): Reducer<RootState> =>
     lease: leaseReducer,
     leasebeta: leaseReducerBeta,
     oidc,
+    rentcriterias: rentCriteriasReducerBeta,
     routing: routerReducer,
     toastr: toastrReducer,
     user: roleReducer,
