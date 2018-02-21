@@ -7,6 +7,7 @@ import roleSaga from '../role/saga';
 import applicationSaga from '../applications-alpha/saga';
 import leaseSaga from '../leases-alpha/saga';
 import leaseSagaBeta from '../leases/saga';
+import rentCriteriasSaga from '../rentcriterias/saga';
 
 export default () =>
   // $FlowFixMe
@@ -18,5 +19,6 @@ export default () =>
       fork(applicationSaga),
       fork(leaseSaga),
       fork(leaseSagaBeta),
+      fork(rentCriteriasSaga),
     ];
   };

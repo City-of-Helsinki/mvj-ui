@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "end_date": "1987-01-01",
+    "purpose": "100",
+    "real_estate_ID": "91-109903-11",
+    "start_date": "2047-12-31"
+  },
+  {
+    "id": 2,
+    "end_date": "1987-01-01",
+    "purpose": "100",
+    "real_estate_ID": "91-109903-12",
+    "start_date": "2047-12-31"
+  },
+  {
+    "id": 3,
+    "end_date": "1987-01-01",
+    "purpose": "100",
+    "real_estate_ID": "91-109903-13",
+    "start_date": "2047-12-31"
+  },
+  {
+    "id": 4,
+    "end_date": "1987-01-01",
+    "purpose": "100",
+    "real_estate_ID": "91-109903-14",
+    "start_date": "2047-12-31"
+  },
+  {
+    "id": 5,
+    "end_date": "1987-01-01",
+    "purpose": "101",
+    "real_estate_ID": "91-109903-15",
+    "start_date": "2047-12-31"
+  },
+  {
+    "id": 5,
+    "end_date": "1987-01-01",
+    "purpose": "103",
+    "real_estate_ID": "91-109903-16",
+    "start_date": "2047-12-31"
+  },
+  {
+    "id": 7,
+    "end_date": "1987-01-01",
+    "purpose": "100",
+    "real_estate_ID": "91-109903-17",
+    "start_date": "2047-12-31"
+  },
+  {
+    "id": 8,
+    "end_date": "1987-01-01",
+    "purpose": "100",
+    "real_estate_ID": "91-109903-18",
+    "start_date": "2047-12-31"
+  },
+  {
+    "id": 9,
+    "end_date": "1987-01-01",
+    "purpose": "100",
+    "real_estate_ID": "91-109903-19",
+    "start_date": "2047-12-31"
+  },
+  {
+    "id": 10,
+    "end_date": "1987-01-01",
+    "purpose": "100",
+    "real_estate_ID": "91-109903-20",
+    "start_date": "2047-12-31"
+  }
+]
