@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 
 import {fetchRentCriterias} from '../actions';
+import {setTopNavigationSettings} from '../../components/topNavigation/actions';
 import {getIsFetching, getRentCriteriasList} from '../selectors';
 import {formatDateObj, getLabelOfOption, getSearchQuery} from '../../util/helpers';
 import {purposeOptions} from '../constants';
@@ -27,6 +28,7 @@ type Props = {
   isFetching: boolean,
   rentcriterias: Array<Object>,
   router: Object,
+  setTopNavigationSettings: Function,
 }
 
 type State = {
@@ -47,8 +49,13 @@ class RentCriteriaList extends Component {
   search: any
 
   componentWillMount() {
-    const {fetchRentCriterias} = this.props;
+    const {fetchRentCriterias, setTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
+
+    setTopNavigationSettings({
+      pageTitle: 'Vuokrausperusteet',
+      showSearch: false,
+    });
 
     fetchRentCriterias(getSearchQuery(query));
   }
@@ -162,6 +169,7 @@ export default flowRight(
     },
     {
       fetchRentCriterias,
+      setTopNavigationSettings,
     },
   ),
 )(RentCriteriaList);

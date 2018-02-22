@@ -12,7 +12,8 @@ import attributesReducer from '../attributes/reducer';
 import applicationsReducer from '../applications-alpha/reducer';
 import leaseReducer from '../leases-alpha/reducer';
 import leaseReducerBeta from '../leases/reducer';
-import rentCriteriasReducerBeta from '../rentcriterias/reducer';
+import rentCriteriasReducer from '../rentcriterias/reducer';
+import topNavigationReducer from '../components/topNavigation/reducer';
 
 import type {Reducer} from '../types';
 import type {RootState} from './types';
@@ -27,8 +28,9 @@ export default (): Reducer<RootState> =>
     lease: leaseReducer,
     leasebeta: leaseReducerBeta,
     oidc,
-    rentcriterias: rentCriteriasReducerBeta,
+    rentcriterias: rentCriteriasReducer,
     routing: routerReducer,
     toastr: toastrReducer,
+    topnavigation: topNavigationReducer,
     user: roleReducer,
   });

@@ -13,6 +13,7 @@ import moment from 'moment';
 import {getLoggedInUser} from '../../auth/selectors';
 import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
+import {setTopNavigationSettings} from '../../components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
 import {displayUIMessage, getLabelOfOption} from '../../util/helpers';
 import {summaryPublicityOptions} from './leaseSections/constants';
@@ -92,6 +93,7 @@ type Props = {
   rentsTouched: boolean,
   rulesForm: Array<Object>,
   rulesTouched: boolean,
+  setTopNavigationSettings: Function,
   start_date: ?string,
   status: string,
   summaryForm: Object,
@@ -131,8 +133,13 @@ class PreparerForm extends Component {
   };
 
   componentWillMount() {
-    const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}} = this.props;
+    const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}, setTopNavigationSettings} = this.props;
     const lease = mockData.leases[0];
+
+    setTopNavigationSettings({
+      pageTitle: 'Vuokraukset',
+      showSearch: true,
+    });
 
     // Destroy forms to initialize new values when data is fetched
     dispatch(destroy('billing-edit-form'));
@@ -675,6 +682,7 @@ export default flowRight(
       editLease,
       fetchAttributes,
       fetchSingleLease,
+      setTopNavigationSettings,
     }
   ),
 )(PreparerForm);

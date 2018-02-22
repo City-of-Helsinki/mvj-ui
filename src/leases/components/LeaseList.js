@@ -7,6 +7,7 @@ import {Row, Column} from 'react-foundation';
 
 import {getRouteById} from '../../root/routes';
 import {createLease, fetchAttributes, fetchLeases} from '../actions';
+import {setTopNavigationSettings} from '../../components/topNavigation/actions';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
 import {leaseTypeOptions} from '../constants';
 import * as contentHelpers from '../helpers';
@@ -33,6 +34,7 @@ type Props = {
   isFetching: boolean,
   leases: Object,
   router: Object,
+  setTopNavigationSettings: Function,
 }
 
 type State = {
@@ -59,8 +61,13 @@ class LeaseList extends Component {
   };
 
   componentWillMount() {
-    const {fetchAttributes, fetchLeases} = this.props;
+    const {fetchAttributes, fetchLeases, setTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
+
+    setTopNavigationSettings({
+      pageTitle: 'Vuokraukset',
+      showSearch: false,
+    });
 
     fetchAttributes();
     fetchLeases(getSearchQuery(query));
@@ -219,6 +226,7 @@ export default flowRight(
       createLease,
       fetchLeases,
       fetchAttributes,
+      setTopNavigationSettings,
     },
   ),
 )(LeaseList);

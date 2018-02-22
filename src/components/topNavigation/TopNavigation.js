@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 
 import {getRouteById} from '../../root/routes';
-import * as helpers from '../../helpers';
 import SearchInput from '../inputs/SearchInput';
 
 type Props = {
   onLogout: Function,
+  pageTitle: string,
   showSearch: boolean,
   toggleSideMenu: Function,
   userProfile: Object,
@@ -16,16 +16,12 @@ type Props = {
 
 type State = {
   keyword: string,
-  logoClass: string,
-  logo: string,
 }
 
 class TopNavigation extends Component {
   props: Props
   state: State = {
     keyword: '',
-    logo: helpers.getLogo(),
-    logoClass: helpers.getLogoClass(),
   }
 
   static contextTypes = {
