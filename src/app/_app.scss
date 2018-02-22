@@ -10,8 +10,14 @@
   }
   .wrapper {
     display: flex;
-    margin: 0 0 0 auto;
     position: relative;
     width: 100%;
+    margin: 0 auto;
+    max-width: 1300px;
+  }
+  .row {
+    margin: 0 rem-calc(-15px);
+    width: auto;
+    max-width: none;
   }
 }
