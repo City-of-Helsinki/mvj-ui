@@ -1,12 +1,15 @@
 .search-input {
   &__component {
     position: relative;
+
     .search-input {
-      width: rem-calc(230px);
+      border: 1px solid #9b9b9b;
+      width: rem-calc(250px);
       margin: 0;
       height: rem-calc(30px);
       padding: 0 0.5rem;
     }
+
     .search-icon {
       position: absolute;
       top: 5px;
@@ -18,5 +21,4 @@
       cursor: pointer;
     }
   }
-
 }

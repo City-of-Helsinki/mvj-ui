@@ -134,7 +134,7 @@ class App extends Component {
           pageTitle={pageTitle}
           showSearch={showSearch}
           toggleSideMenu={this.toggleSideMenu}
-          userProfile={get(user, 'profile')}
+          username={get(user, 'profile.name')}
         />
         <section className="app__content">
           <SideMenu
