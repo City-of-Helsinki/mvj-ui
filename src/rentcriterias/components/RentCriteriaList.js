@@ -63,11 +63,18 @@ class RentCriteriaList extends Component {
     const {router} = this.context;
     const search = getSearchQuery(query);
     fetchRentCriterias(search);
-    console.log(query);
 
     return router.push({
       pathname: getRouteById('rentcriterias'),
       query,
+    });
+  }
+
+  onCreateButtonClick = () => {
+    const {router} = this.context;
+
+    return router.push({
+      pathname: getRouteById('newrentcriteria'),
     });
   }
 
@@ -89,7 +96,7 @@ class RentCriteriaList extends Component {
               <div className="button-container">
                 <Button
                   className='no-margin'
-                  onClick={() => alert('TODO: Luo uusi vuokrausperuste')}
+                  onClick={() => this.onCreateButtonClick()}
                   text='Luo uusi vuokrausperuste'
                 />
               </div>
