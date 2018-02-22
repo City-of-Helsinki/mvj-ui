@@ -24,8 +24,8 @@ const TenantTab = ({tenants, oldTenants}: Props) => {
         <Collapse key={index}
           header={
             <Row>
-              <Column small={5}><span className='collapse__header-title'>{get(tenant, 'tenant.lastname')} {get(tenant, 'tenant.firstname')}</span></Column>
-              <Column small={7}><span className={classnames('collapse__header-subtitle', {'alert': (share_count !== tenant.tenant.share_divider)})}><i/> {get(tenant, 'tenant.share')}/{get(tenant, 'tenant.share_divider')}</span></Column>
+              <Column small={4}><span className='collapse__header-title'>{get(tenant, 'tenant.lastname')} {get(tenant, 'tenant.firstname')}</span></Column>
+              <Column small={8}><span className={classnames('collapse__header-subtitle', {'alert': (share_count !== tenant.tenant.share_divider)})}><i/> {get(tenant, 'tenant.share')}/{get(tenant, 'tenant.share_divider')}</span></Column>
             </Row>
           }
         >

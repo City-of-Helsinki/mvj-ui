@@ -17,64 +17,46 @@ const TenantItem = ({customer}: Props) => {
   return (
     <div className='section-item'>
       <Row>
-        <Column medium={5}>
-          <Row>
-            <Column>
-              <p className='subtitle'>{get(customer, 'name')}</p>
-              <div className='contact'>
-                <p>{fullAddress}</p>
-                <p>{get(customer, 'phone')}</p>
-                <p>{get(customer, 'email')}</p>
-              </div>
-              <p>{get(customer, 'social_security_number')}</p>
-              {get(customer, 'protection_order') && <p className='alert'><i/><span>Turvakielto</span></p>}
+        <Column medium={4}>
+          <p className='subtitle'>{get(customer, 'name')}</p>
+          <div className='contact'>
+            <p>{fullAddress}</p>
+            <p>{get(customer, 'phone')}</p>
+            <p>{get(customer, 'email')}</p>
+          </div>
+          <p>{get(customer, 'social_security_number')}</p>
+          {get(customer, 'protection_order') && <p className='alert'><i/><span>Turvakielto</span></p>}
 
-              <p className='comment'>{get(customer, 'comment')}</p>
-            </Column>
-          </Row>
-
+          <p className='comment'>{get(customer, 'comment')}</p>
         </Column>
-        <Column medium={7}>
-          <Row>
-            <Column medium={6}>
-              <Row>
-                <Column>
-                  <label>Osuus murtolukuina</label>
-                  <p>{get(customer, 'share', '')}/{get(customer, 'share_divider', '')}</p>
+        <Column medium={4}>
+          <label>Osuus murtolukuina</label>
+          <p>{get(customer, 'share', '')}/{get(customer, 'share_divider', '')}</p>
 
-                  <label>Laskun hallintaosuus</label>
-                  <p>{get(customer, 'bill_share', '')} %</p>
+          <label>Laskun hallintaosuus</label>
+          <p>{get(customer, 'bill_share', '')} %</p>
 
-                  <label>Kieli</label>
-                  <p>{get(customer, 'language', '')}</p>
+          <label>Kieli</label>
+          <p>{get(customer, 'language', '')}</p>
 
-                  <label>Alkupäivämäärä</label>
-                  <p>{formatedDate}</p>
+          <label>Alkupäivämäärä</label>
+          <p>{formatedDate}</p>
 
-                  <label>Viite</label>
-                  <p>{get(customer, 'reference', '')}</p>
-                </Column>
-              </Row>
-            </Column>
+          <label>Viite</label>
+          <p>{get(customer, 'reference', '')}</p>
+        </Column>
+        <Column medium={4}>
+          <label>Asiakasnumero</label>
+          <p>{get(customer, 'customer_id', '')}</p>
 
-            <Column medium={6}>
-              <Row>
-                <Column>
-                  <label>Asiakasnumero</label>
-                  <p>{get(customer, 'customer_id', '')}</p>
+          <label>SAP asiakasnumero</label>
+          <p>{get(customer, 'SAP_customer_id', '')}</p>
 
-                  <label>SAP asiakasnumero</label>
-                  <p>{get(customer, 'SAP_customer_id', '')}</p>
+          <label>ovt-tunnus</label>
+          <p>{get(customer, 'ovt_identifier', '')}</p>
 
-                  <label>ovt-tunnus</label>
-                  <p>{get(customer, 'ovt_identifier', '')}</p>
-
-                  <label>Kumppanikoodi</label>
-                  <p>{get(customer, 'partner_code', '')}</p>
-                </Column>
-              </Row>
-            </Column>
-          </Row>
+          <label>Kumppanikoodi</label>
+          <p>{get(customer, 'partner_code', '')}</p>
         </Column>
       </Row>
     </div>
