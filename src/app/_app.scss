@@ -12,15 +12,6 @@
     display: flex;
     margin: 0 0 0 auto;
     position: relative;
-
-    @include transition(0.3s, all, ease-in-out);
+    width: 100%;
   }
-}
-
-.is-sidemenu-closed {
-  width: 100%;
-}
-
-.is-sidemenu-open {
-  width: calc(100% - 200px);
 }

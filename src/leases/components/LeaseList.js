@@ -5,18 +5,26 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import {getRouteById} from '../../root/routes';
 import {createLease, fetchAttributes, fetchLeases} from '../actions';
+import {setTopNavigationSettings} from '../../components/topNavigation/actions';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
+import {leaseTypeOptions} from '../constants';
 import * as contentHelpers from '../helpers';
-import {getSearchQuery} from './search/helpers';
-import Button from '../../components/Button';
+import {getSearchQuery} from '../../util/helpers';
+import Button from '../../components/button/Button';
 import CreateLease from '../components/leaseSections/CreateLease';
-import LeaseListMap from './LeaseListMap';
+import EditableMap from '../../components/map/EditableMap';
 import Loader from '../../components/loader/Loader';
-import Modal from '../../components/Modal';
+import Modal from '../../components/modal/Modal';
 import Search from './search/Search';
-import Table from '../../components/Table';
-import TableControllers from './TableControllers';
+import Table from '../../components/table/Table';
+import TableControllers from '../../components/table/TableControllers';
+
+import mapGreenIcon from '../../../assets/icons/map-green.svg';
+import mapIcon from '../../../assets/icons/map.svg';
+import tableGreenIcon from '../../../assets/icons/table-green.svg';
+import tableIcon from '../../../assets/icons/table.svg';
 
 type Props = {
   attributes: Object,
@@ -26,6 +34,7 @@ type Props = {
   isFetching: boolean,
   leases: Object,
   router: Object,
+  setTopNavigationSettings: Function,
 }
 
 type State = {
@@ -52,8 +61,13 @@ class LeaseList extends Component {
   };
 
   componentWillMount() {
-    const {fetchAttributes, fetchLeases} = this.props;
+    const {fetchAttributes, fetchLeases, setTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
+
+    setTopNavigationSettings({
+      pageTitle: 'Vuokraukset',
+      showSearch: false,
+    });
 
     fetchAttributes();
     fetchLeases(getSearchQuery(query));
@@ -85,16 +99,17 @@ class LeaseList extends Component {
     fetchLeases(search);
 
     return router.push({
-      pathname: `/leases`,
+      pathname: getRouteById('leases'),
       query,
     });
   }
 
-  handleEditClick = (id) => {
+  handleRowClick = (id) => {
     const {router} = this.context;
     const {router: {location: {query}}} = this.props;
+
     return router.push({
-      pathname: `/leases/${id}`,
+      pathname: `${getRouteById('leases')}/${id}`,
       query,
     });
   };
@@ -145,11 +160,18 @@ class LeaseList extends Component {
         <Row>
           <Column>
             <TableControllers
-              amount={filteredLeases.length}
-              documentType={documentType}
-              onDocumentTypeChange={(value) => {this.setState({documentType: value});}}
-              onVisualizationTypeChange={(value) => {this.setState({visualizationType: value});}}
-              visualizationType={visualizationType}
+              buttonSelectorOptions={leaseTypeOptions}
+              buttonSelectorValue={documentType}
+              onButtonSelectorChange={(value) => {this.setState({documentType: value});}}
+              iconSelectorOptions={[
+                {value: 'table', label: 'Taulukko', icon: tableIcon, iconSelected: tableGreenIcon},
+                {value: 'map', label: 'Kartta', icon: mapIcon, iconSelected: mapGreenIcon}]
+              }
+              iconSelectorValue={visualizationType}
+              onIconSelectorChange={
+                (value) => this.setState({visualizationType: value})
+              }
+              title={`Löytyi ${filteredLeases.length} kpl`}
             />
           </Column>
         </Row>
@@ -172,16 +194,15 @@ class LeaseList extends Component {
                       {key: 'start_date', label: 'Alkupvm'},
                       {key: 'end_date', label: 'Loppupvm'},
                     ]}
-                    onRowClick={this.handleEditClick}
+                    onRowClick={this.handleRowClick}
                   />
                 </Column>
               </Row>
-
             )}
             {visualizationType === 'map' && (
               <Row>
                 <Column>
-                  <LeaseListMap />
+                  <EditableMap />
                 </Column>
               </Row>
             )}
@@ -205,6 +226,7 @@ export default flowRight(
       createLease,
       fetchLeases,
       fetchAttributes,
+      setTopNavigationSettings,
     },
   ),
 )(LeaseList);

@@ -6,7 +6,7 @@
   .table-info {
     display: flex;
 
-    .amount-wrapper {
+    .title-wrapper {
       flex: 1 1 0%;
 
       span {
@@ -18,11 +18,11 @@
       }
     }
 
-    .document-type-wrapper {
+    .button-selector-wrapper {
       margin-right: rem-calc(24px);
     }
 
-    .visualization-type-wrapper {
+    .icon-selector-wrapper {
       text-align: right;
       width: 207px;
     }

@@ -2,8 +2,8 @@
 import React, {Component} from 'react';
 import classnames from 'classnames';
 
-import Button from '../Button';
-import TextAreaInput from '../TextAreaInput';
+import Button from '../button/Button';
+import TextAreaInput from '../inputs/TextAreaInput';
 import {formatDate} from '../../util/helpers';
 
 type Props = {

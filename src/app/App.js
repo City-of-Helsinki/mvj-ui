@@ -9,10 +9,11 @@ import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
 import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
-import classnames from 'classnames';
 
+import {getRouteById} from '../root/routes';
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
+import {getPageTitle, getShowSearch} from '../components/topNavigation/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
 import {clearApiToken, fetchApiToken} from '../auth/actions';
 import {getApiToken, getApiTokenLoading, getLoggedInUser} from '../auth/selectors';
@@ -37,7 +38,8 @@ type Props = {
   fetchApiToken: Function,
   location: Object,
   params: Object,
-  apiToken: string,
+  pageTitle: string,
+  showSearch: boolean,
   user: Object,
 };
 
@@ -83,15 +85,16 @@ class App extends Component {
     this.props.clearError();
   };
 
-  showTopHeaderSearch = () => {
-    const {location} = this.props;
-    return location.pathname === '/leases' ? false : true;
-  }
-
   render() {
-    const {apiError, apiToken, apiTokenLoading, children, location, user} = this.props;
+    const {apiError,
+      apiToken,
+      apiTokenLoading,
+      children,
+      location,
+      pageTitle,
+      showSearch,
+      user} = this.props;
     const {displaySideMenu} = this.state;
-    const showSearch = this.showTopHeaderSearch();
 
     if (isEmpty(user) || isEmpty(apiToken)) {
       return (
@@ -103,7 +106,7 @@ class App extends Component {
           <LoginPage buttonDisabled={Boolean(apiTokenLoading)}/>
           <Loader isLoading={Boolean(apiTokenLoading)} />
 
-          {location.pathname === '/callback' &&
+          {location.pathname === getRouteById('callback') &&
             children
           }
         </div>
@@ -128,16 +131,17 @@ class App extends Component {
 
         <TopNavigation
           onLogout={this.logOut}
+          pageTitle={pageTitle}
           showSearch={showSearch}
           toggleSideMenu={this.toggleSideMenu}
-          userProfile={get(user, 'profile')}
+          username={get(user, 'profile.name')}
         />
         <section className="app__content">
           <SideMenu
             isOpen={displaySideMenu}
             onLinkClick={this.toggleSideMenu}
           />
-          <div className={classnames('wrapper', {'is-sidemenu-closed': !displaySideMenu}, {'is-sidemenu-open': displaySideMenu})}>
+          <div className='wrapper'>
             {children}
           </div>
         </section>
@@ -151,8 +155,10 @@ const mapStateToProps = (state: RootState) => {
 
   if (!user || user.expired) {
     return {
-      user: null,
       apiToken: getApiToken(state),
+      pageTitle: getPageTitle(state),
+      showSearch: getShowSearch(state),
+      user: null,
     };
   }
 
@@ -160,6 +166,8 @@ const mapStateToProps = (state: RootState) => {
     apiError: getError(state),
     apiToken: getApiToken(state),
     apiTokenLoading: getApiTokenLoading(state),
+    pageTitle: getPageTitle(state),
+    showSearch: getShowSearch(state),
     user,
   };
 };

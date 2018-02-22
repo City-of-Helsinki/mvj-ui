@@ -18,7 +18,7 @@ import {billingInvoiceMethodOptions,
   billingTypeOptions} from '../constants';
 import {getBillingAbnormalDebtModalErrors} from '../../../selectors';
 import {dateGreaterOrEqual, decimalNumber, required} from '../../../../components/form/validations';
-import Button from '../../../../components/Button';
+import Button from '../../../../components/button/Button';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';

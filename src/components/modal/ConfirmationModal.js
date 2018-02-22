@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-import Button from './Button';
+import Button from '../button/Button';
 import Modal from './Modal';
 
 type Props = {

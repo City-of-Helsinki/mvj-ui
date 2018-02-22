@@ -1,5 +1,5 @@
 .mvj-button {
-  font-size: rem-calc(13px);
+  font-size: $font-xsmall;
   font-family: $font-family-source;
   font-weight: 600;
   color: $black;
@@ -10,12 +10,16 @@
   text-transform: uppercase;
   cursor: pointer;
   margin: 0 0.5rem;
+  white-space: nowrap;
+
   &:hover {
     background-color: $summer-lighter;
   }
+
   &:focus {
     outline: none;
   }
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;

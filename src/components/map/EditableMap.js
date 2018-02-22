@@ -22,7 +22,7 @@ type State = {
   shapes: Array<Object>,
 }
 
-class LeaseListMap extends Component {
+class EditableMap extends Component {
   state: State = {
     rememberableTerms: [],
     shapes: [],
@@ -163,4 +163,4 @@ class LeaseListMap extends Component {
   }
 }
 
-export default LeaseListMap;
+export default EditableMap;

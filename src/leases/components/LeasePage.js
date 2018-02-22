@@ -13,6 +13,7 @@ import moment from 'moment';
 import {getLoggedInUser} from '../../auth/selectors';
 import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
+import {setTopNavigationSettings} from '../../components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
 import {displayUIMessage, getLabelOfOption} from '../../util/helpers';
 import {summaryPublicityOptions} from './leaseSections/constants';
@@ -20,10 +21,11 @@ import {summaryPublicityOptions} from './leaseSections/constants';
 import Billing from './leaseSections/billing/Billing';
 import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
-import ConfirmationModal from '../../components/ConfirmationModal';
+import ConfirmationModal from '../../components/modal/ConfirmationModal';
 import ControlButtons from './ControlButtons';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
+import EditableMap from '../../components/map/EditableMap';
 import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
@@ -41,7 +43,7 @@ import TenantEdit from './leaseSections/tenant/TenantEdit';
 import TenantTab from './leaseSections/tenant/TenantTab';
 import ConstructionEligibilityTab from './leaseSections/constructionEligibility/ConstructionEligibilityTab';
 import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
-import LeaseListMap from './LeaseListMap';
+
 
 import mockData from '../mock-data.json';
 
@@ -91,6 +93,7 @@ type Props = {
   rentsTouched: boolean,
   rulesForm: Array<Object>,
   rulesTouched: boolean,
+  setTopNavigationSettings: Function,
   start_date: ?string,
   status: string,
   summaryForm: Object,
@@ -130,8 +133,13 @@ class PreparerForm extends Component {
   };
 
   componentWillMount() {
-    const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}} = this.props;
+    const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}, setTopNavigationSettings} = this.props;
     const lease = mockData.leases[0];
+
+    setTopNavigationSettings({
+      pageTitle: 'Vuokraukset',
+      showSearch: true,
+    });
 
     // Destroy forms to initialize new values when data is fetched
     dispatch(destroy('billing-edit-form'));
@@ -610,7 +618,7 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <LeaseListMap/>
+                  <EditableMap/>
                 </div>
               </TabPane>
             </TabContent>
@@ -674,6 +682,7 @@ export default flowRight(
       editLease,
       fetchAttributes,
       fetchSingleLease,
+      setTopNavigationSettings,
     }
   ),
 )(PreparerForm);

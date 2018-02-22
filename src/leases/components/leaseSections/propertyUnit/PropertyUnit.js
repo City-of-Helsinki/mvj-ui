@@ -3,7 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import PropertyUnitPlot from './PropertyUnitPlot';
 import {capitalize} from 'lodash';
-import Collapse from '../../../../components/Collapse';
+import Collapse from '../../../../components/collapse/Collapse';
 
 type Props = {
   areas: Array<Object>,

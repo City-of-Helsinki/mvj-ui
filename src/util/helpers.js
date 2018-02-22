@@ -1,7 +1,10 @@
 import {Languages} from '../constants';
 import find from 'lodash/find';
-import get from 'lodash/get';
 import findIndex from 'lodash/findIndex';
+import forEach from 'lodash/forEach';
+import get from 'lodash/get';
+import isArray from 'lodash/isArray';
+import isEmpty from 'lodash/isEmpty';
 import isNumber from 'lodash/isNumber';
 import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
@@ -64,6 +67,36 @@ export const getActiveLanguage = () => {
   //
   // return active;
 };
+
+export const getSearchQuery = (filters) => {
+  let query = [];
+
+  forEach(filters, (filter, key) => {
+    if (!isEmpty(filter) || isNumber(filter)) {
+      if (isArray(filter)) {
+        const items = [];
+        forEach(filter, (item) => {
+          items.push(encodeURIComponent(item));
+        });
+        filter = items;
+      }
+
+      if (key === 'page' && Number(filter) < 2) {
+        return;
+      }
+
+      if (key === 'type') {
+        query.push(`${key}=${encodeURIComponent(filter.toUpperCase())}`);
+        return;
+      }
+
+      query.push(`${key}=${isArray(filter) ? filter.join(',') : encodeURIComponent(filter)}`);
+    }
+  });
+
+  return query.length ? `?${query.join('&')}` : '';
+};
+
 
 /**
  * Set leaflet draw strings in Finnish

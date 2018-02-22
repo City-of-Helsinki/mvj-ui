@@ -10,7 +10,7 @@ import moment from 'moment';
 import AbnormalDebtsTableEdit from './AbnormalDebtsTableEdit';
 import AddBillEdit from './AddBillEdit';
 import BillsTableEdit from './BillsTableEdit';
-import ConfirmationModal from '../../../../components/ConfirmationModal';
+import ConfirmationModal from '../../../../components/modal/ConfirmationModal';
 import FieldTypeSwitch from '../../../../components/form/FieldTypeSwitch';
 import {displayUIMessage} from '../../../../util/helpers';
 import {formatBillingNewBill} from '../../../helpers';

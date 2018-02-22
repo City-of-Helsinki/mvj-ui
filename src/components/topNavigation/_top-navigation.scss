@@ -7,23 +7,104 @@
   align-items: center;
   justify-content: space-between;
   height: rem-calc(70px);
+  font-family: $font-family-helsinki-grotesk;
   font-weight: 600;
   font-size: rem-calc(20px);
-  padding: rem-calc(12px) rem-calc(30px);
+  padding: 0 rem-calc(20px);
   background: $white;
   z-index: 1002;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.06);
   background-color: $white;
+
+  &__left-wrapper {
+    display: flex;
+    flex: 1 1 0%;
+    align-items: center;
+
+    .title {
+      font-size: rem-calc(20px);
+      margin-left: rem-calc(30px);
+      padding: 0 rem-calc(20px);
+      line-height: rem-calc(70px);
+      background-color: $engel;
+
+      a {
+        color: $black;
+        &:hover {
+          color: $black;
+        }
+      }
+    }
+
+    .page-title {
+      font-size: rem-calc(18px);
+      margin: 0;
+      padding: 0 rem-calc(20px);
+      line-height: rem-calc(70px);
+      background-color: $white;
+
+      p {
+        margin: 0;
+      }
+    }
+  }
+
+  &__right-wrapper {
+    display: flex;
+    align-items: center;
+
+    .user-icon-wrapper {
+      position: relative;
+      line-height: 1;
+
+      .userIcon {
+        margin: 0;
+        width: 30px;
+        height: 30px;
+      }
+
+      .badge {
+        position: absolute;
+        font-family: $font-family-source;
+        font-size: rem-calc(12px);
+        min-width: rem-calc(20px);
+        padding: rem-calc(4px);
+        color: $white;
+        font-weight: 600;
+        text-align: center;
+        border-radius: 50%;
+        background-color: $brick;
+        top: rem-calc(-3px);
+        right: rem-calc(-10px);
+      }
+    }
+
+    .username-wrapper {
+      line-height: 1;
+      margin-left: 20px;
+      text-align: right;
+
+      .username {
+        line-height: 1;
+        margin: 0;
+        font-weight: 500;
+        font-size: rem-calc(16px);
+      }
+
+      .logout-link {
+        line-height: 1;
+        color: $tram;
+        font-weight: 500;
+        font-size: rem-calc(16px);
+      }
+    }
+  }
 
   .menuIcon, .userIcon, .flagIcon {
     width: 27px;
     height: 27px;
     fill: $black;
     cursor: pointer;
-  }
-
-  .userIcon {
-    margin-bottom: rem-calc(5px);
   }
 
   .menuIcon:hover, .userIcon:hover {
@@ -37,49 +118,11 @@
   }
 
   .search {
-    margin: 0 rem-calc(70px) 0 0;
+    margin: 0 rem-calc(40px) 0 0;
   }
 
   .flag {
     position: relative;
     margin: 0 rem-calc(70px) 0 0;
-  }
-
-  .title {
-    margin-left: rem-calc(30px);
-    font-family: $font-family-helsinki-grotesk;
-    flex-grow: 2;
-    a {
-      color: $black;
-      &:hover {
-        color: $black;
-      }
-    }
-  }
-  .username {
-    font-family: $font-family-helsinki-grotesk;
-    font-weight: 500;
-    font-size: rem-calc(16px);
-    margin-right: rem-calc(14px);
-  }
-  .circle {
-    position: absolute;
-    font-size: rem-calc(13px);
-    padding: 0 rem-calc(4px);
-    color: $white;
-    font-weight: 600;
-    text-align: center;
-    border-radius: 50%;
-    background-color: $brick;
-    bottom: 0;
-    right: rem-calc(-10px);
-  }
-
-  .logout-link {
-    color: $black;
-    font-family: $font-family-helsinki-grotesk;
-    font-weight: 500;
-    font-size: rem-calc(16px);
-    margin-left: rem-calc(20px);
   }
 }
