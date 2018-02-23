@@ -23,7 +23,10 @@ class NewRentCriteriaPage extends Component {
   render() {
     return (
       <div className='rent-criteria-page'>
-        <h1>Uusi vuokrausperuste</h1>
+        <div className="rent-criteria-page__content">
+          <h1>Uusi vuokrausperuste</h1>
+          <div className="divider" />
+        </div>
       </div>
     );
   }

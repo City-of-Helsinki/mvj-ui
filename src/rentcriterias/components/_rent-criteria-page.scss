@@ -1,0 +1,27 @@
+.rent-criteria-page {
+  width: 100%;
+  padding: rem-calc(20px);
+
+  &__content {
+    width: 100%;
+    background-color: $white;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.07);
+    padding: rem-calc(20px);
+
+    h1 {
+      font-family: $font-family-source;
+      font-size: rem-calc(24px);
+      color: $black;
+      font-weight: 600;
+      margin: 0;
+      text-transform: uppercase;
+    }
+
+    .divider {
+      border-top: 1px dashed $tram;
+      margin: rem-calc(25px) 0;
+      height: 1px;
+      width: 100%;
+    }
+  }
+}

@@ -72,7 +72,7 @@ class Search extends Component {
         {isBasicSearch && (
           <div>
             <Row>
-              <Column  className='search-box' large={12}>
+              <Column  large={12}>
                 <TextInput
                   placeholder={'Hae hakusanalla'}
                   onChange={(e) => this.handleTextInputChange(e, 'keyword')}
