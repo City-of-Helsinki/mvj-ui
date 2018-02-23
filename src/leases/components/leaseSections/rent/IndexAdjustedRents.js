@@ -5,7 +5,7 @@ import {formatDateRange,
   formatNumberWithThousandSeparator,
   formatDecimalNumber,
   getLabelOfOption} from '../../../../util/helpers';
-import {rentIndexAdjustedRentPurposeOptions} from '../constants';
+import {purposeOptions} from '../../../../constants';
 import TableFixedHeader from '../../../../components/table/TableFixedHeader';
 
 type Props = {
@@ -20,8 +20,8 @@ const getTableBody = (indexAdjustedRents: Array<Object>) => {
           <tr key={index}>
             <td>{rent.rent !== null ? formatNumberWithThousandSeparator(formatDecimalNumber(rent.rent), '.') : '-'}</td>
             <td style={{maxWidth: '150px'}}
-              title={rent.purpose ? getLabelOfOption(rentIndexAdjustedRentPurposeOptions, rent.purpose) : '-'}>
-              <div className="text-container">{rent.purpose ? getLabelOfOption(rentIndexAdjustedRentPurposeOptions, rent.purpose) : '-'}</div>
+              title={rent.purpose ? getLabelOfOption(purposeOptions, rent.purpose) : '-'}>
+              <div className="text-container">{rent.purpose ? getLabelOfOption(purposeOptions, rent.purpose) : '-'}</div>
             </td>
             <td>{formatDateRange(rent.start_date, rent.end_date)}</td>
             <td>{rent.calculation_factor !== null ? formatDecimalNumber(rent.calculation_factor) : '-'}</td>

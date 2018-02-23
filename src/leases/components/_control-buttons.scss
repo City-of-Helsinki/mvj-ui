@@ -6,19 +6,21 @@
   .comment-button {
     display: inline-block;
     margin-left: 3rem;
-    margin-right: 1rem;
+    margin-right: 0;
     cursor: pointer;
     position: relative;
+    line-height: 1;
   }
   .commentIcon {
-    width: rem-calc(33px);
-    height: rem-calc(33px);
+    width: rem-calc(30px);
+    height: rem-calc(30px);
     fill: $black;
   }
   .circle {
     position: absolute;
     font-size: rem-calc(13px);
-    padding: 0 rem-calc(4px);
+    line-height: 1;
+    padding: rem-calc(4px);
     color: $white;
     font-weight: 600;
     text-align: center;
@@ -26,6 +28,6 @@
     background-color: $brick;
     top: rem-calc(-6px);
     right: rem-calc(-10px);
-    min-width: rem-calc(19px);
+    min-width: rem-calc(21px);
   }
 }

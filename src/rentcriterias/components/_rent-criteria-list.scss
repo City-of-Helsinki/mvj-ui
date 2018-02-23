@@ -1,21 +1,14 @@
 .rent-criteria-list {
   display: block;
   width: 100%;
-  padding: 2.5rem 1rem 0;
-
-  .row {
-    width: 100%;
-  }
+  padding: rem-calc(20px);
 
   &__search-wrapper {
     display: flex;
 
     .search-container {
       flex: 1 1 0%;
-    }
-
-    .button-container {
-
+      padding-right: rem-calc(15px);
     }
   }
 }

@@ -8,9 +8,8 @@ import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import trashIcon from '../../../../../assets/icons/trash.svg';
 import {rentDiscountAmountTypeOptions,
-  rentDiscountDecisionOptions,
-  rentDiscountPurposeOptions,
   rentDiscountTypeOptions} from '../constants';
+import {decisionOptions, purposeOptions} from '../../../../constants';
 
 type Props = {
   fields: any,
@@ -45,7 +44,7 @@ const DiscountsEdit = ({fields}: Props) => {
                       component={FieldTypeSelect}
                       label='Käyttötarkoitus'
                       name={`${discount}.purpose`}
-                      options={rentDiscountPurposeOptions}
+                      options={purposeOptions}
                     />
                   </Column>
                   <Column small={5}>
@@ -104,7 +103,7 @@ const DiscountsEdit = ({fields}: Props) => {
                       component={FieldTypeSelect}
                       label="Päätös"
                       name={`${discount}.rule`}
-                      options={rentDiscountDecisionOptions}
+                      options={decisionOptions}
                     />
                   </Column>
                 </Row>

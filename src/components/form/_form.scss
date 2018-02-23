@@ -305,6 +305,7 @@
       .Select {
         font-size: $font-small;
         line-height: 1;
+        height: rem-calc(26px);
 
         &:focus, &:focus {
           border: 1px solid $medium-gray;
@@ -395,6 +396,7 @@
         .Select {
           font-size: $font-regular;
           line-height: 1;
+          height: rem-calc(30px);
 
           &:focus, &:focus {
             border: 1px solid $medium-gray;
@@ -479,4 +481,45 @@
 .is-focused:not(.is-open) > .Select-control {
   border: 1px solid $medium-gray !important;
   box-shadow: none !important;
+}
+
+.form-section {
+  .add-button-secondary {
+    font-size: rem-calc(15px);
+    font-family: $font-family-source;
+    font-weight: 600;
+    margin: 0.1rem 0 0;
+    float: left;
+    cursor: pointer;
+
+    i {
+      background-image: url(../assets/icons/plus-green.svg);
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      display: inline-block;
+      margin-right: rem-calc(5px);
+      float: left;
+      line-height: 1;
+    }
+
+    color: $tram;
+
+    &:hover {
+      color: $tram-lighter;
+    }
+  }
+
+  .remove-button {
+    cursor: pointer;
+    position: relative;
+    top: rem-calc(-1px);
+
+    img {
+      height: 22px;
+      width: 22px;
+    }
+    &:hover {
+      opacity: 0.85;
+    }
+  }
 }

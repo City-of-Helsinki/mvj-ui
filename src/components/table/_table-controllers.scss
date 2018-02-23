@@ -1,30 +1,25 @@
 .table-controllers {
   width: 100%;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin: rem-calc(20px) 0 rem-calc(10px);
+  display: flex;
+  align-items: center;
 
-  .table-info {
-    display: flex;
+  .title-wrapper {
+    flex: 1 1 0%;
 
-    .title-wrapper {
-      flex: 1 1 0%;
-
-      span {
-        line-height: rem-calc(30px);
-        font-weight: 600;
-        font-size: rem-calc(18px);
-        padding: 0.5rem 0;
-        display: block;
-      }
+    span {
+      font-size: rem-calc(18px);
+      font-weight: 600;
+      padding: 0;
+      display: block;
     }
+  }
 
-    .button-selector-wrapper {
-      margin-right: rem-calc(24px);
-    }
+  .button-selector-wrapper {
+    margin-right: rem-calc(25px);
+  }
 
-    .icon-selector-wrapper {
-      text-align: right;
-      width: 207px;
-    }
+  .icon-selector-wrapper {
+    text-align: right;
   }
 }

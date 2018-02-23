@@ -3,9 +3,8 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 
 import {formatDateRange, getLabelOfOption} from '../../../../util/helpers';
-import {rentDiscountDecisionOptions,
-  rentDiscountPurposeOptions,
-  rentDiscountTypeOptions} from '../constants';
+import {rentDiscountTypeOptions} from '../constants';
+import {decisionOptions, purposeOptions} from '../../../../constants';
 
 type Props = {
   discounts: Array<Object>,
@@ -28,7 +27,7 @@ const Discounts = ({discounts}: Props) => {
                       </Column>
                       <Column small={3}>
                         <label>Käyttötarkoitus</label>
-                        <p>{discount.purpose ? getLabelOfOption(rentDiscountPurposeOptions, discount.purpose) : '-'}</p>
+                        <p>{discount.purpose ? getLabelOfOption(purposeOptions, discount.purpose) : '-'}</p>
                       </Column>
                       <Column small={6}>
                         <label>Voimassaoloaika</label>
@@ -50,7 +49,7 @@ const Discounts = ({discounts}: Props) => {
                       </Column>
                       <Column small={6}>
                         <label>Päätös</label>
-                        {discount.rule ? <a>{getLabelOfOption(rentDiscountDecisionOptions, discount.rule)}<span className="link-icon"/></a> : '-'}
+                        {discount.rule ? <a>{getLabelOfOption(decisionOptions, discount.rule)}<span className="link-icon"/></a> : '-'}
                       </Column>
                     </Row>
                   </Column>
