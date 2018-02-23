@@ -5,6 +5,7 @@ import flowRight from 'lodash/flowRight';
 import AddRentCriteriaForm from './forms/AddRentCriteriaForm';
 
 import {setTopNavigationSettings} from '../../components/topNavigation/actions';
+import Button from '../../components/button/Button';
 
 type Props = {
   setTopNavigationSettings: Function,
@@ -28,6 +29,16 @@ class NewRentCriteriaPage extends Component {
           <h1>Uusi vuokrausperuste</h1>
           <div className="divider" />
           <AddRentCriteriaForm />
+        </div>
+        <div className="button-wrapper">
+          <Button
+            className="button-red"
+            text="Kumoa"
+          />
+          <Button
+            className="button-green"
+            text="Tallenna"
+          />
         </div>
       </div>
     );
