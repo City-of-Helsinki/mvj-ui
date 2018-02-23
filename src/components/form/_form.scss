@@ -508,4 +508,18 @@
       color: $tram-lighter;
     }
   }
+
+  .remove-button {
+    cursor: pointer;
+    position: relative;
+    top: rem-calc(-1px);
+
+    img {
+      height: 22px;
+      width: 22px;
+    }
+    &:hover {
+      opacity: 0.85;
+    }
+  }
 }

@@ -8,6 +8,7 @@ import FieldTypeCheckbox from '../../../components/form/FieldTypeCheckbox';
 import FieldTypeDatePicker from '../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../components/form/FieldTypeText';
+import RemoveButton from '../../../components/form/RemoveButton';
 
 type RealEstateIdProps = {
   fields: any,
@@ -17,11 +18,21 @@ const renderRealEstateIds = ({fields}: RealEstateIdProps) => {
   return (
     <div>
       <label className="mvj-form-field-label">Kiinteisötunnukset</label>
-      {fields && !!fields.length && fields.map((field) =>
-        <Field
-          component={FieldTypeText}
-          name={field}
-        />
+      {fields && !!fields.length && fields.map((field, index) =>
+        <Row>
+          <Column small={10}>
+            <Field
+              component={FieldTypeText}
+              name={field}
+            />
+          </Column>
+          <Column small={2}>
+            <RemoveButton
+              onClick={() => fields.remove(index)}
+              title="Poista hinta"
+            />
+          </Column>
+        </Row>
       )}
       <Row>
         <Column>
@@ -40,12 +51,22 @@ const renderDecisions = ({fields}: DecisionsProps) => {
   return (
     <div>
       <label className="mvj-form-field-label">Päätökset</label>
-      {fields && !!fields.length && fields.map((field) =>
-        <Field
-          component={FieldTypeSelect}
-          name={field}
-          options={[]}
-        />
+      {fields && !!fields.length && fields.map((field, index) =>
+        <Row>
+          <Column small={10}>
+            <Field
+              component={FieldTypeSelect}
+              name={field}
+              options={[]}
+            />
+          </Column>
+          <Column small={2}>
+            <RemoveButton
+              onClick={() => fields.remove(index)}
+              title="Poista hinta"
+            />
+          </Column>
+        </Row>
       )}
       <Row>
         <Column>
@@ -71,7 +92,7 @@ const renderPrices = ({fields}: PricesProps) => {
             <Column small={1}><label className="mvj-form-field-label">Euroa</label></Column>
             <Column small={1}><label className="mvj-form-field-label">Yksikkö</label></Column>
           </Row>
-          {fields.map((field) =>
+          {fields.map((field, index) =>
             <Row>
               <Column small={2}>
                 <Field
@@ -91,6 +112,12 @@ const renderPrices = ({fields}: PricesProps) => {
                   component={FieldTypeSelect}
                   name={`${field}.unit`}
                   options={[]}
+                />
+              </Column>
+              <Column small={1}>
+                <RemoveButton
+                  onClick={() => fields.remove(index)}
+                  title="Poista hinta"
                 />
               </Column>
             </Row>
