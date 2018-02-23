@@ -6,7 +6,7 @@ import {Row, Column} from 'react-foundation';
 import trashIcon from '../../../../../assets/icons/trash.svg';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
-import {rentCriteriaPurposeOptions} from '../constants';
+import {purposeOptions} from '../../../../constants';
 
 type Props = {
   fields: any,
@@ -67,7 +67,7 @@ const CriteriasEdit = ({fields}: Props) => {
                         <Field
                           component={FieldTypeSelect}
                           name={`${item}.purpose`}
-                          options={rentCriteriaPurposeOptions}
+                          options={purposeOptions}
                         />
                       </Column>
                       <Column small={2}>

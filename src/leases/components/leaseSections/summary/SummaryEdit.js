@@ -8,18 +8,17 @@ import {Field, reduxForm, formValueSelector} from 'redux-form';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import {
-  summaryFinancialMethodOptions,
   summaryHitasOptions,
   summaryLeaseStatisticalUseOptions,
-  summaryLeaseUseOptions,
   summaryLessorOptions,
-  summaryManagementMethodOptions,
   summaryNoticePeriodOptions,
   summaryPublicityOptions,
   summaryRegulatoryOptions,
   summaryRegulatoryMethodOptions,
   summarySpecialApartmentsOptions,
   summaryTransferRightOptions} from '../constants';
+
+import {financialMethodOptions, managementMethodOptions, purposeOptions} from '../../../../constants';
 
 type Props = {
   handleSubmit: Function,
@@ -55,7 +54,7 @@ class SummaryEdit extends Component {
               <Field name="summary.lease_use"
                 component={FieldTypeSelect}
                 label="Vuokarauksen käyttötarkoitus"
-                options={summaryLeaseUseOptions}
+                options={purposeOptions}
               />
             </Column>
             <Column medium={4}>
@@ -86,14 +85,14 @@ class SummaryEdit extends Component {
               <Field name="summary.financing_method"
                 component={FieldTypeSelect}
                 label="Rahoitusmuoto"
-                options={summaryFinancialMethodOptions}
+                options={financialMethodOptions}
               />
             </Column>
             <Column medium={4}>
               <Field name="summary.management_method"
                 component={FieldTypeSelect}
                 label="Hallintamuoto"
-                options={summaryManagementMethodOptions}
+                options={managementMethodOptions}
               />
             </Column>
             <Column medium={4}>

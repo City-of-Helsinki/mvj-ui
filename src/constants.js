@@ -76,3 +76,68 @@ export const minZoom = 2;
  * @type {number}
  */
 export const maxZoom = 12;
+
+/**
+ * Dropdown options
+ */
+
+export const decisionOptions = [
+  {value: '0', label: 'ALK, 36, 14.07.2017'},
+];
+
+export const financialMethodOptions = [
+  {value: 'A', label: 'Korkotuki yht. pitkä'},
+  {value: 'B', label: 'Korkotuki yht. lyhyt'},
+  {value: 'C', label: 'Korkotuki osakk. om.'},
+  {value: 'D', label: 'Muu'},
+  {value: '0', label: 'Ei tietoa'},
+  {value: '1', label: 'Aravalainoitettu'},
+  {value: '2', label: 'Vapaarahoitteinen'},
+  {value: '3', label: 'Peruskorjauslaina'},
+  {value: '4', label: 'Korkotuki'},
+  {value: '5', label: 'Arava tai korkotuki'},
+  {value: '6', label: 'Vapaarah. tai arava'},
+  {value: '7', label: 'Vap. rah. tai korko'},
+  {value: '8', label: 'Korkot./arava/vap.ra'},
+  {value: '9', label: 'Muu kuin AV ja p. KT'},
+];
+
+
+export const managementMethodOptions = [
+  {value: 'A', label: 'koe'},
+  {value: 'B', label: 'koe 2'},
+  {value: 'C', label: 'Asumisoikeus/omistus'},
+  {value: 'D', label: 'Asumisoikeus/vuokra'},
+  {value: 'E', label: 'Omistus ja vuokra'},
+  {value: '0', label: 'Ei tietoa'},
+  {value: '1', label: 'Omistus'},
+  {value: '2', label: 'Vuokra'},
+  {value: '3', label: 'Asumisoikeus'},
+  {value: '4', label: 'Sekatalo'},
+  {value: '5', label: 'Vuokra tai asumisoik'},
+  {value: '6', label: 'Omistus tai vuokra'},
+  {value: '7', label: 'Omist./vuokra/as.oik'},
+  {value: '8', label: 'Osaomistus'},
+  {value: '9', label: 'Asumisoik./osaomist.'},
+];
+
+export const priceTypeOptions = [
+  {value: '0', label: '€ / v'},
+  {value: '1', label: '€ / kk'},
+];
+
+export const purposeOptions = [
+  {value: '100', label: 'Asuminen / yleinen'},
+  {value: '101', label: 'Vapaarahoitteisia omistusasuntoja'},
+  {value: '102', label: 'Aravaomistusasuntoja'},
+  {value: '103', label: 'Vapaarahoitteisia vuokra-asuntoja'},
+  {value: '104', label: 'Aravavuokrataloja'},
+  {value: '105', label: 'Peruskorjattuja arava-vuokrataloja'},
+  {value: '106', label: 'Omakotitalo'},
+  {value: '107', label: 'Paritalo'},
+  {value: '108', label: 'Sekatalo'},
+  {value: '109', label: 'Asumisoikeusasuntoja'},
+  {value: '110', label: 'Opiskelija-asuntoja'},
+  {value: '111', label: 'Vanhusten asuntoja'},
+  {value: '112', label: 'Palvelutalo/hoitokoti'},
+];

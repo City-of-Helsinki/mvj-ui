@@ -3,7 +3,7 @@ import React from 'react';
 
 import {formatNumberWithThousandSeparator,
   getLabelOfOption} from '../../../../util/helpers';
-import {rentCriteriaPurposeOptions} from '../constants';
+import {purposeOptions} from '../../../../constants';
 import Button from '../../../../components/button/Button';
 
 
@@ -33,7 +33,7 @@ const Criterias = ({criterias, onCriteriaAgree}: Props) => {
           {criterias && criterias.length > 0 && criterias.map((criteria, index) => {
             return (
               <tr key={index}>
-                <td>{criteria.purpose ? getLabelOfOption(rentCriteriaPurposeOptions, criteria.purpose) : '-'}</td>
+                <td>{criteria.purpose ? getLabelOfOption(purposeOptions, criteria.purpose) : '-'}</td>
                 <td>{criteria.km2 ? formatNumberWithThousandSeparator(criteria.km2) : '-'}</td>
                 <td>{criteria.index ? formatNumberWithThousandSeparator(criteria.index) : '-'}</td>
                 <td>{criteria.ekm2ind100 ? formatNumberWithThousandSeparator(criteria.ekm2ind100) : '-'}</td>

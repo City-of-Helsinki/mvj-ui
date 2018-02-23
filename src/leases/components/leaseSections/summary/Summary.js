@@ -4,17 +4,15 @@ import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 
 import {getLabelOfOption} from '../../../../util/helpers';
-import {summaryFinancialMethodOptions,
-  summaryHitasOptions,
+import {summaryHitasOptions,
   summaryLeaseStatisticalUseOptions,
-  summaryLeaseUseOptions,
   summaryLessorOptions,
-  summaryManagementMethodOptions,
   summaryNoticePeriodOptions,
   summaryRegulatoryOptions,
   summaryRegulatoryMethodOptions,
   summarySpecialApartmentsOptions,
   summaryTransferRightOptions} from '../constants';
+import {financialMethodOptions, managementMethodOptions, purposeOptions} from '../../../../constants';
 
 type Props = {
   summary: Object,
@@ -34,7 +32,7 @@ const Summary = ({summary}: Props) => {
           <Row>
             <Column medium={4}>
               <label>Vuokrauksen käyttötarkoitus</label>
-              <p>{summary.lease_use ? getLabelOfOption(summaryLeaseUseOptions, summary.lease_use) : '-'}</p>
+              <p>{summary.lease_use ? getLabelOfOption(purposeOptions, summary.lease_use) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Erityisasunnot</label>
@@ -54,11 +52,11 @@ const Summary = ({summary}: Props) => {
           <Row>
             <Column medium={4}>
               <label>Rahoitusmuoto</label>
-              <p>{summary.financing_method ? getLabelOfOption(summaryFinancialMethodOptions, summary.financing_method) : '-'}</p>
+              <p>{summary.financing_method ? getLabelOfOption(financialMethodOptions, summary.financing_method) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Hallintamuoto</label>
-              <p>{summary.management_method ? getLabelOfOption(summaryManagementMethodOptions, summary.management_method) : '-'}</p>
+              <p>{summary.management_method ? getLabelOfOption(managementMethodOptions, summary.management_method) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Siirto-oikeus</label>

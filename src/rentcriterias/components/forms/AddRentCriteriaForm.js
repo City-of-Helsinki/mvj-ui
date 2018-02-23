@@ -9,6 +9,11 @@ import FieldTypeDatePicker from '../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../components/form/FieldTypeText';
 import RemoveButton from '../../../components/form/RemoveButton';
+import {decisionOptions,
+  financialMethodOptions,
+  managementMethodOptions,
+  priceTypeOptions,
+  purposeOptions} from '../../../constants';
 
 type RealEstateIdProps = {
   fields: any,
@@ -57,7 +62,7 @@ const renderDecisions = ({fields}: DecisionsProps) => {
             <Field
               component={FieldTypeSelect}
               name={field}
-              options={[]}
+              options={decisionOptions}
             />
           </Column>
           <Column small={2}>
@@ -98,7 +103,7 @@ const renderPrices = ({fields}: PricesProps) => {
                 <Field
                   component={FieldTypeSelect}
                   name={`${field}.purpose`}
-                  options={[]}
+                  options={purposeOptions}
                 />
               </Column>
               <Column small={1}>
@@ -111,7 +116,7 @@ const renderPrices = ({fields}: PricesProps) => {
                 <Field
                   component={FieldTypeSelect}
                   name={`${field}.unit`}
-                  options={[]}
+                  options={priceTypeOptions}
                 />
               </Column>
               <Column small={1}>
@@ -181,15 +186,15 @@ const AddRentCriteriaForm = ({handleSubmit}: Props) => {
             component={FieldTypeSelect}
             label='Hallintamuoto'
             name='management_method'
-            options={[]}
+            options={managementMethodOptions}
           />
         </Column>
         <Column medium={3}>
           <Field
             component={FieldTypeSelect}
             label='Rahoitusmuoto'
-            name='financing_method'
-            options={[]}
+            name='financial_method'
+            options={financialMethodOptions}
           />
         </Column>
         <Column medium={3}>

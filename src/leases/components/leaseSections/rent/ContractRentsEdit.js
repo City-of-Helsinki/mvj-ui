@@ -7,9 +7,7 @@ import trashIcon from '../../../../../assets/icons/trash.svg';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
-import {rentContractRentPurposeOptions,
-  rentContractRentTypeOptions,
-} from '../constants';
+import {priceTypeOptions, purposeOptions} from '../../../../constants';
 
 type Props = {
   fields: any,
@@ -74,7 +72,7 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                         <Field
                           component={FieldTypeSelect}
                           name={`${rent}.type`}
-                          options={rentContractRentTypeOptions}
+                          options={priceTypeOptions}
                         />
                       </Column>
                     </Row>
@@ -83,7 +81,7 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                     <Field
                       component={FieldTypeSelect}
                       name={`${rent}.purpose`}
-                      options={rentContractRentPurposeOptions}
+                      options={purposeOptions}
                     />
                   </Column>
                   <Column medium={3}>
@@ -99,7 +97,7 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                           <Field
                             component={FieldTypeSelect}
                             name={`${rent}.basic_rent_type`}
-                            options={rentContractRentTypeOptions}
+                            options={priceTypeOptions}
                           />
                         </Column>
                       </Row>

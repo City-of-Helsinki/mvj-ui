@@ -7,7 +7,7 @@ import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import TableFixedHeader from '../../../../components/table/TableFixedHeader';
-import {rentIndexAdjustedRentPurposeOptions} from '../constants';
+import {purposeOptions} from '../../../../constants';
 
 
 const getTableBody = (fields) => {
@@ -28,7 +28,7 @@ const getTableBody = (fields) => {
                 component={FieldTypeSelect}
                 className="no-margin"
                 name={`${item}.purpose`}
-                options={rentIndexAdjustedRentPurposeOptions}
+                options={purposeOptions}
               />
             </td>
             <td style={{width: '25%'}}>
