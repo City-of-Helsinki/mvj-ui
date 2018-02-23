@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import AddRentCriteriaForm from './forms/AddRentCriteriaForm';
 
+import {getRouteById} from '../../root/routes';
 import {setTopNavigationSettings} from '../../components/topNavigation/actions';
 import Button from '../../components/button/Button';
 
@@ -14,11 +15,22 @@ type Props = {
 class NewRentCriteriaPage extends Component {
   props: Props
 
+  static contextTypes = {
+    router: Object,
+  };
+
   componentWillMount() {
     const {setTopNavigationSettings} = this.props;
     setTopNavigationSettings({
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
+    });
+  }
+
+  handleCancel = () => {
+    const {router} = this.context;
+    return router.push({
+      pathname: getRouteById('rentcriterias'),
     });
   }
 
@@ -33,10 +45,12 @@ class NewRentCriteriaPage extends Component {
         <div className="button-wrapper">
           <Button
             className="button-red"
+            onClick={() => this.handleCancel()}
             text="Kumoa"
           />
           <Button
             className="button-green"
+            onClick={() => alert('TODO: Tallenna uusi vuokraperuste')}
             text="Tallenna"
           />
         </div>
