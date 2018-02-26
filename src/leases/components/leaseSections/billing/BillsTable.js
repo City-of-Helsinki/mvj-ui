@@ -38,8 +38,8 @@ class BillsTable extends Component {
     let {clientHeight} = this.tableElement;
     const {showModal} = this.state;
 
-    if(showModal) {clientHeight = 450;}
-    if(clientHeight > 450) {clientHeight = 450;}
+    if(showModal) {clientHeight = 480;}
+    if(clientHeight > 480) {clientHeight = 480;}
 
     this.setState({tableHeight: clientHeight});
   }

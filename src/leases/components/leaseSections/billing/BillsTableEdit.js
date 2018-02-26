@@ -62,8 +62,8 @@ class BillsTableEdit extends Component {
     let {clientHeight} = this.tableElement;
     const {showModal} = this.state;
 
-    if(showModal) {clientHeight = 560;}
-    if(clientHeight > 560) {clientHeight = 560;}
+    if(showModal) {clientHeight = 580;}
+    if(clientHeight > 580) {clientHeight = 580;}
 
     this.setState({tableHeight: clientHeight});
   }
