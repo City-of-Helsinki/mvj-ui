@@ -82,7 +82,7 @@ const BillsTableBodyEdit = ({bills, fields, onRowClick, selectedBillIndex}: Prop
             </td>
             <td onClick={() => onRowClick(index)}>
               {bills && bills.length > (index) &&
-                bills[index].unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bills[index].unpaid_amount))} €` : '0 €'
+                bills[index].unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bills[index].unpaid_amount))} €` : '-'
               }
             </td>
             <td onClick={() => onRowClick(index)}>

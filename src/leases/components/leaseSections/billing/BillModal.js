@@ -35,7 +35,7 @@ const BillModal = ({bill, containerHeight, onClose, show}: Props) => {
         </div>
         <div className="section-item">
           <Row>
-            <Column medium={8}>
+            <Column medium={4}>
               <label>Laskunsaaja</label>
               {(get(bill, 'tenant.firstname') || get(bill, 'tenant.lastname'))
                 ? <p>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</p>
@@ -46,11 +46,15 @@ const BillModal = ({bill, containerHeight, onClose, show}: Props) => {
               <label>Lähetetty SAP:iin</label>
               <p>{bill.sent_to_SAP_date ? formatDate(bill.sent_to_SAP_date) : '-'}</p>
             </Column>
-          </Row>
-          <Row>
             <Column medium={4}>
               <label>SAP numero</label>
               <p>{bill.SAP_number ? bill.SAP_number : '-'}</p>
+            </Column>
+          </Row>
+          <Row>
+            <Column medium={4}>
+              <label>Eräpäivä</label>
+              <p>{bill.due_date ? formatDate(bill.due_date) : '-'}</p>
             </Column>
             <Column medium={4}>
               <label>Laskutuspvm</label>

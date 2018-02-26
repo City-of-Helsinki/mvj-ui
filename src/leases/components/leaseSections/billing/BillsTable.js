@@ -99,7 +99,7 @@ class BillsTable extends Component {
                       <td>{bill.type ? getLabelOfOption(billingTypeOptions, bill.type) : '-'}</td>
                       <td>{bill.status ? getLabelOfOption(billingStatusOptions, bill.status) : '-'}</td>
                       <td>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.invoiced_amount))} €` : '-'}</td>
-                      <td>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '0 €'}</td>
+                      <td>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</td>
                       <td>{bill.info ? 'Kyllä' : 'Ei'}</td>
                       <td>{bill.sent_to_SAP_date ? formatDate(bill.sent_to_SAP_date) : '-'}</td>
                     </tr>
