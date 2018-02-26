@@ -91,7 +91,7 @@ class AbnormalDebtsTableEdit extends Component {
 
   saveBill = (debt: Object, index: ?number) => {
     const {abnormalDebts, dispatch} = this.props;
-    console.log(debt);
+
     if(index !== undefined && index !== null && abnormalDebts && abnormalDebts.length > index) {
       abnormalDebts[index] = formatBillingBillDb(debt);
       dispatch(change('billing-edit-form', `billing.abnormal_debts`, abnormalDebts));
