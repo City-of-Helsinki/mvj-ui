@@ -79,7 +79,7 @@ const BillModalEdit = ({
             <Column medium={4}>
               {get(bill, 'SAP_number')
                 ? (<div>
-                    <label>Eräpäivä</label>
+                    <label className='mvj-form-field-label'>Eräpäivä</label>
                     <p>{get(bill, 'due_date') ? formatDate(bill.due_date) : '-'}</p>
                   </div>
                 )
