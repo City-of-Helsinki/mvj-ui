@@ -25,7 +25,7 @@ type Props = {
   start_date: ?Moment,
 }
 
-const AbnormalDebtModalEdit = ({
+const EditAbnormalDebt = ({
   abnormalDebt,
   errors,
   onCancel,
@@ -157,4 +157,4 @@ export default flowRight(
       };
     }
   ),
-)(AbnormalDebtModalEdit);
+)(EditAbnormalDebt);
