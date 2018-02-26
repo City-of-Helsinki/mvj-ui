@@ -24,7 +24,7 @@ type Props = {
 
 type State = {
   selectedBill: ?Object,
-  selectedBillIndex: ?number,
+  selectedBillIndex: number,
   showModal: boolean,
   tableHeight: ?number,
 }
@@ -36,7 +36,7 @@ class BillsTableEdit extends Component {
 
   state: State = {
     selectedBill: null,
-    selectedBillIndex: null,
+    selectedBillIndex: -1,
     showModal: false,
     tableHeight: null,
   }
@@ -66,6 +66,26 @@ class BillsTableEdit extends Component {
     if(clientHeight > 580) {clientHeight = 580;}
 
     this.setState({tableHeight: clientHeight});
+  }
+
+  handleKeyCodeDown = () => {
+    const {bills} = this.props;
+    const {selectedBillIndex} = this.state;
+    if(selectedBillIndex < bills.length - 1) {
+      const newIndex = selectedBillIndex + 1;
+      this.setState({selectedBill: bills[newIndex], selectedBillIndex: newIndex, showModal: true});
+      this.initilizeBillEditForm(bills[newIndex]);
+    }
+  }
+
+  handleKeyCodeUp = () => {
+    const {bills} = this.props;
+    const {selectedBillIndex} = this.state;
+    if(selectedBillIndex > 0) {
+      const newIndex = selectedBillIndex - 1;
+      this.setState({selectedBill: bills[newIndex], selectedBillIndex: newIndex, showModal: true});
+      this.initilizeBillEditForm(bills[newIndex]);
+    }
   }
 
   initilizeBillEditForm = (bill: Object) => {
@@ -150,7 +170,7 @@ class BillsTableEdit extends Component {
       bills[index].unpaid_amount = 0;
     }
     dispatch(change('billing-edit-form', `billing.bills`, bills));
-    this.setState({selectedBill: null, selectedBillIndex: null, showModal: false});
+    this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false});
     displayUIMessage({title: 'Lasku hyvitetty', body: 'Lasku on hyvitetty onnistuneesti'});
   }
 
@@ -161,7 +181,7 @@ class BillsTableEdit extends Component {
 
       dispatch(change('billing-edit-form', `billing.bills`, bills));
       displayUIMessage({title: 'Lasku tallennettu', body: 'Lasku on tallennettu onnistuneesti'});
-      this.setState({selectedBill: null, selectedBillIndex: null, showModal: false});
+      this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false});
     }
   }
 
@@ -194,7 +214,9 @@ class BillsTableEdit extends Component {
               component={BillModalEdit}
               containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
               name='selected_bill'
-              onClose={() => this.setState({selectedBill: null, selectedBillIndex: null, showModal: false})}
+              onClose={() => this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false})}
+              onKeyCodeDown={() => this.handleKeyCodeDown()}
+              onKeyCodeUp={() => this.handleKeyCodeUp()}
               onRefund={() => this.refundSingle(selectedBillIndex)}
               onSave={(bill) => this.saveBill(bill, selectedBillIndex)}
               show={showModal}

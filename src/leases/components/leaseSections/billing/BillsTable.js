@@ -19,6 +19,7 @@ type Props = {
 
 type State = {
   selectedBill: Object,
+  selectedBillIndex: number,
   showModal: boolean,
   tableHeight: ?number,
 }
@@ -30,6 +31,7 @@ class BillsTable extends Component {
 
   state: State = {
     selectedBill: {},
+    selectedBillIndex: -1,
     showModal: false,
     tableHeight: null,
   }
@@ -60,6 +62,24 @@ class BillsTable extends Component {
     );
   }
 
+  handleKeyCodeDown = () => {
+    const {bills} = this.props;
+    const {selectedBillIndex} = this.state;
+    if(selectedBillIndex < bills.length - 1) {
+      const newIndex = selectedBillIndex + 1;
+      this.setState({selectedBill: bills[newIndex], selectedBillIndex: newIndex, showModal: true});
+    }
+  }
+
+  handleKeyCodeUp = () => {
+    const {bills} = this.props;
+    const {selectedBillIndex} = this.state;
+    if(selectedBillIndex > 0) {
+      const newIndex = selectedBillIndex - 1;
+      this.setState({selectedBill: bills[newIndex], selectedBillIndex: newIndex, showModal: true});
+    }
+  }
+
   render () {
     const {bills, headers} = this.props;
     const {selectedBill, showModal, tableHeight} = this.state;
@@ -70,7 +90,9 @@ class BillsTable extends Component {
           <BillModal
             bill={selectedBill}
             containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
-            onClose={() => this.setState({selectedBill: {}, showModal: false})}
+            onClose={() => this.setState({selectedBill: {}, selectedBillIndex: -1, showModal: false})}
+            onKeyCodeDown={() => this.handleKeyCodeDown()}
+            onKeyCodeUp={() => this.handleKeyCodeUp()}
             show={showModal}
           />
           <div className="table-fixed-header__header-border" />
@@ -89,7 +111,7 @@ class BillsTable extends Component {
                     <tr
                       className={classNames({'selected': selectedBill === bill})}
                       key={index}
-                      onClick={() => this.setState({selectedBill: bill, showModal: true})}
+                      onClick={() => this.setState({selectedBill: bill, selectedBillIndex: index, showModal: true})}
                       >
                       <td>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</td>
                       <td>{get(bill, 'tenant.bill_share') ? `${get(bill, 'tenant.bill_share')} %` : '-'}</td>
