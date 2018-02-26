@@ -82,8 +82,7 @@ const BillModalEdit = ({
                     <label className='mvj-form-field-label'>Eräpäivä</label>
                     <p>{get(bill, 'due_date') ? formatDate(bill.due_date) : '-'}</p>
                   </div>
-                )
-                : (<Field
+                ) : (<Field
                     component={FieldTypeDatePicker}
                     label="Eräpäivä"
                     name="bill.due_date"
@@ -110,7 +109,7 @@ const BillModalEdit = ({
             </Column>
             <Column medium={4}>
               <label className='mvj-form-field-label required'>Laskutuskausi</label>
-              {get(bill, 'SAP_number') &&
+              {!!get(bill, 'SAP_number') &&
                 <p>{formatDateRange(bill.billing_period_start_date, bill.billing_period_end_date)}</p>
               }
               {!get(bill, 'SAP_number') &&
@@ -149,8 +148,7 @@ const BillModalEdit = ({
                     <label className='mvj-form-field-label'>Laskun pääoma</label>
                     <p>{get(bill, 'capital_amount') ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.capital_amount))} €` : '-'}</p>
                   </div>
-                )
-                : (<Field
+                ) : (<Field
                     component={FieldTypeText}
                     label="Laskun pääoma"
                     labelClassName='required'
