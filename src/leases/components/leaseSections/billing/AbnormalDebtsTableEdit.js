@@ -5,7 +5,6 @@ import {connect} from 'react-redux';
 import {change, Field, formValueSelector, initialize, startAsyncValidation} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
-import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 
 import {displayUIMessage,
@@ -14,7 +13,7 @@ import {displayUIMessage,
   formatDecimalNumber,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
 import {formatBillingBillDb} from '../../../helpers';
-import AbnormalDebtModalEdit from './AbnormalDebtModalEdit';
+import EditAbnormalDebt from './EditAbnormalDebt';
 
 type Props = {
   abnormalDebts: Array<Object>,
@@ -63,10 +62,8 @@ class AbnormalDebtsTableEdit extends Component {
 
   calculateHeight = () => {
     let {clientHeight} = this.tableElement;
-    const {showModal} = this.state;
 
-    if(showModal) {clientHeight = 560;}
-    if(clientHeight > 560) {clientHeight = 560;}
+    if(clientHeight > 450) {clientHeight = 450;}
 
     this.setState({tableHeight: clientHeight});
   }
@@ -94,6 +91,7 @@ class AbnormalDebtsTableEdit extends Component {
 
   saveBill = (debt: Object, index: ?number) => {
     const {abnormalDebts, dispatch} = this.props;
+
     if(index !== undefined && index !== null && abnormalDebts && abnormalDebts.length > index) {
       abnormalDebts[index] = formatBillingBillDb(debt);
       dispatch(change('billing-edit-form', `billing.abnormal_debts`, abnormalDebts));
@@ -115,15 +113,6 @@ class AbnormalDebtsTableEdit extends Component {
         </Row>
         <div className={classNames('table-fixed-header', 'billing__bill-table', {'is-open': showModal})}>
           <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
-            <Field
-              abnormalDebt={selectedDebt}
-              component={AbnormalDebtModalEdit}
-              containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
-              name='abnormal_debt'
-              onClose={() => this.setState({selectedDebt: null, selectedDebtIndex: null, showModal: false})}
-              onSave={(bill) => this.saveBill(bill, selectedDebtIndex)}
-              show={showModal}
-            />
             <div className="table-fixed-header__header-border" />
             <table ref={(ref) => this.tableElement = ref}>
               <thead>
@@ -168,6 +157,14 @@ class AbnormalDebtsTableEdit extends Component {
             </table>
           </div>
         </div>
+        <Field
+          abnormalDebt={selectedDebt}
+          component={EditAbnormalDebt}
+          name='abnormal_debt'
+          onCancel={() => this.setState({selectedDebt: null, selectedDebtIndex: null, showModal: false})}
+          onSave={(bill) => this.saveBill(bill, selectedDebtIndex)}
+          show={showModal}
+        />
       </div>
     );
   }
