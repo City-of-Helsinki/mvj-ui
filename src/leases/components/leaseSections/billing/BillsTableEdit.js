@@ -139,6 +139,19 @@ class BillsTableEdit extends Component {
       return bill;
     });
     dispatch(change('billing-edit-form', `billing.bills`, newBills));
+    displayUIMessage({title: 'Laskut hyvitetty', body: 'Valitut laskut on hyvitetty onnistuneesti'});
+  }
+
+  refundSingle = (index: ?number) => {
+    const {bills, dispatch} = this.props;
+    if(index !== null && index !== undefined) {
+      bills[index].invoice_type = '1';
+      bills[index].status = '2';
+      bills[index].unpaid_amount = 0;
+    }
+    dispatch(change('billing-edit-form', `billing.bills`, bills));
+    this.setState({selectedBill: null, selectedBillIndex: null, showModal: false});
+    displayUIMessage({title: 'Lasku hyvitetty', body: 'Lasku on hyvitetty onnistuneesti'});
   }
 
   saveBill = (bill: Object, index: ?number) => {
@@ -182,6 +195,7 @@ class BillsTableEdit extends Component {
               containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
               name='selected_bill'
               onClose={() => this.setState({selectedBill: null, selectedBillIndex: null, showModal: false})}
+              onRefund={() => this.refundSingle(selectedBillIndex)}
               onSave={(bill) => this.saveBill(bill, selectedBillIndex)}
               show={showModal}
             />

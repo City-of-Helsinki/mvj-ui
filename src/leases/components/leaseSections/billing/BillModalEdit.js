@@ -33,6 +33,7 @@ type Props = {
   containerHeight: ?number,
   errors: ?Object,
   onClose: Function,
+  onRefund: Function,
   onSave: Function,
   show: boolean,
   start_date: ?Moment,
@@ -43,6 +44,7 @@ const BillModalEdit = ({
   containerHeight,
   errors,
   onClose,
+  onRefund,
   onSave,
   show,
   start_date}: Props) => {
@@ -217,18 +219,23 @@ const BillModalEdit = ({
               }
             </Column>
           </Row>
-          {!get(bill, 'SAP_number') &&
-            <Row>
-              <Column medium={8}>
+          <Row>
+            <Column medium={8}>
+              <Button
+                className="button-green no-margin"
+                onClick={() => onRefund(bill)}
+                text='Hyvitä'
+              />
+              {!get(bill, 'SAP_number') &&
                 <Button
-                  className="button-green no-margin"
+                  className="button-green"
                   disabled={!isEmpty(errors)}
                   onClick={() => onSave(bill)}
                   text='Tallenna'
                 />
-              </Column>
-            </Row>
-          }
+              }
+            </Column>
+          </Row>
         </div>
       </div>
     </div>
