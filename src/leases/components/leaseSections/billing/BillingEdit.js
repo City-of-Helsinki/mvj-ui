@@ -5,7 +5,6 @@ import {change, Field, FormSection, formValueSelector, initialize, reduxForm} fr
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
-import moment from 'moment';
 
 import AbnormalDebtsTableEdit from './AbnormalDebtsTableEdit';
 import AddBillEdit from './AddBillEdit';
@@ -25,7 +24,7 @@ type Props = {
 }
 
 type State = {
-  addBillMode: boolean,
+  isAddBillEditMode: boolean,
   isDeleteAbnormalDebtModalOpen: boolean,
   selectedDebtIndex: ?number,
 }
@@ -34,10 +33,12 @@ class BillingEdit extends Component {
   props: Props
 
   state: State = {
-    addBillMode: false,
+    isAddBillEditMode: false,
     isDeleteAbnormalDebtModalOpen: false,
     selectedDebtIndex: null,
   }
+
+  addBillComponent: any
 
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
@@ -93,20 +94,14 @@ class BillingEdit extends Component {
 
   saveNewBill = () => {
     const {newBill} = this.props;
+
     const tenant = get(newBill, 'tenant', {});
     tenant.bill_share = 50;
     tenant.firstname = 'Mikko';
     tenant.lastname = 'Koskinen';
     newBill.tenant = tenant;
 
-    newBill.invoiced_amount = newBill.capital_amount;
-    newBill.invoicing_date = moment();
-    newBill.invoice_method = '1',
-    newBill.invoice_type = '0',
-    newBill.SAP_number = 12345678;
-    newBill.sent_to_SAP_date = moment();
     newBill.status = '0';
-    newBill.unpaid_amount = newBill.capital_amount;
 
     const isAbnormalDebt = get(newBill, 'is_abnormal_debt', false);
     if(isAbnormalDebt) {
@@ -114,21 +109,25 @@ class BillingEdit extends Component {
     } else {
       this.addBill(formatBillingNewBill(newBill));
     }
-    this.setState({addBillMode: false});
     displayUIMessage({title: 'Lasku tallennettu', body: 'Uusi lasku on tallennettu onnistuneesti'});
+    this.setState({isAddBillEditMode: false});
   }
 
-  openAddBillMode = () => {
+  hideAddBillEditMode = () => {
+    this.setState({isAddBillEditMode: false});
+  }
+
+  showAddBillEditMode = () => {
     const {billing, dispatch} = this.props;
-    billing.new_bill = {status: '0', tenant: {bill_share: 50}};
+    billing.new_bill = {};
     // dispatch(destroy('billing-edit-form'));
     dispatch(initialize('billing-edit-form', {billing: billing}));
-    this.setState({addBillMode: true});
+    this.setState({isAddBillEditMode: true});
   }
 
   render() {
     const {dispatch, handleSubmit} = this.props;
-    const {addBillMode, isDeleteAbnormalDebtModalOpen} = this.state;
+    const {isAddBillEditMode, isDeleteAbnormalDebtModalOpen} = this.state;
 
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit billing-section'>
@@ -196,25 +195,15 @@ class BillingEdit extends Component {
             />
           </Column>
         </Row>
-
-        {!addBillMode &&
-          <Row style={{marginTop: '1rem'}}>
-            <Column>
-              <button
-                type="button"
-                onClick={() => this.openAddBillMode()}
-                className='add-button'>Luo uusi lasku</button>
-            </Column>
-          </Row>
-        }
-        {addBillMode &&
-          <FormSection
-            component={AddBillEdit}
-            name='billing.new_bill'
-            onCancel={() => this.setState({addBillMode: false})}
-            onSave={() => this.saveNewBill()}
-          />
-        }
+        <Row><Column><div className="separator-line" style={{marginTop: '1rem'}}></div></Column></Row>
+        <FormSection
+          component={AddBillEdit}
+          editMode={isAddBillEditMode}
+          name='billing.new_bill'
+          onAdd={() => this.showAddBillEditMode()}
+          onClose={() => this.hideAddBillEditMode()}
+          onSave={() => this.saveNewBill()}
+        />
       </form>
     );
   }
