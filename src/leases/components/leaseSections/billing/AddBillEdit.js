@@ -12,7 +12,7 @@ import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
 import {dateGreaterOrEqual, decimalNumber, required} from '../../../../components/form/validations';
 import {getBillingAddBillErrors} from '../../../selectors';
-import {billingInvoiceMethodOptions, billingStatusOptions, billingTypeOptions} from '../constants';
+import {billingTypeOptions} from '../constants';
 import trashIcon from '../../../../../assets/icons/trash.svg';
 
 type Props = {
@@ -25,9 +25,10 @@ type Props = {
 const AddBillEdit = ({errors, onCancel, onSave, start_date}: Props) => {
   return (
     <div>
+      <h2>Luo uusi lasku</h2>
       <div className='green-box'>
         <div className='item no-margin no-padding'>
-          <h2>Laskun tiedot</h2>
+
           <button
             className='remove-button'
             type="button"
@@ -36,6 +37,45 @@ const AddBillEdit = ({errors, onCancel, onSave, start_date}: Props) => {
             <img src={trashIcon} alt='Poista' />
           </button>
           <Row>
+            <Column medium={5}>
+              <Row>
+                <Column medium={4}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Saamislaji'
+                    labelClassName='required'
+                    name='type'
+                    options={billingTypeOptions}
+                    validate={[
+                      (value) => required(value, 'Saamislaji on pakollinen'),
+                    ]}
+                  />
+                </Column>
+                <Column medium={4}>
+                  <Field
+                    component={FieldTypeText}
+                    label='Laskun pääoma'
+                    labelClassName='required'
+                    name='capital_amount'
+                    validate={[
+                      (value) => decimalNumber(value, 'Laskun pääoma tulee olla numero'),
+                      (value) => required(value, 'Laskun pääoma on pakollinen'),
+                    ]}
+                  />
+                </Column>
+                <Column medium={4}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    label='Eräpäivä'
+                    labelClassName='required'
+                    name='due_date'
+                    validate={[
+                      (value) => required(value, 'Laskun eräpäivä on pakollinen'),
+                    ]}
+                  />
+                </Column>
+              </Row>
+            </Column>
             <Column medium={3}>
               <label className='mvj-form-field-label required'>Laskutuskausi</label>
               <Row>
@@ -68,81 +108,7 @@ const AddBillEdit = ({errors, onCancel, onSave, start_date}: Props) => {
                 optionLabel='Kertakaikkinen'
               />
             </Column>
-            <Column medium={5}>
-              <Row>
-                <Column medium={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Laskun pääoma'
-                    labelClassName='required'
-                    name='capital_amount'
-                    validate={[
-                      (value) => decimalNumber(value, 'Laskun pääoma tulee olla numero'),
-                      (value) => required(value, 'Laskun pääoma on pakollinen'),
-                    ]}
-                  />
-                </Column>
-                <Column medium={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Laskun osuus'
-                    labelClassName='required'
-                    name='tenant.bill_share'
-                    validate={[
-                      (value) => decimalNumber(value, 'Laskun osuus tulee olla numero'),
-                      (value) => required(value, 'Laskun osuus on pakollinen'),
-                    ]}
-                  />
-                </Column>
-                <Column medium={4}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Eräpäivä'
-                    labelClassName='required'
-                    name='due_date'
-                    validate={[
-                      (value) => required(value, 'Laskun eräpäivä on pakollinen'),
-                    ]}
-                  />
-                </Column>
-                <Column medium={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Laskun tila'
-                    labelClassName='required'
-                    name='status'
-                    options={billingStatusOptions }
-                    validate={[
-                      (value) => required(value, 'Laskun tila on pakollinen'),
-                    ]}
-                  />
-                </Column>
-                <Column medium={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Saamislaji'
-                    labelClassName='required'
-                    name='type'
-                    options={billingTypeOptions}
-                    validate={[
-                      (value) => required(value, 'Saamislaji on pakollinen'),
-                    ]}
-                  />
-                </Column>
-                <Column medium={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='E vai paperilasku'
-                    labelClassName='required'
-                    name='type'
-                    options={billingInvoiceMethodOptions}
-                    validate={[
-                      (value) => required(value, 'Laskutyyppi on pakollinen'),
-                    ]}
-                  />
-                </Column>
-              </Row>
-            </Column>
+
 
             <Column medium={2}>
               <Field
@@ -170,7 +136,7 @@ const AddBillEdit = ({errors, onCancel, onSave, start_date}: Props) => {
             className='add-button'
             disabled={!isEmpty(errors)}
             onClick={() => onSave()}
-            type='button'>Tallenna</button>
+            type='button'>Luo</button>
         </Column>
       </Row>
     </div>
