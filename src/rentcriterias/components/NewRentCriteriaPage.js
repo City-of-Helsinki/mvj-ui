@@ -1,8 +1,9 @@
 // @flow
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import AddRentCriteriaForm from './forms/AddRentCriteriaForm';
+import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
 
 import {getRouteById} from '../../root/routes';
 import {setTopNavigationSettings} from '../../components/topNavigation/actions';
@@ -16,7 +17,7 @@ class NewRentCriteriaPage extends Component {
   props: Props
 
   static contextTypes = {
-    router: Object,
+    router: PropTypes.object,
   };
 
   componentWillMount() {
@@ -40,7 +41,14 @@ class NewRentCriteriaPage extends Component {
         <div className="rent-criteria-page__content">
           <h1>Uusi vuokrausperuste</h1>
           <div className="divider" />
-          <AddRentCriteriaForm />
+          <EditRentCriteriaForm
+            initialValues={{
+              decisions: [''],
+              prices: [{}],
+              real_estate_ids: [''],
+            }}
+
+          />
         </div>
         <div className="button-wrapper">
           <Button

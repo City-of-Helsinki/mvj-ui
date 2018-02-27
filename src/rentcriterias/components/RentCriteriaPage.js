@@ -3,16 +3,25 @@ import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
 
 import ControlButtons from '../../components/controlButtons/ControlButtons';
+import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
 
 import mockCriteria from '../mock-data-single-criteria.json';
 
 type State = {
+  criteria: Object,
   isEditMode: boolean,
 }
 
 class RentCriteriaPage extends Component {
   state: State = {
+    criteria: {},
     isEditMode: false,
+  }
+
+  componentWillMount() {
+    this.setState({
+      criteria: mockCriteria,
+    });
   }
 
   hideEditMode = () => {
@@ -24,14 +33,19 @@ class RentCriteriaPage extends Component {
   }
 
   render() {
-    const {isEditMode} = this.state;
-    console.log(mockCriteria);
+    const {criteria, isEditMode} = this.state;
 
     return (
       <div className='rent-criteria-page'>
         <div className="rent-criteria-page__content">
           <h1>Vuokrausperuste</h1>
           <div className="divider" />
+          {isEditMode
+            ? <EditRentCriteriaForm
+                initialValues={criteria}
+              />
+            : <h1>Non edit mode</h1>
+          }
         </div>
         <Row>
           <Column>

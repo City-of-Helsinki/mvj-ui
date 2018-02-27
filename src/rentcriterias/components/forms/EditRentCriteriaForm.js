@@ -22,7 +22,7 @@ const renderRealEstateIds = ({fields}: RealEstateIdProps) => {
     <div>
       <label className="mvj-form-field-label">Kiinteisötunnukset</label>
       {fields && !!fields.length && fields.map((field, index) =>
-        <Row>
+        <Row key={index}>
           <Column small={8}>
             <Field
               component={FieldTypeText}
@@ -55,7 +55,7 @@ const renderDecisions = ({fields}: DecisionsProps) => {
     <div>
       <label className="mvj-form-field-label">Päätökset</label>
       {fields && !!fields.length && fields.map((field, index) =>
-        <Row>
+        <Row key={index}>
           <Column small={8}>
             <Field
               component={FieldTypeText}
@@ -95,7 +95,7 @@ const renderPrices = ({fields}: PricesProps) => {
             <Column medium={2} large={1}><label className="mvj-form-field-label">Yksikkö</label></Column>
           </Row>
           {fields.map((field, index) =>
-            <Row>
+            <Row key={index}>
               <Column medium={4} large={2}>
                 <Field
                   component={FieldTypeSelect}
@@ -139,7 +139,7 @@ type Props = {
   handleSubmit: Function,
 }
 
-const AddRentCriteriaForm = ({handleSubmit}: Props) => {
+const EditRentCriteriaForm = ({handleSubmit}: Props) => {
   return (
     <form onSubmit={handleSubmit} className="form-section">
       <Row>
@@ -240,15 +240,10 @@ const AddRentCriteriaForm = ({handleSubmit}: Props) => {
   );
 };
 
-const formName = 'add-rent-criteria-form';
+const formName = 'edit-rent-criteria-form';
 
 export default flowRight(
   reduxForm({
     form: formName,
-    initialValues: {
-      decisions: [''],
-      prices: [{}],
-      real_estate_ids: [''],
-    },
   }),
-)(AddRentCriteriaForm);
+)(EditRentCriteriaForm);
