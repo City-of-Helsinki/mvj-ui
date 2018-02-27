@@ -3,7 +3,7 @@ import React from 'react';
 import Button from '../button/Button';
 
 type Props = {
-  commentAmount: number,
+  commentAmount?: number,
   isEditMode: boolean,
   isValid: boolean,
   onCancelClick: Function,
@@ -25,26 +25,28 @@ const ControlButtons = ({
 }: Props) => {
   return (
     <div className='control-buttons'>
-      {isEditMode ?
-        <div className='left-buttons'>
-          <Button
-            className='button-red'
-            onClick={onCancelClick}
-            text='Hylkää muutokset'
-          />
-          <Button
-            className='button-green'
-            disabled={isValid}
-            onClick={onSaveClick}
-            text='Tallenna'
-          />
-        </div>
-        :
-        <div className='left-buttons'>
-          <Button onClick={onEditClick}
-            text='Muokkaa'
-          />
-        </div>
+      {isEditMode
+        ? (
+          <div className='left-buttons'>
+            <Button
+              className='button-red'
+              onClick={onCancelClick}
+              text='Hylkää muutokset'
+            />
+            <Button
+              className='button-green'
+              disabled={isValid}
+              onClick={onSaveClick}
+              text='Tallenna'
+            />
+          </div>
+        ) : (
+          <div className='left-buttons'>
+            <Button onClick={onEditClick}
+              text='Muokkaa'
+            />
+          </div>
+        )
       }
       {!!showCommentButton &&
         <div className="comment-button" onClick={onCommentClick}>

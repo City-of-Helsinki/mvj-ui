@@ -90,33 +90,33 @@ const renderPrices = ({fields}: PricesProps) => {
       {fields && !!fields.length &&
         <div>
           <Row>
-            <Column small={2}><label className="mvj-form-field-label">Pääkäyttötarkoitus</label></Column>
-            <Column small={1}><label className="mvj-form-field-label">Euroa</label></Column>
-            <Column small={1}><label className="mvj-form-field-label">Yksikkö</label></Column>
+            <Column medium={4} large={2}><label className="mvj-form-field-label">Pääkäyttötarkoitus</label></Column>
+            <Column medium={2} large={1}><label className="mvj-form-field-label">Euroa</label></Column>
+            <Column medium={2} large={1}><label className="mvj-form-field-label">Yksikkö</label></Column>
           </Row>
           {fields.map((field, index) =>
             <Row>
-              <Column small={2}>
+              <Column medium={4} large={2}>
                 <Field
                   component={FieldTypeSelect}
                   name={`${field}.purpose`}
                   options={purposeOptions}
                 />
               </Column>
-              <Column small={1}>
+              <Column medium={2} large={1}>
                 <Field
                   component={FieldTypeText}
                   name={`${field}.amount`}
                 />
               </Column>
-              <Column small={1}>
+              <Column medium={2} large={1}>
                 <Field
                   component={FieldTypeSelect}
                   name={`${field}.unit`}
                   options={priceTypeOptions}
                 />
               </Column>
-              <Column small={1}>
+              <Column small={4} medium={2}>
                 <RemoveButton
                   onClick={() => fields.remove(index)}
                   title="Poista hinta"
@@ -143,7 +143,7 @@ const AddRentCriteriaForm = ({handleSubmit}: Props) => {
   return (
     <form onSubmit={handleSubmit} className="form-section">
       <Row>
-        <Column medium={3}>
+        <Column medium={4} large={3}>
           <Field
             component={FieldTypeSelect}
             label='Tonttityyppi'
@@ -167,7 +167,7 @@ const AddRentCriteriaForm = ({handleSubmit}: Props) => {
         </Column>
       </Row>
       <Row>
-        <Column medium={3}>
+        <Column medium={4} large={3}>
           <FieldArray
             component={renderRealEstateIds}
             name="real_estate_ids"
@@ -198,7 +198,7 @@ const AddRentCriteriaForm = ({handleSubmit}: Props) => {
         </Column>
       </Row>
       <Row style={{marginTop: '10px'}}>
-        <Column medium={3}>
+        <Column medium={4} large={3}>
           <FieldArray
             component={renderDecisions}
             name="decisions"

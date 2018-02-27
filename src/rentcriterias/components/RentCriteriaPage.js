@@ -27,7 +27,7 @@ class RentCriteriaPage extends Component {
     return (
       <div className='rent-criteria-page'>
         <div className="rent-criteria-page__content">
-          <h1>Vuokrausperusteperuste</h1>
+          <h1>Vuokrausperuste</h1>
           <div className="divider" />
         </div>
         <Row>
@@ -36,7 +36,6 @@ class RentCriteriaPage extends Component {
               <div className="rent-criteria-info-wrapper"></div>
               <div className='controls'>
                 <ControlButtons
-                  commentAmount={0}
                   isEditMode={isEditMode}
                   isValid={true}
                   onCancelClick={this.hideEditMode}
