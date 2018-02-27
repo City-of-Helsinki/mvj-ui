@@ -22,7 +22,7 @@ import Billing from './leaseSections/billing/Billing';
 import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/modal/ConfirmationModal';
-import ControlButtons from './ControlButtons';
+import ControlButtons from '../../components/controlButtons/ControlButtons';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
 import EditableMap from '../../components/map/EditableMap';

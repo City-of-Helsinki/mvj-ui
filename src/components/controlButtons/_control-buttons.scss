@@ -30,4 +30,9 @@
     right: rem-calc(-10px);
     min-width: rem-calc(21px);
   }
+  .left-buttons {
+    .mvj-button:last-child {
+      margin-right: 0;
+    }
+  }
 }

@@ -48,6 +48,7 @@
 @import "components/button/styled-checkbox-buttons";
 @import "components/collapse/collapse";
 @import "components/commentPanel/comment-panel";
+@import "components/controlButtons/control-buttons";
 @import "components/dropdown/action-dropdown";
 @import "components/form/form";
 @import "components/inputs/search-input";
@@ -70,7 +71,6 @@
 // App Beta
 @import "app/app";
 @import "auth/components/login-page";
-@import "leases/components/control-buttons";
 @import "leases/components/leaseSections/billing/billing";
 @import "leases/components/leaseSections/billing/bill-modal";
 @import "leases/components/leaseSections/create-lease";
