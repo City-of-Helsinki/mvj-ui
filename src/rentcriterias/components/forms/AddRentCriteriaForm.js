@@ -4,13 +4,11 @@ import {Field, FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import {Row, Column} from 'react-foundation';
 
-import FieldTypeCheckbox from '../../../components/form/FieldTypeCheckbox';
 import FieldTypeDatePicker from '../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../components/form/FieldTypeText';
 import RemoveButton from '../../../components/form/RemoveButton';
-import {decisionOptions,
-  financialMethodOptions,
+import {financialMethodOptions,
   managementMethodOptions,
   priceTypeOptions,
   purposeOptions} from '../../../constants';
@@ -25,13 +23,13 @@ const renderRealEstateIds = ({fields}: RealEstateIdProps) => {
       <label className="mvj-form-field-label">Kiinteisötunnukset</label>
       {fields && !!fields.length && fields.map((field, index) =>
         <Row>
-          <Column small={10}>
+          <Column small={8}>
             <Field
               component={FieldTypeText}
               name={field}
             />
           </Column>
-          <Column small={2}>
+          <Column small={4}>
             <RemoveButton
               onClick={() => fields.remove(index)}
               title="Poista hinta"
@@ -58,14 +56,13 @@ const renderDecisions = ({fields}: DecisionsProps) => {
       <label className="mvj-form-field-label">Päätökset</label>
       {fields && !!fields.length && fields.map((field, index) =>
         <Row>
-          <Column small={10}>
+          <Column small={8}>
             <Field
-              component={FieldTypeSelect}
+              component={FieldTypeText}
               name={field}
-              options={decisionOptions}
             />
           </Column>
-          <Column small={2}>
+          <Column small={4}>
             <RemoveButton
               onClick={() => fields.remove(index)}
               title="Poista hinta"
@@ -154,57 +151,18 @@ const AddRentCriteriaForm = ({handleSubmit}: Props) => {
             options={[]}
           />
         </Column>
-        <Column medium={3}>
-          <Row>
-            <Column small={6}>
-              <Field
-                component={FieldTypeDatePicker}
-                label='Alkupvm'
-                name='start_date'
-              />
-            </Column>
-            <Column small={6}>
-              <Field
-                component={FieldTypeDatePicker}
-                label='Loppupvm'
-                name='end_date'
-              />
-            </Column>
-          </Row>
-        </Column>
-        <Column medium={3}>
+        <Column medium={2}>
           <Field
             component={FieldTypeDatePicker}
-            label='Vuokraoikeus päättyy'
-            name='rental_right_end_date'
+            label='Alkupvm'
+            name='start_date'
           />
         </Column>
-      </Row>
-      <Row>
-        <Column medium={3}>
+        <Column medium={2}>
           <Field
-            component={FieldTypeSelect}
-            label='Hallintamuoto'
-            name='management_method'
-            options={managementMethodOptions}
-          />
-        </Column>
-        <Column medium={3}>
-          <Field
-            component={FieldTypeSelect}
-            label='Rahoitusmuoto'
-            name='financial_method'
-            options={financialMethodOptions}
-          />
-        </Column>
-        <Column medium={3}>
-          <Field
-            component={FieldTypeCheckbox}
-            label='Hitas'
-            name='hitas'
-            options={[
-              {value: 'hitas', label: 'Hitas'},
-            ]}
+            component={FieldTypeDatePicker}
+            label='Loppupvm'
+            name='end_date'
           />
         </Column>
       </Row>
@@ -215,25 +173,49 @@ const AddRentCriteriaForm = ({handleSubmit}: Props) => {
             name="real_estate_ids"
           />
         </Column>
+        <Column medium={2}>
+          <Field
+            component={FieldTypeText}
+            label="Asemakaava"
+            name="plan"
+          />
+        </Column>
+        <Column medium={2}>
+          <Field
+            component={FieldTypeSelect}
+            label='Hallintamuoto'
+            name='management_method'
+            options={managementMethodOptions}
+          />
+        </Column>
+        <Column medium={2}>
+          <Field
+            component={FieldTypeSelect}
+            label='Rahoitusmuoto'
+            name='financial_method'
+            options={financialMethodOptions}
+          />
+        </Column>
+      </Row>
+      <Row style={{marginTop: '10px'}}>
         <Column medium={3}>
           <FieldArray
             component={renderDecisions}
             name="decisions"
           />
-
         </Column>
-        <Column medium={3}>
+        <Column medium={2}>
+          <Field
+            component={FieldTypeDatePicker}
+            label='Vuokraoikeus päättyy'
+            name='rental_right_end_date'
+          />
+        </Column>
+        <Column medium={2}>
           <Field
             component={FieldTypeText}
             label="Indeksi"
             name="index"
-          />
-        </Column>
-        <Column medium={3}>
-          <Field
-            component={FieldTypeText}
-            label="Asemakaava"
-            name="plan"
           />
         </Column>
       </Row>
@@ -242,6 +224,15 @@ const AddRentCriteriaForm = ({handleSubmit}: Props) => {
           <FieldArray
             component={renderPrices}
             name="prices"
+          />
+        </Column>
+      </Row>
+      <Row style={{marginTop: '10px'}}>
+        <Column>
+          <FieldArray
+            component={FieldTypeText}
+            label="Kommentti"
+            name="comment"
           />
         </Column>
       </Row>
