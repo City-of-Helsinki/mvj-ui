@@ -47,7 +47,6 @@ class NewRentCriteriaPage extends Component {
               prices: [{}],
               real_estate_ids: [''],
             }}
-
           />
         </div>
         <div className="button-wrapper">

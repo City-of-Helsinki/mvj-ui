@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import DatePicker from 'react-datepicker';
 import moment from 'moment';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -40,12 +40,13 @@ class FieldTypeDatePicker extends Component {
 
     return (
       <div className='mvj-form-field'>
-        {label && <label className={classnames('mvj-form-field-label', labelClassName)}>{label}</label>}
-        <div className={classnames('mvj-form-field__datepicker', className, {'is-dirty': dirty})}>
+        {label &&
+          <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>
+        }
+        <div className={classNames('mvj-form-field__datepicker', className, {'is-dirty': dirty})}>
           <DatePicker
             {...input}
             placeholder={placeholder}
-            // dateFormat="YYYY-MM-DD"
             disabledKeyboardNavigation
             locale='fi'
             selected={value ? moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']) : null}

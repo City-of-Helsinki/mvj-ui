@@ -1,9 +1,12 @@
 // @flow
 import React, {Component} from 'react';
-import {Row, Column} from 'react-foundation';
 
 import ControlButtons from '../../components/controlButtons/ControlButtons';
 import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
+import ContentContainer from '../../components/content/ContentContainer';
+import GreenBox from '../../components/content/GreenBox';
+import GreenBoxEdit from '../../components/content/GreenBoxEdit';
+import RentCriteriaReadonly from './RentCriteriaReadonly';
 
 import mockCriteria from '../mock-data-single-criteria.json';
 
@@ -37,33 +40,36 @@ class RentCriteriaPage extends Component {
 
     return (
       <div className='rent-criteria-page'>
-        <div className="rent-criteria-page__content">
+        <div className='rent-criteria-page__upper-bar'>
+          <div className="rent-criteria-info-wrapper"></div>
+          <div className='controls'>
+            <ControlButtons
+              isEditMode={isEditMode}
+              isValid={true}
+              onCancelClick={this.hideEditMode}
+              onEditClick={this.showEditMode}
+              onSaveClick={() => console.log('123')}
+              showCommentButton={false}
+            />
+          </div>
+        </div>
+        <ContentContainer>
           <h1>Vuokrausperuste</h1>
           <div className="divider" />
-          {isEditMode
-            ? <EditRentCriteriaForm
+          {isEditMode ? (
+            <GreenBoxEdit>
+              <EditRentCriteriaForm
                 initialValues={criteria}
               />
-            : <h1>Non edit mode</h1>
-          }
-        </div>
-        <Row>
-          <Column>
-            <div className='rent-criteria-page__upper-bar'>
-              <div className="rent-criteria-info-wrapper"></div>
-              <div className='controls'>
-                <ControlButtons
-                  isEditMode={isEditMode}
-                  isValid={true}
-                  onCancelClick={this.hideEditMode}
-                  onEditClick={this.showEditMode}
-                  onSaveClick={() => console.log('123')}
-                  showCommentButton={false}
-                />
-              </div>
-            </div>
-          </Column>
-        </Row>
+            </GreenBoxEdit>
+          ) : (
+            <GreenBox>
+              <RentCriteriaReadonly
+                criteria={criteria}
+              />
+            </GreenBox>
+          )}
+        </ContentContainer>
       </div>
     );
   }

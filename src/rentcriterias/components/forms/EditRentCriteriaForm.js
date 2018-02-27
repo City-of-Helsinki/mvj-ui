@@ -86,7 +86,7 @@ type PricesProps = {
 const renderPrices = ({fields}: PricesProps) => {
   return (
     <div>
-      <label className="mvj-form-field-label">Hinnat</label>
+      <p className="sub-title">Hinnat</p>
       {fields && !!fields.length &&
         <div>
           <Row>
@@ -143,7 +143,7 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
   return (
     <form onSubmit={handleSubmit} className="form-section">
       <Row>
-        <Column medium={4} large={3}>
+        <Column medium={4} large={2}>
           <Field
             component={FieldTypeSelect}
             label='Tonttityyppi'
@@ -151,7 +151,7 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
             options={[]}
           />
         </Column>
-        <Column medium={2}>
+        <Column medium={2} offsetOnLarge={1}>
           <Field
             component={FieldTypeDatePicker}
             label='Alkupvm'

@@ -23,28 +23,9 @@
     }
   }
 
-  label.mvj-form-field-label {
-    white-space: nowrap;
-    font-size: rem-calc(14px);
-    line-height: normal;
-	  text-align: left;
-    color: $dark-gray;
-    margin-bottom: rem-calc(2px);
-
-    &.required::after {
-      position: relative;
-      content: '*';
-      color: $brick;
-      font-size: rem-calc(20px);
-      line-height: rem-calc(14px);
-      top: rem-calc(6px);
-      margin-left: rem-calc(5px);
-    }
-  }
-
   .mvj-form-field {
     &__checkbox {
-      margin-bottom: 0.625rem;
+      margin-bottom: rem-calc(20px);
 
       &.checkbox-inline {
         .option-label {
@@ -89,7 +70,7 @@
     }
 
     &__datepicker {
-      margin-bottom: 0.625rem;
+      margin-bottom: rem-calc(20px);
 
       .react-datepicker__input-container {
         width: 100%;
@@ -203,7 +184,7 @@
     }
 
     &__text {
-      margin-bottom: 0.625rem;
+      margin-bottom: rem-calc(20px);
 
       input {
         padding: 0 0.5rem;
@@ -253,7 +234,7 @@
     }
 
     &__textarea {
-      margin-bottom: 0.625rem;
+      margin-bottom: rem-calc(20px);
 
       textarea {
         padding: 0.25rem 0.5rem;
@@ -288,7 +269,7 @@
 
 
     &__select {
-      margin-bottom: 0.625rem;
+      margin-bottom: rem-calc(20px);
 
       &.no-margin {
         margin: 0;

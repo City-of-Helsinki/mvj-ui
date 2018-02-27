@@ -7,9 +7,14 @@
   "financial_method": "C",
   "index": 1880,
   "management_method": "C",
-  "plan": "91-10-58765",
+  "plan": "11770",
   "plot_type": "0",
   "prices": [
+    {
+      "amount": 39.19,
+      "purpose": "100",
+      "unit": "1"
+    },
     {
       "amount": 39.19,
       "purpose": "100",
