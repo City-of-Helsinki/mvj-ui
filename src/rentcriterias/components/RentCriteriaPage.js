@@ -4,6 +4,8 @@ import {Row, Column} from 'react-foundation';
 
 import ControlButtons from '../../components/controlButtons/ControlButtons';
 
+import mockCriteria from '../mock-data-single-criteria.json';
+
 type State = {
   isEditMode: boolean,
 }
@@ -23,6 +25,7 @@ class RentCriteriaPage extends Component {
 
   render() {
     const {isEditMode} = this.state;
+    console.log(mockCriteria);
 
     return (
       <div className='rent-criteria-page'>
