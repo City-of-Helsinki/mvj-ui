@@ -448,10 +448,11 @@
 
 .form-section {
   .add-button-secondary {
-    font-size: rem-calc(15px);
     font-family: $font-family-source;
+    font-size: rem-calc(15px);
     font-weight: 600;
-    margin: 0.1rem 0 0;
+    color: $tram;
+    margin: rem-calc(1px) 0 rem-calc(20px);
     float: left;
     cursor: pointer;
 
@@ -465,10 +466,12 @@
       line-height: 1;
     }
 
-    color: $tram;
-
     &:hover {
       color: $tram-lighter;
+    }
+
+    &.no-margin {
+      margin: 0;
     }
   }
 

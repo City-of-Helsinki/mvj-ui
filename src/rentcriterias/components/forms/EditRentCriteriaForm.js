@@ -4,9 +4,11 @@ import {Field, FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import {Row, Column} from 'react-foundation';
 
+import AddButtonSecondary from '../../../components/form/AddButtonSecondary';
 import FieldTypeDatePicker from '../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../components/form/FieldTypeText';
+import FormSection from '../../../components/form/FormSection';
 import RemoveButton from '../../../components/form/RemoveButton';
 import {financialMethodOptions,
   managementMethodOptions,
@@ -31,16 +33,22 @@ const renderRealEstateIds = ({fields}: RealEstateIdProps) => {
             />
           </Column>
           <Column small={4}>
-            <RemoveButton
-              onClick={() => fields.remove(index)}
-              title="Poista hinta"
-            />
+            {fields.length > 1 &&
+              <RemoveButton
+                onClick={() => fields.remove(index)}
+                title="Poista hinta"
+              />
+            }
           </Column>
         </Row>
       )}
       <Row>
         <Column>
-          <a onClick={() => fields.push('')} className='add-button-secondary'><i /><span>Lisää kiinteistötunnus</span></a>
+          <AddButtonSecondary
+            label='Lisää kiinteistötunnus'
+            onClick={() => fields.push('')}
+            title='Lisää kiinteistötunnus'
+          />
         </Column>
       </Row>
     </div>
@@ -65,16 +73,22 @@ const renderDecisions = ({fields}: DecisionsProps) => {
             />
           </Column>
           <Column small={4}>
-            <RemoveButton
-              onClick={() => fields.remove(index)}
-              title="Poista hinta"
-            />
+            {fields.length > 1 &&
+              <RemoveButton
+                onClick={() => fields.remove(index)}
+                title="Poista hinta"
+              />
+            }
           </Column>
         </Row>
       )}
       <Row>
         <Column>
-          <a onClick={() => fields.push('')} className='add-button-secondary'><i /><span>Lisää päätös</span></a>
+          <AddButtonSecondary
+            label='Lisää päätös'
+            onClick={() => fields.push('')}
+            title='Lisää päätös'
+          />
         </Column>
       </Row>
     </div>
@@ -122,10 +136,12 @@ const renderPrices = ({fields}: PricesProps) => {
                 />
               </Column>
               <Column small={4} medium={2}>
-                <RemoveButton
-                  onClick={() => fields.remove(index)}
-                  title="Poista hinta"
-                />
+                {fields.length > 1 &&
+                  <RemoveButton
+                    onClick={() => fields.remove(index)}
+                    title="Poista hinta"
+                  />
+                }
               </Column>
             </Row>
           )}
@@ -133,7 +149,11 @@ const renderPrices = ({fields}: PricesProps) => {
       }
       <Row>
         <Column>
-          <a onClick={() => fields.push('')} className='add-button-secondary'><i /><span>Lisää hinta</span></a>
+          <AddButtonSecondary
+            label='Lisää hinta'
+            onClick={() => fields.push('')}
+            title='Lisää hinta'
+          />
         </Column>
       </Row>
     </div>
@@ -146,102 +166,104 @@ type Props = {
 
 const EditRentCriteriaForm = ({handleSubmit}: Props) => {
   return (
-    <form onSubmit={handleSubmit} className="form-section">
-      <Row>
-        <Column medium={4} large={2}>
-          <Field
-            component={FieldTypeSelect}
-            label='Tonttityyppi'
-            name='plot_type'
-            options={[]}
-          />
-        </Column>
-        <Column medium={2} offsetOnLarge={1}>
-          <Field
-            component={FieldTypeDatePicker}
-            label='Alkupvm'
-            name='start_date'
-          />
-        </Column>
-        <Column medium={2}>
-          <Field
-            component={FieldTypeDatePicker}
-            label='Loppupvm'
-            name='end_date'
-          />
-        </Column>
-      </Row>
-      <Row>
-        <Column medium={4} large={3}>
-          <FieldArray
-            component={renderRealEstateIds}
-            name="real_estate_ids"
-          />
-        </Column>
-        <Column medium={2}>
-          <Field
-            component={FieldTypeText}
-            label="Asemakaava"
-            name="plan"
-          />
-        </Column>
-        <Column medium={2}>
-          <Field
-            component={FieldTypeSelect}
-            label='Hallintamuoto'
-            name='management_method'
-            options={managementMethodOptions}
-          />
-        </Column>
-        <Column medium={2}>
-          <Field
-            component={FieldTypeSelect}
-            label='Rahoitusmuoto'
-            name='financial_method'
-            options={financialMethodOptions}
-          />
-        </Column>
-      </Row>
-      <Row style={{marginTop: '10px'}}>
-        <Column medium={4} large={3}>
-          <FieldArray
-            component={renderDecisions}
-            name="decisions"
-          />
-        </Column>
-        <Column medium={2}>
-          <Field
-            component={FieldTypeDatePicker}
-            label='Vuokraoikeus päättyy'
-            name='rental_right_end_date'
-          />
-        </Column>
-        <Column medium={2}>
-          <Field
-            component={FieldTypeText}
-            label="Indeksi"
-            name="index"
-          />
-        </Column>
-      </Row>
-      <Row style={{marginTop: '10px'}}>
-        <Column>
-          <FieldArray
-            component={renderPrices}
-            name="prices"
-          />
-        </Column>
-      </Row>
-      <Row style={{marginTop: '10px'}}>
-        <Column>
-          <FieldArray
-            className='no-margin'
-            component={FieldTypeText}
-            label="Kommentti"
-            name="comment"
-          />
-        </Column>
-      </Row>
+    <form onSubmit={handleSubmit}>
+      <FormSection>
+        <Row>
+          <Column medium={4} large={2}>
+            <Field
+              component={FieldTypeSelect}
+              label='Tonttityyppi'
+              name='plot_type'
+              options={[]}
+            />
+          </Column>
+          <Column medium={2} offsetOnLarge={1}>
+            <Field
+              component={FieldTypeDatePicker}
+              label='Alkupvm'
+              name='start_date'
+            />
+          </Column>
+          <Column medium={2}>
+            <Field
+              component={FieldTypeDatePicker}
+              label='Loppupvm'
+              name='end_date'
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column medium={4} large={3}>
+            <FieldArray
+              component={renderRealEstateIds}
+              name="real_estate_ids"
+            />
+          </Column>
+          <Column medium={2}>
+            <Field
+              component={FieldTypeText}
+              label="Asemakaava"
+              name="plan"
+            />
+          </Column>
+          <Column medium={2}>
+            <Field
+              component={FieldTypeSelect}
+              label='Hallintamuoto'
+              name='management_method'
+              options={managementMethodOptions}
+            />
+          </Column>
+          <Column medium={2}>
+            <Field
+              component={FieldTypeSelect}
+              label='Rahoitusmuoto'
+              name='financial_method'
+              options={financialMethodOptions}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column medium={4} large={3}>
+            <FieldArray
+              component={renderDecisions}
+              name="decisions"
+            />
+          </Column>
+          <Column medium={2}>
+            <Field
+              component={FieldTypeDatePicker}
+              label='Vuokraoikeus päättyy'
+              name='rental_right_end_date'
+            />
+          </Column>
+          <Column medium={2}>
+            <Field
+              component={FieldTypeText}
+              label="Indeksi"
+              name="index"
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column>
+            <FieldArray
+              component={renderPrices}
+              name="prices"
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column>
+            <FieldArray
+              className='no-margin'
+              component={FieldTypeText}
+              label="Kommentti"
+              name="comment"
+            />
+          </Column>
+        </Row>
+      </FormSection>
     </form>
   );
 };
