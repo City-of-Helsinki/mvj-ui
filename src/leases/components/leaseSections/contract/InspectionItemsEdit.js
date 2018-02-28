@@ -49,9 +49,10 @@ const InspectionItemsEdit = ({fields}: Props) => {
           <Row>
             <Column medium={12}>
               <Field
-                name={`${inspection}.inspection_description`}
+                className='no-margin'
                 component={FieldTypeText}
                 label='Selite'
+                name={`${inspection}.inspection_description`}
               />
             </Column>
           </Row>

@@ -565,7 +565,6 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Vuokralaiset</h1>
                   <div>
                     {!isEditMode && <TenantTab tenants={tenants} oldTenants={oldTenants}/>}
                     {isEditMode && <TenantEdit initialValues={{tenants: tenants}}/>}

@@ -30,6 +30,7 @@ const renderDueDates = ({fields}: DueDatesProps) => {
           <Row key={index}>
             <Column medium={9}>
               <Field
+                className='list-item'
                 component={FieldTypeText}
                 name={`${due_date}`}
               />
@@ -79,6 +80,7 @@ const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
             <Row>
               <Column medium={2}>
                 <Field
+                  className='list-item'
                   component={FieldTypeText}
                   name={`${rent}.rent`}
                 />
@@ -87,12 +89,14 @@ const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
                 <Row>
                   <Column small={6}>
                     <Field
+                      className='list-item'
                       component={FieldTypeDatePicker}
                       name={`${rent}.start_date`}
                     />
                   </Column>
                   <Column small={6}>
                     <Field
+                      className='list-item'
                       component={FieldTypeDatePicker}
                       name={`${rent}.end_date`}
                     />
@@ -290,6 +294,7 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
       <Row>
         <Column>
           <Field
+            className='no-margin'
             component={FieldTypeText}
             label="Kommentti"
             name="comment"

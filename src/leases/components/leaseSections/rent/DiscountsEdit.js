@@ -112,9 +112,10 @@ const DiscountsEdit = ({fields}: Props) => {
             <Row>
               <Column medium={12}>
                 <Field
-                  name={`${discount}.comment`}
+                  className='no-margin'
                   component={FieldTypeText}
                   label='Kommentti'
+                  name={`${discount}.comment`}
                 />
               </Column>
             </Row>

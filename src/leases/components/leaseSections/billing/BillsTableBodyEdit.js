@@ -36,6 +36,7 @@ const BillsTableBodyEdit = ({bills, fields, onRowClick, selectedBillIndex}: Prop
             key={index}>
             <td>
               <Field
+                className='no-margin'
                 component={FieldTypeCheckboxSingle}
                 name={`${field}.isSelected`}
               />

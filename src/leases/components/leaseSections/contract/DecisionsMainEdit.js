@@ -17,15 +17,15 @@ const DecisionsMainEdit = ({
 }: Props) => {
   return (
     <div>
-      <h1>Sopimukset</h1>
+      <h1 className='no-margin'>Sopimukset</h1>
       <div>
         <ContractsEdit rules={rules} initialValues={{contracts: contracts}}/>
       </div>
-      <h1>Päätökset</h1>
+      <h1 className='no-margin'>Päätökset</h1>
       <div>
         <RuleEdit initialValues={{rules: rules}}/>
       </div>
-      <h1>Tarkastukset ja huomautukset</h1>
+      <h1 className='no-margin'>Tarkastukset ja huomautukset</h1>
       <div>
         <InspectionsEdit initialValues={{inspections: inspections}}/>
       </div>

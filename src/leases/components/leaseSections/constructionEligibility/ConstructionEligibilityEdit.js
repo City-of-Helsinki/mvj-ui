@@ -32,17 +32,21 @@ const renderComments = ({fields}: CommentProps) => {
             <Row>
               <Column medium={10}>
                 <Field
+                  className='no-margin'
+                  component={FieldTypeText}
                   label='Selitys'
                   name={`${comment}.comment`}
                   type="text"
-                  component={FieldTypeText}/>
+                />
               </Column>
               <Column medium={2}>
                 <Field
+                  className='no-margin'
+                  component={FieldTypeText}
                   label='AHJO diaarinumero'
                   name={`${comment}.AHJO_number`}
                   type="text"
-                  component={FieldTypeText}/>
+                />
               </Column>
             </Row>
           </div>
@@ -98,9 +102,9 @@ const renderArea = ({fields, areas}: AreaProps) => {
                 <Row>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.construction_eligibility.preconstruction.research_state`}
                       component={FieldTypeSelect}
                       label='Selvitysaste'
+                      name={`${area}.construction_eligibility.preconstruction.research_state`}
                       options={[
                         {value: 'tarkistamatta', label: 'Tarkistamatta'},
                         {value: 'vaati_toimenpiteita', label: 'Vaati toimenpiteitä'},
@@ -120,9 +124,9 @@ const renderArea = ({fields, areas}: AreaProps) => {
                 <Row>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.construction_eligibility.demolition.research_state`}
                       component={FieldTypeSelect}
                       label='Selvitysaste'
+                      name={`${area}.construction_eligibility.demolition.research_state`}
                       options={[
                         {value: 'tarkistamatta', label: 'Tarkistamatta'},
                         {value: 'vaati_toimenpiteita', label: 'Vaati toimenpiteitä'},
@@ -142,9 +146,9 @@ const renderArea = ({fields, areas}: AreaProps) => {
                 <Row>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.construction_eligibility.contamination.research_state`}
                       component={FieldTypeSelect}
                       label='Selvitysaste'
+                      name={`${area}.construction_eligibility.contamination.research_state`}
                       options={[
                         {value: 'tarkistamatta', label: 'Tarkistamatta'},
                         {value: 'vaati_toimenpiteita', label: 'Vaati toimenpiteitä'},
@@ -154,25 +158,27 @@ const renderArea = ({fields, areas}: AreaProps) => {
                   </Column>
                   <Column medium={3}>
                     <Field
+                      component={FieldTypeText}
                       label='ProjectWise kohdenumero'
                       name={`${area}.construction_eligibility.contamination.projectwise_number`}
                       type="text"
-                      component={FieldTypeText}/>
+                    />
                   </Column>
                   <Column medium={3}>
                     <Field
+                      component={FieldTypeText}
                       label='Matti raportti'
                       name={`${area}.construction_eligibility.contamination.matti_report`}
                       type="text"
-                      component={FieldTypeText}/>
+                    />
                   </Column>
                 </Row>
                 <Row>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.construction_eligibility.contamination.rent_conditions`}
                       component={FieldTypeSelect}
                       label='Vuokraehdot'
+                      name={`${area}.construction_eligibility.contamination.rent_conditions`}
                       options={[
                         {value: 'kysytty', label: 'Kysytty'},
                         {value: 'valmis', label: 'Valmis'},
@@ -181,17 +187,19 @@ const renderArea = ({fields, areas}: AreaProps) => {
                   </Column>
                   <Column medium={3}>
                     <Field
+                      component={FieldTypeDatePicker}
                       label='Päivämäärä'
                       name={`${area}.construction_eligibility.contamination.rent_condition_date`}
                       type="text"
-                      component={FieldTypeDatePicker}/>
+                    />
                   </Column>
                   <Column medium={3}>
                     <Field
+                      component={FieldTypeText}
                       label='PIMA valmistelija'
                       name={`${area}.construction_eligibility.contamination.contamination_author`}
                       type="text"
-                      component={FieldTypeText}/>
+                    />
                   </Column>
                 </Row>
                 <FieldArray name={`${area}.construction_eligibility.contamination.comments`} component={renderComments}/>
@@ -205,9 +213,9 @@ const renderArea = ({fields, areas}: AreaProps) => {
                 <Row>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.construction_eligibility.construction_investigation.research_state`}
                       component={FieldTypeSelect}
                       label='Selvitysaste'
+                      name={`${area}.construction_eligibility.construction_investigation.research_state`}
                       options={[
                         {value: 'tarkistamatta', label: 'Tarkistamatta'},
                         {value: 'vaati_toimenpiteita', label: 'Vaati toimenpiteitä'},
@@ -217,18 +225,19 @@ const renderArea = ({fields, areas}: AreaProps) => {
                   </Column>
                   <Column medium={3}>
                     <Field
+                      component={FieldTypeText}
                       label='Geotekninen palvelun tiedosto'
                       name={`${area}.construction_eligibility.construction_investigation.geotechnical_number`}
                       type="text"
-                      component={FieldTypeText}/>
+                    />
                   </Column>
                 </Row>
                 <Row>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.construction_eligibility.construction_investigation.report`}
                       component={FieldTypeSelect}
                       label='Selvitys'
+                      name={`${area}.construction_eligibility.construction_investigation.report`}
                       options={[
                         {value: 'not-needed', label: 'Ei tarvita'},
                         {value: 'in-progress', label: 'Tekeillä'},
@@ -238,17 +247,19 @@ const renderArea = ({fields, areas}: AreaProps) => {
                   </Column>
                   <Column medium={3}>
                     <Field
+                      component={FieldTypeDatePicker}
                       label='Allekirjoituspäivämäärä'
                       name={`${area}.construction_eligibility.construction_investigation.signing_date`}
                       type="text"
-                      component={FieldTypeDatePicker}/>
+                    />
                   </Column>
                   <Column medium={3}>
                     <Field
+                      component={FieldTypeText}
                       label='Allekirjoittaja'
                       name={`${area}.construction_eligibility.construction_investigation.report_author`}
                       type="text"
-                      component={FieldTypeText}/>
+                    />
                   </Column>
                 </Row>
                 <FieldArray name={`${area}.construction_eligibility.construction_investigation.comments`} component={renderComments}/>
@@ -262,9 +273,9 @@ const renderArea = ({fields, areas}: AreaProps) => {
                 <Row>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.construction_eligibility.other.research_state`}
                       component={FieldTypeSelect}
                       label='Selvitysaste'
+                      name={`${area}.construction_eligibility.other.research_state`}
                       options={[
                         {value: 'tarkistamatta', label: 'Tarkistamatta'},
                         {value: 'vaati_toimenpiteita', label: 'Vaati toimenpiteitä'},

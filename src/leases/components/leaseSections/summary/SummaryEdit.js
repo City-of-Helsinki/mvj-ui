@@ -35,109 +35,125 @@ class SummaryEdit extends Component {
         <div className='green-box no-margin'>
           <Row>
             <Column medium={8}>
-              <Field name="summary.lessor"
+              <Field
                 component={FieldTypeSelect}
                 label="Vuokranantaja"
+                name="summary.lessor"
                 options={summaryLessorOptions}
               />
             </Column>
             <Column medium={4}>
-              <Field name="summary.publicity"
+              <Field
                 component={FieldTypeSelect}
                 label="Julkisuusluokka"
+                name="summary.publicity"
                 options={summaryPublicityOptions}
               />
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
-              <Field name="summary.lease_use"
+              <Field
                 component={FieldTypeSelect}
                 label="Vuokarauksen käyttötarkoitus"
+                name="summary.lease_use"
                 options={purposeOptions}
               />
             </Column>
             <Column medium={4}>
-              <Field name="summary.special_apartments"
+              <Field
                 component={FieldTypeSelect}
                 label="Erityisasunnot"
+                name="summary.special_apartments"
                 options={summarySpecialApartmentsOptions}
               />
             </Column>
             <Column medium={4}>
-              <Field name="summary.lease_statistical_use"
+              <Field
                 component={FieldTypeSelect}
                 label="Tilastollinen pääkäyttötarkoitus"
+                name="summary.lease_statistical_use"
                 options={summaryLeaseStatisticalUseOptions}
               />
             </Column>
           </Row>
           <Row>
             <Column>
-              <Field name="summary.lease_use_description"
+              <Field
                 component={FieldTypeText}
                 label="Vuokrauksen käyttötarkoitus selite"
+                name="summary.lease_use_description"
               />
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
-              <Field name="summary.financing_method"
+              <Field
                 component={FieldTypeSelect}
                 label="Rahoitusmuoto"
+                name="summary.financing_method"
                 options={financialMethodOptions}
               />
             </Column>
             <Column medium={4}>
-              <Field name="summary.management_method"
+              <Field
                 component={FieldTypeSelect}
                 label="Hallintamuoto"
+                name="summary.management_method"
                 options={managementMethodOptions}
               />
             </Column>
             <Column medium={4}>
-              <Field name="summary.transfer_right"
+              <Field
                 component={FieldTypeSelect}
                 label="Siirto-oikeus"
+                name="summary.transfer_right"
                 options={summaryTransferRightOptions}
               />
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
-              <Field name="summary.regulatory"
+              <Field
                 component={FieldTypeSelect}
                 label="Sääntely"
+                name="summary.regulatory"
                 options={summaryRegulatoryOptions}
               />
             </Column>
             <Column medium={4}>
-              <Field name="summary.regulatory_method"
+              <Field
                 component={FieldTypeSelect}
                 label="Sääntelymuoto"
+                name="summary.regulatory_method"
                 options={summaryRegulatoryMethodOptions}
               />
             </Column>
             <Column medium={4}>
-              <Field name="summary.hitas"
+              <Field
                 component={FieldTypeSelect}
                 label="Hitas"
+                name="summary.hitas"
                 options={summaryHitasOptions}
               />
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
-              <Field name="summary.notice_period"
+              <Field
+                className='no-margin'
                 component={FieldTypeSelect}
                 label="Irtisanomisaika"
+                name="summary.notice_period"
                 options={summaryNoticePeriodOptions}
               />
             </Column>
             <Column medium={8}>
-              <Field name="summary.notice_period_description"
+              <Field
+                className='no-margin'
                 component={FieldTypeText}
                 label="Irtisanomisajan selite"
+                name="summary.notice_period_description"
               />
             </Column>
           </Row>

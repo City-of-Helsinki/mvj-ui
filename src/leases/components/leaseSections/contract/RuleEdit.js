@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
-import {Row, Column} from 'react-foundation';
 
 import RuleItemsEdit from './RuleItemsEdit';
 
@@ -20,11 +19,7 @@ class RuleEdit extends Component {
 
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <Row>
-          <Column>
-            <FieldArray name="rules" component={RuleItemsEdit}/>
-          </Column>
-        </Row>
+        <FieldArray name="rules" component={RuleItemsEdit}/>
       </form>
     );
   }

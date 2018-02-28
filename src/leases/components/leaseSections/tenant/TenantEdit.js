@@ -19,6 +19,7 @@ class TenantEdit extends Component {
 
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit'>
+        <h1 className='no-margin'>Vuokralaiset</h1>
         <Row>
           <Column>
             <FieldArray name="tenants" component={TenantItemsEdit}/>

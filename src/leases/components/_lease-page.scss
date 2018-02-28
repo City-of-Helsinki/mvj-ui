@@ -14,13 +14,17 @@
       text-transform: uppercase;
       font-size: $font-xlarge;
       font-weight: $semibold;
-      margin-bottom: 1.6rem;
+      margin-bottom: rem-calc(20px);
       display: inline-block;
       width: 70%;
     }
 
     h1:not(:first-child) {
       margin-top: 2rem;
+    }
+
+    .no-margin {
+      margin: 0;
     }
 
     h2 {

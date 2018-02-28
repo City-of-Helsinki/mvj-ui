@@ -15,8 +15,8 @@ const getTableBody = (fields) => {
           <tr key={index}>
             <td style={{width: '25%'}}>
               <Field
+                className='no-margin'
                 component={FieldTypeText}
-                inputClassName="width-small no-margin"
                 name={`${item}.rent`}
               />
             </td>
@@ -24,14 +24,14 @@ const getTableBody = (fields) => {
               <Row style={{width: '250px'}}>
                 <Column style={{padding: '0 0.25rem 0 0.9375rem'}}>
                   <Field
-                    className='width-small'
+                    className='no-margin'
                     component={FieldTypeDatePicker}
                     name={`${item}.start_date`}
                   />
                 </Column>
                 <Column style={{padding: '0 0.9375rem 0 0.25rem'}}>
                   <Field
-                    className='width-small'
+                    className='no-margin'
                     component={FieldTypeDatePicker}
                     name={`${item}.end_date`}
                   />
@@ -40,15 +40,15 @@ const getTableBody = (fields) => {
             </td>
             <td style={{width: '25%'}}>
               <Field
+                className='no-margin'
                 component={FieldTypeText}
-                inputClassName="width-xsmall no-margin"
                 name={`${item}.difference`}
               />
             </td>
             <td style={{width: '25%'}}>
               <Field
+                className='no-margin'
                 component={FieldTypeText}
-                inputClassName="width-small no-margin"
                 name={`${item}.calendar_year_rent`}
               />
             </td>

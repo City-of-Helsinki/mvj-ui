@@ -123,6 +123,7 @@ const EditAbnormalDebt = ({
           <Row>
             <Column>
               <Field
+                className='no-margin'
                 component={FieldTypeText}
                 label='Tiedote'
                 name='info'

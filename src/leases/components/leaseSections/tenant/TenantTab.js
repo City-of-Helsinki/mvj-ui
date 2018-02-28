@@ -20,6 +20,7 @@ const TenantTab = ({tenants, oldTenants}: Props) => {
 
   return (
     <div className='lease-section'>
+      <h1>Vuokralaiset</h1>
       {tenants && tenants.length > 0 && tenants.map((tenant, index) =>
         <Collapse key={index}
           header={
