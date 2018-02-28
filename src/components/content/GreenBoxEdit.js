@@ -5,9 +5,7 @@ type Props = {
   children?: any,
 }
 
-const GreenBox = ({children}: Props) =>
-  <div className="green-box-edit">
-    {children}
-  </div>;
+const GreenBoxEdit = ({children}: Props) =>
+  <div className="green-box-edit">{children}</div>;
 
-export default GreenBox;
+export default GreenBoxEdit;

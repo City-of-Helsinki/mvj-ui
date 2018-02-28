@@ -25,6 +25,7 @@ const renderRealEstateIds = ({fields}: RealEstateIdProps) => {
         <Row key={index}>
           <Column small={8}>
             <Field
+              className='list-item'
               component={FieldTypeText}
               name={field}
             />
@@ -58,6 +59,7 @@ const renderDecisions = ({fields}: DecisionsProps) => {
         <Row key={index}>
           <Column small={8}>
             <Field
+              className='list-item'
               component={FieldTypeText}
               name={field}
             />
@@ -98,6 +100,7 @@ const renderPrices = ({fields}: PricesProps) => {
             <Row key={index}>
               <Column medium={4} large={2}>
                 <Field
+                  className='list-item'
                   component={FieldTypeSelect}
                   name={`${field}.purpose`}
                   options={purposeOptions}
@@ -105,12 +108,14 @@ const renderPrices = ({fields}: PricesProps) => {
               </Column>
               <Column medium={2} large={1}>
                 <Field
+                  className='list-item'
                   component={FieldTypeText}
                   name={`${field}.amount`}
                 />
               </Column>
               <Column medium={2} large={1}>
                 <Field
+                  className='list-item'
                   component={FieldTypeSelect}
                   name={`${field}.unit`}
                   options={priceTypeOptions}
@@ -230,6 +235,7 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
       <Row style={{marginTop: '10px'}}>
         <Column>
           <FieldArray
+            className='no-margin'
             component={FieldTypeText}
             label="Kommentti"
             name="comment"

@@ -6,8 +6,6 @@ type Props = {
 }
 
 const GreenBox = ({children}: Props) =>
-  <div className="green-box">
-    {children}
-  </div>;
+  <div className="green-box">{children}</div>;
 
 export default GreenBox;

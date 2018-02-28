@@ -2,10 +2,8 @@
 import React, {Component} from 'react';
 
 import ControlButtons from '../../components/controlButtons/ControlButtons';
-import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
-import ContentContainer from '../../components/content/ContentContainer';
-import GreenBox from '../../components/content/GreenBox';
-import GreenBoxEdit from '../../components/content/GreenBoxEdit';
+import PageContainer from '../../components/content/PageContainer';
+import RentCriteriaEdit from './RentCriteriaEdit';
 import RentCriteriaReadonly from './RentCriteriaReadonly';
 
 import mockCriteria from '../mock-data-single-criteria.json';
@@ -39,7 +37,7 @@ class RentCriteriaPage extends Component {
     const {criteria, isEditMode} = this.state;
 
     return (
-      <div className='rent-criteria-page'>
+      <PageContainer>
         <div className='rent-criteria-page__upper-bar'>
           <div className="rent-criteria-info-wrapper"></div>
           <div className='controls'>
@@ -53,24 +51,11 @@ class RentCriteriaPage extends Component {
             />
           </div>
         </div>
-        <ContentContainer>
-          <h1>Vuokrausperuste</h1>
-          <div className="divider" />
-          {isEditMode ? (
-            <GreenBoxEdit>
-              <EditRentCriteriaForm
-                initialValues={criteria}
-              />
-            </GreenBoxEdit>
-          ) : (
-            <GreenBox>
-              <RentCriteriaReadonly
-                criteria={criteria}
-              />
-            </GreenBox>
-          )}
-        </ContentContainer>
-      </div>
+        {isEditMode
+          ? <RentCriteriaEdit criteria={criteria} />
+          : <RentCriteriaReadonly criteria={criteria} />
+        }
+      </PageContainer>
     );
   }
 }
