@@ -1,6 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 
+import ControlButtonBar from '../../components/controlButtons/ControlButtonBar';
 import ControlButtons from '../../components/controlButtons/ControlButtons';
 import PageContainer from '../../components/content/PageContainer';
 import RentCriteriaEdit from './RentCriteriaEdit';
@@ -38,9 +39,8 @@ class RentCriteriaPage extends Component {
 
     return (
       <PageContainer>
-        <div className='rent-criteria-page__upper-bar'>
-          <div className="rent-criteria-info-wrapper"></div>
-          <div className='controls'>
+        <ControlButtonBar
+          buttonsComponent={
             <ControlButtons
               isEditMode={isEditMode}
               isValid={true}
@@ -49,8 +49,8 @@ class RentCriteriaPage extends Component {
               onSaveClick={() => console.log('123')}
               showCommentButton={false}
             />
-          </div>
-        </div>
+          }
+        />
         {isEditMode
           ? <RentCriteriaEdit criteria={criteria} />
           : <RentCriteriaReadonly criteria={criteria} />
