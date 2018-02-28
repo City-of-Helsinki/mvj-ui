@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Field, FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import {Row, Column} from 'react-foundation';
@@ -14,6 +15,8 @@ import {financialMethodOptions,
   managementMethodOptions,
   priceTypeOptions,
   purposeOptions} from '../../../constants';
+import type {RootState} from '../../../root/types';
+import {getRentCriteriaInitialValues} from '../../selectors';
 
 type RealEstateIdProps = {
   fields: any,
@@ -161,10 +164,12 @@ const renderPrices = ({fields}: PricesProps) => {
 };
 
 type Props = {
+  initialValues: Object,
   handleSubmit: Function,
 }
 
-const EditRentCriteriaForm = ({handleSubmit}: Props) => {
+const EditRentCriteriaForm = ({initialValues, handleSubmit}: Props) => {
+  console.log('criteria', initialValues);
   return (
     <form onSubmit={handleSubmit}>
       <FormSection>
@@ -270,7 +275,16 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
 
 const formName = 'edit-rent-criteria-form';
 
+const mapStateToProps = (state: RootState) => {
+  return {
+    initialValues: getRentCriteriaInitialValues(state),
+  };
+};
+
 export default flowRight(
+  connect(
+    mapStateToProps
+  ),
   reduxForm({
     form: formName,
   }),

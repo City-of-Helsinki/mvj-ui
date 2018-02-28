@@ -12,3 +12,4 @@ export type RentCriteriasList = Array<RentCriteria>;
 
 export type FetchRentCriteriasAction = Action<'mvj/rentcriterias/FETCH_ALL', string>;
 export type ReceiveRentCriteriasAction = Action<'mvj/rentcriterias/RECEIVE_ALL', RentCriteriasList>;
+export type ReceiveRentCriteriaInitialValuesAction = Action<'mvj/rentcriterias/INITIALIZE', RentCriteria>;

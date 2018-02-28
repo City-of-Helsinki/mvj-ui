@@ -8,9 +8,11 @@ type Props = {
   isValid: boolean,
   onCancelClick: Function,
   onCommentClick?: Function,
+  onCopyClick?: Function,
   onEditClick: Function,
   onSaveClick: Function,
   showCommentButton?: boolean,
+  showCopyButton?: boolean,
 }
 
 const ControlButtons = ({
@@ -19,9 +21,11 @@ const ControlButtons = ({
   isValid,
   onCancelClick,
   onCommentClick = () => console.log('Comment click'),
+  onCopyClick = () => console.log('Copy click'),
   onEditClick,
   onSaveClick,
   showCommentButton = true,
+  showCopyButton = false,
 }: Props) => {
   return (
     <div className='control-buttons'>
@@ -42,7 +46,14 @@ const ControlButtons = ({
           </div>
         ) : (
           <div className='left-buttons'>
-            <Button onClick={onEditClick}
+            {showCopyButton &&
+              <Button
+                onClick={onCopyClick}
+                text='Kopio'
+              />
+            }
+            <Button
+              onClick={onEditClick}
               text='Muokkaa'
             />
           </div>

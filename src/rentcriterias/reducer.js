@@ -5,8 +5,10 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 
 import type {
+  RentCriteria,
   RentCriteriasList,
   ReceiveRentCriteriasAction,
+  ReceiveRentCriteriaInitialValuesAction,
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -20,7 +22,18 @@ const rentCriteriasListReducer: Reducer<RentCriteriasList> = handleActions({
   },
 }, []);
 
+const rentCriteriaReducer: Reducer<RentCriteria> = handleActions({
+  ['mvj/rentcriterias/INITIALIZE']: (state: RentCriteria, {payload: rentcriteria}: ReceiveRentCriteriaInitialValuesAction) => {
+    return rentcriteria;
+  },
+}, {
+  decisions: [''],
+  prices: [{}],
+  real_estate_ids: [''],
+});
+
 export default combineReducers({
   isFetching: isFetchingReducer,
   list: rentCriteriasListReducer,
+  initialValues: rentCriteriaReducer,
 });
