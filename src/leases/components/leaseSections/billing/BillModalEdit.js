@@ -203,12 +203,12 @@ class BillModalEdit extends Component {
             </Row>
             <Row>
               <Column medium={4}>
-                <label className='mvj-form-field-label'>Maksamaton määrä</label>
-                <p>{get(bill, 'unpaid_amount') ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</p>
-              </Column>
-              <Column medium={4}>
                 <label className='mvj-form-field-label'>Laskutettu määrä</label>
                 <p>{get(bill, 'invoiced_amount') ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.invoiced_amount))} €` : '-'}</p>
+              </Column>
+              <Column medium={4}>
+                <label className='mvj-form-field-label'>Maksamaton määrä</label>
+                <p>{get(bill, 'unpaid_amount') ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</p>
               </Column>
             </Row>
             <Row>

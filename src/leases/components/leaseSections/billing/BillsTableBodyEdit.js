@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import classNames from 'classnames';
-import {Field} from 'redux-form';
+// import {Field} from 'redux-form';
 import get from 'lodash/get';
 
 import {formatDate,
@@ -10,7 +10,7 @@ import {formatDate,
   getLabelOfOption,
   formatNumberWithThousandSeparator} from '../../../../util/helpers';
 import {billingStatusOptions, billingTypeOptions} from '../constants';
-import FieldTypeCheckboxSingle from '../../../../components/form/FieldTypeCheckboxSingle';
+// import FieldTypeCheckboxSingle from '../../../../components/form/FieldTypeCheckboxSingle';
 
 type Props = {
   bills: Array<Object>,
@@ -34,20 +34,15 @@ const BillsTableBodyEdit = ({bills, fields, onRowClick, selectedBillIndex}: Prop
               {'active': (index === selectedBillIndex)},
             )}
             key={index}>
-            <td>
+            {/* <td>
               <Field
                 component={FieldTypeCheckboxSingle}
                 name={`${field}.isSelected`}
               />
-            </td>
+            </td> */}
             <td onClick={() => onRowClick(index)}>
               {bills && bills.length > (index) &&
                 `${get(bills[index], 'tenant.lastname')} ${get(bills[index], 'tenant.firstname')}`
-              }
-            </td>
-            <td onClick={() => onRowClick(index)}>
-              {bills && bills.length > (index) &&
-                get(bills[index], 'tenant.bill_share') ? `${get(bills[index], 'tenant.bill_share')} %` : '-'
               }
             </td>
             <td onClick={() => onRowClick(index)}>
@@ -58,6 +53,11 @@ const BillsTableBodyEdit = ({bills, fields, onRowClick, selectedBillIndex}: Prop
             <td onClick={() => onRowClick(index)}>
               {bills && bills.length > (index) &&
                 bills[index].bill_number ? bills[index].bill_number : '-'
+              }
+            </td>
+            <td onClick={() => onRowClick(index)}>
+              {bills && bills.length > (index) &&
+                get(bills[index], 'tenant.bill_share') ? `${get(bills[index], 'tenant.bill_share')} %` : '-'
               }
             </td>
             <td onClick={() => onRowClick(index)}>

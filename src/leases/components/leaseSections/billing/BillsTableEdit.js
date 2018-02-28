@@ -12,7 +12,7 @@ import {displayUIMessage} from '../../../../util/helpers';
 import {formatBillingBillDb} from '../../../helpers';
 import BillModalEdit from './BillModalEdit';
 import BillsTableBodyEdit from './BillsTableBodyEdit';
-import Button from '../../../../components/button/Button';
+// import Button from '../../../../components/button/Button';
 
 type Props = {
   billing: Object,
@@ -188,8 +188,8 @@ class BillsTableEdit extends Component {
   render () {
     const {bills, headers} = this.props;
     const {selectedBill, selectedBillIndex, showModal, tableHeight} = this.state;
-    const allSelected = this.areAllSelected();
-    const anySelected = this.isAnySelected();
+    // const allSelected = this.areAllSelected();
+    // const anySelected = this.isAnySelected();
 
     return (
       <div>
@@ -198,13 +198,13 @@ class BillsTableEdit extends Component {
             <h2>Laskut</h2>
           </Column>
           <Column medium={3}>
-            <Button
+            {/* <Button
               className="no-margin button-green button-xs"
               disabled={!anySelected}
               onClick={() => this.refund()}
               style={{float: 'right', marginTop: '15px'}}
               text='Hyvitä laskut'
-            />
+            /> */}
           </Column>
         </Row>
         <div className={classNames('table-fixed-header', 'billing__bill-table', {'is-open': showModal})}>
@@ -226,13 +226,13 @@ class BillsTableEdit extends Component {
               <thead>
                 {headers && headers.length > 0 &&
                   <tr>
-                    <th><div>
+                    {/* <th><div>
                       <input
                         checked={allSelected}
                         onClick={this.handleSelectAll}
                         style={{fontSize: '1rem', margin: '0'}}
                         type="checkbox" />
-                    </div></th>
+                    </div></th> */}
                     {headers.map((header, index) => <th key={index}>{header}<div>{header}</div></th>)}
                   </tr>
                 }

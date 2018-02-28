@@ -114,9 +114,9 @@ class BillsTable extends Component {
                       onClick={() => this.setState({selectedBill: bill, selectedBillIndex: index, showModal: true})}
                       >
                       <td>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</td>
-                      <td>{get(bill, 'tenant.bill_share') ? `${get(bill, 'tenant.bill_share')} %` : '-'}</td>
                       <td>{bill.due_date ? formatDate(bill.due_date) : '-'}</td>
                       <td>{bill.bill_number ? bill.bill_number : '-'}</td>
+                      <td>{get(bill, 'tenant.bill_share') ? `${get(bill, 'tenant.bill_share')} %` : '-'}</td>
                       <td>{formatDateRange(bill.billing_period_start_date, bill.billing_period_end_date)}</td>
                       <td>{bill.type ? getLabelOfOption(billingTypeOptions, bill.type) : '-'}</td>
                       <td>{bill.status ? getLabelOfOption(billingStatusOptions, bill.status) : '-'}</td>

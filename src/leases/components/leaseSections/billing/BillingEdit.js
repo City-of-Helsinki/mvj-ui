@@ -159,9 +159,9 @@ class BillingEdit extends Component {
               dispatch={dispatch}
               headers={[
                 'Vuokraaja',
-                'Osuus',
                 'Eräpäivä',
                 'Laskun numero',
+                'Osuus',
                 'Laskutuskausi',
                 'Saamislaji',
                 'Laskun tila',
@@ -170,6 +170,18 @@ class BillingEdit extends Component {
                 'Tiedote',
                 'Läh. SAP:iin',
               ]}
+            />
+          </Column>
+        </Row>
+        <Row style={{marginTop: '20px'}}>
+          <Column>
+            <FormSection
+              component={AddBillEdit}
+              editMode={isAddBillEditMode}
+              name='billing.new_bill'
+              onAdd={() => this.showAddBillEditMode()}
+              onClose={() => this.hideAddBillEditMode()}
+              onSave={() => this.saveNewBill()}
             />
           </Column>
         </Row>
@@ -195,15 +207,6 @@ class BillingEdit extends Component {
             />
           </Column>
         </Row>
-        <Row><Column><div className="separator-line" style={{marginTop: '1rem'}}></div></Column></Row>
-        <FormSection
-          component={AddBillEdit}
-          editMode={isAddBillEditMode}
-          name='billing.new_bill'
-          onAdd={() => this.showAddBillEditMode()}
-          onClose={() => this.hideAddBillEditMode()}
-          onSave={() => this.saveNewBill()}
-        />
       </form>
     );
   }

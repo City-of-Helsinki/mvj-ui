@@ -127,12 +127,12 @@ class BillModal extends Component {
             </Row>
             <Row>
               <Column medium={4}>
-                <label>Maksamaton määrä</label>
-                <p>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</p>
-              </Column>
-              <Column medium={4}>
                 <label>Laskutettu määrä</label>
                 <p>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.invoiced_amount))} €` : '-'}</p>
+              </Column>
+              <Column medium={4}>
+                <label>Maksamaton määrä</label>
+                <p>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</p>
               </Column>
             </Row>
             <Row>

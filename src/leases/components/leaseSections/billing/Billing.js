@@ -29,9 +29,9 @@ const Billing = ({billing}: Props) => {
           <BillsTable
             headers={[
               'Vuokraaja',
-              'Osuus',
               'Eräpäivä',
               'Laskun numero',
+              'Osuus',
               'Laskutuskausi',
               'Saamislaji',
               'Laskun tila',
