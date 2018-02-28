@@ -11,7 +11,6 @@ type Props = {
   labelClassName?: string,
   meta: Object,
   options?: Array<any>,
-  type: string,
 }
 
 const FieldTypeCheckbox = ({
@@ -23,7 +22,6 @@ const FieldTypeCheckbox = ({
   labelClassName,
   meta: {dirty},
   options,
-  type = 'checkbox',
 }: Props) => {
   const hasMultipleValues = options && options.length > 1;
   const handleChange = (event: any, optionValue) => {
@@ -42,18 +40,19 @@ const FieldTypeCheckbox = ({
   };
 
   return (
-    <div className='mvj-form-field'>
+    <div className={classNames('mvj-form-field', className)}>
       {label && <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>}
       <fieldset
         id={name}
-        className={classNames(`mvj-form-field__${type}`, className, {'has-error': displayError}, {'is-dirty': dirty})}
+        className={classNames(`mvj-form-field__checkbox`, {'has-error': displayError}, {'is-dirty': dirty})}
         disabled={disabled}
       >
         {options && options.map((option, index) => {
           const {value: optionValue, label: optionLabel} = option;
           return (
             <label key={index} className='option-label'>
-              <input type={type}
+              <input
+                type='checkbox'
                 checked={hasMultipleValues ? value.indexOf(optionValue) !== -1 : !!value}
                 name={hasMultipleValues ? `${name}[${index}]` : name}
                 onChange={(event) => handleChange(event, optionValue)}

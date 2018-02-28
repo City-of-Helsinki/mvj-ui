@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 type Props = {
+  className?: string,
   disabled: boolean,
   displayError: boolean,
   input: Object,
@@ -13,6 +14,7 @@ type Props = {
 }
 
 const FieldTypeSwitch = ({
+  className,
   disabled,
   displayError,
   input: {name, onChange, value},
@@ -26,7 +28,7 @@ const FieldTypeSwitch = ({
   };
 
   return (
-    <div className='mvj-form-field'>
+    <div className={classNames('mvj-form-field', className)}>
       {label && <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>}
       <div className={classNames(`mvj-form-field__switch`, {'has-error': displayError}, {'is-dirty': dirty})}>
         {optionLabel && <label className={classNames('mvj-form-field__switch-option-label', {'label-off': !value})}>{optionLabel}</label>}

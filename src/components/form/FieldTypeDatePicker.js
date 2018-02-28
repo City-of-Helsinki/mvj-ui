@@ -39,11 +39,11 @@ class FieldTypeDatePicker extends Component {
       placeholder} = this.props;
 
     return (
-      <div className='mvj-form-field'>
+      <div className={classNames('mvj-form-field', className)}>
         {label &&
           <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>
         }
-        <div className={classNames('mvj-form-field__datepicker', className, {'is-dirty': dirty})}>
+        <div className={classNames('mvj-form-field__datepicker', {'is-dirty': dirty})}>
           <DatePicker
             {...input}
             placeholder={placeholder}
