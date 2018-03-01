@@ -44,7 +44,10 @@ const FieldTypeCheckbox = ({
       {label && <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>}
       <fieldset
         id={name}
-        className={classNames(`mvj-form-field__checkbox`, {'has-error': displayError}, {'is-dirty': dirty})}
+        className={classNames('mvj-form-field-component',
+          'mvj-form-field__checkbox',
+          {'has-error': displayError},
+          {'is-dirty': dirty})}
         disabled={disabled}
       >
         {options && options.map((option, index) => {

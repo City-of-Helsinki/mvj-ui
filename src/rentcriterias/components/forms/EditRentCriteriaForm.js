@@ -168,8 +168,7 @@ type Props = {
   handleSubmit: Function,
 }
 
-const EditRentCriteriaForm = ({initialValues, handleSubmit}: Props) => {
-  console.log('criteria', initialValues);
+const EditRentCriteriaForm = ({handleSubmit}: Props) => {
   return (
     <form onSubmit={handleSubmit}>
       <FormSection>
@@ -191,6 +190,7 @@ const EditRentCriteriaForm = ({initialValues, handleSubmit}: Props) => {
           </Column>
           <Column medium={2}>
             <Field
+              className='with-dash'
               component={FieldTypeDatePicker}
               label='Loppupvm'
               name='end_date'

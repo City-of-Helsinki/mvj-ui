@@ -57,7 +57,7 @@ const TenantItemsEdit = ({fields}: Props) => {
                         name={`${tenant}.tenant.share`}
                       />
                       <Field
-                        className='inline width-xsmall with-slash'
+                        className='inline width-xsmall with-slash with-left-margin'
                         component={FieldTypeText}
                         name={`${tenant}.tenant.share_divider`}
                       />

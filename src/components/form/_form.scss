@@ -430,15 +430,31 @@
   &.width-small {
     max-width: rem-calc(111px);
   }
+
+  &.with-dash {
+    position: relative;
+
+    .mvj-form-field-component::before {
+      position: absolute;
+      content: '–';
+      left: rem-calc(-19px);
+    }
+  }
+
+  &.with-left-margin {
+    margin-left: 30px;
+  }
+
   &.with-slash {
     position: relative;
-    margin-left: 20px;
+
+    .mvj-form-field-component::before {
+      position: absolute;
+      content: '/';
+      left: rem-calc(-17px);
+    }
   }
-  &.with-slash::before {
-    position: absolute;
-    content: '/';
-    left: rem-calc(-13px);
-  }
+
 }
 
 .is-focused:not(.is-open) > .Select-control {

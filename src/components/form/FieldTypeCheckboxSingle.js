@@ -19,7 +19,7 @@ const FieldTypeCheckboxSingle = ({
 
   return (
     <div className={classNames('mvj-form-field', className)}>
-      <div className={classNames('mvj-form-field__checkbox-single')}>
+      <div className={classNames('mvj-form-field-component', 'mvj-form-field__checkbox-single')}>
         <input
           checked={value}
           name={name}
