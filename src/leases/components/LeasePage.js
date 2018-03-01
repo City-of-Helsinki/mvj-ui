@@ -13,7 +13,7 @@ import moment from 'moment';
 import {getLoggedInUser} from '../../auth/selectors';
 import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
 import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
-import {setTopNavigationSettings} from '../../components/topNavigation/actions';
+import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
 import {displayUIMessage, getLabelOfOption} from '../../util/helpers';
 import {summaryPublicityOptions} from './leaseSections/constants';
@@ -89,11 +89,11 @@ type Props = {
   leaseInfoTouched: boolean,
   location: Object,
   params: Object,
+  receiveTopNavigationSettings: Function,
   rentsForm: Object,
   rentsTouched: boolean,
   rulesForm: Array<Object>,
   rulesTouched: boolean,
-  setTopNavigationSettings: Function,
   start_date: ?string,
   status: string,
   summaryForm: Object,
@@ -133,10 +133,10 @@ class PreparerForm extends Component {
   };
 
   componentWillMount() {
-    const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}, setTopNavigationSettings} = this.props;
+    const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}, receiveTopNavigationSettings} = this.props;
     const lease = mockData.leases[0];
 
-    setTopNavigationSettings({
+    receiveTopNavigationSettings({
       pageTitle: 'Vuokraukset',
       showSearch: true,
     });
@@ -681,7 +681,7 @@ export default flowRight(
       editLease,
       fetchAttributes,
       fetchSingleLease,
-      setTopNavigationSettings,
+      receiveTopNavigationSettings,
     }
   ),
 )(PreparerForm);

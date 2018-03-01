@@ -7,16 +7,18 @@ import {Row, Column} from 'react-foundation';
 
 import {getRouteById} from '../../root/routes';
 import {createLease, fetchAttributes, fetchLeases} from '../actions';
-import {setTopNavigationSettings} from '../../components/topNavigation/actions';
+import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
 import {leaseTypeOptions} from '../constants';
-import * as contentHelpers from '../helpers';
+import {getContentLeases, getLeasesFilteredByDocumentType} from '../helpers';
 import {getSearchQuery} from '../../util/helpers';
 import Button from '../../components/button/Button';
 import CreateLease from '../components/leaseSections/CreateLease';
 import EditableMap from '../../components/map/EditableMap';
 import Loader from '../../components/loader/Loader';
 import Modal from '../../components/modal/Modal';
+import PageContainer from '../../components/content/PageContainer';
+import SearchWrapper from '../../components/search/SearchWrapper';
 import Search from './search/Search';
 import Table from '../../components/table/Table';
 import TableControllers from '../../components/table/TableControllers';
@@ -34,12 +36,12 @@ type Props = {
   isFetching: boolean,
   leases: Object,
   router: Object,
-  setTopNavigationSettings: Function,
+  receiveTopNavigationSettings: Function,
 }
 
 type State = {
   documentType: Array<string>,
-  isCreateLeaseIdentifierModalOpen: boolean,
+  isModalOpen: boolean,
   visualizationType: string,
 }
 
@@ -48,7 +50,7 @@ class LeaseList extends Component {
 
   state: State = {
     documentType: [],
-    isCreateLeaseIdentifierModalOpen: false,
+    isModalOpen: false,
     newLeaseStatus: '',
     newLeaseTitle: '',
     visualizationType: 'table',
@@ -61,14 +63,13 @@ class LeaseList extends Component {
   };
 
   componentWillMount() {
-    const {fetchAttributes, fetchLeases, setTopNavigationSettings} = this.props;
+    const {fetchAttributes, fetchLeases, receiveTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
 
-    setTopNavigationSettings({
+    receiveTopNavigationSettings({
       pageTitle: 'Vuokraukset',
       showSearch: false,
     });
-
     fetchAttributes();
     fetchLeases(getSearchQuery(query));
   }
@@ -78,17 +79,15 @@ class LeaseList extends Component {
     this.search.initialize(query);
   }
 
-  showModal = (modalName: string) => {
-    const modalVisibilityKey = `is${modalName}ModalOpen`;
+  showModal = () => {
     this.setState({
-      [modalVisibilityKey]: true,
+      isModalOpen: true,
     });
   }
 
-  hideModal = (modalName: string) => {
-    const modalVisibilityKey = `is${modalName}ModalOpen`;
+  hideModal = () => {
     this.setState({
-      [modalVisibilityKey]: false,
+      isModalOpen: false,
     });
   }
 
@@ -114,26 +113,27 @@ class LeaseList extends Component {
     });
   };
 
-  openCreateLeaseModal = () => {
-    this.showModal('CreateLeaseIdentifier');
-  }
-
   render() {
-    const {documentType,
-      isCreateLeaseIdentifierModalOpen,
-      visualizationType} = this.state;
-    const {attributes,
+    const {
+      documentType,
+      isModalOpen,
+      visualizationType,
+    } = this.state;
+    const {
+      attributes,
       createLease,
-      leases: content, isFetching} = this.props;
-    const leases = contentHelpers.getContentLeases(content, attributes);
+      leases: content,
+      isFetching,
+    } = this.props;
+    const leases = getContentLeases(content, attributes);
     //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
-    const filteredLeases = contentHelpers.getLeasesFilteredByDocumentType(leases, documentType);
+    const filteredLeases = getLeasesFilteredByDocumentType(leases, documentType);
 
     return (
-      <div className='lease-list'>
+      <PageContainer>
         <Modal
-          isOpen={isCreateLeaseIdentifierModalOpen}
-          onClose={() => this.hideModal('CreateLeaseIdentifier')}
+          isOpen={isModalOpen}
+          onClose={this.hideModal}
           title={'Luo vuokratunnus'}
         >
           <CreateLease
@@ -141,74 +141,62 @@ class LeaseList extends Component {
             onSubmit={(lease) => createLease(lease)}
           />
         </Modal>
-        <Row>
-          <Column small={10}>
-            <Search
-              ref={(input) => { this.search = input; }}
-              attributes={attributes}
-              onSearch={(query) => this.handleSearchChange(query)}
-            />
-          </Column>
-          <Column small={2} style={{paddingLeft: 0}}>
+        <SearchWrapper
+          buttonComponent={
             <Button
               className='no-margin full-width'
-              onClick={() => this.showModal('CreateLeaseIdentifier')}
+              onClick={this.showModal}
               text='Luo uusi vuokratunnus'
             />
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <TableControllers
-              buttonSelectorOptions={leaseTypeOptions}
-              buttonSelectorValue={documentType}
-              onButtonSelectorChange={(value) => {this.setState({documentType: value});}}
-              iconSelectorOptions={[
-                {value: 'table', label: 'Taulukko', icon: tableIcon, iconSelected: tableGreenIcon},
-                {value: 'map', label: 'Kartta', icon: mapIcon, iconSelected: mapGreenIcon}]
-              }
-              iconSelectorValue={visualizationType}
-              onIconSelectorChange={
-                (value) => this.setState({visualizationType: value})
-              }
-              title={`Löytyi ${filteredLeases.length} kpl`}
+          }
+          searchComponent={
+            <Search
+              attributes={attributes}
+              onSearch={(query) => this.handleSearchChange(query)}
+              ref={(input) => { this.search = input; }}
             />
-          </Column>
-        </Row>
+          }
+        />
+        <TableControllers
+          buttonSelectorOptions={leaseTypeOptions}
+          buttonSelectorValue={documentType}
+          onButtonSelectorChange={(value) => {this.setState({documentType: value});}}
+          iconSelectorOptions={[
+            {value: 'table', label: 'Taulukko', icon: tableIcon, iconSelected: tableGreenIcon},
+            {value: 'map', label: 'Kartta', icon: mapIcon, iconSelected: mapGreenIcon}]
+          }
+          iconSelectorValue={visualizationType}
+          onIconSelectorChange={
+            (value) => this.setState({visualizationType: value})
+          }
+          title={`Löytyi ${filteredLeases.length} kpl`}
+        />
         {isFetching && <Row><Column><div className='loader__wrapper'><Loader isLoading={isFetching} /></div></Column></Row>}
         {!isFetching &&
           <div>
             {visualizationType === 'table' && (
-              <Row>
-                <Column>
-                  <Table
-                    amount={filteredLeases.length}
-                    data={filteredLeases}
-                    dataKeys={[
-                      {key: 'identifier', label: 'Vuokratunnus'},
-                      {key: 'real_property_unit', label: 'Vuokrakohde'},
-                      {key: 'tenant', label: 'Vuokralainen'},
-                      {key: 'person', label: 'Vuokranantaja'},
-                      {key: 'address', label: 'Osoite'},
-                      {key: 'status', label: 'Tyyppi'},
-                      {key: 'start_date', label: 'Alkupvm'},
-                      {key: 'end_date', label: 'Loppupvm'},
-                    ]}
-                    onRowClick={this.handleRowClick}
-                  />
-                </Column>
-              </Row>
+              <Table
+                amount={filteredLeases.length}
+                data={filteredLeases}
+                dataKeys={[
+                  {key: 'identifier', label: 'Vuokratunnus'},
+                  {key: 'real_property_unit', label: 'Vuokrakohde'},
+                  {key: 'tenant', label: 'Vuokralainen'},
+                  {key: 'person', label: 'Vuokranantaja'},
+                  {key: 'address', label: 'Osoite'},
+                  {key: 'status', label: 'Tyyppi'},
+                  {key: 'start_date', label: 'Alkupvm'},
+                  {key: 'end_date', label: 'Loppupvm'},
+                ]}
+                onRowClick={this.handleRowClick}
+              />
             )}
             {visualizationType === 'map' && (
-              <Row>
-                <Column>
-                  <EditableMap />
-                </Column>
-              </Row>
+              <EditableMap />
             )}
           </div>
         }
-      </div>
+      </PageContainer>
     );
   }
 }
@@ -226,7 +214,7 @@ export default flowRight(
       createLease,
       fetchLeases,
       fetchAttributes,
-      setTopNavigationSettings,
+      receiveTopNavigationSettings,
     },
   ),
 )(LeaseList);
