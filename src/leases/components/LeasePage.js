@@ -34,10 +34,12 @@ import Billing from './leaseSections/billing/Billing';
 import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/modal/ConfirmationModal';
+import ContentContainer from '../../components/content/ContentContainer';
 import ControlButtons from '../../components/controlButtons/ControlButtons';
 import ControlButtonBar from '../../components/controlButtons/ControlButtonBar';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
+import Divider from '../../components/content/Divider';
 import EditableMap from '../../components/map/EditableMap';
 import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
@@ -452,7 +454,7 @@ class PreparerForm extends Component {
     }
 
     return (
-      <PageContainer>
+      <PageContainer className='lease-page'>
         <ConfirmationModal
           isOpen={isSaveLeaseModalOpen}
           label='Haluatko varmasti tallentaa muutokset?'
@@ -529,107 +531,103 @@ class PreparerForm extends Component {
           onTabClick={(id) => this.handleTabClick(id)}
         />
 
-        <Row>
-          <Column>
-            <TabContent active={activeTab}>
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  <Row>
-                    <Column medium={9}><h1>Yhteenveto</h1></Column>
-                    <Column medium={3}>
-                      {!isEditMode &&
-                        <p className="publicity-label">
-                          {summary.publicity
-                            ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
-                            : '-'}
-                        </p>
-                      }
-                    </Column>
-                  </Row>
-                  <Row><Column><div className="separator-line"></div></Column></Row>
-                  <Row>
-                    <Column medium={9}>
-                      {!isEditMode && <Summary summary={summary}/>}
-                      {isEditMode && <SummaryEdit initialValues={{summary: summary}}/>}
-                    </Column>
-                    <Column medium={3}>
-                      <LeaseHistory history={history}/>
-                    </Column>
-                  </Row>
-                </div>
-              </TabPane>
-
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  <h1>Vuokra-alue</h1>
-                  <p className="right-subtitle">{sum_areas} m<sup>2</sup></p>
-                  <div className='property-unit'>
-                    {isEditMode && <PropertyUnitEdit initialValues={{areas: areas}}/>}
-                    {!isEditMode && <PropertyUnit areas={areas}/>}
-                  </div>
-                </div>
-              </TabPane>
-
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  <div>
-                    {!isEditMode && <TenantTab tenants={tenants} oldTenants={oldTenants}/>}
-                    {isEditMode && <TenantEdit initialValues={{tenants: tenants}}/>}
-                  </div>
-                </div>
-              </TabPane>
-
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  {!isEditMode && <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>}
-                  {isEditMode && <RentEdit initialValues={{rents: rents}}/>}
-                </div>
-              </TabPane>
-
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
+        <TabContent active={activeTab}>
+          <TabPane>
+            <ContentContainer>
+              <Row>
+                <Column medium={9}><h1>Yhteenveto</h1></Column>
+                <Column medium={3}>
                   {!isEditMode &&
-                    <DecisionsMain
-                      contracts={contracts}
-                      inspections={inspections}
-                      rules={rules}
-                    />
+                    <p className="publicity-label">
+                      {summary.publicity
+                      ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
+                      : '-'}
+                    </p>
                   }
-                  {isEditMode &&
-                    <DecisionsMainEdit
-                      contracts={contracts}
-                      inspections={inspections}
-                      rules={rules}
-                    />
-                  }
-                </div>
-              </TabPane>
+                </Column>
+              </Row>
+              <Divider />
+              <Row>
+                <Column medium={9}>
+                  {!isEditMode && <Summary summary={summary}/>}
+                  {isEditMode && <SummaryEdit initialValues={{summary: summary}}/>}
+                </Column>
+                <Column medium={3}>
+                  <LeaseHistory history={history}/>
+                </Column>
+              </Row>
+            </ContentContainer>
+          </TabPane>
 
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  <h1>Rakentamiskelpoisuus</h1>
-                  <div>
-                    {!isEditMode && <ConstructionEligibilityTab areas={areas}/>}
-                    {isEditMode && <ConstructionEligibilityEdit areas={areas} initialValues={{areas: areas}}/>}
-                  </div>
-                </div>
-              </TabPane>
+          <TabPane className="lease-page__tab-content">
+            <div className='lease-page__tab-content'>
+              <h1>Vuokra-alue</h1>
+              <p className="right-subtitle">{sum_areas} m<sup>2</sup></p>
+              <div className='property-unit'>
+                {isEditMode && <PropertyUnitEdit initialValues={{areas: areas}}/>}
+                {!isEditMode && <PropertyUnit areas={areas}/>}
+              </div>
+            </div>
+          </TabPane>
 
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  {!isEditMode && <Billing billing={billing}/>}
-                  {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
-                </div>
-              </TabPane>
+          <TabPane className="lease-page__tab-content">
+            <div className='lease-page__tab-content'>
+              <div>
+                {!isEditMode && <TenantTab tenants={tenants} oldTenants={oldTenants}/>}
+                {isEditMode && <TenantEdit initialValues={{tenants: tenants}}/>}
+              </div>
+            </div>
+          </TabPane>
 
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  <EditableMap/>
-                </div>
-              </TabPane>
-            </TabContent>
-          </Column>
-        </Row>
+          <TabPane className="lease-page__tab-content">
+            <div className='lease-page__tab-content'>
+              {!isEditMode && <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>}
+              {isEditMode && <RentEdit initialValues={{rents: rents}}/>}
+            </div>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <div className='lease-page__tab-content'>
+              {!isEditMode &&
+                <DecisionsMain
+                  contracts={contracts}
+                  inspections={inspections}
+                  rules={rules}
+                />
+              }
+              {isEditMode &&
+                <DecisionsMainEdit
+                  contracts={contracts}
+                  inspections={inspections}
+                  rules={rules}
+                />
+              }
+            </div>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <div className='lease-page__tab-content'>
+              <h1>Rakentamiskelpoisuus</h1>
+              <div>
+                {!isEditMode && <ConstructionEligibilityTab areas={areas}/>}
+                {isEditMode && <ConstructionEligibilityEdit areas={areas} initialValues={{areas: areas}}/>}
+              </div>
+            </div>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <div className='lease-page__tab-content'>
+              {!isEditMode && <Billing billing={billing}/>}
+              {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
+            </div>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <div className='lease-page__tab-content'>
+              <EditableMap/>
+            </div>
+          </TabPane>
+        </TabContent>
       </PageContainer>
     );
   }

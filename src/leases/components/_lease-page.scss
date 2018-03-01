@@ -44,16 +44,6 @@
     }
   }
 
-  &__upper-bar {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: rem-calc(20px);
-
-    .lease-info-wrapper {
-      flex: 1 1 0%;
-    }
-  }
-
   .separator-line {
     width: 100%;
     border-top: 1px dashed $tram;
@@ -66,9 +56,10 @@
 
   .publicity-label {
     text-align: right;
-    font-size: 16px;
-    line-height: 2.4;
-    font-weight: $semibold;
     color: $tram;
+    font-size: $font-regular;
+    line-height: rem-calc(25px);
+    font-weight: $semibold;
+    margin-bottom: 0;
   }
 }

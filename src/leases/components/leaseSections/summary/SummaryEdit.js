@@ -7,6 +7,7 @@ import {Field, reduxForm, formValueSelector} from 'redux-form';
 
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
+import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
 import {
   summaryHitasOptions,
   summaryLeaseStatisticalUseOptions,
@@ -16,7 +17,8 @@ import {
   summaryRegulatoryOptions,
   summaryRegulatoryMethodOptions,
   summarySpecialApartmentsOptions,
-  summaryTransferRightOptions} from '../constants';
+  summaryTransferRightOptions,
+} from '../constants';
 
 import {financialMethodOptions, managementMethodOptions, purposeOptions} from '../../../../constants';
 
@@ -31,8 +33,8 @@ class SummaryEdit extends Component {
     const {handleSubmit} = this.props;
 
     return (
-      <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <div className='green-box no-margin'>
+      <form onSubmit={handleSubmit}>
+        <GreenBoxEdit>
           <Row>
             <Column medium={8}>
               <Field
@@ -157,7 +159,7 @@ class SummaryEdit extends Component {
               />
             </Column>
           </Row>
-        </div>
+        </GreenBoxEdit>
       </form>
     );
   }
