@@ -154,7 +154,7 @@ const renderPrices = ({fields}: PricesProps) => {
         <Column>
           <AddButtonSecondary
             label='Lisää hinta'
-            onClick={() => fields.push('')}
+            onClick={() => fields.push({})}
             title='Lisää hinta'
           />
         </Column>
@@ -260,7 +260,7 @@ const EditRentCriteriaForm = ({initialValues, handleSubmit}: Props) => {
         </Row>
         <Row>
           <Column>
-            <FieldArray
+            <Field
               className='no-margin'
               component={FieldTypeText}
               label="Kommentti"

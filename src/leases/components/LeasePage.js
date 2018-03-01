@@ -294,7 +294,7 @@ class PreparerForm extends Component {
 
   validateForms = () => {
     const {leaseInfoErrors} = this.props;
-    return leaseInfoErrors ? true : false;
+    return leaseInfoErrors ? false : true;
   }
 
   addComment = (comment: string) => {

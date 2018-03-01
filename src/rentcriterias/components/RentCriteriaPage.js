@@ -6,64 +6,85 @@ import flowRight from 'lodash/flowRight';
 
 import ControlButtonBar from '../../components/controlButtons/ControlButtonBar';
 import ControlButtons from '../../components/controlButtons/ControlButtons';
+import Loader from '../../components/loader/Loader';
 import PageContainer from '../../components/content/PageContainer';
 import RentCriteriaEdit from './RentCriteriaEdit';
 import RentCriteriaReadonly from './RentCriteriaReadonly';
-import {initializeRentCriteria} from '../actions';
+import {
+  editRentCriteria,
+  fetchSingleRentCriteria,
+  hideEditMode,
+  initializeRentCriteria,
+  showEditMode,
+} from '../actions';
+import {
+  getIsEditMode,
+  getIsFetching,
+  getRentCriteria,
+  getRentCriteriaFormValues,
+} from '../selectors';
 import {getRouteById} from '../../root/routes';
-
-import mockCriteria from '../mock-data-single-criteria.json';
+import type {RootState} from '../../root/types';
 
 type Props = {
-  initializeRentCriteria: Function,
-  router: Object,
-}
-
-type State = {
   criteria: Object,
+  editedCriteria: Object,
+  editRentCriteria: Function,
+  fetchSingleRentCriteria: Function,
+  hideEditMode: Function,
+  initializeRentCriteria: Function,
   isEditMode: boolean,
+  isFetching: boolean,
+  router: Object,
+  showEditMode: Function,
 }
 
 class RentCriteriaPage extends Component {
   props: Props
-
-  state: State = {
-    criteria: {},
-    isEditMode: false,
-  }
 
   static contextTypes = {
     router: PropTypes.object,
   };
 
   componentWillMount() {
-    this.setState({
-      criteria: mockCriteria,
-    });
+    const {fetchSingleRentCriteria} = this.props;
+    fetchSingleRentCriteria();
   }
 
   copyCriteria = () => {
-    const {initializeRentCriteria, router} = this.props;
-    const {criteria} = this.state;
+    const {criteria, initializeRentCriteria, router} = this.props;
     initializeRentCriteria(criteria);
     return router.push({
       pathname: getRouteById('newrentcriteria'),
     });
   }
 
+  saveCriteria = () => {
+    const {editRentCriteria, editedCriteria} = this.props;
+    editRentCriteria(editedCriteria);
+  }
+
   hideEditMode = () => {
-    this.setState({isEditMode: false});
+    const {hideEditMode} = this.props;
+    hideEditMode();
   }
 
   showEditMode = () => {
-    const {initializeRentCriteria} = this.props;
-    const {criteria} = this.state;
+    const {criteria, initializeRentCriteria, showEditMode} = this.props;
     initializeRentCriteria(criteria);
-    this.setState({isEditMode: true});
+    showEditMode();
   }
 
   render() {
-    const {criteria, isEditMode} = this.state;
+    const {criteria, isEditMode, isFetching} = this.props;
+
+    if(isFetching) {
+      return (
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
+      );
+    }
 
     return (
       <PageContainer>
@@ -75,7 +96,7 @@ class RentCriteriaPage extends Component {
               onCancelClick={this.hideEditMode}
               onCopyClick={this.copyCriteria}
               onEditClick={this.showEditMode}
-              onSaveClick={() => console.log('123')}
+              onSaveClick={this.saveCriteria}
               showCommentButton={false}
               showCopyButton={true}
             />
@@ -90,11 +111,24 @@ class RentCriteriaPage extends Component {
   }
 }
 
+const mapStateToProps = (state: RootState) => {
+  return {
+    criteria: getRentCriteria(state),
+    editedCriteria: getRentCriteriaFormValues(state),
+    isEditMode: getIsEditMode(state),
+    isFetching: getIsFetching(state),
+  };
+};
+
 export default flowRight(
   connect(
-    null,
+    mapStateToProps,
     {
+      editRentCriteria,
+      fetchSingleRentCriteria,
+      hideEditMode,
       initializeRentCriteria,
+      showEditMode,
     }
   ),
 )(RentCriteriaPage);

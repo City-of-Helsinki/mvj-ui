@@ -112,7 +112,7 @@ class EditableMap extends Component {
     });
     this.setState({rememberableTerms: rememberableTerms, shapes: []});
     this.saveConditionPanel.clearCommentField();
-    displayUIMessage({title: 'Muistettava ehto tallennetty', body: 'Muistettava ehto on tallennettu onnistuneesti'});
+    displayUIMessage({title: 'Muistettava ehto tallennettu', body: 'Muistettava ehto on tallennettu onnistuneesti'});
   }
 
   render() {

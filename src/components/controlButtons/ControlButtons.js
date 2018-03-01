@@ -39,7 +39,7 @@ const ControlButtons = ({
             />
             <Button
               className='button-green'
-              disabled={isValid}
+              disabled={!isValid}
               onClick={onSaveClick}
               text='Tallenna'
             />
