@@ -11,8 +11,20 @@ import get from 'lodash/get';
 import moment from 'moment';
 
 import {getLoggedInUser} from '../../auth/selectors';
-import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
-import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
+import {
+  getAttributes,
+  getCurrentLease,
+  getIsEditMode,
+  getIsFetching,
+  getLeaseInfoErrors,
+} from '../selectors';
+import {
+  editLease,
+  fetchAttributes,
+  fetchSingleLease,
+  hideEditMode,
+  showEditMode,
+} from '../actions';
 import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
 import {displayUIMessage, getLabelOfOption} from '../../util/helpers';
@@ -47,6 +59,46 @@ import ConstructionEligibilityEdit from './leaseSections/constructionEligibility
 
 import mockData from '../mock-data.json';
 
+type Props = {
+  areasForm: Array<Object>,
+  areasTouched: boolean,
+  attributes: Object,
+  billingForm: Object,
+  billingTouched: boolean,
+  contractsForm: Array<Object>,
+  contractsTouched: boolean,
+  currentLease: Object,
+  dispatch: Function,
+  editLease: Function,
+  eligibilityForm: Array<Object>,
+  eligibilityTouched: boolean,
+  end_date: ?string,
+  fetchAttributes: Function,
+  fetchSingleLease: Function,
+  hideEditMode: Function,
+  inspectionsForm: Array<Object>,
+  inspectionTouched: boolean,
+  isEditMode: boolean,
+  isFetching: boolean,
+  leaseInfoErrors: Object,
+  leaseInfoTouched: boolean,
+  location: Object,
+  params: Object,
+  receiveTopNavigationSettings: Function,
+  rentsForm: Object,
+  rentsTouched: boolean,
+  rulesForm: Array<Object>,
+  rulesTouched: boolean,
+  showEditMode: Function,
+  start_date: ?string,
+  status: string,
+  summaryForm: Object,
+  summaryTouched: boolean,
+  tenantsForm: Array<Object>,
+  tenantsTouched: boolean,
+  user: Object,
+}
+
 type State = {
   activeTab: number,
   areas: Array<Object>,
@@ -66,43 +118,6 @@ type State = {
   tenants: Array<Object>,
 };
 
-type Props = {
-  areasForm: Array<Object>,
-  areasTouched: boolean,
-  attributes: Object,
-  billingForm: Object,
-  billingTouched: boolean,
-  contractsForm: Array<Object>,
-  contractsTouched: boolean,
-  currentLease: Object,
-  dispatch: Function,
-  editLease: Function,
-  eligibilityForm: Array<Object>,
-  eligibilityTouched: boolean,
-  end_date: ?string,
-  fetchAttributes: Function,
-  fetchSingleLease: Function,
-  inspectionsForm: Array<Object>,
-  inspectionTouched: boolean,
-  isFetching: boolean,
-  leaseInfoErrors: Object,
-  leaseInfoTouched: boolean,
-  location: Object,
-  params: Object,
-  receiveTopNavigationSettings: Function,
-  rentsForm: Object,
-  rentsTouched: boolean,
-  rulesForm: Array<Object>,
-  rulesTouched: boolean,
-  start_date: ?string,
-  status: string,
-  summaryForm: Object,
-  summaryTouched: boolean,
-  tenantsForm: Array<Object>,
-  tenantsTouched: boolean,
-  user: Object,
-}
-
 class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
@@ -113,7 +128,6 @@ class PreparerForm extends Component {
     history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
-    isEditMode: false,
     isSaveLeaseModalOpen: false,
     oldTenants: [],
     rents: {},
@@ -173,10 +187,6 @@ class PreparerForm extends Component {
     fetchSingleLease(leaseId);
   }
 
-  openEditMode = () => {
-    this.setState({isEditMode: true});
-  }
-
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
     this.setState({
@@ -192,8 +202,9 @@ class PreparerForm extends Component {
   }
 
   cancel = () => {
-    this.setState({isEditMode: false});
+    const {hideEditMode} = this.props;
     this.resetAllForms();
+    hideEditMode();
     this.hideModal('CancelLease');
   }
 
@@ -206,6 +217,7 @@ class PreparerForm extends Component {
       editLease,
       eligibilityForm,
       end_date,
+      hideEditMode,
       inspectionsForm,
       rentsForm,
       rulesForm,
@@ -250,7 +262,7 @@ class PreparerForm extends Component {
       this.setState({tenants: tenantsForm});
     }
 
-    this.setState({isEditMode: false});
+    hideEditMode();
     this.hideModal('SaveLease');
     this.destroyAllForms();
   }
@@ -403,7 +415,6 @@ class PreparerForm extends Component {
       inspections,
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
-      isEditMode,
       isSaveLeaseModalOpen,
       oldTenants,
       rents,
@@ -415,7 +426,9 @@ class PreparerForm extends Component {
     const {
       attributes,
       currentLease,
+      isEditMode,
       isFetching,
+      showEditMode,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -495,7 +508,7 @@ class PreparerForm extends Component {
                 isValid={areFormsValid}
                 onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
                 onCommentClick={this.toggleCommentPanel}
-                onEditClick={this.openEditMode}
+                onEditClick={showEditMode}
                 onSaveClick={() => this.showModal('SaveLease')}
               />
             </div>
@@ -659,6 +672,7 @@ export default flowRight(
         eligibilityForm: eligibilityFormSelector(state, 'areas'),
         eligibilityTouched: get(state, 'form.eligibility-edit-form.anyTouched'),
         end_date: leaseInfoFormSelector(state, 'end_date'),
+        isEditMode: getIsEditMode(state),
         inspectionsForm: inspectionFormSelector(state, 'inspections'),
         inspectionTouched: get(state, 'form.inspection-edit-form.anyTouched'),
         isFetching: getIsFetching(state),
@@ -681,7 +695,9 @@ export default flowRight(
       editLease,
       fetchAttributes,
       fetchSingleLease,
+      hideEditMode,
       receiveTopNavigationSettings,
+      showEditMode,
     }
   ),
 )(PreparerForm);

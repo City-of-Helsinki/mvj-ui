@@ -12,6 +12,11 @@ import type {
   ReceiveSingleLeaseAction,
 } from './types';
 
+const isEditModeReducer: Reducer<boolean> = handleActions({
+  'mvj/leasesbeta/HIDE_EDIT': () => false,
+  'mvj/leasesbeta/SHOW_EDIT': () => true,
+}, false);
+
 const isFetchingReducer: Reducer<boolean> = handleActions({
   // 'mvj/leases/FETCH_IDENTIFIERS': () => true,
   // 'mvj/leases/RECEIVE_ATTRIBUTES': () => false,
@@ -45,6 +50,7 @@ const currentLeaseReducer: Reducer<Lease> = handleActions({
 export default combineReducers({
   attributes: attributesReducer,
   current: currentLeaseReducer,
+  isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
   list: leasesListReducer,
 });
