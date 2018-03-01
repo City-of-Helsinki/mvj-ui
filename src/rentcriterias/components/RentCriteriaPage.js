@@ -9,6 +9,7 @@ import ControlButtons from '../../components/controlButtons/ControlButtons';
 import Loader from '../../components/loader/Loader';
 import PageContainer from '../../components/content/PageContainer';
 import RentCriteriaEdit from './RentCriteriaEdit';
+import RentCriteriaInfo from './RentCriteriaInfo';
 import RentCriteriaReadonly from './RentCriteriaReadonly';
 import {
   editRentCriteria,
@@ -99,6 +100,11 @@ class RentCriteriaPage extends Component {
               onSaveClick={this.saveCriteria}
               showCommentButton={false}
               showCopyButton={true}
+            />
+          }
+          infoComponent={
+            <RentCriteriaInfo
+              identifier={criteria.id}
             />
           }
         />
