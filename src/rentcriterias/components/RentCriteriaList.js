@@ -77,13 +77,23 @@ class RentCriteriaList extends Component {
     });
   }
 
-  onCreateButtonClick = () => {
+  handleCreateButtonClick = () => {
     const {router} = this.context;
 
     return router.push({
       pathname: getRouteById('newrentcriteria'),
     });
   }
+
+  handleRowClick = (id) => {
+    const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
+
+    return router.push({
+      pathname: `${getRouteById('rentcriterias')}/${id}`,
+      query,
+    });
+  };
 
   render() {
     const {isFetching, rentcriterias} = this.props;
@@ -103,7 +113,7 @@ class RentCriteriaList extends Component {
               <div className="button-container">
                 <Button
                   className='no-margin'
-                  onClick={() => this.onCreateButtonClick()}
+                  onClick={() => this.handleCreateButtonClick()}
                   text='Luo uusi vuokrausperuste'
                 />
               </div>
@@ -140,7 +150,7 @@ class RentCriteriaList extends Component {
                       {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
                       {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
                     ]}
-                    onRowClick={(item) => console.log(item)}
+                    onRowClick={this.handleRowClick}
                   />
                 </Column>
               </Row>

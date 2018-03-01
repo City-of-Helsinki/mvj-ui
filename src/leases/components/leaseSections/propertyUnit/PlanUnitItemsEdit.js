@@ -177,9 +177,10 @@ const PlanUnitItemsEdit = ({areas, title, fields}: Props) => {
           <Row>
             <Column medium={6}>
               <Field
-                name={`${planunit}.planplot_type`}
+                className='no-margin'
                 component={FieldTypeSelect}
                 label='Kaavayksikön laji'
+                name={`${planunit}.planplot_type`}
                 options={[
                   {value: 'rekisteröity yleinen alue', label: 'Rekisteröity yleinen alue'},
                   {value: 'ohjeellinen kaavatontti', label: 'Ohjeellinen kaavatontti'},
@@ -196,9 +197,10 @@ const PlanUnitItemsEdit = ({areas, title, fields}: Props) => {
             </Column>
             <Column medium={3}>
               <Field
-                name={`${planunit}.planplot_condition`}
+                className='no-margin'
                 component={FieldTypeSelect}
                 label='Kaavayksikön olotila'
+                name={`${planunit}.planplot_condition`}
                 options={[
                   {value: 'numeronvaraus', label: 'Numeronvaraus'},
                   {value: 'vireillä', label: 'Vireillä'},

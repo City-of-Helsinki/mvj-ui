@@ -32,7 +32,7 @@ class LeaseInfoEdit extends Component {
         <div className='lease-info-edit__column'>
           <div className='lease-info-edit__column-wrapper'>
             <Field
-              className='height-medium'
+              className="no-margin height-medium"
               component={FieldTypeSelect}
               label='Tyyppi'
               name={'status'}
@@ -46,7 +46,7 @@ class LeaseInfoEdit extends Component {
         <div className='lease-info-edit__column'>
           <div className='lease-info-edit__column-wrapper'>
             <Field
-              className="height-medium"
+              className="no-margin height-medium"
               component={FieldTypeDatePicker}
               label='Alkupäivämäärä'
               name={'start_date'}
@@ -57,7 +57,7 @@ class LeaseInfoEdit extends Component {
         <div className='lease-info-edit__column'>
           <div className='lease-info-edit__column-wrapper'>
             <Field
-              className="height-medium"
+              className="no-margin height-medium"
               component={FieldTypeDatePicker}
               label='Loppupäivämäärä'
               name={'end_date'}

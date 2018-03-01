@@ -78,8 +78,8 @@
     top: rem-calc(-1px);
 
     img {
-      height: 22px;
-      width: 22px;
+      height: rem-calc(20px);
+      width: rem-calc(20px);
     }
     &:hover {
       opacity: 0.85;
@@ -91,12 +91,12 @@
     display: block;
     border-top: 1px dashed $tram;
     align-items: baseline;
-    padding: 1rem 0 0 0;
+    padding: 0;
     margin: 0 0 1rem;
     position: relative;
 
-    > .row {
-      padding-right: 3rem;
+    .white-box {
+      padding: rem-calc(20px);
     }
 
     .add-column {
@@ -120,8 +120,8 @@
       cursor: pointer;
 
       img {
-        height: 22px;
-        width: 22px;
+        height: rem-calc(20px);
+        width: rem-calc(20px);
       }
       &:hover {
         opacity: 0.85;
@@ -152,12 +152,9 @@
 
   .green-box {
     background-color: rgba(0, 146, 70, 0.1);
-    padding: 0.6rem 1rem;
-    margin: 0.6rem 0;
+    padding: rem-calc(20px);
+    margin: 0 0 rem-calc(5px);
 
-    &.no-margin {
-      margin: 0;
-    }
 
     h2 {
       margin-top: 0;
@@ -190,23 +187,19 @@
     color: $tram;
   }
 
-  .green-box-item + .green-box-item {
-    border-top: 1px dashed $tram;
-  }
-
   .green-box-item {
     position: relative;
-    padding: 1rem 2rem 0.8rem 0;
+    padding: 0 0 rem-calc(20px);
 
     .remove-button {
       position: absolute;
-      top: 1rem;
-      right: -0.6rem;
+      top: rem-calc(-15px);
+      right: 0;
       cursor: pointer;
 
       img {
-        height: 19px;
-        width: 19px;
+        height: 20px;
+        width: 20px;
       }
 
       &:hover {
@@ -214,6 +207,16 @@
       }
     }
   }
+
+  .green-box-item + .green-box-item {
+    border-top: 1px dashed $tram;
+    padding: rem-calc(20px) 0;
+
+    .remove-button {
+      top: rem-calc(5px);
+    }
+  }
+
   .green-box:last-of-type {
     margin-bottom: 1.6rem;
 
@@ -225,12 +228,12 @@
   .pledge-book {
     position: relative;
     .remove-button {
-      top: 1.4rem;
-      right: -1rem;
+      top: rem-calc(3px);
+      right: rem-calc(-15px);
 
       img {
-        height: 19px;
-        width: 19px;
+        height: rem-calc(20px);
+        width: rem-calc(20px);
       }
     }
   }

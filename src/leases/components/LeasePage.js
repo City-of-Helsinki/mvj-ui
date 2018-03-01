@@ -22,7 +22,7 @@ import Billing from './leaseSections/billing/Billing';
 import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/modal/ConfirmationModal';
-import ControlButtons from './ControlButtons';
+import ControlButtons from '../../components/controlButtons/ControlButtons';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
 import EditableMap from '../../components/map/EditableMap';
@@ -294,7 +294,7 @@ class PreparerForm extends Component {
 
   validateForms = () => {
     const {leaseInfoErrors} = this.props;
-    return leaseInfoErrors ? true : false;
+    return leaseInfoErrors ? false : true;
   }
 
   addComment = (comment: string) => {
@@ -565,7 +565,6 @@ class PreparerForm extends Component {
 
               <TabPane className="lease-page__tab-content">
                 <div className='lease-page__tab-content'>
-                  <h1>Vuokralaiset</h1>
                   <div>
                     {!isEditMode && <TenantTab tenants={tenants} oldTenants={oldTenants}/>}
                     {isEditMode && <TenantEdit initialValues={{tenants: tenants}}/>}

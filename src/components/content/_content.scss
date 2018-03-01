@@ -1,0 +1,114 @@
+.page-container {
+  font-family: $font-family-source;
+  width: 100%;
+  padding: rem-calc(20px);
+
+  .button-wrapper {
+    text-align: right;
+    margin-top: rem-calc(20px);
+
+    .mvj-button:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.content-container {
+  font-family: $font-family-source;
+  width: 100%;
+  background-color: $white;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.07);
+  padding: rem-calc(20px);
+
+  .divider {
+    border-top: 1px dashed $tram;
+    margin: rem-calc(20px) 0;
+    height: 1px;
+    width: 100%;
+  }
+
+  h1 {
+    font-size: rem-calc(22px);
+    line-height: 1.18;
+    font-weight: 600;
+    letter-spacing: normal;
+    color: $black;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  label {
+    font-size: $font-small;
+    line-height: normal;
+    font-weight: normal;
+    color: $dark-gray;
+  }
+
+  p {
+    font-size: $font-regular;
+    line-height: normal;
+    font-weight: normal;
+    color: $black;
+    margin-bottom: 20px;
+  }
+
+  p.no-margin {
+    margin: 0;
+  }
+
+  p.sub-title {
+    font-size: $font-regular;
+    line-height: normal;
+    font-weight: 600;
+    color: $black;
+    margin: 0 0 rem-calc(5px);
+  }
+
+  .list {
+    .list-item {
+      p {
+        margin-bottom: 0;
+      }
+    }
+
+    .list-item:last-child {
+      p {
+        margin-bottom: 20px;
+      }
+    }
+  }
+
+  .green-box {
+    padding: rem-calc(20px);
+    background-color: #d9efe4;
+    position: relative;
+
+    .map-link-button {
+      position: absolute;
+      top: rem-calc(20px);
+      right: rem-calc(20px);
+      display: flex;
+      align-items: center;
+
+      span {
+        color: $black;
+        font-size: $font-small;
+        text-transform: uppercase;
+        line-height: rem-calc(20px);
+        padding-right: 5px;
+        font-weight: 600;
+      }
+
+      i {
+        background-image: url(../assets/icons/map.svg);
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+      }
+    }
+  }
+
+  .green-box-edit {
+    padding: rem-calc(20px);
+    background-color: #d9efe4;
+  }
+}

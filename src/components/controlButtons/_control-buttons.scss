@@ -30,4 +30,23 @@
     right: rem-calc(-10px);
     min-width: rem-calc(21px);
   }
+  .left-buttons {
+    .mvj-button:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.control-button-bar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: rem-calc(20px);
+
+  .info-component-wrapper {
+    flex: 1 1 0%;
+  }
+
+  .control-buttons-wrapper {
+
+  }
 }

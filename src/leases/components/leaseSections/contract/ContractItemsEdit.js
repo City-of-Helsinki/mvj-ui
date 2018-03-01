@@ -73,16 +73,18 @@ const renderContractModifications = ({title, fields}: ContractModificationsProps
             <Row>
               <Column medium={8}>
                 <Field
-                  name={`${modification}.modification_description`}
+                  className='no-margin'
                   component={FieldTypeText}
                   label='Selite'
+                  name={`${modification}.modification_description`}
                 />
               </Column>
               <Column medium={4}>
                 <Field
-                  name={`${modification}.linked_rule`}
+                  className='no-margin'
                   component={FieldTypeText}
                   label='Päätös'
+                  name={`${modification}.linked_rule`}
                 />
               </Column>
             </Row>
@@ -104,45 +106,60 @@ type PledgeBookProps = {
 
 const renderPledgeBooks = ({fields}: PledgeBookProps) => {
   return(
-    <Row>
-      {fields && fields.length > 0 && fields.map((pledge_book, index) =>
-        <Column key={index} medium={12} className='pledge-book'>
-          <button
-            className='remove-button'
-            type="button"
-            title="Poista panttikirja"
-            onClick={() => fields.remove(index)}>
-            <img src={trashIcon} alt='Poista' />
-          </button>
+    <div>
+      {fields && fields.length > 0 &&
+        <div>
           <Row>
             <Column medium={2}>
-              <Field
-                name={`${pledge_book}.pledge_book_number`}
-                component={FieldTypeText}
-                label='Panttikirjan numero'
-              />
+              <label className='mvj-form-field-label'>Panttikirjan numero</label>
             </Column>
             <Column medium={2}>
-              <Field
-                name={`${pledge_book}.pledge_book_date`}
-                component={FieldTypeDatePicker}
-                label='Panttikirjan pvm'
-              />
+              <label className='mvj-form-field-label'>Panttikirjan pvm</label>
             </Column>
             <Column medium={8}>
-              <Field
-                name={`${pledge_book}.pledge_book_comment`}
-                component={FieldTypeText}
-                label='Panttikirjan kommentti'
-              />
+              <label className='mvj-form-field-label'>Panttikirjan kommentti</label>
             </Column>
           </Row>
-        </Column>)
+          {fields.map((pledge_book, index) =>
+            <Row key={index} className='pledge-book'>
+              <Column medium={2}>
+                <Field
+                  className='list-item'
+                  component={FieldTypeText}
+                  name={`${pledge_book}.pledge_book_number`}
+                />
+              </Column>
+              <Column medium={2}>
+                <Field
+                  className='list-item'
+                  component={FieldTypeDatePicker}
+                  name={`${pledge_book}.pledge_book_date`}
+                />
+              </Column>
+              <Column medium={8}>
+                <Field
+                  className='list-item'
+                  component={FieldTypeText}
+                  name={`${pledge_book}.pledge_book_comment`}
+                />
+              </Column>
+              <button
+                className='remove-button'
+                type="button"
+                title="Poista panttikirja"
+                onClick={() => fields.remove(index)}>
+                <img src={trashIcon} alt='Poista' />
+              </button>
+            </Row>
+          )}
+        </div>
       }
-      <Column medium={4} className='add-column'>
-        <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää panttikirja</span></a>
-      </Column>
-    </Row>
+      <Row>
+        <Column medium={4} className='add-column'>
+          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää panttikirja</span></a>
+        </Column>
+      </Row>
+    </div>
   );
 };
 
@@ -166,118 +183,120 @@ const ContractItemsEdit = ({fields, contracts}: Props) => {
       {fields && fields.length > 0 && fields.map((contract, index) => {
         return(
           <div key={index} className='item'>
-            <button
-              className='remove-button'
-              type="button"
-              title="Poista sopimus"
-              onClick={() => fields.remove(index)}>
-              <img src={trashIcon} alt='Poista' />
-            </button>
-            <Row>
-              <Column medium={2}>
-                <Field
-                  name={`${contract}.contract_type`}
-                  component={FieldTypeSelect}
-                  label='Sopimuksen tyyppi'
-                  options={[
-                    {value: 'rent-contract', label: 'Vuokrasopimus'},
-                    {value: 'esisopimus', label: 'Esisopimus'},
-                    {value: 'rasitesopimus', label: 'Rasitesopimus'},
-                  ]}
-                />
-              </Column>
-              <Column medium={2}>
-                <Field
-                  name={`${contract}.contract_type`}
-                  component={FieldTypeText}
-                  label='Sopimusnumero'
-                />
-              </Column>
-              <Column medium={2}>
-                <Field
-                  name={`${contract}.signing_date`}
-                  component={FieldTypeDatePicker}
-                  label='Allekirjoituspäivämäärä'
-                />
-              </Column>
-              <Column medium={6}>
-                <Field
-                  name={`${contract}.signing_date_comment`}
-                  component={FieldTypeText}
-                  label='Kommentti allekirjoitukselle'
-                />
-              </Column>
-            </Row>
-            <Row>
-              <Column medium={4}>
-                <Field
-                  name={`${contract}.setup_decision`}
-                  component={FieldTypeSelect}
-                  label='Järjestelypäätös'
-                  options={[
-                    {value: '', label: 'to be filled'},
-                  ]}
-                />
-              </Column>
-              <Column medium={4}>
-                <Field
-                  name={`${contract}.linked_rule`}
-                  component={FieldTypeSelect}
-                  label='Päätös'
-                  options={contractOptions}
-                />
-              </Column>
-              <Column medium={4}>
-                <Field
-                  // add KTJ integration
-                  component={FieldTypeText}
-                  label='KTJ vuokraoikeustodistuksen linkki'
-                  name={`${contract}.ktj_document`}
-                />
-              </Column>
-            </Row>
-            <Row>
-              <Column medium={2}>
-                <Field
-                  name={`${contract}.lease_deposit_number`}
-                  component={FieldTypeText}
-                  label='Vuokravakuusnumero'
-                />
-              </Column>
-              <Column medium={2}>
-                <Field
-                  name={`${contract}.lease_deposit_starting_date`}
-                  component={FieldTypeDatePicker}
-                  label='Vuokravakuus alkupvm'
-                />
-              </Column>
-              <Column medium={2}>
-                <Field
-                  name={`${contract}.lease_deposit_ending_date`}
-                  component={FieldTypeDatePicker}
-                  label='Vuokravakuus loppupvm'
-                />
-              </Column>
-              <Column medium={6}>
-                <Field
-                  name={`${contract}.lease_deposit_comment`}
-                  component={FieldTypeText}
-                  label='Vuokravakuus kommentti'
-                />
-              </Column>
-            </Row>
-            <Row>
-              <Column medium={9}>
-                <FieldArray name={`${contract}.pledge_books`} component={renderPledgeBooks} />
-              </Column>
-              <Column medium={2} offsetOnMedium={1}>
-                <Field
-                  name={`${contract}.administration_number`}
-                  component={FieldTypeText}
-                  label='Laitostunnus'
-                />
-              </Column>
-            </Row>
+            <div className='white-box'>
+              <button
+                className='remove-button'
+                type="button"
+                title="Poista sopimus"
+                onClick={() => fields.remove(index)}>
+                <img src={trashIcon} alt='Poista' />
+              </button>
+              <Row>
+                <Column medium={2}>
+                  <Field
+                    name={`${contract}.contract_type`}
+                    component={FieldTypeSelect}
+                    label='Sopimuksen tyyppi'
+                    options={[
+                      {value: 'rent-contract', label: 'Vuokrasopimus'},
+                      {value: 'esisopimus', label: 'Esisopimus'},
+                      {value: 'rasitesopimus', label: 'Rasitesopimus'},
+                    ]}
+                  />
+                </Column>
+                <Column medium={2}>
+                  <Field
+                    name={`${contract}.contract_type`}
+                    component={FieldTypeText}
+                    label='Sopimusnumero'
+                  />
+                </Column>
+                <Column medium={2}>
+                  <Field
+                    name={`${contract}.signing_date`}
+                    component={FieldTypeDatePicker}
+                    label='Allekirjoituspäivämäärä'
+                  />
+                </Column>
+                <Column medium={6}>
+                  <Field
+                    name={`${contract}.signing_date_comment`}
+                    component={FieldTypeText}
+                    label='Kommentti allekirjoitukselle'
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column medium={4}>
+                  <Field
+                    name={`${contract}.setup_decision`}
+                    component={FieldTypeSelect}
+                    label='Järjestelypäätös'
+                    options={[
+                      {value: '', label: 'to be filled'},
+                    ]}
+                  />
+                </Column>
+                <Column medium={4}>
+                  <Field
+                    name={`${contract}.linked_rule`}
+                    component={FieldTypeSelect}
+                    label='Päätös'
+                    options={contractOptions}
+                  />
+                </Column>
+                <Column medium={4}>
+                  <Field
+                    // add KTJ integration
+                    component={FieldTypeText}
+                    label='KTJ vuokraoikeustodistuksen linkki'
+                    name={`${contract}.ktj_document`}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column medium={2}>
+                  <Field
+                    name={`${contract}.lease_deposit_number`}
+                    component={FieldTypeText}
+                    label='Vuokravakuusnumero'
+                  />
+                </Column>
+                <Column medium={2}>
+                  <Field
+                    name={`${contract}.lease_deposit_starting_date`}
+                    component={FieldTypeDatePicker}
+                    label='Vuokravakuus alkupvm'
+                  />
+                </Column>
+                <Column medium={2}>
+                  <Field
+                    name={`${contract}.lease_deposit_ending_date`}
+                    component={FieldTypeDatePicker}
+                    label='Vuokravakuus loppupvm'
+                  />
+                </Column>
+                <Column medium={6}>
+                  <Field
+                    name={`${contract}.lease_deposit_comment`}
+                    component={FieldTypeText}
+                    label='Vuokravakuus kommentti'
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column medium={9}>
+                  <FieldArray name={`${contract}.pledge_books`} component={renderPledgeBooks} />
+                </Column>
+                <Column medium={2} offsetOnMedium={1}>
+                  <Field
+                    name={`${contract}.administration_number`}
+                    component={FieldTypeText}
+                    label='Laitostunnus'
+                  />
+                </Column>
+              </Row>
+            </div>
             <FieldArray title='Sopimuksen muutokset' name={`${contract}.modifications`} component={renderContractModifications}/>
           </div>
         );

@@ -108,34 +108,34 @@ const PropertyItemsEdit = ({areas, fields, title}: Props) => {
           <Row>
             <Column medium={4}>
               <Field
-                name={`${property}.address`}
-                type="text"
+                className='no-margin'
                 component={FieldTypeText}
                 label='Osoite'
+                name={`${property}.address`}
                 placeholder='Osoite'/>
             </Column>
             <Column medium={2}>
               <Field
-                name={`${property}.zip_code`}
-                type="text"
+                className='no-margin'
                 component={FieldTypeText}
                 label="Postinumero"
+                name={`${property}.zip_code`}
                 placeholder="Postinumero"/>
             </Column>
             <Column medium={3}>
               <Field
-                name={`${property}.town`}
-                type="text"
+                className='no-margin'
                 component={FieldTypeText}
                 label='Kaupunki'
+                name={`${property}.town`}
                 placeholder='Kaupunki'/>
             </Column>
             <Column medium={3}>
               <Field
-                name={`${property}.registration_date`}
-                type="text"
+                className='no-margin'
                 component={FieldTypeDatePicker}
                 label='Rekisteröintipäivä'
+                name={`${property}.registration_date`}
                 placeholder='Rekisteröintipäivä'/>
             </Column>
           </Row>

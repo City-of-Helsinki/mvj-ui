@@ -145,23 +145,26 @@ const OtherPersonItemsEdit = ({fields}: Props) => {
             <Row>
               <Column medium={3}>
                 <Field
-                  name={`${person}.customer_id`}
+                  className='no-margin'
                   component={FieldTypeText}
                   label='Asiakasnumero'
+                  name={`${person}.customer_id`}
                 />
               </Column>
               <Column medium={3}>
                 <Field
-                  name={`${person}.SAP_customer_id`}
+                  className='no-margin'
                   component={FieldTypeText}
                   label='SAP asiakasnumero'
+                  name={`${person}.SAP_customer_id`}
                 />
               </Column>
               <Column medium={6}>
                 <Field
-                  name={`${person}.comment`}
+                  className='no-margin'
                   component={FieldTypeText}
                   label='Kommentti'
+                  name={`${person}.comment`}
                 />
               </Column>
             </Row>

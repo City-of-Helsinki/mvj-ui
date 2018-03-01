@@ -2,7 +2,6 @@
 import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
-import {Row, Column} from 'react-foundation';
 import {FieldArray, reduxForm, formValueSelector} from 'redux-form';
 
 import DistrictItemsEdit from './DistrictItemsEdit';
@@ -21,11 +20,7 @@ class PropertyUnitEdit extends Component {
 
     return (
       <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <Row>
-          <Column>
-            <FieldArray name="areas" areas={areas} dispatch={dispatch} component={DistrictItemsEdit}/>
-          </Column>
-        </Row>
+        <FieldArray name="areas" areas={areas} dispatch={dispatch} component={DistrictItemsEdit}/>
       </form>
     );
   }

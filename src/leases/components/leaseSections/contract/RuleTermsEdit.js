@@ -60,9 +60,10 @@ const RuleTermsEdit = ({title, fields}: Props) => {
           <Row>
             <Column medium={12}>
               <Field
-                name={`${term}.term_description`}
+                className='no-margin'
                 component={FieldTypeText}
                 label='Selite'
+                name={`${term}.term_description`}
               />
             </Column>
           </Row>

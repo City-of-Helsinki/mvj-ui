@@ -2,35 +2,31 @@
   width: 100%;
   padding: rem-calc(20px);
 
-  &__content {
-    width: 100%;
-    background-color: $white;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.07);
-    padding: rem-calc(20px);
+  &__upper-bar {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: rem-calc(20px);
 
-    h1 {
-      font-family: $font-family-source;
-      font-size: rem-calc(24px);
-      color: $black;
-      font-weight: 600;
-      margin: 0;
-      text-transform: uppercase;
-    }
-
-    .divider {
-      border-top: 1px dashed $tram;
-      margin: rem-calc(25px) 0;
-      height: 1px;
-      width: 100%;
+    .rent-criteria-info-wrapper {
+      flex: 1 1 0%;
     }
   }
 
-  .button-wrapper {
-    text-align: right;
-    margin-top: rem-calc(20px);
-
-    .mvj-button:last-child {
-      margin-right: 0;
+  &__info {
+    &__label {
+      font-size: $font-small;
+      color: $dark-gray;
+      line-height: normal;
+      margin-bottom: rem-calc(2px);
+    }
+    &__number {
+      font-size: $font-xlarge;
+      font-weight: $semibold;
+      line-height: rem-calc(30px);
+    }
+    &__type {
+      margin-bottom: 0;
+      line-height: 1.2;
     }
   }
 }

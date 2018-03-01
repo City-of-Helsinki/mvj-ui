@@ -64,12 +64,14 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                     <Row>
                       <Column small={6} style={{paddingRight: '0'}}>
                         <Field
+                          className='list-item'
                           component={FieldTypeText}
                           name={`${rent}.contract_rent`}
                         />
                       </Column>
                       <Column small={6}>
                         <Field
+                          className='list-item'
                           component={FieldTypeSelect}
                           name={`${rent}.type`}
                           options={priceTypeOptions}
@@ -79,6 +81,7 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                   </Column>
                   <Column medium={2}>
                     <Field
+                      className='list-item'
                       component={FieldTypeSelect}
                       name={`${rent}.purpose`}
                       options={purposeOptions}
@@ -89,12 +92,14 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                       <Row>
                         <Column small={7} style={{paddingRight: '0'}}>
                           <Field
+                            className='list-item'
                             component={FieldTypeText}
                             name={`${rent}.basic_rent`}
                           />
                         </Column>
                         <Column small={5}>
                           <Field
+                            className='list-item'
                             component={FieldTypeSelect}
                             name={`${rent}.basic_rent_type`}
                             options={priceTypeOptions}
@@ -106,6 +111,7 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                   <Column medium={2}>
                     {(rentType === '0' || rentType === '4') &&
                       <Field
+                        className='list-item'
                         component={FieldTypeText}
                         name={`${rent}.basic_rent_new`}
                       />
@@ -115,12 +121,14 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                     <Row>
                       <Column small={6}>
                         <Field
+                          className='list-item'
                           component={FieldTypeDatePicker}
                           name={`${rent}.start_date`}
                         />
                       </Column>
                       <Column small={6}>
                         <Field
+                          className='list-item'
                           component={FieldTypeDatePicker}
                           name={`${rent}.end_date`}
                         />

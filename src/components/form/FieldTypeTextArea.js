@@ -1,8 +1,9 @@
 // @flow
 import React from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 type Props = {
+  className?: string,
   disabled: boolean,
   disableTouched: boolean,
   input: Object,
@@ -14,6 +15,7 @@ type Props = {
 }
 
 const FieldTypeTextArea = ({
+  className,
   disabled = false,
   disableTouched = false,
   input,
@@ -23,9 +25,9 @@ const FieldTypeTextArea = ({
   placeholder,
   rows = 5,
 }: Props) => (
-  <div className='mvj-form-field'>
-    {label && <label className={classnames('mvj-form-field-label', labelClassName)}>{label}</label>}
-    <div className={classnames('mvj-form-field__textarea', {'is-dirty': dirty})}>
+  <div className={classNames('mvj-form-field', className)}>
+    {label && <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>}
+    <div className={classNames('mvj-form-field-component', 'mvj-form-field__textarea', {'is-dirty': dirty})}>
       <textarea {...input} disabled={disabled} placeholder={placeholder} rows={rows}/>
       {(touched || disableTouched) && error && <span className='error'>{error}</span>}
     </div>

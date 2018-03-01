@@ -18,15 +18,15 @@ const getTableBody = (fields) => {
           <tr key={index}>
             <td style={{width: '25%'}}>
               <Field
+                className='no-margin'
                 component={FieldTypeText}
-                inputClassName="width-small no-margin"
                 name={`${item}.rent`}
               />
             </td>
             <td style={{width: '25%'}}>
               <Field
+                className='no-margin'
                 component={FieldTypeSelect}
-                className="no-margin"
                 name={`${item}.purpose`}
                 options={purposeOptions}
               />
@@ -35,15 +35,15 @@ const getTableBody = (fields) => {
               <Row style={{width: '250px'}}>
                 <Column style={{padding: '0 0.25rem 0 0.9375rem'}}>
                   <Field
+                    className='no-margin'
                     component={FieldTypeDatePicker}
-                    className="width-small no-margin"
                     name={`${item}.start_date`}
                   />
                 </Column>
                 <Column style={{padding: '0 0.9375rem 0 0.25rem'}}>
                   <Field
+                    className='no-margin'
                     component={FieldTypeDatePicker}
-                    className="width-small no-margin"
                     name={`${item}.end_date`}
                   />
                 </Column>
@@ -51,8 +51,8 @@ const getTableBody = (fields) => {
             </td>
             <td style={{width: '25%'}}>
               <Field
+                className='no-margin'
                 component={FieldTypeText}
-                inputClassName="width-xsmall no-margin"
                 name={`${item}.calculation_factor`}
               />
             </td>
