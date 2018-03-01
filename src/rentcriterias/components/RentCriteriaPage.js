@@ -90,7 +90,7 @@ class RentCriteriaPage extends Component {
     return (
       <PageContainer>
         <ControlButtonBar
-          buttonsComponent={
+          buttonComponent={
             <ControlButtons
               isEditMode={isEditMode}
               isValid={true}

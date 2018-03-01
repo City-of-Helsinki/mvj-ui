@@ -35,6 +35,7 @@ import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/modal/ConfirmationModal';
 import ControlButtons from '../../components/controlButtons/ControlButtons';
+import ControlButtonBar from '../../components/controlButtons/ControlButtonBar';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
 import EditableMap from '../../components/map/EditableMap';
@@ -42,6 +43,7 @@ import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '../../components/loader/Loader';
+import PageContainer from '../../components/content/PageContainer';
 import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import Rent from './leaseSections/rent/Rent';
@@ -107,7 +109,6 @@ type State = {
   contracts: Array<Object>,
   history: Array<Object>,
   inspections: Array<Object>,
-  isEditMode: boolean,
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
   isSaveLeaseModalOpen: boolean,
@@ -119,6 +120,8 @@ type State = {
 };
 
 class PreparerForm extends Component {
+  props: Props
+
   state: State = {
     activeTab: 0,
     areas: [],
@@ -137,8 +140,6 @@ class PreparerForm extends Component {
     terms: [],
     inspections: [],
   }
-
-  props: Props
 
   commentPanel: any
 
@@ -451,26 +452,25 @@ class PreparerForm extends Component {
     }
 
     return (
-      <div className='lease-page'>
+      <PageContainer>
         <ConfirmationModal
-          title='Tallenna'
           isOpen={isSaveLeaseModalOpen}
           label='Haluatko varmasti tallentaa muutokset?'
           onCancel={() => this.hideModal('SaveLease')}
           onClose={() => this.hideModal('SaveLease')}
           onSave={this.save}
+          title='Tallenna'
         />
         <ConfirmationModal
-          title='Peruuta muutokset'
           isOpen={isCancelLeaseModalOpen}
           label='Haluatko varmasti peruuttaa muutokset?'
           onCancel={() => this.hideModal('CancelLease')}
           onClose={() => this.hideModal('CancelLease')}
           onSave={this.cancel}
           saveButtonLabel='Vahvista'
+          title='Peruuta muutokset'
         />
         <CommentPanel
-          ref={(input) => {this.commentPanel = input;}}
           commentsNotArchived={commentsNotArchived}
           commentsArchived={commentsArchived}
           isOpen={isCommentPanelOpen}
@@ -478,62 +478,56 @@ class PreparerForm extends Component {
           onArchive={(comment) => this.archiveComment(comment)}
           onClose={this.toggleCommentPanel}
           onUnarchive={(comment) => this.unarchiveComment(comment)}
+          ref={(input) => {this.commentPanel = input;}}
         />
-        <Row>
-          <Column className='lease-page__upper-bar'>
-            <div className="lease-info-wrapper">
-              {!isEditMode &&
-                <LeaseInfo
-                  identifier={leaseIdentifier}
-                  startDate={currentLease.start_date}
-                  endDate={currentLease.end_date}
-                />
-              }
-              {isEditMode &&
-                <LeaseInfoEdit
-                  identifier={leaseIdentifier}
-                  initialValues={{
-                    status: currentLease.status,
-                    start_date: currentLease.start_date,
-                    end_date: currentLease.end_date,
-                  }}
-                  statusOptions={statusOptions}
-                />
-              }
-            </div>
-            <div className='controls'>
-              <ControlButtons
-                commentAmount={commentsNotArchived ? commentsNotArchived.length : 0}
-                isEditMode={isEditMode}
-                isValid={areFormsValid}
-                onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
-                onCommentClick={this.toggleCommentPanel}
-                onEditClick={showEditMode}
-                onSaveClick={() => this.showModal('SaveLease')}
-              />
-            </div>
-          </Column>
-        </Row>
-
-        <Row>
-          <Column>
-            <Tabs
-              active={activeTab}
-              className="hero__navigation"
-              tabs={[
-                'Yhteenveto',
-                'Vuokra-alue',
-                'Vuokralaiset',
-                'Vuokra',
-                'Päätökset ja sopimukset',
-                'Rakentamiskelpoisuus',
-                'Laskutus',
-                'Kartta',
-              ]}
-              onTabClick={(id) => this.handleTabClick(id)}
+        <ControlButtonBar
+          buttonComponent={
+            <ControlButtons
+              commentAmount={commentsNotArchived ? commentsNotArchived.length : 0}
+              isEditMode={isEditMode}
+              isValid={areFormsValid}
+              onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
+              onCommentClick={this.toggleCommentPanel}
+              onEditClick={showEditMode}
+              onSaveClick={() => this.showModal('SaveLease')}
             />
-          </Column>
-        </Row>
+          }
+          infoComponent={isEditMode
+            ? (
+              <LeaseInfoEdit
+                identifier={leaseIdentifier}
+                initialValues={{
+                  status: currentLease.status,
+                  start_date: currentLease.start_date,
+                  end_date: currentLease.end_date,
+                }}
+                statusOptions={statusOptions}
+              />
+            ) : (
+              <LeaseInfo
+                identifier={leaseIdentifier}
+                startDate={currentLease.start_date}
+                endDate={currentLease.end_date}
+              />
+            )
+          }
+        />
+
+        <Tabs
+          active={activeTab}
+          className="hero__navigation"
+          tabs={[
+            'Yhteenveto',
+            'Vuokra-alue',
+            'Vuokralaiset',
+            'Vuokra',
+            'Päätökset ja sopimukset',
+            'Rakentamiskelpoisuus',
+            'Laskutus',
+            'Kartta',
+          ]}
+          onTabClick={(id) => this.handleTabClick(id)}
+        />
 
         <Row>
           <Column>
@@ -636,7 +630,7 @@ class PreparerForm extends Component {
             </TabContent>
           </Column>
         </Row>
-      </div>
+      </PageContainer>
     );
   }
 }
