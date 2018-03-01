@@ -11,6 +11,7 @@ import {financialMethodOptions,
 import ContentContainer from '../../components/content/ContentContainer';
 import Divider from '../../components/content/Divider';
 import GreenBox from '../../components/content/GreenBox';
+import MapLinkButton from '../../components/content/MapLinkButton';
 
 type Props = {
   criteria: Object,
@@ -22,6 +23,10 @@ const RentCriteriaReadonly = ({criteria}: Props) => {
       <h1>Vuokrausperuste</h1>
       <Divider />
       <GreenBox>
+        <MapLinkButton
+          label='Kartta'
+          onClick={() => alert('TODO: Avaa kartta')}
+        />
         <Row>
           <Column medium={4} large={3}>
             <label>Tonttityyppi</label>
