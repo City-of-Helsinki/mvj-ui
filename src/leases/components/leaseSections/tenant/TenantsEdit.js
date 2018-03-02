@@ -5,26 +5,28 @@ import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
+import FormSection from '../../../../components/form/FormSection';
 import TenantItemsEdit from './TenantItemsEdit';
 
 type Props = {
   handleSubmit: Function,
 }
 
-class TenantEdit extends Component {
+class TenantsEdit extends Component {
   props: Props
 
   render () {
     const {handleSubmit} = this.props;
 
     return (
-      <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <h1 className='no-margin'>Vuokralaiset</h1>
-        <Row>
-          <Column>
-            <FieldArray name="tenants" component={TenantItemsEdit}/>
-          </Column>
-        </Row>
+      <form onSubmit={handleSubmit}>
+        <FormSection>
+          <Row>
+            <Column>
+              <FieldArray name="tenants" component={TenantItemsEdit}/>
+            </Column>
+          </Row>
+        </FormSection>
       </form>
     );
   }
@@ -45,4 +47,4 @@ export default flowRight(
     form: formName,
     destroyOnUnmount: false,
   }),
-)(TenantEdit);
+)(TenantsEdit);

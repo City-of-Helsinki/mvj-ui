@@ -55,8 +55,8 @@ import SummaryEdit from './leaseSections/summary/SummaryEdit';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
-import TenantEdit from './leaseSections/tenant/TenantEdit';
-import TenantTab from './leaseSections/tenant/TenantTab';
+import TenantsEdit from './leaseSections/tenant/TenantsEdit';
+import Tenants from './leaseSections/tenant/Tenants';
 import ConstructionEligibility from './leaseSections/constructionEligibility/ConstructionEligibility';
 import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
 
@@ -574,12 +574,14 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="lease-page__tab-content">
-            <div className='lease-page__tab-content'>
-              <div>
-                {!isEditMode && <TenantTab tenants={tenants} oldTenants={oldTenants}/>}
-                {isEditMode && <TenantEdit initialValues={{tenants: tenants}}/>}
-              </div>
-            </div>
+            <ContentContainer>
+              <h1>Vuokralaiset</h1>
+              <Divider />
+              {isEditMode
+                ? <TenantsEdit initialValues={{tenants: tenants}} />
+                : <Tenants tenants={tenants} oldTenants={oldTenants} />
+              }
+            </ContentContainer>
           </TabPane>
 
           <TabPane className="lease-page__tab-content">

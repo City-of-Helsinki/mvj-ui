@@ -3,10 +3,13 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import trashIcon from '../../../../../assets/icons/trash.svg';
+import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
 import FieldTypeCheckbox from '../../../../components/form/FieldTypeCheckbox';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
+import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
+import GreenBoxItem from '../../../../components/content/GreenBoxItem';
+import RemoveButton from '../../../../components/form/RemoveButton';
 
 import {tenantsRolesOptions} from '../constants';
 
@@ -17,17 +20,16 @@ type Props = {
 const OtherPersonItemsEdit = ({fields}: Props) => {
   return (
 
-    <div className='green-box'>
+    <GreenBoxEdit>
       {fields && fields.length > 0 && fields.map((person, index) => {
         return (
-          <div key={index} className='green-box-item'>
-            <button
-              className='remove-button'
-              type="button"
-              title="Poista henkilö"
-              onClick={() => fields.remove(index)}>
-              <img src={trashIcon} alt='Poista' />
-            </button>
+          <GreenBoxItem key={index} className='no-border-on-first-child'>
+            <RemoveButton
+              className='position-topright'
+              label='Poista henkilö'
+              onClick={() => fields.remove(index)}
+              title='Poista henkilö'
+            />
             <Row>
               <Column medium={3}>
                 <Field
@@ -168,15 +170,20 @@ const OtherPersonItemsEdit = ({fields}: Props) => {
                 />
               </Column>
             </Row>
-          </div>
+          </GreenBoxItem>
         );
       })}
       <Row>
         <Column>
-          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää vuokralaiselle laskunsaaja tai yhteyshenkilö</span></a>
+          <AddButtonSecondary
+            className='no-margin'
+            label='Lisää vuokralaiselle laskunsaaja tai yhteyshenkilö'
+            onClick={() => fields.push({})}
+            title='Lisää vuokralaiselle laskunsaaja tai yhteyshenkilö'
+          />
         </Column>
       </Row>
-    </div>
+    </GreenBoxEdit>
   );
 };
 

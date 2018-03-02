@@ -6,6 +6,37 @@ import {Row, Column} from 'react-foundation';
 import {formatDate} from '../../../../util/helpers';
 import {getFullAddress} from '../../../helpers';
 
+type AddressProps = {
+  address: ?string,
+  comment: ?string,
+  email: ?string,
+  name: ?string,
+  phone: ?string,
+  protectionOrder: ?boolean,
+  socialSecurityNumber: ?string,
+}
+
+const Address = ({
+  address,
+  comment,
+  email,
+  name,
+  phone,
+  protectionOrder,
+  socialSecurityNumber,
+}: AddressProps) =>
+  <div className='tenants__address'>
+    {name && <p className='subtitle'>{name}</p>}
+    <div className='contact'>
+      {address && <p>{address}</p>}
+      {phone && <p>{phone}</p>}
+      {email && <p>{email}</p>}
+    </div>
+    {socialSecurityNumber && <p>{socialSecurityNumber}</p>}
+    {protectionOrder && <p className='alert'><i/><span>Turvakielto</span></p>}
+    <p className='comment'>{comment || '-'}</p>
+  </div>;
+
 type Props = {
   customer: Object,
 };
@@ -18,14 +49,15 @@ const OtherPersonItem = ({customer}: Props) => {
     <div className='section-item'>
       <Row>
         <Column medium={4}>
-          <p className='subtitle'>{get(customer, 'lastname')} {get(customer, 'firstname')}</p>
-          <div className='contact'>
-            <p>{fullAddress}</p>
-            <p>{get(customer, 'phone')}</p>
-            <p>{get(customer, 'email')}</p>
-          </div>
-          {get(customer, 'protection_order') && <p className='alert'><i/><span>Turvakielto</span></p>}
-          <p className='comment'>{get(customer, 'comment')}</p>
+          <Address
+            address={fullAddress}
+            comment={get(customer, 'comment')}
+            email={get(customer, 'email')}
+            name={`${get(customer, 'lastname')} ${get(customer, 'firstname')}`}
+            phone={get(customer, 'phone')}
+            protectionOrder={get(customer, 'protection_order')}
+            socialSecurityNumber={get(customer, 'social_security_number')}
+          />
         </Column>
         <Column medium={4}>
           <label>Kieli</label>

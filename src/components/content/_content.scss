@@ -121,4 +121,29 @@
       margin: 0;
     }
   }
+
+  .green-box-item {
+    border-top: 1px dashed #009246;
+    padding: rem-calc(20px) 0;
+    position: relative;
+
+    &.no-border-on-first-child:first-child {
+      border: none;
+      padding-top: 0;
+    }
+  }
+
+  .green-box-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .white-box-edit {
+    position: relative;
+    padding: 0 rem-calc(20px) rem-calc(20px);
+    background-color: white;
+  }
+
+  .box-content-wrapper {
+    position: relative;
+  }
 }

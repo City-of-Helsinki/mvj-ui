@@ -12,15 +12,14 @@ type Props = {
   oldTenants: Array<Object>,
 }
 
-const TenantTab = ({tenants, oldTenants}: Props) => {
+const Tenants = ({tenants, oldTenants}: Props) => {
   let share_count = 0;
   tenants && tenants.length > 0 && tenants.map((tenant) =>
     share_count = tenant.tenant.share + share_count
   );
 
   return (
-    <div className='lease-section'>
-      <h1>Vuokralaiset</h1>
+    <div>
       {tenants && tenants.length > 0 && tenants.map((tenant, index) =>
         <Collapse key={index}
           header={
@@ -47,4 +46,4 @@ const TenantTab = ({tenants, oldTenants}: Props) => {
   );
 };
 
-export default TenantTab;
+export default Tenants;

@@ -463,6 +463,32 @@
 }
 
 .form-section {
+  .add-button {
+    font-size: rem-calc(13px);
+    font-family: $font-family-source;
+    font-weight: $semibold;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+    height: rem-calc(30px);
+    padding: 0 1rem;
+    margin: 0;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    outline: none;
+
+    background-color: $tram;
+    color: $white;
+
+    &:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    &:hover {
+      background-color: $tram-lighter;
+    }
+  }
+
   .add-button-secondary {
     font-family: $font-family-source;
     font-size: rem-calc(15px);

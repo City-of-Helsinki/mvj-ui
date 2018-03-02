@@ -91,4 +91,27 @@
       padding-bottom: 0;
     }
   }
+
+  .tenants {
+    &__address {
+      p {
+        margin: 0 0 rem-calc(4px);
+      }
+
+      .subtitle {
+        font-size: $font-regular;
+        font-weight: $semibold;
+        color: $black;
+        margin: 0 0 rem-calc(5px);
+      }
+
+      .comment {
+        margin-top: rem-calc(20px);
+      }
+
+      .alert {
+        color: $brick;
+      }
+    }
+  }
 }
