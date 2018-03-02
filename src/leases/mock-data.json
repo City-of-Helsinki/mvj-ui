@@ -1039,9 +1039,9 @@
           "construction_eligibility": {
             "construction_investigation": {
               "geotechnical_number": "495874698",
-              "report": "Tilattu",
+              "report": "1",
               "report_author": "Petra Selvittäjä",
-              "research_state": "Valmis",
+              "research_state": "2",
               "signing_date": "2017-06-05",
 
               "comments": [
@@ -1058,9 +1058,9 @@
               "contamination_author": "Kati Valkama",
               "matti_report": "847568796",
               "projectwise_number": "495874698",
-              "rent_conditions": "Kysytty",
+              "rent_conditions": "0",
               "rent_condition_date": "2017-06-05",
-              "research_state": "Valmis",
+              "research_state": "2",
 
               "comments": [
                 {
@@ -1073,19 +1073,19 @@
             },
 
             "demolition": {
-              "research_state": "Tarkistamatta",
+              "research_state": "0",
 
               "comments": []
             },
 
             "other": {
-              "research_state": "Tarkistamatta",
+              "research_state": "0",
 
               "comments": []
             },
 
             "preconstruction": {
-              "research_state": "Vaati toimenpiteitä",
+              "research_state": "1",
 
               "comments": [
                 {
@@ -1182,7 +1182,7 @@
 
           "construction_eligibility": {
             "demolition": {
-              "research_state": "Valmis",
+              "research_state": "2",
 
               "comments": [
                 {
@@ -1196,9 +1196,9 @@
 
             "construction_investigation": {
               "geotechnical_number": "495874698",
-              "report": "Tilattu",
+              "report": "1",
               "report_author": "Petra Selvittäjä",
-              "research_state": "Valmis",
+              "research_state": "2",
               "signing_date": "2017-06-05",
 
               "comments": []
@@ -1208,9 +1208,9 @@
               "contamination_author": "Kati Valkama",
               "matti_report": "847568796",
               "projectwise_number": "495874698",
-              "rent_conditions": "Kysytty",
+              "rent_conditions": "0",
               "rent_condition_date": "2017-06-05",
-              "research_state": "Valmis",
+              "research_state": "2",
 
               "comments": [
                 {
@@ -1223,13 +1223,13 @@
             },
 
             "other": {
-              "research_state": "Tarkistamatta",
+              "research_state": "0",
 
               "comments": []
             },
 
             "preconstruction": {
-              "research_state": "Tarkistamatta",
+              "research_state": "0",
 
               "comments": [
                 {

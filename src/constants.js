@@ -141,3 +141,20 @@ export const purposeOptions = [
   {value: '111', label: 'Vanhusten asuntoja'},
   {value: '112', label: 'Palvelutalo/hoitokoti'},
 ];
+
+export const researchStateOptions = [
+  {value: '0', label: 'Tarkistamatta'},
+  {value: '1', label: 'Vaati toimenpiteitä'},
+  {value: '2', label: 'Valmis'},
+];
+
+export const constructionEligibilityRentConditionsOptions = [
+  {value: '0', label: 'Kysytty'},
+  {value: '1', label: 'Valmis'},
+];
+
+export const constructionEligibilityReportOptions = [
+  {value: '0', label: 'Ei tarvita'},
+  {value: '1', label: 'Tekeillä'},
+  {value: '2', label: 'Valmis'},
+];

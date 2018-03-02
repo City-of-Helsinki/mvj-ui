@@ -1,10 +1,10 @@
 .collapse {
   border-top: 1px dashed $tram;
   align-items: baseline;
-  padding: 0.6rem 0 1rem;
+  padding: rem-calc(20px) 0 rem-calc(10px);
 
   .collapse__header {
-    padding: 0 0 0.6rem;
+    padding: 0;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -109,7 +109,7 @@
     border-top: none;
     margin: 0.6rem 0;
     align-items: baseline;
-    padding: 0;
+    padding: 0 !important;
 
     .collapse__header {
       padding: rem-calc(6px) rem-calc(20px);
@@ -146,7 +146,7 @@
     }
 
     .collapse__content-wrapper {
-      padding: rem-calc(10px) rem-calc(20px) rem-calc(10px);
+      padding: rem-calc(10px) rem-calc(20px) rem-calc(20px);
     }
 
     &.open {
@@ -180,6 +180,11 @@
       }
     }
   }
+}
+
+.collapse:first-child {
+  border: none;
+  padding: 0 0 rem-calc(10px);
 }
 
 .alert {

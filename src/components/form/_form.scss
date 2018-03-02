@@ -503,5 +503,11 @@
     &:hover {
       opacity: 0.85;
     }
+
+    &.position-topright {
+      position: absolute;
+      top: rem-calc(7px);
+      right: 0;
+    }
   }
 }

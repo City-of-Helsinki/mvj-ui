@@ -62,4 +62,33 @@
     font-weight: $semibold;
     margin-bottom: 0;
   }
+
+  .construction-eligibility {
+    &__comment-item {
+      border-top: 1px dashed #009246;
+      padding: rem-calc(20px) 0;
+      position: relative;
+
+      .explanation {
+        p {
+          margin-bottom: 0;
+        }
+
+        p.info {
+          font-size: $font-small;
+        }
+      }
+
+      &.no-comments {
+        border-top: none;
+        padding: 0;
+        p {
+          margin: 0;
+        }
+      }
+    }
+    &__comment-item:last-child {
+      padding-bottom: 0;
+    }
+  }
 }

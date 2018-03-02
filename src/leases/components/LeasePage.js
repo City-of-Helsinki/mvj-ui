@@ -57,7 +57,7 @@ import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
 import TenantEdit from './leaseSections/tenant/TenantEdit';
 import TenantTab from './leaseSections/tenant/TenantTab';
-import ConstructionEligibilityTab from './leaseSections/constructionEligibility/ConstructionEligibilityTab';
+import ConstructionEligibility from './leaseSections/constructionEligibility/ConstructionEligibility';
 import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
 
 
@@ -540,8 +540,9 @@ class PreparerForm extends Component {
                   {!isEditMode &&
                     <p className="publicity-label">
                       {summary.publicity
-                      ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
-                      : '-'}
+                        ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
+                        : '-'
+                      }
                     </p>
                   }
                 </Column>
@@ -549,9 +550,11 @@ class PreparerForm extends Component {
               <Divider />
               <Row>
                 <Column medium={9}>
-                  {!isEditMode && <Summary summary={summary}/>}
-                  {isEditMode && <SummaryEdit initialValues={{summary: summary}}/>}
-                </Column>
+                  {isEditMode
+                    ? <SummaryEdit initialValues={{summary: summary}}/>
+                    : <Summary summary={summary}/>
+                  }
+                  </Column>
                 <Column medium={3}>
                   <LeaseHistory history={history}/>
                 </Column>
@@ -606,13 +609,14 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="lease-page__tab-content">
-            <div className='lease-page__tab-content'>
+            <ContentContainer>
               <h1>Rakentamiskelpoisuus</h1>
-              <div>
-                {!isEditMode && <ConstructionEligibilityTab areas={areas}/>}
-                {isEditMode && <ConstructionEligibilityEdit areas={areas} initialValues={{areas: areas}}/>}
-              </div>
-            </div>
+              <Divider />
+              {isEditMode
+                ? <ConstructionEligibilityEdit areas={areas} initialValues={{areas: areas}}/>
+                : <ConstructionEligibility areas={areas}/>
+              }
+            </ContentContainer>
           </TabPane>
 
           <TabPane className="lease-page__tab-content">
@@ -622,10 +626,10 @@ class PreparerForm extends Component {
             </div>
           </TabPane>
 
-          <TabPane className="lease-page__tab-content">
-            <div className='lease-page__tab-content'>
+          <TabPane>
+            <ContentContainer>
               <EditableMap/>
-            </div>
+            </ContentContainer>
           </TabPane>
         </TabContent>
       </PageContainer>
