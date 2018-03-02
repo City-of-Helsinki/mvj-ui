@@ -5,6 +5,8 @@ import capitalize from 'lodash/capitalize';
 import get from 'lodash/get';
 
 import {formatDate} from '../../../../util/helpers';
+import GreenBoxItem from '../../../../components/content/GreenBoxItem';
+import MapLink from '../../../../components/content/MapLink';
 
 type Props = {
   item: Object,
@@ -13,45 +15,59 @@ type Props = {
 const PropertyUnitPlanPlotItem = (props: Props) => {
   const {item} = props;
 
+  const getIdentifier = (item: Object) => {
+    return `${capitalize(get(item, 'explanation', ''))} ${get(item, 'municipality', '')}-${get(item, 'district', '')}-${get(item, 'group_number', '')}-${get(item, 'unit_number', '')}`;
+  };
+
   return (
-    <div className='section-item'>
+    <GreenBoxItem>
       <Row>
         <Column medium={12}>
-          <svg className='map-icon-smaller' viewBox="0 0 30 30">
-            <path d="M28.5 2.06v21.52l-.7.28-7.88 3.37-.42.22-.42-.15-8.58-3.23-7.45 3.16-1.55.71V6.42l.7-.28 7.88-3.37.42-.22.42.15 8.58 3.23L27 2.77zM9.38 5.44L3.75 7.83v16.73l5.63-2.39zm2.24-.07V22.1l6.76 2.53V7.9zm14.63.07l-5.63 2.39v16.73l5.63-2.39z"/>
-          </svg>
-          <p className='section-item__subtitle'>{`${capitalize(get(item, 'explanation', ''))} ${get(item, 'municipality', '')}-${get(item, 'district', '')}-${get(item, 'group_number', '')}-${get(item, 'unit_number', '')}`}</p>
+          <MapLink
+            label={getIdentifier(item)}
+            onClick={() => console.log('Open map')}
+            title={getIdentifier(item)}
+          />
         </Column>
       </Row>
       <Row>
-        <Column medium={8}>
+        <Column medium={6}>
           <label>Osoite</label>
           <p>{`${capitalize(item.address)}, ${item.zip_code} ${item.town}`}</p>
+
           <label>Tonttijaon tunnus</label>
           <p>{item.plot_division_id}</p>
+
           <label>Tonttijaon hyväksymispäivämäärä</label>
-          <p>{formatDate(item.plot_division_approval_date)}</p>
+          <p>{formatDate(item.plot_division_approval_date) || '-'}</p>
+
           <label>Asemakaava</label>
           <p>{item.plan}</p>
+
           <label>Asemakaavan vahvistumispäivämäärä</label>
-          <p>{formatDate(item.plan_approval_date)}</p>
+          <p>{formatDate(item.plan_approval_date) || '-'}</p>
+
           <label>Kaavayksikön laji</label>
-          <p>{item.planplot_type}</p>
+          <p className='no-margin'>{item.planplot_type}</p>
         </Column>
-        <Column medium={4}>
+        <Column medium={6}>
           <label>Kokonaisala</label>
           <p>{item.full_area} m<sup>2</sup></p>
+
           <label>Leikkausala</label>
           <p>{item.intersection_area} m<sup>2</sup></p>
+
           <label>Olotila</label>
           <p>{item.state}</p>
+
           <label>Käyttötarkoitus</label>
           <p>{item.use}</p>
+
           <label>Kaavayksikön olotila</label>
-          <p>{item.planplot_condition}</p>
+          <p className='no-margin'>{item.planplot_condition}</p>
         </Column>
       </Row>
-    </div>
+    </GreenBoxItem>
   );
 };
 

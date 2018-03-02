@@ -50,6 +50,7 @@ import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import Rent from './leaseSections/rent/Rent';
 import RentEdit from './leaseSections/rent/RentEdit';
+import RightSubtitle from '../../components/content/RightSubtitle';
 import Summary from './leaseSections/summary/Summary';
 import SummaryEdit from './leaseSections/summary/SummaryEdit';
 import Tabs from '../../components/tabs/Tabs';
@@ -534,19 +535,16 @@ class PreparerForm extends Component {
         <TabContent active={activeTab}>
           <TabPane>
             <ContentContainer>
-              <Row>
-                <Column medium={9}><h1>Yhteenveto</h1></Column>
-                <Column medium={3}>
-                  {!isEditMode &&
-                    <p className="publicity-label">
-                      {summary.publicity
-                        ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
-                        : '-'
-                      }
-                    </p>
+              <h1>Yhteenveto</h1>
+              {!isEditMode &&
+                <RightSubtitle
+                  className='publicity-label'
+                  text={summary.publicity
+                    ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
+                    : '-'
                   }
-                </Column>
-              </Row>
+                />
+              }
               <Divider />
               <Row>
                 <Column medium={9}>
@@ -563,14 +561,17 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="lease-page__tab-content">
-            <div className='lease-page__tab-content'>
+            <ContentContainer>
               <h1>Vuokra-alue</h1>
-              <p className="right-subtitle">{sum_areas} m<sup>2</sup></p>
-              <div className='property-unit'>
-                {isEditMode && <PropertyUnitEdit initialValues={{areas: areas}}/>}
-                {!isEditMode && <PropertyUnit areas={areas}/>}
-              </div>
-            </div>
+              <RightSubtitle
+                text={<div>{sum_areas} m<sup>2</sup></div>}
+              />
+              <Divider />
+              {isEditMode
+                ? <PropertyUnitEdit initialValues={{areas: areas}}/>
+                : <PropertyUnit areas={areas}/>
+              }
+            </ContentContainer>
           </TabPane>
 
           <TabPane className="lease-page__tab-content">

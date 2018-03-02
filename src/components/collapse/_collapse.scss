@@ -99,6 +99,7 @@
     .collapse__content {
       height: auto;
       max-height: 2000px;
+      padding-bottom: rem-calc(15px);
 
       @include transition(0.4s, max-height, ease);
     }
@@ -185,6 +186,12 @@
 .collapse:first-child {
   border: none;
   padding: 0 0 rem-calc(10px);
+}
+
+.collapse:last-child {
+  .collapse__content {
+    padding-bottom: 0;
+  }
 }
 
 .alert {

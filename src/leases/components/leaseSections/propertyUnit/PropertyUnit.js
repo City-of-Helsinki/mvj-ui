@@ -1,9 +1,10 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
-import PropertyUnitPlot from './PropertyUnitPlot';
 import {capitalize} from 'lodash';
+
 import Collapse from '../../../../components/collapse/Collapse';
+import PropertyUnitPlot from './PropertyUnitPlot';
 
 type Props = {
   areas: Array<Object>,
@@ -11,7 +12,7 @@ type Props = {
 
 const PropertyUnit = ({areas}: Props) => {
   return (
-    <div className='lease-section'>
+    <div>
       {areas && areas.length > 0 && areas.map((area, index) =>
         <Collapse key={index}
           defaultOpen={true}
