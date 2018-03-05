@@ -1,10 +1,12 @@
 // @flow
 import React from 'react';
-import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
-import * as helpers from '../../../../util/helpers';
 import classNames from 'classnames';
+
+import {formatDate} from '../../../../util/helpers';
 import Collapse from '../../../../components/collapse/Collapse';
+import GreenBox from '../../../../components/content/GreenBox';
+import GreenBoxItem from '../../../../components/content/GreenBoxItem';
 
 type Props = {
   rule: Object,
@@ -14,16 +16,14 @@ const Rule = ({rule}: Props) => {
 
   return (
     <div>
-      <div className='green-box'>
-        <div className='section-item'>
-          <Row>
-            <Column medium={12}>
-              <label>Selite</label>
-              <p>{rule.rule_description ? get(rule, 'rule_description', '–') : '–'}</p>
-            </Column>
-          </Row>
-        </div>
-      </div>
+      <GreenBox>
+        <Row>
+          <Column medium={12}>
+            <label>Selite</label>
+            <p className='no-margin'>{rule.rule_description || '–'}</p>
+          </Column>
+        </Row>
+      </GreenBox>
 
       {rule.terms &&
       <Collapse
@@ -36,29 +36,35 @@ const Rule = ({rule}: Props) => {
         }
       >
         {rule.terms && rule.terms.map((term, index) =>
-          <div className='section-item' key={index}>
+          <GreenBoxItem key={index}>
             <Row>
               <Column medium={4}>
                 <label>Ehtotyyppi</label>
-                <p>{term.term_purpose ? get(term, 'term_purpose', '–') : '–'}</p>
+                <p>{term.term_purpose || '–'}</p>
               </Column>
               <Column medium={4}>
                 <label>Valvonta päivämäärä</label>
-                {term.supervision_date ? <p className={classNames({'alert': term.supervision_date && !term.supervised_date})}><i/>{helpers.formatDate(term.supervision_date)} </p> : <p>–</p>}
+                {term.supervision_date
+                  ? <p className={classNames({'alert': term.supervision_date && !term.supervised_date})}><i/>{formatDate(term.supervision_date)} </p>
+                  : <p>–</p>
+                }
               </Column>
               <Column medium={4}>
                 <label>Valvottu päivämäärä</label>
-                {term.supervised_date ? <p className={classNames({'success': term.supervised_date})}><i/>{helpers.formatDate(term.supervised_date)}</p> : <p>–</p>}
+                {term.supervised_date
+                  ? <p className={classNames({'success': term.supervised_date})}><i/>{formatDate(term.supervised_date)}</p>
+                  : <p>–</p>
+                }
               </Column>
             </Row>
             <Row>
               <Column medium={12}>
                 <label>Selite</label>
-                <p>{term.term_description ? get(term, 'term_description', '–') : '–'}</p>
+                <p className='no-margin'>{term.term_description || '–'}</p>
               </Column>
             </Row>
-          </div>)
-        }
+          </GreenBoxItem>
+        )}
       </Collapse>}
     </div>
   );

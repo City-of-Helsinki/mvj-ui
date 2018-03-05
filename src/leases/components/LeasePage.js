@@ -593,22 +593,24 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="lease-page__tab-content">
-            <div className='lease-page__tab-content'>
-              {!isEditMode &&
-                <DecisionsMain
-                  contracts={contracts}
-                  inspections={inspections}
-                  rules={rules}
-                />
+            <ContentContainer>
+              {isEditMode
+                ? (
+                  <DecisionsMainEdit
+                    contracts={contracts}
+                    inspections={inspections}
+                    rules={rules}
+                  />
+                ) : (
+                  <DecisionsMain
+                    contracts={contracts}
+                    inspections={inspections}
+                    rules={rules}
+                  />
+                )
+
               }
-              {isEditMode &&
-                <DecisionsMainEdit
-                  contracts={contracts}
-                  inspections={inspections}
-                  rules={rules}
-                />
-              }
-            </div>
+            </ContentContainer>
           </TabPane>
 
           <TabPane className="lease-page__tab-content">

@@ -34,10 +34,13 @@
     font-weight: 600;
     letter-spacing: normal;
     color: $black;
-    margin: 0;
+    margin: rem-calc(40px) 0 0;
     text-transform: uppercase;
   }
 
+  h1:first-child {
+    margin: 0;
+  }
   h2 {
     font-size: $font-large;
     font-weight: $semibold;
