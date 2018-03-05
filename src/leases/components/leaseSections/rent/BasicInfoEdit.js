@@ -3,10 +3,12 @@ import React from 'react';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import trashIcon from '../../../../../assets/icons/trash.svg';
+import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
+import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
+import RemoveButton from '../../../../components/form/RemoveButton';
 import {rentBasicInfoBillingTypeOptions,
   rentBasicInfoIndexTypeOptions,
   rentBasicInfoRentalPeriodOptions,
@@ -28,28 +30,29 @@ const renderDueDates = ({fields}: DueDatesProps) => {
       {fields && fields.length > 0 && fields.map((due_date, index) => {
         return (
           <Row key={index}>
-            <Column medium={9}>
+            <Column small={9}>
               <Field
                 className='list-item'
                 component={FieldTypeText}
                 name={`${due_date}`}
               />
             </Column>
-            <Column medium={3}>
-              <button
-                className='remove-button'
-                type="button"
+            <Column small={3}>
+              <RemoveButton
+                onClick={() => fields.remove(index)}
                 title="Poista eräpäivä"
-                onClick={() => fields.remove(index)}>
-                <img src={trashIcon} alt='Poista' />
-              </button>
+              />
             </Column>
           </Row>
         );
       })}
-      <Row style={{paddingBottom: '0.5rem'}}>
+      <Row>
         <Column>
-          <a onClick={() => fields.push('')} className='add-button-secondary'><i /><span>Lisää eräpäivä</span></a>
+          <AddButtonSecondary
+            label='Lisää eräpäivä'
+            onClick={() => fields.push('')}
+            title='Lisää eräpäivä'
+          />
         </Column>
       </Row>
     </div>
@@ -63,15 +66,14 @@ type FixedInitialYearRentsProps = {
 const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
   return (
     <div>
+      <Row>
+        <Column><p className="sub-title">Kiinteät alkuvuosivuokrat</p></Column>
+      </Row>
       {fields && fields.length > 0 &&
         <Row>
-          <Column medium={2}><label className="mvj-form-field-label">Kiinteä alkuvuosivuokra</label></Column>
-          <Column medium={4}>
-            <Row>
-              <Column small={6}><label className="mvj-form-field-label">Alkupvm</label></Column>
-              <Column small={6}><label className="mvj-form-field-label">Loppupvm</label></Column>
-            </Row>
-          </Column>
+          <Column medium={2}><label className="mvj-form-field-label">Vuokra</label></Column>
+          <Column medium={2}><label className="mvj-form-field-label">Alkupvm</label></Column>
+          <Column medium={2}><label className="mvj-form-field-label">Loppupvm</label></Column>
         </Row>
       }
       {fields && fields.length > 0 && fields.map((rent, index) => {
@@ -85,40 +87,37 @@ const renderFixedInitialYearRents = ({fields}: FixedInitialYearRentsProps) => {
                   name={`${rent}.rent`}
                 />
               </Column>
-              <Column medium={4}>
-                <Row>
-                  <Column small={6}>
-                    <Field
-                      className='list-item'
-                      component={FieldTypeDatePicker}
-                      name={`${rent}.start_date`}
-                    />
-                  </Column>
-                  <Column small={6}>
-                    <Field
-                      className='list-item'
-                      component={FieldTypeDatePicker}
-                      name={`${rent}.end_date`}
-                    />
-                  </Column>
-                </Row>
+              <Column medium={2}>
+                <Field
+                  className='list-item'
+                  component={FieldTypeDatePicker}
+                  name={`${rent}.start_date`}
+                />
+              </Column>
+              <Column medium={2}>
+                <Field
+                  className='list-item'
+                  component={FieldTypeDatePicker}
+                  name={`${rent}.end_date`}
+                />
               </Column>
               <Column>
-                <button
-                  className='remove-button'
-                  type="button"
+                <RemoveButton
+                  onClick={() => fields.remove(index)}
                   title="Poista alennus/korotus"
-                  onClick={() => fields.remove(index)}>
-                  <img src={trashIcon} alt='Poista' />
-                </button>
+                />
               </Column>
             </Row>
           </div>
         );
       })}
-      <Row style={{paddingBottom: '0.5rem'}}>
+      <Row>
         <Column>
-          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää kiinteä alkuvuosivuokra</span></a>
+          <AddButtonSecondary
+            label='Lisää kiinteä alkuvuosivuokra'
+            onClick={() => fields.push({})}
+            title='Lisää kiinteä alkuvuosivuokra'
+          />
         </Column>
       </Row>
     </div>
@@ -131,7 +130,7 @@ type Props = {
 
 const BasicInfoEdit = ({basicInfo}: Props) => {
   return (
-    <div className="green-box">
+    <GreenBoxEdit>
       <Row>
         <Column medium={10}>
           <Row>
@@ -143,7 +142,8 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
                 options={rentBasicInfoTypeOptions}
               />
             </Column>
-            {(basicInfo.type === '0' || basicInfo.type === '4') &&
+            {(basicInfo.type === '0' ||
+              basicInfo.type === '4') &&
               <Column medium={3}>
                 <Field
                   component={FieldTypeSelect}
@@ -153,7 +153,8 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
                 />
               </Column>
             }
-            {(basicInfo.type === '0' || basicInfo.type === '4') &&
+            {(basicInfo.type === '0' ||
+              basicInfo.type === '4') &&
               <Column medium={3}>
                 <Field
                   component={FieldTypeSelect}
@@ -186,7 +187,9 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
             {basicInfo.type === '2' &&
               <Column medium={3}></Column>
             }
-            {(basicInfo.type === '0' || basicInfo.type === '2' || basicInfo.type === '4') &&
+            {(basicInfo.type === '0' ||
+              basicInfo.type === '2' ||
+              basicInfo.type === '4') &&
               <Column medium={3}>
                 <Field
                   component={FieldTypeSelect}
@@ -197,7 +200,8 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
               </Column>
             }
           </Row>
-          {(basicInfo.type === '0' || basicInfo.type === '4') &&
+          {(basicInfo.type === '0' ||
+            basicInfo.type === '4') &&
             <Row>
               <Column medium={3}>
                 <Row>
@@ -262,18 +266,21 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
               </Column>
             </Row>
           }
-          {(basicInfo.type === '0' || basicInfo.type === '4') &&
+          {(basicInfo.type === '0' ||
+            basicInfo.type === '4') &&
             <Row>
               <Column>
                 <FieldArray
-                  name="fidex_initial_year_rents"
                   component={renderFixedInitialYearRents}
+                  name="fidex_initial_year_rents"
                 />
               </Column>
             </Row>
           }
         </Column>
-        {(basicInfo.type === '0' || basicInfo.type === '2' || basicInfo.type === '4') &&
+        {(basicInfo.type === '0' ||
+          basicInfo.type === '2' ||
+          basicInfo.type === '4') &&
         <Column medium={2}>
           {basicInfo.billing_type === '0' &&
             <FieldArray
@@ -301,7 +308,7 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
           />
         </Column>
       </Row>
-    </div>
+    </GreenBoxEdit>
   );
 };
 

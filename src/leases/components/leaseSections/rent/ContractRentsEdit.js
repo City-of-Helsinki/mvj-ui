@@ -3,10 +3,12 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import trashIcon from '../../../../../assets/icons/trash.svg';
+import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
+import BorderedBoxEdit from '../../../../components/content/BorderedBoxEdit';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
+import RemoveButton from '../../../../components/form/RemoveButton';
 import {priceTypeOptions, purposeOptions} from '../../../../constants';
 
 type Props = {
@@ -16,7 +18,7 @@ type Props = {
 
 const ContractRentsEdit = ({fields, rentType}: Props) => {
   return (
-    <div className="bordered-box">
+    <BorderedBoxEdit>
       {fields && fields.length > 0 &&
         <Row>
           <Column small={11}>
@@ -88,7 +90,8 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                     />
                   </Column>
                   <Column medium={3}>
-                    {(rentType === '0' || rentType === '4') &&
+                    {(rentType === '0' ||
+                      rentType === '4') &&
                       <Row>
                         <Column small={7} style={{paddingRight: '0'}}>
                           <Field
@@ -109,7 +112,8 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                     }
                   </Column>
                   <Column medium={2}>
-                    {(rentType === '0' || rentType === '4') &&
+                    {(rentType === '0' ||
+                      rentType === '4') &&
                       <Field
                         className='list-item'
                         component={FieldTypeText}
@@ -138,13 +142,10 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                 </Row>
               </Column>
               <Column small={1}>
-                <button
-                  className='remove-button'
-                  type="button"
+                <RemoveButton
+                  onClick={() => fields.remove(index)}
                   title="Poista alennus/korotus"
-                  onClick={() => fields.remove(index)}>
-                  <img src={trashIcon} alt='Poista' />
-                </button>
+                />
               </Column>
             </Row>
           </div>
@@ -152,10 +153,15 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
       })}
       <Row>
         <Column>
-          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää sopimusvuokra</span></a>
+          <AddButtonSecondary
+            className='no-margin'
+            label='Lisää sopimusvuokra'
+            onClick={() => fields.push({})}
+            title='Lisää sopimusvuokra'
+          />
         </Column>
       </Row>
-    </div>
+    </BorderedBoxEdit>
   );
 };
 

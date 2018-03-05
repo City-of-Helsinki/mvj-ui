@@ -188,6 +188,23 @@
     }
   }
 
+  .bordered-box-edit {
+    background-color: $white;
+    border: 1px solid #d7d5d5;
+    padding: rem-calc(20px);
+    margin: rem-calc(10px) 0;
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    .mvj-form-field-label {
+      font-size: $font-xsmall;
+      font-weight: $semibold;
+      color: $black;
+    }
+  }
+
   .green-box-edit {
     padding: rem-calc(20px);
     background-color: $tram-lighter-solid;

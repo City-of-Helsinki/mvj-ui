@@ -83,11 +83,11 @@ const Summary = ({summary}: Props) => {
       <Row>
         <Column medium={4}>
           <label>Irtisanomisaika</label>
-          <p>{summary.notice_period ? getLabelOfOption(summaryNoticePeriodOptions, summary.notice_period) : '-'}</p>
+          <p className='no-margin'>{summary.notice_period ? getLabelOfOption(summaryNoticePeriodOptions, summary.notice_period) : '-'}</p>
         </Column>
         <Column medium={8}>
           <label>Irtisanomisajan selite</label>
-          <p>{summary.notice_period_description ? summary.notice_period_description : '-'}</p>
+          <p className='no-margin'>{summary.notice_period_description ? summary.notice_period_description : '-'}</p>
         </Column>
       </Row>
     </GreenBox>

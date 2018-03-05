@@ -586,10 +586,12 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="lease-page__tab-content">
-            <div className='lease-page__tab-content'>
-              {!isEditMode && <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>}
-              {isEditMode && <RentEdit initialValues={{rents: rents}}/>}
-            </div>
+            <ContentContainer>
+              {isEditMode
+                ? <RentEdit initialValues={{rents: rents}}/>
+                : <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>
+              }
+            </ContentContainer>
           </TabPane>
 
           <TabPane className="lease-page__tab-content">
@@ -636,6 +638,7 @@ class PreparerForm extends Component {
               <EditableMap/>
             </ContentContainer>
           </TabPane>
+
         </TabContent>
       </PageContainer>
     );
