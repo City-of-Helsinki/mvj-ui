@@ -205,3 +205,9 @@ export const propertyItemExplanationOptions = [
   {value: 'kiinteistö', label: 'Kiinteistö'},
   {value: 'määräala', label: 'Määräala'},
 ];
+
+export const contractTypeOptions = [
+  {value: 'vuokrasopimus', label: 'Vuokrasopimus'},
+  {value: 'esisopimus', label: 'Esisopimus'},
+  {value: 'rasitesopimus', label: 'Rasitesopimus'},
+];

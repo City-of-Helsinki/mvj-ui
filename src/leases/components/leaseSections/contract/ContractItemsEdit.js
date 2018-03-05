@@ -4,10 +4,18 @@ import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import {formatDate} from '../../../../util/helpers';
-import trashIcon from '../../../../../assets/icons/trash.svg';
+import {contractTypeOptions} from '../../../../constants';
+import AddButton from '../../../../components/form/AddButton';
+import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
+import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
+import ContentItem from '../../../../components/content/ContentItem';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
+import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
+import GreenBoxItem from '../../../../components/content/GreenBoxItem';
+import RemoveButton from '../../../../components/form/RemoveButton';
+import WhiteBoxEdit from '../../../../components/content/WhiteBoxEdit';
 
 type ContractModificationsProps = {
   title: string,
@@ -16,87 +24,88 @@ type ContractModificationsProps = {
 
 const renderContractModifications = ({title, fields}: ContractModificationsProps) => {
   return(
-    <div className='green-box'>
-      {fields.length > 0 &&
-        <Row>
-          <Column>
-            <h2>{title}</h2>
-          </Column>
-        </Row>}
+    <GreenBoxEdit>
+      <h2>{title}</h2>
+
       {fields && fields.length > 0 && fields.map((modification, index) => {
         return (
-          <div key={index} className='green-box-item'>
-            <button
-              className='remove-button'
-              type="button"
-              title="Poista sopimuksen muutos"
-              onClick={() => fields.remove(index)}>
-              <img src={trashIcon} alt='Poista' />
-            </button>
-            <Row>
-              <Column medium={3}>
-                <Field
-                  name={`${modification}.modification_signing_date`}
-                  component={FieldTypeDatePicker}
-                  label='Allekirjoituspäivä'
-                />
-              </Column>
-              <Column medium={3}>
-                <Field
-                  name={`${modification}.to_be_signed_by`}
-                  component={FieldTypeDatePicker}
-                  label='Allekirjoitettava mennessä'
-                />
-              </Column>
-              <Column medium={2}>
-                <Field
-                  name={`${modification}.first_call_sent`}
-                  component={FieldTypeDatePicker}
-                  label='1. kutsu lähetetty'
-                />
-              </Column>
-              <Column medium={2}>
-                <Field
-                  name={`${modification}.second_call_sent`}
-                  component={FieldTypeDatePicker}
-                  label='2. kutsu lähetetty'
-                />
-              </Column>
-              <Column medium={2}>
-                <Field
-                  name={`${modification}.third_call_sent`}
-                  component={FieldTypeDatePicker}
-                  label='3. kutsu lähetetty'
-                />
-              </Column>
-            </Row>
-            <Row>
-              <Column medium={8}>
-                <Field
-                  className='no-margin'
-                  component={FieldTypeText}
-                  label='Selite'
-                  name={`${modification}.modification_description`}
-                />
-              </Column>
-              <Column medium={4}>
-                <Field
-                  className='no-margin'
-                  component={FieldTypeText}
-                  label='Päätös'
-                  name={`${modification}.linked_rule`}
-                />
-              </Column>
-            </Row>
-          </div>
+          <GreenBoxItem key={index}>
+            <BoxContentWrapper>
+              <RemoveButton
+                className='position-topright-no-padding'
+                onClick={() => fields.remove(index)}
+                title="Poista sopimuksen muutos"
+              />
+              <Row>
+                <Column medium={3}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    label='Allekirjoituspäivä'
+                    name={`${modification}.modification_signing_date`}
+                  />
+                </Column>
+                <Column medium={3}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    label='Allekirjoitettava mennessä'
+                    name={`${modification}.to_be_signed_by`}
+                  />
+                </Column>
+                <Column medium={2}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    label='1. kutsu lähetetty'
+                    name={`${modification}.first_call_sent`}
+                  />
+                </Column>
+                <Column medium={2}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    label='2. kutsu lähetetty'
+                    name={`${modification}.second_call_sent`}
+                  />
+                </Column>
+                <Column medium={2}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    label='3. kutsu lähetetty'
+                    name={`${modification}.third_call_sent`}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column medium={8}>
+                  <Field
+                    className='no-margin'
+                    component={FieldTypeText}
+                    label='Selite'
+                    name={`${modification}.modification_description`}
+                  />
+                </Column>
+                <Column medium={4}>
+                  <Field
+                    className='no-margin'
+                    component={FieldTypeText}
+                    label='Päätös'
+                    name={`${modification}.linked_rule`}
+                  />
+                </Column>
+              </Row>
+            </BoxContentWrapper>
+          </GreenBoxItem>
         );
       })}
       <Row>
         <Column>
-          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää sopimuksen muutos</span></a>
+          <AddButtonSecondary
+            className='no-margin'
+            label='Lisää sopimuksen muutos'
+            onClick={() => fields.push({})}
+            title='Lisää sopimuksen muutos'
+          />
         </Column>
       </Row>
-    </div>
+    </GreenBoxEdit>
   );
 };
 
@@ -107,56 +116,61 @@ type PledgeBookProps = {
 const renderPledgeBooks = ({fields}: PledgeBookProps) => {
   return(
     <div>
+      <p className='sub-title'>Panttikirjat</p>
       {fields && fields.length > 0 &&
         <div>
           <Row>
-            <Column medium={2}>
+            <Column small={2}>
               <label className='mvj-form-field-label'>Panttikirjan numero</label>
             </Column>
-            <Column medium={2}>
+            <Column small={2}>
               <label className='mvj-form-field-label'>Panttikirjan pvm</label>
             </Column>
-            <Column medium={8}>
+            <Column small={6}>
               <label className='mvj-form-field-label'>Panttikirjan kommentti</label>
             </Column>
           </Row>
           {fields.map((pledge_book, index) =>
             <Row key={index} className='pledge-book'>
-              <Column medium={2}>
+              <Column small={2}>
                 <Field
                   className='list-item'
                   component={FieldTypeText}
                   name={`${pledge_book}.pledge_book_number`}
                 />
               </Column>
-              <Column medium={2}>
+              <Column small={2}>
                 <Field
                   className='list-item'
                   component={FieldTypeDatePicker}
                   name={`${pledge_book}.pledge_book_date`}
                 />
               </Column>
-              <Column medium={8}>
+              <Column small={6}>
                 <Field
                   className='list-item'
                   component={FieldTypeText}
                   name={`${pledge_book}.pledge_book_comment`}
                 />
               </Column>
-              <button
-                className='remove-button'
-                type="button"
-                title="Poista panttikirja"
-                onClick={() => fields.remove(index)}>
-                <img src={trashIcon} alt='Poista' />
-              </button>
+              <Column>
+                <RemoveButton
+                  onClick={() => fields.remove(index)}
+                  title="Poista panttikirja"
+                />
+              </Column>
             </Row>
           )}
         </div>
       }
       <Row>
-        <Column medium={4} className='add-column'>
-          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää panttikirja</span></a>
+        <Column medium={12}>
+          <AddButtonSecondary
+            className='no-margin'
+            label='Lisää panttikirja'
+            onClick={() => fields.push({})}
+            title='Lisää panttikirja'
+          />
         </Column>
       </Row>
     </div>
@@ -182,128 +196,135 @@ const ContractItemsEdit = ({fields, contracts}: Props) => {
     <div>
       {fields && fields.length > 0 && fields.map((contract, index) => {
         return(
-          <div key={index} className='item'>
-            <div className='white-box'>
-              <button
-                className='remove-button'
-                type="button"
-                title="Poista sopimus"
-                onClick={() => fields.remove(index)}>
-                <img src={trashIcon} alt='Poista' />
-              </button>
-              <Row>
-                <Column medium={2}>
-                  <Field
-                    name={`${contract}.contract_type`}
-                    component={FieldTypeSelect}
-                    label='Sopimuksen tyyppi'
-                    options={[
-                      {value: 'rent-contract', label: 'Vuokrasopimus'},
-                      {value: 'esisopimus', label: 'Esisopimus'},
-                      {value: 'rasitesopimus', label: 'Rasitesopimus'},
-                    ]}
-                  />
-                </Column>
-                <Column medium={2}>
-                  <Field
-                    name={`${contract}.contract_type`}
-                    component={FieldTypeText}
-                    label='Sopimusnumero'
-                  />
-                </Column>
-                <Column medium={2}>
-                  <Field
-                    name={`${contract}.signing_date`}
-                    component={FieldTypeDatePicker}
-                    label='Allekirjoituspäivämäärä'
-                  />
-                </Column>
-                <Column medium={6}>
-                  <Field
-                    name={`${contract}.signing_date_comment`}
-                    component={FieldTypeText}
-                    label='Kommentti allekirjoitukselle'
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column medium={4}>
-                  <Field
-                    name={`${contract}.setup_decision`}
-                    component={FieldTypeSelect}
-                    label='Järjestelypäätös'
-                    options={[
-                      {value: '', label: 'to be filled'},
-                    ]}
-                  />
-                </Column>
-                <Column medium={4}>
-                  <Field
-                    name={`${contract}.linked_rule`}
-                    component={FieldTypeSelect}
-                    label='Päätös'
-                    options={contractOptions}
-                  />
-                </Column>
-                <Column medium={4}>
-                  <Field
-                    // add KTJ integration
-                    component={FieldTypeText}
-                    label='KTJ vuokraoikeustodistuksen linkki'
-                    name={`${contract}.ktj_document`}
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column medium={2}>
-                  <Field
-                    name={`${contract}.lease_deposit_number`}
-                    component={FieldTypeText}
-                    label='Vuokravakuusnumero'
-                  />
-                </Column>
-                <Column medium={2}>
-                  <Field
-                    name={`${contract}.lease_deposit_starting_date`}
-                    component={FieldTypeDatePicker}
-                    label='Vuokravakuus alkupvm'
-                  />
-                </Column>
-                <Column medium={2}>
-                  <Field
-                    name={`${contract}.lease_deposit_ending_date`}
-                    component={FieldTypeDatePicker}
-                    label='Vuokravakuus loppupvm'
-                  />
-                </Column>
-                <Column medium={6}>
-                  <Field
-                    name={`${contract}.lease_deposit_comment`}
-                    component={FieldTypeText}
-                    label='Vuokravakuus kommentti'
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column medium={9}>
-                  <FieldArray name={`${contract}.pledge_books`} component={renderPledgeBooks} />
-                </Column>
-                <Column medium={2} offsetOnMedium={1}>
-                  <Field
-                    name={`${contract}.administration_number`}
-                    component={FieldTypeText}
-                    label='Laitostunnus'
-                  />
-                </Column>
-              </Row>
-            </div>
-            <FieldArray title='Sopimuksen muutokset' name={`${contract}.modifications`} component={renderContractModifications}/>
-          </div>
+          <ContentItem key={index}>
+            <WhiteBoxEdit>
+              <BoxContentWrapper>
+                <RemoveButton
+                  className='position-topright-no-padding'
+                  onClick={() => fields.remove(index)}
+                  title="Poista sopimus"
+                />
+                <Row>
+                  <Column medium={2}>
+                    <Field
+                      component={FieldTypeSelect}
+                      name={`${contract}.contract_type`}
+                      label='Sopimuksen tyyppi'
+                      options={contractTypeOptions}
+                    />
+                  </Column>
+                  <Column medium={2}>
+                    <Field
+                      component={FieldTypeText}
+                      label='Sopimusnumero'
+                      name={`${contract}.contract_type`}
+                    />
+                  </Column>
+                  <Column medium={2}>
+                    <Field
+                      component={FieldTypeDatePicker}
+                      label='Allekirjoituspäivämäärä'
+                      name={`${contract}.signing_date`}
+                    />
+                  </Column>
+                  <Column medium={6}>
+                    <Field
+                      component={FieldTypeText}
+                      label='Kommentti allekirjoitukselle'
+                      name={`${contract}.signing_date_comment`}
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column medium={4}>
+                    <Field
+                      component={FieldTypeSelect}
+                      label='Järjestelypäätös'
+                      name={`${contract}.setup_decision`}
+                      options={[
+                        {value: '', label: 'to be filled'},
+                      ]}
+                    />
+                  </Column>
+                  <Column medium={4}>
+                    <Field
+                      component={FieldTypeSelect}
+                      label='Päätös'
+                      name={`${contract}.linked_rule`}
+                      options={contractOptions}
+                    />
+                  </Column>
+                  <Column medium={4}>
+                    <Field
+                      // add KTJ integration
+                      component={FieldTypeText}
+                      label='KTJ vuokraoikeustodistuksen linkki'
+                      name={`${contract}.ktj_document`}
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column medium={2}>
+                    <Field
+                      component={FieldTypeText}
+                      label='Vuokravakuusnumero'
+                      name={`${contract}.lease_deposit_number`}
+                    />
+                  </Column>
+                  <Column medium={2}>
+                    <Field
+                      component={FieldTypeDatePicker}
+                      label='Vuokravakuus alkupvm'
+                      name={`${contract}.lease_deposit_starting_date`}
+                    />
+                  </Column>
+                  <Column medium={2}>
+                    <Field
+                      component={FieldTypeDatePicker}
+                      label='Vuokravakuus loppupvm'
+                      name={`${contract}.lease_deposit_ending_date`}
+                    />
+                  </Column>
+                  <Column medium={6}>
+                    <Field
+                      component={FieldTypeText}
+                      label='Vuokravakuus kommentti'
+                      name={`${contract}.lease_deposit_comment`}
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column medium={9}>
+                    <FieldArray
+                      component={renderPledgeBooks}
+                      name={`${contract}.pledge_books`}
+                    />
+                  </Column>
+                  <Column medium={2} offsetOnMedium={1}>
+                    <Field
+                      component={FieldTypeText}
+                      label='Laitostunnus'
+                      name={`${contract}.administration_number`}
+                    />
+                  </Column>
+                </Row>
+              </BoxContentWrapper>
+            </WhiteBoxEdit>
+            <FieldArray
+              component={renderContractModifications}
+              name={`${contract}.modifications`}
+              title='Sopimuksen muutokset'
+            />
+          </ContentItem>
         );
       })}
       <Row>
         <Column>
-          <button type="button" onClick={() => fields.push({})} className='add-button'>Lisää uusi sopimus</button>
+          <AddButton
+            label='Lisää uusi sopimus'
+            onClick={() => fields.push({})}
+            title='Lisää uusi sopimus'
+          />
         </Column>
       </Row>
     </div>

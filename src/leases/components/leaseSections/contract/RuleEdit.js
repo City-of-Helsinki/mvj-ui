@@ -4,6 +4,7 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
 
+import FormSection from '../../../../components/form/FormSection';
 import RuleItemsEdit from './RuleItemsEdit';
 
 type Props = {
@@ -18,8 +19,11 @@ class RuleEdit extends Component {
     const {handleSubmit} = this.props;
 
     return (
-      <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <FieldArray name="rules" component={RuleItemsEdit}/>
+      <form onSubmit={handleSubmit}>
+        <FormSection>
+          <FieldArray name="rules" component={RuleItemsEdit} />
+        </FormSection>
+
       </form>
     );
   }
