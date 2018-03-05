@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import AddButton from '../../../../components/form/AddButton';
 import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
+import ContentItem from '../../../../components/content/ContentItem';
 import FieldTypeCheckbox from '../../../../components/form/FieldTypeCheckbox';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
@@ -22,11 +23,12 @@ const TenantItemsEdit = ({fields}: Props) => {
     <div>
       {fields && fields.length > 0 && fields.map((tenant, index) => {
         return (
-          <div key={index} className='item'>
+          <ContentItem key={index}>
+
             <WhiteBoxEdit>
               <BoxContentWrapper>
                 <RemoveButton
-                  className='position-topright'
+                  className='position-topright-no-padding'
                   label='Poista vuokralainen'
                   onClick={() => fields.remove(index)}
                   title='Poista vuokralainen'
@@ -223,7 +225,7 @@ const TenantItemsEdit = ({fields}: Props) => {
             </WhiteBoxEdit>
 
             <FieldArray name={`${tenant}.other_persons`} component={OtherPersonItemsEdit}/>
-          </div>
+          </ContentItem>
         );
       })
       }

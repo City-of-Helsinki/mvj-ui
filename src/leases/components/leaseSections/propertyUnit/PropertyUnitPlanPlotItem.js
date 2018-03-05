@@ -4,9 +4,16 @@ import {Row, Column} from 'react-foundation';
 import capitalize from 'lodash/capitalize';
 import get from 'lodash/get';
 
-import {formatDate} from '../../../../util/helpers';
+import {formatDate, getLabelOfOption} from '../../../../util/helpers';
 import GreenBoxItem from '../../../../components/content/GreenBoxItem';
 import MapLink from '../../../../components/content/MapLink';
+
+import {
+  planUnitConditionOptions,
+  planUnitStateOptions,
+  planUnitTypeOptions,
+  planUnitUseOptions,
+} from '../../../../constants';
 
 type Props = {
   item: Object,
@@ -48,7 +55,7 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
           <p>{formatDate(item.plan_approval_date) || '-'}</p>
 
           <label>Kaavayksikön laji</label>
-          <p className='no-margin'>{item.planplot_type}</p>
+          <p className='no-margin'>{getLabelOfOption(planUnitTypeOptions, item.planplot_type) || '-'}</p>
         </Column>
         <Column medium={6}>
           <label>Kokonaisala</label>
@@ -58,13 +65,13 @@ const PropertyUnitPlanPlotItem = (props: Props) => {
           <p>{item.intersection_area} m<sup>2</sup></p>
 
           <label>Olotila</label>
-          <p>{item.state}</p>
+          <p>{getLabelOfOption(planUnitStateOptions, item.state) || '-'}</p>
 
           <label>Käyttötarkoitus</label>
-          <p>{item.use}</p>
+          <p>{getLabelOfOption(planUnitUseOptions, item.use) || '-'}</p>
 
           <label>Kaavayksikön olotila</label>
-          <p className='no-margin'>{item.planplot_condition}</p>
+          <p className='no-margin'>{getLabelOfOption(planUnitConditionOptions, item.planplot_condition) || '-'}</p>
         </Column>
       </Row>
     </GreenBoxItem>

@@ -532,7 +532,13 @@
 
     &.position-topright {
       position: absolute;
-      top: rem-calc(7px);
+      top: 0;
+      right: 0;
+    }
+
+    &.position-topright-no-padding {
+      position: absolute;
+      top: rem-calc(-10px);
       right: 0;
     }
   }

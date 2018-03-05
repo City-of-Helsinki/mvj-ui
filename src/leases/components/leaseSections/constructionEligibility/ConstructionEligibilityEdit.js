@@ -7,6 +7,7 @@ import capitalize from 'lodash/capitalize';
 import flowRight from 'lodash/flowRight';
 
 import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
+import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
 import Collapse from '../../../../components/collapse/Collapse';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
@@ -30,31 +31,33 @@ const renderComments = ({fields}: CommentProps) => {
       {fields && fields.length > 0 && fields.map((comment, index) => {
         return (
           <div className='construction-eligibility__comment-item'  key={index}>
-            <RemoveButton
-              className='position-topright'
-              onClick={() => fields.remove(index)}
-              title="Poista kommentti"
-            />
-            <Row>
-              <Column medium={9} large={10}>
-                <Field
-                  className='no-margin'
-                  component={FieldTypeText}
-                  label='Selitys'
-                  name={`${comment}.comment`}
-                  type="text"
-                />
-              </Column>
-              <Column medium={3} large={2}>
-                <Field
-                  className='no-margin'
-                  component={FieldTypeText}
-                  label='AHJO diaarinumero'
-                  name={`${comment}.AHJO_number`}
-                  type="text"
-                />
-              </Column>
-            </Row>
+            <BoxContentWrapper>
+              <RemoveButton
+                className='position-topright-no-padding'
+                onClick={() => fields.remove(index)}
+                title="Poista kommentti"
+              />
+              <Row>
+                <Column medium={9} large={10}>
+                  <Field
+                    className='no-margin'
+                    component={FieldTypeText}
+                    label='Selitys'
+                    name={`${comment}.comment`}
+                    type="text"
+                  />
+                </Column>
+                <Column medium={3} large={2}>
+                  <Field
+                    className='no-margin'
+                    component={FieldTypeText}
+                    label='AHJO diaarinumero'
+                    name={`${comment}.AHJO_number`}
+                    type="text"
+                  />
+                </Column>
+              </Row>
+            </BoxContentWrapper>
           </div>
         );
       })}

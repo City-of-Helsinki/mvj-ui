@@ -564,7 +564,7 @@ class PreparerForm extends Component {
             <ContentContainer>
               <h1>Vuokra-alue</h1>
               <RightSubtitle
-                text={<div>{sum_areas} m<sup>2</sup></div>}
+                text={<span>{sum_areas} m<sup>2</sup></span>}
               />
               <Divider />
               {isEditMode

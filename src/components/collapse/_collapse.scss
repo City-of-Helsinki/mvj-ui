@@ -84,6 +84,7 @@
   &__content {
     max-height: 0;
     overflow: hidden;
+    padding: 0;
 
     @include transition(0.5s, max-height, ease);
   }
@@ -99,14 +100,13 @@
     .collapse__content {
       height: auto;
       max-height: 2000px;
-      padding-bottom: rem-calc(15px);
 
       @include transition(0.4s, max-height, ease);
     }
   }
 
   &.collapse__secondary {
-    background-color: rgba(0, 146, 70, 0.15);
+    background-color: $tram-lighter-solid;
     border-top: none;
     margin: 0.6rem 0;
     align-items: baseline;
@@ -193,6 +193,7 @@
     padding-bottom: 0;
   }
 }
+
 
 .alert {
   color: $brick;

@@ -102,9 +102,24 @@
     }
   }
 
+  .content-item {
+    border: none;
+    display: block;
+    border-top: 1px dashed $tram;
+    padding: rem-calc(20px) 0 0;
+    margin: rem-calc(20px) 0 0;
+    position: relative;
+  }
+
+  .content-item:first-child {
+    margin: 0;
+    border-top: none;
+    padding: 0;
+  }
+
   .green-box {
     padding: rem-calc(20px);
-    background-color: #d9efe4;
+    background-color: $tram-lighter-solid;
     position: relative;
 
     &.full-height {
@@ -172,7 +187,7 @@
 
   .green-box-edit {
     padding: rem-calc(20px);
-    background-color: #d9efe4;
+    background-color: $tram-lighter-solid;
     margin-bottom: rem-calc(10px);
 
     h2 {
