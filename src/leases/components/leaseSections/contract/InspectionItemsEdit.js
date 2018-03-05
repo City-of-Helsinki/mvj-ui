@@ -3,9 +3,13 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import trashIcon from '../../../../../assets/icons/trash.svg';
+import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
+import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
+import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
+import GreenBoxItem from '../../../../components/content/GreenBoxItem';
+import RemoveButton from '../../../../components/form/RemoveButton';
 
 type Props = {
   fields: any,
@@ -13,57 +17,62 @@ type Props = {
 
 const InspectionItemsEdit = ({fields}: Props) => {
   return(
-    <div className='green-box'>
+    <GreenBoxEdit>
       {fields && fields.length > 0 && fields.map((inspection, index) =>
-        <div key={index} className='green-box-item'>
-          <button
-            className='remove-button'
-            type="button"
-            title="Poista tarkastus"
-            onClick={() => fields.remove(index)}>
-            <img src={trashIcon} alt='Poista' />
-          </button>
-          <Row>
-            <Column medium={4}>
-              <Field
-                name={`${inspection}.inspector`}
-                component={FieldTypeText}
-                label='Tarkastaja'
-              />
-            </Column>
-            <Column medium={4}>
-              <Field
-                name={`${inspection}.supervision_date`}
-                component={FieldTypeDatePicker}
-                label='Valvonta päivämäärä'
-              />
-            </Column>
-            <Column medium={4}>
-              <Field
-                name={`${inspection}.supervised_date`}
-                component={FieldTypeDatePicker}
-                label='Valvottu päivämäärä'
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column medium={12}>
-              <Field
-                className='no-margin'
-                component={FieldTypeText}
-                label='Selite'
-                name={`${inspection}.inspection_description`}
-              />
-            </Column>
-          </Row>
-        </div>
+        <GreenBoxItem className='no-border-on-first-child' key={index}>
+          <BoxContentWrapper>
+            <RemoveButton
+              className='position-topright-no-padding'
+              onClick={() => fields.remove(index)}
+              title="Poista tarkastus"
+            />
+            <Row>
+              <Column medium={4}>
+                <Field
+                  component={FieldTypeText}
+                  label='Tarkastaja'
+                  name={`${inspection}.inspector`}
+                />
+              </Column>
+              <Column medium={4}>
+                <Field
+                  component={FieldTypeDatePicker}
+                  label='Valvonta päivämäärä'
+                  name={`${inspection}.supervision_date`}
+                />
+              </Column>
+              <Column medium={4}>
+                <Field
+                  component={FieldTypeDatePicker}
+                  label='Valvottu päivämäärä'
+                  name={`${inspection}.supervised_date`}
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column medium={12}>
+                <Field
+                  className='no-margin'
+                  component={FieldTypeText}
+                  label='Selite'
+                  name={`${inspection}.inspection_description`}
+                />
+              </Column>
+            </Row>
+          </BoxContentWrapper>
+        </GreenBoxItem>
       )}
       <Row>
         <Column>
-          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää tarkastus</span></a>
+          <AddButtonSecondary
+            className='no-margin'
+            label='Lisää tarkastus'
+            onClick={() => fields.push({})}
+            title='Lisää tarkastus'
+          />
         </Column>
       </Row>
-    </div>
+    </GreenBoxEdit>
   );
 };
 

@@ -6,14 +6,14 @@ import flowRight from 'lodash/flowRight';
 import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
 
 import {getRouteById} from '../../root/routes';
-import {setTopNavigationSettings} from '../../components/topNavigation/actions';
+import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
 import Button from '../../components/button/Button';
 import ContentContainer from '../../components/content/ContentContainer';
 import GreenBoxEdit from '../../components/content/GreenBoxEdit';
 import PageContainer from '../../components/content/PageContainer';
 
 type Props = {
-  setTopNavigationSettings: Function,
+  receiveTopNavigationSettings: Function,
 }
 
 class NewRentCriteriaPage extends Component {
@@ -24,8 +24,8 @@ class NewRentCriteriaPage extends Component {
   };
 
   componentWillMount() {
-    const {setTopNavigationSettings} = this.props;
-    setTopNavigationSettings({
+    const {receiveTopNavigationSettings} = this.props;
+    receiveTopNavigationSettings({
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
@@ -76,7 +76,7 @@ export default flowRight(
   connect(
     null,
     {
-      setTopNavigationSettings,
+      receiveTopNavigationSettings,
     },
   ),
 )(NewRentCriteriaPage);

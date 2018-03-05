@@ -4,6 +4,9 @@ import type {Selector} from '../types';
 import get from 'lodash/get';
 import type {Attributes, Lease, LeaseState} from './types';
 
+export const getIsEditMode: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.leasebeta.isEditMode;
+
 export const getIsFetching: Selector<Lease, void> = (state: Object): LeaseState =>
   state.leasebeta.isFetching;
 

@@ -3,9 +3,11 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import trashIcon from '../../../../../assets/icons/trash.svg';
+import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
+import BorderedBoxEdit from '../../../../components/content/BorderedBoxEdit';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
+import RemoveButton from '../../../../components/form/RemoveButton';
 import {purposeOptions} from '../../../../constants';
 
 type Props = {
@@ -14,7 +16,7 @@ type Props = {
 
 const CriteriasEdit = ({fields}: Props) => {
   return (
-    <div className="bordered-box">
+    <BorderedBoxEdit>
       {fields && fields.length > 0 &&
         <Row>
           <Column small={11}>
@@ -65,6 +67,7 @@ const CriteriasEdit = ({fields}: Props) => {
                     <Row>
                       <Column small={4}>
                         <Field
+                          className='list-item'
                           component={FieldTypeSelect}
                           name={`${item}.purpose`}
                           options={purposeOptions}
@@ -72,18 +75,21 @@ const CriteriasEdit = ({fields}: Props) => {
                       </Column>
                       <Column small={2}>
                         <Field
+                          className='list-item'
                           component={FieldTypeText}
                           name={`${item}.km2`}
                         />
                       </Column>
                       <Column small={3}>
                         <Field
+                          className='list-item'
                           component={FieldTypeText}
                           name={`${item}.index`}
                         />
                       </Column>
                       <Column small={3}>
                         <Field
+                          className='list-item'
                           component={FieldTypeText}
                           name={`${item}.ekm2ind100`}
                         />
@@ -94,24 +100,28 @@ const CriteriasEdit = ({fields}: Props) => {
                     <Row>
                       <Column small={2}>
                         <Field
+                          className='list-item'
                           component={FieldTypeText}
                           name={`${item}.ekm2ind`}
                         />
                       </Column>
                       <Column small={2}>
                         <Field
+                          className='list-item'
                           component={FieldTypeText}
                           name={`${item}.percentage`}
                         />
                       </Column>
                       <Column small={4}>
                         <Field
+                          className='list-item'
                           component={FieldTypeText}
                           name={`${item}.basic_rent`}
                         />
                       </Column>
                       <Column small={4}>
                         <Field
+                          className='list-item'
                           component={FieldTypeText}
                           name={`${item}.start_rent`}
                         />
@@ -121,13 +131,10 @@ const CriteriasEdit = ({fields}: Props) => {
                 </Row>
               </Column>
               <Column small={1}>
-                <button
-                  className='remove-button'
-                  type="button"
+                <RemoveButton
+                  onClick={() => fields.remove(index)}
                   title="Poista vuokranperuste"
-                  onClick={() => fields.remove(index)}>
-                  <img src={trashIcon} alt='Poista' />
-                </button>
+                />
               </Column>
             </Row>
           </div>
@@ -135,10 +142,15 @@ const CriteriasEdit = ({fields}: Props) => {
       })}
       <Row>
         <Column>
-          <a onClick={() => fields.push({agreed: false, index: 1880})} className='add-button-secondary'><i /><span>Lisää vuokranperuste</span></a>
+          <AddButtonSecondary
+            className='no-margin'
+            label='Lisää vuokranperuste'
+            onClick={() => fields.push({agreed: false, index: 1880})}
+            title='Lisää vuokranperuste'
+          />
         </Column>
       </Row>
-    </div>
+    </BorderedBoxEdit>
   );
 };
 

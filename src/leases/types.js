@@ -31,3 +31,6 @@ export type CreateLeaseAction = Action<'mvj/leasesbeta/CREATE', Lease>;
 export type EditLeaseAction = Action<'mvj/leasesbeta/EDIT', Lease>;
 
 export type LeaseNotFoundAction = Action<'mvj/leasesbeta/NOT_FOUND', void>;
+
+export type HideEditModeAction = Action<'mvj/leasesbeta/HIDE_EDIT', void>;
+export type ShowEditModeAction = Action<'mvj/leasesbeta/SHOW_EDIT', void>;

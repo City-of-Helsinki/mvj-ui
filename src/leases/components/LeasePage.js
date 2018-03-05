@@ -11,9 +11,21 @@ import get from 'lodash/get';
 import moment from 'moment';
 
 import {getLoggedInUser} from '../../auth/selectors';
-import {getAttributes, getCurrentLease, getIsFetching, getLeaseInfoErrors} from '../selectors';
-import {editLease, fetchAttributes, fetchSingleLease} from '../actions';
-import {setTopNavigationSettings} from '../../components/topNavigation/actions';
+import {
+  getAttributes,
+  getCurrentLease,
+  getIsEditMode,
+  getIsFetching,
+  getLeaseInfoErrors,
+} from '../selectors';
+import {
+  editLease,
+  fetchAttributes,
+  fetchSingleLease,
+  hideEditMode,
+  showEditMode,
+} from '../actions';
+import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
 import {displayUIMessage, getLabelOfOption} from '../../util/helpers';
 import {summaryPublicityOptions} from './leaseSections/constants';
@@ -22,49 +34,35 @@ import Billing from './leaseSections/billing/Billing';
 import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '../../components/commentPanel/CommentPanel';
 import ConfirmationModal from '../../components/modal/ConfirmationModal';
+import ContentContainer from '../../components/content/ContentContainer';
 import ControlButtons from '../../components/controlButtons/ControlButtons';
+import ControlButtonBar from '../../components/controlButtons/ControlButtonBar';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
+import Divider from '../../components/content/Divider';
 import EditableMap from '../../components/map/EditableMap';
 import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '../../components/loader/Loader';
+import PageContainer from '../../components/content/PageContainer';
 import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import Rent from './leaseSections/rent/Rent';
 import RentEdit from './leaseSections/rent/RentEdit';
+import RightSubtitle from '../../components/content/RightSubtitle';
 import Summary from './leaseSections/summary/Summary';
 import SummaryEdit from './leaseSections/summary/SummaryEdit';
 import Tabs from '../../components/tabs/Tabs';
 import TabPane from '../../components/tabs/TabPane';
 import TabContent from '../../components/tabs/TabContent';
-import TenantEdit from './leaseSections/tenant/TenantEdit';
-import TenantTab from './leaseSections/tenant/TenantTab';
-import ConstructionEligibilityTab from './leaseSections/constructionEligibility/ConstructionEligibilityTab';
+import TenantsEdit from './leaseSections/tenant/TenantsEdit';
+import Tenants from './leaseSections/tenant/Tenants';
+import ConstructionEligibility from './leaseSections/constructionEligibility/ConstructionEligibility';
 import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
 
 
 import mockData from '../mock-data.json';
-
-type State = {
-  activeTab: number,
-  areas: Array<Object>,
-  billing: Object,
-  comments: Array<Object>,
-  contracts: Array<Object>,
-  history: Array<Object>,
-  inspections: Array<Object>,
-  isEditMode: boolean,
-  isCancelLeaseModalOpen: boolean,
-  isCommentPanelOpen: boolean,
-  isSaveLeaseModalOpen: boolean,
-  oldTenants: Array<Object>,
-  rents: Object,
-  rules: Array<Object>,
-  summary: Object,
-  tenants: Array<Object>,
-};
 
 type Props = {
   areasForm: Array<Object>,
@@ -82,18 +80,21 @@ type Props = {
   end_date: ?string,
   fetchAttributes: Function,
   fetchSingleLease: Function,
+  hideEditMode: Function,
   inspectionsForm: Array<Object>,
   inspectionTouched: boolean,
+  isEditMode: boolean,
   isFetching: boolean,
   leaseInfoErrors: Object,
   leaseInfoTouched: boolean,
   location: Object,
   params: Object,
+  receiveTopNavigationSettings: Function,
   rentsForm: Object,
   rentsTouched: boolean,
   rulesForm: Array<Object>,
   rulesTouched: boolean,
-  setTopNavigationSettings: Function,
+  showEditMode: Function,
   start_date: ?string,
   status: string,
   summaryForm: Object,
@@ -103,7 +104,27 @@ type Props = {
   user: Object,
 }
 
+type State = {
+  activeTab: number,
+  areas: Array<Object>,
+  billing: Object,
+  comments: Array<Object>,
+  contracts: Array<Object>,
+  history: Array<Object>,
+  inspections: Array<Object>,
+  isCancelLeaseModalOpen: boolean,
+  isCommentPanelOpen: boolean,
+  isSaveLeaseModalOpen: boolean,
+  oldTenants: Array<Object>,
+  rents: Object,
+  rules: Array<Object>,
+  summary: Object,
+  tenants: Array<Object>,
+};
+
 class PreparerForm extends Component {
+  props: Props
+
   state: State = {
     activeTab: 0,
     areas: [],
@@ -113,7 +134,6 @@ class PreparerForm extends Component {
     history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
-    isEditMode: false,
     isSaveLeaseModalOpen: false,
     oldTenants: [],
     rents: {},
@@ -124,8 +144,6 @@ class PreparerForm extends Component {
     inspections: [],
   }
 
-  props: Props
-
   commentPanel: any
 
   static contextTypes = {
@@ -133,10 +151,10 @@ class PreparerForm extends Component {
   };
 
   componentWillMount() {
-    const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}, setTopNavigationSettings} = this.props;
+    const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}, receiveTopNavigationSettings} = this.props;
     const lease = mockData.leases[0];
 
-    setTopNavigationSettings({
+    receiveTopNavigationSettings({
       pageTitle: 'Vuokraukset',
       showSearch: true,
     });
@@ -173,10 +191,6 @@ class PreparerForm extends Component {
     fetchSingleLease(leaseId);
   }
 
-  openEditMode = () => {
-    this.setState({isEditMode: true});
-  }
-
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
     this.setState({
@@ -192,8 +206,9 @@ class PreparerForm extends Component {
   }
 
   cancel = () => {
-    this.setState({isEditMode: false});
+    const {hideEditMode} = this.props;
     this.resetAllForms();
+    hideEditMode();
     this.hideModal('CancelLease');
   }
 
@@ -206,6 +221,7 @@ class PreparerForm extends Component {
       editLease,
       eligibilityForm,
       end_date,
+      hideEditMode,
       inspectionsForm,
       rentsForm,
       rulesForm,
@@ -250,7 +266,7 @@ class PreparerForm extends Component {
       this.setState({tenants: tenantsForm});
     }
 
-    this.setState({isEditMode: false});
+    hideEditMode();
     this.hideModal('SaveLease');
     this.destroyAllForms();
   }
@@ -403,7 +419,6 @@ class PreparerForm extends Component {
       inspections,
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
-      isEditMode,
       isSaveLeaseModalOpen,
       oldTenants,
       rents,
@@ -415,7 +430,9 @@ class PreparerForm extends Component {
     const {
       attributes,
       currentLease,
+      isEditMode,
       isFetching,
+      showEditMode,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -438,26 +455,25 @@ class PreparerForm extends Component {
     }
 
     return (
-      <div className='lease-page'>
+      <PageContainer className='lease-page'>
         <ConfirmationModal
-          title='Tallenna'
           isOpen={isSaveLeaseModalOpen}
           label='Haluatko varmasti tallentaa muutokset?'
           onCancel={() => this.hideModal('SaveLease')}
           onClose={() => this.hideModal('SaveLease')}
           onSave={this.save}
+          title='Tallenna'
         />
         <ConfirmationModal
-          title='Peruuta muutokset'
           isOpen={isCancelLeaseModalOpen}
           label='Haluatko varmasti peruuttaa muutokset?'
           onCancel={() => this.hideModal('CancelLease')}
           onClose={() => this.hideModal('CancelLease')}
           onSave={this.cancel}
           saveButtonLabel='Vahvista'
+          title='Peruuta muutokset'
         />
         <CommentPanel
-          ref={(input) => {this.commentPanel = input;}}
           commentsNotArchived={commentsNotArchived}
           commentsArchived={commentsArchived}
           isOpen={isCommentPanelOpen}
@@ -465,165 +481,166 @@ class PreparerForm extends Component {
           onArchive={(comment) => this.archiveComment(comment)}
           onClose={this.toggleCommentPanel}
           onUnarchive={(comment) => this.unarchiveComment(comment)}
+          ref={(input) => {this.commentPanel = input;}}
         />
-        <Row>
-          <Column className='lease-page__upper-bar'>
-            <div className="lease-info-wrapper">
-              {!isEditMode &&
-                <LeaseInfo
-                  identifier={leaseIdentifier}
-                  startDate={currentLease.start_date}
-                  endDate={currentLease.end_date}
-                />
-              }
-              {isEditMode &&
-                <LeaseInfoEdit
-                  identifier={leaseIdentifier}
-                  initialValues={{
-                    status: currentLease.status,
-                    start_date: currentLease.start_date,
-                    end_date: currentLease.end_date,
-                  }}
-                  statusOptions={statusOptions}
-                />
-              }
-            </div>
-            <div className='controls'>
-              <ControlButtons
-                commentAmount={commentsNotArchived ? commentsNotArchived.length : 0}
-                isEditMode={isEditMode}
-                isValid={areFormsValid}
-                onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
-                onCommentClick={this.toggleCommentPanel}
-                onEditClick={this.openEditMode}
-                onSaveClick={() => this.showModal('SaveLease')}
-              />
-            </div>
-          </Column>
-        </Row>
-
-        <Row>
-          <Column>
-            <Tabs
-              active={activeTab}
-              className="hero__navigation"
-              tabs={[
-                'Yhteenveto',
-                'Vuokra-alue',
-                'Vuokralaiset',
-                'Vuokra',
-                'Päätökset ja sopimukset',
-                'Rakentamiskelpoisuus',
-                'Laskutus',
-                'Kartta',
-              ]}
-              onTabClick={(id) => this.handleTabClick(id)}
+        <ControlButtonBar
+          buttonComponent={
+            <ControlButtons
+              commentAmount={commentsNotArchived ? commentsNotArchived.length : 0}
+              isEditMode={isEditMode}
+              isValid={areFormsValid}
+              onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
+              onCommentClick={this.toggleCommentPanel}
+              onEditClick={showEditMode}
+              onSaveClick={() => this.showModal('SaveLease')}
             />
-          </Column>
-        </Row>
+          }
+          infoComponent={isEditMode
+            ? (
+              <LeaseInfoEdit
+                identifier={leaseIdentifier}
+                initialValues={{
+                  status: currentLease.status,
+                  start_date: currentLease.start_date,
+                  end_date: currentLease.end_date,
+                }}
+                statusOptions={statusOptions}
+              />
+            ) : (
+              <LeaseInfo
+                identifier={leaseIdentifier}
+                startDate={currentLease.start_date}
+                endDate={currentLease.end_date}
+              />
+            )
+          }
+        />
 
-        <Row>
-          <Column>
-            <TabContent active={activeTab}>
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  <Row>
-                    <Column medium={9}><h1>Yhteenveto</h1></Column>
-                    <Column medium={3}>
-                      {!isEditMode &&
-                        <p className="publicity-label">
-                          {summary.publicity
-                            ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
-                            : '-'}
-                        </p>
-                      }
-                    </Column>
-                  </Row>
-                  <Row><Column><div className="separator-line"></div></Column></Row>
-                  <Row>
-                    <Column medium={9}>
-                      {!isEditMode && <Summary summary={summary}/>}
-                      {isEditMode && <SummaryEdit initialValues={{summary: summary}}/>}
-                    </Column>
-                    <Column medium={3}>
-                      <LeaseHistory history={history}/>
-                    </Column>
-                  </Row>
-                </div>
-              </TabPane>
+        <Tabs
+          active={activeTab}
+          className="hero__navigation"
+          tabs={[
+            'Yhteenveto',
+            'Vuokra-alue',
+            'Vuokralaiset',
+            'Vuokra',
+            'Päätökset ja sopimukset',
+            'Rakentamiskelpoisuus',
+            'Laskutus',
+            'Kartta',
+          ]}
+          onTabClick={(id) => this.handleTabClick(id)}
+        />
 
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  <h1>Vuokra-alue</h1>
-                  <p className="right-subtitle">{sum_areas} m<sup>2</sup></p>
-                  <div className='property-unit'>
-                    {isEditMode && <PropertyUnitEdit initialValues={{areas: areas}}/>}
-                    {!isEditMode && <PropertyUnit areas={areas}/>}
-                  </div>
-                </div>
-              </TabPane>
-
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  <div>
-                    {!isEditMode && <TenantTab tenants={tenants} oldTenants={oldTenants}/>}
-                    {isEditMode && <TenantEdit initialValues={{tenants: tenants}}/>}
-                  </div>
-                </div>
-              </TabPane>
-
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  {!isEditMode && <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>}
-                  {isEditMode && <RentEdit initialValues={{rents: rents}}/>}
-                </div>
-              </TabPane>
-
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  {!isEditMode &&
-                    <DecisionsMain
-                      contracts={contracts}
-                      inspections={inspections}
-                      rules={rules}
-                    />
+        <TabContent active={activeTab}>
+          <TabPane>
+            <ContentContainer>
+              <h1>Yhteenveto</h1>
+              {!isEditMode &&
+                <RightSubtitle
+                  className='publicity-label'
+                  text={summary.publicity
+                    ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
+                    : '-'
                   }
-                  {isEditMode &&
-                    <DecisionsMainEdit
-                      contracts={contracts}
-                      inspections={inspections}
-                      rules={rules}
-                    />
+                />
+              }
+              <Divider />
+              <Row>
+                <Column medium={9}>
+                  {isEditMode
+                    ? <SummaryEdit initialValues={{summary: summary}}/>
+                    : <Summary summary={summary}/>
                   }
-                </div>
-              </TabPane>
+                  </Column>
+                <Column medium={3}>
+                  <LeaseHistory history={history}/>
+                </Column>
+              </Row>
+            </ContentContainer>
+          </TabPane>
 
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  <h1>Rakentamiskelpoisuus</h1>
-                  <div>
-                    {!isEditMode && <ConstructionEligibilityTab areas={areas}/>}
-                    {isEditMode && <ConstructionEligibilityEdit areas={areas} initialValues={{areas: areas}}/>}
-                  </div>
-                </div>
-              </TabPane>
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              <h1>Vuokra-alue</h1>
+              <RightSubtitle
+                text={<span>{sum_areas} m<sup>2</sup></span>}
+              />
+              <Divider />
+              {isEditMode
+                ? <PropertyUnitEdit initialValues={{areas: areas}}/>
+                : <PropertyUnit areas={areas}/>
+              }
+            </ContentContainer>
+          </TabPane>
 
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  {!isEditMode && <Billing billing={billing}/>}
-                  {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
-                </div>
-              </TabPane>
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              <h1>Vuokralaiset</h1>
+              <Divider />
+              {isEditMode
+                ? <TenantsEdit initialValues={{tenants: tenants}} />
+                : <Tenants tenants={tenants} oldTenants={oldTenants} />
+              }
+            </ContentContainer>
+          </TabPane>
 
-              <TabPane className="lease-page__tab-content">
-                <div className='lease-page__tab-content'>
-                  <EditableMap/>
-                </div>
-              </TabPane>
-            </TabContent>
-          </Column>
-        </Row>
-      </div>
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              {isEditMode
+                ? <RentEdit initialValues={{rents: rents}}/>
+                : <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>
+              }
+            </ContentContainer>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              {isEditMode
+                ? (
+                  <DecisionsMainEdit
+                    contracts={contracts}
+                    inspections={inspections}
+                    rules={rules}
+                  />
+                ) : (
+                  <DecisionsMain
+                    contracts={contracts}
+                    inspections={inspections}
+                    rules={rules}
+                  />
+                )
+
+              }
+            </ContentContainer>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <ContentContainer>
+              <h1>Rakentamiskelpoisuus</h1>
+              <Divider />
+              {isEditMode
+                ? <ConstructionEligibilityEdit areas={areas} initialValues={{areas: areas}}/>
+                : <ConstructionEligibility areas={areas}/>
+              }
+            </ContentContainer>
+          </TabPane>
+
+          <TabPane className="lease-page__tab-content">
+            <div className='lease-page__tab-content'>
+              {!isEditMode && <Billing billing={billing}/>}
+              {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
+            </div>
+          </TabPane>
+
+          <TabPane>
+            <ContentContainer>
+              <EditableMap/>
+            </ContentContainer>
+          </TabPane>
+
+        </TabContent>
+      </PageContainer>
     );
   }
 }
@@ -659,6 +676,7 @@ export default flowRight(
         eligibilityForm: eligibilityFormSelector(state, 'areas'),
         eligibilityTouched: get(state, 'form.eligibility-edit-form.anyTouched'),
         end_date: leaseInfoFormSelector(state, 'end_date'),
+        isEditMode: getIsEditMode(state),
         inspectionsForm: inspectionFormSelector(state, 'inspections'),
         inspectionTouched: get(state, 'form.inspection-edit-form.anyTouched'),
         isFetching: getIsFetching(state),
@@ -681,7 +699,9 @@ export default flowRight(
       editLease,
       fetchAttributes,
       fetchSingleLease,
-      setTopNavigationSettings,
+      hideEditMode,
+      receiveTopNavigationSettings,
+      showEditMode,
     }
   ),
 )(PreparerForm);

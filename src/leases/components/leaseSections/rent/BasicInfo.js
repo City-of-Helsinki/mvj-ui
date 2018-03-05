@@ -10,6 +10,8 @@ import {rentBasicInfoIndexTypeOptions,
   rentBasicInfoRentalPeriodOptions,
   rentBasicInfoTypeOptions} from '../constants';
 
+import GreenBox from '../../../../components/content/GreenBox';
+
 type Props = {
   basicInfo: Object,
 }
@@ -32,7 +34,7 @@ const BasicInfoIndex = ({basicInfo}: Props) => {
     y_value_start} = basicInfo;
 
   return (
-    <div className="section-item">
+    <div>
       <Row>
         <Column medium={10}>
           <Row>
@@ -104,7 +106,7 @@ const BasicInfoIndex = ({basicInfo}: Props) => {
           <Row>
             <Column>
               <label>Kommentti</label>
-              <p>{comment ? comment : '-'}</p>
+              <p className='no-margin'>{comment ? comment : '-'}</p>
             </Column>
           </Row>
         </Column>
@@ -136,7 +138,7 @@ const BasicInfoUtter = ({basicInfo}: Props) => {
     type} = basicInfo;
 
   return (
-    <div className="section-item">
+    <div>
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
@@ -150,7 +152,7 @@ const BasicInfoUtter = ({basicInfo}: Props) => {
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{comment ? comment : '-'}</p>
+          <p className='no-margin'>{comment ? comment : '-'}</p>
         </Column>
       </Row>
     </div>
@@ -166,7 +168,7 @@ const BasicInfoFixed = ({basicInfo}: Props) => {
     type} = basicInfo;
 
   return (
-    <div className="section-item">
+    <div>
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
@@ -197,7 +199,7 @@ const BasicInfoFixed = ({basicInfo}: Props) => {
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{comment ? comment : '-'}</p>
+          <p className='no-margin'>{comment ? comment : '-'}</p>
         </Column>
       </Row>
     </div>
@@ -209,7 +211,7 @@ const BasicInfoFree = ({basicInfo}: Props) => {
     type} = basicInfo;
 
   return (
-    <div className="section-item">
+    <div>
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
@@ -219,7 +221,7 @@ const BasicInfoFree = ({basicInfo}: Props) => {
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{comment ? comment : '-'}</p>
+          <p className='no-margin'>{comment ? comment : '-'}</p>
         </Column>
       </Row>
     </div>
@@ -234,7 +236,7 @@ const BasicInfoCalculated = ({basicInfo}: Props) => {
     type} = basicInfo;
 
   return (
-    <div className="section-item">
+    <div>
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
@@ -261,18 +263,18 @@ const BasicInfoCalculated = ({basicInfo}: Props) => {
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{comment ? comment : '-'}</p>
+          <p className='no-margin'>{comment ? comment : '-'}</p>
         </Column>
       </Row>
     </div>
   );
 };
 
-const RentBasicInfo = ({basicInfo}: Props) => {
+const BasicInfo = ({basicInfo}: Props) => {
   const {type} = basicInfo;
 
   return (
-    <div className={'green-box no-margin'}>
+    <GreenBox className='no-margin'>
       {type === '0' &&
         <BasicInfoIndex
           basicInfo={basicInfo}
@@ -298,8 +300,8 @@ const RentBasicInfo = ({basicInfo}: Props) => {
           basicInfo={basicInfo}
         />
       }
-    </div>
+    </GreenBox>
   );
 };
 
-export default RentBasicInfo;
+export default BasicInfo;

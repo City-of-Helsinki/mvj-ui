@@ -44,16 +44,6 @@
     }
   }
 
-  &__upper-bar {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: rem-calc(20px);
-
-    .lease-info-wrapper {
-      flex: 1 1 0%;
-    }
-  }
-
   .separator-line {
     width: 100%;
     border-top: 1px dashed $tram;
@@ -66,9 +56,62 @@
 
   .publicity-label {
     text-align: right;
-    font-size: 16px;
-    line-height: 2.4;
-    font-weight: $semibold;
     color: $tram;
+    font-size: $font-regular;
+    line-height: rem-calc(25px);
+    font-weight: $semibold;
+    margin-bottom: 0;
+  }
+
+  .construction-eligibility {
+    &__comment-item {
+      border-top: 1px dashed #009246;
+      padding: rem-calc(20px) 0;
+      position: relative;
+
+      .explanation {
+        p {
+          margin-bottom: 0;
+        }
+
+        p.info {
+          font-size: $font-small;
+        }
+      }
+
+      &.no-comments {
+        border-top: none;
+        padding: 0;
+        p {
+          margin: 0;
+        }
+      }
+    }
+    &__comment-item:last-child {
+      padding-bottom: 0;
+    }
+  }
+
+  .tenants {
+    &__address {
+      p {
+        margin: 0 0 rem-calc(4px);
+      }
+
+      .subtitle {
+        font-size: $font-regular;
+        font-weight: $semibold;
+        color: $black;
+        margin: 0 0 rem-calc(5px);
+      }
+
+      .comment {
+        margin-top: rem-calc(20px);
+      }
+
+      .alert {
+        color: $brick;
+      }
+    }
   }
 }

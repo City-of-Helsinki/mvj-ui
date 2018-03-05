@@ -3,9 +3,9 @@
 import {createAction} from 'redux-actions';
 
 import type {
-  SetTopNavigationSettingsAction,
+  ReceiveTopNavigationSettingsAction,
   TopNavigationSettings,
 } from './types';
 
-export const setTopNavigationSettings = (options: TopNavigationSettings): SetTopNavigationSettingsAction  =>
-  createAction('mvj/topnavigation/SET_SETTINGS')(options);
+export const receiveTopNavigationSettings = (options: TopNavigationSettings): ReceiveTopNavigationSettingsAction  =>
+  createAction('mvj/topnavigation/RECEIVE')(options);

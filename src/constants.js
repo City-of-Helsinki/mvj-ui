@@ -141,3 +141,73 @@ export const purposeOptions = [
   {value: '111', label: 'Vanhusten asuntoja'},
   {value: '112', label: 'Palvelutalo/hoitokoti'},
 ];
+
+export const researchStateOptions = [
+  {value: '0', label: 'Tarkistamatta'},
+  {value: '1', label: 'Vaati toimenpiteitä'},
+  {value: '2', label: 'Valmis'},
+];
+
+export const constructionEligibilityRentConditionsOptions = [
+  {value: '0', label: 'Kysytty'},
+  {value: '1', label: 'Valmis'},
+];
+
+export const constructionEligibilityReportOptions = [
+  {value: '0', label: 'Ei tarvita'},
+  {value: '1', label: 'Tekeillä'},
+  {value: '2', label: 'Valmis'},
+];
+
+export const districtItemExplanationOptions = [
+  {value: 'kaavayksikkö', label: 'Kaavayksikkö'},
+  {value: 'kiinteistö', label: 'Kiinteisto'},
+  {value: 'määräala', label: 'Määräala'},
+  {value: 'muu', label: 'Muu'},
+];
+
+export const districtItemPositionOptions = [
+  {value: 'maanpäällinen', label: 'Maanpäällinen'},
+  {value: 'maanalainen', label: 'Maanalainen'},
+];
+
+export const planUnitConditionOptions = [
+  {value: 'numeronvaraus', label: 'Numeronvaraus'},
+  {value: 'vireillä', label: 'Vireillä'},
+  {value: 'voimassa', label: 'Voimassa'},
+  {value: 'kumottu', label: 'Kumottu'},
+];
+
+export const planUnitStateOptions = [
+  {value: 'luonnos', label: 'Luonnos'},
+  {value: 'voimassa', label: 'Voimassa'},
+];
+
+export const planUnitTypeOptions = [
+  {value: 'rekisteröity yleinen alue', label: 'Rekisteröity yleinen alue'},
+  {value: 'ohjeellinen kaavatontti', label: 'Ohjeellinen kaavatontti'},
+  {value: 'vireillä olevan tonttijaon/-muutoksen mukainen tontti', label: 'Vireillä olevan tonttijaon/-muutoksen mukainen tontti'},
+  {value: 'vireillä olevan tonttijaonmuutoksen mukainen tontti', label: 'Vireillä olevan tonttijaonmuutoksen mukainen tontti'},
+  {value: 'hyväksytyn tonttijaon mukainen tontti', label: 'Hyväksytyn tonttijaon mukainen tontti'},
+  {value: 'muodostusluetteloon merkitty tontti', label: 'Muodostusluetteloon merkitty tontti'},
+  {value: 'tonttirekisteritontti', label: 'Tonttirekisteritontti'},
+  {value: 'muun kuin korttelialueen yksikkö', label: 'Muun kuin korttelialueen yksikkö'},
+  {value: 'keinoyksikkö (maarekisterialue)', label: 'Keinoyksikkö (maarekisterialue)'},
+  {value: 'keinokaavayksikkö (yleisen alueen lisäosa)', label: 'Keinokaavayksikkö (yleisen alueen lisäosa)'},
+];
+
+export const planUnitUseOptions = [
+  {value: 'kiinteistö', label: 'Kiinteistö'},
+  {value: 'määräala', label: 'Määräala'},
+];
+
+export const propertyItemExplanationOptions = [
+  {value: 'kiinteistö', label: 'Kiinteistö'},
+  {value: 'määräala', label: 'Määräala'},
+];
+
+export const contractTypeOptions = [
+  {value: 'vuokrasopimus', label: 'Vuokrasopimus'},
+  {value: 'esisopimus', label: 'Esisopimus'},
+  {value: 'rasitesopimus', label: 'Rasitesopimus'},
+];

@@ -3,9 +3,9 @@ import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
-import {Row, Column} from 'react-foundation';
 
 import ContractItemsEdit from './ContractItemsEdit';
+import FormSection from '../../../../components/form/FormSection';
 
 type Props = {
   handleSubmit: Function,
@@ -19,12 +19,15 @@ class ContractsEdit extends Component {
   render() {
     const {dispatch, handleSubmit, rules} = this.props;
     return (
-      <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <Row>
-          <Column>
-            <FieldArray name="contracts" rules={rules} dispatch={dispatch} component={ContractItemsEdit}/>
-          </Column>
-        </Row>
+      <form onSubmit={handleSubmit}>
+        <FormSection>
+          <FieldArray
+            component={ContractItemsEdit}
+            dispatch={dispatch}
+            name="contracts"
+            rules={rules}
+          />
+        </FormSection>
       </form>
     );
   }

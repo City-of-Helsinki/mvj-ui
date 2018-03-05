@@ -14,6 +14,7 @@
 }
 
 .content-container {
+  position: relative;
   font-family: $font-family-source;
   width: 100%;
   background-color: $white;
@@ -33,8 +34,23 @@
     font-weight: 600;
     letter-spacing: normal;
     color: $black;
-    margin: 0;
+    margin: rem-calc(40px) 0 0;
     text-transform: uppercase;
+  }
+
+  h1:first-child {
+    margin: 0;
+  }
+  h2 {
+    font-size: $font-large;
+    font-weight: $semibold;
+    color: $tram;
+    text-transform: uppercase;
+    margin-top: rem-calc(30px);
+  }
+
+  h2:first-child {
+    margin-top: rem-calc(10px);
   }
 
   label {
@@ -42,6 +58,7 @@
     line-height: normal;
     font-weight: normal;
     color: $dark-gray;
+    white-space: nowrap;
   }
 
   p {
@@ -64,6 +81,16 @@
     margin: 0 0 rem-calc(5px);
   }
 
+  p.right-subtitle {
+    position: absolute;
+    top: rem-calc(20px);
+    right: rem-calc(20px);
+    display: block;
+    line-height: rem-calc(25px);
+    font-weight: $semibold;
+    margin-bottom: 0;
+  }
+
   .list {
     .list-item {
       p {
@@ -78,10 +105,57 @@
     }
   }
 
+  .content-item {
+    border: none;
+    display: block;
+    border-top: 1px dashed $tram;
+    padding: rem-calc(20px) 0 0;
+    margin: rem-calc(20px) 0 0;
+    position: relative;
+  }
+
+  .content-item:first-child {
+    margin: 0;
+    border-top: none;
+    padding: 0;
+  }
+
   .green-box {
     padding: rem-calc(20px);
-    background-color: #d9efe4;
+    background-color: $tram-lighter-solid;
     position: relative;
+
+    &.full-height {
+      height: 100%;
+    }
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    .map-link {
+      .icon {
+        width: rem-calc(22px);
+        height: rem-calc(22px);;
+        margin-right: rem-calc(5px);;
+        vertical-align: text-top;
+
+        &:hover {
+          fill: $tram;
+        }
+      }
+
+      .subtitle {
+        font-size: $font-regular;
+        text-align: left;
+        color: $black;
+        line-height: normal;
+        font-weight: $semibold;
+        display: inline-block;
+        margin: 0 0 rem-calc(10px);
+        font-weight: $semibold;
+      }
+    }
 
     .map-link-button {
       position: absolute;
@@ -105,10 +179,68 @@
         width: rem-calc(20px);
       }
     }
+
+    h3 {
+      font-size: $font-regular;
+      font-weight: $semibold;
+      color: $tram;
+      margin: 0 0 rem-calc(5px);
+    }
+  }
+
+  .bordered-box-edit {
+    background-color: $white;
+    border: 1px solid #d7d5d5;
+    padding: rem-calc(20px);
+    margin: rem-calc(10px) 0;
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    .mvj-form-field-label {
+      font-size: $font-xsmall;
+      font-weight: $semibold;
+      color: $black;
+    }
   }
 
   .green-box-edit {
     padding: rem-calc(20px);
-    background-color: #d9efe4;
+    background-color: $tram-lighter-solid;
+    margin-bottom: rem-calc(10px);
+
+    h2 {
+      font-size: $font-large;
+      font-weight: $semibold;
+      color: $tram;
+      text-transform: uppercase;
+      margin: 0;
+    }
+  }
+
+  .green-box-item {
+    border-top: 1px dashed #009246;
+    padding: rem-calc(20px) 0;
+    position: relative;
+
+    &.no-border-on-first-child:first-child {
+      border: none;
+      padding-top: 0;
+    }
+  }
+
+  .green-box-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .white-box-edit {
+    position: relative;
+    padding: 0 rem-calc(20px) rem-calc(20px);
+    background-color: white;
+  }
+
+  .box-content-wrapper {
+    position: relative;
   }
 }

@@ -3,10 +3,14 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import trashIcon from '../../../../../assets/icons/trash.svg';
+import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
+import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
 import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
 import FieldTypeText from '../../../../components/form/FieldTypeText';
+import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
+import GreenBoxItem from '../../../../components/content/GreenBoxItem';
+import RemoveButton from '../../../../components/form/RemoveButton';
 
 type Props = {
   fields: any,
@@ -15,66 +19,67 @@ type Props = {
 
 const RuleTermsEdit = ({title, fields}: Props) => {
   return(
-    <div className='green-box'>
-      {fields.length > 0 &&
-      <Row>
-        <Column>
-          <h2>{title}</h2>
-        </Column>
-      </Row>}
+    <GreenBoxEdit>
+      <h2>{title}</h2>
+
       {fields && fields.length > 0 && fields.map((term, index) =>
-        <div key={index} className='green-box-item'>
-          <button
-            className='remove-button'
-            type="button"
-            title="Poista ehto"
-            onClick={() => fields.remove(index)}>
-            <img src={trashIcon} alt='Poista' />
-          </button>
-          <Row>
-            <Column medium={6}>
-              <Field
-                name={`${term}.term_purpose`}
-                component={FieldTypeSelect}
-                label='Käyttötarkoitusehto'
-                options={[
-                  {value: 'discount', label: 'Alennusehto'},
-                ]}
-              />
-            </Column>
-            <Column medium={3}>
-              <Field
-                name={`${term}.supervision_date`}
-                component={FieldTypeDatePicker}
-                label='Valvonta päivämäärä'
-              />
-            </Column>
-            <Column medium={3}>
-              <Field
-                name={`${term}.supervised_date`}
-                component={FieldTypeDatePicker}
-                label='Valvottu päivämäärä'
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column medium={12}>
-              <Field
-                className='no-margin'
-                component={FieldTypeText}
-                label='Selite'
-                name={`${term}.term_description`}
-              />
-            </Column>
-          </Row>
-        </div>
+        <GreenBoxItem key={index}>
+          <BoxContentWrapper>
+            <RemoveButton
+              className='position-topright-no-padding'
+              onClick={() => fields.remove(index)}
+              title="Poista ehto"
+            />
+            <Row>
+              <Column medium={6}>
+                <Field
+                  component={FieldTypeSelect}
+                  label='Käyttötarkoitusehto'
+                  name={`${term}.term_purpose`}
+                  options={[
+                    {value: 'discount', label: 'Alennusehto'},
+                  ]}
+                />
+              </Column>
+              <Column medium={3}>
+                <Field
+                  component={FieldTypeDatePicker}
+                  label='Valvonta päivämäärä'
+                  name={`${term}.supervision_date`}
+                />
+              </Column>
+              <Column medium={3}>
+                <Field
+                  component={FieldTypeDatePicker}
+                  label='Valvottu päivämäärä'
+                  name={`${term}.supervised_date`}
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column medium={12}>
+                <Field
+                  className='no-margin'
+                  component={FieldTypeText}
+                  label='Selite'
+                  name={`${term}.term_description`}
+                />
+              </Column>
+            </Row>
+          </BoxContentWrapper>
+        </GreenBoxItem>
       )}
       <Row>
         <Column>
-          <a onClick={() => fields.push({})} className='add-button-secondary'><i /><span>Lisää ehto</span></a>
+          <AddButtonSecondary
+            className='no-margin'
+            label='Lisää ehto'
+            onClick={() => fields.push({})}
+            title='Lisää ehto'
+          />
         </Column>
       </Row>
-    </div>
+    </GreenBoxEdit>
   );
 };
 

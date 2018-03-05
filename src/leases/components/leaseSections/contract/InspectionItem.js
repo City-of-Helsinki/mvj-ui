@@ -15,31 +15,35 @@ const InspectionItem = ({inspection}: Props) => {
       <Row>
         <Column medium={4}>
           <label>Tarkastaja</label>
-          <p>{inspection.inspector ? inspection.inspector : '–'}</p>
+          <p>{inspection.inspector || '–'}</p>
         </Column>
         <Column medium={4}>
           <label>Valvonta päivämäärä</label>
           {inspection.supervision_date
-            ? (<p className={classNames({'alert': inspection.supervision_date && !inspection.supervised_date})}>
+            ? (
+              <p className={classNames({'alert': inspection.supervision_date && !inspection.supervised_date})}>
                 <i/>
                 {formatDate(inspection.supervision_date)}
-              </p>)
-            : <p>–</p>}
+              </p>
+            ) : <p>–</p>
+          }
         </Column>
         <Column medium={4}>
           <label>Valvottu päivämäärä</label>
           {inspection.supervised_date
-            ? (<p className={classNames({'success': inspection.supervised_date})}>
+            ? (
+              <p className={classNames({'success': inspection.supervised_date})}>
                 <i/>
                 {formatDate(inspection.supervised_date)}
-              </p>)
-            : <p>–</p>}
+              </p>
+            ) : <p>–</p>
+          }
         </Column>
       </Row>
       <Row>
         <Column medium={12}>
           <label>Selite</label>
-          <p>{inspection.inspection_description ? inspection.inspection_description : '–'}</p>
+          <p className='no-margin'>{inspection.inspection_description || '–'}</p>
         </Column>
       </Row>
     </div>

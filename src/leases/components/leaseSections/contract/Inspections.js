@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
 
+import GreenBox from '../../../../components/content/GreenBox';
+import GreenBoxItem from '../../../../components/content/GreenBoxItem';
 import InspectionItem from './InspectionItem';
 
 type Props = {
@@ -9,15 +11,20 @@ type Props = {
 
 const Inspections = ({inspections}: Props) => {
   return (
-    <div className='lease-section'>
-      {inspections &&
-      <div className='green-box'>
-        {inspections && inspections.map((inspection, index) =>
-          <div className='section-item' key={index}>
-            <InspectionItem inspection={inspection} />
-          </div>)
+    <div>
+      <GreenBox>
+        {inspections && !!inspections.length
+          ? (
+            <div>
+              {inspections.map((inspection, index) =>
+                <GreenBoxItem className='no-border-on-first-child' key={index}>
+                  <InspectionItem inspection={inspection} />
+                </GreenBoxItem>
+              )}
+            </div>
+          ) : <p className='no-margin'>Ei tarkastuksia tai huomautuksia</p>
         }
-      </div>}
+      </GreenBox>
     </div>
   );
 };

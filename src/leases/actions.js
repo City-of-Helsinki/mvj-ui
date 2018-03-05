@@ -22,6 +22,8 @@ import type {
   FetchSingleLeaseAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
+  HideEditModeAction,
+  ShowEditModeAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -62,3 +64,9 @@ export const editLease = (lease: Lease): EditLeaseAction =>
 
 export const notFound = (): LeaseNotFoundAction =>
   createAction('mvj/leasesbeta/NOT_FOUND')();
+
+export const hideEditMode = (): HideEditModeAction =>
+  createAction('mvj/leasesbeta/HIDE_EDIT')();
+
+export const showEditMode = (): ShowEditModeAction =>
+  createAction('mvj/leasesbeta/SHOW_EDIT')();

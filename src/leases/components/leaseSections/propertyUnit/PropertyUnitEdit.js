@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {FieldArray, reduxForm, formValueSelector} from 'redux-form';
 
 import DistrictItemsEdit from './DistrictItemsEdit';
+import FormSection from '../../../../components/form/FormSection';
 
 type Props = {
   areas: Array<Object>,
@@ -19,8 +20,10 @@ class PropertyUnitEdit extends Component {
     const {areas, dispatch, handleSubmit} = this.props;
 
     return (
-      <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <FieldArray name="areas" areas={areas} dispatch={dispatch} component={DistrictItemsEdit}/>
+      <form onSubmit={handleSubmit}>
+        <FormSection>
+          <FieldArray name="areas" areas={areas} dispatch={dispatch} component={DistrictItemsEdit}/>
+        </FormSection>
       </form>
     );
   }

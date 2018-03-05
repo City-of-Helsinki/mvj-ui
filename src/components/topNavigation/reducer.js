@@ -4,13 +4,13 @@ import {handleActions} from 'redux-actions';
 
 import type {Reducer} from '../../types';
 import type {
-  SetTopNavigationSettingsAction,
+  ReceiveTopNavigationSettingsAction,
   TopNavigationSettings,
   TopNavigationState,
 } from './types';
 
 const setSettingsReducer: Reducer<TopNavigationSettings> = handleActions({
-  ['mvj/topnavigation/SET_SETTINGS']: (state: TopNavigationState, {payload: options}: SetTopNavigationSettingsAction) => {
+  ['mvj/topnavigation/RECEIVE']: (state: TopNavigationState, {payload: options}: ReceiveTopNavigationSettingsAction) => {
     return options;
   },
 }, {pageTitle: '', showSearch: false});

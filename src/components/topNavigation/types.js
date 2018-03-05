@@ -10,4 +10,4 @@ export type TopNavigationSettings = {
 };
 
 
-export type SetTopNavigationSettingsAction = Action<'mvj/topnavigation/SET_SETTINGS', TopNavigationSettings>;
+export type ReceiveTopNavigationSettingsAction = Action<'mvj/topnavigation/RECEIVE', TopNavigationSettings>;

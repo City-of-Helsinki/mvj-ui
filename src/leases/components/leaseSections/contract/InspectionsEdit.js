@@ -3,8 +3,8 @@ import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
-import {Row, Column} from 'react-foundation';
 
+import FormSection from '../../../../components/form/FormSection';
 import InspectionItemsEdit from './InspectionItemsEdit';
 
 type Props = {
@@ -18,12 +18,13 @@ class InspectionsEdit extends Component {
     const {handleSubmit} = this.props;
 
     return (
-      <form onSubmit={handleSubmit} className='lease-section-edit'>
-        <Row>
-          <Column>
-            <FieldArray name="inspections" component={InspectionItemsEdit}/>
-          </Column>
-        </Row>
+      <form onSubmit={handleSubmit}>
+        <FormSection>
+          <FieldArray
+            component={InspectionItemsEdit}
+            name="inspections"
+          />
+        </FormSection>
       </form>
     );
   }
