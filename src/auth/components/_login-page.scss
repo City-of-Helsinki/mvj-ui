@@ -12,7 +12,7 @@
     padding: 2rem 2rem 3rem;
 
     .helsinki-logo {
-      background: url(../assets/images/logo.svg);
+      background: url('$assets/images/logo.svg');
       background-size: contain;
       background-repeat: no-repeat;
       height: 48px;
@@ -38,7 +38,7 @@
   .login-koro {
     @include rotate(180deg);
     height: rem-calc(14px);
-    background: url(../assets/images/basic-wave-koro.svg);
+    background: url('$assets/images/basic-wave-koro.svg');
   }
   .login-footer {
     height: rem-calc(40px);

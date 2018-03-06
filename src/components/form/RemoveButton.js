@@ -2,7 +2,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import trashIcon from '../../../assets/icons/trash.svg';
+import trashIcon from '$assets/icons/trash.svg';
 
 type Props = {
   className?: string,

@@ -106,11 +106,11 @@
       }
 
       .button-edit {
-        background-image: url(../assets/icons/icon_edit.svg);
+        background-image: url('$assets/icons/icon_edit.svg');
       }
 
       .button-delete {
-        background-image: url(../assets/icons/trash.svg);
+        background-image: url('$assets/icons/trash.svg');
       }
     }
   }

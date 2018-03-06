@@ -2,7 +2,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import closeIcon from '../../../assets/icons/icon_close.svg';
+import closeIcon from '$assets/icons/icon_close.svg';
 
 type Props = {
   className?: string,

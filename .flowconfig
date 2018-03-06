@@ -13,5 +13,9 @@
 [options]
 module.name_mapper.extension='css' -> 'CSSModule'
 module.name_mapper.extension='svg' -> 'EmptyModule'
+module.name_mapper='^\$assets/\(.*\)$' -> '<PROJECT_ROOT>/assets/\1'
 module.name_mapper='^\$src/\(.*\)$' -> '<PROJECT_ROOT>/src/\1'
+
+module.ignore_non_literal_requires=true
+
 suppress_comment= \\(.\\|\n\\)*\\$FlowFixMe

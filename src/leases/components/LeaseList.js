@@ -23,10 +23,10 @@ import Search from './search/Search';
 import Table from '../../components/table/Table';
 import TableControllers from '../../components/table/TableControllers';
 
-import mapGreenIcon from '../../../assets/icons/map-green.svg';
-import mapIcon from '../../../assets/icons/map.svg';
-import tableGreenIcon from '../../../assets/icons/table-green.svg';
-import tableIcon from '../../../assets/icons/table.svg';
+import mapGreenIcon from '$assets/icons/map-green.svg';
+import mapIcon from '$assets/icons/map.svg';
+import tableGreenIcon from '$assets/icons/table-green.svg';
+import tableIcon from '$assets/icons/table.svg';
 
 type Props = {
   attributes: Object,

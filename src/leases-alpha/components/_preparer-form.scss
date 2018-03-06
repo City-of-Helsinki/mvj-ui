@@ -9,7 +9,7 @@
 
     padding: rem-calc(0 20px 0 45px);
     height: 50px;
-    background: darken($primary-color, 5%) url('../assets/icons/icon-loop.svg') 1rem center no-repeat;
+    background: darken($primary-color, 5%) url('$assets/icons/icon-loop.svg') 1rem center no-repeat;
     background-size: 20px 20px;
     border-radius: 2px;
     cursor: pointer;
@@ -25,7 +25,7 @@
 
     width: 50px;
     height: 50px;
-    background: darken($primary-color, 5%) url('../assets/icons/icon-notes.svg') center center no-repeat;
+    background: darken($primary-color, 5%) url('$assets/icons/icon-notes.svg') center center no-repeat;
     border-radius: 2px;
     cursor: pointer;
 

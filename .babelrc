@@ -5,6 +5,10 @@
     "stage-1"
   ],
   "plugins": [
-    "react-hot-loader/babel"
+    "react-hot-loader/babel",
+    ["module-alias", [
+      { "src": "./src", "expose": "$src" },
+      { "src": "./assets", "expose": "$assets" },
+    ]]
   ]
 }

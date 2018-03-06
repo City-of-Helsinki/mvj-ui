@@ -19,7 +19,7 @@
     }
 
     .title::after {
-      background-image: url('../assets/icons/icon_arrow_down.svg');
+      background-image: url('$assets/icons/icon_arrow_down.svg');
       display: block;
       position: absolute;
       content: ' ';
@@ -31,7 +31,7 @@
   }
 
   .title.isOpen::after {
-    background-image: url('../assets/icons/icon_arrow_up.svg');
+    background-image: url('$assets/icons/icon_arrow_up.svg');
   }
 
   &_option-wrapper {
