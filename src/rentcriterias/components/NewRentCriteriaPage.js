@@ -7,12 +7,18 @@ import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
 
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import Button from '$components/button/Button';
 import ContentContainer from '$components/content/ContentContainer';
+import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
+import ControlButtons from '$components/controlButtons/ControlButtons';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import PageContainer from '$components/content/PageContainer';
+import {createRentCriteria} from '../actions';
+import {getRentCriteria} from '../selectors';
+import type {RootState} from '$src/root/types';
 
 type Props = {
+  createRentCriteria: Function,
+  criteria: ?Object,
   receiveTopNavigationSettings: Function,
 }
 
@@ -38,9 +44,27 @@ class NewRentCriteriaPage extends Component {
     });
   }
 
+  handleSave = () => {
+    const {createRentCriteria, criteria} = this.props;
+    createRentCriteria(criteria);
+  }
+
   render() {
     return (
       <PageContainer>
+        <ControlButtonBar
+          buttonComponent={
+            <ControlButtons
+              isCopyDisabled={true}
+              isEditMode={true}
+              isValid={true}
+              onCancelClick={this.handleCancel}
+              onSaveClick={this.handleSave}
+              showCommentButton={false}
+              showCopyButton={true}
+            />
+          }
+        />
         <ContentContainer>
           <h1>Uusi vuokrausperuste</h1>
           <div className="divider" />
@@ -53,18 +77,6 @@ class NewRentCriteriaPage extends Component {
               }}
             />
           </GreenBoxEdit>
-          <div className="button-wrapper">
-            <Button
-              className="button-red"
-              onClick={() => this.handleCancel()}
-              text="Kumoa"
-            />
-            <Button
-              className="button-green"
-              onClick={() => alert('TODO: Tallenna uusi vuokraperuste')}
-              text="Tallenna"
-            />
-          </div>
         </ContentContainer>
       </PageContainer>
 
@@ -72,10 +84,17 @@ class NewRentCriteriaPage extends Component {
   }
 }
 
+const mapStateToProps = (state: RootState) => {
+  return {
+    criteria: getRentCriteria(state),
+  };
+};
+
 export default flowRight(
   connect(
-    null,
+    mapStateToProps,
     {
+      createRentCriteria,
       receiveTopNavigationSettings,
     },
   ),

@@ -21,23 +21,35 @@
   }
 
   &:disabled {
-    opacity: 0.6;
+    background-color: #ffe8a5;
+    color: #666;
+    opacity: 1;
     cursor: not-allowed;
   }
 
   &.button-green {
     background-color: $tram;
     color: $white;
+
     &:hover {
       background-color: $tram-lighter;
+    }
+
+    &:disabled {
+      background-color: #99d3b5;
     }
   }
 
   &.button-red {
     background-color: $brick;
     color: $white;
+
     &:hover {
       background-color: $brick-lighter;
+    }
+
+    &:disabled {
+      background-color: #e5a9a3;
     }
   }
 

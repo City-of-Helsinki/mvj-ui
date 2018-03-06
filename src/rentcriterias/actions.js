@@ -3,8 +3,7 @@
 import {createAction} from 'redux-actions';
 
 import type {
-  RentCriteria,
-  RentCriteriasList,
+  CreateRentCriteriaAction,
   EditRentCriteriaAction,
   FetchRentCriteriasAction,
   FetchSingleRentCriteriaAction,
@@ -12,8 +11,13 @@ import type {
   ReceiveRentCriteriasAction,
   ReceiveRentCriteriaInitialValuesAction,
   ReceiveSingleRentCriteriaAction,
+  RentCriteria,
+  RentCriteriasList,
   ShowEditModeAction,
 } from './types';
+
+export const createRentCriteria = (rentcriteria: RentCriteria): CreateRentCriteriaAction =>
+  createAction('mvj/rentcriteria/CREATE')(rentcriteria);
 
 export const editRentCriteria = (rentcriteria: RentCriteria): EditRentCriteriaAction =>
   createAction('mvj/rentcriteria/EDIT')(rentcriteria);

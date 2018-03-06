@@ -4,12 +4,14 @@ import Button from '../button/Button';
 
 type Props = {
   commentAmount?: number,
+  isCancelDisabled?: boolean,
+  isCopyDisabled?: boolean,
   isEditMode: boolean,
   isValid: boolean,
   onCancelClick: Function,
   onCommentClick?: Function,
   onCopyClick?: Function,
-  onEditClick: Function,
+  onEditClick?: Function,
   onSaveClick: Function,
   showCommentButton?: boolean,
   showCopyButton?: boolean,
@@ -17,12 +19,14 @@ type Props = {
 
 const ControlButtons = ({
   commentAmount,
+  isCancelDisabled = false,
+  isCopyDisabled = true,
   isEditMode,
   isValid,
   onCancelClick,
   onCommentClick = () => console.log('Comment click'),
   onCopyClick = () => console.log('Copy click'),
-  onEditClick,
+  onEditClick = () => console.log('Edit click'),
   onSaveClick,
   showCommentButton = true,
   showCopyButton = false,
@@ -34,9 +38,17 @@ const ControlButtons = ({
           <div className='left-buttons'>
             <Button
               className='button-red'
+              disabled={isCancelDisabled}
               onClick={onCancelClick}
               text='Hylkää muutokset'
             />
+            {showCopyButton &&
+              <Button
+                disabled={isCopyDisabled}
+                onClick={onCopyClick}
+                text='Kopio'
+              />
+            }
             <Button
               className='button-green'
               disabled={!isValid}
@@ -46,12 +58,6 @@ const ControlButtons = ({
           </div>
         ) : (
           <div className='left-buttons'>
-            {showCopyButton &&
-              <Button
-                onClick={onCopyClick}
-                text='Kopio'
-              />
-            }
             <Button
               onClick={onEditClick}
               text='Muokkaa'
