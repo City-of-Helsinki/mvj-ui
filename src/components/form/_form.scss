@@ -121,14 +121,14 @@
 
       .select-input__arrow-renderer {
         display: block;
-        background-image: url('../assets/icons/icon_arrow_down.svg');
+        background-image: url(../assets/icons/icon_arrow_down.svg);
         height: rem-calc(14px);
         width: rem-calc(14px);
       }
 
       &.is-open {
         .select-input__arrow-renderer {
-          background-image: url('../assets/icons/icon_arrow_up.svg');
+          background-image: url(../assets/icons/icon_arrow_up.svg);
         }
       }
     }
@@ -217,16 +217,16 @@
     margin: 0;
 
     &-option-label {
-      font-size: $font-regular;
-      font-weight: $semibold;
+      font-size: $font-regular !important;
+      font-weight: $semibold !important;
       text-align: left;
       display: inline-block;
       margin-right: rem-calc(5px);
-      line-height: rem-calc(20px);
-      color: $tram;
+      line-height: rem-calc(20px) !important;
+      color: $tram !important;
 
       &.label-off {
-        color: $brick;
+        color: $brick !important;
       }
     }
 
@@ -235,6 +235,7 @@
       width: rem-calc(43px);
       height: rem-calc(20px);
       display: inline-block;
+      margin-bottom: 0;
     }
 
     input {
@@ -357,14 +358,14 @@
 
       .select-input__arrow-renderer {
         display: block;
-        background-image: url('../assets/icons/icon_arrow_down.svg');
+        background-image: url(../assets/icons/icon_arrow_down.svg);
         height: rem-calc(14px);
         width: rem-calc(14px);
       }
 
       &.is-open {
         .select-input__arrow-renderer {
-          background-image: url('../assets/icons/icon_arrow_up.svg');
+          background-image: url(../assets/icons/icon_arrow_up.svg);
         }
       }
     }

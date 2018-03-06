@@ -3,10 +3,10 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
-import {formatDate} from '../../../../util/helpers';
-import Collapse from '../../../../components/collapse/Collapse';
-import GreenBox from '../../../../components/content/GreenBox';
-import GreenBoxItem from '../../../../components/content/GreenBoxItem';
+import {formatDate} from '$util/helpers';
+import Collapse from '$components/collapse/Collapse';
+import GreenBox from '$components/content/GreenBox';
+import GreenBoxItem from '$components/content/GreenBoxItem';
 
 type Props = {
   rule: Object,

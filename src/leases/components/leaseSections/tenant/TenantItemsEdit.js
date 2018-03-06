@@ -3,15 +3,15 @@ import React from 'react';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import AddButton from '../../../../components/form/AddButton';
-import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
-import ContentItem from '../../../../components/content/ContentItem';
-import FieldTypeCheckbox from '../../../../components/form/FieldTypeCheckbox';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
+import AddButton from '$components/form/AddButton';
+import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import ContentItem from '$components/content/ContentItem';
+import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeText from '$components/form/FieldTypeText';
 import OtherPersonItemsEdit from './OtherPersonItemsEdit';
-import RemoveButton from '../../../../components/form/RemoveButton';
-import WhiteBoxEdit from '../../../../components/content/WhiteBoxEdit';
+import RemoveButton from '$components/form/RemoveButton';
+import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {tenantsRolesOptions} from '../constants';
 
 type Props = {

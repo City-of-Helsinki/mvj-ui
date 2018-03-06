@@ -3,9 +3,9 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import TableFixedHeader from '../../../../components/table/TableFixedHeader';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeText from '$components/form/FieldTypeText';
+import TableFixedHeader from '$components/table/TableFixedHeader';
 
 const getTableBody = (fields) => {
   if(fields && fields.length > 0) {

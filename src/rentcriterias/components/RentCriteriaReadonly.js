@@ -2,16 +2,16 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import {formatDate, getLabelOfOption} from '../../util/helpers';
+import {formatDate, getLabelOfOption} from '$util/helpers';
 import {financialMethodOptions,
   managementMethodOptions,
   purposeOptions,
   priceTypeOptions,
-} from '../../constants';
-import ContentContainer from '../../components/content/ContentContainer';
-import Divider from '../../components/content/Divider';
-import GreenBox from '../../components/content/GreenBox';
-import MapLinkButton from '../../components/content/MapLinkButton';
+} from '$src/constants';
+import ContentContainer from '$components/content/ContentContainer';
+import Divider from '$components/content/Divider';
+import GreenBox from '$components/content/GreenBox';
+import MapLinkButton from '$components/content/MapLinkButton';
 
 type Props = {
   criteria: Object,

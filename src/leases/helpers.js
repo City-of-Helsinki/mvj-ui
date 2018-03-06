@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
-import {formatDate, formatDateDb, formatDateRange, formatDecimalNumberDb} from '../util/helpers';
+import {formatDate, formatDateDb, formatDateRange, formatDecimalNumberDb} from '$util/helpers';
 
 export const formatSequenceNumber = (value: number) => {
   if(!value) {

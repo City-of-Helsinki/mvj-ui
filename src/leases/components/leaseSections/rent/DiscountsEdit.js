@@ -3,17 +3,17 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
-import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
-import GreenBoxItem from '../../../../components/content/GreenBoxItem';
-import RemoveButton from '../../../../components/form/RemoveButton';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import GreenBoxItem from '$components/content/GreenBoxItem';
+import RemoveButton from '$components/form/RemoveButton';
 import {rentDiscountAmountTypeOptions,
   rentDiscountTypeOptions} from '../constants';
-import {decisionOptions, purposeOptions} from '../../../../constants';
+import {decisionOptions, purposeOptions} from '$src/constants';
 
 type Props = {
   fields: any,

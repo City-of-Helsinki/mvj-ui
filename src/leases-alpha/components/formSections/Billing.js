@@ -27,7 +27,7 @@ import {
   getFractionFromFloat,
   getFullRent,
   getTenantsYearlyShare,
-} from '../../../util/helpers';
+} from '$util/helpers';
 
 type Props = {
   array: Object,

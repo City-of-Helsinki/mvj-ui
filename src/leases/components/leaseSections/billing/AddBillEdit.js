@@ -6,13 +6,13 @@ import {Field, formValueSelector} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import CloseButton from '../../../../components/button/CloseButton';
-import FieldTypeCheckboxSingle from '../../../../components/form/FieldTypeCheckboxSingle';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import {dateGreaterOrEqual, decimalNumber, required} from '../../../../components/form/validations';
-import {getBillingAddBillErrors} from '../../../selectors';
+import CloseButton from '$components/button/CloseButton';
+import FieldTypeCheckboxSingle from '$components/form/FieldTypeCheckboxSingle';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import {dateGreaterOrEqual, decimalNumber, required} from '$components/form/validations';
+import {getBillingAddBillErrors} from '$src/leases/selectors';
 import {billingTypeOptions} from '../constants';
 
 type Props = {

@@ -8,13 +8,13 @@ import isEmpty from 'lodash/isEmpty';
 import type Moment from 'moment';
 
 import {billingTypeOptions} from '../constants';
-import {getBillingAbnormalDebtModalErrors} from '../../../selectors';
-import {dateGreaterOrEqual, decimalNumber, required} from '../../../../components/form/validations';
-import CloseButton from '../../../../components/button/CloseButton';
-import FieldTypeCheckboxSingle from '../../../../components/form/FieldTypeCheckboxSingle';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
+import {getBillingAbnormalDebtModalErrors} from '$src/leases/selectors';
+import {dateGreaterOrEqual, decimalNumber, required} from '$components/form/validations';
+import CloseButton from '$components/button/CloseButton';
+import FieldTypeCheckboxSingle from '$components/form/FieldTypeCheckboxSingle';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
 
 type Props = {
   abnormalDebt: Object,

@@ -5,9 +5,9 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {Field, reduxForm, formValueSelector} from 'redux-form';
 
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import {
   summaryHitasOptions,
   summaryLeaseStatisticalUseOptions,
@@ -20,7 +20,7 @@ import {
   summaryTransferRightOptions,
 } from '../constants';
 
-import {financialMethodOptions, managementMethodOptions, purposeOptions} from '../../../../constants';
+import {financialMethodOptions, managementMethodOptions, purposeOptions} from '$src/constants';
 
 type Props = {
   handleSubmit: Function,

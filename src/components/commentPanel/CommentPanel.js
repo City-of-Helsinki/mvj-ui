@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import Button from '../button/Button';
 import TextAreaInput from '../inputs/TextAreaInput';
-import {formatDate} from '../../util/helpers';
+import {formatDate} from '$util/helpers';
 
 type Props = {
   commentsArchived: Array<Object>,

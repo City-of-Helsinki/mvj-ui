@@ -12,7 +12,7 @@ import {editLease, fetchLeases, createLease} from '../actions';
 import Loader from '../../components-alpha/loader/Loader';
 import {getIsFetching, getLeasesList} from '../selectors';
 import FilterableList from '../../components-alpha/filterableList/FilterableList';
-import {getActiveLanguage} from '../../util/helpers';
+import {getActiveLanguage} from '$util/helpers';
 
 import NewLeaseTemplate from './NewLeaseTemplate';
 

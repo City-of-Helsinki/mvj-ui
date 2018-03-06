@@ -3,12 +3,12 @@ import React from 'react';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
-import RemoveButton from '../../../../components/form/RemoveButton';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import RemoveButton from '$components/form/RemoveButton';
 import {rentBasicInfoBillingTypeOptions,
   rentBasicInfoIndexTypeOptions,
   rentBasicInfoRentalPeriodOptions,

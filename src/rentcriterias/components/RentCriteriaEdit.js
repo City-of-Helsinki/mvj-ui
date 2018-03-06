@@ -1,10 +1,10 @@
 // @flow
 import React from 'react';
 
-import ContentContainer from '../../components/content/ContentContainer';
-import Divider from '../../components/content/Divider';
+import ContentContainer from '$components/content/ContentContainer';
+import Divider from '$components/content/Divider';
 import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
-import GreenBoxEdit from '../../components/content/GreenBoxEdit';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
 
 type Props = {
   criteria: Object,

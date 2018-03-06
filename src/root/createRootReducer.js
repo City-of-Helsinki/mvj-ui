@@ -9,11 +9,9 @@ import apiReducer from '../api/reducer';
 import authReducer from '../auth/reducer';
 import roleReducer from '../role/reducer';
 import attributesReducer from '../attributes/reducer';
-import applicationsReducer from '../applications-alpha/reducer';
-import leaseReducer from '../leases-alpha/reducer';
-import leaseReducerBeta from '../leases/reducer';
+import leaseReducer from '../leases/reducer';
 import rentCriteriasReducer from '../rentcriterias/reducer';
-import topNavigationReducer from '../components/topNavigation/reducer';
+import topNavigationReducer from '$components/topNavigation/reducer';
 
 import type {Reducer} from '../types';
 import type {RootState} from './types';
@@ -22,13 +20,11 @@ export default (): Reducer<RootState> =>
   combineReducers({
     api: apiReducer,
     auth: authReducer,
-    applications: applicationsReducer,
     attributes: attributesReducer,
     form: formReducer,
     lease: leaseReducer,
-    leasebeta: leaseReducerBeta,
     oidc,
-    rentcriterias: rentCriteriasReducer,
+    rentcriteria: rentCriteriasReducer,
     routing: routerReducer,
     toastr: toastrReducer,
     topnavigation: topNavigationReducer,

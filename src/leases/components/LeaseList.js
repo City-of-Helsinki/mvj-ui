@@ -5,28 +5,28 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import {getRouteById} from '../../root/routes';
+import {getRouteById} from '$src/root/routes';
 import {createLease, fetchAttributes, fetchLeases} from '../actions';
-import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
 import {leaseTypeOptions} from '../constants';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '../helpers';
-import {getSearchQuery} from '../../util/helpers';
-import Button from '../../components/button/Button';
-import CreateLease from '../components/leaseSections/CreateLease';
-import EditableMap from '../../components/map/EditableMap';
-import Loader from '../../components/loader/Loader';
-import Modal from '../../components/modal/Modal';
-import PageContainer from '../../components/content/PageContainer';
-import SearchWrapper from '../../components/search/SearchWrapper';
+import {getSearchQuery} from '$util/helpers';
+import Button from '$components/button/Button';
+import CreateLease from './leaseSections/CreateLease';
+import EditableMap from '$components/map/EditableMap';
+import Loader from '$components/loader/Loader';
+import Modal from '$components/modal/Modal';
+import PageContainer from '$components/content/PageContainer';
+import SearchWrapper from '$components/search/SearchWrapper';
 import Search from './search/Search';
-import Table from '../../components/table/Table';
-import TableControllers from '../../components/table/TableControllers';
+import Table from '$components/table/Table';
+import TableControllers from '$components/table/TableControllers';
 
-import mapGreenIcon from '../../../assets/icons/map-green.svg';
-import mapIcon from '../../../assets/icons/map.svg';
-import tableGreenIcon from '../../../assets/icons/table-green.svg';
-import tableIcon from '../../../assets/icons/table.svg';
+import mapGreenIcon from '$assets/icons/map-green.svg';
+import mapIcon from '$assets/icons/map.svg';
+import tableGreenIcon from '$assets/icons/table-green.svg';
+import tableIcon from '$assets/icons/table.svg';
 
 type Props = {
   attributes: Object,

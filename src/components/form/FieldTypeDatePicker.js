@@ -4,8 +4,6 @@ import DatePicker from 'react-datepicker';
 import moment from 'moment';
 import classNames from 'classnames';
 
-import 'react-datepicker/dist/react-datepicker.css';
-
 type Props = {
   className?: string,
   disableTouched: boolean,

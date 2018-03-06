@@ -18,7 +18,7 @@ import Table from '../../../components-alpha/table/Table';
 
 import EditModal from '../../../components-alpha/editModal/editModal';
 import PropertyUnitEdit from './PropertyUnitEdits';
-import {getKtjLink} from '../../../util/helpers';
+import {getKtjLink} from '$util/helpers';
 
 type Props = Object;
 

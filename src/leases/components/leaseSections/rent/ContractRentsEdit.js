@@ -3,13 +3,13 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
-import BorderedBoxEdit from '../../../../components/content/BorderedBoxEdit';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import RemoveButton from '../../../../components/form/RemoveButton';
-import {priceTypeOptions, purposeOptions} from '../../../../constants';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import BorderedBoxEdit from '$components/content/BorderedBoxEdit';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import RemoveButton from '$components/form/RemoveButton';
+import {priceTypeOptions, purposeOptions} from '$src/constants';
 
 type Props = {
   fields: any,
@@ -34,14 +34,16 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                 </Row>
               </Column>
               <Column medium={3}>
-                {(rentType === '0' || rentType === '4') &&
+                {(rentType === '0' ||
+                  rentType === '4') &&
                   <Row>
                     <Column><label className="mvj-form-field-label">Vuokranlaskennan perusteena oleva vuokra</label></Column>
                   </Row>
                 }
               </Column>
               <Column medium={2}>
-                {(rentType === '0' || rentType === '4') &&
+                {(rentType === '0' ||
+                  rentType === '4') &&
                   <Row>
                     <Column><label className="mvj-form-field-label">Uusi perusvuosi vuokra</label></Column>
                   </Row>

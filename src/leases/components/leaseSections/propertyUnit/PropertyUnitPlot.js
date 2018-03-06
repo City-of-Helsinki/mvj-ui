@@ -2,10 +2,10 @@
 import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
 
-import GreenBox from '../../../../components/content/GreenBox';
+import GreenBox from '$components/content/GreenBox';
 import PropertyUnitPlotItem from './PropertyUnitPlotItem';
 import PropertyUnitPlanPlotItem from './PropertyUnitPlanPlotItem';
-import SubsectionContent from '../../../../components/content/SubsectionContent';
+import SubsectionContent from '$components/content/SubsectionContent';
 
 type Props = {
   area: Object,

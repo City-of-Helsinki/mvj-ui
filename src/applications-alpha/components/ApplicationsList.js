@@ -8,7 +8,7 @@ import orderBy from 'lodash/orderBy';
 
 import {fetchApplications} from '../actions';
 import {getApplicationsList, getIsFetching} from '../selectors';
-// import {getActiveLanguage} from '../../util/helpers';
+// import {getActiveLanguage} from '$util/helpers';
 
 import FilterableList from '../../components-alpha/filterableList/FilterableList';
 

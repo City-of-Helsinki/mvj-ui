@@ -2,7 +2,7 @@
 import React from 'react';
 import get from 'lodash/get';
 
-import Collapse from '../../../../components/collapse/Collapse';
+import Collapse from '$components/collapse/Collapse';
 import Tenant from './Tenant';
 import {Row, Column} from 'react-foundation';
 import classnames from 'classnames';

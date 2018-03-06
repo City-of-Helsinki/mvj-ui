@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {FieldArray, reduxForm, formValueSelector} from 'redux-form';
 
 import DistrictItemsEdit from './DistrictItemsEdit';
-import FormSection from '../../../../components/form/FormSection';
+import FormSection from '$components/form/FormSection';
 
 type Props = {
   areas: Array<Object>,

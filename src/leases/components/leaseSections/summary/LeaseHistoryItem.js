@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import classNames from 'classnames';
-import {formatDate} from '../../../../util/helpers';
+import {formatDate} from '$util/helpers';
 
 type Props = {
   active?: boolean,

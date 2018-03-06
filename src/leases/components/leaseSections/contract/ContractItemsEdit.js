@@ -3,19 +3,19 @@ import React from 'react';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import {formatDate} from '../../../../util/helpers';
-import {contractTypeOptions} from '../../../../constants';
-import AddButton from '../../../../components/form/AddButton';
-import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
-import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
-import ContentItem from '../../../../components/content/ContentItem';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
-import GreenBoxItem from '../../../../components/content/GreenBoxItem';
-import RemoveButton from '../../../../components/form/RemoveButton';
-import WhiteBoxEdit from '../../../../components/content/WhiteBoxEdit';
+import {formatDate} from '$util/helpers';
+import {contractTypeOptions} from '$src/constants';
+import AddButton from '$components/form/AddButton';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import ContentItem from '$components/content/ContentItem';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import GreenBoxItem from '$components/content/GreenBoxItem';
+import RemoveButton from '$components/form/RemoveButton';
+import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 
 type ContractModificationsProps = {
   title: string,

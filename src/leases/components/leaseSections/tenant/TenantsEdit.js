@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import FormSection from '../../../../components/form/FormSection';
+import FormSection from '$components/form/FormSection';
 import TenantItemsEdit from './TenantItemsEdit';
 
 type Props = {

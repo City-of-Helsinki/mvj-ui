@@ -2,11 +2,11 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import GreenBox from '../../../../components/content/GreenBox';
-import GreenBoxItem from '../../../../components/content/GreenBoxItem';
-import {formatDateRange, getLabelOfOption} from '../../../../util/helpers';
+import GreenBox from '$components/content/GreenBox';
+import GreenBoxItem from '$components/content/GreenBoxItem';
+import {formatDateRange, getLabelOfOption} from '$util/helpers';
 import {rentDiscountTypeOptions} from '../constants';
-import {decisionOptions, purposeOptions} from '../../../../constants';
+import {decisionOptions, purposeOptions} from '$src/constants';
 
 type Props = {
   discounts: Array<Object>,

@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 
-import GreenBox from '../../../../components/content/GreenBox';
-import GreenBoxItem from '../../../../components/content/GreenBoxItem';
+import GreenBox from '$components/content/GreenBox';
+import GreenBoxItem from '$components/content/GreenBoxItem';
 import InspectionItem from './InspectionItem';
 
 type Props = {

@@ -4,7 +4,7 @@ import {Row, Column} from 'react-foundation';
 import toArray from 'lodash/toArray';
 import debounce from 'lodash/debounce';
 
-import TextInput from '../../../components/inputs/TextInput';
+import TextInput from '$components/inputs/TextInput';
 
 type Props = {
   onSearch: Function,

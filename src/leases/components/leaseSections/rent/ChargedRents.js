@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
 
-import {formatDateRange, formatNumberWithThousandSeparator, formatDecimalNumber} from '../../../../util/helpers';
-import TableFixedHeader from '../../../../components/table/TableFixedHeader';
+import {formatDateRange, formatNumberWithThousandSeparator, formatDecimalNumber} from '$util/helpers';
+import TableFixedHeader from '$components/table/TableFixedHeader';
 
 type Props = {
   chargedRents: Array<Object>,

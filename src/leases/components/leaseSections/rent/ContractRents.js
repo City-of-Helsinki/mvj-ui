@@ -4,8 +4,8 @@ import React from 'react';
 import {formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator,
-  getLabelOfOption} from '../../../../util/helpers';
-import {priceTypeOptions, purposeOptions} from '../../../../constants';
+  getLabelOfOption} from '$util/helpers';
+import {priceTypeOptions, purposeOptions} from '$src/constants';
 
 type Props = {
   contractRents: Array<Object>,

@@ -3,15 +3,15 @@ import React from 'react';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import AddButton from '../../../../components/form/AddButton';
-import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
-import ContentItem from '../../../../components/content/ContentItem';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import RemoveButton from '../../../../components/form/RemoveButton';
+import AddButton from '$components/form/AddButton';
+import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import ContentItem from '$components/content/ContentItem';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import RemoveButton from '$components/form/RemoveButton';
 import RuleTermsEdit from './RuleTermsEdit';
-import WhiteBoxEdit from '../../../../components/content/WhiteBoxEdit';
+import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 
 type Props = {
   fields: any,

@@ -4,7 +4,7 @@ import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
-import {displayUIMessage} from '../util/helpers';
+import {displayUIMessage} from '$util/helpers';
 // import mockData from './mock-data.json';
 
 import {
@@ -143,11 +143,11 @@ function* editLeaseSaga({payload: lease}): Generator<> {
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
-      yield takeLatest('mvj/leasesbeta/FETCH_ATTRIBUTES', fetchAttributesSaga);
-      yield takeLatest('mvj/leasesbeta/FETCH_ALL', fetchLeasesSaga);
-      yield takeLatest('mvj/leasesbeta/FETCH_SINGLE', fetchSingleLeaseSaga);
-      yield takeLatest('mvj/leasesbeta/CREATE', createLeaseSaga);
-      yield takeLatest('mvj/leasesbeta/EDIT', editLeaseSaga);
+      yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
+      yield takeLatest('mvj/leases/FETCH_ALL', fetchLeasesSaga);
+      yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
+      yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
+      yield takeLatest('mvj/leases/EDIT', editLeaseSaga);
     }),
   ];
 }

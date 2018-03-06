@@ -2,7 +2,7 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import {getLabelOfOption} from '../../../../util/helpers';
+import {getLabelOfOption} from '$util/helpers';
 import {summaryHitasOptions,
   summaryLeaseStatisticalUseOptions,
   summaryLessorOptions,
@@ -11,8 +11,8 @@ import {summaryHitasOptions,
   summaryRegulatoryMethodOptions,
   summarySpecialApartmentsOptions,
   summaryTransferRightOptions} from '../constants';
-import {financialMethodOptions, managementMethodOptions, purposeOptions} from '../../../../constants';
-import GreenBox from '../../../../components/content/GreenBox';
+import {financialMethodOptions, managementMethodOptions, purposeOptions} from '$src/constants';
+import GreenBox from '$components/content/GreenBox';
 
 type Props = {
   summary: Object,

@@ -4,7 +4,7 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
 
-import FormSection from '../../../../components/form/FormSection';
+import FormSection from '$components/form/FormSection';
 import InspectionItemsEdit from './InspectionItemsEdit';
 
 type Props = {

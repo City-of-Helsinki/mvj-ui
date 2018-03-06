@@ -4,9 +4,9 @@ import React from 'react';
 import {formatDateRange,
   formatNumberWithThousandSeparator,
   formatDecimalNumber,
-  getLabelOfOption} from '../../../../util/helpers';
-import {purposeOptions} from '../../../../constants';
-import TableFixedHeader from '../../../../components/table/TableFixedHeader';
+  getLabelOfOption} from '$util/helpers';
+import {purposeOptions} from '$src/constants';
+import TableFixedHeader from '$components/table/TableFixedHeader';
 
 type Props = {
   indexAdjustedRents: Array<Object>,

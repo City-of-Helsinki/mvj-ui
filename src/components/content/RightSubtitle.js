@@ -8,6 +8,6 @@ type Props = {
 }
 
 const RightSubtitle = ({className, text}: Props) =>
-  <p className={classNames('right-subtitle', className)}>{text}</p>;
+  <div className={classNames('right-subtitle', className)}>{text}</div>;
 
 export default RightSubtitle;

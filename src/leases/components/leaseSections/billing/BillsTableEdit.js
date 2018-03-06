@@ -8,11 +8,11 @@ import forEach from 'lodash/forEach';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 
-import {displayUIMessage} from '../../../../util/helpers';
-import {formatBillingBillDb} from '../../../helpers';
+import {displayUIMessage} from '$util/helpers';
+import {formatBillingBillDb} from '$src/leases/helpers';
 import BillModalEdit from './BillModalEdit';
 import BillsTableBodyEdit from './BillsTableBodyEdit';
-// import Button from '../../../../components/button/Button';
+// import Button from '$components/button/Button';
 
 type Props = {
   billing: Object,

@@ -4,21 +4,21 @@ import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
-import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
-import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
-import GreenBoxItem from '../../../../components/content/GreenBoxItem';
-import RemoveButton from '../../../../components/form/RemoveButton';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import GreenBoxItem from '$components/content/GreenBoxItem';
+import RemoveButton from '$components/form/RemoveButton';
 
 import {
   planUnitConditionOptions,
   planUnitStateOptions,
   planUnitTypeOptions,
   planUnitUseOptions,
-} from '../../../../constants';
+} from '$src/constants';
 
 type Props = {
   areas: Array<Object>,

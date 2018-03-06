@@ -3,12 +3,12 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
-import BorderedBoxEdit from '../../../../components/content/BorderedBoxEdit';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import RemoveButton from '../../../../components/form/RemoveButton';
-import {purposeOptions} from '../../../../constants';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import BorderedBoxEdit from '$components/content/BorderedBoxEdit';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import RemoveButton from '$components/form/RemoveButton';
+import {purposeOptions} from '$src/constants';
 
 type Props = {
   fields: any,

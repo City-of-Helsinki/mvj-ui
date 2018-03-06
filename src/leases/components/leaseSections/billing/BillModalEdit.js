@@ -14,18 +14,18 @@ import {formatDate,
   formatDecimalNumber,
   formatNumberWithThousandSeparator,
   getLabelOfOption,
-} from '../../../../util/helpers';
+} from '$util/helpers';
 import {billingInvoiceMethodOptions,
   billingInvoiceTypeOptions,
   billingStatusOptions,
   billingTypeOptions,
 } from '../constants';
-import {getBillingBillModalErrors} from '../../../selectors';
-import {dateGreaterOrEqual, decimalNumber, required} from '../../../../components/form/validations';
-import Button from '../../../../components/button/Button';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import FieldTypeTextArea from '../../../../components/form/FieldTypeTextArea';
+import {getBillingBillModalErrors} from '$src/leases/selectors';
+import {dateGreaterOrEqual, decimalNumber, required} from '$components/form/validations';
+import Button from '$components/button/Button';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeText from '$components/form/FieldTypeText';
+import FieldTypeTextArea from '$components/form/FieldTypeTextArea';
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;

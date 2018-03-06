@@ -3,7 +3,7 @@
 import {takeLatest} from 'redux-saga';
 import {fork, put} from 'redux-saga/effects';
 
-import {displayUIMessage} from '../util/helpers';
+import {displayUIMessage} from '$util/helpers';
 import mockData from './mock-data.json';
 import mockCriteria from './mock-data-single-criteria.json';
 
@@ -33,9 +33,9 @@ function* fetchSingleRentCriteriaSaga(): Generator<> {
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
-      yield takeLatest('mvj/rentcriterias/EDIT', editRentCriteriasSaga);
-      yield takeLatest('mvj/rentcriterias/FETCH_ALL', fetchRentCriteriasSaga);
-      yield takeLatest('mvj/rentcriterias/FETCH_SINGLE', fetchSingleRentCriteriaSaga);
+      yield takeLatest('mvj/rentcriteria/EDIT', editRentCriteriasSaga);
+      yield takeLatest('mvj/rentcriteria/FETCH_ALL', fetchRentCriteriasSaga);
+      yield takeLatest('mvj/rentcriteria/FETCH_SINGLE', fetchSingleRentCriteriaSaga);
     }),
   ];
 }

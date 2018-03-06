@@ -4,10 +4,10 @@ import {Row, Column} from 'react-foundation';
 import {
   formatDate,
   formatDateRange,
-} from '../../../../util/helpers';
+} from '$util/helpers';
 
-import Collapse from '../../../../components/collapse/Collapse';
-import GreenBoxItem from '../../../../components/content/GreenBoxItem';
+import Collapse from '$components/collapse/Collapse';
+import GreenBoxItem from '$components/content/GreenBoxItem';
 
 type Props = {
   contract: Object,

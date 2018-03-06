@@ -1,6 +1,6 @@
 // @flow
 
-import type {Action} from '../../types';
+import type {Action} from '$src/types';
 
 export type TopNavigationState = Object;
 

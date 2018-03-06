@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import {formatDate,
   formatDateRange,
   formatDecimalNumber,
-  formatNumberWithThousandSeparator} from '../../../../util/helpers';
+  formatNumberWithThousandSeparator} from '$util/helpers';
 
 type Props = {
   abnormalDebts: Array<Object>

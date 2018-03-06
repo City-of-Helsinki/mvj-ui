@@ -10,7 +10,7 @@ import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import moment from 'moment';
 
-import {getLoggedInUser} from '../../auth/selectors';
+import {getLoggedInUser} from '$src/auth/selectors';
 import {
   getAttributes,
   getCurrentLease,
@@ -25,37 +25,37 @@ import {
   hideEditMode,
   showEditMode,
 } from '../actions';
-import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
-import {displayUIMessage, getLabelOfOption} from '../../util/helpers';
+import {displayUIMessage, getLabelOfOption} from '$util/helpers';
 import {summaryPublicityOptions} from './leaseSections/constants';
 
 import Billing from './leaseSections/billing/Billing';
 import BillingEdit from './leaseSections/billing/BillingEdit';
-import CommentPanel from '../../components/commentPanel/CommentPanel';
-import ConfirmationModal from '../../components/modal/ConfirmationModal';
-import ContentContainer from '../../components/content/ContentContainer';
-import ControlButtons from '../../components/controlButtons/ControlButtons';
-import ControlButtonBar from '../../components/controlButtons/ControlButtonBar';
+import CommentPanel from '$components/commentPanel/CommentPanel';
+import ConfirmationModal from '$components/modal/ConfirmationModal';
+import ContentContainer from '$components/content/ContentContainer';
+import ControlButtons from '$components/controlButtons/ControlButtons';
+import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
-import Divider from '../../components/content/Divider';
-import EditableMap from '../../components/map/EditableMap';
+import Divider from '$components/content/Divider';
+import EditableMap from '$components/map/EditableMap';
 import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
-import Loader from '../../components/loader/Loader';
-import PageContainer from '../../components/content/PageContainer';
+import Loader from '$components/loader/Loader';
+import PageContainer from '$components/content/PageContainer';
 import PropertyUnit from './leaseSections/propertyUnit/PropertyUnit';
 import PropertyUnitEdit from './leaseSections/propertyUnit/PropertyUnitEdit';
 import Rent from './leaseSections/rent/Rent';
 import RentEdit from './leaseSections/rent/RentEdit';
-import RightSubtitle from '../../components/content/RightSubtitle';
+import RightSubtitle from '$components/content/RightSubtitle';
 import Summary from './leaseSections/summary/Summary';
 import SummaryEdit from './leaseSections/summary/SummaryEdit';
-import Tabs from '../../components/tabs/Tabs';
-import TabPane from '../../components/tabs/TabPane';
-import TabContent from '../../components/tabs/TabContent';
+import Tabs from '$components/tabs/Tabs';
+import TabPane from '$components/tabs/TabPane';
+import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 import ConstructionEligibility from './leaseSections/constructionEligibility/ConstructionEligibility';
@@ -627,10 +627,10 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="lease-page__tab-content">
-            <div className='lease-page__tab-content'>
+            <ContentContainer>
               {!isEditMode && <Billing billing={billing}/>}
               {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
-            </div>
+            </ContentContainer>
           </TabPane>
 
           <TabPane>

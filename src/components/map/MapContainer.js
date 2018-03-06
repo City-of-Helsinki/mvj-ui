@@ -12,10 +12,10 @@ import {Circle,
 import FullscreenControl from 'react-leaflet-fullscreen';
 import L from 'leaflet';
 import 'proj4leaflet';
-import {getCircleCenter, getCoordinates, getCoordinatesPolygon} from '../../util/helpers';
+import {getCircleCenter, getCoordinates, getCoordinatesPolygon} from '$util/helpers';
 const {BaseLayer, Overlay} = LayersControl;
 
-import {minZoom, maxZoom} from '../../constants';
+import {minZoom, maxZoom} from '$src/constants';
 import 'react-leaflet-fullscreen/dist/styles.css';
 
 const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
