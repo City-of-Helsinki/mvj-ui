@@ -5,7 +5,7 @@ import flowRight from 'lodash/flowRight';
 import {translate} from 'react-i18next';
 import {connect} from 'react-redux';
 import {getFormInitialValues, reduxForm} from 'redux-form';
-import {formatDateObj} from '../../../util/helpers';
+import {formatDateObj} from '$util/helpers';
 import {getUser} from '../../../role/selectors';
 import NotesForm from './NotesForm';
 

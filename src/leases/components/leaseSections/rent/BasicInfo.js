@@ -5,7 +5,7 @@ import {Row, Column} from 'react-foundation';
 import {formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator,
-  getLabelOfOption} from '../../../../util/helpers';
+  getLabelOfOption} from '$util/helpers';
 import {rentBasicInfoIndexTypeOptions,
   rentBasicInfoRentalPeriodOptions,
   rentBasicInfoTypeOptions} from '../constants';

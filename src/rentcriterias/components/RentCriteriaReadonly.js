@@ -2,7 +2,7 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import {formatDate, getLabelOfOption} from '../../util/helpers';
+import {formatDate, getLabelOfOption} from '$util/helpers';
 import {financialMethodOptions,
   managementMethodOptions,
   purposeOptions,

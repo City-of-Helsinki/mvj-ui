@@ -9,7 +9,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import {getActiveLanguage} from '../../util/helpers';
+import {getActiveLanguage} from '$util/helpers';
 import {editLease, fetchSingleLease} from '../actions';
 import {getCurrentLease, getIsFetching} from '../selectors';
 

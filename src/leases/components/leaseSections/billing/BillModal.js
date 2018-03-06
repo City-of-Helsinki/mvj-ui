@@ -8,7 +8,7 @@ import {formatDate,
   formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator,
-  getLabelOfOption} from '../../../../util/helpers';
+  getLabelOfOption} from '$util/helpers';
 import {billingInvoiceMethodOptions,
   billingInvoiceTypeOptions,
   billingStatusOptions,

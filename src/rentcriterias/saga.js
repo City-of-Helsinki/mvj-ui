@@ -3,7 +3,7 @@
 import {takeLatest} from 'redux-saga';
 import {fork, put} from 'redux-saga/effects';
 
-import {displayUIMessage} from '../util/helpers';
+import {displayUIMessage} from '$util/helpers';
 import mockData from './mock-data.json';
 import mockCriteria from './mock-data-single-criteria.json';
 

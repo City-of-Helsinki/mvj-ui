@@ -4,7 +4,7 @@ import {Row, Column} from 'react-foundation';
 
 import GreenBox from '../../../../components/content/GreenBox';
 import GreenBoxItem from '../../../../components/content/GreenBoxItem';
-import {formatDateRange, getLabelOfOption} from '../../../../util/helpers';
+import {formatDateRange, getLabelOfOption} from '$util/helpers';
 import {rentDiscountTypeOptions} from '../constants';
 import {decisionOptions, purposeOptions} from '../../../../constants';
 

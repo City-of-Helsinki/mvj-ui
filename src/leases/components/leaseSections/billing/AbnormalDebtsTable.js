@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import {formatDate,
   formatDateRange,
   formatDecimalNumber,
-  formatNumberWithThousandSeparator} from '../../../../util/helpers';
+  formatNumberWithThousandSeparator} from '$util/helpers';
 
 type Props = {
   debts: Array<Object>,

@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
 import FormField from '../../../components-alpha/form/FormField';
-import {formatDateObj, getTenantsYearlyShare} from '../../../util/helpers';
+import {formatDateObj, getTenantsYearlyShare} from '$util/helpers';
 type Props = Object;
 
 const getOptions = (field) => field.map(({value, display_name}) => ({value, label: display_name}));

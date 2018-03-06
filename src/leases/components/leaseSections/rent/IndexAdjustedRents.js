@@ -4,7 +4,7 @@ import React from 'react';
 import {formatDateRange,
   formatNumberWithThousandSeparator,
   formatDecimalNumber,
-  getLabelOfOption} from '../../../../util/helpers';
+  getLabelOfOption} from '$util/helpers';
 import {purposeOptions} from '../../../../constants';
 import TableFixedHeader from '../../../../components/table/TableFixedHeader';
 

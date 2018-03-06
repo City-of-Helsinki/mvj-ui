@@ -2,7 +2,7 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import {getLabelOfOption} from '../../../../util/helpers';
+import {getLabelOfOption} from '$util/helpers';
 import {summaryHitasOptions,
   summaryLeaseStatisticalUseOptions,
   summaryLessorOptions,

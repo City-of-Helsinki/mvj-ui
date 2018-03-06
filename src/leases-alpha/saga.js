@@ -27,7 +27,7 @@ import {
 } from './requests';
 
 import {receiveError} from '../api/actions';
-import {getActiveLanguage} from '../util/helpers';
+import {getActiveLanguage} from '$util/helpers';
 
 function* fetchAttributesSaga(): Generator<> {
   try {

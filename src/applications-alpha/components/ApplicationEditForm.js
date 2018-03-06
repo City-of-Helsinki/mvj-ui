@@ -11,7 +11,7 @@ import FieldTypeMulti from '../../components-alpha/form/FieldTypeMulti';
 import {BaseValidator} from '../../components-alpha/form/validation';
 import {getCurrentApplication} from '../selectors';
 import {fetchSingleApplication} from '../actions';
-import {formatDateObj} from '../../util/helpers';
+import {formatDateObj} from '$util/helpers';
 import {getAttributes} from '../../attributes/selectors';
 import FormActions from '../../leases-alpha/components/formSections/FormActions';
 import {getUser} from '../../role/selectors';

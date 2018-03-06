@@ -3,7 +3,7 @@ import React from 'react';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import {formatDate} from '../../../../util/helpers';
+import {formatDate} from '$util/helpers';
 import {contractTypeOptions} from '../../../../constants';
 import AddButton from '../../../../components/form/AddButton';
 import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';

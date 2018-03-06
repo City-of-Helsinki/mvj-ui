@@ -5,7 +5,7 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {CurrentUser, UserList, ChangeUserAction, ReceiveUsersAction} from './types';
 
-import {setStorageItem} from '../util/storage';
+import {setStorageItem} from '$util/storage';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/user/FETCH': () => true,

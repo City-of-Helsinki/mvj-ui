@@ -11,7 +11,7 @@ import DropDown from '../dropdown/DropDown';
 import {changeUser} from '../../role/actions';
 import {getUser, getUserList} from '../../role/selectors';
 import {Languages} from '../../constants';
-import {getActiveLanguage} from '../../util/helpers';
+import {getActiveLanguage} from '$util/helpers';
 
 type Props = {
   changeUser: Function,

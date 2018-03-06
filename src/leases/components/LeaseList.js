@@ -11,7 +11,7 @@ import {receiveTopNavigationSettings} from '../../components/topNavigation/actio
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
 import {leaseTypeOptions} from '../constants';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '../helpers';
-import {getSearchQuery} from '../../util/helpers';
+import {getSearchQuery} from '$util/helpers';
 import Button from '../../components/button/Button';
 import CreateLease from '../components/leaseSections/CreateLease';
 import EditableMap from '../../components/map/EditableMap';

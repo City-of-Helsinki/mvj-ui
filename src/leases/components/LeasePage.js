@@ -27,7 +27,7 @@ import {
 } from '../actions';
 import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
-import {displayUIMessage, getLabelOfOption} from '../../util/helpers';
+import {displayUIMessage, getLabelOfOption} from '$util/helpers';
 import {summaryPublicityOptions} from './leaseSections/constants';
 
 import Billing from './leaseSections/billing/Billing';

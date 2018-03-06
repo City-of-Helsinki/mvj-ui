@@ -3,7 +3,7 @@ import React from 'react';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
-import {formatDate} from '../../../../util/helpers';
+import {formatDate} from '$util/helpers';
 import {getFullAddress} from '../../../helpers';
 
 type AddressProps = {

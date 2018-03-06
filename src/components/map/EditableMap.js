@@ -6,7 +6,7 @@ import forEach from 'lodash/forEach';
 import isEmpty from 'lodash/isEmpty';
 import 'leaflet-measure-path';
 
-import {displayUIMessage, localizeMap} from '../../util/helpers';
+import {displayUIMessage, localizeMap} from '$util/helpers';
 import {defaultCoordinates, defaultZoom} from '../../constants';
 import MapContainer from '../../components/map/MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';

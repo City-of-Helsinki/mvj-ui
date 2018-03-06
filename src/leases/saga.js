@@ -4,7 +4,7 @@ import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
-import {displayUIMessage} from '../util/helpers';
+import {displayUIMessage} from '$util/helpers';
 // import mockData from './mock-data.json';
 
 import {

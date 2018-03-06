@@ -11,7 +11,7 @@ import {displayUIMessage,
   formatDate,
   formatDateRange,
   formatDecimalNumber,
-  formatNumberWithThousandSeparator} from '../../../../util/helpers';
+  formatNumberWithThousandSeparator} from '$util/helpers';
 import {formatBillingBillDb} from '../../../helpers';
 import EditAbnormalDebt from './EditAbnormalDebt';
 

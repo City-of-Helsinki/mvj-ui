@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-import * as utilHelpers from '../../../../util/helpers';
+import * as utilHelpers from '$util/helpers';
 
 type Props = {
   startDate: ?string,

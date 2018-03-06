@@ -7,9 +7,9 @@ import classNames from 'classnames';
 import {formatDate,
   formatDateRange,
   formatDecimalNumber,
-  formatNumberWithThousandSeparator} from '../../../../util/helpers';
+  formatNumberWithThousandSeparator} from '$util/helpers';
 import BillModal from './BillModal';
-import {getLabelOfOption} from '../../../../util/helpers';
+import {getLabelOfOption} from '$util/helpers';
 import {billingStatusOptions, billingTypeOptions} from '../constants';
 
 type Props = {

@@ -10,7 +10,7 @@ import {
   districtItemExplanationOptions,
   districtItemPositionOptions,
 } from '../../../../constants';
-import {getLabelOfOption}  from '../../../../util/helpers';
+import {getLabelOfOption}  from '$util/helpers';
 
 type Props = {
   areas: Array<Object>,

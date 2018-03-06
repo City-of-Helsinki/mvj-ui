@@ -3,7 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
-import {formatDate} from '../../../../util/helpers';
+import {formatDate} from '$util/helpers';
 
 type Props = {
   inspection: Object,

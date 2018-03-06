@@ -8,7 +8,7 @@ import flowRight from 'lodash/flowRight';
 import {fetchRentCriterias} from '../actions';
 import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
 import {getIsFetching, getRentCriteriasList} from '../selectors';
-import {formatDateObj, getLabelOfOption, getSearchQuery} from '../../util/helpers';
+import {formatDateObj, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {purposeOptions} from '../constants';
 import {getRouteById} from '../../root/routes';
 import Button from '../../components/button/Button';

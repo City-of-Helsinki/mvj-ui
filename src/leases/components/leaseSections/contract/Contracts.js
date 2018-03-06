@@ -4,7 +4,7 @@ import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
 import {contractTypeOptions} from '../../../../constants';
-import {formatDate, getLabelOfOption} from '../../../../util/helpers';
+import {formatDate, getLabelOfOption} from '$util/helpers';
 import Collapse from '../../../../components/collapse/Collapse';
 import ContractItem from './ContractItem';
 import DocIcon from '../../../../components/icons/DocIcon';
