@@ -9,7 +9,7 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
-import {priceTypeOptions, purposeOptions} from '../../../../constants';
+import {priceTypeOptions, purposeOptions} from '$src/constants';
 
 type Props = {
   fields: any,

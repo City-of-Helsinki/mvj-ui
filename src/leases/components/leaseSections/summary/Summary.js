@@ -11,7 +11,7 @@ import {summaryHitasOptions,
   summaryRegulatoryMethodOptions,
   summarySpecialApartmentsOptions,
   summaryTransferRightOptions} from '../constants';
-import {financialMethodOptions, managementMethodOptions, purposeOptions} from '../../../../constants';
+import {financialMethodOptions, managementMethodOptions, purposeOptions} from '$src/constants';
 import GreenBox from '$components/content/GreenBox';
 
 type Props = {

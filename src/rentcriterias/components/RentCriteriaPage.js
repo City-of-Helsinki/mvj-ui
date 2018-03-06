@@ -24,8 +24,8 @@ import {
   getRentCriteria,
   getRentCriteriaFormValues,
 } from '../selectors';
-import {getRouteById} from '../../root/routes';
-import type {RootState} from '../../root/types';
+import {getRouteById} from '$src/root/routes';
+import type {RootState} from '$src/root/types';
 
 type Props = {
   criteria: Object,

@@ -20,7 +20,7 @@ import {
   summaryTransferRightOptions,
 } from '../constants';
 
-import {financialMethodOptions, managementMethodOptions, purposeOptions} from '../../../../constants';
+import {financialMethodOptions, managementMethodOptions, purposeOptions} from '$src/constants';
 
 type Props = {
   handleSubmit: Function,

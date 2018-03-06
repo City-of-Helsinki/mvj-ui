@@ -17,7 +17,7 @@ import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {
   districtItemExplanationOptions,
   districtItemPositionOptions,
-} from '../../../../constants';
+} from '$src/constants';
 
 type Props = {
   areas: Array<Object>,

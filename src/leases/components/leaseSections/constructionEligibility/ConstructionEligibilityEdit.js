@@ -20,7 +20,7 @@ import {
   constructionEligibilityReportOptions,
   constructionEligibilityRentConditionsOptions,
   researchStateOptions,
-} from '../../../../constants';
+} from '$src/constants';
 
 type CommentProps = {
   fields: any,

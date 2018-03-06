@@ -12,7 +12,7 @@ import {displayUIMessage,
   formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator} from '$util/helpers';
-import {formatBillingBillDb} from '../../../helpers';
+import {formatBillingBillDb} from '$src/leases/helpers';
 import EditAbnormalDebt from './EditAbnormalDebt';
 
 type Props = {

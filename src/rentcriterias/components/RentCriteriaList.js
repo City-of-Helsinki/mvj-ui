@@ -10,7 +10,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getIsFetching, getRentCriteriasList} from '../selectors';
 import {formatDateObj, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {purposeOptions} from '../constants';
-import {getRouteById} from '../../root/routes';
+import {getRouteById} from '$src/root/routes';
 import Button from '$components/button/Button';
 import EditableMap from '$components/map/EditableMap';
 import Loader from '$components/loader/Loader';

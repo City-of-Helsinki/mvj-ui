@@ -7,7 +7,7 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import TableFixedHeader from '$components/table/TableFixedHeader';
-import {purposeOptions} from '../../../../constants';
+import {purposeOptions} from '$src/constants';
 
 
 const getTableBody = (fields) => {

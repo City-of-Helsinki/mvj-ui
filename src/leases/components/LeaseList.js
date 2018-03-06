@@ -5,7 +5,7 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import {getRouteById} from '../../root/routes';
+import {getRouteById} from '$src/root/routes';
 import {createLease, fetchAttributes, fetchLeases} from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getAttributes, getIsFetching, getLeasesList} from '../selectors';

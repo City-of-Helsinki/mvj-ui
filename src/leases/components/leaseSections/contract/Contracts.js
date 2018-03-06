@@ -3,7 +3,7 @@ import React from 'react';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
-import {contractTypeOptions} from '../../../../constants';
+import {contractTypeOptions} from '$src/constants';
 import {formatDate, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
 import ContractItem from './ContractItem';

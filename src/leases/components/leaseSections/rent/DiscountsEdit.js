@@ -13,7 +13,7 @@ import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
 import {rentDiscountAmountTypeOptions,
   rentDiscountTypeOptions} from '../constants';
-import {decisionOptions, purposeOptions} from '../../../../constants';
+import {decisionOptions, purposeOptions} from '$src/constants';
 
 type Props = {
   fields: any,

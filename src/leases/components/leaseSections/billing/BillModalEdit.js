@@ -20,7 +20,7 @@ import {billingInvoiceMethodOptions,
   billingStatusOptions,
   billingTypeOptions,
 } from '../constants';
-import {getBillingBillModalErrors} from '../../../selectors';
+import {getBillingBillModalErrors} from '$src/leases/selectors';
 import {dateGreaterOrEqual, decimalNumber, required} from '$components/form/validations';
 import Button from '$components/button/Button';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';

@@ -10,7 +10,7 @@ import {
   constructionEligibilityRentConditionsOptions,
   constructionEligibilityReportOptions,
   researchStateOptions,
-} from '../../../../constants';
+} from '$src/constants';
 
 type CommentsProps = {
   comments: ?Array<Object>,

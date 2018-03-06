@@ -12,7 +12,7 @@ import BillsTableEdit from './BillsTableEdit';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import FieldTypeSwitch from '$components/form/FieldTypeSwitch';
 import {displayUIMessage} from '$util/helpers';
-import {formatBillingNewBill} from '../../../helpers';
+import {formatBillingNewBill} from '$src/leases/helpers';
 
 type Props = {
   abnormalDebts: Array<Object>,

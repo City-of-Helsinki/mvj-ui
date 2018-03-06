@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router';
 
-import {getRouteById} from '../../root/routes';
+import {getRouteById} from '$src/root/routes';
 import SearchInput from '../inputs/SearchInput';
 
 type Props = {

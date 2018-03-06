@@ -5,7 +5,7 @@ import {formatDateRange,
   formatNumberWithThousandSeparator,
   formatDecimalNumber,
   getLabelOfOption} from '$util/helpers';
-import {purposeOptions} from '../../../../constants';
+import {purposeOptions} from '$src/constants';
 import TableFixedHeader from '$components/table/TableFixedHeader';
 
 type Props = {

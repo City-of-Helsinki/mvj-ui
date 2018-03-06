@@ -10,7 +10,7 @@ import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import moment from 'moment';
 
-import {getLoggedInUser} from '../../auth/selectors';
+import {getLoggedInUser} from '$src/auth/selectors';
 import {
   getAttributes,
   getCurrentLease,

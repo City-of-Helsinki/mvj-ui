@@ -12,7 +12,7 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import {dateGreaterOrEqual, decimalNumber, required} from '$components/form/validations';
-import {getBillingAddBillErrors} from '../../../selectors';
+import {getBillingAddBillErrors} from '$src/leases/selectors';
 import {billingTypeOptions} from '../constants';
 
 type Props = {

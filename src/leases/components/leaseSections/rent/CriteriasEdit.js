@@ -8,7 +8,7 @@ import BorderedBoxEdit from '$components/content/BorderedBoxEdit';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
-import {purposeOptions} from '../../../../constants';
+import {purposeOptions} from '$src/constants';
 
 type Props = {
   fields: any,

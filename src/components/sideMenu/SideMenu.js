@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {Link} from 'react-router';
 import classnames from 'classnames';
 
-import {getRouteById} from '../../root/routes';
+import {getRouteById} from '$src/root/routes';
 
 type Props = {
   isOpen: boolean,

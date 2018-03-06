@@ -18,7 +18,7 @@ import {
   planUnitStateOptions,
   planUnitTypeOptions,
   planUnitUseOptions,
-} from '../../../../constants';
+} from '$src/constants';
 
 type Props = {
   areas: Array<Object>,

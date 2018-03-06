@@ -9,7 +9,7 @@ import PropertyUnitPlot from './PropertyUnitPlot';
 import {
   districtItemExplanationOptions,
   districtItemPositionOptions,
-} from '../../../../constants';
+} from '$src/constants';
 import {getLabelOfOption}  from '$util/helpers';
 
 type Props = {

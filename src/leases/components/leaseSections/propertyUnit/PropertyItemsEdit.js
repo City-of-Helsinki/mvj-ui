@@ -13,7 +13,7 @@ import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
 
-import {propertyItemExplanationOptions} from '../../../../constants';
+import {propertyItemExplanationOptions} from '$src/constants';
 
 type Props = {
   areas: Array<Object>,

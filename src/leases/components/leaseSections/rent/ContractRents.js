@@ -5,7 +5,7 @@ import {formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator,
   getLabelOfOption} from '$util/helpers';
-import {priceTypeOptions, purposeOptions} from '../../../../constants';
+import {priceTypeOptions, purposeOptions} from '$src/constants';
 
 type Props = {
   contractRents: Array<Object>,

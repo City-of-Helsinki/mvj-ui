@@ -7,7 +7,7 @@ import {financialMethodOptions,
   managementMethodOptions,
   purposeOptions,
   priceTypeOptions,
-} from '../../constants';
+} from '$src/constants';
 import ContentContainer from '$components/content/ContentContainer';
 import Divider from '$components/content/Divider';
 import GreenBox from '$components/content/GreenBox';
