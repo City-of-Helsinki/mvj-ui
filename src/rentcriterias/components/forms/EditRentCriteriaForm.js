@@ -14,9 +14,9 @@ import RemoveButton from '$components/form/RemoveButton';
 import {financialMethodOptions,
   managementMethodOptions,
   priceTypeOptions,
-  purposeOptions} from '../../../constants';
-import type {RootState} from '../../../root/types';
-import {getRentCriteriaInitialValues} from '../../selectors';
+  purposeOptions} from '$src/constants';
+import type {RootState} from '$src/root/types';
+import {getRentCriteriaInitialValues} from '$src/rentcriterias/selectors';
 
 type RealEstateIdProps = {
   fields: any,

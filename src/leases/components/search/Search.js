@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import toArray from 'lodash/toArray';
 import debounce from 'lodash/debounce';
 
-import * as contentHelpers from '../../helpers';
+import * as contentHelpers from '$src/leases/helpers';
 import SelectInput from '$components/inputs/SelectInput';
 import SingleCheckboxInput from '$components/inputs/SingleCheckboxInput';
 import TextInput from '$components/inputs/TextInput';

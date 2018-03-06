@@ -5,13 +5,13 @@
   .Select {
     .select-input__arrow-renderer {
       display: block;
-      background-image: url('$assets/icons/icon_arrow_down.svg');
+      background-image: url(../assets/icons/icon_arrow_down.svg);
       height: rem-calc(16px);
       width: rem-calc(16px);
     }
     &.is-open {
       .select-input__arrow-renderer {
-        background-image: url('$assets/icons/icon_arrow_up.svg');
+        background-image: url(../assets/icons/icon_arrow_up.svg);
       }
     }
 

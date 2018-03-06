@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {getRouteById} from '../../root/routes';
+import {getRouteById} from '$src/root/routes';
 import userManager from '../util/user-manager';
 
 type Props = {

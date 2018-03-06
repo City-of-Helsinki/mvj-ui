@@ -11,8 +11,6 @@ import {defaultCoordinates, defaultZoom} from '../../constants';
 import MapContainer from '$components/map/MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
 
-import '../../../node_modules/leaflet-draw/dist/leaflet.draw.css';
-
 import mockData from '$components/map/mock-data-map.json';
 
 localizeMap();

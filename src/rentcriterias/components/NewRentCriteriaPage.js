@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
 
-import {getRouteById} from '../../root/routes';
+import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import Button from '$components/button/Button';
 import ContentContainer from '$components/content/ContentContainer';
