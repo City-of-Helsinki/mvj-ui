@@ -1,7 +1,6 @@
 // @flow
 import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
-import toArray from 'lodash/toArray';
 import debounce from 'lodash/debounce';
 
 import TextInput from '$components/inputs/TextInput';
@@ -11,7 +10,6 @@ type Props = {
 }
 
 type State = {
-  isBasicSearch: boolean,
   keyword: string,
 }
 
@@ -19,7 +17,6 @@ class Search extends Component {
   props: Props
 
   state: State = {
-    isBasicSearch: true,
     keyword: '',
   }
 
@@ -27,27 +24,14 @@ class Search extends Component {
     this.setState({
       keyword: query.keyword ? query.keyword : '',
     });
-
-    if(toArray(query).length > 0 && !query.keyword) {
-      this.setState({
-        isBasicSearch: false,
-      });
-    }
   }
 
   onSearchChange = debounce(() => {
     const {onSearch} = this.props;
-    const {
-      isBasicSearch,
-      keyword,
-    } = this.state;
+    const {keyword} = this.state;
 
     const filters = {};
-    if(isBasicSearch) {
-      filters.keyword = keyword ? keyword : undefined;
-    } else {
-      console.log('advanced search');
-    }
+    filters.keyword = keyword ? keyword : undefined;
     onSearch(filters);
   }, 300);
 
@@ -56,43 +40,18 @@ class Search extends Component {
     this.onSearchChange();
   }
 
-  toggleSearchType = () => {
-    this.onSearchChange();
-    this.setState({isBasicSearch: !this.state.isBasicSearch});
-  }
-
   render () {
-    const {
-      isBasicSearch,
-      keyword,
-    } = this.state;
+    const {keyword} = this.state;
 
     return (
       <div className='search'>
-        {isBasicSearch && (
-          <div>
-            <Row>
-              <Column  large={12}>
-                <TextInput
-                  placeholder={'Hae hakusanalla'}
-                  onChange={(e) => this.handleTextInputChange(e, 'keyword')}
-                  value={keyword}/>
-              </Column>
-            </Row>
-          </div>
-        )}
-        {!isBasicSearch && (
-          <div>
-            <Row>
-              <Column large={12}>
-                <p>TODO: Tarkennettu haku</p>
-              </Column>
-            </Row>
-          </div>
-        )}
         <Row>
-          <Column large={12}>
-            <a onClick={this.toggleSearchType} className='readme-link'>{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</a>
+          <Column>
+            <TextInput
+              placeholder={'Hae hakusanalla'}
+              onChange={(e) => this.handleTextInputChange(e, 'keyword')}
+              value={keyword}
+            />
           </Column>
         </Row>
       </div>
