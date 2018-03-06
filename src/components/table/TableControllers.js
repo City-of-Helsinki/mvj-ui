@@ -1,8 +1,8 @@
 // @flow
 import React, {Component} from 'react';
 
-import IconRadioButtons from '../../components/button/IconRadioButtons';
-import StyledCheckboxButtons from '../../components/button/StyledCheckboxButtons';
+import IconRadioButtons from '$components/button/IconRadioButtons';
+import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
 
 type Props = {
   buttonSelectorOptions?: Array<Object>,

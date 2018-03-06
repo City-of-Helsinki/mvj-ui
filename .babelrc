@@ -9,6 +9,7 @@
     ["module-alias", [
       { "src": "./src", "expose": "$src" },
       { "src": "./assets", "expose": "$assets" },
+      { "src": "./src/components", "expose": "$components" },
       { "src": "./src/util", "expose": "$util" },
     ]]
   ]

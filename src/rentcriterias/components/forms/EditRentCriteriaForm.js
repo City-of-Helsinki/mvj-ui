@@ -5,12 +5,12 @@ import {Field, FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import {Row, Column} from 'react-foundation';
 
-import AddButtonSecondary from '../../../components/form/AddButtonSecondary';
-import FieldTypeDatePicker from '../../../components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../components/form/FieldTypeText';
-import FormSection from '../../../components/form/FormSection';
-import RemoveButton from '../../../components/form/RemoveButton';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import FormSection from '$components/form/FormSection';
+import RemoveButton from '$components/form/RemoveButton';
 import {financialMethodOptions,
   managementMethodOptions,
   priceTypeOptions,

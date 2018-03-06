@@ -5,9 +5,9 @@ import {Row, Column} from 'react-foundation';
 
 import {contractTypeOptions} from '../../../../constants';
 import {formatDate, getLabelOfOption} from '$util/helpers';
-import Collapse from '../../../../components/collapse/Collapse';
+import Collapse from '$components/collapse/Collapse';
 import ContractItem from './ContractItem';
-import DocIcon from '../../../../components/icons/DocIcon';
+import DocIcon from '$components/icons/DocIcon';
 
 type Props = {
   contracts: Array<Object>,

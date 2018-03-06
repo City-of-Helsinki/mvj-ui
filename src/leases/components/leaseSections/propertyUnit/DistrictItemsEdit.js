@@ -4,15 +4,15 @@ import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
-import AddButton from '../../../../components/form/AddButton';
-import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
-import ContentItem from '../../../../components/content/ContentItem';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
+import AddButton from '$components/form/AddButton';
+import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import ContentItem from '$components/content/ContentItem';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
 import PlanUnitItemsEdit from './PlanUnitItemsEdit';
 import PropertyItemsEdit from './PropertyItemsEdit';
-import RemoveButton from '../../../../components/form/RemoveButton';
-import WhiteBoxEdit from '../../../../components/content/WhiteBoxEdit';
+import RemoveButton from '$components/form/RemoveButton';
+import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 
 import {
   districtItemExplanationOptions,

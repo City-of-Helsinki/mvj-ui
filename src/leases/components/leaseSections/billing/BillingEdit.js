@@ -9,8 +9,8 @@ import {Row, Column} from 'react-foundation';
 import AbnormalDebtsTableEdit from './AbnormalDebtsTableEdit';
 import AddBillEdit from './AddBillEdit';
 import BillsTableEdit from './BillsTableEdit';
-import ConfirmationModal from '../../../../components/modal/ConfirmationModal';
-import FieldTypeSwitch from '../../../../components/form/FieldTypeSwitch';
+import ConfirmationModal from '$components/modal/ConfirmationModal';
+import FieldTypeSwitch from '$components/form/FieldTypeSwitch';
 import {displayUIMessage} from '$util/helpers';
 import {formatBillingNewBill} from '../../../helpers';
 

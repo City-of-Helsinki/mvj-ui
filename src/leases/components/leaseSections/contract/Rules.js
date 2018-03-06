@@ -4,8 +4,8 @@ import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
 import {formatDate} from '$util/helpers';
-import Collapse from '../../../../components/collapse/Collapse';
-import DocIcon from '../../../../components/icons/DocIcon';
+import Collapse from '$components/collapse/Collapse';
+import DocIcon from '$components/icons/DocIcon';
 import RuleItem from './RuleItem';
 
 type Props = {

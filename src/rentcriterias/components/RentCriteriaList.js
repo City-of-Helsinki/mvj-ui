@@ -6,19 +6,19 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 
 import {fetchRentCriterias} from '../actions';
-import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getIsFetching, getRentCriteriasList} from '../selectors';
 import {formatDateObj, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {purposeOptions} from '../constants';
 import {getRouteById} from '../../root/routes';
-import Button from '../../components/button/Button';
-import EditableMap from '../../components/map/EditableMap';
-import Loader from '../../components/loader/Loader';
-import PageContainer from '../../components/content/PageContainer';
+import Button from '$components/button/Button';
+import EditableMap from '$components/map/EditableMap';
+import Loader from '$components/loader/Loader';
+import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
-import SearchWrapper from '../../components/search/SearchWrapper';
-import Table from '../../components/table/Table';
-import TableControllers from '../../components/table/TableControllers';
+import SearchWrapper from '$components/search/SearchWrapper';
+import Table from '$components/table/Table';
+import TableControllers from '$components/table/TableControllers';
 
 import mapGreenIcon from '$assets/icons/map-green.svg';
 import mapIcon from '$assets/icons/map.svg';

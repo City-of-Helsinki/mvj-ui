@@ -12,7 +12,7 @@ import {summaryHitasOptions,
   summarySpecialApartmentsOptions,
   summaryTransferRightOptions} from '../constants';
 import {financialMethodOptions, managementMethodOptions, purposeOptions} from '../../../../constants';
-import GreenBox from '../../../../components/content/GreenBox';
+import GreenBox from '$components/content/GreenBox';
 
 type Props = {
   summary: Object,

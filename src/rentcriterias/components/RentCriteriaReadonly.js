@@ -8,10 +8,10 @@ import {financialMethodOptions,
   purposeOptions,
   priceTypeOptions,
 } from '../../constants';
-import ContentContainer from '../../components/content/ContentContainer';
-import Divider from '../../components/content/Divider';
-import GreenBox from '../../components/content/GreenBox';
-import MapLinkButton from '../../components/content/MapLinkButton';
+import ContentContainer from '$components/content/ContentContainer';
+import Divider from '$components/content/Divider';
+import GreenBox from '$components/content/GreenBox';
+import MapLinkButton from '$components/content/MapLinkButton';
 
 type Props = {
   criteria: Object,

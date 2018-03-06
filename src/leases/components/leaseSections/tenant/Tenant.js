@@ -3,7 +3,7 @@ import React from 'react';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 
-import Collapse from '../../../../components/collapse/Collapse';
+import Collapse from '$components/collapse/Collapse';
 import TenantItem from './TenantItem';
 import OtherPersonItem from './OtherPersonItem';
 import {getLabelOfOption} from '$util/helpers';

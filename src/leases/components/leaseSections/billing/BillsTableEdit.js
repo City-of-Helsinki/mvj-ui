@@ -12,7 +12,7 @@ import {displayUIMessage} from '$util/helpers';
 import {formatBillingBillDb} from '../../../helpers';
 import BillModalEdit from './BillModalEdit';
 import BillsTableBodyEdit from './BillsTableBodyEdit';
-// import Button from '../../../../components/button/Button';
+// import Button from '$components/button/Button';
 
 type Props = {
   billing: Object,

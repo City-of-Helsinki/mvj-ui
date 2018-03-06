@@ -10,7 +10,7 @@ import {formatDate,
   getLabelOfOption,
   formatNumberWithThousandSeparator} from '$util/helpers';
 import {billingStatusOptions, billingTypeOptions} from '../constants';
-// import FieldTypeCheckboxSingle from '../../../../components/form/FieldTypeCheckboxSingle';
+// import FieldTypeCheckboxSingle from '$components/form/FieldTypeCheckboxSingle';
 
 type Props = {
   bills: Array<Object>,

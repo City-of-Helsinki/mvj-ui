@@ -10,7 +10,7 @@ import {rentBasicInfoIndexTypeOptions,
   rentBasicInfoRentalPeriodOptions,
   rentBasicInfoTypeOptions} from '../constants';
 
-import GreenBox from '../../../../components/content/GreenBox';
+import GreenBox from '$components/content/GreenBox';
 
 type Props = {
   basicInfo: Object,

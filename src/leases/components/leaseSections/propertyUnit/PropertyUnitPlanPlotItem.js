@@ -5,8 +5,8 @@ import capitalize from 'lodash/capitalize';
 import get from 'lodash/get';
 
 import {formatDate, getLabelOfOption} from '$util/helpers';
-import GreenBoxItem from '../../../../components/content/GreenBoxItem';
-import MapLink from '../../../../components/content/MapLink';
+import GreenBoxItem from '$components/content/GreenBoxItem';
+import MapLink from '$components/content/MapLink';
 
 import {
   planUnitConditionOptions,

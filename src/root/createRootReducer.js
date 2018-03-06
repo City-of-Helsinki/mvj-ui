@@ -11,7 +11,7 @@ import roleReducer from '../role/reducer';
 import attributesReducer from '../attributes/reducer';
 import leaseReducer from '../leases/reducer';
 import rentCriteriasReducer from '../rentcriterias/reducer';
-import topNavigationReducer from '../components/topNavigation/reducer';
+import topNavigationReducer from '$components/topNavigation/reducer';
 
 import type {Reducer} from '../types';
 import type {RootState} from './types';

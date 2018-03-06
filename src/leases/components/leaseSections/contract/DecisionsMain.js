@@ -2,7 +2,7 @@
 import React from 'react';
 
 import Contracts from './Contracts';
-import Divider from '../../../../components/content/Divider';
+import Divider from '$components/content/Divider';
 import Inspections from './Inspections';
 import Rules from './Rules';
 

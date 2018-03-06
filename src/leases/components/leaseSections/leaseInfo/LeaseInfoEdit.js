@@ -5,9 +5,9 @@ import {Field, formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import type Moment from 'moment';
 
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import {dateGreaterOrEqual, required} from '../../../../components/form/validations';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import {dateGreaterOrEqual, required} from '$components/form/validations';
 
 type Props = {
   error: string,

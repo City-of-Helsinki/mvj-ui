@@ -6,11 +6,11 @@ import flowRight from 'lodash/flowRight';
 import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
 
 import {getRouteById} from '../../root/routes';
-import {receiveTopNavigationSettings} from '../../components/topNavigation/actions';
-import Button from '../../components/button/Button';
-import ContentContainer from '../../components/content/ContentContainer';
-import GreenBoxEdit from '../../components/content/GreenBoxEdit';
-import PageContainer from '../../components/content/PageContainer';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import Button from '$components/button/Button';
+import ContentContainer from '$components/content/ContentContainer';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import PageContainer from '$components/content/PageContainer';
 
 type Props = {
   receiveTopNavigationSettings: Function,

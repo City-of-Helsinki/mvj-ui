@@ -2,7 +2,7 @@
 import React from 'react';
 
 import ContractsEdit from './ContractsEdit';
-import Divider from '../../../../components/content/Divider';
+import Divider from '$components/content/Divider';
 import InspectionsEdit from './InspectionsEdit';
 import RuleEdit from './RuleEdit';
 

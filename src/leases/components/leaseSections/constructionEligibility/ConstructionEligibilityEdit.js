@@ -6,16 +6,16 @@ import {Row, Column} from 'react-foundation';
 import capitalize from 'lodash/capitalize';
 import flowRight from 'lodash/flowRight';
 
-import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
-import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
-import Collapse from '../../../../components/collapse/Collapse';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import FieldTypeSelect from '../../../../components/form/FieldTypeSelect';
-import FormSection from '../../../../components/form/FormSection';
-import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
-import MapIcon from '../../../../components/icons/MapIcon';
-import RemoveButton from '../../../../components/form/RemoveButton';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import Collapse from '$components/collapse/Collapse';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeText from '$components/form/FieldTypeText';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FormSection from '$components/form/FormSection';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import MapIcon from '$components/icons/MapIcon';
+import RemoveButton from '$components/form/RemoveButton';
 import {
   constructionEligibilityReportOptions,
   constructionEligibilityRentConditionsOptions,

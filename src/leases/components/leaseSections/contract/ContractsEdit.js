@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
 
 import ContractItemsEdit from './ContractItemsEdit';
-import FormSection from '../../../../components/form/FormSection';
+import FormSection from '$components/form/FormSection';
 
 type Props = {
   handleSubmit: Function,

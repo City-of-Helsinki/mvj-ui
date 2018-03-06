@@ -3,8 +3,8 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import {capitalize} from 'lodash';
 
-import Collapse from '../../../../components/collapse/Collapse';
-import MapIcon from '../../../../components/icons/MapIcon';
+import Collapse from '$components/collapse/Collapse';
+import MapIcon from '$components/icons/MapIcon';
 import PropertyUnitPlot from './PropertyUnitPlot';
 import {
   districtItemExplanationOptions,

@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
-import ControlButtonBar from '../../components/controlButtons/ControlButtonBar';
-import ControlButtons from '../../components/controlButtons/ControlButtons';
-import Loader from '../../components/loader/Loader';
-import PageContainer from '../../components/content/PageContainer';
+import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
+import ControlButtons from '$components/controlButtons/ControlButtons';
+import Loader from '$components/loader/Loader';
+import PageContainer from '$components/content/PageContainer';
 import RentCriteriaEdit from './RentCriteriaEdit';
 import RentCriteriaInfo from './RentCriteriaInfo';
 import RentCriteriaReadonly from './RentCriteriaReadonly';

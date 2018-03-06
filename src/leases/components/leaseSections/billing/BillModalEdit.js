@@ -21,11 +21,11 @@ import {billingInvoiceMethodOptions,
   billingTypeOptions,
 } from '../constants';
 import {getBillingBillModalErrors} from '../../../selectors';
-import {dateGreaterOrEqual, decimalNumber, required} from '../../../../components/form/validations';
-import Button from '../../../../components/button/Button';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import FieldTypeTextArea from '../../../../components/form/FieldTypeTextArea';
+import {dateGreaterOrEqual, decimalNumber, required} from '$components/form/validations';
+import Button from '$components/button/Button';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeText from '$components/form/FieldTypeText';
+import FieldTypeTextArea from '$components/form/FieldTypeTextArea';
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;

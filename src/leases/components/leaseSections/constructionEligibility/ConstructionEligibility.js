@@ -1,11 +1,11 @@
 // @flow
 import React from 'react';
 import {capitalize} from 'lodash';
-import Collapse from '../../../../components/collapse/Collapse';
+import Collapse from '$components/collapse/Collapse';
 import ConstructionEligibilityItem from './ConstructionEligibilityItem';
 import {Row, Column} from 'react-foundation';
 
-import MapIcon from '../../../../components/icons/MapIcon';
+import MapIcon from '$components/icons/MapIcon';
 
 type Props = {
   areas: Array<Object>,

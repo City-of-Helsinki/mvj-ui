@@ -11,11 +11,11 @@ import ContractRentsEdit from './ContractRentsEdit';
 import ChargedRentsEdit from './ChargedRentsEdit';
 import CriteriasEdit from './CriteriasEdit';
 import DiscountsEdit from './DiscountsEdit';
-import Divider from '../../../../components/content/Divider';
-import FormSectionComponent from '../../../../components/form/FormSection';
+import Divider from '$components/content/Divider';
+import FormSectionComponent from '$components/form/FormSection';
 import IndexAdjustedRentsEdit from './IndexAdjustedRentsEdit';
-import FieldTypeSwitch from '../../../../components/form/FieldTypeSwitch';
-import RightSubtitle from '../../../../components/content/RightSubtitle';
+import FieldTypeSwitch from '$components/form/FieldTypeSwitch';
+import RightSubtitle from '$components/content/RightSubtitle';
 
 type Props = {
   handleSubmit: Function,

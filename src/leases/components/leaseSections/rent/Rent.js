@@ -5,15 +5,15 @@ import moment from 'moment';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 
-import Collapse from '../../../../components/collapse/Collapse';
+import Collapse from '$components/collapse/Collapse';
 import ContractRents from './ContractRents';
 import Discounts from './Discounts';
-import Divider from '../../../../components/content/Divider';
+import Divider from '$components/content/Divider';
 import Criterias from './Criterias';
 import ChargedRents from './ChargedRents';
 import IndexAdjustedRents from './IndexAdjustedRents';
 import BasicInfo from './BasicInfo';
-import RightSubtitle from '../../../../components/content/RightSubtitle';
+import RightSubtitle from '$components/content/RightSubtitle';
 
 type Props = {
   onCriteriaAgree: Function,

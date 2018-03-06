@@ -3,14 +3,14 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
-import AddButtonSecondary from '../../../../components/form/AddButtonSecondary';
-import BoxContentWrapper from '../../../../components/content/BoxContentWrapper';
-import FieldTypeCheckbox from '../../../../components/form/FieldTypeCheckbox';
-import FieldTypeDatePicker from '../../../../components/form/FieldTypeDatePicker';
-import FieldTypeText from '../../../../components/form/FieldTypeText';
-import GreenBoxEdit from '../../../../components/content/GreenBoxEdit';
-import GreenBoxItem from '../../../../components/content/GreenBoxItem';
-import RemoveButton from '../../../../components/form/RemoveButton';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
+import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeText from '$components/form/FieldTypeText';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import GreenBoxItem from '$components/content/GreenBoxItem';
+import RemoveButton from '$components/form/RemoveButton';
 
 import {tenantsRolesOptions} from '../constants';
 

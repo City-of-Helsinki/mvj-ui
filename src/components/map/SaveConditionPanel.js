@@ -3,8 +3,8 @@ import React, {Component} from 'react';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 
-import Button from '../../components/button/Button';
-import TextAreaInput from '../../components/inputs/TextAreaInput';
+import Button from '$components/button/Button';
+import TextAreaInput from '$components/inputs/TextAreaInput';
 
 type Props = {
   createCondition: Function,
