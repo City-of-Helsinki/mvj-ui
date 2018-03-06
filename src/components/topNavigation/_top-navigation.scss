@@ -28,11 +28,8 @@
       line-height: rem-calc(70px);
       background-color: $engel;
 
-      a {
+      span {
         color: $black;
-        &:hover {
-          color: $black;
-        }
       }
     }
 
@@ -43,8 +40,12 @@
       line-height: rem-calc(70px);
       background-color: $white;
 
-      p {
-        margin: 0;
+      a {
+        color: $black;
+
+        &:hover {
+          color: $tram;
+        }
       }
     }
   }

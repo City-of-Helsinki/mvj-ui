@@ -13,7 +13,7 @@ const setSettingsReducer: Reducer<TopNavigationSettings> = handleActions({
   ['mvj/topnavigation/RECEIVE']: (state: TopNavigationState, {payload: options}: ReceiveTopNavigationSettingsAction) => {
     return options;
   },
-}, {pageTitle: '', showSearch: false});
+}, {linkUrl: '', pageTitle: '', showSearch: false});
 
 export default combineReducers({
   settings: setSettingsReducer,

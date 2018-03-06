@@ -25,6 +25,7 @@ import {
   hideEditMode,
   showEditMode,
 } from '../actions';
+import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
 import {displayUIMessage, getLabelOfOption} from '$util/helpers';
@@ -155,6 +156,7 @@ class PreparerForm extends Component {
     const lease = mockData.leases[0];
 
     receiveTopNavigationSettings({
+      linkUrl: getRouteById('leases'),
       pageTitle: 'Vuokraukset',
       showSearch: true,
     });

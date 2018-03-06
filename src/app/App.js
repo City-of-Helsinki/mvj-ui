@@ -13,7 +13,7 @@ import {revealContext} from '../foundation/reveal';
 import {getRouteById} from '../root/routes';
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
-import {getPageTitle, getShowSearch} from '$components/topNavigation/selectors';
+import {getLinkUrl, getPageTitle, getShowSearch} from '$components/topNavigation/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
 import {clearApiToken, fetchApiToken} from '../auth/actions';
 import {getApiToken, getApiTokenLoading, getLoggedInUser} from '../auth/selectors';
@@ -36,6 +36,7 @@ type Props = {
   clearError: typeof clearError,
   closeReveal: Function,
   fetchApiToken: Function,
+  linkUrl: string,
   location: Object,
   params: Object,
   pageTitle: string,
@@ -90,6 +91,7 @@ class App extends Component {
       apiToken,
       apiTokenLoading,
       children,
+      linkUrl,
       location,
       pageTitle,
       showSearch,
@@ -130,6 +132,7 @@ class App extends Component {
         />
 
         <TopNavigation
+          linkUrl={linkUrl}
           onLogout={this.logOut}
           pageTitle={pageTitle}
           showSearch={showSearch}
@@ -166,6 +169,7 @@ const mapStateToProps = (state: RootState) => {
     apiError: getError(state),
     apiToken: getApiToken(state),
     apiTokenLoading: getApiTokenLoading(state),
+    linkUrl: getLinkUrl(state),
     pageTitle: getPageTitle(state),
     showSearch: getShowSearch(state),
     user,

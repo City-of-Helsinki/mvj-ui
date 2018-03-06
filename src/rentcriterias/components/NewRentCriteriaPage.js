@@ -32,6 +32,7 @@ class NewRentCriteriaPage extends Component {
   componentWillMount() {
     const {receiveTopNavigationSettings} = this.props;
     receiveTopNavigationSettings({
+      linkUrl: getRouteById('rentcriterias'),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });

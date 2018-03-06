@@ -67,6 +67,7 @@ class LeaseList extends Component {
     const {router: {location: {query}}} = this.props;
 
     receiveTopNavigationSettings({
+      linkUrl: getRouteById('leases'),
       pageTitle: 'Vuokraukset',
       showSearch: false,
     });

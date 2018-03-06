@@ -24,6 +24,7 @@ import {
   getRentCriteria,
   getRentCriteriaFormValues,
 } from '../selectors';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
 import type {RootState} from '$src/root/types';
 
@@ -36,6 +37,7 @@ type Props = {
   initializeRentCriteria: Function,
   isEditMode: boolean,
   isFetching: boolean,
+  receiveTopNavigationSettings: Function,
   router: Object,
   showEditMode: Function,
 }
@@ -48,7 +50,13 @@ class RentCriteriaPage extends Component {
   };
 
   componentWillMount() {
-    const {fetchSingleRentCriteria} = this.props;
+    const {fetchSingleRentCriteria, receiveTopNavigationSettings} = this.props;
+
+    receiveTopNavigationSettings({
+      linkUrl: getRouteById('rentcriterias'),
+      pageTitle: 'Vuokrausperusteet',
+      showSearch: false,
+    });
     fetchSingleRentCriteria();
   }
 
@@ -135,6 +143,7 @@ export default flowRight(
       fetchSingleRentCriteria,
       hideEditMode,
       initializeRentCriteria,
+      receiveTopNavigationSettings,
       showEditMode,
     }
   ),
