@@ -13,7 +13,7 @@ import {leaseTypeOptions} from '../constants';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '../helpers';
 import {getSearchQuery} from '$util/helpers';
 import Button from '$components/button/Button';
-import CreateLease from '$src/leases/leaseSections/CreateLease';
+import CreateLease from './leaseSections/CreateLease';
 import EditableMap from '$components/map/EditableMap';
 import Loader from '$components/loader/Loader';
 import Modal from '$components/modal/Modal';
