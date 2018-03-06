@@ -8,9 +8,10 @@
 // Vendor
 @import "~react-redux-toastr/src/styles/index";
 @import "~react-select/dist/react-select.css";
+@import "~react-datepicker/dist/react-datepicker.css";
 @import "components/map/leaflet";
 
-// Components Beta
+// Components
 @import "components/button/button";
 @import "components/button/close-button";
 @import "components/button/icon-radio-buttons";
@@ -40,7 +41,7 @@
 @import "components/tabs/tabs";
 @import "components/topNavigation/top-navigation";
 
-// App Beta
+// App
 @import "app/app";
 @import "auth/components/login-page";
 @import "leases/components/leaseSections/billing/billing";
