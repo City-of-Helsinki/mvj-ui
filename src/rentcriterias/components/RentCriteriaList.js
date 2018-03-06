@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 
-import {fetchRentCriterias} from '../actions';
+import {fetchRentCriterias, initializeRentCriteria} from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getIsFetching, getRentCriteriasList} from '../selectors';
 import {formatDateObj, getLabelOfOption, getSearchQuery} from '$util/helpers';
@@ -27,6 +27,7 @@ import tableIcon from '$assets/icons/table.svg';
 
 type Props = {
   fetchRentCriterias: Function,
+  initializeRentCriteria: Function,
   isFetching: boolean,
   receiveTopNavigationSettings: Function,
   rentcriterias: Array<Object>,
@@ -55,6 +56,7 @@ class RentCriteriaList extends Component {
     const {router: {location: {query}}} = this.props;
 
     receiveTopNavigationSettings({
+      linkUrl: getRouteById('rentcriterias'),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
@@ -80,11 +82,19 @@ class RentCriteriaList extends Component {
   }
 
   handleCreateButtonClick = () => {
+    const {initializeRentCriteria} = this.props;
     const {router} = this.context;
+
+    initializeRentCriteria({
+      decisions: [''],
+      prices: [{}],
+      real_estate_ids: [''],
+    });
 
     return router.push({
       pathname: getRouteById('newrentcriteria'),
     });
+
   }
 
   handleRowClick = (id) => {
@@ -165,6 +175,7 @@ export default flowRight(
     },
     {
       fetchRentCriterias,
+      initializeRentCriteria,
       receiveTopNavigationSettings,
     },
   ),

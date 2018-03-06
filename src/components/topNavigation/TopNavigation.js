@@ -7,6 +7,7 @@ import {getRouteById} from '$src/root/routes';
 import SearchInput from '../inputs/SearchInput';
 
 type Props = {
+  linkUrl: string,
   onLogout: Function,
   pageTitle: string,
   showSearch: boolean,
@@ -53,7 +54,9 @@ class TopNavigation extends Component {
   }
 
   render() {
-    const {onLogout,
+    const {
+      linkUrl,
+      onLogout,
       pageTitle,
       showSearch,
       toggleSideMenu,
@@ -68,10 +71,10 @@ class TopNavigation extends Component {
             <path d="M1.5,2.9h27v2.2h-27V2.9z M1.5,11.9h27v2.2h-27V11.9z M1.5,20.9h27v2.2h-27V20.9z"/>
           </svg>
           <div className="title">
-            <Link to="/">Maanvuokrausjärjestelmä</Link>
+            <span>Maanvuokrausjärjestelmä</span>
           </div>
           <div className="page-title">
-            <p>{pageTitle}</p>
+            <Link to={linkUrl}>{pageTitle}</Link>
           </div>
         </div>
         <div className="top-navigation__right-wrapper">

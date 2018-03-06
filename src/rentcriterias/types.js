@@ -10,6 +10,7 @@ export type RentCriteria = Object;
 
 export type RentCriteriasList = Array<RentCriteria>;
 
+export type CreateRentCriteriaAction = Action<'mvj/rentcriteria/CREATE', RentCriteria>;
 export type EditRentCriteriaAction = Action<'mvj/rentcriteria/EDIT', RentCriteria>;
 export type FetchRentCriteriasAction = Action<'mvj/rentcriteria/FETCH_ALL', string>;
 export type FetchSingleRentCriteriaAction = Action<'mvj/rentcriteria/FETCH_SINGLE', void>;

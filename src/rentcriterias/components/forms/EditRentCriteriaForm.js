@@ -13,6 +13,7 @@ import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
 import {financialMethodOptions,
   managementMethodOptions,
+  plotTypeOptions,
   priceTypeOptions,
   purposeOptions} from '$src/constants';
 import type {RootState} from '$src/root/types';
@@ -178,7 +179,7 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
               component={FieldTypeSelect}
               label='Tonttityyppi'
               name='plot_type'
-              options={[]}
+              options={plotTypeOptions}
             />
           </Column>
           <Column medium={2} offsetOnLarge={1}>
