@@ -217,16 +217,16 @@
     margin: 0;
 
     &-option-label {
-      font-size: $font-regular;
-      font-weight: $semibold;
+      font-size: $font-regular !important;
+      font-weight: $semibold !important;
       text-align: left;
       display: inline-block;
       margin-right: rem-calc(5px);
-      line-height: rem-calc(20px);
-      color: $tram;
+      line-height: rem-calc(20px) !important;
+      color: $tram !important;
 
       &.label-off {
-        color: $brick;
+        color: $brick !important;
       }
     }
 
@@ -235,6 +235,7 @@
       width: rem-calc(43px);
       height: rem-calc(20px);
       display: inline-block;
+      margin-bottom: 0;
     }
 
     input {

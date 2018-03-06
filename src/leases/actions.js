@@ -27,46 +27,46 @@ import type {
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
-  createAction('mvj/leasesbeta/FETCH_ATTRIBUTES')();
+  createAction('mvj/leases/FETCH_ATTRIBUTES')();
 
 export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAction =>
-  createAction('mvj/leasesbeta/RECEIVE_ATTRIBUTES')(identifiers);
+  createAction('mvj/leases/RECEIVE_ATTRIBUTES')(identifiers);
 
 export const fetchInvoices = (lease: LeaseId): FetchInvoicesAction =>
-  createAction('mvj/leasesbeta/FETCH_INVOICES')(lease);
+  createAction('mvj/leases/FETCH_INVOICES')(lease);
 
 export const receiveInvoices = (invoices: Invoices): ReceiveInvoicesAction =>
-  createAction('mvj/leasesbeta/RECEIVE_INVOICES')(invoices);
+  createAction('mvj/leases/RECEIVE_INVOICES')(invoices);
 
 export const fetchAreas = (): FetchAreasAction =>
-  createAction('mvj/leasesbeta/FETCH_AREAS')();
+  createAction('mvj/leases/FETCH_AREAS')();
 
 export const receiveAreas = (areas: Areas): ReceiveAreasAction =>
-  createAction('mvj/leasesbeta/RECEIVE_AREAS')(areas);
+  createAction('mvj/leases/RECEIVE_AREAS')(areas);
 
 export const fetchLeases = (search: string): FetchLeasesAction =>
-  createAction('mvj/leasesbeta/FETCH_ALL')(search);
+  createAction('mvj/leases/FETCH_ALL')(search);
 
 export const receiveLeases = (leases: LeasesList): ReceiveLeasesAction =>
-  createAction('mvj/leasesbeta/RECEIVE_ALL')(leases);
+  createAction('mvj/leases/RECEIVE_ALL')(leases);
 
 export const fetchSingleLease = (id: LeaseId): FetchSingleLeaseAction =>
-  createAction('mvj/leasesbeta/FETCH_SINGLE')(id);
+  createAction('mvj/leases/FETCH_SINGLE')(id);
 
 export const receiveSingleLease = (lease: Lease): ReceiveSingleLeaseAction =>
-  createAction('mvj/leasesbeta/RECEIVE_SINGLE')(lease);
+  createAction('mvj/leases/RECEIVE_SINGLE')(lease);
 
 export const createLease = (lease: Lease): CreateLeaseAction =>
-  createAction('mvj/leasesbeta/CREATE')(lease);
+  createAction('mvj/leases/CREATE')(lease);
 
 export const editLease = (lease: Lease): EditLeaseAction =>
-  createAction('mvj/leasesbeta/EDIT')(lease);
+  createAction('mvj/leases/EDIT')(lease);
 
 export const notFound = (): LeaseNotFoundAction =>
-  createAction('mvj/leasesbeta/NOT_FOUND')();
+  createAction('mvj/leases/NOT_FOUND')();
 
 export const hideEditMode = (): HideEditModeAction =>
-  createAction('mvj/leasesbeta/HIDE_EDIT')();
+  createAction('mvj/leases/HIDE_EDIT')();
 
 export const showEditMode = (): ShowEditModeAction =>
-  createAction('mvj/leasesbeta/SHOW_EDIT')();
+  createAction('mvj/leases/SHOW_EDIT')();

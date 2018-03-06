@@ -64,7 +64,6 @@ class Rent extends Component {
           <Column>
             <h1>Vuokra</h1>
             <RightSubtitle
-              className='publicity-label'
               text={rents.rent_info_ok
                 ? <span className="success">Vuokratiedot kunnossa<i /></span>
                 : <span className="alert">Vaatii toimenpiteitä<i /></span>

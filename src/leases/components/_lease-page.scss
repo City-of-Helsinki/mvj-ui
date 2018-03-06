@@ -44,16 +44,6 @@
     }
   }
 
-  .separator-line {
-    width: 100%;
-    border-top: 1px dashed $tram;
-    margin-bottom: 1rem;
-
-    &.no-margin {
-      margin: 0;
-    }
-  }
-
   .publicity-label {
     text-align: right;
     color: $tram;

@@ -13,32 +13,32 @@ import type {
 } from './types';
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
-  'mvj/rentcriterias/HIDE_EDIT': () => false,
-  'mvj/rentcriterias/SHOW_EDIT': () => true,
+  'mvj/rentcriteria/HIDE_EDIT': () => false,
+  'mvj/rentcriteria/SHOW_EDIT': () => true,
 }, false);
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
-  'mvj/rentcriterias/EDIT': () => true,
-  'mvj/rentcriterias/FETCH_ALL': () => true,
-  'mvj/rentcriterias/FETCH_SINGLE': () => true,
-  'mvj/rentcriterias/RECEIVE_ALL': () => false,
-  'mvj/rentcriterias/RECEIVE_SINGLE': () => false,
+  'mvj/rentcriteria/EDIT': () => true,
+  'mvj/rentcriteria/FETCH_ALL': () => true,
+  'mvj/rentcriteria/FETCH_SINGLE': () => true,
+  'mvj/rentcriteria/RECEIVE_ALL': () => false,
+  'mvj/rentcriteria/RECEIVE_SINGLE': () => false,
 }, false);
 
 const rentCriteriasListReducer: Reducer<RentCriteriasList> = handleActions({
-  ['mvj/rentcriterias/RECEIVE_ALL']: (state: RentCriteriasList, {payload: rentcriterias}: ReceiveRentCriteriasAction) => {
+  ['mvj/rentcriteria/RECEIVE_ALL']: (state: RentCriteriasList, {payload: rentcriterias}: ReceiveRentCriteriasAction) => {
     return rentcriterias;
   },
 }, []);
 
 const rentCriteriaReducer: Reducer<RentCriteria> = handleActions({
-  ['mvj/rentcriterias/RECEIVE_SINGLE']: (state: RentCriteria, {payload: rentcriteria}: ReceiveSingleRentCriteriaAction) => {
+  ['mvj/rentcriteria/RECEIVE_SINGLE']: (state: RentCriteria, {payload: rentcriteria}: ReceiveSingleRentCriteriaAction) => {
     return rentcriteria;
   },
 }, {});
 
 const initialValuesReducer: Reducer<RentCriteria> = handleActions({
-  ['mvj/rentcriterias/INITIALIZE']: (state: RentCriteria, {payload: rentcriteria}: ReceiveRentCriteriaInitialValuesAction) => {
+  ['mvj/rentcriteria/INITIALIZE']: (state: RentCriteria, {payload: rentcriteria}: ReceiveRentCriteriaInitialValuesAction) => {
     return rentcriteria;
   },
 }, {

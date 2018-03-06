@@ -16,25 +16,25 @@ import type {
 } from './types';
 
 export const editRentCriteria = (rentcriteria: RentCriteria): EditRentCriteriaAction =>
-  createAction('mvj/rentcriterias/EDIT')(rentcriteria);
+  createAction('mvj/rentcriteria/EDIT')(rentcriteria);
 
 export const fetchRentCriterias = (search: string): FetchRentCriteriasAction =>
-  createAction('mvj/rentcriterias/FETCH_ALL')(search);
+  createAction('mvj/rentcriteria/FETCH_ALL')(search);
 
 export const fetchSingleRentCriteria = (): FetchSingleRentCriteriaAction =>
-  createAction('mvj/rentcriterias/FETCH_SINGLE')();
+  createAction('mvj/rentcriteria/FETCH_SINGLE')();
 
 export const initializeRentCriteria = (rentCriteria: RentCriteria): ReceiveRentCriteriaInitialValuesAction =>
-  createAction('mvj/rentcriterias/INITIALIZE')(rentCriteria);
+  createAction('mvj/rentcriteria/INITIALIZE')(rentCriteria);
 
 export const receiveRentCriterias = (rentcriterias: RentCriteriasList): ReceiveRentCriteriasAction =>
-  createAction('mvj/rentcriterias/RECEIVE_ALL')(rentcriterias);
+  createAction('mvj/rentcriteria/RECEIVE_ALL')(rentcriterias);
 
 export const receiveSingleRentCriteria = (rentcriteria: RentCriteria): ReceiveSingleRentCriteriaAction =>
-  createAction('mvj/rentcriterias/RECEIVE_SINGLE')(rentcriteria);
+  createAction('mvj/rentcriteria/RECEIVE_SINGLE')(rentcriteria);
 
 export const hideEditMode = (): HideEditModeAction =>
-  createAction('mvj/rentcriterias/HIDE_EDIT')();
+  createAction('mvj/rentcriteria/HIDE_EDIT')();
 
 export const showEditMode = (): ShowEditModeAction =>
-  createAction('mvj/rentcriterias/SHOW_EDIT')();
+  createAction('mvj/rentcriteria/SHOW_EDIT')();

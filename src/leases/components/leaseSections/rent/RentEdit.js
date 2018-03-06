@@ -11,9 +11,11 @@ import ContractRentsEdit from './ContractRentsEdit';
 import ChargedRentsEdit from './ChargedRentsEdit';
 import CriteriasEdit from './CriteriasEdit';
 import DiscountsEdit from './DiscountsEdit';
+import Divider from '../../../../components/content/Divider';
 import FormSectionComponent from '../../../../components/form/FormSection';
 import IndexAdjustedRentsEdit from './IndexAdjustedRentsEdit';
 import FieldTypeSwitch from '../../../../components/form/FieldTypeSwitch';
+import RightSubtitle from '../../../../components/content/RightSubtitle';
 
 type Props = {
   handleSubmit: Function,
@@ -30,17 +32,20 @@ class RentEdit extends Component {
       <form onSubmit={handleSubmit}>
         <FormSectionComponent>
           <Row>
-            <Column medium={9}><h1>Vuokra</h1></Column>
-            <Column medium={3}>
-              <Field
-                component={FieldTypeSwitch}
-                name="rents.rent_info_ok"
-                optionLabel="Vuokratiedot kunnossa"
+            <Column>
+              <h1>Vuokra</h1>
+              <RightSubtitle
+                text={
+                  <Field
+                    component={FieldTypeSwitch}
+                    name="rents.rent_info_ok"
+                    optionLabel="Vuokratiedot kunnossa"
+                  />
+                }
               />
             </Column>
           </Row>
-
-          <Row><Column><div className="separator-line no-margin"></div></Column></Row>
+          <Divider />
 
           <FormSection name="rents.basic_info">
             <h2>Vuokran perustiedot</h2>

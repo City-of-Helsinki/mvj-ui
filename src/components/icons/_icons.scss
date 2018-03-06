@@ -1,0 +1,13 @@
+.icons {
+  &.doc-icon, &.map-icon {
+    fill: $black;
+    vertical-align: sub;
+    height: rem-calc(25px);
+    width: rem-calc(25px);
+    margin-right: rem-calc(10px);
+
+    &:hover {
+      fill: $tram;
+    }
+  }
+}

@@ -627,10 +627,10 @@ class PreparerForm extends Component {
           </TabPane>
 
           <TabPane className="lease-page__tab-content">
-            <div className='lease-page__tab-content'>
+            <ContentContainer>
               {!isEditMode && <Billing billing={billing}/>}
               {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
-            </div>
+            </ContentContainer>
           </TabPane>
 
           <TabPane>

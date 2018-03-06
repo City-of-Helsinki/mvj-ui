@@ -34,14 +34,16 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                 </Row>
               </Column>
               <Column medium={3}>
-                {(rentType === '0' || rentType === '4') &&
+                {(rentType === '0' ||
+                  rentType === '4') &&
                   <Row>
                     <Column><label className="mvj-form-field-label">Vuokranlaskennan perusteena oleva vuokra</label></Column>
                   </Row>
                 }
               </Column>
               <Column medium={2}>
-                {(rentType === '0' || rentType === '4') &&
+                {(rentType === '0' ||
+                  rentType === '4') &&
                   <Row>
                     <Column><label className="mvj-form-field-label">Uusi perusvuosi vuokra</label></Column>
                   </Row>
