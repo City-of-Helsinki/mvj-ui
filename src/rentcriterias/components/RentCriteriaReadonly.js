@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import {formatDate, getLabelOfOption} from '$util/helpers';
 import {financialMethodOptions,
   managementMethodOptions,
+  plotTypeOptions,
   purposeOptions,
   priceTypeOptions,
 } from '$src/constants';
@@ -30,15 +31,15 @@ const RentCriteriaReadonly = ({criteria}: Props) => {
         <Row>
           <Column medium={4} large={3}>
             <label>Tonttityyppi</label>
-            <p>{criteria.plot_type || '-'}</p>
+            <p>{getLabelOfOption(plotTypeOptions, criteria.plot_type) || '-'}</p>
           </Column>
           <Column medium={2}>
             <label>Alkupvm</label>
-            <p>{criteria.start_date ? formatDate(criteria.start_date) : '-'}</p>
+            <p>{formatDate(criteria.start_date) || '-'}</p>
           </Column>
           <Column medium={2}>
             <label>Loppupvm</label>
-            <p>{criteria.end_date ? formatDate(criteria.end_date) : '-'}</p>
+            <p>{formatDate(criteria.end_date) || '-'}</p>
           </Column>
         </Row>
         <Row>
@@ -58,11 +59,11 @@ const RentCriteriaReadonly = ({criteria}: Props) => {
           </Column>
           <Column medium={2}>
             <label>Hallintamuoto</label>
-            <p>{criteria.management_method ? getLabelOfOption(managementMethodOptions, criteria.management_method) : '-'}</p>
+            <p>{getLabelOfOption(managementMethodOptions, criteria.management_method) || '-'}</p>
           </Column>
           <Column medium={2}>
             <label>Hallintamuoto</label>
-            <p>{criteria.financial_method ? getLabelOfOption(financialMethodOptions, criteria.financial_method) : '-'}</p>
+            <p>{getLabelOfOption(financialMethodOptions, criteria.financial_method) || '-'}</p>
           </Column>
         </Row>
         <Row>
@@ -78,7 +79,7 @@ const RentCriteriaReadonly = ({criteria}: Props) => {
           </Column>
           <Column medium={2}>
             <label>Asemakaava</label>
-            <p>{criteria.rental_right_end_date ? formatDate(criteria.rental_right_end_date) : '-'}</p>
+            <p>{formatDate(criteria.rental_right_end_date) || '-'}</p>
           </Column>
           <Column medium={2}>
             <label>Indeksi</label>
@@ -100,13 +101,13 @@ const RentCriteriaReadonly = ({criteria}: Props) => {
                     return(
                       <Row key={index} className='list-item'>
                         <Column medium={4} large={2}>
-                          <p>{price.purpose ? getLabelOfOption(purposeOptions, price.purpose) : '-'}</p>
+                          <p>{getLabelOfOption(purposeOptions, price.purpose) || '-'}</p>
                         </Column>
                         <Column medium={2} large={1}>
                           <p>{price.amount || '-'}</p>
                         </Column>
                         <Column medium={2} large={1}>
-                          <p>{price.unit ? getLabelOfOption(priceTypeOptions, price.unit) : '-'}</p>
+                          <p>{getLabelOfOption(priceTypeOptions, price.unit) || '-'}</p>
                         </Column>
                       </Row>
                     );

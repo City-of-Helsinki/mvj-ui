@@ -201,6 +201,10 @@ export const planUnitUseOptions = [
   {value: 'määräala', label: 'Määräala'},
 ];
 
+export const plotTypeOptions = [
+  {value: '0', label: '02 AK (kerrostalo)'},
+];
+
 export const propertyItemExplanationOptions = [
   {value: 'kiinteistö', label: 'Kiinteistö'},
   {value: 'määräala', label: 'Määräala'},
