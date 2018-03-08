@@ -10,6 +10,7 @@ import AbnormalDebtsTableEdit from './AbnormalDebtsTableEdit';
 import AddBillEdit from './AddBillEdit';
 import BillsTableEdit from './BillsTableEdit';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
+import Divider from '$components/content/Divider';
 import FieldTypeSwitch from '$components/form/FieldTypeSwitch';
 import {displayUIMessage} from '$util/helpers';
 import {formatBillingNewBill} from '$src/leases/helpers';
@@ -150,63 +151,53 @@ class BillingEdit extends Component {
             />
           </Column>
         </Row>
-        <Row><Column><div className="separator-line"></div></Column></Row>
-        <Row>
-          <Column>
-            <FormSection
-              name="billing"
-              component={BillsTableEdit}
-              dispatch={dispatch}
-              headers={[
-                'Vuokraaja',
-                'Eräpäivä',
-                'Laskun numero',
-                'Osuus',
-                'Laskutuskausi',
-                'Saamislaji',
-                'Laskun tila',
-                'Laskutettu',
-                'Maksamatta',
-                'Tiedote',
-                'Läh. SAP:iin',
-              ]}
-            />
-          </Column>
-        </Row>
-        <Row style={{marginTop: '20px'}}>
-          <Column>
-            <FormSection
-              component={AddBillEdit}
-              editMode={isAddBillEditMode}
-              name='billing.new_bill'
-              onAdd={() => this.showAddBillEditMode()}
-              onClose={() => this.hideAddBillEditMode()}
-              onSave={() => this.saveNewBill()}
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column>
-            <FormSection
-              name="billing"
-              component={AbnormalDebtsTableEdit}
-              dispatch={dispatch}
-              headers={[
-                'Vuokraaja',
-                'Hallintaosuus',
-                'Eräpäivä',
-                'Määrä',
-                'Aikaväli',
-              ]}
-              onDeleteClick={(index) => {
-                this.setState({
-                  isDeleteAbnormalDebtModalOpen: true,
-                  selectedDebtIndex: index,
-                });
-              }}
-            />
-          </Column>
-        </Row>
+        <Divider />
+        <FormSection
+          name="billing"
+          component={BillsTableEdit}
+          dispatch={dispatch}
+          headers={[
+            'Vuokraaja',
+            'Eräpäivä',
+            'Laskun numero',
+            'Osuus',
+            'Laskutuskausi',
+            'Saamislaji',
+            'Laskun tila',
+            'Laskutettu',
+            'Maksamatta',
+            'Tiedote',
+            'Läh. SAP:iin',
+          ]}
+        />
+        <h2>Luo uusi lasku</h2>
+        <FormSection
+          component={AddBillEdit}
+          editMode={isAddBillEditMode}
+          name='billing.new_bill'
+          onAdd={() => this.showAddBillEditMode()}
+          onClose={() => this.hideAddBillEditMode()}
+          onSave={() => this.saveNewBill()}
+        />
+        <h2>Poikkeavat perinnät</h2>
+        <FormSection
+          name="billing"
+          component={AbnormalDebtsTableEdit}
+          dispatch={dispatch}
+          headers={[
+            'Vuokraaja',
+            'Hallintaosuus',
+            'Eräpäivä',
+            'Määrä',
+            'Aikaväli',
+          ]}
+          onDeleteClick={(index) => {
+            this.setState({
+              isDeleteAbnormalDebtModalOpen: true,
+              selectedDebtIndex: index,
+            });
+          }}
+        />
       </form>
     );
   }

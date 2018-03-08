@@ -45,7 +45,6 @@ start_date}: Props) => {
 
   return (
     <div>
-      <h2>Luo uusi lasku</h2>
       <div className='green-box'>
         <div className='item no-margin no-padding'>
           <CloseButton

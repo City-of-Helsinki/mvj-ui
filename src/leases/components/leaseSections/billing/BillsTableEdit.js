@@ -1,6 +1,5 @@
 // @flow
 import React, {Component} from 'react';
-import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import {change, Field, FieldArray, formValueSelector, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
@@ -193,20 +192,7 @@ class BillsTableEdit extends Component {
 
     return (
       <div>
-        <Row>
-          <Column medium={9}>
-            <h2>Laskut</h2>
-          </Column>
-          <Column medium={3}>
-            {/* <Button
-              className="no-margin button-green button-xs"
-              disabled={!anySelected}
-              onClick={() => this.refund()}
-              style={{float: 'right', marginTop: '15px'}}
-              text='Hyvitä laskut'
-            /> */}
-          </Column>
-        </Row>
+        <h2>Laskut</h2>
         <div className={classNames('table-fixed-header', 'billing__bill-table', {'is-open': showModal})}>
           <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
             <Field

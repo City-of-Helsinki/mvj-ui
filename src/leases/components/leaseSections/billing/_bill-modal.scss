@@ -1,27 +1,27 @@
 .bill-modal {
   position: absolute;
-  width: 0;
+  width: 700px;
   max-width: 100%;
   height: 0;
   top: 0;
-  right: 0;
-  z-index: 1;
+  right: -700px;
+  z-index: 2;
   border: none;
   background-color: $white;
   overflow: hidden;
+  margin-left: 10px;
 
   @include transition(0.5s, all, ease-in-out);
 
   &__container {
-    padding: rem-calc(16px) rem-calc(16px);
+    padding: rem-calc(20px);
     background-color: rgba(0, 146, 70, 0.1);
     height: 100%;
   }
 
   &.is-open {
-    width: 800px;
     height: 100%;
-    border-left: 1px solid $medium-gray;
+    right: 0;
 
     @include transition(0.5s, all, ease-in-out);
   }

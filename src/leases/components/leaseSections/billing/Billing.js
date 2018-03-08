@@ -5,6 +5,7 @@ import get from 'lodash/get';
 
 import AbnormalDebtsTable from './AbnormalDebtsTable';
 import BillsTable from './BillsTable';
+import Divider from '$components/content/Divider';
 
 type Props = {
   billing: Object,
@@ -14,7 +15,9 @@ const Billing = ({billing}: Props) => {
   return (
     <div className="lease-section billing-section">
       <Row>
-        <Column medium={9}><h1>Laskutus</h1></Column>
+        <Column medium={9}>
+          <h1>Laskutus</h1>
+        </Column>
         <Column medium={3}>
           {billing.billing_started
             ? (<p className="success">Laskutus käynnissä<i /></p>)
@@ -22,43 +25,22 @@ const Billing = ({billing}: Props) => {
           }
         </Column>
       </Row>
-      <Row><Column><div className="separator-line"></div></Column></Row>
-      <Row><Column><h2>Laskut</h2></Column></Row>
-      <Row>
-        <Column>
-          <BillsTable
-            headers={[
-              'Vuokraaja',
-              'Eräpäivä',
-              'Laskun numero',
-              'Osuus',
-              'Laskutuskausi',
-              'Saamislaji',
-              'Laskun tila',
-              'Laskutettu',
-              'Maksamatta',
-              'Tiedote',
-              'Läh. SAP:iin',
-            ]}
-            bills={get(billing, 'bills')}
-          />
-        </Column>
-      </Row>
-      <Row><Column><h2>Poikkeavat perinnät</h2></Column></Row>
-      <Row>
-        <Column>
-          <AbnormalDebtsTable
-            headers={[
-              'Vuokraaja',
-              'Hallintaosuus',
-              'Eräpäivä',
-              'Määrä',
-              'Aikaväli',
-            ]}
-            debts={get(billing, 'abnormal_debts')}
-          />
-        </Column>
-      </Row>
+      <Divider />
+      <h2>Laskut</h2>
+      <BillsTable
+        bills={get(billing, 'bills')}
+      />
+      <h2>Poikkeavat perinnät</h2>
+      <AbnormalDebtsTable
+        headers={[
+          'Vuokraaja',
+          'Hallintaosuus',
+          'Eräpäivä',
+          'Määrä',
+          'Aikaväli',
+        ]}
+        debts={get(billing, 'abnormal_debts')}
+      />
     </div>
   );
 };

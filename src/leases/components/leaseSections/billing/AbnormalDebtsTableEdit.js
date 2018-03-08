@@ -1,6 +1,5 @@
 // @flow
 import React, {Component} from 'react';
-import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import {change, Field, formValueSelector, initialize, startAsyncValidation} from 'redux-form';
 import flowRight from 'lodash/flowRight';
@@ -106,11 +105,6 @@ class AbnormalDebtsTableEdit extends Component {
 
     return (
       <div>
-        <Row>
-          <Column>
-            <h2>Poikkeavat perinnät</h2>
-          </Column>
-        </Row>
         <div className={classNames('table-fixed-header', 'billing__bill-table', {'is-open': showModal})}>
           <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
             <div className="table-fixed-header__header-border" />
