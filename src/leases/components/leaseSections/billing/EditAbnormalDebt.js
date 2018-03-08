@@ -10,11 +10,14 @@ import type Moment from 'moment';
 import {billingTypeOptions} from '../constants';
 import {getBillingAbnormalDebtModalErrors} from '$src/leases/selectors';
 import {dateGreaterOrEqual, decimalNumber, required} from '$components/form/validations';
+import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import FieldTypeCheckboxSingle from '$components/form/FieldTypeCheckboxSingle';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
 
 type Props = {
   abnormalDebt: Object,
@@ -38,10 +41,14 @@ const EditAbnormalDebt = ({
   }
 
   return (
-    <div>
-      <h2>Muokkaa poikkeavaa perintää</h2>
-      <div className='green-box'>
-        <div className='item no-margin no-padding'>
+    <div className='billing__edit-abnormal-debt'>
+      <Row>
+        <Column>
+          <h2>Muokkaa poikkeavaa perintää</h2>
+        </Column>
+      </Row>
+      <GreenBoxEdit>
+        <BoxContentWrapper>
           <CloseButton
             className="position-topright"
             onClick={() => onCancel()}
@@ -123,24 +130,26 @@ const EditAbnormalDebt = ({
           <Row>
             <Column>
               <Field
-                className='no-margin'
                 component={FieldTypeText}
                 label='Tiedote'
                 name='info'
               />
             </Column>
           </Row>
-        </div>
-      </div>
-      <Row>
-        <Column>
-          <button
-            className='add-button'
-            disabled={!isEmpty(errors)}
-            onClick={() => onSave(abnormalDebt)}
-            type='button'>Tallenna</button>
-        </Column>
-      </Row>
+          <Row>
+            <Column>
+              <Button
+                className='button-green no-margin pull-right'
+                disabled={!isEmpty(errors)}
+                label='Tallenna'
+                onClick={() => onSave(abnormalDebt)}
+                title='Tallenna'
+              />
+            </Column>
+          </Row>
+        </BoxContentWrapper>
+      </GreenBoxEdit>
+
     </div>
   );
 };

@@ -1,101 +1,12 @@
-.billing-section {
-  .alert {
-    color: $brick;
-    text-align: right;
-    font-weight: $semibold;
-    line-height: rem-calc(33px);
-
-    i {
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      vertical-align: text-bottom;
-      background-image: url(../assets/icons/icon-alert.svg);
-      display: inline-block;
-      margin-left: rem-calc(5px);
-    }
-  }
-
-  .success {
-    color: $tram;
-    text-align: right;
-    font-weight: $semibold;
-    line-height: rem-calc(33px);
-
-    i {
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      vertical-align: text-bottom;
-      background-image: url(../assets/icons/icon_checked.svg);
-      display: inline-block;
-      margin-left: rem-calc(5px);
-    }
-  }
-
-  table.abnormal-debts-table {
-    border: 1px solid #d7d5d5;
-
-    thead {
-      tr {
-        th {
-          border: none;
-          border-bottom: 1px solid $light-gray;
-          padding: 0.3rem 0.5rem;
-          font-size: $font-xsmall;
-          font-weight: $semibold;
-          color: $black;
-        }
-      }
-    }
-
-    tbody {
-      tr {
-        td {
-          border: none;
-          padding: 0.3rem 0.5rem;
-        }
-
-        td.action-buttons {
-          width: rem-calc(70px);
-          line-height: 1;
-        }
-      }
-
-      tr:hover {
-        background-color: rgba(0, 146, 70, 0.1);
-      }
-
-      tr.selected {
-        background-color: rgba(0, 146, 70, 0.2);
-      }
-
-      tr.no-data {
-        text-align: center;
-        background-color: $lightest-gray;
-      }
-    }
-
-    .action-button {
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      margin: 0 rem-calc(3px);
-      cursor: pointer;
-    }
-
-    .action-button:hover {
-      opacity: 0.85;
-    }
-
-    .button-edit {
-      background-image: url(../assets/icons/icon_edit.svg);
-    }
-
-    .button-delete {
-      background-image: url(../assets/icons/trash.svg);
-    }
-  }
-}
-
 .billing {
+  &__add-bill {
+    margin-top: rem-calc(20px);
+  }
+
+  &__edit-abnormal-debt {
+    margin-top: rem-calc(20px);
+  }
+
   &__bill-table {
     position: relative;
     z-index: 3;
@@ -112,12 +23,12 @@
         height: 1000px;
         overflow: auto;
 
-        @include transition(0.5s, max-height, ease-in-out);
+        // @include transition(0.5s, max-height, ease-in-out);
       }
 
       &.is-open {
         .table-fixed-header__container {
-          @include transition(0.5s, max-height, ease-in-out);
+          // @include transition(0.5s, max-height, ease-in-out);
         }
       }
 
@@ -125,11 +36,11 @@
         cursor: pointer;
 
         &.selected {
-          background-color: rgba(0, 146, 70, 0.1);
+          background-color: $tram-lighter-solid;
         }
 
         &.active {
-          background-color: rgba(0, 146, 70, 0.2);
+          background-color: $tram-lighter-solid;
         }
 
         &.no-data {
@@ -138,7 +49,7 @@
         }
 
         td.action-buttons {
-          width: rem-calc(70px);
+          width: rem-calc(50px);
           line-height: 1;
         }
 

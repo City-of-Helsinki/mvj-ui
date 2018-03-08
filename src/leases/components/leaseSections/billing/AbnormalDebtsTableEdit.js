@@ -104,8 +104,8 @@ class AbnormalDebtsTableEdit extends Component {
     const {selectedDebt, selectedDebtIndex, showModal, tableHeight} = this.state;
 
     return (
-      <div>
-        <div className={classNames('table-fixed-header', 'billing__bill-table', {'is-open': showModal})}>
+      <div className='billing__bill-table'>
+        <div className={classNames('table-fixed-header', 'billing-fixed-table', {'is-open': showModal})}>
           <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
             <div className="table-fixed-header__header-border" />
             <table ref={(ref) => this.tableElement = ref}>
@@ -123,17 +123,12 @@ class AbnormalDebtsTableEdit extends Component {
                       <tr
                         className={classNames({'selected': selectedDebtIndex === index})}
                         key={index}>
-                        <td>{`${get(debt, 'tenant.lastname')} ${get(debt, 'tenant.firstname')}`}</td>
-                        <td>{get(debt, 'tenant.bill_share') ? `${get(debt, 'tenant.bill_share')} %` : '-'}</td>
-                        <td>{debt.due_date ? formatDate(debt.due_date) : '-'}</td>
-                        <td>{debt.capital_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(debt.capital_amount))} €` : '-'}</td>
-                        <td>{formatDateRange(debt.billing_period_start_date, debt.billing_period_end_date)}</td>
+                        <td onClick={() => this.showDebtModal(index)}>{`${get(debt, 'tenant.lastname')} ${get(debt, 'tenant.firstname')}`}</td>
+                        <td onClick={() => this.showDebtModal(index)}>{get(debt, 'tenant.bill_share') ? `${get(debt, 'tenant.bill_share')} %` : '-'}</td>
+                        <td onClick={() => this.showDebtModal(index)}>{debt.due_date ? formatDate(debt.due_date) : '-'}</td>
+                        <td onClick={() => this.showDebtModal(index)}>{debt.capital_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(debt.capital_amount))} €` : '-'}</td>
+                        <td onClick={() => this.showDebtModal(index)}>{formatDateRange(debt.billing_period_start_date, debt.billing_period_end_date)}</td>
                         <td className="action-buttons">
-                          <button
-                            className='action-button button-edit'
-                            onClick={() => this.showDebtModal(index)}
-                            type='button'
-                          />
                           <button
                             className='action-button button-delete'
                             onClick={() => {

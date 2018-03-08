@@ -7,15 +7,18 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import classNames from 'classnames';
-import type Moment from 'moment';
 
-import {formatDate,
+import CloseButton from '$components/button/CloseButton';
+
+import {
+  formatDate,
   formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator,
   getLabelOfOption,
 } from '$util/helpers';
-import {billingInvoiceMethodOptions,
+import {
+  billingInvoiceMethodOptions,
   billingInvoiceTypeOptions,
   billingStatusOptions,
   billingTypeOptions,
@@ -40,7 +43,7 @@ type Props = {
   onRefund: Function,
   onSave: Function,
   show: boolean,
-  start_date: ?Moment,
+  start_date: ?string,
 }
 
 class BillModalEdit extends Component {
@@ -72,27 +75,30 @@ class BillModalEdit extends Component {
   }
 
   render() {
-    const {bill,
+    const {
+      bill,
       containerHeight,
       errors,
       onClose,
       onRefund,
       onSave,
       show,
-      start_date} = this.props;
+      start_date,
+    } = this.props;
 
     return (
       <div className={classNames('bill-modal', {'is-open': show})} style={{height: containerHeight}}>
         <div className="bill-modal__container">
-          <div className='bill-modal__title-row'>
-            <div className='title'>
-              <h1>Laskun tiedot</h1>
-            </div>
-            <div className='close-button-container'>
-              <a onClick={onClose}></a>
-            </div>
+          <div className='bill-modal__header'>
+            <h1>Laskun tiedot</h1>
+            <CloseButton
+              className='position-topright'
+              onClick={onClose}
+              title='Sulje'
+            />
           </div>
-          <div className="section-item">
+
+          <div className="bill-modal__body with-footer">
             <Row>
               <Column medium={4}>
                 <label className='mvj-form-field-label'>Laskunsaaja</label>
@@ -252,23 +258,23 @@ class BillModalEdit extends Component {
                 }
               </Column>
             </Row>
-            <Row>
-              <Column medium={8}>
-                <Button
-                  className="button-green no-margin"
-                  onClick={() => onRefund(bill)}
-                  text='Hyvitä'
-                />
-                {!get(bill, 'SAP_number') &&
-                  <Button
-                    className="button-green"
-                    disabled={!isEmpty(errors)}
-                    onClick={() => onSave(bill)}
-                    text='Tallenna'
-                  />
-                }
-              </Column>
-            </Row>
+          </div>
+          <div className='bill-modal__footer'>
+            <Button
+              className="button-green no-margin"
+              label='Hyvitä'
+              onClick={() => onRefund(bill)}
+              title='Hyvitä'
+            />
+            {!get(bill, 'SAP_number') &&
+              <Button
+                className="button-green no-margin pull-right"
+                disabled={!isEmpty(errors)}
+                label='Tallenna'
+                onClick={() => onSave(bill)}
+                title='Tallenna'
+              />
+            }
           </div>
         </div>
       </div>

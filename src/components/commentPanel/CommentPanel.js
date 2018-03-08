@@ -57,8 +57,9 @@ class CommentPanel extends Component {
           <Button
             className='button-green no-margin'
             disabled={!comment}
+            label='Lisää kommentti'
             onClick={() => onAddComment(comment)}
-            text='Lisää kommentti'
+            title='Lisää kommentti'
           />
         </div>
         <div className='comment-panel__comments'>

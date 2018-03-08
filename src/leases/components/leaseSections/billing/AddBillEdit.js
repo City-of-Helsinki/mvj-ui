@@ -6,11 +6,15 @@ import {Field, formValueSelector} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import AddButton from '$components/form/AddButton';
+import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import FieldTypeCheckboxSingle from '$components/form/FieldTypeCheckboxSingle';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
+import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import {dateGreaterOrEqual, decimalNumber, required} from '$components/form/validations';
 import {getBillingAddBillErrors} from '$src/leases/selectors';
 import {billingTypeOptions} from '../constants';
@@ -32,21 +36,25 @@ onSave,
 start_date}: Props) => {
   if(!editMode) {
     return (
-      <Row>
-        <Column>
-          <button
-            type="button"
-            onClick={() => onAdd()}
-            className='add-button'>Luo uusi lasku</button>
-        </Column>
-      </Row>
+      <div className='billing__add-bill'>
+        <AddButton
+          label='Luo uusi lasku'
+          onClick={() => onAdd()}
+          title='Luo uusi lasku'
+        />
+      </div>
     );
   }
 
   return (
-    <div>
-      <div className='green-box'>
-        <div className='item no-margin no-padding'>
+    <div className='billing__add-bill'>
+      <Row>
+        <Column>
+          <h2>Luo uusi lasku</h2>
+        </Column>
+      </Row>
+      <GreenBoxEdit>
+        <BoxContentWrapper>
           <CloseButton
             className="position-topright"
             onClick={() => onClose()}
@@ -136,24 +144,25 @@ start_date}: Props) => {
           <Row>
             <Column>
               <Field
-                className='no-margin'
                 component={FieldTypeText}
                 label='Tiedote'
                 name='info'
               />
             </Column>
           </Row>
-        </div>
-      </div>
-      <Row>
-        <Column>
-          <button
-            className='add-button'
-            disabled={!isEmpty(errors)}
-            onClick={() => onSave()}
-            type='button'>Luo</button>
-        </Column>
-      </Row>
+          <Row>
+            <Column>
+              <Button
+                className='button-green no-margin pull-right'
+                disabled={!isEmpty(errors)}
+                label='Tallenna'
+                onClick={() => onSave()}
+                title='Tallenna'
+              />
+            </Column>
+          </Row>
+        </BoxContentWrapper>
+      </GreenBoxEdit>
     </div>
   );
 };

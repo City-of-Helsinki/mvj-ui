@@ -5,23 +5,25 @@ import classNames from 'classnames';
 type Props = {
   className?: string,
   disabled?: boolean,
+  label: string,
   onClick: Function,
   style?: Object,
-  text: string,
+  title?: string,
   type?: string,
 
 }
 
-const Button = ({className, disabled, onClick, style, text, type = 'button'}: Props) => {
+const Button = ({className, disabled, label, onClick, style, title, type = 'button'}: Props) => {
   return (
     <button
       className={classNames('mvj-button', className)}
       onClick={onClick}
       disabled={disabled}
       style={style}
+      title={title}
       type={type}
     >
-      {text}
+      {label}
     </button>
   );
 };

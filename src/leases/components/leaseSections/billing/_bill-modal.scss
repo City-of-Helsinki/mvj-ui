@@ -11,11 +11,11 @@
   overflow: hidden;
   margin-left: 10px;
 
-  @include transition(0.5s, all, ease-in-out);
+  @include transition(0.5s, right, ease-in-out);
 
   &__container {
     padding: rem-calc(20px);
-    background-color: rgba(0, 146, 70, 0.1);
+    background-color: $tram-lighter-solid;
     height: 100%;
   }
 
@@ -23,39 +23,33 @@
     height: 100%;
     right: 0;
 
-    @include transition(0.5s, all, ease-in-out);
+    @include transition(0.5s, right, ease-in-out);
   }
 
-  &__title-row {
-    display: flex;
-    flex: row nowrap;
-    margin-bottom: 1rem;
-
-    .title {
-      flex: 1 1 0%;
-
-      h1 {
-        font-family: $font-family-source;
-	      font-size: $font-large;
-	      font-weight: $semibold;
-        margin: 0;
-        color: $tram;
-      }
-    }
-    .close-button-container {
-      align-self: center;
-      a {
-        background-image: url(../assets/icons/icon_close.svg);
-        height: 20px;
-        width: 20px;
-        display: block;
-        cursor: pointer;
-      }
+  &__header {
+    position: relative;
+    h1 {
+      font-family: $font-family-source;
+	    font-size: $font-large;
+      font-weight: $semibold;
+      margin: 0 0 rem-calc(20px) !important;
+      color: $tram;
     }
   }
-  .section-item {
-    max-height: calc(100% - 40px);
+  &__body {
+    max-height: calc(100% - 30px);
     overflow-y: auto;
     overflow-x: hidden;
+
+    &.with-footer {
+      max-height: calc(100% - 80px);
+    }
+  }
+  &__footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: rem-calc(10px) rem-calc(20px) rem-calc(20px);
   }
 }

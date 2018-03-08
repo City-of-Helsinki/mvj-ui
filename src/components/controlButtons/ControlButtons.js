@@ -39,28 +39,32 @@ const ControlButtons = ({
             <Button
               className='button-red'
               disabled={isCancelDisabled}
+              label='Hylkää muutokset'
               onClick={onCancelClick}
-              text='Hylkää muutokset'
+              title='Hylkää muutokset'
             />
             {showCopyButton &&
               <Button
                 disabled={isCopyDisabled}
+                label='Kopio'
                 onClick={onCopyClick}
-                text='Kopio'
+                title='Kopio'
               />
             }
             <Button
               className='button-green'
               disabled={!isValid}
+              label='Tallenna'
               onClick={onSaveClick}
-              text='Tallenna'
+              title='Tallenna'
             />
           </div>
         ) : (
           <div className='left-buttons'>
             <Button
+              label='Muokkaa'
               onClick={onEditClick}
-              text='Muokkaa'
+              title='Muokkaa'
             />
           </div>
         )

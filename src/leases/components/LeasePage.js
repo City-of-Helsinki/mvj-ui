@@ -630,8 +630,19 @@ class PreparerForm extends Component {
 
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
-              {!isEditMode && <Billing billing={billing}/>}
-              {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
+              <h1>Laskutus</h1>
+              <RightSubtitle
+                className='billing-status'
+                text={billing.billing_started
+                  ? <p className="success">Laskutus käynnissä<i /></p>
+                  : <p className="alert">Laskutus ei käynnissä<i /></p>
+                }
+              />
+              <Divider />
+              {isEditMode
+                ? <BillingEdit initialValues={{billing: billing}}/>
+                : <Billing billing={billing}/>
+              }
             </ContentContainer>
           </TabPane>
 

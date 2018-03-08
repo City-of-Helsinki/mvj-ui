@@ -60,8 +60,13 @@
   &.no-margin {
     margin: 0;
   }
+
   &.full-width {
     width: 100%;
+  }
+
+  &.pull-right {
+    float: right;
   }
 
   &.button-map {

@@ -12,17 +12,20 @@ import BillModal from './BillModal';
 import {getLabelOfOption} from '$util/helpers';
 import {billingStatusOptions, billingTypeOptions} from '../constants';
 
+const MODAL_HEIGHT = 530;
+const MODAL_WIDTH = 700;
+
 type Props = {
   bills: Array<Object>,
 }
 
 type State = {
-  containerWidth: ?number,
   selectedBill: Object,
   selectedBillIndex: number,
   showAllColumns: boolean,
   showModal: boolean,
   tableHeight: ?number,
+  tableWidth: ?number,
 }
 
 class BillsTable extends Component {
@@ -35,20 +38,20 @@ class BillsTable extends Component {
   tableWrapper : any
 
   state: State = {
-    containerWidth: null,
     selectedBill: {},
     selectedBillIndex: -1,
     showAllColumns: true,
     showModal: false,
     tableHeight: null,
+    tableWidth: null,
   }
 
   calculateHeight = () => {
     let {clientHeight} = this.tableElement;
     const {showModal} = this.state;
 
-    if(showModal) {clientHeight = 480;}
-    if(clientHeight > 480) {clientHeight = 480;}
+    if(showModal) {clientHeight = MODAL_HEIGHT;}
+    if(clientHeight > MODAL_HEIGHT) {clientHeight = MODAL_HEIGHT;}
 
     this.setState({tableHeight: clientHeight});
   }
@@ -58,16 +61,16 @@ class BillsTable extends Component {
     const {showModal} = this.state;
 
     if(showModal) {
-      if(clientWidth - 700 - 10 <= 0) {
+      if(clientWidth - MODAL_WIDTH - 10 <= 0) {
         clientWidth = 0;
       } else {
-        clientWidth = clientWidth - 700 - 10;
+        clientWidth = clientWidth - MODAL_WIDTH - 10;
       }
     }
-    this.setState({containerWidth: clientWidth});
+    this.setState({tableWidth: clientWidth});
   }
 
-  fadingDone = () => {
+  transitionEnds = () => {
     const {clientWidth} = this.container;
     const {clientWidth: tableWidth} = this.tableWrapper;
     if(clientWidth === tableWidth) {
@@ -78,7 +81,7 @@ class BillsTable extends Component {
   componentDidMount() {
     this.calculateHeight();
     this.calculateTableWidth();
-    this.tableWrapper.addEventListener('transitionend', this.fadingDone);
+    this.tableWrapper.addEventListener('transitionend', this.transitionEnds);
   }
 
   componentDidUpdate() {
@@ -97,7 +100,7 @@ class BillsTable extends Component {
   }
 
   componentWillUnmount() {
-    this.tableWrapper.removeEventListener('transitionend', this.fadingDone);
+    this.tableWrapper.removeEventListener('transitionend', this.transitionEnds);
   }
 
   handleKeyCodeDown = () => {
@@ -146,16 +149,22 @@ class BillsTable extends Component {
 
   render () {
     const {bills} = this.props;
-    const {containerWidth, selectedBill, showAllColumns, showModal, tableHeight} = this.state;
+    const {selectedBill, showAllColumns, showModal, tableHeight, tableWidth} = this.state;
     const headers = this.getTableHeaders();
 
     return (
-      <div className='billing__bill-table' ref={(ref) => this.container = ref}>
-        <div className='table-wrapper' ref={(ref) => this.tableWrapper = ref} style={{maxWidth: containerWidth}}>
+      <div
+        className='billing__bill-table'
+        ref={(ref) => this.container = ref}>
+        <div
+          className='table-wrapper'
+          ref={(ref) => this.tableWrapper = ref}
+          style={{maxWidth: tableWidth}}>
           <div className={classNames('table-fixed-header', 'billing-fixed-table', {'is-open': showModal})}>
             <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
               <div className="table-fixed-header__header-border" />
-              <table ref={(ref) => this.tableElement = ref}>
+              <table
+                ref={(ref) => this.tableElement = ref}>
                 <thead>
                   {headers && headers.length > 0 &&
                     <tr>

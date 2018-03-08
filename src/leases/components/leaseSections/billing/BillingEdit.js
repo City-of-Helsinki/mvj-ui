@@ -1,17 +1,15 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {change, Field, FormSection, formValueSelector, initialize, reduxForm} from 'redux-form';
+import {change, FormSection, formValueSelector, initialize, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
-import {Row, Column} from 'react-foundation';
 
 import AbnormalDebtsTableEdit from './AbnormalDebtsTableEdit';
 import AddBillEdit from './AddBillEdit';
 import BillsTableEdit from './BillsTableEdit';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
-import Divider from '$components/content/Divider';
-import FieldTypeSwitch from '$components/form/FieldTypeSwitch';
+import FormSectionContainer from '../../../../components/form/FormSection';
 import {displayUIMessage} from '$util/helpers';
 import {formatBillingNewBill} from '$src/leases/helpers';
 
@@ -131,73 +129,53 @@ class BillingEdit extends Component {
     const {isAddBillEditMode, isDeleteAbnormalDebtModalOpen} = this.state;
 
     return (
-      <form onSubmit={handleSubmit} className='lease-section-edit billing-section'>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteAbnormalDebtModalOpen}
-          label='Haluatko varmasti poistaa poikkeavan perinnän?'
-          onCancel={() => this.hideModal('DeleteAbnormalDebt')}
-          onClose={() => this.hideModal('DeleteAbnormalDebt')}
-          onSave={this.deleteAbnormalDebt}
-          title='Poista poikkeava perintä'
-        />
-        <Row>
-          <Column medium={9}><h1>Laskutus</h1></Column>
-          <Column medium={3}>
-            <Field
-              component={FieldTypeSwitch}
-              name="billing.billing_started"
-              optionLabel="Laskutus käynnissä"
-            />
-          </Column>
-        </Row>
-        <Divider />
-        <FormSection
-          name="billing"
-          component={BillsTableEdit}
-          dispatch={dispatch}
-          headers={[
-            'Vuokraaja',
-            'Eräpäivä',
-            'Laskun numero',
-            'Osuus',
-            'Laskutuskausi',
-            'Saamislaji',
-            'Laskun tila',
-            'Laskutettu',
-            'Maksamatta',
-            'Tiedote',
-            'Läh. SAP:iin',
-          ]}
-        />
-        <h2>Luo uusi lasku</h2>
-        <FormSection
-          component={AddBillEdit}
-          editMode={isAddBillEditMode}
-          name='billing.new_bill'
-          onAdd={() => this.showAddBillEditMode()}
-          onClose={() => this.hideAddBillEditMode()}
-          onSave={() => this.saveNewBill()}
-        />
-        <h2>Poikkeavat perinnät</h2>
-        <FormSection
-          name="billing"
-          component={AbnormalDebtsTableEdit}
-          dispatch={dispatch}
-          headers={[
-            'Vuokraaja',
-            'Hallintaosuus',
-            'Eräpäivä',
-            'Määrä',
-            'Aikaväli',
-          ]}
-          onDeleteClick={(index) => {
-            this.setState({
-              isDeleteAbnormalDebtModalOpen: true,
-              selectedDebtIndex: index,
-            });
-          }}
-        />
+      <form onSubmit={handleSubmit}>
+        <FormSectionContainer>
+          <ConfirmationModal
+            confirmButtonLabel='Poista'
+            isOpen={isDeleteAbnormalDebtModalOpen}
+            label='Haluatko varmasti poistaa poikkeavan perinnän?'
+            onCancel={() => this.hideModal('DeleteAbnormalDebt')}
+            onClose={() => this.hideModal('DeleteAbnormalDebt')}
+            onSave={this.deleteAbnormalDebt}
+            title='Poista poikkeava perintä'
+          />
+          <h2>Laskut</h2>
+          <FormSection
+            component={BillsTableEdit}
+            dispatch={dispatch}
+            name="billing"
+          />
+
+          <FormSection
+            component={AddBillEdit}
+            editMode={isAddBillEditMode}
+            name='billing.new_bill'
+            onAdd={() => this.showAddBillEditMode()}
+            onClose={() => this.hideAddBillEditMode()}
+            onSave={() => this.saveNewBill()}
+          />
+
+          <h2>Poikkeavat perinnät</h2>
+          <FormSection
+            name="billing"
+            component={AbnormalDebtsTableEdit}
+            dispatch={dispatch}
+            headers={[
+              'Vuokraaja',
+              'Hallintaosuus',
+              'Eräpäivä',
+              'Määrä',
+              'Aikaväli',
+            ]}
+            onDeleteClick={(index) => {
+              this.setState({
+                isDeleteAbnormalDebtModalOpen: true,
+                selectedDebtIndex: index,
+              });
+            }}
+          />
+        </FormSectionContainer>
       </form>
     );
   }

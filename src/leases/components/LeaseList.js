@@ -146,8 +146,9 @@ class LeaseList extends Component {
           buttonComponent={
             <Button
               className='no-margin full-width'
+              label='Luo uusi vuokratunnus'
               onClick={this.showModal}
-              text='Luo uusi vuokratunnus'
+              title='Luo uusi vuokratunnus'
             />
           }
           searchComponent={

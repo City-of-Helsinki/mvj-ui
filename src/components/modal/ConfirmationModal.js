@@ -32,8 +32,18 @@ const ConfirmationModal = ({
     >
       <p>{label}</p>
       <div className='confirmation-modal__footer'>
-        <Button className='button-red' text='Peruuta' onClick={onCancel}/>
-        <Button className='button-green' text={confirmButtonLabel} onClick={onSave}/>
+        <Button
+          className='button-red'
+          label='Peruuta'
+          onClick={onCancel}
+          title='Peruuta'
+        />
+        <Button
+          className='button-green'
+          label={confirmButtonLabel}
+          onClick={onSave}
+          title={confirmButtonLabel}
+        />
       </div>
     </Modal>
   </div>
