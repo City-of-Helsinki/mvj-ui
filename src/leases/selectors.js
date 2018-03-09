@@ -31,8 +31,5 @@ export const getLeaseInfoErrors: Selector<any, void> = (state: Object): Object =
 export const getBillingAbnormalDebtModalErrors: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.billing-edit-form.syncErrors.billing.abnormal_debt');
 
-export const getBillingAddBillErrors: Selector<any, void> = (state: Object): Object =>
-  get(state, 'form.billing-edit-form.syncErrors.billing.new_bill');
-
 export const getBillingBillModalErrors: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.billing-edit-form.syncErrors.billing.bill');

@@ -154,7 +154,7 @@ export const getContentBilling = (lease: Object) => {
 
   return {
     abnormal_debts: getContentBillingAbnormalDebts(get(billing, 'abnormal_debts')),
-    billing_started: get(billing, 'billing_started'),
+    invoicing_started: get(billing, 'invoicing_started'),
     bills: getContentBillingBills(get(billing, 'bills')),
   };
 };

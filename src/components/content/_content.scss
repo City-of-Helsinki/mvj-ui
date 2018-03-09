@@ -38,7 +38,7 @@
     text-transform: uppercase;
   }
 
-  h1:first-child {
+  h1:first-of-type {
     margin: 0;
   }
   h2 {
@@ -49,7 +49,7 @@
     margin-top: rem-calc(30px);
   }
 
-  h2:first-child {
+  h2:first-of-type {
     margin-top: rem-calc(10px);
   }
 

@@ -4,6 +4,8 @@ import get from 'lodash/get';
 
 import AbnormalDebtsTable from './AbnormalDebtsTable';
 import BillsTable from './BillsTable';
+import Divider from '$components/content/Divider';
+import RightSubtitle from '$components/content/RightSubtitle';
 
 type Props = {
   billing: Object,
@@ -11,7 +13,16 @@ type Props = {
 
 const Billing = ({billing}: Props) => {
   return (
-    <div className="lease-section billing-section">
+    <div>
+      <h1>Laskutus</h1>
+      <RightSubtitle
+        className='invoicing-status'
+        text={billing.invoicing_started
+          ? <p className="success">Laskutus käynnissä<i /></p>
+          : <p className="alert">Laskutus ei käynnissä<i /></p>
+        }
+      />
+      <Divider />
       <h2>Laskut</h2>
       <BillsTable
         bills={get(billing, 'bills')}

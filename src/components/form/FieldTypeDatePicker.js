@@ -22,6 +22,8 @@ class FieldTypeDatePicker extends Component {
     const {target: {value}} = e;
     if(value) {
       onBlur(moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD'));
+    } else {
+      onBlur('');
     }
   }
 

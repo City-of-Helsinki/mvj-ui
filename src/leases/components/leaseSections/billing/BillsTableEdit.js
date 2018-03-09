@@ -1,15 +1,24 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {change, Field, FieldArray, formValueSelector, initialize} from 'redux-form';
+import {change, destroy, initialize, formValueSelector} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 
 import {displayUIMessage} from '$util/helpers';
 import {formatBillingBillDb} from '$src/leases/helpers';
+import {editBill} from './actions';
 import BillModalEdit from './BillModalEdit';
-import BillsTableBodyEdit from './BillsTableBodyEdit';
+import {
+  formatDate,
+  formatDateRange,
+  formatDecimalNumber,
+  getLabelOfOption,
+  formatNumberWithThousandSeparator,
+} from '$util/helpers';
+import {billingStatusOptions, billingTypeOptions} from '../constants';
 
 const MODAL_HEIGHT = 610;
 const MODAL_WIDTH = 700;
@@ -34,6 +43,8 @@ class BillsTableEdit extends Component {
   props: Props
 
   container: any
+
+  modal: any
 
   tableElement: any
 
@@ -65,7 +76,8 @@ class BillsTableEdit extends Component {
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
       this.state.selectedBill !== nextState.selectedBill ||
-      this.state.showModal !== nextState.showModal
+      this.state.showModal !== nextState.showModal ||
+      this.props !== nextProps
     );
   }
 
@@ -88,17 +100,13 @@ class BillsTableEdit extends Component {
     const {showModal} = this.state;
 
     if(showModal) {
-      if(clientWidth - MODAL_WIDTH - 10 <= 0) {
-        clientWidth = 0;
-      } else {
-        clientWidth = clientWidth - MODAL_WIDTH - 10;
-      }
+      if(clientWidth - MODAL_WIDTH - 10 <= 0) {clientWidth = 0;}
+      else {clientWidth = clientWidth - MODAL_WIDTH - 10;}
     }
     this.setState({tableWidth: clientWidth});
   }
 
   transitionEnds = () => {
-    console.log('transitionend');
     const {clientWidth} = this.container;
     const {clientWidth: tableWidth} = this.tableWrapper;
     if(clientWidth === tableWidth) {
@@ -127,10 +135,9 @@ class BillsTableEdit extends Component {
   }
 
   initilizeBillEditForm = (bill: Object) => {
-    const {billing, dispatch} = this.props;
-    billing.bill = bill;
-
-    dispatch(initialize('billing-edit-form', {billing: billing}, true, {}));
+    const {dispatch} = this.props;
+    dispatch(destroy('billing-edit-bill-form'));
+    dispatch(initialize('billing-edit-bill-form', bill));
   }
 
   showBillModal = (index: number) => {
@@ -160,14 +167,12 @@ class BillsTableEdit extends Component {
   }
 
   saveBill = (bill: Object, index: ?number) => {
-    const {bills, dispatch} = this.props;
-    if(index !== undefined && index !== null && bills && bills.length > index) {
-      bills[index] = formatBillingBillDb(bill);
+    const {dispatch} = this.props;
+    const newBill:Object = formatBillingBillDb(bill);
+    newBill.arrayIndex = index;
+    dispatch(editBill(newBill));
 
-      dispatch(change('billing-edit-form', `billing.bills`, bills));
-      displayUIMessage({title: 'Lasku tallennettu', body: 'Lasku on tallennettu onnistuneesti'});
-      this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false});
-    }
+    this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false});
   }
 
   getTableHeaders = () => {
@@ -198,7 +203,14 @@ class BillsTableEdit extends Component {
 
   render () {
     const {bills} = this.props;
-    const {selectedBill, selectedBillIndex, showAllColumns, showModal, tableHeight, tableWidth} = this.state;
+    const {
+      selectedBill,
+      selectedBillIndex,
+      showAllColumns,
+      showModal,
+      tableHeight,
+      tableWidth,
+    } = this.state;
     const headers = this.getTableHeaders();
 
     return (
@@ -219,23 +231,61 @@ class BillsTableEdit extends Component {
                     </tr>
                   }
                 </thead>
-                <FieldArray
-                  bills={bills}
-                  component={BillsTableBodyEdit}
-                  name="bills"
-                  onRowClick={(index) => this.showBillModal(index)}
-                  selectedBillIndex={selectedBillIndex}
-                  showAllColumns={showAllColumns}
-                />
+                {bills && bills.length > 0 &&
+                  <tbody>
+                    {bills.map((bill, index) => {
+                      return (
+                        <tr
+                          className={classNames({'selected': selectedBill === bill})}
+                          key={index}
+                          onClick={() => {
+                            this.setState({
+                              showAllColumns: false,
+                              selectedBill: bill,
+                              selectedBillIndex: index,
+                              showModal: true,
+                            });
+                            this.initilizeBillEditForm(bill);
+                          }}>
+                          <td>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</td>
+                          <td>{formatDate(bill.due_date) || '-'}</td>
+                          <td>{bill.bill_number || '-'}</td>
+                          <td>{get(bill, 'tenant.bill_share') ? `${bill.tenant.bill_share} %` : '-'}</td>
+                          {showAllColumns &&
+                            <td>{formatDateRange(bill.billing_period_start_date, bill.billing_period_end_date)}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{getLabelOfOption(billingTypeOptions, bill.type) || '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{getLabelOfOption(billingStatusOptions, bill.status) || '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.invoiced_amount))} €` : '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{bill.info ? 'Kyllä' : 'Ei'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{formatDate(bill.sent_to_SAP_date) || '-'}</td>
+                          }
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                }
+                {!bills || bills.length === 0 && <tbody></tbody>}
               </table>
             </div>
           </div>
         </div>
-        <Field
+        <BillModalEdit
+          ref={(ref) => this.modal = ref}
           bill={selectedBill}
-          component={BillModalEdit}
           containerHeight={isNumber(tableHeight) ? tableHeight + 33 : null}
-          name='selected_bill'
           onClose={() => this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false})}
           onKeyCodeDown={() => this.handleKeyCodeDown()}
           onKeyCodeUp={() => this.handleKeyCodeUp()}
@@ -252,10 +302,11 @@ const formName = 'billing-edit-form';
 const selector = formValueSelector(formName);
 
 export default flowRight(
-  connect((state) => {
-    return {
-      billing: selector(state, 'billing'),
-      bills: selector(state, 'billing.bills'),
-    };
-  }),
+  connect(
+    (state) => {
+      return {
+        billing: selector(state, 'billing'),
+      };
+    },
+  ),
 )(BillsTableEdit);

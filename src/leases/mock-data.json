@@ -24,7 +24,7 @@
       "transfer_right": "K",
 
       "billing": {
-        "billing_started": false,
+        "invoicing_started": true,
 
         "abnormal_debts": [
           {
