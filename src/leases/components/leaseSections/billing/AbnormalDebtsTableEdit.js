@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {destroy, initialize} from 'redux-form';
 import get from 'lodash/get';
 import classNames from 'classnames';
+import scrollToComponent from 'react-scroll-to-component';
 
 import {
   formatDate,
@@ -36,6 +37,7 @@ type State = {
 class AbnormalDebtsTableEdit extends Component {
   props: Props
 
+  modal: any
   tableElement: any
 
   state: State = {
@@ -88,6 +90,13 @@ class AbnormalDebtsTableEdit extends Component {
         showModal: true,
       });
       this.initilizeAbnormalDebtForm(abnormalDebts[index]);
+      setTimeout(() => {
+        scrollToComponent(this.modal, {
+          offset: -130,
+          align: 'top',
+          duration: 450,
+        });
+      }, 50);
     }
   }
 
@@ -104,7 +113,7 @@ class AbnormalDebtsTableEdit extends Component {
   render () {
     const {abnormalDebts, headers, onDeleteClick} = this.props;
     const {selectedDebt, selectedDebtIndex, showModal, tableHeight} = this.state;
-    console.log(abnormalDebts);
+
     return (
       <div className='billing__bill-table'>
         <div className={classNames('table-fixed-header', 'billing-fixed-table', {'is-open': showModal})}>
@@ -149,6 +158,7 @@ class AbnormalDebtsTableEdit extends Component {
           </div>
         </div>
         <AbnormalDebtModalEdit
+          ref={(ref) => this.modal = ref}
           abnormalDebt={selectedDebt}
           onCancel={() => this.setState({selectedDebt: null, selectedDebtIndex: null, showModal: false})}
           onSave={(bill) => this.saveBill(bill, selectedDebtIndex)}

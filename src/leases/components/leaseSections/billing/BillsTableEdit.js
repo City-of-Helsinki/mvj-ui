@@ -6,6 +6,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
+import scrollToComponent from 'react-scroll-to-component';
 
 import {formatBillingBillDb} from '$src/leases/helpers';
 import {editBill, refundBill} from './actions';
@@ -147,6 +148,13 @@ class BillsTableEdit extends Component {
         showModal: true,
       });
       this.initilizeBillEditForm(bills[index]);
+      setTimeout(() => {
+        scrollToComponent(this.modal, {
+          offset: -130,
+          align: 'top',
+          duration: 450,
+        });
+      }, 50);
     }
   }
 

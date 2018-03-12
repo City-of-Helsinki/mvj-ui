@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
+import scrollToComponent from 'react-scroll-to-component';
 
 import {formatDate,
   formatDateRange,
@@ -32,6 +33,7 @@ class BillsTable extends Component {
   props: Props
 
   container: any
+  modal: any
   tableElement: any
   tableWrapper : any
 
@@ -101,12 +103,23 @@ class BillsTable extends Component {
     this.tableWrapper.removeEventListener('transitionend', this.transitionEnds);
   }
 
+  scrolToModal = () => {
+    setTimeout(() => {
+      scrollToComponent(this.modal, {
+        offset: -130,
+        align: 'top',
+        duration: 450,
+      });
+    }, 50);
+  }
+
   handleKeyCodeDown = () => {
     const {bills} = this.props;
     const {selectedBillIndex} = this.state;
     if(selectedBillIndex < bills.length - 1) {
       const newIndex = selectedBillIndex + 1;
       this.setState({selectedBill: bills[newIndex], selectedBillIndex: newIndex, showModal: true});
+      this.scrolToModal();
     }
   }
 
@@ -116,6 +129,7 @@ class BillsTable extends Component {
     if(selectedBillIndex > 0) {
       const newIndex = selectedBillIndex - 1;
       this.setState({selectedBill: bills[newIndex], selectedBillIndex: newIndex, showModal: true});
+      this.scrolToModal();
     }
   }
 
@@ -177,7 +191,14 @@ class BillsTable extends Component {
                         <tr
                           className={classNames({'selected': selectedBill === bill})}
                           key={index}
-                          onClick={() => this.setState({showAllColumns: false, selectedBill: bill, selectedBillIndex: index, showModal: true})}
+                          onClick={() => {
+                            this.setState({
+                              showAllColumns: false,
+                              selectedBill: bill,
+                              selectedBillIndex: index,
+                              showModal: true});
+                            this.scrolToModal();
+                          }}
                           >
                           <td>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</td>
                           <td>{bill.due_date ? formatDate(bill.due_date) : '-'}</td>
@@ -215,6 +236,7 @@ class BillsTable extends Component {
           </div>
         </div>
         <BillModal
+          ref={(ref) => this.modal = ref}
           bill={selectedBill}
           containerHeight={isNumber(tableHeight) ? tableHeight + 33 : null}
           onClose={() => this.setState({selectedBill: {}, selectedBillIndex: -1, showModal: false})}
