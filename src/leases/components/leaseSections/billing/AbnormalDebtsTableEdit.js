@@ -13,7 +13,7 @@ import {
 } from '$util/helpers';
 import {editAbnormalDebt} from './actions';
 import {formatBillingBillDb} from '$src/leases/helpers';
-import EditAbnormalDebt from './EditAbnormalDebt';
+import AbnormalDebtModalEdit from './AbnormalDebtModalEdit';
 
 const MODAL_HEIGHT = 450;
 
@@ -148,7 +148,7 @@ class AbnormalDebtsTableEdit extends Component {
             </table>
           </div>
         </div>
-        <EditAbnormalDebt
+        <AbnormalDebtModalEdit
           abnormalDebt={selectedDebt}
           onCancel={() => this.setState({selectedDebt: null, selectedDebtIndex: null, showModal: false})}
           onSave={(bill) => this.saveBill(bill, selectedDebtIndex)}

@@ -14,8 +14,8 @@ import {
   formatDate,
   formatDateRange,
   formatDecimalNumber,
-  getLabelOfOption,
   formatNumberWithThousandSeparator,
+  getLabelOfOption,
 } from '$util/helpers';
 import {billingStatusOptions, billingTypeOptions} from '../constants';
 
@@ -42,11 +42,8 @@ class BillsTableEdit extends Component {
   props: Props
 
   container: any
-
   modal: any
-
   tableElement: any
-
   tableWrapper: any
 
   state: State = {

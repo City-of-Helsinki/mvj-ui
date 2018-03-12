@@ -32,9 +32,7 @@ class BillsTable extends Component {
   props: Props
 
   container: any
-
   tableElement: any
-
   tableWrapper : any
 
   state: State = {

@@ -1,7 +1,6 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-// import {change, FormSection, formValueSelector, initialize, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
@@ -10,26 +9,22 @@ import AddBillComponent from './AddBillComponent';
 import BillsTableEdit from './BillsTableEdit';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Divider from '$components/content/Divider';
-// import FormSectionContainer from '../../../../components/form/FormSection';
 import RightSubtitle from '$components/content/RightSubtitle';
-// import {displayUIMessage} from '$util/helpers';
 import {formatBillingNewBill} from '$src/leases/helpers';
 import {
   createAbnormalDebt,
   createBill,
+  deleteAbnormalDebt,
   startInvoicing,
   stopInvoicing,
 } from './actions';
 
 type Props = {
-  // abnormalDebts: Array<Object>,
   billing: Object,
   createAbnormalDebt: Function,
   createBill: Function,
+  deleteAbnormalDebt: Function,
   dispatch: Function,
-  // bills: Array<Object>,
-  // handleSubmit: Function,
-  // newBill: Object,
   startInvoicing: Function,
   stopInvoicing: Function,
 }
@@ -39,7 +34,8 @@ type State = {
   isDeleteAbnormalDebtModalOpen: boolean,
   isStartInvoicingModalOpen: boolean,
   isStopInvoicingModalOpen: boolean,
-  selectedDebtIndex: ?number,
+  selectedDebtIndex: number,
+  selectedDebtToDeleteIndex: number,
 }
 
 class BillingEdit extends Component {
@@ -50,7 +46,8 @@ class BillingEdit extends Component {
     isDeleteAbnormalDebtModalOpen: false,
     isStartInvoicingModalOpen: false,
     isStopInvoicingModalOpen: false,
-    selectedDebtIndex: null,
+    selectedDebtIndex: -1,
+    selectedDebtToDeleteIndex: -1,
   }
 
   addBillComponent: any
@@ -66,7 +63,7 @@ class BillingEdit extends Component {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
     this.setState({
       [modalVisibilityKey]: false,
-      selectedDebtIndex: null,
+      selectedDebtIndex: -1,
     });
   }
 
@@ -94,23 +91,15 @@ class BillingEdit extends Component {
     this.setState({isAddBillEditMode: true});
   }
 
-  // deleteAbnormalDebt = () => {
-  //   const {billing, dispatch} = this.props;
-  //   const selectedDebtIndex = get(this.state, 'selectedDebtIndex', -1);
-  //   const abnormalDebts = get(billing, 'abnormal_debts');
-  //
-  //   if (abnormalDebts &&
-  //     abnormalDebts.length > selectedDebtIndex &&
-  //     selectedDebtIndex > -1) {
-  //     abnormalDebts.splice(selectedDebtIndex, 1);
-  //   }
-  //
-  //   dispatch(change('billing-edit-form', `billing.abnormal_debts`, abnormalDebts));
-  //   this.hideModal('DeleteAbnormalDebt');
-  //   displayUIMessage({title: 'Poikkeva perintä poistettu', body: 'Poikkeava perintä on poistettu onnistuneesti'});
-  // }
-  //
-  //
+  deleteAbnormalDebt = () => {
+    const {deleteAbnormalDebt} = this.props;
+    const {selectedDebtToDeleteIndex} = this.state;
+    deleteAbnormalDebt(selectedDebtToDeleteIndex);
+    this.setState({
+      isDeleteAbnormalDebtModalOpen: false,
+      selectedDebtToDeleteIndex: -1,
+    });
+  }
 
   startBilling = () => {
     const {startInvoicing} = this.props;
@@ -132,9 +121,9 @@ class BillingEdit extends Component {
       isAddBillEditMode,
       isStartInvoicingModalOpen,
       isStopInvoicingModalOpen,
-      // isDeleteAbnormalDebtModalOpen,
+      isDeleteAbnormalDebtModalOpen,
     } = this.state;
-    console.log(get(billing, 'abnormal_debts', []));
+
     return (
       <div>
         <ConfirmationModal
@@ -155,6 +144,16 @@ class BillingEdit extends Component {
           onSave={this.stopBilling}
           title='Keskeytä laskutus'
         />
+        <ConfirmationModal
+          confirmButtonLabel='Poista'
+          isOpen={isDeleteAbnormalDebtModalOpen}
+          label='Haluatko varmasti poistaa poikkeavan perinnän?'
+          onCancel={() => this.hideModal('DeleteAbnormalDebt')}
+          onClose={() => this.hideModal('DeleteAbnormalDebt')}
+          onSave={this.deleteAbnormalDebt}
+          title='Poista poikkeava perintä'
+        />
+
         <h1>Laskutus</h1>
         <RightSubtitle
           className='invoicing-status'
@@ -191,31 +190,12 @@ class BillingEdit extends Component {
             'Määrä',
             'Aikaväli',
           ]}
-          onDeleteClick={() => console.log('delete')}
+          onDeleteClick={(index) => this.setState({
+            isDeleteAbnormalDebtModalOpen: true,
+            selectedDebtToDeleteIndex: index,
+          })}
         />
       </div>
-        //       onDeleteClick={(index) => {
-        //         this.setState({
-        //           isDeleteAbnormalDebtModalOpen: true,
-        //           selectedDebtIndex: index,
-        //         });
-        //       }}
-        //     />
-        //   </FormSectionContainer>
-      // <form onSubmit={handleSubmit}>
-      //   <FormSectionContainer>
-      //     <ConfirmationModal
-      //       confirmButtonLabel='Poista'
-      //       isOpen={isDeleteAbnormalDebtModalOpen}
-      //       label='Haluatko varmasti poistaa poikkeavan perinnän?'
-      //       onCancel={() => this.hideModal('DeleteAbnormalDebt')}
-      //       onClose={() => this.hideModal('DeleteAbnormalDebt')}
-      //       onSave={this.deleteAbnormalDebt}
-      //       title='Poista poikkeava perintä'
-      //     />
-      //
-      //   </FormSectionContainer>
-      // </form>
     );
   }
 }
@@ -226,34 +206,9 @@ export default flowRight(
     {
       createAbnormalDebt,
       createBill,
+      deleteAbnormalDebt,
       startInvoicing,
       stopInvoicing,
     }
   ),
 )(BillingEdit);
-
-// const formName = 'billing-edit-form';
-// const selector = formValueSelector(formName);
-//
-// export default flowRight(
-//   connect(
-//     (state) => {
-//       return {
-//         abnormalDebts: selector(state, 'billing.abnormal_debts'),
-//         billing: selector(state, 'billing'),
-//         bills: selector(state, 'billing.bills'),
-//         newBill: selector(state, 'billing.new_bill'),
-//       };
-//     },
-//     {
-//       startInvoicing,
-//       stopInvoicing,
-//     }
-//   ),
-//   reduxForm({
-//     form: formName,
-//     destroyOnUnmount: false,
-//     enableReinitialize: true,
-//     keepDirtyOnReinitialize: true,
-//   }),
-// )(BillingEdit);

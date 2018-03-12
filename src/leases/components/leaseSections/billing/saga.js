@@ -10,6 +10,7 @@ import {
   receiveInvoicingStatus,
   receiveBill,
   receiveEditedBill,
+  removeAbnormalDebt,
 } from './actions';
 
 function* startInvoicingSaga(): Generator<> {
@@ -25,6 +26,11 @@ function* stopInvoicingSaga(): Generator<> {
 function* createAbnormalDebtSaga({payload: bill}): Generator<> {
   yield put(receiveAbnormalDebt(bill));
   displayUIMessage({title: 'Poikkeava perintä tallennettu', body: 'Poikkeava perintä on tallennettu onnistuneesti'});
+}
+
+function* deleteAbnormalDebtSaga({payload: billId}): Generator<> {
+  yield put(removeAbnormalDebt(billId));
+  displayUIMessage({title: 'Poikkeva perintä poistettu', body: 'Poikkeava perintä on poistettu onnistuneesti'});
 }
 
 function* editAbnormalDebtSaga({payload: bill}): Generator<> {
@@ -57,6 +63,7 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/billing/START_INVOICING', startInvoicingSaga);
       yield takeLatest('mvj/billing/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/billing/CREATE_ABNORMAL_DEBT', createAbnormalDebtSaga);
+      yield takeLatest('mvj/billing/DELETE_ABNORMAL_DEBT', deleteAbnormalDebtSaga);
       yield takeLatest('mvj/billing/EDIT_ABNORMAL_DEBT', editAbnormalDebtSaga);
       yield takeLatest('mvj/billing/CREATE_BILL', createBillSaga);
       yield takeLatest('mvj/billing/EDIT_BILL', editBillSaga);

@@ -21,7 +21,7 @@ type Props = {
   show: boolean,
 }
 
-const EditAbnormalDebt = ({
+const AbnormalDebtModalEdit = ({
   abnormalDebt,
   errors,
   newDebt,
@@ -78,4 +78,4 @@ export default flowRight(
       };
     }
   ),
-)(EditAbnormalDebt);
+)(AbnormalDebtModalEdit);
