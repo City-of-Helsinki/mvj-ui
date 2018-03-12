@@ -6,8 +6,9 @@ type Props = {
   commentAmount?: number,
   isCancelDisabled?: boolean,
   isCopyDisabled?: boolean,
+  isEditDisabled?: boolean,
   isEditMode: boolean,
-  isValid: boolean,
+  isSaveDisabled: boolean,
   onCancelClick: Function,
   onCommentClick?: Function,
   onCopyClick?: Function,
@@ -21,8 +22,9 @@ const ControlButtons = ({
   commentAmount,
   isCancelDisabled = false,
   isCopyDisabled = true,
+  isEditDisabled = false,
   isEditMode,
-  isValid,
+  isSaveDisabled = true,
   onCancelClick,
   onCommentClick = () => console.log('Comment click'),
   onCopyClick = () => console.log('Copy click'),
@@ -31,6 +33,7 @@ const ControlButtons = ({
   showCommentButton = true,
   showCopyButton = false,
 }: Props) => {
+  console.log(isEditDisabled);
   return (
     <div className='control-buttons'>
       {isEditMode
@@ -53,7 +56,7 @@ const ControlButtons = ({
             }
             <Button
               className='button-green'
-              disabled={!isValid}
+              disabled={isSaveDisabled}
               label='Tallenna'
               onClick={onSaveClick}
               title='Tallenna'
@@ -62,6 +65,7 @@ const ControlButtons = ({
         ) : (
           <div className='left-buttons'>
             <Button
+              disabled={isEditDisabled}
               label='Muokkaa'
               onClick={onEditClick}
               title='Muokkaa'

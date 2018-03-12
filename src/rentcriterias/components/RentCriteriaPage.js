@@ -102,7 +102,7 @@ class RentCriteriaPage extends Component {
             <ControlButtons
               isCopyDisabled={false}
               isEditMode={isEditMode}
-              isValid={true}
+              isSaveDisabled={false}
               onCancelClick={this.hideEditMode}
               onCopyClick={this.copyCriteria}
               onEditClick={this.showEditMode}

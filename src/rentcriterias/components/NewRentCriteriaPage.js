@@ -58,7 +58,7 @@ class NewRentCriteriaPage extends Component {
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
-              isValid={true}
+              isSaveDisabled={false}
               onCancelClick={this.handleCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}

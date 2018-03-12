@@ -493,8 +493,10 @@ class PreparerForm extends Component {
           buttonComponent={
             <ControlButtons
               commentAmount={commentsNotArchived ? commentsNotArchived.length : 0}
+              isCancelDisabled={activeTab.toString() === '6'}
+              isEditDisabled={activeTab.toString() === '6'}
               isEditMode={isEditMode}
-              isValid={areFormsValid}
+              isSaveDisabled={!areFormsValid || activeTab.toString() === '6'}
               onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
               onCommentClick={this.toggleCommentPanel}
               onEditClick={showEditMode}
