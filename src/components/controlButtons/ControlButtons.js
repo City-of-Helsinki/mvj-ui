@@ -33,7 +33,6 @@ const ControlButtons = ({
   showCommentButton = true,
   showCopyButton = false,
 }: Props) => {
-  console.log(isEditDisabled);
   return (
     <div className='control-buttons'>
       {isEditMode

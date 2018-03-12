@@ -50,8 +50,6 @@ class BillingEdit extends Component {
     selectedDebtToDeleteIndex: -1,
   }
 
-  addBillComponent: any
-
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
     this.setState({
@@ -171,7 +169,6 @@ class BillingEdit extends Component {
 
         <AddBillComponent
           editMode={isAddBillEditMode}
-          name='billing.new_bill'
           onAdd={() => this.showAddBillEditMode()}
           onClose={() => this.hideAddBillEditMode()}
           onSave={(bill) => this.saveNewBill(bill)}
