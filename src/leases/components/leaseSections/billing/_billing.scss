@@ -1,94 +1,77 @@
-.billing-section {
-  .alert {
-    color: $brick;
-    text-align: right;
-    line-height: rem-calc(33px);
-
-    i {
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      vertical-align: text-bottom;
-      background-image: url(../assets/icons/icon-alert.svg);
-      display: inline-block;
-      margin-left: 0.4rem;
-    }
+.billing {
+  &__add-bill {
+    margin-top: rem-calc(20px);
   }
 
-  .success {
-    color: $tram;
-    text-align: right;
-    line-height: rem-calc(33px);
-
-    i {
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      vertical-align: text-bottom;
-      background-image: url(../assets/icons/icon_checked.svg);
-      display: inline-block;
-      margin-left: 0.4rem;
-    }
+  &__edit-abnormal-debt {
+    margin-top: rem-calc(20px);
   }
 
-  table.abnormal-debts-table {
-    border: 1px solid #d7d5d5;
+  &__bill-table {
+    position: relative;
+    z-index: 3;
+    overflow: hidden;
 
-    thead {
-      tr {
-        th {
-          border: none;
-          border-bottom: 1px solid $light-gray;
-          padding: 0.3rem 0.5rem;
-          font-size: $font-xsmall;
-          font-weight: $semibold;
-          color: $black;
+    .table-wrapper {
+      width: 100%;
+      z-index: 1;
+      @include transition(0.5s, all, ease-in-out);
+    }
+
+    .billing-fixed-table {
+      .table-fixed-header__container {
+        height: 1000px;
+        overflow: auto;
+
+        // @include transition(0.5s, max-height, ease-in-out);
+      }
+
+      &.is-open {
+        .table-fixed-header__container {
+          // @include transition(0.5s, max-height, ease-in-out);
         }
       }
-    }
 
-    tbody {
-      tr {
-        td {
-          border: none;
-          padding: 0.3rem 0.5rem;
+      table tbody tr {
+        cursor: pointer;
+
+        &.selected {
+          background-color: $tram-lighter-solid;
+        }
+
+        &.active {
+          background-color: $tram-lighter-solid;
+        }
+
+        &.no-data {
+          text-align: center;
+          background-color: $lightest-gray;
         }
 
         td.action-buttons {
-          width: rem-calc(70px);
+          width: rem-calc(50px);
           line-height: 1;
         }
+
+        .action-button {
+          height: rem-calc(20px);
+          width: rem-calc(20px);
+          margin: 0 rem-calc(3px);
+          cursor: pointer;
+        }
+
+        .action-button:hover {
+          opacity: 0.85;
+        }
+
+        .button-edit {
+          background-image: url(../assets/icons/icon_edit.svg);
+        }
+
+        .button-delete {
+          background-image: url(../assets/icons/trash.svg);
+        }
       }
-
-      tr:hover {
-        background-color: rgba(0, 146, 70, 0.1);
-      }
-
-      tr.selected {
-        background-color: rgba(0, 146, 70, 0.2);
-      }
-
-      tr.no-data {
-        text-align: center;
-        background-color: $lightest-gray;
-      }
-    }
-
-    .action-button {
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      margin: 0 rem-calc(3px);
-      cursor: pointer;
-    }
-
-    .action-button:hover {
-      opacity: 0.85;
-    }
-
-    .button-edit {
-      background-image: url(../assets/icons/icon_edit.svg);
-    }
-
-    .button-delete {
-      background-image: url(../assets/icons/trash.svg);
     }
   }
 }

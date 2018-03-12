@@ -45,8 +45,9 @@ class SaveConditionPanel extends Component {
             <Column medium={3} style={{paddingRight: 0, paddingTop: '20px'}}>
               <Button
                 className='button-green no-margin full-width'
+                label='Lisää muistettava ehto'
                 onClick={() => createCondition(this.state.comment)}
-                text='Lisää muistettava ehto'
+                title='Lisää muistettava ehto'
               />
             </Column>
           </Row>

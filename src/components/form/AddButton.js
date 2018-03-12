@@ -15,9 +15,7 @@ const AddButton = ({className, label, onClick, title}: Props) =>
     onClick={() => onClick()}
     title={title || label}
     type='button'
-    >
-    {label}
-  </button>;
+    >+&nbsp;{label}</button>;
 
 
 export default AddButton;

@@ -117,8 +117,9 @@ class RentCriteriaList extends Component {
           buttonComponent={
             <Button
               className='no-margin'
+              label='Luo uusi vuokrausperuste'
               onClick={() => this.handleCreateButtonClick()}
-              text='Luo uusi vuokrausperuste'
+              title='Luo uusi vuokrausperuste'
             />
           }
           searchComponent={

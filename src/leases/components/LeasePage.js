@@ -11,6 +11,8 @@ import get from 'lodash/get';
 import moment from 'moment';
 
 import {getLoggedInUser} from '$src/auth/selectors';
+import {receiveBilling} from './leaseSections/billing/actions';
+import {getBilling} from './leaseSections/billing/selectors';
 import {
   getAttributes,
   getCurrentLease,
@@ -69,8 +71,7 @@ type Props = {
   areasForm: Array<Object>,
   areasTouched: boolean,
   attributes: Object,
-  billingForm: Object,
-  billingTouched: boolean,
+  billing: Object,
   contractsForm: Array<Object>,
   contractsTouched: boolean,
   currentLease: Object,
@@ -90,6 +91,7 @@ type Props = {
   leaseInfoTouched: boolean,
   location: Object,
   params: Object,
+  receiveBilling: Function,
   receiveTopNavigationSettings: Function,
   rentsForm: Object,
   rentsTouched: boolean,
@@ -108,7 +110,6 @@ type Props = {
 type State = {
   activeTab: number,
   areas: Array<Object>,
-  billing: Object,
   comments: Array<Object>,
   contracts: Array<Object>,
   history: Array<Object>,
@@ -129,7 +130,6 @@ class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
     areas: [],
-    billing: {},
     comments: [],
     contracts: [],
     history: [],
@@ -152,7 +152,14 @@ class PreparerForm extends Component {
   };
 
   componentWillMount() {
-    const {dispatch, fetchAttributes, fetchSingleLease, location, params: {leaseId}, receiveTopNavigationSettings} = this.props;
+    const {
+      dispatch,
+      fetchAttributes,
+      fetchSingleLease,
+      location, params: {leaseId},
+      receiveBilling,
+      receiveTopNavigationSettings,
+    } = this.props;
     const lease = mockData.leases[0];
 
     receiveTopNavigationSettings({
@@ -178,7 +185,6 @@ class PreparerForm extends Component {
 
     this.setState({
       areas: contentHelpers.getContentLeaseAreas(lease),
-      billing: contentHelpers.getContentBilling(lease),
       comments: lease.comments,
       contracts: contentHelpers.getContentContracts(lease),
       history: contentHelpers.getContentHistory(lease),
@@ -189,6 +195,7 @@ class PreparerForm extends Component {
       summary: contentHelpers.getContentSummary(lease),
       tenants: contentHelpers.getContentTenants(lease),
     });
+    receiveBilling(contentHelpers.getContentBilling(lease));
     fetchAttributes();
     fetchSingleLease(leaseId);
   }
@@ -217,7 +224,6 @@ class PreparerForm extends Component {
   save = () => {
     const {
       areasForm,
-      billingForm,
       contractsForm,
       currentLease,
       editLease,
@@ -230,7 +236,8 @@ class PreparerForm extends Component {
       start_date,
       status,
       summaryForm,
-      tenantsForm} = this.props;
+      tenantsForm,
+    } = this.props;
 
     const payload = currentLease;
     payload.status = status;
@@ -242,9 +249,6 @@ class PreparerForm extends Component {
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
     if(areasForm !== undefined) {
       this.setState({areas: areasForm});
-    }
-    if(billingForm !== undefined) {
-      this.setState({billing: billingForm});
     }
     if(eligibilityForm !== undefined) {
       this.setState({areas: eligibilityForm});
@@ -415,7 +419,6 @@ class PreparerForm extends Component {
     const {
       activeTab,
       areas,
-      billing,
       contracts,
       history,
       inspections,
@@ -431,6 +434,7 @@ class PreparerForm extends Component {
 
     const {
       attributes,
+      billing,
       currentLease,
       isEditMode,
       isFetching,
@@ -489,8 +493,10 @@ class PreparerForm extends Component {
           buttonComponent={
             <ControlButtons
               commentAmount={commentsNotArchived ? commentsNotArchived.length : 0}
+              isCancelDisabled={activeTab.toString() === '6'}
+              isEditDisabled={activeTab.toString() === '6'}
               isEditMode={isEditMode}
-              isValid={areFormsValid}
+              isSaveDisabled={!areFormsValid || activeTab.toString() === '6'}
               onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
               onCommentClick={this.toggleCommentPanel}
               onEditClick={showEditMode}
@@ -630,8 +636,10 @@ class PreparerForm extends Component {
 
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
-              {!isEditMode && <Billing billing={billing}/>}
-              {isEditMode && <BillingEdit initialValues={{billing: billing}}/>}
+              {isEditMode
+                ? <BillingEdit billing={billing}/>
+                : <Billing billing={billing}/>
+              }
             </ContentContainer>
           </TabPane>
 
@@ -648,7 +656,6 @@ class PreparerForm extends Component {
 }
 
 const areasFormSelector = formValueSelector('property-unit-edit-form');
-const billingFormSelector = formValueSelector('billing-edit-form');
 const contractFormSelector = formValueSelector('contract-edit-form');
 const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const inspectionFormSelector = formValueSelector('inspection-edit-form');
@@ -670,8 +677,7 @@ export default flowRight(
         areasForm: areasFormSelector(state, 'areas'),
         areasTouched: get(state, 'form.property-unit-edit-form.anyTouched'),
         attributes: getAttributes(state),
-        billingForm: billingFormSelector(state, 'billing'),
-        billingTouched: get(state, 'form.billing-edit-form.anyTouched'),
+        billing: getBilling(state),
         contractsForm: contractFormSelector(state, 'contracts'),
         contractsTouched: get(state, 'form.contract-edit-form.anyTouched'),
         currentLease: getCurrentLease(state),
@@ -702,6 +708,7 @@ export default flowRight(
       fetchAttributes,
       fetchSingleLease,
       hideEditMode,
+      receiveBilling,
       receiveTopNavigationSettings,
       showEditMode,
     }

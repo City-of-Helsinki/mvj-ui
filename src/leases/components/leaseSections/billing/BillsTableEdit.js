@@ -1,56 +1,76 @@
 // @flow
 import React, {Component} from 'react';
-import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
-import {change, Field, FieldArray, formValueSelector, initialize} from 'redux-form';
+import {destroy, initialize, formValueSelector} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import forEach from 'lodash/forEach';
+import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
+import scrollToComponent from 'react-scroll-to-component';
 
-import {displayUIMessage} from '$util/helpers';
 import {formatBillingBillDb} from '$src/leases/helpers';
+import {editBill, refundBill} from './actions';
 import BillModalEdit from './BillModalEdit';
-import BillsTableBodyEdit from './BillsTableBodyEdit';
-// import Button from '$components/button/Button';
+import {
+  formatDate,
+  formatDateRange,
+  formatDecimalNumber,
+  formatNumberWithThousandSeparator,
+  getLabelOfOption,
+} from '$util/helpers';
+import {billingStatusOptions, billingTypeOptions} from '../constants';
+
+const MODAL_HEIGHT = 610;
+const MODAL_WIDTH = 700;
 
 type Props = {
   billing: Object,
   bills: Array<Object>,
   dispatch: Function,
   fields: any,
-  headers: Array<string>,
 }
 
 type State = {
   selectedBill: ?Object,
   selectedBillIndex: number,
+  showAllColumns: boolean,
   showModal: boolean,
   tableHeight: ?number,
+  tableWidth: ?number,
 }
 
 class BillsTableEdit extends Component {
   props: Props
 
+  container: any
+  modal: any
   tableElement: any
+  tableWrapper: any
 
   state: State = {
     selectedBill: null,
     selectedBillIndex: -1,
+    showAllColumns: true,
     showModal: false,
     tableHeight: null,
+    tableWidth: null,
   }
 
   componentDidMount() {
     this.calculateHeight();
+    this.calculateTableWidth();
+    this.tableWrapper.addEventListener('transitionend', this.transitionEnds);
   }
 
   componentDidUpdate() {
     this.calculateHeight();
+    this.calculateTableWidth();
   }
 
   shouldComponentUpdate(nextProps: Object, nextState: Object) {
     return (
+      this.state.containerWidth !== nextState.containerWidth ||
+      this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
       this.state.selectedBill !== nextState.selectedBill ||
       this.state.showModal !== nextState.showModal ||
@@ -58,14 +78,37 @@ class BillsTableEdit extends Component {
     );
   }
 
+  componentWillUnmount() {
+    this.tableWrapper.removeEventListener('transitionend', this.transitionEnds);
+  }
+
   calculateHeight = () => {
     let {clientHeight} = this.tableElement;
     const {showModal} = this.state;
 
-    if(showModal) {clientHeight = 580;}
-    if(clientHeight > 580) {clientHeight = 580;}
+    if(showModal) {clientHeight = MODAL_HEIGHT;}
+    if(clientHeight > MODAL_HEIGHT) {clientHeight = MODAL_HEIGHT;}
 
     this.setState({tableHeight: clientHeight});
+  }
+
+  calculateTableWidth = () => {
+    let {clientWidth} = this.container;
+    const {showModal} = this.state;
+
+    if(showModal) {
+      if(clientWidth - MODAL_WIDTH - 10 <= 0) {clientWidth = 0;}
+      else {clientWidth = clientWidth - MODAL_WIDTH - 10;}
+    }
+    this.setState({tableWidth: clientWidth});
+  }
+
+  transitionEnds = () => {
+    const {clientWidth} = this.container;
+    const {clientWidth: tableWidth} = this.tableWrapper;
+    if(clientWidth === tableWidth) {
+      this.setState({showAllColumns: true});
+    }
   }
 
   handleKeyCodeDown = () => {
@@ -89,11 +132,9 @@ class BillsTableEdit extends Component {
   }
 
   initilizeBillEditForm = (bill: Object) => {
-    const {billing, dispatch} = this.props;
-    billing.bill = bill;
-
-    // dispatch(destroy('billing-edit-form'));
-    dispatch(initialize('billing-edit-form', {billing: billing}, true, {}));
+    const {dispatch} = this.props;
+    dispatch(destroy('billing-edit-bill-form'));
+    dispatch(initialize('billing-edit-bill-form', bill));
   }
 
   showBillModal = (index: number) => {
@@ -103,150 +144,149 @@ class BillsTableEdit extends Component {
       this.setState({
         selectedBill: bills[index],
         selectedBillIndex: index,
+        showAllColumns: false,
         showModal: true,
       });
       this.initilizeBillEditForm(bills[index]);
+      setTimeout(() => {
+        scrollToComponent(this.modal, {
+          offset: -130,
+          align: 'top',
+          duration: 450,
+        });
+      }, 50);
     }
   }
 
-  areAllSelected = () => {
-    const {bills} = this.props;
-    if(!bills || !bills.length) {return false;}
+  refundSingle = (bill: Object, index: ?number) => {
+    const {dispatch} = this.props;
+    const newBill:Object = formatBillingBillDb(bill);
+    newBill.arrayIndex = index;
+    dispatch(refundBill(newBill));
 
-    let allSelected = true;
-    forEach(bills, (bill) => {
-      if(!bill.isSelected) {
-        allSelected = false;
-        return false;
-      }
-    });
-    return allSelected;
-  }
-
-  isAnySelected = () => {
-    const {bills} = this.props;
-    if(!bills || !bills.length) {return false;}
-
-    let anySelected = false;
-    forEach(bills, (bill) => {
-      if(bill.isSelected) {
-        anySelected = true;
-        return false;
-      }
-    });
-    return anySelected;
-  }
-
-  handleSelectAll = () => {
-    const {dispatch, bills} = this.props;
-    if(!bills || !bills.length) {return null;}
-
-    const allSelected = this.areAllSelected();
-    for(let i = 0; i < bills.length; i++) {
-      dispatch(change('billing-edit-form', `billing.bills[${i}].isSelected`, !allSelected));
-    }
-  }
-
-  refund = () => {
-    const {bills, dispatch} = this.props;
-    const newBills = bills.map((bill) => {
-      if(bill.isSelected) {
-        bill.isSelected = false;
-        bill.invoice_type = '1';
-        bill.status = '2';
-        bill.unpaid_amount = 0;
-      }
-      return bill;
-    });
-    dispatch(change('billing-edit-form', `billing.bills`, newBills));
-    displayUIMessage({title: 'Laskut hyvitetty', body: 'Valitut laskut on hyvitetty onnistuneesti'});
-  }
-
-  refundSingle = (index: ?number) => {
-    const {bills, dispatch} = this.props;
-    if(index !== null && index !== undefined) {
-      bills[index].invoice_type = '1';
-      bills[index].status = '2';
-      bills[index].unpaid_amount = 0;
-    }
-    dispatch(change('billing-edit-form', `billing.bills`, bills));
     this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false});
-    displayUIMessage({title: 'Lasku hyvitetty', body: 'Lasku on hyvitetty onnistuneesti'});
   }
 
   saveBill = (bill: Object, index: ?number) => {
-    const {bills, dispatch} = this.props;
-    if(index !== undefined && index !== null && bills && bills.length > index) {
-      bills[index] = formatBillingBillDb(bill);
+    const {dispatch} = this.props;
+    const newBill:Object = formatBillingBillDb(bill);
+    newBill.arrayIndex = index;
+    dispatch(editBill(newBill));
 
-      dispatch(change('billing-edit-form', `billing.bills`, bills));
-      displayUIMessage({title: 'Lasku tallennettu', body: 'Lasku on tallennettu onnistuneesti'});
-      this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false});
+    this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false});
+  }
+
+  getTableHeaders = () => {
+    const {showAllColumns} = this.state;
+    if(showAllColumns) {
+      return [
+        'Vuokraaja',
+        'Eräpäivä',
+        'Laskun numero',
+        'Osuus',
+        'Laskutuskausi',
+        'Saamislaji',
+        'Laskun tila',
+        'Laskutettu',
+        'Maksamatta',
+        'Tiedote',
+        'Läh. SAP:iin',
+      ];
+    } else {
+      return [
+        'Vuokraaja',
+        'Eräpäivä',
+        'Laskun numero',
+        'Osuus',
+      ];
     }
   }
 
   render () {
-    const {bills, headers} = this.props;
-    const {selectedBill, selectedBillIndex, showModal, tableHeight} = this.state;
-    // const allSelected = this.areAllSelected();
-    // const anySelected = this.isAnySelected();
+    const {bills} = this.props;
+    const {
+      selectedBill,
+      selectedBillIndex,
+      showAllColumns,
+      showModal,
+      tableHeight,
+      tableWidth,
+    } = this.state;
+    const headers = this.getTableHeaders();
 
     return (
-      <div>
-        <Row>
-          <Column medium={9}>
-            <h2>Laskut</h2>
-          </Column>
-          <Column medium={3}>
-            {/* <Button
-              className="no-margin button-green button-xs"
-              disabled={!anySelected}
-              onClick={() => this.refund()}
-              style={{float: 'right', marginTop: '15px'}}
-              text='Hyvitä laskut'
-            /> */}
-          </Column>
-        </Row>
-        <div className={classNames('table-fixed-header', 'billing__bill-table', {'is-open': showModal})}>
-          <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
-            <Field
-              bill={selectedBill}
-              component={BillModalEdit}
-              containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
-              name='selected_bill'
-              onClose={() => this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false})}
-              onKeyCodeDown={() => this.handleKeyCodeDown()}
-              onKeyCodeUp={() => this.handleKeyCodeUp()}
-              onRefund={() => this.refundSingle(selectedBillIndex)}
-              onSave={(bill) => this.saveBill(bill, selectedBillIndex)}
-              show={showModal}
-            />
-            <div className="table-fixed-header__header-border" />
-            <table ref={(ref) => this.tableElement = ref}>
-              <thead>
-                {headers && headers.length > 0 &&
-                  <tr>
-                    {/* <th><div>
-                      <input
-                        checked={allSelected}
-                        onClick={this.handleSelectAll}
-                        style={{fontSize: '1rem', margin: '0'}}
-                        type="checkbox" />
-                    </div></th> */}
-                    {headers.map((header, index) => <th key={index}>{header}<div>{header}</div></th>)}
-                  </tr>
+      <div className='billing__bill-table' ref={(ref) => this.container = ref}>
+        <div
+          className='table-wrapper'
+          ref={(ref) => this.tableWrapper = ref}
+          style={{maxWidth: tableWidth}}>
+          <div className={classNames('table-fixed-header', 'billing-fixed-table', {'is-open': showModal})}>
+            <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
+              <div className="table-fixed-header__header-border" />
+              <table
+                ref={(ref) => this.tableElement = ref}>
+                <thead>
+                  {headers && headers.length > 0 &&
+                    <tr>
+                      {headers.map((header, index) => <th key={index}>{header}<div>{header}</div></th>)}
+                    </tr>
+                  }
+                </thead>
+                {bills && bills.length > 0 &&
+                  <tbody>
+                    {bills.map((bill, index) => {
+                      return (
+                        <tr
+                          className={classNames({'selected': selectedBill === bill})}
+                          key={index}
+                          onClick={() => {this.showBillModal(index);}}
+                          >
+                          <td>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</td>
+                          <td>{formatDate(bill.due_date) || '-'}</td>
+                          <td>{bill.bill_number || '-'}</td>
+                          <td>{get(bill, 'tenant.bill_share') ? `${bill.tenant.bill_share} %` : '-'}</td>
+                          {showAllColumns &&
+                            <td>{formatDateRange(bill.billing_period_start_date, bill.billing_period_end_date)}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{getLabelOfOption(billingTypeOptions, bill.type) || '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{getLabelOfOption(billingStatusOptions, bill.status) || '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.invoiced_amount))} €` : '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{bill.info ? 'Kyllä' : 'Ei'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{formatDate(bill.sent_to_SAP_date) || '-'}</td>
+                          }
+                        </tr>
+                      );
+                    })}
+                  </tbody>
                 }
-              </thead>
-              <FieldArray
-                bills={bills}
-                component={BillsTableBodyEdit}
-                name="bills"
-                onRowClick={(index) => this.showBillModal(index)}
-                selectedBillIndex={selectedBillIndex}
-              />
-            </table>
+                {!bills || !bills.length && <tbody><tr><td colSpan={showAllColumns ? 11 : 4} className='no-data'>Ei laskuja</td></tr></tbody>}
+              </table>
+            </div>
           </div>
         </div>
+        <BillModalEdit
+          ref={(ref) => this.modal = ref}
+          bill={selectedBill}
+          containerHeight={isNumber(tableHeight) ? tableHeight + 33 : null}
+          onClose={() => this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false})}
+          onKeyCodeDown={() => this.handleKeyCodeDown()}
+          onKeyCodeUp={() => this.handleKeyCodeUp()}
+          onRefund={(bill) => this.refundSingle(bill, selectedBillIndex)}
+          onSave={(bill) => this.saveBill(bill, selectedBillIndex)}
+          show={showModal}
+        />
       </div>
     );
   }
@@ -256,10 +296,11 @@ const formName = 'billing-edit-form';
 const selector = formValueSelector(formName);
 
 export default flowRight(
-  connect((state) => {
-    return {
-      billing: selector(state, 'billing'),
-      bills: selector(state, 'billing.bills'),
-    };
-  }),
+  connect(
+    (state) => {
+      return {
+        billing: selector(state, 'billing'),
+      };
+    },
+  ),
 )(BillsTableEdit);

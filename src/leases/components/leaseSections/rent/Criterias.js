@@ -45,8 +45,9 @@ const Criterias = ({criterias, onCriteriaAgree}: Props) => {
                   {!criteria.agreed &&
                     <Button
                       className="button-green button-xs no-margin"
+                      label="Hyväksy"
                       onClick={() => onCriteriaAgree(criteria)}
-                      text="Hyväksy"
+                      title="Hyväksy"
                     />
                   }
                 </td>

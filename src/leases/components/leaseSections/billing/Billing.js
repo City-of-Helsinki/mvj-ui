@@ -1,10 +1,11 @@
 // @flow
 import React from 'react';
-import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import AbnormalDebtsTable from './AbnormalDebtsTable';
 import BillsTable from './BillsTable';
+import Divider from '$components/content/Divider';
+import RightSubtitle from '$components/content/RightSubtitle';
 
 type Props = {
   billing: Object,
@@ -12,53 +13,32 @@ type Props = {
 
 const Billing = ({billing}: Props) => {
   return (
-    <div className="lease-section billing-section">
-      <Row>
-        <Column medium={9}><h1>Laskutus</h1></Column>
-        <Column medium={3}>
-          {billing.billing_started
-            ? (<p className="success">Laskutus käynnissä<i /></p>)
-            : (<p className="alert">Laskutus ei käynnissä<i /></p>)
-          }
-        </Column>
-      </Row>
-      <Row><Column><div className="separator-line"></div></Column></Row>
-      <Row><Column><h2>Laskut</h2></Column></Row>
-      <Row>
-        <Column>
-          <BillsTable
-            headers={[
-              'Vuokraaja',
-              'Eräpäivä',
-              'Laskun numero',
-              'Osuus',
-              'Laskutuskausi',
-              'Saamislaji',
-              'Laskun tila',
-              'Laskutettu',
-              'Maksamatta',
-              'Tiedote',
-              'Läh. SAP:iin',
-            ]}
-            bills={get(billing, 'bills')}
-          />
-        </Column>
-      </Row>
-      <Row><Column><h2>Poikkeavat perinnät</h2></Column></Row>
-      <Row>
-        <Column>
-          <AbnormalDebtsTable
-            headers={[
-              'Vuokraaja',
-              'Hallintaosuus',
-              'Eräpäivä',
-              'Määrä',
-              'Aikaväli',
-            ]}
-            debts={get(billing, 'abnormal_debts')}
-          />
-        </Column>
-      </Row>
+    <div>
+      <h1>Laskutus</h1>
+      <RightSubtitle
+        className='invoicing-status'
+        text={billing.invoicing_started
+          ? <p className="success">Laskutus käynnissä<i /></p>
+          : <p className="alert">Laskutus ei käynnissä<i /></p>
+        }
+      />
+      <Divider />
+      <h2>Laskut</h2>
+      <BillsTable
+        bills={get(billing, 'bills')}
+      />
+
+      <h2>Poikkeavat perinnät</h2>
+      <AbnormalDebtsTable
+        headers={[
+          'Vuokraaja',
+          'Hallintaosuus',
+          'Eräpäivä',
+          'Määrä',
+          'Aikaväli',
+        ]}
+        debts={get(billing, 'abnormal_debts')}
+      />
     </div>
   );
 };

@@ -4,15 +4,21 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import classNames from 'classnames';
 
-import {formatDate,
+import CloseButton from '$components/button/CloseButton';
+
+import {
+  formatDate,
   formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator,
-  getLabelOfOption} from '$util/helpers';
-import {billingInvoiceMethodOptions,
+  getLabelOfOption,
+} from '$util/helpers';
+import {
+  billingInvoiceMethodOptions,
   billingInvoiceTypeOptions,
   billingStatusOptions,
-  billingTypeOptions} from '../constants';
+  billingTypeOptions,
+} from '../constants';
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
@@ -61,15 +67,16 @@ class BillModal extends Component {
     return(
       <div className={classNames('bill-modal', {'is-open': show})} style={{height: containerHeight}}>
         <div className="bill-modal__container">
-          <div className='bill-modal__title-row'>
-            <div className='title'>
-              <h1>Laskun tiedot</h1>
-            </div>
-            <div className='close-button-container'>
-              <a onClick={onClose}></a>
-            </div>
+          <div className='bill-modal__header'>
+            <h1>Laskun tiedot</h1>
+            <CloseButton
+              className='position-topright'
+              onClick={onClose}
+              title='Sulje'
+            />
           </div>
-          <div className="section-item">
+
+          <div className="bill-modal__body">
             <Row>
               <Column medium={4}>
                 <label>Laskunsaaja</label>
