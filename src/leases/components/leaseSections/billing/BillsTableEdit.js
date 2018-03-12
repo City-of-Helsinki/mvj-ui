@@ -271,7 +271,7 @@ class BillsTableEdit extends Component {
                     })}
                   </tbody>
                 }
-                {!bills || !bills.length && <tbody><tr><td colSpan={showAllColumns ? 11 : 4} className='no-data'>Ei laskuja</td></tr></tbody>}
+                {!bills || !bills.length && <tbody><tr className='no-data'><td colSpan={showAllColumns ? 11 : 4}>Ei laskuja</td></tr></tbody>}
               </table>
             </div>
           </div>
