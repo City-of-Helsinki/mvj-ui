@@ -8,6 +8,7 @@ import type {
   Billing,
   CreateBillAction,
   EditBillAction,
+  RefundBillAction,
   ReceiveBillAction,
   ReceiveEditedBillAction,
   CreateAbnormalDebtAction,
@@ -25,6 +26,9 @@ export const createBill = (bill: Bill): CreateBillAction =>
 
 export const editBill = (bill: Bill): EditBillAction =>
   createAction('mvj/billing/EDIT_BILL')(bill);
+
+export const refundBill = (bill: Bill): RefundBillAction =>
+  createAction('mvj/billing/REFUND_BILL')(bill);
 
 export const receiveBill = (bill: Bill): ReceiveBillAction =>
   createAction('mvj/billing/RECEIVE_BILL')(bill);

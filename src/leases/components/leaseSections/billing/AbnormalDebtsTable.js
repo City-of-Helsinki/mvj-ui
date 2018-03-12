@@ -3,10 +3,14 @@ import React, {Component} from 'react';
 import get from 'lodash/get';
 import classNames from 'classnames';
 
-import {formatDate,
+import {
+  formatDate,
   formatDateRange,
   formatDecimalNumber,
-  formatNumberWithThousandSeparator} from '$util/helpers';
+  formatNumberWithThousandSeparator,
+} from '$util/helpers';
+
+const MODAL_HEIGHT = 450;
 
 type Props = {
   debts: Array<Object>,
@@ -29,7 +33,9 @@ class AbnormalDebtsTable extends Component {
   calculateHeight = () => {
     let {clientHeight} = this.tableElement;
 
-    if(clientHeight > 450) {clientHeight = 450;}
+    if(clientHeight > MODAL_HEIGHT) {
+      clientHeight = MODAL_HEIGHT;
+    }
     this.setState({tableHeight: clientHeight});
   }
 

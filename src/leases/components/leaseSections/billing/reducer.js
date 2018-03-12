@@ -26,7 +26,6 @@ const receiveBillingReducer: Reducer<Billing> = handleActions({
   ['mvj/billing/RECEIVE_EDITED_BILL']: (state: Billing, {payload: bill}: ReceiveEditedBillAction) => {
     const bills = state.bills;
     bills[bill.arrayIndex] = bill;
-    console.log(bills);
     state.bills = bills;
     return state;
   },

@@ -1,15 +1,14 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {change, destroy, initialize, formValueSelector} from 'redux-form';
+import {destroy, initialize, formValueSelector} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 
-import {displayUIMessage} from '$util/helpers';
 import {formatBillingBillDb} from '$src/leases/helpers';
-import {editBill} from './actions';
+import {editBill, refundBill} from './actions';
 import BillModalEdit from './BillModalEdit';
 import {
   formatDate,
@@ -154,16 +153,13 @@ class BillsTableEdit extends Component {
     }
   }
 
-  refundSingle = (index: ?number) => {
-    const {bills, dispatch} = this.props;
-    if(index !== null && index !== undefined) {
-      bills[index].invoice_type = '1';
-      bills[index].status = '2';
-      bills[index].unpaid_amount = 0;
-    }
-    dispatch(change('billing-edit-form', `billing.bills`, bills));
+  refundSingle = (bill: Object, index: ?number) => {
+    const {dispatch} = this.props;
+    const newBill:Object = formatBillingBillDb(bill);
+    newBill.arrayIndex = index;
+    dispatch(refundBill(newBill));
+
     this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false});
-    displayUIMessage({title: 'Lasku hyvitetty', body: 'Lasku on hyvitetty onnistuneesti'});
   }
 
   saveBill = (bill: Object, index: ?number) => {
@@ -277,7 +273,7 @@ class BillsTableEdit extends Component {
                     })}
                   </tbody>
                 }
-                {!bills || bills.length === 0 && <tbody></tbody>}
+                {!bills || !bills.length && <tbody><tr><td colSpan={showAllColumns ? 11 : 4} className='no-data'>Ei laskuja</td></tr></tbody>}
               </table>
             </div>
           </div>
@@ -289,7 +285,7 @@ class BillsTableEdit extends Component {
           onClose={() => this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false})}
           onKeyCodeDown={() => this.handleKeyCodeDown()}
           onKeyCodeUp={() => this.handleKeyCodeUp()}
-          onRefund={() => this.refundSingle(selectedBillIndex)}
+          onRefund={(bill) => this.refundSingle(bill, selectedBillIndex)}
           onSave={(bill) => this.saveBill(bill, selectedBillIndex)}
           show={showModal}
         />

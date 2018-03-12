@@ -32,9 +32,17 @@ function* createBillSaga({payload: bill}): Generator<> {
 }
 
 function* editBillSaga({payload: bill}): Generator<> {
-  console.log(bill);
   yield put(receiveEditedBill(bill));
-  displayUIMessage({title: 'Laskutus tallennettu', body: 'Laskutus on tallennettu onnistuneesti'});
+  displayUIMessage({title: 'Lasku tallennettu', body: 'Lasku on tallennettu onnistuneesti'});
+}
+
+function* refundBillSaga({payload: bill}): Generator<> {
+  bill.invoice_type = '1';
+  bill.status = '2';
+  bill.unpaid_amount = 0;
+
+  yield put(receiveEditedBill(bill));
+  displayUIMessage({title: 'Lasku hyvitetty', body: 'Lasku on hyvitetty onnistuneesti'});
 }
 
 export default function*(): Generator<> {
@@ -45,6 +53,7 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/billing/CREATE_ABNORMAL_DEBT', createAbnormalDebtSaga);
       yield takeLatest('mvj/billing/CREATE_BILL', createBillSaga);
       yield takeLatest('mvj/billing/EDIT_BILL', editBillSaga);
+      yield takeLatest('mvj/billing/REFUND_BILL', refundBillSaga);
     }),
   ];
 }

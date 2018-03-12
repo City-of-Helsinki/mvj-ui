@@ -8,7 +8,6 @@ import classNames from 'classnames';
 
 import CloseButton from '$components/button/CloseButton';
 
-
 import {getEditBillFormErrors, getEditBillFormValues} from './selectors';
 import Button from '$components/button/Button';
 import EditBillForm from './forms/EditBillForm';

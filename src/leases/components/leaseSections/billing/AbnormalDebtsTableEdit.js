@@ -6,13 +6,17 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import classNames from 'classnames';
 
-import {displayUIMessage,
+import {
+  displayUIMessage,
   formatDate,
   formatDateRange,
   formatDecimalNumber,
-  formatNumberWithThousandSeparator} from '$util/helpers';
+  formatNumberWithThousandSeparator,
+} from '$util/helpers';
 import {formatBillingBillDb} from '$src/leases/helpers';
 import EditAbnormalDebt from './EditAbnormalDebt';
+
+const MODAL_HEIGHT = 450;
 
 type Props = {
   abnormalDebts: Array<Object>,
@@ -62,7 +66,7 @@ class AbnormalDebtsTableEdit extends Component {
   calculateHeight = () => {
     let {clientHeight} = this.tableElement;
 
-    if(clientHeight > 450) {clientHeight = 450;}
+    if(clientHeight > MODAL_HEIGHT) {clientHeight = MODAL_HEIGHT;}
 
     this.setState({tableHeight: clientHeight});
   }
