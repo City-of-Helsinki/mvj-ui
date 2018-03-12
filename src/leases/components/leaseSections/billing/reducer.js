@@ -28,7 +28,9 @@ const receiveBillingReducer: Reducer<Billing> = handleActions({
   },
   ['mvj/billing/REMOVE_ABNORMAL_DEBT']: (state: Billing, {payload: billId}: RemoveAbnormalDebtAction) => {
     const bills = state.abnormal_debts;
-    return bills.splice(billId, 1);
+    bills.splice(billId, 1);
+    state.abnormal_debts = bills;
+    return state;
   },
   ['mvj/billing/RECEIVE_BILL']: (state: Billing, {payload: bill}: ReceiveBillAction) => {
     const bills = [...state.bills, bill];

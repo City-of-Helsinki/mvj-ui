@@ -35,6 +35,7 @@ class AddBillComponent extends Component {
       });
     }, 50);
   }
+
   render() {
     const {
       editMode,

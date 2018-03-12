@@ -110,6 +110,14 @@ class AbnormalDebtsTableEdit extends Component {
     this.setState({selectedDebt: null, selectedDebtIndex: -1, showModal: false});
   }
 
+  onDeleteCallBack = (delIndex: number) => {
+    const {selectedDebtIndex} = this.state;
+
+    if(delIndex === selectedDebtIndex) {
+      this.setState({selectedDebt: null, selectedDebtIndex: -1, showModal: false});
+    }
+  }
+
   render () {
     const {abnormalDebts, headers, onDeleteClick} = this.props;
     const {selectedDebt, selectedDebtIndex, showModal, tableHeight} = this.state;
@@ -169,4 +177,4 @@ class AbnormalDebtsTableEdit extends Component {
   }
 }
 
-export default connect()(AbnormalDebtsTableEdit);
+export default connect(null, null, null, {withRef: true})(AbnormalDebtsTableEdit);

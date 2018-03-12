@@ -50,6 +50,8 @@ class BillingEdit extends Component {
     selectedDebtToDeleteIndex: -1,
   }
 
+  abnormalDebtTable: any
+
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
     this.setState({
@@ -97,6 +99,7 @@ class BillingEdit extends Component {
       isDeleteAbnormalDebtModalOpen: false,
       selectedDebtToDeleteIndex: -1,
     });
+    this.abnormalDebtTable.getWrappedInstance().onDeleteCallBack(selectedDebtToDeleteIndex);
   }
 
   startBilling = () => {
@@ -179,6 +182,7 @@ class BillingEdit extends Component {
 
         <h2>Poikkeavat perinnät</h2>
         <AbnormalDebtsTableEdit
+          ref={(input) => this.abnormalDebtTable = input}
           abnormalDebts={get(billing, 'abnormal_debts', [])}
           headers={[
             'Vuokraaja',
