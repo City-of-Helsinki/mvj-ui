@@ -15,6 +15,7 @@ import type {
   DeleteAbnormalDebtAction,
   EditAbnormalDebtAction,
   ReceiveAbnormalDebtAction,
+  ReceiveEditedAbnormalDebtAction,
   ReceiveBillingAction,
   ReceiveInvoicingStatusAction,
   StartInvoicingAction,
@@ -42,11 +43,14 @@ export const createAbnormalDebt = (bill: Bill): CreateAbnormalDebtAction =>
 export const deleteAbnormalDebt = (billId: BillId): DeleteAbnormalDebtAction =>
   createAction('mvj/billing/DELETE_ABNORMAL_DEBT')(billId);
 
-export const editAbnormalDebt = (bill: Bill, billId: BillId): EditAbnormalDebtAction =>
-  createAction('mvj/billing/EDIT_ABNORMAL_DEBT')(bill, billId);
+export const editAbnormalDebt = (bill: Bill): EditAbnormalDebtAction =>
+  createAction('mvj/billing/EDIT_ABNORMAL_DEBT')(bill);
 
 export const receiveAbnormalDebt = (bill: Bill): ReceiveAbnormalDebtAction =>
   createAction('mvj/billing/RECEIVE_ABNORMAL_DEBT')(bill);
+
+export const receiveEditedAbnormalDebt = (bill: Bill): ReceiveEditedAbnormalDebtAction =>
+  createAction('mvj/billing/RECEIVE_EDITED_ABNORMAL_DEBT')(bill);
 
 export const receiveBilling = (billing: Billing): ReceiveBillingAction =>
   createAction('mvj/billing/RECEIVE_BILLING')(billing);

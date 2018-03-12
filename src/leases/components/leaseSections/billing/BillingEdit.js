@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
-// import AbnormalDebtsTableEdit from './AbnormalDebtsTableEdit';
+import AbnormalDebtsTableEdit from './AbnormalDebtsTableEdit';
 import AddBillComponent from './AddBillComponent';
 import BillsTableEdit from './BillsTableEdit';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
@@ -134,7 +134,7 @@ class BillingEdit extends Component {
       isStopInvoicingModalOpen,
       // isDeleteAbnormalDebtModalOpen,
     } = this.state;
-
+    console.log(get(billing, 'abnormal_debts', []));
     return (
       <div>
         <ConfirmationModal
@@ -180,7 +180,28 @@ class BillingEdit extends Component {
           onStopInvoicing={() => this.showModal('StopInvoicing')}
           showStartInvoicingButton={!get(billing, 'invoicing_started', false)}
         />
+
+        <h2>Poikkeavat perinnät</h2>
+        <AbnormalDebtsTableEdit
+          abnormalDebts={get(billing, 'abnormal_debts', [])}
+          headers={[
+            'Vuokraaja',
+            'Hallintaosuus',
+            'Eräpäivä',
+            'Määrä',
+            'Aikaväli',
+          ]}
+          onDeleteClick={() => console.log('delete')}
+        />
       </div>
+        //       onDeleteClick={(index) => {
+        //         this.setState({
+        //           isDeleteAbnormalDebtModalOpen: true,
+        //           selectedDebtIndex: index,
+        //         });
+        //       }}
+        //     />
+        //   </FormSectionContainer>
       // <form onSubmit={handleSubmit}>
       //   <FormSectionContainer>
       //     <ConfirmationModal
@@ -192,44 +213,7 @@ class BillingEdit extends Component {
       //       onSave={this.deleteAbnormalDebt}
       //       title='Poista poikkeava perintä'
       //     />
-      //     <h2>Laskut</h2>
-      //     <FormSection
-      //       component={BillsTableEdit}
-      //       dispatch={dispatch}
-      //       name="billing"
-      //     />
       //
-      //     <FormSection
-      //       component={AddBillEdit}
-      //       editMode={isAddBillEditMode}
-      //       name='billing.new_bill'
-      //       onAdd={() => this.showAddBillEditMode()}
-      //       onClose={() => this.hideAddBillEditMode()}
-      //       onSave={() => this.saveNewBill()}
-      //       onStartBilling={() => this.showModal('StartBilling')}
-      //       onStopBilling={() => this.showModal('StopBilling')}
-      //       showStartBillingButton={!get(billing, 'invoicing_started', false)}
-      //     />
-      //
-      //     <h2>Poikkeavat perinnät</h2>
-      //     <FormSection
-      //       name="billing"
-      //       component={AbnormalDebtsTableEdit}
-      //       dispatch={dispatch}
-      //       headers={[
-      //         'Vuokraaja',
-      //         'Hallintaosuus',
-      //         'Eräpäivä',
-      //         'Määrä',
-      //         'Aikaväli',
-      //       ]}
-      //       onDeleteClick={(index) => {
-      //         this.setState({
-      //           isDeleteAbnormalDebtModalOpen: true,
-      //           selectedDebtIndex: index,
-      //         });
-      //       }}
-      //     />
       //   </FormSectionContainer>
       // </form>
     );

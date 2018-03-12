@@ -234,15 +234,8 @@ class BillsTableEdit extends Component {
                         <tr
                           className={classNames({'selected': selectedBill === bill})}
                           key={index}
-                          onClick={() => {
-                            this.setState({
-                              showAllColumns: false,
-                              selectedBill: bill,
-                              selectedBillIndex: index,
-                              showModal: true,
-                            });
-                            this.initilizeBillEditForm(bill);
-                          }}>
+                          onClick={() => {this.showBillModal(index);}}
+                          >
                           <td>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</td>
                           <td>{formatDate(bill.due_date) || '-'}</td>
                           <td>{bill.bill_number || '-'}</td>

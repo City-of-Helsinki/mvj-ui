@@ -17,6 +17,7 @@ export type CreateAbnormalDebtAction = Action<'mvj/billing/CREATE_ABNORMAL_DEBT'
 export type DeleteAbnormalDebtAction = Action<'mvj/billing/DELETE_ABNORMAL_DEBT', BillId>;
 export type EditAbnormalDebtAction = Action<'mvj/billing/EDIT_ABNORMAL_DEBT', Bill>;
 export type ReceiveAbnormalDebtAction = Action<'mvj/billing/RECEIVE_ABNORMAL_DEBT', Bill>;
+export type ReceiveEditedAbnormalDebtAction = Action<'mvj/billing/RECEIVE_EDITED_ABNORMAL_DEBT', Bill>;
 
 export type ReceiveBillingAction = Action<'mvj/billing/RECEIVE_BILLING', Billing>;
 

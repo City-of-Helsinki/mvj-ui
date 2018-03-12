@@ -1,18 +1,17 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {change, Field, formValueSelector, initialize, startAsyncValidation} from 'redux-form';
-import flowRight from 'lodash/flowRight';
+import {destroy, initialize} from 'redux-form';
 import get from 'lodash/get';
 import classNames from 'classnames';
 
 import {
-  displayUIMessage,
   formatDate,
   formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator,
 } from '$util/helpers';
+import {editAbnormalDebt} from './actions';
 import {formatBillingBillDb} from '$src/leases/helpers';
 import EditAbnormalDebt from './EditAbnormalDebt';
 
@@ -66,17 +65,17 @@ class AbnormalDebtsTableEdit extends Component {
   calculateHeight = () => {
     let {clientHeight} = this.tableElement;
 
-    if(clientHeight > MODAL_HEIGHT) {clientHeight = MODAL_HEIGHT;}
-
+    if(clientHeight > MODAL_HEIGHT) {
+      clientHeight = MODAL_HEIGHT;
+    }
     this.setState({tableHeight: clientHeight});
   }
 
   initilizeAbnormalDebtForm = (debt: Object) => {
-    const {billing, dispatch} = this.props;
-    billing.abnormal_debt = debt;
+    const {dispatch} = this.props;
 
-    dispatch(initialize('billing-edit-form', {billing: billing}));
-    dispatch(startAsyncValidation('billing-edit-form'));
+    dispatch(destroy('billing-edit-abnormal-debt-form'));
+    dispatch(initialize('billing-edit-abnormal-debt-form', debt));
   }
 
   showDebtModal = (index: number) => {
@@ -93,20 +92,19 @@ class AbnormalDebtsTableEdit extends Component {
   }
 
   saveBill = (debt: Object, index: ?number) => {
-    const {abnormalDebts, dispatch} = this.props;
+    const {dispatch} = this.props;
 
-    if(index !== undefined && index !== null && abnormalDebts && abnormalDebts.length > index) {
-      abnormalDebts[index] = formatBillingBillDb(debt);
-      dispatch(change('billing-edit-form', `billing.abnormal_debts`, abnormalDebts));
-      displayUIMessage({title: 'Poikkeava perintä tallennettu', body: 'Poikkeava perintä on tallennettu onnistuneesti'});
-      this.setState({selectedDebt: null, selectedDebtIndex: null, showModal: false});
-    }
+    const newDebt:Object = formatBillingBillDb(debt);
+    newDebt.arrayIndex = index;
+    dispatch(editAbnormalDebt(newDebt));
+
+    this.setState({selectedDebt: null, selectedDebtIndex: -1, showModal: false});
   }
 
   render () {
     const {abnormalDebts, headers, onDeleteClick} = this.props;
     const {selectedDebt, selectedDebtIndex, showModal, tableHeight} = this.state;
-
+    console.log(abnormalDebts);
     return (
       <div className='billing__bill-table'>
         <div className={classNames('table-fixed-header', 'billing-fixed-table', {'is-open': showModal})}>
@@ -150,10 +148,8 @@ class AbnormalDebtsTableEdit extends Component {
             </table>
           </div>
         </div>
-        <Field
+        <EditAbnormalDebt
           abnormalDebt={selectedDebt}
-          component={EditAbnormalDebt}
-          name='abnormal_debt'
           onCancel={() => this.setState({selectedDebt: null, selectedDebtIndex: null, showModal: false})}
           onSave={(bill) => this.saveBill(bill, selectedDebtIndex)}
           show={showModal}
@@ -163,14 +159,4 @@ class AbnormalDebtsTableEdit extends Component {
   }
 }
 
-const formName = 'billing-edit-form';
-const selector = formValueSelector(formName);
-
-export default flowRight(
-  connect((state) => {
-    return {
-      abnormalDebts: selector(state, 'billing.abnormal_debts'),
-      billing: selector(state, 'billing'),
-    };
-  }),
-)(AbnormalDebtsTableEdit);
+export default connect()(AbnormalDebtsTableEdit);

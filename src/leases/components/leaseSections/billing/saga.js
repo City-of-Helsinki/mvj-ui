@@ -6,6 +6,7 @@ import {displayUIMessage} from '$util/helpers';
 
 import {
   receiveAbnormalDebt,
+  receiveEditedAbnormalDebt,
   receiveInvoicingStatus,
   receiveBill,
   receiveEditedBill,
@@ -23,6 +24,11 @@ function* stopInvoicingSaga(): Generator<> {
 
 function* createAbnormalDebtSaga({payload: bill}): Generator<> {
   yield put(receiveAbnormalDebt(bill));
+  displayUIMessage({title: 'Poikkeava perintä tallennettu', body: 'Poikkeava perintä on tallennettu onnistuneesti'});
+}
+
+function* editAbnormalDebtSaga({payload: bill}): Generator<> {
+  yield put(receiveEditedAbnormalDebt(bill));
   displayUIMessage({title: 'Poikkeava perintä tallennettu', body: 'Poikkeava perintä on tallennettu onnistuneesti'});
 }
 
@@ -51,6 +57,7 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/billing/START_INVOICING', startInvoicingSaga);
       yield takeLatest('mvj/billing/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/billing/CREATE_ABNORMAL_DEBT', createAbnormalDebtSaga);
+      yield takeLatest('mvj/billing/EDIT_ABNORMAL_DEBT', editAbnormalDebtSaga);
       yield takeLatest('mvj/billing/CREATE_BILL', createBillSaga);
       yield takeLatest('mvj/billing/EDIT_BILL', editBillSaga);
       yield takeLatest('mvj/billing/REFUND_BILL', refundBillSaga);

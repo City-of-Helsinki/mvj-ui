@@ -6,6 +6,7 @@ import type {Reducer} from '$src/types';
 import type {
   Billing,
   ReceiveAbnormalDebtAction,
+  ReceiveEditedAbnormalDebtAction,
   ReceiveBillAction,
   ReceiveEditedBillAction,
   ReceiveBillingAction,
@@ -15,6 +16,12 @@ import type {
 const receiveBillingReducer: Reducer<Billing> = handleActions({
   ['mvj/billing/RECEIVE_ABNORMAL_DEBT']: (state: Billing, {payload: bill}: ReceiveAbnormalDebtAction) => {
     const bills = [...state.abnormal_debts, bill];
+    state.abnormal_debts = bills;
+    return state;
+  },
+  ['mvj/billing/RECEIVE_EDITED_ABNORMAL_DEBT']: (state: Billing, {payload: bill}: ReceiveEditedAbnormalDebtAction) => {
+    const bills = state.abnormal_debts;
+    bills[bill.arrayIndex] = bill;
     state.abnormal_debts = bills;
     return state;
   },
