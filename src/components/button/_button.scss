@@ -61,6 +61,10 @@
     margin: 0;
   }
 
+  &.no-margin-right {
+    margin-right: 0;
+  }
+
   &.full-width {
     width: 100%;
   }
@@ -74,5 +78,25 @@
     top: rem-calc(10px);
     right: rem-calc(10px);
     z-index: 1001;
+  }
+}
+
+.icon-button-component {
+  cursor: pointer;
+  position: relative;
+  top: rem-calc(-1px);
+
+  img {
+    height: 20px;
+    width: 20px;
+  }
+  &:hover {
+    opacity: 0.85;
+  }
+
+  &.position-topright {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 }

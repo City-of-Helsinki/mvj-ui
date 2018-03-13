@@ -278,7 +278,7 @@ export const findIndexOfArrayfield = (collection, id) => {
 
 export const getLabelOfOption = (options: Array<Object>, value: string) => {
   const option = options.find(x => x.value=== value);
-  return get(option, 'display_name', '');
+  return get(option, 'label', '');
 };
 
 /**

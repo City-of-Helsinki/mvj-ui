@@ -5,6 +5,7 @@ import classNames from 'classnames';
 type Props = {
   className: string,
   disabled: boolean,
+  disableDirty: boolean,
   displayError: boolean,
   input: Object,
   label: string,
@@ -16,6 +17,7 @@ type Props = {
 const FieldTypeCheckbox = ({
   className,
   disabled,
+  disableDirty = false,
   displayError,
   input: {name, onBlur, value},
   label,
@@ -47,7 +49,7 @@ const FieldTypeCheckbox = ({
         className={classNames('mvj-form-field-component',
           'mvj-form-field__checkbox',
           {'has-error': displayError},
-          {'is-dirty': dirty})}
+          {'is-dirty': (!disableDirty && dirty)})}
         disabled={disabled}
       >
         {options && options.map((option, index) => {

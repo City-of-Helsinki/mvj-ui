@@ -324,16 +324,17 @@ class PreparerForm extends Component {
     return leaseInfoErrors ? false : true;
   }
 
-  addComment = (text: string) => {
+  addComment = (text: string, type: string) => {
     const {createComment, user} = this.props;
     const comment = {
       archived: false,
       date: moment().format('YYYY-MM-DD'),
       text: text,
+      type: type,
       user: get(user, 'profile.name'),
     };
     createComment(comment);
-    this.commentPanel.resetField();
+    this.commentPanel.getWrappedInstance().resetNewCommentField();
   }
 
   archiveComment = (comment: Object) => {
@@ -362,12 +363,9 @@ class PreparerForm extends Component {
     });
   }
 
-  getNotArchivedComments = (comments: Array<Object>) => {
+  getCurrentComments = (comments: Array<Object>) => {
+    if(!comments || !comments.length) {return [];}
     return comments.filter((comments) => {return comments.archived !== true;});
-  }
-
-  getArchivedComments = (comments: Array<Object>) => {
-    return comments.filter((comments) => {return comments.archived === true;});
   }
 
   handleTabClick = (tabId) => {
@@ -438,8 +436,7 @@ class PreparerForm extends Component {
 
     const areFormsValid = this.validateForms();
     const sortedComments = this.sortComments(comments);
-    const commentsNotArchived = this.getNotArchivedComments(sortedComments);
-    const commentsArchived = this.getArchivedComments(sortedComments);
+    const currentComments = this.getCurrentComments(sortedComments);
     const isAnyFormTouched = this.isAnyFormTouched();
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
     const statusOptions = contentHelpers.getStatusOptions(attributes);
@@ -475,10 +472,9 @@ class PreparerForm extends Component {
           title='Peruuta muutokset'
         />
         <CommentPanel
-          commentsNotArchived={commentsNotArchived}
-          commentsArchived={commentsArchived}
+          comments={sortedComments}
           isOpen={isCommentPanelOpen}
-          onAddComment={(comment) => this.addComment(comment)}
+          onAddComment={(text, type) => this.addComment(text, type)}
           onArchive={(comment) => this.archiveComment(comment)}
           onClose={this.toggleCommentPanel}
           onUnarchive={(comment) => this.unarchiveComment(comment)}
@@ -487,7 +483,7 @@ class PreparerForm extends Component {
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              commentAmount={commentsNotArchived ? commentsNotArchived.length : 0}
+              commentAmount={currentComments ? currentComments.length : 0}
               isCancelDisabled={activeTab.toString() === '6'}
               isEditDisabled={activeTab.toString() === '6'}
               isEditMode={isEditMode}
@@ -667,7 +663,6 @@ export default flowRight(
   }),
   connect(
     (state) => {
-      console.log('ss', state);
       const user = getLoggedInUser(state);
       return {
         areasForm: areasFormSelector(state, 'areas'),

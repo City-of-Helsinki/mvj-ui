@@ -1,20 +1,20 @@
 export const createLeaseStatusOptions = [
-  {value: 'H', display_name: 'Hakemus'},
-  {value: 'R', display_name: 'Varaus'},
-  {value: 'V', display_name: 'Vuokraus'},
-  {value: 'L', display_name: 'Lupa'},
+  {value: 'H', label: 'Hakemus'},
+  {value: 'R', label: 'Varaus'},
+  {value: 'V', label: 'Vuokraus'},
+  {value: 'L', label: 'Lupa'},
 ];
 
 export const createLeaseTypeOptions = [
-  {value: 'H', display_name: 'Hakemus'},
-  {value: 'R', display_name: 'Varaus'},
-  {value: 'V', display_name: 'Vuokraus'},
-  {value: 'L', display_name: 'Lupa'},
+  {value: 'H', label: 'Hakemus'},
+  {value: 'R', label: 'Varaus'},
+  {value: 'V', label: 'Vuokraus'},
+  {value: 'L', label: 'Lupa'},
 ];
 
 export const leaseTypeOptions = [
-  {value: 'H', display_name: 'Hakemus'},
-  {value: 'R', display_name: 'Varaus'},
-  {value: 'V', display_name: 'Vuokraus'},
-  {value: 'L', display_name: 'Lupa'},
+  {value: 'H', label: 'Hakemus'},
+  {value: 'R', label: 'Varaus'},
+  {value: 'V', label: 'Vuokraus'},
+  {value: 'L', label: 'Lupa'},
 ];
