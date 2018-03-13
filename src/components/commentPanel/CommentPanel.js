@@ -1,6 +1,6 @@
 //@flow
 import React, {Component} from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import Button from '../button/Button';
 import TextAreaInput from '../inputs/TextAreaInput';
@@ -32,11 +32,19 @@ class CommentPanel extends Component {
   }
 
   render () {
-    const {commentsArchived, commentsNotArchived, isOpen, onAddComment, onArchive, onClose, onUnarchive} = this.props;
+    const {
+      commentsArchived,
+      commentsNotArchived,
+      isOpen,
+      onAddComment,
+      onArchive,
+      onClose,
+      onUnarchive,
+    } = this.props;
     const {comment} = this.state;
 
     return (
-      <div className={classnames('comment-panel', {'is-panel-open': isOpen}) }>
+      <div className={classNames('comment-panel', {'is-panel-open': isOpen}) }>
         <div className='comment-panel__title-row'>
           <div className='title'>
             <h1>Kommentit</h1>

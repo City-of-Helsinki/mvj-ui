@@ -24,6 +24,13 @@ import type {
   ReceiveSingleLeaseAction,
   HideEditModeAction,
   ShowEditModeAction,
+  Comment,
+  CreateCommentAction,
+  EditCommentAction,
+  ArchiveCommentAction,
+  UnarchiveCommentAction,
+  ReceiveCommentAction,
+  ReceiveEditedCommentAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -70,3 +77,21 @@ export const hideEditMode = (): HideEditModeAction =>
 
 export const showEditMode = (): ShowEditModeAction =>
   createAction('mvj/leases/SHOW_EDIT')();
+
+export const createComment = (comment: Comment): CreateCommentAction =>
+  createAction('mvj/leases/CREATE_COMMENT')(comment);
+
+export const editComment = (comment: Comment): EditCommentAction =>
+  createAction('mvj/leases/EDIT_COMMENT')(comment);
+
+export const archiveComment = (comment: Comment): ArchiveCommentAction =>
+  createAction('mvj/leases/ARCHIVE_COMMENT')(comment);
+
+export const unarchiveComment = (comment: Comment): UnarchiveCommentAction =>
+  createAction('mvj/leases/UNARCHIVE_COMMENT')(comment);
+
+export const receiveComment = (comment: Comment): ReceiveCommentAction =>
+  createAction('mvj/leases/RECEIVE_COMMENT')(comment);
+
+export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentAction =>
+  createAction('mvj/leases/RECEIVE_EDITED_COMMENT')(comment);

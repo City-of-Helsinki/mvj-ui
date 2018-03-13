@@ -5,13 +5,15 @@ import {call, fork, put} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 import {displayUIMessage} from '$util/helpers';
-// import mockData from './mock-data.json';
+import mockData from './mock-data.json';
 
 import {
   receiveLeases,
   receiveSingleLease,
   notFound,
   receiveAttributes,
+  receiveComment,
+  receiveEditedComment,
 } from './actions';
 
 import {getRouteById} from '../root/routes';
@@ -72,6 +74,8 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<> {
 
     switch (statusCode) {
       case 200:
+        // TODO: These comments are only for testing. Use real comments when end-points are ready
+        bodyAsJson.comments = mockData.leases[0].comments;
         yield put(receiveSingleLease(bodyAsJson));
         break;
       case 404:
@@ -140,6 +144,28 @@ function* editLeaseSaga({payload: lease}): Generator<> {
   }
 }
 
+let newId = 100;
+function* createCommentSaga({payload: comment}): Generator<> {
+  comment.id = newId++;
+  yield put(receiveComment(comment)),
+  displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
+}
+
+function* editCommentSaga({payload: comment}): Generator<> {
+  yield put(receiveEditedComment(comment)),
+  displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
+}
+
+function* archiveCommentSaga({payload: comment}): Generator<> {
+  yield put(receiveEditedComment(comment)),
+  displayUIMessage({title: 'Kommentti arkistoitu', body: 'Kommentti on arkistoitu onnistuneesti'});
+}
+
+function* unarchiveCommentSaga({payload: comment}): Generator<> {
+  yield put(receiveEditedComment(comment)),
+  displayUIMessage({title: 'Kommentti palautettu', body: 'Kommentti on palautettu onnistuneesti'});
+}
+
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
@@ -148,6 +174,10 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/EDIT', editLeaseSaga);
+      yield takeLatest('mvj/leases/CREATE_COMMENT', createCommentSaga);
+      yield takeLatest('mvj/leases/EDIT_COMMENT', editCommentSaga);
+      yield takeLatest('mvj/leases/ARCHIVE_COMMENT', archiveCommentSaga);
+      yield takeLatest('mvj/leases/UNARCHIVE_COMMENT', unarchiveCommentSaga);
     }),
   ];
 }

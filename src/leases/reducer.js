@@ -10,6 +10,8 @@ import type {
   ReceiveAttributesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
+  ReceiveCommentAction,
+  ReceiveEditedCommentAction,
 } from './types';
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
@@ -42,6 +44,20 @@ const leasesListReducer: Reducer<LeasesList> = handleActions({
 }, []);
 
 const currentLeaseReducer: Reducer<Lease> = handleActions({
+  ['mvj/leases/RECEIVE_COMMENT']: (state: Lease, {payload: comment}: ReceiveCommentAction) => {
+    const newState = {...state};
+    const comments = [...state.comments, comment];
+    newState.comments = comments;
+    return newState;
+  },
+  ['mvj/leases/RECEIVE_EDITED_COMMENT']: (state: Lease, {payload: comment}: ReceiveEditedCommentAction) => {
+    const newState = {...state};
+    const comments = state.comments;
+    const index = comments.findIndex((item) => item.id === comment.id);
+    comments[index] = comment;
+    newState.comments = comments;
+    return newState;
+  },
   ['mvj/leases/RECEIVE_SINGLE']: (state: Lease, {payload: lease}: ReceiveSingleLeaseAction) => {
     return lease;
   },
