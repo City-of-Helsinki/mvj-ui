@@ -11,6 +11,7 @@ import type {
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
   ReceiveCommentAction,
+  ReceiveDeletedCommentAction,
   ReceiveEditedCommentAction,
 } from './types';
 
@@ -47,6 +48,14 @@ const currentLeaseReducer: Reducer<Lease> = handleActions({
   ['mvj/leases/RECEIVE_COMMENT']: (state: Lease, {payload: comment}: ReceiveCommentAction) => {
     const newState = {...state};
     const comments = [...state.comments, comment];
+    newState.comments = comments;
+    return newState;
+  },
+  ['mvj/leases/RECEIVE_DELETED_COMMENT']: (state: Lease, {payload: comment}: ReceiveDeletedCommentAction) => {
+    const newState = {...state};
+    const comments = state.comments;
+    const index = comments.findIndex((item) => item.id === comment.id);
+    comments.splice(index, 1);
     newState.comments = comments;
     return newState;
   },

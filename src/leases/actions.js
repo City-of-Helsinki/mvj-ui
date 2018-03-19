@@ -26,10 +26,12 @@ import type {
   ShowEditModeAction,
   Comment,
   CreateCommentAction,
+  DeleteCommentAction,
   EditCommentAction,
   ArchiveCommentAction,
   UnarchiveCommentAction,
   ReceiveCommentAction,
+  ReceiveDeletedCommentAction,
   ReceiveEditedCommentAction,
 } from './types';
 
@@ -81,6 +83,9 @@ export const showEditMode = (): ShowEditModeAction =>
 export const createComment = (comment: Comment): CreateCommentAction =>
   createAction('mvj/leases/CREATE_COMMENT')(comment);
 
+export const deleteComment = (comment: Comment): DeleteCommentAction =>
+  createAction('mvj/leases/DELETE_COMMENT')(comment);
+
 export const editComment = (comment: Comment): EditCommentAction =>
   createAction('mvj/leases/EDIT_COMMENT')(comment);
 
@@ -92,6 +97,9 @@ export const unarchiveComment = (comment: Comment): UnarchiveCommentAction =>
 
 export const receiveComment = (comment: Comment): ReceiveCommentAction =>
   createAction('mvj/leases/RECEIVE_COMMENT')(comment);
+
+export const receiveDeletedComment = (comment: Comment): ReceiveDeletedCommentAction =>
+  createAction('mvj/leases/RECEIVE_DELETED_COMMENT')(comment);
 
 export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentAction =>
   createAction('mvj/leases/RECEIVE_EDITED_COMMENT')(comment);

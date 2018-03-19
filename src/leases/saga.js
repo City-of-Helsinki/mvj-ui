@@ -13,6 +13,7 @@ import {
   notFound,
   receiveAttributes,
   receiveComment,
+  receiveDeletedComment,
   receiveEditedComment,
 } from './actions';
 
@@ -151,6 +152,11 @@ function* createCommentSaga({payload: comment}): Generator<> {
   displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
 }
 
+function* deleteCommentSaga({payload: comment}): Generator<> {
+  yield put(receiveDeletedComment(comment)),
+  displayUIMessage({title: 'Kommentti poistettu', body: 'Kommentti on poistettu onnistuneesti'});
+}
+
 function* editCommentSaga({payload: comment}): Generator<> {
   yield put(receiveEditedComment(comment)),
   displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
@@ -175,6 +181,7 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/EDIT', editLeaseSaga);
       yield takeLatest('mvj/leases/CREATE_COMMENT', createCommentSaga);
+      yield takeLatest('mvj/leases/DELETE_COMMENT', deleteCommentSaga);
       yield takeLatest('mvj/leases/EDIT_COMMENT', editCommentSaga);
       yield takeLatest('mvj/leases/ARCHIVE_COMMENT', archiveCommentSaga);
       yield takeLatest('mvj/leases/UNARCHIVE_COMMENT', unarchiveCommentSaga);

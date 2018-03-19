@@ -10,9 +10,8 @@ import {formatDate} from '../../util/helpers';
 
 type Props = {
   date: string,
-  onArchive: Function,
   onDelete: Function,
-  onEdit: Function,
+  onUnarchive: Function,
   text: string,
   user: string,
 }
@@ -22,7 +21,7 @@ type State = {
   isEditMode: boolean,
 }
 
-class Comment extends Component {
+class CommentArchived extends Component {
   props: Props
 
   state: State = {
@@ -46,9 +45,8 @@ class Comment extends Component {
     const {editedText, isEditMode} = this.state;
     const {
       date,
-      onArchive,
       onDelete,
-      onEdit,
+      onUnarchive,
       text,
       user,
     } = this.props;
@@ -84,6 +82,7 @@ class Comment extends Component {
               <Row>
                 <Column>
                   <TextAreaInput
+                    disabled={true}
                     onChange={this.handleTextFieldChange}
                     placeholder='Kommentti'
                     rows={3}
@@ -95,22 +94,12 @@ class Comment extends Component {
                 <Column>
                   <Button
                     className='button-green pull-right no-margin-right'
-                    disabled={!editedText}
-                    label='Tallenna'
+                    label='Palauta'
                     onClick={() => {
-                      onEdit(editedText);
+                      onUnarchive();
                       this.setState({isEditMode: false});
                     }}
-                    title='Tallenna'
-                  />
-                  <Button
-                    className='button-green pull-right'
-                    label='Arkistoi'
-                    onClick={() => {
-                      onArchive();
-                      this.setState({isEditMode: false});
-                    }}
-                    title='Arkistoi'
+                    title='Palauta'
                   />
                   <Button
                     className='button-red pull-right'
@@ -128,4 +117,4 @@ class Comment extends Component {
   }
 }
 
-export default Comment;
+export default CommentArchived;

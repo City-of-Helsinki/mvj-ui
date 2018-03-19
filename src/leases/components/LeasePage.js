@@ -24,6 +24,8 @@ import {
 import {
   archiveComment,
   createComment,
+  deleteComment,
+  editComment,
   editLease,
   fetchAttributes,
   fetchSingleLease,
@@ -82,7 +84,9 @@ type Props = {
   contractsTouched: boolean,
   createComment: Function,
   currentLease: Object,
+  deleteComment: Function,
   dispatch: Function,
+  editComment: Function,
   editLease: Function,
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
@@ -343,6 +347,17 @@ class PreparerForm extends Component {
     archiveComment(comment);
   }
 
+  deleteComment = (comment: Object) => {
+    const {deleteComment} = this.props;
+    deleteComment(comment);
+  }
+
+  editComment = (comment: Object, newText: string) => {
+    const {editComment} = this.props;
+    comment.text = newText;
+    editComment(comment);
+  }
+
   unarchiveComment = (comment: Object) => {
     const {unarchiveComment} = this.props;
     comment.archived = false;
@@ -477,6 +492,8 @@ class PreparerForm extends Component {
           onAddComment={(text, type) => this.addComment(text, type)}
           onArchive={(comment) => this.archiveComment(comment)}
           onClose={this.toggleCommentPanel}
+          onDelete={(comment) => this.deleteComment(comment)}
+          onEdit={(comment, newText) => this.editComment(comment, newText)}
           onUnarchive={(comment) => this.unarchiveComment(comment)}
           ref={(input) => {this.commentPanel = input;}}
         />
@@ -698,6 +715,8 @@ export default flowRight(
     {
       archiveComment,
       createComment,
+      deleteComment,
+      editComment,
       editLease,
       fetchAttributes,
       fetchSingleLease,

@@ -6,8 +6,8 @@ import classNames from 'classnames';
 
 import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
+import CommentArchived from './CommentArchived';
 import NewCommentForm from './forms/NewCommentForm';
-import {formatDate} from '$util/helpers';
 
 type Props = {
   comments: Array<Object>,
@@ -16,6 +16,8 @@ type Props = {
   onAddComment: Function,
   onArchive: Function,
   onClose: Function,
+  onDelete: Function,
+  onEdit: Function,
   onUnarchive: Function,
 }
 
@@ -44,6 +46,8 @@ class CommentPanel extends Component {
       onAddComment,
       onArchive,
       onClose,
+      onDelete,
+      onEdit,
       onUnarchive,
     } = this.props;
 
@@ -76,7 +80,8 @@ class CommentPanel extends Component {
                   key={comment.id}
                   date={comment.date}
                   onArchive={() => onArchive(comment)}
-                  onEdit={() => onArchive(comment)}
+                  onDelete={() => onDelete(comment)}
+                  onEdit={(newText) => onEdit(comment, newText)}
                   text={comment.text}
                   user={comment.user}
                 />
@@ -87,18 +92,16 @@ class CommentPanel extends Component {
           <h2>Arkistoidut</h2>
           <div className='comments'>
             {!archivedComments || !archivedComments.length && <p>Ei arkistoituja kommentteja</p>}
-            {archivedComments && !!archivedComments.length && archivedComments.map((comment, index) => {
+            {archivedComments && !!archivedComments.length && archivedComments.map((comment) => {
               return (
-                <div key={index} className='comment comment-archived'>
-                  <span className="archive-icon" onClick={() => onUnarchive(comment)}></span>
-                  <p className='comment-text'>
-                    {comment.text}
-                  </p>
-                  <p className='comment-info'>
-                    <span className='user'>{comment.user}, </span><span className='date'>{formatDate(comment.date)}</span>
-                  </p>
-
-                </div>
+                <CommentArchived
+                  key={comment.id}
+                  date={comment.date}
+                  onDelete={() => onDelete(comment)}
+                  onUnarchive={() => onUnarchive(comment)}
+                  text={comment.text}
+                  user={comment.user}
+                />
               );
             })}
           </div>

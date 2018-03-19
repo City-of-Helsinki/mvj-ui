@@ -2,9 +2,8 @@
   background-color: $engel-lighter-opaque;
   z-index: 1001;
   width: rem-calc(500px);
-  min-height: 100vh;
-  overflow: auto;
-  position: absolute;
+  height: 100vh;
+  position: fixed;
   top: 0;
   right: rem-calc(-500px);
   padding: 0;
@@ -16,7 +15,7 @@
     position: fixed;
     max-width: 100%;
     width: rem-calc(500px);
-    padding: rem-calc(20px);
+    padding: rem-calc(92px) rem-calc(20px) rem-calc(20px);
     background-color: $engel-lighter-opaque;
     z-index: 1;
   }
@@ -32,7 +31,9 @@
   }
 
   &__content-wrapper {
-    padding: rem-calc(72px) rem-calc(20px) rem-calc(20px);
+    max-height: 100%;
+    padding: rem-calc(142px) rem-calc(20px) rem-calc(20px);
+    overflow: auto;
   }
 
   h2 {
@@ -54,6 +55,7 @@
       .comment-text {
         font-size: $font-regular;
         margin-bottom: rem-calc(5px);
+        padding-left: rem-calc(20px);
         line-height: 1.25;
       }
 
