@@ -7,8 +7,10 @@ import type {
   Attributes,
   Lease,
   LeasesList,
+  Lessors,
   ReceiveAttributesAction,
   ReceiveLeasesAction,
+  ReceiveLessorsAction,
   ReceiveSingleLeaseAction,
   ReceiveCommentAction,
   ReceiveDeletedCommentAction,
@@ -25,6 +27,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   // 'mvj/leases/RECEIVE_ATTRIBUTES': () => false,
   'mvj/leases/CREATE': () => true,
   'mvj/leases/EDIT': () => true,
+  'mvj/leases/PATCH': () => true,
   'mvj/leases/FETCH_ALL': () => true,
   'mvj/leases/FETCH_SINGLE': () => true,
   'mvj/leases/NOT_FOUND': () => false,
@@ -37,6 +40,12 @@ const attributesReducer: Reducer<Attributes> = handleActions({
     return attributes;
   },
 }, {});
+
+const lessorsReducer: Reducer<Lessors> = handleActions({
+  ['mvj/leases/RECEIVE_LESSORS']: (state: Lessors, {payload: lessors}: ReceiveLessorsAction) => {
+    return lessors;
+  },
+}, []);
 
 const leasesListReducer: Reducer<LeasesList> = handleActions({
   ['mvj/leases/RECEIVE_ALL']: (state: LeasesList, {payload: leases}: ReceiveLeasesAction) => {
@@ -78,4 +87,5 @@ export default combineReducers({
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
   list: leasesListReducer,
+  lessors: lessorsReducer,
 });

@@ -24,7 +24,7 @@ export const getContentLeaseIdentifier = (item:Object) => {
   if(isEmpty(item)) {
     return null;
   }
-  const unit = `${get(item, 'type')}${get(item, 'municipality')}${get(item, 'district')}-${formatSequenceNumber(get(item, 'sequence'))}`;
+  const unit = `${get(item, 'type')}${get(item, 'municipality')}${get(item, 'district')}-${formatSequenceNumber(get(item, 'identifier.sequence'))}`;
   return unit;
 };
 
@@ -178,22 +178,23 @@ export const getContentHistory = (lease: Object) => {
 
 export const getContentSummary = (lease: Object) => {
   return {
-    financing_method: get(lease, 'financing_method'),
+    lessor: get(lease, 'lessor.id'),
+    classification: get(lease, 'classification'),
+    intended_use: get(lease, 'intended_use'),
+    supportive_housing: get(lease, 'supportive_housing'),
+    statistical_use: get(lease, 'statistical_use'),
+    intended_use_note: get(lease, 'intended_use_note'),
+    financing: get(lease, 'financing'),
+    management: get(lease, 'management'),
+    transferable: get(lease, 'transferable'),
+    regulated: get(lease, 'regulated'),
+    regulation: get(lease, 'regulation'),
     hitas: get(lease, 'hitas'),
-    lease_statistical_use: get(lease, 'lease_statistical_use'),
-    lease_use: get(lease, 'lease_use'),
-    lease_use_description: get(lease, 'lease_use_description'),
-    lessor: get(lease, 'lessor'),
-    management_method: get(lease, 'management_method'),
     notice_period: get(lease, 'notice_period'),
-    notice_period_description: get(lease, 'notice_period_description'),
-    publicity: get(lease, 'publicity'),
-    regulatory: get(lease, 'regulatory'),
-    regulatory_method: get(lease, 'regulatory_method'),
-    special_apartments: get(lease, 'special_apartments'),
-    transfer_right: get(lease, 'transfer_right'),
+    notice_note: get(lease, 'notice_note'),
   };
 };
+
 export const getContentFixedInitialYearRentItems = (items: Array<Object>) => {
   if(!items || items.length === 0) {
     return [];
@@ -616,33 +617,28 @@ export const getContentLeaseTenant = (item:Object) => {
   return tenant;
 };
 
-export const getContentLeaseItem = (item:Object, statusOptions: Array<Object>) => {
+export const getContentLeaseItem = (item:Object) => {
   return {
     id: get(item, 'id'),
     real_property_unit: getContentRealPropertyUnit(item),
     identifier: getContentLeaseIdentifier(item),
+    lessor: get(item, 'lessor.id'),
     address: getContentLeaseAddress(item),
-    status: getContentLeaseStatus(item, statusOptions),
-    status_code: get(item, 'status'),
+    state: get(item, 'state'),
     start_date: item.start_date ? formatDate(moment(item.start_date)) : null,
     end_date: item.end_date ? formatDate(moment(item.end_date)) : null,
   };
 };
 
-export const getContentLeases = (content:Object, attributes: Object) => {
-  const items = [];
+export const getContentLeases = (content:Object) => {
   const {results} = content;
-  const statusOptions = getStatusOptions(attributes);
-
-  if(!results) {
+  if(!results || !results.length) {
     return [];
   }
 
-  for(let i = 0; i < results.length; i++) {
-    const item = getContentLeaseItem(results[i], statusOptions);
-    items.push(item);
-  }
-  return items;
+  return results.map((item) => {
+    return getContentLeaseItem(item);
+  });
 };
 
 export const getContentTenantOtherPersons = (persons: Array<Object>) => {
@@ -711,11 +707,11 @@ export const getContentTenants = (lease: Object) => {
 };
 
 export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>) => {
-  if(!documentTypes || documentTypes.length === 0) {
+  if(!documentTypes || !documentTypes.length) {
     return items;
   }
   return items.filter((item) => {
-    return documentTypes.indexOf(item.status_code) !== -1;
+    return documentTypes.indexOf(item.state) !== -1;
   });
 
 };

@@ -25,8 +25,14 @@ export const getComments: Selector<Lease, void> = (state: Object): LeaseState =>
 export const getInvoices: Selector<Object, void> = (state: Object): LeaseState =>
   state.lease.invoices;
 
+export const getLessors: Selector<Object, void> = (state: Object): LeaseState =>
+  state.lease.lessors;
+
 export const getAreas: Selector<Object, void> = (state: Object): LeaseState =>
   state.lease.areas;
 
 export const getLeaseInfoErrors: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.lease-info-edit-form.syncErrors');
+
+export const getSummaryFormValues: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.summary-edit-form.values');

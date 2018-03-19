@@ -5,10 +5,12 @@ import {createAction} from 'redux-actions';
 import type {
   Areas,
   FetchAttributesAction,
+  FetchLessorsAction,
   FetchInvoicesAction,
   FetchAreasAction,
   Attributes,
   ReceiveAttributesAction,
+  ReceiveLessorsAction,
   ReceiveInvoicesAction,
   ReceiveAreasAction,
   Lease,
@@ -16,8 +18,10 @@ import type {
   LeaseId,
   LeaseNotFoundAction,
   LeasesList,
+  Lessors,
   CreateLeaseAction,
   EditLeaseAction,
+  PatchLeaseAction,
   FetchLeasesAction,
   FetchSingleLeaseAction,
   ReceiveLeasesAction,
@@ -40,6 +44,12 @@ export const fetchAttributes = (): FetchAttributesAction =>
 
 export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAction =>
   createAction('mvj/leases/RECEIVE_ATTRIBUTES')(identifiers);
+
+export const fetchLessors = (): FetchLessorsAction =>
+  createAction('mvj/leases/FETCH_LESSORS')();
+
+export const receiveLessors = (lessors: Lessors): ReceiveLessorsAction =>
+  createAction('mvj/leases/RECEIVE_LESSORS')(lessors);
 
 export const fetchInvoices = (lease: LeaseId): FetchInvoicesAction =>
   createAction('mvj/leases/FETCH_INVOICES')(lease);
@@ -70,6 +80,9 @@ export const createLease = (lease: Lease): CreateLeaseAction =>
 
 export const editLease = (lease: Lease): EditLeaseAction =>
   createAction('mvj/leases/EDIT')(lease);
+
+export const patchLease = (lease: Lease): PatchLeaseAction =>
+  createAction('mvj/leases/PATCH')(lease);
 
 export const notFound = (): LeaseNotFoundAction =>
   createAction('mvj/leases/NOT_FOUND')();
