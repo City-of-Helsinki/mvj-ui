@@ -8,6 +8,8 @@ import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
 import CommentArchived from './CommentArchived';
 import NewCommentForm from './forms/NewCommentForm';
+import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
+import {CommentTypes} from './constants';
 
 type Props = {
   comments: Array<Object>,
@@ -21,8 +23,16 @@ type Props = {
   onUnarchive: Function,
 }
 
+type State = {
+  selectedCommentTypes: Array<string>,
+}
+
 class CommentPanel extends Component {
   props: Props
+
+  state: State = {
+    selectedCommentTypes: ['0', '1', '2', '3'],
+  }
 
   getCommentsByType = (comments: Array<Object>, type: string) => {
     if(!comments || !comments.length) {return [];}
@@ -39,9 +49,19 @@ class CommentPanel extends Component {
     return comments.filter((comment) => {return comment.archived !== true;});
   }
 
+  getFilteredComments = (comments: Array<Object>) => {
+    const {selectedCommentTypes} = this.state;
+    if(!comments || !comments.length) {return [];}
+    return comments.filter((comment) => {return selectedCommentTypes.indexOf(comment.type) !== -1;});
+  }
+
   resetNewCommentField = () => {
     const {dispatch} = this.props;
     dispatch(initialize('new-comment-form', {text: '', type: ''}));
+  }
+
+  handleFilterChange = (value: Array<string>) => {
+    this.setState({selectedCommentTypes: value});
   }
 
   render () {
@@ -56,16 +76,20 @@ class CommentPanel extends Component {
       onUnarchive,
     } = this.props;
 
+    const {selectedCommentTypes} = this.state;
+
     const archivedComments = this.getArchivedComments(comments);
     const archivedInvoicingComments = this.getCommentsByType(archivedComments, '0');
     const archivedCommunicationComments = this.getCommentsByType(archivedComments, '1');
     const archivedContractTermsComments = this.getCommentsByType(archivedComments, '2');
     const archivedPreparationComments = this.getCommentsByType(archivedComments, '3');
+
     const currentComments = this.getCurrentComments(comments);
-    const currentInvoicingComments = this.getCommentsByType(currentComments, '0');
-    const currentCommunicationComments = this.getCommentsByType(currentComments, '1');
-    const currentContractTermsComments = this.getCommentsByType(currentComments, '2');
-    const currentPreparationComments = this.getCommentsByType(currentComments, '3');
+    const filteredCurrentComments = this.getFilteredComments(currentComments);
+    const currentInvoicingComments = this.getCommentsByType(filteredCurrentComments, '0');
+    const currentCommunicationComments = this.getCommentsByType(filteredCurrentComments, '1');
+    const currentContractTermsComments = this.getCommentsByType(filteredCurrentComments, '2');
+    const currentPreparationComments = this.getCommentsByType(filteredCurrentComments, '3');
 
 
     return (
@@ -86,8 +110,25 @@ class CommentPanel extends Component {
           />
 
           <h2>Ajankohtaiset</h2>
-          {!currentComments || !currentComments.length && <p>Ei ajankohtaisia kommentteja</p>}
-          {currentComments && !!currentComments.length &&
+          {!!currentComments.length &&
+            <div className='filters'>
+              <StyledCheckboxButtons
+                checkboxName='checkbox-buttons-document-type'
+                onChange={(value) => this.handleFilterChange(value)}
+                options={CommentTypes}
+                selectAllButton
+                selectAllButtonLabel='Kaikki'
+                value={selectedCommentTypes}
+              />
+            </div>
+          }
+
+          {!filteredCurrentComments || !filteredCurrentComments.length &&
+            <div className='comments'>
+              <p className='no-comments-text'>Ei ajankohtaisia kommentteja</p>
+            </div>
+          }
+          {filteredCurrentComments && !!filteredCurrentComments.length &&
             <div className='comments'>
               {currentInvoicingComments && !!currentInvoicingComments.length &&
                 <div className='comments-section'>
@@ -165,7 +206,11 @@ class CommentPanel extends Component {
           }
 
           <h2 className='archived'>Arkistoidut</h2>
-          {!archivedComments || !archivedComments.length && <p>Ei ajankohtaisia kommentteja</p>}
+          {!archivedComments || !archivedComments.length &&
+            <div className='comments archived'>
+              <p className='no-comments-text'>Ei arkistoituja kommentteja</p>
+            </div>
+          }
           {archivedComments && !!archivedComments.length &&
             <div className='comments archived'>
               {archivedInvoicingComments && !!archivedInvoicingComments.length &&

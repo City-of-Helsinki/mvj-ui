@@ -64,16 +64,17 @@ class StyledCheckboxButtons extends Component {
         {selectAllButton &&
           <label className='label select-all'>
             <input
-              className='checkbox'
-              type='checkbox'
               checked={areAllSelected}
-              onClick={() => {
+              className='checkbox'
+              onChange={() => {
                 if(!areAllSelected) {
                   this.selectAll();
                 } else {
                   this.unselectAll();
                 }
-              }} />
+              }}
+              type='checkbox'
+            />
             <span className='option-label'>{selectAllButtonLabel}</span>
           </label>
         }
@@ -82,11 +83,12 @@ class StyledCheckboxButtons extends Component {
             <label className='label' key={index}>
               <input
                 className='checkbox'
-                type='checkbox'
-                name={checkboxName}
                 checked={value.indexOf(option.value) !== -1}
+                name={checkboxName}
+                onChange={this.handleChange}
+                type='checkbox'
                 value={option.value}
-                onChange={this.handleChange} />
+              />
               <span className='option-label'>{option.label}</span>
             </label>
           );

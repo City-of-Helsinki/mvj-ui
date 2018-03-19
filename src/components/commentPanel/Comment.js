@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import Button from '$components/button/Button';
 import DeleteButton from '$components/button/DeleteButton';
 import EditButton from '$components/button/EditButton';
+import ShowMore from '../showMore/ShowMore';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {formatDate} from '../../util/helpers';
 
@@ -20,6 +21,7 @@ type Props = {
 type State = {
   editedText: string,
   isEditMode: boolean,
+  showMore: boolean,
 }
 
 class Comment extends Component {
@@ -28,6 +30,7 @@ class Comment extends Component {
   state: State = {
     editedText: '',
     isEditMode: false,
+    showMore: false,
   }
 
   handleTextFieldChange = (e: Object) => {
@@ -67,9 +70,11 @@ class Comment extends Component {
                 &nbsp;
                 <span>{user}</span>
               </p>
-              <p className='comment-text'>
-                {text}
-              </p>
+              <div className='comment-text'>
+                <ShowMore>
+                  <div dangerouslySetInnerHTML={{__html: text}}/>
+                </ShowMore>
+              </div>
             </div>
           </div>
         }
