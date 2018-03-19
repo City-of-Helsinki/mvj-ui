@@ -40,7 +40,7 @@ import {
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
-import {displayUIMessage, getAttributeFieldOptions, getLabelOfOption, getLessorsOptions} from '$util/helpers';
+import {displayUIMessage, getAttributeFieldOptions, getLabelOfOption, getLessorOptions} from '$util/helpers';
 import {summaryPublicityOptions} from './leaseSections/constants';
 
 import Billing from './leaseSections/billing/Billing';
@@ -475,7 +475,7 @@ class PreparerForm extends Component {
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
 
     const stateOptions = getAttributeFieldOptions(attributes, 'state');
-    const lessorOptions = getLessorsOptions(lessors);
+    const lessorOptions = getLessorOptions(lessors);
     const summary = contentHelpers.getContentSummary(currentLease);
 
     let sum_areas = 0;

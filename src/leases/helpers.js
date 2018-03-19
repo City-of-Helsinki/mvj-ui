@@ -622,6 +622,7 @@ export const getContentLeaseItem = (item:Object) => {
     id: get(item, 'id'),
     real_property_unit: getContentRealPropertyUnit(item),
     identifier: getContentLeaseIdentifier(item),
+    lessor: get(item, 'lessor.id'),
     address: getContentLeaseAddress(item),
     state: get(item, 'state'),
     start_date: item.start_date ? formatDate(moment(item.start_date)) : null,

@@ -10,7 +10,7 @@ import Button from '$components/button/Button';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import {required} from '$components/form/validations';
-import {getAttributeFieldOptions, getLessorsOptions} from '$src/util/helpers';
+import {getAttributeFieldOptions, getLessorOptions} from '$src/util/helpers';
 
 type Props = {
   attributes: Object,
@@ -46,7 +46,7 @@ class CreateLease extends Component {
     const districtOptions = contentHelpers.getDistrictOptions(attributes);
     const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
     const typeOptions = contentHelpers.getTypeOptions(attributes);
-    const lessorOptions = getLessorsOptions(lessors);
+    const lessorOptions = getLessorOptions(lessors);
     const noticePeriodOptions = getAttributeFieldOptions(attributes, 'notice_period');
 
     return (

@@ -22,7 +22,7 @@ import {
 } from '../selectors';
 import {leaseTypeOptions} from '../constants';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '../helpers';
-import {getSearchQuery} from '$util/helpers';
+import {getLessorOptions, getSearchQuery} from '$util/helpers';
 import Button from '$components/button/Button';
 import CreateLease from './leaseSections/CreateLease';
 import EditableMap from '$components/map/EditableMap';
@@ -149,6 +149,7 @@ class LeaseList extends Component {
     const leases = getContentLeases(content, attributes);
     //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
     const filteredLeases = getLeasesFilteredByDocumentType(leases, documentType);
+    const lessorOptions = getLessorOptions(lessors);
     const stateOptions = getAttributeFieldOptions(attributes, 'state');
 
     return (
@@ -206,7 +207,7 @@ class LeaseList extends Component {
                   {key: 'identifier', label: 'Vuokratunnus'},
                   {key: 'real_property_unit', label: 'Vuokrakohde'},
                   {key: 'tenant', label: 'Vuokralainen'},
-                  {key: 'lessor', label: 'Vuokranantaja'},
+                  {key: 'lessor', label: 'Vuokranantaja', renderer: (val) => getLabelOfOption(lessorOptions, val)},
                   {key: 'address', label: 'Osoite'},
                   {key: 'state', label: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
                   {key: 'start_date', label: 'Alkupvm'},
