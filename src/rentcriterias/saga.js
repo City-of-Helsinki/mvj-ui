@@ -18,7 +18,7 @@ import {
 function* createRentCriteriasSaga({payload: criteria}): Generator<> {
   // TODO: Integrate with API
   const dummyId = 1;
-  console.log(criteria);
+
   yield put(receiveSingleRentCriteria(criteria));
   yield put(hideEditMode());
   displayUIMessage({title: 'Vuokrausperuste luotu', body: 'Vuokrausperuste on luotu onnistuneesti'});

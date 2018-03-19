@@ -5,10 +5,21 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {createLease, fetchAttributes, fetchLeases} from '../actions';
+import {
+  createLease,
+  fetchAttributes,
+  fetchLeases,
+  fetchLessors,
+} from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {getAttributes, getIsFetching, getLeasesList} from '../selectors';
+import {
+  getAttributes,
+  getIsFetching,
+  getLeasesList,
+  getLessors,
+} from '../selectors';
 import {leaseTypeOptions} from '../constants';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '../helpers';
 import {getSearchQuery} from '$util/helpers';
@@ -33,8 +44,10 @@ type Props = {
   createLease: Function,
   fetchAttributes: Function,
   fetchLeases: Function,
+  fetchLessors: Function,
   isFetching: boolean,
   leases: Object,
+  lessors: Array<Object>,
   router: Object,
   receiveTopNavigationSettings: Function,
 }
@@ -63,7 +76,12 @@ class LeaseList extends Component {
   };
 
   componentWillMount() {
-    const {fetchAttributes, fetchLeases, receiveTopNavigationSettings} = this.props;
+    const {
+      fetchAttributes,
+      fetchLeases,
+      fetchLessors,
+      receiveTopNavigationSettings,
+    } = this.props;
     const {router: {location: {query}}} = this.props;
 
     receiveTopNavigationSettings({
@@ -72,6 +90,7 @@ class LeaseList extends Component {
       showSearch: false,
     });
     fetchAttributes();
+    fetchLessors();
     fetchLeases(getSearchQuery(query));
   }
 
@@ -124,11 +143,13 @@ class LeaseList extends Component {
       attributes,
       createLease,
       leases: content,
+      lessors,
       isFetching,
     } = this.props;
     const leases = getContentLeases(content, attributes);
     //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
     const filteredLeases = getLeasesFilteredByDocumentType(leases, documentType);
+    const stateOptions = getAttributeFieldOptions(attributes, 'state');
 
     return (
       <PageContainer>
@@ -139,6 +160,7 @@ class LeaseList extends Component {
         >
           <CreateLease
             attributes={attributes}
+            lessors={lessors}
             onSubmit={(lease) => createLease(lease)}
           />
         </Modal>
@@ -184,9 +206,9 @@ class LeaseList extends Component {
                   {key: 'identifier', label: 'Vuokratunnus'},
                   {key: 'real_property_unit', label: 'Vuokrakohde'},
                   {key: 'tenant', label: 'Vuokralainen'},
-                  {key: 'person', label: 'Vuokranantaja'},
+                  {key: 'lessor', label: 'Vuokranantaja'},
                   {key: 'address', label: 'Osoite'},
-                  {key: 'status', label: 'Tyyppi'},
+                  {key: 'state', label: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
                   {key: 'start_date', label: 'Alkupvm'},
                   {key: 'end_date', label: 'Loppupvm'},
                 ]}
@@ -210,12 +232,14 @@ export default flowRight(
         attributes: getAttributes(state),
         isFetching: getIsFetching(state),
         leases: getLeasesList(state),
+        lessors: getLessors(state),
       };
     },
     {
       createLease,
-      fetchLeases,
       fetchAttributes,
+      fetchLeases,
+      fetchLessors,
       receiveTopNavigationSettings,
     },
   ),

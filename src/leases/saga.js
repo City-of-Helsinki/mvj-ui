@@ -9,6 +9,7 @@ import mockData from './mock-data.json';
 
 import {
   receiveLeases,
+  receiveLessors,
   receiveSingleLease,
   notFound,
   receiveAttributes,
@@ -21,9 +22,11 @@ import {getRouteById} from '../root/routes';
 
 import {
   fetchLeases,
+  fetchLessors,
   fetchSingleLease,
   createLease,
   editLease,
+  patchLease,
   fetchAttributes,
 } from './requests';
 
@@ -44,6 +47,25 @@ function* fetchAttributesSaga(): Generator<> {
     }
   } catch (error) {
     console.error('Failed to fetch identifiers with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchLessorsSaga(): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLessors);
+    const lessors = bodyAsJson.results;
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveLessors(lessors));
+        break;
+      case 404:
+      case 500:
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch LESSORS with error "%s"', error);
     yield put(receiveError(error));
   }
 }
@@ -145,6 +167,31 @@ function* editLeaseSaga({payload: lease}): Generator<> {
   }
 }
 
+function* patchLeaseSaga({payload: lease}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSingleLease(bodyAsJson));
+        displayUIMessage({title: 'Vuokraus tallennettu', body: 'Vuokraus on tallennettu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 let newId = 100;
 function* createCommentSaga({payload: comment}): Generator<> {
   comment.id = newId++;
@@ -176,10 +223,12 @@ export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
       yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
+      yield takeLatest('mvj/leases/FETCH_LESSORS', fetchLessorsSaga);
       yield takeLatest('mvj/leases/FETCH_ALL', fetchLeasesSaga);
       yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/EDIT', editLeaseSaga);
+      yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
       yield takeLatest('mvj/leases/CREATE_COMMENT', createCommentSaga);
       yield takeLatest('mvj/leases/DELETE_COMMENT', deleteCommentSaga);
       yield takeLatest('mvj/leases/EDIT_COMMENT', editCommentSaga);

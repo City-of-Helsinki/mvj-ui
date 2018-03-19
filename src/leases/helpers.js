@@ -24,7 +24,7 @@ export const getContentLeaseIdentifier = (item:Object) => {
   if(isEmpty(item)) {
     return null;
   }
-  const unit = `${get(item, 'type')}${get(item, 'municipality')}${get(item, 'district')}-${formatSequenceNumber(get(item, 'sequence'))}`;
+  const unit = `${get(item, 'type')}${get(item, 'municipality')}${get(item, 'district')}-${formatSequenceNumber(get(item, 'identifier.sequence'))}`;
   return unit;
 };
 
@@ -617,33 +617,27 @@ export const getContentLeaseTenant = (item:Object) => {
   return tenant;
 };
 
-export const getContentLeaseItem = (item:Object, statusOptions: Array<Object>) => {
+export const getContentLeaseItem = (item:Object) => {
   return {
     id: get(item, 'id'),
     real_property_unit: getContentRealPropertyUnit(item),
     identifier: getContentLeaseIdentifier(item),
     address: getContentLeaseAddress(item),
-    status: getContentLeaseStatus(item, statusOptions),
-    status_code: get(item, 'status'),
+    state: get(item, 'state'),
     start_date: item.start_date ? formatDate(moment(item.start_date)) : null,
     end_date: item.end_date ? formatDate(moment(item.end_date)) : null,
   };
 };
 
-export const getContentLeases = (content:Object, attributes: Object) => {
-  const items = [];
+export const getContentLeases = (content:Object) => {
   const {results} = content;
-  const statusOptions = getStatusOptions(attributes);
-
-  if(!results) {
+  if(!results || !results.length) {
     return [];
   }
 
-  for(let i = 0; i < results.length; i++) {
-    const item = getContentLeaseItem(results[i], statusOptions);
-    items.push(item);
-  }
-  return items;
+  return results.map((item) => {
+    return getContentLeaseItem(item);
+  });
 };
 
 export const getContentTenantOtherPersons = (persons: Array<Object>) => {

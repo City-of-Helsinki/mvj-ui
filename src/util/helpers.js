@@ -330,3 +330,21 @@ export const getAttributeFieldOptions = (attributes: Object, path: string) => {
     };
   });
 };
+
+/**
+ * Get options for lessor field
+ * @param lessors
+ * @param path
+ */
+export const getLessorsOptions = (lessors: Array<Object>) => {
+  if(!lessors || !lessors.length) {
+    return [];
+  }
+
+  return lessors.filter((item) => item.is_lessor).map((item) => {
+    return {
+      value: item.id,
+      label: item.is_business ? item.business_name : `${item.last_name} ${item.first_name}`,
+    };
+  });
+};
