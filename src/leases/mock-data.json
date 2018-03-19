@@ -143,21 +143,27 @@
 
       "comments": [
         {
+          "id": 1,
           "archived": false,
           "date": "2017-10-20",
           "text": "Vilu mulle virttä virkkoi, sae saatteli runoja. Virttä toista tuulet toivat, meren aaltoset ajoivat. Linnut liitteli sanoja, puien latvat lausehia.",
+          "type": "0",
           "user": "Kati Valkama"
         },
         {
+          "id": 2,
           "archived": false,
           "date": "2017-09-20",
           "text": "Vilu mulle virttä virkkoi, sae saatteli runoja. Virttä toista tuulet toivat, meren aaltoset ajoivat. Linnut liitteli sanoja, puien latvat lausehia.",
+          "type": "1",
           "user": "Kati Valkama"
         },
         {
+          "id": 3,
           "archived": true,
           "date": "2017-08-20",
           "text": "Vilu mulle virttä virkkoi, sae saatteli runoja. Virttä toista tuulet toivat, meren aaltoset ajoivat. Linnut liitteli sanoja, puien latvat lausehia.",
+          "type": "1",
           "user": "Kati Valkama"
         }
       ],

@@ -490,13 +490,13 @@
     background-color: $tram;
     color: $white;
 
-    &:disabled {
-      opacity: 0.65;
-      cursor: not-allowed;
-    }
-
     &:hover {
       background-color: $tram-lighter;
+    }
+
+    &:disabled {
+      background-color: #99d3b5;
+      cursor: not-allowed;
     }
   }
 

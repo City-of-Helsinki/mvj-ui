@@ -15,17 +15,23 @@ import {receiveBilling} from './leaseSections/billing/actions';
 import {getBilling} from './leaseSections/billing/selectors';
 import {
   getAttributes,
+  getComments,
   getCurrentLease,
   getIsEditMode,
   getIsFetching,
   getLeaseInfoErrors,
 } from '../selectors';
 import {
+  archiveComment,
+  createComment,
+  deleteComment,
+  editComment,
   editLease,
   fetchAttributes,
   fetchSingleLease,
   hideEditMode,
   showEditMode,
+  unarchiveComment,
 } from '../actions';
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
@@ -68,14 +74,19 @@ import ConstructionEligibilityEdit from './leaseSections/constructionEligibility
 import mockData from '../mock-data.json';
 
 type Props = {
+  archiveComment: Function,
   areasForm: Array<Object>,
   areasTouched: boolean,
   attributes: Object,
   billing: Object,
+  comments: Array<Object>,
   contractsForm: Array<Object>,
   contractsTouched: boolean,
+  createComment: Function,
   currentLease: Object,
+  deleteComment: Function,
   dispatch: Function,
+  editComment: Function,
   editLease: Function,
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
@@ -105,12 +116,12 @@ type Props = {
   tenantsForm: Array<Object>,
   tenantsTouched: boolean,
   user: Object,
+  unarchiveComment: Function,
 }
 
 type State = {
   activeTab: number,
   areas: Array<Object>,
-  comments: Array<Object>,
   contracts: Array<Object>,
   history: Array<Object>,
   inspections: Array<Object>,
@@ -130,7 +141,6 @@ class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
     areas: [],
-    comments: [],
     contracts: [],
     history: [],
     isCancelLeaseModalOpen: false,
@@ -185,7 +195,6 @@ class PreparerForm extends Component {
 
     this.setState({
       areas: contentHelpers.getContentLeaseAreas(lease),
-      comments: lease.comments,
       contracts: contentHelpers.getContentContracts(lease),
       history: contentHelpers.getContentHistory(lease),
       inspections: contentHelpers.getContentInspections(lease),
@@ -319,37 +328,59 @@ class PreparerForm extends Component {
     return leaseInfoErrors ? false : true;
   }
 
-  addComment = (comment: string) => {
-    const {user} = this.props;
-    const {comments} = this.state;
-
-    comments.push({
+  addComment = (text: string, type: string) => {
+    const {createComment, user} = this.props;
+    const comment = {
       archived: false,
       date: moment().format('YYYY-MM-DD'),
-      text: comment,
+      text: text,
+      type: type,
       user: get(user, 'profile.name'),
-    });
-    this.setState({comments: comments});
-    this.commentPanel.resetField();
+    };
+    createComment(comment);
+    this.commentPanel.getWrappedInstance().resetNewCommentField();
   }
 
-  getComments = () => {
-    const {comments} = this.state;
+  archiveComment = (comment: Object) => {
+    const {archiveComment} = this.props;
+    comment.archived = true;
+    archiveComment(comment);
+  }
+
+  deleteComment = (comment: Object) => {
+    const {deleteComment} = this.props;
+    deleteComment(comment);
+  }
+
+  editComment = (comment: Object, newText: string) => {
+    const {editComment} = this.props;
+    comment.text = newText;
+    editComment(comment);
+  }
+
+  unarchiveComment = (comment: Object) => {
+    const {unarchiveComment} = this.props;
+    comment.archived = false;
+    unarchiveComment(comment);
+  }
+
+  sortComments = (comments: Array<Object>) => {
+    if(!comments || !comments.length) {
+      return [];
+    }
+
     return comments.sort(function(a, b){
       const keyA = a.date,
         keyB = b.date;
-      if(moment(keyA).isAfter(keyB)) return -1;
-      if(moment(keyB).isAfter(keyA)) return 1;
+      if(moment(keyA).isAfter(moment(keyB))) return -1;
+      if(moment(keyB).isAfter(moment(keyA))) return 1;
       return 0;
     });
   }
 
-  getNotArchivedComments = (comments: Array<Object>) => {
+  getCurrentComments = (comments: Array<Object>) => {
+    if(!comments || !comments.length) {return [];}
     return comments.filter((comments) => {return comments.archived !== true;});
-  }
-
-  getArchivedComments = (comments: Array<Object>) => {
-    return comments.filter((comments) => {return comments.archived === true;});
   }
 
   handleTabClick = (tabId) => {
@@ -391,30 +422,6 @@ class PreparerForm extends Component {
       tenantsTouched;
   }
 
-  archiveComment = (comment: Object) => {
-    const {comments} = this.state;
-    const newComments = [];
-    forEach(comments, (com) => {
-      if(com === comment) {
-        com.archived = true;
-      }
-      newComments.push(com);
-    });
-    this.setState({comments: newComments});
-  }
-
-  unarchiveComment = (comment: Object) => {
-    const {comments} = this.state;
-    const newComments = [];
-    forEach(comments, (com) => {
-      if(com === comment) {
-        com.archived = false;
-      }
-      newComments.push(com);
-    });
-    this.setState({comments: newComments});
-  }
-
   render() {
     const {
       activeTab,
@@ -435,6 +442,7 @@ class PreparerForm extends Component {
     const {
       attributes,
       billing,
+      comments,
       currentLease,
       isEditMode,
       isFetching,
@@ -442,9 +450,8 @@ class PreparerForm extends Component {
     } = this.props;
 
     const areFormsValid = this.validateForms();
-    const comments = this.getComments();
-    const commentsNotArchived = this.getNotArchivedComments(comments);
-    const commentsArchived = this.getArchivedComments(comments);
+    const sortedComments = this.sortComments(comments);
+    const currentComments = this.getCurrentComments(sortedComments);
     const isAnyFormTouched = this.isAnyFormTouched();
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
     const statusOptions = contentHelpers.getStatusOptions(attributes);
@@ -480,19 +487,20 @@ class PreparerForm extends Component {
           title='Peruuta muutokset'
         />
         <CommentPanel
-          commentsNotArchived={commentsNotArchived}
-          commentsArchived={commentsArchived}
+          comments={sortedComments}
           isOpen={isCommentPanelOpen}
-          onAddComment={(comment) => this.addComment(comment)}
+          onAddComment={(text, type) => this.addComment(text, type)}
           onArchive={(comment) => this.archiveComment(comment)}
           onClose={this.toggleCommentPanel}
+          onDelete={(comment) => this.deleteComment(comment)}
+          onEdit={(comment, newText) => this.editComment(comment, newText)}
           onUnarchive={(comment) => this.unarchiveComment(comment)}
           ref={(input) => {this.commentPanel = input;}}
         />
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              commentAmount={commentsNotArchived ? commentsNotArchived.length : 0}
+              commentAmount={currentComments ? currentComments.length : 0}
               isCancelDisabled={activeTab.toString() === '6'}
               isEditDisabled={activeTab.toString() === '6'}
               isEditMode={isEditMode}
@@ -678,6 +686,7 @@ export default flowRight(
         areasTouched: get(state, 'form.property-unit-edit-form.anyTouched'),
         attributes: getAttributes(state),
         billing: getBilling(state),
+        comments: getComments(state),
         contractsForm: contractFormSelector(state, 'contracts'),
         contractsTouched: get(state, 'form.contract-edit-form.anyTouched'),
         currentLease: getCurrentLease(state),
@@ -704,6 +713,10 @@ export default flowRight(
       };
     },
     {
+      archiveComment,
+      createComment,
+      deleteComment,
+      editComment,
       editLease,
       fetchAttributes,
       fetchSingleLease,
@@ -711,6 +724,7 @@ export default flowRight(
       receiveBilling,
       receiveTopNavigationSettings,
       showEditMode,
+      unarchiveComment,
     }
   ),
 )(PreparerForm);

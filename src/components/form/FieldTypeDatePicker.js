@@ -6,6 +6,7 @@ import classNames from 'classnames';
 
 type Props = {
   className?: string,
+  disableDirty: boolean,
   disableTouched: boolean,
   input: Object,
   label: string,
@@ -30,6 +31,7 @@ class FieldTypeDatePicker extends Component {
   render(){
     const {
       className,
+      disableDirty = false,
       disableTouched = false,
       input,
       input: {value},
@@ -43,7 +45,10 @@ class FieldTypeDatePicker extends Component {
         {label &&
           <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>
         }
-        <div className={classNames('mvj-form-field-component', 'mvj-form-field__datepicker', {'is-dirty': dirty})}>
+        <div className={classNames(
+          'mvj-form-field-component',
+          'mvj-form-field__datepicker',
+          {'is-dirty': (!disableDirty && dirty)})}>
           <DatePicker
             {...input}
             placeholder={placeholder}

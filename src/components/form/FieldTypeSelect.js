@@ -6,6 +6,7 @@ import Select from 'react-select';
 type Props = {
   className: String,
   disabled: boolean,
+  disableDirty: boolean,
   disableTouched: boolean,
   displayError: boolean,
   input: Object,
@@ -19,6 +20,7 @@ type Props = {
 const FieldTypeSelect = ({
   className,
   disabled,
+  disableDirty = false,
   disableTouched = false,
   displayError,
   input,
@@ -46,7 +48,11 @@ const FieldTypeSelect = ({
   return (
     <div className={classNames('mvj-form-field', className)}>
       {label && <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>}
-      <div className={classNames('mvj-form-field-component', 'mvj-form-field__select', {'has-error': displayError}, {'is-dirty': dirty})}>
+      <div className={classNames(
+        'mvj-form-field-component',
+        'mvj-form-field__select',
+        {'has-error': displayError},
+        {'is-dirty': (!disableDirty && dirty)})}>
         <Select
           {...input}
           arrowRenderer={arrowRenderer}

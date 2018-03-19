@@ -24,6 +24,15 @@ import type {
   ReceiveSingleLeaseAction,
   HideEditModeAction,
   ShowEditModeAction,
+  Comment,
+  CreateCommentAction,
+  DeleteCommentAction,
+  EditCommentAction,
+  ArchiveCommentAction,
+  UnarchiveCommentAction,
+  ReceiveCommentAction,
+  ReceiveDeletedCommentAction,
+  ReceiveEditedCommentAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -70,3 +79,27 @@ export const hideEditMode = (): HideEditModeAction =>
 
 export const showEditMode = (): ShowEditModeAction =>
   createAction('mvj/leases/SHOW_EDIT')();
+
+export const createComment = (comment: Comment): CreateCommentAction =>
+  createAction('mvj/leases/CREATE_COMMENT')(comment);
+
+export const deleteComment = (comment: Comment): DeleteCommentAction =>
+  createAction('mvj/leases/DELETE_COMMENT')(comment);
+
+export const editComment = (comment: Comment): EditCommentAction =>
+  createAction('mvj/leases/EDIT_COMMENT')(comment);
+
+export const archiveComment = (comment: Comment): ArchiveCommentAction =>
+  createAction('mvj/leases/ARCHIVE_COMMENT')(comment);
+
+export const unarchiveComment = (comment: Comment): UnarchiveCommentAction =>
+  createAction('mvj/leases/UNARCHIVE_COMMENT')(comment);
+
+export const receiveComment = (comment: Comment): ReceiveCommentAction =>
+  createAction('mvj/leases/RECEIVE_COMMENT')(comment);
+
+export const receiveDeletedComment = (comment: Comment): ReceiveDeletedCommentAction =>
+  createAction('mvj/leases/RECEIVE_DELETED_COMMENT')(comment);
+
+export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentAction =>
+  createAction('mvj/leases/RECEIVE_EDITED_COMMENT')(comment);

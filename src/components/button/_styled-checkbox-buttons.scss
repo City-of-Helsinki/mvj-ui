@@ -2,7 +2,7 @@
   display:inline-block;
 
   .label {
-    padding: 0 0.15rem;
+    padding: 0 rem-calc(5px) rem-calc(5px) 0;
     background: none;
   }
 

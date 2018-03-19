@@ -4,6 +4,9 @@ import type {Action} from '../types';
 
 export type LeaseState = Object;
 
+export type Comment = Object;
+export type CommentId = number;
+
 export type Lease = Object;
 export type LeaseId = number;
 export type Attributes = Object;
@@ -34,3 +37,12 @@ export type LeaseNotFoundAction = Action<'mvj/leases/NOT_FOUND', void>;
 
 export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;
+
+export type CreateCommentAction = Action<'mvj/leases/CREATE_COMMENT', Comment>;
+export type DeleteCommentAction = Action<'mvj/leases/DELETE_COMMENT', Comment>;
+export type EditCommentAction = Action<'mvj/leases/EDIT_COMMENT', Comment>;
+export type ArchiveCommentAction = Action<'mvj/leases/ARCHIVE_COMMENT', Comment>;
+export type UnarchiveCommentAction = Action<'mvj/leases/UNARCHIVE_COMMENT', Comment>;
+export type ReceiveCommentAction = Action<'mvj/leases/RECEIVE_COMMENT', Comment>;
+export type ReceiveEditedCommentAction = Action<'mvj/leases/RECEIVE_EDITED_COMMENT', Comment>;
+export type ReceiveDeletedCommentAction = Action<'mvj/leases/RECEIVE_DELETED_COMMENT', Comment>;
