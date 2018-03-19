@@ -707,11 +707,11 @@ export const getContentTenants = (lease: Object) => {
 };
 
 export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>) => {
-  if(!documentTypes || documentTypes.length === 0) {
+  if(!documentTypes || !documentTypes.length) {
     return items;
   }
   return items.filter((item) => {
-    return documentTypes.indexOf(item.status_code) !== -1;
+    return documentTypes.indexOf(item.state) !== -1;
   });
 
 };

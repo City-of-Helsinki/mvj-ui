@@ -20,7 +20,6 @@ import {
   getLeasesList,
   getLessors,
 } from '../selectors';
-import {leaseTypeOptions} from '../constants';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '../helpers';
 import {getLessorOptions, getSearchQuery} from '$util/helpers';
 import Button from '$components/button/Button';
@@ -183,7 +182,7 @@ class LeaseList extends Component {
           }
         />
         <TableControllers
-          buttonSelectorOptions={leaseTypeOptions}
+          buttonSelectorOptions={stateOptions}
           buttonSelectorValue={documentType}
           onButtonSelectorChange={(value) => {this.setState({documentType: value});}}
           iconSelectorOptions={[
