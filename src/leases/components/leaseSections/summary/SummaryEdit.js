@@ -1,28 +1,17 @@
 // @flow
 import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
-import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Field, reduxForm, formValueSelector} from 'redux-form';
+import {Field, reduxForm} from 'redux-form';
 
+import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
-import {
-  summaryHitasOptions,
-  summaryLeaseStatisticalUseOptions,
-  summaryLessorOptions,
-  summaryNoticePeriodOptions,
-  summaryPublicityOptions,
-  summaryRegulatoryOptions,
-  summaryRegulatoryMethodOptions,
-  summarySpecialApartmentsOptions,
-  summaryTransferRightOptions,
-} from '../constants';
-
-import {financialMethodOptions, managementMethodOptions, purposeOptions} from '$src/constants';
+import {getAttributeFieldOptions} from '$src/util/helpers';
 
 type Props = {
+  attributes: Object,
   handleSubmit: Function,
 }
 
@@ -30,7 +19,16 @@ class SummaryEdit extends Component {
   props: Props
 
   render () {
-    const {handleSubmit} = this.props;
+    const {attributes, handleSubmit} = this.props;
+    const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
+    const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
+    const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
+    const statisticalUseOptions = getAttributeFieldOptions(attributes, 'statistical_use');
+    const financingOptions = getAttributeFieldOptions(attributes, 'financing');
+    const managementOptions = getAttributeFieldOptions(attributes, 'management');
+    const regulationOptions = getAttributeFieldOptions(attributes, 'regulation');
+    const hitasOptions = getAttributeFieldOptions(attributes, 'hitas');
+    const noticePeriodOptions = getAttributeFieldOptions(attributes, 'notice_period');
 
     return (
       <form onSubmit={handleSubmit}>
@@ -40,16 +38,16 @@ class SummaryEdit extends Component {
               <Field
                 component={FieldTypeSelect}
                 label="Vuokranantaja"
-                name="summary.lessor"
-                options={summaryLessorOptions}
+                name="lessor"
+                options={[]}
               />
             </Column>
             <Column medium={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Julkisuusluokka"
-                name="summary.publicity"
-                options={summaryPublicityOptions}
+                name="classification"
+                options={classificationOptions}
               />
             </Column>
           </Row>
@@ -57,25 +55,25 @@ class SummaryEdit extends Component {
             <Column medium={4}>
               <Field
                 component={FieldTypeSelect}
-                label="Vuokarauksen käyttötarkoitus"
-                name="summary.lease_use"
-                options={purposeOptions}
+                label="Vuokrauksen käyttötarkoitus"
+                name="intended_use"
+                options={intendedUseOptions}
               />
             </Column>
             <Column medium={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Erityisasunnot"
-                name="summary.special_apartments"
-                options={summarySpecialApartmentsOptions}
+                name="supportive_housing"
+                options={supportiveHousingOptions}
               />
             </Column>
             <Column medium={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Tilastollinen pääkäyttötarkoitus"
-                name="summary.lease_statistical_use"
-                options={summaryLeaseStatisticalUseOptions}
+                name="statistical_use"
+                options={statisticalUseOptions}
               />
             </Column>
           </Row>
@@ -84,7 +82,7 @@ class SummaryEdit extends Component {
               <Field
                 component={FieldTypeText}
                 label="Vuokrauksen käyttötarkoitus selite"
-                name="summary.lease_use_description"
+                name="intended_use_note"
               />
             </Column>
           </Row>
@@ -93,50 +91,56 @@ class SummaryEdit extends Component {
               <Field
                 component={FieldTypeSelect}
                 label="Rahoitusmuoto"
-                name="summary.financing_method"
-                options={financialMethodOptions}
+                name="financing"
+                options={financingOptions}
               />
             </Column>
             <Column medium={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Hallintamuoto"
-                name="summary.management_method"
-                options={managementMethodOptions}
+                name="management"
+                options={managementOptions}
               />
             </Column>
             <Column medium={4}>
               <Field
-                component={FieldTypeSelect}
-                label="Siirto-oikeus"
-                name="summary.transfer_right"
-                options={summaryTransferRightOptions}
+                className='checkbox-inline'
+                component={FieldTypeCheckbox}
+                label='Siirto-oikeus'
+                name="transferable"
+                options= {[
+                  {value: 'true', label: 'Siirto-oikeus'},
+                ]}
               />
             </Column>
           </Row>
           <Row>
             <Column medium={4}>
               <Field
-                component={FieldTypeSelect}
-                label="Sääntely"
-                name="summary.regulatory"
-                options={summaryRegulatoryOptions}
+                className='checkbox-inline'
+                component={FieldTypeCheckbox}
+                label='Sääntely'
+                name="regulated"
+                options= {[
+                  {value: true, label: 'Säännelty'},
+                ]}
               />
             </Column>
             <Column medium={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Sääntelymuoto"
-                name="summary.regulatory_method"
-                options={summaryRegulatoryMethodOptions}
+                name="regulation"
+                options={regulationOptions}
               />
             </Column>
             <Column medium={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Hitas"
-                name="summary.hitas"
-                options={summaryHitasOptions}
+                name="hitas"
+                options={hitasOptions}
               />
             </Column>
           </Row>
@@ -146,8 +150,8 @@ class SummaryEdit extends Component {
                 className='no-margin'
                 component={FieldTypeSelect}
                 label="Irtisanomisaika"
-                name="summary.notice_period"
-                options={summaryNoticePeriodOptions}
+                name="notice_period"
+                options={noticePeriodOptions}
               />
             </Column>
             <Column medium={8}>
@@ -155,7 +159,7 @@ class SummaryEdit extends Component {
                 className='no-margin'
                 component={FieldTypeText}
                 label="Irtisanomisajan selite"
-                name="summary.notice_period_description"
+                name="notice_note"
               />
             </Column>
           </Row>
@@ -166,16 +170,8 @@ class SummaryEdit extends Component {
 }
 
 const formName = 'summary-edit-form';
-const selector = formValueSelector(formName);
 
 export default flowRight(
-  connect(
-    (state) => {
-      return {
-        summary: selector(state, 'summary'),
-      };
-    }
-  ),
   reduxForm({
     form: formName,
     destroyOnUnmount: false,

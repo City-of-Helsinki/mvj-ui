@@ -178,22 +178,23 @@ export const getContentHistory = (lease: Object) => {
 
 export const getContentSummary = (lease: Object) => {
   return {
-    financing_method: get(lease, 'financing_method'),
-    hitas: get(lease, 'hitas'),
-    lease_statistical_use: get(lease, 'lease_statistical_use'),
-    lease_use: get(lease, 'lease_use'),
-    lease_use_description: get(lease, 'lease_use_description'),
     lessor: get(lease, 'lessor'),
-    management_method: get(lease, 'management_method'),
+    classification: get(lease, 'classification'),
+    intended_use: get(lease, 'intended_use'),
+    supportive_housing: get(lease, 'supportive_housing'),
+    statistical_use: get(lease, 'statistical_use'),
+    intended_use_note: get(lease, 'intended_use_note'),
+    financing: get(lease, 'financing'),
+    management: get(lease, 'management'),
+    transferable: get(lease, 'transferable'),
+    regulated: get(lease, 'regulated'),
+    regulation: get(lease, 'regulation'),
+    hitas: get(lease, 'hitas'),
     notice_period: get(lease, 'notice_period'),
-    notice_period_description: get(lease, 'notice_period_description'),
-    publicity: get(lease, 'publicity'),
-    regulatory: get(lease, 'regulatory'),
-    regulatory_method: get(lease, 'regulatory_method'),
-    special_apartments: get(lease, 'special_apartments'),
-    transfer_right: get(lease, 'transfer_right'),
+    notice_note: get(lease, 'notice_note'),
   };
 };
+
 export const getContentFixedInitialYearRentItems = (items: Array<Object>) => {
   if(!items || items.length === 0) {
     return [];

@@ -312,3 +312,21 @@ export const getFractionFromFloat = (float) => new Fraction(float).toFraction(tr
  */
 // TODO: Only if the rent-type is fixed (monthly)
 export const getTenantsYearlyShare = ({share}, rents) => (getFullRent(rents) * 12) * parseFloat(share);
+
+/**
+ * Get options for attribute field
+ * @param attributes
+ * @param path
+ */
+export const getAttributeFieldOptions = (attributes: Object, path: string) => {
+  const choices = get(attributes, `${path}.choices`);
+  if(!choices || !choices.length) {
+    return [];
+  }
+  return choices.map((item) => {
+    return {
+      value: item.value,
+      label: item.display_name,
+    };
+  });
+};

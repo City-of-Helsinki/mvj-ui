@@ -131,7 +131,6 @@ type State = {
   oldTenants: Array<Object>,
   rents: Object,
   rules: Array<Object>,
-  summary: Object,
   tenants: Array<Object>,
 };
 
@@ -149,7 +148,6 @@ class PreparerForm extends Component {
     oldTenants: [],
     rents: {},
     rules: [],
-    summary: {},
     tenants: [],
     terms: [],
     inspections: [],
@@ -201,7 +199,6 @@ class PreparerForm extends Component {
       oldTenants: lease.tenants_old,
       rents: contentHelpers.getContentRents(lease),
       rules: contentHelpers.getContentRules(lease),
-      summary: contentHelpers.getContentSummary(lease),
       tenants: contentHelpers.getContentTenants(lease),
     });
     receiveBilling(contentHelpers.getContentBilling(lease));
@@ -244,7 +241,7 @@ class PreparerForm extends Component {
       rulesForm,
       start_date,
       status,
-      summaryForm,
+      // summaryForm,
       tenantsForm,
     } = this.props;
 
@@ -274,9 +271,9 @@ class PreparerForm extends Component {
     if(rulesForm !== undefined) {
       this.setState({rules: rulesForm});
     }
-    if(summaryForm !== undefined) {
-      this.setState({summary: summaryForm});
-    }
+    // if(summaryForm !== undefined) {
+    //   this.setState({summary: summaryForm});
+    // }
     if(tenantsForm !== undefined) {
       this.setState({tenants: tenantsForm});
     }
@@ -435,7 +432,6 @@ class PreparerForm extends Component {
       oldTenants,
       rents,
       rules,
-      summary,
       tenants,
     } = this.state;
 
@@ -455,6 +451,8 @@ class PreparerForm extends Component {
     const isAnyFormTouched = this.isAnyFormTouched();
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
     const statusOptions = contentHelpers.getStatusOptions(attributes);
+
+    const summary = contentHelpers.getContentSummary(currentLease);
 
     let sum_areas = 0;
     areas && areas.length > 0 && areas.map((area) =>
@@ -565,8 +563,14 @@ class PreparerForm extends Component {
               <Row>
                 <Column medium={9}>
                   {isEditMode
-                    ? <SummaryEdit initialValues={{summary: summary}}/>
-                    : <Summary summary={summary}/>
+                    ? <SummaryEdit
+                        attributes={attributes}
+                        initialValues={{summary: summary}}
+                      />
+                    : <Summary
+                        attributes={attributes}
+                        summary={summary}
+                      />
                   }
                   </Column>
                 <Column medium={3}>
