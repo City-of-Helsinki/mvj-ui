@@ -7,10 +7,11 @@ import GreenBox from '$components/content/GreenBox';
 
 type Props = {
   attributes: Object,
+  lessorOptions: Array<Object>,
   summary: Object,
 }
 
-const Summary = ({attributes, summary}: Props) => {
+const Summary = ({attributes, lessorOptions, summary}: Props) => {
   const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
   const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
   const statisticalUseOptions = getAttributeFieldOptions(attributes, 'statistical_use');
@@ -25,7 +26,7 @@ const Summary = ({attributes, summary}: Props) => {
       <Row>
         <Column>
           <label>Vuokranantaja</label>
-          <p>{getLabelOfOption([], summary.lessor) || '-'}</p>
+          <p>{getLabelOfOption(lessorOptions, summary.lessor) || '-'}</p>
         </Column>
       </Row>
 

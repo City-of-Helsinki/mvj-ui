@@ -334,7 +334,6 @@ export const getAttributeFieldOptions = (attributes: Object, path: string) => {
 /**
  * Get options for lessor field
  * @param lessors
- * @param path
  */
 export const getLessorsOptions = (lessors: Array<Object>) => {
   if(!lessors || !lessors.length) {

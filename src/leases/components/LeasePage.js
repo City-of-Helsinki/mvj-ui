@@ -20,6 +20,7 @@ import {
   getIsEditMode,
   getIsFetching,
   getLeaseInfoErrors,
+  getLessors,
   getSummaryFormValues,
 } from '../selectors';
 import {
@@ -29,6 +30,7 @@ import {
   editComment,
   editLease,
   fetchAttributes,
+  fetchLessors,
   fetchSingleLease,
   hideEditMode,
   patchLease,
@@ -38,7 +40,7 @@ import {
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
-import {displayUIMessage, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {displayUIMessage, getAttributeFieldOptions, getLabelOfOption, getLessorsOptions} from '$util/helpers';
 import {summaryPublicityOptions} from './leaseSections/constants';
 
 import Billing from './leaseSections/billing/Billing';
@@ -94,6 +96,7 @@ type Props = {
   eligibilityTouched: boolean,
   end_date: ?string,
   fetchAttributes: Function,
+  fetchLessors: Function,
   fetchSingleLease: Function,
   hideEditMode: Function,
   inspectionsForm: Array<Object>,
@@ -102,6 +105,7 @@ type Props = {
   isFetching: boolean,
   leaseInfoErrors: Object,
   leaseInfoTouched: boolean,
+  lessors: Array<Object>,
   location: Object,
   params: Object,
   patchLease: Function,
@@ -166,6 +170,7 @@ class PreparerForm extends Component {
     const {
       dispatch,
       fetchAttributes,
+      fetchLessors,
       fetchSingleLease,
       location, params: {leaseId},
       receiveBilling,
@@ -206,6 +211,7 @@ class PreparerForm extends Component {
     });
     receiveBilling(contentHelpers.getContentBilling(lease));
     fetchAttributes();
+    fetchLessors();
     fetchSingleLease(leaseId);
   }
 
@@ -458,6 +464,7 @@ class PreparerForm extends Component {
       currentLease,
       isEditMode,
       isFetching,
+      lessors,
       showEditMode,
     } = this.props;
 
@@ -466,8 +473,9 @@ class PreparerForm extends Component {
     const currentComments = this.getCurrentComments(sortedComments);
     const isAnyFormTouched = this.isAnyFormTouched();
     const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
-    const stateOptions = getAttributeFieldOptions(attributes, 'state');
 
+    const stateOptions = getAttributeFieldOptions(attributes, 'state');
+    const lessorOptions = getLessorsOptions(lessors);
     const summary = contentHelpers.getContentSummary(currentLease);
 
     let sum_areas = 0;
@@ -582,9 +590,11 @@ class PreparerForm extends Component {
                     ? <SummaryEdit
                         attributes={attributes}
                         initialValues={{...summary}}
+                        lessorOptions={lessorOptions}
                       />
                     : <Summary
                         attributes={attributes}
+                        lessorOptions={lessorOptions}
                         summary={summary}
                       />
                   }
@@ -717,6 +727,7 @@ export default flowRight(
         isFetching: getIsFetching(state),
         leaseInfoErrors: getLeaseInfoErrors(state),
         leaseInfoTouched: get(state, 'form.lease-info-edit-form.anyTouched'),
+        lessors: getLessors(state),
         rentsForm: rentFormSelector(state, 'rents'),
         rentsTouched: get(state, 'form.rent-edit-form.anyTouched'),
         rulesForm: ruleFormSelector(state, 'rules'),
@@ -737,6 +748,7 @@ export default flowRight(
       editComment,
       editLease,
       fetchAttributes,
+      fetchLessors,
       fetchSingleLease,
       hideEditMode,
       patchLease,

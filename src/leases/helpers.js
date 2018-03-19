@@ -178,7 +178,7 @@ export const getContentHistory = (lease: Object) => {
 
 export const getContentSummary = (lease: Object) => {
   return {
-    lessor: get(lease, 'lessor'),
+    lessor: get(lease, 'lessor.id'),
     classification: get(lease, 'classification'),
     intended_use: get(lease, 'intended_use'),
     supportive_housing: get(lease, 'supportive_housing'),

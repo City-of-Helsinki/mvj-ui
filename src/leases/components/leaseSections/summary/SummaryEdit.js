@@ -13,13 +13,14 @@ import {getAttributeFieldOptions} from '$src/util/helpers';
 type Props = {
   attributes: Object,
   handleSubmit: Function,
+  lessorOptions: Array<Object>,
 }
 
 class SummaryEdit extends Component {
   props: Props
 
   render () {
-    const {attributes, handleSubmit} = this.props;
+    const {attributes, handleSubmit, lessorOptions} = this.props;
     const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
     const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
     const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
@@ -39,7 +40,7 @@ class SummaryEdit extends Component {
                 component={FieldTypeSelect}
                 label="Vuokranantaja"
                 name="lessor"
-                options={[]}
+                options={lessorOptions}
               />
             </Column>
             <Column medium={4}>
