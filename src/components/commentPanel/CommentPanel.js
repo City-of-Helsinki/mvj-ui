@@ -24,14 +24,19 @@ type Props = {
 class CommentPanel extends Component {
   props: Props
 
+  getCommentsByType = (comments: Array<Object>, type: string) => {
+    if(!comments || !comments.length) {return [];}
+    return comments.filter((comment) => {return comment.type === type;});
+  }
+
   getArchivedComments = (comments: Array<Object>) => {
     if(!comments || !comments.length) {return [];}
-    return comments.filter((comments) => {return comments.archived === true;});
+    return comments.filter((comment) => {return comment.archived === true;});
   }
 
   getCurrentComments = (comments: Array<Object>) => {
     if(!comments || !comments.length) {return [];}
-    return comments.filter((comments) => {return comments.archived !== true;});
+    return comments.filter((comment) => {return comment.archived !== true;});
   }
 
   resetNewCommentField = () => {
@@ -52,7 +57,16 @@ class CommentPanel extends Component {
     } = this.props;
 
     const archivedComments = this.getArchivedComments(comments);
+    const archivedInvoicingComments = this.getCommentsByType(archivedComments, '0');
+    const archivedCommunicationComments = this.getCommentsByType(archivedComments, '1');
+    const archivedContractTermsComments = this.getCommentsByType(archivedComments, '2');
+    const archivedPreparationComments = this.getCommentsByType(archivedComments, '3');
     const currentComments = this.getCurrentComments(comments);
+    const currentInvoicingComments = this.getCommentsByType(currentComments, '0');
+    const currentCommunicationComments = this.getCommentsByType(currentComments, '1');
+    const currentContractTermsComments = this.getCommentsByType(currentComments, '2');
+    const currentPreparationComments = this.getCommentsByType(currentComments, '3');
+
 
     return (
       <div className={classNames('comment-panel', {'is-panel-open': isOpen}) }>
@@ -72,39 +86,162 @@ class CommentPanel extends Component {
           />
 
           <h2>Ajankohtaiset</h2>
-          <div className='comments'>
-            {!currentComments || !currentComments.length && <p>Ei ajankohtaisia kommentteja</p>}
-            {currentComments && !!currentComments.length && currentComments.map((comment) => {
-              return (
-                <Comment
-                  key={comment.id}
-                  date={comment.date}
-                  onArchive={() => onArchive(comment)}
-                  onDelete={() => onDelete(comment)}
-                  onEdit={(newText) => onEdit(comment, newText)}
-                  text={comment.text}
-                  user={comment.user}
-                />
-              );
-            })}
-          </div>
+          {!currentComments || !currentComments.length && <p>Ei ajankohtaisia kommentteja</p>}
+          {currentComments && !!currentComments.length &&
+            <div className='comments'>
+              {currentInvoicingComments && !!currentInvoicingComments.length &&
+                <div className='comments-section'>
+                  <h3>Laskutus ja perintä</h3>
+                  {currentInvoicingComments.map((comment) => {
+                    return (
+                      <Comment
+                        key={comment.id}
+                        date={comment.date}
+                        onArchive={() => onArchive(comment)}
+                        onDelete={() => onDelete(comment)}
+                        onEdit={(newText) => onEdit(comment, newText)}
+                        text={comment.text}
+                        user={comment.user}
+                      />
+                    );
+                  })}
+                </div>
+              }
+              {currentCommunicationComments && !!currentCommunicationComments.length &&
+                <div className='comments-section'>
+                  <h3>Yhteydenpito</h3>
+                  {currentCommunicationComments.map((comment) => {
+                    return (
+                      <Comment
+                        key={comment.id}
+                        date={comment.date}
+                        onArchive={() => onArchive(comment)}
+                        onDelete={() => onDelete(comment)}
+                        onEdit={(newText) => onEdit(comment, newText)}
+                        text={comment.text}
+                        user={comment.user}
+                      />
+                    );
+                  })}
+                </div>
+              }
+              {currentContractTermsComments && !!currentContractTermsComments.length &&
+                <div className='comments-section'>
+                  <h3>Sopimusehdot</h3>
+                  {currentContractTermsComments.map((comment) => {
+                    return (
+                      <Comment
+                        key={comment.id}
+                        date={comment.date}
+                        onArchive={() => onArchive(comment)}
+                        onDelete={() => onDelete(comment)}
+                        onEdit={(newText) => onEdit(comment, newText)}
+                        text={comment.text}
+                        user={comment.user}
+                      />
+                    );
+                  })}
+                </div>
+              }
+              {currentPreparationComments && !!currentPreparationComments.length &&
+                <div className='comments-section'>
+                  <h3>Valmistelu</h3>
+                  {currentPreparationComments.map((comment) => {
+                    return (
+                      <Comment
+                        key={comment.id}
+                        date={comment.date}
+                        onArchive={() => onArchive(comment)}
+                        onDelete={() => onDelete(comment)}
+                        onEdit={(newText) => onEdit(comment, newText)}
+                        text={comment.text}
+                        user={comment.user}
+                      />
+                    );
+                  })}
+                </div>
+              }
+            </div>
+          }
 
-          <h2>Arkistoidut</h2>
-          <div className='comments'>
-            {!archivedComments || !archivedComments.length && <p>Ei arkistoituja kommentteja</p>}
-            {archivedComments && !!archivedComments.length && archivedComments.map((comment) => {
-              return (
-                <CommentArchived
-                  key={comment.id}
-                  date={comment.date}
-                  onDelete={() => onDelete(comment)}
-                  onUnarchive={() => onUnarchive(comment)}
-                  text={comment.text}
-                  user={comment.user}
-                />
-              );
-            })}
-          </div>
+          <h2 className='archived'>Arkistoidut</h2>
+          {!archivedComments || !archivedComments.length && <p>Ei ajankohtaisia kommentteja</p>}
+          {archivedComments && !!archivedComments.length &&
+            <div className='comments archived'>
+              {archivedInvoicingComments && !!archivedInvoicingComments.length &&
+                <div className='comments-section'>
+                  <h3>Laskutus ja perintä</h3>
+                  {archivedInvoicingComments.map((comment) => {
+                    return (
+                      <CommentArchived
+                        key={comment.id}
+                        date={comment.date}
+                        onDelete={() => onDelete(comment)}
+                        onEdit={(newText) => onEdit(comment, newText)}
+                        onUnarchive={() => onUnarchive(comment)}
+                        text={comment.text}
+                        user={comment.user}
+                      />
+                    );
+                  })}
+                </div>
+              }
+              {archivedCommunicationComments && !!archivedCommunicationComments.length &&
+                <div className='comments-section'>
+                  <h3>Yhteydenpito</h3>
+                  {archivedCommunicationComments.map((comment) => {
+                    return (
+                      <CommentArchived
+                        key={comment.id}
+                        date={comment.date}
+                        onDelete={() => onDelete(comment)}
+                        onEdit={(newText) => onEdit(comment, newText)}
+                        onUnarchive={() => onUnarchive(comment)}
+                        text={comment.text}
+                        user={comment.user}
+                      />
+                    );
+                  })}
+                </div>
+              }
+              {archivedContractTermsComments && !!archivedContractTermsComments.length &&
+                <div className='comments-section'>
+                  <h3>Sopimusehdot</h3>
+                  {archivedContractTermsComments.map((comment) => {
+                    return (
+                      <CommentArchived
+                        key={comment.id}
+                        date={comment.date}
+                        onDelete={() => onDelete(comment)}
+                        onEdit={(newText) => onEdit(comment, newText)}
+                        onUnarchive={() => onUnarchive(comment)}
+                        text={comment.text}
+                        user={comment.user}
+                      />
+                    );
+                  })}
+                </div>
+              }
+              {archivedPreparationComments && !!archivedPreparationComments.length &&
+                <div className='comments-section'>
+                  <h3>Valmistelu</h3>
+                  {archivedPreparationComments.map((comment) => {
+                    return (
+                      <CommentArchived
+                        key={comment.id}
+                        date={comment.date}
+                        onDelete={() => onDelete(comment)}
+                        onEdit={(newText) => onEdit(comment, newText)}
+                        onUnarchive={() => onUnarchive(comment)}
+                        text={comment.text}
+                        user={comment.user}
+                      />
+                    );
+                  })}
+                </div>
+              }
+            </div>
+          }
         </div>
       </div>
     );

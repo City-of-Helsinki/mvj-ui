@@ -38,7 +38,18 @@
 
   h2 {
     font-family: $font-family-source;
-    font-size: rem-calc(22px);
+    font-size: rem-calc(20px);
+    font-weight: $semibold;
+    margin: rem-calc(30px) 0 rem-calc(10px);
+
+    &.archived {
+      color: $dark-gray;
+    }
+  }
+
+  h3 {
+    font-family: $font-family-source;
+    font-size: rem-calc(18px);
     font-weight: $semibold;
     margin: rem-calc(30px) 0 rem-calc(10px);
   }
@@ -46,7 +57,7 @@
   .comments {
     .comment {
       position: relative;
-      margin-bottom: rem-calc(20px);
+      margin-bottom: rem-calc(15px);
 
       .content-wrapper {
         padding-right: 25px;
@@ -67,8 +78,28 @@
           font-weight: $semibold;
         }
       }
-      &:last-child {
+    }
+
+    .comments-section {
+      .comment:last-child {
         margin-bottom: 0;
+      }
+    }
+    .comments-section:first-child {
+      h3 {
+        margin-top: 0;
+      }
+    }
+
+    &.archived {
+      .comments-section {
+        h3 {
+          color: $dark-gray;
+        }
+      }
+
+      .comment {
+        color: $dark-gray;
       }
     }
   }
