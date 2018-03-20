@@ -193,6 +193,23 @@ export const displayUIMessage = (message, opts = {type: 'success'}) => {
   return toastr[opts.type](title, body, opts);
 };
 
+/**
+ * Format number to fixed length
+ * @param value
+ * @param length
+ */
+export const fixedLengthNumber = (value: number, length: number = 2) => {
+  const size = value.toString().length;
+  if (size < length) {
+    let prefix = '';
+    for (let i = 1; i <= (length - size); i++) {
+      prefix += '0';
+    }
+    return prefix + value.toString();
+  }
+  return  value.toString();
+};
+
 export const formatDate = (date: string) => {
   if (!date) {
     return '';
