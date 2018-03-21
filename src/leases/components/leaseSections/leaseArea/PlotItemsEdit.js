@@ -2,6 +2,7 @@
 import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -11,14 +12,16 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
+import {genericValidator} from '$components/form/validations';
 
 type Props = {
+  attributes: Object,
   fields: any,
   title: string,
   typeOptions: Array<Object>,
 }
 
-const PlotItemsEdit = ({fields, title, typeOptions}: Props) => {
+const PlotItemsEdit = ({attributes, fields, title, typeOptions}: Props) => {
   return (
     <GreenBoxEdit>
       <h2 className='no-margin'>{title}</h2>
@@ -39,6 +42,10 @@ const PlotItemsEdit = ({fields, title, typeOptions}: Props) => {
                       component={FieldTypeText}
                       label='Tunnus'
                       name={`${plot}.identifier`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'lease_areas.child.children.plots.child.children.identifier')),
+                      ]}
                     />
                   </Column>
                 </Row>
@@ -49,6 +56,10 @@ const PlotItemsEdit = ({fields, title, typeOptions}: Props) => {
                   component={FieldTypeSelect}
                   label='Selite'
                   options={typeOptions}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'lease_areas.child.children.plots.child.children.type')),
+                  ]}
                 />
               </Column>
               <Column medium={3}>
@@ -56,6 +67,10 @@ const PlotItemsEdit = ({fields, title, typeOptions}: Props) => {
                   component={FieldTypeText}
                   label='Kokonaisala'
                   name={`${plot}.area`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'lease_areas.child.children.plots.child.children.area')),
+                  ]}
                 />
               </Column>
               <Column medium={3}>
@@ -63,6 +78,10 @@ const PlotItemsEdit = ({fields, title, typeOptions}: Props) => {
                   component={FieldTypeText}
                   label='Leikkausala'
                   name={`${plot}.section_area`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'lease_areas.child.children.plots.child.children.section_area')),
+                  ]}
                 />
               </Column>
             </Row>
@@ -73,6 +92,10 @@ const PlotItemsEdit = ({fields, title, typeOptions}: Props) => {
                   component={FieldTypeText}
                   label='Osoite'
                   name={`${plot}.address`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'lease_areas.child.children.plots.child.children.address')),
+                  ]}
                 />
               </Column>
               <Column medium={2}>
@@ -81,6 +104,10 @@ const PlotItemsEdit = ({fields, title, typeOptions}: Props) => {
                   component={FieldTypeText}
                   label="Postinumero"
                   name={`${plot}.postal_code`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'lease_areas.child.children.plots.child.children.postal_code')),
+                  ]}
                 />
               </Column>
               <Column medium={3}>
@@ -89,6 +116,10 @@ const PlotItemsEdit = ({fields, title, typeOptions}: Props) => {
                   component={FieldTypeText}
                   label='Kaupunki'
                   name={`${plot}.city`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'lease_areas.child.children.plots.child.children.city')),
+                  ]}
                 />
               </Column>
               <Column medium={3}>
@@ -97,6 +128,10 @@ const PlotItemsEdit = ({fields, title, typeOptions}: Props) => {
                   component={FieldTypeDatePicker}
                   label='Rekisteröintipäivä'
                   name={`${plot}.registration_date`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'lease_areas.child.children.plots.child.children.registration_date')),
+                  ]}
                 />
               </Column>
             </Row>

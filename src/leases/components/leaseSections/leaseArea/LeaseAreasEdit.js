@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {Field, FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -14,9 +15,10 @@ import PlotItemsEdit from './PlotItemsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {getAttributeFieldOptions} from '$src/util/helpers';
-import {decimalNumber, required} from '$components/form/validations';
+import {genericValidator} from '$components/form/validations';
 
 type AreaItemProps = {
+  attributes: Object,
   fields: any,
   locationOptions: Array<Object>,
   plotTypeOptions: Array<Object>,
@@ -24,6 +26,7 @@ type AreaItemProps = {
 }
 
 const LeaseAreaItem = ({
+  attributes,
   fields,
   locationOptions,
   plotTypeOptions,
@@ -49,7 +52,8 @@ const LeaseAreaItem = ({
                       name={`${area}.identifier`}
                       type="text"
                       validate={[
-                        (value) => required(value, 'Kohteen tunnus on pakollinen'),
+                        (value) => genericValidator(value,
+                          get(attributes, 'lease_areas.child.children.identifier')),
                       ]}
                     />
                   </Column>
@@ -60,7 +64,8 @@ const LeaseAreaItem = ({
                       label='Selite'
                       options={typeOptions}
                       validate={[
-                        (value) => required(value, 'Selite on pakollinen'),
+                        (value) => genericValidator(value,
+                          get(attributes, 'lease_areas.child.children.type')),
                       ]}
                     />
                   </Column>
@@ -71,8 +76,8 @@ const LeaseAreaItem = ({
                       component={FieldTypeText}
                       label="Pinta-ala"
                       validate={[
-                        (value) => required(value, 'Pinta-ala on pakollinen'),
-                        (value) => decimalNumber(value, 'Pinta-alan tulee olla numero'),
+                        (value) => genericValidator(value,
+                          get(attributes, 'lease_areas.child.children.area')),
                       ]}
                     />
                   </Column>
@@ -83,7 +88,8 @@ const LeaseAreaItem = ({
                       label='Sijainti'
                       options={locationOptions}
                       validate={[
-                        (value) => required(value, 'Sijainti on pakollinen'),
+                        (value) => genericValidator(value,
+                          get(attributes, 'lease_areas.child.children.location')),
                       ]}
                     />
                   </Column>
@@ -96,7 +102,8 @@ const LeaseAreaItem = ({
                       label="Osoite"
                       name={`${area}.address`}
                       validate={[
-                        (value) => required(value, 'Osoite on pakollinen'),
+                        (value) => genericValidator(value,
+                          get(attributes, 'lease_areas.child.children.address')),
                       ]}
                     />
                   </Column>
@@ -107,7 +114,8 @@ const LeaseAreaItem = ({
                       label="Postinumero"
                       name={`${area}.postal_code`}
                       validate={[
-                        (value) => required(value, 'Postinumero on pakollinen'),
+                        (value) => genericValidator(value,
+                          get(attributes, 'lease_areas.child.children.postal_code')),
                       ]}
                     />
                   </Column>
@@ -118,7 +126,8 @@ const LeaseAreaItem = ({
                       label="Kaupunki"
                       name={`${area}.city`}
                       validate={[
-                        (value) => required(value, 'Kaupunki on pakollinen'),
+                        (value) => genericValidator(value,
+                          get(attributes, 'lease_areas.child.children.city')),
                       ]}
                     />
                   </Column>
@@ -126,12 +135,14 @@ const LeaseAreaItem = ({
               </BoxContentWrapper>
             </WhiteBoxEdit>
             <FieldArray
+              attributes={attributes}
               component={PlotItemsEdit}
               name={`${area}.plots_contract`}
               title='Kiinteistöt / määräalat sopimushetkellä'
               typeOptions={plotTypeOptions}
             />
             <FieldArray
+              attributes={attributes}
               component={PlotItemsEdit}
               name={`${area}.plots_current`}
               title='Kiinteistöt / määräalat nykyhetkellä'
@@ -176,6 +187,7 @@ class LeaseAreasEdit extends Component {
         <FormSection>
           <FieldArray
             areas={areas}
+            attributes={attributes}
             component={LeaseAreaItem}
             locationOptions={locationOptions}
             name="lease_areas"
