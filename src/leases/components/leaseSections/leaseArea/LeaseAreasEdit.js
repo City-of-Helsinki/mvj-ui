@@ -57,9 +57,9 @@ const LeaseAreaItem = ({
                   </Column>
                   <Column medium={2}>
                     <Field
-                      name={`${area}.type`}
                       component={FieldTypeSelect}
                       label='Selite'
+                      name={`${area}.type`}
                       options={typeOptions}
                       validate={[
                         (value) => genericValidator(value,
@@ -69,10 +69,9 @@ const LeaseAreaItem = ({
                   </Column>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.area`}
-                      type="text"
                       component={FieldTypeText}
                       label="Pinta-ala"
+                      name={`${area}.area`}
                       validate={[
                         (value) => genericValidator(value,
                           get(attributes, 'lease_areas.child.children.area')),
@@ -81,9 +80,9 @@ const LeaseAreaItem = ({
                   </Column>
                   <Column medium={3}>
                     <Field
-                      name={`${area}.location`}
                       component={FieldTypeSelect}
                       label='Sijainti'
+                      name={`${area}.location`}
                       options={locationOptions}
                       validate={[
                         (value) => genericValidator(value,
