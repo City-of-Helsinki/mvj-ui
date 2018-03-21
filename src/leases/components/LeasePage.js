@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {destroy, formValueSelector, reduxForm, reset} from 'redux-form';
+import {destroy, formValueSelector, reduxForm} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
@@ -14,7 +14,6 @@ import {getLoggedInUser} from '$src/auth/selectors';
 import {receiveBilling} from './leaseSections/billing/actions';
 import {getBilling} from './leaseSections/billing/selectors';
 import {
-  getAreasFormErrors,
   getAreasFormTouched,
   getAreasFormValues,
   getAttributes,
@@ -22,16 +21,18 @@ import {
   getCurrentLease,
   getIsEditMode,
   getIsFetching,
-  getLeaseInfoFormErrors,
+  getIsLeaseAreasValid,
+  getIsLeaseInfoValid,
+  getIsSummaryValid,
   getLeaseInfoFormTouched,
   getLeaseInfoFormValues,
   getLessors,
-  getSummaryFormErrors,
   getSummaryFormTouched,
   getSummaryFormValues,
 } from '../selectors';
 import {
   archiveComment,
+  clearFormValidFlags,
   createComment,
   deleteComment,
   editComment,
@@ -41,6 +42,9 @@ import {
   fetchSingleLease,
   hideEditMode,
   patchLease,
+  receiveLeaseAreasFormValid,
+  receiveLeaseInfoFormValid,
+  receiveSummaryFormValid,
   showEditMode,
   unarchiveComment,
 } from '../actions';
@@ -90,11 +94,11 @@ import mockData from '../mock-data.json';
 
 type Props = {
   archiveComment: Function,
-  areasFormErrors: Object,
   areasFormTouched: boolean,
   areasFormValues: Object,
   attributes: Object,
   billing: Object,
+  clearFormValidFlags: Function,
   comments: Array<Object>,
   contractsForm: Array<Object>,
   contractsTouched: boolean,
@@ -114,7 +118,9 @@ type Props = {
   inspectionTouched: boolean,
   isEditMode: boolean,
   isFetching: boolean,
-  leaseInfoFormErrors: Object,
+  isLeaseAreasValid: boolean,
+  isLeaseInfoValid: boolean,
+  isSummaryValid: boolean,
   leaseInfoFormTouched: boolean,
   leaseInfoFormValues: Object,
   lessors: Array<Object>,
@@ -122,13 +128,15 @@ type Props = {
   params: Object,
   patchLease: Function,
   receiveBilling: Function,
+  receiveLeaseAreasFormValid: Function,
+  receiveLeaseInfoFormValid: Function,
+  receiveSummaryFormValid: Function,
   receiveTopNavigationSettings: Function,
   rentsForm: Object,
   rentsTouched: boolean,
   rulesForm: Array<Object>,
   rulesTouched: boolean,
   showEditMode: Function,
-  summaryFormErrors: Object,
   summaryFormTouched: boolean,
   summaryFormValues: Object,
   tenantsForm: Array<Object>,
@@ -179,6 +187,7 @@ class PreparerForm extends Component {
 
   componentWillMount() {
     const {
+      clearFormValidFlags,
       fetchAttributes,
       fetchLessors,
       fetchSingleLease,
@@ -196,6 +205,7 @@ class PreparerForm extends Component {
 
     // Destroy forms to initialize new values when data is fetched
     this.destroyAllForms();
+    clearFormValidFlags();
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
@@ -232,14 +242,16 @@ class PreparerForm extends Component {
   }
 
   cancel = () => {
-    const {hideEditMode} = this.props;
-    this.resetAllForms();
+    const {clearFormValidFlags, hideEditMode} = this.props;
     hideEditMode();
     this.hideModal('CancelLease');
+    this.destroyAllForms();
+    clearFormValidFlags();
   }
 
   save = () => {
     const {
+      clearFormValidFlags,
       areasFormValues,
       leaseInfoFormValues,
       summaryFormValues,
@@ -293,7 +305,9 @@ class PreparerForm extends Component {
 
     hideEditMode();
     this.hideModal('SaveLease');
+
     this.destroyAllForms();
+    clearFormValidFlags();
   }
 
   agreeCriteria = (criteria: Object) => {
@@ -321,29 +335,16 @@ class PreparerForm extends Component {
     dispatch(destroy('tenant-edit-form'));
   }
 
-  resetAllForms = () => {
-    const {dispatch} = this.props;
-    dispatch(reset('lease-area-form'));
-    dispatch(reset('lease-info-form'));
-    dispatch(reset('summary-form'));
-
-    dispatch(reset('billing-edit-form'));
-    dispatch(reset('contract-edit-form'));
-    dispatch(reset('inspection-edit-form'));
-    dispatch(reset('rent-edit-form'));
-    dispatch(reset('rule-edit-form'));
-    dispatch(reset('tenant-edit-form'));
-  }
-
   validateForms = () => {
     const {
-      areasFormErrors,
-      leaseInfoFormErrors,
-      summaryFormErrors,
+      isLeaseAreasValid,
+      isLeaseInfoValid,
+      isSummaryValid,
     } = this.props;
-    return (areasFormErrors ||
-      leaseInfoFormErrors ||
-      summaryFormErrors) ? false : true;
+
+    return isLeaseAreasValid &&
+      isLeaseInfoValid &&
+      isSummaryValid;
   }
 
   addComment = (text: string, type: string) => {
@@ -717,7 +718,6 @@ export default flowRight(
     (state) => {
       const user = getLoggedInUser(state);
       return {
-        areasFormErrors: getAreasFormErrors(state),
         areasFormTouched: getAreasFormTouched(state),
         areasFormValues: getAreasFormValues(state),
         attributes: getAttributes(state),
@@ -729,10 +729,12 @@ export default flowRight(
         eligibilityForm: eligibilityFormSelector(state, 'areas'),
         eligibilityTouched: get(state, 'form.eligibility-edit-form.anyTouched'),
         isEditMode: getIsEditMode(state),
+        isLeaseAreasValid: getIsLeaseAreasValid(state),
+        isLeaseInfoValid: getIsLeaseInfoValid(state),
+        isSummaryValid: getIsSummaryValid(state),
         inspectionsForm: inspectionFormSelector(state, 'inspections'),
         inspectionTouched: get(state, 'form.inspection-edit-form.anyTouched'),
         isFetching: getIsFetching(state),
-        leaseInfoFormErrors: getLeaseInfoFormErrors(state),
         leaseInfoFormTouched: getLeaseInfoFormTouched(state),
         leaseInfoFormValues: getLeaseInfoFormValues(state),
         lessors: getLessors(state),
@@ -740,7 +742,6 @@ export default flowRight(
         rentsTouched: get(state, 'form.rent-edit-form.anyTouched'),
         rulesForm: ruleFormSelector(state, 'rules'),
         rulesTouched: get(state, 'form.rule-edit-form.anyTouched'),
-        summaryFormErrors: getSummaryFormErrors(state),
         summaryFormTouched: getSummaryFormTouched(state),
         summaryFormValues: getSummaryFormValues(state),
         tenantsForm: tenantFormSelector(state, 'tenants'),
@@ -750,6 +751,7 @@ export default flowRight(
     },
     {
       archiveComment,
+      clearFormValidFlags,
       createComment,
       deleteComment,
       editComment,
@@ -760,6 +762,9 @@ export default flowRight(
       hideEditMode,
       patchLease,
       receiveBilling,
+      receiveLeaseAreasFormValid,
+      receiveLeaseInfoFormValid,
+      receiveSummaryFormValid,
       receiveTopNavigationSettings,
       showEditMode,
       unarchiveComment,

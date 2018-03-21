@@ -9,15 +9,27 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import {dateGreaterOrEqual, genericValidator} from '$components/form/validations';
 import {getAttributeFieldOptions} from '$src/util/helpers';
+import {receiveLeaseInfoFormValid} from '../../../actions';
+import {getIsLeaseInfoValid} from '../../../selectors';
 
 type Props = {
   attributes: Object,
+  isLeaseInfoValid: boolean,
   leaseInfo: Object,
+  receiveLeaseInfoFormValid: Function,
   start_date: string,
+  valid: boolean,
 }
 
 class LeaseInfoEdit extends Component {
   props: Props
+
+  componentDidUpdate() {
+    const {isLeaseInfoValid, receiveLeaseInfoFormValid, valid} = this.props;
+    if(isLeaseInfoValid !== valid) {
+      receiveLeaseInfoFormValid(valid);
+    }
+  }
 
   render () {
     const {
@@ -25,6 +37,7 @@ class LeaseInfoEdit extends Component {
       leaseInfo,
       start_date,
     } = this.props;
+
     const stateOptions = getAttributeFieldOptions(attributes, 'state');
 
     return (
@@ -87,8 +100,12 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        isLeaseInfoValid: getIsLeaseInfoValid(state),
         start_date: selector(state, 'start_date'),
       };
+    },
+    {
+      receiveLeaseInfoFormValid,
     }
   ),
   reduxForm({

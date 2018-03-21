@@ -4,6 +4,7 @@ import {Row, Column} from 'react-foundation';
 
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import GreenBox from '$components/content/GreenBox';
+import ShowMore from '$components/showMore/ShowMore';
 
 type Props = {
   attributes: Object,
@@ -48,7 +49,11 @@ const Summary = ({attributes, lessorOptions, summary}: Props) => {
       <Row>
         <Column>
           <label>Vuokrauksen käyttötarkoitus selite</label>
-          <p>{summary.intended_use_note || '-'}</p>
+          <p>
+            <ShowMore className="background-green">
+              <div dangerouslySetInnerHTML={{__html: summary.intended_use_note || '-'}}/>
+            </ShowMore>
+          </p>
         </Column>
       </Row>
 
@@ -89,7 +94,11 @@ const Summary = ({attributes, lessorOptions, summary}: Props) => {
         </Column>
         <Column medium={8}>
           <label>Irtisanomisajan selite</label>
-          <p className='no-margin'>{summary.notice_note || '-'}</p>
+          <p className='no-margin'>
+            <ShowMore className="background-green">
+              <div dangerouslySetInnerHTML={{__html: summary.notice_note || '-'}}/>
+            </ShowMore>
+          </p>
         </Column>
       </Row>
     </GreenBox>

@@ -10,6 +10,15 @@ export const getIsEditMode: Selector<boolean, void> = (state: LeaseState): boole
 export const getIsFetching: Selector<Lease, void> = (state: Object): LeaseState =>
   state.lease.isFetching;
 
+export const getIsLeaseAreasValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isLeaseAreasValid;
+
+export const getIsLeaseInfoValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isLeaseInfoValid;
+
+export const getIsSummaryValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isSummaryValid;
+
 export const getAttributes: Selector<Attributes, void> = (state: Object): LeaseState =>
   state.lease.attributes;
 
