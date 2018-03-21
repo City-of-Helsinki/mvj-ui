@@ -1,14 +1,16 @@
 // @flow
 import React, {Component} from 'react';
-import flowRight from 'lodash/flowRight';
 import {Row, Column} from 'react-foundation';
 import {Field, reduxForm} from 'redux-form';
+import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import {getAttributeFieldOptions} from '$src/util/helpers';
+import {genericValidator} from '$components/form/validations';
 
 type Props = {
   attributes: Object,
@@ -41,6 +43,9 @@ class SummaryEdit extends Component {
                 label="Vuokranantaja"
                 name="lessor"
                 options={lessorOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'lessor')),
+                ]}
               />
             </Column>
             <Column medium={4}>
@@ -49,6 +54,9 @@ class SummaryEdit extends Component {
                 label="Julkisuusluokka"
                 name="classification"
                 options={classificationOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'classification')),
+                ]}
               />
             </Column>
           </Row>
@@ -59,6 +67,9 @@ class SummaryEdit extends Component {
                 label="Vuokrauksen käyttötarkoitus"
                 name="intended_use"
                 options={intendedUseOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'intended_use')),
+                ]}
               />
             </Column>
             <Column medium={4}>
@@ -67,6 +78,9 @@ class SummaryEdit extends Component {
                 label="Erityisasunnot"
                 name="supportive_housing"
                 options={supportiveHousingOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'supportive_housing')),
+                ]}
               />
             </Column>
             <Column medium={4}>
@@ -75,6 +89,9 @@ class SummaryEdit extends Component {
                 label="Tilastollinen pääkäyttötarkoitus"
                 name="statistical_use"
                 options={statisticalUseOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'statistical_use')),
+                ]}
               />
             </Column>
           </Row>
@@ -84,6 +101,9 @@ class SummaryEdit extends Component {
                 component={FieldTypeText}
                 label="Vuokrauksen käyttötarkoitus selite"
                 name="intended_use_note"
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'intended_use_note')),
+                ]}
               />
             </Column>
           </Row>
@@ -94,6 +114,9 @@ class SummaryEdit extends Component {
                 label="Rahoitusmuoto"
                 name="financing"
                 options={financingOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'financing')),
+                ]}
               />
             </Column>
             <Column medium={4}>
@@ -102,6 +125,9 @@ class SummaryEdit extends Component {
                 label="Hallintamuoto"
                 name="management"
                 options={managementOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'management')),
+                ]}
               />
             </Column>
             <Column medium={4}>
@@ -112,6 +138,9 @@ class SummaryEdit extends Component {
                 name="transferable"
                 options= {[
                   {value: 'true', label: 'Siirto-oikeus'},
+                ]}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'transferable')),
                 ]}
               />
             </Column>
@@ -126,6 +155,9 @@ class SummaryEdit extends Component {
                 options= {[
                   {value: true, label: 'Säännelty'},
                 ]}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'regulated')),
+                ]}
               />
             </Column>
             <Column medium={4}>
@@ -134,6 +166,9 @@ class SummaryEdit extends Component {
                 label="Sääntelymuoto"
                 name="regulation"
                 options={regulationOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'regulation')),
+                ]}
               />
             </Column>
             <Column medium={4}>
@@ -142,6 +177,9 @@ class SummaryEdit extends Component {
                 label="Hitas"
                 name="hitas"
                 options={hitasOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'hitas')),
+                ]}
               />
             </Column>
           </Row>
@@ -153,6 +191,9 @@ class SummaryEdit extends Component {
                 label="Irtisanomisaika"
                 name="notice_period"
                 options={noticePeriodOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'notice_period')),
+                ]}
               />
             </Column>
             <Column medium={8}>
@@ -161,6 +202,9 @@ class SummaryEdit extends Component {
                 component={FieldTypeText}
                 label="Irtisanomisajan selite"
                 name="notice_note"
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'notice_note')),
+                ]}
               />
             </Column>
           </Row>
@@ -170,7 +214,7 @@ class SummaryEdit extends Component {
   }
 }
 
-const formName = 'summary-edit-form';
+const formName = 'summary-form';
 
 export default flowRight(
   reduxForm({

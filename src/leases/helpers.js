@@ -3,33 +3,19 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
-import {formatDate, formatDateDb, formatDateRange, formatDecimalNumberDb} from '$util/helpers';
-
-export const formatSequenceNumber = (value: number) => {
-  if(!value) {
-    return '';
-  }
-  const length = value.toString().length;
-  if (length < 4) {
-    let prefix = '';
-    for (var i = 1; i <= 4 - length; i++) {
-      prefix += '0';
-    }
-    return prefix + value.toString();
-  }
-  return  value.toString();
-};
+import {
+  fixedLengthNumber,
+  formatDate,
+  formatDateDb,
+  formatDecimalNumberDb,
+} from '$util/helpers';
 
 export const getContentLeaseIdentifier = (item:Object) => {
   if(isEmpty(item)) {
     return null;
   }
-  const unit = `${get(item, 'type')}${get(item, 'municipality')}${get(item, 'district')}-${formatSequenceNumber(get(item, 'identifier.sequence'))}`;
+  const unit = `${get(item, 'type')}${get(item, 'municipality')}${fixedLengthNumber(get(item, 'district'), 2)}-${get(item, 'identifier.sequence')}`;
   return unit;
-};
-
-export const getContentLeaseDateRange = (item: Object) => {
-  return formatDateRange(get(item, 'start_date'), get(item, 'end_date'));
 };
 
 export const getContentRealPropertyUnit = (item: Object) => {
@@ -62,18 +48,160 @@ export const getContentLeaseAddress = (item:Object) => {
   return address;
 };
 
-export const getContentLeaseStatus = (item: Object, options: Array<Object>) => {
-  const {status} = item;
-  if(!status) {
-    return null;
+export const getContentLeaseInfo = (lease: Object) => {
+  return {
+    identifier: getContentLeaseIdentifier(lease),
+    end_date: get(lease, 'end_date'),
+    start_date: get(lease, 'start_date'),
+    state: get(lease, 'state'),
+  };
+};
+
+export const getContentHistory = (lease: Object) => {
+  const historyItems = get(lease, 'history', []);
+  if(!historyItems || historyItems.length === 0) {
+    return [];
   }
 
-  for(let i = 0; i < options.length; i++) {
-    if(options[i].value === status) {
-      return get(options[i], 'label');
-    }
+  return historyItems.map((item) => {
+    return {
+      active: get(item, 'active'),
+      end_date: get(item, 'end_date'),
+      identifier: get(item, 'identifier'),
+      start_date: get(item, 'start_date'),
+      type: get(item, 'type'),
+    };
+  });
+};
+
+export const getContentSummary = (lease: Object) => {
+  return {
+    lessor: get(lease, 'lessor.id'),
+    classification: get(lease, 'classification'),
+    intended_use: get(lease, 'intended_use'),
+    supportive_housing: get(lease, 'supportive_housing'),
+    statistical_use: get(lease, 'statistical_use'),
+    intended_use_note: get(lease, 'intended_use_note'),
+    financing: get(lease, 'financing'),
+    management: get(lease, 'management'),
+    transferable: get(lease, 'transferable'),
+    regulated: get(lease, 'regulated'),
+    regulation: get(lease, 'regulation'),
+    hitas: get(lease, 'hitas'),
+    notice_period: get(lease, 'notice_period'),
+    notice_note: get(lease, 'notice_note'),
+  };
+};
+
+export const getContentPlots = (plots: Array<Object>, inContract: boolean) => {
+  if(!plots || !plots.length) {
+    return [];
   }
-  return status;
+
+  return plots.filter((plot) => plot.in_contract === inContract).map((plot) => {
+    return {
+      id: get(plot, 'id'),
+      identifier: get(plot, 'identifier'),
+      area: get(plot, 'area'),
+      section_area: get(plot, 'section_area'),
+      address: get(plot, 'address'),
+      postal_code: get(plot, 'postal_code'),
+      city: get(plot, 'city'),
+      type: get(plot, 'type'),
+      registration_date: get(plot, 'registration_date'),
+      in_contract: get(plot, 'in_contract'),
+    };
+  });
+};
+
+export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolean) => {
+  if(!planunits || !planunits.length) {
+    return [];
+  }
+
+  return planunits.filter((planunit) => planunit.in_contract === inContract).map((planunit) => {
+    return {
+      id: get(planunit, 'id'),
+      identifier: get(planunit, 'identifier'),
+      area: get(planunit, 'area'),
+      section_area: get(planunit, 'section_area'),
+      address: get(planunit, 'address'),
+      postal_code: get(planunit, 'postal_code'),
+      city: get(planunit, 'city'),
+      type: get(planunit, 'type'),
+      in_contract: get(planunit, 'in_contract'),
+      plot_division_identifier: get(planunit, 'plot_division_identifier'),
+      plot_division_date_of_approval: get(planunit, 'plot_division_date_of_approval'),
+      detailed_plan_identifier: get(planunit, 'detailed_plan_identifier'),
+      detailed_plan_date_of_approval: get(planunit, 'detailed_plan_date_of_approval'),
+      plan_unit_type: get(planunit, 'plan_unit_type.id'),
+      plan_unit_state: get(planunit, 'plan_unit_state.id'),
+    };
+  });
+};
+
+export const getContentLeaseAreaItem = (area: Object) => {
+  return {
+    id: get(area, 'id'),
+    identifier: get(area, 'identifier'),
+    area: get(area, 'area'),
+    section_area: get(area, 'section_area'),
+    address: get(area, 'address'),
+    postal_code: get(area, 'postal_code'),
+    city: get(area, 'city'),
+    type: get(area, 'type'),
+    location: get(area, 'location'),
+    plots_current: getContentPlots(get(area, 'plots'), false),
+    plots_contract: getContentPlots(get(area, 'plots'), true),
+    plan_units_current: getContentPlanUnits(get(area, 'plan_units'), false),
+    plan_units_contract: getContentPlanUnits(get(area, 'plan_units'), true),
+  };
+};
+
+export const getContentLeaseAreas = (lease: Object) => {
+  const leaseAreas = get(lease, 'lease_areas', []);
+  if(!leaseAreas || !leaseAreas.length) {
+    return [];
+  }
+
+  return leaseAreas.map((area) => {
+    return getContentLeaseAreaItem(area);
+  });
+};
+
+//
+//
+// OLD HELPER FUNCTIONS
+//TODO: Remove mock data helper function when contruction eligibility tab is added to API
+export const getContentLeaseAreaItemMock = (area: Object) => {
+  return {
+    address: get(area, 'address'),
+    district: get(area, 'district'),
+    explanation: get(area, 'explanation'),
+    full_area: get(area, 'full_area'),
+    group_number: get(area, 'group_number'),
+    intersection_area: get(area, 'intersection_area'),
+    lease_area_id: get(area, 'lease_area_id'),
+    municipality: get(area, 'municipality'),
+    planplot_condition: get(area, 'planplot_condition'),
+    planplot_type: get(area, 'planplot_type'),
+    position: get(area, 'position'),
+    town: get(area, 'town'),
+    unit_number: get(area, 'unit_number'),
+    zip_code: get(area, 'zip_code'),
+    construction_eligibility: getContentLeaseAreaConstructionEligibility(get(area, 'construction_eligibility')),
+  };
+};
+//TODO: Remove mock data helper function when contruction eligibility tab is added to API
+export const getContentLeaseAreasMock = (lease: Object) => {
+  const leaseAreas = get(lease, 'lease_areas', []);
+  if(!leaseAreas || leaseAreas.length === 0) {
+    return [];
+  }
+
+  return leaseAreas.map((area) => {
+    return getContentLeaseAreaItemMock(area);
+  });
 };
 
 export const getContentBillingTenant = (tenant: Object) => {
@@ -156,42 +284,6 @@ export const getContentBilling = (lease: Object) => {
     abnormal_debts: getContentBillingAbnormalDebts(get(billing, 'abnormal_debts')),
     invoicing_started: get(billing, 'invoicing_started'),
     bills: getContentBillingBills(get(billing, 'bills')),
-  };
-};
-
-export const getContentHistory = (lease: Object) => {
-  const historyItems = get(lease, 'history', []);
-  if(!historyItems || historyItems.length === 0) {
-    return [];
-  }
-
-  return historyItems.map((item) => {
-    return {
-      active: get(item, 'active'),
-      end_date: get(item, 'end_date'),
-      identifier: get(item, 'identifier'),
-      start_date: get(item, 'start_date'),
-      type: get(item, 'type'),
-    };
-  });
-};
-
-export const getContentSummary = (lease: Object) => {
-  return {
-    lessor: get(lease, 'lessor.id'),
-    classification: get(lease, 'classification'),
-    intended_use: get(lease, 'intended_use'),
-    supportive_housing: get(lease, 'supportive_housing'),
-    statistical_use: get(lease, 'statistical_use'),
-    intended_use_note: get(lease, 'intended_use_note'),
-    financing: get(lease, 'financing'),
-    management: get(lease, 'management'),
-    transferable: get(lease, 'transferable'),
-    regulated: get(lease, 'regulated'),
-    regulation: get(lease, 'regulation'),
-    hitas: get(lease, 'hitas'),
-    notice_period: get(lease, 'notice_period'),
-    notice_note: get(lease, 'notice_note'),
   };
 };
 
@@ -347,97 +439,6 @@ export const getContentLeaseAreaConstructionEligibility = (item: Object) => {
     other: getContentLeaseAreaConstructionEligibilityItem(get(item, 'other')),
     preconstruction: getContentLeaseAreaConstructionEligibilityItem(get(item, 'preconstruction')),
   };
-};
-
-export const getContentLeaseAreaPlotItems = (plots: Array<Object>) => {
-  if(!plots || plots.length === 0) {
-    return [];
-  }
-
-  return plots.map((plot) => {
-    return {
-      abolishment_date: get(plot, 'abolishment_date'),
-      address: get(plot, 'address'),
-      coordinates: get(plot, 'coordinates', []),
-      district: get(plot, 'district'),
-      explanation: get(plot, 'explanation'),
-      full_area: get(plot, 'full_area'),
-      group_number: get(plot, 'group_number'),
-      intersection_area: get(plot, 'intersection_area'),
-      municipality: get(plot, 'municipality'),
-      plot_id: get(plot, 'plot_id'),
-      registration_date: get(plot, 'registration_date'),
-      town: get(plot, 'town'),
-      unit_number: get(plot, 'unit_number'),
-      unseparate_parcel_number: get(plot, 'unseparate_parcel_number'),
-      zip_code: get(plot, 'zip_code'),
-    };
-  });
-};
-
-export const getContentLeaseAreaPlanPlotItems = (planPlots: Array<Object>) => {
-  if(!planPlots || planPlots.length === 0) {
-    return [];
-  }
-
-  return planPlots.map((planPlot) => {
-    return {
-      address: get(planPlot, 'address'),
-      district: get(planPlot, 'district'),
-      explanation: get(planPlot, 'explanation'),
-      full_area: get(planPlot, 'full_area'),
-      group_number: get(planPlot, 'group_number'),
-      intersection_area: get(planPlot, 'intersection_area'),
-      municipality: get(planPlot, 'municipality'),
-      plan: get(planPlot, 'plan'),
-      plan_approval_date: get(planPlot, 'plan_approval_date'),
-      planplot_condition: get(planPlot, 'planplot_condition'),
-      plan_plot_in_contract_id: get(planPlot, 'plan_plot_in_contract_id'),
-      planplot_type: get(planPlot, 'planplot_type'),
-      plot_division_id: get(planPlot, 'plot_division_id'),
-      plot_division_approval_date: get(planPlot, 'plot_division_approval_date'),
-      state: get(planPlot, 'state'),
-      town: get(planPlot, 'town'),
-      unit_number: get(planPlot, 'unit_number'),
-      use: get(planPlot, 'use'),
-      zip_code: get(planPlot, 'zip_code'),
-    };
-  });
-};
-
-export const getContentLeaseAreaItem = (area: Object) => {
-  return {
-    address: get(area, 'address'),
-    district: get(area, 'district'),
-    explanation: get(area, 'explanation'),
-    full_area: get(area, 'full_area'),
-    group_number: get(area, 'group_number'),
-    intersection_area: get(area, 'intersection_area'),
-    lease_area_id: get(area, 'lease_area_id'),
-    municipality: get(area, 'municipality'),
-    planplot_condition: get(area, 'planplot_condition'),
-    planplot_type: get(area, 'planplot_type'),
-    position: get(area, 'position'),
-    town: get(area, 'town'),
-    unit_number: get(area, 'unit_number'),
-    zip_code: get(area, 'zip_code'),
-    construction_eligibility: getContentLeaseAreaConstructionEligibility(get(area, 'construction_eligibility')),
-    plan_plots_at_present: getContentLeaseAreaPlanPlotItems(get(area, 'plan_plots_at_present', [])),
-    plan_plots_in_contract: getContentLeaseAreaPlanPlotItems(get(area, 'plan_plots_in_contract', [])),
-    plots_at_present: getContentLeaseAreaPlotItems((get(area, 'plots_at_present', []))),
-    plots_in_contract: getContentLeaseAreaPlotItems((get(area, 'plots_in_contract', []))),
-  };
-};
-
-export const getContentLeaseAreas = (lease: Object) => {
-  const leaseAreas = get(lease, 'lease_areas', []);
-  if(!leaseAreas || leaseAreas.length === 0) {
-    return [];
-  }
-
-  return leaseAreas.map((area) => {
-    return getContentLeaseAreaItem(area);
-  });
 };
 
 export const getContentRentBasicInfo = (basicInfoData: Object) => {
@@ -843,4 +844,118 @@ export const formatBillingBillDb = (bill: Object) => {
     type: get(bill, 'type'),
     unpaid_amount: formatDecimalNumberDb(get(bill, 'unpaid_amount')),
   };
+};
+
+export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {
+  payload.state = get(leaseInfo, 'state');
+  payload.start_date = get(leaseInfo, 'start_date');
+  payload.end_date = get(leaseInfo, 'end_date');
+  return payload;
+};
+
+export const addSummaryFormValues = (payload: Object, summary: Object) => {
+  payload.lessor = get(summary, 'lessor');
+  payload.classification = get(summary, 'classification');
+  payload.intended_use = get(summary, 'intended_use');
+  payload.supportive_housing = get(summary, 'supportive_housing');
+  payload.statistical_use = get(summary, 'statistical_use');
+  payload.intended_use_note = get(summary, 'intended_use_note');
+  payload.financing = get(summary, 'financing');
+  payload.management = get(summary, 'management');
+  payload.transferable = get(summary, 'transferable');
+  payload.regulated = get(summary, 'regulated');
+  payload.regulation = get(summary, 'regulation');
+  payload.hitas = get(summary, 'hitas');
+  payload.notice_period = get(summary, 'notice_period');
+  payload.notice_note = get(summary, 'notice_note');
+  return payload;
+};
+
+const getPlotsForDb = (area: Object) => {
+  const currentPlots = get(area, 'plots_current', []).map((plot) => {
+    plot.in_contract = false;
+    return plot;
+  });
+  const contractPlots = get(area, 'plots_contract', []).map((plot) => {
+    plot.in_contract = true;
+    return plot;
+  });
+  const plots = currentPlots.concat(contractPlots);
+  if(!plots.length) {
+    return [];
+  }
+  return plots.map((plot) => {
+    return {
+      id: plot.id || undefined,
+      identifier: get(plot, 'identifier'),
+      area: formatDecimalNumberDb(get(plot, 'area')),
+      section_area: formatDecimalNumberDb(get(plot, 'section_area')),
+      address: get(plot, 'address'),
+      postal_code: get(plot, 'postal_code'),
+      city: get(plot, 'city'),
+      type: get(plot, 'type'),
+      location: get(plot, 'location'),
+      registration_date: get(plot, 'registration_date'),
+      in_contract: get(plot, 'in_contract'),
+    };
+  });
+};
+
+const getPlanUnitsForDb = (area: Object) => {
+  const currentPlanUnits = get(area, 'plan_units_current', []).map((planunit) => {
+    planunit.in_contract = false;
+    return planunit;
+  });
+  const contractPlanUnits = get(area, 'plan_units_contract', []).map((planunit) => {
+    planunit.in_contract = true;
+    return planunit;
+  });
+  const planUnits = currentPlanUnits.concat(contractPlanUnits);
+  if(!planUnits.length) {
+    return [];
+  }
+  return planUnits.map((planunit) => {
+    return {
+      id: planunit.id || undefined,
+      identifier: get(planunit, 'identifier'),
+      area: formatDecimalNumberDb(get(planunit, 'area')),
+      section_area: formatDecimalNumberDb(get(planunit, 'section_area')),
+      address: get(planunit, 'address'),
+      postal_code: get(planunit, 'postal_code'),
+      city: get(planunit, 'city'),
+      type: get(planunit, 'type'),
+      in_contract: get(planunit, 'in_contract'),
+      plot_division_identifier: get(planunit, 'plot_division_identifier'),
+      plot_division_date_of_approval: get(planunit, 'plot_division_date_of_approval'),
+      detailed_plan_identifier: get(planunit, 'detailed_plan_identifier'),
+      detailed_plan_date_of_approval: get(planunit, 'detailed_plan_date_of_approval'),
+      plan_unit_type: get(planunit, 'plan_unit_type'),
+      plan_unit_state: get(planunit, 'plan_unit_state'),
+    };
+  });
+};
+
+export const addAreasFormValues = (payload: Object, values: Object) => {
+  const areas = get(values, 'lease_areas', []);
+  if(!areas.length) {
+    payload.lease_areas = [];
+  } else {
+    payload.lease_areas = areas.map((area) => {
+      return {
+        id: area.id || undefined,
+        identifier: get(area, 'identifier'),
+        area: formatDecimalNumberDb(get(area, 'area')),
+        section_area: formatDecimalNumberDb(get(area, 'area')),
+        address: get(area, 'address'),
+        postal_code: get(area, 'postal_code'),
+        city: get(area, 'city'),
+        type: get(area, 'type'),
+        location: get(area, 'location'),
+        plots: getPlotsForDb(area),
+        plan_units: getPlanUnitsForDb(area),
+      };
+    });
+  }
+
+  return payload;
 };
