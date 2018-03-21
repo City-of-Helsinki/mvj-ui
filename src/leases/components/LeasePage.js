@@ -139,6 +139,7 @@ type Props = {
 
 type State = {
   activeTab: number,
+  areasMock: Array<Object>,
   contracts: Array<Object>,
   history: Array<Object>,
   inspections: Array<Object>,
@@ -156,6 +157,7 @@ class PreparerForm extends Component {
 
   state: State = {
     activeTab: 0,
+    areasMock: [],
     contracts: [],
     history: [],
     isCancelLeaseModalOpen: false,
@@ -200,6 +202,7 @@ class PreparerForm extends Component {
     }
 
     this.setState({
+      areasMock: contentHelpers.getContentLeaseAreasMock(lease),
       contracts: contentHelpers.getContentContracts(lease),
       history: contentHelpers.getContentHistory(lease),
       inspections: contentHelpers.getContentInspections(lease),
@@ -243,7 +246,7 @@ class PreparerForm extends Component {
 
       contractsForm,
       currentLease,
-      // eligibilityForm,
+      eligibilityForm,
       hideEditMode,
       inspectionsForm,
       patchLease,
@@ -269,9 +272,9 @@ class PreparerForm extends Component {
     patchLease(payload);
 
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
-    // if(eligibilityForm !== undefined) {
-    //   this.setState({areas: eligibilityForm});
-    // }
+    if(eligibilityForm !== undefined) {
+      this.setState({areasMock: eligibilityForm});
+    }
     if(contractsForm !== undefined) {
       this.setState({contracts: contractsForm});
     }
@@ -444,6 +447,7 @@ class PreparerForm extends Component {
   render() {
     const {
       activeTab,
+      areasMock,
       contracts,
       history,
       inspections,
@@ -670,8 +674,8 @@ class PreparerForm extends Component {
               <h1>Rakentamiskelpoisuus</h1>
               <Divider />
               {isEditMode
-                ? <ConstructionEligibilityEdit areas={areas} initialValues={{areas: areas}}/>
-                : <ConstructionEligibility areas={areas}/>
+                ? <ConstructionEligibilityEdit areas={areasMock} initialValues={{areas: areasMock}}/>
+                : <ConstructionEligibility areas={areasMock}/>
               }
             </ContentContainer>
           </TabPane>

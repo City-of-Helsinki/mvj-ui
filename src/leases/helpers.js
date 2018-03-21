@@ -172,6 +172,38 @@ export const getContentLeaseAreas = (lease: Object) => {
 //
 //
 // OLD HELPER FUNCTIONS
+//TODO: Remove mock data helper function when contruction eligibility tab is added to API
+export const getContentLeaseAreaItemMock = (area: Object) => {
+  return {
+    address: get(area, 'address'),
+    district: get(area, 'district'),
+    explanation: get(area, 'explanation'),
+    full_area: get(area, 'full_area'),
+    group_number: get(area, 'group_number'),
+    intersection_area: get(area, 'intersection_area'),
+    lease_area_id: get(area, 'lease_area_id'),
+    municipality: get(area, 'municipality'),
+    planplot_condition: get(area, 'planplot_condition'),
+    planplot_type: get(area, 'planplot_type'),
+    position: get(area, 'position'),
+    town: get(area, 'town'),
+    unit_number: get(area, 'unit_number'),
+    zip_code: get(area, 'zip_code'),
+    construction_eligibility: getContentLeaseAreaConstructionEligibility(get(area, 'construction_eligibility')),
+  };
+};
+//TODO: Remove mock data helper function when contruction eligibility tab is added to API
+export const getContentLeaseAreasMock = (lease: Object) => {
+  const leaseAreas = get(lease, 'lease_areas', []);
+  if(!leaseAreas || leaseAreas.length === 0) {
+    return [];
+  }
+
+  return leaseAreas.map((area) => {
+    return getContentLeaseAreaItemMock(area);
+  });
+};
+
 export const getContentBillingTenant = (tenant: Object) => {
   return {
     bill_share: get(tenant, 'bill_share'),
