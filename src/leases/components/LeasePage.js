@@ -47,8 +47,12 @@ import {
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
-import {displayUIMessage, getLabelOfOption, getLessorOptions} from '$util/helpers';
-import {summaryPublicityOptions} from './leaseSections/constants';
+import {
+  displayUIMessage,
+  getAttributeFieldOptions,
+  getLabelOfOption,
+  getLessorOptions,
+} from '$util/helpers';
 
 import Billing from './leaseSections/billing/Billing';
 import BillingEdit from './leaseSections/billing/BillingEdit';
@@ -468,6 +472,7 @@ class PreparerForm extends Component {
     const currentComments = this.getCurrentComments(sortedComments);
     const isAnyFormTouched = this.isAnyFormTouched();
 
+    const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
     const lessorOptions = getLessorOptions(lessors);
 
     const leaseInfo = contentHelpers.getContentLeaseInfo(currentLease);
@@ -571,8 +576,8 @@ class PreparerForm extends Component {
               {!isEditMode &&
                 <RightSubtitle
                   className='publicity-label'
-                  text={summary.publicity
-                    ? getLabelOfOption(summaryPublicityOptions, summary.publicity)
+                  text={summary.classification
+                    ? getLabelOfOption(classificationOptions, summary.classification)
                     : '-'
                   }
                 />
