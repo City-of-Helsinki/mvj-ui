@@ -37,6 +37,10 @@ import type {
   ReceiveCommentAction,
   ReceiveDeletedCommentAction,
   ReceiveEditedCommentAction,
+  ClearFormValidityFlagsAction,
+  ReceiveLeaseInfoFormValidAction,
+  ReceiveSummaryFormValidAction,
+  ReceiveLeaseAreasFormValidAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -116,3 +120,16 @@ export const receiveDeletedComment = (comment: Comment): ReceiveDeletedCommentAc
 
 export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentAction =>
   createAction('mvj/leases/RECEIVE_EDITED_COMMENT')(comment);
+
+// Actions to manage form validity statuses
+export const clearFormValidFlags = (): ClearFormValidityFlagsAction =>
+  createAction('mvj/leases/CLEAR_FORM_VALIDITY_FLAGS')();
+
+export const receiveLeaseAreasFormValid = (valid: boolean): ReceiveLeaseAreasFormValidAction =>
+  createAction('mvj/leases/RECEIVE_LEASE_AREAS_VALID')(valid);
+
+export const receiveLeaseInfoFormValid = (valid: boolean): ReceiveLeaseInfoFormValidAction =>
+  createAction('mvj/leases/RECEIVE_LEASE_INFO_VALID')(valid);
+
+export const receiveSummaryFormValid = (valid: boolean): ReceiveSummaryFormValidAction =>
+  createAction('mvj/leases/RECEIVE_SUMMARY_VALID')(valid);

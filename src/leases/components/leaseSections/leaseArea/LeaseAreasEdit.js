@@ -1,5 +1,6 @@
 // @flow
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {Field, FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
@@ -17,6 +18,8 @@ import RemoveButton from '$components/form/RemoveButton';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 import {genericValidator} from '$components/form/validations';
+import {getIsLeaseAreasValid} from '../../../selectors';
+import {receiveLeaseAreasFormValid} from '../../../actions';
 
 type AreaItemProps = {
   attributes: Object,
@@ -175,10 +178,20 @@ type Props = {
   areas: Array<Object>,
   attributes: Object,
   handleSubmit: Function,
+  isLeaseAreasValid: boolean,
+  receiveLeaseAreasFormValid: Function,
+  valid: boolean,
 }
 
 class LeaseAreasEdit extends Component {
   props: Props
+
+  componentDidUpdate() {
+    const {isLeaseAreasValid, receiveLeaseAreasFormValid, valid} = this.props;
+    if(isLeaseAreasValid !== valid) {
+      receiveLeaseAreasFormValid(valid);
+    }
+  }
 
   render () {
     const {areas, attributes, handleSubmit} = this.props;
@@ -201,6 +214,16 @@ class LeaseAreasEdit extends Component {
 const formName = 'lease-area-form';
 
 export default flowRight(
+  connect(
+    (state) => {
+      return {
+        isLeaseAreasValid: getIsLeaseAreasValid(state),
+      };
+    },
+    {
+      receiveLeaseAreasFormValid,
+    }
+  ),
   reduxForm({
     form: formName,
     destroyOnUnmount: false,

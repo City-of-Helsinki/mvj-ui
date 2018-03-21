@@ -18,6 +18,12 @@
     display: none;
   }
 
+  &.background-green {
+    .show-more__line-end {
+      background: linear-gradient(to right, rgba(217, 239, 228, 0), rgba(217, 239, 228, 1) 50%);
+    }
+  }
+
   &:not(.show-more--open) {
     p {
       margin: 0;

@@ -51,3 +51,8 @@ export type UnarchiveCommentAction = Action<'mvj/leases/UNARCHIVE_COMMENT', Comm
 export type ReceiveCommentAction = Action<'mvj/leases/RECEIVE_COMMENT', Comment>;
 export type ReceiveEditedCommentAction = Action<'mvj/leases/RECEIVE_EDITED_COMMENT', Comment>;
 export type ReceiveDeletedCommentAction = Action<'mvj/leases/RECEIVE_DELETED_COMMENT', Comment>;
+
+export type ClearFormValidityFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS', void>
+export type ReceiveLeaseInfoFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_INFO_VALID', boolean>;
+export type ReceiveSummaryFormValidAction = Action<'mvj/leases/RECEIVE_SUMMARY_VALID', boolean>;
+export type ReceiveLeaseAreasFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_AREAS_VALID', boolean>;

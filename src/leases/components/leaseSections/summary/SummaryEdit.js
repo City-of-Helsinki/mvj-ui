@@ -1,5 +1,6 @@
 // @flow
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {Field, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
@@ -11,15 +12,27 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 import {genericValidator} from '$components/form/validations';
+import {getIsSummaryValid} from '../../../selectors';
+import {receiveSummaryFormValid} from '../../../actions';
 
 type Props = {
   attributes: Object,
   handleSubmit: Function,
+  isSummaryValid: boolean,
   lessorOptions: Array<Object>,
+  receiveSummaryFormValid: Function,
+  valid: boolean,
 }
 
 class SummaryEdit extends Component {
   props: Props
+
+  componentDidUpdate() {
+    const {isSummaryValid, receiveSummaryFormValid, valid} = this.props;
+    if(isSummaryValid !== valid) {
+      receiveSummaryFormValid(valid);
+    }
+  }
 
   render () {
     const {attributes, handleSubmit, lessorOptions} = this.props;
@@ -217,6 +230,16 @@ class SummaryEdit extends Component {
 const formName = 'summary-form';
 
 export default flowRight(
+  connect(
+    (state) => {
+      return {
+        isSummaryValid: getIsSummaryValid(state),
+      };
+    },
+    {
+      receiveSummaryFormValid,
+    }
+  ),
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
