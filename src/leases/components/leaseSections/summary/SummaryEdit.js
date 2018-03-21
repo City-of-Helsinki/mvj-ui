@@ -170,7 +170,7 @@ class SummaryEdit extends Component {
   }
 }
 
-const formName = 'summary-edit-form';
+const formName = 'summary-form';
 
 export default flowRight(
   reduxForm({

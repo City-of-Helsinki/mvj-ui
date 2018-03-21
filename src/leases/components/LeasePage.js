@@ -14,6 +14,9 @@ import {getLoggedInUser} from '$src/auth/selectors';
 import {receiveBilling} from './leaseSections/billing/actions';
 import {getBilling} from './leaseSections/billing/selectors';
 import {
+  getAreasFormErrors,
+  getAreasFormTouched,
+  getAreasFormValues,
   getAttributes,
   getComments,
   getCurrentLease,
@@ -21,6 +24,8 @@ import {
   getIsFetching,
   getLeaseInfoErrors,
   getLessors,
+  getSummaryFormErrors,
+  getSummaryFormTouched,
   getSummaryFormValues,
 } from '../selectors';
 import {
@@ -79,8 +84,9 @@ import mockData from '../mock-data.json';
 
 type Props = {
   archiveComment: Function,
-  areasForm: Array<Object>,
-  areasTouched: boolean,
+  areasFormErrors: Object,
+  areasFormTouched: boolean,
+  areasFormValues: Object,
   attributes: Object,
   billing: Object,
   comments: Array<Object>,
@@ -118,8 +124,9 @@ type Props = {
   showEditMode: Function,
   start_date: ?string,
   state: string,
-  summaryForm: Object,
-  summaryTouched: boolean,
+  summaryFormErrors: Object,
+  summaryFormTouched: boolean,
+  summaryFormValues: Object,
   tenantsForm: Array<Object>,
   tenantsTouched: boolean,
   user: Object,
@@ -226,7 +233,8 @@ class PreparerForm extends Component {
 
   save = () => {
     const {
-      areasForm,
+      areasFormValues,
+      summaryFormValues,
       contractsForm,
       currentLease,
       // eligibilityForm,
@@ -238,7 +246,7 @@ class PreparerForm extends Component {
       rulesForm,
       start_date,
       state,
-      summaryForm,
+
       tenantsForm,
     } = this.props;
 
@@ -247,12 +255,12 @@ class PreparerForm extends Component {
     payload.start_date = start_date;
     payload.end_date = end_date;
 
-    if(summaryForm !== undefined) {
-      payload = contentHelpers.addSummaryFormValues(payload, summaryForm);
+    if(summaryFormValues !== undefined) {
+      payload = contentHelpers.addSummaryFormValues(payload, summaryFormValues);
     }
 
-    if(areasForm !== undefined) {
-      payload = contentHelpers.addAreasFormValues(payload, areasForm);
+    if(areasFormValues !== undefined) {
+      payload = contentHelpers.addAreasFormValues(payload, areasFormValues);
     }
 
     patchLease(payload);
@@ -296,7 +304,7 @@ class PreparerForm extends Component {
   destroyAllForms = () => {
     const {dispatch} = this.props;
     dispatch(destroy('lease-area-form'));
-    dispatch(destroy('summary-edit-form'));
+    dispatch(destroy('summary-form'));
 
     dispatch(destroy('billing-edit-form'));
     dispatch(destroy('contract-edit-form'));
@@ -310,7 +318,7 @@ class PreparerForm extends Component {
   resetAllForms = () => {
     const {dispatch} = this.props;
     dispatch(reset('lease-area-form'));
-    dispatch(reset('summary-edit-form'));
+    dispatch(reset('summary-form'));
 
     dispatch(reset('billing-edit-form'));
     dispatch(reset('contract-edit-form'));
@@ -322,8 +330,14 @@ class PreparerForm extends Component {
   }
 
   validateForms = () => {
-    const {leaseInfoErrors} = this.props;
-    return leaseInfoErrors ? false : true;
+    const {
+      areasFormErrors,
+      leaseInfoErrors,
+      summaryFormErrors,
+    } = this.props;
+    return (areasFormErrors ||
+      leaseInfoErrors ||
+      summaryFormErrors) ? false : true;
   }
 
   addComment = (text: string, type: string) => {
@@ -400,7 +414,8 @@ class PreparerForm extends Component {
 
   isAnyFormTouched = () => {
     const {
-      areasTouched,
+      areasFormTouched,
+      summaryFormTouched,
       contractsTouched,
       eligibilityTouched,
       inspectionTouched,
@@ -410,7 +425,8 @@ class PreparerForm extends Component {
       tenantsTouched,
     } = this.props;
 
-    return areasTouched ||
+    return areasFormTouched ||
+      summaryFormTouched ||
       contractsTouched ||
       eligibilityTouched ||
       inspectionTouched ||
@@ -678,7 +694,6 @@ class PreparerForm extends Component {
   }
 }
 
-const areasFormSelector = formValueSelector('lease-area-form');
 const contractFormSelector = formValueSelector('contract-edit-form');
 const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const inspectionFormSelector = formValueSelector('inspection-edit-form');
@@ -696,7 +711,9 @@ export default flowRight(
     (state) => {
       const user = getLoggedInUser(state);
       return {
-        areasForm: areasFormSelector(state, 'lease_areas'),
+        areasFormErrors: getAreasFormErrors(state),
+        areasFormTouched: getAreasFormTouched(state),
+        areasFormValues: getAreasFormValues(state),
         areasTouched: get(state, 'form.lease-area-form.anyTouched'),
         attributes: getAttributes(state),
         billing: getBilling(state),
@@ -720,8 +737,9 @@ export default flowRight(
         rulesTouched: get(state, 'form.rule-edit-form.anyTouched'),
         start_date: leaseInfoFormSelector(state, 'start_date'),
         state: leaseInfoFormSelector(state, 'state'),
-        summaryForm: getSummaryFormValues(state),
-        summaryTouched: get(state, 'form.summary-edit-form.anyTouched'),
+        summaryFormErrors: getSummaryFormErrors(state),
+        summaryFormTouched: getSummaryFormTouched(state),
+        summaryFormValues: getSummaryFormValues(state),
         tenantsForm: tenantFormSelector(state, 'tenants'),
         tenantsTouched: get(state, 'form.tenant-edit-form.anyTouched'),
         user,

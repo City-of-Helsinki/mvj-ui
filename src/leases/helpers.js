@@ -853,8 +853,43 @@ const getPlotsForDb = (area: Object) => {
   });
 };
 
-export const addAreasFormValues = (payload: Object, areas: Array<Object>) => {
-  if(!areas || !areas.length) {
+const getPlanUnitsForDb = (area: Object) => {
+  const currentPlanUnits = get(area, 'plan_units_current', []).map((planunit) => {
+    planunit.in_contract = false;
+    return planunit;
+  });
+  const contractPlanUnits = get(area, 'plan_units_contract', []).map((planunit) => {
+    planunit.in_contract = true;
+    return planunit;
+  });
+  const planUnits = currentPlanUnits.concat(contractPlanUnits);
+  if(!planUnits.length) {
+    return [];
+  }
+  return planUnits.map((planunit) => {
+    return {
+      id: planunit.id || undefined,
+      identifier: get(planunit, 'identifier'),
+      area: formatDecimalNumberDb(get(planunit, 'area')),
+      section_area: formatDecimalNumberDb(get(planunit, 'section_area')),
+      address: get(planunit, 'address'),
+      postal_code: get(planunit, 'postal_code'),
+      city: get(planunit, 'city'),
+      type: get(planunit, 'type'),
+      in_contract: get(planunit, 'in_contract'),
+      plot_division_identifier: get(planunit, 'plot_division_identifier'),
+      plot_division_date_of_approval: get(planunit, 'plot_division_date_of_approval'),
+      detailed_plan_identifier: get(planunit, 'detailed_plan_identifier'),
+      detailed_plan_date_of_approval: get(planunit, 'detailed_plan_date_of_approval'),
+      plan_unit_type: get(planunit, 'plan_unit_type'),
+      plan_unit_state: get(planunit, 'plan_unit_state'),
+    };
+  });
+};
+
+export const addAreasFormValues = (payload: Object, values: Object) => {
+  const areas = get(values, 'lease_areas', []);
+  if(!areas.length) {
     payload.lease_areas = [];
   } else {
     payload.lease_areas = areas.map((area) => {
@@ -869,7 +904,7 @@ export const addAreasFormValues = (payload: Object, areas: Array<Object>) => {
         type: get(area, 'type'),
         location: get(area, 'location'),
         plots: getPlotsForDb(area),
-        plan_units: [],
+        plan_units: getPlanUnitsForDb(area),
       };
     });
   }

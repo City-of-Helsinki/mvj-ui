@@ -12,16 +12,19 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
+import {getAttributeFieldOptions} from '$src/util/helpers';
 import {genericValidator} from '$components/form/validations';
 
 type Props = {
   attributes: Object,
   fields: any,
   title: string,
-  typeOptions: Array<Object>,
 }
 
-const PlotItemsEdit = ({attributes, fields, title, typeOptions}: Props) => {
+const PlotItemsEdit = ({attributes, fields, title}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes,
+    'lease_areas.child.children.plots.child.children.type');
+
   return (
     <GreenBoxEdit>
       <h2 className='no-margin'>{title}</h2>

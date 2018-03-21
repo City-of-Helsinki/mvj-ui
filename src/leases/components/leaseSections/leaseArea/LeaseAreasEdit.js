@@ -12,6 +12,7 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FormSection from '$components/form/FormSection';
 import PlotItemsEdit from './PlotItemsEdit';
+import PlanUnitItemsEdit from './PlanUnitItemsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {getAttributeFieldOptions} from '$src/util/helpers';
@@ -20,18 +21,15 @@ import {genericValidator} from '$components/form/validations';
 type AreaItemProps = {
   attributes: Object,
   fields: any,
-  locationOptions: Array<Object>,
-  plotTypeOptions: Array<Object>,
-  typeOptions: Array<Object>,
 }
 
 const LeaseAreaItem = ({
   attributes,
   fields,
-  locationOptions,
-  plotTypeOptions,
-  typeOptions,
 }: AreaItemProps) => {
+  const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
+  const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
+
   return (
     <div>
       {fields && fields.length > 0 && fields.map((area, index) => {
@@ -139,17 +137,25 @@ const LeaseAreaItem = ({
               component={PlotItemsEdit}
               name={`${area}.plots_contract`}
               title='Kiinteistöt / määräalat sopimushetkellä'
-              typeOptions={plotTypeOptions}
             />
             <FieldArray
               attributes={attributes}
               component={PlotItemsEdit}
               name={`${area}.plots_current`}
               title='Kiinteistöt / määräalat nykyhetkellä'
-              typeOptions={plotTypeOptions}
             />
-            {/* <FieldArray title='Kaavayksiköt sopimushetkellä' name={`${district}.plan_plots_in_contract`} component={PlanUnitItemsEdit}/>
-            <FieldArray title='Kaavayksiköt nykyhetkellä' name={`${district}.plan_plots_at_present`} component={PlanUnitItemsEdit}/> */}
+            <FieldArray
+              attributes={attributes}
+              component={PlanUnitItemsEdit}
+              name={`${area}.plan_units_contract`}
+              title='Kaavayksiköt sopimushetkellä'
+            />
+            <FieldArray
+              attributes={attributes}
+              component={PlanUnitItemsEdit}
+              name={`${area}.plan_units_current`}
+              title='Kaavayksiköt nykyhetkellä'
+            />
           </ContentItem>
         );
       })}
@@ -178,9 +184,6 @@ class LeaseAreasEdit extends Component {
 
   render () {
     const {areas, attributes, handleSubmit} = this.props;
-    const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
-    const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
-    const plotTypeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.plots.child.children.type');
 
     return (
       <form onSubmit={handleSubmit}>
@@ -189,10 +192,7 @@ class LeaseAreasEdit extends Component {
             areas={areas}
             attributes={attributes}
             component={LeaseAreaItem}
-            locationOptions={locationOptions}
             name="lease_areas"
-            plotTypeOptions={plotTypeOptions}
-            typeOptions={typeOptions}
           />
         </FormSection>
       </form>
