@@ -16,7 +16,6 @@ type Props = {
 const LeaseAreas = ({areas, attributes}: Props) => {
   const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
   const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
-  const plotTypeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.plots.child.children.type');
 
   const getFullAddress = (area: Object) => {
     return `${capitalize(area.address)}, ${area.postal_code} ${capitalize(area.city)}`;
@@ -59,7 +58,7 @@ const LeaseAreas = ({areas, attributes}: Props) => {
           >
             <LeaseArea
               area={area}
-              plotTypeOptions={plotTypeOptions}
+              attributes={attributes}
             />
           </Collapse>
         )

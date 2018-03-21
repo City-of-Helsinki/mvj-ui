@@ -105,6 +105,32 @@ export const getContentPlots = (plots: Array<Object>, inContract: boolean) => {
   });
 };
 
+export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolean) => {
+  if(!planunits || !planunits.length) {
+    return [];
+  }
+
+  return planunits.filter((planunit) => planunit.in_contract === inContract).map((planunit) => {
+    return {
+      id: get(planunit, 'id'),
+      identifier: get(planunit, 'identifier'),
+      area: get(planunit, 'area'),
+      section_area: get(planunit, 'section_area'),
+      address: get(planunit, 'address'),
+      postal_code: get(planunit, 'postal_code'),
+      city: get(planunit, 'city'),
+      type: get(planunit, 'type'),
+      in_contract: get(planunit, 'in_contract'),
+      plot_division_identifier: get(planunit, 'plot_division_identifier'),
+      plot_division_date_of_approval: get(planunit, 'plot_division_date_of_approval'),
+      detailed_plan_identifier: get(planunit, 'detailed_plan_identifier'),
+      detailed_plan_date_of_approval: get(planunit, 'detailed_plan_date_of_approval'),
+      plan_unit_type: get(planunit, 'plan_unit_type.id'),
+      plan_unit_state: get(planunit, 'plan_unit_state.id'),
+    };
+  });
+};
+
 export const getContentLeaseAreaItem = (area: Object) => {
   return {
     id: get(area, 'id'),
@@ -118,6 +144,8 @@ export const getContentLeaseAreaItem = (area: Object) => {
     location: get(area, 'location'),
     plots_current: getContentPlots(get(area, 'plots'), false),
     plots_contract: getContentPlots(get(area, 'plots'), true),
+    plan_units_current: getContentPlanUnits(get(area, 'plan_units'), false),
+    plan_units_contract: getContentPlanUnits(get(area, 'plan_units'), true),
   };
 };
 

@@ -3,16 +3,18 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import capitalize from 'lodash/capitalize';
 
-import {formatDate, getLabelOfOption} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import MapLink from '$components/content/MapLink';
 
 type Props = {
+  attributes: Object,
   plot: Object,
-  typeOptions: Array<Object>,
 }
 
-const PlotItem = ({plot, typeOptions}: Props) => {
+const PlotItem = ({attributes, plot}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes,
+    'lease_areas.child.children.plots.child.children.type');
   const getFullAddress = (item: Object) => {
     return `${capitalize(item.address)}, ${item.postal_code} ${item.city}`;
   };
