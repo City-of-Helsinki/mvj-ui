@@ -40,8 +40,14 @@ export const getAreasFormTouched: Selector<any, void> = (state: Object): Object 
 export const getAreasFormValues: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.lease-area-form.values');
 
-export const getLeaseInfoErrors: Selector<any, void> = (state: Object): Object =>
-  get(state, 'form.lease-info-edit-form.syncErrors');
+export const getLeaseInfoFormErrors: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.lease-info-form.syncErrors');
+
+export const getLeaseInfoFormTouched: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.lease-info-form.anyTouched');
+
+export const getLeaseInfoFormValues: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.lease-info-form.values');
 
 export const getSummaryFormErrors: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.summary-form.syncErrors');

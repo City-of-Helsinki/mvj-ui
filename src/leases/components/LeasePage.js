@@ -22,7 +22,9 @@ import {
   getCurrentLease,
   getIsEditMode,
   getIsFetching,
-  getLeaseInfoErrors,
+  getLeaseInfoFormErrors,
+  getLeaseInfoFormTouched,
+  getLeaseInfoFormValues,
   getLessors,
   getSummaryFormErrors,
   getSummaryFormTouched,
@@ -45,7 +47,7 @@ import {
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
-import {displayUIMessage, getAttributeFieldOptions, getLabelOfOption, getLessorOptions} from '$util/helpers';
+import {displayUIMessage, getLabelOfOption, getLessorOptions} from '$util/helpers';
 import {summaryPublicityOptions} from './leaseSections/constants';
 
 import Billing from './leaseSections/billing/Billing';
@@ -100,7 +102,6 @@ type Props = {
   editLease: Function,
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
-  end_date: ?string,
   fetchAttributes: Function,
   fetchLessors: Function,
   fetchSingleLease: Function,
@@ -109,8 +110,9 @@ type Props = {
   inspectionTouched: boolean,
   isEditMode: boolean,
   isFetching: boolean,
-  leaseInfoErrors: Object,
-  leaseInfoTouched: boolean,
+  leaseInfoFormErrors: Object,
+  leaseInfoFormTouched: boolean,
+  leaseInfoFormValues: Object,
   lessors: Array<Object>,
   location: Object,
   params: Object,
@@ -122,8 +124,6 @@ type Props = {
   rulesForm: Array<Object>,
   rulesTouched: boolean,
   showEditMode: Function,
-  start_date: ?string,
-  state: string,
   summaryFormErrors: Object,
   summaryFormTouched: boolean,
   summaryFormValues: Object,
@@ -234,26 +234,25 @@ class PreparerForm extends Component {
   save = () => {
     const {
       areasFormValues,
+      leaseInfoFormValues,
       summaryFormValues,
+
       contractsForm,
       currentLease,
       // eligibilityForm,
-      end_date,
       hideEditMode,
       inspectionsForm,
       patchLease,
       rentsForm,
       rulesForm,
-      start_date,
-      state,
-
       tenantsForm,
     } = this.props;
 
     let payload: Object = {id: currentLease.id};
-    payload.state = state;
-    payload.start_date = start_date;
-    payload.end_date = end_date;
+
+    if(leaseInfoFormValues !== undefined) {
+      payload = contentHelpers.addLeaseInfoFormValues(payload, leaseInfoFormValues);
+    }
 
     if(summaryFormValues !== undefined) {
       payload = contentHelpers.addSummaryFormValues(payload, summaryFormValues);
@@ -304,12 +303,12 @@ class PreparerForm extends Component {
   destroyAllForms = () => {
     const {dispatch} = this.props;
     dispatch(destroy('lease-area-form'));
+    dispatch(destroy('lease-info-form'));
     dispatch(destroy('summary-form'));
 
     dispatch(destroy('billing-edit-form'));
     dispatch(destroy('contract-edit-form'));
     dispatch(destroy('inspection-edit-form'));
-    dispatch(destroy('lease-info-edit-form'));
     dispatch(destroy('rent-edit-form'));
     dispatch(destroy('rule-edit-form'));
     dispatch(destroy('tenant-edit-form'));
@@ -318,12 +317,12 @@ class PreparerForm extends Component {
   resetAllForms = () => {
     const {dispatch} = this.props;
     dispatch(reset('lease-area-form'));
+    dispatch(reset('lease-info-form'));
     dispatch(reset('summary-form'));
 
     dispatch(reset('billing-edit-form'));
     dispatch(reset('contract-edit-form'));
     dispatch(reset('inspection-edit-form'));
-    dispatch(reset('lease-info-edit-form'));
     dispatch(reset('rent-edit-form'));
     dispatch(reset('rule-edit-form'));
     dispatch(reset('tenant-edit-form'));
@@ -332,11 +331,11 @@ class PreparerForm extends Component {
   validateForms = () => {
     const {
       areasFormErrors,
-      leaseInfoErrors,
+      leaseInfoFormErrors,
       summaryFormErrors,
     } = this.props;
     return (areasFormErrors ||
-      leaseInfoErrors ||
+      leaseInfoFormErrors ||
       summaryFormErrors) ? false : true;
   }
 
@@ -415,22 +414,24 @@ class PreparerForm extends Component {
   isAnyFormTouched = () => {
     const {
       areasFormTouched,
+      leaseInfoFormTouched,
       summaryFormTouched,
+
       contractsTouched,
       eligibilityTouched,
       inspectionTouched,
-      leaseInfoTouched,
       rentsTouched,
       rulesTouched,
       tenantsTouched,
     } = this.props;
 
     return areasFormTouched ||
+      leaseInfoFormTouched ||
       summaryFormTouched ||
+
       contractsTouched ||
       eligibilityTouched ||
       inspectionTouched ||
-      leaseInfoTouched ||
       rentsTouched ||
       rulesTouched ||
       tenantsTouched;
@@ -466,11 +467,10 @@ class PreparerForm extends Component {
     const sortedComments = this.sortComments(comments);
     const currentComments = this.getCurrentComments(sortedComments);
     const isAnyFormTouched = this.isAnyFormTouched();
-    const leaseIdentifier = contentHelpers.getContentLeaseIdentifier(currentLease);
 
-    const stateOptions = getAttributeFieldOptions(attributes, 'state');
     const lessorOptions = getLessorOptions(lessors);
 
+    const leaseInfo = contentHelpers.getContentLeaseInfo(currentLease);
     const summary = contentHelpers.getContentSummary(currentLease);
     const areas = contentHelpers.getContentLeaseAreas(currentLease);
 
@@ -532,19 +532,17 @@ class PreparerForm extends Component {
           infoComponent={isEditMode
             ? (
               <LeaseInfoEdit
-                identifier={leaseIdentifier}
+                attributes={attributes}
                 initialValues={{
-                  state: currentLease.state,
-                  start_date: currentLease.start_date,
-                  end_date: currentLease.end_date,
+                  state: leaseInfo.state,
+                  start_date: leaseInfo.start_date,
+                  end_date: leaseInfo.end_date,
                 }}
-                stateOptions={stateOptions}
+                leaseInfo={leaseInfo}
               />
             ) : (
               <LeaseInfo
-                identifier={leaseIdentifier}
-                startDate={currentLease.start_date}
-                endDate={currentLease.end_date}
+                leaseInfo={leaseInfo}
               />
             )
           }
@@ -697,7 +695,6 @@ class PreparerForm extends Component {
 const contractFormSelector = formValueSelector('contract-edit-form');
 const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const inspectionFormSelector = formValueSelector('inspection-edit-form');
-const leaseInfoFormSelector = formValueSelector('lease-info-edit-form');
 const rentFormSelector = formValueSelector('rent-edit-form');
 const ruleFormSelector = formValueSelector('rule-edit-form');
 const tenantFormSelector = formValueSelector('tenant-edit-form');
@@ -714,7 +711,6 @@ export default flowRight(
         areasFormErrors: getAreasFormErrors(state),
         areasFormTouched: getAreasFormTouched(state),
         areasFormValues: getAreasFormValues(state),
-        areasTouched: get(state, 'form.lease-area-form.anyTouched'),
         attributes: getAttributes(state),
         billing: getBilling(state),
         comments: getComments(state),
@@ -723,20 +719,18 @@ export default flowRight(
         currentLease: getCurrentLease(state),
         eligibilityForm: eligibilityFormSelector(state, 'areas'),
         eligibilityTouched: get(state, 'form.eligibility-edit-form.anyTouched'),
-        end_date: leaseInfoFormSelector(state, 'end_date'),
         isEditMode: getIsEditMode(state),
         inspectionsForm: inspectionFormSelector(state, 'inspections'),
         inspectionTouched: get(state, 'form.inspection-edit-form.anyTouched'),
         isFetching: getIsFetching(state),
-        leaseInfoErrors: getLeaseInfoErrors(state),
-        leaseInfoTouched: get(state, 'form.lease-info-edit-form.anyTouched'),
+        leaseInfoFormErrors: getLeaseInfoFormErrors(state),
+        leaseInfoFormTouched: getLeaseInfoFormTouched(state),
+        leaseInfoFormValues: getLeaseInfoFormValues(state),
         lessors: getLessors(state),
         rentsForm: rentFormSelector(state, 'rents'),
         rentsTouched: get(state, 'form.rent-edit-form.anyTouched'),
         rulesForm: ruleFormSelector(state, 'rules'),
         rulesTouched: get(state, 'form.rule-edit-form.anyTouched'),
-        start_date: leaseInfoFormSelector(state, 'start_date'),
-        state: leaseInfoFormSelector(state, 'state'),
         summaryFormErrors: getSummaryFormErrors(state),
         summaryFormTouched: getSummaryFormTouched(state),
         summaryFormValues: getSummaryFormValues(state),

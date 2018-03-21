@@ -48,6 +48,15 @@ export const getContentLeaseAddress = (item:Object) => {
   return address;
 };
 
+export const getContentLeaseInfo = (lease: Object) => {
+  return {
+    identifier: getContentLeaseIdentifier(lease),
+    end_date: get(lease, 'end_date'),
+    start_date: get(lease, 'start_date'),
+    state: get(lease, 'state'),
+  };
+};
+
 export const getContentHistory = (lease: Object) => {
   const historyItems = get(lease, 'history', []);
   if(!historyItems || historyItems.length === 0) {
@@ -803,6 +812,13 @@ export const formatBillingBillDb = (bill: Object) => {
     type: get(bill, 'type'),
     unpaid_amount: formatDecimalNumberDb(get(bill, 'unpaid_amount')),
   };
+};
+
+export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {
+  payload.state = get(leaseInfo, 'state');
+  payload.start_date = get(leaseInfo, 'start_date');
+  payload.end_date = get(leaseInfo, 'end_date');
+  return payload;
 };
 
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
