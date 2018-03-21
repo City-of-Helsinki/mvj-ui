@@ -175,7 +175,6 @@ type Props = {
   areas: Array<Object>,
   attributes: Object,
   handleSubmit: Function,
-  dispatch: Function,
 }
 
 class LeaseAreasEdit extends Component {
