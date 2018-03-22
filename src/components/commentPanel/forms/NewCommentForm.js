@@ -18,7 +18,7 @@ type Props = {
   handleSubmit: Function,
   onAddComment: Function,
   text: string,
-  type: string,
+  topic: string,
   valid: boolean,
 }
 
@@ -27,10 +27,11 @@ const NewCommentForm = ({
   handleSubmit,
   onAddComment,
   text,
-  type,
+  topic,
   valid,
 }: Props) => {
   const topicOptions = getAttributeFieldOptions(attributes, 'topic');
+
   return (
     <form onSubmit={handleSubmit}>
       <FormSection>
@@ -38,7 +39,7 @@ const NewCommentForm = ({
           component={FieldTypeSelect}
           disableDirty
           label='Aihealue'
-          name='type'
+          name='topic'
           options={topicOptions}
           validate={[
             (value) => required(value, 'Aihealue on pakollinen'),
@@ -56,7 +57,7 @@ const NewCommentForm = ({
         <AddButton
           disabled={!valid}
           label='Lisää kommentti'
-          onClick={() => onAddComment(text, type)}
+          onClick={() => onAddComment(text, topic)}
           title='Lisää kommentti'
         />
       </FormSection>
@@ -70,7 +71,7 @@ const selector = formValueSelector(formName);
 const mapStateToProps = (state: RootState) => {
   return {
     text: selector(state, 'text'),
-    type: selector(state, 'type'),
+    topic: selector(state, 'topic'),
   };
 };
 

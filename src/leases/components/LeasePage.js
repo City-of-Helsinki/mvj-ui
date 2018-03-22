@@ -31,7 +31,6 @@ import {
 } from '../selectors';
 import {
   clearFormValidFlags,
-  editLease,
   fetchAttributes,
   fetchComments,
   fetchLessors,
@@ -98,7 +97,6 @@ type Props = {
   contractsTouched: boolean,
   currentLease: Object,
   dispatch: Function,
-  editLease: Function,
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
   fetchAttributes: Function,
@@ -629,7 +627,6 @@ class PreparerForm extends Component {
               <EditableMap/>
             </ContentContainer>
           </TabPane>
-
         </TabContent>
       </PageContainer>
     );
@@ -685,7 +682,6 @@ export default flowRight(
     },
     {
       clearFormValidFlags,
-      editLease,
       fetchAttributes,
       fetchComments,
       fetchLessors,
