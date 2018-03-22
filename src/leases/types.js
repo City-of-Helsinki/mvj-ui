@@ -43,15 +43,19 @@ export type LeaseNotFoundAction = Action<'mvj/leases/NOT_FOUND', void>;
 export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;
 
+export type FetchCommentsAction = Action<'mvj/leases/FETCH_COMMENTS', LeaseId>;
+export type ReceiveCommentsAction = Action<'mvj/leases/RECEIVE_COMMENTS', Array<Comment>>;
+export type FetchCommentAttributesAction = Action<'mvj/leases/FETCH_COMMENT_ATTRIBUTES', void>;
+export type ReceiveCommentAttributesAction = Action<'mvj/leases/RECEIVE_COMMENT_ATTRIBUTES', Attributes>;
+
 export type CreateCommentAction = Action<'mvj/leases/CREATE_COMMENT', Comment>;
 export type DeleteCommentAction = Action<'mvj/leases/DELETE_COMMENT', Comment>;
 export type EditCommentAction = Action<'mvj/leases/EDIT_COMMENT', Comment>;
 export type ArchiveCommentAction = Action<'mvj/leases/ARCHIVE_COMMENT', Comment>;
 export type UnarchiveCommentAction = Action<'mvj/leases/UNARCHIVE_COMMENT', Comment>;
-export type ReceiveCommentAction = Action<'mvj/leases/RECEIVE_COMMENT', Comment>;
+export type ReceiveSingleCommentAction = Action<'mvj/leases/RECEIVE_SINGLE_COMMENT', Comment>;
 export type ReceiveEditedCommentAction = Action<'mvj/leases/RECEIVE_EDITED_COMMENT', Comment>;
 export type ReceiveDeletedCommentAction = Action<'mvj/leases/RECEIVE_DELETED_COMMENT', Comment>;
-
 export type ClearFormValidityFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS', void>
 export type ReceiveLeaseInfoFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_INFO_VALID', boolean>;
 export type ReceiveSummaryFormValidAction = Action<'mvj/leases/RECEIVE_SUMMARY_VALID', boolean>;

@@ -38,6 +38,7 @@ import {
   editComment,
   editLease,
   fetchAttributes,
+  fetchComments,
   fetchLessors,
   fetchSingleLease,
   hideEditMode,
@@ -99,7 +100,7 @@ type Props = {
   attributes: Object,
   billing: Object,
   clearFormValidFlags: Function,
-  comments: Array<Object>,
+  commentsStore: Array<Object>,
   contractsForm: Array<Object>,
   contractsTouched: boolean,
   createComment: Function,
@@ -111,6 +112,7 @@ type Props = {
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
   fetchAttributes: Function,
+  fetchComments: Function,
   fetchLessors: Function,
   fetchSingleLease: Function,
   hideEditMode: Function,
@@ -189,6 +191,7 @@ class PreparerForm extends Component {
     const {
       clearFormValidFlags,
       fetchAttributes,
+      fetchComments,
       fetchLessors,
       fetchSingleLease,
       location, params: {leaseId},
@@ -223,6 +226,7 @@ class PreparerForm extends Component {
     });
     receiveBilling(contentHelpers.getContentBilling(lease));
     fetchAttributes();
+    fetchComments(leaseId);
     fetchLessors();
     fetchSingleLease(leaseId);
   }
@@ -383,20 +387,6 @@ class PreparerForm extends Component {
     unarchiveComment(comment);
   }
 
-  sortComments = (comments: Array<Object>) => {
-    if(!comments || !comments.length) {
-      return [];
-    }
-
-    return comments.sort(function(a, b){
-      const keyA = a.date,
-        keyB = b.date;
-      if(moment(keyA).isAfter(moment(keyB))) return -1;
-      if(moment(keyB).isAfter(moment(keyA))) return 1;
-      return 0;
-    });
-  }
-
   getCurrentComments = (comments: Array<Object>) => {
     if(!comments || !comments.length) {return [];}
     return comments.filter((comments) => {return comments.archived !== true;});
@@ -464,7 +454,7 @@ class PreparerForm extends Component {
     const {
       attributes,
       billing,
-      comments,
+      commentsStore,
       currentLease,
       isEditMode,
       isFetching,
@@ -473,8 +463,6 @@ class PreparerForm extends Component {
     } = this.props;
 
     const areFormsValid = this.validateForms();
-    const sortedComments = this.sortComments(comments);
-    const currentComments = this.getCurrentComments(sortedComments);
     const isAnyFormTouched = this.isAnyFormTouched();
 
     const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
@@ -483,6 +471,8 @@ class PreparerForm extends Component {
     const leaseInfo = contentHelpers.getContentLeaseInfo(currentLease);
     const summary = contentHelpers.getContentSummary(currentLease);
     const areas = contentHelpers.getContentLeaseAreas(currentLease);
+    const comments = contentHelpers.getContentComments(commentsStore);
+    const currentComments = this.getCurrentComments(comments);
 
     let sum_areas = 0;
     areas && areas.length > 0 && areas.map((area) =>
@@ -515,7 +505,7 @@ class PreparerForm extends Component {
           title='Peruuta muutokset'
         />
         <CommentPanel
-          comments={sortedComments}
+          comments={comments}
           isOpen={isCommentPanelOpen}
           onAddComment={(text, type) => this.addComment(text, type)}
           onArchive={(comment) => this.archiveComment(comment)}
@@ -722,7 +712,7 @@ export default flowRight(
         areasFormValues: getAreasFormValues(state),
         attributes: getAttributes(state),
         billing: getBilling(state),
-        comments: getComments(state),
+        commentsStore: getComments(state),
         contractsForm: contractFormSelector(state, 'contracts'),
         contractsTouched: get(state, 'form.contract-edit-form.anyTouched'),
         currentLease: getCurrentLease(state),
@@ -757,6 +747,7 @@ export default flowRight(
       editComment,
       editLease,
       fetchAttributes,
+      fetchComments,
       fetchLessors,
       fetchSingleLease,
       hideEditMode,

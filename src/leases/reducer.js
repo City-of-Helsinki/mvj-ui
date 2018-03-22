@@ -5,16 +5,19 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {
   Attributes,
+  Comment,
   Lease,
   LeasesList,
   Lessors,
   ReceiveAttributesAction,
   ReceiveLeasesAction,
-  ReceiveLessorsAction,
   ReceiveSingleLeaseAction,
-  ReceiveCommentAction,
-  ReceiveDeletedCommentAction,
-  ReceiveEditedCommentAction,
+  ReceiveLessorsAction,
+  ReceiveCommentsAction,
+  ReceiveCommentAttributesAction,
+  // ReceiveSingleCommentAction,
+  // ReceiveDeletedCommentAction,
+  // ReceiveEditedCommentAction,
   ReceiveLeaseInfoFormValidAction,
   ReceiveSummaryFormValidAction,
   ReceiveLeaseAreasFormValidAction,
@@ -56,29 +59,45 @@ const leasesListReducer: Reducer<LeasesList> = handleActions({
   },
 }, []);
 
+const commentsReducer: Reducer<Array<Comment>> = handleActions({
+  ['mvj/leases/RECEIVE_COMMENTS']: (state: Array<Comment>, {payload: comments}: ReceiveCommentsAction) => {
+    return comments;
+  },
+  // },
+  // ['mvj/leases/RECEIVE_SINGLE_COMMENT']: (state: Lease, {payload: comment}: ReceiveSingleCommentAction) => {
+  //   const newState = {...state};
+  //   const comments = [...state.comments, comment];
+  //   newState.comments = comments;
+  //   return newState;
+  // },
+  // ['mvj/leases/RECEIVE_DELETED_COMMENT']: (state: Lease, {payload: comment}: ReceiveDeletedCommentAction) => {
+  //   const newState = {...state};
+  //   const comments = state.comments;
+  //   const index = comments.findIndex((item) => item.id === comment.id);
+  //   comments.splice(index, 1);
+  //   newState.comments = comments;
+  //   return newState;
+  // },
+  // ['mvj/leases/RECEIVE_EDITED_COMMENT']: (state: Lease, {payload: comment}: ReceiveEditedCommentAction) => {
+  //   const newState = {...state};
+  //   const comments = state.comments;
+  //   const index = comments.findIndex((item) => item.id === comment.id);
+  //   comments[index] = comment;
+  //   newState.comments = comments;
+  //   return newState;
+  // },
+  // ['mvj/leases/RECEIVE_SINGLE']: (state: Lease, {payload: lease}: ReceiveSingleLeaseAction) => {
+  //   return lease;
+  // },
+}, []);
+
+const commentAttributesReducer: Reducer<Attributes> = handleActions({
+  ['mvj/leases/RECEIVE_COMMENT_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveCommentAttributesAction) => {
+    return attributes;
+  },
+}, {});
+
 const currentLeaseReducer: Reducer<Lease> = handleActions({
-  ['mvj/leases/RECEIVE_COMMENT']: (state: Lease, {payload: comment}: ReceiveCommentAction) => {
-    const newState = {...state};
-    const comments = [...state.comments, comment];
-    newState.comments = comments;
-    return newState;
-  },
-  ['mvj/leases/RECEIVE_DELETED_COMMENT']: (state: Lease, {payload: comment}: ReceiveDeletedCommentAction) => {
-    const newState = {...state};
-    const comments = state.comments;
-    const index = comments.findIndex((item) => item.id === comment.id);
-    comments.splice(index, 1);
-    newState.comments = comments;
-    return newState;
-  },
-  ['mvj/leases/RECEIVE_EDITED_COMMENT']: (state: Lease, {payload: comment}: ReceiveEditedCommentAction) => {
-    const newState = {...state};
-    const comments = state.comments;
-    const index = comments.findIndex((item) => item.id === comment.id);
-    comments[index] = comment;
-    newState.comments = comments;
-    return newState;
-  },
   ['mvj/leases/RECEIVE_SINGLE']: (state: Lease, {payload: lease}: ReceiveSingleLeaseAction) => {
     return lease;
   },
@@ -107,6 +126,8 @@ const leaseAreasValidReducer: Reducer<boolean> = handleActions({
 
 export default combineReducers({
   attributes: attributesReducer,
+  comments: commentsReducer,
+  commentAttributes: commentAttributesReducer,
   current: currentLeaseReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,

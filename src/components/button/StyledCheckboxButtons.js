@@ -32,7 +32,7 @@ class StyledCheckboxButtons extends Component {
 
     let allSelected = true;
     forEach(options, (option) => {
-      if(value.indexOf(option.value) === -1) {
+      if(value.toString().indexOf(option.value.toString()) === -1) {
         allSelected = false;
         return;
       }
@@ -49,7 +49,7 @@ class StyledCheckboxButtons extends Component {
     const {onChange, options} = this.props;
     const newValues = [];
     forEach(options, (option) => {
-      newValues.push(option.value);
+      newValues.push(option.value.toString());
     });
 
     onChange(newValues);
@@ -83,7 +83,7 @@ class StyledCheckboxButtons extends Component {
             <label className='label' key={index}>
               <input
                 className='checkbox'
-                checked={value.indexOf(option.value) !== -1}
+                checked={value.toString().indexOf(option.value.toString()) !== -1}
                 name={checkboxName}
                 onChange={this.handleChange}
                 type='checkbox'

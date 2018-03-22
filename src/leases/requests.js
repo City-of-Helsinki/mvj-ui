@@ -9,6 +9,14 @@ export const fetchAttributes = () => {
   return callApi(new Request(createUrl('lease/'), {method: 'OPTIONS'}));
 };
 
+export const fetchComments = (id: LeaseId) => {
+  return callApi(new Request(createUrl(`comment/?lease=${id}&limit=1000`)));
+};
+
+export const fetchCommentAttributes = () => {
+  return callApi(new Request(createUrl('comment/'), {method: 'OPTIONS'}));
+};
+
 export const fetchLessors = () => {
   return callApi(new Request(createUrl('contact/?is_lessor=true')));
 };

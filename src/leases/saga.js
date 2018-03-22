@@ -8,6 +8,8 @@ import {displayUIMessage} from '$util/helpers';
 import mockData from './mock-data.json';
 
 import {
+  receiveComments,
+  receiveCommentAttributes,
   receiveLeases,
   receiveLessors,
   receiveSingleLease,
@@ -21,6 +23,8 @@ import {
 import {getRouteById} from '../root/routes';
 
 import {
+  fetchComments,
+  fetchCommentAttributes,
   fetchLeases,
   fetchLessors,
   fetchSingleLease,
@@ -65,7 +69,7 @@ function* fetchLessorsSaga(): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch LESSORS with error "%s"', error);
+    console.error('Failed to fetch lessors with error "%s"', error);
     yield put(receiveError(error));
   }
 }
@@ -192,6 +196,44 @@ function* patchLeaseSaga({payload: lease}): Generator<> {
   }
 }
 
+function* fetchCommentsSaga({payload: id}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield yield call(fetchComments, id);
+    const comments = bodyAsJson.results;
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveComments(comments));
+        break;
+      case 404:
+      case 500:
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch comments with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchCommentAttributesSaga(): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchCommentAttributes);
+    const attributes = bodyAsJson.fields;
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveCommentAttributes(attributes));
+        break;
+      case 404:
+      case 500:
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch identifiers with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
 let newId = 100;
 function* createCommentSaga({payload: comment}): Generator<> {
   comment.id = newId++;
@@ -229,6 +271,8 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/EDIT', editLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
+      yield takeLatest('mvj/leases/FETCH_COMMENTS', fetchCommentsSaga);
+      yield takeLatest('mvj/leases/FETCH_COMMENT_ATTRIBUTES', fetchCommentAttributesSaga);
       yield takeLatest('mvj/leases/CREATE_COMMENT', createCommentSaga);
       yield takeLatest('mvj/leases/DELETE_COMMENT', deleteCommentSaga);
       yield takeLatest('mvj/leases/EDIT_COMMENT', editCommentSaga);
