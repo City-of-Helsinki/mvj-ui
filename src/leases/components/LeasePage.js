@@ -168,8 +168,6 @@ class PreparerForm extends Component {
     inspections: [],
   }
 
-  commentPanel: any
-
   static contextTypes = {
     router: PropTypes.object,
   };
@@ -455,7 +453,6 @@ class PreparerForm extends Component {
           dispatch={dispatch}
           isOpen={isCommentPanelOpen}
           onClose={this.toggleCommentPanel}
-          ref={(input) => {this.commentPanel = input;}}
         />
         <ControlButtonBar
           buttonComponent={

@@ -91,7 +91,7 @@ class CommentPanel extends Component {
 
   resetNewCommentField = () => {
     const {dispatch} = this.props;
-    dispatch(initialize('new-comment-form', {text: '', type: ''}));
+    dispatch(initialize('new-comment-form', {text: '', topic: ''}));
   }
 
   handleFilterChange = (value: Array<string>) => {
@@ -195,7 +195,5 @@ export default flowRight(
       editComment,
       fetchCommentAttributes,
     },
-    null,
-    {withRef: true}
   ),
 )(CommentPanel);
