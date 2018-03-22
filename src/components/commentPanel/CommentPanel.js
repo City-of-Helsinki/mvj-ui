@@ -110,7 +110,6 @@ class CommentPanel extends Component {
     const {selectedTopics} = this.state;
 
     const filteredComments = this.getFilteredComments(comments);
-    console.log(filteredComments);
 
     return (
       <div className={classNames('comment-panel', {'is-panel-open': isOpen}) }>

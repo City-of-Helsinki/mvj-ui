@@ -86,8 +86,6 @@ function* fetchLeasesSaga({payload: search}): Generator<> {
         yield put(notFound());
         break;
     }
-
-    // yield put(receiveLeases(mockData.leases));
   } catch (error) {
     console.error('Failed to fetch leases with error "%s"', error);
     yield put(notFound());
@@ -208,13 +206,6 @@ function* fetchCommentAttributesSaga(): Generator<> {
     yield put(receiveError(error));
   }
 }
-
-// let newId = 100;
-// function* createCommentSaga({payload: comment}): Generator<> {
-//   comment.id = newId++;
-//   yield put(receiveComment(comment)),
-//   displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
-// }
 
 function* createCommentSaga({payload: comment}): Generator<> {
   try {
