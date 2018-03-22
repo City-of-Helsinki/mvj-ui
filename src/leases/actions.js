@@ -34,12 +34,8 @@ import type {
   FetchCommentAttributesAction,
   ReceiveCommentAttributesAction,
   CreateCommentAction,
-  DeleteCommentAction,
+  ReceiveCreatedCommentAction,
   EditCommentAction,
-  ArchiveCommentAction,
-  UnarchiveCommentAction,
-  ReceiveSingleCommentAction,
-  ReceiveDeletedCommentAction,
   ReceiveEditedCommentAction,
   ClearFormValidityFlagsAction,
   ReceiveLeaseInfoFormValidAction,
@@ -116,23 +112,11 @@ export const receiveCommentAttributes = (identifiers: Attributes): ReceiveCommen
 export const createComment = (comment: Comment): CreateCommentAction =>
   createAction('mvj/leases/CREATE_COMMENT')(comment);
 
-export const deleteComment = (comment: Comment): DeleteCommentAction =>
-  createAction('mvj/leases/DELETE_COMMENT')(comment);
+export const receiveCreatedComment = (comment: Comment): ReceiveCreatedCommentAction =>
+  createAction('mvj/leases/RECEIVE_CREATED_COMMENT')(comment);
 
 export const editComment = (comment: Comment): EditCommentAction =>
   createAction('mvj/leases/EDIT_COMMENT')(comment);
-
-export const archiveComment = (comment: Comment): ArchiveCommentAction =>
-  createAction('mvj/leases/ARCHIVE_COMMENT')(comment);
-
-export const unarchiveComment = (comment: Comment): UnarchiveCommentAction =>
-  createAction('mvj/leases/UNARCHIVE_COMMENT')(comment);
-
-export const receiveComment = (comment: Comment): ReceiveSingleCommentAction =>
-  createAction('mvj/leases/RECEIVE_SINGLE_COMMENT')(comment);
-
-export const receiveDeletedComment = (comment: Comment): ReceiveDeletedCommentAction =>
-  createAction('mvj/leases/RECEIVE_DELETED_COMMENT')(comment);
 
 export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentAction =>
   createAction('mvj/leases/RECEIVE_EDITED_COMMENT')(comment);

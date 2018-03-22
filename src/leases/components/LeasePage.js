@@ -8,7 +8,6 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
-import moment from 'moment';
 
 import {getLoggedInUser} from '$src/auth/selectors';
 import {receiveBilling} from './leaseSections/billing/actions';
@@ -31,11 +30,7 @@ import {
   getSummaryFormValues,
 } from '../selectors';
 import {
-  archiveComment,
   clearFormValidFlags,
-  createComment,
-  deleteComment,
-  editComment,
   editLease,
   fetchAttributes,
   fetchComments,
@@ -47,7 +42,6 @@ import {
   receiveLeaseInfoFormValid,
   receiveSummaryFormValid,
   showEditMode,
-  unarchiveComment,
 } from '../actions';
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
@@ -94,7 +88,6 @@ import ConstructionEligibilityEdit from './leaseSections/constructionEligibility
 import mockData from '../mock-data.json';
 
 type Props = {
-  archiveComment: Function,
   areasFormTouched: boolean,
   areasFormValues: Object,
   attributes: Object,
@@ -103,11 +96,8 @@ type Props = {
   commentsStore: Array<Object>,
   contractsForm: Array<Object>,
   contractsTouched: boolean,
-  createComment: Function,
   currentLease: Object,
-  deleteComment: Function,
   dispatch: Function,
-  editComment: Function,
   editLease: Function,
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
@@ -144,7 +134,6 @@ type Props = {
   tenantsForm: Array<Object>,
   tenantsTouched: boolean,
   user: Object,
-  unarchiveComment: Function,
 }
 
 type State = {
@@ -351,47 +340,6 @@ class PreparerForm extends Component {
       isSummaryValid;
   }
 
-  addComment = (text: string, type: string) => {
-    const {createComment, user} = this.props;
-    const comment = {
-      archived: false,
-      date: moment().format('YYYY-MM-DD'),
-      text: text,
-      type: type,
-      user: get(user, 'profile.name'),
-    };
-    createComment(comment);
-    this.commentPanel.getWrappedInstance().resetNewCommentField();
-  }
-
-  archiveComment = (comment: Object) => {
-    const {archiveComment} = this.props;
-    comment.archived = true;
-    archiveComment(comment);
-  }
-
-  deleteComment = (comment: Object) => {
-    const {deleteComment} = this.props;
-    deleteComment(comment);
-  }
-
-  editComment = (comment: Object, newText: string) => {
-    const {editComment} = this.props;
-    comment.text = newText;
-    editComment(comment);
-  }
-
-  unarchiveComment = (comment: Object) => {
-    const {unarchiveComment} = this.props;
-    comment.archived = false;
-    unarchiveComment(comment);
-  }
-
-  getCurrentComments = (comments: Array<Object>) => {
-    if(!comments || !comments.length) {return [];}
-    return comments.filter((comments) => {return comments.archived !== true;});
-  }
-
   handleTabClick = (tabId) => {
     const {router} = this.context;
     const {location} = this.props;
@@ -456,6 +404,7 @@ class PreparerForm extends Component {
       billing,
       commentsStore,
       currentLease,
+      dispatch,
       isEditMode,
       isFetching,
       lessors,
@@ -472,7 +421,6 @@ class PreparerForm extends Component {
     const summary = contentHelpers.getContentSummary(currentLease);
     const areas = contentHelpers.getContentLeaseAreas(currentLease);
     const comments = contentHelpers.getContentComments(commentsStore);
-    const currentComments = this.getCurrentComments(comments);
 
     let sum_areas = 0;
     areas && areas.length > 0 && areas.map((area) =>
@@ -506,19 +454,15 @@ class PreparerForm extends Component {
         />
         <CommentPanel
           comments={comments}
+          dispatch={dispatch}
           isOpen={isCommentPanelOpen}
-          onAddComment={(text, type) => this.addComment(text, type)}
-          onArchive={(comment) => this.archiveComment(comment)}
           onClose={this.toggleCommentPanel}
-          onDelete={(comment) => this.deleteComment(comment)}
-          onEdit={(comment, newText) => this.editComment(comment, newText)}
-          onUnarchive={(comment) => this.unarchiveComment(comment)}
           ref={(input) => {this.commentPanel = input;}}
         />
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              commentAmount={currentComments ? currentComments.length : 0}
+              commentAmount={comments ? comments.length : 0}
               isCancelDisabled={activeTab.toString() === '6'}
               isEditDisabled={activeTab.toString() === '6'}
               isEditMode={isEditMode}
@@ -740,11 +684,7 @@ export default flowRight(
       };
     },
     {
-      archiveComment,
       clearFormValidFlags,
-      createComment,
-      deleteComment,
-      editComment,
       editLease,
       fetchAttributes,
       fetchComments,
@@ -758,7 +698,6 @@ export default flowRight(
       receiveSummaryFormValid,
       receiveTopNavigationSettings,
       showEditMode,
-      unarchiveComment,
     }
   ),
 )(PreparerForm);

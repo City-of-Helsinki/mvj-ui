@@ -1,22 +1,18 @@
 import React, {Component} from 'react';
 import classNames from 'classnames';
-import ReactDOM from 'react-dom';
-import lineHeight from 'line-height';
+
+const MAX_CHARS = 130;
 
 type Props = {
   className: String,
-  children: Object,
+  maxChars?: number,
   open: Boolean,
-  onReadMoreClick: Function,
-  lines: Number,
-  preserveSpace: Boolean,
+  text: string,
 };
 
 type State = {
   open: boolean,
   overflows: boolean,
-  bodyStyle: ?any,
-  lineHeight: ?any,
 }
 
 class ShowMore extends Component {
@@ -25,46 +21,28 @@ class ShowMore extends Component {
   state: State = {
     open: this.props.open || false,
     overflows: false,
-    bodyStyle: null,
-    lineHeight: null,
   }
-
-  static defaultProps = {
-    lines: 2,
-    preserveSpace: false,
-    onReadMoreClick: () => {},
-  };
 
   componentDidMount() {
     this.checkOverflow();
-    this.calculateBodyStyle();
-    window.addEventListener('resize', this.onResize);
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.onResize);
+  componentWillReceiveProps(nextProps) {
+    this.checkOverflow(nextProps.text);
   }
 
-  onResize = () => {
-    this.checkOverflow();
-    this.calculateBodyStyle();
-  };
-
-  checkOverflow = () => {
-    if (this.state.open) {
-      return true;
+  checkOverflow = (textOverFlow) => {
+    const {maxChars, text} = this.props;
+    const t = textOverFlow || text;
+    if(t.length > (maxChars || MAX_CHARS)) {
+      this.setState({
+        overflows: true,
+      });
+    } else {
+      this.setState({
+        overflows: false,
+      });
     }
-
-    const innerEl = ReactDOM.findDOMNode(this.bodyInner);
-
-    if (!innerEl) {
-      return;
-    }
-
-    const lh = lineHeight(innerEl);
-    this.setState({
-      overflows: innerEl.offsetHeight > (lh * this.props.lines),
-    });
   };
 
   getLinkText = () => {
@@ -72,66 +50,40 @@ class ShowMore extends Component {
   };
 
   onReadMoreClick = () => {
-    this.props.onReadMoreClick(!this.state.open);
     this.setState({
       open: !this.state.open,
     });
+    this.checkOverflow();
   };
 
-  calculateBodyStyle = () => {
+  getTextToDisplay = () => {
+    const {maxChars, text} = this.props;
     if (this.state.open) {
-      return null;
+      return text;
     }
-
-    const outerEl = ReactDOM.findDOMNode(this.body),
-      innerEl = ReactDOM.findDOMNode(this.bodyInner);
-
-    if (!outerEl || !innerEl) {
-      return null;
+    if(text.length > (maxChars || MAX_CHARS)) {
+      return `${this.props.text.substring(0, (maxChars || MAX_CHARS))}...`;
+    } else {
+      return text;
     }
-
-    const lh = lineHeight(innerEl),
-      height = this.props.lines * lh,
-      style = {
-        maxHeight: height,
-      };
-
-    if (this.props.preserveSpace) {
-      style.minHeight = height;
-    }
-
-    this.setState({
-      lineHeight: lh,
-      bodyStyle: style,
-    });
-  };
+  }
 
   render() {
-    const {className, children} = this.props,
-      {open, overflows, bodyStyle, lineHeight} = this.state;
+    const {className} = this.props,
+      {overflows} = this.state;
 
     return (
-      <div className={classNames(
-        'show-more', className, {
-          'show-more--open': open,
-          'show-more--overflows': overflows,
-        })}>
-        <div className="show-more__body"
-          ref={(c) => {this.body = c;}}
-          style={!open ? bodyStyle : null}>
-          <div className="show-more__body-inner"
-            ref={(c) => {this.bodyInner = c;}}>
-            {children}
-          </div>
-          <span className="show-more__line-end"
-            style={lineHeight ? {height: lineHeight} : null}/>
-        </div>
-        {overflows &&
-          <a className={classNames('show-more__read-more')}
-            onClick={this.onReadMoreClick}>
-            {this.getLinkText()}
-          </a>
-        }
+      <div className={classNames('show-more', className)}>
+        <p>
+          <span className='show-more__text'>{this.getTextToDisplay()}&nbsp;</span>
+          {overflows &&
+            <a className={classNames('show-more__read-more')}
+              onClick={this.onReadMoreClick}>
+
+              {this.getLinkText()}
+            </a>
+          }
+        </p>
       </div>
     );
   }

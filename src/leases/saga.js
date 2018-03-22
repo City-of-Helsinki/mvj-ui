@@ -8,30 +8,30 @@ import {displayUIMessage} from '$util/helpers';
 import mockData from './mock-data.json';
 
 import {
-  receiveComments,
   receiveCommentAttributes,
-  receiveLeases,
-  receiveLessors,
-  receiveSingleLease,
-  notFound,
-  receiveAttributes,
-  receiveComment,
-  receiveDeletedComment,
+  receiveComments,
+  receiveCreatedComment,
   receiveEditedComment,
+  receiveAttributes,
+  receiveLeases,
+  receiveSingleLease,
+  receiveLessors,
+  notFound,
 } from './actions';
 
 import {getRouteById} from '../root/routes';
 
 import {
+  createComment,
+  editComment,
   fetchComments,
   fetchCommentAttributes,
+  fetchAttributes,
   fetchLeases,
-  fetchLessors,
   fetchSingleLease,
   createLease,
-  editLease,
   patchLease,
-  fetchAttributes,
+  fetchLessors,
 } from './requests';
 
 import {receiveError} from '../api/actions';
@@ -146,31 +146,6 @@ function* createLeaseSaga({payload: lease}): Generator<> {
   }
 }
 
-function* editLeaseSaga({payload: lease}): Generator<> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editLease, lease);
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveSingleLease(bodyAsJson));
-        displayUIMessage({title: 'Vuokraus tallennettu', body: 'Vuokraus on tallennettu onnistuneesti'});
-        break;
-      case 400:
-        yield put(notFound());
-        yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to edit lease with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
 function* patchLeaseSaga({payload: lease}): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
@@ -234,31 +209,61 @@ function* fetchCommentAttributesSaga(): Generator<> {
   }
 }
 
-let newId = 100;
-function* createCommentSaga({payload: comment}): Generator<> {
-  comment.id = newId++;
-  yield put(receiveComment(comment)),
-  displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
-}
+// let newId = 100;
+// function* createCommentSaga({payload: comment}): Generator<> {
+//   comment.id = newId++;
+//   yield put(receiveComment(comment)),
+//   displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
+// }
 
-function* deleteCommentSaga({payload: comment}): Generator<> {
-  yield put(receiveDeletedComment(comment)),
-  displayUIMessage({title: 'Kommentti poistettu', body: 'Kommentti on poistettu onnistuneesti'});
+function* createCommentSaga({payload: comment}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createComment, comment);
+
+    switch (statusCode) {
+      case 201:
+        yield put(receiveCreatedComment(bodyAsJson));
+        displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
 }
 
 function* editCommentSaga({payload: comment}): Generator<> {
-  yield put(receiveEditedComment(comment)),
-  displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
-}
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editComment, comment);
 
-function* archiveCommentSaga({payload: comment}): Generator<> {
-  yield put(receiveEditedComment(comment)),
-  displayUIMessage({title: 'Kommentti arkistoitu', body: 'Kommentti on arkistoitu onnistuneesti'});
-}
-
-function* unarchiveCommentSaga({payload: comment}): Generator<> {
-  yield put(receiveEditedComment(comment)),
-  displayUIMessage({title: 'Kommentti palautettu', body: 'Kommentti on palautettu onnistuneesti'});
+    switch (statusCode) {
+      case 200:
+        yield put(receiveEditedComment(bodyAsJson));
+        displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
 }
 
 export default function*(): Generator<> {
@@ -269,15 +274,11 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/FETCH_ALL', fetchLeasesSaga);
       yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
-      yield takeLatest('mvj/leases/EDIT', editLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
       yield takeLatest('mvj/leases/FETCH_COMMENTS', fetchCommentsSaga);
       yield takeLatest('mvj/leases/FETCH_COMMENT_ATTRIBUTES', fetchCommentAttributesSaga);
       yield takeLatest('mvj/leases/CREATE_COMMENT', createCommentSaga);
-      yield takeLatest('mvj/leases/DELETE_COMMENT', deleteCommentSaga);
       yield takeLatest('mvj/leases/EDIT_COMMENT', editCommentSaga);
-      yield takeLatest('mvj/leases/ARCHIVE_COMMENT', archiveCommentSaga);
-      yield takeLatest('mvj/leases/UNARCHIVE_COMMENT', unarchiveCommentSaga);
     }),
   ];
 }

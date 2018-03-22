@@ -191,6 +191,7 @@ export const getContentComments = (content: Array<Object>) => {
       text: get(comment, 'text'),
       topic: get(comment, 'topic.id'),
       user: getContentUser(get(comment, 'user')),
+      lease: get(comment, 'lease'),
     };
   });
 };

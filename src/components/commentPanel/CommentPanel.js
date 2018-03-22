@@ -1,30 +1,34 @@
 //@flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
 import classNames from 'classnames';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
 import NewCommentForm from './forms/NewCommentForm';
 import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
 import {getCommentAttributes} from '$src/leases/selectors';
-import {fetchCommentAttributes} from '$src/leases/actions';
+import {
+  createComment,
+  editComment,
+  fetchCommentAttributes,
+} from '$src/leases/actions';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 
 type Props = {
   attributes: Object,
   comments: Array<Object>,
+  createComment: Function,
   dispatch: Function,
+  editComment: Function,
   fetchCommentAttributes: Function,
   isOpen: boolean,
-  onAddComment: Function,
-  onArchive: Function,
   onClose: Function,
-  onDelete: Function,
-  onEdit: Function,
-  onUnarchive: Function,
+  params: Object,
 }
 
 type State = {
@@ -50,11 +54,6 @@ class CommentPanel extends Component {
     fetchCommentAttributes();
   }
 
-  getCurrentComments = (comments: Array<Object>) => {
-    if(!comments || !comments.length) {return [];}
-    return comments.filter((comment) => {return comment.is_archived !== true;});
-  }
-
   getFilteredComments = (comments: Array<Object>) => {
     const {selectedTopics} = this.state;
     if(!comments || !comments.length) {return [];}
@@ -63,6 +62,31 @@ class CommentPanel extends Component {
     return comments.filter((comment) => {
       return selectedTopics.indexOf(comment.topic.toString()) !== -1;}
     );
+  }
+
+  createComment = (text: string, topic: number) => {
+    const {
+      createComment,
+      params: {leaseId},
+    } = this.props;
+
+    createComment({
+      lease: leaseId,
+      text: text,
+      topic: topic,
+    });
+
+    this.resetNewCommentField();
+  }
+
+  editComment = (comment: Object, newText: string) => {
+    const {editComment} = this.props;
+    editComment({
+      id: get(comment, 'id'),
+      lease: get(comment, 'lease'),
+      text: newText,
+      topic: get(comment, 'topic'),
+    });
   }
 
   resetNewCommentField = () => {
@@ -79,15 +103,14 @@ class CommentPanel extends Component {
       attributes,
       comments,
       isOpen,
-      onAddComment,
       onClose,
-      onEdit,
     } = this.props;
 
     const topicOptions = getAttributeFieldOptions(attributes, 'topic');
     const {selectedTopics} = this.state;
 
     const filteredComments = this.getFilteredComments(comments);
+    console.log(filteredComments);
 
     return (
       <div className={classNames('comment-panel', {'is-panel-open': isOpen}) }>
@@ -104,7 +127,7 @@ class CommentPanel extends Component {
         <div className='comment-panel__content-wrapper'>
           <NewCommentForm
             attributes={attributes}
-            onAddComment={(text, type) => onAddComment(text, type)}
+            onAddComment={(text, type) => this.createComment(text, type)}
           />
 
           <h2>Ajankohtaiset</h2>
@@ -142,7 +165,7 @@ class CommentPanel extends Component {
                           <Comment
                             key={comment.id}
                             date={comment.modified_at}
-                            onEdit={(newText) => onEdit(comment, newText)}
+                            onEdit={(newText) => this.editComment(comment, newText)}
                             text={comment.text}
                             user={comment.user}
                           />
@@ -161,6 +184,7 @@ class CommentPanel extends Component {
 }
 
 export default flowRight(
+  withRouter,
   connect(
     (state) => {
       return {
@@ -168,6 +192,8 @@ export default flowRight(
       };
     },
     {
+      createComment,
+      editComment,
       fetchCommentAttributes,
     },
     null,

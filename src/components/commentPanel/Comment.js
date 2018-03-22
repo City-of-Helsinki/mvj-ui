@@ -66,12 +66,10 @@ class Comment extends Component {
               <p className='comment-info'>
                 <span className='date'>{formatDate(date)}</span>
                 &nbsp;
-                <span>{user.last_name} {user.firstname_name}</span>
+                <span>{user.last_name} {user.first_name}</span>
               </p>
               <div className='comment-text'>
-                <ShowMore>
-                  <div dangerouslySetInnerHTML={{__html: text}}/>
-                </ShowMore>
+                <ShowMore text={text} />
               </div>
             </div>
           </div>

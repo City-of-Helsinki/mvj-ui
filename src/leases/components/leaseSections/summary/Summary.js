@@ -49,11 +49,7 @@ const Summary = ({attributes, lessorOptions, summary}: Props) => {
       <Row>
         <Column>
           <label>Vuokrauksen käyttötarkoitus selite</label>
-          <p>
-            <ShowMore className="background-green">
-              <div dangerouslySetInnerHTML={{__html: summary.intended_use_note || '-'}}/>
-            </ShowMore>
-          </p>
+          <ShowMore text={summary.intended_use_note || '-'} />
         </Column>
       </Row>
 
@@ -94,11 +90,7 @@ const Summary = ({attributes, lessorOptions, summary}: Props) => {
         </Column>
         <Column medium={8}>
           <label>Irtisanomisajan selite</label>
-          <p className='no-margin'>
-            <ShowMore className="background-green">
-              <div dangerouslySetInnerHTML={{__html: summary.notice_note || '-'}}/>
-            </ShowMore>
-          </p>
+          <ShowMore text={summary.notice_note || '-'} />
         </Column>
       </Row>
     </GreenBox>
