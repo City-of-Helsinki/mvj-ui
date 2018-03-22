@@ -29,13 +29,13 @@ import type {
   HideEditModeAction,
   ShowEditModeAction,
   Comment,
+  FetchCommentsAction,
+  ReceiveCommentsAction,
+  FetchCommentAttributesAction,
+  ReceiveCommentAttributesAction,
   CreateCommentAction,
-  DeleteCommentAction,
+  ReceiveCreatedCommentAction,
   EditCommentAction,
-  ArchiveCommentAction,
-  UnarchiveCommentAction,
-  ReceiveCommentAction,
-  ReceiveDeletedCommentAction,
   ReceiveEditedCommentAction,
   ClearFormValidityFlagsAction,
   ReceiveLeaseInfoFormValidAction,
@@ -97,26 +97,26 @@ export const hideEditMode = (): HideEditModeAction =>
 export const showEditMode = (): ShowEditModeAction =>
   createAction('mvj/leases/SHOW_EDIT')();
 
+export const fetchComments = (leaseId: LeaseId): FetchCommentsAction =>
+  createAction('mvj/leases/FETCH_COMMENTS')(leaseId);
+
+export const receiveComments = (comments: Array<Comment>): ReceiveCommentsAction =>
+  createAction('mvj/leases/RECEIVE_COMMENTS')(comments);
+
+export const fetchCommentAttributes = (): FetchCommentAttributesAction =>
+  createAction('mvj/leases/FETCH_COMMENT_ATTRIBUTES')();
+
+export const receiveCommentAttributes = (identifiers: Attributes): ReceiveCommentAttributesAction =>
+  createAction('mvj/leases/RECEIVE_COMMENT_ATTRIBUTES')(identifiers);
+
 export const createComment = (comment: Comment): CreateCommentAction =>
   createAction('mvj/leases/CREATE_COMMENT')(comment);
 
-export const deleteComment = (comment: Comment): DeleteCommentAction =>
-  createAction('mvj/leases/DELETE_COMMENT')(comment);
+export const receiveCreatedComment = (comment: Comment): ReceiveCreatedCommentAction =>
+  createAction('mvj/leases/RECEIVE_CREATED_COMMENT')(comment);
 
 export const editComment = (comment: Comment): EditCommentAction =>
   createAction('mvj/leases/EDIT_COMMENT')(comment);
-
-export const archiveComment = (comment: Comment): ArchiveCommentAction =>
-  createAction('mvj/leases/ARCHIVE_COMMENT')(comment);
-
-export const unarchiveComment = (comment: Comment): UnarchiveCommentAction =>
-  createAction('mvj/leases/UNARCHIVE_COMMENT')(comment);
-
-export const receiveComment = (comment: Comment): ReceiveCommentAction =>
-  createAction('mvj/leases/RECEIVE_COMMENT')(comment);
-
-export const receiveDeletedComment = (comment: Comment): ReceiveDeletedCommentAction =>
-  createAction('mvj/leases/RECEIVE_DELETED_COMMENT')(comment);
 
 export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentAction =>
   createAction('mvj/leases/RECEIVE_EDITED_COMMENT')(comment);

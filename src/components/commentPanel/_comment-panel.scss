@@ -71,6 +71,10 @@
 
       .content-wrapper {
         padding-right: 25px;
+
+        &.no-padding {
+          padding-right: 0;
+        }
       }
 
       .comment-text {

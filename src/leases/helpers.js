@@ -169,6 +169,33 @@ export const getContentLeaseAreas = (lease: Object) => {
   });
 };
 
+export const getContentUser = (userData: Object) => {
+  return {
+    id: get(userData, 'id'),
+    first_name: get(userData, 'first_name'),
+    last_name: get(userData, 'last_name'),
+  };
+};
+
+export const getContentComments = (content: Array<Object>) => {
+  if(!content || !content.length) {
+    return [];
+  }
+
+  return content.map((comment) => {
+    return {
+      id: get(comment, 'id'),
+      created_at: get(comment, 'created_at'),
+      modified_at: get(comment, 'modified_at'),
+      is_archived: get(comment, 'is_archived'),
+      text: get(comment, 'text'),
+      topic: get(comment, 'topic.id'),
+      user: getContentUser(get(comment, 'user')),
+      lease: get(comment, 'lease'),
+    };
+  });
+};
+
 //
 //
 // OLD HELPER FUNCTIONS
@@ -192,6 +219,7 @@ export const getContentLeaseAreaItemMock = (area: Object) => {
     construction_eligibility: getContentLeaseAreaConstructionEligibility(get(area, 'construction_eligibility')),
   };
 };
+
 //TODO: Remove mock data helper function when contruction eligibility tab is added to API
 export const getContentLeaseAreasMock = (lease: Object) => {
   const leaseAreas = get(lease, 'lease_areas', []);

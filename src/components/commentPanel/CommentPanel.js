@@ -1,96 +1,115 @@
 //@flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
 import classNames from 'classnames';
+import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
-import CommentArchived from './CommentArchived';
 import NewCommentForm from './forms/NewCommentForm';
 import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
-import {CommentTypes} from './constants';
+import {getCommentAttributes} from '$src/leases/selectors';
+import {
+  createComment,
+  editComment,
+  fetchCommentAttributes,
+} from '$src/leases/actions';
+import {getAttributeFieldOptions} from '$src/util/helpers';
 
 type Props = {
+  attributes: Object,
   comments: Array<Object>,
+  createComment: Function,
   dispatch: Function,
+  editComment: Function,
+  fetchCommentAttributes: Function,
   isOpen: boolean,
-  onAddComment: Function,
-  onArchive: Function,
   onClose: Function,
-  onDelete: Function,
-  onEdit: Function,
-  onUnarchive: Function,
+  params: Object,
 }
 
 type State = {
-  selectedCommentTypes: Array<string>,
+  selectedTopics: Array<string>,
 }
+
+const getCommentsByTopic = (comments: Array<Object>, topic: Object) => {
+  if(!comments || !comments.length) {return [];}
+  return comments.filter((comment) => {
+    return comment.topic === topic.value;
+  });
+};
 
 class CommentPanel extends Component {
   props: Props
 
   state: State = {
-    selectedCommentTypes: ['0', '1', '2', '3'],
+    selectedTopics: [],
   }
 
-  getCommentsByType = (comments: Array<Object>, type: string) => {
-    if(!comments || !comments.length) {return [];}
-    return comments.filter((comment) => {return comment.type === type;});
-  }
-
-  getArchivedComments = (comments: Array<Object>) => {
-    if(!comments || !comments.length) {return [];}
-    return comments.filter((comment) => {return comment.archived === true;});
-  }
-
-  getCurrentComments = (comments: Array<Object>) => {
-    if(!comments || !comments.length) {return [];}
-    return comments.filter((comment) => {return comment.archived !== true;});
+  componentWillMount() {
+    const {fetchCommentAttributes} = this.props;
+    fetchCommentAttributes();
   }
 
   getFilteredComments = (comments: Array<Object>) => {
-    const {selectedCommentTypes} = this.state;
+    const {selectedTopics} = this.state;
     if(!comments || !comments.length) {return [];}
-    return comments.filter((comment) => {return selectedCommentTypes.indexOf(comment.type) !== -1;});
+    if(!selectedTopics.length) {return comments;}
+
+    return comments.filter((comment) => {
+      return selectedTopics.indexOf(comment.topic.toString()) !== -1;}
+    );
+  }
+
+  createComment = (text: string, topic: number) => {
+    const {
+      createComment,
+      params: {leaseId},
+    } = this.props;
+
+    createComment({
+      lease: leaseId,
+      text: text,
+      topic: topic,
+    });
+
+    this.resetNewCommentField();
+  }
+
+  editComment = (comment: Object, newText: string) => {
+    const {editComment} = this.props;
+    editComment({
+      id: get(comment, 'id'),
+      lease: get(comment, 'lease'),
+      text: newText,
+      topic: get(comment, 'topic'),
+    });
   }
 
   resetNewCommentField = () => {
     const {dispatch} = this.props;
-    dispatch(initialize('new-comment-form', {text: '', type: ''}));
+    dispatch(initialize('new-comment-form', {text: '', topic: ''}));
   }
 
   handleFilterChange = (value: Array<string>) => {
-    this.setState({selectedCommentTypes: value});
+    this.setState({selectedTopics: value});
   }
 
   render () {
     const {
+      attributes,
       comments,
       isOpen,
-      onAddComment,
-      onArchive,
       onClose,
-      onDelete,
-      onEdit,
-      onUnarchive,
     } = this.props;
 
-    const {selectedCommentTypes} = this.state;
+    const topicOptions = getAttributeFieldOptions(attributes, 'topic');
+    const {selectedTopics} = this.state;
 
-    const archivedComments = this.getArchivedComments(comments);
-    const archivedInvoicingComments = this.getCommentsByType(archivedComments, '0');
-    const archivedCommunicationComments = this.getCommentsByType(archivedComments, '1');
-    const archivedContractTermsComments = this.getCommentsByType(archivedComments, '2');
-    const archivedPreparationComments = this.getCommentsByType(archivedComments, '3');
-
-    const currentComments = this.getCurrentComments(comments);
-    const filteredCurrentComments = this.getFilteredComments(currentComments);
-    const currentInvoicingComments = this.getCommentsByType(filteredCurrentComments, '0');
-    const currentCommunicationComments = this.getCommentsByType(filteredCurrentComments, '1');
-    const currentContractTermsComments = this.getCommentsByType(filteredCurrentComments, '2');
-    const currentPreparationComments = this.getCommentsByType(filteredCurrentComments, '3');
-
+    const filteredComments = this.getFilteredComments(comments);
 
     return (
       <div className={classNames('comment-panel', {'is-panel-open': isOpen}) }>
@@ -106,184 +125,54 @@ class CommentPanel extends Component {
         </div>
         <div className='comment-panel__content-wrapper'>
           <NewCommentForm
-            onAddComment={(text, type) => onAddComment(text, type)}
+            attributes={attributes}
+            onAddComment={(text, type) => this.createComment(text, type)}
           />
 
           <h2>Ajankohtaiset</h2>
-          {!!currentComments.length &&
+          {!!comments.length &&
             <div className='filters'>
               <StyledCheckboxButtons
                 checkboxName='checkbox-buttons-document-type'
                 onChange={(value) => this.handleFilterChange(value)}
-                options={CommentTypes}
+                options={topicOptions}
                 selectAllButton
                 selectAllButtonLabel='Kaikki'
-                value={selectedCommentTypes}
+                value={selectedTopics}
               />
             </div>
           }
 
-          {!filteredCurrentComments || !filteredCurrentComments.length &&
+          {!filteredComments || !filteredComments.length &&
             <div className='comments'>
               <p className='no-comments-text'>Ei ajankohtaisia kommentteja</p>
             </div>
           }
-          {filteredCurrentComments && !!filteredCurrentComments.length &&
+          {filteredComments && !!filteredComments.length &&
             <div className='comments'>
-              {currentInvoicingComments && !!currentInvoicingComments.length &&
-                <div className='comments-section'>
-                  <h3>Laskutus ja perintä</h3>
-                  {currentInvoicingComments.map((comment) => {
-                    return (
-                      <Comment
-                        key={comment.id}
-                        date={comment.date}
-                        onArchive={() => onArchive(comment)}
-                        onDelete={() => onDelete(comment)}
-                        onEdit={(newText) => onEdit(comment, newText)}
-                        text={comment.text}
-                        user={comment.user}
-                      />
-                    );
-                  })}
-                </div>
-              }
-              {currentCommunicationComments && !!currentCommunicationComments.length &&
-                <div className='comments-section'>
-                  <h3>Yhteydenpito</h3>
-                  {currentCommunicationComments.map((comment) => {
-                    return (
-                      <Comment
-                        key={comment.id}
-                        date={comment.date}
-                        onArchive={() => onArchive(comment)}
-                        onDelete={() => onDelete(comment)}
-                        onEdit={(newText) => onEdit(comment, newText)}
-                        text={comment.text}
-                        user={comment.user}
-                      />
-                    );
-                  })}
-                </div>
-              }
-              {currentContractTermsComments && !!currentContractTermsComments.length &&
-                <div className='comments-section'>
-                  <h3>Sopimusehdot</h3>
-                  {currentContractTermsComments.map((comment) => {
-                    return (
-                      <Comment
-                        key={comment.id}
-                        date={comment.date}
-                        onArchive={() => onArchive(comment)}
-                        onDelete={() => onDelete(comment)}
-                        onEdit={(newText) => onEdit(comment, newText)}
-                        text={comment.text}
-                        user={comment.user}
-                      />
-                    );
-                  })}
-                </div>
-              }
-              {currentPreparationComments && !!currentPreparationComments.length &&
-                <div className='comments-section'>
-                  <h3>Valmistelu</h3>
-                  {currentPreparationComments.map((comment) => {
-                    return (
-                      <Comment
-                        key={comment.id}
-                        date={comment.date}
-                        onArchive={() => onArchive(comment)}
-                        onDelete={() => onDelete(comment)}
-                        onEdit={(newText) => onEdit(comment, newText)}
-                        text={comment.text}
-                        user={comment.user}
-                      />
-                    );
-                  })}
-                </div>
-              }
-            </div>
-          }
-
-          <h2 className='archived'>Arkistoidut</h2>
-          {!archivedComments || !archivedComments.length &&
-            <div className='comments archived'>
-              <p className='no-comments-text'>Ei arkistoituja kommentteja</p>
-            </div>
-          }
-          {archivedComments && !!archivedComments.length &&
-            <div className='comments archived'>
-              {archivedInvoicingComments && !!archivedInvoicingComments.length &&
-                <div className='comments-section'>
-                  <h3>Laskutus ja perintä</h3>
-                  {archivedInvoicingComments.map((comment) => {
-                    return (
-                      <CommentArchived
-                        key={comment.id}
-                        date={comment.date}
-                        onDelete={() => onDelete(comment)}
-                        onEdit={(newText) => onEdit(comment, newText)}
-                        onUnarchive={() => onUnarchive(comment)}
-                        text={comment.text}
-                        user={comment.user}
-                      />
-                    );
-                  })}
-                </div>
-              }
-              {archivedCommunicationComments && !!archivedCommunicationComments.length &&
-                <div className='comments-section'>
-                  <h3>Yhteydenpito</h3>
-                  {archivedCommunicationComments.map((comment) => {
-                    return (
-                      <CommentArchived
-                        key={comment.id}
-                        date={comment.date}
-                        onDelete={() => onDelete(comment)}
-                        onEdit={(newText) => onEdit(comment, newText)}
-                        onUnarchive={() => onUnarchive(comment)}
-                        text={comment.text}
-                        user={comment.user}
-                      />
-                    );
-                  })}
-                </div>
-              }
-              {archivedContractTermsComments && !!archivedContractTermsComments.length &&
-                <div className='comments-section'>
-                  <h3>Sopimusehdot</h3>
-                  {archivedContractTermsComments.map((comment) => {
-                    return (
-                      <CommentArchived
-                        key={comment.id}
-                        date={comment.date}
-                        onDelete={() => onDelete(comment)}
-                        onEdit={(newText) => onEdit(comment, newText)}
-                        onUnarchive={() => onUnarchive(comment)}
-                        text={comment.text}
-                        user={comment.user}
-                      />
-                    );
-                  })}
-                </div>
-              }
-              {archivedPreparationComments && !!archivedPreparationComments.length &&
-                <div className='comments-section'>
-                  <h3>Valmistelu</h3>
-                  {archivedPreparationComments.map((comment) => {
-                    return (
-                      <CommentArchived
-                        key={comment.id}
-                        date={comment.date}
-                        onDelete={() => onDelete(comment)}
-                        onEdit={(newText) => onEdit(comment, newText)}
-                        onUnarchive={() => onUnarchive(comment)}
-                        text={comment.text}
-                        user={comment.user}
-                      />
-                    );
-                  })}
-                </div>
+              {topicOptions && !!topicOptions.length &&
+                topicOptions.map((topic) => {
+                  const comments = getCommentsByTopic(filteredComments, topic);
+                  if(!comments.length) {
+                    return null;
+                  }
+                  return (
+                    <div className='comments-section' key={topic.value}>
+                      <h3>{topic.label}</h3>
+                      {comments.map((comment) => {
+                        return (
+                          <Comment
+                            key={comment.id}
+                            date={comment.modified_at}
+                            onEdit={(newText) => this.editComment(comment, newText)}
+                            text={comment.text}
+                            user={comment.user}
+                          />
+                        );
+                      })}
+                    </div>
+                  );
+                })
               }
             </div>
           }
@@ -293,4 +182,18 @@ class CommentPanel extends Component {
   }
 }
 
-export default connect(null, null, null, {withRef: true})(CommentPanel);
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      return {
+        attributes: getCommentAttributes(state),
+      };
+    },
+    {
+      createComment,
+      editComment,
+      fetchCommentAttributes,
+    },
+  ),
+)(CommentPanel);

@@ -3,10 +3,18 @@
 import callApi from '../api/callApi';
 import createUrl from '../api/createUrl';
 
-import type {LeaseId, Lease} from './types';
+import type {Comment, LeaseId, Lease} from './types';
 
 export const fetchAttributes = () => {
   return callApi(new Request(createUrl('lease/'), {method: 'OPTIONS'}));
+};
+
+export const fetchComments = (id: LeaseId) => {
+  return callApi(new Request(createUrl(`comment/?lease=${id}&limit=1000`)));
+};
+
+export const fetchCommentAttributes = () => {
+  return callApi(new Request(createUrl('comment/'), {method: 'OPTIONS'}));
 };
 
 export const fetchLessors = () => {
@@ -46,6 +54,25 @@ export const patchLease = (lease: Lease): Generator<> => {
 
   return callApi(new Request(createUrl(`lease/${id}/`), {
     method: 'PATCH',
+    body,
+  }));
+};
+
+export const createComment = (comment: Comment): Generator<> => {
+  const body = JSON.stringify(comment);
+
+  return callApi(new Request(createUrl(`comment/`), {
+    method: 'POST',
+    body,
+  }));
+};
+
+export const editComment = (comment: Comment): Generator<> => {
+  const {id} = comment;
+  const body = JSON.stringify(comment);
+
+  return callApi(new Request(createUrl(`comment/${id}/`), {
+    method: 'PUT',
     body,
   }));
 };

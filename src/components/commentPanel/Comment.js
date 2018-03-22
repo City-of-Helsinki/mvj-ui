@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
 
 import Button from '$components/button/Button';
-import DeleteButton from '$components/button/DeleteButton';
 import EditButton from '$components/button/EditButton';
 import ShowMore from '../showMore/ShowMore';
 import TextAreaInput from '$components/inputs/TextAreaInput';
@@ -11,11 +10,9 @@ import {formatDate} from '../../util/helpers';
 
 type Props = {
   date: string,
-  onArchive: Function,
-  onDelete: Function,
   onEdit: Function,
   text: string,
-  user: string,
+  user: Object,
 }
 
 type State = {
@@ -46,11 +43,12 @@ class Comment extends Component {
   }
 
   render() {
-    const {editedText, isEditMode} = this.state;
+    const {
+      editedText,
+      isEditMode,
+    } = this.state;
     const {
       date,
-      onArchive,
-      onDelete,
       onEdit,
       text,
       user,
@@ -68,24 +66,17 @@ class Comment extends Component {
               <p className='comment-info'>
                 <span className='date'>{formatDate(date)}</span>
                 &nbsp;
-                <span>{user}</span>
+                <span>{user.last_name} {user.first_name}</span>
               </p>
               <div className='comment-text'>
-                <ShowMore>
-                  <div dangerouslySetInnerHTML={{__html: text}}/>
-                </ShowMore>
+                <ShowMore text={text} />
               </div>
             </div>
           </div>
         }
         {isEditMode &&
           <div>
-            <DeleteButton
-              className='position-topright'
-              onClick={onDelete}
-              title='Poista'
-            />
-            <div className='content-wrapper'>
+            <div className='content-wrapper no-padding'>
               <Row>
                 <Column>
                   <TextAreaInput
@@ -107,15 +98,6 @@ class Comment extends Component {
                       this.setState({isEditMode: false});
                     }}
                     title='Tallenna'
-                  />
-                  <Button
-                    className='button-green pull-right'
-                    label='Arkistoi'
-                    onClick={() => {
-                      onArchive();
-                      this.setState({isEditMode: false});
-                    }}
-                    title='Arkistoi'
                   />
                   <Button
                     className='button-red pull-right'
