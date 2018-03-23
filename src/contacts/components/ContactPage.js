@@ -39,6 +39,7 @@ type Props = {
   location: Object,
   params: Object,
   receiveTopNavigationSettings: Function,
+  router: Object,
   showEditMode: Function,
 }
 
@@ -67,11 +68,13 @@ class ContactPage extends Component {
   }
 
   copyContact = () => {
-    // const {criteria, initializeRentCriteria, router} = this.props;
-    // initializeRentCriteria(criteria);
-    // return router.push({
-    //   pathname: getRouteById('newrentcriteria'),
-    // });
+    const {contact, hideEditMode, initializeContactForm, router} = this.props;
+    contact.id = undefined;
+    initializeContactForm(contact);
+    hideEditMode();
+    return router.push({
+      pathname: getRouteById('newcontact'),
+    });
   }
 
   saveContact = () => {
