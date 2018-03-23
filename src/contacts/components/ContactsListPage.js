@@ -83,13 +83,18 @@ class ContactListPage extends Component {
     });
   }
 
-  handleRowClick = () => {
-    console.log('click');
-  }
+  handleRowClick = (id) => {
+    const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
+
+    return router.push({
+      pathname: `${getRouteById('contacts')}/${id}`,
+      query,
+    });
+  };
 
   render() {
     const {contacts, isFetching} = this.props;
-    console.log(contacts);
     return(
       <PageContainer>
         <SearchWrapper

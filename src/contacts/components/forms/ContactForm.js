@@ -11,7 +11,10 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FormSection from '$components/form/FormSection';
 import {receiveContactFormValid} from '../../actions';
-import {getIsContactFormValid} from '../../selectors';
+import {
+  getInitialContactFormValues,
+  getIsContactFormValid,
+} from '../../selectors';
 import {genericValidator} from '$components/form/validations';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 
@@ -262,7 +265,7 @@ const formName = 'contact-form';
 const mapStateToProps = (state: RootState) => {
   return {
     isContactFormValid: getIsContactFormValid(state),
-    // initialValues: getRentCriteriaInitialValues(state),
+    initialValues: getInitialContactFormValues(state),
   };
 };
 
