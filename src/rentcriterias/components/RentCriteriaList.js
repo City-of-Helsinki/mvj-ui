@@ -80,7 +80,6 @@ class RentCriteriaList extends Component {
     return router.push({
       pathname: getRouteById('newrentcriteria'),
     });
-
   }
 
   handleRowClick = (id) => {

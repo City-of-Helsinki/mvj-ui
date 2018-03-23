@@ -2,9 +2,14 @@
 
 import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
+import {push} from 'react-router-redux';
+import {SubmissionError} from 'redux-form';
 
+import {displayUIMessage} from '$util/helpers';
+import {getRouteById} from '../root/routes';
 
 import {
+  receiveAttributes,
   receiveContacts,
   notFound,
 } from './actions';
@@ -12,13 +17,34 @@ import {
 import {receiveError} from '$src/api/actions';
 
 import {
-
+  createContact,
+  fetchAttributes,
   fetchContacts,
 } from './requests';
 
+function* fetchAttributesSaga(): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
+    const attributes = bodyAsJson.fields;
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveAttributes(attributes));
+        break;
+      case 401:
+      case 404:
+      case 500:
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch identifiers with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
 function* fetchContactsSaga({payload: search}): Generator<> {
   try {
-    console.log('search', search);
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchContacts, search);
     const contacts = bodyAsJson.results;
     switch (statusCode) {
@@ -38,10 +64,37 @@ function* fetchContactsSaga({payload: search}): Generator<> {
   }
 }
 
+function* createContactSaga({payload: contact}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createContact, contact);
+
+    switch (statusCode) {
+      case 201:
+        yield put(push(`${getRouteById('contacts')}/${bodyAsJson.id}`));
+        displayUIMessage({title: 'Asiakas tallennettu', body: 'Asiakas on tallennettu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
+      yield takeLatest('mvj/contacts/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/contacts/FETCH_ALL', fetchContactsSaga);
+      yield takeLatest('mvj/contacts/CREATE', createContactSaga);
     }),
   ];
 }

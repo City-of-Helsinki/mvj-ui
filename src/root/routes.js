@@ -9,6 +9,7 @@ import ContactListPage from '../contacts/components/ContactsListPage';
 import LeaseList from '../leases/components/LeaseList';
 import LeasePage from '../leases/components/LeasePage';
 import LoginPage from '../auth/components/LoginPage';
+import NewContactPage from '../contacts/components/NewContactPage';
 import NewRentCriteriaPage from '../rentcriterias/components/NewRentCriteriaPage';
 import RentCriteriaList from '../rentcriterias/components/RentCriteriaList';
 import RentCriteriaPage from '../rentcriterias/components/RentCriteriaPage';
@@ -17,6 +18,7 @@ export const getRouteById = (id: string): string => {
   const routes = {
     callback: '/callback',
     contacts: '/asiakkaat',
+    newcontact: '/uusiasiakas',
     leases: '/vuokraukset',
     logout: '/logout',
     newrentcriteria: '/uusivuokrausperuste',
@@ -29,6 +31,7 @@ export default
 <Route path="/" component={App}>
   <IndexRedirect to={getRouteById('leases')} />
   <Route path={getRouteById('contacts')} components={ContactListPage} />
+  <Route path={getRouteById('newcontact')} components={NewContactPage} />
   <Route path={getRouteById('leases')} components={LeaseList} />
   <Route path={`${getRouteById('leases')}/:leaseId`} component={LeasePage}/>
   <Route path={getRouteById('newrentcriteria')} components={NewRentCriteriaPage} />

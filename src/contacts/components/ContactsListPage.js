@@ -57,7 +57,18 @@ class ContactListPage extends Component {
   }
 
   handleCreateButtonClick = () => {
-    console.log('create new contact');
+    // const {initializeRentCriteria} = this.props;
+    const {router} = this.context;
+
+    // initializeRentCriteria({
+    //   decisions: [''],
+    //   prices: [{}],
+    //   real_estate_ids: [''],
+    // });
+
+    return router.push({
+      pathname: getRouteById('newcontact'),
+    });
   }
 
   handleSearchChange = (query: any) => {

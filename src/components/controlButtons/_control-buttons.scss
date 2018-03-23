@@ -44,6 +44,16 @@
 
   .info-component-wrapper {
     flex: 1 1 0%;
+
+    h1 {
+      padding-top: rem-calc(20px);
+      font-family: $font-family-source;
+      font-size: rem-calc(22px);
+      font-weight: $semibold;
+      line-height: rem-calc(30px);
+      color: $black;
+      margin: 0;
+    }
   }
 
   .control-buttons-wrapper {
