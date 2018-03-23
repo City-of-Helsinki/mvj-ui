@@ -10,6 +10,7 @@ import authReducer from '../auth/reducer';
 import roleReducer from '../role/reducer';
 import attributesReducer from '../attributes/reducer';
 import billingReducer from '../leases/components/leaseSections/billing/reducer';
+import contactsReducer from '../contacts/reducer';
 import leaseReducer from '../leases/reducer';
 import rentCriteriasReducer from '../rentcriterias/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
@@ -23,6 +24,7 @@ export default (): Reducer<RootState> =>
     auth: authReducer,
     attributes: attributesReducer,
     billing: billingReducer,
+    contacts: contactsReducer,
     form: formReducer,
     lease: leaseReducer,
     oidc,

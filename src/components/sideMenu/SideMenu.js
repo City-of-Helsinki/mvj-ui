@@ -21,8 +21,9 @@ class SideMenu extends Component {
         <ul>
           <li onClick={onLinkClick}><Link to={getRouteById('leases')}>Vuokraukset</Link></li>
           <li onClick={onLinkClick}><Link to={getRouteById('rentcriterias')}>Vuokrausperusteet</Link></li>
-          <li>Raportointi</li>
-          <li>Tietoa palvelusta</li>
+          <li onClick={onLinkClick}><Link to={getRouteById('contacts')}>Asiakkaat</Link></li>
+          {/* <li>Raportointi</li>
+          <li>Tietoa palvelusta</li> */}
         </ul>
       </div>
     );
