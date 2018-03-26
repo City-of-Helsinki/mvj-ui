@@ -12,13 +12,13 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 import {genericValidator} from '$components/form/validations';
-import {getIsSummaryValid} from '../../../selectors';
+import {getIsSummaryFormValid} from '../../../selectors';
 import {receiveSummaryFormValid} from '../../../actions';
 
 type Props = {
   attributes: Object,
   handleSubmit: Function,
-  isSummaryValid: boolean,
+  isSummaryFormValid: boolean,
   lessorOptions: Array<Object>,
   receiveSummaryFormValid: Function,
   valid: boolean,
@@ -28,8 +28,8 @@ class SummaryEdit extends Component {
   props: Props
 
   componentDidUpdate() {
-    const {isSummaryValid, receiveSummaryFormValid, valid} = this.props;
-    if(isSummaryValid !== valid) {
+    const {isSummaryFormValid, receiveSummaryFormValid, valid} = this.props;
+    if(isSummaryFormValid !== valid) {
       receiveSummaryFormValid(valid);
     }
   }
@@ -233,7 +233,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        isSummaryValid: getIsSummaryValid(state),
+        isSummaryFormValid: getIsSummaryFormValid(state),
       };
     },
     {

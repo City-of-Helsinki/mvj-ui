@@ -22,9 +22,10 @@ import {
   getDecisionsFormValues,
   getIsEditMode,
   getIsFetching,
-  getIsLeaseAreasValid,
-  getIsLeaseInfoValid,
-  getIsSummaryValid,
+  getIsDecisionsFormValid,
+  getIsLeaseAreasFormValid,
+  getIsLeaseInfoFormValid,
+  getIsSummaryFormValid,
   getLeaseInfoFormTouched,
   getLeaseInfoFormValues,
   getLessors,
@@ -112,9 +113,10 @@ type Props = {
   inspectionTouched: boolean,
   isEditMode: boolean,
   isFetching: boolean,
-  isLeaseAreasValid: boolean,
-  isLeaseInfoValid: boolean,
-  isSummaryValid: boolean,
+  isDecisionsFormValid: boolean,
+  isLeaseAreasFormValid: boolean,
+  isLeaseInfoFormValid: boolean,
+  isSummaryFormValid: boolean,
   leaseInfoFormTouched: boolean,
   leaseInfoFormValues: Object,
   lessors: Array<Object>,
@@ -330,14 +332,16 @@ class PreparerForm extends Component {
 
   validateForms = () => {
     const {
-      isLeaseAreasValid,
-      isLeaseInfoValid,
-      isSummaryValid,
+      isDecisionsFormValid,
+      isLeaseAreasFormValid,
+      isLeaseInfoFormValid,
+      isSummaryFormValid,
     } = this.props;
 
-    return isLeaseAreasValid &&
-      isLeaseInfoValid &&
-      isSummaryValid;
+    return isDecisionsFormValid &&
+      isLeaseAreasFormValid &&
+      isLeaseInfoFormValid &&
+      isSummaryFormValid;
   }
 
   handleTabClick = (tabId) => {
@@ -666,9 +670,10 @@ export default flowRight(
         eligibilityForm: eligibilityFormSelector(state, 'areas'),
         eligibilityTouched: get(state, 'form.eligibility-edit-form.anyTouched'),
         isEditMode: getIsEditMode(state),
-        isLeaseAreasValid: getIsLeaseAreasValid(state),
-        isLeaseInfoValid: getIsLeaseInfoValid(state),
-        isSummaryValid: getIsSummaryValid(state),
+        isDecisionsFormValid: getIsDecisionsFormValid(state),
+        isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
+        isLeaseInfoFormValid: getIsLeaseInfoFormValid(state),
+        isSummaryFormValid: getIsSummaryFormValid(state),
         inspectionsForm: inspectionFormSelector(state, 'inspections'),
         inspectionTouched: get(state, 'form.inspection-edit-form.anyTouched'),
         isFetching: getIsFetching(state),

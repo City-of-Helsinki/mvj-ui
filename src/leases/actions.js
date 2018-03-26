@@ -38,6 +38,7 @@ import type {
   EditCommentAction,
   ReceiveEditedCommentAction,
   ClearFormValidityFlagsAction,
+  ReceiveDecisionsFormValidAction,
   ReceiveLeaseInfoFormValidAction,
   ReceiveSummaryFormValidAction,
   ReceiveLeaseAreasFormValidAction,
@@ -125,11 +126,14 @@ export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentActi
 export const clearFormValidFlags = (): ClearFormValidityFlagsAction =>
   createAction('mvj/leases/CLEAR_FORM_VALIDITY_FLAGS')();
 
+export const receiveDecisionsFormValid = (valid: boolean): ReceiveDecisionsFormValidAction =>
+  createAction('mvj/leases/RECEIVE_DECISIONS_FORM_VALID')(valid);
+
 export const receiveLeaseAreasFormValid = (valid: boolean): ReceiveLeaseAreasFormValidAction =>
-  createAction('mvj/leases/RECEIVE_LEASE_AREAS_VALID')(valid);
+  createAction('mvj/leases/RECEIVE_LEASE_AREAS_FORM_VALID')(valid);
 
 export const receiveLeaseInfoFormValid = (valid: boolean): ReceiveLeaseInfoFormValidAction =>
-  createAction('mvj/leases/RECEIVE_LEASE_INFO_VALID')(valid);
+  createAction('mvj/leases/RECEIVE_LEASE_INFO_FORM_VALID')(valid);
 
 export const receiveSummaryFormValid = (valid: boolean): ReceiveSummaryFormValidAction =>
-  createAction('mvj/leases/RECEIVE_SUMMARY_VALID')(valid);
+  createAction('mvj/leases/RECEIVE_SUMMARY_FORM_VALID')(valid);

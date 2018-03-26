@@ -17,6 +17,7 @@ import type {
   ReceiveCommentAttributesAction,
   ReceiveCreatedCommentAction,
   ReceiveEditedCommentAction,
+  ReceiveDecisionsFormValidAction,
   ReceiveLeaseInfoFormValidAction,
   ReceiveSummaryFormValidAction,
   ReceiveLeaseAreasFormValidAction,
@@ -86,22 +87,29 @@ const lessorsReducer: Reducer<Lessors> = handleActions({
   },
 }, []);
 
-const leaseInfoValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_LEASE_INFO_VALID']: (state: boolean, {payload: valid}: ReceiveLeaseInfoFormValidAction) => {
+const decisionsFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_DECISIONS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveDecisionsFormValidAction) => {
     return valid;
   },
   'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
 }, true);
 
-const summaryValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_SUMMARY_VALID']: (state: boolean, {payload: valid}: ReceiveSummaryFormValidAction) => {
+const leaseInfoFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_LEASE_INFO_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveLeaseInfoFormValidAction) => {
     return valid;
   },
   'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
 }, true);
 
-const leaseAreasValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_LEASE_AREAS_VALID']: (state: boolean, {payload: valid}: ReceiveLeaseAreasFormValidAction) => {
+const summaryFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_SUMMARY_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveSummaryFormValidAction) => {
+    return valid;
+  },
+  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
+}, true);
+
+const leaseAreasFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_LEASE_AREAS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveLeaseAreasFormValidAction) => {
     return valid;
   },
   'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
@@ -116,7 +124,8 @@ export default combineReducers({
   isFetching: isFetchingReducer,
   list: leasesListReducer,
   lessors: lessorsReducer,
-  isLeaseAreasValid: leaseAreasValidReducer,
-  isLeaseInfoValid: leaseInfoValidReducer,
-  isSummaryValid: summaryValidReducer,
+  isDecisionsFormValid: decisionsFormValidReducer,
+  isLeaseAreasFormValid: leaseAreasFormValidReducer,
+  isLeaseInfoFormValid: leaseInfoFormValidReducer,
+  isSummaryFormValid: summaryFormValidReducer,
 });

@@ -53,6 +53,7 @@ export type FetchCommentAttributesAction = Action<'mvj/leases/FETCH_COMMENT_ATTR
 export type ReceiveCommentAttributesAction = Action<'mvj/leases/RECEIVE_COMMENT_ATTRIBUTES', Attributes>;
 
 export type ClearFormValidityFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS', void>
-export type ReceiveLeaseInfoFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_INFO_VALID', boolean>;
-export type ReceiveSummaryFormValidAction = Action<'mvj/leases/RECEIVE_SUMMARY_VALID', boolean>;
-export type ReceiveLeaseAreasFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_AREAS_VALID', boolean>;
+export type ReceiveDecisionsFormValidAction = Action<'mvj/leases/RECEIVE_DECISIONS_FORM_VALID', boolean>;
+export type ReceiveLeaseInfoFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_INFO_FORM_VALID', boolean>;
+export type ReceiveSummaryFormValidAction = Action<'mvj/leases/RECEIVE_SUMMARY_FORM_VALID', boolean>;
+export type ReceiveLeaseAreasFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_AREAS_FORM_VALID', boolean>;
