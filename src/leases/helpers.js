@@ -196,6 +196,47 @@ export const getContentComments = (content: Array<Object>) => {
   });
 };
 
+export const getContentDecisionConditions = (decision: Object) => {
+  const conditions = get(decision, 'conditions', []);
+  if(!conditions.length) {
+    return [];
+  }
+
+  return conditions.map((condition) => {
+    return {
+      id: get(condition, 'id'),
+      type: get(condition, 'type'),
+      supervision_date: get(condition, 'supervision_date'),
+      supervised_date: get(condition, 'supervised_date'),
+      description: get(condition, 'description'),
+    };
+  });
+};
+
+export const getContentDecisionItem = (decision: Object) => {
+  return {
+    id: get(decision, 'id'),
+    reference_number: get(decision, 'reference_number'),
+    decision_maker: get(decision, 'decision_maker'),
+    decision_date: get(decision, 'decision_date'),
+    section: get(decision, 'section'),
+    type: get(decision, 'type'),
+    description: get(decision, 'description'),
+    conditions: getContentDecisionConditions(decision),
+  };
+};
+
+export const getContentDecisions = (lease: Object) => {
+  const decisions = get(lease, 'decisions', []);
+  if(!decisions.length) {
+    return [];
+  }
+
+  return decisions.map((decision) =>
+    getContentDecisionItem(decision)
+  );
+};
+
 //
 //
 // OLD HELPER FUNCTIONS
@@ -594,44 +635,6 @@ export const getContentRents = (lease: Object) => {
     discounts: getContentRentDiscount(get(lease, 'rents.discounts', [])),
     index_adjusted_rents: getContentRentIndexAdjustedRents(get(lease, 'rents.index_adjusted_rents', [])),
   };
-};
-
-export const getContentRuleTerms = (rule: Object) => {
-  const terms = get(rule, 'terms', []);
-  if(!terms || terms.length === 0) {
-    return [];
-  }
-
-  return terms.map((term) => {
-    return {
-      supervision_date: get(term, 'supervision_date'),
-      supervised_date: get(term, 'supervised_date'),
-      term_description: get(term, 'term_description'),
-      term_purpose: get(term, 'term_purpose'),
-    };
-  });
-};
-
-export const getContentRuleItem = (rule: Object) => {
-  return {
-    rule_clause: get(rule, 'rule_clause'),
-    rule_date: get(rule, 'rule_date'),
-    rule_description: get(rule, 'rule_description'),
-    rule_maker: get(rule, 'rule_maker'),
-    rule_type: get(rule, 'rule_type'),
-    terms: getContentRuleTerms(rule),
-  };
-};
-
-export const getContentRules = (lease: Object) => {
-  const rules = get(lease, 'rules', []);
-  if(!rules || rules.length === 0) {
-    return [];
-  }
-
-  return rules.map((rule) =>
-    getContentRuleItem(rule)
-  );
 };
 
 export const getFullAddress = (item: Object) => {

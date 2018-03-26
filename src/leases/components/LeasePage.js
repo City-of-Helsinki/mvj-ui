@@ -145,7 +145,6 @@ type State = {
   isSaveLeaseModalOpen: boolean,
   oldTenants: Array<Object>,
   rents: Object,
-  rules: Array<Object>,
   tenants: Array<Object>,
 };
 
@@ -162,7 +161,6 @@ class PreparerForm extends Component {
     isSaveLeaseModalOpen: false,
     oldTenants: [],
     rents: {},
-    rules: [],
     tenants: [],
     terms: [],
     inspections: [],
@@ -206,7 +204,6 @@ class PreparerForm extends Component {
       inspections: contentHelpers.getContentInspections(lease),
       oldTenants: lease.tenants_old,
       rents: contentHelpers.getContentRents(lease),
-      rules: contentHelpers.getContentRules(lease),
       tenants: contentHelpers.getContentTenants(lease),
     });
     receiveBilling(contentHelpers.getContentBilling(lease));
@@ -252,7 +249,7 @@ class PreparerForm extends Component {
       inspectionsForm,
       patchLease,
       rentsForm,
-      rulesForm,
+      // rulesForm,
       tenantsForm,
     } = this.props;
 
@@ -285,9 +282,9 @@ class PreparerForm extends Component {
     if(rentsForm !== undefined) {
       this.setState({rents: rentsForm});
     }
-    if(rulesForm !== undefined) {
-      this.setState({rules: rulesForm});
-    }
+    // if(rulesForm !== undefined) {
+    //   this.setState({rules: rulesForm});
+    // }
     if(tenantsForm !== undefined) {
       this.setState({tenants: tenantsForm});
     }
@@ -391,7 +388,6 @@ class PreparerForm extends Component {
       isSaveLeaseModalOpen,
       oldTenants,
       rents,
-      rules,
       tenants,
     } = this.state;
 
@@ -416,7 +412,10 @@ class PreparerForm extends Component {
     const leaseInfo = contentHelpers.getContentLeaseInfo(currentLease);
     const summary = contentHelpers.getContentSummary(currentLease);
     const areas = contentHelpers.getContentLeaseAreas(currentLease);
+    const decisions = contentHelpers.getContentDecisions(currentLease);
+
     const comments = contentHelpers.getContentComments(commentsStore);
+
 
     let sum_areas = 0;
     areas && areas.length > 0 && areas.map((area) =>
@@ -586,13 +585,14 @@ class PreparerForm extends Component {
                   <DecisionsMainEdit
                     contracts={contracts}
                     inspections={inspections}
-                    rules={rules}
+                    rules={decisions}
                   />
                 ) : (
                   <DecisionsMain
+                    attributes={attributes}
                     contracts={contracts}
+                    decisions={decisions}
                     inspections={inspections}
-                    rules={rules}
                   />
                 )
               }
