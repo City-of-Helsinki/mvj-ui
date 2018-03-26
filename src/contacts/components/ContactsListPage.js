@@ -134,8 +134,9 @@ class ContactListPage extends Component {
               dataKeys={[
                 {key: 'first_name', label: 'Etunimi'},
                 {key: 'last_name', label: 'Sukunimi'},
+                {key: 'national_identification_number', label: 'Henkilötunnus'},
                 {key: 'business_name', label: 'Yritys'},
-                {key: 'address', label: 'Osoite'},
+                {key: 'business_id', label: 'Y-tunnus'},
               ]}
               onRowClick={this.handleRowClick}
             />

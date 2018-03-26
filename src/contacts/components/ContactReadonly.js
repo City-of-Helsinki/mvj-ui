@@ -95,7 +95,7 @@ const ContactReadonly = ({attributes, contact}: Props) => {
           </Column>
           <Column small={6} medium={4} large={2}>
             <label>Vuokranantaja</label>
-            <p className='no-margin'>{contact.lessor ? 'Kyllä' : 'Ei'}</p>
+            <p className='no-margin'>{contact.is_lessor ? 'Kyllä' : 'Ei'}</p>
           </Column>
         </Row>
       </GreenBox>

@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import ContactEdit from './ContactEdit';
 import ContactReadonly from './ContactReadonly';
@@ -97,9 +98,24 @@ class ContactPage extends Component {
     showEditMode();
   }
 
+  getContactNameInfo = () => {
+    const {contact} = this.props;
+    if(!contact) {
+      return '';
+    }
+
+    if(contact.is_business) {
+      return get(contact, 'business_name', '');
+    }
+    return `${get(contact, 'first_name', '')} ${get(contact, 'last_name', '')}`;
+  }
+
 
   render() {
     const {attributes, contact, isEditMode, isFetching} = this.props;
+
+    const nameInfo = this.getContactNameInfo();
+    console.log('info', nameInfo);
 
     if(isFetching) {
       return (
@@ -125,11 +141,7 @@ class ContactPage extends Component {
               showCopyButton={true}
             />
           }
-          // infoComponent={
-          //   <RentCriteriaInfo
-          //     identifier={criteria.id}
-          //   />
-          // }
+          infoComponent={<h1>{nameInfo}</h1>}
         />
         {isEditMode
           ? <ContactEdit
