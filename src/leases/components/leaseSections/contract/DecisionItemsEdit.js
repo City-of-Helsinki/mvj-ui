@@ -2,6 +2,7 @@
 import React from 'react';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -12,6 +13,7 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
+import {genericValidator} from '$components/form/validations';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 
 import type {Attributes} from '$src/leases/types';
@@ -44,6 +46,10 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     label='Päättäjä'
                     name={`${decision}.decision_maker`}
                     options={decisionMakerOptions}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'decisions.child.children.decision_maker')),
+                    ]}
                   />
                 </Column>
                 <Column small={4} medium={2}>
@@ -51,6 +57,10 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     component={FieldTypeDatePicker}
                     label='Päätöspäivämäärä'
                     name={`${decision}.decision_date`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'decisions.child.children.decision_date')),
+                    ]}
                   />
                 </Column>
                 <Column small={4} medium={2}>
@@ -58,6 +68,10 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     component={FieldTypeText}
                     label='Pykälä'
                     name={`${decision}.section`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'decisions.child.children.section')),
+                    ]}
                   />
                 </Column>
                 <Column small={8} medium={4}>
@@ -66,6 +80,10 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     label='Päätöksen tyyppi'
                     name={`${decision}.type`}
                     options={typeOptions}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'decisions.child.children.type')),
+                    ]}
                   />
                 </Column>
               </Row>
@@ -76,6 +94,10 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     component={FieldTypeText}
                     label='Diaarinumero'
                     name={`${decision}.reference_number`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'decisions.child.children.reference_number')),
+                    ]}
                   />
                 </Column>
                 <Column small={12} medium={10}>
@@ -84,6 +106,10 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     component={FieldTypeText}
                     label='Selite'
                     name={`${decision}.description`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'decisions.child.children.description')),
+                    ]}
                   />
                 </Column>
               </Row>

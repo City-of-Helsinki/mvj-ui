@@ -2,6 +2,7 @@
 import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -12,6 +13,7 @@ import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
 import {getAttributeFieldOptions} from '$src/util/helpers';
+import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -47,6 +49,10 @@ const DecisionConditionsEdit = ({
                   label='Käyttötarkoitusehto'
                   name={`${condition}.type`}
                   options={typeOptions}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'decisions.child.children.conditions.child.children.type')),
+                  ]}
                 />
               </Column>
               <Column small={6} medium={4}>
@@ -54,6 +60,10 @@ const DecisionConditionsEdit = ({
                   component={FieldTypeDatePicker}
                   label='Valvonta päivämäärä'
                   name={`${condition}.supervision_date`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')),
+                  ]}
                 />
               </Column>
               <Column small={12} medium={4}>
@@ -61,6 +71,10 @@ const DecisionConditionsEdit = ({
                   component={FieldTypeDatePicker}
                   label='Valvottu päivämäärä'
                   name={`${condition}.supervised_date`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')),
+                  ]}
                 />
               </Column>
             </Row>
@@ -71,6 +85,10 @@ const DecisionConditionsEdit = ({
                   component={FieldTypeText}
                   label='Selite'
                   name={`${condition}.description`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'decisions.child.children.conditions.child.children.description')),
+                  ]}
                 />
               </Column>
             </Row>
