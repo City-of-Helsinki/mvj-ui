@@ -3,11 +3,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
+import isNumber from 'lodash/isNumber';
 import {Row, Column} from 'react-foundation';
 
 import Button from '$components/button/Button';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
+import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
 import Table from '$components/table/Table';
@@ -21,16 +24,25 @@ import {getSearchQuery} from '$src/util/helpers';
 import type {ContactList} from '../types';
 import type {RootState} from '../../root/types';
 
+const PAGE_SIZE = 5;
+
 type Props = {
-  contacts: ContactList,
+  contactList: ContactList,
   fetchContacts: Function,
   isFetching: boolean,
   receiveTopNavigationSettings: Function,
   router: Object,
 }
 
+type State = {
+  activePage: number,
+}
+
 class ContactListPage extends Component {
   props: Props
+  state: State = {
+    activePage: 1,
+  }
 
   search: any
 
@@ -47,12 +59,21 @@ class ContactListPage extends Component {
       pageTitle: 'Asiakkaat',
       showSearch: false,
     });
-
+    const page = Number(query.page);
+    if(!page || !isNumber(page) || query.page <= 1) {
+      this.setState({activePage: 1});
+      query.limit = PAGE_SIZE;
+    } else {
+      this.setState({activePage: page});
+      query.limit = PAGE_SIZE;
+      query.offset = (page - 1) * PAGE_SIZE;
+    }
     fetchContacts(getSearchQuery(query));
   }
 
   componentDidMount = () => {
     const {router: {location: {query}}} = this.props;
+    query.limit = undefined;
     this.search.initialize(query);
   }
 
@@ -73,10 +94,19 @@ class ContactListPage extends Component {
 
   handleSearchChange = (query: any) => {
     const {fetchContacts} = this.props;
+    const {activePage} = this.state;
     const {router} = this.context;
 
+    query.limit = PAGE_SIZE;
+
+    if(activePage > 1) {
+      query.page = activePage;
+      query.offset = (activePage - 1) * PAGE_SIZE;
+    }
     fetchContacts(getSearchQuery(query));
 
+    query.offset = undefined;
+    query.limit = undefined;
     return router.push({
       pathname: getRouteById('contacts'),
       query,
@@ -93,8 +123,53 @@ class ContactListPage extends Component {
     });
   };
 
+  handlePageClick = (page: number) => {
+    const {router} = this.context;
+    const {fetchContacts, router: {location: {query}}} = this.props;
+
+    query.limit = PAGE_SIZE;
+    if(page > 1) {
+      query.page = page;
+      query.offset = (page - 1) * PAGE_SIZE;
+    }
+    fetchContacts(getSearchQuery(query));
+
+    this.setState({activePage: page});
+    query.offset = undefined;
+    query.limit = undefined;
+
+    return router.push({
+      pathname: getRouteById('contacts'),
+      query,
+    });
+  }
+
+  getContactCount = (contactList: ContactList) => {
+    return get(contactList, 'count', 0);
+  }
+
+  getContacts = (contactList: ContactList) => {
+    return get(contactList, 'results', []);
+  }
+
+  getContactMaxPage = (contactList: ContactList) => {
+    const count = this.getContactCount(contactList);
+    if(!count) {
+      return 0;
+    }
+    else {
+      return Math.ceil(count/PAGE_SIZE);
+    }
+  }
+
   render() {
-    const {contacts, isFetching} = this.props;
+    const {contactList, isFetching} = this.props;
+    const {activePage} = this.state;
+
+    const count = this.getContactCount(contactList);
+    const contacts = this.getContacts(contactList);
+    const maxPage = this.getContactMaxPage(contactList);
+    console.log(contactList);
     return(
       <PageContainer>
         <SearchWrapper
@@ -126,7 +201,7 @@ class ContactListPage extends Component {
         {!isFetching &&
           <div>
             <TableControllers
-              title={`Löytyi ${contacts.length} kpl`}
+              title={`Löytyi ${count} kpl`}
             />
             <Table
               amount={contacts.length}
@@ -140,6 +215,11 @@ class ContactListPage extends Component {
               ]}
               onRowClick={this.handleRowClick}
             />
+            <Pagination
+              activePage={activePage}
+              maxPage={maxPage}
+              onPageClick={(page) => this.handlePageClick(page)}
+            />
           </div>
         }
       </PageContainer>
@@ -151,7 +231,7 @@ export default flowRight(
   connect(
     (state: RootState) => {
       return {
-        contacts: getContactList(state),
+        contactList: getContactList(state),
         isFetching: getIsFetching(state),
       };
     },

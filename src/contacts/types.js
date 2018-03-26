@@ -10,7 +10,7 @@ export type Contact = Object;
 
 export type ContactId = number;
 
-export type ContactList = Array<Contact>;
+export type ContactList = Object;
 
 export type ContactNotFoundAction = Action<'mvj/contacts/NOT_FOUND', void>;
 

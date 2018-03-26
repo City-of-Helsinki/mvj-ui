@@ -37,7 +37,7 @@ const contactsListReducer: Reducer<ContactList> = handleActions({
   ['mvj/contacts/RECEIVE_ALL']: (state: ContactList, {payload: contacts}: ReceiveContactsAction) => {
     return contacts;
   },
-}, []);
+}, {});
 
 const contactReducer: Reducer<Contact> = handleActions({
   ['mvj/contacts/RECEIVE_SINGLE']: (state: Contact, {payload: contact}: ReceiveSingleContactAction) => {

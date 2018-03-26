@@ -50,10 +50,9 @@ function* fetchAttributesSaga(): Generator<> {
 function* fetchContactsSaga({payload: search}): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchContacts, search);
-    const contacts = bodyAsJson.results;
     switch (statusCode) {
       case 200:
-        yield put(receiveContacts(contacts));
+        yield put(receiveContacts(bodyAsJson));
         break;
       case 401:
       case 404:

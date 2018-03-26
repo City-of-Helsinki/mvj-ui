@@ -50,3 +50,42 @@
     }
   }
 }
+
+.pagination {
+  display: flex;
+  padding-left: 0;
+  list-style: none;
+  border-radius: rem-calc(4px);
+
+  .page-item {
+    .page-link {
+      position: relative;
+      display: block;
+      padding: .5rem .75rem;
+      margin-left: -1px;
+      line-height: 1.25;
+      color: $black;
+      background-color: $white;
+      border: 1px solid $engel;
+    }
+
+    &.active {
+      .page-link {
+        z-index: 1;
+        color: $black;
+        background-color: $engel;
+        border-color: $engel;
+      }
+    }
+
+    &:disabled {
+      .page-link {
+        color: $dark-gray;
+        pointer-events: none;
+        cursor: auto;
+        background-color: $white;
+        border-color: $engel;
+      }
+    }
+  }
+}
