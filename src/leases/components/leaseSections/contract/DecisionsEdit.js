@@ -5,38 +5,43 @@ import {connect} from 'react-redux';
 import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
 
 import FormSection from '$components/form/FormSection';
-import RuleItemsEdit from './RuleItemsEdit';
+import DecisionItemsEdit from './DecisionItemsEdit';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
   handleSubmit: Function,
-  dispatch: Function,
 }
 
-class RuleEdit extends Component {
+class DecisionsEdit extends Component {
   props: Props
 
   render() {
-    const {handleSubmit} = this.props;
+    const {attributes, handleSubmit} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
-          <FieldArray name="rules" component={RuleItemsEdit} />
+          <FieldArray
+            attributes={attributes}
+            component={DecisionItemsEdit}
+            name="decisions"
+          />
         </FormSection>
-
       </form>
     );
   }
 }
 
-const formName = 'rule-edit-form';
+const formName = 'decisions-form';
 const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
     (state) => {
       return {
-        rules: selector(state, 'rules'),
+        decisions: selector(state, 'decisions'),
       };
     }
   ),
@@ -44,4 +49,4 @@ export default flowRight(
     form: formName,
     destroyOnUnmount: false,
   }),
-)(RuleEdit);
+)(DecisionsEdit);

@@ -6,22 +6,30 @@ import {Row, Column} from 'react-foundation';
 import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import ContentItem from '$components/content/ContentItem';
+import DecisionConditionsEdit from './DecisionConditionsEdit';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
-import RuleTermsEdit from './RuleTermsEdit';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
+import {getAttributeFieldOptions} from '$src/util/helpers';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
   fields: any,
 }
 
-const RuleItemsEdit = ({fields}: Props) => {
+const RuleItemsEdit = ({attributes, fields}: Props) => {
+  const decisionMakerOptions = getAttributeFieldOptions(attributes,
+    'decisions.child.children.decision_maker');
+  const typeOptions = getAttributeFieldOptions(attributes,
+    'decisions.child.children.type');
   return(
     <div>
-      {fields && fields.length > 0 && fields.map((rule, index) =>
-        <ContentItem key={index}>
+      {fields && fields.length > 0 && fields.map((decision, index) =>
+        <ContentItem key={decision.id ? decision.id : `index_${index}`}>
           <WhiteBoxEdit>
             <BoxContentWrapper>
               <RemoveButton
@@ -30,55 +38,64 @@ const RuleItemsEdit = ({fields}: Props) => {
                 title="Poista sopimus"
               />
               <Row>
-                <Column medium={4}>
+                <Column small={8} medium={4}>
                   <Field
                     component={FieldTypeSelect}
                     label='Päättäjä'
-                    name={`${rule}.rule_maker`}
-                    options={[
-                      {value: '', label: 'To be filled'},
-                    ]}
+                    name={`${decision}.decision_maker`}
+                    options={decisionMakerOptions}
                   />
                 </Column>
-                <Column medium={2}>
+                <Column small={4} medium={2}>
                   <Field
                     component={FieldTypeDatePicker}
                     label='Päätöspäivämäärä'
-                    name={`${rule}.rule_date`}
+                    name={`${decision}.decision_date`}
                   />
                 </Column>
-                <Column medium={2}>
+                <Column small={4} medium={2}>
                   <Field
                     component={FieldTypeText}
                     label='Pykälä'
-                    name={`${rule}.rule_clause`}
+                    name={`${decision}.section`}
                   />
                 </Column>
-                <Column medium={4}>
+                <Column small={8} medium={4}>
                   <Field
                     component={FieldTypeSelect}
                     label='Päätöksen tyyppi'
-                    name={`${rule}.rule_type`}
-                    options={[
-                      {value: '', label: 'To be filled'},
-                    ]}
+                    name={`${decision}.type`}
+                    options={typeOptions}
                   />
                 </Column>
               </Row>
               <Row>
-                <Column medium={12}>
+                <Column small={12} medium={2}>
+                  <Field
+                    className='no-margin'
+                    component={FieldTypeText}
+                    label='Diaarinumero'
+                    name={`${decision}.reference_number`}
+                  />
+                </Column>
+                <Column small={12} medium={10}>
                   <Field
                     className='no-margin'
                     component={FieldTypeText}
                     label='Selite'
-                    name={`${rule}.rule_description`}
+                    name={`${decision}.description`}
                   />
                 </Column>
               </Row>
             </BoxContentWrapper>
           </WhiteBoxEdit>
 
-          <FieldArray title='Ehdot' name={`${rule}.terms`} component={RuleTermsEdit}/>
+          <FieldArray
+            attributes={attributes}
+            component={DecisionConditionsEdit}
+            name={`${decision}.conditions`}
+            title='Ehdot'
+          />
         </ContentItem>
       )}
       <Row>

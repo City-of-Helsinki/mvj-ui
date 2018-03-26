@@ -134,8 +134,8 @@ export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolea
       plot_division_date_of_approval: get(planunit, 'plot_division_date_of_approval'),
       detailed_plan_identifier: get(planunit, 'detailed_plan_identifier'),
       detailed_plan_date_of_approval: get(planunit, 'detailed_plan_date_of_approval'),
-      plan_unit_type: get(planunit, 'plan_unit_type.id'),
-      plan_unit_state: get(planunit, 'plan_unit_state.id'),
+      plan_unit_type: get(planunit, 'plan_unit_type.id') || get(planunit, 'plan_unit_type'),
+      plan_unit_state: get(planunit, 'plan_unit_state.id') || get(planunit, 'plan_unit_state'),
     };
   });
 };
@@ -205,7 +205,7 @@ export const getContentDecisionConditions = (decision: Object) => {
   return conditions.map((condition) => {
     return {
       id: get(condition, 'id'),
-      type: get(condition, 'type'),
+      type: get(condition, 'type.id') || get(condition, 'type'),
       supervision_date: get(condition, 'supervision_date'),
       supervised_date: get(condition, 'supervised_date'),
       description: get(condition, 'description'),
@@ -217,7 +217,7 @@ export const getContentDecisionItem = (decision: Object) => {
   return {
     id: get(decision, 'id'),
     reference_number: get(decision, 'reference_number'),
-    decision_maker: get(decision, 'decision_maker'),
+    decision_maker: get(decision, 'decision_maker.id') || get(decision, 'decision_maker'),
     decision_date: get(decision, 'decision_date'),
     section: get(decision, 'section'),
     type: get(decision, 'type'),
@@ -984,6 +984,44 @@ export const addAreasFormValues = (payload: Object, values: Object) => {
         location: get(area, 'location'),
         plots: getPlotsForDb(area),
         plan_units: getPlanUnitsForDb(area),
+      };
+    });
+  }
+
+  return payload;
+};
+
+const getDecisionConditionsForDb = (decision: Object) => {
+  const conditions = get(decision, 'conditions', []);
+  if(!conditions.length) {
+    return [];
+  }
+  return conditions.map((condition) => {
+    return {
+      id: condition.id || undefined,
+      type: get(condition, 'type'),
+      supervision_date: get(condition, 'supervision_date'),
+      supervised_date: get(condition, 'supervised_date'),
+      description: get(condition, 'description'),
+    };
+  });
+};
+
+export const addDecisionsFormValues = (payload: Object, values: Object) => {
+  const decisions = get(values, 'decisions', []);
+  if(!decisions.length) {
+    payload.decisions = [];
+  } else {
+    payload.decisions = decisions.map((decision) => {
+      return {
+        id: decision.id || undefined,
+        reference_number: get(decision, 'reference_number'),
+        decision_maker: get(decision, 'decision_maker'),
+        decision_date: get(decision, 'decision_date'),
+        section: get(decision, 'section'),
+        type: get(decision, 'type'),
+        description: get(decision, 'description'),
+        conditions: getDecisionConditionsForDb(decision),
       };
     });
   }

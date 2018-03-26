@@ -49,11 +49,11 @@ const DecisionItem = ({attributes, decision}: Props) => {
               {decision.conditions.map((condition) =>
                 <GreenBoxItem key={condition.id}>
                   <Row>
-                    <Column medium={4}>
+                    <Column small={6} medium={4}>
                       <label>Ehtotyyppi</label>
                       <p>{getLabelOfOption(conditionTypeOptions, condition.type) || '–'}</p>
                     </Column>
-                    <Column medium={4}>
+                    <Column small={6} medium={4}>
                       <label>Valvonta päivämäärä</label>
                       {condition.supervision_date
                         ? (
@@ -65,7 +65,7 @@ const DecisionItem = ({attributes, decision}: Props) => {
                         ) : <p>–</p>
                       }
                     </Column>
-                    <Column medium={4}>
+                    <Column small={12} medium={4}>
                       <label>Valvottu päivämäärä</label>
                       {condition.supervised_date
                         ? (

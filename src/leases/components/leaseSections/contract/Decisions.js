@@ -19,10 +19,10 @@ const Decisions = ({attributes, decisions}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.type');
   return (
     <div>
-      {!decisions || !decisions.length && <p>Ei päätöksiä</p>}
-      {decisions && decisions.length > 0 && decisions.map((decision, index) =>
+      {!decisions || !decisions.length && <p className='no-margin'>Ei päätöksiä</p>}
+      {decisions && !!decisions.length && decisions.map((decision) =>
         <Collapse
-          key={index}
+          key={decision.id}
           defaultOpen={false}
           header={
             <Row>

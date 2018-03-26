@@ -18,6 +18,8 @@ import {
   getAttributes,
   getComments,
   getCurrentLease,
+  getDecisionsFormTouched,
+  getDecisionsFormValues,
   getIsEditMode,
   getIsFetching,
   getIsLeaseAreasValid,
@@ -96,6 +98,8 @@ type Props = {
   contractsForm: Array<Object>,
   contractsTouched: boolean,
   currentLease: Object,
+  decisionsFormValues: Object,
+  decisionsFormTouched: boolean,
   dispatch: Function,
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
@@ -124,8 +128,6 @@ type Props = {
   receiveTopNavigationSettings: Function,
   rentsForm: Object,
   rentsTouched: boolean,
-  rulesForm: Array<Object>,
-  rulesTouched: boolean,
   showEditMode: Function,
   summaryFormTouched: boolean,
   summaryFormValues: Object,
@@ -241,6 +243,7 @@ class PreparerForm extends Component {
       areasFormValues,
       leaseInfoFormValues,
       summaryFormValues,
+      decisionsFormValues,
 
       contractsForm,
       currentLease,
@@ -265,6 +268,10 @@ class PreparerForm extends Component {
 
     if(areasFormValues !== undefined) {
       payload = contentHelpers.addAreasFormValues(payload, areasFormValues);
+    }
+
+    if(decisionsFormValues !== undefined) {
+      payload = contentHelpers.addDecisionsFormValues(payload, decisionsFormValues);
     }
 
     patchLease(payload);
@@ -312,12 +319,12 @@ class PreparerForm extends Component {
     dispatch(destroy('lease-area-form'));
     dispatch(destroy('lease-info-form'));
     dispatch(destroy('summary-form'));
+    dispatch(destroy('decisions-form'));
 
     dispatch(destroy('billing-edit-form'));
     dispatch(destroy('contract-edit-form'));
     dispatch(destroy('inspection-edit-form'));
     dispatch(destroy('rent-edit-form'));
-    dispatch(destroy('rule-edit-form'));
     dispatch(destroy('tenant-edit-form'));
   }
 
@@ -355,24 +362,24 @@ class PreparerForm extends Component {
       areasFormTouched,
       leaseInfoFormTouched,
       summaryFormTouched,
+      decisionsFormTouched,
 
       contractsTouched,
       eligibilityTouched,
       inspectionTouched,
       rentsTouched,
-      rulesTouched,
       tenantsTouched,
     } = this.props;
 
     return areasFormTouched ||
       leaseInfoFormTouched ||
       summaryFormTouched ||
+      decisionsFormTouched ||
 
       contractsTouched ||
       eligibilityTouched ||
       inspectionTouched ||
       rentsTouched ||
-      rulesTouched ||
       tenantsTouched;
   }
 
@@ -583,9 +590,10 @@ class PreparerForm extends Component {
               {isEditMode
                 ? (
                   <DecisionsMainEdit
+                    attributes={attributes}
                     contracts={contracts}
+                    decisions={decisions}
                     inspections={inspections}
-                    rules={decisions}
                   />
                 ) : (
                   <DecisionsMain
@@ -634,7 +642,6 @@ const contractFormSelector = formValueSelector('contract-edit-form');
 const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const inspectionFormSelector = formValueSelector('inspection-edit-form');
 const rentFormSelector = formValueSelector('rent-edit-form');
-const ruleFormSelector = formValueSelector('rule-edit-form');
 const tenantFormSelector = formValueSelector('tenant-edit-form');
 
 export default flowRight(
@@ -654,6 +661,8 @@ export default flowRight(
         contractsForm: contractFormSelector(state, 'contracts'),
         contractsTouched: get(state, 'form.contract-edit-form.anyTouched'),
         currentLease: getCurrentLease(state),
+        decisionsFormTouched: getDecisionsFormTouched(state),
+        decisionsFormValues: getDecisionsFormValues(state),
         eligibilityForm: eligibilityFormSelector(state, 'areas'),
         eligibilityTouched: get(state, 'form.eligibility-edit-form.anyTouched'),
         isEditMode: getIsEditMode(state),
@@ -668,8 +677,6 @@ export default flowRight(
         lessors: getLessors(state),
         rentsForm: rentFormSelector(state, 'rents'),
         rentsTouched: get(state, 'form.rent-edit-form.anyTouched'),
-        rulesForm: ruleFormSelector(state, 'rules'),
-        rulesTouched: get(state, 'form.rule-edit-form.anyTouched'),
         summaryFormTouched: getSummaryFormTouched(state),
         summaryFormValues: getSummaryFormValues(state),
         tenantsForm: tenantFormSelector(state, 'tenants'),
