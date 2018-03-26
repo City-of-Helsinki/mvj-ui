@@ -113,9 +113,7 @@ class ContactPage extends Component {
 
   render() {
     const {attributes, contact, isEditMode, isFetching} = this.props;
-
     const nameInfo = this.getContactNameInfo();
-    console.log('info', nameInfo);
 
     if(isFetching) {
       return (

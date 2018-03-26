@@ -17,7 +17,10 @@ import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
 import {getRouteById} from '$src/root/routes';
 import {getContactList, getIsFetching} from '../selectors';
-import {fetchContacts} from '../actions';
+import {
+  fetchContacts,
+  initializeContactForm,
+} from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getSearchQuery} from '$src/util/helpers';
 
@@ -29,6 +32,7 @@ const PAGE_SIZE = 5;
 type Props = {
   contactList: ContactList,
   fetchContacts: Function,
+  initializeContactForm: Function,
   isFetching: boolean,
   receiveTopNavigationSettings: Function,
   router: Object,
@@ -59,6 +63,7 @@ class ContactListPage extends Component {
       pageTitle: 'Asiakkaat',
       showSearch: false,
     });
+
     const page = Number(query.page);
     if(!page || !isNumber(page) || query.page <= 1) {
       this.setState({activePage: 1});
@@ -78,14 +83,10 @@ class ContactListPage extends Component {
   }
 
   handleCreateButtonClick = () => {
-    // const {initializeRentCriteria} = this.props;
+    const {initializeContactForm} = this.props;
     const {router} = this.context;
 
-    // initializeRentCriteria({
-    //   decisions: [''],
-    //   prices: [{}],
-    //   real_estate_ids: [''],
-    // });
+    initializeContactForm({});
 
     return router.push({
       pathname: getRouteById('newcontact'),
@@ -98,10 +99,12 @@ class ContactListPage extends Component {
     const {router} = this.context;
 
     query.limit = PAGE_SIZE;
-
     if(activePage > 1) {
       query.page = activePage;
       query.offset = (activePage - 1) * PAGE_SIZE;
+    } else {
+      query.page = undefined;
+      query.offset = undefined;
     }
     fetchContacts(getSearchQuery(query));
 
@@ -131,10 +134,14 @@ class ContactListPage extends Component {
     if(page > 1) {
       query.page = page;
       query.offset = (page - 1) * PAGE_SIZE;
+    } else {
+      query.page = undefined;
+      query.offset = undefined;
     }
     fetchContacts(getSearchQuery(query));
 
     this.setState({activePage: page});
+
     query.offset = undefined;
     query.limit = undefined;
 
@@ -237,6 +244,7 @@ export default flowRight(
     },
     {
       fetchContacts,
+      initializeContactForm,
       receiveTopNavigationSettings,
     },
   ),
