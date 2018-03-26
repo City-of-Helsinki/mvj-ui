@@ -7,8 +7,8 @@ import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
 type Props = {
   buttonSelectorOptions?: Array<Object>,
   buttonSelectorValue?: Array<string>,
-  iconSelectorOptions: Array<Object>,
-  iconSelectorValue: string,
+  iconSelectorOptions?: Array<Object>,
+  iconSelectorValue?: string,
   onButtonSelectorChange: Function,
   onIconSelectorChange: Function,
   title: string,
@@ -19,6 +19,7 @@ class TableControllers extends Component {
 
   static defaultProps = {
     onButtonSelectorChange: (value) => console.log(value),
+    onIconSelectorChange: (value) => console.log(value),
   };
 
   render () {
@@ -37,7 +38,7 @@ class TableControllers extends Component {
         <div className='title-wrapper'>
           <span>{title}</span>
         </div>
-        {buttonSelectorOptions && buttonSelectorOptions.length &&
+        {buttonSelectorOptions && !!buttonSelectorOptions.length &&
           <div className='button-selector-wrapper'>
             <StyledCheckboxButtons
               checkboxName='checkbox-buttons-document-type'
@@ -49,14 +50,16 @@ class TableControllers extends Component {
             />
           </div>
         }
-        <div className='icon-selector-wrapper'>
-          <IconRadioButtons
-            onChange={(value) => onIconSelectorChange(value)}
-            options={iconSelectorOptions}
-            radioName='radio-buttons-selector-type'
-            value={iconSelectorValue}
-          />
-        </div>
+        {iconSelectorOptions && !!iconSelectorOptions.length &&
+          <div className='icon-selector-wrapper'>
+            <IconRadioButtons
+              onChange={(value) => onIconSelectorChange(value)}
+              options={iconSelectorOptions}
+              radioName='radio-buttons-selector-type'
+              value={iconSelectorValue}
+            />
+          </div>
+        }
       </div>
     );
   }

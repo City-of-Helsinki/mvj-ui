@@ -12,18 +12,12 @@ import {formatDateObj, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {purposeOptions} from '../constants';
 import {getRouteById} from '$src/root/routes';
 import Button from '$components/button/Button';
-import EditableMap from '$components/map/EditableMap';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
 import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
-
-import mapGreenIcon from '$assets/icons/map-green.svg';
-import mapIcon from '$assets/icons/map.svg';
-import tableGreenIcon from '$assets/icons/table-green.svg';
-import tableIcon from '$assets/icons/table.svg';
 
 type Props = {
   fetchRentCriterias: Function,
@@ -34,16 +28,8 @@ type Props = {
   router: Object,
 }
 
-type State = {
-  visualizationType: string,
-}
-
 class RentCriteriaList extends Component {
   props: Props
-
-  state: State = {
-    visualizationType: 'table',
-  }
 
   static contextTypes = {
     router: PropTypes.object,
@@ -94,7 +80,6 @@ class RentCriteriaList extends Component {
     return router.push({
       pathname: getRouteById('newrentcriteria'),
     });
-
   }
 
   handleRowClick = (id) => {
@@ -109,7 +94,6 @@ class RentCriteriaList extends Component {
 
   render() {
     const {isFetching, rentcriterias} = this.props;
-    const {visualizationType} = this.state;
 
     return (
       <PageContainer>
@@ -117,9 +101,9 @@ class RentCriteriaList extends Component {
           buttonComponent={
             <Button
               className='no-margin'
-              label='Luo uusi vuokrausperuste'
+              label='Luo vuokrausperuste'
               onClick={() => this.handleCreateButtonClick()}
-              title='Luo uusi vuokrausperuste'
+              title='Luo vuokrausperuste'
             />
           }
           searchComponent={
@@ -129,36 +113,24 @@ class RentCriteriaList extends Component {
             />
           }
         />
-        <TableControllers
-          iconSelectorOptions={[
-            {value: 'table', label: 'Taulukko', icon: tableIcon, iconSelected: tableGreenIcon},
-            {value: 'map', label: 'Kartta', icon: mapIcon, iconSelected: mapGreenIcon}]
-          }
-          iconSelectorValue={visualizationType}
-          onIconSelectorChange={
-            (value) => this.setState({visualizationType: value})
-          }
-          title={`Viimeksi muokattuja`}
-        />
+
         {isFetching && <Row><Column><div className='loader__wrapper'><Loader isLoading={isFetching} /></div></Column></Row>}
         {!isFetching &&
           <div>
-            {visualizationType === 'table' && (
-              <Table
-                amount={rentcriterias.length}
-                data={rentcriterias}
-                dataKeys={[
-                  {key: 'real_estate_ID', label: 'Kiinteistötunnus'},
-                  {key: 'purpose', label: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(purposeOptions, val) : '-'},
-                  {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
-                  {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
-                ]}
-                onRowClick={this.handleRowClick}
-              />
-            )}
-            {visualizationType === 'map' && (
-              <EditableMap />
-            )}
+            <TableControllers
+              title={`Viimeksi muokattuja`}
+            />
+            <Table
+              amount={rentcriterias.length}
+              data={rentcriterias}
+              dataKeys={[
+                {key: 'real_estate_ID', label: 'Kiinteistötunnus'},
+                {key: 'purpose', label: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(purposeOptions, val) : '-'},
+                {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
+                {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
+              ]}
+              onRowClick={this.handleRowClick}
+            />
           </div>
         }
       </PageContainer>
