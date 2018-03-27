@@ -70,7 +70,10 @@ class DecisionsMainEdit extends Component {
 
         <h1>Tarkastukset ja huomautukset</h1>
         <Divider />
-        <InspectionsEdit initialValues={{inspections: inspections}} />
+        <InspectionsEdit
+          attributes={attributes}
+          initialValues={{inspections: inspections}}
+        />
       </div>
     );
   }

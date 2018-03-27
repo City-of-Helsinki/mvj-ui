@@ -28,6 +28,7 @@ import {
   getIsFetching,
   getIsContractsFormValid,
   getIsDecisionsFormValid,
+  getIsInspectionsFormValid,
   getIsLeaseAreasFormValid,
   getIsLeaseInfoFormValid,
   getIsSummaryFormValid,
@@ -120,6 +121,7 @@ type Props = {
   isFetching: boolean,
   isContractsFormValid: boolean,
   isDecisionsFormValid: boolean,
+  isInspectionsFormValid: boolean,
   isLeaseAreasFormValid: boolean,
   isLeaseInfoFormValid: boolean,
   isSummaryFormValid: boolean,
@@ -334,6 +336,7 @@ class PreparerForm extends Component {
     const {
       isContractsFormValid,
       isDecisionsFormValid,
+      isInspectionsFormValid,
       isLeaseAreasFormValid,
       isLeaseInfoFormValid,
       isSummaryFormValid,
@@ -341,6 +344,7 @@ class PreparerForm extends Component {
 
     return isContractsFormValid &&
       isDecisionsFormValid &&
+      isInspectionsFormValid &&
       isLeaseAreasFormValid &&
       isLeaseInfoFormValid &&
       isSummaryFormValid;
@@ -672,6 +676,7 @@ export default flowRight(
         isEditMode: getIsEditMode(state),
         isContractsFormValid: getIsContractsFormValid(state),
         isDecisionsFormValid: getIsDecisionsFormValid(state),
+        isInspectionsFormValid: getIsInspectionsFormValid(state),
         isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
         isLeaseInfoFormValid: getIsLeaseInfoFormValid(state),
         isSummaryFormValid: getIsSummaryFormValid(state),

@@ -2,25 +2,41 @@
 import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
-import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
+import {reduxForm, FieldArray} from 'redux-form';
 
 import FormSection from '$components/form/FormSection';
 import InspectionItemsEdit from './InspectionItemsEdit';
+import {getIsInspectionsFormValid} from '$src/leases/selectors';
+import {receiveInspectionsFormValid} from '$src/leases/actions';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
   handleSubmit: Function,
+  isInspectionsFormValid: boolean,
+  receiveInspectionsFormValid: Function,
+  valid: boolean,
 }
 
 class InspectionsEdit extends Component {
   props: Props
 
+  componentDidUpdate() {
+    const {isInspectionsFormValid, receiveInspectionsFormValid, valid} = this.props;
+    if(isInspectionsFormValid !== valid) {
+      receiveInspectionsFormValid(valid);
+    }
+  }
+
   render() {
-    const {handleSubmit} = this.props;
+    const {attributes, handleSubmit} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <FieldArray
+            attributes={attributes}
             component={InspectionItemsEdit}
             name="inspections"
           />
@@ -31,14 +47,16 @@ class InspectionsEdit extends Component {
 }
 
 const formName = 'inspections-form';
-const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
     (state) => {
       return {
-        inspections: selector(state, 'inspections'),
+        isInspectionsFormValid: getIsInspectionsFormValid(state),
       };
+    },
+    {
+      receiveInspectionsFormValid,
     }
   ),
   reduxForm({
