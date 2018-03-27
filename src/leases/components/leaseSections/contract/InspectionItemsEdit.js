@@ -31,7 +31,9 @@ const InspectionItemsEdit = ({
   return(
     <GreenBoxEdit>
       {fields && fields.length > 0 && fields.map((inspection, index) =>
-        <GreenBoxItem className='no-border-on-first-child' key={index}>
+        <GreenBoxItem
+          className='no-border-on-first-child'
+          key={inspection.id ? inspection.id : `index_${index}`}>
           <BoxContentWrapper>
             <RemoveButton
               className='position-topright-no-padding'
