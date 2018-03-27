@@ -67,6 +67,8 @@
     font-weight: normal;
     color: $black;
     margin-bottom: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis
   }
 
   p.no-margin {

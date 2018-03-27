@@ -176,7 +176,7 @@ class ContactListPage extends Component {
     const count = this.getContactCount(contactList);
     const contacts = this.getContacts(contactList);
     const maxPage = this.getContactMaxPage(contactList);
-    console.log(contactList);
+
     return(
       <PageContainer>
         <SearchWrapper

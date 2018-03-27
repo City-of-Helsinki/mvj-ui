@@ -16,6 +16,7 @@ import {
   receiveLeases,
   receiveSingleLease,
   receiveLessors,
+  receiveDecisions,
   notFound,
 } from './actions';
 
@@ -32,6 +33,7 @@ import {
   createLease,
   patchLease,
   fetchLessors,
+  fetchDecisions,
 } from './requests';
 
 import {receiveError} from '../api/actions';
@@ -63,6 +65,25 @@ function* fetchLessorsSaga(): Generator<> {
     switch (statusCode) {
       case 200:
         yield put(receiveLessors(lessors));
+        break;
+      case 404:
+      case 500:
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch lessors with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
+function* fetchDecisionsSaga({payload: search}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchDecisions, search);
+    const decisions = bodyAsJson.results;
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveDecisions(decisions));
         break;
       case 404:
       case 500:
@@ -262,6 +283,7 @@ export default function*(): Generator<> {
     fork(function*(): Generator<> {
       yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/leases/FETCH_LESSORS', fetchLessorsSaga);
+      yield takeLatest('mvj/leases/FETCH_DECISIONS', fetchDecisionsSaga);
       yield takeLatest('mvj/leases/FETCH_ALL', fetchLeasesSaga);
       yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);

@@ -18,7 +18,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 import {genericValidator} from '$components/form/validations';
-import {getIsLeaseAreasValid} from '../../../selectors';
+import {getIsLeaseAreasFormValid} from '../../../selectors';
 import {receiveLeaseAreasFormValid} from '../../../actions';
 
 type AreaItemProps = {
@@ -178,7 +178,7 @@ type Props = {
   areas: Array<Object>,
   attributes: Object,
   handleSubmit: Function,
-  isLeaseAreasValid: boolean,
+  isLeaseAreasFormValid: boolean,
   receiveLeaseAreasFormValid: Function,
   valid: boolean,
 }
@@ -187,8 +187,8 @@ class LeaseAreasEdit extends Component {
   props: Props
 
   componentDidUpdate() {
-    const {isLeaseAreasValid, receiveLeaseAreasFormValid, valid} = this.props;
-    if(isLeaseAreasValid !== valid) {
+    const {isLeaseAreasFormValid, receiveLeaseAreasFormValid, valid} = this.props;
+    if(isLeaseAreasFormValid !== valid) {
       receiveLeaseAreasFormValid(valid);
     }
   }
@@ -211,13 +211,13 @@ class LeaseAreasEdit extends Component {
   }
 }
 
-const formName = 'lease-area-form';
+const formName = 'lease-areas-form';
 
 export default flowRight(
   connect(
     (state) => {
       return {
-        isLeaseAreasValid: getIsLeaseAreasValid(state),
+        isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
       };
     },
     {

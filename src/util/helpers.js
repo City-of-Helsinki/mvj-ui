@@ -357,10 +357,33 @@ export const getLessorOptions = (lessors: Array<Object>) => {
     return [];
   }
 
-  return lessors.filter((item) => item.is_lessor).map((item) => {
+  return lessors.map((item) => {
     return {
       value: item.id,
       label: item.is_business ? item.business_name : `${item.last_name} ${item.first_name}`,
+    };
+  });
+};
+
+/**
+ * Get options for decisions field
+ * @param decisions
+ */
+export const getDecisionsOptions = (decisions: Array<Object>) => {
+  if(!decisions || !decisions.length) {
+    return [];
+  }
+
+  return decisions.map((item) => {
+    if(!item.reference_number && !item.decision_date && !item.section) {
+      return {
+        value: item.id,
+        label: item.id,
+      };
+    }
+    return {
+      value: item.id,
+      label: `${item.reference_number ? item.reference_number + ', ' : ''}${item.section ? item.section + ' §, ' : ''}${formatDate(item.decision_date)}`,
     };
   });
 };

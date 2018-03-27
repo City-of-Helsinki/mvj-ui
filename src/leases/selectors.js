@@ -10,14 +10,23 @@ export const getIsEditMode: Selector<boolean, void> = (state: LeaseState): boole
 export const getIsFetching: Selector<Lease, void> = (state: Object): LeaseState =>
   state.lease.isFetching;
 
-export const getIsLeaseAreasValid: Selector<any, void> = (state: Object): boolean =>
-  state.lease.isLeaseAreasValid;
+export const getIsContractsFormValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isContractsFormValid;
 
-export const getIsLeaseInfoValid: Selector<any, void> = (state: Object): boolean =>
-  state.lease.isLeaseInfoValid;
+export const getIsDecisionsFormValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isDecisionsFormValid;
 
-export const getIsSummaryValid: Selector<any, void> = (state: Object): boolean =>
-  state.lease.isSummaryValid;
+export const getIsInspectionsFormValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isInspectionsFormValid;
+
+export const getIsLeaseAreasFormValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isLeaseAreasFormValid;
+
+export const getIsLeaseInfoFormValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isLeaseInfoFormValid;
+
+export const getIsSummaryFormValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isSummaryFormValid;
 
 export const getAttributes: Selector<Attributes, void> = (state: Object): LeaseState =>
   state.lease.attributes;
@@ -34,20 +43,35 @@ export const getLeasesList: Selector<Lease, void> = (state: Object): LeaseState 
 export const getCurrentLease: Selector<Lease, void> = (state: Object): LeaseState =>
   state.lease.current;
 
-export const getInvoices: Selector<Object, void> = (state: Object): LeaseState =>
-  state.lease.invoices;
-
 export const getLessors: Selector<Object, void> = (state: Object): LeaseState =>
   state.lease.lessors;
 
-export const getAreas: Selector<Object, void> = (state: Object): LeaseState =>
-  state.lease.areas;
+export const getDecisions: Selector<Object, void> = (state: Object): LeaseState =>
+  state.lease.decisions;
 
 export const getAreasFormTouched: Selector<any, void> = (state: Object): Object =>
-  get(state, 'form.lease-area-form.anyTouched');
+  get(state, 'form.lease-areas-form.anyTouched');
 
 export const getAreasFormValues: Selector<any, void> = (state: Object): Object =>
-  get(state, 'form.lease-area-form.values');
+  get(state, 'form.lease-areas-form.values');
+
+export const getContractsFormTouched: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.contracts-form.anyTouched');
+
+export const getContractsFormValues: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.contracts-form.values');
+
+export const getDecisionsFormTouched: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.decisions-form.anyTouched');
+
+export const getDecisionsFormValues: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.decisions-form.values');
+
+export const getInspectionsFormTouched: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.inspections-form.anyTouched');
+
+export const getInspectionsFormValues: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.inspections-form.values');
 
 export const getLeaseInfoFormTouched: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.lease-info-form.anyTouched');

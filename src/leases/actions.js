@@ -3,22 +3,19 @@
 import {createAction} from 'redux-actions';
 
 import type {
-  Areas,
-  FetchAttributesAction,
-  FetchLessorsAction,
-  FetchInvoicesAction,
-  FetchAreasAction,
   Attributes,
+  FetchAttributesAction,
   ReceiveAttributesAction,
+  Lessors,
+  FetchLessorsAction,
   ReceiveLessorsAction,
-  ReceiveInvoicesAction,
-  ReceiveAreasAction,
+  Decisions,
+  FetchDecisionsAction,
+  ReceiveDecisionsAction,
   Lease,
-  Invoices,
   LeaseId,
   LeaseNotFoundAction,
   LeasesList,
-  Lessors,
   CreateLeaseAction,
   EditLeaseAction,
   PatchLeaseAction,
@@ -26,8 +23,6 @@ import type {
   FetchSingleLeaseAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
-  HideEditModeAction,
-  ShowEditModeAction,
   Comment,
   FetchCommentsAction,
   ReceiveCommentsAction,
@@ -37,7 +32,12 @@ import type {
   ReceiveCreatedCommentAction,
   EditCommentAction,
   ReceiveEditedCommentAction,
+  HideEditModeAction,
+  ShowEditModeAction,
   ClearFormValidityFlagsAction,
+  ReceiveContractsFormValidAction,
+  ReceiveDecisionsFormValidAction,
+  ReceiveInspectionsFormValidAction,
   ReceiveLeaseInfoFormValidAction,
   ReceiveSummaryFormValidAction,
   ReceiveLeaseAreasFormValidAction,
@@ -55,17 +55,11 @@ export const fetchLessors = (): FetchLessorsAction =>
 export const receiveLessors = (lessors: Lessors): ReceiveLessorsAction =>
   createAction('mvj/leases/RECEIVE_LESSORS')(lessors);
 
-export const fetchInvoices = (lease: LeaseId): FetchInvoicesAction =>
-  createAction('mvj/leases/FETCH_INVOICES')(lease);
+export const fetchDecisions = (search: string): FetchDecisionsAction =>
+  createAction('mvj/leases/FETCH_DECISIONS')(search);
 
-export const receiveInvoices = (invoices: Invoices): ReceiveInvoicesAction =>
-  createAction('mvj/leases/RECEIVE_INVOICES')(invoices);
-
-export const fetchAreas = (): FetchAreasAction =>
-  createAction('mvj/leases/FETCH_AREAS')();
-
-export const receiveAreas = (areas: Areas): ReceiveAreasAction =>
-  createAction('mvj/leases/RECEIVE_AREAS')(areas);
+export const receiveDecisions = (decisions: Decisions): ReceiveDecisionsAction =>
+  createAction('mvj/leases/RECEIVE_DECISIONS')(decisions);
 
 export const fetchLeases = (search: string): FetchLeasesAction =>
   createAction('mvj/leases/FETCH_ALL')(search);
@@ -125,11 +119,20 @@ export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentActi
 export const clearFormValidFlags = (): ClearFormValidityFlagsAction =>
   createAction('mvj/leases/CLEAR_FORM_VALIDITY_FLAGS')();
 
+export const receiveContractsFormValid = (valid: boolean): ReceiveContractsFormValidAction =>
+  createAction('mvj/leases/RECEIVE_CONTRACTS_FORM_VALID')(valid);
+
+export const receiveDecisionsFormValid = (valid: boolean): ReceiveDecisionsFormValidAction =>
+  createAction('mvj/leases/RECEIVE_DECISIONS_FORM_VALID')(valid);
+
+export const receiveInspectionsFormValid = (valid: boolean): ReceiveInspectionsFormValidAction =>
+  createAction('mvj/leases/RECEIVE_INSPECTIONS_FORM_VALID')(valid);
+
 export const receiveLeaseAreasFormValid = (valid: boolean): ReceiveLeaseAreasFormValidAction =>
-  createAction('mvj/leases/RECEIVE_LEASE_AREAS_VALID')(valid);
+  createAction('mvj/leases/RECEIVE_LEASE_AREAS_FORM_VALID')(valid);
 
 export const receiveLeaseInfoFormValid = (valid: boolean): ReceiveLeaseInfoFormValidAction =>
-  createAction('mvj/leases/RECEIVE_LEASE_INFO_VALID')(valid);
+  createAction('mvj/leases/RECEIVE_LEASE_INFO_FORM_VALID')(valid);
 
 export const receiveSummaryFormValid = (valid: boolean): ReceiveSummaryFormValidAction =>
-  createAction('mvj/leases/RECEIVE_SUMMARY_VALID')(valid);
+  createAction('mvj/leases/RECEIVE_SUMMARY_FORM_VALID')(valid);

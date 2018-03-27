@@ -14,16 +14,24 @@
     &-title {
       font-size: $font-large;
       font-weight: $semibold;
-      line-height: 1.6;
       display: inline-block;
-      text-transform: capitalize;
+      height: rem-calc(30px);
+      line-height: rem-calc(30px);
+      max-width: calc(100% - 35px);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     &-subtitle {
       font-size: $font-regular;
-      line-height: rem-calc(32px);
-      height: rem-calc(32px);
+      line-height: rem-calc(30px);
+      height: rem-calc(30px);
       display: inline-block;
+      overflow: hidden;
+      max-width: calc(100% - 30px);
+      white-space: nowrap;
+      text-overflow: ellipsis
     }
 
     &-neutral {
@@ -76,8 +84,7 @@
       content: ' ';
       height: rem-calc(20px);
       width: rem-calc(20px);
-      top: calc(50% - 15px);
-      right: rem-calc(10px);
+      right: 0;
     }
   }
 
@@ -134,8 +141,7 @@
         content: ' ';
         height: rem-calc(16px);
         width: rem-calc(16px);
-        top: calc(50% - 8px);
-        right: rem-calc(12px);
+        right: rem-calc(20px);
       }
     }
 

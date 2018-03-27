@@ -9,14 +9,19 @@ import type {
   Lease,
   LeasesList,
   Lessors,
+  Decisions,
   ReceiveAttributesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
   ReceiveLessorsAction,
+  ReceiveDecisionsAction,
   ReceiveCommentsAction,
   ReceiveCommentAttributesAction,
   ReceiveCreatedCommentAction,
   ReceiveEditedCommentAction,
+  ReceiveContractsFormValidAction,
+  ReceiveDecisionsFormValidAction,
+  ReceiveInspectionsFormValidAction,
   ReceiveLeaseInfoFormValidAction,
   ReceiveSummaryFormValidAction,
   ReceiveLeaseAreasFormValidAction,
@@ -28,8 +33,6 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
 }, false);
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
-  // 'mvj/leases/FETCH_IDENTIFIERS': () => true,
-  // 'mvj/leases/RECEIVE_ATTRIBUTES': () => false,
   'mvj/leases/CREATE': () => true,
   'mvj/leases/EDIT': () => true,
   'mvj/leases/PATCH': () => true,
@@ -86,22 +89,49 @@ const lessorsReducer: Reducer<Lessors> = handleActions({
   },
 }, []);
 
-const leaseInfoValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_LEASE_INFO_VALID']: (state: boolean, {payload: valid}: ReceiveLeaseInfoFormValidAction) => {
+const decisionsReducer: Reducer<Decisions> = handleActions({
+  ['mvj/leases/RECEIVE_DECISIONS']: (state: Decisions, {payload: decisions}: ReceiveDecisionsAction) => {
+    return decisions;
+  },
+}, []);
+
+const contractsFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_CONTRACTS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveContractsFormValidAction) => {
     return valid;
   },
   'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
 }, true);
 
-const summaryValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_SUMMARY_VALID']: (state: boolean, {payload: valid}: ReceiveSummaryFormValidAction) => {
+const decisionsFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_DECISIONS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveDecisionsFormValidAction) => {
     return valid;
   },
   'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
 }, true);
 
-const leaseAreasValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_LEASE_AREAS_VALID']: (state: boolean, {payload: valid}: ReceiveLeaseAreasFormValidAction) => {
+const inspectionsFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_INSPECTIONS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveInspectionsFormValidAction) => {
+    return valid;
+  },
+  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
+}, true);
+
+const leaseInfoFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_LEASE_INFO_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveLeaseInfoFormValidAction) => {
+    return valid;
+  },
+  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
+}, true);
+
+const summaryFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_SUMMARY_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveSummaryFormValidAction) => {
+    return valid;
+  },
+  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
+}, true);
+
+const leaseAreasFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_LEASE_AREAS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveLeaseAreasFormValidAction) => {
     return valid;
   },
   'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
@@ -114,9 +144,13 @@ export default combineReducers({
   current: currentLeaseReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  isContractsFormValid: contractsFormValidReducer,
+  isDecisionsFormValid: decisionsFormValidReducer,
+  isInspectionsFormValid: inspectionsFormValidReducer,
+  isLeaseAreasFormValid: leaseAreasFormValidReducer,
+  isLeaseInfoFormValid: leaseInfoFormValidReducer,
+  isSummaryFormValid: summaryFormValidReducer,
   list: leasesListReducer,
   lessors: lessorsReducer,
-  isLeaseAreasValid: leaseAreasValidReducer,
-  isLeaseInfoValid: leaseInfoValidReducer,
-  isSummaryValid: summaryValidReducer,
+  decisions: decisionsReducer,
 });

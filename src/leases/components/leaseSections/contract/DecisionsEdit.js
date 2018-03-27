@@ -4,28 +4,28 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {reduxForm, FieldArray} from 'redux-form';
 
+import {getIsDecisionsFormValid} from '../../../selectors';
+import {receiveDecisionsFormValid} from '../../../actions';
 import FormSection from '$components/form/FormSection';
-import InspectionItemsEdit from './InspectionItemsEdit';
-import {getIsInspectionsFormValid} from '$src/leases/selectors';
-import {receiveInspectionsFormValid} from '$src/leases/actions';
+import DecisionItemsEdit from './DecisionItemsEdit';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   handleSubmit: Function,
-  isInspectionsFormValid: boolean,
-  receiveInspectionsFormValid: Function,
+  isDecisionsFormValid: boolean,
+  receiveDecisionsFormValid: Function,
   valid: boolean,
 }
 
-class InspectionsEdit extends Component {
+class DecisionsEdit extends Component {
   props: Props
 
   componentDidUpdate() {
-    const {isInspectionsFormValid, receiveInspectionsFormValid, valid} = this.props;
-    if(isInspectionsFormValid !== valid) {
-      receiveInspectionsFormValid(valid);
+    const {isDecisionsFormValid, receiveDecisionsFormValid, valid} = this.props;
+    if(isDecisionsFormValid !== valid) {
+      receiveDecisionsFormValid(valid);
     }
   }
 
@@ -37,8 +37,8 @@ class InspectionsEdit extends Component {
         <FormSection>
           <FieldArray
             attributes={attributes}
-            component={InspectionItemsEdit}
-            name="inspections"
+            component={DecisionItemsEdit}
+            name="decisions"
           />
         </FormSection>
       </form>
@@ -46,21 +46,21 @@ class InspectionsEdit extends Component {
   }
 }
 
-const formName = 'inspections-form';
+const formName = 'decisions-form';
 
 export default flowRight(
   connect(
     (state) => {
       return {
-        isInspectionsFormValid: getIsInspectionsFormValid(state),
+        isDecisionsFormValid: getIsDecisionsFormValid(state),
       };
     },
     {
-      receiveInspectionsFormValid,
-    }
+      receiveDecisionsFormValid,
+    },
   ),
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
   }),
-)(InspectionsEdit);
+)(DecisionsEdit);

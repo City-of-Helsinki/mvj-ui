@@ -134,8 +134,8 @@ export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolea
       plot_division_date_of_approval: get(planunit, 'plot_division_date_of_approval'),
       detailed_plan_identifier: get(planunit, 'detailed_plan_identifier'),
       detailed_plan_date_of_approval: get(planunit, 'detailed_plan_date_of_approval'),
-      plan_unit_type: get(planunit, 'plan_unit_type.id'),
-      plan_unit_state: get(planunit, 'plan_unit_state.id'),
+      plan_unit_type: get(planunit, 'plan_unit_type.id') || get(planunit, 'plan_unit_type'),
+      plan_unit_state: get(planunit, 'plan_unit_state.id') || get(planunit, 'plan_unit_state'),
     };
   });
 };
@@ -194,6 +194,135 @@ export const getContentComments = (content: Array<Object>) => {
       lease: get(comment, 'lease'),
     };
   });
+};
+
+export const getContentDecisionConditions = (decision: Object) => {
+  const conditions = get(decision, 'conditions', []);
+  if(!conditions.length) {
+    return [];
+  }
+
+  return conditions.map((condition) => {
+    return {
+      id: get(condition, 'id'),
+      type: get(condition, 'type.id') || get(condition, 'type'),
+      supervision_date: get(condition, 'supervision_date'),
+      supervised_date: get(condition, 'supervised_date'),
+      description: get(condition, 'description'),
+    };
+  });
+};
+
+export const getContentDecisionItem = (decision: Object) => {
+  return {
+    id: get(decision, 'id'),
+    reference_number: get(decision, 'reference_number'),
+    decision_maker: get(decision, 'decision_maker.id') || get(decision, 'decision_maker'),
+    decision_date: get(decision, 'decision_date'),
+    section: get(decision, 'section'),
+    type: get(decision, 'type.id') || get(decision, 'type'),
+    description: get(decision, 'description'),
+    conditions: getContentDecisionConditions(decision),
+  };
+};
+
+export const getContentDecisions = (lease: Object) => {
+  const decisions = get(lease, 'decisions', []);
+  if(!decisions.length) {
+    return [];
+  }
+
+  return decisions.map((decision) =>
+    getContentDecisionItem(decision)
+  );
+};
+
+export const getContentContractChanges = (contract: Object) => {
+  const changes = get(contract, 'contract_changes', []);
+  if(!changes.length) {
+    return [];
+  }
+
+  return changes.map((change) => {
+    return ({
+      id: get(change, 'id'),
+      signing_date: get(change, 'signing_date'),
+      sign_by_date: get(change, 'sign_by_date'),
+      first_call_sent: get(change, 'first_call_sent'),
+      second_call_sent: get(change, 'second_call_sent'),
+      third_call_sent: get(change, 'third_call_sent'),
+      description: get(change, 'description'),
+      decision: get(change, 'decision.id') || get(change, 'decision'),
+    });
+  });
+};
+
+export const getContentContractMortageDocuments = (contract: Object) => {
+  const documents = get(contract, 'mortgage_documents', []);
+  if(!documents.length) {
+    return [];
+  }
+
+  return documents.map((document) => {
+    return ({
+      id: get(document, 'id'),
+      number: get(document, 'number'),
+      date: get(document, 'date'),
+      note: get(document, 'note'),
+    });
+  });
+};
+
+export const getContentContractItem = (contract: Object) => {
+  return {
+    id: get(contract, 'id'),
+    type: get(contract, 'type.id') || get(contract, 'type'),
+    contract_number: get(contract, 'contract_number'),
+    signing_date: get(contract, 'signing_date'),
+    signing_note: get(contract, 'signing_note'),
+    is_readjustment_decision: get(contract, 'is_readjustment_decision'),
+    decision: get(contract, 'decision.id') || get(contract, 'decision'),
+    ktj_link: get(contract, 'ktj_link'),
+    collateral_number: get(contract, 'collateral_number'),
+    collateral_start_date: get(contract, 'collateral_start_date'),
+    collateral_end_date: get(contract, 'collateral_end_date'),
+    collateral_note: get(contract, 'collateral_note'),
+    institution_identifier: get(contract, 'institution_identifier'),
+    contract_changes: getContentContractChanges(contract),
+    mortgage_documents: getContentContractMortageDocuments(contract),
+  };
+};
+
+export const getContentContracts = (lease: Object) => {
+  const contracts = get(lease, 'contracts', []);
+  if(!contracts || contracts.length === 0) {
+    return [];
+  }
+
+  return contracts.map((contract) =>
+    getContentContractItem(contract)
+  );
+};
+
+export const getContentInspectionItem = (inspection: Object) => {
+  return {
+    id: get(inspection, 'id'),
+    inspector: get(inspection, 'inspector'),
+    supervision_date: get(inspection, 'supervision_date'),
+    supervised_date: get(inspection, 'supervised_date'),
+    description: get(inspection, 'description'),
+  };
+};
+
+export const getContentInspections = (lease: Object) => {
+  const inspections = get(lease, 'inspections', []);
+  if(!inspections.length) {
+    return [];
+  }
+
+  return inspections.map((inspection) =>
+    getContentInspectionItem(inspection)
+  );
 };
 
 //
@@ -327,87 +456,6 @@ export const getContentFixedInitialYearRentItems = (items: Array<Object>) => {
       start_date: get(item, 'start_date'),
     };
   });
-};
-
-export const getContentContractModification = (modifications: Array<Object>) => {
-  if(!modifications || modifications.length === 0) {
-    return [];
-  }
-
-  return modifications.map((modification) => {
-    return ({
-      first_call_sent: get(modification, 'first_call_sent'),
-      modification_description: get(modification, 'modification_description'),
-      modification_signing_date: get(modification, 'modification_signing_date'),
-      second_call_sent: get(modification, 'second_call_sent'),
-      third_call_sent: get(modification, 'third_call_sent'),
-      to_be_signed_by: get(modification, 'to_be_signed_by'),
-    });
-  });
-};
-
-export const getContentContractPledgeBooks = (pledgeBooks: Array<Object>) => {
-  if(!pledgeBooks || pledgeBooks.length === 0) {
-    return [];
-  }
-
-  return pledgeBooks.map((book) => {
-    return ({
-      pledge_book_comment: get(book, 'pledge_book_comment'),
-      pledge_book_number: get(book, 'pledge_book_number'),
-      pledge_book_date: get(book, 'pledge_book_date'),
-    });
-  });
-};
-
-export const getContentContractItem = (contract: Object) => {
-  return {
-    active: get(contract, 'active'),
-    administration_number: get(contract, 'administration_number'),
-    contract_number: get(contract, 'contract_number'),
-    contract_type: get(contract, 'contract_type'),
-    ktj_document: get(contract, 'ktj_document'),
-    lease_deposit_comment: get(contract, 'lease_deposit_comment'),
-    lease_deposit_ending_date: get(contract, 'lease_deposit_ending_date'),
-    lease_deposit_number: get(contract, 'lease_deposit_number'),
-    lease_deposit_starting_date: get(contract, 'lease_deposit_starting_date'),
-    modifications: getContentContractModification(get(contract, 'modifications', [])),
-    pledge_books: getContentContractPledgeBooks(get(contract, 'pledge_books', [])),
-    setup_decision: get(contract, 'setup_decision'),
-    signing_date: get(contract, 'signing_date'),
-    signing_date_comment: get(contract, 'signing_date_comment'),
-  };
-};
-
-export const getContentContracts = (lease: Object) => {
-  const contracts = get(lease, 'contracts', []);
-  if(!contracts || contracts.length === 0) {
-    return [];
-  }
-
-  return contracts.map((contract) =>
-    getContentContractItem(contract)
-  );
-};
-
-export const getContentInspectionItem = (inspection: Object) => {
-  return {
-    inspection_description: get(inspection, 'inspection_description'),
-    inspector: get(inspection, 'inspector'),
-    supervision_date: get(inspection, 'supervision_date'),
-    supervised_date: get(inspection, 'supervised_date'),
-  };
-};
-
-export const getContentInspections = (lease: Object) => {
-  const inspections = get(lease, 'inspections', []);
-  if(!inspections || inspections.length === 0) {
-    return [];
-  }
-
-  return inspections.map((inspection) =>
-    getContentInspectionItem(inspection)
-  );
 };
 
 export const getContentLeaseAreaConstructionEligibilityComments = (comments: Array<Object>) => {
@@ -594,44 +642,6 @@ export const getContentRents = (lease: Object) => {
     discounts: getContentRentDiscount(get(lease, 'rents.discounts', [])),
     index_adjusted_rents: getContentRentIndexAdjustedRents(get(lease, 'rents.index_adjusted_rents', [])),
   };
-};
-
-export const getContentRuleTerms = (rule: Object) => {
-  const terms = get(rule, 'terms', []);
-  if(!terms || terms.length === 0) {
-    return [];
-  }
-
-  return terms.map((term) => {
-    return {
-      supervision_date: get(term, 'supervision_date'),
-      supervised_date: get(term, 'supervised_date'),
-      term_description: get(term, 'term_description'),
-      term_purpose: get(term, 'term_purpose'),
-    };
-  });
-};
-
-export const getContentRuleItem = (rule: Object) => {
-  return {
-    rule_clause: get(rule, 'rule_clause'),
-    rule_date: get(rule, 'rule_date'),
-    rule_description: get(rule, 'rule_description'),
-    rule_maker: get(rule, 'rule_maker'),
-    rule_type: get(rule, 'rule_type'),
-    terms: getContentRuleTerms(rule),
-  };
-};
-
-export const getContentRules = (lease: Object) => {
-  const rules = get(lease, 'rules', []);
-  if(!rules || rules.length === 0) {
-    return [];
-  }
-
-  return rules.map((rule) =>
-    getContentRuleItem(rule)
-  );
 };
 
 export const getFullAddress = (item: Object) => {
@@ -981,6 +991,126 @@ export const addAreasFormValues = (payload: Object, values: Object) => {
         location: get(area, 'location'),
         plots: getPlotsForDb(area),
         plan_units: getPlanUnitsForDb(area),
+      };
+    });
+  }
+
+  return payload;
+};
+
+const getDecisionConditionsForDb = (decision: Object) => {
+  const conditions = get(decision, 'conditions', []);
+  if(!conditions.length) {
+    return [];
+  }
+  return conditions.map((condition) => {
+    return {
+      id: condition.id || undefined,
+      type: get(condition, 'type'),
+      supervision_date: get(condition, 'supervision_date'),
+      supervised_date: get(condition, 'supervised_date'),
+      description: get(condition, 'description'),
+    };
+  });
+};
+
+export const addDecisionsFormValues = (payload: Object, values: Object) => {
+  const decisions = get(values, 'decisions', []);
+  if(!decisions.length) {
+    payload.decisions = [];
+  } else {
+    payload.decisions = decisions.map((decision) => {
+      return {
+        id: decision.id || undefined,
+        reference_number: get(decision, 'reference_number'),
+        decision_maker: get(decision, 'decision_maker'),
+        decision_date: get(decision, 'decision_date'),
+        section: get(decision, 'section'),
+        type: get(decision, 'type'),
+        description: get(decision, 'description'),
+        conditions: getDecisionConditionsForDb(decision),
+      };
+    });
+  }
+
+  return payload;
+};
+
+const getContractMortgageDocumentsForDb = (contract: Object) => {
+  const documents = get(contract, 'mortgage_documents', []);
+  if(!documents.length) {
+    return [];
+  }
+  return documents.map((doc) => {
+    return {
+      id: doc.id || undefined,
+      number: get(doc, 'number'),
+      date: get(doc, 'date'),
+      note: get(doc, 'note'),
+    };
+  });
+};
+
+const getContractChangesForDb = (contract: Object) => {
+  const changes = get(contract, 'contract_changes', []);
+  if(!changes.length) {
+    return [];
+  }
+  return changes.map((change) => {
+    return {
+      id: change.id || undefined,
+      signing_date: get(change, 'signing_date'),
+      sign_by_date: get(change, 'sign_by_date'),
+      first_call_sent: get(change, 'first_call_sent'),
+      second_call_sent: get(change, 'second_call_sent'),
+      third_call_sent: get(change, 'third_call_sent'),
+      description: get(change, 'description'),
+      decision: get(change, 'decision'),
+    };
+  });
+};
+
+export const addContractsFormValues = (payload: Object, values: Object) => {
+  const contracts = get(values, 'contracts', []);
+  if(!contracts.length) {
+    payload.contracts = [];
+  } else {
+    payload.contracts = contracts.map((contract) => {
+      return {
+        id: contract.id || undefined,
+        type: get(contract, 'type'),
+        contract_number: get(contract, 'contract_number'),
+        signing_date: get(contract, 'signing_date'),
+        signing_note: get(contract, 'signing_note'),
+        is_readjustment_decision: get(contract, 'is_readjustment_decision'),
+        decision: get(contract, 'decision'),
+        ktj_link: get(contract, 'ktj_link'),
+        collateral_number: get(contract, 'collateral_number'),
+        collateral_start_date: get(contract, 'collateral_start_date'),
+        collateral_end_date: get(contract, 'collateral_end_date'),
+        collateral_note: get(contract, 'collateral_note'),
+        institution_identifier: get(contract, 'institution_identifier'),
+        contract_changes: getContractChangesForDb(contract),
+        mortgage_documents: getContractMortgageDocumentsForDb(contract),
+      };
+    });
+  }
+
+  return payload;
+};
+
+export const addInspectionsFormValues = (payload: Object, values: Object) => {
+  const inspections = get(values, 'inspections', []);
+  if(!inspections.length) {
+    payload.inspections = [];
+  } else {
+    payload.inspections = inspections.map((inspection) => {
+      return {
+        id: inspection.id || undefined,
+        inspector: get(inspection, 'inspector'),
+        supervision_date: get(inspection, 'supervision_date'),
+        supervised_date: get(inspection, 'supervised_date'),
+        description: get(inspection, 'description'),
       };
     });
   }

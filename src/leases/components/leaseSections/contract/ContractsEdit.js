@@ -1,31 +1,50 @@
 // @flow
 import React, {Component} from 'react';
-import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
-import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
+import flowRight from 'lodash/flowRight';
+import {reduxForm, FieldArray} from 'redux-form';
 
 import ContractItemsEdit from './ContractItemsEdit';
 import FormSection from '$components/form/FormSection';
+import {getIsContractsFormValid} from '$src/leases/selectors';
+import {receiveContractsFormValid} from '$src/leases/actions';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
+  decisionOptions: Array<Object>,
   handleSubmit: Function,
-  dispatch: Function,
-  rules: Array<Object>,
+  isContractsFormValid: boolean,
+  receiveContractsFormValid: Function,
+  valid: boolean,
 }
 
 class ContractsEdit extends Component {
   props: Props
 
+  componentDidUpdate() {
+    const {isContractsFormValid, receiveContractsFormValid, valid} = this.props;
+    if(isContractsFormValid !== valid) {
+      receiveContractsFormValid(valid);
+    }
+  }
+
   render() {
-    const {dispatch, handleSubmit, rules} = this.props;
+    const {
+      attributes,
+      decisionOptions,
+      handleSubmit,
+    } = this.props;
+
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <FieldArray
+            attributes={attributes}
             component={ContractItemsEdit}
-            dispatch={dispatch}
+            decisionOptions={decisionOptions}
             name="contracts"
-            rules={rules}
           />
         </FormSection>
       </form>
@@ -33,16 +52,18 @@ class ContractsEdit extends Component {
   }
 }
 
-const formName = 'contract-edit-form';
-const selector = formValueSelector(formName);
+const formName = 'contracts-form';
 
 export default flowRight(
   connect(
     (state) => {
       return {
-        contracts: selector(state, 'contracts'),
+        isContractsFormValid: getIsContractsFormValid(state),
       };
-    }
+    },
+    {
+      receiveContractsFormValid,
+    },
   ),
   reduxForm({
     form: formName,

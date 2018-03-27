@@ -2,13 +2,15 @@
 import React from 'react';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
-import {formatDate} from '$util/helpers';
-import {contractTypeOptions} from '$src/constants';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {genericValidator} from '$components/form/validations';
 import AddButton from '$components/form/AddButton';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import ContentItem from '$components/content/ContentItem';
+import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
@@ -17,19 +19,28 @@ import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 
-type ContractModificationsProps = {
-  title: string,
+import type {Attributes} from '$src/leases/types';
+
+type ContractChangesProps = {
+  attributes: Attributes,
+  decisionOptions: Array<Object>,
   fields: any,
+  title: string,
 }
 
-const renderContractModifications = ({title, fields}: ContractModificationsProps) => {
+const renderContractChanges = ({
+  attributes,
+  decisionOptions,
+  fields,
+  title,
+}: ContractChangesProps) => {
   return(
     <GreenBoxEdit>
       <h2>{title}</h2>
 
-      {fields && fields.length > 0 && fields.map((modification, index) => {
+      {fields && fields.length > 0 && fields.map((change, index) => {
         return (
-          <GreenBoxItem key={index}>
+          <GreenBoxItem key={change.id ? change.id : `index_${index}`}>
             <BoxContentWrapper>
               <RemoveButton
                 className='position-topright-no-padding'
@@ -37,57 +48,86 @@ const renderContractModifications = ({title, fields}: ContractModificationsProps
                 title="Poista sopimuksen muutos"
               />
               <Row>
-                <Column medium={3}>
+                <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeDatePicker}
                     label='Allekirjoituspäivä'
-                    name={`${modification}.modification_signing_date`}
+                    name={`${change}.signing_date`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.signing_date')),
+                    ]}
                   />
                 </Column>
-                <Column medium={3}>
+                <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeDatePicker}
                     label='Allekirjoitettava mennessä'
-                    name={`${modification}.to_be_signed_by`}
+                    name={`${change}.sign_by_date`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.sign_by_date')),
+                    ]}
                   />
                 </Column>
-                <Column medium={2}>
+                <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeDatePicker}
                     label='1. kutsu lähetetty'
-                    name={`${modification}.first_call_sent`}
+                    name={`${change}.first_call_sent`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.first_call_sent')),
+                    ]}
                   />
                 </Column>
-                <Column medium={2}>
+                <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeDatePicker}
                     label='2. kutsu lähetetty'
-                    name={`${modification}.second_call_sent`}
+                    name={`${change}.second_call_sent`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.second_call_sent')),
+                    ]}
                   />
                 </Column>
-                <Column medium={2}>
+                <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeDatePicker}
                     label='3. kutsu lähetetty'
-                    name={`${modification}.third_call_sent`}
+                    name={`${change}.third_call_sent`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.third_call_sent')),
+                    ]}
                   />
                 </Column>
               </Row>
               <Row>
-                <Column medium={8}>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    className='no-margin'
+                    component={FieldTypeSelect}
+                    label='Päätös'
+                    name={`${change}.decision`}
+                    options={decisionOptions}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.decision')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={8} large={10}>
                   <Field
                     className='no-margin'
                     component={FieldTypeText}
                     label='Selite'
-                    name={`${modification}.modification_description`}
-                  />
-                </Column>
-                <Column medium={4}>
-                  <Field
-                    className='no-margin'
-                    component={FieldTypeText}
-                    label='Päätös'
-                    name={`${modification}.linked_rule`}
+                    name={`${change}.description`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.description')),
+                    ]}
                   />
                 </Column>
               </Row>
@@ -109,48 +149,61 @@ const renderContractModifications = ({title, fields}: ContractModificationsProps
   );
 };
 
-type PledgeBookProps = {
+type MortgageDocumentsProps = {
+  attributes: Attributes,
   fields: any,
 }
 
-const renderPledgeBooks = ({fields}: PledgeBookProps) => {
+const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps) => {
   return(
     <div>
       <p className='sub-title'>Panttikirjat</p>
       {fields && fields.length > 0 &&
         <div>
           <Row>
-            <Column small={2}>
+            <Column small={4} medium={4} large={2}>
               <label className='mvj-form-field-label'>Panttikirjan numero</label>
             </Column>
-            <Column small={2}>
+            <Column small={4} medium={4} large={2}>
               <label className='mvj-form-field-label'>Panttikirjan pvm</label>
             </Column>
-            <Column small={6}>
+            <Column small={4} medium={4} large={2}>
               <label className='mvj-form-field-label'>Panttikirjan kommentti</label>
             </Column>
           </Row>
-          {fields.map((pledge_book, index) =>
-            <Row key={index} className='pledge-book'>
-              <Column small={2}>
+          {fields.map((doc, index) =>
+            <Row key={doc.id ? doc.id : `index_${index}`} className='pledge-book'>
+              <Column small={4} medium={4} large={2}>
                 <Field
                   className='list-item'
                   component={FieldTypeText}
-                  name={`${pledge_book}.pledge_book_number`}
+                  name={`${doc}.number`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'contracts.child.children.mortgage_documents.child.children.number')),
+                  ]}
                 />
               </Column>
-              <Column small={2}>
+              <Column small={4} medium={4} large={2}>
                 <Field
                   className='list-item'
                   component={FieldTypeDatePicker}
-                  name={`${pledge_book}.pledge_book_date`}
+                  name={`${doc}.date`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'contracts.child.children.mortgage_documents.child.children.date')),
+                  ]}
                 />
               </Column>
-              <Column small={6}>
+              <Column small={3} medium={3} large={2}>
                 <Field
                   className='list-item'
                   component={FieldTypeText}
-                  name={`${pledge_book}.pledge_book_comment`}
+                  name={`${doc}.note`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'contracts.child.children.mortgage_documents.child.children.note')),
+                  ]}
                 />
               </Column>
               <Column>
@@ -178,25 +231,24 @@ const renderPledgeBooks = ({fields}: PledgeBookProps) => {
 };
 
 type Props = {
+  attributes: Attributes,
   fields: any,
   contracts: Array<Object>,
+  decisionOptions: Array<Object>,
 }
 
-const ContractItemsEdit = ({fields, contracts}: Props) => {
-  const contractOptions = [];
-  if (contracts) {
-    contracts.map(rule =>
-      contractOptions.push({
-        value: rule.rule_clause,
-        label: `${rule.rule_maker}, ${formatDate(rule.rule_date)}, ${rule.rule_clause}`})
-    );
-  }
+const ContractItemsEdit = ({
+  attributes,
+  fields,
+  decisionOptions,
+}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.type');
 
   return (
     <div>
       {fields && fields.length > 0 && fields.map((contract, index) => {
         return(
-          <ContentItem key={index}>
+          <ContentItem key={contract.id ? contract.id : `index_${index}`}>
             <WhiteBoxEdit>
               <BoxContentWrapper>
                 <RemoveButton
@@ -205,114 +257,167 @@ const ContractItemsEdit = ({fields, contracts}: Props) => {
                   title="Poista sopimus"
                 />
                 <Row>
-                  <Column medium={2}>
+                  <Column small={6} medium={4} large={2}>
                     <Field
                       component={FieldTypeSelect}
-                      name={`${contract}.contract_type`}
+                      name={`${contract}.type`}
                       label='Sopimuksen tyyppi'
-                      options={contractTypeOptions}
+                      options={typeOptions}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.type')),
+                      ]}
                     />
                   </Column>
-                  <Column medium={2}>
+                  <Column small={6} medium={4} large={2}>
                     <Field
                       component={FieldTypeText}
                       label='Sopimusnumero'
-                      name={`${contract}.contract_type`}
+                      name={`${contract}.contract_number`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.contract_number')),
+                      ]}
                     />
                   </Column>
-                  <Column medium={2}>
+                  <Column small={6} medium={4} large={2}>
                     <Field
                       component={FieldTypeDatePicker}
                       label='Allekirjoituspäivämäärä'
                       name={`${contract}.signing_date`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.signing_date')),
+                      ]}
                     />
                   </Column>
-                  <Column medium={6}>
+                  <Column small={6} medium={12} large={6}>
                     <Field
                       component={FieldTypeText}
                       label='Kommentti allekirjoitukselle'
-                      name={`${contract}.signing_date_comment`}
+                      name={`${contract}.signing_note`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.signing_note')),
+                      ]}
                     />
                   </Column>
                 </Row>
                 <Row>
-                  <Column medium={4}>
+                  <Column small={6} medium={4} large={2}>
                     <Field
-                      component={FieldTypeSelect}
+                      className='checkbox-inline'
+                      component={FieldTypeCheckbox}
                       label='Järjestelypäätös'
-                      name={`${contract}.setup_decision`}
+                      name={`${contract}.is_readjustment_decision`}
                       options={[
-                        {value: '', label: 'to be filled'},
+                        {value: true, label: 'Järjestelypäätös'},
+                      ]}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.is_readjustment_decision')),
                       ]}
                     />
                   </Column>
-                  <Column medium={4}>
+                  <Column small={6} medium={4} large={2}>
+                    <Field
+                      component={FieldTypeText}
+                      label='Laitostunnus'
+                      name={`${contract}.institution_identifier`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.institution_identifier')),
+                      ]}
+                    />
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
                     <Field
                       component={FieldTypeSelect}
                       label='Päätös'
-                      name={`${contract}.linked_rule`}
-                      options={contractOptions}
+                      name={`${contract}.decision`}
+                      options={decisionOptions}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.decision')),
+                      ]}
                     />
                   </Column>
-                  <Column medium={4}>
+                  <Column small={6} medium={12} large={6}>
                     <Field
                       // add KTJ integration
                       component={FieldTypeText}
                       label='KTJ vuokraoikeustodistuksen linkki'
-                      name={`${contract}.ktj_document`}
+                      name={`${contract}.ktj_link`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.ktj_link')),
+                      ]}
                     />
                   </Column>
                 </Row>
                 <Row>
-                  <Column medium={2}>
+                  <Column small={6} medium={4} large={2}>
                     <Field
                       component={FieldTypeText}
                       label='Vuokravakuusnumero'
-                      name={`${contract}.lease_deposit_number`}
+                      name={`${contract}.collateral_number`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.collateral_number')),
+                      ]}
                     />
                   </Column>
-                  <Column medium={2}>
+                  <Column small={6} medium={4} large={2}>
                     <Field
                       component={FieldTypeDatePicker}
                       label='Vuokravakuus alkupvm'
-                      name={`${contract}.lease_deposit_starting_date`}
+                      name={`${contract}.collateral_start_date`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.collateral_start_date')),
+                      ]}
                     />
                   </Column>
-                  <Column medium={2}>
+                  <Column small={6} medium={4} large={2}>
                     <Field
                       component={FieldTypeDatePicker}
                       label='Vuokravakuus loppupvm'
-                      name={`${contract}.lease_deposit_ending_date`}
+                      name={`${contract}.collateral_end_date`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.collateral_end_date')),
+                      ]}
                     />
                   </Column>
-                  <Column medium={6}>
+                  <Column small={6} medium={12} large={6}>
                     <Field
                       component={FieldTypeText}
                       label='Vuokravakuus kommentti'
-                      name={`${contract}.lease_deposit_comment`}
+                      name={`${contract}.collateral_note`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.collateral_note')),
+                      ]}
                     />
                   </Column>
                 </Row>
                 <Row>
-                  <Column medium={9}>
+                  <Column small={12}>
                     <FieldArray
-                      component={renderPledgeBooks}
-                      name={`${contract}.pledge_books`}
+                      attributes={attributes}
+                      component={renderMortgageDocuments}
+                      name={`${contract}.mortgage_documents`}
                     />
                   </Column>
-                  <Column medium={2} offsetOnMedium={1}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Laitostunnus'
-                      name={`${contract}.administration_number`}
-                    />
-                  </Column>
+
                 </Row>
               </BoxContentWrapper>
             </WhiteBoxEdit>
             <FieldArray
-              component={renderContractModifications}
-              name={`${contract}.modifications`}
+              attributes={attributes}
+              component={renderContractChanges}
+              decisionOptions={decisionOptions}
+              name={`${contract}.contract_changes`}
               title='Sopimuksen muutokset'
             />
           </ContentItem>
