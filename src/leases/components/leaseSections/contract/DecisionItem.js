@@ -5,7 +5,6 @@ import classNames from 'classnames';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
-import GreenBox from '$components/content/GreenBox';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 
 import type {Attributes} from '$src/leases/types';
@@ -16,23 +15,53 @@ type Props = {
 }
 
 const DecisionItem = ({attributes, decision}: Props) => {
+  const decisionMakerOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker');
+  const typeOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.type');
   const conditionTypeOptions = getAttributeFieldOptions(attributes,
     'decisions.child.children.conditions.child.children.type');
 
   return (
     <div>
-      <GreenBox>
+      <Collapse
+        className='collapse__secondary'
+        defaultOpen={true}
+        header={
+          <Row>
+            <Column small={12}>
+              <span className='collapse__header-title'>Päätöksen tiedot</span>
+            </Column>
+          </Row>
+        }
+      >
         <Row>
-          <Column small={12} medium={2}>
-            <label>Diaarinumero</label>
-            <p className='no-margin'>{decision.reference_number || '–'}</p>
+          <Column small={6} medium={4} large={2}>
+            <label>Päättäjä</label>
+            <p>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '–'}</p>
           </Column>
-          <Column small={12} medium={10}>
+          <Column small={6} medium={4} large={2}>
+            <label>Päätöspäivämäärä</label>
+            <p>{decision.decision_date || '–'}</p>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <label>Pykälä</label>
+            <p>{decision.section || '–'}</p>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <label>Päätöksen tyyppi</label>
+            <p>{getLabelOfOption(typeOptions, decision.type) || '–'}</p>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <label>Diaarinumero</label>
+            <p>{decision.reference_number || '–'}</p>
+          </Column>
+        </Row>
+        <Row>
+          <Column small={12}>
             <label>Selite</label>
             <p className='no-margin'>{decision.description || '–'}</p>
           </Column>
         </Row>
-      </GreenBox>
+      </Collapse>
 
       <Collapse
         className='collapse__secondary'

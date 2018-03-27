@@ -141,7 +141,6 @@ type Props = {
 type State = {
   activeTab: number,
   areasMock: Array<Object>,
-  contracts: Array<Object>,
   history: Array<Object>,
   inspections: Array<Object>,
   isCancelLeaseModalOpen: boolean,
@@ -158,7 +157,6 @@ class PreparerForm extends Component {
   state: State = {
     activeTab: 0,
     areasMock: [],
-    contracts: [],
     history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
@@ -181,7 +179,8 @@ class PreparerForm extends Component {
       fetchComments,
       fetchLessors,
       fetchSingleLease,
-      location, params: {leaseId},
+      location,
+      params: {leaseId},
       receiveBilling,
       receiveTopNavigationSettings,
     } = this.props;
@@ -203,7 +202,6 @@ class PreparerForm extends Component {
 
     this.setState({
       areasMock: contentHelpers.getContentLeaseAreasMock(lease),
-      contracts: contentHelpers.getContentContracts(lease),
       history: contentHelpers.getContentHistory(lease),
       inspections: contentHelpers.getContentInspections(lease),
       oldTenants: lease.tenants_old,
@@ -247,7 +245,7 @@ class PreparerForm extends Component {
       summaryFormValues,
       decisionsFormValues,
 
-      contractsForm,
+      // contractsForm,
       currentLease,
       eligibilityForm,
       hideEditMode,
@@ -282,9 +280,9 @@ class PreparerForm extends Component {
     if(eligibilityForm !== undefined) {
       this.setState({areasMock: eligibilityForm});
     }
-    if(contractsForm !== undefined) {
-      this.setState({contracts: contractsForm});
-    }
+    // if(contractsForm !== undefined) {
+    //   this.setState({contracts: contractsForm});
+    // }
     if(inspectionsForm !== undefined) {
       this.setState({inspections: inspectionsForm});
     }
@@ -391,7 +389,6 @@ class PreparerForm extends Component {
     const {
       activeTab,
       areasMock,
-      contracts,
       history,
       inspections,
       isCancelLeaseModalOpen,
@@ -424,6 +421,7 @@ class PreparerForm extends Component {
     const summary = contentHelpers.getContentSummary(currentLease);
     const areas = contentHelpers.getContentLeaseAreas(currentLease);
     const decisions = contentHelpers.getContentDecisions(currentLease);
+    const contracts = contentHelpers.getContentContracts(currentLease);
 
     const comments = contentHelpers.getContentComments(commentsStore);
 

@@ -37,14 +37,11 @@ export const getLeasesList: Selector<Lease, void> = (state: Object): LeaseState 
 export const getCurrentLease: Selector<Lease, void> = (state: Object): LeaseState =>
   state.lease.current;
 
-export const getInvoices: Selector<Object, void> = (state: Object): LeaseState =>
-  state.lease.invoices;
-
 export const getLessors: Selector<Object, void> = (state: Object): LeaseState =>
   state.lease.lessors;
 
-export const getAreas: Selector<Object, void> = (state: Object): LeaseState =>
-  state.lease.areas;
+export const getDecisions: Selector<Object, void> = (state: Object): LeaseState =>
+  state.lease.decisions;
 
 export const getAreasFormTouched: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.lease-area-form.anyTouched');

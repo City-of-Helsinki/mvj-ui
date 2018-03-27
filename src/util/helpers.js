@@ -364,3 +364,26 @@ export const getLessorOptions = (lessors: Array<Object>) => {
     };
   });
 };
+
+/**
+ * Get options for decisions field
+ * @param decisions
+ */
+export const getDecisionsOptions = (decisions: Array<Object>) => {
+  if(!decisions || !decisions.length) {
+    return [];
+  }
+
+  return decisions.map((item) => {
+    if(!item.reference_number && !item.decision_date && !item.section) {
+      return {
+        value: item.id,
+        label: item.id,
+      };
+    }
+    return {
+      value: item.id,
+      label: `${item.reference_number ? item.reference_number + ', ' : ''}${item.section ? item.section + ' §, ' : ''}${formatDate(item.decision_date)}`,
+    };
+  });
+};

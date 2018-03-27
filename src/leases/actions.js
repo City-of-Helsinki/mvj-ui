@@ -3,22 +3,19 @@
 import {createAction} from 'redux-actions';
 
 import type {
-  Areas,
-  FetchAttributesAction,
-  FetchLessorsAction,
-  FetchInvoicesAction,
-  FetchAreasAction,
   Attributes,
+  FetchAttributesAction,
   ReceiveAttributesAction,
+  Lessors,
+  FetchLessorsAction,
   ReceiveLessorsAction,
-  ReceiveInvoicesAction,
-  ReceiveAreasAction,
+  Decisions,
+  FetchDecisionsAction,
+  ReceiveDecisionsAction,
   Lease,
-  Invoices,
   LeaseId,
   LeaseNotFoundAction,
   LeasesList,
-  Lessors,
   CreateLeaseAction,
   EditLeaseAction,
   PatchLeaseAction,
@@ -26,8 +23,6 @@ import type {
   FetchSingleLeaseAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
-  HideEditModeAction,
-  ShowEditModeAction,
   Comment,
   FetchCommentsAction,
   ReceiveCommentsAction,
@@ -37,6 +32,8 @@ import type {
   ReceiveCreatedCommentAction,
   EditCommentAction,
   ReceiveEditedCommentAction,
+  HideEditModeAction,
+  ShowEditModeAction,
   ClearFormValidityFlagsAction,
   ReceiveDecisionsFormValidAction,
   ReceiveLeaseInfoFormValidAction,
@@ -56,17 +53,11 @@ export const fetchLessors = (): FetchLessorsAction =>
 export const receiveLessors = (lessors: Lessors): ReceiveLessorsAction =>
   createAction('mvj/leases/RECEIVE_LESSORS')(lessors);
 
-export const fetchInvoices = (lease: LeaseId): FetchInvoicesAction =>
-  createAction('mvj/leases/FETCH_INVOICES')(lease);
+export const fetchDecisions = (search: string): FetchDecisionsAction =>
+  createAction('mvj/leases/FETCH_DECISIONS')(search);
 
-export const receiveInvoices = (invoices: Invoices): ReceiveInvoicesAction =>
-  createAction('mvj/leases/RECEIVE_INVOICES')(invoices);
-
-export const fetchAreas = (): FetchAreasAction =>
-  createAction('mvj/leases/FETCH_AREAS')();
-
-export const receiveAreas = (areas: Areas): ReceiveAreasAction =>
-  createAction('mvj/leases/RECEIVE_AREAS')(areas);
+export const receiveDecisions = (decisions: Decisions): ReceiveDecisionsAction =>
+  createAction('mvj/leases/RECEIVE_DECISIONS')(decisions);
 
 export const fetchLeases = (search: string): FetchLeasesAction =>
   createAction('mvj/leases/FETCH_ALL')(search);

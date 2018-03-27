@@ -9,10 +9,12 @@ import type {
   Lease,
   LeasesList,
   Lessors,
+  Decisions,
   ReceiveAttributesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
   ReceiveLessorsAction,
+  ReceiveDecisionsAction,
   ReceiveCommentsAction,
   ReceiveCommentAttributesAction,
   ReceiveCreatedCommentAction,
@@ -29,8 +31,6 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
 }, false);
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
-  // 'mvj/leases/FETCH_IDENTIFIERS': () => true,
-  // 'mvj/leases/RECEIVE_ATTRIBUTES': () => false,
   'mvj/leases/CREATE': () => true,
   'mvj/leases/EDIT': () => true,
   'mvj/leases/PATCH': () => true,
@@ -87,6 +87,12 @@ const lessorsReducer: Reducer<Lessors> = handleActions({
   },
 }, []);
 
+const decisionsReducer: Reducer<Decisions> = handleActions({
+  ['mvj/leases/RECEIVE_DECISIONS']: (state: Decisions, {payload: decisions}: ReceiveDecisionsAction) => {
+    return decisions;
+  },
+}, []);
+
 const decisionsFormValidReducer: Reducer<boolean> = handleActions({
   ['mvj/leases/RECEIVE_DECISIONS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveDecisionsFormValidAction) => {
     return valid;
@@ -122,10 +128,11 @@ export default combineReducers({
   current: currentLeaseReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
-  list: leasesListReducer,
-  lessors: lessorsReducer,
   isDecisionsFormValid: decisionsFormValidReducer,
   isLeaseAreasFormValid: leaseAreasFormValidReducer,
   isLeaseInfoFormValid: leaseInfoFormValidReducer,
   isSummaryFormValid: summaryFormValidReducer,
+  list: leasesListReducer,
+  lessors: lessorsReducer,
+  decisions: decisionsReducer,
 });

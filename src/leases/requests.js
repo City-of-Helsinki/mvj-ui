@@ -21,6 +21,10 @@ export const fetchLessors = () => {
   return callApi(new Request(createUrl('contact/?is_lessor=true')));
 };
 
+export const fetchDecisions = (search: string): Generator<> => {
+  return callApi(new Request(createUrl(`decision/${search}`)));
+};
+
 export const fetchLeases = (search: string): Generator<> => {
   return callApi(new Request(createUrl(`lease/${search}`)));
 };

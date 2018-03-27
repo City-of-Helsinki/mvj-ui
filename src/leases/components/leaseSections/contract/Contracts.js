@@ -2,34 +2,79 @@
 import React from 'react';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
+import moment from 'moment';
 
-import {contractTypeOptions} from '$src/constants';
-import {formatDate, getLabelOfOption} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
 import ContractItem from './ContractItem';
 import DocIcon from '$components/icons/DocIcon';
 
+import type {Attributes} from '$src/leases/types';
+
 type Props = {
+  attributes: Attributes,
   contracts: Array<Object>,
+  decisionOptions: Array<Object>,
 }
-const Contracts = ({contracts}: Props) => {
+const Contracts = ({attributes, contracts, decisionOptions}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.type');
+
+  const isContractActive = (item) => {
+    const start_date = item.collateral_start_date;
+    const end_date = item.collateral_end_date;
+    if(!start_date && !end_date) {
+      return false;
+    }
+    const now = moment();
+    if(!!start_date && moment(start_date).isAfter(now)) {
+      return false;
+    } else if (!!start_date && !moment(start_date).isAfter(now)){
+      if(!end_date) {
+        return true;
+      } else if(!now.isAfter(moment(end_date))) {
+        return true;
+      }
+      return false;
+    } else {
+      if(now.isAfter(moment(end_date))) {
+        return false;
+      }
+      return true;
+    }
+  };
 
   return (
     <div>
-      {contracts && contracts.length > 0 && contracts.map((contract, index) =>
+      {(!contracts || !contracts.length) && <p className='no-margin'>Ei sopimuksia</p>}
+      {contracts && !!contracts.length && contracts.map((contract, index) =>
         <Collapse key={index}
           defaultOpen={false}
           header={
             <Row>
               <Column small={3}>
                 <DocIcon />
-                <span className='collapse__header-title'>{getLabelOfOption(contractTypeOptions, contract.contract_type)} {get(contract, 'contract_number')}</span></Column>
-              <Column small={3}><span className='collapse__header-subtitle'>{formatDate(contract.signing_date)}</span></Column>
-              <Column small={3}><span className='collapse__header-subtitle'>{contract.active ? 'Voimassa' : 'Ei voimassa'}</span></Column>
+                <span className='collapse__header-title'>
+                  {getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}
+                </span>
+              </Column>
+              <Column small={3}>
+                <span className='collapse__header-subtitle'>
+                  {formatDate(contract.signing_date)}
+                </span>
+              </Column>
+              <Column small={3}>
+                <span className='collapse__header-subtitle'>
+                  {isContractActive(contract) ? 'Voimassa' : 'Ei voimassa'}
+                </span>
+              </Column>
             </Row>
           }
         >
-          <ContractItem contract={contract} />
+          <ContractItem
+            attributes={attributes}
+            contract={contract}
+            decisionOptions={decisionOptions}
+          />
         </Collapse>
       )}
     </div>
