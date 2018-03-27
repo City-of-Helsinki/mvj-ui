@@ -23,13 +23,13 @@ const DecisionItem = ({attributes, decision}: Props) => {
     <div>
       <GreenBox>
         <Row>
-          <Column small={12} medium={6}>
-            <label>Selite</label>
-            <p className='no-margin'>{decision.description || '–'}</p>
-          </Column>
-          <Column small={12} medium={6}>
+          <Column small={12} medium={2}>
             <label>Diaarinumero</label>
             <p className='no-margin'>{decision.reference_number || '–'}</p>
+          </Column>
+          <Column small={12} medium={10}>
+            <label>Selite</label>
+            <p className='no-margin'>{decision.description || '–'}</p>
           </Column>
         </Row>
       </GreenBox>
