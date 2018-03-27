@@ -1,100 +1,126 @@
 // @flow
-import React from 'react';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributeFieldOptions, getLabelOfOption, getLessorOptions} from '$util/helpers';
+import {getLessors} from '$src/leases/selectors';
+import {fetchLessors} from '$src/leases/actions';
 import GreenBox from '$components/content/GreenBox';
 import ShowMore from '$components/showMore/ShowMore';
 
 type Props = {
   attributes: Object,
-  lessorOptions: Array<Object>,
+  fetchLessors: Function,
+  lessors: Array<Object>,
   summary: Object,
 }
 
-const Summary = ({attributes, lessorOptions, summary}: Props) => {
-  const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
-  const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
-  const statisticalUseOptions = getAttributeFieldOptions(attributes, 'statistical_use');
-  const financingOptions = getAttributeFieldOptions(attributes, 'financing');
-  const managementOptions = getAttributeFieldOptions(attributes, 'management');
-  const regulationOptions = getAttributeFieldOptions(attributes, 'regulation');
-  const hitasOptions = getAttributeFieldOptions(attributes, 'hitas');
-  const noticePeriodOptions = getAttributeFieldOptions(attributes, 'notice_period');
+class Summary extends Component {
+  props: Props
 
-  return (
-    <GreenBox>
-      <Row>
-        <Column>
-          <label>Vuokranantaja</label>
-          <p>{getLabelOfOption(lessorOptions, summary.lessor) || '-'}</p>
-        </Column>
-      </Row>
+  componentWillMount() {
+    const {fetchLessors} = this.props;
 
-      <Row>
-        <Column medium={4}>
-          <label>Vuokrauksen käyttötarkoitus</label>
-          <p>{getLabelOfOption(intendedUseOptions, summary.intended_use) || '-'}</p>
-        </Column>
-        <Column medium={4}>
-          <label>Erityisasunnot</label>
-          <p>{getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}</p>
-        </Column>
-        <Column medium={4}>
-          <label>Tilastollinen pääkäyttötarkoitus</label>
-          <p>{getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}</p>
-        </Column>
-      </Row>
+    fetchLessors();
+  }
 
-      <Row>
-        <Column>
-          <label>Vuokrauksen käyttötarkoitus selite</label>
-          <ShowMore text={summary.intended_use_note || '-'} />
-        </Column>
-      </Row>
+  render() {
+    const {attributes, lessors, summary} = this.props;
+    const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
+    const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
+    const statisticalUseOptions = getAttributeFieldOptions(attributes, 'statistical_use');
+    const financingOptions = getAttributeFieldOptions(attributes, 'financing');
+    const managementOptions = getAttributeFieldOptions(attributes, 'management');
+    const regulationOptions = getAttributeFieldOptions(attributes, 'regulation');
+    const hitasOptions = getAttributeFieldOptions(attributes, 'hitas');
+    const noticePeriodOptions = getAttributeFieldOptions(attributes, 'notice_period');
 
-      <Row>
-        <Column medium={4}>
-          <label>Rahoitusmuoto</label>
-          <p>{getLabelOfOption(financingOptions, summary.financing) || '-'}</p>
-        </Column>
-        <Column medium={4}>
-          <label>Hallintamuoto</label>
-          <p>{getLabelOfOption(managementOptions, summary.management) || '-'}</p>
-        </Column>
-        <Column medium={4}>
-          <label>Siirto-oikeus</label>
-          <p>{summary.transferable ? 'Kyllä' : 'Ei'}</p>
-        </Column>
-      </Row>
+    const lessorOptions = getLessorOptions(lessors);
 
-      <Row>
-        <Column medium={4}>
-          <label>Sääntely</label>
-          <p>{summary.regulated ? 'Kyllä' : 'Ei'}</p>
-        </Column>
-        <Column medium={4}>
-          <label>Sääntelymuoto</label>
-          <p>{getLabelOfOption(regulationOptions, summary.regulation) || '-'}</p>
-        </Column>
-        <Column medium={4}>
-          <label>Hitas</label>
-          <p>{getLabelOfOption(hitasOptions, summary.hitas) || '-'}</p>
-        </Column>
-      </Row>
+    return (
+      <GreenBox>
+        <Row>
+          <Column>
+            <label>Vuokranantaja</label>
+            <p>{getLabelOfOption(lessorOptions, summary.lessor) || '-'}</p>
+          </Column>
+        </Row>
 
-      <Row>
-        <Column medium={4}>
-          <label>Irtisanomisaika</label>
-          <p className='no-margin'>{getLabelOfOption(noticePeriodOptions, summary.notice_period) || '-'}</p>
-        </Column>
-        <Column medium={8}>
-          <label>Irtisanomisajan selite</label>
-          <ShowMore text={summary.notice_note || '-'} />
-        </Column>
-      </Row>
-    </GreenBox>
-  );
-};
+        <Row>
+          <Column medium={4}>
+            <label>Vuokrauksen käyttötarkoitus</label>
+            <p>{getLabelOfOption(intendedUseOptions, summary.intended_use) || '-'}</p>
+          </Column>
+          <Column medium={4}>
+            <label>Erityisasunnot</label>
+            <p>{getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}</p>
+          </Column>
+          <Column medium={4}>
+            <label>Tilastollinen pääkäyttötarkoitus</label>
+            <p>{getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}</p>
+          </Column>
+        </Row>
 
-export default Summary;
+        <Row>
+          <Column>
+            <label>Vuokrauksen käyttötarkoitus selite</label>
+            <ShowMore text={summary.intended_use_note || '-'} />
+          </Column>
+        </Row>
+
+        <Row>
+          <Column medium={4}>
+            <label>Rahoitusmuoto</label>
+            <p>{getLabelOfOption(financingOptions, summary.financing) || '-'}</p>
+          </Column>
+          <Column medium={4}>
+            <label>Hallintamuoto</label>
+            <p>{getLabelOfOption(managementOptions, summary.management) || '-'}</p>
+          </Column>
+          <Column medium={4}>
+            <label>Siirto-oikeus</label>
+            <p>{summary.transferable ? 'Kyllä' : 'Ei'}</p>
+          </Column>
+        </Row>
+
+        <Row>
+          <Column medium={4}>
+            <label>Sääntely</label>
+            <p>{summary.regulated ? 'Kyllä' : 'Ei'}</p>
+          </Column>
+          <Column medium={4}>
+            <label>Sääntelymuoto</label>
+            <p>{getLabelOfOption(regulationOptions, summary.regulation) || '-'}</p>
+          </Column>
+          <Column medium={4}>
+            <label>Hitas</label>
+            <p>{getLabelOfOption(hitasOptions, summary.hitas) || '-'}</p>
+          </Column>
+        </Row>
+
+        <Row>
+          <Column medium={4}>
+            <label>Irtisanomisaika</label>
+            <p className='no-margin'>{getLabelOfOption(noticePeriodOptions, summary.notice_period) || '-'}</p>
+          </Column>
+          <Column medium={8}>
+            <label>Irtisanomisajan selite</label>
+            <ShowMore text={summary.notice_note || '-'} />
+          </Column>
+        </Row>
+      </GreenBox>
+    );
+  }
+}
+
+export default connect(
+  (state) => {
+    return {
+      lessors: getLessors(state),
+    };
+  },
+  {
+    fetchLessors,
+  }
+)(Summary);

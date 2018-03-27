@@ -10,22 +10,29 @@ import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
-import {getAttributeFieldOptions} from '$src/util/helpers';
+import {getAttributeFieldOptions, getLessorOptions} from '$src/util/helpers';
 import {genericValidator} from '$components/form/validations';
-import {getIsSummaryFormValid} from '../../../selectors';
-import {receiveSummaryFormValid} from '../../../actions';
+import {getIsSummaryFormValid, getLessors} from '$src/leases/selectors';
+import {fetchLessors, receiveSummaryFormValid} from '$src/leases/actions';
 
 type Props = {
   attributes: Object,
+  fetchLessors: Function,
   handleSubmit: Function,
   isSummaryFormValid: boolean,
-  lessorOptions: Array<Object>,
+  lessors: Array<Object>,
   receiveSummaryFormValid: Function,
   valid: boolean,
 }
 
 class SummaryEdit extends Component {
   props: Props
+
+  componentWillMount() {
+    const {fetchLessors} = this.props;
+
+    fetchLessors();
+  }
 
   componentDidUpdate() {
     const {isSummaryFormValid, receiveSummaryFormValid, valid} = this.props;
@@ -35,7 +42,7 @@ class SummaryEdit extends Component {
   }
 
   render () {
-    const {attributes, handleSubmit, lessorOptions} = this.props;
+    const {attributes, handleSubmit, lessors} = this.props;
     const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
     const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
     const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
@@ -45,6 +52,8 @@ class SummaryEdit extends Component {
     const regulationOptions = getAttributeFieldOptions(attributes, 'regulation');
     const hitasOptions = getAttributeFieldOptions(attributes, 'hitas');
     const noticePeriodOptions = getAttributeFieldOptions(attributes, 'notice_period');
+
+    const lessorOptions = getLessorOptions(lessors);
 
     return (
       <form onSubmit={handleSubmit}>
@@ -234,9 +243,11 @@ export default flowRight(
     (state) => {
       return {
         isSummaryFormValid: getIsSummaryFormValid(state),
+        lessors: getLessors(state),
       };
     },
     {
+      fetchLessors,
       receiveSummaryFormValid,
     }
   ),
