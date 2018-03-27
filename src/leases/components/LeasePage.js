@@ -17,6 +17,8 @@ import {
   getAreasFormValues,
   getAttributes,
   getComments,
+  getContractsFormTouched,
+  getContractsFormValues,
   getCurrentLease,
   getDecisionsFormTouched,
   getDecisionsFormValues,
@@ -96,11 +98,11 @@ type Props = {
   billing: Object,
   clearFormValidFlags: Function,
   commentsStore: Array<Object>,
-  contractsForm: Array<Object>,
-  contractsTouched: boolean,
+  contractsFormTouched: boolean,
+  contractsFormValues: Object,
   currentLease: Object,
-  decisionsFormValues: Object,
   decisionsFormTouched: boolean,
+  decisionsFormValues: Object,
   dispatch: Function,
   eligibilityForm: Array<Object>,
   eligibilityTouched: boolean,
@@ -244,15 +246,14 @@ class PreparerForm extends Component {
       leaseInfoFormValues,
       summaryFormValues,
       decisionsFormValues,
+      contractsFormValues,
 
-      // contractsForm,
       currentLease,
       eligibilityForm,
       hideEditMode,
       inspectionsForm,
       patchLease,
       rentsForm,
-      // rulesForm,
       tenantsForm,
     } = this.props;
 
@@ -274,24 +275,24 @@ class PreparerForm extends Component {
       payload = contentHelpers.addDecisionsFormValues(payload, decisionsFormValues);
     }
 
+    if(contractsFormValues !== undefined) {
+      payload = contentHelpers.addContractsFormValues(payload, contractsFormValues);
+    }
+
     patchLease(payload);
 
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
     if(eligibilityForm !== undefined) {
       this.setState({areasMock: eligibilityForm});
     }
-    // if(contractsForm !== undefined) {
-    //   this.setState({contracts: contractsForm});
-    // }
+
     if(inspectionsForm !== undefined) {
       this.setState({inspections: inspectionsForm});
     }
     if(rentsForm !== undefined) {
       this.setState({rents: rentsForm});
     }
-    // if(rulesForm !== undefined) {
-    //   this.setState({rules: rulesForm});
-    // }
+
     if(tenantsForm !== undefined) {
       this.setState({tenants: tenantsForm});
     }
@@ -320,9 +321,9 @@ class PreparerForm extends Component {
     dispatch(destroy('lease-info-form'));
     dispatch(destroy('summary-form'));
     dispatch(destroy('decisions-form'));
+    dispatch(destroy('contracts-form'));
 
     dispatch(destroy('billing-edit-form'));
-    dispatch(destroy('contract-edit-form'));
     dispatch(destroy('inspection-edit-form'));
     dispatch(destroy('rent-edit-form'));
     dispatch(destroy('tenant-edit-form'));
@@ -365,8 +366,8 @@ class PreparerForm extends Component {
       leaseInfoFormTouched,
       summaryFormTouched,
       decisionsFormTouched,
+      contractsFormTouched,
 
-      contractsTouched,
       eligibilityTouched,
       inspectionTouched,
       rentsTouched,
@@ -377,8 +378,8 @@ class PreparerForm extends Component {
       leaseInfoFormTouched ||
       summaryFormTouched ||
       decisionsFormTouched ||
+      contractsFormTouched ||
 
-      contractsTouched ||
       eligibilityTouched ||
       inspectionTouched ||
       rentsTouched ||
@@ -640,7 +641,6 @@ class PreparerForm extends Component {
   }
 }
 
-const contractFormSelector = formValueSelector('contract-edit-form');
 const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const inspectionFormSelector = formValueSelector('inspection-edit-form');
 const rentFormSelector = formValueSelector('rent-edit-form');
@@ -660,8 +660,8 @@ export default flowRight(
         attributes: getAttributes(state),
         billing: getBilling(state),
         commentsStore: getComments(state),
-        contractsForm: contractFormSelector(state, 'contracts'),
-        contractsTouched: get(state, 'form.contract-edit-form.anyTouched'),
+        contractsFormTouched: getContractsFormTouched(state),
+        contractsFormValues: getContractsFormValues(state),
         currentLease: getCurrentLease(state),
         decisionsFormTouched: getDecisionsFormTouched(state),
         decisionsFormValues: getDecisionsFormValues(state),

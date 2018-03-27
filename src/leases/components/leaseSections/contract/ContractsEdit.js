@@ -33,7 +33,7 @@ const ContractsEdit = ({
   );
 };
 
-const formName = 'contract-form';
+const formName = 'contracts-form';
 
 export default flowRight(
   reduxForm({

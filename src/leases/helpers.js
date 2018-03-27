@@ -1034,3 +1034,66 @@ export const addDecisionsFormValues = (payload: Object, values: Object) => {
 
   return payload;
 };
+
+const getContractMortgageDocumentsForDb = (contract: Object) => {
+  const documents = get(contract, 'mortgage_documents', []);
+  if(!documents.length) {
+    return [];
+  }
+  return documents.map((doc) => {
+    return {
+      id: doc.id || undefined,
+      number: get(doc, 'number'),
+      date: get(doc, 'date'),
+      note: get(doc, 'note'),
+    };
+  });
+};
+
+const getContractChangesForDb = (contract: Object) => {
+  const changes = get(contract, 'contract_changes', []);
+  if(!changes.length) {
+    return [];
+  }
+  return changes.map((change) => {
+    return {
+      id: change.id || undefined,
+      signing_date: get(change, 'signing_date'),
+      sign_by_date: get(change, 'sign_by_date'),
+      first_call_sent: get(change, 'first_call_sent'),
+      second_call_sent: get(change, 'second_call_sent'),
+      third_call_sent: get(change, 'third_call_sent'),
+      description: get(change, 'description'),
+      decision: get(change, 'decision'),
+    };
+  });
+};
+
+export const addContractsFormValues = (payload: Object, values: Object) => {
+  const contracts = get(values, 'contracts', []);
+  if(!contracts.length) {
+    payload.contracts = [];
+  } else {
+    payload.contracts = contracts.map((contract) => {
+      return {
+        id: contract.id || undefined,
+        type: get(contract, 'type'),
+        contract_number: get(contract, 'contract_number'),
+        signing_date: get(contract, 'signing_date'),
+        signing_note: get(contract, 'signing_note'),
+        is_readjustment_decision: get(contract, 'is_readjustment_decision'),
+        decision: get(contract, 'decision'),
+        ktj_link: get(contract, 'ktj_link'),
+        collateral_number: get(contract, 'collateral_number'),
+        collateral_start_date: get(contract, 'collateral_start_date'),
+        collateral_end_date: get(contract, 'collateral_end_date'),
+        collateral_note: get(contract, 'collateral_note'),
+        institution_identifier: get(contract, 'institution_identifier'),
+        contract_changes: getContractChangesForDb(contract),
+        mortgage_documents: getContractMortgageDocumentsForDb(contract),
+      };
+    });
+  }
+
+  return payload;
+};
