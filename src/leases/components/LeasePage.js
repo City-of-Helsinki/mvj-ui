@@ -146,7 +146,6 @@ type State = {
   activeTab: number,
   areasMock: Array<Object>,
   history: Array<Object>,
-  inspections: Array<Object>,
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
   isSaveLeaseModalOpen: boolean,
@@ -169,7 +168,6 @@ class PreparerForm extends Component {
     rents: {},
     tenants: [],
     terms: [],
-    inspections: [],
   }
 
   static contextTypes = {
@@ -207,7 +205,6 @@ class PreparerForm extends Component {
     this.setState({
       areasMock: contentHelpers.getContentLeaseAreasMock(lease),
       history: contentHelpers.getContentHistory(lease),
-      inspections: contentHelpers.getContentInspections(lease),
       oldTenants: lease.tenants_old,
       rents: contentHelpers.getContentRents(lease),
       tenants: contentHelpers.getContentTenants(lease),
@@ -253,7 +250,7 @@ class PreparerForm extends Component {
       currentLease,
       eligibilityForm,
       hideEditMode,
-      inspectionsForm,
+      // inspectionsForm,
       patchLease,
       rentsForm,
       tenantsForm,
@@ -288,9 +285,9 @@ class PreparerForm extends Component {
       this.setState({areasMock: eligibilityForm});
     }
 
-    if(inspectionsForm !== undefined) {
-      this.setState({inspections: inspectionsForm});
-    }
+    // if(inspectionsForm !== undefined) {
+    //   this.setState({inspections: inspectionsForm});
+    // }
     if(rentsForm !== undefined) {
       this.setState({rents: rentsForm});
     }
@@ -324,9 +321,9 @@ class PreparerForm extends Component {
     dispatch(destroy('summary-form'));
     dispatch(destroy('decisions-form'));
     dispatch(destroy('contracts-form'));
+    dispatch(destroy('inspection-form'));
 
     dispatch(destroy('billing-edit-form'));
-    dispatch(destroy('inspection-edit-form'));
     dispatch(destroy('rent-edit-form'));
     dispatch(destroy('tenant-edit-form'));
   }
@@ -395,7 +392,6 @@ class PreparerForm extends Component {
       activeTab,
       areasMock,
       history,
-      inspections,
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
       isSaveLeaseModalOpen,
@@ -427,6 +423,7 @@ class PreparerForm extends Component {
     const areas = contentHelpers.getContentLeaseAreas(currentLease);
     const decisions = contentHelpers.getContentDecisions(currentLease);
     const contracts = contentHelpers.getContentContracts(currentLease);
+    const inspections = contentHelpers.getContentInspections(currentLease);
 
     const comments = contentHelpers.getContentComments(commentsStore);
 

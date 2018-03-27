@@ -304,6 +304,27 @@ export const getContentContracts = (lease: Object) => {
   );
 };
 
+export const getContentInspectionItem = (inspection: Object) => {
+  return {
+    id: get(inspection, 'id'),
+    inspector: get(inspection, 'inspector'),
+    supervision_date: get(inspection, 'supervision_date'),
+    supervised_date: get(inspection, 'supervised_date'),
+    description: get(inspection, 'description'),
+  };
+};
+
+export const getContentInspections = (lease: Object) => {
+  const inspections = get(lease, 'inspections', []);
+  if(!inspections.length) {
+    return [];
+  }
+
+  return inspections.map((inspection) =>
+    getContentInspectionItem(inspection)
+  );
+};
+
 //
 //
 // OLD HELPER FUNCTIONS
@@ -435,26 +456,6 @@ export const getContentFixedInitialYearRentItems = (items: Array<Object>) => {
       start_date: get(item, 'start_date'),
     };
   });
-};
-
-export const getContentInspectionItem = (inspection: Object) => {
-  return {
-    inspection_description: get(inspection, 'inspection_description'),
-    inspector: get(inspection, 'inspector'),
-    supervision_date: get(inspection, 'supervision_date'),
-    supervised_date: get(inspection, 'supervised_date'),
-  };
-};
-
-export const getContentInspections = (lease: Object) => {
-  const inspections = get(lease, 'inspections', []);
-  if(!inspections || inspections.length === 0) {
-    return [];
-  }
-
-  return inspections.map((inspection) =>
-    getContentInspectionItem(inspection)
-  );
 };
 
 export const getContentLeaseAreaConstructionEligibilityComments = (comments: Array<Object>) => {

@@ -16,9 +16,13 @@ const Inspections = ({inspections}: Props) => {
         {inspections && !!inspections.length
           ? (
             <div>
-              {inspections.map((inspection, index) =>
-                <GreenBoxItem className='no-border-on-first-child' key={index}>
-                  <InspectionItem inspection={inspection} />
+              {inspections.map((inspection) =>
+                <GreenBoxItem
+                  className='no-border-on-first-child'
+                  key={inspection.id}>
+                  <InspectionItem
+                    inspection={inspection}
+                  />
                 </GreenBoxItem>
               )}
             </div>
