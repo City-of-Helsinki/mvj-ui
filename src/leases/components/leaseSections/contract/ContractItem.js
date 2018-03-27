@@ -170,11 +170,6 @@ const ContractItem = ({attributes, contract, decisionOptions}: Props) => {
                 <p className='no-margin'>{change.description  || '–'}</p>
               </Column>
             </Row>
-            <Row>
-              <Column medium={12}>
-
-              </Column>
-            </Row>
           </GreenBoxItem>
         )}
       </Collapse>
