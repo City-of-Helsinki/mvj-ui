@@ -32,7 +32,7 @@ const renderContractChanges = ({decisionOptions, fields, title}: ContractChanges
 
       {fields && fields.length > 0 && fields.map((change, index) => {
         return (
-          <GreenBoxItem key={index}>
+          <GreenBoxItem key={change.id ? change.id : `index_${index}`}>
             <BoxContentWrapper>
               <RemoveButton
                 className='position-topright-no-padding'
@@ -134,27 +134,27 @@ const renderMortgageDocuments = ({fields}: MortgageDocumentsProps) => {
               <label className='mvj-form-field-label'>Panttikirjan kommentti</label>
             </Column>
           </Row>
-          {fields.map((pledge_book, index) =>
-            <Row key={index} className='pledge-book'>
+          {fields.map((doc, index) =>
+            <Row key={doc.id ? doc.id : `index_${index}`} className='pledge-book'>
               <Column small={4} medium={4} large={2}>
                 <Field
                   className='list-item'
                   component={FieldTypeText}
-                  name={`${pledge_book}.number`}
+                  name={`${doc}.number`}
                 />
               </Column>
               <Column small={4} medium={4} large={2}>
                 <Field
                   className='list-item'
                   component={FieldTypeDatePicker}
-                  name={`${pledge_book}.date`}
+                  name={`${doc}.date`}
                 />
               </Column>
               <Column small={3} medium={3} large={2}>
                 <Field
                   className='list-item'
                   component={FieldTypeText}
-                  name={`${pledge_book}.note`}
+                  name={`${doc}.note`}
                 />
               </Column>
               <Column>
@@ -199,7 +199,7 @@ const ContractItemsEdit = ({
     <div>
       {fields && fields.length > 0 && fields.map((contract, index) => {
         return(
-          <ContentItem key={index}>
+          <ContentItem key={contract.id ? contract.id : `index_${index}`}>
             <WhiteBoxEdit>
               <BoxContentWrapper>
                 <RemoveButton
