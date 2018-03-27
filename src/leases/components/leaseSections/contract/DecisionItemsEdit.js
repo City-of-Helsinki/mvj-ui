@@ -40,7 +40,7 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                 title="Poista sopimus"
               />
               <Row>
-                <Column small={8} medium={4}>
+                <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeSelect}
                     label='Päättäjä'
@@ -52,7 +52,7 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     ]}
                   />
                 </Column>
-                <Column small={4} medium={2}>
+                <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeDatePicker}
                     label='Päätöspäivämäärä'
@@ -63,7 +63,7 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     ]}
                   />
                 </Column>
-                <Column small={4} medium={2}>
+                <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeText}
                     label='Pykälä'
@@ -74,7 +74,7 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     ]}
                   />
                 </Column>
-                <Column small={8} medium={4}>
+                <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeSelect}
                     label='Päätöksen tyyppi'
@@ -86,11 +86,8 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     ]}
                   />
                 </Column>
-              </Row>
-              <Row>
-                <Column small={12} medium={2}>
+                <Column small={6} medium={4} large={2}>
                   <Field
-                    className='no-margin'
                     component={FieldTypeText}
                     label='Diaarinumero'
                     name={`${decision}.reference_number`}
@@ -100,7 +97,9 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                     ]}
                   />
                 </Column>
-                <Column small={12} medium={10}>
+              </Row>
+              <Row>
+                <Column small={12}>
                   <Field
                     className='no-margin'
                     component={FieldTypeText}

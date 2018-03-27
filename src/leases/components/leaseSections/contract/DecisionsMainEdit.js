@@ -64,7 +64,8 @@ class DecisionsMainEdit extends Component {
         <h1>Sopimukset</h1>
         <Divider />
         <ContractsEdit
-          rules={decisions}
+          attributes={attributes}
+          decisionOptions={decisionOptions}
           initialValues={{contracts: contracts}}
         />
 

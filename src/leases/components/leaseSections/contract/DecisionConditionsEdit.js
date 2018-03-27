@@ -79,7 +79,7 @@ const DecisionConditionsEdit = ({
               </Column>
             </Row>
             <Row>
-              <Column medium={12}>
+              <Column small={12} >
                 <Field
                   className='no-margin'
                   component={FieldTypeText}
