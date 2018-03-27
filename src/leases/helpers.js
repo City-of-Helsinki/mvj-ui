@@ -1098,3 +1098,22 @@ export const addContractsFormValues = (payload: Object, values: Object) => {
 
   return payload;
 };
+
+export const addInspectionsFormValues = (payload: Object, values: Object) => {
+  const inspections = get(values, 'inspections', []);
+  if(!inspections.length) {
+    payload.inspections = [];
+  } else {
+    payload.inspections = inspections.map((inspection) => {
+      return {
+        id: inspection.id || undefined,
+        inspector: get(inspection, 'inspector'),
+        supervision_date: get(inspection, 'supervision_date'),
+        supervised_date: get(inspection, 'supervised_date'),
+        description: get(inspection, 'description'),
+      };
+    });
+  }
+
+  return payload;
+};

@@ -11,7 +11,7 @@ type Props = {
 
 const InspectionItem = ({inspection}: Props) => {
   const breakpoint = getFoundationBreakpoint();
-  console.log(breakpoint);
+
   return (
     <div>
       <Row>
@@ -47,7 +47,7 @@ const InspectionItem = ({inspection}: Props) => {
                 {formatDate(inspection.supervised_date)}
               </p>
             ) : <p className={classNames(
-                {'no-margin': (breakpoint === 'xxlarge' || breakpoint === 'xlarge' || breakpoint === 'xlarge' || breakpoint === 'small')}
+                {'no-margin': (breakpoint === 'xxlarge' || breakpoint === 'xlarge' || breakpoint === 'large' || breakpoint === 'small')}
               )}>–</p>
           }
         </Column>

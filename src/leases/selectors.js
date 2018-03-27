@@ -47,10 +47,10 @@ export const getDecisions: Selector<Object, void> = (state: Object): LeaseState 
   state.lease.decisions;
 
 export const getAreasFormTouched: Selector<any, void> = (state: Object): Object =>
-  get(state, 'form.lease-area-form.anyTouched');
+  get(state, 'form.lease-areas-form.anyTouched');
 
 export const getAreasFormValues: Selector<any, void> = (state: Object): Object =>
-  get(state, 'form.lease-area-form.values');
+  get(state, 'form.lease-areas-form.values');
 
 export const getContractsFormTouched: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.contracts-form.anyTouched');
@@ -63,6 +63,12 @@ export const getDecisionsFormTouched: Selector<any, void> = (state: Object): Obj
 
 export const getDecisionsFormValues: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.decisions-form.values');
+
+export const getInspectionsFormTouched: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.inspections-form.anyTouched');
+
+export const getInspectionsFormValues: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.inspections-form.values');
 
 export const getLeaseInfoFormTouched: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.lease-info-form.anyTouched');

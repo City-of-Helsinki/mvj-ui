@@ -30,7 +30,7 @@ class InspectionsEdit extends Component {
   }
 }
 
-const formName = 'inspection-edit-form';
+const formName = 'inspections-form';
 const selector = formValueSelector(formName);
 
 export default flowRight(

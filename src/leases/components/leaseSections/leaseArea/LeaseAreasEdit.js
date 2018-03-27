@@ -211,7 +211,7 @@ class LeaseAreasEdit extends Component {
   }
 }
 
-const formName = 'lease-area-form';
+const formName = 'lease-areas-form';
 
 export default flowRight(
   connect(

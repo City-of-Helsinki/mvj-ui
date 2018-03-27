@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import classNames from 'classnames';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
@@ -10,12 +11,14 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
+import {getFoundationBreakpoint} from '$src/util/helpers';
 
 type Props = {
   fields: any,
 }
 
 const InspectionItemsEdit = ({fields}: Props) => {
+  const breakpoint = getFoundationBreakpoint();
   return(
     <GreenBoxEdit>
       {fields && fields.length > 0 && fields.map((inspection, index) =>
@@ -27,35 +30,42 @@ const InspectionItemsEdit = ({fields}: Props) => {
               title="Poista tarkastus"
             />
             <Row>
-              <Column medium={4}>
+              <Column small={6} medium={4} large={2}>
                 <Field
+                  className={classNames(
+                     {'no-margin': (breakpoint === 'xxlarge' || breakpoint === 'xlarge' || breakpoint === 'large')}
+                   )}
                   component={FieldTypeText}
                   label='Tarkastaja'
                   name={`${inspection}.inspector`}
                 />
               </Column>
-              <Column medium={4}>
+              <Column small={6} medium={4} large={2}>
                 <Field
+                  className={classNames(
+                     {'no-margin': (breakpoint === 'xxlarge' || breakpoint === 'xlarge' || breakpoint === 'large')}
+                   )}
                   component={FieldTypeDatePicker}
                   label='Valvonta päivämäärä'
                   name={`${inspection}.supervision_date`}
                 />
               </Column>
-              <Column medium={4}>
+              <Column small={6} medium={4} large={2}>
                 <Field
+                  className={classNames(
+                     {'no-margin': (breakpoint === 'xxlarge' || breakpoint === 'xlarge' || breakpoint === 'large' || breakpoint === 'small')}
+                   )}
                   component={FieldTypeDatePicker}
                   label='Valvottu päivämäärä'
                   name={`${inspection}.supervised_date`}
                 />
               </Column>
-            </Row>
-            <Row>
-              <Column medium={12}>
+              <Column small={6} medium={12} large={6}>
                 <Field
                   className='no-margin'
                   component={FieldTypeText}
                   label='Selite'
-                  name={`${inspection}.inspection_description`}
+                  name={`${inspection}.description`}
                 />
               </Column>
             </Row>

@@ -22,6 +22,8 @@ import {
   getCurrentLease,
   getDecisionsFormTouched,
   getDecisionsFormValues,
+  getInspectionsFormTouched,
+  getInspectionsFormValues,
   getIsEditMode,
   getIsFetching,
   getIsContractsFormValid,
@@ -112,8 +114,8 @@ type Props = {
   fetchLessors: Function,
   fetchSingleLease: Function,
   hideEditMode: Function,
-  inspectionsForm: Array<Object>,
-  inspectionTouched: boolean,
+  inspectionsFormValues: Object,
+  inspectionsFormTouched: boolean,
   isEditMode: boolean,
   isFetching: boolean,
   isContractsFormValid: boolean,
@@ -246,11 +248,11 @@ class PreparerForm extends Component {
       summaryFormValues,
       decisionsFormValues,
       contractsFormValues,
+      inspectionsFormValues,
 
       currentLease,
       eligibilityForm,
       hideEditMode,
-      // inspectionsForm,
       patchLease,
       rentsForm,
       tenantsForm,
@@ -277,6 +279,9 @@ class PreparerForm extends Component {
     if(contractsFormValues !== undefined) {
       payload = contentHelpers.addContractsFormValues(payload, contractsFormValues);
     }
+    if(inspectionsFormValues !== undefined) {
+      payload = contentHelpers.addInspectionsFormValues(payload, inspectionsFormValues);
+    }
 
     patchLease(payload);
 
@@ -285,9 +290,6 @@ class PreparerForm extends Component {
       this.setState({areasMock: eligibilityForm});
     }
 
-    // if(inspectionsForm !== undefined) {
-    //   this.setState({inspections: inspectionsForm});
-    // }
     if(rentsForm !== undefined) {
       this.setState({rents: rentsForm});
     }
@@ -316,12 +318,12 @@ class PreparerForm extends Component {
 
   destroyAllForms = () => {
     const {dispatch} = this.props;
-    dispatch(destroy('lease-area-form'));
+    dispatch(destroy('lease-areas-form'));
     dispatch(destroy('lease-info-form'));
     dispatch(destroy('summary-form'));
     dispatch(destroy('decisions-form'));
     dispatch(destroy('contracts-form'));
-    dispatch(destroy('inspection-form'));
+    dispatch(destroy('inspections-form'));
 
     dispatch(destroy('billing-edit-form'));
     dispatch(destroy('rent-edit-form'));
@@ -368,9 +370,9 @@ class PreparerForm extends Component {
       summaryFormTouched,
       decisionsFormTouched,
       contractsFormTouched,
+      inspectionsFormTouched,
 
       eligibilityTouched,
-      inspectionTouched,
       rentsTouched,
       tenantsTouched,
     } = this.props;
@@ -380,9 +382,9 @@ class PreparerForm extends Component {
       summaryFormTouched ||
       decisionsFormTouched ||
       contractsFormTouched ||
+      inspectionsFormTouched ||
 
       eligibilityTouched ||
-      inspectionTouched ||
       rentsTouched ||
       tenantsTouched;
   }
@@ -643,7 +645,6 @@ class PreparerForm extends Component {
 }
 
 const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
-const inspectionFormSelector = formValueSelector('inspection-edit-form');
 const rentFormSelector = formValueSelector('rent-edit-form');
 const tenantFormSelector = formValueSelector('tenant-edit-form');
 
@@ -674,8 +675,8 @@ export default flowRight(
         isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
         isLeaseInfoFormValid: getIsLeaseInfoFormValid(state),
         isSummaryFormValid: getIsSummaryFormValid(state),
-        inspectionsForm: inspectionFormSelector(state, 'inspections'),
-        inspectionTouched: get(state, 'form.inspection-edit-form.anyTouched'),
+        inspectionFormTouched: getInspectionsFormTouched(state),
+        inspectionsFormValues: getInspectionsFormValues(state),
         isFetching: getIsFetching(state),
         leaseInfoFormTouched: getLeaseInfoFormTouched(state),
         leaseInfoFormValues: getLeaseInfoFormValues(state),
