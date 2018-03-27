@@ -24,6 +24,7 @@ import {
   getDecisionsFormValues,
   getIsEditMode,
   getIsFetching,
+  getIsContractsFormValid,
   getIsDecisionsFormValid,
   getIsLeaseAreasFormValid,
   getIsLeaseInfoFormValid,
@@ -115,6 +116,7 @@ type Props = {
   inspectionTouched: boolean,
   isEditMode: boolean,
   isFetching: boolean,
+  isContractsFormValid: boolean,
   isDecisionsFormValid: boolean,
   isLeaseAreasFormValid: boolean,
   isLeaseInfoFormValid: boolean,
@@ -331,13 +333,15 @@ class PreparerForm extends Component {
 
   validateForms = () => {
     const {
+      isContractsFormValid,
       isDecisionsFormValid,
       isLeaseAreasFormValid,
       isLeaseInfoFormValid,
       isSummaryFormValid,
     } = this.props;
 
-    return isDecisionsFormValid &&
+    return isContractsFormValid &&
+      isDecisionsFormValid &&
       isLeaseAreasFormValid &&
       isLeaseInfoFormValid &&
       isSummaryFormValid;
@@ -668,6 +672,7 @@ export default flowRight(
         eligibilityForm: eligibilityFormSelector(state, 'areas'),
         eligibilityTouched: get(state, 'form.eligibility-edit-form.anyTouched'),
         isEditMode: getIsEditMode(state),
+        isContractsFormValid: getIsContractsFormValid(state),
         isDecisionsFormValid: getIsDecisionsFormValid(state),
         isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
         isLeaseInfoFormValid: getIsLeaseInfoFormValid(state),

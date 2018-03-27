@@ -40,7 +40,7 @@ const DecisionItem = ({attributes, decision}: Props) => {
           </Column>
           <Column small={6} medium={4} large={2}>
             <label>Päätöspäivämäärä</label>
-            <p>{decision.decision_date || '–'}</p>
+            <p>{formatDate(decision.decision_date) || '–'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <label>Pykälä</label>

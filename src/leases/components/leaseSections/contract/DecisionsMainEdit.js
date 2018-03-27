@@ -50,7 +50,6 @@ class DecisionsMainEdit extends Component {
       inspections,
     } = this.props;
     const decisionOptions = getDecisionsOptions(decisionsOptionData);
-    console.log(decisionOptions);
 
     return(
       <div>

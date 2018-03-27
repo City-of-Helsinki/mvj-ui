@@ -247,7 +247,7 @@ export const getContentContractChanges = (contract: Object) => {
     return ({
       id: get(change, 'id'),
       signing_date: get(change, 'signing_date'),
-      signing_by_date: get(change, 'signing_by_date'),
+      sign_by_date: get(change, 'sign_by_date'),
       first_call_sent: get(change, 'first_call_sent'),
       second_call_sent: get(change, 'second_call_sent'),
       third_call_sent: get(change, 'third_call_sent'),

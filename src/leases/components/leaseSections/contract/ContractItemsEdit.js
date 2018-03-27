@@ -2,8 +2,10 @@
 import React from 'react';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import {getAttributeFieldOptions} from '$util/helpers';
+import {genericValidator} from '$components/form/validations';
 import AddButton from '$components/form/AddButton';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -20,12 +22,18 @@ import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import type {Attributes} from '$src/leases/types';
 
 type ContractChangesProps = {
+  attributes: Attributes,
   decisionOptions: Array<Object>,
   fields: any,
   title: string,
 }
 
-const renderContractChanges = ({decisionOptions, fields, title}: ContractChangesProps) => {
+const renderContractChanges = ({
+  attributes,
+  decisionOptions,
+  fields,
+  title,
+}: ContractChangesProps) => {
   return(
     <GreenBoxEdit>
       <h2>{title}</h2>
@@ -45,6 +53,10 @@ const renderContractChanges = ({decisionOptions, fields, title}: ContractChanges
                     component={FieldTypeDatePicker}
                     label='Allekirjoituspäivä'
                     name={`${change}.signing_date`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.signing_date')),
+                    ]}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
@@ -52,6 +64,10 @@ const renderContractChanges = ({decisionOptions, fields, title}: ContractChanges
                     component={FieldTypeDatePicker}
                     label='Allekirjoitettava mennessä'
                     name={`${change}.sign_by_date`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.sign_by_date')),
+                    ]}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
@@ -59,6 +75,10 @@ const renderContractChanges = ({decisionOptions, fields, title}: ContractChanges
                     component={FieldTypeDatePicker}
                     label='1. kutsu lähetetty'
                     name={`${change}.first_call_sent`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.first_call_sent')),
+                    ]}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
@@ -66,6 +86,10 @@ const renderContractChanges = ({decisionOptions, fields, title}: ContractChanges
                     component={FieldTypeDatePicker}
                     label='2. kutsu lähetetty'
                     name={`${change}.second_call_sent`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.second_call_sent')),
+                    ]}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
@@ -73,6 +97,10 @@ const renderContractChanges = ({decisionOptions, fields, title}: ContractChanges
                     component={FieldTypeDatePicker}
                     label='3. kutsu lähetetty'
                     name={`${change}.third_call_sent`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.third_call_sent')),
+                    ]}
                   />
                 </Column>
               </Row>
@@ -84,6 +112,10 @@ const renderContractChanges = ({decisionOptions, fields, title}: ContractChanges
                     label='Päätös'
                     name={`${change}.decision`}
                     options={decisionOptions}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.decision')),
+                    ]}
                   />
                 </Column>
                 <Column small={6} medium={8} large={10}>
@@ -92,6 +124,10 @@ const renderContractChanges = ({decisionOptions, fields, title}: ContractChanges
                     component={FieldTypeText}
                     label='Selite'
                     name={`${change}.description`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'contracts.child.children.contract_changes.child.children.description')),
+                    ]}
                   />
                 </Column>
               </Row>
@@ -114,10 +150,11 @@ const renderContractChanges = ({decisionOptions, fields, title}: ContractChanges
 };
 
 type MortgageDocumentsProps = {
+  attributes: Attributes,
   fields: any,
 }
 
-const renderMortgageDocuments = ({fields}: MortgageDocumentsProps) => {
+const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps) => {
   return(
     <div>
       <p className='sub-title'>Panttikirjat</p>
@@ -141,6 +178,10 @@ const renderMortgageDocuments = ({fields}: MortgageDocumentsProps) => {
                   className='list-item'
                   component={FieldTypeText}
                   name={`${doc}.number`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'contracts.child.children.mortgage_documents.child.children.number')),
+                  ]}
                 />
               </Column>
               <Column small={4} medium={4} large={2}>
@@ -148,6 +189,10 @@ const renderMortgageDocuments = ({fields}: MortgageDocumentsProps) => {
                   className='list-item'
                   component={FieldTypeDatePicker}
                   name={`${doc}.date`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'contracts.child.children.mortgage_documents.child.children.date')),
+                  ]}
                 />
               </Column>
               <Column small={3} medium={3} large={2}>
@@ -155,6 +200,10 @@ const renderMortgageDocuments = ({fields}: MortgageDocumentsProps) => {
                   className='list-item'
                   component={FieldTypeText}
                   name={`${doc}.note`}
+                  validate={[
+                    (value) => genericValidator(value,
+                      get(attributes, 'contracts.child.children.mortgage_documents.child.children.note')),
+                  ]}
                 />
               </Column>
               <Column>
@@ -214,6 +263,10 @@ const ContractItemsEdit = ({
                       name={`${contract}.type`}
                       label='Sopimuksen tyyppi'
                       options={typeOptions}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.type')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
@@ -221,6 +274,10 @@ const ContractItemsEdit = ({
                       component={FieldTypeText}
                       label='Sopimusnumero'
                       name={`${contract}.contract_number`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.contract_number')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
@@ -228,6 +285,10 @@ const ContractItemsEdit = ({
                       component={FieldTypeDatePicker}
                       label='Allekirjoituspäivämäärä'
                       name={`${contract}.signing_date`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.signing_date')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={12} large={6}>
@@ -235,6 +296,10 @@ const ContractItemsEdit = ({
                       component={FieldTypeText}
                       label='Kommentti allekirjoitukselle'
                       name={`${contract}.signing_note`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.signing_note')),
+                      ]}
                     />
                   </Column>
                 </Row>
@@ -248,6 +313,10 @@ const ContractItemsEdit = ({
                       options={[
                         {value: true, label: 'Järjestelypäätös'},
                       ]}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.is_readjustment_decision')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
@@ -255,6 +324,10 @@ const ContractItemsEdit = ({
                       component={FieldTypeText}
                       label='Laitostunnus'
                       name={`${contract}.institution_identifier`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.institution_identifier')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
@@ -263,6 +336,10 @@ const ContractItemsEdit = ({
                       label='Päätös'
                       name={`${contract}.decision`}
                       options={decisionOptions}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.decision')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={12} large={6}>
@@ -271,6 +348,10 @@ const ContractItemsEdit = ({
                       component={FieldTypeText}
                       label='KTJ vuokraoikeustodistuksen linkki'
                       name={`${contract}.ktj_link`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.ktj_link')),
+                      ]}
                     />
                   </Column>
                 </Row>
@@ -280,6 +361,10 @@ const ContractItemsEdit = ({
                       component={FieldTypeText}
                       label='Vuokravakuusnumero'
                       name={`${contract}.collateral_number`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.collateral_number')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
@@ -287,6 +372,10 @@ const ContractItemsEdit = ({
                       component={FieldTypeDatePicker}
                       label='Vuokravakuus alkupvm'
                       name={`${contract}.collateral_start_date`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.collateral_start_date')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
@@ -294,6 +383,10 @@ const ContractItemsEdit = ({
                       component={FieldTypeDatePicker}
                       label='Vuokravakuus loppupvm'
                       name={`${contract}.collateral_end_date`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.collateral_end_date')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={12} large={6}>
@@ -301,12 +394,17 @@ const ContractItemsEdit = ({
                       component={FieldTypeText}
                       label='Vuokravakuus kommentti'
                       name={`${contract}.collateral_note`}
+                      validate={[
+                        (value) => genericValidator(value,
+                          get(attributes, 'contracts.child.children.collateral_note')),
+                      ]}
                     />
                   </Column>
                 </Row>
                 <Row>
                   <Column small={12}>
                     <FieldArray
+                      attributes={attributes}
                       component={renderMortgageDocuments}
                       name={`${contract}.mortgage_documents`}
                     />
@@ -316,6 +414,7 @@ const ContractItemsEdit = ({
               </BoxContentWrapper>
             </WhiteBoxEdit>
             <FieldArray
+              attributes={attributes}
               component={renderContractChanges}
               decisionOptions={decisionOptions}
               name={`${contract}.contract_changes`}
