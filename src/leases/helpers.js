@@ -325,6 +325,58 @@ export const getContentInspections = (lease: Object) => {
   );
 };
 
+export const getContentConstructabilityDescriptions = (area: Object) => {
+  const descriptions = get(area, 'constructability_descriptions', []);
+  if(!descriptions.length) {
+    return [];
+  }
+
+  return descriptions.map((description) => {
+    return {
+      id: get(description, 'id'),
+      type: get(description, 'type'),
+      user: get(description, 'user.id'),
+      text: get(description, 'text'),
+      ahjo_reference_number: get(description, 'ahjo_reference_number'),
+      modified_at: get(description, 'modified_at'),
+    };
+  });
+};
+
+export const getContentConstructability = (lease: Object) => {
+  const lease_areas = get(lease, 'lease_areas', []);
+  if(!lease_areas.length) {
+    return [];
+  }
+  return lease_areas.map((area) => {
+    return {
+      id: get(area, 'id'),
+      identifier: get(area, 'identifier'),
+      type: get(area, 'type'),
+      location: get(area, 'location'),
+      area: get(area, 'area'),
+      address: get(area, 'address'),
+      postal_code: get(area, 'postal_code'),
+      city: get(area, 'city'),
+      preconstruction_state: get(area, 'preconstruction_state'),
+      demolition_state: get(area, 'demolition_state'),
+      polluted_land_state: get(area, 'polluted_land_state'),
+      polluted_land_rent_condition_state: get(area, 'polluted_land_rent_condition_state'),
+      polluted_land_rent_condition_date: get(area, 'polluted_land_rent_condition_date'),
+      polluted_land_planner: get(area, 'polluted_land_planner.id'),
+      polluted_land_projectwise_number: get(area, 'polluted_land_projectwise_number'),
+      polluted_land_matti_report_number: get(area, 'polluted_land_matti_report_number'),
+      constructability_report_state: get(area, 'constructability_report_state'),
+      constructability_report_investigation_state: get(area, 'constructability_report_investigation_state'),
+      constructability_report_signing_date: get(area, 'constructability_report_signing_date'),
+      constructability_report_signer: get(area, 'constructability_report_signer'),
+      constructability_report_geotechnical_number: get(area, 'constructability_report_geotechnical_number'),
+      other_state: get(area, 'other_state'),
+      constructability_descriptions: getContentConstructabilityDescriptions(area),
+    };
+  });
+};
+
 //
 //
 // OLD HELPER FUNCTIONS

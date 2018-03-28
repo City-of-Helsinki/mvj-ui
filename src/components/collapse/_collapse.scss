@@ -35,6 +35,9 @@
     }
 
     &-neutral {
+      line-height: rem-calc(30px);
+      display: flex;
+      align-items: center;
       color: $dark-gray;
       font-size: $font-small;
       i {
@@ -48,6 +51,9 @@
     }
 
     &-alert {
+      line-height: rem-calc(30px);
+      display: flex;
+      align-items: center;
       color: $brick;
       font-size: $font-small;
       i {
@@ -61,6 +67,9 @@
     }
 
     &-success {
+      line-height: rem-calc(30px);
+      display: flex;
+      align-items: center;
       color: $tram;
       font-size: $font-small;
       i {

@@ -77,10 +77,10 @@ const IndexAdjustedRentsEdit = ({fields}: Props) => {
     <div>
       <TableFixedHeader
         headers={[
-          'Ind. tark. vuokra (€)',
+          'Indeksitarkastettu vuokra (€)',
           'Käyttötarkoitus',
           'Voimassaoloaika',
-          'Laskentak.',
+          'Laskentakerroin',
         ]}
         body={
           getTableBody(fields)

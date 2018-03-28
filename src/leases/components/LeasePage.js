@@ -86,8 +86,8 @@ import TabPane from '$components/tabs/TabPane';
 import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
-import ConstructionEligibility from './leaseSections/constructionEligibility/ConstructionEligibility';
-import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
+import Constructability from './leaseSections/constructability/Constructability';
+import ConstructionEligibilityEdit from './leaseSections/constructability/ConstructionEligibilityEdit';
 
 
 import mockData from '../mock-data.json';
@@ -421,6 +421,7 @@ class PreparerForm extends Component {
     const decisions = contentHelpers.getContentDecisions(currentLease);
     const contracts = contentHelpers.getContentContracts(currentLease);
     const inspections = contentHelpers.getContentInspections(currentLease);
+    const constructability = contentHelpers.getContentConstructability(currentLease);
 
     const comments = contentHelpers.getContentComments(commentsStore);
 
@@ -611,8 +612,17 @@ class PreparerForm extends Component {
               <h1>Rakentamiskelpoisuus</h1>
               <Divider />
               {isEditMode
-                ? <ConstructionEligibilityEdit areas={areasMock} initialValues={{areas: areasMock}}/>
-                : <ConstructionEligibility areas={areasMock}/>
+                ? (
+                  <ConstructionEligibilityEdit
+                    areas={constructability}
+                    initialValues={{areas: areasMock}}
+                  />
+                ) : (
+                  <Constructability
+                    areas={constructability}
+                    attributes={attributes}
+                  />
+                )
               }
             </ContentContainer>
           </TabPane>
