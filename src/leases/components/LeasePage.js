@@ -89,7 +89,7 @@ import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 import Constructability from './leaseSections/constructability/Constructability';
-import ConstructionEligibilityEdit from './leaseSections/constructability/ConstructionEligibilityEdit';
+import ConstructabilityEdit from './leaseSections/constructability/ConstructabilityEdit';
 
 import type {UserList} from '$src/users/types';
 
@@ -323,6 +323,7 @@ class PreparerForm extends Component {
     dispatch(destroy('decisions-form'));
     dispatch(destroy('contracts-form'));
     dispatch(destroy('inspections-form'));
+    dispatch(destroy('constructability-form'));
 
     dispatch(destroy('billing-edit-form'));
     dispatch(destroy('rent-edit-form'));
@@ -617,9 +618,11 @@ class PreparerForm extends Component {
               <Divider />
               {isEditMode
                 ? (
-                  <ConstructionEligibilityEdit
+                  <ConstructabilityEdit
                     areas={constructability}
-                    initialValues={{constructability}}
+                    attributes={attributes}
+                    initialValues={{lease_areas: constructability}}
+                    users={users}
                   />
                 ) : (
                   <Constructability
@@ -652,7 +655,7 @@ class PreparerForm extends Component {
   }
 }
 
-const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
+const eligibilityFormSelector = formValueSelector('constructability-form');
 const rentFormSelector = formValueSelector('rent-edit-form');
 const tenantFormSelector = formValueSelector('tenant-edit-form');
 
@@ -676,7 +679,7 @@ export default flowRight(
         decisionsFormTouched: getDecisionsFormTouched(state),
         decisionsFormValues: getDecisionsFormValues(state),
         eligibilityForm: eligibilityFormSelector(state, 'areas'),
-        eligibilityTouched: get(state, 'form.eligibility-edit-form.anyTouched'),
+        eligibilityTouched: get(state, 'form.constructability-form.anyTouched'),
         isEditMode: getIsEditMode(state),
         isContractsFormValid: getIsContractsFormValid(state),
         isDecisionsFormValid: getIsDecisionsFormValid(state),

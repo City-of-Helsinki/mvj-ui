@@ -1,11 +1,10 @@
 // @flow
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {formValueSelector, reduxForm, Field, FieldArray} from 'redux-form';
+import {reduxForm, Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import capitalize from 'lodash/capitalize';
 import flowRight from 'lodash/flowRight';
 
+import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
@@ -16,11 +15,9 @@ import FormSection from '$components/form/FormSection';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import MapIcon from '$components/icons/MapIcon';
 import RemoveButton from '$components/form/RemoveButton';
-import {
-  constructionEligibilityReportOptions,
-  constructionEligibilityRentConditionsOptions,
-  researchStateOptions,
-} from '$src/constants';
+
+import type {Attributes} from '$src/leases/types';
+import type {UserList} from '$src/users/types';
 
 type CommentProps = {
   fields: any,
@@ -44,8 +41,7 @@ const renderComments = ({fields}: CommentProps) => {
                     className='no-margin'
                     component={FieldTypeText}
                     label='Selitys'
-                    name={`${comment}.comment`}
-                    type="text"
+                    name={`${comment}.text`}
                   />
                 </Column>
                 <Column medium={3} large={2}>
@@ -53,8 +49,7 @@ const renderComments = ({fields}: CommentProps) => {
                     className='no-margin'
                     component={FieldTypeText}
                     label='AHJO diaarinumero'
-                    name={`${comment}.AHJO_number`}
-                    type="text"
+                    name={`${comment}.ahjo_reference_number`}
                   />
                 </Column>
               </Row>
@@ -78,35 +73,63 @@ const renderComments = ({fields}: CommentProps) => {
 
 
 type AreaProps = {
-  fields: any,
   areas: Array<Object>,
+  attributes: Attributes,
+  fields: any,
+  users: UserList,
 }
 
-const renderArea = ({fields, areas}: AreaProps) => {
+const renderAreas = ({
+  areas,
+  attributes,
+  fields,
+  users,
+}: AreaProps) => {
+  const getFullAddress = (item: Object) => {
+    return `${item.address}, ${item.postal_code} ${item.city}`;
+  };
+  const getUserOptions = (users: UserList) => {
+    if(!users || !users.length) {
+      return [];
+    }
+    return users.map((user) => {
+      return {
+        value: user.id,
+        label: `${user.first_name} ${user.last_name}`,
+      };
+    });
+  };
+  const stateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.preconstruction_state');
+  const pollutedLandConditionStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state');
+  const constructabilityReportStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.constructability_report_investigation_state');
+  const userOptions = getUserOptions(users);
+  const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
+  const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
+
   return (
     <div>
-      {fields && fields.length > 0 && fields.map((area, index) => {
+      {areas && !!areas.length &&fields && !!fields.length && fields.map((area, index) => {
         return (
-          <div key={index}>
+          <div key={area.id ? area.id : `index_${index}`}>
             <Collapse
               defaultOpen={true}
               header={
                 <Row>
                   <Column medium={4} className='collapse__header-title'>
                     <MapIcon />
-                    {areas && areas.length > index &&
-                      <span>
-                        <span>{`${areas[index].municipality}-${areas[index].district}-${areas[index].group_number}-${areas[index].unit_number}`}</span>
-                        &nbsp;&nbsp;
-                        <span className='collapse__header-subtitle'>{`(${areas[index].explanation})`}</span>
+                    <span>
+                      <span>{areas[index].identifier}</span>
+                      &nbsp;&nbsp;
+                      <span className='collapse__header-subtitle'>
+                        {getLabelOfOption(typeOptions, areas[index].type) || '-'}
                       </span>
-                    }
+                    </span>
                   </Column>
                   <Column medium={4} className='collapse__header-subtitle'>
-                    {areas && areas.length > index &&  <span>{`${capitalize(areas[index].address)}, ${areas[index].zip_code} ${capitalize(areas[index].town)}`}</span>}
+                    <span>{getFullAddress(areas[index])}</span>
                   </Column>
                   <Column medium={4} className='collapse__header-subtitle'>
-                    {areas && areas.length > index &&  <span>{areas[index].full_area} m<sup>2</sup> / {capitalize(areas[index].position)}</span>}
+                    <span>{areas[index].area || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areas[index].location) || '-'}</span>}
                   </Column>
                 </Row>
               }
@@ -118,12 +141,15 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <Field
                       component={FieldTypeSelect}
                       label='Selvitysaste'
-                      name={`${area}.construction_eligibility.preconstruction.research_state`}
-                      options={researchStateOptions}
+                      name={`${area}.preconstruction_state`}
+                      options={stateOptions}
                     />
                   </Column>
                 </Row>
-                <FieldArray name={`${area}.construction_eligibility.preconstruction.comments`} component={renderComments}/>
+                <FieldArray
+                  name={`${area}.descriptionsPreconstruction`}
+                  component={renderComments}
+                />
               </GreenBoxEdit>
 
               <GreenBoxEdit>
@@ -133,12 +159,15 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <Field
                       component={FieldTypeSelect}
                       label='Selvitysaste'
-                      name={`${area}.construction_eligibility.demolition.research_state`}
-                      options={researchStateOptions}
+                      name={`${area}.demolition_state`}
+                      options={stateOptions}
                     />
                   </Column>
                 </Row>
-                <FieldArray name={`${area}.construction_eligibility.demolition.comments`} component={renderComments}/>
+                <FieldArray
+                  component={renderComments}
+                  name={`${area}.descriptionsDemolition`}
+                />
               </GreenBoxEdit>
 
               <GreenBoxEdit>
@@ -148,39 +177,39 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <Field
                       component={FieldTypeSelect}
                       label='Selvitysaste'
-                      name={`${area}.construction_eligibility.contamination.research_state`}
-                      options={researchStateOptions}
+                      name={`${area}.polluted_land_state`}
+                      options={stateOptions}
                     />
                   </Column>
                   <Column medium={3} large={2}>
                     <Field
                       component={FieldTypeSelect}
                       label='Vuokraehdot'
-                      name={`${area}.construction_eligibility.contamination.rent_conditions`}
-                      options={constructionEligibilityRentConditionsOptions}
+                      name={`${area}.polluted_land_rent_condition_state`}
+                      options={pollutedLandConditionStateOptions}
                     />
                   </Column>
                   <Column medium={3} large={2}>
                     <Field
                       component={FieldTypeDatePicker}
                       label='Päivämäärä'
-                      name={`${area}.construction_eligibility.contamination.rent_condition_date`}
+                      name={`${area}.polluted_land_rent_condition_date`}
                       type="text"
                     />
                   </Column>
                   <Column medium={3} large={2}>
                     <Field
-                      component={FieldTypeText}
+                      component={FieldTypeSelect}
                       label='PIMA valmistelija'
-                      name={`${area}.construction_eligibility.contamination.contamination_author`}
-                      type="text"
+                      name={`${area}.polluted_land_planner`}
+                      options={userOptions}
                     />
                   </Column>
                   <Column medium={3} large={2}>
                     <Field
                       component={FieldTypeText}
                       label='ProjectWise kohdenumero'
-                      name={`${area}.construction_eligibility.contamination.projectwise_number`}
+                      name={`${area}.polluted_land_projectwise_number`}
                       type="text"
                     />
                   </Column>
@@ -188,12 +217,15 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <Field
                       component={FieldTypeText}
                       label='Matti raportti'
-                      name={`${area}.construction_eligibility.contamination.matti_report`}
+                      name={`${area}.polluted_land_matti_report_number`}
                       type="text"
                     />
                   </Column>
                 </Row>
-                <FieldArray name={`${area}.construction_eligibility.contamination.comments`} component={renderComments}/>
+                <FieldArray
+                  component={renderComments}
+                  name={`${area}.descriptionsPollutedLand`}
+                />
               </GreenBoxEdit>
 
               <GreenBoxEdit>
@@ -203,23 +235,23 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <Field
                       component={FieldTypeSelect}
                       label='Selvitysaste'
-                      name={`${area}.construction_eligibility.construction_investigation.research_state`}
-                      options={researchStateOptions}
+                      name={`${area}.constructability_report_state`}
+                      options={stateOptions}
                     />
                   </Column>
                   <Column medium={3} large={2}>
                     <Field
                       component={FieldTypeSelect}
                       label='Selvitys'
-                      name={`${area}.construction_eligibility.construction_investigation.report`}
-                      options={constructionEligibilityReportOptions}
+                      name={`${area}.constructability_report_investigation_state`}
+                      options={constructabilityReportStateOptions}
                     />
                   </Column>
                   <Column medium={3} large={2}>
                     <Field
                       component={FieldTypeDatePicker}
                       label='Allekirjoituspäivämäärä'
-                      name={`${area}.construction_eligibility.construction_investigation.signing_date`}
+                      name={`${area}.constructability_report_signing_date`}
                       type="text"
                     />
                   </Column>
@@ -227,7 +259,7 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <Field
                       component={FieldTypeText}
                       label='Allekirjoittaja'
-                      name={`${area}.construction_eligibility.construction_investigation.report_author`}
+                      name={`${area}.constructability_report_signer`}
                       type="text"
                     />
                   </Column>
@@ -235,12 +267,15 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <Field
                       component={FieldTypeText}
                       label='Geotekninen palvelun tiedosto'
-                      name={`${area}.construction_eligibility.construction_investigation.geotechnical_number`}
+                      name={`${area}.constructability_report_geotechnical_number`}
                       type="text"
                     />
                   </Column>
                 </Row>
-                <FieldArray name={`${area}.construction_eligibility.construction_investigation.comments`} component={renderComments}/>
+                <FieldArray
+                  component={renderComments}
+                  name={`${area}.descriptionsReport`}
+                />
               </GreenBoxEdit>
 
               <GreenBoxEdit>
@@ -250,12 +285,15 @@ const renderArea = ({fields, areas}: AreaProps) => {
                     <Field
                       component={FieldTypeSelect}
                       label='Selvitysaste'
-                      name={`${area}.construction_eligibility.other.research_state`}
-                      options={researchStateOptions}
+                      name={`${area}.other_state`}
+                      options={stateOptions}
                     />
                   </Column>
                 </Row>
-                <FieldArray name={`${area}.construction_eligibility.other.comments`} component={renderComments}/>
+                <FieldArray
+                  component={renderComments}
+                  name={`${area}.descriptionsOther`}
+                />
               </GreenBoxEdit>
             </Collapse>
           </div>
@@ -266,42 +304,38 @@ const renderArea = ({fields, areas}: AreaProps) => {
 };
 
 type Props = {
-  handleSubmit: Function,
-  dispatch: Function,
   areas: Array<Object>,
+  attributes: Attributes,
+  handleSubmit: Function,
+  users: UserList,
 }
 
-class ConstructionEligibilityEdit extends Component {
+class ConstructabilityEdit extends Component {
   props: Props
 
   render () {
-    const {handleSubmit, dispatch, areas} = this.props;
+    const {areas, attributes, handleSubmit, users} = this.props;
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <FieldArray
             areas={areas}
-            component={renderArea}
-            dispatch={dispatch}
-            name="areas" />
+            attributes={attributes}
+            component={renderAreas}
+            name="lease_areas"
+            users={users}
+          />
         </FormSection>
       </form>
     );
   }
 }
 
-const formName = 'eligibility-edit-form';
-const selector = formValueSelector(formName);
+const formName = 'constructability-form';
 
 export default flowRight(
-  connect(
-    (state) => {
-      return {
-        areas: selector(state, 'areas'),
-      };
-    }
-  ),
   reduxForm({
     form: formName,
+    destroyOnUnmount: false,
   }),
-)(ConstructionEligibilityEdit);
+)(ConstructabilityEdit);

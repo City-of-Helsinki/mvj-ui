@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 import Collapse from '$components/collapse/Collapse';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
-import {ConstructabilityStatus, ConstructabilityType} from '$src/leases/enums';
+import {ConstructabilityStatus} from '$src/leases/enums';
 
 import type {Attributes} from '$src/leases/types';
 import type {UserList} from '$src/users/types';
@@ -77,16 +77,6 @@ type Props = {
 }
 
 const ConstructabilityItem = ({area, attributes, users}: Props) => {
-  const getDescriptions = (type: string) => {
-    const descriptions = get(area, 'constructability_descriptions', []);
-    if(!descriptions.length) {
-      return [];
-    }
-    return descriptions.filter((description) => {
-      return description.type === type;
-    });
-  };
-
   const getUserOptions = (users: UserList) => {
     if(!users || !users.length) {
       return [];
@@ -103,8 +93,6 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
   const pollutedLandConditionStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state');
   const constructabilityReportStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.constructability_report_investigation_state');
   const userOptions = getUserOptions(users);
-
-  console.log(userOptions);
 
   return (
     <div>
@@ -125,7 +113,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
           </Row>
         }>
         <Comments
-          comments={getDescriptions(ConstructabilityType.PRECONSTRUCTION)}
+          comments={area.descriptionsPreconstruction}
           userOptions={userOptions}
         />
       </Collapse>
@@ -147,7 +135,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
           </Row>
         }>
         <Comments
-          comments={getDescriptions(ConstructabilityType.DEMOLITION)}
+          comments={area.descriptionsDemolition}
           userOptions={userOptions}
         />
       </Collapse>
@@ -193,7 +181,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
           </Row>
         </div>
         <Comments
-          comments={getDescriptions(ConstructabilityType.POLLLUTED_LAND)}
+          comments={area.descriptionsPollutedLand}
           userOptions={userOptions}
         />
       </Collapse>
@@ -235,7 +223,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
           </Row>
         </div>
         <Comments
-          comments={getDescriptions(ConstructabilityType.REPORT)}
+          comments={area.descriptionsReport}
           userOptions={userOptions}
         />
       </Collapse>
@@ -257,7 +245,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
           </Row>
         }>
         <Comments
-          comments={getDescriptions(ConstructabilityType.OTHER)}
+          comments={area.descriptionsOther}
           userOptions={userOptions}
         />
       </Collapse>

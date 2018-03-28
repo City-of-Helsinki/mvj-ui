@@ -3,6 +3,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
+import {ConstructabilityType} from './enums';
 import {
   fixedLengthNumber,
   formatDate,
@@ -325,13 +326,13 @@ export const getContentInspections = (lease: Object) => {
   );
 };
 
-export const getContentConstructabilityDescriptions = (area: Object) => {
+export const getContentConstructabilityDescriptions = (area: Object, type: string) => {
   const descriptions = get(area, 'constructability_descriptions', []);
   if(!descriptions.length) {
     return [];
   }
 
-  return descriptions.map((description) => {
+  return descriptions.filter((description) => description.type === type).map((description) => {
     return {
       id: get(description, 'id'),
       type: get(description, 'type'),
@@ -372,7 +373,11 @@ export const getContentConstructability = (lease: Object) => {
       constructability_report_signer: get(area, 'constructability_report_signer'),
       constructability_report_geotechnical_number: get(area, 'constructability_report_geotechnical_number'),
       other_state: get(area, 'other_state'),
-      constructability_descriptions: getContentConstructabilityDescriptions(area),
+      descriptionsPreconstruction: getContentConstructabilityDescriptions(area, ConstructabilityType.PRECONSTRUCTION),
+      descriptionsDemolition: getContentConstructabilityDescriptions(area, ConstructabilityType.DEMOLITION),
+      descriptionsPollutedLand: getContentConstructabilityDescriptions(area, ConstructabilityType.POLLUTED_LAND),
+      descriptionsReport: getContentConstructabilityDescriptions(area, ConstructabilityType.REPORT),
+      descriptionsOther: getContentConstructabilityDescriptions(area, ConstructabilityType.OTHER),
     };
   });
 };
