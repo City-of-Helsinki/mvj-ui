@@ -6,7 +6,7 @@
 export const ConstructabilityType = {
   PRECONSTRUCTION: 'preconstruction',
   DEMOLITION: 'demolition',
-  POLLLUTED_LAND: 'polluted_land',
+  POLLUTED_LAND: 'polluted_land',
   REPORT: 'report',
   OTHER: 'other',
 };

@@ -21,6 +21,8 @@ import {
   getComments,
   getContractsFormTouched,
   getContractsFormValues,
+  getConstructabilityFormTouched,
+  getConstructabilityFormValues,
   getCurrentLease,
   getDecisionsFormTouched,
   getDecisionsFormValues,
@@ -104,12 +106,12 @@ type Props = {
   commentsStore: Array<Object>,
   contractsFormTouched: boolean,
   contractsFormValues: Object,
+  constructabilityFormTouched: boolean,
+  constructabilityFormValues: Object,
   currentLease: Object,
   decisionsFormTouched: boolean,
   decisionsFormValues: Object,
   dispatch: Function,
-  eligibilityForm: Array<Object>,
-  eligibilityTouched: boolean,
   fetchAttributes: Function,
   fetchComments: Function,
   fetchSingleLease: Function,
@@ -248,6 +250,7 @@ class PreparerForm extends Component {
       decisionsFormValues,
       contractsFormValues,
       inspectionsFormValues,
+      constructabilityFormValues,
 
       currentLease,
       // eligibilityForm,
@@ -280,6 +283,9 @@ class PreparerForm extends Component {
     }
     if(inspectionsFormValues !== undefined) {
       payload = contentHelpers.addInspectionsFormValues(payload, inspectionsFormValues);
+    }
+    if(constructabilityFormValues !== undefined) {
+      payload = contentHelpers.addConstructabilityFormValues(payload, constructabilityFormValues);
     }
 
     patchLease(payload);
@@ -373,8 +379,8 @@ class PreparerForm extends Component {
       decisionsFormTouched,
       contractsFormTouched,
       inspectionsFormTouched,
+      constructabilityFormTouched,
 
-      eligibilityTouched,
       rentsTouched,
       tenantsTouched,
     } = this.props;
@@ -385,8 +391,8 @@ class PreparerForm extends Component {
       decisionsFormTouched ||
       contractsFormTouched ||
       inspectionsFormTouched ||
+      constructabilityFormTouched ||
 
-      eligibilityTouched ||
       rentsTouched ||
       tenantsTouched;
   }
@@ -655,7 +661,6 @@ class PreparerForm extends Component {
   }
 }
 
-const eligibilityFormSelector = formValueSelector('constructability-form');
 const rentFormSelector = formValueSelector('rent-edit-form');
 const tenantFormSelector = formValueSelector('tenant-edit-form');
 
@@ -678,8 +683,8 @@ export default flowRight(
         currentLease: getCurrentLease(state),
         decisionsFormTouched: getDecisionsFormTouched(state),
         decisionsFormValues: getDecisionsFormValues(state),
-        eligibilityForm: eligibilityFormSelector(state, 'areas'),
-        eligibilityTouched: get(state, 'form.constructability-form.anyTouched'),
+        constructabilityFormTouched: getConstructabilityFormTouched(state),
+        constructabilityFormValues: getConstructabilityFormValues(state),
         isEditMode: getIsEditMode(state),
         isContractsFormValid: getIsContractsFormValid(state),
         isDecisionsFormValid: getIsDecisionsFormValid(state),

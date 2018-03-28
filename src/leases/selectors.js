@@ -61,6 +61,12 @@ export const getContractsFormTouched: Selector<any, void> = (state: Object): Obj
 export const getContractsFormValues: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.contracts-form.values');
 
+export const getConstructabilityFormTouched: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.constructability-form.anyTouched');
+
+export const getConstructabilityFormValues: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.constructability-form.values');
+
 export const getDecisionsFormTouched: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.decisions-form.anyTouched');
 

@@ -356,6 +356,7 @@ export const getContentConstructability = (lease: Object) => {
       type: get(area, 'type'),
       location: get(area, 'location'),
       area: get(area, 'area'),
+      section_area: get(area, 'section_area'),
       address: get(area, 'address'),
       postal_code: get(area, 'postal_code'),
       city: get(area, 'city'),
@@ -1172,5 +1173,97 @@ export const addInspectionsFormValues = (payload: Object, values: Object) => {
     });
   }
 
+  return payload;
+};
+
+export const getConstructabilityDescriptionsForDb = (area: Object) => {
+  const descriptionsPreconstruction = get(area, 'descriptionsPreconstruction', []).map((description) => {
+    description.type = ConstructabilityType.PRECONSTRUCTION;
+    return description;
+  });
+  const descriptionsDemolition = get(area, 'descriptionsDemolition', []).map((description) => {
+    description.type = ConstructabilityType.DEMOLITION;
+    return description;
+  });
+  const descriptionsPollutedLand = get(area, 'descriptionsPollutedLand', []).map((description) => {
+    description.type = ConstructabilityType.POLLUTED_LAND;
+    return description;
+  });
+  const descriptionsReport = get(area, 'descriptionsReport', []).map((description) => {
+    description.type = ConstructabilityType.REPORT;
+    return description;
+  });
+  const descriptionsOther = get(area, 'descriptionsOther', []).map((description) => {
+    description.type = ConstructabilityType.OTHER;
+    return description;
+  });
+  const descriptions = [
+    ...descriptionsPreconstruction,
+    ...descriptionsDemolition,
+    ...descriptionsPollutedLand,
+    ...descriptionsReport,
+    ...descriptionsOther,
+  ];
+
+  if(!descriptions.length) {
+    return [];
+  }
+  return descriptions.map((description) => {
+    return {
+      id: description.id || undefined,
+      type: get(description, 'type'),
+      text: get(description, 'text'),
+      ahjo_reference_number: get(description, 'ahjo_reference_number'),
+    };
+  });
+};
+
+export const getConstructabilityItemForDb = (area: Object, values: Object) => {
+  area.preconstruction_state = get(values, 'preconstruction_state');
+  area.demolition_state = get(values, 'demolition_state');
+  area.polluted_land_state = get(values, 'polluted_land_state');
+  area.polluted_land_rent_condition_state = get(values, 'polluted_land_rent_condition_state');
+  area.polluted_land_rent_condition_date = get(values, 'polluted_land_rent_condition_date');
+  area.polluted_land_planner = get(values, 'polluted_land_planner');
+  area.polluted_land_projectwise_number = get(values, 'polluted_land_projectwise_number');
+  area.polluted_land_matti_report_number = get(values, 'polluted_land_matti_report_number');
+  area.constructability_report_state = get(values, 'constructability_report_state');
+  area.constructability_report_investigation_state = get(values, 'constructability_report_investigation_state');
+  area.constructability_report_signing_date = get(values, 'constructability_report_signing_date');
+  area.constructability_report_signer = get(values, 'constructability_report_signer');
+  area.constructability_report_geotechnical_number = get(values, 'constructability_report_geotechnical_number');
+  area.other_state = get(values, 'other_state');
+  area.constructability_descriptions = getConstructabilityDescriptionsForDb(values);
+  return area;
+};
+
+export const addConstructabilityFormValues = (payload: Object, values: Object) => {
+  const areas = payload.lease_areas;
+  const constAreas = get(values, 'lease_areas', []);
+  if(areas && !!areas.length) {
+    payload.lease_areas = areas.map((area) => {
+      const constArea = constAreas.find(x => x.id === area.id);
+      if(constArea) {
+        return getConstructabilityItemForDb(area, constArea);
+      }
+      return area;
+    });
+  } else if(constAreas && !!constAreas.length) {
+    payload.lease_areas = constAreas.map((area) => {
+      return getConstructabilityItemForDb({
+        id: area.id,
+        city: area.city,
+        location: area.location,
+        area: area.area,
+        identifier: area.identifier,
+        type: area.type,
+        address: area.address,
+        postal_code: area.postal_code,
+        section_area: area.section_area,
+      }, area);
+    });
+  } else {
+    payload.lease_areas = [];
+  }
   return payload;
 };
