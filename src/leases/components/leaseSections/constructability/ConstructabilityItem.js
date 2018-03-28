@@ -9,12 +9,14 @@ import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/help
 import {ConstructabilityStatus, ConstructabilityType} from '$src/leases/enums';
 
 import type {Attributes} from '$src/leases/types';
+import type {UserList} from '$src/users/types';
 
 type CommentsProps = {
   comments: ?Array<Object>,
+  userOptions: Array<Object>,
 }
 
-const Comments = ({comments}: CommentsProps) => {
+const Comments = ({comments, userOptions}: CommentsProps) => {
   return (
     <div>
       {comments && !!comments.length
@@ -27,7 +29,7 @@ const Comments = ({comments}: CommentsProps) => {
                   <Column small={12} className='explanation'>
                     <p>{get(comment, 'text', '')}</p>
                     <p className='info'>
-                      <strong>{get(comment, 'user', '')}</strong>
+                      <strong>{getLabelOfOption(userOptions, comment.user)}</strong>
                       {comment.modified_at && `, ${formatDate(comment.modified_at)}`}
                       {comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}
                     </p>
@@ -71,9 +73,10 @@ const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
 type Props = {
   area: Object,
   attributes: Attributes,
+  users: UserList,
 }
 
-const ConstructabilityItem = ({area, attributes}: Props) => {
+const ConstructabilityItem = ({area, attributes, users}: Props) => {
   const getDescriptions = (type: string) => {
     const descriptions = get(area, 'constructability_descriptions', []);
     if(!descriptions.length) {
@@ -84,9 +87,24 @@ const ConstructabilityItem = ({area, attributes}: Props) => {
     });
   };
 
+  const getUserOptions = (users: UserList) => {
+    if(!users || !users.length) {
+      return [];
+    }
+    return users.map((user) => {
+      return {
+        value: user.id,
+        label: `${user.first_name} ${user.last_name}`,
+      };
+    });
+  };
+
   const stateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.preconstruction_state');
   const pollutedLandConditionStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state');
   const constructabilityReportStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.constructability_report_investigation_state');
+  const userOptions = getUserOptions(users);
+
+  console.log(userOptions);
 
   return (
     <div>
@@ -106,7 +124,10 @@ const ConstructabilityItem = ({area, attributes}: Props) => {
             </Column>
           </Row>
         }>
-        <Comments comments={getDescriptions(ConstructabilityType.PRECONSTRUCTION)} />
+        <Comments
+          comments={getDescriptions(ConstructabilityType.PRECONSTRUCTION)}
+          userOptions={userOptions}
+        />
       </Collapse>
 
       <Collapse
@@ -125,7 +146,10 @@ const ConstructabilityItem = ({area, attributes}: Props) => {
             </Column>
           </Row>
         }>
-        <Comments comments={getDescriptions(ConstructabilityType.DEMOLITION)} />
+        <Comments
+          comments={getDescriptions(ConstructabilityType.DEMOLITION)}
+          userOptions={userOptions}
+        />
       </Collapse>
 
       <Collapse
@@ -168,7 +192,10 @@ const ConstructabilityItem = ({area, attributes}: Props) => {
             </Column>
           </Row>
         </div>
-        <Comments comments={getDescriptions(ConstructabilityType.POLLLUTED_LAND)} />
+        <Comments
+          comments={getDescriptions(ConstructabilityType.POLLLUTED_LAND)}
+          userOptions={userOptions}
+        />
       </Collapse>
 
       <Collapse
@@ -207,7 +234,10 @@ const ConstructabilityItem = ({area, attributes}: Props) => {
             </Column>
           </Row>
         </div>
-        <Comments comments={getDescriptions(ConstructabilityType.REPORT)} />
+        <Comments
+          comments={getDescriptions(ConstructabilityType.REPORT)}
+          userOptions={userOptions}
+        />
       </Collapse>
 
       <Collapse
@@ -226,7 +256,10 @@ const ConstructabilityItem = ({area, attributes}: Props) => {
             </Column>
           </Row>
         }>
-        <Comments comments={getDescriptions(ConstructabilityType.OTHER)} />
+        <Comments
+          comments={getDescriptions(ConstructabilityType.OTHER)}
+          userOptions={userOptions}
+        />
       </Collapse>
     </div>
   );

@@ -11,6 +11,8 @@ import get from 'lodash/get';
 
 import {getLoggedInUser} from '$src/auth/selectors';
 import {receiveBilling} from './leaseSections/billing/actions';
+import {fetchUsers} from '$src/users/actions';
+import {getUsers} from '$src/users/selectors';
 import {getBilling} from './leaseSections/billing/selectors';
 import {
   getAreasFormTouched,
@@ -89,6 +91,7 @@ import Tenants from './leaseSections/tenant/Tenants';
 import Constructability from './leaseSections/constructability/Constructability';
 import ConstructionEligibilityEdit from './leaseSections/constructability/ConstructionEligibilityEdit';
 
+import type {UserList} from '$src/users/types';
 
 import mockData from '../mock-data.json';
 
@@ -110,6 +113,7 @@ type Props = {
   fetchAttributes: Function,
   fetchComments: Function,
   fetchSingleLease: Function,
+  fetchUsers: Function,
   hideEditMode: Function,
   inspectionsFormValues: Object,
   inspectionsFormTouched: boolean,
@@ -139,11 +143,11 @@ type Props = {
   tenantsForm: Array<Object>,
   tenantsTouched: boolean,
   user: Object,
+  users: UserList,
 }
 
 type State = {
   activeTab: number,
-  areasMock: Array<Object>,
   history: Array<Object>,
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
@@ -158,7 +162,6 @@ class PreparerForm extends Component {
 
   state: State = {
     activeTab: 0,
-    areasMock: [],
     history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
@@ -179,6 +182,7 @@ class PreparerForm extends Component {
       fetchAttributes,
       fetchComments,
       fetchSingleLease,
+      fetchUsers,
       location,
       params: {leaseId},
       receiveBilling,
@@ -201,7 +205,6 @@ class PreparerForm extends Component {
     }
 
     this.setState({
-      areasMock: contentHelpers.getContentLeaseAreasMock(lease),
       history: contentHelpers.getContentHistory(lease),
       oldTenants: lease.tenants_old,
       rents: contentHelpers.getContentRents(lease),
@@ -211,6 +214,7 @@ class PreparerForm extends Component {
     fetchAttributes();
     fetchComments(leaseId);
     fetchSingleLease(leaseId);
+    fetchUsers();
   }
 
   showModal = (modalName: string) => {
@@ -246,7 +250,7 @@ class PreparerForm extends Component {
       inspectionsFormValues,
 
       currentLease,
-      eligibilityForm,
+      // eligibilityForm,
       hideEditMode,
       patchLease,
       rentsForm,
@@ -281,9 +285,9 @@ class PreparerForm extends Component {
     patchLease(payload);
 
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
-    if(eligibilityForm !== undefined) {
-      this.setState({areasMock: eligibilityForm});
-    }
+    // if(eligibilityForm !== undefined) {
+    //   this.setState({areasMock: eligibilityForm});
+    // }
 
     if(rentsForm !== undefined) {
       this.setState({rents: rentsForm});
@@ -389,7 +393,6 @@ class PreparerForm extends Component {
   render() {
     const {
       activeTab,
-      areasMock,
       history,
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
@@ -408,6 +411,7 @@ class PreparerForm extends Component {
       isEditMode,
       isFetching,
       showEditMode,
+      users,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -615,12 +619,13 @@ class PreparerForm extends Component {
                 ? (
                   <ConstructionEligibilityEdit
                     areas={constructability}
-                    initialValues={{areas: areasMock}}
+                    initialValues={{constructability}}
                   />
                 ) : (
                   <Constructability
                     areas={constructability}
                     attributes={attributes}
+                    users={users}
                   />
                 )
               }
@@ -691,6 +696,7 @@ export default flowRight(
         tenantsForm: tenantFormSelector(state, 'tenants'),
         tenantsTouched: get(state, 'form.tenant-edit-form.anyTouched'),
         user,
+        users: getUsers(state),
       };
     },
     {
@@ -698,6 +704,7 @@ export default flowRight(
       fetchAttributes,
       fetchComments,
       fetchSingleLease,
+      fetchUsers,
       hideEditMode,
       patchLease,
       receiveBilling,

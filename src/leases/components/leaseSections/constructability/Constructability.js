@@ -8,13 +8,15 @@ import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
 import MapIcon from '$components/icons/MapIcon';
 
 import type {Attributes} from '$src/leases/types';
+import type {UserList} from '$src/users/types';
 
 type Props = {
   areas: Array<Object>,
   attributes: Attributes,
+  users: UserList,
 }
 
-const Constructability = ({areas, attributes}: Props) => {
+const Constructability = ({areas, attributes, users}: Props) => {
   const getFullAddress = (item: Object) => {
     return `${item.address}, ${item.postal_code} ${item.city}`;
   };
@@ -34,7 +36,7 @@ const Constructability = ({areas, attributes}: Props) => {
             <Row>
               <Column medium={4} className='collapse__header-title'>
                 <MapIcon />
-                <span>
+                <span style={{display: 'flex'}}>
                   <span>{area.identifier || '-'}</span>
                   &nbsp;&nbsp;
                   <span className='collapse__header-subtitle'>
@@ -54,6 +56,7 @@ const Constructability = ({areas, attributes}: Props) => {
           <ConstructabilityItem
             area={area}
             attributes={attributes}
+            users={users}
           />
         </Collapse>
       )}
