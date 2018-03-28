@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
@@ -27,7 +26,7 @@ const Comments = ({comments, userOptions}: CommentsProps) => {
                 key={comment.id}>
                 <Row>
                   <Column small={12} className='explanation'>
-                    <p>{get(comment, 'text', '')}</p>
+                    <p>{comment.text || ''}</p>
                     <p className='info'>
                       <strong>{getLabelOfOption(userOptions, comment.user)}</strong>
                       {comment.modified_at && `, ${formatDate(comment.modified_at)}`}
@@ -106,7 +105,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
             </Column>
             <Column small={6} medium={3} large={4}>
               <StatusIndicator
-                researchState={get(area, 'preconstruction_state')}
+                researchState={area.preconstruction_state}
                 stateOptions={stateOptions}
               />
             </Column>
@@ -128,7 +127,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
             </Column>
             <Column small={6} medium={3} large={4}>
               <StatusIndicator
-                researchState={get(area, 'demolition_state')}
+                researchState={area.demolition_state}
                 stateOptions={stateOptions}
               />
             </Column>
@@ -150,7 +149,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
             </Column>
             <Column small={6} medium={3} large={4}>
               <StatusIndicator
-                researchState={get(area, 'polluted_land_state')}
+                researchState={area.polluted_land_state}
                 stateOptions={stateOptions}
               />
             </Column>
@@ -160,23 +159,23 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
           <Row>
             <Column small={6} medium={3} large={2}>
               <label>Vuokraehdot</label>
-              <p>{getLabelOfOption(pollutedLandConditionStateOptions, get(area, 'polluted_land_rent_condition_state')) || '-'}</p>
+              <p>{getLabelOfOption(pollutedLandConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
               <label>Päivämäärä</label>
-              <p>{formatDate(get(area, 'polluted_land_rent_condition_date')) || '–'}</p>
+              <p>{formatDate(area.polluted_land_rent_condition_date) || '–'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
               <label>PIMA valmistelija</label>
-              <p>{get(area, 'polluted_land_planner,id') || '–'}</p>
+              <p>{getLabelOfOption(userOptions, area.polluted_land_planner) || '–'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
               <label>ProjectWise numero</label>
-              <p>{get(area, 'polluted_land_projectwise_number') || '-'}</p>
+              <p>{area.polluted_land_projectwise_number || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
               <label>Matti raportti</label>
-              <p>{get(area, 'polluted_land_matti_report_number') || '-'}</p>
+              <p>{area.polluted_land_matti_report_number || '-'}</p>
             </Column>
           </Row>
         </div>
@@ -196,7 +195,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
             </Column>
             <Column small={6} medium={3} large={4}>
               <StatusIndicator
-                researchState={get(area, 'constructability_report_state')}
+                researchState={area.constructability_report_state}
                 stateOptions={stateOptions}
               />
             </Column>
@@ -206,19 +205,19 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
           <Row>
             <Column small={6} medium={3} large={2}>
               <label>Selvitys</label>
-              <p>{getLabelOfOption(constructabilityReportStateOptions, get(area, 'constructability_report_investigation_state')) || '-'}</p>
+              <p>{getLabelOfOption(constructabilityReportStateOptions, area.constructability_report_investigation_state) || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
               <label>Allekirjoituspäivämäärä</label>
-              <p>{formatDate(get(area, 'constructability_report_signing_date')) || '–'}</p>
+              <p>{formatDate(area.constructability_report_signing_date) || '–'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
               <label>Allekirjoittaja</label>
-              <p>{get(area, 'constructability_report_signer') || '-'}</p>
+              <p>{area.constructability_report_signer || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
               <label>Geotekninenpalvelun tiedosto</label>
-              <p>{get(area, 'constructability_report_geotechnical_number') || '-'}</p>
+              <p>{area.constructability_report_geotechnical_number || '-'}</p>
             </Column>
           </Row>
         </div>
@@ -238,7 +237,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
             </Column>
             <Column small={6} medium={3} large={4}>
               <StatusIndicator
-                researchState={get(area, 'other_state')}
+                researchState={area.other_state}
                 stateOptions={stateOptions}
               />
             </Column>
