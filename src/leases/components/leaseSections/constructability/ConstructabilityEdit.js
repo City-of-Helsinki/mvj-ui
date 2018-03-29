@@ -1,10 +1,13 @@
 // @flow
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {reduxForm, Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import {getIsConstructabilityFormValid} from '$src/leases/selectors';
+import {receiveConstructabilityFormValid} from '$src/leases/actions';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {genericValidator} from '$components/form/validations';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -359,11 +362,21 @@ type Props = {
   areas: Array<Object>,
   attributes: Attributes,
   handleSubmit: Function,
+  isConstructabilityFormValid: boolean,
+  receiveConstructabilityFormValid: Function,
   users: UserList,
+  valid: boolean,
 }
 
 class ConstructabilityEdit extends Component {
   props: Props
+
+  componentDidUpdate() {
+    const {isConstructabilityFormValid, receiveConstructabilityFormValid, valid} = this.props;
+    if(isConstructabilityFormValid !== valid) {
+      receiveConstructabilityFormValid(valid);
+    }
+  }
 
   render () {
     const {areas, attributes, handleSubmit, users} = this.props;
@@ -386,6 +399,16 @@ class ConstructabilityEdit extends Component {
 const formName = 'constructability-form';
 
 export default flowRight(
+  connect(
+    (state) => {
+      return {
+        isConstructabilityFormValid: getIsConstructabilityFormValid(state),
+      };
+    },
+    {
+      receiveConstructabilityFormValid,
+    }
+  ),
   reduxForm({
     form: formName,
     destroyOnUnmount: false,

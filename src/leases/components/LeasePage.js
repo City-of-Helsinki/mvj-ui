@@ -30,6 +30,7 @@ import {
   getInspectionsFormValues,
   getIsEditMode,
   getIsFetching,
+  getIsConstructabilityFormValid,
   getIsContractsFormValid,
   getIsDecisionsFormValid,
   getIsInspectionsFormValid,
@@ -48,9 +49,6 @@ import {
   fetchSingleLease,
   hideEditMode,
   patchLease,
-  receiveLeaseAreasFormValid,
-  receiveLeaseInfoFormValid,
-  receiveSummaryFormValid,
   showEditMode,
 } from '../actions';
 import {getRouteById} from '$src/root/routes';
@@ -121,6 +119,7 @@ type Props = {
   inspectionsFormTouched: boolean,
   isEditMode: boolean,
   isFetching: boolean,
+  isConstructabilityFormValid: boolean,
   isContractsFormValid: boolean,
   isDecisionsFormValid: boolean,
   isInspectionsFormValid: boolean,
@@ -133,9 +132,6 @@ type Props = {
   params: Object,
   patchLease: Function,
   receiveBilling: Function,
-  receiveLeaseAreasFormValid: Function,
-  receiveLeaseInfoFormValid: Function,
-  receiveSummaryFormValid: Function,
   receiveTopNavigationSettings: Function,
   rentsForm: Object,
   rentsTouched: boolean,
@@ -253,7 +249,6 @@ class PreparerForm extends Component {
       constructabilityFormValues,
 
       currentLease,
-      // eligibilityForm,
       hideEditMode,
       patchLease,
       rentsForm,
@@ -281,9 +276,11 @@ class PreparerForm extends Component {
     if(contractsFormValues !== undefined) {
       payload = contentHelpers.addContractsFormValues(payload, contractsFormValues);
     }
+
     if(inspectionsFormValues !== undefined) {
       payload = contentHelpers.addInspectionsFormValues(payload, inspectionsFormValues);
     }
+
     if(constructabilityFormValues !== undefined) {
       payload = contentHelpers.addConstructabilityFormValues(payload, constructabilityFormValues);
     }
@@ -291,10 +288,6 @@ class PreparerForm extends Component {
     patchLease(payload);
 
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
-    // if(eligibilityForm !== undefined) {
-    //   this.setState({areasMock: eligibilityForm});
-    // }
-
     if(rentsForm !== undefined) {
       this.setState({rents: rentsForm});
     }
@@ -338,6 +331,7 @@ class PreparerForm extends Component {
 
   validateForms = () => {
     const {
+      isConstructabilityFormValid,
       isContractsFormValid,
       isDecisionsFormValid,
       isInspectionsFormValid,
@@ -346,12 +340,15 @@ class PreparerForm extends Component {
       isSummaryFormValid,
     } = this.props;
 
-    return isContractsFormValid &&
+    return (
+      isConstructabilityFormValid &&
+      isContractsFormValid &&
       isDecisionsFormValid &&
       isInspectionsFormValid &&
       isLeaseAreasFormValid &&
       isLeaseInfoFormValid &&
-      isSummaryFormValid;
+      isSummaryFormValid
+    );
   }
 
   handleTabClick = (tabId) => {
@@ -435,7 +432,6 @@ class PreparerForm extends Component {
     const constructability = contentHelpers.getContentConstructability(currentLease);
 
     const comments = contentHelpers.getContentComments(commentsStore);
-
 
     let sum_areas = 0;
     areas && areas.length > 0 && areas.map((area) =>
@@ -686,6 +682,7 @@ export default flowRight(
         constructabilityFormTouched: getConstructabilityFormTouched(state),
         constructabilityFormValues: getConstructabilityFormValues(state),
         isEditMode: getIsEditMode(state),
+        isConstructabilityFormValid: getIsConstructabilityFormValid(state),
         isContractsFormValid: getIsContractsFormValid(state),
         isDecisionsFormValid: getIsDecisionsFormValid(state),
         isInspectionsFormValid: getIsInspectionsFormValid(state),
@@ -716,9 +713,6 @@ export default flowRight(
       hideEditMode,
       patchLease,
       receiveBilling,
-      receiveLeaseAreasFormValid,
-      receiveLeaseInfoFormValid,
-      receiveSummaryFormValid,
       receiveTopNavigationSettings,
       showEditMode,
     }

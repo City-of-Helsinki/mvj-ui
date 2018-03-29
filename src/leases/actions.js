@@ -35,6 +35,7 @@ import type {
   HideEditModeAction,
   ShowEditModeAction,
   ClearFormValidityFlagsAction,
+  ReceiveConstructabilityFormValidAction,
   ReceiveContractsFormValidAction,
   ReceiveDecisionsFormValidAction,
   ReceiveInspectionsFormValidAction,
@@ -118,6 +119,9 @@ export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentActi
 // Actions to manage form validity statuses
 export const clearFormValidFlags = (): ClearFormValidityFlagsAction =>
   createAction('mvj/leases/CLEAR_FORM_VALIDITY_FLAGS')();
+
+export const receiveConstructabilityFormValid = (valid: boolean): ReceiveConstructabilityFormValidAction =>
+  createAction('mvj/leases/RECEIVE_CONSTRUCTABILITY_FORM_VALID')(valid);
 
 export const receiveContractsFormValid = (valid: boolean): ReceiveContractsFormValidAction =>
   createAction('mvj/leases/RECEIVE_CONTRACTS_FORM_VALID')(valid);

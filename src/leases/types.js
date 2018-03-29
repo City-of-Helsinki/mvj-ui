@@ -51,6 +51,7 @@ export type EditCommentAction = Action<'mvj/leases/EDIT_COMMENT', Comment>;
 export type ReceiveEditedCommentAction = Action<'mvj/leases/RECEIVE_EDITED_COMMENT', Comment>;
 
 export type ClearFormValidityFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS', void>
+export type ReceiveConstructabilityFormValidAction = Action<'mvj/leases/RECEIVE_CONSTRUCTABILITY_FORM_VALID', boolean>;
 export type ReceiveContractsFormValidAction = Action<'mvj/leases/RECEIVE_CONTRACTS_FORM_VALID', boolean>;
 export type ReceiveDecisionsFormValidAction = Action<'mvj/leases/RECEIVE_DECISIONS_FORM_VALID', boolean>;
 export type ReceiveInspectionsFormValidAction = Action<'mvj/leases/RECEIVE_INSPECTIONS_FORM_VALID', boolean>;

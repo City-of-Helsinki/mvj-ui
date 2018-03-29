@@ -10,8 +10,11 @@ export const getIsEditMode: Selector<boolean, void> = (state: LeaseState): boole
 export const getIsFetching: Selector<Lease, void> = (state: Object): LeaseState =>
   state.lease.isFetching;
 
+export const getIsConstructabilityFormValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isConstructabilityFormValid;
+
 export const getIsContractsFormValid: Selector<any, void> = (state: Object): boolean =>
-  state.lease.isContractsFormValid;
+  state.lease.isConstructabilityFormValid;
 
 export const getIsDecisionsFormValid: Selector<any, void> = (state: Object): boolean =>
   state.lease.isDecisionsFormValid;
