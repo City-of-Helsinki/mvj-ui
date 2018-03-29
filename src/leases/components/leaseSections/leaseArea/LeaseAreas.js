@@ -29,7 +29,7 @@ const LeaseAreas = ({areas, attributes}: Props) => {
 
   return (
     <div>
-      {!areas || !areas.length && <p>Ei vuokra-alueita</p>}
+      {!areas || !areas.length && <p className='no-margin'>Ei vuokra-alueita</p>}
       {areas && !!areas.length &&
         areas.map((area, index) =>
           <Collapse
