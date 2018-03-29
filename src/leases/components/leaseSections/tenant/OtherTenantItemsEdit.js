@@ -48,7 +48,7 @@ const OtherTenantItemsEdit = ({
     'tenants.child.children.tenantcontact_set.child.children.type').filter((x) => x.value !== TenantContactType.TENANT);
   return (
     <GreenBoxEdit>
-      {fields && fields.length > 0 && fields.map((tenant, index) => {
+      {fields && !!fields.length && fields.map((tenant, index) => {
         const contact = findContact(get(formValues, `${tenant}.contact`));
         return (
           <GreenBoxItem key={tenant.id ? tenant.id : `index_${index}`} className='no-border-on-first-child'>

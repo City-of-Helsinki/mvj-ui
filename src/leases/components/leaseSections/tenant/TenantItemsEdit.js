@@ -64,9 +64,9 @@ const TenantItemsEdit = ({
                     <Row>
                       <Column small={9} medium={9} large={9}>
                         <Field
-                          name={`${tenant}.tenant.contact`}
                           component={FieldTypeSelect}
                           label='Asiakas'
+                          name={`${tenant}.tenant.contact`}
                           options={contactOptions}
                           validate={[
                             (value) => genericValidator(value, get(attributes,

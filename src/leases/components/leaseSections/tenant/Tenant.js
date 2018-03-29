@@ -97,7 +97,6 @@ const Tenant = ({
           })
         }
       </div>
-
     </Collapse>
   );
 };
