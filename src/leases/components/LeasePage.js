@@ -49,6 +49,8 @@ import {
   getLeaseInfoFormValues,
   getSummaryFormTouched,
   getSummaryFormValues,
+  getTenantsFormTouched,
+  getTenantsFormValues,
 } from '../selectors';
 import {
   clearFormValidFlags,
@@ -154,8 +156,8 @@ type Props = {
   showEditMode: Function,
   summaryFormTouched: boolean,
   summaryFormValues: Object,
-  tenantsForm: Array<Object>,
-  tenantsTouched: boolean,
+  tenantsFormTouched: boolean,
+  tenantsFormValues: Object,
   user: Object,
   users: UserList,
 }
@@ -262,6 +264,7 @@ class PreparerForm extends Component {
       contractsFormValues,
       inspectionsFormValues,
       constructabilityFormValues,
+      tenantsFormValues,
 
       currentLease,
       hideEditMode,
@@ -300,16 +303,16 @@ class PreparerForm extends Component {
       payload = contentHelpers.addConstructabilityFormValues(payload, constructabilityFormValues);
     }
 
+    if(tenantsFormValues !== undefined) {
+      payload = contentHelpers.addTenantsFormValues(payload, tenantsFormValues);
+    }
+
     patchLease(payload);
 
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
     if(rentsForm !== undefined) {
       this.setState({rents: rentsForm});
     }
-
-    // if(tenantsForm !== undefined) {
-    //   this.setState({tenants: tenantsForm});
-    // }
 
     hideEditMode();
     this.hideModal('SaveLease');
@@ -392,9 +395,10 @@ class PreparerForm extends Component {
       contractsFormTouched,
       inspectionsFormTouched,
       constructabilityFormTouched,
+      tenantsFormTouched,
 
       rentsTouched,
-      tenantsTouched,
+
     } = this.props;
 
     return areasFormTouched ||
@@ -404,9 +408,9 @@ class PreparerForm extends Component {
       contractsFormTouched ||
       inspectionsFormTouched ||
       constructabilityFormTouched ||
+      tenantsFormTouched ||
 
-      rentsTouched ||
-      tenantsTouched;
+      rentsTouched;
   }
 
   render() {
@@ -688,7 +692,6 @@ class PreparerForm extends Component {
 }
 
 const rentFormSelector = formValueSelector('rent-edit-form');
-const tenantFormSelector = formValueSelector('tenants-form');
 
 export default flowRight(
   withRouter,
@@ -730,8 +733,8 @@ export default flowRight(
         rentsTouched: get(state, 'form.rent-edit-form.anyTouched'),
         summaryFormTouched: getSummaryFormTouched(state),
         summaryFormValues: getSummaryFormValues(state),
-        tenantsForm: tenantFormSelector(state, 'tenants'),
-        tenantsTouched: get(state, 'form.tenants-form.anyTouched'),
+        tenantsFormTouched: getTenantsFormTouched(state),
+        tenantsFormValues: getTenantsFormValues(state),
         user,
         users: getUsers(state),
       };

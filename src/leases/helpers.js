@@ -1,4 +1,5 @@
 // @flow
+import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
@@ -1156,5 +1157,47 @@ export const addConstructabilityFormValues = (payload: Object, values: Object) =
   } else {
     payload.lease_areas = [];
   }
+  return payload;
+};
+
+export const getTenantContactSetForDb = (tenant: Object) => {
+  let contacts = [];
+  const tenantData = get(tenant, 'tenant');
+  contacts.push({
+    id: tenantData.id || undefined,
+    type: TenantContactType.TENANT,
+    contact: get(tenantData, 'contact'),
+    start_date: get(tenantData, 'start_date'),
+    end_date: get(tenantData, 'end_date'),
+  });
+  const otherPersons = get(tenant, 'tenantcontact_set', []);
+  forEach(otherPersons, (person) => {
+    contacts.push({
+      id: person.id || undefined,
+      type: get(person, 'type'),
+      contact: get(person, 'contact'),
+      start_date: get(person, 'start_date'),
+      end_date: get(person, 'end_date'),
+    });
+  });
+  return contacts;
+};
+
+export const addTenantsFormValues = (payload: Object, values: Object) => {
+  const tenants = get(values, 'tenants', []);
+  if(!tenants.length) {
+    payload.tenants = [];
+  } else {
+    payload.tenants = tenants.map((tenant) => {
+      return {
+        id: tenant.id || undefined,
+        share_numerator: get(tenant, 'share_numerator'),
+        share_denominator: get(tenant, 'share_denominator'),
+        reference: get(tenant, 'reference'),
+        tenantcontact_set: getTenantContactSetForDb(tenant),
+      };
+    });
+  }
+
   return payload;
 };
