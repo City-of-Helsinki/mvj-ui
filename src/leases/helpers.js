@@ -3,7 +3,10 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
-import {ConstructabilityType} from './enums';
+import {
+  ConstructabilityType,
+  TenantContactType,
+} from './enums';
 import {
   fixedLengthNumber,
   formatDate,
@@ -383,6 +386,54 @@ export const getContentConstructability = (lease: Object) => {
   });
 };
 
+export const getContentTenantItem = (tenant: Object) => {
+  const contacts = get(tenant, 'tenantcontact_set', []);
+  const contact = contacts.find(x => x.type === TenantContactType.TENANT);
+  if(!contact) {
+    return {};
+  }
+  return {
+    id: get(contact, 'id'),
+    type: get(contact, 'type'),
+    contact: get(contact, 'contact.id'),
+    start_date: get(contact, 'start_date'),
+    end_date: get(contact, 'end_date'),
+  };
+};
+
+export const getContentTenantContactSet = (tenant: Object) => {
+  const contacts = get(tenant, 'tenantcontact_set', []).filter((x) => x.type !== TenantContactType.TENANT);
+  if(!contacts.length) {
+    return {};
+  }
+  return contacts.map((contact) => {
+    return {
+      id: get(contact, 'id'),
+      type: get(contact, 'type'),
+      contact: get(contact, 'contact.id'),
+      start_date: get(contact, 'start_date'),
+      end_date: get(contact, 'end_date'),
+    };
+  });
+};
+
+export const getContentTenants = (lease: Object) => {
+  const tenants = get(lease, 'tenants', []);
+  if(!tenants.length) {
+    return [];
+  }
+  return tenants.map((tenant) => {
+    return {
+      id: get(tenant, 'id'),
+      share_numerator: get(tenant, 'share_numerator'),
+      share_denominator: get(tenant, 'share_denominator'),
+      reference: get(tenant, 'reference'),
+      tenant: getContentTenantItem(tenant),
+      tenantcontact_set: getContentTenantContactSet(tenant),
+    };
+  });
+};
+
 //
 //
 // OLD HELPER FUNCTIONS
@@ -618,10 +669,6 @@ export const getFullAddress = (item: Object) => {
   return `${get(item, 'address')}, ${get(item, 'zip_code')} ${get(item, 'town')}`;
 };
 
-export const getContentLeaseTenant = (item:Object) => {
-  const tenant = get(item, 'tenants[0].contact.name');
-  return tenant;
-};
 
 export const getContentLeaseItem = (item:Object) => {
   return {
@@ -644,71 +691,6 @@ export const getContentLeases = (content:Object) => {
 
   return results.map((item) => {
     return getContentLeaseItem(item);
-  });
-};
-
-export const getContentTenantOtherPersons = (persons: Array<Object>) => {
-  if(!persons || persons.length === 0) {
-    return [];
-  }
-
-  return persons.map((person) => {
-    return {
-      customer_id: get(person, 'customer_id'),
-      address: get(person, 'address'),
-      comment: get(person, 'comment'),
-      email: get(person, 'email'),
-      end_date: get(person, 'end_date'),
-      firstname: get(person, 'firstname'),
-      language: get(person, 'language'),
-      lastname: get(person, 'lastname'),
-      phone: get(person, 'phone'),
-      protection_order: get(person, 'protection_order'),
-      roles: get(person, 'roles'),
-      SAP_customer_id: get(person, 'SAP_customer_id'),
-      social_security_number: get(person, 'social_security_number'),
-      start_date: get(person, 'start_date'),
-      town: get(person, 'town'),
-      type: get(person, 'type'),
-      zip_code: get(person, 'zip_code'),
-    };
-  });
-};
-
-export const getContentTenantItem = (tenant: Object) => {
-  return {
-    address: get(tenant, 'address'),
-    bill_share: get(tenant, 'bill_share'),
-    comment: get(tenant, 'comment'),
-    customer_id: get(tenant, 'customer_id'),
-    email: get(tenant, 'email'),
-    end_date: get(tenant, 'end_date'),
-    firstname: get(tenant, 'firstname'),
-    language: get(tenant, 'language'),
-    lastname: get(tenant, 'lastname'),
-    ovt_identifier: get(tenant, 'ovt_identifier'),
-    partner_code: get(tenant, 'partner_code'),
-    phone: get(tenant, 'phone'),
-    protection_order: get(tenant, 'protection_order'),
-    reference: get(tenant, 'reference'),
-    roles: get(tenant, 'roles'),
-    SAP_customer_id: get(tenant, 'SAP_customer_id'),
-    share: get(tenant, 'share'),
-    share_divider: get(tenant, 'share_divider'),
-    social_security_number: get(tenant, 'social_security_number'),
-    start_date: get(tenant, 'start_date'),
-    town: get(tenant, 'town'),
-    zip_code: get(tenant, 'zip_code'),
-  };
-};
-
-export const getContentTenants = (lease: Object) => {
-  const tenants = get(lease, 'tenants', []);
-  return tenants.map((tenant) => {
-    return {
-      other_persons: getContentTenantOtherPersons(get(tenant, 'other_persons', [])),
-      tenant: getContentTenantItem(get(tenant, 'tenant')),
-    };
   });
 };
 

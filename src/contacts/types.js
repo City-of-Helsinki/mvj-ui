@@ -19,10 +19,16 @@ export type ReceiveAttributesAction = Action<'mvj/contacts/RECEIVE_ATTRIBUTES', 
 
 export type CreateContactAction = Action<'mvj/contacts/CREATE', Contact>;
 export type EditContactAction = Action<'mvj/contacts/EDIT', Contact>;
+
 export type FetchContactsAction = Action<'mvj/contacts/FETCH_ALL', string>;
 export type ReceiveContactsAction = Action<'mvj/contacts/RECEIVE_ALL', ContactList>;
+
+export type FetchCompleteContactListAction = Action<'mvj/contacts/FETCH_COMPLETE', string>;
+export type ReceiveCompleteContactListAction = Action<'mvj/contacts/RECEIVE_COMPLETE', ContactList>;
+
 export type FetchSingleContactAction = Action<'mvj/contacts/FETCH_SINGLE', ContactId>;
 export type ReceiveSingleContactAction = Action<'mvj/contacts/RECEIVE_SINGLE', Contact>;
+
 export type InitializeContactFormValuesAction = Action<'mvj/contacts/INITIALIZE_FORM', Contact>;
 export type ReceiveContactFormValidAction = Action<'mvj/contacts/RECEIVE_CONTACT_FORM_VALID', boolean>;
 export type HideEditModeAction = Action<'mvj/contacts/HIDE_EDIT', void>;

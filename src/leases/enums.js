@@ -1,4 +1,15 @@
 /**
+ * Contact type enumerable.
+ *
+ * @type {{TENANT: string, BILLING: string, CONTACT: string}}
+ */
+export const TenantContactType = {
+  TENANT: 'tenant',
+  BILLING: 'billing',
+  CONTACT: 'contact',
+};
+
+/**
  * Constructability type enumerable.
  *
  * @type {{PRECONSTRUCTION: string, DEMOLITION: string, POLLLUTED_LAND: string, REPORT: string, OTHER: string}}

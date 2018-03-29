@@ -29,7 +29,7 @@ export const editContact = (contact: Contact): Generator<> => {
 };
 
 export const fetchContacts = (search: string) => {
-  return callApi(new Request(createUrl(`contact/${search}`)));
+  return callApi(new Request(createUrl(`contact/${search || ''}`)));
 };
 
 export const fetchSingleContact = (id: ContactId): Generator<> => {

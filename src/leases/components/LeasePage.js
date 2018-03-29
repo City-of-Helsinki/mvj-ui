@@ -11,9 +11,17 @@ import get from 'lodash/get';
 
 import {getLoggedInUser} from '$src/auth/selectors';
 import {receiveBilling} from './leaseSections/billing/actions';
+import {getBilling} from './leaseSections/billing/selectors';
 import {fetchUsers} from '$src/users/actions';
 import {getUsers} from '$src/users/selectors';
-import {getBilling} from './leaseSections/billing/selectors';
+import {
+  fetchAttributes as fetchContactAttributes,
+  fetchCompleteContactList,
+} from '$src/contacts/actions';
+import {
+  getAttributes as getContactAttributes,
+  getCompleteContactList,
+} from '$src/contacts/selectors';
 import {
   getAreasFormTouched,
   getAreasFormValues,
@@ -92,16 +100,22 @@ import Constructability from './leaseSections/constructability/Constructability'
 import ConstructabilityEdit from './leaseSections/constructability/ConstructabilityEdit';
 
 import type {UserList} from '$src/users/types';
+import type {
+  Attributes as ContactAttributes,
+  ContactList,
+} from '$src/contacts/types';
 
 import mockData from '../mock-data.json';
 
 type Props = {
+  allContacts: ContactList,
   areasFormTouched: boolean,
   areasFormValues: Object,
   attributes: Object,
   billing: Object,
   clearFormValidFlags: Function,
   commentsStore: Array<Object>,
+  contactAttributes: ContactAttributes,
   contractsFormTouched: boolean,
   contractsFormValues: Object,
   constructabilityFormTouched: boolean,
@@ -112,6 +126,8 @@ type Props = {
   dispatch: Function,
   fetchAttributes: Function,
   fetchComments: Function,
+  fetchCompleteContactList: Function,
+  fetchContactAttributes: Function,
   fetchSingleLease: Function,
   fetchUsers: Function,
   hideEditMode: Function,
@@ -150,9 +166,7 @@ type State = {
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
   isSaveLeaseModalOpen: boolean,
-  oldTenants: Array<Object>,
   rents: Object,
-  tenants: Array<Object>,
 };
 
 class PreparerForm extends Component {
@@ -164,9 +178,7 @@ class PreparerForm extends Component {
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
     isSaveLeaseModalOpen: false,
-    oldTenants: [],
     rents: {},
-    tenants: [],
     terms: [],
   }
 
@@ -179,6 +191,8 @@ class PreparerForm extends Component {
       clearFormValidFlags,
       fetchAttributes,
       fetchComments,
+      fetchCompleteContactList,
+      fetchContactAttributes,
       fetchSingleLease,
       fetchUsers,
       location,
@@ -204,15 +218,16 @@ class PreparerForm extends Component {
 
     this.setState({
       history: contentHelpers.getContentHistory(lease),
-      oldTenants: lease.tenants_old,
       rents: contentHelpers.getContentRents(lease),
-      tenants: contentHelpers.getContentTenants(lease),
     });
     receiveBilling(contentHelpers.getContentBilling(lease));
     fetchAttributes();
     fetchComments(leaseId);
     fetchSingleLease(leaseId);
+
     fetchUsers();
+    fetchCompleteContactList();
+    fetchContactAttributes();
   }
 
   showModal = (modalName: string) => {
@@ -252,7 +267,7 @@ class PreparerForm extends Component {
       hideEditMode,
       patchLease,
       rentsForm,
-      tenantsForm,
+      // tenantsForm,
     } = this.props;
 
     let payload: Object = {id: currentLease.id};
@@ -292,9 +307,9 @@ class PreparerForm extends Component {
       this.setState({rents: rentsForm});
     }
 
-    if(tenantsForm !== undefined) {
-      this.setState({tenants: tenantsForm});
-    }
+    // if(tenantsForm !== undefined) {
+    //   this.setState({tenants: tenantsForm});
+    // }
 
     hideEditMode();
     this.hideModal('SaveLease');
@@ -401,15 +416,15 @@ class PreparerForm extends Component {
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
       isSaveLeaseModalOpen,
-      oldTenants,
       rents,
-      tenants,
     } = this.state;
 
     const {
+      allContacts,
       attributes,
       billing,
       commentsStore,
+      contactAttributes,
       currentLease,
       dispatch,
       isEditMode,
@@ -430,6 +445,7 @@ class PreparerForm extends Component {
     const contracts = contentHelpers.getContentContracts(currentLease);
     const inspections = contentHelpers.getContentInspections(currentLease);
     const constructability = contentHelpers.getContentConstructability(currentLease);
+    const tenants = contentHelpers.getContentTenants(currentLease);
 
     const comments = contentHelpers.getContentComments(commentsStore);
 
@@ -577,8 +593,16 @@ class PreparerForm extends Component {
               <h1>Vuokralaiset</h1>
               <Divider />
               {isEditMode
-                ? <TenantsEdit initialValues={{tenants: tenants}} />
-                : <Tenants tenants={tenants} oldTenants={oldTenants} />
+                ? (
+                  <TenantsEdit initialValues={{tenants: tenants}} />
+                )
+                : (
+                  <Tenants
+                    allContacts={allContacts}
+                    contactAttributes={contactAttributes}
+                    tenants={tenants}
+                  />
+                )
               }
             </ContentContainer>
           </TabPane>
@@ -669,11 +693,13 @@ export default flowRight(
     (state) => {
       const user = getLoggedInUser(state);
       return {
+        allContacts: getCompleteContactList(state),
         areasFormTouched: getAreasFormTouched(state),
         areasFormValues: getAreasFormValues(state),
         attributes: getAttributes(state),
         billing: getBilling(state),
         commentsStore: getComments(state),
+        contactAttributes: getContactAttributes(state),
         contractsFormTouched: getContractsFormTouched(state),
         contractsFormValues: getContractsFormValues(state),
         currentLease: getCurrentLease(state),
@@ -708,6 +734,8 @@ export default flowRight(
       clearFormValidFlags,
       fetchAttributes,
       fetchComments,
+      fetchCompleteContactList,
+      fetchContactAttributes,
       fetchSingleLease,
       fetchUsers,
       hideEditMode,

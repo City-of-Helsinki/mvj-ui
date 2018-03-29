@@ -36,7 +36,7 @@ const Constructability = ({areas, attributes, users}: Props) => {
             <Row>
               <Column medium={4} className='collapse__header-title'>
                 <MapIcon />
-                <span style={{display: 'flex'}}>
+                <span>
                   <span>{area.identifier || '-'}</span>
                   &nbsp;&nbsp;
                   <span className='collapse__header-subtitle'>

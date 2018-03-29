@@ -21,8 +21,6 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      display: flex;
-      align-items: center;
     }
 
     &-subtitle {
@@ -175,7 +173,7 @@
       }
 
       .collapse__content {
-        max-height: 500px;
+        max-height: 2000px;
 
         @include transition(0.4s, max-height, ease);
       }

@@ -10,6 +10,7 @@ import type {
   InitializeContactFormValuesAction,
   ReceiveAttributesAction,
   ReceiveContactsAction,
+  ReceiveCompleteContactListAction,
   ReceiveSingleContactAction,
   ReceiveContactFormValidAction,
 } from './types';
@@ -39,6 +40,12 @@ const contactsListReducer: Reducer<ContactList> = handleActions({
   },
 }, {});
 
+const completeContactListReducer: Reducer<ContactList> = handleActions({
+  ['mvj/contacts/RECEIVE_COMPLETE']: (state: ContactList, {payload: contacts}: ReceiveCompleteContactListAction) => {
+    return contacts;
+  },
+}, {});
+
 const contactReducer: Reducer<Contact> = handleActions({
   ['mvj/contacts/RECEIVE_SINGLE']: (state: Contact, {payload: contact}: ReceiveSingleContactAction) => {
     return contact;
@@ -62,6 +69,7 @@ const isContactFormValidReducer: Reducer<boolean> = handleActions({
 }, false);
 
 export default combineReducers({
+  allContacts: completeContactListReducer,
   attributes: attributesReducer,
   current: contactReducer,
   initialContactFormValues: initialValuesReducer,
