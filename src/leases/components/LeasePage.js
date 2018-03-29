@@ -45,6 +45,7 @@ import {
   getIsLeaseAreasFormValid,
   getIsLeaseInfoFormValid,
   getIsSummaryFormValid,
+  getIsTenantsFormValid,
   getLeaseInfoFormTouched,
   getLeaseInfoFormValues,
   getSummaryFormTouched,
@@ -144,6 +145,7 @@ type Props = {
   isLeaseAreasFormValid: boolean,
   isLeaseInfoFormValid: boolean,
   isSummaryFormValid: boolean,
+  isTenantsFormValid: boolean,
   leaseInfoFormTouched: boolean,
   leaseInfoFormValues: Object,
   location: Object,
@@ -270,7 +272,6 @@ class PreparerForm extends Component {
       hideEditMode,
       patchLease,
       rentsForm,
-      // tenantsForm,
     } = this.props;
 
     let payload: Object = {id: currentLease.id};
@@ -341,10 +342,10 @@ class PreparerForm extends Component {
     dispatch(destroy('contracts-form'));
     dispatch(destroy('inspections-form'));
     dispatch(destroy('constructability-form'));
+    dispatch(destroy('tenants-form'));
 
     dispatch(destroy('billing-edit-form'));
     dispatch(destroy('rent-edit-form'));
-    dispatch(destroy('tenants-form'));
   }
 
   validateForms = () => {
@@ -356,6 +357,7 @@ class PreparerForm extends Component {
       isLeaseAreasFormValid,
       isLeaseInfoFormValid,
       isSummaryFormValid,
+      isTenantsFormValid,
     } = this.props;
 
     return (
@@ -365,7 +367,8 @@ class PreparerForm extends Component {
       isInspectionsFormValid &&
       isLeaseAreasFormValid &&
       isLeaseInfoFormValid &&
-      isSummaryFormValid
+      isSummaryFormValid &&
+      isTenantsFormValid
     );
   }
 
@@ -724,6 +727,7 @@ export default flowRight(
         isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
         isLeaseInfoFormValid: getIsLeaseInfoFormValid(state),
         isSummaryFormValid: getIsSummaryFormValid(state),
+        isTenantsFormValid: getIsTenantsFormValid(state),
         inspectionFormTouched: getInspectionsFormTouched(state),
         inspectionsFormValues: getInspectionsFormValues(state),
         isFetching: getIsFetching(state),

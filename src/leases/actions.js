@@ -39,9 +39,10 @@ import type {
   ReceiveContractsFormValidAction,
   ReceiveDecisionsFormValidAction,
   ReceiveInspectionsFormValidAction,
+  ReceiveLeaseAreasFormValidAction,
   ReceiveLeaseInfoFormValidAction,
   ReceiveSummaryFormValidAction,
-  ReceiveLeaseAreasFormValidAction,
+  ReceiveTenantsFormValidAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -140,3 +141,6 @@ export const receiveLeaseInfoFormValid = (valid: boolean): ReceiveLeaseInfoFormV
 
 export const receiveSummaryFormValid = (valid: boolean): ReceiveSummaryFormValidAction =>
   createAction('mvj/leases/RECEIVE_SUMMARY_FORM_VALID')(valid);
+
+export const receiveTenantsFormValid = (valid: boolean): ReceiveTenantsFormValidAction =>
+  createAction('mvj/leases/RECEIVE_TENANTS_FORM_VALID')(valid);

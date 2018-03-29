@@ -10,18 +10,12 @@ import Button from '$components/button/Button';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import {required} from '$components/form/validations';
-import {getAttributeFieldOptions, getLessorOptions} from '$src/util/helpers';
 
 type Props = {
   attributes: Object,
   district: string,
-  lessor: string,
-  lessors: Array<Object>,
   municipality: string,
-  notice_period: string,
   onSubmit: Function,
-  sequence: number,
-  status: string,
   type: string,
   valid: boolean,
 }
@@ -33,12 +27,8 @@ class CreateLease extends Component {
     const {
       attributes,
       district,
-      lessor,
-      lessors,
       municipality,
-      notice_period,
       onSubmit,
-      status,
       type,
       valid,
     } = this.props;
@@ -46,8 +36,6 @@ class CreateLease extends Component {
     const districtOptions = contentHelpers.getDistrictOptions(attributes);
     const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
     const typeOptions = contentHelpers.getTypeOptions(attributes);
-    const lessorOptions = getLessorOptions(lessors);
-    const noticePeriodOptions = getAttributeFieldOptions(attributes, 'notice_period');
 
     return (
       <form className='create-lease-form'>
@@ -96,30 +84,6 @@ class CreateLease extends Component {
           </Column>
         </Row>
         <Row>
-          <Column small={3}>
-            <Field
-              component={FieldTypeSelect}
-              label='Vuokranantaja'
-              name='lessor'
-              options={lessorOptions}
-              validate={[
-                (value) => required(value, 'Vuokranantaja on pakollinen'),
-              ]}
-            />
-          </Column>
-          <Column small={3}>
-            <Field
-              component={FieldTypeSelect}
-              label='Irtisanomisaika'
-              name='notice_period'
-              options={noticePeriodOptions}
-              validate={[
-                (value) => required(value, 'Irtisanomisaika on pakollinen'),
-              ]}
-            />
-          </Column>
-        </Row>
-        <Row>
           <Column medium={12}>
             <Button
               className='button-green pull-right no-margin'
@@ -127,12 +91,7 @@ class CreateLease extends Component {
               label='Luo tunnus'
               onClick={() => onSubmit({
                 district: district,
-                end_date: null,
-                lessor: lessor,
                 municipality: municipality,
-                notice_period: notice_period,
-                start_date: null,
-                status: status,
                 type: type,
               })}
               title='Luo tunnus'
@@ -152,11 +111,7 @@ export default flowRight(
     state => {
       return {
         district: selector(state, 'district'),
-        lessor: selector(state, 'lessor'),
         municipality: selector(state, 'municipality'),
-        notice_period: selector(state, 'notice_period'),
-        sequence: selector(state, 'sequence'),
-        status: selector(state, 'status'),
         type: selector(state, 'type'),
       };
     },

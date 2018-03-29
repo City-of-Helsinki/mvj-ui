@@ -29,7 +29,7 @@ const Constructability = ({areas, attributes, users}: Props) => {
       {!areas || !areas.length &&
         <p className='no-margin'>Ei vuokra-alueita</p>
       }
-      {areas && areas.length && areas.map((area) =>
+      {areas && !!areas.length && areas.map((area) =>
         <Collapse key={area.id}
           defaultOpen={true}
           header={

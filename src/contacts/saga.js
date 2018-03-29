@@ -81,7 +81,6 @@ function* fetchCompleteContactListSaga({payload: search}): Generator<> {
       body = bodyAsJson;
       results = [...results, ...get(body, 'results', [])];
     }
-    console.log(results);
 
     switch (statusCode) {
       case 200:
