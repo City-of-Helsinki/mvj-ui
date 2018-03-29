@@ -1,0 +1,84 @@
+// @flow
+import React from 'react';
+import get from 'lodash/get';
+import {Row, Column} from 'react-foundation';
+
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import Collapse from '$components/collapse/Collapse';
+import ContactInfo from './ContactInfo';
+
+import type {
+  Attributes as ContactAttributes,
+  ContactList,
+} from '$src/contacts/types';
+import type {Attributes} from '$src/leases/types';
+
+type Props = {
+  allContacts: ContactList,
+  attributes: Attributes,
+  contactAttributes: ContactAttributes,
+  tenant: Object,
+};
+
+const OtherTenantItem = ({
+  allContacts,
+  attributes,
+  contactAttributes,
+  tenant,
+}: Props) => {
+  const getFullName = (contact: Object) => {
+    if(!contact) {
+      return '';
+    }
+    return contact.is_business ? contact.business_name : `${contact.last_name} ${contact.first_name}`;
+  };
+  const tenantTypeOptions = getAttributeFieldOptions(attributes, 'tenants.child.children.tenantcontact_set.child.children.type');
+
+  const findContact = () => {
+    if(!allContacts || !allContacts.length) {
+      return {};
+    }
+    return allContacts.find((x) => x.id === get(tenant, 'id'));
+  };
+
+  const contact: Object = findContact();
+
+  return (
+    <Collapse
+      className='collapse__secondary'
+      defaultOpen={true}
+      header={
+        <Row>
+          <Column small={12}>
+            <span className='collapse__header-title'>
+              {getLabelOfOption(tenantTypeOptions, tenant.type)}
+            </span></Column>
+        </Row>
+      }>
+      <Row>
+        <Column small={6} medium={4} large={4}>
+          <label>Asiakas</label>
+          <p>{getFullName(contact)}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Alkupäivämäärä</label>
+          <p>{formatDate(get(tenant, 'tenant.start_date')) || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Loppupäivämäärä</label>
+          <p>{formatDate(get(tenant, 'tenant.end_date')) || '-'}</p>
+        </Column>
+        <Column small={6} medium={12} large={6}>
+          <label>Kommentti</label>
+          <p>{tenant.note || '-'}</p>
+        </Column>
+      </Row>
+      <ContactInfo
+        contact={contact}
+        contactAttributes={contactAttributes}
+      />
+    </Collapse>
+  );
+};
+
+export default OtherTenantItem;

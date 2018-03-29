@@ -5,15 +5,18 @@ import Tenant from './Tenant';
 
 import type {ContactList} from '$src/contacts/types';
 import type {Attributes as ContactAttributes} from '$src/contacts/types';
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
   allContacts: ContactList,
+  attributes: Attributes,
   contactAttributes: ContactAttributes,
   tenants: Array<Object>,
 }
 
 const Tenants = ({
   allContacts,
+  attributes,
   contactAttributes,
   tenants,
 }: Props) => {
@@ -26,6 +29,7 @@ const Tenants = ({
         <Tenant
           key={tenant.id}
           allContacts={allContacts}
+          attributes={attributes}
           contactAttributes={contactAttributes}
           tenant={tenant}
         />

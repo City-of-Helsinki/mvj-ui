@@ -599,6 +599,7 @@ class PreparerForm extends Component {
                 : (
                   <Tenants
                     allContacts={allContacts}
+                    attributes={attributes}
                     contactAttributes={contactAttributes}
                     tenants={tenants}
                   />

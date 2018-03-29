@@ -7,21 +7,26 @@ import Collapse from '$components/collapse/Collapse';
 import TenantItem from './TenantItem';
 import classnames from 'classnames';
 
-// import OtherPersonItem from './OtherPersonItem';
-// import {getLabelOfOption} from '$util/helpers';
-// import {tenantsRolesOptions} from '../constants';
+import OtherTenantItem from './OtherTenantItem';
 
-import type {ContactList} from '$src/contacts/types';
-import type {Attributes as ContactAttributes} from '$src/contacts/types';
+import type {
+  Attributes as ContactAttributes,
+  ContactList,
+} from '$src/contacts/types';
+import type {
+  Attributes,
+} from '$src/leases/types';
 
 type Props = {
   allContacts: ContactList,
+  attributes: Attributes,
   contactAttributes: ContactAttributes,
   tenant: Object,
 }
 
 const Tenant = ({
   allContacts,
+  attributes,
   contactAttributes,
   tenant,
 }: Props) => {
@@ -62,50 +67,38 @@ const Tenant = ({
         </Row>
       }
     >
-      <Collapse
-        className='collapse__secondary'
-        defaultOpen={true}
-        header={
-          <Row>
-            <Column small={12}><span className='collapse__header-title'>Vuokralainen</span></Column>
-          </Row>
+      <div>
+        <Collapse
+          className='collapse__secondary'
+          defaultOpen={true}
+          header={
+            <Row>
+              <Column small={12}><span className='collapse__header-title'>Vuokralainen</span></Column>
+            </Row>
+          }
+        >
+          <TenantItem
+            contact={contact}
+            contactAttributes={contactAttributes}
+            tenant={tenant}
+          />
+        </Collapse>
+        {tenant.tenantcontact_set && !!tenant.tenantcontact_set.length &&
+          tenant.tenantcontact_set.map((person) => {
+            return (
+              <OtherTenantItem
+                key={person.id}
+                allContacts={allContacts}
+                attributes={attributes}
+                contactAttributes={contactAttributes}
+                tenant={person}
+              />
+            );
+          })
         }
-      >
-        <TenantItem
-          contact={contact}
-          contactAttributes={contactAttributes}
-          tenant={tenant}
-        />
-      </Collapse>
-    </Collapse>
+      </div>
 
-    //   {other_persons && other_persons.length && other_persons.map((person, index) => {
-    //     const {roles} = person;
-    //     return (
-    //       <Collapse
-    //         key={index}
-    //         className='collapse__secondary'
-    //         defaultOpen={true}
-    //         header={
-    //           <Row>
-    //             <Column small={6}>
-    //               <span className='collapse__header-title-nocap'>
-    //                 {roles && roles.length > 0 &&
-    //                   roles.map((role, index) => {
-    //                     if(index > 0) {
-    //                       return (<span key={index}>&nbsp;/ {getLabelOfOption(tenantsRolesOptions, role)}</span>);
-    //                     }
-    //                     return (<span key={index}>{getLabelOfOption(tenantsRolesOptions, role)}</span>);
-    //                   })
-    //                 }
-    //               </span></Column>
-    //           </Row>
-    //         }>
-    //           <OtherPersonItem customer={person} />
-    //         </Collapse>
-    //     );
-    //   })}
-    // </div>
+    </Collapse>
   );
 };
 
