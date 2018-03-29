@@ -9,7 +9,6 @@ import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import ContactInfo from './ContactInfo';
 import ContentItem from '$components/content/ContentItem';
-// import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import OtherTenantItemsEdit from './OtherTenantItemsEdit';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
@@ -18,6 +17,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {getContactOptions} from '$util/helpers';
 import {getTenantsFormValues} from '$src/leases/selectors';
+import {genericValidator} from '$components/form/validations';
 
 import type {Attributes as ContactAttributes, ContactList} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
@@ -68,6 +68,10 @@ const TenantItemsEdit = ({
                           component={FieldTypeSelect}
                           label='Asiakas'
                           options={contactOptions}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.tenantcontact_set.child.children.contact')),
+                          ]}
                         />
                       </Column>
                     </Row>
@@ -78,15 +82,23 @@ const TenantItemsEdit = ({
                     <Row>
                       <Column small={6}>
                         <Field
-                          name={`${tenant}.share_numerator`}
                           component={FieldTypeText}
+                          name={`${tenant}.share_numerator`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.share_numerator')),
+                          ]}
                         />
                       </Column>
                       <Column small={6}>
                         <Field
                           className='with-slash'
-                          name={`${tenant}.share_denominator`}
                           component={FieldTypeText}
+                          name={`${tenant}.share_denominator`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.share_denominator')),
+                          ]}
                         />
                       </Column>
                     </Row>
@@ -97,6 +109,10 @@ const TenantItemsEdit = ({
                       component={FieldTypeDatePicker}
                       label='Alkupäivämäärä'
                       name={`${tenant}.tenant.start_date`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'tenants.child.children.tenantcontact_set.child.children.start_date')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
@@ -104,6 +120,10 @@ const TenantItemsEdit = ({
                       component={FieldTypeDatePicker}
                       label='Loppupäivämäärä'
                       name={`${tenant}.tenant.end_date`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'tenants.child.children.tenantcontact_set.child.children.end_date')),
+                      ]}
                     />
                   </Column>
                 </Row>
@@ -113,6 +133,10 @@ const TenantItemsEdit = ({
                       component={FieldTypeText}
                       label='Viite'
                       name={`${tenant}.tenant.reference`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'tenants.child.children.reference')),
+                      ]}
                     />
                   </Column>
                   <Column small={6} medium={8} large={8}>
@@ -120,6 +144,10 @@ const TenantItemsEdit = ({
                       component={FieldTypeText}
                       label='Kommentti'
                       name={`${tenant}.tenant.note`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'tenants.child.children.note')),
+                      ]}
                     />
                   </Column>
                 </Row>

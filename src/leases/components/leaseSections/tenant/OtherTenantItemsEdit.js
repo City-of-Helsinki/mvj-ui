@@ -17,6 +17,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import {getTenantsFormValues} from '$src/leases/selectors';
 import {getAttributeFieldOptions, getContactOptions} from '$util/helpers';
 import {TenantContactType} from '$src/leases/enums';
+import {genericValidator} from '$components/form/validations';
 
 import type {Attributes as ContactAttributes, ContactList} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
@@ -67,6 +68,10 @@ const OtherTenantItemsEdit = ({
                         component={FieldTypeSelect}
                         label='Asiakas'
                         options={contactOptions}
+                        validate={[
+                          (value) => genericValidator(value, get(attributes,
+                            'tenants.child.children.tenantcontact_set.child.children.contact')),
+                        ]}
                       />
                     </Column>
                   </Row>
@@ -74,10 +79,14 @@ const OtherTenantItemsEdit = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Field
-                    name={`${tenant}.type`}
                     component={FieldTypeSelect}
                     label='Rooli'
+                    name={`${tenant}.type`}
                     options={tenantTypeOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes,
+                        'tenants.child.children.tenantcontact_set.child.children.type')),
+                    ]}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
@@ -85,6 +94,10 @@ const OtherTenantItemsEdit = ({
                     component={FieldTypeDatePicker}
                     label='Alkupäivämäärä'
                     name={`${tenant}.start_date`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes,
+                        'tenants.child.children.tenantcontact_set.child.children.start_date')),
+                    ]}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
@@ -92,6 +105,10 @@ const OtherTenantItemsEdit = ({
                     component={FieldTypeDatePicker}
                     label='Loppupäivämäärä'
                     name={`${tenant}.end_date`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes,
+                        'tenants.child.children.tenantcontact_set.child.children.end_date')),
+                    ]}
                   />
                 </Column>
               </Row>
@@ -101,6 +118,10 @@ const OtherTenantItemsEdit = ({
                     component={FieldTypeText}
                     label='Kommentti'
                     name={`${tenant}.note`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes,
+                        'tenants.child.children.tenantcontact_set.child.children.note')),
+                    ]}
                   />
                 </Column>
               </Row>
