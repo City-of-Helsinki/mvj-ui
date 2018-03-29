@@ -29,14 +29,14 @@ const Constructability = ({areas, attributes, users}: Props) => {
       {!areas || !areas.length &&
         <p className='no-margin'>Ei vuokra-alueita</p>
       }
-      {areas && areas.length && areas.map((area) =>
+      {areas && !!areas.length && areas.map((area) =>
         <Collapse key={area.id}
           defaultOpen={true}
           header={
             <Row>
               <Column medium={4} className='collapse__header-title'>
                 <MapIcon />
-                <span style={{display: 'flex'}}>
+                <span>
                   <span>{area.identifier || '-'}</span>
                   &nbsp;&nbsp;
                   <span className='collapse__header-subtitle'>

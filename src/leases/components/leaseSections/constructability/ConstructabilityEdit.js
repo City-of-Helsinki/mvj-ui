@@ -32,7 +32,7 @@ type CommentProps = {
 const renderComments = ({attributes, fields}: CommentProps) => {
   return (
     <div>
-      {fields && fields.length > 0 && fields.map((comment, index) => {
+      {fields && !!fields.length && fields.map((comment, index) => {
         return (
           <div className='construction-eligibility__comment-item'  key={index}>
             <BoxContentWrapper>
@@ -122,6 +122,9 @@ const renderAreas = ({
 
   return (
     <div>
+      {!fields || !fields.length &&
+        <p className='no-margin'>Ei vuokra-alueita</p>
+      }
       {areas && !!areas.length &&fields && !!fields.length && fields.map((area, index) => {
         return (
           <div key={area.id ? area.id : `index_${index}`}>

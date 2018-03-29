@@ -1,30 +1,56 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import ContactInfo from './ContactInfo';
 import ContentItem from '$components/content/ContentItem';
-import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
+import OtherTenantItemsEdit from './OtherTenantItemsEdit';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
-import OtherPersonItemsEdit from './OtherPersonItemsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
-import {tenantsRolesOptions} from '../constants';
+import {getContactOptions} from '$util/helpers';
+import {getTenantsFormValues} from '$src/leases/selectors';
+import {genericValidator} from '$components/form/validations';
+
+import type {Attributes as ContactAttributes, ContactList} from '$src/contacts/types';
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  allContacts: ContactList,
+  attributes: Attributes,
+  contactAttributes: ContactAttributes,
   fields: any,
+  formValues: Object,
 }
 
-const TenantItemsEdit = ({fields}: Props) => {
+const TenantItemsEdit = ({
+  allContacts,
+  attributes,
+  contactAttributes,
+  fields,
+  formValues,
+}: Props) => {
+
+  const findContact = (id: string) => {
+    if(!allContacts || !allContacts.length) {
+      return null;
+    }
+    return allContacts.find((x) => x.id === id);
+  };
+  const contactOptions = getContactOptions(allContacts);
   return (
     <div>
-      {fields && fields.length > 0 && fields.map((tenant, index) => {
+      {fields && !!fields.length && fields.map((tenant, index) => {
+        const contact = findContact(get(formValues, `${tenant}.tenant.contact`));
         return (
-          <ContentItem key={index}>
-
+          <ContentItem key={tenant.id ? tenant.id : `index_${index}`}>
             <WhiteBoxEdit>
               <BoxContentWrapper>
                 <RemoveButton
@@ -34,197 +60,112 @@ const TenantItemsEdit = ({fields}: Props) => {
                   title='Poista vuokralainen'
                 />
                 <Row>
-                  <Column medium={3}>
-                    <Field
-                      name={`${tenant}.tenant.firstname`}
-                      component={FieldTypeText}
-                      label='Etunimi'
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      name={`${tenant}.tenant.lastname`}
-                      component={FieldTypeText}
-                      label='Sukunimi'
-                    />
-                  </Column>
-                  <Column medium={3}>
+                  <Column small={6} medium={4} large={4}>
                     <Row>
-                      <Column>
-                        <label className='mvj-form-field-label'>Osuus murtolukuna</label>
-                      </Column>
-                    </Row>
-                    <Row>
-                      <Column>
+                      <Column small={9} medium={9} large={9}>
                         <Field
-                          className='inline width-xsmall'
-                          component={FieldTypeText}
-                          name={`${tenant}.tenant.share`}
-                        />
-                        <Field
-                          className='inline width-xsmall with-slash with-left-margin'
-                          component={FieldTypeText}
-                          name={`${tenant}.tenant.share_divider`}
-                        />
-                      </Column>
-                    </Row>
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      name={`${tenant}.roles`}
-                      className='checkbox-inline'
-                      component={FieldTypeCheckbox}
-                      options= {tenantsRolesOptions}
-                      label='Rooli'
-                    />
-                  </Column>
-                </Row>
-
-                <Row>
-                  <Column medium={4}>
-                    <Field
-                      name={`${tenant}.tenant.address`}
-                      component={FieldTypeText}
-                      label='Osoite'
-                    />
-                  </Column>
-                  <Column medium={2}>
-                    <Field
-                      name={`${tenant}.tenant.zip_code`}
-                      component={FieldTypeText}
-                      label='Postinumero'
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      name={`${tenant}.tenant.town`}
-                      component={FieldTypeText}
-                      label='Kaupunki'
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Row>
-                      <Column medium={6}>
-                        <Field
-                          name={`${tenant}.tenant.start_date`}
-                          component={FieldTypeDatePicker}
-                          label='Alkupvm'
-                        />
-                      </Column>
-                      <Column medium={6}>
-                        <Field
-                          name={`${tenant}.tenant.end_date`}
-                          component={FieldTypeDatePicker}
-                          label='Loppupvm'
-                        />
-                      </Column>
-                    </Row>
-                  </Column>
-                </Row>
-
-                <Row>
-                  <Column medium={3}>
-                    <Field
-                      name={`${tenant}.tenant.email`}
-                      component={FieldTypeText}
-                      label='Sähköposti'
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      name={`${tenant}.tenant.phone`}
-                      component={FieldTypeText}
-                      label='Puhelin'
-                    />
-                  </Column>
-                  <Column medium={6}>
-                    <Row>
-                      <Column medium={4}>
-                        <Field
-                          name={`${tenant}.tenant.language`}
-                          component={FieldTypeText}
-                          label='Kieli'
-                        />
-                      </Column>
-                      <Column medium={4}>
-                        <Field
-                          name={`${tenant}.tenant.social_security_number`}
-                          component={FieldTypeText}
-                          label='Henkilötunnus'
-                        />
-                      </Column>
-                      <Column medium={4}>
-                        <Field
-                          name={`${tenant}.tenant.protection_order`}
-                          className='checkbox-inline'
-                          component={FieldTypeCheckbox}
-                          options= {[
-                            {value: 'true', label: 'Turvakielto'},
+                          component={FieldTypeSelect}
+                          label='Asiakas'
+                          name={`${tenant}.tenant.contact`}
+                          options={contactOptions}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.tenantcontact_set.child.children.contact')),
                           ]}
-                          label='Turvakielto'
                         />
-
                       </Column>
                     </Row>
-                  </Column>
-                </Row>
 
-                <Row>
-                  <Column medium={3}>
-                    <Field
-                      name={`${tenant}.tenant.customer_id`}
-                      component={FieldTypeText}
-                      label='Asiakasnumero'
-                    />
                   </Column>
-                  <Column medium={3}>
-                    <Field
-                      name={`${tenant}.tenant.SAP_customer_id`}
-                      component={FieldTypeText}
-                      label='SAP asiakasnumero'
-                    />
-                  </Column>
-                  <Column medium={6}>
+                  <Column small={6} medium={4} large={2}>
+                    <label className='mvj-form-field-label'>Osuus murtolukuna</label>
                     <Row>
-                      <Column medium={4}>
+                      <Column small={6}>
                         <Field
-                          name={`${tenant}.tenant.ovt_identifier`}
                           component={FieldTypeText}
-                          label='Ovt-tunnus'
+                          name={`${tenant}.share_numerator`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.share_numerator')),
+                          ]}
                         />
                       </Column>
-                      <Column medium={3}>
+                      <Column small={6}>
                         <Field
-                          name={`${tenant}.tenant.partner_code`}
+                          className='with-slash'
                           component={FieldTypeText}
-                          label='Kumppanikoodi'
-                        />
-                      </Column>
-                      <Column medium={5}>
-                        <Field
-                          name={`${tenant}.tenant.reference`}
-                          component={FieldTypeText}
-                          label='Viite'
+                          name={`${tenant}.share_denominator`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.share_denominator')),
+                          ]}
                         />
                       </Column>
                     </Row>
                   </Column>
-                </Row>
-
-                <Row>
-                  <Column>
+                  <Column small={6} medium={4} large={2}></Column>
+                  <Column small={6} medium={4} large={2}>
                     <Field
-                      className='no-margin'
+                      component={FieldTypeDatePicker}
+                      label='Alkupäivämäärä'
+                      name={`${tenant}.tenant.start_date`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'tenants.child.children.tenantcontact_set.child.children.start_date')),
+                      ]}
+                    />
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <Field
+                      component={FieldTypeDatePicker}
+                      label='Loppupäivämäärä'
+                      name={`${tenant}.tenant.end_date`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'tenants.child.children.tenantcontact_set.child.children.end_date')),
+                      ]}
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={6} medium={4} large={4}>
+                    <Field
+                      component={FieldTypeText}
+                      label='Viite'
+                      name={`${tenant}.tenant.reference`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'tenants.child.children.reference')),
+                      ]}
+                    />
+                  </Column>
+                  <Column small={6} medium={8} large={8}>
+                    <Field
                       component={FieldTypeText}
                       label='Kommentti'
-                      name={`${tenant}.tenant.comment`}
+                      name={`${tenant}.tenant.note`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'tenants.child.children.note')),
+                      ]}
                     />
                   </Column>
                 </Row>
+
+                <ContactInfo
+                  contact={contact}
+                  contactAttributes={contactAttributes}
+                />
               </BoxContentWrapper>
             </WhiteBoxEdit>
 
-            <FieldArray name={`${tenant}.other_persons`} component={OtherPersonItemsEdit}/>
+            <FieldArray
+              allContacts={allContacts}
+              attributes={attributes}
+              component={OtherTenantItemsEdit}
+              contactAttributes={contactAttributes}
+              name={`${tenant}.tenantcontact_set`}
+            />
           </ContentItem>
         );
       })
@@ -243,4 +184,10 @@ const TenantItemsEdit = ({fields}: Props) => {
   );
 };
 
-export default TenantItemsEdit;
+export default connect(
+  (state) => {
+    return {
+      formValues: getTenantsFormValues(state),
+    };
+  },
+)(TenantItemsEdit);

@@ -31,6 +31,9 @@ export const getIsLeaseInfoFormValid: Selector<any, void> = (state: Object): boo
 export const getIsSummaryFormValid: Selector<any, void> = (state: Object): boolean =>
   state.lease.isSummaryFormValid;
 
+export const getIsTenantsFormValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isTenantsFormValid;
+
 export const getAttributes: Selector<Attributes, void> = (state: Object): LeaseState =>
   state.lease.attributes;
 
@@ -93,3 +96,9 @@ export const getSummaryFormTouched: Selector<any, void> = (state: Object): Objec
 
 export const getSummaryFormValues: Selector<any, void> = (state: Object): Object =>
   get(state, 'form.summary-form.values');
+
+export const getTenantsFormTouched: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.tenants-form.anyTouched');
+
+export const getTenantsFormValues: Selector<any, void> = (state: Object): Object =>
+  get(state, 'form.tenants-form.values');

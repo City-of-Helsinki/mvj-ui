@@ -1,94 +1,82 @@
 // @flow
 import React from 'react';
-import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
+import isNumber from 'lodash/isNumber';
 
 import {formatDate} from '$util/helpers';
-import {getFullAddress} from '$src/leases/helpers';
+import ContactInfo from './ContactInfo';
 
-type AddressProps = {
-  address: ?string,
-  comment: ?string,
-  email: ?string,
-  name: ?string,
-  phone: ?string,
-  protectionOrder: ?boolean,
-  socialSecurityNumber: ?string,
-}
-
-const Address = ({
-  address,
-  comment,
-  email,
-  name,
-  phone,
-  protectionOrder,
-  socialSecurityNumber,
-}: AddressProps) =>
-  <div className='tenants__address'>
-    {name && <p className='subtitle'>{name}</p>}
-    <div className='contact'>
-      {address && <p>{address}</p>}
-      {phone && <p>{phone}</p>}
-      {email && <p>{email}</p>}
-    </div>
-    {socialSecurityNumber && <p>{socialSecurityNumber}</p>}
-    {protectionOrder && <p className='alert'><i/><span>Turvakielto</span></p>}
-    <p className='comment'>{comment || '-'}</p>
-  </div>;
+import type {Attributes as ContactAttributes} from '$src/contacts/types';
 
 type Props = {
-  customer: Object,
+  contact: Object,
+  contactAttributes: ContactAttributes,
+  tenant: Object,
 };
 
-const TenantItem = ({customer}: Props) => {
-  const formatedDate = formatDate(customer.start_date);
-  const fullAddress = getFullAddress(customer);
+const TenantItem = ({
+  contact,
+  contactAttributes,
+  tenant,
+}: Props) => {
+  const getFullName = () => {
+    return contact.is_business ? contact.business_name : `${contact.last_name} ${contact.first_name}`;
+  };
+
+  const getInvoiceManagementShare = () => {
+    if(!tenant ||
+      !tenant.share_numerator ||
+      !isNumber(Number(tenant.share_numerator)) ||
+      !tenant.share_denominator ||
+      !isNumber(Number(tenant.share_denominator))) {
+      return null;
+    }
+    return `${(Number(tenant.share_numerator)*100/Number(tenant.share_denominator)).toFixed(1)} %`;
+  };
+
+  if(!contact) {
+    return null;
+  }
 
   return (
     <div>
       <Row>
-        <Column medium={4}>
-          <Address
-            address={fullAddress}
-            comment={get(customer, 'comment')}
-            email={get(customer, 'email')}
-            name={`${get(customer, 'lastname')} ${get(customer, 'firstname')}`}
-            phone={get(customer, 'phone')}
-            protectionOrder={get(customer, 'protection_order')}
-            socialSecurityNumber={get(customer, 'social_security_number')}
-          />
+        <Column small={6} medium={4} large={4}>
+          <label>Asiakas</label>
+          <p>{getFullName()}</p>
         </Column>
-        <Column medium={4}>
-          <label>Osuus murtolukuina</label>
-          <p>{get(customer, 'share', '')}/{get(customer, 'share_divider', '')}</p>
-
+        <Column small={6} medium={4} large={2}>
+          <label>Osuus murtolukuna</label>
+          <p>{tenant.share_numerator || ''} / {tenant.share_denominator || ''}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
           <label>Laskun hallintaosuus</label>
-          <p>{get(customer, 'bill_share', '')} %</p>
-
-          <label>Kieli</label>
-          <p>{get(customer, 'language', '')}</p>
-
-          <label>Alkupäivämäärä</label>
-          <p>{formatedDate}</p>
-
-          <label>Viite</label>
-          <p className='no-margin'>{get(customer, 'reference', '')}</p>
+          <p>{getInvoiceManagementShare()}</p>
         </Column>
-        <Column medium={4}>
-          <label>Asiakasnumero</label>
-          <p>{get(customer, 'customer_id', '')}</p>
-
-          <label>SAP asiakasnumero</label>
-          <p>{get(customer, 'SAP_customer_id', '')}</p>
-
-          <label>ovt-tunnus</label>
-          <p>{get(customer, 'ovt_identifier', '')}</p>
-
-          <label>Kumppanikoodi</label>
-          <p>{get(customer, 'partner_code', '')}</p>
+        <Column small={6} medium={4} large={2}>
+          <label>Alkupäivämäärä</label>
+          <p>{formatDate(get(tenant, 'tenant.start_date')) || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Loppupäivämäärä</label>
+          <p>{formatDate(get(tenant, 'tenant.end_date')) || '-'}</p>
         </Column>
       </Row>
+      <Row>
+        <Column small={6} medium={4} large={4}>
+          <label>Viite</label>
+          <p>{tenant.reference || '-'}</p>
+        </Column>
+        <Column small={6} medium={8} large={8}>
+          <label>Kommentti</label>
+          <p>{tenant.note || '-'}</p>
+        </Column>
+      </Row>
+      <ContactInfo
+        contact={contact}
+        contactAttributes={contactAttributes}
+      />
     </div>
   );
 };

@@ -387,3 +387,26 @@ export const getDecisionsOptions = (decisions: Array<Object>) => {
     };
   });
 };
+
+/**
+ * Get options for contact field
+ * @param decisions
+ */
+export const getContactOptions = (contacts: Array<Object>) => {
+  if(!contacts || !contacts.length) {
+    return [];
+  }
+
+  return contacts.map((contact) => {
+    return {
+      value: contact.id,
+      label: contact.is_business ? contact.business_name : `${contact.last_name} ${contact.first_name}`,
+    };
+  }).sort(function(a, b){
+    const keyA = a.label,
+      keyB = b.label;
+    if(keyA < keyB) return -1;
+    if(keyA > keyB) return 1;
+    return 0;
+  });
+};

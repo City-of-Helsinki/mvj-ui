@@ -1,29 +1,58 @@
 // @flow
 import React, {Component} from 'react';
-import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
-import {formValueSelector, reduxForm, FieldArray} from 'redux-form';
+import flowRight from 'lodash/flowRight';
+import {reduxForm, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import FormSection from '$components/form/FormSection';
 import TenantItemsEdit from './TenantItemsEdit';
+import {getIsTenantsFormValid} from '$src/leases/selectors';
+import {receiveTenantsFormValid} from '$src/leases/actions';
+
+import type {Attributes as ContactAttributes, ContactList} from '$src/contacts/types';
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  allContacts: ContactList,
+  attributes: Attributes,
+  contactAttributes: ContactAttributes,
   handleSubmit: Function,
+  isTenantsFormValid: boolean,
+  receiveTenantsFormValid: Function,
+  valid: boolean,
 }
 
 class TenantsEdit extends Component {
   props: Props
 
+  componentDidUpdate() {
+    const {isTenantsFormValid, receiveTenantsFormValid, valid} = this.props;
+    if(isTenantsFormValid !== valid) {
+      receiveTenantsFormValid(valid);
+    }
+  }
+
   render () {
-    const {handleSubmit} = this.props;
+    const {
+      allContacts,
+      attributes,
+      contactAttributes,
+      handleSubmit,
+    } = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <Row>
             <Column>
-              <FieldArray name="tenants" component={TenantItemsEdit}/>
+              <FieldArray
+                allContacts={allContacts}
+                attributes={attributes}
+                component={TenantItemsEdit}
+                contactAttributes={contactAttributes}
+                name="tenants"
+              />
             </Column>
           </Row>
         </FormSection>
@@ -32,15 +61,17 @@ class TenantsEdit extends Component {
   }
 }
 
-const formName = 'tenant-edit-form';
-const selector = formValueSelector(formName);
+const formName = 'tenants-form';
 
 export default flowRight(
   connect(
     (state) => {
       return {
-        tenants: selector(state, 'tenants'),
+        isTenantsFormValid: getIsTenantsFormValid(state),
       };
+    },
+    {
+      receiveTenantsFormValid,
     }
   ),
   reduxForm({
