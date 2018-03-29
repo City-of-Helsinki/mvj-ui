@@ -7,7 +7,7 @@ import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import type {Attributes as ContactAttributes} from '$src/contacts/types';
 
 type Props = {
-  contact: Object,
+  contact: ?Object,
   contactAttributes: ContactAttributes,
 }
 

@@ -341,7 +341,7 @@ class PreparerForm extends Component {
 
     dispatch(destroy('billing-edit-form'));
     dispatch(destroy('rent-edit-form'));
-    dispatch(destroy('tenant-edit-form'));
+    dispatch(destroy('tenants-form'));
   }
 
   validateForms = () => {
@@ -594,7 +594,12 @@ class PreparerForm extends Component {
               <Divider />
               {isEditMode
                 ? (
-                  <TenantsEdit initialValues={{tenants: tenants}} />
+                  <TenantsEdit
+                    allContacts={allContacts}
+                    attributes={attributes}
+                    contactAttributes={contactAttributes}
+                    initialValues={{tenants: tenants}}
+                  />
                 )
                 : (
                   <Tenants
@@ -683,7 +688,7 @@ class PreparerForm extends Component {
 }
 
 const rentFormSelector = formValueSelector('rent-edit-form');
-const tenantFormSelector = formValueSelector('tenant-edit-form');
+const tenantFormSelector = formValueSelector('tenants-form');
 
 export default flowRight(
   withRouter,
@@ -726,7 +731,7 @@ export default flowRight(
         summaryFormTouched: getSummaryFormTouched(state),
         summaryFormValues: getSummaryFormValues(state),
         tenantsForm: tenantFormSelector(state, 'tenants'),
-        tenantsTouched: get(state, 'form.tenant-edit-form.anyTouched'),
+        tenantsTouched: get(state, 'form.tenants-form.anyTouched'),
         user,
         users: getUsers(state),
       };

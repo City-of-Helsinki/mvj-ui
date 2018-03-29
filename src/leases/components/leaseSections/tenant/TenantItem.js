@@ -64,11 +64,11 @@ const TenantItem = ({
         </Column>
       </Row>
       <Row>
-        <Column small={6} medium={4} large={2}>
+        <Column small={6} medium={4} large={4}>
           <label>Viite</label>
           <p>{tenant.reference || '-'}</p>
         </Column>
-        <Column small={6} medium={8} large={2}>
+        <Column small={6} medium={8} large={8}>
           <label>Kommentti</label>
           <p>{tenant.note || '-'}</p>
         </Column>

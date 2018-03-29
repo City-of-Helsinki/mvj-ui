@@ -35,7 +35,7 @@ const Tenant = ({
     if(!allContacts || !allContacts.length) {
       return {};
     }
-    return allContacts.find((x) => x.id === get(tenant, 'tenant.id'));
+    return allContacts.find((x) => x.id === get(tenant, 'tenant.contact'));
   };
 
   const contact: Object = findContact();

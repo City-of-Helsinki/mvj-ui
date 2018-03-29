@@ -38,7 +38,7 @@ const OtherTenantItem = ({
     if(!allContacts || !allContacts.length) {
       return {};
     }
-    return allContacts.find((x) => x.id === get(tenant, 'id'));
+    return allContacts.find((x) => x.id === get(tenant, 'contact'));
   };
 
   const contact: Object = findContact();
@@ -62,13 +62,15 @@ const OtherTenantItem = ({
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Alkupäivämäärä</label>
-          <p>{formatDate(get(tenant, 'tenant.start_date')) || '-'}</p>
+          <p>{formatDate(get(tenant, 'start_date')) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Loppupäivämäärä</label>
-          <p>{formatDate(get(tenant, 'tenant.end_date')) || '-'}</p>
+          <p>{formatDate(get(tenant, 'end_date')) || '-'}</p>
         </Column>
-        <Column small={6} medium={12} large={6}>
+      </Row>
+      <Row>
+        <Column small={12}>
           <label>Kommentti</label>
           <p>{tenant.note || '-'}</p>
         </Column>
