@@ -387,38 +387,6 @@ export const getContentConstructability = (lease: Object) => {
 //
 // OLD HELPER FUNCTIONS
 //TODO: Remove mock data helper function when contruction eligibility tab is added to API
-export const getContentLeaseAreaItemMock = (area: Object) => {
-  return {
-    address: get(area, 'address'),
-    district: get(area, 'district'),
-    explanation: get(area, 'explanation'),
-    full_area: get(area, 'full_area'),
-    group_number: get(area, 'group_number'),
-    intersection_area: get(area, 'intersection_area'),
-    lease_area_id: get(area, 'lease_area_id'),
-    municipality: get(area, 'municipality'),
-    planplot_condition: get(area, 'planplot_condition'),
-    planplot_type: get(area, 'planplot_type'),
-    position: get(area, 'position'),
-    town: get(area, 'town'),
-    unit_number: get(area, 'unit_number'),
-    zip_code: get(area, 'zip_code'),
-    construction_eligibility: getContentLeaseAreaConstructionEligibility(get(area, 'construction_eligibility')),
-  };
-};
-
-//TODO: Remove mock data helper function when contruction eligibility tab is added to API
-export const getContentLeaseAreasMock = (lease: Object) => {
-  const leaseAreas = get(lease, 'lease_areas', []);
-  if(!leaseAreas || leaseAreas.length === 0) {
-    return [];
-  }
-
-  return leaseAreas.map((area) => {
-    return getContentLeaseAreaItemMock(area);
-  });
-};
-
 export const getContentBillingTenant = (tenant: Object) => {
   return {
     bill_share: get(tenant, 'bill_share'),
@@ -514,65 +482,6 @@ export const getContentFixedInitialYearRentItems = (items: Array<Object>) => {
       start_date: get(item, 'start_date'),
     };
   });
-};
-
-export const getContentLeaseAreaConstructionEligibilityComments = (comments: Array<Object>) => {
-  if(!comments || comments.length === 0) {
-    return [];
-  }
-
-  return comments.map((comment) => {
-    return {
-      AHJO_number: get(comment, 'AHJO_number'),
-      comment: get(comment, 'comment'),
-      comment_author: get(comment, 'comment_author'),
-      comment_date: get(comment, 'comment_date'),
-    };
-  });
-};
-
-export const getContentLeaseAreaConstructionEligibilityInvestigationItem = (item: Object) => {
-  return {
-    comments: getContentLeaseAreaConstructionEligibilityComments(get(item, 'comments', [])),
-    geotechnical_number: get(item, 'geotechnical_number'),
-    report: get(item, 'report'),
-    report_author: get(item, 'report_author'),
-    research_state: get(item, 'research_state'),
-    signing_date: get(item, 'signing_date'),
-  };
-};
-
-export const getContentLeaseAreaConstructionEligibilityPIMAItem = (item: Object) => {
-  return {
-    comments: getContentLeaseAreaConstructionEligibilityComments(get(item, 'comments', [])),
-    contamination_author: get(item, 'contamination_author'),
-    matti_report: get(item, 'matti_report'),
-    projectwise_number: get(item, 'projectwise_number'),
-    rent_conditions: get(item, 'rent_conditions'),
-    rent_condition_date: get(item, 'rent_condition_date'),
-    research_state: get(item, 'research_state'),
-  };
-};
-
-export const getContentLeaseAreaConstructionEligibilityItem = (item: Object) => {
-  return {
-    comments: getContentLeaseAreaConstructionEligibilityComments(get(item, 'comments', [])),
-    research_state: get(item, 'research_state'),
-  };
-};
-
-export const getContentLeaseAreaConstructionEligibility = (item: Object) => {
-  if(!item) {
-    return {};
-  }
-
-  return {
-    construction_investigation: getContentLeaseAreaConstructionEligibilityInvestigationItem(get(item, 'construction_investigation')),
-    contamination: getContentLeaseAreaConstructionEligibilityPIMAItem(get(item, 'contamination')),
-    demolition: getContentLeaseAreaConstructionEligibilityItem(get(item, 'demolition')),
-    other: getContentLeaseAreaConstructionEligibilityItem(get(item, 'other')),
-    preconstruction: getContentLeaseAreaConstructionEligibilityItem(get(item, 'preconstruction')),
-  };
 };
 
 export const getContentRentBasicInfo = (basicInfoData: Object) => {

@@ -5,7 +5,6 @@ import {call, fork, put} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 import {displayUIMessage} from '$util/helpers';
-import mockData from './mock-data.json';
 
 import {
   receiveCommentAttributes,
@@ -120,8 +119,6 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<> {
 
     switch (statusCode) {
       case 200:
-        // TODO: These comments are only for testing. Use real comments when end-points are ready
-        bodyAsJson.comments = mockData.leases[0].comments;
         yield put(receiveSingleLease(bodyAsJson));
         break;
       case 404:
