@@ -56,7 +56,7 @@ const FieldTypeSelect = ({
         <Select
           {...input}
           arrowRenderer={arrowRenderer}
-          autoBlur={true}
+          autoBlur={false}
           clearable={true}
           disabled={disabled}
           id={name}
