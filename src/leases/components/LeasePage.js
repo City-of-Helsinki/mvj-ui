@@ -11,6 +11,8 @@ import get from 'lodash/get';
 
 import {getLoggedInUser} from '$src/auth/selectors';
 import {receiveBilling} from './leaseSections/billing/actions';
+import {fetchUsers} from '$src/users/actions';
+import {getUsers} from '$src/users/selectors';
 import {getBilling} from './leaseSections/billing/selectors';
 import {
   getAreasFormTouched,
@@ -19,6 +21,8 @@ import {
   getComments,
   getContractsFormTouched,
   getContractsFormValues,
+  getConstructabilityFormTouched,
+  getConstructabilityFormValues,
   getCurrentLease,
   getDecisionsFormTouched,
   getDecisionsFormValues,
@@ -26,6 +30,7 @@ import {
   getInspectionsFormValues,
   getIsEditMode,
   getIsFetching,
+  getIsConstructabilityFormValid,
   getIsContractsFormValid,
   getIsDecisionsFormValid,
   getIsInspectionsFormValid,
@@ -44,9 +49,6 @@ import {
   fetchSingleLease,
   hideEditMode,
   patchLease,
-  receiveLeaseAreasFormValid,
-  receiveLeaseInfoFormValid,
-  receiveSummaryFormValid,
   showEditMode,
 } from '../actions';
 import {getRouteById} from '$src/root/routes';
@@ -86,9 +88,10 @@ import TabPane from '$components/tabs/TabPane';
 import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
-import ConstructionEligibility from './leaseSections/constructionEligibility/ConstructionEligibility';
-import ConstructionEligibilityEdit from './leaseSections/constructionEligibility/ConstructionEligibilityEdit';
+import Constructability from './leaseSections/constructability/Constructability';
+import ConstructabilityEdit from './leaseSections/constructability/ConstructabilityEdit';
 
+import type {UserList} from '$src/users/types';
 
 import mockData from '../mock-data.json';
 
@@ -101,20 +104,22 @@ type Props = {
   commentsStore: Array<Object>,
   contractsFormTouched: boolean,
   contractsFormValues: Object,
+  constructabilityFormTouched: boolean,
+  constructabilityFormValues: Object,
   currentLease: Object,
   decisionsFormTouched: boolean,
   decisionsFormValues: Object,
   dispatch: Function,
-  eligibilityForm: Array<Object>,
-  eligibilityTouched: boolean,
   fetchAttributes: Function,
   fetchComments: Function,
   fetchSingleLease: Function,
+  fetchUsers: Function,
   hideEditMode: Function,
   inspectionsFormValues: Object,
   inspectionsFormTouched: boolean,
   isEditMode: boolean,
   isFetching: boolean,
+  isConstructabilityFormValid: boolean,
   isContractsFormValid: boolean,
   isDecisionsFormValid: boolean,
   isInspectionsFormValid: boolean,
@@ -127,9 +132,6 @@ type Props = {
   params: Object,
   patchLease: Function,
   receiveBilling: Function,
-  receiveLeaseAreasFormValid: Function,
-  receiveLeaseInfoFormValid: Function,
-  receiveSummaryFormValid: Function,
   receiveTopNavigationSettings: Function,
   rentsForm: Object,
   rentsTouched: boolean,
@@ -139,11 +141,11 @@ type Props = {
   tenantsForm: Array<Object>,
   tenantsTouched: boolean,
   user: Object,
+  users: UserList,
 }
 
 type State = {
   activeTab: number,
-  areasMock: Array<Object>,
   history: Array<Object>,
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
@@ -158,7 +160,6 @@ class PreparerForm extends Component {
 
   state: State = {
     activeTab: 0,
-    areasMock: [],
     history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
@@ -179,6 +180,7 @@ class PreparerForm extends Component {
       fetchAttributes,
       fetchComments,
       fetchSingleLease,
+      fetchUsers,
       location,
       params: {leaseId},
       receiveBilling,
@@ -201,7 +203,6 @@ class PreparerForm extends Component {
     }
 
     this.setState({
-      areasMock: contentHelpers.getContentLeaseAreasMock(lease),
       history: contentHelpers.getContentHistory(lease),
       oldTenants: lease.tenants_old,
       rents: contentHelpers.getContentRents(lease),
@@ -211,6 +212,7 @@ class PreparerForm extends Component {
     fetchAttributes();
     fetchComments(leaseId);
     fetchSingleLease(leaseId);
+    fetchUsers();
   }
 
   showModal = (modalName: string) => {
@@ -244,9 +246,9 @@ class PreparerForm extends Component {
       decisionsFormValues,
       contractsFormValues,
       inspectionsFormValues,
+      constructabilityFormValues,
 
       currentLease,
-      eligibilityForm,
       hideEditMode,
       patchLease,
       rentsForm,
@@ -274,17 +276,18 @@ class PreparerForm extends Component {
     if(contractsFormValues !== undefined) {
       payload = contentHelpers.addContractsFormValues(payload, contractsFormValues);
     }
+
     if(inspectionsFormValues !== undefined) {
       payload = contentHelpers.addInspectionsFormValues(payload, inspectionsFormValues);
+    }
+
+    if(constructabilityFormValues !== undefined) {
+      payload = contentHelpers.addConstructabilityFormValues(payload, constructabilityFormValues);
     }
 
     patchLease(payload);
 
     // TODO: Temporarily save changes to state. Replace with api call when end points are ready
-    if(eligibilityForm !== undefined) {
-      this.setState({areasMock: eligibilityForm});
-    }
-
     if(rentsForm !== undefined) {
       this.setState({rents: rentsForm});
     }
@@ -319,6 +322,7 @@ class PreparerForm extends Component {
     dispatch(destroy('decisions-form'));
     dispatch(destroy('contracts-form'));
     dispatch(destroy('inspections-form'));
+    dispatch(destroy('constructability-form'));
 
     dispatch(destroy('billing-edit-form'));
     dispatch(destroy('rent-edit-form'));
@@ -327,6 +331,7 @@ class PreparerForm extends Component {
 
   validateForms = () => {
     const {
+      isConstructabilityFormValid,
       isContractsFormValid,
       isDecisionsFormValid,
       isInspectionsFormValid,
@@ -335,12 +340,15 @@ class PreparerForm extends Component {
       isSummaryFormValid,
     } = this.props;
 
-    return isContractsFormValid &&
+    return (
+      isConstructabilityFormValid &&
+      isContractsFormValid &&
       isDecisionsFormValid &&
       isInspectionsFormValid &&
       isLeaseAreasFormValid &&
       isLeaseInfoFormValid &&
-      isSummaryFormValid;
+      isSummaryFormValid
+    );
   }
 
   handleTabClick = (tabId) => {
@@ -368,8 +376,8 @@ class PreparerForm extends Component {
       decisionsFormTouched,
       contractsFormTouched,
       inspectionsFormTouched,
+      constructabilityFormTouched,
 
-      eligibilityTouched,
       rentsTouched,
       tenantsTouched,
     } = this.props;
@@ -380,8 +388,8 @@ class PreparerForm extends Component {
       decisionsFormTouched ||
       contractsFormTouched ||
       inspectionsFormTouched ||
+      constructabilityFormTouched ||
 
-      eligibilityTouched ||
       rentsTouched ||
       tenantsTouched;
   }
@@ -389,7 +397,6 @@ class PreparerForm extends Component {
   render() {
     const {
       activeTab,
-      areasMock,
       history,
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
@@ -408,6 +415,7 @@ class PreparerForm extends Component {
       isEditMode,
       isFetching,
       showEditMode,
+      users,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -421,9 +429,9 @@ class PreparerForm extends Component {
     const decisions = contentHelpers.getContentDecisions(currentLease);
     const contracts = contentHelpers.getContentContracts(currentLease);
     const inspections = contentHelpers.getContentInspections(currentLease);
+    const constructability = contentHelpers.getContentConstructability(currentLease);
 
     const comments = contentHelpers.getContentComments(commentsStore);
-
 
     let sum_areas = 0;
     areas && areas.length > 0 && areas.map((area) =>
@@ -611,8 +619,20 @@ class PreparerForm extends Component {
               <h1>Rakentamiskelpoisuus</h1>
               <Divider />
               {isEditMode
-                ? <ConstructionEligibilityEdit areas={areasMock} initialValues={{areas: areasMock}}/>
-                : <ConstructionEligibility areas={areasMock}/>
+                ? (
+                  <ConstructabilityEdit
+                    areas={constructability}
+                    attributes={attributes}
+                    initialValues={{lease_areas: constructability}}
+                    users={users}
+                  />
+                ) : (
+                  <Constructability
+                    areas={constructability}
+                    attributes={attributes}
+                    users={users}
+                  />
+                )
               }
             </ContentContainer>
           </TabPane>
@@ -637,7 +657,6 @@ class PreparerForm extends Component {
   }
 }
 
-const eligibilityFormSelector = formValueSelector('eligibility-edit-form');
 const rentFormSelector = formValueSelector('rent-edit-form');
 const tenantFormSelector = formValueSelector('tenant-edit-form');
 
@@ -660,9 +679,10 @@ export default flowRight(
         currentLease: getCurrentLease(state),
         decisionsFormTouched: getDecisionsFormTouched(state),
         decisionsFormValues: getDecisionsFormValues(state),
-        eligibilityForm: eligibilityFormSelector(state, 'areas'),
-        eligibilityTouched: get(state, 'form.eligibility-edit-form.anyTouched'),
+        constructabilityFormTouched: getConstructabilityFormTouched(state),
+        constructabilityFormValues: getConstructabilityFormValues(state),
         isEditMode: getIsEditMode(state),
+        isConstructabilityFormValid: getIsConstructabilityFormValid(state),
         isContractsFormValid: getIsContractsFormValid(state),
         isDecisionsFormValid: getIsDecisionsFormValid(state),
         isInspectionsFormValid: getIsInspectionsFormValid(state),
@@ -681,6 +701,7 @@ export default flowRight(
         tenantsForm: tenantFormSelector(state, 'tenants'),
         tenantsTouched: get(state, 'form.tenant-edit-form.anyTouched'),
         user,
+        users: getUsers(state),
       };
     },
     {
@@ -688,12 +709,10 @@ export default flowRight(
       fetchAttributes,
       fetchComments,
       fetchSingleLease,
+      fetchUsers,
       hideEditMode,
       patchLease,
       receiveBilling,
-      receiveLeaseAreasFormValid,
-      receiveLeaseInfoFormValid,
-      receiveSummaryFormValid,
       receiveTopNavigationSettings,
       showEditMode,
     }

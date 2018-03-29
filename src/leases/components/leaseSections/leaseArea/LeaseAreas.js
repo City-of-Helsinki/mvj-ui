@@ -37,7 +37,7 @@ const LeaseAreas = ({areas, attributes}: Props) => {
             defaultOpen={true}
             header={
               <Row>
-                <Column medium={4} className='collapse__header-title'>
+                <Column small={4} className='collapse__header-title'>
                   <MapIcon />
                   <span>
                     {area.identifier || '-'}
@@ -47,10 +47,10 @@ const LeaseAreas = ({areas, attributes}: Props) => {
                     {`(${getLabelOfOption(typeOptions, area.type) || '-'})`}
                   </span>
                 </Column>
-                <Column medium={4} className='collapse__header-subtitle'>
+                <Column small={4} className='collapse__header-subtitle'>
                   <span>{getFullAddress(area)}</span>
                 </Column>
-                <Column medium={4} className='collapse__header-subtitle'>
+                <Column small={4} className='collapse__header-subtitle'>
                   {getAreaLabel(area)}
                 </Column>
               </Row>

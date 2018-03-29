@@ -7,13 +7,12 @@ import {reducer as toastrReducer} from 'react-redux-toastr';
 import {routerReducer} from 'react-router-redux';
 import apiReducer from '../api/reducer';
 import authReducer from '../auth/reducer';
-import roleReducer from '../role/reducer';
-import attributesReducer from '../attributes/reducer';
 import billingReducer from '../leases/components/leaseSections/billing/reducer';
 import contactsReducer from '../contacts/reducer';
 import leaseReducer from '../leases/reducer';
 import rentCriteriasReducer from '../rentcriterias/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
+import usersReducer from '../users/reducer';
 
 import type {Reducer} from '../types';
 import type {RootState} from './types';
@@ -22,7 +21,6 @@ export default (): Reducer<RootState> =>
   combineReducers({
     api: apiReducer,
     auth: authReducer,
-    attributes: attributesReducer,
     billing: billingReducer,
     contacts: contactsReducer,
     form: formReducer,
@@ -32,5 +30,5 @@ export default (): Reducer<RootState> =>
     routing: routerReducer,
     toastr: toastrReducer,
     topnavigation: topNavigationReducer,
-    user: roleReducer,
+    users: usersReducer,
   });

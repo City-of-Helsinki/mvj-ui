@@ -41,7 +41,7 @@ const IndexAdjustedRents = ({indexAdjustedRents}: Props) => {
   return (
     <TableFixedHeader
       headers={[
-        'Ind. tark. vuokra (€)',
+        'Indeksitarkastettu vuokra (€)',
         'Käyttötarkoitus',
         'Voimassaoloaika',
         'Laskentakerroin',

@@ -130,9 +130,9 @@ const DiscountsEdit = ({fields}: Props) => {
         <Column>
           <AddButtonSecondary
             className='no-margin'
-            label='Lisää sopimuksen muutos'
+            label='Lisää alennus/korotus'
             onClick={() => fields.push({})}
-            title='Lisää sopimuksen muutos'
+            title='Lisää alennus/korotus'
           />
         </Column>
       </Row>

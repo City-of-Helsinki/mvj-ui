@@ -3,6 +3,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
+import {ConstructabilityType} from './enums';
 import {
   fixedLengthNumber,
   formatDate,
@@ -325,42 +326,67 @@ export const getContentInspections = (lease: Object) => {
   );
 };
 
+export const getContentConstructabilityDescriptions = (area: Object, type: string) => {
+  const descriptions = get(area, 'constructability_descriptions', []);
+  if(!descriptions.length) {
+    return [];
+  }
+
+  return descriptions.filter((description) => description.type === type).map((description) => {
+    return {
+      id: get(description, 'id'),
+      type: get(description, 'type'),
+      user: get(description, 'user.id'),
+      text: get(description, 'text'),
+      ahjo_reference_number: get(description, 'ahjo_reference_number'),
+      modified_at: get(description, 'modified_at'),
+    };
+  });
+};
+
+export const getContentConstructability = (lease: Object) => {
+  const lease_areas = get(lease, 'lease_areas', []);
+  if(!lease_areas.length) {
+    return [];
+  }
+  return lease_areas.map((area) => {
+    return {
+      id: get(area, 'id'),
+      identifier: get(area, 'identifier'),
+      type: get(area, 'type'),
+      location: get(area, 'location'),
+      area: get(area, 'area'),
+      section_area: get(area, 'section_area'),
+      address: get(area, 'address'),
+      postal_code: get(area, 'postal_code'),
+      city: get(area, 'city'),
+      preconstruction_state: get(area, 'preconstruction_state'),
+      demolition_state: get(area, 'demolition_state'),
+      polluted_land_state: get(area, 'polluted_land_state'),
+      polluted_land_rent_condition_state: get(area, 'polluted_land_rent_condition_state'),
+      polluted_land_rent_condition_date: get(area, 'polluted_land_rent_condition_date'),
+      polluted_land_planner: get(area, 'polluted_land_planner.id'),
+      polluted_land_projectwise_number: get(area, 'polluted_land_projectwise_number'),
+      polluted_land_matti_report_number: get(area, 'polluted_land_matti_report_number'),
+      constructability_report_state: get(area, 'constructability_report_state'),
+      constructability_report_investigation_state: get(area, 'constructability_report_investigation_state'),
+      constructability_report_signing_date: get(area, 'constructability_report_signing_date'),
+      constructability_report_signer: get(area, 'constructability_report_signer'),
+      constructability_report_geotechnical_number: get(area, 'constructability_report_geotechnical_number'),
+      other_state: get(area, 'other_state'),
+      descriptionsPreconstruction: getContentConstructabilityDescriptions(area, ConstructabilityType.PRECONSTRUCTION),
+      descriptionsDemolition: getContentConstructabilityDescriptions(area, ConstructabilityType.DEMOLITION),
+      descriptionsPollutedLand: getContentConstructabilityDescriptions(area, ConstructabilityType.POLLUTED_LAND),
+      descriptionsReport: getContentConstructabilityDescriptions(area, ConstructabilityType.REPORT),
+      descriptionsOther: getContentConstructabilityDescriptions(area, ConstructabilityType.OTHER),
+    };
+  });
+};
+
 //
 //
 // OLD HELPER FUNCTIONS
 //TODO: Remove mock data helper function when contruction eligibility tab is added to API
-export const getContentLeaseAreaItemMock = (area: Object) => {
-  return {
-    address: get(area, 'address'),
-    district: get(area, 'district'),
-    explanation: get(area, 'explanation'),
-    full_area: get(area, 'full_area'),
-    group_number: get(area, 'group_number'),
-    intersection_area: get(area, 'intersection_area'),
-    lease_area_id: get(area, 'lease_area_id'),
-    municipality: get(area, 'municipality'),
-    planplot_condition: get(area, 'planplot_condition'),
-    planplot_type: get(area, 'planplot_type'),
-    position: get(area, 'position'),
-    town: get(area, 'town'),
-    unit_number: get(area, 'unit_number'),
-    zip_code: get(area, 'zip_code'),
-    construction_eligibility: getContentLeaseAreaConstructionEligibility(get(area, 'construction_eligibility')),
-  };
-};
-
-//TODO: Remove mock data helper function when contruction eligibility tab is added to API
-export const getContentLeaseAreasMock = (lease: Object) => {
-  const leaseAreas = get(lease, 'lease_areas', []);
-  if(!leaseAreas || leaseAreas.length === 0) {
-    return [];
-  }
-
-  return leaseAreas.map((area) => {
-    return getContentLeaseAreaItemMock(area);
-  });
-};
-
 export const getContentBillingTenant = (tenant: Object) => {
   return {
     bill_share: get(tenant, 'bill_share'),
@@ -456,65 +482,6 @@ export const getContentFixedInitialYearRentItems = (items: Array<Object>) => {
       start_date: get(item, 'start_date'),
     };
   });
-};
-
-export const getContentLeaseAreaConstructionEligibilityComments = (comments: Array<Object>) => {
-  if(!comments || comments.length === 0) {
-    return [];
-  }
-
-  return comments.map((comment) => {
-    return {
-      AHJO_number: get(comment, 'AHJO_number'),
-      comment: get(comment, 'comment'),
-      comment_author: get(comment, 'comment_author'),
-      comment_date: get(comment, 'comment_date'),
-    };
-  });
-};
-
-export const getContentLeaseAreaConstructionEligibilityInvestigationItem = (item: Object) => {
-  return {
-    comments: getContentLeaseAreaConstructionEligibilityComments(get(item, 'comments', [])),
-    geotechnical_number: get(item, 'geotechnical_number'),
-    report: get(item, 'report'),
-    report_author: get(item, 'report_author'),
-    research_state: get(item, 'research_state'),
-    signing_date: get(item, 'signing_date'),
-  };
-};
-
-export const getContentLeaseAreaConstructionEligibilityPIMAItem = (item: Object) => {
-  return {
-    comments: getContentLeaseAreaConstructionEligibilityComments(get(item, 'comments', [])),
-    contamination_author: get(item, 'contamination_author'),
-    matti_report: get(item, 'matti_report'),
-    projectwise_number: get(item, 'projectwise_number'),
-    rent_conditions: get(item, 'rent_conditions'),
-    rent_condition_date: get(item, 'rent_condition_date'),
-    research_state: get(item, 'research_state'),
-  };
-};
-
-export const getContentLeaseAreaConstructionEligibilityItem = (item: Object) => {
-  return {
-    comments: getContentLeaseAreaConstructionEligibilityComments(get(item, 'comments', [])),
-    research_state: get(item, 'research_state'),
-  };
-};
-
-export const getContentLeaseAreaConstructionEligibility = (item: Object) => {
-  if(!item) {
-    return {};
-  }
-
-  return {
-    construction_investigation: getContentLeaseAreaConstructionEligibilityInvestigationItem(get(item, 'construction_investigation')),
-    contamination: getContentLeaseAreaConstructionEligibilityPIMAItem(get(item, 'contamination')),
-    demolition: getContentLeaseAreaConstructionEligibilityItem(get(item, 'demolition')),
-    other: getContentLeaseAreaConstructionEligibilityItem(get(item, 'other')),
-    preconstruction: getContentLeaseAreaConstructionEligibilityItem(get(item, 'preconstruction')),
-  };
 };
 
 export const getContentRentBasicInfo = (basicInfoData: Object) => {
@@ -1115,5 +1082,97 @@ export const addInspectionsFormValues = (payload: Object, values: Object) => {
     });
   }
 
+  return payload;
+};
+
+export const getConstructabilityDescriptionsForDb = (area: Object) => {
+  const descriptionsPreconstruction = get(area, 'descriptionsPreconstruction', []).map((description) => {
+    description.type = ConstructabilityType.PRECONSTRUCTION;
+    return description;
+  });
+  const descriptionsDemolition = get(area, 'descriptionsDemolition', []).map((description) => {
+    description.type = ConstructabilityType.DEMOLITION;
+    return description;
+  });
+  const descriptionsPollutedLand = get(area, 'descriptionsPollutedLand', []).map((description) => {
+    description.type = ConstructabilityType.POLLUTED_LAND;
+    return description;
+  });
+  const descriptionsReport = get(area, 'descriptionsReport', []).map((description) => {
+    description.type = ConstructabilityType.REPORT;
+    return description;
+  });
+  const descriptionsOther = get(area, 'descriptionsOther', []).map((description) => {
+    description.type = ConstructabilityType.OTHER;
+    return description;
+  });
+  const descriptions = [
+    ...descriptionsPreconstruction,
+    ...descriptionsDemolition,
+    ...descriptionsPollutedLand,
+    ...descriptionsReport,
+    ...descriptionsOther,
+  ];
+
+  if(!descriptions.length) {
+    return [];
+  }
+  return descriptions.map((description) => {
+    return {
+      id: description.id || undefined,
+      type: get(description, 'type'),
+      text: get(description, 'text'),
+      ahjo_reference_number: get(description, 'ahjo_reference_number'),
+    };
+  });
+};
+
+export const getConstructabilityItemForDb = (area: Object, values: Object) => {
+  area.preconstruction_state = get(values, 'preconstruction_state');
+  area.demolition_state = get(values, 'demolition_state');
+  area.polluted_land_state = get(values, 'polluted_land_state');
+  area.polluted_land_rent_condition_state = get(values, 'polluted_land_rent_condition_state');
+  area.polluted_land_rent_condition_date = get(values, 'polluted_land_rent_condition_date');
+  area.polluted_land_planner = get(values, 'polluted_land_planner');
+  area.polluted_land_projectwise_number = get(values, 'polluted_land_projectwise_number');
+  area.polluted_land_matti_report_number = get(values, 'polluted_land_matti_report_number');
+  area.constructability_report_state = get(values, 'constructability_report_state');
+  area.constructability_report_investigation_state = get(values, 'constructability_report_investigation_state');
+  area.constructability_report_signing_date = get(values, 'constructability_report_signing_date');
+  area.constructability_report_signer = get(values, 'constructability_report_signer');
+  area.constructability_report_geotechnical_number = get(values, 'constructability_report_geotechnical_number');
+  area.other_state = get(values, 'other_state');
+  area.constructability_descriptions = getConstructabilityDescriptionsForDb(values);
+  return area;
+};
+
+export const addConstructabilityFormValues = (payload: Object, values: Object) => {
+  const areas = payload.lease_areas;
+  const constAreas = get(values, 'lease_areas', []);
+  if(areas && !!areas.length) {
+    payload.lease_areas = areas.map((area) => {
+      const constArea = constAreas.find(x => x.id === area.id);
+      if(constArea) {
+        return getConstructabilityItemForDb(area, constArea);
+      }
+      return area;
+    });
+  } else if(constAreas && !!constAreas.length) {
+    payload.lease_areas = constAreas.map((area) => {
+      return getConstructabilityItemForDb({
+        id: area.id,
+        city: area.city,
+        location: area.location,
+        area: area.area,
+        identifier: area.identifier,
+        type: area.type,
+        address: area.address,
+        postal_code: area.postal_code,
+        section_area: area.section_area,
+      }, area);
+    });
+  } else {
+    payload.lease_areas = [];
+  }
   return payload;
 };
