@@ -21,7 +21,11 @@ import {
   getLessors,
 } from '../selectors';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '../helpers';
-import {getLessorOptions, getSearchQuery} from '$util/helpers';
+import {
+  formatDate,
+  getLessorOptions,
+  getSearchQuery,
+} from '$util/helpers';
 import Button from '$components/button/Button';
 import CreateLease from './leaseSections/CreateLease';
 import EditableMap from '$components/map/EditableMap';
@@ -209,8 +213,8 @@ class LeaseList extends Component {
                   {key: 'lessor', label: 'Vuokranantaja', renderer: (val) => getLabelOfOption(lessorOptions, val)},
                   {key: 'address', label: 'Osoite'},
                   {key: 'state', label: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
-                  {key: 'start_date', label: 'Alkupvm'},
-                  {key: 'end_date', label: 'Loppupvm'},
+                  {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val)},
+                  {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
                 ]}
                 onRowClick={this.handleRowClick}
               />

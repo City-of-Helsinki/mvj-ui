@@ -2,7 +2,6 @@
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import moment from 'moment';
 
 import {
   ConstructabilityType,
@@ -10,7 +9,6 @@ import {
 } from './enums';
 import {
   fixedLengthNumber,
-  formatDate,
   formatDateDb,
   formatDecimalNumberDb,
 } from '$util/helpers';
@@ -23,34 +21,49 @@ export const getContentLeaseIdentifier = (item:Object) => {
   return unit;
 };
 
-export const getContentRealPropertyUnit = (item: Object) => {
-  const {assets} = item;
-  if(isEmpty(assets)) {
+export const getContentLeaseTenant = (lease: Object) => {
+  const tenants = get(lease, 'tenants[0].tenantcontact_set', []);
+  if(!tenants.length) {
     return null;
   }
-  let realPropertyUnit = '';
-  for(let i = 0; i < assets.length; i++) {
-    //TODO: get real property unit when it's available at the end point
-    console.log(assets[i]);
+  const tenant = tenants.find((x) => x.type === TenantContactType.TENANT);
+  if(!tenant) {
+    return null;
   }
-
-  return realPropertyUnit;
+  return get(tenant, 'contact.is_business') ? get(tenant, 'contact.business_name') : `${get(tenant, 'contact.last_name', '')} ${get(tenant, 'contact.first_name', '')}`;
 };
 
-export const getContentLeaseAddress = (item:Object) => {
-  const {assets} = item;
-  if(isEmpty(assets)) {
+export const getContentLeaseAddress = (lease: Object) => {
+  const areas = get(lease, 'lease_areas', []);
+  if(!areas.length) {
     return null;
   }
-  let address = '';
-  for(let i = 0; i < assets.length; i++) {
-    if(get(assets[i], 'address')) {
-      address = get(assets[i], 'address');
-      return address;
-    }
+  return `${areas[0].address ? areas[0].address + ', ' : ''}${get(areas[0], 'postal_code', '')} ${get(areas[0], 'city', '')}`;
+};
+
+export const getContentLeaseItem = (lease: Object) => {
+  return {
+    id: get(lease, 'id'),
+    identifier: getContentLeaseIdentifier(lease),
+    real_property_unit: get(lease, 'lease_areas[0].identifier'),
+    tenant: getContentLeaseTenant(lease),
+    lessor: get(lease, 'lessor.id'),
+    address: getContentLeaseAddress(lease),
+    state: get(lease, 'state'),
+    start_date: get(lease, 'start_date'),
+    end_date: get(lease, 'end_date'),
+  };
+};
+
+export const getContentLeases = (content:Object) => {
+  const {results} = content;
+  if(!results || !results.length) {
+    return [];
   }
 
-  return address;
+  return results.map((item) => {
+    return getContentLeaseItem(item);
+  });
 };
 
 export const getContentLeaseInfo = (lease: Object) => {
@@ -668,31 +681,6 @@ export const getFullAddress = (item: Object) => {
     return get(item, 'address');
   }
   return `${get(item, 'address')}, ${get(item, 'zip_code')} ${get(item, 'town')}`;
-};
-
-
-export const getContentLeaseItem = (item:Object) => {
-  return {
-    id: get(item, 'id'),
-    real_property_unit: getContentRealPropertyUnit(item),
-    identifier: getContentLeaseIdentifier(item),
-    lessor: get(item, 'lessor.id'),
-    address: getContentLeaseAddress(item),
-    state: get(item, 'state'),
-    start_date: item.start_date ? formatDate(moment(item.start_date)) : null,
-    end_date: item.end_date ? formatDate(moment(item.end_date)) : null,
-  };
-};
-
-export const getContentLeases = (content:Object) => {
-  const {results} = content;
-  if(!results || !results.length) {
-    return [];
-  }
-
-  return results.map((item) => {
-    return getContentLeaseItem(item);
-  });
 };
 
 export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>) => {

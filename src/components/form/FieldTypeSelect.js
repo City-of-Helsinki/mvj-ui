@@ -24,7 +24,7 @@ const FieldTypeSelect = ({
   disableTouched = false,
   displayError,
   input,
-  input: {name, onChange},
+  input: {name, onBlur},
   label,
   labelClassName,
   meta: {dirty, error, touched},
@@ -38,11 +38,10 @@ const FieldTypeSelect = ({
   };
 
   const handleBlur = () => {
-    // onBlur(value || '');
   };
 
   const handleChange = (value: string) => {
-    onChange(value || '');
+    onBlur(value || '');
   };
 
   return (
