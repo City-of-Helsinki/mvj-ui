@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Field, reduxForm} from 'redux-form';
+import {Field, formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
@@ -15,7 +15,7 @@ import {
   getInitialContactFormValues,
   getIsContactFormValid,
 } from '../../selectors';
-import {genericValidator} from '$components/form/validations';
+import {genericValidator, required} from '$components/form/validations';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 
 import type {Attributes} from '../../types';
@@ -24,6 +24,7 @@ import type {RootState} from '$src/root/types';
 type Props = {
   attributes: Attributes,
   initialValues: Object,
+  is_business: boolean,
   isContactFormValid: boolean,
   handleSubmit: Function,
   receiveContactFormValid: Function,
@@ -46,7 +47,7 @@ class ContactForm extends Component {
   }
 
   render() {
-    const {attributes, handleSubmit} = this.props;
+    const {attributes, handleSubmit, is_business} = this.props;
     const languageOptions = getAttributeFieldOptions(attributes, 'language');
 
     return(
@@ -73,6 +74,7 @@ class ContactForm extends Component {
                 label='Etunimi'
                 name='first_name'
                 validate={[
+                  (value) => is_business ? null : required(value),
                   (value) => genericValidator(value, get(attributes, 'first_name')),
                 ]}
               />
@@ -83,6 +85,7 @@ class ContactForm extends Component {
                 label='Sukunimi'
                 name='last_name'
                 validate={[
+                  (value) => is_business ? null : required(value),
                   (value) => genericValidator(value, get(attributes, 'last_name')),
                 ]}
               />
@@ -113,6 +116,7 @@ class ContactForm extends Component {
                 label='Yrityksen nimi'
                 name='business_name'
                 validate={[
+                  (value) => is_business ? required(value) : null,
                   (value) => genericValidator(value, get(attributes, 'business_name')),
                 ]}
               />
@@ -261,9 +265,11 @@ class ContactForm extends Component {
 }
 
 const formName = 'contact-form';
+const selector = formValueSelector(formName);
 
 const mapStateToProps = (state: RootState) => {
   return {
+    is_business: selector(state, 'is_business'),
     isContactFormValid: getIsContactFormValid(state),
     initialValues: getInitialContactFormValues(state),
   };
