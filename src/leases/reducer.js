@@ -19,6 +19,8 @@ import type {
   ReceiveCommentAttributesAction,
   ReceiveCreatedCommentAction,
   ReceiveEditedCommentAction,
+  ContactModalSettings,
+  ReceiveContactModalSettingsAction,
   ReceiveConstructabilityFormValidAction,
   ReceiveContractsFormValidAction,
   ReceiveDecisionsFormValidAction,
@@ -33,6 +35,17 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/leases/HIDE_EDIT': () => false,
   'mvj/leases/SHOW_EDIT': () => true,
 }, false);
+
+const isContactModalOpenReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/HIDE_CONTACT_MODAL': () => false,
+  'mvj/leases/SHOW_CONTACT_MODAL': () => true,
+}, false);
+
+const contactModalSettingsReducer: Reducer<ContactModalSettings> = handleActions({
+  ['mvj/leases/RECEIVE_CONTACT_SETTINGS']: (state: ContactModalSettings, {payload: settings}: ReceiveContactModalSettingsAction) => {
+    return settings;
+  },
+}, null);
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/CREATE': () => true,
@@ -157,7 +170,9 @@ export default combineReducers({
   attributes: attributesReducer,
   comments: commentsReducer,
   commentAttributes: commentAttributesReducer,
+  contactModalSettings: contactModalSettingsReducer,
   current: currentLeaseReducer,
+  isContactModalOpen: isContactModalOpenReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
   isConstructabilityFormValid: constructabilityFormValidReducer,

@@ -1,11 +1,14 @@
 // @flow
 
 import type {Action} from '../types';
+import type {Contact} from '$src/contacts/types';
 
 export type LeaseState = Object;
 
 export type Comment = Object;
 export type CommentId = number;
+
+export type ContactModalSettings = Object | null;
 
 export type Lease = Object;
 export type LeaseId = number;
@@ -36,15 +39,19 @@ export type PatchLeaseAction = Action<'mvj/leases/PATCH', Lease>;
 
 export type LeaseNotFoundAction = Action<'mvj/leases/NOT_FOUND', void>;
 
+export type HideContactModalAction = Action<'mvj/leases/HIDE_CONTACT_MODAL', void>;
+export type ShowContactModalAction = Action<'mvj/leases/SHOW_CONTACT_MODAL', void>;
+export type ReceiveContactModalSettingsAction = Action<'mvj/leases/RECEIVE_CONTACT_SETTINGS', ContactModalSettings>;
+export type CreateContactAction = Action<'mvj/leases/CREATE_CONTACT', Contact>;
+export type EditContactAction = Action<'mvj/leases/EDIT_CONTACT', Contact>;
+
 export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;
 
 export type FetchCommentAttributesAction = Action<'mvj/leases/FETCH_COMMENT_ATTRIBUTES', void>;
 export type ReceiveCommentAttributesAction = Action<'mvj/leases/RECEIVE_COMMENT_ATTRIBUTES', Attributes>;
-
 export type FetchCommentsAction = Action<'mvj/leases/FETCH_COMMENTS', LeaseId>;
 export type ReceiveCommentsAction = Action<'mvj/leases/RECEIVE_COMMENTS', Array<Comment>>;
-
 export type CreateCommentAction = Action<'mvj/leases/CREATE_COMMENT', Comment>;
 export type ReceiveCreatedCommentAction = Action<'mvj/leases/RECEIVE_CREATED_COMMENT', Comment>;
 export type EditCommentAction = Action<'mvj/leases/EDIT_COMMENT', Comment>;

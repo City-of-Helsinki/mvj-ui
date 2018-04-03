@@ -2,7 +2,13 @@
 
 import type {Selector} from '../types';
 import get from 'lodash/get';
-import type {Attributes, Comment, Lease, LeaseState} from './types';
+import type {Attributes, Comment, ContactModalSettings, Lease, LeaseState} from './types';
+
+export const getIsContactModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.lease.isContactModalOpen;
+
+export const getContactModalSettings: Selector<ContactModalSettings, void> = (state: LeaseState): ContactModalSettings =>
+  state.lease.contactModalSettings;
 
 export const getIsEditMode: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isEditMode;

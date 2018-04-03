@@ -17,6 +17,8 @@ import type {
   ReceiveContactsAction,
   FetchCompleteContactListAction,
   ReceiveCompleteContactListAction,
+  ReceiveNewContactToCompleteListAction,
+  ReceiveEditedContactToCompleteListAction,
   FetchSingleContactAction,
   ReceiveSingleContactAction,
   ReceiveContactFormValidAction,
@@ -50,6 +52,12 @@ export const fetchCompleteContactList = (search: string): FetchCompleteContactLi
 
 export const receiveCompleteContactList = (contacts: ContactList): ReceiveCompleteContactListAction =>
   createAction('mvj/contacts/RECEIVE_COMPLETE')(contacts);
+
+export const receiveNewContactToCompleteList = (contact: Contact): ReceiveNewContactToCompleteListAction =>
+  createAction('mvj/contacts/RECEIVE_NEW_TO_COMPLETE')(contact);
+
+export const receiveEditedContactToCompleteList = (contact: Contact): ReceiveEditedContactToCompleteListAction =>
+  createAction('mvj/contacts/RECEIVE_EDITED_TO_COMPLETE')(contact);
 
 export const fetchSingleContact = (contactId: ContactId): FetchSingleContactAction =>
   createAction('mvj/contacts/FETCH_SINGLE')(contactId);

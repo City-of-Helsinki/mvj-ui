@@ -7,7 +7,7 @@
     position: fixed;
     top: -1000px;
     left: 50%;
-    transform: translateX(-50%) translateY(-30%);
+    transform: translateX(-50%) translateY(50%);
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
 
     @include transition(0.5s, top, ease);
@@ -17,11 +17,12 @@
   }
 
   &__header {
-    padding: rem-calc(35px) rem-calc(35px) 0;
+    padding: rem-calc(20px) rem-calc(20px) 0;
     h1.title {
       font-family: $font-family-source;
-	    font-size: rem-calc(24px);
-	    font-weight: 600;
+	    font-size: rem-calc(22px);
+      line-height: rem-calc(24px);
+	    font-weight: $semibold;
 	    text-align: left;
 	    color: $black;
       margin: 0;
@@ -29,7 +30,7 @@
   }
 
   &__content {
-    padding: rem-calc(20px) rem-calc(35px);
+    padding: rem-calc(20px) rem-calc(20px);
     height: auto;
   }
 
@@ -56,7 +57,7 @@
 
   &.modal-open {
     .modal__wrapper {
-      top: 20%;
+      top: 0;
     }
 
     .modal__overlay {
@@ -68,6 +69,11 @@
   &.modal-small {
     .modal__wrapper {
       width: rem-calc(500px);
+    }
+  }
+  &.modal-large {
+    .modal__wrapper {
+      width: rem-calc(1300px);
     }
   }
   &.modal-center {

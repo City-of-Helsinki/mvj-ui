@@ -25,6 +25,8 @@ export type ReceiveContactsAction = Action<'mvj/contacts/RECEIVE_ALL', ContactLi
 
 export type FetchCompleteContactListAction = Action<'mvj/contacts/FETCH_COMPLETE', string>;
 export type ReceiveCompleteContactListAction = Action<'mvj/contacts/RECEIVE_COMPLETE', ContactList>;
+export type ReceiveNewContactToCompleteListAction = Action<'mvj/contacts/RECEIVE_NEW_TO_COMPLETE', Contact>;
+export type ReceiveEditedContactToCompleteListAction = Action<'mvj/contacts/RECEIVE_EDITED_TO_COMPLETE', Contact>;
 
 export type FetchSingleContactAction = Action<'mvj/contacts/FETCH_SINGLE', ContactId>;
 export type ReceiveSingleContactAction = Action<'mvj/contacts/RECEIVE_SINGLE', Contact>;

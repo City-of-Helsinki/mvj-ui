@@ -80,7 +80,7 @@ class ContactForm extends Component {
             <Column small={6} medium={4} large={2}>
               <Field
                 component={FieldTypeText}
-                label='Etunimi'
+                label='Sukunimi'
                 name='last_name'
                 validate={[
                   (value) => genericValidator(value, get(attributes, 'last_name')),

@@ -1,6 +1,7 @@
 // @flow
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
+import findIndex from 'lodash/findIndex';
 
 import type {Reducer} from '../types';
 import type {
@@ -11,6 +12,8 @@ import type {
   ReceiveAttributesAction,
   ReceiveContactsAction,
   ReceiveCompleteContactListAction,
+  ReceiveNewContactToCompleteListAction,
+  ReceiveEditedContactToCompleteListAction,
   ReceiveSingleContactAction,
   ReceiveContactFormValidAction,
 } from './types';
@@ -42,6 +45,19 @@ const contactsListReducer: Reducer<ContactList> = handleActions({
 
 const completeContactListReducer: Reducer<ContactList> = handleActions({
   ['mvj/contacts/RECEIVE_COMPLETE']: (state: ContactList, {payload: contacts}: ReceiveCompleteContactListAction) => {
+    return contacts;
+  },
+  ['mvj/contacts/RECEIVE_NEW_TO_COMPLETE']: (state: ContactList, {payload: contact}: ReceiveNewContactToCompleteListAction) => {
+    const contacts = [...state];
+    contacts.push(contact);
+    return contacts;
+  },
+  ['mvj/contacts/RECEIVE_EDITED_TO_COMPLETE']: (state: ContactList, {payload: contact}: ReceiveEditedContactToCompleteListAction) => {
+    const contacts = [...state];
+    const index = findIndex(contacts, (x) => x.id === contact.id);
+    if(index !== -1) {
+      contacts[index] = contact;
+    }
     return contacts;
   },
 }, {});
