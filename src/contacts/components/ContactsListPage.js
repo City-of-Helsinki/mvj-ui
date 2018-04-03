@@ -27,7 +27,7 @@ import {getSearchQuery} from '$src/util/helpers';
 import type {ContactList} from '../types';
 import type {RootState} from '../../root/types';
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 25;
 
 type Props = {
   contactList: ContactList,
