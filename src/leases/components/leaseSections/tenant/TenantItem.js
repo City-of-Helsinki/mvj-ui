@@ -42,23 +42,23 @@ const TenantItem = ({
   return (
     <div>
       <Row>
-        <Column small={6} medium={4} large={4}>
+        <Column small={12} medium={6} large={4}>
           <label>Asiakas</label>
           <p>{getFullName()}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={6} large={2}>
           <label>Osuus murtolukuna</label>
           <p>{tenant.share_numerator || ''} / {tenant.share_denominator || ''}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={6} large={2}>
           <label>Laskun hallintaosuus</label>
           <p>{getInvoiceManagementShare()}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={6} large={2}>
           <label>Alkupäivämäärä</label>
           <p>{formatDate(get(tenant, 'tenant.start_date')) || '-'}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={6} large={2}>
           <label>Loppupäivämäärä</label>
           <p>{formatDate(get(tenant, 'tenant.end_date')) || '-'}</p>
         </Column>

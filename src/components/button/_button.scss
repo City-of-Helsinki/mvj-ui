@@ -94,6 +94,13 @@
     opacity: 0.85;
   }
 
+  &:disabled {
+    cursor: not-allowed;
+    .icons {
+      fill: $dark-gray !important;
+    }
+  }
+
   &.position-topright {
     position: absolute;
     top: 0;

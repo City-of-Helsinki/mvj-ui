@@ -1,12 +1,14 @@
 // @flow
 
 import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {call, fork, put, select} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 import {displayUIMessage} from '$util/helpers';
 
 import {
+  hideContactModal,
+  receiveContactModalSettings,
   receiveCommentAttributes,
   receiveComments,
   receiveCreatedComment,
@@ -22,6 +24,16 @@ import {
 import {getRouteById} from '../root/routes';
 
 import {
+  receiveEditedContactToCompleteList,
+  receiveNewContactToCompleteList,
+} from '../contacts/actions';
+
+import {
+  createContact,
+  editContact,
+} from '../contacts/requests';
+
+import {
   createComment,
   editComment,
   fetchComments,
@@ -34,6 +46,8 @@ import {
   fetchLessors,
   fetchDecisions,
 } from './requests';
+
+import {getContactModalSettings} from './selectors';
 
 import {receiveError} from '../api/actions';
 
@@ -275,6 +289,61 @@ function* editCommentSaga({payload: comment}): Generator<> {
   }
 }
 
+function* createContactSaga({payload: contact}): Generator<> {
+  try {
+    const contactModalSettings = yield select(getContactModalSettings);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createContact, contact);
+
+    switch (statusCode) {
+      case 201:
+        yield put(receiveNewContactToCompleteList(bodyAsJson));
+        contactModalSettings.contactId = bodyAsJson.id;
+        yield put(receiveContactModalSettings(contactModalSettings));
+        yield put(hideContactModal());
+        displayUIMessage({title: 'Asiakas tallennettu', body: 'Asiakas on tallennettu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create contact with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* editContactSaga({payload: contact}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editContact, contact);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveEditedContactToCompleteList(bodyAsJson));
+        yield put(hideContactModal());
+        displayUIMessage({title: 'Asiakas tallennettu', body: 'Asiakas on tallennettu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit contact with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
@@ -289,6 +358,8 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/FETCH_COMMENT_ATTRIBUTES', fetchCommentAttributesSaga);
       yield takeLatest('mvj/leases/CREATE_COMMENT', createCommentSaga);
       yield takeLatest('mvj/leases/EDIT_COMMENT', editCommentSaga);
+      yield takeLatest('mvj/leases/CREATE_CONTACT', createContactSaga);
+      yield takeLatest('mvj/leases/EDIT_CONTACT', editContactSaga);
     }),
   ];
 }

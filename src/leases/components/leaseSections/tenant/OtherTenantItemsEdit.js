@@ -6,18 +6,23 @@ import {connect} from 'react-redux';
 import get from 'lodash/get';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddIcon from '$components/icons/AddIcon';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import ContactInfo from './ContactInfo';
+import EditIcon from '$components/icons/EditIcon';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import GreenBoxItem from '$components/content/GreenBoxItem';
+import IconButton from '$components/button/IconButton';
 import RemoveButton from '$components/form/RemoveButton';
 import {getTenantsFormValues} from '$src/leases/selectors';
 import {getAttributeFieldOptions, getContactOptions} from '$util/helpers';
 import {TenantContactType} from '$src/leases/enums';
 import {genericValidator} from '$components/form/validations';
+import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
+import {initializeContactForm} from '$src/contacts/actions';
 
 import type {Attributes as ContactAttributes, ContactList} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
@@ -28,6 +33,9 @@ type Props = {
   contactAttributes: ContactAttributes,
   fields: any,
   formValues: Object,
+  initializeContactForm: Function,
+  receiveContactModalSettings: Function,
+  showContactModal: Function,
 }
 
 const OtherTenantItemsEdit = ({
@@ -36,6 +44,9 @@ const OtherTenantItemsEdit = ({
   contactAttributes,
   fields,
   formValues,
+  initializeContactForm,
+  receiveContactModalSettings,
+  showContactModal,
 }: Props) => {
   const findContact = (id: string) => {
     if(!allContacts || !allContacts.length) {
@@ -60,9 +71,9 @@ const OtherTenantItemsEdit = ({
                 title='Poista henkilö'
               />
               <Row>
-                <Column small={6} medium={4} large={4}>
+                <Column small={12} medium={6} large={4}>
                   <Row>
-                    <Column small={9} medium={9} large={9}>
+                    <Column small={9} medium={8} large={8}>
                       <Field
                         name={`${tenant}.contact`}
                         component={FieldTypeSelect}
@@ -74,10 +85,44 @@ const OtherTenantItemsEdit = ({
                         ]}
                       />
                     </Column>
+                    <Column small={3} medium={4} large={4}>
+                      <div className='contact-buttons-wrapper'>
+                        <IconButton
+                          onClick={() => {
+                            initializeContactForm({});
+                            receiveContactModalSettings({
+                              field: `${tenant}.contact`,
+                              contactId: null,
+                              isNew: true,
+                            });
+                            showContactModal();
+                          }}
+                        >
+                          <AddIcon
+                            className='icon-small'
+                          />
+                        </IconButton>
+                        <IconButton
+                          disabled={!contact}
+                          onClick={() => {
+                            initializeContactForm({...contact});
+                            receiveContactModalSettings({
+                              field: `${tenant}.contact`,
+                              contactId: null,
+                              isNew: false,
+                            });
+                            showContactModal();
+                          }}
+                        >
+                          <EditIcon
+                            className='icon-small'
+                          />
+                        </IconButton>
+                      </div>
+                    </Column>
                   </Row>
-
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                <Column small={12} medium={6} large={2}>
                   <Field
                     component={FieldTypeSelect}
                     label='Rooli'
@@ -89,7 +134,7 @@ const OtherTenantItemsEdit = ({
                     ]}
                   />
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                <Column small={12} medium={6} large={2}>
                   <Field
                     component={FieldTypeDatePicker}
                     label='Alkupäivämäärä'
@@ -100,7 +145,7 @@ const OtherTenantItemsEdit = ({
                     ]}
                   />
                 </Column>
-                <Column small={6} medium={4} large={2}>
+                <Column small={12} medium={6} large={2}>
                   <Field
                     component={FieldTypeDatePicker}
                     label='Loppupäivämäärä'
@@ -154,4 +199,9 @@ export default connect(
       formValues: getTenantsFormValues(state),
     };
   },
+  {
+    initializeContactForm,
+    receiveContactModalSettings,
+    showContactModal,
+  }
 )(OtherTenantItemsEdit);

@@ -56,15 +56,19 @@ const OtherTenantItem = ({
         </Row>
       }>
       <Row>
-        <Column small={6} medium={4} large={4}>
+        <Column small={12} medium={6} large={4}>
           <label>Asiakas</label>
           <p>{getFullName(contact)}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={6} large={2}>
+          <label>Rooli</label>
+          <p>{getLabelOfOption(tenantTypeOptions, tenant.type)}</p>
+        </Column>
+        <Column small={12} medium={6} large={2}>
           <label>Alkupäivämäärä</label>
           <p>{formatDate(get(tenant, 'start_date')) || '-'}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={6} large={2}>
           <label>Loppupäivämäärä</label>
           <p>{formatDate(get(tenant, 'end_date')) || '-'}</p>
         </Column>

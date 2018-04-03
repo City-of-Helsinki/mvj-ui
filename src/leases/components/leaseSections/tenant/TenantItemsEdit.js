@@ -6,9 +6,12 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import AddButton from '$components/form/AddButton';
+import AddIcon from '$components/icons/AddIcon';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import ContactInfo from './ContactInfo';
 import ContentItem from '$components/content/ContentItem';
+import EditIcon from '$components/icons/EditIcon';
+import IconButton from '$components/button/IconButton';
 import OtherTenantItemsEdit from './OtherTenantItemsEdit';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
@@ -18,6 +21,8 @@ import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {getContactOptions} from '$util/helpers';
 import {getTenantsFormValues} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
+import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
+import {initializeContactForm} from '$src/contacts/actions';
 
 import type {Attributes as ContactAttributes, ContactList} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
@@ -28,6 +33,9 @@ type Props = {
   contactAttributes: ContactAttributes,
   fields: any,
   formValues: Object,
+  initializeContactForm: Function,
+  receiveContactModalSettings: Function,
+  showContactModal: Function,
 }
 
 const TenantItemsEdit = ({
@@ -36,6 +44,9 @@ const TenantItemsEdit = ({
   contactAttributes,
   fields,
   formValues,
+  initializeContactForm,
+  receiveContactModalSettings,
+  showContactModal,
 }: Props) => {
 
   const findContact = (id: string) => {
@@ -60,9 +71,9 @@ const TenantItemsEdit = ({
                   title='Poista vuokralainen'
                 />
                 <Row>
-                  <Column small={6} medium={4} large={4}>
+                  <Column small={12} medium={6} large={4}>
                     <Row>
-                      <Column small={9} medium={9} large={9}>
+                      <Column small={9} medium={8} large={8}>
                         <Field
                           component={FieldTypeSelect}
                           label='Asiakas'
@@ -74,10 +85,44 @@ const TenantItemsEdit = ({
                           ]}
                         />
                       </Column>
+                      <Column small={3} medium={4} large={4}>
+                        <div className='contact-buttons-wrapper'>
+                          <IconButton
+                            onClick={() => {
+                              initializeContactForm({});
+                              receiveContactModalSettings({
+                                field: `${tenant}.tenant.contact`,
+                                contactId: null,
+                                isNew: true,
+                              });
+                              showContactModal();
+                            }}
+                          >
+                            <AddIcon
+                              className='icon-small'
+                            />
+                          </IconButton>
+                          <IconButton
+                            disabled={!contact}
+                            onClick={() => {
+                              initializeContactForm({...contact});
+                              receiveContactModalSettings({
+                                field: `${tenant}.tenant.contact`,
+                                contactId: null,
+                                isNew: false,
+                              });
+                              showContactModal();
+                            }}
+                          >
+                            <EditIcon
+                              className='icon-small'
+                            />
+                          </IconButton>
+                        </div>
+                      </Column>
                     </Row>
-
                   </Column>
-                  <Column small={6} medium={4} large={2}>
+                  <Column small={12} medium={6} large={2}>
                     <label className='mvj-form-field-label'>Osuus murtolukuna</label>
                     <Row>
                       <Column small={6}>
@@ -103,8 +148,7 @@ const TenantItemsEdit = ({
                       </Column>
                     </Row>
                   </Column>
-                  <Column small={6} medium={4} large={2}></Column>
-                  <Column small={6} medium={4} large={2}>
+                  <Column small={12} medium={6} large={2}>
                     <Field
                       component={FieldTypeDatePicker}
                       label='Alkupäivämäärä'
@@ -115,7 +159,7 @@ const TenantItemsEdit = ({
                       ]}
                     />
                   </Column>
-                  <Column small={6} medium={4} large={2}>
+                  <Column small={12} medium={6} large={2}>
                     <Field
                       component={FieldTypeDatePicker}
                       label='Loppupäivämäärä'
@@ -189,5 +233,10 @@ export default connect(
     return {
       formValues: getTenantsFormValues(state),
     };
+  },
+  {
+    initializeContactForm,
+    receiveContactModalSettings,
+    showContactModal,
   },
 )(TenantItemsEdit);
