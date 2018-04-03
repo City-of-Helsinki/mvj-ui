@@ -1,22 +1,31 @@
 .lease-info {
+  display: flex;
+
+  &__identifier-wrapper {
+    padding-right: rem-calc(20px);
+  }
 
   &__label {
     font-size: $font-small;
     color: $dark-gray;
     line-height: normal;
-    margin-bottom: rem-calc(5px);
+    margin-bottom: 0;
   }
-  &__number {
-    font-size: $font-xlarge;
-    font-weight: $semibold;
-    line-height: rem-calc(30px);
-    margin-right: 2rem;
-    margin-bottom: rem-calc(5px);
+
+  h1.lease-info__number {
+    padding: 0;
+    margin: 0;
   }
+
+  &__date-wrapper {
+    align-self: flex-end
+  }
+
   &__date {
     font-weight: $semibold;
-    margin-bottom: rem-calc(5px);
+    margin-bottom: 0;
   }
+
   &__type {
     margin-bottom: 0;
     line-height: 1.2;

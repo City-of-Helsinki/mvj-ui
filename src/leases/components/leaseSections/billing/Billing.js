@@ -14,7 +14,7 @@ type Props = {
 const Billing = ({billing}: Props) => {
   return (
     <div>
-      <h1>Laskutus</h1>
+      <h2>Laskutus</h2>
       <RightSubtitle
         className='invoicing-status'
         text={billing.invoicing_started

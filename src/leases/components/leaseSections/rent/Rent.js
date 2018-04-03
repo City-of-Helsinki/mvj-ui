@@ -62,7 +62,7 @@ class Rent extends Component {
       <div className="rent-section">
         <Row>
           <Column>
-            <h1>Vuokra</h1>
+            <h2>Vuokra</h2>
             <RightSubtitle
               text={rents.rent_info_ok
                 ? <span className="success">Vuokratiedot kunnossa<i /></span>

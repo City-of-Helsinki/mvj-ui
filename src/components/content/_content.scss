@@ -11,6 +11,44 @@
       margin-right: 0;
     }
   }
+
+  h1 {
+    font-family: $font-family-source;
+    font-size: rem-calc(22px);
+    line-height: rem-calc(24px);
+    font-weight: $semibold;
+    color: $black;
+    margin: 0;
+  }
+
+  h2 {
+    font-family: $font-family-source;
+    font-size: rem-calc(20px);
+    line-height: rem-calc(22px);
+    font-weight: $semibold;
+    color: $black;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  h3 {
+    font-family: $font-family-source;
+    font-size: rem-calc(20px);
+    line-height: rem-calc(22px);
+    font-weight: $semibold;
+    color: $black;
+    margin: 0;
+  }
+
+  h4 {
+    font-family: $font-family-source;
+    font-size: rem-calc(16px);
+    line-height: rem-calc(18px);
+    font-weight: $semibold;
+    color: $black;
+    text-transform: uppercase;
+    margin: 0;
+  }
 }
 
 .content-container {
@@ -19,56 +57,32 @@
   width: 100%;
   background-color: $white;
   box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.07);
-  padding: rem-calc(20px);
+  padding: rem-calc(15PX);
 
   .divider {
     border-top: 1px dashed $tram;
-    margin: rem-calc(20px) 0;
+    margin: rem-calc(15px) 0;
     height: 1px;
     width: 100%;
   }
 
-  h1 {
-    font-size: rem-calc(22px);
-    line-height: 1.18;
-    font-weight: 600;
-    letter-spacing: normal;
-    color: $black;
-    margin: rem-calc(40px) 0 0;
-    text-transform: uppercase;
-  }
-
-  h1:first-of-type {
-    margin: 0;
-  }
-  h2 {
-    font-size: $font-large;
-    font-weight: $semibold;
-    color: $tram;
-    text-transform: uppercase;
-    margin-top: rem-calc(30px);
-  }
-
-  h2:first-of-type {
-    margin-top: rem-calc(10px);
-  }
-
   label {
-    font-size: $font-small;
-    line-height: normal;
+    font-size: rem-calc(13px);
+    line-height: rem-calc(15px);
     font-weight: normal;
     color: $dark-gray;
     white-space: nowrap;
   }
 
   p {
-    font-size: $font-regular;
-    line-height: normal;
+    font-size: rem-calc(14px);
+    line-height: rem-calc(16px);
     font-weight: normal;
     color: $black;
-    margin-bottom: 20px;
+    margin-bottom: rem-calc(15px);
     overflow: hidden;
-    text-overflow: ellipsis
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   p.no-margin {
@@ -227,7 +241,7 @@
 
   .green-box-item {
     border-top: 1px dashed #009246;
-    padding: rem-calc(20px) 0;
+    padding: rem-calc(15px) 0 0;
     position: relative;
 
     &.no-border-on-first-child:first-child {
@@ -242,7 +256,7 @@
 
   .white-box-edit {
     position: relative;
-    padding: 0 rem-calc(20px) rem-calc(20px);
+    padding: rem-calc(15px) rem-calc(15px) 0;
     background-color: white;
   }
 

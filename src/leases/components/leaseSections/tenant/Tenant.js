@@ -52,9 +52,9 @@ const Tenant = ({
       header={
         <Row>
           <Column small={6} medium={4} large={4}>
-            <span className='collapse__header-title'>
+            <h3 className='collapse__header-title'>
               {getFullName()}
-            </span>
+            </h3>
           </Column>
           <Column small={6} medium={6} large={6}>
             <span className={classnames(

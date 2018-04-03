@@ -464,17 +464,6 @@
 }
 
 .form-section {
-  h2 {
-    font-size: $font-large;
-    font-weight: $semibold;
-    color: $tram;
-    text-transform: uppercase;
-    margin-top: rem-calc(30px);
-  }
-
-  h2:first-of-type {
-    margin-top: rem-calc(0px);
-  }
   .add-button {
     font-size: $font-small;
     font-family: $font-family-source;

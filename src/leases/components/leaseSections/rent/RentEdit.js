@@ -33,7 +33,7 @@ class RentEdit extends Component {
         <FormSectionComponent>
           <Row>
             <Column>
-              <h1>Vuokra</h1>
+              <h2>Vuokra</h2>
               <RightSubtitle
                 text={
                   <Field

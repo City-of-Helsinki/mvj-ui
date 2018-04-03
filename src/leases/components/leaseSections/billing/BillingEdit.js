@@ -155,7 +155,7 @@ class BillingEdit extends Component {
           title='Poista poikkeava perintä'
         />
 
-        <h1>Laskutus</h1>
+        <h2>Laskutus</h2>
         <RightSubtitle
           className='invoicing-status'
           text={billing.invoicing_started

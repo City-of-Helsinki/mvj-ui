@@ -53,7 +53,7 @@ class DecisionsMainEdit extends Component {
 
     return(
       <div>
-        <h1>Päätökset</h1>
+        <h2>Päätökset</h2>
         <Divider />
         <DecisionsEdit
           attributes={attributes}

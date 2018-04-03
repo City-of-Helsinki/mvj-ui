@@ -1,11 +1,9 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
-import capitalize from 'lodash/capitalize';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import GreenBoxItem from '$components/content/GreenBoxItem';
-import MapLink from '$components/content/MapLink';
 
 type Props = {
   attributes: Object,
@@ -20,59 +18,66 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
   const planUnitStateOptions = getAttributeFieldOptions(attributes,
     'lease_areas.child.children.plan_units.child.children.plan_unit_state');
 
-  const getIdentifier = (item: Object) => {
-    return `Kaavayksikkö ${item.identifier || '-'}`;
-  };
-  const getFullAddress = (item: Object) => {
-    return `${capitalize(item.address)}, ${item.postal_code} ${item.city}`;
-  };
-
   return (
-    <GreenBoxItem>
+    <GreenBoxItem className='no-border-on-first-child'>
       <Row>
-        <Column medium={12}>
-          <MapLink
-            label={getIdentifier(planUnit)}
-            onClick={() => console.log('Open map')}
-            title={getIdentifier(planUnit)}
-          />
+        <Column small={6} medium={4} large={2}>
+          <label>Tunnus</label>
+          <p><strong>{planUnit.identifier || '-'}</strong></p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Käyttötarkoitus</label>
+          <p>{getLabelOfOption(typeOptions, planUnit.type) || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Kokonaisala</label>
+          <p>{planUnit.area || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Leikkausala</label>
+          <p>{planUnit.section_area || '-'}</p>
         </Column>
       </Row>
       <Row>
-        <Column medium={6}>
+        <Column small={12} medium={12} large={4}>
           <label>Osoite</label>
-          <p>{getFullAddress(planUnit)}</p>
-
+          <p>{planUnit.address || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Postinumero</label>
+          <p>{planUnit.postal_code || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Kaupunki</label>
+          <p>{planUnit.city || '-'}</p>
+        </Column>
+      </Row>
+      <Row>
+        <Column small={6} medium={4} large={2}>
           <label>Tonttijaon tunnus</label>
           <p>{planUnit.plot_division_identifier || '-'}</p>
-
-          <label>Tonttijaon hyväksymispäivämäärä</label>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Tonttijaon hyväksymispvm</label>
           <p>{formatDate(planUnit.plot_division_date_of_approval) || '-'}</p>
-
+        </Column>
+        <Column small={6} medium={4} large={2}>
           <label>Asemakaava</label>
           <p>{planUnit.detailed_plan_identifier}</p>
-
+        </Column>
+        <Column small={6} medium={4} large={2}>
           <label>Asemakaavan vahvistumispvm</label>
           <p>{formatDate(planUnit.detailed_plan_date_of_approval) || '-'}</p>
-
-          <label>Kaavayksikön laji</label>
-          <p className='no-margin'>{getLabelOfOption(planUnitTypeOptions, planUnit.plan_unit_type) || '-'}</p>
         </Column>
-        <Column medium={6}>
-          <label>Kokonaisala</label>
-          <p>{planUnit.area} m<sup>2</sup></p>
-
-          <label>Leikkausala</label>
-          <p>{planUnit.section_area} m<sup>2</sup></p>
-
-          {/* <label>Olotila</label>
-          <p>{getLabelOfOption(planUnitStateOptions, item.state) || '-'}</p> */}
-
-          <label>Käyttötarkoitus</label>
-          <p>{getLabelOfOption(typeOptions, planUnit.type) || '-'}</p>
-
+      </Row>
+      <Row>
+        <Column small={12} medium={12} large={4}>
+          <label>Kaavayksikön laji</label>
+          <p>{getLabelOfOption(planUnitTypeOptions, planUnit.plan_unit_type) || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
           <label>Kaavayksikön olotila</label>
-          <p className='no-margin'>{getLabelOfOption(planUnitStateOptions, planUnit.plan_unit_state) || '-'}</p>
+          <p>{getLabelOfOption(planUnitStateOptions, planUnit.plan_unit_state) || '-'}</p>
         </Column>
       </Row>
     </GreenBoxItem>

@@ -52,7 +52,7 @@ class DecisionsMain extends Component {
 
     return (
       <div>
-        <h1>Päätökset</h1>
+        <h2>Päätökset</h2>
         <Divider />
         <Decisions
           attributes={attributes}

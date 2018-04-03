@@ -2,11 +2,10 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import GreenBox from '$components/content/GreenBox';
+import Collapse from '$components/collapse/Collapse';
 import PlanUnitItem from './PlanUnitItem';
 import PlotItem from './PlotItem';
-
-import SubsectionContent from '$components/content/SubsectionContent';
+import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
 type Props = {
   area: Object,
@@ -14,95 +13,152 @@ type Props = {
 }
 
 const LeaseArea = ({area, attributes}: Props) => {
+  const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
+  const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
   return (
-    <SubsectionContent>
-      <h2>Kiinteistöt ja määräalat</h2>
+    <div>
       <Row>
-        <Column small={12} medium={6}>
-          <GreenBox className='full-height'>
-            <h3>Kiinteistöt / määräalat sopimushetkellä</h3>
-            {area.plots_contract && !!area.plots_contract.length
-              ? (
-                <div>
-                  {area.plots_contract.map((item, index) =>
-                    <PlotItem
-                      key={index}
-                      attributes={attributes}
-                      plot={item}
-                    />
-                  )}
-                </div>
-              ) : (
-                <p className='no-margin'>Ei kiinteistöjä / määräaloja sopimushetkellä</p>
-              )
-            }
-          </GreenBox>
+        <Column small={6} medium={4} large={2}>
+          <label>Tunnus</label>
+          <p>{area.identifier || '-'}</p>
         </Column>
-        <Column small={12} medium={6}>
-          <GreenBox className='full-height'>
-            <h3>Kiinteistöt / määräalat nykyhetkellä</h3>
-            {area.plots_current && !!area.plots_current.length
-              ? (
-                <div>
-                  {area.plots_current.map((item, index) =>
-                    <PlotItem
-                      key={index}
-                      attributes={attributes}
-                      plot={item}
-                    />
-                  )}
-                </div>
-              ) : (
-                <p className='no-margin'>Ei kiinteistöjä / määräaloja nykyhetkellä</p>
-              )
-            }
-          </GreenBox>
+        <Column small={6} medium={4} large={2}>
+          <label>Selite</label>
+          <p>{getLabelOfOption(typeOptions, area.type) || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Pinta-ala</label>
+          <p>{area.area || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Sijainti</label>
+          <p>{getLabelOfOption(locationOptions, area.location) || '-'}</p>
         </Column>
       </Row>
-      <h2>Kaavayksiköt</h2>
       <Row>
-        <Column small={12} medium={6}>
-          <GreenBox className='full-height'>
-            <h3>Kaavayksiköt sopimushetkellä</h3>
-            {area.plan_units_contract && !!area.plan_units_contract.length
-              ? (
-                <div>
-                  {area.plan_units_contract.map((item, index) =>
-                    <PlanUnitItem
-                      key={index}
-                      attributes={attributes}
-                      planUnit={item}
-                    />
-                  )}
-                </div>
-              ) : (
-                <p className='no-margin'>Ei kaavayksiköitä sopimushetkellä</p>
-              )
-            }
-          </GreenBox>
+        <Column small={12} medium={12} large={4}>
+          <label>Osoite</label>
+          <p>{area.address || '-'}</p>
         </Column>
-        <Column small={12} medium={6}>
-          <GreenBox className='full-height'>
-            <h3>Kaavayksiköt nykyhetkellä</h3>
-            {area.plan_units_current && area.plan_units_current.length
-              ? (
-                <div>
-                  {area.plan_units_current.map((item, index) =>
-                    <PlanUnitItem
-                      key={index}
-                      attributes={attributes}
-                      planUnit={item}
-                    />
-                  )}
-                </div>
-              ) : (
-                <p className='no-margin'>Ei kaavayksiköitä nykyhetkellä</p>
-              )
-            }
-          </GreenBox>
+        <Column small={6} medium={4} large={2}>
+          <label>Postinumero</label>
+          <p>{area.postal_code || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Kaupunki</label>
+          <p>{area.city || '-'}</p>
         </Column>
       </Row>
-    </SubsectionContent>
+
+      {area.plots_contract && !!area.plots_contract.length &&
+        <Row>
+          <Column small={12}>
+            <Collapse
+              className='collapse__secondary'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column small={12}>
+                    <h4 className='collapse__header-title'>Kiinteistöt / määräalat sopimushetkellä</h4>
+                  </Column>
+                </Row>
+              }
+            >
+              <div>
+                {area.plots_contract.map((item, index) =>
+                  <PlotItem
+                    key={index}
+                    attributes={attributes}
+                    plot={item}
+                  />
+                )}
+              </div>
+            </Collapse>
+          </Column>
+        </Row>
+      }
+      {area.plots_current && !!area.plots_current.length &&
+        <Row>
+          <Column small={12}>
+            <Collapse
+              className='collapse__secondary'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column small={12}>
+                    <h4 className='collapse__header-title'>Kiinteistöt / määräalat nykyhetkellä</h4>
+                  </Column>
+                </Row>
+              }
+            >
+              <div>
+                {area.plots_current.map((item, index) =>
+                  <PlotItem
+                    key={index}
+                    attributes={attributes}
+                    plot={item}
+                  />
+                )}
+              </div>
+            </Collapse>
+          </Column>
+        </Row>
+      }
+      {area.plan_units_contract && !!area.plan_units_contract.length &&
+        <Row>
+          <Column small={12}>
+            <Collapse
+              className='collapse__secondary'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column small={12}>
+                    <h4 className='collapse__header-title'>Kaavayksiköt sopimushetkellä</h4>
+                  </Column>
+                </Row>
+              }
+            >
+              <div>
+                {area.plan_units_contract.map((item, index) =>
+                  <PlanUnitItem
+                    key={index}
+                    attributes={attributes}
+                    planUnit={item}
+                  />
+                )}
+              </div>
+            </Collapse>
+          </Column>
+        </Row>
+      }
+      {area.plan_units_current && !!area.plan_units_current.length &&
+        <Row>
+          <Column small={12}>
+            <Collapse
+              className='collapse__secondary'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column small={12}>
+                    <h4 className='collapse__header-title'>Kaavayksiköt nykyhetkellä</h4>
+                  </Column>
+                </Row>
+              }
+            >
+              <div>
+                {area.plan_units_current.map((item, index) =>
+                  <PlanUnitItem
+                    key={index}
+                    attributes={attributes}
+                    planUnit={item}
+                  />
+                )}
+              </div>
+            </Collapse>
+          </Column>
+        </Row>
+      }
+    </div>
   );
 };
 
