@@ -24,7 +24,7 @@ const FieldTypeSelect = ({
   disableTouched = false,
   displayError,
   input,
-  input: {name, onBlur},
+  input: {name, onBlur, onChange, value},
   label,
   labelClassName,
   meta: {dirty, error, touched},
@@ -38,10 +38,11 @@ const FieldTypeSelect = ({
   };
 
   const handleBlur = () => {
+    onBlur(value);
   };
 
   const handleChange = (value: string) => {
-    onBlur(value || '');
+    onChange(value || '');
   };
 
   return (
@@ -55,14 +56,15 @@ const FieldTypeSelect = ({
         <Select
           {...input}
           arrowRenderer={arrowRenderer}
-          autoBlur={false}
+          autoBlur={true}
           clearable={true}
           disabled={disabled}
           id={name}
           options={options}
-          onBlur={(value) => handleBlur(value)}
           onBlurResetsInput={false}
+          onBlur={(value) => handleBlur(value)}
           onChange={({value}) => handleChange(value)}
+          noResultsText={'Ei tuloksia'}
           placeholder={placeholder || 'Valitse'}
           resetValue={''}
         />
