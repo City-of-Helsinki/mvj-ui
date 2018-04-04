@@ -110,7 +110,7 @@
   }
 
   &__content-wrapper {
-    padding: 0 rem-calc(15px);
+    padding: rem-calc(10px) rem-calc(15px) 0;
   }
 
   // Opened stage
@@ -152,7 +152,7 @@
     }
 
     .collapse__content-wrapper {
-      padding: 0 rem-calc(15px) 0;
+      padding: rem-calc(10px) rem-calc(15px) 0;
     }
 
     &.open {

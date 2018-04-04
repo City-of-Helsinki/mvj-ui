@@ -16,9 +16,7 @@ const LeaseInfo = ({leaseInfo}: Props) => {
     <div className='lease-info'>
       <div className='lease-info__identifier-wrapper'>
         <p className='lease-info__label'>Vuokratunnus</p>
-        <p className='lease-info__type'>
-          <h1 className='lease-info__number'>{leaseInfo.identifier || '-'}</h1>
-        </p>
+        <h1 className='lease-info__number'>{leaseInfo.identifier || '-'}</h1>
       </div>
       {dateRange &&
         <div className='lease-info__date-wrapper'>

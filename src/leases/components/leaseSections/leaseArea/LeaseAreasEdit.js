@@ -140,24 +140,28 @@ const LeaseAreaItem = ({
             </BoxContentWrapper>
             <FieldArray
               attributes={attributes}
+              buttonTitle='Lisää kiinteistö/määräala sopimushetkellä'
               component={PlotItemsEdit}
               name={`${area}.plots_contract`}
               title='Kiinteistöt / määräalat sopimushetkellä'
             />
             <FieldArray
               attributes={attributes}
+              buttonTitle='Lisää kiinteistö/määräala nykyhetkellä'
               component={PlotItemsEdit}
               name={`${area}.plots_current`}
               title='Kiinteistöt / määräalat nykyhetkellä'
             />
             <FieldArray
               attributes={attributes}
+              buttonTitle='Lisää kaavayksiköt sopimushetkellä'
               component={PlanUnitItemsEdit}
               name={`${area}.plan_units_contract`}
               title='Kaavayksiköt sopimushetkellä'
             />
             <FieldArray
               attributes={attributes}
+              buttonTitle='Lisää kaavayksiköt nykyhetkellä'
               component={PlanUnitItemsEdit}
               name={`${area}.plan_units_current`}
               title='Kaavayksiköt nykyhetkellä'

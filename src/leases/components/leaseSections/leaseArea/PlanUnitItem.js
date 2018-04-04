@@ -71,11 +71,11 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
         </Column>
       </Row>
       <Row>
-        <Column small={12} medium={12} large={4}>
+        <Column small={6} medium={6} large={4}>
           <label>Kaavayksikön laji</label>
           <p>{getLabelOfOption(planUnitTypeOptions, planUnit.plan_unit_type) || '-'}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={6} medium={6} large={2}>
           <label>Kaavayksikön olotila</label>
           <p>{getLabelOfOption(planUnitStateOptions, planUnit.plan_unit_state) || '-'}</p>
         </Column>
