@@ -45,13 +45,17 @@
     .option-label {
       display: inline-block;
       font-size: rem-calc(14px);
-      line-height: rem-calc(21px);
-      height: rem-calc(21px);
+      line-height: rem-calc(20px);
+      height: rem-calc(20px);
       margin-right: rem-calc(10px);
     }
 
     .option-label:last-child {
       margin-right: 0;
+    }
+
+    fieldset {
+      line-height: 1;
     }
   }
 

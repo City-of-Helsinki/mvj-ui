@@ -1,7 +1,7 @@
 .show-more {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: rem-calc(15px);
 
   .no-margin {
     margin: 0;

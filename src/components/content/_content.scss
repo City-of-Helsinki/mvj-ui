@@ -137,7 +137,7 @@
   }
 
   .green-box {
-    padding: rem-calc(20px);
+    padding: rem-calc(15px) rem-calc(15px) 0;
     background-color: $tram-lighter-solid;
     position: relative;
 
@@ -222,7 +222,7 @@
   }
 
   .green-box-edit {
-    padding: rem-calc(20px);
+    padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
     background-color: $tram-lighter-solid;
     margin-bottom: rem-calc(10px);
 
