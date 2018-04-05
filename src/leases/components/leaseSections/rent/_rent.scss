@@ -30,6 +30,9 @@
   }
 
   table.rent-table {
+    background-color: transparent;
+    border-collapse: collapse;
+
     thead {
       tr {
         th {
@@ -37,9 +40,10 @@
           border-top: 1px solid #d7d5d5;
           border-bottom: 1px solid $light-gray;
           padding: 0.3rem 0.5rem;
-          font-size: $font-xsmall;
+          font-size: rem-calc(13px);
           font-weight: $semibold;
           color: $black;
+          background-color: $white;
         }
 
         th:first-child {
@@ -54,15 +58,20 @@
           border-top: none;
           border-bottom: none;
           width: rem-calc(90px);
+          background-color: transparent;
+          border: 1px solid transparent;
         }
       }
     }
 
     tbody {
+      background-color: transparent;
       tr {
         td {
           border: none;
           padding: 0.3rem 0.5rem;
+          background-color: $white;
+          font-size: rem-calc(14px);
 
           button {
             vertical-align: middle;
@@ -80,12 +89,13 @@
         td:last-child {
           padding-right: 0;
           background-color: transparent;
+          border: 1px solid transparent
         }
       }
 
       tr:hover {
         td {
-          background-color: rgba(0, 146, 70, 0.1);
+          background-color: $tram-lighter-solid;
         }
 
         td:last-child {
@@ -99,7 +109,7 @@
         }
 
         td:last-child {
-          border-bottom: none;
+          border: 1px solid transparent
         }
       }
     }
@@ -108,6 +118,8 @@
   table.contract-rent-table {
     border: 1px solid #d7d5d5;
     margin: 0;
+    border-collapse: collapse;
+    margin-bottom: rem-calc(15px);
 
     thead {
       tr {
@@ -115,9 +127,10 @@
           border: none;
           border-bottom: 1px solid $light-gray;
           padding: 0.3rem 0.5rem;
-          font-size: $font-xsmall;
+          font-size: rem-calc(13px);
           font-weight: $semibold;
           color: $black;
+          background-color: $white;
         }
       }
     }
@@ -127,11 +140,12 @@
         td {
           border: none;
           padding: 0.3rem 0.5rem;
+          font-size: rem-calc(14px);
         }
       }
 
       tr:hover {
-        background-color: rgba(0, 146, 70, 0.1);
+        background-color: $tram-lighter-solid;
       }
     }
   }

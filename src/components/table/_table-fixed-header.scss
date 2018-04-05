@@ -3,6 +3,7 @@
   border: 1px solid #d7d5d5;
   padding-top: rem-calc(31px);
   background: $white;
+  margin-bottom: rem-calc(15px);
 
   &__container {
     overflow-y: auto;
@@ -19,8 +20,10 @@
   table {
     margin-bottom: 0;
     border-collapse: collapse;
+
     thead {
       border: none;
+
       th {
         height: 0;
         line-height: 0;
@@ -37,7 +40,7 @@
           top: 0;
           margin-left: 0;
           line-height: rem-calc(30px);
-          font-size: $font-xsmall;
+          font-size: rem-calc(13px);
           font-weight: $semibold;
           color: $black;
         }
@@ -54,6 +57,7 @@
       td {
         border-bottom: none;
         padding: 0.3rem 0.5rem;
+        font-size: rem-calc(14px);
 
         div.text-container {
           white-space: nowrap;

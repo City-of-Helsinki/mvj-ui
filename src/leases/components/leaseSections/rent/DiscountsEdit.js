@@ -8,7 +8,6 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
 import {rentDiscountAmountTypeOptions,
@@ -21,7 +20,7 @@ type Props = {
 
 const DiscountsEdit = ({fields}: Props) => {
   return (
-    <GreenBoxEdit>
+    <div>
       {fields && fields.length > 0 && fields.map((discount, index) => {
         return (
           <GreenBoxItem className='no-border-on-first-child' key={index}>
@@ -32,90 +31,79 @@ const DiscountsEdit = ({fields}: Props) => {
                 title="Poista alennus/korotus"
               />
               <Row>
-                <Column medium={6}>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Tyyppi'
+                    name={`${discount}.type`}
+                    options={rentDiscountTypeOptions}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Käyttötarkoitus'
+                    name={`${discount}.purpose`}
+                    options={purposeOptions}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
                   <Row>
-                    <Column small={3}>
+                    <Column small={6}>
                       <Field
-                        component={FieldTypeSelect}
-                        label='Tyyppi'
-                        name={`${discount}.type`}
-                        options={rentDiscountTypeOptions}
+                        component={FieldTypeDatePicker}
+                        label='Alkupvm'
+                        name={`${discount}.start_date`}
                       />
                     </Column>
-                    <Column small={4}>
+                    <Column small={6}>
                       <Field
-                        component={FieldTypeSelect}
-                        label='Käyttötarkoitus'
-                        name={`${discount}.purpose`}
-                        options={purposeOptions}
+                        component={FieldTypeDatePicker}
+                        label='Loppupvm'
+                        name={`${discount}.end_date`}
                       />
-                    </Column>
-                    <Column small={5}>
-                      <Row>
-                        <Column small={6} style={{paddingRight: '0'}}>
-                          <Field
-                            component={FieldTypeDatePicker}
-                            label='Alkupvm'
-                            name={`${discount}.start_date`}
-                          />
-                        </Column>
-                        <Column small={6} style={{paddingRight: '0'}}>
-                          <Field
-                            component={FieldTypeDatePicker}
-                            label='Loppupvm'
-                            name={`${discount}.end_date`}
-                          />
-                        </Column>
-                      </Row>
                     </Column>
                   </Row>
                 </Column>
-                <Column medium={6}>
+                <Column small={6} medium={4} large={2}>
+                  <label className="mvj-form-field-label">Kokonaismäärä</label>
                   <Row>
                     <Column small={6}>
-                      <Row>
-                        <Column><label className="mvj-form-field-label">Kokonaismäärä</label></Column>
-                      </Row>
-                      <Row>
-                        <Column small={6} style={{paddingRight: '0'}}>
-                          <Field
-                            component={FieldTypeText}
-                            name={`${discount}.amount`}
-                          />
-                        </Column>
-                        <Column small={6} style={{paddingRight: '0'}}>
-                          <Field
-                            component={FieldTypeSelect}
-                            name={`${discount}.amount_type`}
-                            options={rentDiscountAmountTypeOptions}
-                          />
-                        </Column>
-                      </Row>
-                    </Column>
-                    <Column small={3}>
                       <Field
                         component={FieldTypeText}
-                        disabled={true}
-                        label="Jäljellä (€)"
-                        name={`${discount}.amount_left`}
+                        name={`${discount}.amount`}
                       />
                     </Column>
-                    <Column small={3}>
+                    <Column small={6}>
                       <Field
-                        clearable={true}
                         component={FieldTypeSelect}
-                        label="Päätös"
-                        name={`${discount}.rule`}
-                        options={decisionOptions}
+                        name={`${discount}.amount_type`}
+                        options={rentDiscountAmountTypeOptions}
                       />
                     </Column>
                   </Row>
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeText}
+                    disabled={true}
+                    label="Jäljellä (€)"
+                    name={`${discount}.amount_left`}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    clearable={true}
+                    component={FieldTypeSelect}
+                    label="Päätös"
+                    name={`${discount}.rule`}
+                    options={decisionOptions}
+                  />
                 </Column>
               </Row>
               <Row>
                 <Column medium={12}>
                   <Field
-                    className='no-margin'
                     component={FieldTypeText}
                     label='Kommentti'
                     name={`${discount}.comment`}
@@ -129,14 +117,13 @@ const DiscountsEdit = ({fields}: Props) => {
       <Row>
         <Column>
           <AddButtonSecondary
-            className='no-margin'
             label='Lisää alennus/korotus'
             onClick={() => fields.push({})}
             title='Lisää alennus/korotus'
           />
         </Column>
       </Row>
-    </GreenBoxEdit>
+    </div>
   );
 };
 

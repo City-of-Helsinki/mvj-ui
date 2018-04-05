@@ -3,6 +3,8 @@
   padding: 0;
   background-color: $tram-lighter-solid;
   margin-bottom: rem-calc(15px);
+  display: inline-block;
+  width: 100%;
 
   .collapse__header {
     padding: rem-calc(15px);
