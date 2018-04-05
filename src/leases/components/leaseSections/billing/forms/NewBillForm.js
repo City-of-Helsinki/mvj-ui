@@ -44,7 +44,7 @@ const NewBillForm = ({
       <FormSection>
         <Row>
           <Column>
-            <h2>Luo uusi lasku</h2>
+            <h3>Luo uusi lasku</h3>
           </Column>
         </Row>
         <GreenBoxEdit>
@@ -144,7 +144,7 @@ const NewBillForm = ({
                 />
               </Column>
             </Row>
-            <Row>
+            <Row style={{marginBottom: '10px'}}>
               <Column>
                 <Button
                   className='button-green no-margin pull-right'

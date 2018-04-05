@@ -4,7 +4,6 @@ import {Row, Column} from 'react-foundation';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
-import DocIcon from '$components/icons/DocIcon';
 import DecisionItem from './DecisionItem';
 
 import type {Attributes} from '$src/leases/types';
@@ -23,14 +22,14 @@ const Decisions = ({attributes, decisions}: Props) => {
       {decisions && !!decisions.length && decisions.map((decision) =>
         <Collapse
           key={decision.id}
+          className='no-content-top-padding'
           defaultOpen={false}
           header={
             <Row>
               <Column small={3}>
-                <DocIcon />
-                <span className='collapse__header-title'>
+                <h3 className='collapse__header-title'>
                   {getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}
-                </span>
+                </h3>
               </Column>
               <Column small={3}>
                 <span className='collapse__header-subtitle'>

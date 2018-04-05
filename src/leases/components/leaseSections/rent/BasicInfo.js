@@ -10,8 +10,6 @@ import {rentBasicInfoIndexTypeOptions,
   rentBasicInfoRentalPeriodOptions,
   rentBasicInfoTypeOptions} from '../constants';
 
-import GreenBox from '$components/content/GreenBox';
-
 type Props = {
   basicInfo: Object,
 }
@@ -106,7 +104,7 @@ const BasicInfoIndex = ({basicInfo}: Props) => {
           <Row>
             <Column>
               <label>Kommentti</label>
-              <p className='no-margin'>{comment ? comment : '-'}</p>
+              <p>{comment ? comment : '-'}</p>
             </Column>
           </Row>
         </Column>
@@ -152,7 +150,7 @@ const BasicInfoUtter = ({basicInfo}: Props) => {
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p className='no-margin'>{comment ? comment : '-'}</p>
+          <p>{comment ? comment : '-'}</p>
         </Column>
       </Row>
     </div>
@@ -199,7 +197,7 @@ const BasicInfoFixed = ({basicInfo}: Props) => {
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p className='no-margin'>{comment ? comment : '-'}</p>
+          <p>{comment ? comment : '-'}</p>
         </Column>
       </Row>
     </div>
@@ -221,7 +219,7 @@ const BasicInfoFree = ({basicInfo}: Props) => {
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p className='no-margin'>{comment ? comment : '-'}</p>
+          <p>{comment ? comment : '-'}</p>
         </Column>
       </Row>
     </div>
@@ -246,9 +244,9 @@ const BasicInfoCalculated = ({basicInfo}: Props) => {
           <Column medium={3} offsetOnMedium={6}>
             <label>Eräpäivät</label>
             {due_dates && due_dates.length > 0
-              ? (due_dates.map((due_date, index) => {
-                return (<p style={{marginBottom: '0'}} key={index}>{due_date}</p>);
-              }))
+              ? (due_dates.map((due_date, index) =>
+                <p style={{marginBottom: '0'}} key={index}>{due_date}</p>
+              ))
               : <p>Ei eräpäiviä</p>
             }
           </Column>
@@ -274,7 +272,7 @@ const BasicInfo = ({basicInfo}: Props) => {
   const {type} = basicInfo;
 
   return (
-    <GreenBox className='no-margin'>
+    <div>
       {type === '0' &&
         <BasicInfoIndex
           basicInfo={basicInfo}
@@ -300,7 +298,7 @@ const BasicInfo = ({basicInfo}: Props) => {
           basicInfo={basicInfo}
         />
       }
-    </GreenBox>
+    </div>
   );
 };
 

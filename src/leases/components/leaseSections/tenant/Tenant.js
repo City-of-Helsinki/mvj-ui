@@ -49,12 +49,13 @@ const Tenant = ({
 
   return (
     <Collapse
+      className='no-content-top-padding'
       header={
         <Row>
           <Column small={6} medium={4} large={4}>
-            <span className='collapse__header-title'>
+            <h3 className='collapse__header-title'>
               {getFullName()}
-            </span>
+            </h3>
           </Column>
           <Column small={6} medium={6} large={6}>
             <span className={classnames(
@@ -68,21 +69,11 @@ const Tenant = ({
       }
     >
       <div>
-        <Collapse
-          className='collapse__secondary'
-          defaultOpen={true}
-          header={
-            <Row>
-              <Column small={12}><span className='collapse__header-title'>Vuokralainen</span></Column>
-            </Row>
-          }
-        >
-          <TenantItem
-            contact={contact}
-            contactAttributes={contactAttributes}
-            tenant={tenant}
-          />
-        </Collapse>
+        <TenantItem
+          contact={contact}
+          contactAttributes={contactAttributes}
+          tenant={tenant}
+        />
         {tenant.tenantcontact_set && !!tenant.tenantcontact_set.length &&
           tenant.tenantcontact_set.map((person) => {
             return (

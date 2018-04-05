@@ -1,45 +1,59 @@
 .collapse {
-  border-top: 1px dashed $tram;
   align-items: baseline;
-  padding: rem-calc(20px) 0 rem-calc(10px);
+  padding: 0;
+  background-color: $tram-lighter-solid;
+  margin-bottom: rem-calc(15px);
+  display: inline-block;
+  width: 100%;
 
   .collapse__header {
-    padding: 0;
+    padding: rem-calc(15px);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: relative;
+
+    .icon-wrapper {
+      padding-right: rem-calc(15px);
+    }
+
+    i.arrow-icon {
+      background-image: url(../assets/icons/icon_accordion_close.svg);
+      display: block;
+      content: ' ';
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      background-repeat: no-repeat;
+      background-position: 0 50%;
+    }
+
+    .header-info-wrapper {
+      flex: 1 1 0%;
+    }
 
     &-title {
-      font-size: $font-large;
-      font-weight: $semibold;
-      display: inline-block;
-      height: rem-calc(30px);
-      line-height: rem-calc(30px);
-      max-width: calc(100% - 35px);
+      max-width: calc(100%);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     &-subtitle {
-      font-size: $font-regular;
-      line-height: rem-calc(30px);
-      height: rem-calc(30px);
-      display: inline-block;
+      font-size: rem-calc(14px);
+      line-height: rem-calc(16px);
       overflow: hidden;
-      max-width: calc(100% - 30px);
+      max-width: 100%;
       white-space: nowrap;
       text-overflow: ellipsis
     }
 
     &-neutral {
-      line-height: rem-calc(30px);
+      line-height: rem-calc(22px);
       display: flex;
       align-items: center;
       color: $dark-gray;
       font-size: $font-small;
+
       i {
         height: rem-calc(20px);
         width: rem-calc(20px);
@@ -51,11 +65,12 @@
     }
 
     &-alert {
-      line-height: rem-calc(30px);
+      line-height: rem-calc(22px);
       display: flex;
       align-items: center;
       color: $brick;
       font-size: $font-small;
+
       i {
         height: rem-calc(20px);
         width: rem-calc(20px);
@@ -67,11 +82,12 @@
     }
 
     &-success {
-      line-height: rem-calc(30px);
+      line-height: rem-calc(22px);
       display: flex;
       align-items: center;
       color: $tram;
       font-size: $font-small;
+
       i {
         height: rem-calc(20px);
         width: rem-calc(20px);
@@ -85,16 +101,6 @@
     > span {
       flex: 1;
     }
-
-    i.arrow-icon {
-      background-image: url(../assets/icons/icon_arrow_down.svg);
-      display: block;
-      position: absolute;
-      content: ' ';
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      right: 0;
-    }
   }
 
   &__content {
@@ -105,11 +111,21 @@
     @include transition(0.5s, max-height, ease);
   }
 
+  &__content-wrapper {
+    padding: rem-calc(10px) rem-calc(15px) 0;
+  }
+
+  &.no-content-top-padding {
+    .collapse__content-wrapper {
+      padding-top: 0;
+    }
+  }
+
   // Opened stage
   &.open {
     .collapse__header {
       i.arrow-icon {
-        background-image: url(../assets/icons/icon_arrow_up.svg);
+        background-image: url(../assets/icons/icon_accordion_open.svg);
       }
     }
 
@@ -118,64 +134,62 @@
       max-height: 2000px;
 
       @include transition(0.4s, max-height, ease);
+
+      &.visible {
+        overflow: visible;
+      }
     }
   }
 
+
   &.collapse__secondary {
-    background-color: $tram-lighter-solid;
+    width: 100%;
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.8);;
     border-top: none;
-    margin: 0.6rem 0;
+    margin: 0 0 rem-calc(15px);
     align-items: baseline;
-    padding: 0 !important;
+    padding: 0;
 
     .collapse__header {
-      padding: rem-calc(6px) rem-calc(20px);
-      &-title {
-        color: $tram;
-        font-weight: $semibold;
-        font-size: $font-regular;
-        text-transform: uppercase;
-        &-nocap {
-          color: $tram;
-          font-weight: $semibold;
-          font-size: $font-regular;
-          text-transform: none;
-        }
-      }
+      padding: rem-calc(15px);
 
       i.arrow-icon {
-        background-image: url(../assets/icons/icon_arrow_down-green.svg);
-        display: block;
-        position: absolute;
-        content: ' ';
-        height: rem-calc(16px);
-        width: rem-calc(16px);
-        right: rem-calc(20px);
+        background-image: url(../assets/icons/icon_accordion_close.svg);
       }
     }
 
     .collapse__content {
       max-height: 0;
-      overflow: hidden;
+      overflow: hidden !important;
 
       @include transition(0.5s, max-height, ease);
     }
 
     .collapse__content-wrapper {
-      padding: rem-calc(10px) rem-calc(20px) rem-calc(20px);
+      padding: rem-calc(10px) rem-calc(15px) 0;
+    }
+
+    &.no-content-top-padding {
+      .collapse__content-wrapper {
+        padding-top: 0;
+      }
     }
 
     &.open {
-      .collapse__header {
-        i.arrow-icon {
-          background-image: url(../assets/icons/icon_arrow_up-green.svg);
+      .collapse__content {
+        max-height: 2000px;
+        @include transition(0.4s, max-height, ease);
+
+        &.visible {
+          overflow: visible !important;
         }
       }
 
-      .collapse__content {
-        max-height: 2000px;
-
-        @include transition(0.4s, max-height, ease);
+      .collapse__header {
+        i.arrow-icon {
+          background-image: url(../assets/icons/icon_accordion_open.svg);
+        }
       }
     }
   }
@@ -198,17 +212,14 @@
   }
 }
 
-.collapse:first-child {
-  border: none;
-  padding: 0 0 rem-calc(10px);
-}
 
 .collapse:last-child {
-  .collapse__content {
-    padding-bottom: 0;
-  }
+  margin-bottom: 0;
 }
 
+.collapse.collapse__secondary:last-child {
+  margin-bottom: rem-calc(15px);
+}
 
 .alert {
   color: $brick;

@@ -8,14 +8,13 @@ import get from 'lodash/get';
 
 import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
-import ContentItem from '$components/content/ContentItem';
+import Collapse from '$components/collapse/Collapse';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FormSection from '$components/form/FormSection';
 import PlotItemsEdit from './PlotItemsEdit';
 import PlanUnitItemsEdit from './PlanUnitItemsEdit';
 import RemoveButton from '$components/form/RemoveButton';
-import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 import {genericValidator} from '$components/form/validations';
 import {getIsLeaseAreasFormValid} from '../../../selectors';
@@ -37,128 +36,137 @@ const LeaseAreaItem = ({
     <div>
       {fields && fields.length > 0 && fields.map((area, index) => {
         return (
-          <ContentItem key={index}>
-            <WhiteBoxEdit>
-              <BoxContentWrapper>
-                <RemoveButton
-                  className='position-topright-no-padding'
-                  onClick={() => fields.remove(index)}
-                  title="Poista vuokra-alue"
-                />
-                <Row>
-                  <Column medium={4}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Kohteen tunnus'
-                      name={`${area}.identifier`}
-                      type="text"
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'lease_areas.child.children.identifier')),
-                      ]}
-                    />
-                  </Column>
-                  <Column medium={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Selite'
-                      name={`${area}.type`}
-                      options={typeOptions}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'lease_areas.child.children.type')),
-                      ]}
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      component={FieldTypeText}
-                      label="Pinta-ala"
-                      name={`${area}.area`}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'lease_areas.child.children.area')),
-                      ]}
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Sijainti'
-                      name={`${area}.location`}
-                      options={locationOptions}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'lease_areas.child.children.location')),
-                      ]}
-                    />
-                  </Column>
-                </Row>
-                <Row>
-                  <Column medium={6}>
-                    <Field
-                      className='no-margin'
-                      component={FieldTypeText}
-                      label="Osoite"
-                      name={`${area}.address`}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'lease_areas.child.children.address')),
-                      ]}
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      className='no-margin'
-                      component={FieldTypeText}
-                      label="Postinumero"
-                      name={`${area}.postal_code`}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'lease_areas.child.children.postal_code')),
-                      ]}
-                    />
-                  </Column>
-                  <Column medium={3}>
-                    <Field
-                      className='no-margin'
-                      component={FieldTypeText}
-                      label="Kaupunki"
-                      name={`${area}.city`}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'lease_areas.child.children.city')),
-                      ]}
-                    />
-                  </Column>
-                </Row>
-              </BoxContentWrapper>
-            </WhiteBoxEdit>
+          <Collapse
+            key={index}
+            defaultOpen={true}
+            header={
+              <Row>
+                <Column small={3}>
+                  <h3 className='collapse__header-title'>Vuokra-alue {index + 1}</h3>
+                </Column>
+              </Row>
+            }
+          >
+            <BoxContentWrapper>
+              <RemoveButton
+                className='position-topright-no-padding'
+                onClick={() => fields.remove(index)}
+                title="Poista vuokra-alue"
+              />
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeText}
+                    label='Kohteen tunnus'
+                    name={`${area}.identifier`}
+                    type="text"
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'lease_areas.child.children.identifier')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Selite'
+                    name={`${area}.type`}
+                    options={typeOptions}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'lease_areas.child.children.type')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeText}
+                    label="Pinta-ala"
+                    name={`${area}.area`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'lease_areas.child.children.area')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Sijainti'
+                    name={`${area}.location`}
+                    options={locationOptions}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'lease_areas.child.children.location')),
+                    ]}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12} medium={12} large={4}>
+                  <Field
+                    component={FieldTypeText}
+                    label="Osoite"
+                    name={`${area}.address`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'lease_areas.child.children.address')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeText}
+                    label="Postinumero"
+                    name={`${area}.postal_code`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'lease_areas.child.children.postal_code')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeText}
+                    label="Kaupunki"
+                    name={`${area}.city`}
+                    validate={[
+                      (value) => genericValidator(value,
+                        get(attributes, 'lease_areas.child.children.city')),
+                    ]}
+                  />
+                </Column>
+              </Row>
+            </BoxContentWrapper>
             <FieldArray
               attributes={attributes}
+              buttonTitle='Lisää kiinteistö/määräala sopimushetkellä'
               component={PlotItemsEdit}
               name={`${area}.plots_contract`}
               title='Kiinteistöt / määräalat sopimushetkellä'
             />
             <FieldArray
               attributes={attributes}
+              buttonTitle='Lisää kiinteistö/määräala nykyhetkellä'
               component={PlotItemsEdit}
               name={`${area}.plots_current`}
               title='Kiinteistöt / määräalat nykyhetkellä'
             />
             <FieldArray
               attributes={attributes}
+              buttonTitle='Lisää kaavayksiköt sopimushetkellä'
               component={PlanUnitItemsEdit}
               name={`${area}.plan_units_contract`}
               title='Kaavayksiköt sopimushetkellä'
             />
             <FieldArray
               attributes={attributes}
+              buttonTitle='Lisää kaavayksiköt nykyhetkellä'
               component={PlanUnitItemsEdit}
               name={`${area}.plan_units_current`}
               title='Kaavayksiköt nykyhetkellä'
             />
-          </ContentItem>
+          </Collapse>
         );
       })}
       <Row>

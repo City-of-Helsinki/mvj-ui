@@ -26,7 +26,7 @@ const Inspections = ({inspections}: Props) => {
                 </GreenBoxItem>
               )}
             </div>
-          ) : <p className='no-margin'>Ei tarkastuksia tai huomautuksia</p>
+          ) : <p>Ei tarkastuksia tai huomautuksia</p>
         }
       </GreenBox>
     </div>

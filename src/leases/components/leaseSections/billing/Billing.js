@@ -14,7 +14,7 @@ type Props = {
 const Billing = ({billing}: Props) => {
   return (
     <div>
-      <h1>Laskutus</h1>
+      <h2>Laskutus</h2>
       <RightSubtitle
         className='invoicing-status'
         text={billing.invoicing_started
@@ -23,12 +23,12 @@ const Billing = ({billing}: Props) => {
         }
       />
       <Divider />
-      <h2>Laskut</h2>
+      <h3>Laskut</h3>
       <BillsTable
         bills={get(billing, 'bills')}
       />
 
-      <h2>Poikkeavat perinnät</h2>
+      <h3>Poikkeavat perinnät</h3>
       <AbnormalDebtsTable
         headers={[
           'Vuokraaja',

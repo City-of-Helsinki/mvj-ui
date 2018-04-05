@@ -22,53 +22,43 @@ const DecisionItem = ({attributes, decision}: Props) => {
 
   return (
     <div>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <label>Päättäjä</label>
+          <p>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '–'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Päätöspäivämäärä</label>
+          <p>{formatDate(decision.decision_date) || '–'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Pykälä</label>
+          <p>{decision.section || '–'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Päätöksen tyyppi</label>
+          <p>{getLabelOfOption(typeOptions, decision.type) || '–'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Diaarinumero</label>
+          <p>{decision.reference_number || '–'}</p>
+        </Column>
+      </Row>
+      <Row>
+        <Column small={12}>
+          <label>Selite</label>
+          <p>{decision.description || '–'}</p>
+        </Column>
+      </Row>
+
       <Collapse
-        className='collapse__secondary'
+        className='collapse__secondary no-content-top-padding'
         defaultOpen={true}
         header={
           <Row>
             <Column small={12}>
-              <span className='collapse__header-title'>Päätöksen tiedot</span>
+              <h4 className='collapse__header-title'>Ehdot</h4>
             </Column>
-          </Row>
-        }
-      >
-        <Row>
-          <Column small={6} medium={4} large={2}>
-            <label>Päättäjä</label>
-            <p>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '–'}</p>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <label>Päätöspäivämäärä</label>
-            <p>{formatDate(decision.decision_date) || '–'}</p>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <label>Pykälä</label>
-            <p>{decision.section || '–'}</p>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <label>Päätöksen tyyppi</label>
-            <p>{getLabelOfOption(typeOptions, decision.type) || '–'}</p>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <label>Diaarinumero</label>
-            <p>{decision.reference_number || '–'}</p>
-          </Column>
-        </Row>
-        <Row>
-          <Column small={12}>
-            <label>Selite</label>
-            <p className='no-margin'>{decision.description || '–'}</p>
-          </Column>
-        </Row>
-      </Collapse>
-
-      <Collapse
-        className='collapse__secondary'
-        defaultOpen={true}
-        header={
-          <Row>
-            <Column small={12}><span className='collapse__header-title'>Ehdot</span></Column>
           </Row>
         }
       >
@@ -76,13 +66,13 @@ const DecisionItem = ({attributes, decision}: Props) => {
           ? (
             <div>
               {decision.conditions.map((condition) =>
-                <GreenBoxItem key={condition.id}>
+                <GreenBoxItem key={condition.id} className='no-border-on-first-child'>
                   <Row>
-                    <Column small={6} medium={4}>
+                    <Column small={6} medium={4} large={2}>
                       <label>Ehtotyyppi</label>
                       <p>{getLabelOfOption(conditionTypeOptions, condition.type) || '–'}</p>
                     </Column>
-                    <Column small={6} medium={4}>
+                    <Column small={6} medium={4} large={2}>
                       <label>Valvonta päivämäärä</label>
                       {condition.supervision_date
                         ? (
@@ -94,7 +84,7 @@ const DecisionItem = ({attributes, decision}: Props) => {
                         ) : <p>–</p>
                       }
                     </Column>
-                    <Column small={12} medium={4}>
+                    <Column small={12} medium={4} large={2}>
                       <label>Valvottu päivämäärä</label>
                       {condition.supervised_date
                         ? (
@@ -108,16 +98,16 @@ const DecisionItem = ({attributes, decision}: Props) => {
                     </Column>
                   </Row>
                   <Row>
-                    <Column medium={12}>
+                    <Column small={12}>
                       <label>Selite</label>
-                      <p className='no-margin'>{condition.description || '–'}</p>
+                      <p>{condition.description || '–'}</p>
                     </Column>
                   </Row>
                 </GreenBoxItem>
               )}
             </div>
           ) : (
-            <p className='no-margin'>Ei ehtoja</p>
+            <p>Ei ehtoja</p>
           )
         }
       </Collapse>

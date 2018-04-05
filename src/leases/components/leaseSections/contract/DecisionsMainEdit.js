@@ -53,14 +53,14 @@ class DecisionsMainEdit extends Component {
 
     return(
       <div>
-        <h1>Päätökset</h1>
+        <h2>Päätökset</h2>
         <Divider />
         <DecisionsEdit
           attributes={attributes}
           initialValues={{decisions: decisions}}
         />
 
-        <h1>Sopimukset</h1>
+        <h2>Sopimukset</h2>
         <Divider />
         <ContractsEdit
           attributes={attributes}
@@ -68,7 +68,7 @@ class DecisionsMainEdit extends Component {
           initialValues={{contracts: contracts}}
         />
 
-        <h1>Tarkastukset ja huomautukset</h1>
+        <h2>Tarkastukset ja huomautukset</h2>
         <Divider />
         <InspectionsEdit
           attributes={attributes}

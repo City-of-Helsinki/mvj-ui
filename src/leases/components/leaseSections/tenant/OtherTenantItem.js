@@ -45,14 +45,15 @@ const OtherTenantItem = ({
 
   return (
     <Collapse
-      className='collapse__secondary'
+      className='collapse__secondary no-content-top-padding'
       defaultOpen={true}
       header={
         <Row>
           <Column small={12}>
-            <span className='collapse__header-title'>
+            <h4 className='collapse__header-title'>
               {getLabelOfOption(tenantTypeOptions, tenant.type)}
-            </span></Column>
+            </h4>
+          </Column>
         </Row>
       }>
       <Row>

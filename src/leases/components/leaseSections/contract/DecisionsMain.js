@@ -52,14 +52,14 @@ class DecisionsMain extends Component {
 
     return (
       <div>
-        <h1>Päätökset</h1>
+        <h2>Päätökset</h2>
         <Divider />
         <Decisions
           attributes={attributes}
           decisions={decisions}
         />
 
-        <h1>Sopimukset</h1>
+        <h2>Sopimukset</h2>
         <Divider />
         <Contracts
           attributes={attributes}
@@ -67,7 +67,7 @@ class DecisionsMain extends Component {
           decisionOptions={decisionOptions}
         />
 
-        <h1>Tarkastukset ja huomautukset</h1>
+        <h2>Tarkastukset ja huomautukset</h2>
         <Divider />
         <Inspections inspections={inspections}/>
       </div>

@@ -110,13 +110,13 @@ const renderPrices = ({fields}: PricesProps) => {
       {fields && !!fields.length &&
         <div>
           <Row>
-            <Column medium={4} large={2}><label className="mvj-form-field-label">Pääkäyttötarkoitus</label></Column>
-            <Column medium={2} large={1}><label className="mvj-form-field-label">Euroa</label></Column>
-            <Column medium={2} large={1}><label className="mvj-form-field-label">Yksikkö</label></Column>
+            <Column small={4} medium={4} large={2}><label className="mvj-form-field-label">Pääkäyttötarkoitus</label></Column>
+            <Column small={3} medium={4} large={1}><label className="mvj-form-field-label">Euroa</label></Column>
+            <Column small={3} medium={4} large={1}><label className="mvj-form-field-label">Yksikkö</label></Column>
           </Row>
           {fields.map((field, index) =>
             <Row key={index}>
-              <Column medium={4} large={2}>
+              <Column small={4} medium={4} large={2}>
                 <Field
                   className='list-item'
                   component={FieldTypeSelect}
@@ -124,14 +124,14 @@ const renderPrices = ({fields}: PricesProps) => {
                   options={purposeOptions}
                 />
               </Column>
-              <Column medium={2} large={1}>
+              <Column small={3} medium={2} large={1}>
                 <Field
                   className='list-item'
                   component={FieldTypeText}
                   name={`${field}.amount`}
                 />
               </Column>
-              <Column medium={2} large={1}>
+              <Column small={3} medium={2} large={1}>
                 <Field
                   className='list-item'
                   component={FieldTypeSelect}
@@ -139,7 +139,7 @@ const renderPrices = ({fields}: PricesProps) => {
                   options={priceTypeOptions}
                 />
               </Column>
-              <Column small={4} medium={2}>
+              <Column small={2} medium={2} large={1}>
                 {fields.length > 1 &&
                   <RemoveButton
                     onClick={() => fields.remove(index)}
@@ -174,7 +174,7 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
     <form onSubmit={handleSubmit}>
       <FormSection>
         <Row>
-          <Column medium={4} large={2}>
+          <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeSelect}
               label='Tonttityyppi'
@@ -182,37 +182,42 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
               options={plotTypeOptions}
             />
           </Column>
-          <Column medium={2} offsetOnLarge={1}>
-            <Field
-              component={FieldTypeDatePicker}
-              label='Alkupvm'
-              name='start_date'
-            />
-          </Column>
-          <Column medium={2}>
-            <Field
-              className='with-dash'
-              component={FieldTypeDatePicker}
-              label='Loppupvm'
-              name='end_date'
-            />
+          <Column  small={6} medium={8} large={4} offsetOnLarge={1}>
+            <Row>
+              <Column small={6}>
+                <Field
+                  component={FieldTypeDatePicker}
+                  label='Alkupvm'
+                  name='start_date'
+                />
+              </Column>
+              <Column small={6}>
+                <Field
+                  className='with-dash'
+                  component={FieldTypeDatePicker}
+                  label='Loppupvm'
+                  name='end_date'
+                />
+              </Column>
+            </Row>
+
           </Column>
         </Row>
         <Row>
-          <Column medium={4} large={3}>
+          <Column small={6} medium={4} large={3}>
             <FieldArray
               component={renderRealEstateIds}
               name="real_estate_ids"
             />
           </Column>
-          <Column medium={2}>
+          <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeText}
               label="Asemakaava"
               name="plan"
             />
           </Column>
-          <Column medium={2}>
+          <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeSelect}
               label='Hallintamuoto'
@@ -220,7 +225,7 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
               options={managementMethodOptions}
             />
           </Column>
-          <Column medium={2}>
+          <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeSelect}
               label='Rahoitusmuoto'
@@ -230,20 +235,20 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
           </Column>
         </Row>
         <Row>
-          <Column medium={4} large={3}>
+          <Column small={6} medium={4} large={3}>
             <FieldArray
               component={renderDecisions}
               name="decisions"
             />
           </Column>
-          <Column medium={2}>
+          <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeDatePicker}
               label='Vuokraoikeus päättyy'
               name='rental_right_end_date'
             />
           </Column>
-          <Column medium={2}>
+          <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeText}
               label="Indeksi"
@@ -262,7 +267,6 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
         <Row>
           <Column>
             <Field
-              className='no-margin'
               component={FieldTypeText}
               label="Kommentti"
               name="comment"

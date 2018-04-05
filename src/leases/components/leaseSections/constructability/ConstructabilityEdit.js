@@ -17,8 +17,7 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FormSection from '$components/form/FormSection';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
-import MapIcon from '$components/icons/MapIcon';
+import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
 
 import type {Attributes} from '$src/leases/types';
@@ -34,7 +33,7 @@ const renderComments = ({attributes, fields}: CommentProps) => {
     <div>
       {fields && !!fields.length && fields.map((comment, index) => {
         return (
-          <div className='construction-eligibility__comment-item'  key={index}>
+          <GreenBoxItem key={index}>
             <BoxContentWrapper>
               <RemoveButton
                 className='position-topright-no-padding'
@@ -44,7 +43,6 @@ const renderComments = ({attributes, fields}: CommentProps) => {
               <Row>
                 <Column small={6} medium={9} large={10}>
                   <Field
-                    className='no-margin'
                     component={FieldTypeText}
                     label='Selitys'
                     name={`${comment}.text`}
@@ -56,7 +54,6 @@ const renderComments = ({attributes, fields}: CommentProps) => {
                 </Column>
                 <Column small={6} medium={3} large={2}>
                   <Field
-                    className='no-margin'
                     component={FieldTypeText}
                     label='AHJO diaarinumero'
                     name={`${comment}.ahjo_reference_number`}
@@ -68,13 +65,12 @@ const renderComments = ({attributes, fields}: CommentProps) => {
                 </Column>
               </Row>
             </BoxContentWrapper>
-          </div>
+          </GreenBoxItem>
         );
       })}
       <Row>
         <Column>
           <AddButtonSecondary
-            className='no-margin'
             label='Lisää selitys'
             onClick={() => fields.push({})}
             title='Lisää selitys'
@@ -127,234 +123,283 @@ const renderAreas = ({
       }
       {areas && !!areas.length &&fields && !!fields.length && fields.map((area, index) => {
         return (
-          <div key={area.id ? area.id : `index_${index}`}>
+          <Collapse
+            key={area.id ? area.id : `index_${index}`}
+            className='no-content-top-padding'
+            defaultOpen={true}
+            header={
+              <Row>
+                <Column small={3}>
+                  <h3  className='collapse__header-title'>
+                    {areas[index].identifier}
+                  </h3>
+                </Column>
+                <Column small={3}>
+                  <span className='collapse__header-subtitle'>
+                    {getLabelOfOption(typeOptions, areas[index].type) || '-'}
+                  </span>
+                </Column>
+                <Column small={3}>
+                  <span className='collapse__header-subtitle'>
+                    {getFullAddress(areas[index])}
+                  </span>
+                </Column>
+                <Column small={3}>
+                  <span className='collapse__header-subtitle'>
+                    {areas[index].area || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areas[index].location) || '-'}
+                  </span>
+                </Column>
+              </Row>
+            }
+          >
             <Collapse
+              className='collapse__secondary no-content-top-padding'
               defaultOpen={true}
               header={
                 <Row>
-                  <Column small={4} className='collapse__header-title'>
-                    <MapIcon />
-                    <span>
-                      <span>{areas[index].identifier}</span>
-                      &nbsp;&nbsp;
-                      <span className='collapse__header-subtitle'>
-                        {getLabelOfOption(typeOptions, areas[index].type) || '-'}
-                      </span>
-                    </span>
-                  </Column>
-                  <Column small={4} className='collapse__header-subtitle'>
-                    <span>{getFullAddress(areas[index])}</span>
-                  </Column>
-                  <Column small={4} className='collapse__header-subtitle'>
-                    <span>{areas[index].area || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areas[index].location) || '-'}</span>}
+                  <Column small={12}>
+                    <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
                   </Column>
                 </Row>
               }
             >
-              <GreenBoxEdit>
-                <h2>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h2>
-                <Row>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Selvitysaste'
-                      name={`${area}.preconstruction_state`}
-                      options={stateOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.preconstruction_state')),
-                      ]}
-                    />
-                  </Column>
-                </Row>
-                <FieldArray
-                  attributes={attributes}
-                  name={`${area}.descriptionsPreconstruction`}
-                  component={renderComments}
-                />
-              </GreenBoxEdit>
-
-              <GreenBoxEdit>
-                <h2>Purku</h2>
-                <Row>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Selvitysaste'
-                      name={`${area}.demolition_state`}
-                      options={stateOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.demolition_state')),
-                      ]}
-                    />
-                  </Column>
-                </Row>
-                <FieldArray
-                  attributes={attributes}
-                  component={renderComments}
-                  name={`${area}.descriptionsDemolition`}
-                />
-              </GreenBoxEdit>
-
-              <GreenBoxEdit>
-                <h2>Pima</h2>
-                <Row>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Selvitysaste'
-                      name={`${area}.polluted_land_state`}
-                      options={stateOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_state')),
-                      ]}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Vuokraehdot'
-                      name={`${area}.polluted_land_rent_condition_state`}
-                      options={pollutedLandConditionStateOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state')),
-                      ]}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeDatePicker}
-                      label='Päivämäärä'
-                      name={`${area}.polluted_land_rent_condition_date`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_date')),
-                      ]}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='PIMA valmistelija'
-                      name={`${area}.polluted_land_planner`}
-                      options={userOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_plannerr')),
-                      ]}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeText}
-                      label='ProjectWise kohdenumero'
-                      name={`${area}.polluted_land_projectwise_number`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_projectwise_number')),
-                      ]}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Matti raportti'
-                      name={`${area}.polluted_land_matti_report_number`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_matti_report_number')),
-                      ]}
-                    />
-                  </Column>
-                </Row>
-                <FieldArray
-                  attributes={attributes}
-                  component={renderComments}
-                  name={`${area}.descriptionsPollutedLand`}
-                />
-              </GreenBoxEdit>
-
-              <GreenBoxEdit>
-                <h2>Rakennettavuusselvitys</h2>
-                <Row>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Selvitysaste'
-                      name={`${area}.constructability_report_state`}
-                      options={stateOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_state')),
-                      ]}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Selvitys'
-                      name={`${area}.constructability_report_investigation_state`}
-                      options={constructabilityReportStateOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_investigation_state')),
-                      ]}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeDatePicker}
-                      label='Allekirjoituspäivämäärä'
-                      name={`${area}.constructability_report_signing_date`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_signing_date')),
-                      ]}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Allekirjoittaja'
-                      name={`${area}.constructability_report_signer`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_signer')),
-                      ]}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Geotekninen palvelun tiedosto'
-                      name={`${area}.constructability_report_geotechnical_number`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_geotechnical_number')),
-                      ]}
-                    />
-                  </Column>
-                </Row>
-                <FieldArray
-                  attributes={attributes}
-                  component={renderComments}
-                  name={`${area}.descriptionsReport`}
-                />
-              </GreenBoxEdit>
-
-              <GreenBoxEdit>
-                <h2>Muut</h2>
-                <Row>
-                  <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Selvitysaste'
-                      name={`${area}.other_state`}
-                      options={stateOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.other_state')),
-                      ]}
-                    />
-                  </Column>
-                </Row>
-                <FieldArray
-                  attributes={attributes}
-                  component={renderComments}
-                  name={`${area}.descriptionsOther`}
-                />
-              </GreenBoxEdit>
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Selvitysaste'
+                    name={`${area}.preconstruction_state`}
+                    options={stateOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.preconstruction_state')),
+                    ]}
+                  />
+                </Column>
+              </Row>
+              <FieldArray
+                attributes={attributes}
+                name={`${area}.descriptionsPreconstruction`}
+                component={renderComments}
+              />
             </Collapse>
-          </div>
+
+            <Collapse
+              className='collapse__secondary no-content-top-padding'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column small={12}>
+                    <h4 className='collapse__header-title'>Purku</h4>
+                  </Column>
+                </Row>
+              }
+            >
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Selvitysaste'
+                    name={`${area}.demolition_state`}
+                    options={stateOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.demolition_state')),
+                    ]}
+                  />
+                </Column>
+              </Row>
+              <FieldArray
+                attributes={attributes}
+                component={renderComments}
+                name={`${area}.descriptionsDemolition`}
+              />
+            </Collapse>
+
+            <Collapse
+              className='collapse__secondary no-content-top-padding'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column small={12}>
+                    <h4 className='collapse__header-title'>PIMA</h4>
+                  </Column>
+                </Row>
+              }
+            >
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Selvitysaste'
+                    name={`${area}.polluted_land_state`}
+                    options={stateOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_state')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Vuokraehdot'
+                    name={`${area}.polluted_land_rent_condition_state`}
+                    options={pollutedLandConditionStateOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    label='Päivämäärä'
+                    name={`${area}.polluted_land_rent_condition_date`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_date')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='PIMA valmistelija'
+                    name={`${area}.polluted_land_planner`}
+                    options={userOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_plannerr')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeText}
+                    label='ProjectWise kohdenumero'
+                    name={`${area}.polluted_land_projectwise_number`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_projectwise_number')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeText}
+                    label='Matti raportti'
+                    name={`${area}.polluted_land_matti_report_number`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_matti_report_number')),
+                    ]}
+                  />
+                </Column>
+              </Row>
+              <FieldArray
+                attributes={attributes}
+                component={renderComments}
+                name={`${area}.descriptionsPollutedLand`}
+              />
+            </Collapse>
+
+            <Collapse
+              className='collapse__secondary no-content-top-padding'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column small={12}>
+                    <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
+                  </Column>
+                </Row>
+              }
+            >
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Selvitysaste'
+                    name={`${area}.constructability_report_state`}
+                    options={stateOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_state')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Selvitys'
+                    name={`${area}.constructability_report_investigation_state`}
+                    options={constructabilityReportStateOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_investigation_state')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeDatePicker}
+                    label='Allekirjoituspäivämäärä'
+                    name={`${area}.constructability_report_signing_date`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_signing_date')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeText}
+                    label='Allekirjoittaja'
+                    name={`${area}.constructability_report_signer`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_signer')),
+                    ]}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeText}
+                    label='Geotekninen palvelun tiedosto'
+                    name={`${area}.constructability_report_geotechnical_number`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_geotechnical_number')),
+                    ]}
+                  />
+                </Column>
+              </Row>
+              <FieldArray
+                attributes={attributes}
+                component={renderComments}
+                name={`${area}.descriptionsReport`}
+              />
+            </Collapse>
+
+            <Collapse
+              className='collapse__secondary no-content-top-padding'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column small={12}>
+                    <h4 className='collapse__header-title'>Muut</h4>
+                  </Column>
+                </Row>
+              }
+            >
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label='Selvitysaste'
+                    name={`${area}.other_state`}
+                    options={stateOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.other_state')),
+                    ]}
+                  />
+                </Column>
+              </Row>
+              <FieldArray
+                attributes={attributes}
+                component={renderComments}
+                name={`${area}.descriptionsOther`}
+              />
+            </Collapse>
+          </Collapse>
         );
       })}
     </div>

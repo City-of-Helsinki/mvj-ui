@@ -94,11 +94,11 @@ const ContactInfo = ({contact, contactAttributes}: Props) => {
       <Row>
         <Column small={6} medium={4} large={2}>
           <label>Kumppanikoodi</label>
-          <p className='no-margin'>{contact.partner_code || '-'}</p>
+          <p>{contact.partner_code || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Vuokranantaja</label>
-          <p className='no-margin'>{contact.is_lessor ? 'Kyllä' : 'Ei'}</p>
+          <p>{contact.is_lessor ? 'Kyllä' : 'Ei'}</p>
         </Column>
       </Row>
     </div>

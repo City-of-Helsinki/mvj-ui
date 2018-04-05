@@ -5,7 +5,6 @@ import {capitalize} from 'lodash';
 
 import Collapse from '$components/collapse/Collapse';
 import LeaseArea from './LeaseArea';
-import MapIcon from '$components/icons/MapIcon';
 import {getAttributeFieldOptions, getLabelOfOption}  from '$util/helpers';
 
 type Props = {
@@ -33,25 +32,28 @@ const LeaseAreas = ({areas, attributes}: Props) => {
       {areas && !!areas.length &&
         areas.map((area, index) =>
           <Collapse
+            className='no-content-top-padding'
             key={index}
             defaultOpen={true}
             header={
               <Row>
-                <Column small={4} className='collapse__header-title'>
-                  <MapIcon />
-                  <span>
-                    {area.identifier || '-'}
-                  </span>
-                  &nbsp;
+                <Column small={3}>
+                  <h3 className='collapse__header-title'>{area.identifier || '-'}</h3>
+                </Column>
+                <Column small={3}>
                   <span className='collapse__header-subtitle'>
-                    {`(${getLabelOfOption(typeOptions, area.type) || '-'})`}
+                    {getLabelOfOption(typeOptions, area.type) || '-'}
                   </span>
                 </Column>
-                <Column small={4} className='collapse__header-subtitle'>
-                  <span>{getFullAddress(area)}</span>
+                <Column small={3}>
+                  <span className='collapse__header-subtitle'>
+                    {getFullAddress(area)}
+                  </span>
                 </Column>
-                <Column small={4} className='collapse__header-subtitle'>
-                  {getAreaLabel(area)}
+                <Column small={3}>
+                  <span className='collapse__header-subtitle'>
+                    {getAreaLabel(area)}
+                  </span>
                 </Column>
               </Row>
             }

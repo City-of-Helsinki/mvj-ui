@@ -9,6 +9,7 @@ import get from 'lodash/get';
 import BasicInfoEdit from './BasicInfoEdit';
 import ContractRentsEdit from './ContractRentsEdit';
 import ChargedRentsEdit from './ChargedRentsEdit';
+import Collapse from '$components/collapse/Collapse';
 import CriteriasEdit from './CriteriasEdit';
 import DiscountsEdit from './DiscountsEdit';
 import Divider from '$components/content/Divider';
@@ -33,7 +34,7 @@ class RentEdit extends Component {
         <FormSectionComponent>
           <Row>
             <Column>
-              <h1>Vuokra</h1>
+              <h2>Vuokra</h2>
               <RightSubtitle
                 text={
                   <Field
@@ -47,60 +48,86 @@ class RentEdit extends Component {
           </Row>
           <Divider />
 
-          <FormSection name="rents.basic_info">
-            <h2>Vuokran perustiedot</h2>
-            <BasicInfoEdit basicInfo={get(rents, 'basic_info', {})} />
-          </FormSection>
+          <Collapse
+            className='no-content-top-padding'
+            defaultOpen={true}
+            header={
+              <Row>
+                <Column><h3 className='collapse__header-title'>Vuokran perustiedot</h3></Column>
+              </Row>
+            }>
+            <FormSection name="rents.basic_info">
+              <BasicInfoEdit basicInfo={get(rents, 'basic_info', {})} />
+            </FormSection>
+          </Collapse>
 
           {(rentType === '0' || rentType === '2' || rentType === '4') &&
-            <Row>
-              <Column>
-                <h2>Sopimusvuokra</h2>
-                <FieldArray component={ContractRentsEdit} name="rents.contract_rents" rentType={rentType} />
-              </Column>
-            </Row>
+            <Collapse
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column><h3 className='collapse__header-title'>Sopimusvuokra</h3></Column>
+                </Row>
+              }>
+              <FieldArray component={ContractRentsEdit} name="rents.contract_rents" rentType={rentType} />
+            </Collapse>
           }
 
           {(rentType === '0' ||rentType === '4') &&
-            <Row>
-              <Column>
-                <h2>Indeksitarkistettu vuokra</h2>
-                <FieldArray
-                  component={IndexAdjustedRentsEdit}
-                  name="rents.index_adjusted_rents"
-                />
-              </Column>
-            </Row>
+            <Collapse
+              className='no-content-top-padding'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column><h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3></Column>
+                </Row>
+              }>
+              <FieldArray
+                component={IndexAdjustedRentsEdit}
+                name="rents.index_adjusted_rents"
+              />
+            </Collapse>
           }
 
           {(rentType === '0' || rentType === '2' || rentType === '4') &&
-            <Row>
-              <Column>
-                <h2>Alennukset ja korotukset</h2>
-                <FieldArray name="rents.discounts" component={DiscountsEdit}/>
-              </Column>
-            </Row>
+            <Collapse
+              className='no-content-top-padding'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column><h3 className='collapse__header-title'>Alennukset ja korotukset</h3></Column>
+                </Row>
+              }>
+              <FieldArray name="rents.discounts" component={DiscountsEdit}/>
+            </Collapse>
           }
 
           {(rentType === '0' || rentType === '2' || rentType === '4') &&
-            <Row>
-              <Column>
-                <h2>Perittävä vuokra</h2>
-                <FieldArray
-                  component={ChargedRentsEdit}
-                  name="rents.charged_rents"
-                />
-              </Column>
-            </Row>
+            <Collapse
+              className='no-content-top-padding'
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column><h3 className='collapse__header-title'>Perittävä vuokra</h3></Column>
+                </Row>
+              }>
+              <FieldArray
+                component={ChargedRentsEdit}
+                name="rents.charged_rents"
+              />
+            </Collapse>
           }
 
           {(rentType === '0' || rentType === '1' || rentType === '2' || rentType === '4') &&
-            <Row>
-              <Column>
-                <h2>Vuokranperusteet</h2>
-                <FieldArray name="rents.criterias" component={CriteriasEdit}/>
-              </Column>
-            </Row>
+            <Collapse
+              defaultOpen={true}
+              header={
+                <Row>
+                  <Column><h3 className='collapse__header-title'>Vuokranperusteet</h3></Column>
+                </Row>
+              }>
+              <FieldArray name="rents.criterias" component={CriteriasEdit}/>
+            </Collapse>
           }
         </FormSectionComponent>
       </form>

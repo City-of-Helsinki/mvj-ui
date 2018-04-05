@@ -544,7 +544,7 @@ class PreparerForm extends Component {
         <TabContent active={activeTab}>
           <TabPane>
             <ContentContainer>
-              <h1>Yhteenveto</h1>
+              <h2>Yhteenveto</h2>
               {!isEditMode &&
                 <RightSubtitle
                   className='publicity-label'
@@ -577,7 +577,7 @@ class PreparerForm extends Component {
 
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
-              <h1>Vuokra-alue</h1>
+              <h2>Vuokra-alue</h2>
               <RightSubtitle
                 text={<span>{sum_areas} m<sup>2</sup></span>}
               />
@@ -597,7 +597,7 @@ class PreparerForm extends Component {
 
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
-              <h1>Vuokralaiset</h1>
+              <h2>Vuokralaiset</h2>
               <Divider />
               {isEditMode
                 ? (
@@ -653,7 +653,7 @@ class PreparerForm extends Component {
 
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
-              <h1>Rakentamiskelpoisuus</h1>
+              <h2>Rakentamiskelpoisuus</h2>
               <Divider />
               {isEditMode
                 ? (

@@ -4,6 +4,7 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
 import Collapse from '$components/collapse/Collapse';
+import GreenBoxItem from '$components/content/GreenBoxItem';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {ConstructabilityStatus} from '$src/leases/enums';
 
@@ -22,25 +23,23 @@ const Comments = ({comments, userOptions}: CommentsProps) => {
         ? (
           <div>
             {comments.map((comment) =>
-              <div className='construction-eligibility__comment-item'
+              <GreenBoxItem
                 key={comment.id}>
                 <Row>
-                  <Column small={12} className='explanation'>
-                    <p>{comment.text || ''}</p>
-                    <p className='info'>
+                  <Column small={12}>
+                    <p className='no-margin'>{comment.text || ''}</p>
+                    <p>
                       <strong>{getLabelOfOption(userOptions, comment.user)}</strong>
                       {comment.modified_at && `, ${formatDate(comment.modified_at)}`}
                       {comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}
                     </p>
                   </Column>
                 </Row>
-              </div>
+              </GreenBoxItem>
             )}
           </div>
         ) : (
-          <div className='construction-eligibility__comment-item no-comments'>
-            <p><em>Ei selityksiä.</em></p>
-          </div>
+          <p><em>Ei selityksiä.</em></p>
         )
       }
     </div>
@@ -96,14 +95,14 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
   return (
     <div>
       <Collapse
-        className='collapse__secondary'
+        className='collapse__secondary no-content-top-padding'
         defaultOpen={false}
         header={
           <Row>
-            <Column small={6} medium={9} large={8}>
-              <span className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</span>
+            <Column small={6}>
+              <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
             </Column>
-            <Column small={6} medium={3} large={4}>
+            <Column small={6}>
               <StatusIndicator
                 researchState={area.preconstruction_state}
                 stateOptions={stateOptions}
@@ -118,14 +117,14 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       </Collapse>
 
       <Collapse
-        className='collapse__secondary'
+        className='collapse__secondary no-content-top-padding'
         defaultOpen={false}
         header={
           <Row>
-            <Column small={6} medium={9} large={8}>
-              <span className='collapse__header-title'>Purku</span>
+            <Column small={6}>
+              <h4 className='collapse__header-title'>Purku</h4>
             </Column>
-            <Column small={6} medium={3} large={4}>
+            <Column small={6}>
               <StatusIndicator
                 researchState={area.demolition_state}
                 stateOptions={stateOptions}
@@ -140,14 +139,14 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       </Collapse>
 
       <Collapse
-        className='collapse__secondary'
+        className='collapse__secondary no-content-top-padding'
         defaultOpen={false}
         header={
           <Row>
-            <Column small={6} medium={9} large={8}>
-              <span className='collapse__header-title'>PIMA</span>
+            <Column small={6}>
+              <h4 className='collapse__header-title'>PIMA</h4>
             </Column>
-            <Column small={6} medium={3} large={4}>
+            <Column small={6}>
               <StatusIndicator
                 researchState={area.polluted_land_state}
                 stateOptions={stateOptions}
@@ -186,14 +185,14 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       </Collapse>
 
       <Collapse
-        className='collapse__secondary'
+        className='collapse__secondary no-content-top-padding'
         defaultOpen={false}
         header={
           <Row>
-            <Column small={6} medium={9} large={8}>
-              <span className='collapse__header-title'>Rakennettavuusselvitys</span>
+            <Column small={6}>
+              <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
             </Column>
-            <Column small={6} medium={3} large={4}>
+            <Column small={6}>
               <StatusIndicator
                 researchState={area.constructability_report_state}
                 stateOptions={stateOptions}
@@ -228,14 +227,14 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       </Collapse>
 
       <Collapse
-        className='collapse__secondary'
+        className='collapse__secondary no-content-top-padding'
         defaultOpen={false}
         header={
           <Row>
-            <Column small={6} medium={9} large={8}>
-              <span className='collapse__header-title'>Muut</span>
+            <Column small={6}>
+              <h4 className='collapse__header-title'>Muut</h4>
             </Column>
-            <Column small={6} medium={3} large={4}>
+            <Column small={6}>
               <StatusIndicator
                 researchState={area.other_state}
                 stateOptions={stateOptions}

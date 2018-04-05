@@ -38,7 +38,7 @@ const AbnormalDebtModalEdit = ({
     <div className='billing__edit-abnormal-debt'>
       <Row>
         <Column>
-          <h2>Muokkaa poikkeavaa perintää</h2>
+          <h3>Muokkaa poikkeavaa perintää</h3>
         </Column>
       </Row>
       <GreenBoxEdit>
@@ -51,7 +51,7 @@ const AbnormalDebtModalEdit = ({
           <EditAbnormalDebtForm
             initialValues={{...abnormalDebt}}
           />
-          <Row>
+          <Row style={{marginBottom: '10px'}}>
             <Column>
               <Button
                 className='button-green no-margin pull-right'

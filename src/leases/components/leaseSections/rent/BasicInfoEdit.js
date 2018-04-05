@@ -7,7 +7,6 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import {rentBasicInfoBillingTypeOptions,
   rentBasicInfoIndexTypeOptions,
@@ -130,7 +129,7 @@ type Props = {
 
 const BasicInfoEdit = ({basicInfo}: Props) => {
   return (
-    <GreenBoxEdit>
+    <div>
       <Row>
         <Column medium={10}>
           <Row>
@@ -301,14 +300,13 @@ const BasicInfoEdit = ({basicInfo}: Props) => {
       <Row>
         <Column>
           <Field
-            className='no-margin'
             component={FieldTypeText}
             label="Kommentti"
             name="comment"
           />
         </Column>
       </Row>
-    </GreenBoxEdit>
+    </div>
   );
 };
 

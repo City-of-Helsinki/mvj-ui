@@ -6,10 +6,10 @@ import get from 'lodash/get';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import Collapse from '$components/collapse/Collapse';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
 import {getAttributeFieldOptions} from '$src/util/helpers';
@@ -20,22 +20,31 @@ import type {Attributes} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   fields: any,
-  title: string,
 }
 
 const DecisionConditionsEdit = ({
   attributes,
   fields,
-  title,
 }: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes,
     'decisions.child.children.conditions.child.children.type');
   return(
-    <GreenBoxEdit>
-      <h2>{title}</h2>
-
+    <Collapse
+      className='collapse__secondary'
+      defaultOpen={true}
+      header={
+        <Row>
+          <Column small={3}>
+            <h4 className='collapse__header-title'>Ehdot</h4>
+          </Column>
+        </Row>
+      }
+    >
       {fields && !!fields.length && fields.map((condition, index) =>
-        <GreenBoxItem key={condition.id ? condition.id : `index_${index}`}>
+        <GreenBoxItem
+          key={condition.id ? condition.id : `index_${index}`}
+          className='no-border-on-first-child'
+        >
           <BoxContentWrapper>
             <RemoveButton
               className='position-topright-no-padding'
@@ -43,7 +52,7 @@ const DecisionConditionsEdit = ({
               title="Poista ehto"
             />
             <Row>
-              <Column small={6} medium={4}>
+              <Column small={6} medium={4} large={2}>
                 <Field
                   component={FieldTypeSelect}
                   label='Käyttötarkoitusehto'
@@ -55,7 +64,7 @@ const DecisionConditionsEdit = ({
                   ]}
                 />
               </Column>
-              <Column small={6} medium={4}>
+              <Column small={6} medium={4} large={2}>
                 <Field
                   component={FieldTypeDatePicker}
                   label='Valvonta päivämäärä'
@@ -66,7 +75,7 @@ const DecisionConditionsEdit = ({
                   ]}
                 />
               </Column>
-              <Column small={12} medium={4}>
+              <Column small={12} medium={4} large={2}>
                 <Field
                   component={FieldTypeDatePicker}
                   label='Valvottu päivämäärä'
@@ -81,7 +90,6 @@ const DecisionConditionsEdit = ({
             <Row>
               <Column small={12} >
                 <Field
-                  className='no-margin'
                   component={FieldTypeText}
                   label='Selite'
                   name={`${condition}.description`}
@@ -98,14 +106,13 @@ const DecisionConditionsEdit = ({
       <Row>
         <Column>
           <AddButtonSecondary
-            className='no-margin'
             label='Lisää ehto'
             onClick={() => fields.push({})}
             title='Lisää ehto'
           />
         </Column>
       </Row>
-    </GreenBoxEdit>
+    </Collapse>
   );
 };
 

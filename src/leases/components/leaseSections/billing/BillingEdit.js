@@ -155,7 +155,7 @@ class BillingEdit extends Component {
           title='Poista poikkeava perintä'
         />
 
-        <h1>Laskutus</h1>
+        <h2>Laskutus</h2>
         <RightSubtitle
           className='invoicing-status'
           text={billing.invoicing_started
@@ -165,7 +165,7 @@ class BillingEdit extends Component {
         />
         <Divider />
 
-        <h2>Laskut</h2>
+        <h3>Laskut</h3>
         <BillsTableEdit
           bills={get(billing, 'bills', [])}
         />
@@ -180,7 +180,7 @@ class BillingEdit extends Component {
           showStartInvoicingButton={!get(billing, 'invoicing_started', false)}
         />
 
-        <h2>Poikkeavat perinnät</h2>
+        <h3>Poikkeavat perinnät</h3>
         <AbnormalDebtsTableEdit
           ref={(input) => this.abnormalDebtTable = input}
           abnormalDebts={get(billing, 'abnormal_debts', [])}

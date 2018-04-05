@@ -1,8 +1,6 @@
 // @flow
 import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
-import moment from 'moment';
-import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 
 import Collapse from '$components/collapse/Collapse';
@@ -20,49 +18,18 @@ type Props = {
   rents: Object,
 }
 
-type State = {isDiscountsOpen: boolean}
-
 class Rent extends Component {
   props: Props
 
-  state: State
-
-  componentWillMount() {
-    const isDiscountsOpen = this.isDiscountsOpenByDefault();
-    this.setState({isDiscountsOpen: isDiscountsOpen});
-  }
-
-  isDiscountsOpenByDefault = () => {
-    const {rents: {discounts}} = this.props;
-
-    if(!discounts || !discounts.length) {return false;}
-
-    let isOpen = false;
-    forEach(discounts, (discount) => {
-      const {start_date, end_date} = discount;
-      if(start_date && !end_date) {
-        isOpen = true;
-        return false;
-      } else if (start_date && end_date) {
-        if(moment() <= end_date || moment() <= start_date) {
-          isOpen = true;
-          return false;
-        }
-      }
-    });
-    return isOpen;
-  }
-
   render() {
     const {onCriteriaAgree, rents} = this.props;
-    const {isDiscountsOpen} = this.state;
     const rentType = get(rents, 'basic_info.type');
 
     return (
       <div className="rent-section">
         <Row>
           <Column>
-            <h1>Vuokra</h1>
+            <h2>Vuokra</h2>
             <RightSubtitle
               text={rents.rent_info_ok
                 ? <span className="success">Vuokratiedot kunnossa<i /></span>
@@ -74,11 +41,11 @@ class Rent extends Component {
         <Divider />
 
         <Collapse
-          className='collapse__secondary collapse__rents'
+          className='no-content-top-padding'
           defaultOpen={true}
           header={
             <Row>
-              <Column><span className='collapse__header-title'>Vuokran perustiedot</span></Column>
+              <Column><h3 className='collapse__header-title'>Vuokran perustiedot</h3></Column>
             </Row>
           }>
           <BasicInfo basicInfo={get(rents, 'basic_info', {})}/>
@@ -88,11 +55,11 @@ class Rent extends Component {
           rentType === '2' ||
           rentType === '4') &&
           <Collapse
-            className='collapse__secondary collapse__rents'
+            className='no-content-top-padding'
             defaultOpen={true}
             header={
               <Row>
-                <Column><span className='collapse__header-title'>Sopimusvuokra</span></Column>
+                <Column><h3 className='collapse__header-title'>Sopimusvuokra</h3></Column>
               </Row>
             }>
             <ContractRents
@@ -105,11 +72,11 @@ class Rent extends Component {
         {(rentType === '0' ||
           rentType === '4') &&
           <Collapse
-            className='collapse__secondary collapse__rents'
+            className='no-content-top-padding'
             defaultOpen={true}
             header={
               <Row>
-                <Column><span className='collapse__header-title'>Indeksitarkistettu vuokra</span></Column>
+                <Column><h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3></Column>
               </Row>
             }>
             <IndexAdjustedRents indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}/>
@@ -120,11 +87,11 @@ class Rent extends Component {
           rentType === '2' ||
           rentType === '4') &&
           <Collapse
-            className='collapse__secondary collapse__rents'
-            defaultOpen={isDiscountsOpen}
+            className='no-content-top-padding'
+            defaultOpen={true}
             header={
               <Row>
-                <Column><span className='collapse__header-title'>Alennukset ja korotukset</span></Column>
+                <Column><h3 className='collapse__header-title'>Alennukset ja korotukset</h3></Column>
               </Row>
             }>
             <Discounts discounts={get(rents, 'discounts', [])}/>
@@ -135,11 +102,11 @@ class Rent extends Component {
           rentType === '2' ||
           rentType === '4') &&
           <Collapse
-            className='collapse__secondary collapse__rents'
+            className='no-content-top-padding'
             defaultOpen={true}
             header={
               <Row>
-                <Column><span className='collapse__header-title'>Perittävä vuokra</span></Column>
+                <Column><h3 className='collapse__header-title'>Perittävä vuokra</h3></Column>
               </Row>
             }>
             <ChargedRents chargedRents={get(rents, 'charged_rents', [])}/>
@@ -151,11 +118,11 @@ class Rent extends Component {
           rentType === '2' ||
           rentType === '4') &&
           <Collapse
-            className='collapse__secondary collapse__rents'
+            className='no-content-top-padding'
             defaultOpen={true}
             header={
               <Row>
-                <Column><span className='collapse__header-title'>Vuokranperusteet</span></Column>
+                <Column><h3 className='collapse__header-title'>Vuokranperusteet</h3></Column>
               </Row>
             }>
             <Criterias

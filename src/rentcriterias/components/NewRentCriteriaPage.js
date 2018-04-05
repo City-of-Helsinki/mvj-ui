@@ -67,7 +67,7 @@ class NewRentCriteriaPage extends Component {
           }
         />
         <ContentContainer>
-          <h1>Uusi vuokrausperuste</h1>
+          <h2>Uusi vuokrausperuste</h2>
           <div className="divider" />
           <GreenBoxEdit>
             <EditRentCriteriaForm

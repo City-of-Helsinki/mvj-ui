@@ -37,21 +37,11 @@
   }
 
   h2 {
-    font-family: $font-family-source;
-    font-size: rem-calc(20px);
-    font-weight: $semibold;
-    margin: rem-calc(30px) 0 rem-calc(10px);
-
-    &.archived {
-      color: $dark-gray;
-    }
+    margin-bottom: rem-calc(10px) !important;
   }
 
   h3 {
-    font-family: $font-family-source;
-    font-size: rem-calc(18px);
-    font-weight: $semibold;
-    margin: rem-calc(30px) 0 rem-calc(10px);
+
   }
 
   .filters {
@@ -60,9 +50,9 @@
 
   .comments {
     .no-comments-text {
-      font-size: $font-regular;
+      font-size: rem-calc(14px);
       margin-bottom: rem-calc(5px);
-      line-height: 1.25;
+      line-height: rem-calc(16px);
     }
 
     .comment {
@@ -78,10 +68,10 @@
       }
 
       .comment-text {
-        font-size: $font-regular;
+        font-size: rem-calc(14px);
+        line-height: rem-calc(16px);
         margin-bottom: rem-calc(5px);
         padding-left: rem-calc(20px);
-        line-height: 1.25;
       }
 
       .comment-info {

@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import classNames from 'classnames';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -12,7 +11,6 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
-import {getFoundationBreakpoint} from '$src/util/helpers';
 import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
@@ -26,7 +24,6 @@ const InspectionItemsEdit = ({
   attributes,
   fields,
 }: Props) => {
-  const breakpoint = getFoundationBreakpoint();
 
   return(
     <GreenBoxEdit>
@@ -43,9 +40,6 @@ const InspectionItemsEdit = ({
             <Row>
               <Column small={6} medium={4} large={2}>
                 <Field
-                  className={classNames(
-                     {'no-margin': (breakpoint === 'xxlarge' || breakpoint === 'xlarge' || breakpoint === 'large')}
-                   )}
                   component={FieldTypeText}
                   label='Tarkastaja'
                   name={`${inspection}.inspector`}
@@ -57,9 +51,6 @@ const InspectionItemsEdit = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <Field
-                  className={classNames(
-                     {'no-margin': (breakpoint === 'xxlarge' || breakpoint === 'xlarge' || breakpoint === 'large')}
-                   )}
                   component={FieldTypeDatePicker}
                   label='Valvonta päivämäärä'
                   name={`${inspection}.supervision_date`}
@@ -71,9 +62,6 @@ const InspectionItemsEdit = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <Field
-                  className={classNames(
-                     {'no-margin': (breakpoint === 'xxlarge' || breakpoint === 'xlarge' || breakpoint === 'large' || breakpoint === 'small')}
-                   )}
                   component={FieldTypeDatePicker}
                   label='Valvottu päivämäärä'
                   name={`${inspection}.supervised_date`}
@@ -85,7 +73,6 @@ const InspectionItemsEdit = ({
               </Column>
               <Column small={6} medium={12} large={6}>
                 <Field
-                  className='no-margin'
                   component={FieldTypeText}
                   label='Selite'
                   name={`${inspection}.description`}
@@ -102,7 +89,7 @@ const InspectionItemsEdit = ({
       <Row>
         <Column>
           <AddButtonSecondary
-            className='no-margin'
+            className='uppercase-label'
             label='Lisää tarkastus'
             onClick={() => fields.push({})}
             title='Lisää tarkastus'

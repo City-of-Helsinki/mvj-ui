@@ -57,9 +57,9 @@ class SummaryEdit extends Component {
 
     return (
       <form onSubmit={handleSubmit}>
-        <GreenBoxEdit>
+        <GreenBoxEdit className='no-margin'>
           <Row>
-            <Column medium={8}>
+            <Column small={12} medium={6} large={8}>
               <Field
                 component={FieldTypeSelect}
                 label="Vuokranantaja"
@@ -70,7 +70,7 @@ class SummaryEdit extends Component {
                 ]}
               />
             </Column>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Julkisuusluokka"
@@ -83,7 +83,7 @@ class SummaryEdit extends Component {
             </Column>
           </Row>
           <Row>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Vuokrauksen käyttötarkoitus"
@@ -94,7 +94,7 @@ class SummaryEdit extends Component {
                 ]}
               />
             </Column>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Erityisasunnot"
@@ -105,7 +105,7 @@ class SummaryEdit extends Component {
                 ]}
               />
             </Column>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Tilastollinen pääkäyttötarkoitus"
@@ -118,7 +118,7 @@ class SummaryEdit extends Component {
             </Column>
           </Row>
           <Row>
-            <Column>
+            <Column small={12} medium={12} large={12}>
               <Field
                 component={FieldTypeText}
                 label="Vuokrauksen käyttötarkoitus selite"
@@ -130,7 +130,7 @@ class SummaryEdit extends Component {
             </Column>
           </Row>
           <Row>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Rahoitusmuoto"
@@ -141,7 +141,7 @@ class SummaryEdit extends Component {
                 ]}
               />
             </Column>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Hallintamuoto"
@@ -152,7 +152,7 @@ class SummaryEdit extends Component {
                 ]}
               />
             </Column>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 className='checkbox-inline'
                 component={FieldTypeCheckbox}
@@ -168,7 +168,7 @@ class SummaryEdit extends Component {
             </Column>
           </Row>
           <Row>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 className='checkbox-inline'
                 component={FieldTypeCheckbox}
@@ -182,7 +182,7 @@ class SummaryEdit extends Component {
                 ]}
               />
             </Column>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Sääntelymuoto"
@@ -193,7 +193,7 @@ class SummaryEdit extends Component {
                 ]}
               />
             </Column>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Hitas"
@@ -206,9 +206,8 @@ class SummaryEdit extends Component {
             </Column>
           </Row>
           <Row>
-            <Column medium={4}>
+            <Column small={12} medium={6} large={4}>
               <Field
-                className='no-margin'
                 component={FieldTypeSelect}
                 label="Irtisanomisaika"
                 name="notice_period"
@@ -218,9 +217,8 @@ class SummaryEdit extends Component {
                 ]}
               />
             </Column>
-            <Column medium={8}>
+            <Column small={12} medium={6} large={8}>
               <Field
-                className='no-margin'
                 component={FieldTypeText}
                 label="Irtisanomisajan selite"
                 name="notice_note"
