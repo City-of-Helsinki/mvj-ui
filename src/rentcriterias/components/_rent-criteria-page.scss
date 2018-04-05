@@ -20,7 +20,8 @@
       margin-bottom: rem-calc(2px);
     }
     &__number {
-      font-size: $font-xlarge;
+      padding-top: 0 !important;
+      font-size: rem-calc(22px);
       font-weight: $semibold;
       line-height: rem-calc(30px);
     }

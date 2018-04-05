@@ -43,6 +43,7 @@
 
   &.checkbox-inline {
     .option-label {
+      color: $black;
       display: inline-block;
       font-size: rem-calc(14px);
       line-height: rem-calc(20px);
@@ -446,7 +447,7 @@
     .mvj-form-field-component::before {
       position: absolute;
       content: '–';
-      left: rem-calc(-19px);
+      left: rem-calc(-11px);
     }
   }
 

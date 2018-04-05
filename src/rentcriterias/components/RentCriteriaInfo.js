@@ -14,7 +14,7 @@ const RentCriteriaInfo = ({identifier}: Props) => {
     <div className='rent-criteria-page__info'>
       <p className='rent-criteria-page__info__label'>Vuokrausperustetunnus</p>
       <p className='rent-criteria-page__info__type'>
-        <span className='rent-criteria-page__info__number'>{identifier}</span>
+        <h1 className='rent-criteria-page__info__number'>{identifier}</h1>
       </p>
     </div>
   );
