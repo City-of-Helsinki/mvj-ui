@@ -8,13 +8,12 @@ import get from 'lodash/get';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddIcon from '$components/icons/AddIcon';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import Collapse from '$components/collapse/Collapse';
 import ContactInfo from './ContactInfo';
 import EditIcon from '$components/icons/EditIcon';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
-import GreenBoxItem from '$components/content/GreenBoxItem';
 import IconButton from '$components/button/IconButton';
 import RemoveButton from '$components/form/RemoveButton';
 import {getTenantsFormValues} from '$src/leases/selectors';
@@ -58,11 +57,21 @@ const OtherTenantItemsEdit = ({
   const tenantTypeOptions = getAttributeFieldOptions(attributes,
     'tenants.child.children.tenantcontact_set.child.children.type').filter((x) => x.value !== TenantContactType.TENANT);
   return (
-    <GreenBoxEdit>
+    <div>
       {fields && !!fields.length && fields.map((tenant, index) => {
         const contact = findContact(get(formValues, `${tenant}.contact`));
         return (
-          <GreenBoxItem key={tenant.id ? tenant.id : `index_${index}`} className='no-border-on-first-child'>
+          <Collapse
+            key={tenant.id ? tenant.id : `index_${index}`}
+            className='collapse__secondary'
+            defaultOpen={true}
+            header={
+              <Row>
+                <Column small={12}>
+                  <h4 className='collapse__header-title'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
+                </Column>
+              </Row>
+            }>
             <BoxContentWrapper>
               <RemoveButton
                 className='position-topright'
@@ -99,7 +108,7 @@ const OtherTenantItemsEdit = ({
                           }}
                         >
                           <AddIcon
-                            className='icon-small'
+                            className='icon-medium'
                           />
                         </IconButton>
                         <IconButton
@@ -115,7 +124,7 @@ const OtherTenantItemsEdit = ({
                           }}
                         >
                           <EditIcon
-                            className='icon-small'
+                            className='icon-medium'
                           />
                         </IconButton>
                       </div>
@@ -176,20 +185,20 @@ const OtherTenantItemsEdit = ({
                 contactAttributes={contactAttributes}
               />
             </BoxContentWrapper>
-          </GreenBoxItem>
+          </Collapse>
         );
       })}
       <Row>
         <Column>
           <AddButtonSecondary
-            className='no-margin'
-            label='Lisää vuokralaiselle laskunsaaja tai yhteyshenkilö'
+            className='uppercase-label'
+            label='Lisää laskunsaaja tai yhteyshenkilö'
             onClick={() => fields.push({})}
-            title='Lisää vuokralaiselle laskunsaaja tai yhteyshenkilö'
+            title='Lisää laskunsaaja tai yhteyshenkilö'
           />
         </Column>
       </Row>
-    </GreenBoxEdit>
+    </div>
   );
 };
 

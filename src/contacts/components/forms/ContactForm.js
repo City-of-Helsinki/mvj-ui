@@ -234,7 +234,6 @@ class ContactForm extends Component {
           <Row>
             <Column small={6} medium={4} large={2}>
               <Field
-                className='no-margin'
                 component={FieldTypeText}
                 label='Kumppanikoodi'
                 name='partner_code'
@@ -245,7 +244,7 @@ class ContactForm extends Component {
             </Column>
             <Column small={6} medium={4} large={2}>
               <Field
-                className='checkbox-inline no-margin'
+                className='checkbox-inline'
                 component={FieldTypeCheckbox}
                 label='Vuokranantaja'
                 name="is_lessor"

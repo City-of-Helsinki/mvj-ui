@@ -57,7 +57,7 @@ class SummaryEdit extends Component {
 
     return (
       <form onSubmit={handleSubmit}>
-        <GreenBoxEdit>
+        <GreenBoxEdit className='no-margin'>
           <Row>
             <Column small={12} medium={6} large={8}>
               <Field

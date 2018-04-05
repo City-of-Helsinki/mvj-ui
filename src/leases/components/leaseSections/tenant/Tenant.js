@@ -49,6 +49,7 @@ const Tenant = ({
 
   return (
     <Collapse
+      className='no-content-top-padding'
       header={
         <Row>
           <Column small={6} medium={4} large={4}>
