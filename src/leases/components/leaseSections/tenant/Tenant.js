@@ -68,21 +68,11 @@ const Tenant = ({
       }
     >
       <div>
-        <Collapse
-          className='collapse__secondary'
-          defaultOpen={true}
-          header={
-            <Row>
-              <Column small={12}><span className='collapse__header-title'>Vuokralainen</span></Column>
-            </Row>
-          }
-        >
-          <TenantItem
-            contact={contact}
-            contactAttributes={contactAttributes}
-            tenant={tenant}
-          />
-        </Collapse>
+        <TenantItem
+          contact={contact}
+          contactAttributes={contactAttributes}
+          tenant={tenant}
+        />
         {tenant.tenantcontact_set && !!tenant.tenantcontact_set.length &&
           tenant.tenantcontact_set.map((person) => {
             return (

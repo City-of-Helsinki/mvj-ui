@@ -5,7 +5,6 @@ import ConstructabilityItem from './ConstructabilityItem';
 import {Row, Column} from 'react-foundation';
 
 import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
-import MapIcon from '$components/icons/MapIcon';
 
 import type {Attributes} from '$src/leases/types';
 import type {UserList} from '$src/users/types';
@@ -31,24 +30,27 @@ const Constructability = ({areas, attributes, users}: Props) => {
       }
       {areas && !!areas.length && areas.map((area) =>
         <Collapse key={area.id}
+          className='no-content-top-padding'
           defaultOpen={true}
           header={
             <Row>
-              <Column medium={4} className='collapse__header-title'>
-                <MapIcon />
-                <span>
-                  <span>{area.identifier || '-'}</span>
-                  &nbsp;&nbsp;
-                  <span className='collapse__header-subtitle'>
-                    ({getLabelOfOption(typeOptions, area.type) || '-'})
-                  </span>
+              <Column small={3}>
+                <h3 className='collapse__header-title'>{area.identifier || '-'}</h3>
+              </Column>
+              <Column small={3}>
+                <span className='collapse__header-subtitle'>
+                  {getLabelOfOption(typeOptions, area.type) || '-'}
                 </span>
               </Column>
-              <Column medium={4} className='collapse__header-subtitle'>
-                <span>{getFullAddress(area)}</span>
+              <Column small={3}>
+                <span className='collapse__header-subtitle'>
+                  {getFullAddress(area)}
+                </span>
               </Column>
-              <Column medium={4} className='collapse__header-subtitle'>
-                <span>{area.area} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location)}</span>
+              <Column small={3}>
+                <span className='collapse__header-subtitle'>
+                  {area.area} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location)}
+                </span>
               </Column>
             </Row>
           }

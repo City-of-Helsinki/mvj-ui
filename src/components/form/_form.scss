@@ -461,6 +461,7 @@
       position: absolute;
       content: '/';
       left: rem-calc(-17px);
+      line-height: rem-calc(20px);
     }
   }
 
@@ -473,8 +474,8 @@
 
 .form-section {
   .add-button {
-    font-size: $font-small;
     font-family: $font-family-source;
+    font-size: rem-calc(16px);
     font-weight: $semibold;
     box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
     height: rem-calc(30px);
