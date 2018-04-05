@@ -28,11 +28,7 @@
     font-weight: $semibold;
     color: $black;
     text-transform: uppercase;
-    margin: rem-calc(30px) 0 0;
-  }
-
-  h2:first-child {
-    margin-top: 0;
+    margin: 0;
   }
 
   h3 {
@@ -80,6 +76,14 @@
     font-weight: normal;
     color: $dark-gray;
     white-space: nowrap;
+  }
+
+  h2 {
+    margin: rem-calc(30px) 0 0;
+  }
+
+  h2:first-of-type {
+    margin-top: 0;
   }
 
   p {
