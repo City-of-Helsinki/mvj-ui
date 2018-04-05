@@ -12,6 +12,7 @@ type Props = {
 
 type State = {
   isOpen: boolean,
+  isVisible: boolean,
 }
 
 class Collapse extends Component {
@@ -19,7 +20,10 @@ class Collapse extends Component {
 
   state: State = {
     isOpen: false,
+    isVisible: false,
   };
+
+  component: any
 
   static defaultProps = {
     defaulOpen: false,
@@ -29,7 +33,21 @@ class Collapse extends Component {
     const {defaultOpen} = this.props;
     this.setState({
       isOpen: defaultOpen,
+      isVisible: defaultOpen,
     });
+  }
+
+  componentDidMount() {
+    this.component.addEventListener('transitionend', this.transitionEnds);
+  }
+
+  componentWillUnmount() {
+    this.component.removeEventListener('transitionend', this.transitionEnds);
+  }
+
+  transitionEnds = () => {
+    const {isOpen} = this.state;
+    this.setState({isVisible: isOpen});
   }
 
   handleToggle = () => {
@@ -39,18 +57,21 @@ class Collapse extends Component {
   };
 
   render() {
-    const {isOpen} = this.state;
+    const {isOpen, isVisible} = this.state;
     const {children, className, header} = this.props;
 
     return (
-      <div className={classNames('collapse', className, {'open': isOpen})}>
+      <div
+        ref={(ref) => this.component = ref}
+        className={classNames('collapse', className, {'open': isOpen})}
+      >
         <div className="collapse__header" onClick={this.handleToggle}>
           <div className='icon-wrapper'>
             <i className="arrow-icon"/>
           </div>
           <div className='header-info-wrapper'>{header}</div>
         </div>
-        <div className="collapse__content">
+        <div className={classNames('collapse__content', {'visible': isVisible})}>
           <div className="collapse__content-wrapper">
             {children}
           </div>

@@ -130,11 +130,15 @@
     .collapse__content {
       height: auto;
       max-height: 2000px;
-      overflow: visible;
 
       @include transition(0.4s, max-height, ease);
+
+      &.visible {
+        overflow: visible;
+      }
     }
   }
+
 
   &.collapse__secondary {
     width: 100%;
@@ -173,8 +177,12 @@
     &.open {
       .collapse__content {
         max-height: 2000px;
-        overflow: visible;
+
         @include transition(0.4s, max-height, ease);
+
+        &.visible {
+          overflow: visible;
+        }
       }
 
       .collapse__header {
