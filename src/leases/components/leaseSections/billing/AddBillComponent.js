@@ -2,7 +2,6 @@
 import React, {Component} from 'react';
 import scrollToComponent from 'react-scroll-to-component';
 
-import AddButton from '$components/form/AddButton';
 import Button from '$components/button/Button';
 import FormSection from '$components/form/FormSection';
 import NewBillForm from './forms/NewBillForm';
@@ -49,8 +48,9 @@ class AddBillComponent extends Component {
       <div className='billing__add-bill'>
         {!editMode &&
           <FormSection>
-            <AddButton
-              label='Luo uusi lasku'
+            <Button
+              className='button-green no-margin'
+              label='+ Luo uusi lasku'
               onClick={this.handleOnAdd}
               title='Luo uusi lasku'
             />
