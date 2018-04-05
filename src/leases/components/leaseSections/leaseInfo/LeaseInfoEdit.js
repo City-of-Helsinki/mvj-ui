@@ -48,10 +48,10 @@ class LeaseInfoEdit extends Component {
         </div>
         <div className='lease-info-edit__column'>
           <div className='lease-info-edit__column-wrapper'>
+            <p className='lease-info-edit__label'>Tyyppi</p>
             <Field
-              className="no-margin height-medium"
+              className="no-margin"
               component={FieldTypeSelect}
-              label='Tyyppi'
               name='state'
               options={stateOptions}
               validate={[
@@ -62,10 +62,10 @@ class LeaseInfoEdit extends Component {
         </div>
         <div className='lease-info-edit__column'>
           <div className='lease-info-edit__column-wrapper'>
+            <p className='lease-info-edit__label'>Alkupvm</p>
             <Field
-              className="no-margin height-medium"
+              className="no-margin"
               component={FieldTypeDatePicker}
-              label='Alkupvm'
               name='start_date'
               validate={[
                 (value) => genericValidator(value, get(attributes, 'start_date')),
@@ -75,10 +75,10 @@ class LeaseInfoEdit extends Component {
         </div>
         <div className='lease-info-edit__column'>
           <div className='lease-info-edit__column-wrapper'>
+            <p className='lease-info-edit__label'>Loppupvm</p>
             <Field
-              className="no-margin height-medium"
+              className="no-margin"
               component={FieldTypeDatePicker}
-              label='Loppupvm'
               name='end_date'
               disableTouched
               validate={[
