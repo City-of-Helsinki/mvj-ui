@@ -57,8 +57,8 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
           }
         >
           {fields.map((planunit, index) =>
-            <GreenBoxItem className='no-border-on-first-child'>
-              <BoxContentWrapper key={index}>
+            <GreenBoxItem className='no-border-on-first-child' key={planunit.id ? planunit.id : `index_${index}`}>
+              <BoxContentWrapper>
                 <RemoveButton
                   className='position-topright-no-padding'
                   onClick={() => fields.remove(index)}

@@ -53,8 +53,8 @@ const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
           }
         >
           {fields.map((plot, index) =>
-            <GreenBoxItem className='no-border-on-first-child'>
-              <BoxContentWrapper key={index}>
+            <GreenBoxItem className='no-border-on-first-child'  key={plot.id ? plot.id : `index_${index}`}>
+              <BoxContentWrapper>
                 <RemoveButton
                   className='position-topright-no-padding'
                   onClick={() => fields.remove(index)}
