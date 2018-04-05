@@ -54,7 +54,7 @@ const LeaseArea = ({area, attributes}: Props) => {
         <Row>
           <Column small={12}>
             <Collapse
-              className='collapse__secondary'
+              className='collapse__secondary no-content-top-padding'
               defaultOpen={true}
               header={
                 <Row>
@@ -81,7 +81,7 @@ const LeaseArea = ({area, attributes}: Props) => {
         <Row>
           <Column small={12}>
             <Collapse
-              className='collapse__secondary'
+              className='collapse__secondary no-content-top-padding'
               defaultOpen={true}
               header={
                 <Row>
@@ -108,7 +108,7 @@ const LeaseArea = ({area, attributes}: Props) => {
         <Row>
           <Column small={12}>
             <Collapse
-              className='collapse__secondary'
+              className='collapse__secondary no-content-top-padding'
               defaultOpen={true}
               header={
                 <Row>
@@ -135,7 +135,7 @@ const LeaseArea = ({area, attributes}: Props) => {
         <Row>
           <Column small={12}>
             <Collapse
-              className='collapse__secondary'
+              className='collapse__secondary no-content-top-padding'
               defaultOpen={true}
               header={
                 <Row>

@@ -159,7 +159,7 @@
 
     .collapse__content {
       max-height: 0;
-      overflow: hidden;
+      overflow: hidden !important;
 
       @include transition(0.5s, max-height, ease);
     }
@@ -177,11 +177,10 @@
     &.open {
       .collapse__content {
         max-height: 2000px;
-
         @include transition(0.4s, max-height, ease);
 
         &.visible {
-          overflow: visible;
+          overflow: visible !important;
         }
       }
 

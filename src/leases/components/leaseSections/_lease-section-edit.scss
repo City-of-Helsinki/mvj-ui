@@ -167,7 +167,8 @@
     }
 
     .mvj-form-field-label {
-      font-size: $font-xsmall;
+      font-size: rem-calc(13px);
+      line-height: rem-calc(15px);
       font-weight: $semibold;
       color: $black;
     }

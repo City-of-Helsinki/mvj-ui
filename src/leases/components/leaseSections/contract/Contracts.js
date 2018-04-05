@@ -7,7 +7,6 @@ import moment from 'moment';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
 import ContractItem from './ContractItem';
-import DocIcon from '$components/icons/DocIcon';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -45,21 +44,22 @@ const Contracts = ({attributes, contracts, decisionOptions}: Props) => {
 
   return (
     <div>
-      {(!contracts || !contracts.length) && <p className='no-margin'>Ei sopimuksia</p>}
+      {(!contracts || !contracts.length) && <p>Ei sopimuksia</p>}
       {contracts && !!contracts.length && contracts.map((contract, index) =>
-        <Collapse key={index}
+        <Collapse
+          key={index}
+          className='no-content-top-padding'
           defaultOpen={false}
           header={
             <Row>
               <Column small={3}>
-                <DocIcon />
-                <span className='collapse__header-title'>
+                <h3 className='collapse__header-title'>
                   {getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}
-                </span>
+                </h3>
               </Column>
               <Column small={3}>
                 <span className='collapse__header-subtitle'>
-                  {formatDate(contract.signing_date)}
+                  {formatDate(contract.signing_date) || '-'}
                 </span>
               </Column>
               <Column small={3}>

@@ -32,6 +32,7 @@ const LeaseAreas = ({areas, attributes}: Props) => {
       {areas && !!areas.length &&
         areas.map((area, index) =>
           <Collapse
+            className='no-content-top-padding'
             key={index}
             defaultOpen={true}
             header={

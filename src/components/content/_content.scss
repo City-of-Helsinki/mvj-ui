@@ -28,7 +28,11 @@
     font-weight: $semibold;
     color: $black;
     text-transform: uppercase;
-    margin: 0;
+    margin: rem-calc(30px) 0 0;
+  }
+
+  h2:first-child {
+    margin-top: 0;
   }
 
   h3 {
@@ -121,6 +125,14 @@
     }
   }
 
+  .list-items {
+    margin-bottom: rem-calc(15px);
+
+    &.list-items-edit {
+      margin-bottom: rem-calc(10px);
+    }
+  }
+
   .content-item {
     border: none;
     display: block;
@@ -137,6 +149,8 @@
   }
 
   .green-box {
+    display: inline-block;
+    width: 100%;
     padding: rem-calc(15px) rem-calc(15px) 0;
     background-color: $tram-lighter-solid;
     position: relative;
@@ -215,7 +229,8 @@
     }
 
     .mvj-form-field-label {
-      font-size: $font-xsmall;
+      font-size: rem-calc(13px);
+      line-height: rem-calc(15px);
       font-weight: $semibold;
       color: $black;
     }

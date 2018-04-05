@@ -59,7 +59,7 @@ class DecisionsMain extends Component {
           decisions={decisions}
         />
 
-        <h1>Sopimukset</h1>
+        <h2>Sopimukset</h2>
         <Divider />
         <Contracts
           attributes={attributes}
@@ -67,7 +67,7 @@ class DecisionsMain extends Component {
           decisionOptions={decisionOptions}
         />
 
-        <h1>Tarkastukset ja huomautukset</h1>
+        <h2>Tarkastukset ja huomautukset</h2>
         <Divider />
         <Inspections inspections={inspections}/>
       </div>
