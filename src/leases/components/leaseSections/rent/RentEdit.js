@@ -75,7 +75,7 @@ class RentEdit extends Component {
                 text={
                   <Field
                     component={FieldTypeSwitch}
-                    name="rents.rent_info_ok"
+                    name="rents.is_active"
                     optionLabel="Vuokratiedot kunnossa"
                   />
                 }
@@ -94,7 +94,9 @@ class RentEdit extends Component {
             }>
             <FormSection name='rents'>
               <BasicInfoEdit
-                basicInfo={get(rents, 'basic_info', {})}
+                attributes={attributes}
+                rents={rents}
+                rentType={rentType}
               />
             </FormSection>
           </Collapse>

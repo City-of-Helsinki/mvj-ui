@@ -18,7 +18,7 @@ import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  attributes?: Attributes,
+  attributes: Attributes,
   rents: Object,
 }
 
@@ -268,6 +268,9 @@ const BasicInfo = ({attributes, rents}: Props) => {
 
   return (
     <div>
+      {!type &&
+        <p>Vuokralajia ei ole valittu</p>
+      }
       {type === RentTypes.INDEX &&
         <BasicInfoIndex
           attributes={attributes}
@@ -276,21 +279,25 @@ const BasicInfo = ({attributes, rents}: Props) => {
       }
       {type === RentTypes.ONE_TIME &&
         <BasicInfoOneTime
+          attributes={attributes}
           rents={rents}
         />
       }
       {type === RentTypes.FIXED &&
         <BasicInfoFixed
+          attributes={attributes}
           rents={rents}
         />
       }
       {type === RentTypes.FREE &&
         <BasicInfoFree
+          attributes={attributes}
           rents={rents}
         />
       }
       {type === RentTypes.MANUAL &&
         <BasicInfoManual
+          attributes={attributes}
           rents={rents}
         />
       }
