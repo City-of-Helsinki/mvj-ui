@@ -110,7 +110,12 @@ class RentEdit extends Component {
                   <Column><h3 className='collapse__header-title'>Sopimusvuokra</h3></Column>
                 </Row>
               }>
-              <FieldArray component={ContractRentsEdit} name="rents.contract_rents" rentType={rentType} />
+              <FieldArray
+                attributes={attributes}
+                component={ContractRentsEdit}
+                name="rents.contract_rents"
+                rentType={rentType}
+              />
             </Collapse>
           }
 

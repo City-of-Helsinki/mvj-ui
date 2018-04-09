@@ -2,6 +2,7 @@
 import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -10,14 +11,26 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
-import {priceTypeOptions, purposeOptions} from '$src/constants';
+import {RentTypes} from '$src/leases/enums';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {genericValidator} from '$components/form/validations';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
   fields: any,
   rentType: string,
 }
 
-const ContractRentsEdit = ({fields, rentType}: Props) => {
+const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
+  const amountPeriodOptions = getAttributeFieldOptions(attributes,
+    'rents.child.children.contract_rents.child.children.amount_period');
+  const baseAmountPeriodOptions = getAttributeFieldOptions(attributes,
+    'rents.child.children.contract_rents.child.children.base_amount_period');
+  const intendedUseOptions = getAttributeFieldOptions(attributes,
+    'rents.child.children.contract_rents.child.children.intended_use');
+
   return (
     <div>
       {fields && fields.length > 0 && fields.map((rent, index) => {
@@ -38,14 +51,22 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                     <Column small={6}>
                       <Field
                         component={FieldTypeText}
-                        name={`${rent}.contract_rent`}
+                        name={`${rent}.amount`}
+                        validate={[
+                          (value) => genericValidator(value, get(attributes,
+                            'rents.child.children.contract_rents.child.children.amount')),
+                        ]}
                       />
                     </Column>
                     <Column small={6}>
                       <Field
                         component={FieldTypeSelect}
-                        name={`${rent}.type`}
-                        options={priceTypeOptions}
+                        name={`${rent}.amount_period`}
+                        options={amountPeriodOptions}
+                        validate={[
+                          (value) => genericValidator(value, get(attributes,
+                            'rents.child.children.contract_rents.child.children.amount_period')),
+                        ]}
                       />
                     </Column>
                   </Row>
@@ -54,11 +75,15 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                   <Field
                     component={FieldTypeSelect}
                     label='Käyttötarkoitus'
-                    name={`${rent}.purpose`}
-                    options={purposeOptions}
+                    name={`${rent}.intended_use`}
+                    options={intendedUseOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes,
+                        'rents.child.children.contract_rents.child.children.intended_use')),
+                    ]}
                   />
                 </Column>
-                {(rentType === '0' ||
+                {(rentType === RentTypes.INDEX ||
                   rentType === '4') &&
                   <Column small={6} medium={4} large={2}>
                     <label className="mvj-form-field-label">Vuokranlaskennan perusteena oleva vuokra</label>
@@ -66,26 +91,38 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                       <Column small={6}>
                         <Field
                           component={FieldTypeText}
-                          name={`${rent}.basic_rent`}
+                          name={`${rent}.base_amount`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'rents.child.children.contract_rents.child.children.base_amount')),
+                          ]}
                         />
                       </Column>
                       <Column small={6}>
                         <Field
                           component={FieldTypeSelect}
-                          name={`${rent}.basic_rent_type`}
-                          options={priceTypeOptions}
+                          name={`${rent}.base_amount_period`}
+                          options={baseAmountPeriodOptions}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'rents.child.children.contract_rents.child.children.base_amount_period')),
+                          ]}
                         />
                       </Column>
                     </Row>
                   </Column>
                 }
-                {(rentType === '0' ||
+                {(rentType === RentTypes.INDEX ||
                   rentType === '4') &&
                   <Column small={6} medium={4} large={2} offsetOnLarge={1}>
                     <Field
                       component={FieldTypeText}
                       label='Uusi perusvuosi vuokra'
-                      name={`${rent}.basic_rent_new`}
+                      name={`${rent}.base_year_rent`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'rents.child.children.contract_rents.child.children.base_year_rent')),
+                      ]}
                     />
                   </Column>
                 }
@@ -94,16 +131,22 @@ const ContractRentsEdit = ({fields, rentType}: Props) => {
                   <Row>
                     <Column small={6}>
                       <Field
-                        className='list-item'
                         component={FieldTypeDatePicker}
                         name={`${rent}.start_date`}
+                        validate={[
+                          (value) => genericValidator(value, get(attributes,
+                            'rents.child.children.contract_rents.child.children.start_date')),
+                        ]}
                       />
                     </Column>
                     <Column small={6}>
                       <Field
-                        className='list-item'
                         component={FieldTypeDatePicker}
                         name={`${rent}.end_date`}
+                        validate={[
+                          (value) => genericValidator(value, get(attributes,
+                            'rents.child.children.contract_rents.child.children.end_date')),
+                        ]}
                       />
                     </Column>
                   </Row>
