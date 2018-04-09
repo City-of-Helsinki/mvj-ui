@@ -2,12 +2,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {destroy, formValueSelector, reduxForm} from 'redux-form';
+import {destroy, reduxForm} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
-// import forEach from 'lodash/forEach';
-import get from 'lodash/get';
 
 import {getLoggedInUser} from '$src/auth/selectors';
 import {receiveBilling} from './leaseSections/billing/actions';
@@ -49,6 +47,8 @@ import {
   getIsTenantsFormValid,
   getLeaseInfoFormTouched,
   getLeaseInfoFormValues,
+  getRentsFormTouched,
+  getRentsFormValues,
   getSummaryFormTouched,
   getSummaryFormValues,
   getTenantsFormTouched,
@@ -155,8 +155,8 @@ type Props = {
   patchLease: Function,
   receiveBilling: Function,
   receiveTopNavigationSettings: Function,
-  rentsForm: Object,
-  rentsTouched: boolean,
+  rentsFormTouched: boolean,
+  rentsFormValues: Object,
   showEditMode: Function,
   summaryFormTouched: boolean,
   summaryFormValues: Object,
@@ -266,12 +266,12 @@ class PreparerForm extends Component {
       contractsFormValues,
       inspectionsFormValues,
       constructabilityFormValues,
+      rentsFormValues,
       tenantsFormValues,
 
       currentLease,
       hideEditMode,
       patchLease,
-      // rentsForm,
     } = this.props;
 
     let payload: Object = {id: currentLease.id};
@@ -308,12 +308,11 @@ class PreparerForm extends Component {
       payload = contentHelpers.addTenantsFormValues(payload, tenantsFormValues);
     }
 
-    patchLease(payload);
+    if(rentsFormValues !== undefined) {
+      payload = contentHelpers.addRentsFormValues(payload, rentsFormValues);
+    }
 
-    // TODO: Temporarily save changes to state. Replace with api call when end points are ready
-    // if(rentsForm !== undefined) {
-    //   this.setState({rents: rentsForm});
-    // }
+    patchLease(payload);
 
     hideEditMode();
     this.hideModal('SaveLease');
@@ -332,9 +331,9 @@ class PreparerForm extends Component {
     dispatch(destroy('inspections-form'));
     dispatch(destroy('constructability-form'));
     dispatch(destroy('tenants-form'));
+    dispatch(destroy('rents-form'));
 
     dispatch(destroy('billing-edit-form'));
-    dispatch(destroy('rents-form'));
   }
 
   validateForms = () => {
@@ -390,8 +389,7 @@ class PreparerForm extends Component {
       inspectionsFormTouched,
       constructabilityFormTouched,
       tenantsFormTouched,
-
-      rentsTouched,
+      rentsFormTouched,
 
     } = this.props;
 
@@ -403,8 +401,7 @@ class PreparerForm extends Component {
       inspectionsFormTouched ||
       constructabilityFormTouched ||
       tenantsFormTouched ||
-
-      rentsTouched;
+      rentsFormTouched;
   }
 
   render() {
@@ -698,8 +695,6 @@ class PreparerForm extends Component {
   }
 }
 
-const rentFormSelector = formValueSelector('rents-form');
-
 export default flowRight(
   withRouter,
   reduxForm({
@@ -738,8 +733,8 @@ export default flowRight(
         isFetching: getIsFetching(state),
         leaseInfoFormTouched: getLeaseInfoFormTouched(state),
         leaseInfoFormValues: getLeaseInfoFormValues(state),
-        rentsForm: rentFormSelector(state, 'rents'),
-        rentsTouched: get(state, 'form.rents-form.anyTouched'),
+        rentsFormTouched: getRentsFormTouched(state),
+        rentsFormValues: getRentsFormValues(state),
         summaryFormTouched: getSummaryFormTouched(state),
         summaryFormValues: getSummaryFormValues(state),
         tenantsFormTouched: getTenantsFormTouched(state),

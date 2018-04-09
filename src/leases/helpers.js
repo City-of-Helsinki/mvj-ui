@@ -10,7 +10,7 @@ import {
 import {
   fixedLengthNumber,
   formatDateDb,
-  formatDecimalNumberDb,
+  formatDecimalNumberForDb,
 } from '$util/helpers';
 
 export const getContentLeaseIdentifier = (item:Object) => {
@@ -762,8 +762,8 @@ export const getTypeOptions = (attributes: Object) => {
 
 const formatBillingBillTenant = (tenant: Object) => {
   return {
-    bill_share: formatDecimalNumberDb(get(tenant, 'bill_share')),
-    bill_share_amount: formatDecimalNumberDb(get(tenant, 'bill_share_amount')),
+    bill_share: formatDecimalNumberForDb(get(tenant, 'bill_share')),
+    bill_share_amount: formatDecimalNumberForDb(get(tenant, 'bill_share_amount')),
     firstname: get(tenant, 'firstname'),
     lastname: get(tenant, 'lastname'),
   };
@@ -773,45 +773,45 @@ export const formatBillingNewBill = (bill: Object) => {
   return {
     billing_period_end_date: formatDateDb(get(bill, 'billing_period_end_date')),
     billing_period_start_date: formatDateDb(get(bill, 'billing_period_start_date')),
-    capital_amount: formatDecimalNumberDb(get(bill, 'capital_amount')),
+    capital_amount: formatDecimalNumberForDb(get(bill, 'capital_amount')),
     due_date: formatDateDb(get(bill, 'due_date')),
     info: get(bill, 'info'),
-    invoiced_amount: formatDecimalNumberDb(get(bill, 'invoiced_amount')),
+    invoiced_amount: formatDecimalNumberForDb(get(bill, 'invoiced_amount')),
     invoicing_date: formatDateDb(get(bill, 'invoicing_date')),
     invoice_method: get(bill, 'invoice_method'),
     invoice_type: get(bill, 'invoice_type'),
     is_utter: get(bill, 'is_utter'),
-    SAP_number: formatDecimalNumberDb(get(bill, 'SAP_number')),
+    SAP_number: formatDecimalNumberForDb(get(bill, 'SAP_number')),
     sent_to_SAP_date: formatDateDb(get(bill, 'sent_to_SAP_date')),
     status: get(bill, 'status'),
     tenant: formatBillingBillTenant(get(bill, 'tenant', {})),
     type: get(bill, 'type'),
-    unpaid_amount: formatDecimalNumberDb(get(bill, 'unpaid_amount')),
+    unpaid_amount: formatDecimalNumberForDb(get(bill, 'unpaid_amount')),
   };
 };
 
 export const formatBillingBillDb = (bill: Object) => {
   return {
-    bill_number: formatDecimalNumberDb(get(bill, 'bill_number')),
+    bill_number: formatDecimalNumberForDb(get(bill, 'bill_number')),
     billing_period_end_date: formatDateDb(get(bill, 'billing_period_end_date')),
     billing_period_start_date: formatDateDb(get(bill, 'billing_period_start_date')),
-    capital_amount: formatDecimalNumberDb(get(bill, 'capital_amount')),
+    capital_amount: formatDecimalNumberForDb(get(bill, 'capital_amount')),
     demand_date: formatDateDb(get(bill, 'demand_date')),
     due_date: formatDateDb(get(bill, 'due_date')),
     info: get(bill, 'info'),
-    invoiced_amount: formatDecimalNumberDb(get(bill, 'invoiced_amount')),
+    invoiced_amount: formatDecimalNumberForDb(get(bill, 'invoiced_amount')),
     invoicing_date: formatDateDb(get(bill, 'invoicing_date')),
     invoice_method: get(bill, 'invoice_method'),
     invoice_type: get(bill, 'invoice_type'),
     payment_demand_list: get(bill, 'payment_demand_list'),
-    recovery_cost: formatDecimalNumberDb(get(bill, 'recovery_cost')),
-    SAP_number: formatDecimalNumberDb(get(bill, 'SAP_number')),
+    recovery_cost: formatDecimalNumberForDb(get(bill, 'recovery_cost')),
+    SAP_number: formatDecimalNumberForDb(get(bill, 'SAP_number')),
     sent_to_SAP_date: formatDateDb(get(bill, 'sent_to_SAP_date')),
     status: get(bill, 'status'),
     suspension_date: formatDateDb(get(bill, 'suspension_date')),
     tenant: formatBillingBillTenant(get(bill, 'tenant', {})),
     type: get(bill, 'type'),
-    unpaid_amount: formatDecimalNumberDb(get(bill, 'unpaid_amount')),
+    unpaid_amount: formatDecimalNumberForDb(get(bill, 'unpaid_amount')),
   };
 };
 
@@ -857,8 +857,8 @@ const getPlotsForDb = (area: Object) => {
     return {
       id: plot.id || undefined,
       identifier: get(plot, 'identifier'),
-      area: formatDecimalNumberDb(get(plot, 'area')),
-      section_area: formatDecimalNumberDb(get(plot, 'section_area')),
+      area: formatDecimalNumberForDb(get(plot, 'area')),
+      section_area: formatDecimalNumberForDb(get(plot, 'section_area')),
       address: get(plot, 'address'),
       postal_code: get(plot, 'postal_code'),
       city: get(plot, 'city'),
@@ -887,8 +887,8 @@ const getPlanUnitsForDb = (area: Object) => {
     return {
       id: planunit.id || undefined,
       identifier: get(planunit, 'identifier'),
-      area: formatDecimalNumberDb(get(planunit, 'area')),
-      section_area: formatDecimalNumberDb(get(planunit, 'section_area')),
+      area: formatDecimalNumberForDb(get(planunit, 'area')),
+      section_area: formatDecimalNumberForDb(get(planunit, 'section_area')),
       address: get(planunit, 'address'),
       postal_code: get(planunit, 'postal_code'),
       city: get(planunit, 'city'),
@@ -913,8 +913,8 @@ export const addAreasFormValues = (payload: Object, values: Object) => {
       return {
         id: area.id || undefined,
         identifier: get(area, 'identifier'),
-        area: formatDecimalNumberDb(get(area, 'area')),
-        section_area: formatDecimalNumberDb(get(area, 'area')),
+        area: formatDecimalNumberForDb(get(area, 'area')),
+        section_area: formatDecimalNumberForDb(get(area, 'area')),
         address: get(area, 'address'),
         postal_code: get(area, 'postal_code'),
         city: get(area, 'city'),
@@ -1179,6 +1179,115 @@ export const addTenantsFormValues = (payload: Object, values: Object) => {
       };
     });
   }
+
+  return payload;
+};
+
+export const getContentRentAdjustmentsForDb = (rent: Object) => {
+  const items = get(rent, 'rent_adjustments', []);
+
+  return items.map((item) => {
+    return {
+      id: item.id || undefined,
+      type: get(item, 'type'),
+      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      start_date: get(item, 'start_date'),
+      end_date: get(item, 'end_date'),
+      full_amount: formatDecimalNumberForDb(get(item, 'full_amount')),
+      amount_type: get(item, 'amount_type.id') || get(item, 'amount_type'),
+      amount_left: formatDecimalNumberForDb(get(item, 'amount_left')),
+      decision: get(item, 'decision.id') || get(item, 'decision'),
+      note: get(item, 'note'),
+    };
+  });
+};
+
+export const getContentContractRentsForDb = (rent: Object) => {
+  const items = get(rent, 'contract_rents', []);
+
+  return items.map((item) => {
+    return {
+      id: item.id || undefined,
+      amount: formatDecimalNumberForDb(get(item, 'amount')),
+      period: get(item, 'period'),
+      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      base_amount: formatDecimalNumberForDb(get(item, 'base_amount')),
+      base_amount_period: get(item, 'base_amount_period'),
+      base_year_rent: formatDecimalNumberForDb(get(item, 'base_year_rent')),
+      start_date: get(item, 'start_date'),
+      end_date: get(item, 'end_date'),
+    };
+  });
+};
+
+export const getContentFixedInitialYearRentsForDb = (rent: Object) => {
+  const items = get(rent, 'fixed_initial_year_rents', []);
+
+  return items.map((item) => {
+    return {
+      id: item.id || undefined,
+      amount: formatDecimalNumberForDb(get(item, 'amount')),
+      start_date: get(item, 'start_date'),
+      end_date: get(item, 'end_date'),
+    };
+  });
+};
+
+export const getContentRentDueDatesForDb = (rent: Object) => {
+  const dueDates = get(rent, 'due_dates', []);
+  dueDates.map((date) => {
+    return {
+      id: date.id || undefined,
+      day: get(date, 'day'),
+      month: get(date, 'month'),
+    };
+  });
+};
+
+export const addRentsFormValues = (payload: Object, values: Object) => {
+  const basisOfRents = get(values, 'basis_of_rents', {});
+  if(!basisOfRents.length) {
+    payload.basis_of_rents = [];
+  } else {
+    payload.basis_of_rents = basisOfRents.map((item) => {
+      return {
+        id: item.id || undefined,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        floor_m2: formatDecimalNumberForDb(get(item, 'floor_m2')),
+        index: get(item, 'index'),
+        amount_per_floor_m2_index_100: formatDecimalNumberForDb(get(item, 'amount_per_floor_m2_index_100')),
+        amount_per_floor_m2_index: formatDecimalNumberForDb(get(item, 'amount_per_floor_m2_index')),
+        percent: formatDecimalNumberForDb(get(item, 'percent')),
+        year_rent_index_100: formatDecimalNumberForDb(get(item, 'year_rent_index_100')),
+        year_rent_index: formatDecimalNumberForDb(get(item, 'year_rent_index')),
+      };
+    });
+  }
+  const rent = get(values, 'rents', {});
+  payload.rents = [
+    {
+      id: rent.id || undefined,
+      type: get(rent, 'type'),
+      cycle: get(rent, 'cycle'),
+      index_type: get(rent, 'index_type'),
+      due_dates_type: get(rent, 'due_dates_type'),
+      due_dates_per_year: get(rent, 'due_dates_per_year'),
+      elementary_index: get(rent, 'elementary_index'),
+      index_rounding: get(rent, 'index_rounding'),
+      x_value: get(rent, 'x_value'),
+      y_value: get(rent, 'y_value'),
+      y_value_start: get(rent, 'y_value_start'),
+      equalization_start_date: get(rent, 'equalization_start_date'),
+      equalization_end_date: get(rent, 'equalization_end_date'),
+      amount: formatDecimalNumberForDb(get(rent, 'amount')),
+      note: get(rent, 'note'),
+      is_active: get(rent, 'is_active'),
+      due_dates: getContentRentDueDatesForDb(rent),
+      fixed_initial_year_rents: getContentFixedInitialYearRentsForDb(rent),
+      contract_rents: getContentContractRentsForDb(rent),
+      rent_adjustments: getContentRentAdjustmentsForDb(rent),
+    },
+  ];
 
   return payload;
 };
