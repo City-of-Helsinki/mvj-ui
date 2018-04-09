@@ -54,6 +54,13 @@
         background-color: $tram-lighter-solid;
       }
 
+      tr.no-data {
+        td {
+          background-color: $lightest-gray;
+          text-align: center;
+        }
+      }
+
       td {
         border-bottom: none;
         padding: 0.3rem 0.5rem;

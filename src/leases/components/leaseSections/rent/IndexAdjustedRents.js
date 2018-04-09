@@ -1,30 +1,32 @@
 // @flow
 import React from 'react';
 
-import {formatDateRange,
+import {
+  formatDateRange,
   formatNumberWithThousandSeparator,
   formatDecimalNumber,
-  getLabelOfOption} from '$util/helpers';
-import {purposeOptions} from '$src/constants';
+  getAttributeFieldOptions,
+  getLabelOfOption,
+} from '$util/helpers';
 import TableFixedHeader from '$components/table/TableFixedHeader';
 
+import type {Attributes} from '$src/leases/types';
+
 type Props = {
+  attributes: Attributes,
   indexAdjustedRents: Array<Object>,
 }
 
-const getTableBody = (indexAdjustedRents: Array<Object>) => {
-  if(indexAdjustedRents && indexAdjustedRents.length > 0) {
+const getTableBody = (indexAdjustedRents: Array<Object>, intendedUseOptions: Array<Object>) => {
+  if(indexAdjustedRents && !!indexAdjustedRents.length) {
     return (
       <tbody>
         {indexAdjustedRents.map((rent, index) => (
           <tr key={index}>
-            <td>{rent.rent !== null ? formatNumberWithThousandSeparator(formatDecimalNumber(rent.rent), '.') : '-'}</td>
-            <td style={{maxWidth: '150px'}}
-              title={rent.purpose ? getLabelOfOption(purposeOptions, rent.purpose) : '-'}>
-              <div className="text-container">{rent.purpose ? getLabelOfOption(purposeOptions, rent.purpose) : '-'}</div>
-            </td>
+            <td>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.amount), '.') || '-'}</td>
+            <td>{getLabelOfOption(intendedUseOptions, rent.intended_use) || '-'}</td>
             <td>{formatDateRange(rent.start_date, rent.end_date)}</td>
-            <td>{rent.calculation_factor !== null ? formatDecimalNumber(rent.calculation_factor) : '-'}</td>
+            <td>{formatDecimalNumber(rent.factor) || '-'}</td>
           </tr>
         ))}
       </tbody>
@@ -32,12 +34,14 @@ const getTableBody = (indexAdjustedRents: Array<Object>) => {
   }
   else {
     return (
-      <tbody></tbody>
+      <tbody><tr className='no-data'><td colSpan={4}>Ei Indeksitarkistettuja vuokria</td></tr></tbody>
     );
   }
 };
 
-const IndexAdjustedRents = ({indexAdjustedRents}: Props) => {
+const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
+  const intendedUseOptions = getAttributeFieldOptions(attributes,
+    'rents.child.children.index_adjusted_rents.child.children.intended_use');
   return (
     <TableFixedHeader
       headers={[
@@ -46,7 +50,7 @@ const IndexAdjustedRents = ({indexAdjustedRents}: Props) => {
         'Voimassaoloaika',
         'Laskentakerroin',
       ]}
-      body={getTableBody(indexAdjustedRents)}
+      body={getTableBody(indexAdjustedRents, intendedUseOptions)}
     />
   );
 };

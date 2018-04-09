@@ -2,12 +2,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {destroy, formValueSelector, reduxForm} from 'redux-form';
+import {destroy, reduxForm} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
-import forEach from 'lodash/forEach';
-import get from 'lodash/get';
 
 import {getLoggedInUser} from '$src/auth/selectors';
 import {receiveBilling} from './leaseSections/billing/actions';
@@ -44,10 +42,13 @@ import {
   getIsInspectionsFormValid,
   getIsLeaseAreasFormValid,
   getIsLeaseInfoFormValid,
+  getIsRentsFormValid,
   getIsSummaryFormValid,
   getIsTenantsFormValid,
   getLeaseInfoFormTouched,
   getLeaseInfoFormValues,
+  getRentsFormTouched,
+  getRentsFormValues,
   getSummaryFormTouched,
   getSummaryFormValues,
   getTenantsFormTouched,
@@ -66,7 +67,6 @@ import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
 import {
-  displayUIMessage,
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
@@ -144,6 +144,7 @@ type Props = {
   isInspectionsFormValid: boolean,
   isLeaseAreasFormValid: boolean,
   isLeaseInfoFormValid: boolean,
+  isRentsFormValid: boolean,
   isSummaryFormValid: boolean,
   isTenantsFormValid: boolean,
   leaseInfoFormTouched: boolean,
@@ -153,8 +154,8 @@ type Props = {
   patchLease: Function,
   receiveBilling: Function,
   receiveTopNavigationSettings: Function,
-  rentsForm: Object,
-  rentsTouched: boolean,
+  rentsFormTouched: boolean,
+  rentsFormValues: Object,
   showEditMode: Function,
   summaryFormTouched: boolean,
   summaryFormValues: Object,
@@ -170,7 +171,6 @@ type State = {
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
   isSaveLeaseModalOpen: boolean,
-  rents: Object,
 };
 
 class PreparerForm extends Component {
@@ -182,7 +182,6 @@ class PreparerForm extends Component {
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
     isSaveLeaseModalOpen: false,
-    rents: {},
     terms: [],
   }
 
@@ -222,8 +221,8 @@ class PreparerForm extends Component {
 
     this.setState({
       history: contentHelpers.getContentHistory(lease),
-      rents: contentHelpers.getContentRents(lease),
     });
+
     receiveBilling(contentHelpers.getContentBilling(lease));
     fetchAttributes();
     fetchComments(leaseId);
@@ -266,12 +265,12 @@ class PreparerForm extends Component {
       contractsFormValues,
       inspectionsFormValues,
       constructabilityFormValues,
+      rentsFormValues,
       tenantsFormValues,
 
       currentLease,
       hideEditMode,
       patchLease,
-      rentsForm,
     } = this.props;
 
     let payload: Object = {id: currentLease.id};
@@ -308,29 +307,17 @@ class PreparerForm extends Component {
       payload = contentHelpers.addTenantsFormValues(payload, tenantsFormValues);
     }
 
-    patchLease(payload);
-
-    // TODO: Temporarily save changes to state. Replace with api call when end points are ready
-    if(rentsForm !== undefined) {
-      this.setState({rents: rentsForm});
+    if(rentsFormValues !== undefined) {
+      payload = contentHelpers.addRentsFormValues(payload, rentsFormValues);
     }
+
+    patchLease(payload);
 
     hideEditMode();
     this.hideModal('SaveLease');
 
     this.destroyAllForms();
     clearFormValidFlags();
-  }
-
-  agreeCriteria = (criteria: Object) => {
-    const {rents, rents: {criterias}} = this.state;
-    forEach(criterias, (x) => {
-      if(x === criteria) {
-        x.agreed = true;
-      }
-    });
-    this.setState({rents: rents});
-    displayUIMessage({title: 'Vuokranperuste hyväksytty', body: 'Vuokranperuste on hyväksytty onnistuneesti'});
   }
 
   destroyAllForms = () => {
@@ -343,9 +330,9 @@ class PreparerForm extends Component {
     dispatch(destroy('inspections-form'));
     dispatch(destroy('constructability-form'));
     dispatch(destroy('tenants-form'));
+    dispatch(destroy('rents-form'));
 
     dispatch(destroy('billing-edit-form'));
-    dispatch(destroy('rent-edit-form'));
   }
 
   validateForms = () => {
@@ -356,6 +343,7 @@ class PreparerForm extends Component {
       isInspectionsFormValid,
       isLeaseAreasFormValid,
       isLeaseInfoFormValid,
+      isRentsFormValid,
       isSummaryFormValid,
       isTenantsFormValid,
     } = this.props;
@@ -367,6 +355,7 @@ class PreparerForm extends Component {
       isInspectionsFormValid &&
       isLeaseAreasFormValid &&
       isLeaseInfoFormValid &&
+      isRentsFormValid &&
       isSummaryFormValid &&
       isTenantsFormValid
     );
@@ -399,8 +388,7 @@ class PreparerForm extends Component {
       inspectionsFormTouched,
       constructabilityFormTouched,
       tenantsFormTouched,
-
-      rentsTouched,
+      rentsFormTouched,
 
     } = this.props;
 
@@ -412,8 +400,7 @@ class PreparerForm extends Component {
       inspectionsFormTouched ||
       constructabilityFormTouched ||
       tenantsFormTouched ||
-
-      rentsTouched;
+      rentsFormTouched;
   }
 
   render() {
@@ -423,7 +410,6 @@ class PreparerForm extends Component {
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
       isSaveLeaseModalOpen,
-      rents,
     } = this.state;
 
     const {
@@ -453,6 +439,8 @@ class PreparerForm extends Component {
     const inspections = contentHelpers.getContentInspections(currentLease);
     const constructability = contentHelpers.getContentConstructability(currentLease);
     const tenants = contentHelpers.getContentTenants(currentLease);
+    const rents = contentHelpers.getContentRents(currentLease);
+    const basisOfRents = contentHelpers.getContentBasisOfRents(currentLease);
 
     const comments = contentHelpers.getContentComments(commentsStore);
 
@@ -623,8 +611,20 @@ class PreparerForm extends Component {
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
               {isEditMode
-                ? <RentEdit initialValues={{rents: rents}}/>
-                : <Rent onCriteriaAgree={(criteria) => this.agreeCriteria(criteria)} rents={rents}/>
+                ? (
+                  <RentEdit
+                    attributes={attributes}
+                    initialValues={{
+                      basis_of_rents: basisOfRents,
+                      rents: rents,
+                    }}
+                  />
+                ) : (
+                  <Rent
+                    attributes={attributes}
+                    basisOfRents={basisOfRents}
+                    rents={rents} />
+                )
               }
             </ContentContainer>
           </TabPane>
@@ -694,8 +694,6 @@ class PreparerForm extends Component {
   }
 }
 
-const rentFormSelector = formValueSelector('rent-edit-form');
-
 export default flowRight(
   withRouter,
   reduxForm({
@@ -726,6 +724,7 @@ export default flowRight(
         isInspectionsFormValid: getIsInspectionsFormValid(state),
         isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
         isLeaseInfoFormValid: getIsLeaseInfoFormValid(state),
+        isRentsFormValid: getIsRentsFormValid(state),
         isSummaryFormValid: getIsSummaryFormValid(state),
         isTenantsFormValid: getIsTenantsFormValid(state),
         inspectionFormTouched: getInspectionsFormTouched(state),
@@ -733,8 +732,8 @@ export default flowRight(
         isFetching: getIsFetching(state),
         leaseInfoFormTouched: getLeaseInfoFormTouched(state),
         leaseInfoFormValues: getLeaseInfoFormValues(state),
-        rentsForm: rentFormSelector(state, 'rents'),
-        rentsTouched: get(state, 'form.rent-edit-form.anyTouched'),
+        rentsFormTouched: getRentsFormTouched(state),
+        rentsFormValues: getRentsFormValues(state),
         summaryFormTouched: getSummaryFormTouched(state),
         summaryFormValues: getSummaryFormValues(state),
         tenantsFormTouched: getTenantsFormTouched(state),

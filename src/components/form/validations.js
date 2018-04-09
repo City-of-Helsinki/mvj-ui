@@ -30,6 +30,10 @@ export const genericValidator = (value: any, options: Object) => {
     error = required(value);
     if(error) {return error;}
   }
+  if(options.type === 'decimal') {
+    error = decimalNumber(value);
+    if(error) {return error;}
+  }
   if(options.type === 'integer') {
     error = integer(value);
     if(error) {return error;}

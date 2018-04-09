@@ -1,34 +1,70 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import {formValueSelector, reduxForm, Field, FieldArray, FormSection} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import BasicInfoEdit from './BasicInfoEdit';
+import BasisOfRentsEdit from './BasisOfRentsEdit';
 import ContractRentsEdit from './ContractRentsEdit';
-import ChargedRentsEdit from './ChargedRentsEdit';
 import Collapse from '$components/collapse/Collapse';
-import CriteriasEdit from './CriteriasEdit';
-import DiscountsEdit from './DiscountsEdit';
 import Divider from '$components/content/Divider';
 import FormSectionComponent from '$components/form/FormSection';
-import IndexAdjustedRentsEdit from './IndexAdjustedRentsEdit';
+import IndexAdjustedRents from './IndexAdjustedRents';
 import FieldTypeSwitch from '$components/form/FieldTypeSwitch';
+import PayableRents from './PayableRents';
+import RentAdjustmentsEdit from './RentAdjustmentsEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
+import {RentTypes} from '$src/leases/enums';
+import {fetchDecisions, receiveRentsFormValid} from '$src/leases/actions';
+import {getDecisions, getIsRentsFormValid} from '$src/leases/selectors';
+import {getDecisionsOptions, getSearchQuery} from '$util/helpers';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
+  decisionsOptionData: Array<Object>,
+  fetchDecisions: Function,
   handleSubmit: Function,
+  isRentsFormValid: boolean,
+  params: Object,
+  receiveRentsFormValid: Function,
   rents: Object,
+  valid: boolean,
 }
 
 class RentEdit extends Component {
   props: Props
 
+  componentWillMount() {
+    const {
+      fetchDecisions,
+      params: {leaseId},
+    } = this.props;
+    const query = {
+      lease: leaseId,
+      imit: 1000,
+    };
+    const search = getSearchQuery(query);
+    fetchDecisions(search);
+  }
+
+  componentDidUpdate() {
+    const {isRentsFormValid, receiveRentsFormValid, valid} = this.props;
+    if(isRentsFormValid !== valid) {
+      receiveRentsFormValid(valid);
+    }
+  }
+
   render() {
-    const {handleSubmit, rents} = this.props;
-    const rentType = get(rents, 'basic_info.type');
+    const {attributes, decisionsOptionData, handleSubmit, rents} = this.props;
+    const decisionOptions = getDecisionsOptions(decisionsOptionData);
+    const rentType = get(rents, 'type');
+
     return (
       <form onSubmit={handleSubmit}>
         <FormSectionComponent>
@@ -39,7 +75,7 @@ class RentEdit extends Component {
                 text={
                   <Field
                     component={FieldTypeSwitch}
-                    name="rents.rent_info_ok"
+                    name="rents.is_active"
                     optionLabel="Vuokratiedot kunnossa"
                   />
                 }
@@ -56,12 +92,19 @@ class RentEdit extends Component {
                 <Column><h3 className='collapse__header-title'>Vuokran perustiedot</h3></Column>
               </Row>
             }>
-            <FormSection name="rents.basic_info">
-              <BasicInfoEdit basicInfo={get(rents, 'basic_info', {})} />
+            <FormSection name='rents'>
+              <BasicInfoEdit
+                attributes={attributes}
+                rents={rents}
+                rentType={rentType}
+              />
             </FormSection>
           </Collapse>
 
-          {(rentType === '0' || rentType === '2' || rentType === '4') &&
+          {(rentType === RentTypes.INDEX ||
+            rentType === RentTypes.FIXED ||
+            rentType === RentTypes.MANUAL
+          ) &&
             <Collapse
               defaultOpen={true}
               header={
@@ -69,11 +112,18 @@ class RentEdit extends Component {
                   <Column><h3 className='collapse__header-title'>Sopimusvuokra</h3></Column>
                 </Row>
               }>
-              <FieldArray component={ContractRentsEdit} name="rents.contract_rents" rentType={rentType} />
+              <FieldArray
+                attributes={attributes}
+                component={ContractRentsEdit}
+                name="rents.contract_rents"
+                rentType={rentType}
+              />
             </Collapse>
           }
 
-          {(rentType === '0' ||rentType === '4') &&
+          {(rentType === RentTypes.INDEX ||
+            rentType === RentTypes.MANUAL
+          ) &&
             <Collapse
               className='no-content-top-padding'
               defaultOpen={true}
@@ -82,14 +132,17 @@ class RentEdit extends Component {
                   <Column><h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3></Column>
                 </Row>
               }>
-              <FieldArray
-                component={IndexAdjustedRentsEdit}
-                name="rents.index_adjusted_rents"
+              <IndexAdjustedRents
+                attributes={attributes}
+                indexAdjustedRents={get(rents, 'index_adjusted_rents', [])}
               />
             </Collapse>
           }
 
-          {(rentType === '0' || rentType === '2' || rentType === '4') &&
+          {(rentType === RentTypes.INDEX ||
+            rentType === RentTypes.FIXED ||
+            rentType === RentTypes.MANUAL
+          ) &&
             <Collapse
               className='no-content-top-padding'
               defaultOpen={true}
@@ -98,11 +151,19 @@ class RentEdit extends Component {
                   <Column><h3 className='collapse__header-title'>Alennukset ja korotukset</h3></Column>
                 </Row>
               }>
-              <FieldArray name="rents.discounts" component={DiscountsEdit}/>
+              <FieldArray
+                attributes={attributes}
+                component={RentAdjustmentsEdit}
+                decisionOptions={decisionOptions}
+                name="rents.rent_adjustments"
+              />
             </Collapse>
           }
 
-          {(rentType === '0' || rentType === '2' || rentType === '4') &&
+          {(rentType === RentTypes.INDEX ||
+            rentType === RentTypes.FIXED ||
+            rentType === RentTypes.MANUAL
+          ) &&
             <Collapse
               className='no-content-top-padding'
               defaultOpen={true}
@@ -111,14 +172,17 @@ class RentEdit extends Component {
                   <Column><h3 className='collapse__header-title'>Perittävä vuokra</h3></Column>
                 </Row>
               }>
-              <FieldArray
-                component={ChargedRentsEdit}
-                name="rents.charged_rents"
+              <PayableRents
+                payableRents={get(rents, 'payable_rents', [])}
               />
             </Collapse>
           }
 
-          {(rentType === '0' || rentType === '1' || rentType === '2' || rentType === '4') &&
+          {(rentType === RentTypes.INDEX ||
+            rentType === RentTypes.ONE_TIME ||
+            rentType === RentTypes.FIXED ||
+            rentType === RentTypes.MANUAL
+          ) &&
             <Collapse
               defaultOpen={true}
               header={
@@ -126,7 +190,11 @@ class RentEdit extends Component {
                   <Column><h3 className='collapse__header-title'>Vuokranperusteet</h3></Column>
                 </Row>
               }>
-              <FieldArray name="rents.criterias" component={CriteriasEdit}/>
+              <FieldArray
+                attributes={attributes}
+                component={BasisOfRentsEdit}
+                name="basis_of_rents"
+              />
             </Collapse>
           }
         </FormSectionComponent>
@@ -135,19 +203,26 @@ class RentEdit extends Component {
   }
 }
 
-const formName = 'rent-edit-form';
+const formName = 'rents-form';
 const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
     (state) => {
       return {
+        decisionsOptionData: getDecisions(state),
+        isRentsFormValid: getIsRentsFormValid(state),
         rents: selector(state, 'rents'),
       };
+    },
+    {
+      fetchDecisions,
+      receiveRentsFormValid,
     }
   ),
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
   }),
+  withRouter,
 )(RentEdit);

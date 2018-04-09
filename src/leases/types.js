@@ -64,5 +64,6 @@ export type ReceiveDecisionsFormValidAction = Action<'mvj/leases/RECEIVE_DECISIO
 export type ReceiveInspectionsFormValidAction = Action<'mvj/leases/RECEIVE_INSPECTIONS_FORM_VALID', boolean>;
 export type ReceiveLeaseAreasFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_AREAS_FORM_VALID', boolean>;
 export type ReceiveLeaseInfoFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_INFO_FORM_VALID', boolean>;
+export type ReceiveRentsFormValidAction = Action<'mvj/leases/RECEIVE_RENTS_FORM_VALID', boolean>;
 export type ReceiveSummaryFormValidAction = Action<'mvj/leases/RECEIVE_SUMMARY_FORM_VALID', boolean>;
 export type ReceiveTenantsFormValidAction = Action<'mvj/leases/RECEIVE_TENANTS_FORM_VALID', boolean>;

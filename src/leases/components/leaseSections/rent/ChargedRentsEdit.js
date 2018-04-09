@@ -8,7 +8,7 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import TableFixedHeader from '$components/table/TableFixedHeader';
 
 const getTableBody = (fields) => {
-  if(fields && fields.length > 0) {
+  if(fields && !!fields.length) {
     return (
       <tbody>
         {fields.map((item, index) => (

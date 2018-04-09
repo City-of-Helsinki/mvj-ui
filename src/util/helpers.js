@@ -141,8 +141,6 @@ export const localizeMap = () => {
   L.drawLocal.edit.toolbar.buttons.editDisabled = 'Ei muokattavia alueita';
   L.drawLocal.edit.toolbar.buttons.remove = 'Poista alueita';
   L.drawLocal.edit.toolbar.buttons.removeDisabled = 'Ei poistettavia alueita';
-
-
 };
 
 /**
@@ -229,14 +227,23 @@ export const formatDateDb = (date: string) => {
 };
 
 export const formatDecimalNumber = (x) => {
+  if(x === null || x === undefined || !isNumber(Number(x))) {
+    return null;
+  }
   return parseFloat(x).toFixed(2).toString().replace('.', ',');
 };
 
-export const formatDecimalNumberDb = (x) => {
-  return x ? Number(x.toString().replace(',', '.')): null;
+export const formatDecimalNumberForDb = (x) => {
+  if(x === null || x === undefined || !isNumber(Number(x))) {
+    return null;
+  }
+  return Number(x.toString().replace(',', '.'));
 };
 
 export const formatNumberWithThousandSeparator = (x, separator = ' ') => {
+  if(x === null || x === undefined || !isNumber(Number(x))) {
+    return null;
+  }
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 };
 
