@@ -48,10 +48,10 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
         <tr>
           <th>Sopimusvuokra</th>
           <th>Käyttötarkoitus</th>
-          {(rentType === RentTypes.INDEX || rentType === '4') &&
+          {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
             <th>Vuokranlaskennan perusteena oleva vuokra</th>
           }
-          {(rentType === RentTypes.INDEX || rentType === '4') &&
+          {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
             <th>Uusi perusvuosi vuokra</th>
           }
           <th>Voimassaoloaika</th>
@@ -59,17 +59,17 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
       </thead>
       <tbody>
         {(!contractRents || !contractRents.length) &&
-          <tr className='no-data'><td colSpan={(rentType === RentTypes.INDEX || rentType === '4') ? 5 : 3}>Ei sopimusvuokria</td></tr>
+          <tr className='no-data'><td colSpan={(rentType === RentTypes.INDEX || rentType === rentType === RentTypes.MANUAL) ? 5 : 3}>Ei sopimusvuokria</td></tr>
         }
         {contractRents && !!contractRents.length && contractRents.map((rent, index) => {
           return (
             <tr key={index}>
               <td>{getAmount(rent) || '-'}</td>
               <td>{getLabelOfOption(intendedUseOptions, rent.intended_use) || '-'}</td>
-              {(rentType === RentTypes.INDEX || rentType === '4') &&
+              {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
                 <td>{getBaseAmount(rent) || '-'}</td>
               }
-              {(rentType === RentTypes.INDEX || rentType === '4') &&
+              {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
                 <td>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.base_year_rent), '.') || '-'}</td>
               }
               <td>{formatDateRange(rent.start_date, rent.end_date) || '-'}</td>

@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 
 import ListItems from '$components/content/ListItems';
 import {
@@ -12,7 +11,6 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {rentBasicInfoTypeOptions} from '../constants';
 import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
 
 import type {Attributes} from '$src/leases/types';
@@ -20,6 +18,7 @@ import type {Attributes} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   rents: Object,
+  rentType: ?string,
 }
 
 const BasicInfoIndex = ({attributes, rents}: Props) => {
@@ -125,180 +124,135 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
   );
 };
 
-const BasicInfoOneTime = ({rents}: Props) => {
-  const {comment,
-    rent_amount,
-    type} = rents;
+const BasicInfoOneTime = ({attributes, rents}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
 
   return (
     <div>
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
-          <p>{type ? getLabelOfOption(rentBasicInfoTypeOptions, type) : '-'}</p>
+          <p>{getLabelOfOption(typeOptions, rents.type) || '-'}</p>
         </Column>
         <Column medium={3}>
           <label>Kertakaikkinen vuokra</label>
-          <p>{rent_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(rent_amount))} €` : '-'}</p>
+          <p>{formatNumberWithThousandSeparator(formatDecimalNumber(rents.amount)) || '-'}</p>
         </Column>
       </Row>
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{comment ? comment : '-'}</p>
+          <p>{rents.note || '-'}</p>
         </Column>
       </Row>
     </div>
   );
 };
 
-const BasicInfoFixed = ({rents}: Props) => {
-  const {bill_amount,
-    billing_type,
-    comment,
-    due_dates,
-    rent_amount,
-    type} = rents;
+const BasicInfoFixed = ({attributes, rents}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
 
   return (
     <div>
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
-          <p>{type ? getLabelOfOption(rentBasicInfoTypeOptions, type) : '-'}</p>
+          <p>{getLabelOfOption(typeOptions, rents.type) || '-'}</p>
         </Column>
         <Column medium={3}>
           <label>Kertakaikkinen vuokra</label>
-          <p>{rent_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(rent_amount))} €` : '-'}</p>
+          <p>{formatNumberWithThousandSeparator(formatDecimalNumber(rents.amount)) || '-'}</p>
         </Column>
-        {billing_type === '0' &&
-          <Column medium={3} offsetOnMedium={3}>
+        {rents.due_dates_type === RentDueDateTypes.CUSTOM &&
+          <Column small={6} medium={4} large={2}>
             <label>Eräpäivät</label>
-            {due_dates && due_dates.length > 0
-              ? (due_dates.map((due_date, index) => {
-                return (<p style={{marginBottom: '0'}} key={index}>{due_date}</p>);
-              }))
-              : <p>Ei eräpäiviä</p>
-            }
+            <ListItems>
+              {rents.due_dates && !!rents.due_dates.length
+                ? (rents.due_dates.map((date, index) => {
+                  return (<p className='no-margin' key={index}>{`${date.day}.${date.month}`}</p>);
+                }))
+                : <p className='no-margin'>Ei eräpäiviä</p>
+              }
+            </ListItems>
           </Column>
         }
-        {billing_type === '1' &&
-          <Column medium={3} offsetOnMedium={3}>
+        {rents.due_dates_type === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={2}>
             <label>Laskut kpl / vuodessa</label>
-            <p>{bill_amount ? bill_amount : '-'}</p>
+            <p>{rents.due_dates_per_year || '-'}</p>
           </Column>
         }
       </Row>
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{comment ? comment : '-'}</p>
+          <p>{rents.note || '-'}</p>
         </Column>
       </Row>
     </div>
   );
 };
 
-const BasicInfoFree = ({rents}: Props) => {
-  const {comment,
-    type} = rents;
+const BasicInfoFree = ({attributes, rents}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
 
   return (
     <div>
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
-          <p>{type ? getLabelOfOption(rentBasicInfoTypeOptions, type) : '-'}</p>
+          <p>{getLabelOfOption(typeOptions, rents.type) || '-'}</p>
         </Column>
       </Row>
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{comment ? comment : '-'}</p>
+          <p>{rents.note || '-'}</p>
         </Column>
       </Row>
     </div>
   );
 };
 
-const BasicInfoManual = ({rents}: Props) => {
-  const {bill_amount,
-    billing_type,
-    comment,
-    due_dates,
-    type} = rents;
-
+const BasicInfo = ({attributes, rents, rentType}: Props) => {
   return (
     <div>
-      <Row>
-        <Column medium={3}>
-          <label>Vuokralaji</label>
-          <p>{type ? getLabelOfOption(rentBasicInfoTypeOptions, type) : '-'}</p>
-        </Column>
-        {billing_type === '0' &&
-          <Column medium={3} offsetOnMedium={6}>
-            <label>Eräpäivät</label>
-            {due_dates && due_dates.length > 0
-              ? (due_dates.map((due_date, index) =>
-                <p style={{marginBottom: '0'}} key={index}>{due_date}</p>
-              ))
-              : <p>Ei eräpäiviä</p>
-            }
-          </Column>
-        }
-        {billing_type === '1' &&
-          <Column medium={3} offsetOnMedium={6}>
-            <label>Laskut kpl / vuodessa</label>
-            <p>{bill_amount ? bill_amount : '-'}</p>
-          </Column>
-        }
-      </Row>
-      <Row>
-        <Column>
-          <label>Kommentti</label>
-          <p className='no-margin'>{comment ? comment : '-'}</p>
-        </Column>
-      </Row>
-    </div>
-  );
-};
-
-const BasicInfo = ({attributes, rents}: Props) => {
-  const type = get(rents, 'type');
-
-  return (
-    <div>
-      {!type &&
+      {!rentType &&
         <p>Vuokralajia ei ole valittu</p>
       }
-      {type === RentTypes.INDEX &&
+      {rentType === RentTypes.INDEX &&
         <BasicInfoIndex
           attributes={attributes}
           rents={rents}
+          rentType={rentType}
         />
       }
-      {type === RentTypes.ONE_TIME &&
+      {rentType === RentTypes.ONE_TIME &&
         <BasicInfoOneTime
           attributes={attributes}
           rents={rents}
+          rentType={rentType}
         />
       }
-      {type === RentTypes.FIXED &&
+      {rentType === RentTypes.FIXED &&
         <BasicInfoFixed
           attributes={attributes}
           rents={rents}
+          rentType={rentType}
         />
       }
-      {type === RentTypes.FREE &&
+      {rentType === RentTypes.FREE &&
         <BasicInfoFree
           attributes={attributes}
           rents={rents}
+          rentType={rentType}
         />
       }
-      {type === RentTypes.MANUAL &&
-        <BasicInfoManual
+      {rentType === RentTypes.MANUAL &&
+        <BasicInfoIndex
           attributes={attributes}
           rents={rents}
+          rentType={rentType}
         />
       }
     </div>

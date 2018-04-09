@@ -376,6 +376,171 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
   );
 };
 
+const BasicInfoOneTime = ({attributes}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
+
+  return (
+    <div>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <Field
+            component={FieldTypeSelect}
+            label="Vuokralaji"
+            name="type"
+            options={typeOptions}
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.type')),
+            ]}
+          />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Field
+            component={FieldTypeText}
+            label="Kertakaikkinen vuokra"
+            name="amount"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.amount')),
+            ]}
+          />
+        </Column>
+      </Row>
+      <Row>
+        <Column>
+          <Field
+            component={FieldTypeText}
+            label="Kommentti"
+            name="note"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.note')),
+            ]}
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
+
+const BasicInfoFixed = ({attributes, rents}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
+  const dueDatesTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.due_dates_type');
+
+  return (
+    <div>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <Field
+            component={FieldTypeSelect}
+            label="Vuokralaji"
+            name="type"
+            options={typeOptions}
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.type')),
+            ]}
+          />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Field
+            component={FieldTypeText}
+            label="Kertakaikkinen vuokra"
+            name="amount"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.amount')),
+            ]}
+          />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Field
+            component={FieldTypeSelect}
+            label="Laskutusjako"
+            name="due_dates_type"
+            options={dueDatesTypeOptions}
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.due_dates_type')),
+            ]}
+          />
+        </Column>
+        {rents.due_dates_type === RentDueDateTypes.CUSTOM &&
+          <Column small={6} medium={4} large={2}>
+            <FieldArray
+              attributes={attributes}
+              component={renderDueDates}
+              name="due_dates"
+            />
+          </Column>
+        }
+        {rents.due_dates_type === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={2}>
+            <Field
+              component={FieldTypeText}
+              label="Laskut kpl / vuodessa"
+              name="due_dates_per_year"
+              validate={[
+                (value) => genericValidator(value, get(attributes,
+                  'rents.child.children.due_dates_per_year')),
+              ]}
+            />
+          </Column>
+        }
+      </Row>
+      <Row>
+        <Column>
+          <Field
+            component={FieldTypeText}
+            label="Kommentti"
+            name="note"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.note')),
+            ]}
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
+
+const BasicInfoFree = ({attributes}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
+
+  return (
+    <div>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <Field
+            component={FieldTypeSelect}
+            label="Vuokralaji"
+            name="type"
+            options={typeOptions}
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.type')),
+            ]}
+          />
+        </Column>
+      </Row>
+      <Row>
+        <Column>
+          <Field
+            component={FieldTypeText}
+            label="Kommentti"
+            name="note"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.note')),
+            ]}
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
+
 const BasicInfoEdit = ({attributes, rents, rentType}: Props) => {
   return (
     <div>
@@ -387,6 +552,34 @@ const BasicInfoEdit = ({attributes, rents, rentType}: Props) => {
         />
       }
       {rentType === RentTypes.INDEX &&
+        <BasicInfoIndex
+          attributes={attributes}
+          rents={rents}
+          rentType={rentType}
+        />
+      }
+      {rentType === RentTypes.ONE_TIME &&
+        <BasicInfoOneTime
+          attributes={attributes}
+          rents={rents}
+          rentType={rentType}
+        />
+      }
+      {rentType === RentTypes.FIXED &&
+        <BasicInfoFixed
+          attributes={attributes}
+          rents={rents}
+          rentType={rentType}
+        />
+      }
+      {rentType === RentTypes.FREE &&
+        <BasicInfoFree
+          attributes={attributes}
+          rents={rents}
+          rentType={rentType}
+        />
+      }
+      {rentType === RentTypes.MANUAL &&
         <BasicInfoIndex
           attributes={attributes}
           rents={rents}

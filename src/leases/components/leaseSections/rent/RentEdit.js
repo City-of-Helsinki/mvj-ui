@@ -102,8 +102,8 @@ class RentEdit extends Component {
           </Collapse>
 
           {(rentType === RentTypes.INDEX ||
-            rentType === '2' ||
-            rentType === '4'
+            rentType === RentTypes.FIXED ||
+            rentType === RentTypes.MANUAL
           ) &&
             <Collapse
               defaultOpen={true}
@@ -122,7 +122,7 @@ class RentEdit extends Component {
           }
 
           {(rentType === RentTypes.INDEX ||
-            rentType === '4'
+            rentType === RentTypes.MANUAL
           ) &&
             <Collapse
               className='no-content-top-padding'
@@ -140,8 +140,8 @@ class RentEdit extends Component {
           }
 
           {(rentType === RentTypes.INDEX ||
-            rentType === '2' ||
-            rentType === '4'
+            rentType === RentTypes.FIXED ||
+            rentType === RentTypes.MANUAL
           ) &&
             <Collapse
               className='no-content-top-padding'
@@ -161,8 +161,8 @@ class RentEdit extends Component {
           }
 
           {(rentType === RentTypes.INDEX ||
-            rentType === '2' ||
-            rentType === '4'
+            rentType === RentTypes.FIXED ||
+            rentType === RentTypes.MANUAL
           ) &&
             <Collapse
               className='no-content-top-padding'
@@ -179,9 +179,9 @@ class RentEdit extends Component {
           }
 
           {(rentType === RentTypes.INDEX ||
-            rentType === '1' ||
-            rentType === '2' ||
-            rentType === '4'
+            rentType === RentTypes.ONE_TIME ||
+            rentType === RentTypes.FIXED ||
+            rentType === RentTypes.MANUAL
           ) &&
             <Collapse
               defaultOpen={true}

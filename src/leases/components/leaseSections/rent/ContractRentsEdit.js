@@ -33,7 +33,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
 
   return (
     <div>
-      {fields && fields.length > 0 && fields.map((rent, index) => {
+      {fields && !!fields.length && fields.map((rent, index) => {
         return(
           <GreenBoxItem
             key={index}
@@ -84,7 +84,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                   />
                 </Column>
                 {(rentType === RentTypes.INDEX ||
-                  rentType === '4') &&
+                  rentType === RentTypes.MANUAL) &&
                   <Column small={6} medium={4} large={2}>
                     <label className="mvj-form-field-label">Vuokranlaskennan perusteena oleva vuokra</label>
                     <Row>
@@ -113,7 +113,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                   </Column>
                 }
                 {(rentType === RentTypes.INDEX ||
-                  rentType === '4') &&
+                  rentType === RentTypes.MANUAL) &&
                   <Column small={6} medium={4} large={2} offsetOnLarge={1}>
                     <Field
                       component={FieldTypeText}
