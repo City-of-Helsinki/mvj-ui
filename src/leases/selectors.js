@@ -34,6 +34,9 @@ export const getIsLeaseAreasFormValid: Selector<any, void> = (state: Object): bo
 export const getIsLeaseInfoFormValid: Selector<any, void> = (state: Object): boolean =>
   state.lease.isLeaseInfoFormValid;
 
+export const getIsRentsFormValid: Selector<any, void> = (state: Object): boolean =>
+  state.lease.isRentsFormValid;
+
 export const getIsSummaryFormValid: Selector<any, void> = (state: Object): boolean =>
   state.lease.isSummaryFormValid;
 

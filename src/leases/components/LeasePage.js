@@ -44,6 +44,7 @@ import {
   getIsInspectionsFormValid,
   getIsLeaseAreasFormValid,
   getIsLeaseInfoFormValid,
+  getIsRentsFormValid,
   getIsSummaryFormValid,
   getIsTenantsFormValid,
   getLeaseInfoFormTouched,
@@ -144,6 +145,7 @@ type Props = {
   isInspectionsFormValid: boolean,
   isLeaseAreasFormValid: boolean,
   isLeaseInfoFormValid: boolean,
+  isRentsFormValid: boolean,
   isSummaryFormValid: boolean,
   isTenantsFormValid: boolean,
   leaseInfoFormTouched: boolean,
@@ -332,7 +334,7 @@ class PreparerForm extends Component {
     dispatch(destroy('tenants-form'));
 
     dispatch(destroy('billing-edit-form'));
-    dispatch(destroy('rent-edit-form'));
+    dispatch(destroy('rents-form'));
   }
 
   validateForms = () => {
@@ -343,6 +345,7 @@ class PreparerForm extends Component {
       isInspectionsFormValid,
       isLeaseAreasFormValid,
       isLeaseInfoFormValid,
+      isRentsFormValid,
       isSummaryFormValid,
       isTenantsFormValid,
     } = this.props;
@@ -354,6 +357,7 @@ class PreparerForm extends Component {
       isInspectionsFormValid &&
       isLeaseAreasFormValid &&
       isLeaseInfoFormValid &&
+      isRentsFormValid &&
       isSummaryFormValid &&
       isTenantsFormValid
     );
@@ -612,7 +616,13 @@ class PreparerForm extends Component {
             <ContentContainer>
               {isEditMode
                 ? (
-                  <RentEdit initialValues={{rents: rents}}/>
+                  <RentEdit
+                    attributes={attributes}
+                    initialValues={{
+                      basis_of_rents: basisOfRents,
+                      rents: rents,
+                    }}
+                  />
                 ) : (
                   <Rent
                     attributes={attributes}
@@ -688,7 +698,7 @@ class PreparerForm extends Component {
   }
 }
 
-const rentFormSelector = formValueSelector('rent-edit-form');
+const rentFormSelector = formValueSelector('rents-form');
 
 export default flowRight(
   withRouter,
@@ -720,6 +730,7 @@ export default flowRight(
         isInspectionsFormValid: getIsInspectionsFormValid(state),
         isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
         isLeaseInfoFormValid: getIsLeaseInfoFormValid(state),
+        isRentsFormValid: getIsRentsFormValid(state),
         isSummaryFormValid: getIsSummaryFormValid(state),
         isTenantsFormValid: getIsTenantsFormValid(state),
         inspectionFormTouched: getInspectionsFormTouched(state),
@@ -728,7 +739,7 @@ export default flowRight(
         leaseInfoFormTouched: getLeaseInfoFormTouched(state),
         leaseInfoFormValues: getLeaseInfoFormValues(state),
         rentsForm: rentFormSelector(state, 'rents'),
-        rentsTouched: get(state, 'form.rent-edit-form.anyTouched'),
+        rentsTouched: get(state, 'form.rents-form.anyTouched'),
         summaryFormTouched: getSummaryFormTouched(state),
         summaryFormValues: getSummaryFormValues(state),
         tenantsFormTouched: getTenantsFormTouched(state),

@@ -48,6 +48,7 @@ import type {
   ReceiveInspectionsFormValidAction,
   ReceiveLeaseAreasFormValidAction,
   ReceiveLeaseInfoFormValidAction,
+  ReceiveRentsFormValidAction,
   ReceiveSummaryFormValidAction,
   ReceiveTenantsFormValidAction,
 } from './types';
@@ -160,6 +161,9 @@ export const receiveLeaseAreasFormValid = (valid: boolean): ReceiveLeaseAreasFor
 
 export const receiveLeaseInfoFormValid = (valid: boolean): ReceiveLeaseInfoFormValidAction =>
   createAction('mvj/leases/RECEIVE_LEASE_INFO_FORM_VALID')(valid);
+
+export const receiveRentsFormValid = (valid: boolean): ReceiveRentsFormValidAction =>
+  createAction('mvj/leases/RECEIVE_RENTS_FORM_VALID')(valid);
 
 export const receiveSummaryFormValid = (valid: boolean): ReceiveSummaryFormValidAction =>
   createAction('mvj/leases/RECEIVE_SUMMARY_FORM_VALID')(valid);

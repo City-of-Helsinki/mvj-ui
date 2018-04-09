@@ -27,6 +27,7 @@ import type {
   ReceiveInspectionsFormValidAction,
   ReceiveLeaseAreasFormValidAction,
   ReceiveLeaseInfoFormValidAction,
+  ReceiveRentsFormValidAction,
   ReceiveSummaryFormValidAction,
   ReceiveTenantsFormValidAction,
 } from './types';
@@ -152,6 +153,13 @@ const leaseInfoFormValidReducer: Reducer<boolean> = handleActions({
   'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
 }, true);
 
+const rentsFormValidReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_RENTS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveRentsFormValidAction) => {
+    return valid;
+  },
+  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
+}, true);
+
 const summaryFormValidReducer: Reducer<boolean> = handleActions({
   ['mvj/leases/RECEIVE_SUMMARY_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveSummaryFormValidAction) => {
     return valid;
@@ -181,6 +189,7 @@ export default combineReducers({
   isInspectionsFormValid: inspectionsFormValidReducer,
   isLeaseAreasFormValid: leaseAreasFormValidReducer,
   isLeaseInfoFormValid: leaseInfoFormValidReducer,
+  isRentsFormValid: rentsFormValidReducer,
   isSummaryFormValid: summaryFormValidReducer,
   isTenantsFormValid: tenantsFormValidReducer,
   list: leasesListReducer,
