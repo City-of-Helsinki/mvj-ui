@@ -1,139 +1,134 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
-import {formatDateRange,
+import ListItems from '$components/content/ListItems';
+import {
+  formatDate,
+  formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator,
-  getLabelOfOption} from '$util/helpers';
-import {rentBasicInfoIndexTypeOptions,
-  rentBasicInfoRentalPeriodOptions,
-  rentBasicInfoTypeOptions} from '../constants';
+  getAttributeFieldOptions,
+  getLabelOfOption,
+} from '$util/helpers';
+import {rentBasicInfoTypeOptions} from '../constants';
+import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  basicInfo: Object,
+  attributes?: Attributes,
+  rents: Object,
 }
 
-const BasicInfoIndex = ({basicInfo}: Props) => {
-  const {adjustment_end_date,
-    adjustment_start_date,
-    basic_index,
-    basic_index_rounding,
-    bill_amount,
-    billing_type,
-    comment,
-    due_dates,
-    fidex_initial_year_rents,
-    index_type,
-    rental_period,
-    type,
-    x_value,
-    y_value,
-    y_value_start} = basicInfo;
+const BasicInfoIndex = ({attributes, rents}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
+  const cycleOptions = getAttributeFieldOptions(attributes, 'rents.child.children.cycle');
+  const indexTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.index_type');
 
   return (
     <div>
       <Row>
-        <Column medium={10}>
-          <Row>
-            <Column medium={3}>
-              <label>Vuokralaji</label>
-              <p>{type ? getLabelOfOption(rentBasicInfoTypeOptions, type) : '-'}</p>
-            </Column>
-            <Column medium={3}>
-              <label>Vuokrakausi</label>
-              <p>{rental_period ? getLabelOfOption(rentBasicInfoRentalPeriodOptions, rental_period) : '-'}</p>
-            </Column>
-            <Column medium={6}>
-              <label>Indeksin tunnusnumero (laskentalaji)</label>
-              <p>{index_type ? getLabelOfOption(rentBasicInfoIndexTypeOptions, index_type) : '-'}</p>
-            </Column>
-          </Row>
-          <Row>
-            <Column medium={3}>
-              <label>Perusindeksi/pyöristys</label>
-              <p>{basic_index ? basic_index : '-'} / {basic_index_rounding ? basic_index_rounding : '-'}</p>
-            </Column>
-            <Column medium={3}>
-              <Row>
-                <Column medium={6}>
-                  <label>X-luku</label>
-                  <p>{x_value ? x_value : '-'}</p>
-                </Column>
-                <Column medium={6}>
-                  <label>Y-luku</label>
-                  <p>{y_value ? y_value : '-'}</p>
-                </Column>
-              </Row>
-            </Column>
-            <Column medium={3}>
-              <label>Y-alkaen</label>
-              <p>{y_value_start ? y_value_start : '-'}</p>
-            </Column>
-            <Column medium={3}>
-              <label>Tasaus pvm</label>
-              {formatDateRange(adjustment_start_date, adjustment_end_date)}
-            </Column>
-          </Row>
-          {fidex_initial_year_rents && fidex_initial_year_rents.length > 0 &&
-            <div style={{marginBottom: '0.625rem'}}>
-              <Row>
-                <Column medium={3}>
-                  <label>Kiinteä alkuvuosivuokra</label>
-                </Column>
-                <Column medium={3}>
-                  <label>Alkuvuosivuokra-aika</label>
-                </Column>
-              </Row>
-              {fidex_initial_year_rents.map((rent, index) => {
-                return (
-                  <Row key={index}>
-                    <Column medium={3}>
-                      <p style={{marginBottom: '0'}}>{rent.rent ? formatNumberWithThousandSeparator(formatDecimalNumber(rent.rent), '.') : '-'}</p>
-                    </Column>
-                    <Column medium={3}>
-                      <p style={{marginBottom: '0'}}>{formatDateRange(rent.start_date, rent.end_date)}</p>
-                    </Column>
-                    <Column medium={6}>
-                    </Column>
-                  </Row>
-                );
-              })}
-            </div>
-          }
-          <Row>
-            <Column>
-              <label>Kommentti</label>
-              <p>{comment ? comment : '-'}</p>
-            </Column>
-          </Row>
+        <Column small={6} medium={4} large={2}>
+          <label>Vuokralaji</label>
+          <p>{getLabelOfOption(typeOptions, rents.type) || '-'}</p>
         </Column>
-        {billing_type === '0' &&
-          <Column medium={2}>
+        <Column small={6} medium={4} large={2}>
+          <label>Vuokrakausi</label>
+          <p>{getLabelOfOption(cycleOptions, rents.cycle) || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={4}>
+          <label>Indeksin tunnusnumero (laskentalaji)</label>
+          <p>{getLabelOfOption(indexTypeOptions, rents.index_type) || '-'}</p>
+        </Column>
+        {rents.due_dates_type === RentDueDateTypes.CUSTOM &&
+          <Column small={6} medium={4} large={2}>
             <label>Eräpäivät</label>
-            {due_dates && due_dates.length > 0
-              ? (due_dates.map((due_date, index) => {
-                return (<p style={{marginBottom: '0'}} key={index}>{due_date}</p>);
-              }))
-              : <p>Ei eräpäiviä</p>
-            }
+            <ListItems>
+              {rents.due_dates && !!rents.due_dates.length
+                ? (rents.due_dates.map((date, index) => {
+                  return (<p className='no-margin' key={index}>{`${date.day}.${date.month}`}</p>);
+                }))
+                : <p className='no-margin'>Ei eräpäiviä</p>
+              }
+            </ListItems>
           </Column>
         }
-        {billing_type === '1' &&
-          <Column medium={2}>
+        {rents.due_dates_type === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={2}>
             <label>Laskut kpl / vuodessa</label>
-            <p>{bill_amount ? bill_amount : '-'}</p>
+            <p>{rents.due_dates_per_year || '-'}</p>
           </Column>
         }
+      </Row>
+      <Row>
+        <Column small={12} medium={4} large={2}>
+          <label>Perusindeksi/pyöristys</label>
+          <p>{rents.elementary_index || '-'} / {rents.index_rounding || '-'}</p>
+        </Column>
+        <Column small={4} medium={2} large={1}>
+          <label>X-luku</label>
+          <p>{rents.x_value || '-'}</p>
+        </Column>
+        <Column small={4} medium={2} large={1}>
+          <label>Y-luku</label>
+          <p>{rents.y_value || '-'}</p>
+        </Column>
+        <Column small={4} medium={2} large={1}>
+          <label>Y-alkaen</label>
+          <p>{rents.y_value_start || '-'}</p>
+        </Column>
+        <Column small={12} medium={4} large={2}>
+          <label>Tasaus pvm</label>
+          <p>{formatDateRange(rents.equalization_start_date, rents.equalization_end_date) || '-'}</p>
+        </Column>
+      </Row>
+      {rents.fixed_initial_year_rents && !!rents.fixed_initial_year_rents.length &&
+        <ListItems>
+          <p className='sub-title'>Kiinteät alkuvuosivuokrat</p>
+          <Row>
+            <Column small={4} medium={4} large={2}>
+              <label>Kiinteä alkuvuosivuokra</label>
+            </Column>
+            <Column small={4} medium={2} large={2}>
+              <label>Alkupvm</label>
+            </Column>
+            <Column small={4} medium={2} large={2}>
+              <label>Loppupvm</label>
+            </Column>
+          </Row>
+          {rents.fixed_initial_year_rents.map((rent, index) => {
+            return (
+              <Row key={index}>
+                <Column small={4} medium={4} large={2}>
+                  <p className='no-margin'>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.amount), '.') || '-'}</p>
+                </Column>
+                <Column small={4} medium={2} large={2}>
+                  <p className='no-margin'>{formatDate(rent.start_date) || '-'}</p>
+                </Column>
+                <Column small={4} medium={2} large={2}>
+                  <p className='no-margin'>{formatDate(rent.end_date) || '-'}</p>
+                </Column>
+              </Row>
+            );
+          })}
+        </ListItems>
+      }
+      <Row>
+        <Column>
+          <label>Kommentti</label>
+          <p>{rents.note || '-'}</p>
+        </Column>
       </Row>
     </div>
   );
 };
 
-const BasicInfoUtter = ({basicInfo}: Props) => {
+const BasicInfoOneTime = ({rents}: Props) => {
   const {comment,
     rent_amount,
-    type} = basicInfo;
+    type} = rents;
 
   return (
     <div>
@@ -157,13 +152,13 @@ const BasicInfoUtter = ({basicInfo}: Props) => {
   );
 };
 
-const BasicInfoFixed = ({basicInfo}: Props) => {
+const BasicInfoFixed = ({rents}: Props) => {
   const {bill_amount,
     billing_type,
     comment,
     due_dates,
     rent_amount,
-    type} = basicInfo;
+    type} = rents;
 
   return (
     <div>
@@ -204,9 +199,9 @@ const BasicInfoFixed = ({basicInfo}: Props) => {
   );
 };
 
-const BasicInfoFree = ({basicInfo}: Props) => {
+const BasicInfoFree = ({rents}: Props) => {
   const {comment,
-    type} = basicInfo;
+    type} = rents;
 
   return (
     <div>
@@ -226,12 +221,12 @@ const BasicInfoFree = ({basicInfo}: Props) => {
   );
 };
 
-const BasicInfoCalculated = ({basicInfo}: Props) => {
+const BasicInfoManual = ({rents}: Props) => {
   const {bill_amount,
     billing_type,
     comment,
     due_dates,
-    type} = basicInfo;
+    type} = rents;
 
   return (
     <div>
@@ -268,34 +263,35 @@ const BasicInfoCalculated = ({basicInfo}: Props) => {
   );
 };
 
-const BasicInfo = ({basicInfo}: Props) => {
-  const {type} = basicInfo;
+const BasicInfo = ({attributes, rents}: Props) => {
+  const type = get(rents, 'type');
 
   return (
     <div>
-      {type === '0' &&
+      {type === RentTypes.INDEX &&
         <BasicInfoIndex
-          basicInfo={basicInfo}
+          attributes={attributes}
+          rents={rents}
         />
       }
-      {type === '1' &&
-        <BasicInfoUtter
-          basicInfo={basicInfo}
+      {type === RentTypes.ONE_TIME &&
+        <BasicInfoOneTime
+          rents={rents}
         />
       }
-      {type === '2' &&
+      {type === RentTypes.FIXED &&
         <BasicInfoFixed
-          basicInfo={basicInfo}
+          rents={rents}
         />
       }
-      {type === '3' &&
+      {type === RentTypes.FREE &&
         <BasicInfoFree
-          basicInfo={basicInfo}
+          rents={rents}
         />
       }
-      {type === '4' &&
-        <BasicInfoCalculated
-          basicInfo={basicInfo}
+      {type === RentTypes.MANUAL &&
+        <BasicInfoManual
+          rents={rents}
         />
       }
     </div>

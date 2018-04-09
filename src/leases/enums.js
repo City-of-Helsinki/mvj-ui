@@ -32,3 +32,26 @@ export const ConstructabilityStatus = {
   REQUIRES_MEASURES: 'requires_measures',
   COMPLETE: 'complete',
 };
+
+/**
+ * Rent type enumerable.
+ *
+ * @type {{INDEX: string, ONE_TIME: string, FIXED: string, FREE: string, MANUAL: string}}
+ */
+export const RentTypes = {
+  INDEX: 'index',
+  ONE_TIME: 'one_time',
+  FIXED: 'fixed',
+  FREE: 'free',
+  MANUAL: 'manual',
+};
+
+/**
+ * Rent type enumerable.
+ *
+ * @type {{CUSTOM: string, FIXED: string,}}
+ */
+export const RentDueDateTypes = {
+  CUSTOM: 'custom',
+  FIXED: 'fixed',
+};

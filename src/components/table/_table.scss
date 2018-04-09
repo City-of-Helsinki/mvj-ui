@@ -33,6 +33,14 @@
       font-weight: $global-weight-normal;
     }
   }
+
+  tr.no-data {
+    td {
+      background-color: $lightest-gray;
+      text-align: center;
+    }
+  }
+
   &.clickable-row {
     tbody {
       tr {
@@ -41,12 +49,29 @@
           background-color: $engel-lighter !important;
           color: $black !important;
         }
-
-        td.no-data {
-          background-color: $lightest-gray;
-          text-align: center;
-        }
       }
+    }
+  }
+
+  &.secondary-table {
+    border: 1px solid #d7d5d5;
+    margin: 0;
+    margin-bottom: rem-calc(15px);
+
+    thead th {
+      border: none;
+      border-bottom: 1px solid $light-gray;
+      padding: 0.3rem 0.5rem;
+      font-size: rem-calc(13px);
+      font-weight: $semibold;
+      color: $black;
+      background-color: $white;
+    }
+
+    tbody td {
+      border: none;
+      padding: 0.3rem 0.5rem;
+      font-size: rem-calc(14px);
     }
   }
 }
