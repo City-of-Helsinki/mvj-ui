@@ -21,7 +21,6 @@ const RentAdjustments = ({attributes, decisionOptions, rentAdjustments}: Props) 
   const amountTypeOptions = getAttributeFieldOptions(attributes,
     'rents.child.children.rent_adjustments.child.children.amount_type');
 
-  console.log(decisionOptions);
   return (
     <div>
       {(!rentAdjustments || !rentAdjustments.length) && <p>Ei alennuksia tai korotuksia</p>}

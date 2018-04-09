@@ -67,7 +67,6 @@ import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
 import {
-  // displayUIMessage,
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
