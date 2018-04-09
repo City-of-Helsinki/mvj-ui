@@ -528,7 +528,7 @@ export const getContentFixedInitialYearRents = (rent: Object) => {
 
 export const getContentRentDueDate = (rent: Object) => {
   const dueDates = get(rent, 'due_dates', []);
-  dueDates.map((date) => {
+  return dueDates.map((date) => {
     return {
       id: date.id || undefined,
       day: get(date, 'day'),
@@ -1235,7 +1235,8 @@ export const getContentFixedInitialYearRentsForDb = (rent: Object) => {
 
 export const getContentRentDueDatesForDb = (rent: Object) => {
   const dueDates = get(rent, 'due_dates', []);
-  dueDates.map((date) => {
+
+  return dueDates.map((date) => {
     return {
       id: date.id || undefined,
       day: get(date, 'day'),
