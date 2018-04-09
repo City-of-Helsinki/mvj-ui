@@ -2,6 +2,7 @@
 import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -10,15 +11,25 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
-import {rentDiscountAmountTypeOptions,
-  rentDiscountTypeOptions} from '../constants';
-import {decisionOptions, purposeOptions} from '$src/constants';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {genericValidator} from '$components/form/validations';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
   fields: any,
+  decisionOptions: Array<Object>,
 }
 
-const DiscountsEdit = ({fields}: Props) => {
+const RentAdjustmentsEdit = ({attributes, decisionOptions, fields}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes,
+    'rents.child.children.rent_adjustments.child.children.type');
+  const intendedUseOptions = getAttributeFieldOptions(attributes,
+    'basis_of_rents.child.children.intended_use');
+  const amountTypeOptions = getAttributeFieldOptions(attributes,
+    'rents.child.children.rent_adjustments.child.children.amount_type');
+
   return (
     <div>
       {fields && fields.length > 0 && fields.map((discount, index) => {
@@ -36,15 +47,23 @@ const DiscountsEdit = ({fields}: Props) => {
                     component={FieldTypeSelect}
                     label='Tyyppi'
                     name={`${discount}.type`}
-                    options={rentDiscountTypeOptions}
+                    options={typeOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes,
+                        'rents.child.children.rent_adjustments.child.children.type')),
+                    ]}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeSelect}
                     label='Käyttötarkoitus'
-                    name={`${discount}.purpose`}
-                    options={purposeOptions}
+                    name={`${discount}.intended_use`}
+                    options={intendedUseOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes,
+                        'rents.child.children.rent_adjustments.child.children.intended_use')),
+                    ]}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
@@ -54,6 +73,10 @@ const DiscountsEdit = ({fields}: Props) => {
                         component={FieldTypeDatePicker}
                         label='Alkupvm'
                         name={`${discount}.start_date`}
+                        validate={[
+                          (value) => genericValidator(value, get(attributes,
+                            'rents.child.children.rent_adjustments.child.children.start_date')),
+                        ]}
                       />
                     </Column>
                     <Column small={6}>
@@ -61,6 +84,10 @@ const DiscountsEdit = ({fields}: Props) => {
                         component={FieldTypeDatePicker}
                         label='Loppupvm'
                         name={`${discount}.end_date`}
+                        validate={[
+                          (value) => genericValidator(value, get(attributes,
+                            'rents.child.children.rent_adjustments.child.children.end_date')),
+                        ]}
                       />
                     </Column>
                   </Row>
@@ -71,14 +98,22 @@ const DiscountsEdit = ({fields}: Props) => {
                     <Column small={6}>
                       <Field
                         component={FieldTypeText}
-                        name={`${discount}.amount`}
+                        name={`${discount}.full_amount`}
+                        validate={[
+                          (value) => genericValidator(value, get(attributes,
+                            'rents.child.children.rent_adjustments.child.children.full_amount')),
+                        ]}
                       />
                     </Column>
                     <Column small={6}>
                       <Field
                         component={FieldTypeSelect}
                         name={`${discount}.amount_type`}
-                        options={rentDiscountAmountTypeOptions}
+                        options={amountTypeOptions}
+                        validate={[
+                          (value) => genericValidator(value, get(attributes,
+                            'rents.child.children.rent_adjustments.child.children.amount_type')),
+                        ]}
                       />
                     </Column>
                   </Row>
@@ -89,6 +124,10 @@ const DiscountsEdit = ({fields}: Props) => {
                     disabled={true}
                     label="Jäljellä (€)"
                     name={`${discount}.amount_left`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes,
+                        'rents.child.children.rent_adjustments.child.children.amount_left')),
+                    ]}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
@@ -96,8 +135,12 @@ const DiscountsEdit = ({fields}: Props) => {
                     clearable={true}
                     component={FieldTypeSelect}
                     label="Päätös"
-                    name={`${discount}.rule`}
+                    name={`${discount}.decision`}
                     options={decisionOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes,
+                        'rents.child.children.rent_adjustments.child.children.decision')),
+                    ]}
                   />
                 </Column>
               </Row>
@@ -106,7 +149,11 @@ const DiscountsEdit = ({fields}: Props) => {
                   <Field
                     component={FieldTypeText}
                     label='Kommentti'
-                    name={`${discount}.comment`}
+                    name={`${discount}.note`}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes,
+                        'rents.child.children.rent_adjustments.child.children.note')),
+                    ]}
                   />
                 </Column>
               </Row>
@@ -127,4 +174,4 @@ const DiscountsEdit = ({fields}: Props) => {
   );
 };
 
-export default DiscountsEdit;
+export default RentAdjustmentsEdit;
