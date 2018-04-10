@@ -52,7 +52,7 @@ class Table extends Component {
             </tr>
           ))}
           {!data || !data.length &&
-            <tr><td className='no-data' colSpan={dataKeys.length}>{noDataText ? noDataText : 'Ei tuloksia'}</td></tr>
+            <tr className='no-data'><td colSpan={dataKeys.length}>{noDataText ? noDataText : 'Ei tuloksia'}</td></tr>
           }
         </tbody>
       </table>
