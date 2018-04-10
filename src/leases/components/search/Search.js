@@ -26,7 +26,6 @@ type State = {
   address: string,
   customer: string,
   district: string,
-  districts: Array<Object>,
   documentType: string,
   finished: boolean,
   inEffect: boolean,
