@@ -6,6 +6,8 @@ export const required = (value: any, error?: string) => (value ? undefined : (er
 
 export const integer = (value: any, error?: string) => (Number.isInteger(Number(value)) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
 
+export const isDate = (value: any, error?: string) => (value === null || value === undefined || moment(value).isValid() ? undefined : (error ? error : 'Arvon tulee olla päivämäärä'));
+
 export const decimalNumber = (value: any, error?: string) => (value === null || value === undefined || !isNaN(value.toString().replace(',', '.')) ? undefined : (error ? error : 'Arvon tulee olla numero'));
 
 export const min = (value: any, min: number, error?: string) => ((Number(value) >= min) ? undefined : (error ? error : `Minimiarvo on ${min}`));
@@ -28,6 +30,10 @@ export const genericValidator = (value: any, options: Object) => {
   let error = '';
   if(options.required) {
     error = required(value);
+    if(error) {return error;}
+  }
+  if(options.type === 'date') {
+    error = isDate(value);
     if(error) {return error;}
   }
   if(options.type === 'decimal') {
