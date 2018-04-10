@@ -42,7 +42,11 @@ const FieldTypeSelect = ({
   };
 
   const handleChange = (value: string) => {
-    onChange(value || '');
+    if(value !== null && value !== undefined && value !== '') {
+      onChange(value);
+    } else {
+      onChange('');
+    }
   };
 
   return (

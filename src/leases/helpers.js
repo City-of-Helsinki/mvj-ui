@@ -686,77 +686,15 @@ export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTy
 
 };
 
-export const getDistrictOptions = (attributes: Object) => {
-  const choices = get(attributes, 'district.choices', []);
-  if(!choices || choices.length === 0) {
+export const getDistrictOptions = (districts: Array<Object>) => {
+  if(!districts || !districts.length) {
     return [];
   }
-
-  return choices.map((choice) => {
+  return districts.map((choice) => {
     return {
-      value: get(choice, 'value'),
-      label: `${get(choice, 'value')} ${get(choice, 'display_name')}`,
+      value: get(choice, 'identifier'),
+      label: get(choice, 'name'),
     };
-  }).sort(function(a, b){
-    const keyA = a.value,
-      keyB = b.value;
-    if(keyA < keyB) return -1;
-    if(keyA > keyB) return 1;
-    return 0;
-  });
-};
-
-export const getMunicipalityOptions = (attributes: Object) => {
-  const choices = get(attributes, 'municipality.choices', []);
-  if(!choices || choices.length === 0) {
-    return [];
-  }
-
-  return choices.map((choice) => {
-    return {
-      value: get(choice, 'value'),
-      label: `${get(choice, 'value')} ${get(choice, 'display_name')}`,
-    };
-  }).sort(function(a, b){
-    const keyA = a.value,
-      keyB = b.value;
-    if(keyA < keyB) return -1;
-    if(keyA > keyB) return 1;
-    return 0;
-  });
-};
-
-export const getStatusOptions = (attributes: Object) => {
-  const choices = get(attributes, 'status.choices', []);
-  if(!choices || choices.length === 0) {
-    return [];
-  }
-
-  return choices.map((choice) => {
-    return {
-      value: get(choice, 'value'),
-      label: `${get(choice, 'display_name')}`,
-    };
-  });
-};
-
-export const getTypeOptions = (attributes: Object) => {
-  const choices = get(attributes, 'type.choices', []);
-  if(!choices || choices.length === 0) {
-    return [];
-  }
-
-  return choices.map((choice) => {
-    return {
-      value: get(choice, 'value'),
-      label: `${get(choice, 'value')} ${get(choice, 'display_name')}`,
-    };
-  }).sort(function(a, b){
-    const keyA = a.value,
-      keyB = b.value;
-    if(keyA < keyB) return -1;
-    if(keyA > keyB) return 1;
-    return 0;
   });
 };
 

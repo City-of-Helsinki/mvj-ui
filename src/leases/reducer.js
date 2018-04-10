@@ -5,16 +5,18 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {
   Attributes,
-  Comment,
+  CommentList,
   Lease,
-  LeasesList,
-  Lessors,
-  Decisions,
+  LeaseList,
+  LessorList,
+  DecisionList,
+  DistrictList,
   ReceiveAttributesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
   ReceiveLessorsAction,
   ReceiveDecisionsAction,
+  ReceiveDistrictsAction,
   ReceiveCommentsAction,
   ReceiveCommentAttributesAction,
   ReceiveCreatedCommentAction,
@@ -65,8 +67,8 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   },
 }, {});
 
-const leasesListReducer: Reducer<LeasesList> = handleActions({
-  ['mvj/leases/RECEIVE_ALL']: (state: LeasesList, {payload: leases}: ReceiveLeasesAction) => {
+const leasesListReducer: Reducer<LeaseList> = handleActions({
+  ['mvj/leases/RECEIVE_ALL']: (state: LeaseList, {payload: leases}: ReceiveLeasesAction) => {
     return leases;
   },
 }, []);
@@ -77,15 +79,15 @@ const currentLeaseReducer: Reducer<Lease> = handleActions({
   },
 }, {});
 
-const commentsReducer: Reducer<Array<Comment>> = handleActions({
-  ['mvj/leases/RECEIVE_COMMENTS']: (state: Array<Comment>, {payload: comments}: ReceiveCommentsAction) => {
+const commentsReducer: Reducer<CommentList> = handleActions({
+  ['mvj/leases/RECEIVE_COMMENTS']: (state: CommentList, {payload: comments}: ReceiveCommentsAction) => {
     return comments;
   },
-  ['mvj/leases/RECEIVE_CREATED_COMMENT']: (state: Array<Comment>, {payload: comment}: ReceiveCreatedCommentAction) => {
+  ['mvj/leases/RECEIVE_CREATED_COMMENT']: (state: CommentList, {payload: comment}: ReceiveCreatedCommentAction) => {
     const comments = [comment, ...state];
     return comments;
   },
-  ['mvj/leases/RECEIVE_EDITED_COMMENT']: (state: Array<Comment>, {payload: comment}: ReceiveEditedCommentAction) => {
+  ['mvj/leases/RECEIVE_EDITED_COMMENT']: (state: CommentList, {payload: comment}: ReceiveEditedCommentAction) => {
     const comments = [...state];
     const index = comments.findIndex((item) => item.id === comment.id);
     comments[index] = comment;
@@ -99,15 +101,21 @@ const commentAttributesReducer: Reducer<Attributes> = handleActions({
   },
 }, {});
 
-const lessorsReducer: Reducer<Lessors> = handleActions({
-  ['mvj/leases/RECEIVE_LESSORS']: (state: Lessors, {payload: lessors}: ReceiveLessorsAction) => {
+const lessorsReducer: Reducer<LessorList> = handleActions({
+  ['mvj/leases/RECEIVE_LESSORS']: (state: LessorList, {payload: lessors}: ReceiveLessorsAction) => {
     return lessors;
   },
 }, []);
 
-const decisionsReducer: Reducer<Decisions> = handleActions({
-  ['mvj/leases/RECEIVE_DECISIONS']: (state: Decisions, {payload: decisions}: ReceiveDecisionsAction) => {
+const decisionsReducer: Reducer<DecisionList> = handleActions({
+  ['mvj/leases/RECEIVE_DECISIONS']: (state: DecisionList, {payload: decisions}: ReceiveDecisionsAction) => {
     return decisions;
+  },
+}, []);
+
+const districtsReducer: Reducer<DistrictList> = handleActions({
+  ['mvj/leases/RECEIVE_DISTRICTS']: (state: DistrictList, {payload: districts}: ReceiveDistrictsAction) => {
+    return districts;
   },
 }, []);
 
@@ -195,4 +203,5 @@ export default combineReducers({
   list: leasesListReducer,
   lessors: lessorsReducer,
   decisions: decisionsReducer,
+  districts: districtsReducer,
 });

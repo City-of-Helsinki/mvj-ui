@@ -7,38 +7,53 @@ import type {
   Attributes,
   FetchAttributesAction,
   ReceiveAttributesAction,
-  Lessors,
-  FetchLessorsAction,
-  ReceiveLessorsAction,
-  Decisions,
-  FetchDecisionsAction,
-  ReceiveDecisionsAction,
   Lease,
   LeaseId,
   LeaseNotFoundAction,
-  LeasesList,
+  LeaseList,
   CreateLeaseAction,
-  EditLeaseAction,
   PatchLeaseAction,
   FetchLeasesAction,
   FetchSingleLeaseAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
-  Comment,
-  FetchCommentsAction,
-  ReceiveCommentsAction,
-  FetchCommentAttributesAction,
-  ReceiveCommentAttributesAction,
-  CreateCommentAction,
-  ReceiveCreatedCommentAction,
-  EditCommentAction,
-  ReceiveEditedCommentAction,
+} from './types';
+import type {
   HideContactModalAction,
   ShowContactModalAction,
   ContactModalSettings,
   ReceiveContactModalSettingsAction,
   CreateContactAction,
   EditContactAction,
+} from './types';
+import type {
+  DecisionList,
+  FetchDecisionsAction,
+  ReceiveDecisionsAction,
+} from './types';
+import type {
+  DistrictList,
+  FetchDistrictsAction,
+  ReceiveDistrictsAction,
+} from './types';
+import type {
+  LessorList,
+  FetchLessorsAction,
+  ReceiveLessorsAction,
+} from './types';
+import type {
+  Comment,
+  FetchCommentAttributesAction,
+  ReceiveCommentAttributesAction,
+  FetchCommentsAction,
+  CreateCommentAction,
+  EditCommentAction,
+  ReceiveCommentsAction,
+  ReceiveCreatedCommentAction,
+  ReceiveEditedCommentAction,
+} from './types';
+
+import type {
   HideEditModeAction,
   ShowEditModeAction,
   ClearFormValidityFlagsAction,
@@ -59,22 +74,10 @@ export const fetchAttributes = (): FetchAttributesAction =>
 export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAction =>
   createAction('mvj/leases/RECEIVE_ATTRIBUTES')(identifiers);
 
-export const fetchLessors = (): FetchLessorsAction =>
-  createAction('mvj/leases/FETCH_LESSORS')();
-
-export const receiveLessors = (lessors: Lessors): ReceiveLessorsAction =>
-  createAction('mvj/leases/RECEIVE_LESSORS')(lessors);
-
-export const fetchDecisions = (search: string): FetchDecisionsAction =>
-  createAction('mvj/leases/FETCH_DECISIONS')(search);
-
-export const receiveDecisions = (decisions: Decisions): ReceiveDecisionsAction =>
-  createAction('mvj/leases/RECEIVE_DECISIONS')(decisions);
-
 export const fetchLeases = (search: string): FetchLeasesAction =>
   createAction('mvj/leases/FETCH_ALL')(search);
 
-export const receiveLeases = (leases: LeasesList): ReceiveLeasesAction =>
+export const receiveLeases = (leases: LeaseList): ReceiveLeasesAction =>
   createAction('mvj/leases/RECEIVE_ALL')(leases);
 
 export const fetchSingleLease = (id: LeaseId): FetchSingleLeaseAction =>
@@ -85,9 +88,6 @@ export const receiveSingleLease = (lease: Lease): ReceiveSingleLeaseAction =>
 
 export const createLease = (lease: Lease): CreateLeaseAction =>
   createAction('mvj/leases/CREATE')(lease);
-
-export const editLease = (lease: Lease): EditLeaseAction =>
-  createAction('mvj/leases/EDIT')(lease);
 
 export const patchLease = (lease: Lease): PatchLeaseAction =>
   createAction('mvj/leases/PATCH')(lease);
@@ -110,23 +110,35 @@ export const createContact = (contact: Contact): CreateContactAction =>
 export const editContact = (contact: Contact): EditContactAction =>
   createAction('mvj/leases/EDIT_CONTACT')(contact);
 
-export const hideEditMode = (): HideEditModeAction =>
-  createAction('mvj/leases/HIDE_EDIT')();
+export const fetchDecisions = (search: string): FetchDecisionsAction =>
+  createAction('mvj/leases/FETCH_DECISIONS')(search);
 
-export const showEditMode = (): ShowEditModeAction =>
-  createAction('mvj/leases/SHOW_EDIT')();
+export const receiveDecisions = (decisions: DecisionList): ReceiveDecisionsAction =>
+  createAction('mvj/leases/RECEIVE_DECISIONS')(decisions);
 
-export const fetchComments = (leaseId: LeaseId): FetchCommentsAction =>
-  createAction('mvj/leases/FETCH_COMMENTS')(leaseId);
+export const fetchDistricts = (search: string): FetchDistrictsAction =>
+  createAction('mvj/leases/FETCH_DISTRICTS')(search);
 
-export const receiveComments = (comments: Array<Comment>): ReceiveCommentsAction =>
-  createAction('mvj/leases/RECEIVE_COMMENTS')(comments);
+export const receiveDistricts = (districts: DistrictList): ReceiveDistrictsAction =>
+  createAction('mvj/leases/RECEIVE_DISTRICTS')(districts);
+
+export const fetchLessors = (): FetchLessorsAction =>
+  createAction('mvj/leases/FETCH_LESSORS')();
+
+export const receiveLessors = (lessors: LessorList): ReceiveLessorsAction =>
+  createAction('mvj/leases/RECEIVE_LESSORS')(lessors);
 
 export const fetchCommentAttributes = (): FetchCommentAttributesAction =>
   createAction('mvj/leases/FETCH_COMMENT_ATTRIBUTES')();
 
 export const receiveCommentAttributes = (identifiers: Attributes): ReceiveCommentAttributesAction =>
   createAction('mvj/leases/RECEIVE_COMMENT_ATTRIBUTES')(identifiers);
+
+export const fetchComments = (leaseId: LeaseId): FetchCommentsAction =>
+  createAction('mvj/leases/FETCH_COMMENTS')(leaseId);
+
+export const receiveComments = (comments: Array<Comment>): ReceiveCommentsAction =>
+  createAction('mvj/leases/RECEIVE_COMMENTS')(comments);
 
 export const createComment = (comment: Comment): CreateCommentAction =>
   createAction('mvj/leases/CREATE_COMMENT')(comment);
@@ -139,6 +151,12 @@ export const editComment = (comment: Comment): EditCommentAction =>
 
 export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentAction =>
   createAction('mvj/leases/RECEIVE_EDITED_COMMENT')(comment);
+
+export const hideEditMode = (): HideEditModeAction =>
+  createAction('mvj/leases/HIDE_EDIT')();
+
+export const showEditMode = (): ShowEditModeAction =>
+  createAction('mvj/leases/SHOW_EDIT')();
 
 // Actions to manage form validity statuses
 export const clearFormValidFlags = (): ClearFormValidityFlagsAction =>

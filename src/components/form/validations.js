@@ -7,7 +7,7 @@ const decimalPlaces = (n) => {
   return result === null ? 0 : result[1].length;
 };
 
-export const required = (value: any, error?: string) => (value ? undefined : (error ? error : 'Pakollinen kenttä'));
+export const required = (value: any, error?: string) => (value !== null && value !== undefined && value !== '') ? undefined : (error ? error : 'Pakollinen kenttä');
 
 export const integer = (value: any, error?: string) => (Number.isInteger(Number(value)) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
 
