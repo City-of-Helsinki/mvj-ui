@@ -2,6 +2,11 @@
 import type Moment from 'moment';
 import moment from 'moment';
 
+const decimalPlaces = (n) => {
+  let result= /^-?[0-9]+\.([0-9]+)$/.exec(n);
+  return result === null ? 0 : result[1].length;
+};
+
 export const required = (value: any, error?: string) => (value ? undefined : (error ? error : 'Pakollinen kenttä'));
 
 export const integer = (value: any, error?: string) => (Number.isInteger(Number(value)) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
@@ -16,6 +21,10 @@ export const max = (value: any, max: number, error?: string) => ((Number(value) 
 
 export const maxLength = (value: any, max: number, error?: string) => ((!value || value.length <= max) ? undefined : (error ? error : `Maksimipituus on ${max}`));
 
+export const digitsMaxLength = (value: any, max: number, error?: string) => ((value === null || value === undefined || parseInt(value).toString().length <= max) ? undefined : (error ? error : `Kokonaislukuosan maksimipituus on ${max}`));
+
+export const decimalsMaxLength = (value: any, max: number, error?: string) => ((value === null || value === undefined || decimalPlaces(value.toString().replace(',', '.')) <= max) ? undefined : (error ? error : `Desimaaliosan maksimipituus on ${max}`));
+
 export const dateGreaterOrEqual = (date: ?Moment, otherDate: ?Moment, error?: string) => {
   if(!date || !otherDate) {
     return undefined;
@@ -28,6 +37,7 @@ export const genericValidator = (value: any, options: Object) => {
     return undefined;
   }
   let error = '';
+
   if(options.required) {
     error = required(value);
     if(error) {return error;}
@@ -39,6 +49,16 @@ export const genericValidator = (value: any, options: Object) => {
   if(options.type === 'decimal') {
     error = decimalNumber(value);
     if(error) {return error;}
+
+    if(options.max_digits) {
+      error = digitsMaxLength(value, options.max_digits);
+      if(error) {return error;}
+    }
+
+    if(options.decimal_places) {
+      error = decimalsMaxLength(value, options.decimal_places);
+      if(error) {return error;}
+    }
   }
   if(options.type === 'integer') {
     error = integer(value);

@@ -65,6 +65,7 @@ class RentEdit extends Component {
     const decisionOptions = getDecisionsOptions(decisionsOptionData);
     const rentType = get(rents, 'type');
 
+    console.log(attributes);
     return (
       <form onSubmit={handleSubmit}>
         <FormSectionComponent>
