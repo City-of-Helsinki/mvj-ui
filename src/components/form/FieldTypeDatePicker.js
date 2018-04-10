@@ -22,11 +22,7 @@ class FieldTypeDatePicker extends Component {
     const {input: {onBlur}} = this.props;
     const {target: {value}} = e;
     if(value) {
-      if(moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD').isValid()) {
-        onBlur(moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD'));
-      } else {
-        onBlur(null);
-      }
+      onBlur(moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD'));
     } else {
       onBlur(null);
     }

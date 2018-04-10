@@ -189,7 +189,7 @@ function* patchLeaseSaga({payload: lease}): Generator<> {
         break;
       case 400:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        yield put(receiveError(new SubmissionError({...bodyAsJson, _error: 'Virhe'})));
         break;
       case 500:
         yield put(notFound());
