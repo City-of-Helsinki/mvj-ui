@@ -27,7 +27,12 @@ const ApiErrorList = ({errors}) => {
     );
   }
 
-  return <div>{listObjectErrors(errors)}</div>
+  return (
+    <div className='api-error-modal__error-list'>
+      <h5 className="api-error-modal__error-list-heading">Error list</h5>
+      {listObjectErrors(errors)}
+    </div>
+  );
 }
 
 const ApiErrorStackTrace = ({trace}) => (
