@@ -12,11 +12,11 @@ export const getIsFetching: Selector<boolean, void> = (state: RentBasisState): b
 export const getAttributes: Selector<Attributes, void> = (state: RentBasisState): Attributes =>
   state.rentbasis.attributes;
 
-export const getRentCriteria: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
-  state.rentbasis.rentbasis;
-
 export const getRentBasisList: Selector<RentBasisList, void> = (state: RentBasisState): RentBasisList =>
   state.rentbasis.list;
+
+export const getRentBasis: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
+  state.rentbasis.rentbasis;
 
 export const getRentCriteriaInitialValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
   state.rentbasis.initialValues;

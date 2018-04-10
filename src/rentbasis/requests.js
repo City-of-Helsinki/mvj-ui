@@ -3,7 +3,7 @@
 import callApi from '../api/callApi';
 import createUrl from '../api/createUrl';
 
-import type {} from './types';
+import type {RentBasisId} from './types';
 
 export const fetchAttributes = () => {
   return callApi(new Request(createUrl('basis_of_rent/'), {method: 'OPTIONS'}));
@@ -12,7 +12,12 @@ export const fetchAttributes = () => {
 export const fetchRentBasisList = (search: string): Generator<> => {
   return callApi(new Request(createUrl(`basis_of_rent/${search || ''}`)));
 };
+
+export const fetchSingleRentBasis = (id: RentBasisId): Generator<> => {
+  return callApi(new Request(createUrl(`basis_of_rent/${id}/`)));
+};
 //
+
 // export const fetchSingleLease = (id: LeaseId): Generator<> => {
 //   return callApi(new Request(createUrl(`lease/${id}/`)));
 // };

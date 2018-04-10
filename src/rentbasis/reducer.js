@@ -11,7 +11,7 @@ import type {
   RentBasisList,
   ReceiveRentBasisListAction,
   ReceiveRentCriteriaInitialValuesAction,
-  ReceiveSingleRentCriteriaAction,
+  ReceiveSingleRentBasisAction,
 } from './types';
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
@@ -40,8 +40,8 @@ const rentBasisListReducer: Reducer<RentBasisList> = handleActions({
   },
 }, {});
 
-const rentCriteriaReducer: Reducer<RentBasis> = handleActions({
-  ['mvj/rentbasisRECEIVE_SINGLE']: (state: RentBasis, {payload: rentbasis}: ReceiveSingleRentCriteriaAction) => {
+const rentBasisReducer: Reducer<RentBasis> = handleActions({
+  ['mvj/rentbasis/RECEIVE_SINGLE']: (state: RentBasis, {payload: rentbasis}: ReceiveSingleRentBasisAction) => {
     return rentbasis;
   },
 }, {});
@@ -58,9 +58,9 @@ const initialValuesReducer: Reducer<RentBasis> = handleActions({
 
 export default combineReducers({
   attributes: attributesReducer,
-  rentbasis: rentCriteriaReducer,
   initialValues: initialValuesReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
   list: rentBasisListReducer,
+  rentbasis: rentBasisReducer,
 });

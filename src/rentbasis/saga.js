@@ -3,9 +3,9 @@
 import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
+import {SubmissionError} from 'redux-form';
 
 import {displayUIMessage} from '$util/helpers';
-import mockCriteria from './mock-data-single-criteria.json';
 import {getRouteById} from '../root/routes';
 
 import {
@@ -13,11 +13,12 @@ import {
   notFound,
   receiveAttributes,
   receiveRentBasisList,
-  receiveSingleRentCriteria,
+  receiveSingleRentBasis,
 } from './actions';
 import {
   fetchAttributes,
   fetchRentBasisList,
+  fetchSingleRentBasis,
 } from './requests';
 import {receiveError} from '../api/actions';
 
@@ -59,16 +60,34 @@ function* fetchRentBasisListSaga({payload: search}): Generator<> {
   }
 }
 
-function* fetchSingleRentCriteriaSaga(): Generator<> {
-  // TODO: Integrate with API
-  yield put(receiveSingleRentCriteria(mockCriteria));
+function* fetchSingleRentBasisSaga({payload: id}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSingleRentBasis, id);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSingleRentBasis(bodyAsJson));
+        break;
+      case 404:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        // yield put(receiveError(new Error(`404: ${bodyAsJson.detail}`)));
+        break;
+      case 500:
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch leases with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
 }
 
 function* createRentCriteriasSaga({payload: criteria}): Generator<> {
   // TODO: Integrate with API
   const dummyId = 1;
 
-  yield put(receiveSingleRentCriteria(criteria));
+  yield put(receiveSingleRentBasis(criteria));
   yield put(hideEditMode());
   displayUIMessage({title: 'Vuokrausperuste luotu', body: 'Vuokrausperuste on luotu onnistuneesti'});
   yield put(push(`${getRouteById('rentbasis')}/${dummyId}`));
@@ -76,7 +95,7 @@ function* createRentCriteriasSaga({payload: criteria}): Generator<> {
 
 function* editRentCriteriasSaga({payload: criteria}): Generator<> {
   // TODO: Integrate with API
-  yield put(receiveSingleRentCriteria(criteria));
+  yield put(receiveSingleRentBasis(criteria));
   yield put(hideEditMode());
   displayUIMessage({title: 'Vuokrausperuste tallennettu', body: 'Vuokrausperuste on tallennettu onnistuneesti'});
 }
@@ -89,7 +108,7 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/rentbasis/CREATE', createRentCriteriasSaga);
       yield takeLatest('mvj/rentbasis/EDIT', editRentCriteriasSaga);
 
-      yield takeLatest('mvj/rentbasis/FETCH_SINGLE', fetchSingleRentCriteriaSaga);
+      yield takeLatest('mvj/rentbasis/FETCH_SINGLE', fetchSingleRentBasisSaga);
     }),
   ];
 }

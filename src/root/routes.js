@@ -13,7 +13,7 @@ import LoginPage from '../auth/components/LoginPage';
 import NewContactPage from '../contacts/components/NewContactPage';
 import NewRentCriteriaPage from '../rentbasis/components/NewRentCriteriaPage';
 import RentBasisListPage from '../rentbasis/components/RentBasisListPage';
-import RentCriteriaPage from '../rentbasis/components/RentCriteriaPage';
+import RentBasisPage from '../rentbasis/components/RentBasisPage';
 
 export const getRouteById = (id: string): string => {
   const routes = {
@@ -38,7 +38,7 @@ export default
   <Route path={`${getRouteById('leases')}/:leaseId`} component={LeasePage}/>
   <Route path={getRouteById('newrentbasis')} components={NewRentCriteriaPage} />
   <Route path={getRouteById('rentbasis')} components={RentBasisListPage} />
-  <Route path={`${getRouteById('rentbasis')}/:criteriaId`} components={RentCriteriaPage} />
+  <Route path={`${getRouteById('rentbasis')}/:rentBasisId`} components={RentBasisPage} />
   <Route path={getRouteById('callback')} components={CallbackPage} />
   <Route path={getRouteById('logout')} components={LoginPage} />
   <Route path="*" component={ErrorPage}/>

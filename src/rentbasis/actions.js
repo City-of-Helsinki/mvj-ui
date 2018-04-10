@@ -9,13 +9,15 @@ import type {
   RentBasisList,
   FetchRentBasisListAction,
   ReceiveRentBasisListAction,
+  RentBasisId,
+  RentBasis,
+  FetchSingleRentBasisAction,
+  ReceiveSingleRentBasisAction,
+
   CreateRentCriteriaAction,
   EditRentCriteriaAction,
-  FetchSingleRentCriteriaAction,
   HideEditModeAction,
   ReceiveRentCriteriaInitialValuesAction,
-  ReceiveSingleRentCriteriaAction,
-  RentBasis,
   RentBasisNotFoundAction,
   ShowEditModeAction,
 } from './types';
@@ -32,13 +34,13 @@ export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAct
 export const fetchRentBasisList = (search: string): FetchRentBasisListAction =>
   createAction('mvj/rentbasis/FETCH_ALL')(search);
 
-export const fetchSingleRentCriteria = (): FetchSingleRentCriteriaAction =>
-  createAction('mvj/rentbasis/FETCH_SINGLE')();
+export const fetchSingleRentBasis = (id: RentBasisId): FetchSingleRentBasisAction =>
+  createAction('mvj/rentbasis/FETCH_SINGLE')(id);
 
 export const receiveRentBasisList = (rentbasis: RentBasisList): ReceiveRentBasisListAction =>
   createAction('mvj/rentbasis/RECEIVE_ALL')(rentbasis);
 
-export const receiveSingleRentCriteria = (rentbasis: RentBasis): ReceiveSingleRentCriteriaAction =>
+export const receiveSingleRentBasis = (rentbasis: RentBasis): ReceiveSingleRentBasisAction =>
   createAction('mvj/rentbasis/RECEIVE_SINGLE')(rentbasis);
 
 export const createRentCriteria = (rentbasis: RentBasis): CreateRentCriteriaAction =>

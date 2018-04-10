@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
@@ -13,36 +14,43 @@ import RentCriteriaInfo from './RentCriteriaInfo';
 import RentCriteriaReadonly from './RentCriteriaReadonly';
 import {
   editRentCriteria,
-  fetchSingleRentCriteria,
+  fetchAttributes,
+  fetchSingleRentBasis,
   hideEditMode,
   initializeRentCriteria,
   showEditMode,
 } from '../actions';
 import {
+  getAttributes,
   getIsEditMode,
   getIsFetching,
-  getRentCriteria,
+  getRentBasis,
   getRentCriteriaFormValues,
 } from '../selectors';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
+
+import type {Attributes, RentBasis} from '../types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
-  criteria: Object,
+  attributes: Attributes,
   editedCriteria: Object,
   editRentCriteria: Function,
-  fetchSingleRentCriteria: Function,
+  fetchAttributes: Function,
+  fetchSingleRentBasis: Function,
   hideEditMode: Function,
   initializeRentCriteria: Function,
   isEditMode: boolean,
   isFetching: boolean,
+  params: Object,
   receiveTopNavigationSettings: Function,
+  rentBasis: RentBasis,
   router: Object,
   showEditMode: Function,
 }
 
-class RentCriteriaPage extends Component {
+class RentBasisPage extends Component {
   props: Props
 
   static contextTypes = {
@@ -50,19 +58,26 @@ class RentCriteriaPage extends Component {
   };
 
   componentWillMount() {
-    const {fetchSingleRentCriteria, receiveTopNavigationSettings} = this.props;
+    const {
+      fetchAttributes,
+      fetchSingleRentBasis,
+      params: {rentBasisId},
+      receiveTopNavigationSettings,
+    } = this.props;
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById('rentbasis'),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
-    fetchSingleRentCriteria();
+
+    fetchSingleRentBasis(rentBasisId);
+    fetchAttributes();
   }
 
   copyCriteria = () => {
-    const {criteria, initializeRentCriteria, router} = this.props;
-    initializeRentCriteria(criteria);
+    const {initializeRentCriteria, rentBasis, router} = this.props;
+    initializeRentCriteria(rentBasis);
     return router.push({
       pathname: getRouteById('newrentcriteria'),
     });
@@ -79,13 +94,13 @@ class RentCriteriaPage extends Component {
   }
 
   showEditMode = () => {
-    const {criteria, initializeRentCriteria, showEditMode} = this.props;
-    initializeRentCriteria(criteria);
+    const {initializeRentCriteria, rentBasis, showEditMode} = this.props;
+    initializeRentCriteria(rentBasis);
     showEditMode();
   }
 
   render() {
-    const {criteria, isEditMode, isFetching} = this.props;
+    const {attributes, isEditMode, isFetching, rentBasis} = this.props;
 
     if(isFetching) {
       return (
@@ -113,13 +128,19 @@ class RentCriteriaPage extends Component {
           }
           infoComponent={
             <RentCriteriaInfo
-              identifier={criteria.id}
+              identifier={rentBasis.id}
             />
           }
         />
         {isEditMode
-          ? <RentCriteriaEdit criteria={criteria} />
-          : <RentCriteriaReadonly criteria={criteria} />
+          ? (
+            <RentCriteriaEdit criteria={rentBasis} />
+          ) : (
+            <RentCriteriaReadonly
+              attributes={attributes}
+              rentBasis={rentBasis}
+            />
+          )
         }
       </PageContainer>
     );
@@ -128,23 +149,26 @@ class RentCriteriaPage extends Component {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    criteria: getRentCriteria(state),
+    attributes: getAttributes(state),
     editedCriteria: getRentCriteriaFormValues(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
+    rentBasis: getRentBasis(state),
   };
 };
 
 export default flowRight(
+  withRouter,
   connect(
     mapStateToProps,
     {
       editRentCriteria,
-      fetchSingleRentCriteria,
+      fetchAttributes,
+      fetchSingleRentBasis,
       hideEditMode,
       initializeRentCriteria,
       receiveTopNavigationSettings,
       showEditMode,
     }
   ),
-)(RentCriteriaPage);
+)(RentBasisPage);

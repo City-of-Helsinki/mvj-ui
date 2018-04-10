@@ -13,7 +13,7 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import PageContainer from '$components/content/PageContainer';
 import {createRentCriteria} from '../actions';
-import {getRentCriteria} from '../selectors';
+import {getRentBasis} from '../selectors';
 import type {RootState} from '$src/root/types';
 
 type Props = {
@@ -87,7 +87,7 @@ class NewRentCriteriaPage extends Component {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    criteria: getRentCriteria(state),
+    criteria: getRentBasis(state),
   };
 };
 

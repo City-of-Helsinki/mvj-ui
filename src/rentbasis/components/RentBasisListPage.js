@@ -80,6 +80,7 @@ class RentBasisListPage extends Component {
 
   componentDidMount = () => {
     const {router: {location: {query}}} = this.props;
+    query.limit = undefined;
     this.search.initialize(query);
   }
 
@@ -169,8 +170,7 @@ class RentBasisListPage extends Component {
       return {
         id: item.id,
         property_identifier: get(item, 'property_identifiers[0].identifier'),
-        management: get(item, 'management'),
-        financing: get(item, 'financing'),
+        intended_use: get(item, 'rent_rates[0].intended_use.id') || get(item, 'rent_rates[0].intended_use'),
         start_date: get(item, 'start_date'),
         end_date: get(item, 'end_date'),
       };
@@ -194,8 +194,7 @@ class RentBasisListPage extends Component {
     const rentBasisList = this.getRentBasisList(rentBasisListData);
     const maxPage = this.getRentBasisMaxPage(rentBasisListData);
 
-    const managementOptions = getAttributeFieldOptions(attributes, 'management');
-    const financingOptions = getAttributeFieldOptions(attributes, 'financing');
+    const intendedUseOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.intended_use');
 
     return (
       <PageContainer>
@@ -226,8 +225,7 @@ class RentBasisListPage extends Component {
               data={rentBasisList}
               dataKeys={[
                 {key: 'property_identifier', label: 'Kiinteistötunnus'},
-                {key: 'management', label: 'Hallintamuoto', renderer: (val) => val ? getLabelOfOption(managementOptions, val) : '-'},
-                {key: 'financing', label: 'Rahoitusmuoto', renderer: (val) => val ? getLabelOfOption(financingOptions, val) : '-'},
+                {key: 'intended_use', label: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(intendedUseOptions, val) : '-'},
                 {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
                 {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
               ]}
