@@ -65,6 +65,7 @@ class ContactListPage extends Component {
     });
 
     const page = Number(query.page);
+
     if(!page || !isNumber(page) || query.page <= 1) {
       this.setState({activePage: 1});
       query.limit = PAGE_SIZE;
@@ -99,6 +100,7 @@ class ContactListPage extends Component {
     const {router} = this.context;
 
     query.limit = PAGE_SIZE;
+
     if(activePage > 1) {
       query.page = activePage;
       query.offset = (activePage - 1) * PAGE_SIZE;
@@ -106,10 +108,12 @@ class ContactListPage extends Component {
       query.page = undefined;
       query.offset = undefined;
     }
+
     fetchContacts(getSearchQuery(query));
 
     query.offset = undefined;
     query.limit = undefined;
+
     return router.push({
       pathname: getRouteById('contacts'),
       query,
@@ -211,7 +215,6 @@ class ContactListPage extends Component {
               title={`Löytyi ${count} kpl`}
             />
             <Table
-              amount={contacts.length}
               data={contacts}
               dataKeys={[
                 {key: 'first_name', label: 'Etunimi'},

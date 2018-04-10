@@ -17,7 +17,7 @@ import {financialMethodOptions,
   priceTypeOptions,
   purposeOptions} from '$src/constants';
 import type {RootState} from '$src/root/types';
-import {getRentCriteriaInitialValues} from '$src/rentcriterias/selectors';
+import {getRentCriteriaInitialValues} from '$src/rentbasis/selectors';
 
 type RealEstateIdProps = {
   fields: any,
@@ -278,7 +278,7 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
   );
 };
 
-const formName = 'edit-rent-criteria-form';
+const formName = 'rent-basis-form';
 
 const mapStateToProps = (state: RootState) => {
   return {

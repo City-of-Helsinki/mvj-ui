@@ -352,5 +352,7 @@ export default connect(
   {
     fetchDistricts,
     receiveDistricts,
-  }
+  },
+  null,
+  {withRef: true},
 )(Search);

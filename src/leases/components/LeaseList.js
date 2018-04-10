@@ -99,7 +99,8 @@ class LeaseList extends Component {
 
   componentDidMount = () => {
     const {router: {location: {query}}} = this.props;
-    this.search.initialize(query);
+    this.search.getWrappedInstance().initialize(query);
+    // this.search;
   }
 
   showModal = () => {

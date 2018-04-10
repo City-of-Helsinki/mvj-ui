@@ -32,7 +32,7 @@ class NewRentCriteriaPage extends Component {
   componentWillMount() {
     const {receiveTopNavigationSettings} = this.props;
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('rentcriterias'),
+      linkUrl: getRouteById('rentbasis'),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
@@ -41,7 +41,7 @@ class NewRentCriteriaPage extends Component {
   handleCancel = () => {
     const {router} = this.context;
     return router.push({
-      pathname: getRouteById('rentcriterias'),
+      pathname: getRouteById('rentbasis'),
     });
   }
 

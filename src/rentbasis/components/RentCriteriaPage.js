@@ -53,7 +53,7 @@ class RentCriteriaPage extends Component {
     const {fetchSingleRentCriteria, receiveTopNavigationSettings} = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('rentcriterias'),
+      linkUrl: getRouteById('rentbasis'),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
