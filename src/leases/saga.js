@@ -8,6 +8,7 @@ import {displayUIMessage} from '$util/helpers';
 
 import {
   hideContactModal,
+  hideEditMode,
   receiveContactModalSettings,
   receiveCommentAttributes,
   receiveComments,
@@ -183,6 +184,7 @@ function* patchLeaseSaga({payload: lease}): Generator<> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
+        yield put(hideEditMode());
         displayUIMessage({title: 'Vuokraus tallennettu', body: 'Vuokraus on tallennettu onnistuneesti'});
         break;
       case 400:

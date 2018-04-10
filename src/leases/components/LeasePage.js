@@ -257,7 +257,6 @@ class PreparerForm extends Component {
 
   save = () => {
     const {
-      clearFormValidFlags,
       areasFormValues,
       leaseInfoFormValues,
       summaryFormValues,
@@ -269,7 +268,6 @@ class PreparerForm extends Component {
       tenantsFormValues,
 
       currentLease,
-      hideEditMode,
       patchLease,
     } = this.props;
 
@@ -312,12 +310,7 @@ class PreparerForm extends Component {
     }
 
     patchLease(payload);
-
-    hideEditMode();
     this.hideModal('SaveLease');
-
-    this.destroyAllForms();
-    clearFormValidFlags();
   }
 
   destroyAllForms = () => {
@@ -490,7 +483,11 @@ class PreparerForm extends Component {
               isSaveDisabled={!areFormsValid || activeTab.toString() === '6'}
               onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
               onCommentClick={this.toggleCommentPanel}
-              onEditClick={showEditMode}
+              onEditClick={() => {
+                this.destroyAllForms();
+                clearFormValidFlags();
+                showEditMode();
+              }}
               onSaveClick={() => this.showModal('SaveLease')}
             />
           }
