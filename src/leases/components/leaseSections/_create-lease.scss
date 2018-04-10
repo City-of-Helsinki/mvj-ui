@@ -3,32 +3,4 @@
     line-height: 1;
     padding-top: 20px;
   }
-
-  .Select {
-    position: relative;
-  }
-
-  .Select-menu-outer {
-    width: 270px;
-    max-height: 170px;
-    position: absolute;
-    margin-top: 0.3rem;
-  }
-
-  .Select-menu {
-  	max-height: 168px;
-  }
-  .Select-menu::-webkit-scrollbar-track {
-  	border: none;
-  	background-color: none;
-  }
-
-  .Select-menu::-webkit-scrollbar {
-  	width: 10px;
-  	background-color: $white;
-  }
-
-  .Select-menu::-webkit-scrollbar-thumb {
-  	background-color: $medium-gray;
-  }
 }

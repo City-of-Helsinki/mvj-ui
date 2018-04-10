@@ -1,24 +1,32 @@
 // @flow
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import toArray from 'lodash/toArray';
 import debounce from 'lodash/debounce';
 
-import * as contentHelpers from '$src/leases/helpers';
+import {getDistrictOptions} from '$src/leases/helpers';
+import {getAttributeFieldOptions, getSearchQuery} from '$util/helpers';
+import {fetchDistricts, receiveDistricts} from '$src/leases/actions';
+import {getDistricts} from '$src/leases/selectors';
 import SelectInput from '$components/inputs/SelectInput';
 import SingleCheckboxInput from '$components/inputs/SingleCheckboxInput';
 import TextInput from '$components/inputs/TextInput';
 
 type Props = {
   attributes: Object,
+  districts: Array<Object>,
+  fetchDistricts: Function,
   onSearch: Function,
+  receiveDistricts: Function,
 }
 
 type State = {
   address: string,
   customer: string,
   district: string,
+  districts: Array<Object>,
   documentType: string,
   finished: boolean,
   inEffect: boolean,
@@ -58,6 +66,22 @@ class Search extends Component {
     sequence: '',
     type: '',
     types: [],
+  }
+
+  componentWillUpdate(nextProps: Object, nextState: Object) {
+    const {fetchDistricts, receiveDistricts} = this.props;
+    if (this.state.municipality !== nextState.municipality) {
+      receiveDistricts([]);
+      if(nextState.municipality) {
+        const query = {
+          limit: 1000,
+          municipality: nextState.municipality,
+        };
+        fetchDistricts(getSearchQuery(query));
+      } else {
+        this.setState({district: ''});
+      }
+    }
   }
 
   initialize = (query: Object) => {
@@ -134,7 +158,10 @@ class Search extends Component {
   }
 
   render () {
-    const {attributes} = this.props;
+    const {
+      attributes,
+      districts,
+    } = this.props;
     const {
       address,
       customer,
@@ -155,9 +182,9 @@ class Search extends Component {
       types,
     } = this.state;
 
-    const districtOptions = contentHelpers.getDistrictOptions(attributes);
-    const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
-    const typeOptions = contentHelpers.getTypeOptions(attributes);
+    const districtOptions = getDistrictOptions(districts);
+    const municipalityOptions = getAttributeFieldOptions(attributes, 'municipality');
+    const typeOptions = getAttributeFieldOptions(attributes, 'type');
 
     return (
       <div className='search'>
@@ -317,4 +344,14 @@ class Search extends Component {
   }
 }
 
-export default Search;
+export default connect(
+  state => {
+    return {
+      districts: getDistricts(state),
+    };
+  },
+  {
+    fetchDistricts,
+    receiveDistricts,
+  }
+)(Search);

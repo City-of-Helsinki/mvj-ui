@@ -5,17 +5,25 @@ import {Field, reduxForm, formValueSelector} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import {Row, Column} from 'react-foundation';
 
-import * as contentHelpers from '../../helpers';
+import {getDistrictOptions} from '../../helpers';
 import Button from '$components/button/Button';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import {required} from '$components/form/validations';
+import {fetchDistricts, receiveDistricts} from '$src/leases/actions';
+import {getDistricts} from '$src/leases/selectors';
+import {getAttributeFieldOptions, getSearchQuery} from '$util/helpers';
+
+import type {DistrictList} from '$src/leases/types';
 
 type Props = {
   attributes: Object,
   district: string,
+  districts: DistrictList,
+  fetchDistricts: Function,
   municipality: string,
   onSubmit: Function,
+  receiveDistricts: Function,
   type: string,
   valid: boolean,
 }
@@ -23,19 +31,35 @@ type Props = {
 class CreateLease extends Component {
   props: Props
 
+  componentWillReceiveProps(nextProps) {
+    if(this.props.municipality !== nextProps.municipality) {
+      const {fetchDistricts, receiveDistricts} = this.props;
+      receiveDistricts([]);
+
+      if(nextProps.municipality) {
+        const query = {
+          limit: 1000,
+          municipality: nextProps.municipality,
+        };
+        fetchDistricts(getSearchQuery(query));
+      }
+    }
+  }
+
   render () {
     const {
       attributes,
       district,
+      districts,
       municipality,
       onSubmit,
       type,
       valid,
     } = this.props;
 
-    const districtOptions = contentHelpers.getDistrictOptions(attributes);
-    const municipalityOptions = contentHelpers.getMunicipalityOptions(attributes);
-    const typeOptions = contentHelpers.getTypeOptions(attributes);
+    const districtOptions = getDistrictOptions(districts);
+    const municipalityOptions = getAttributeFieldOptions(attributes, 'municipality');
+    const typeOptions = getAttributeFieldOptions(attributes, 'type');
 
     return (
       <form className='create-lease-form'>
@@ -111,10 +135,15 @@ export default flowRight(
     state => {
       return {
         district: selector(state, 'district'),
+        districts: getDistricts(state),
         municipality: selector(state, 'municipality'),
         type: selector(state, 'type'),
       };
     },
+    {
+      fetchDistricts,
+      receiveDistricts,
+    }
   ),
   reduxForm({
     form: formName,

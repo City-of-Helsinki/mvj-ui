@@ -16,6 +16,16 @@
     margin-bottom: 20px;
   }
 
+  &__error-list {
+    ul li {
+      list-style: square;
+    }
+  }
+
+  &__error-list-heading {
+    margin-bottom: 10px;
+  }
+
   &__trace-heading {
     margin-bottom: 10px;
   }

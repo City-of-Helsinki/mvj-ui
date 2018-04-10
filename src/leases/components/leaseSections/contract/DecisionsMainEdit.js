@@ -12,14 +12,14 @@ import {fetchDecisions} from '$src/leases/actions';
 import {getDecisionsOptions, getSearchQuery} from '$src/util/helpers';
 import {getDecisions} from '$src/leases/selectors';
 
-import type {Attributes, Decisions} from '$src/leases/types';
+import type {Attributes, DecisionList} from '$src/leases/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
   attributes: Attributes,
   contracts: Array<Object>,
   decisions: Array<Object>,
-  decisionsOptionData: Decisions,
+  decisionsOptionData: DecisionList,
   fetchDecisions: Function,
   inspections: Array<Object>,
   params: Object,

@@ -33,6 +33,7 @@ const BasisOfRents = ({attributes, basisOfRents}: Props) => {
           {key: 'year_rent_index_100', label: 'Perusvuosivuokra €/v (ind 100)', renderer: (val) => formatNumberWithThousandSeparator(val) || '-'},
           {key: 'year_rent_index', label: 'Alkuvuosivuokra €/v (ind)', renderer: (val) => formatNumberWithThousandSeparator(val) || '-'},
         ]}
+        noDataText='Ei vuokranperusteita'
       />
     </div>
   );

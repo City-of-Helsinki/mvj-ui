@@ -13,7 +13,7 @@ const TableFixedHeader = ({body, headers}: Props) => {
         <div className="table-fixed-header__header-border" />
         <table>
           <thead>
-            {headers && headers.length > 0 &&
+            {headers && !!headers.length &&
               <tr>
                 {headers.map((header, index) => <th key={index}>{header}<div>{header}</div></th>)}
               </tr>
