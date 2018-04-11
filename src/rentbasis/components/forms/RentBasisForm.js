@@ -11,19 +11,18 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
-import {financialMethodOptions,
-  managementMethodOptions,
-  plotTypeOptions,
-  priceTypeOptions,
-  purposeOptions} from '$src/constants';
-import type {RootState} from '$src/root/types';
-import {getRentCriteriaInitialValues} from '$src/rentbasis/selectors';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {getRentBasisInitialValues} from '$src/rentbasis/selectors';
 
-type RealEstateIdProps = {
+import type {Attributes} from '$src/rentbasis/types';
+import type {RootState} from '$src/root/types';
+
+
+type PropertyIdentifiersProps = {
   fields: any,
 }
 
-const renderRealEstateIds = ({fields}: RealEstateIdProps) => {
+const renderPropertyIdentifiers = ({fields}: PropertyIdentifiersProps) => {
   return (
     <div>
       <label className="mvj-form-field-label">Kiinteisötunnukset</label>
@@ -33,7 +32,7 @@ const renderRealEstateIds = ({fields}: RealEstateIdProps) => {
             <Field
               className='list-item'
               component={FieldTypeText}
-              name={field}
+              name={`${field}.identifier`}
             />
           </Column>
           <Column small={4}>
@@ -73,7 +72,7 @@ const renderDecisions = ({fields}: DecisionsProps) => {
             <Field
               className='list-item'
               component={FieldTypeText}
-              name={field}
+              name={`${field}.identifier`}
             />
           </Column>
           <Column small={4}>
@@ -99,11 +98,15 @@ const renderDecisions = ({fields}: DecisionsProps) => {
   );
 };
 
-type PricesProps = {
+type RentRatesProps = {
+  attributes: Attributes,
   fields: any,
 }
 
-const renderPrices = ({fields}: PricesProps) => {
+const renderRentRates = ({attributes, fields}: RentRatesProps) => {
+  const intendedUseOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.intended_use');
+  const periodOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.period');
+
   return (
     <div>
       <p className="sub-title">Hinnat</p>
@@ -118,25 +121,22 @@ const renderPrices = ({fields}: PricesProps) => {
             <Row key={index}>
               <Column small={4} medium={4} large={2}>
                 <Field
-                  className='list-item'
                   component={FieldTypeSelect}
-                  name={`${field}.purpose`}
-                  options={purposeOptions}
+                  name={`${field}.intended_use`}
+                  options={intendedUseOptions}
                 />
               </Column>
               <Column small={3} medium={2} large={1}>
                 <Field
-                  className='list-item'
                   component={FieldTypeText}
                   name={`${field}.amount`}
                 />
               </Column>
               <Column small={3} medium={2} large={1}>
                 <Field
-                  className='list-item'
                   component={FieldTypeSelect}
-                  name={`${field}.unit`}
-                  options={priceTypeOptions}
+                  name={`${field}.period`}
+                  options={periodOptions}
                 />
               </Column>
               <Column small={2} medium={2} large={1}>
@@ -165,11 +165,16 @@ const renderPrices = ({fields}: PricesProps) => {
 };
 
 type Props = {
+  attributes: Attributes,
   initialValues: Object,
   handleSubmit: Function,
 }
 
-const EditRentCriteriaForm = ({handleSubmit}: Props) => {
+const RentBasisForm = ({attributes, handleSubmit}: Props) => {
+  const plotTypeOptions = getAttributeFieldOptions(attributes, 'plot_type');
+  const managementOptions = getAttributeFieldOptions(attributes, 'management');
+  const financingOptions = getAttributeFieldOptions(attributes, 'financing');
+
   return (
     <form onSubmit={handleSubmit}>
       <FormSection>
@@ -206,31 +211,31 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
         <Row>
           <Column small={6} medium={4} large={3}>
             <FieldArray
-              component={renderRealEstateIds}
-              name="real_estate_ids"
+              component={renderPropertyIdentifiers}
+              name="property_identifiers"
             />
           </Column>
           <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeText}
               label="Asemakaava"
-              name="plan"
+              name="detailed_plan_identifier"
             />
           </Column>
           <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeSelect}
               label='Hallintamuoto'
-              name='management_method'
-              options={managementMethodOptions}
+              name='management'
+              options={managementOptions}
             />
           </Column>
           <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeSelect}
               label='Rahoitusmuoto'
-              name='financial_method'
-              options={financialMethodOptions}
+              name='financing'
+              options={financingOptions}
             />
           </Column>
         </Row>
@@ -245,7 +250,7 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
             <Field
               component={FieldTypeDatePicker}
               label='Vuokraoikeus päättyy'
-              name='rental_right_end_date'
+              name='lease_rights_end_date'
             />
           </Column>
           <Column small={6} medium={4} large={2}>
@@ -259,8 +264,9 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
         <Row>
           <Column>
             <FieldArray
-              component={renderPrices}
-              name="prices"
+              attributes={attributes}
+              component={renderRentRates}
+              name="rent_rates"
             />
           </Column>
         </Row>
@@ -269,7 +275,7 @@ const EditRentCriteriaForm = ({handleSubmit}: Props) => {
             <Field
               component={FieldTypeText}
               label="Kommentti"
-              name="comment"
+              name="note"
             />
           </Column>
         </Row>
@@ -282,7 +288,7 @@ const formName = 'rent-basis-form';
 
 const mapStateToProps = (state: RootState) => {
   return {
-    initialValues: getRentCriteriaInitialValues(state),
+    initialValues: getRentBasisInitialValues(state),
   };
 };
 
@@ -293,4 +299,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-)(EditRentCriteriaForm);
+)(RentBasisForm);

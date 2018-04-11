@@ -16,7 +16,7 @@ type Props = {
   rentBasis: RentBasis,
 }
 
-const RentCriteriaReadonly = ({attributes, rentBasis}: Props) => {
+const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
   const plotTypeOptions = getAttributeFieldOptions(attributes, 'plot_type');
   const managementOptions = getAttributeFieldOptions(attributes, 'management');
   const financingOptions = getAttributeFieldOptions(attributes, 'financing');
@@ -31,7 +31,7 @@ const RentCriteriaReadonly = ({attributes, rentBasis}: Props) => {
         <Row>
           <Column small={6} medium={4} large={3}>
             <label>Tonttityyppi</label>
-            <p>{getLabelOfOption( plotTypeOptions, rentBasis.plot_type) || '-'}</p>
+            <p>{getLabelOfOption(plotTypeOptions, rentBasis.plot_type) || '-'}</p>
           </Column>
           <Column small={6} medium={8} large={4}>
             <Row>
@@ -133,4 +133,4 @@ const RentCriteriaReadonly = ({attributes, rentBasis}: Props) => {
   );
 };
 
-export default RentCriteriaReadonly;
+export default RentBasisReadonly;

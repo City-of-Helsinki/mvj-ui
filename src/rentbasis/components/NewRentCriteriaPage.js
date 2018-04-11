@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
+import RentBasisForm from './forms/RentBasisForm';
 
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
@@ -70,7 +70,7 @@ class NewRentCriteriaPage extends Component {
           <h2>Uusi vuokrausperuste</h2>
           <div className="divider" />
           <GreenBoxEdit>
-            <EditRentCriteriaForm
+            <RentBasisForm
               initialValues={{
                 decisions: [''],
                 prices: [{}],

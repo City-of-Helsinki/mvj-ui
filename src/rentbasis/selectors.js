@@ -18,8 +18,8 @@ export const getRentBasisList: Selector<RentBasisList, void> = (state: RentBasis
 export const getRentBasis: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
   state.rentbasis.rentbasis;
 
-export const getRentCriteriaInitialValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
+export const getRentBasisInitialValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
   state.rentbasis.initialValues;
 
-export const getRentCriteriaFormValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
+export const getRentBasisFormValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
   get(state, 'form.rent-basis-form.values');

@@ -9,9 +9,9 @@ import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
-import RentCriteriaEdit from './RentCriteriaEdit';
-import RentCriteriaInfo from './RentCriteriaInfo';
-import RentCriteriaReadonly from './RentCriteriaReadonly';
+import RentBasisEdit from './RentBasisEdit';
+import RentBasisInfo from './RentBasisInfo';
+import RentBasisReadonly from './RentBasisReadonly';
 import {
   editRentCriteria,
   fetchAttributes,
@@ -25,7 +25,7 @@ import {
   getIsEditMode,
   getIsFetching,
   getRentBasis,
-  getRentCriteriaFormValues,
+  getRentBasisFormValues,
 } from '../selectors';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
@@ -35,7 +35,7 @@ import type {RootState} from '$src/root/types';
 
 type Props = {
   attributes: Attributes,
-  editedCriteria: Object,
+  editedRentBasis: Object,
   editRentCriteria: Function,
   fetchAttributes: Function,
   fetchSingleRentBasis: Function,
@@ -84,8 +84,8 @@ class RentBasisPage extends Component {
   }
 
   saveCriteria = () => {
-    const {editRentCriteria, editedCriteria} = this.props;
-    editRentCriteria(editedCriteria);
+    const {editRentCriteria, editedRentBasis} = this.props;
+    editRentCriteria(editedRentBasis);
   }
 
   hideEditMode = () => {
@@ -127,16 +127,19 @@ class RentBasisPage extends Component {
             />
           }
           infoComponent={
-            <RentCriteriaInfo
+            <RentBasisInfo
               identifier={rentBasis.id}
             />
           }
         />
         {isEditMode
           ? (
-            <RentCriteriaEdit criteria={rentBasis} />
+            <RentBasisEdit
+              attributes={attributes}
+              rentBasis={rentBasis}
+            />
           ) : (
-            <RentCriteriaReadonly
+            <RentBasisReadonly
               attributes={attributes}
               rentBasis={rentBasis}
             />
@@ -150,7 +153,7 @@ class RentBasisPage extends Component {
 const mapStateToProps = (state: RootState) => {
   return {
     attributes: getAttributes(state),
-    editedCriteria: getRentCriteriaFormValues(state),
+    editedCriteria: getRentBasisFormValues(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
     rentBasis: getRentBasis(state),

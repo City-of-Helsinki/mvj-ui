@@ -3,22 +3,26 @@ import React from 'react';
 
 import ContentContainer from '$components/content/ContentContainer';
 import Divider from '$components/content/Divider';
-import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
+import RentBasisForm from './forms/RentBasisForm';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 
+import type {Attributes} from '../types';
+
 type Props = {
-  criteria: Object,
+  attributes: Attributes,
+  rentBasis: Object,
 }
 
-const RentCriteriaEdit = ({criteria}: Props) =>
+const RentBasisEdit = ({attributes, rentBasis}: Props) =>
   <ContentContainer>
     <h1>Vuokrausperuste</h1>
     <Divider />
     <GreenBoxEdit>
-      <EditRentCriteriaForm
-        initialValues={criteria}
+      <RentBasisForm
+        attributes={attributes}
+        initialValues={rentBasis}
       />
     </GreenBoxEdit>
   </ContentContainer>;
 
-export default RentCriteriaEdit;
+export default RentBasisEdit;
