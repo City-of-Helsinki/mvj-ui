@@ -7,7 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 
-import {fetchAttributes, fetchRentBasisList, initializeRentCriteria} from '../actions';
+import {fetchAttributes, fetchRentBasisList, initializeRentBasis} from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getAttributes, getIsFetching, getRentBasisList} from '../selectors';
 import {formatDateObj, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
@@ -29,7 +29,7 @@ type Props = {
   attributes: Attributes,
   fetchAttributes: Function,
   fetchRentBasisList: Function,
-  initializeRentCriteria: Function,
+  initializeRentBasis: Function,
   isFetching: boolean,
   receiveTopNavigationSettings: Function,
   rentBasisListData: RentBasisList,
@@ -111,10 +111,10 @@ class RentBasisListPage extends Component {
   }
 
   handleCreateButtonClick = () => {
-    const {initializeRentCriteria} = this.props;
+    const {initializeRentBasis} = this.props;
     const {router} = this.context;
 
-    initializeRentCriteria({
+    initializeRentBasis({
       decisions: [{}],
       property_identifiers: [{}],
       rent_rates: [{}],
@@ -226,8 +226,8 @@ class RentBasisListPage extends Component {
               dataKeys={[
                 {key: 'property_identifier', label: 'Kiinteistötunnus'},
                 {key: 'intended_use', label: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(intendedUseOptions, val) : '-'},
-                {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
                 {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
+                {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
               ]}
               onRowClick={this.handleRowClick}
             />
@@ -255,7 +255,7 @@ export default flowRight(
     {
       fetchAttributes,
       fetchRentBasisList,
-      initializeRentCriteria,
+      initializeRentBasis,
       receiveTopNavigationSettings,
     },
   ),

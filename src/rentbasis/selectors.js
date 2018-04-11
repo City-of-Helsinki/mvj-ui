@@ -21,5 +21,8 @@ export const getRentBasis: Selector<RentBasis, void> = (state: RentBasisState): 
 export const getRentBasisInitialValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
   state.rentbasis.initialValues;
 
+export const getIsFormValid: Selector<boolean, void> = (state: RentBasisState): boolean =>
+  state.rentbasis.isFormValid;
+
 export const getRentBasisFormValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
   get(state, 'form.rent-basis-form.values');

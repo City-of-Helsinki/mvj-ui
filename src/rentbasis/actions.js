@@ -15,15 +15,12 @@ import type {
   ReceiveSingleRentBasisAction,
   CreateRentBasisAction,
   EditRentBasisAction,
-
   HideEditModeAction,
-  ReceiveRentCriteriaInitialValuesAction,
-  RentBasisNotFoundAction,
+  ReceiveRentBasisInitialValuesAction,
   ShowEditModeAction,
+  ReceiveFormValidAction,
+  RentBasisNotFoundAction,
 } from './types';
-
-export const notFound = (): RentBasisNotFoundAction =>
-  createAction('mvj/rentbasis/NOT_FOUND')();
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/rentbasis/FETCH_ATTRIBUTES')();
@@ -49,7 +46,7 @@ export const createRentBasis = (rentbasis: RentBasis): CreateRentBasisAction =>
 export const editRentBasis = (rentbasis: RentBasis): EditRentBasisAction =>
   createAction('mvj/rentbasis/EDIT')(rentbasis);
 
-export const initializeRentCriteria = (rentbasis: RentBasis): ReceiveRentCriteriaInitialValuesAction =>
+export const initializeRentBasis = (rentbasis: RentBasis): ReceiveRentBasisInitialValuesAction =>
   createAction('mvj/rentbasis/INITIALIZE')(rentbasis);
 
 export const hideEditMode = (): HideEditModeAction =>
@@ -57,3 +54,9 @@ export const hideEditMode = (): HideEditModeAction =>
 
 export const showEditMode = (): ShowEditModeAction =>
   createAction('mvj/rentbasis/SHOW_EDIT')();
+
+export const receiveFormValid = (valid: boolean): ReceiveFormValidAction =>
+  createAction('mvj/rentbasis/RECEIVE_FORM_VALID')(valid);
+
+export const notFound = (): RentBasisNotFoundAction =>
+  createAction('mvj/rentbasis/NOT_FOUND')();

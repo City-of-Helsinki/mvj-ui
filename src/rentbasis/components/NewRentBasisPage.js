@@ -14,7 +14,7 @@ import Divider from '$components/content/Divider';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import PageContainer from '$components/content/PageContainer';
 import {createRentBasis, fetchAttributes} from '../actions';
-import {getAttributes, getRentBasisFormValues} from '../selectors';
+import {getAttributes, getIsFormValid, getRentBasisFormValues} from '../selectors';
 
 import type {Attributes} from '../types';
 import type {RootState} from '$src/root/types';
@@ -24,6 +24,7 @@ type Props = {
   createRentBasis: Function,
   editedRentBasis: ?Object,
   fetchAttributes: Function,
+  isFormValid: boolean,
   receiveTopNavigationSettings: Function,
 }
 
@@ -61,7 +62,7 @@ class NewRentBasisPage extends Component {
   }
 
   render() {
-    const {attributes} = this.props;
+    const {attributes, isFormValid} = this.props;
 
     return (
       <PageContainer>
@@ -70,7 +71,7 @@ class NewRentBasisPage extends Component {
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
-              isSaveDisabled={false}
+              isSaveDisabled={!isFormValid}
               onCancelClick={this.handleCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}
@@ -96,6 +97,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     attributes: getAttributes(state),
     editedRentBasis: getRentBasisFormValues(state),
+    isFormValid: getIsFormValid(state),
   };
 };
 

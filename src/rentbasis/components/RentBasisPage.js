@@ -17,13 +17,14 @@ import {
   fetchAttributes,
   fetchSingleRentBasis,
   hideEditMode,
-  initializeRentCriteria,
+  initializeRentBasis,
   showEditMode,
 } from '../actions';
 import {
   getAttributes,
   getIsEditMode,
   getIsFetching,
+  getIsFormValid,
   getRentBasis,
   getRentBasisFormValues,
 } from '../selectors';
@@ -41,9 +42,10 @@ type Props = {
   fetchAttributes: Function,
   fetchSingleRentBasis: Function,
   hideEditMode: Function,
-  initializeRentCriteria: Function,
+  initializeRentBasis: Function,
   isEditMode: boolean,
   isFetching: boolean,
+  isFormValid: boolean,
   params: Object,
   receiveTopNavigationSettings: Function,
   rentBasisData: RentBasis,
@@ -80,10 +82,10 @@ class RentBasisPage extends Component {
   }
 
   copyRentBasis = () => {
-    const {initializeRentCriteria, rentBasisData, router} = this.props;
+    const {initializeRentBasis, rentBasisData, router} = this.props;
     const rentBasis = getContentCopiedRentBasis(rentBasisData);
 
-    initializeRentCriteria(rentBasis);
+    initializeRentBasis(rentBasis);
 
     return router.push({
       pathname: getRouteById('newrentbasis'),
@@ -101,14 +103,14 @@ class RentBasisPage extends Component {
   }
 
   showEditMode = (rentBasis: Object) => {
-    const {initializeRentCriteria, showEditMode} = this.props;
+    const {initializeRentBasis, showEditMode} = this.props;
 
-    initializeRentCriteria(rentBasis);
+    initializeRentBasis(rentBasis);
     showEditMode();
   }
 
   render() {
-    const {attributes, isEditMode, isFetching, rentBasisData} = this.props;
+    const {attributes, isEditMode, isFetching, isFormValid, rentBasisData} = this.props;
 
     const rentBasis = getContentRentBasis(rentBasisData);
 
@@ -127,7 +129,7 @@ class RentBasisPage extends Component {
             <ControlButtons
               isCopyDisabled={false}
               isEditMode={isEditMode}
-              isSaveDisabled={false}
+              isSaveDisabled={!isFormValid}
               onCancelClick={this.hideEditMode}
               onCopyClick={this.copyRentBasis}
               onEditClick={() => this.showEditMode(rentBasis)}
@@ -166,6 +168,7 @@ const mapStateToProps = (state: RootState) => {
     editedRentBasis: getRentBasisFormValues(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
+    isFormValid: getIsFormValid(state),
     rentBasisData: getRentBasis(state),
   };
 };
@@ -179,7 +182,7 @@ export default flowRight(
       fetchAttributes,
       fetchSingleRentBasis,
       hideEditMode,
-      initializeRentCriteria,
+      initializeRentBasis,
       receiveTopNavigationSettings,
       showEditMode,
     }
