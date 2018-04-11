@@ -389,7 +389,7 @@ class PreparerForm extends Component {
     } = this.props;
 
     return areasFormTouched ||
-    constructabilityFormTouched ||
+      constructabilityFormTouched ||
       contractsFormTouched ||
       decisionsFormTouched ||
       inspectionsFormTouched ||
