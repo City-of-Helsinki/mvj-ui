@@ -29,7 +29,7 @@ import {
 } from '../selectors';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
-import {getContentRentBasis} from '../helpers';
+import {getContentCopiedRentBasis, getContentRentBasis} from '../helpers';
 
 import type {Attributes, RentBasis} from '../types';
 import type {RootState} from '$src/root/types';
@@ -79,11 +79,14 @@ class RentBasisPage extends Component {
     fetchAttributes();
   }
 
-  copyCriteria = () => {
+  copyRentBasis = () => {
     const {initializeRentCriteria, rentBasisData, router} = this.props;
-    initializeRentCriteria(rentBasisData);
+    const rentBasis = getContentCopiedRentBasis(rentBasisData);
+
+    initializeRentCriteria(rentBasis);
+
     return router.push({
-      pathname: getRouteById('newrentcriteria'),
+      pathname: getRouteById('newrentbasis'),
     });
   }
 
@@ -126,7 +129,7 @@ class RentBasisPage extends Component {
               isEditMode={isEditMode}
               isSaveDisabled={false}
               onCancelClick={this.hideEditMode}
-              onCopyClick={this.copyCriteria}
+              onCopyClick={this.copyRentBasis}
               onEditClick={() => this.showEditMode(rentBasis)}
               onSaveClick={this.editRentBasis}
               showCommentButton={false}

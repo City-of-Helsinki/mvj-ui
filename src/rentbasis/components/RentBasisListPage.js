@@ -115,9 +115,9 @@ class RentBasisListPage extends Component {
     const {router} = this.context;
 
     initializeRentCriteria({
-      decisions: [''],
-      prices: [{}],
-      real_estate_ids: [''],
+      decisions: [{}],
+      property_identifiers: [{}],
+      rent_rates: [{}],
     });
 
     return router.push({

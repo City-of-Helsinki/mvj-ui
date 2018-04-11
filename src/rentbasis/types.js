@@ -19,10 +19,11 @@ export type ReceiveRentBasisListAction = Action<'mvj/rentbasis/RECEIVE_ALL', Ren
 export type FetchSingleRentBasisAction = Action<'mvj/rentbasis/FETCH_SINGLE', RentBasisId>;
 export type ReceiveSingleRentBasisAction = Action<'mvj/rentbasis/RECEIVE_SINGLE', RentBasis>;
 export type RentBasisNotFoundAction = Action<'mvj/rentbasis/NOT_FOUND', void>;
+export type CreateRentBasisAction = Action<'mvj/rentbasis/CREATE', RentBasis>;
 export type EditRentBasisAction = Action<'mvj/rentbasis/EDIT', RentBasis>;
 
 export type ReceiveRentCriteriaInitialValuesAction = Action<'mvj/rentbasis/INITIALIZE', RentBasis>;
-export type CreateRentCriteriaAction = Action<'mvj/rentbasis/CREATE', RentBasis>;
+
 
 export type HideEditModeAction = Action<'mvj/rentbasis/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/rentbasis/SHOW_EDIT', void>;

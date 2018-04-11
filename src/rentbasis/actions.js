@@ -13,9 +13,9 @@ import type {
   RentBasis,
   FetchSingleRentBasisAction,
   ReceiveSingleRentBasisAction,
+  CreateRentBasisAction,
   EditRentBasisAction,
 
-  CreateRentCriteriaAction,
   HideEditModeAction,
   ReceiveRentCriteriaInitialValuesAction,
   RentBasisNotFoundAction,
@@ -43,7 +43,7 @@ export const receiveRentBasisList = (rentbasis: RentBasisList): ReceiveRentBasis
 export const receiveSingleRentBasis = (rentbasis: RentBasis): ReceiveSingleRentBasisAction =>
   createAction('mvj/rentbasis/RECEIVE_SINGLE')(rentbasis);
 
-export const createRentCriteria = (rentbasis: RentBasis): CreateRentCriteriaAction =>
+export const createRentBasis = (rentbasis: RentBasis): CreateRentBasisAction =>
   createAction('mvj/rentbasis/CREATE')(rentbasis);
 
 export const editRentBasis = (rentbasis: RentBasis): EditRentBasisAction =>

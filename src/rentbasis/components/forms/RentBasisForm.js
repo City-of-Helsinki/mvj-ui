@@ -36,12 +36,10 @@ const renderPropertyIdentifiers = ({fields}: PropertyIdentifiersProps) => {
             />
           </Column>
           <Column small={4}>
-            {fields.length > 1 &&
-              <RemoveButton
-                onClick={() => fields.remove(index)}
-                title="Poista hinta"
-              />
-            }
+            <RemoveButton
+              onClick={() => fields.remove(index)}
+              title="Poista hinta"
+            />
           </Column>
         </Row>
       )}
@@ -76,12 +74,10 @@ const renderDecisions = ({fields}: DecisionsProps) => {
             />
           </Column>
           <Column small={4}>
-            {fields.length > 1 &&
-              <RemoveButton
-                onClick={() => fields.remove(index)}
-                title="Poista hinta"
-              />
-            }
+            <RemoveButton
+              onClick={() => fields.remove(index)}
+              title="Poista hinta"
+            />
           </Column>
         </Row>
       )}
@@ -140,12 +136,10 @@ const renderRentRates = ({attributes, fields}: RentRatesProps) => {
                 />
               </Column>
               <Column small={2} medium={2} large={1}>
-                {fields.length > 1 &&
-                  <RemoveButton
-                    onClick={() => fields.remove(index)}
-                    title="Poista hinta"
-                  />
-                }
+                <RemoveButton
+                  onClick={() => fields.remove(index)}
+                  title="Poista hinta"
+                />
               </Column>
             </Row>
           )}

@@ -17,6 +17,15 @@ export const fetchSingleRentBasis = (id: RentBasisId): Generator<> => {
   return callApi(new Request(createUrl(`basis_of_rent/${id}/`)));
 };
 
+export const createRentBasis = (rentBasis: RentBasis): Generator<> => {
+  const body = JSON.stringify(rentBasis);
+
+  return callApi(new Request(createUrl(`basis_of_rent/`), {
+    method: 'POST',
+    body,
+  }));
+};
+
 export const editRentBasis = (rentBasis: RentBasis): Generator<> => {
   const {id} = rentBasis;
   const body = JSON.stringify(rentBasis);

@@ -26,6 +26,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/rentbasis/FETCH_SINGLE': () => true,
   'mvj/rentbasis/RECEIVE_ALL': () => false,
   'mvj/rentbasis/RECEIVE_SINGLE': () => false,
+  'mvj/rentbasis/NOT_FOUND': () => false,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -51,9 +52,9 @@ const initialValuesReducer: Reducer<RentBasis> = handleActions({
     return rentbasis;
   },
 }, {
-  decisions: [''],
-  prices: [{}],
-  real_estate_ids: [''],
+  decisions: [{}],
+  property_identifiers: [{}],
+  rent_rates: [{}],
 });
 
 export default combineReducers({

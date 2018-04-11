@@ -11,7 +11,7 @@ import LeaseList from '../leases/components/LeaseList';
 import LeasePage from '../leases/components/LeasePage';
 import LoginPage from '../auth/components/LoginPage';
 import NewContactPage from '../contacts/components/NewContactPage';
-import NewRentCriteriaPage from '../rentbasis/components/NewRentCriteriaPage';
+import NewRentBasisPage from '../rentbasis/components/NewRentBasisPage';
 import RentBasisListPage from '../rentbasis/components/RentBasisListPage';
 import RentBasisPage from '../rentbasis/components/RentBasisPage';
 
@@ -36,7 +36,7 @@ export default
   <Route path={getRouteById('newcontact')} components={NewContactPage} />
   <Route path={getRouteById('leases')} components={LeaseList} />
   <Route path={`${getRouteById('leases')}/:leaseId`} component={LeasePage}/>
-  <Route path={getRouteById('newrentbasis')} components={NewRentCriteriaPage} />
+  <Route path={getRouteById('newrentbasis')} components={NewRentBasisPage} />
   <Route path={getRouteById('rentbasis')} components={RentBasisListPage} />
   <Route path={`${getRouteById('rentbasis')}/:rentBasisId`} components={RentBasisPage} />
   <Route path={getRouteById('callback')} components={CallbackPage} />

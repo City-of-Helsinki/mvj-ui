@@ -16,6 +16,7 @@ import {
   receiveSingleRentBasis,
 } from './actions';
 import {
+  createRentBasis,
   editRentBasis,
   fetchAttributes,
   fetchRentBasisList,
@@ -84,14 +85,29 @@ function* fetchSingleRentBasisSaga({payload: id}): Generator<> {
   }
 }
 
-function* createRentCriteriasSaga({payload: criteria}): Generator<> {
-  // TODO: Integrate with API
-  const dummyId = 1;
+function* createRentBasisSaga({payload: rentBasis}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createRentBasis, rentBasis);
 
-  yield put(receiveSingleRentBasis(criteria));
-  yield put(hideEditMode());
-  displayUIMessage({title: 'Vuokrausperuste luotu', body: 'Vuokrausperuste on luotu onnistuneesti'});
-  yield put(push(`${getRouteById('rentbasis')}/${dummyId}`));
+    switch (statusCode) {
+      case 201:
+        yield put(push(`${getRouteById('rentbasis')}/${bodyAsJson.id}`));
+        displayUIMessage({title: 'Vuokrausperuste luotu', body: 'Vuokrausperuste on luotu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
 }
 
 function* editRentBasisSaga({payload: rentBasis}): Generator<> {
@@ -125,7 +141,7 @@ export default function*(): Generator<> {
     fork(function*(): Generator<> {
       yield takeLatest('mvj/rentbasis/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/rentbasis/FETCH_ALL', fetchRentBasisListSaga);
-      yield takeLatest('mvj/rentbasis/CREATE', createRentCriteriasSaga);
+      yield takeLatest('mvj/rentbasis/CREATE', createRentBasisSaga);
       yield takeLatest('mvj/rentbasis/EDIT', editRentBasisSaga);
 
       yield takeLatest('mvj/rentbasis/FETCH_SINGLE', fetchSingleRentBasisSaga);
