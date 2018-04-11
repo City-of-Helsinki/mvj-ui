@@ -28,9 +28,9 @@ import {
   getRentBasis,
   getRentBasisFormValues,
 } from '../selectors';
+import {getContentCopiedRentBasis, getContentRentBasis} from '../helpers';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
-import {getContentCopiedRentBasis, getContentRentBasis} from '../helpers';
 
 import type {Attributes, RentBasis} from '../types';
 import type {RootState} from '$src/root/types';
@@ -97,11 +97,6 @@ class RentBasisPage extends Component {
     editRentBasis(editedRentBasis);
   }
 
-  hideEditMode = () => {
-    const {hideEditMode} = this.props;
-    hideEditMode();
-  }
-
   showEditMode = (rentBasis: Object) => {
     const {initializeRentBasis, showEditMode} = this.props;
 
@@ -110,7 +105,14 @@ class RentBasisPage extends Component {
   }
 
   render() {
-    const {attributes, isEditMode, isFetching, isFormValid, rentBasisData} = this.props;
+    const {
+      attributes,
+      hideEditMode,
+      isEditMode,
+      isFetching,
+      isFormValid,
+      rentBasisData,
+    } = this.props;
 
     const rentBasis = getContentRentBasis(rentBasisData);
 
@@ -130,7 +132,7 @@ class RentBasisPage extends Component {
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={!isFormValid}
-              onCancelClick={this.hideEditMode}
+              onCancelClick={hideEditMode}
               onCopyClick={this.copyRentBasis}
               onEditClick={() => this.showEditMode(rentBasis)}
               onSaveClick={this.editRentBasis}
@@ -148,7 +150,6 @@ class RentBasisPage extends Component {
           ? (
             <RentBasisEdit
               attributes={attributes}
-              rentBasis={rentBasis}
             />
           ) : (
             <RentBasisReadonly

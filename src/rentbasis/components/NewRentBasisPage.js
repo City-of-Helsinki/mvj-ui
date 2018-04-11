@@ -3,8 +3,9 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import RentBasisForm from './forms/RentBasisForm';
 
+import {createRentBasis, fetchAttributes} from '../actions';
+import {getAttributes, getIsFormValid, getRentBasisFormValues} from '../selectors';
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import ContentContainer from '$components/content/ContentContainer';
@@ -13,8 +14,7 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import Divider from '$components/content/Divider';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import PageContainer from '$components/content/PageContainer';
-import {createRentBasis, fetchAttributes} from '../actions';
-import {getAttributes, getIsFormValid, getRentBasisFormValues} from '../selectors';
+import RentBasisForm from './forms/RentBasisForm';
 
 import type {Attributes} from '../types';
 import type {RootState} from '$src/root/types';

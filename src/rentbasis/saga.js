@@ -38,7 +38,7 @@ function* fetchAttributesSaga(): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch identifiers with error "%s"', error);
+    console.error('Failed to fetch rent basis attributes with error "%s"', error);
     yield put(receiveError(error));
   }
 }
@@ -56,7 +56,7 @@ function* fetchRentBasisListSaga({payload: search}): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch leases with error "%s"', error);
+    console.error('Failed to fetch rent basis list with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -72,14 +72,13 @@ function* fetchSingleRentBasisSaga({payload: id}): Generator<> {
       case 404:
         yield put(notFound());
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        // yield put(receiveError(new Error(`404: ${bodyAsJson.detail}`)));
         break;
       case 500:
         yield put(notFound());
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch leases with error "%s"', error);
+    console.error('Failed to fetch rent basis with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -104,7 +103,7 @@ function* createRentBasisSaga({payload: rentBasis}): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to create lease with error "%s"', error);
+    console.error('Failed to create rent basis with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -130,7 +129,7 @@ function* editRentBasisSaga({payload: rentBasis}): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to edit lease with error "%s"', error);
+    console.error('Failed to edit rent basis with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }

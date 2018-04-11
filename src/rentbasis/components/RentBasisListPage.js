@@ -8,8 +8,8 @@ import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 
 import {fetchAttributes, fetchRentBasisList, initializeRentBasis} from '../actions';
-import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getAttributes, getIsFetching, getRentBasisList} from '../selectors';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {formatDateObj, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import Button from '$components/button/Button';
