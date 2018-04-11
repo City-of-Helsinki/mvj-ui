@@ -70,6 +70,7 @@ function* fetchAttributesSaga(): Generator<> {
 function* fetchLeasesSaga({payload: search}): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLeases, search);
+
     switch (statusCode) {
       case 200:
         yield put(receiveLeases(bodyAsJson));

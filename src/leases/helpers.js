@@ -55,11 +55,8 @@ export const getContentLeaseItem = (lease: Object) => {
   };
 };
 
-export const getContentLeases = (content:Object) => {
-  const {results} = content;
-  if(!results || !results.length) {
-    return [];
-  }
+export const getContentLeases = (content: Object) => {
+  const results = get(content, 'results', []);
 
   return results.map((item) => {
     return getContentLeaseItem(item);

@@ -9,7 +9,7 @@ export type ContactModalSettings = Object | null;
 
 export type Attributes = Object;
 export type Lease = Object;
-export type LeaseList = Array<Object>;
+export type LeaseList = Object;
 export type DecisionList = Array<Object>;
 export type DistrictList = Array<Object>;
 export type LeaseId = number;

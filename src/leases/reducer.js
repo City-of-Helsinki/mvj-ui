@@ -71,7 +71,7 @@ const leasesListReducer: Reducer<LeaseList> = handleActions({
   ['mvj/leases/RECEIVE_ALL']: (state: LeaseList, {payload: leases}: ReceiveLeasesAction) => {
     return leases;
   },
-}, []);
+}, {});
 
 const currentLeaseReducer: Reducer<Lease> = handleActions({
   ['mvj/leases/RECEIVE_SINGLE']: (state: Lease, {payload: lease}: ReceiveSingleLeaseAction) => {

@@ -67,42 +67,34 @@ class RentBasisListPage extends Component {
 
     if(!page || !isNumber(page) || query.page <= 1) {
       this.setState({activePage: 1});
-      query.limit = PAGE_SIZE;
     } else {
       this.setState({activePage: page});
-      query.limit = PAGE_SIZE;
       query.offset = (page - 1) * PAGE_SIZE;
     }
+    query.limit = PAGE_SIZE;
 
     fetchRentBasisList(getSearchQuery(query));
+    delete query.limit;
+
     fetchAttributes();
   }
 
   componentDidMount = () => {
     const {router: {location: {query}}} = this.props;
-    query.limit = undefined;
     this.search.initialize(query);
   }
 
   handleSearchChange = (query) => {
     const {fetchRentBasisList} = this.props;
-    const {activePage} = this.state;
     const {router} = this.context;
 
     query.limit = PAGE_SIZE;
-
-    if(activePage > 1) {
-      query.page = activePage;
-      query.offset = (activePage - 1) * PAGE_SIZE;
-    } else {
-      query.page = undefined;
-      query.offset = undefined;
-    }
-
     fetchRentBasisList(getSearchQuery(query));
 
-    query.offset = undefined;
-    query.limit = undefined;
+    this.setState({activePage: 1});
+    delete query.limit;
+    delete query.offset;
+    delete query.page;
 
     return router.push({
       pathname: getRouteById('rentbasis'),
@@ -139,7 +131,6 @@ class RentBasisListPage extends Component {
     const {router} = this.context;
     const {fetchRentBasisList, router: {location: {query}}} = this.props;
 
-    query.limit = PAGE_SIZE;
     if(page > 1) {
       query.page = page;
       query.offset = (page - 1) * PAGE_SIZE;
@@ -147,12 +138,13 @@ class RentBasisListPage extends Component {
       query.page = undefined;
       query.offset = undefined;
     }
+    query.limit = PAGE_SIZE;
+
     fetchRentBasisList(getSearchQuery(query));
 
     this.setState({activePage: page});
-
-    query.offset = undefined;
-    query.limit = undefined;
+    delete query.limit;
+    delete query.offset;
 
     return router.push({
       pathname: getRouteById('rentbasis'),
