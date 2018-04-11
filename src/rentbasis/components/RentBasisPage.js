@@ -29,6 +29,7 @@ import {
 } from '../selectors';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
+import {getContentRentBasis} from '../helpers';
 
 import type {Attributes, RentBasis} from '../types';
 import type {RootState} from '$src/root/types';
@@ -45,7 +46,7 @@ type Props = {
   isFetching: boolean,
   params: Object,
   receiveTopNavigationSettings: Function,
-  rentBasis: RentBasis,
+  rentBasisData: RentBasis,
   router: Object,
   showEditMode: Function,
 }
@@ -76,8 +77,8 @@ class RentBasisPage extends Component {
   }
 
   copyCriteria = () => {
-    const {initializeRentCriteria, rentBasis, router} = this.props;
-    initializeRentCriteria(rentBasis);
+    const {initializeRentCriteria, rentBasisData, router} = this.props;
+    initializeRentCriteria(rentBasisData);
     return router.push({
       pathname: getRouteById('newrentcriteria'),
     });
@@ -93,14 +94,17 @@ class RentBasisPage extends Component {
     hideEditMode();
   }
 
-  showEditMode = () => {
-    const {initializeRentCriteria, rentBasis, showEditMode} = this.props;
+  showEditMode = (rentBasis: Object) => {
+    const {initializeRentCriteria, showEditMode} = this.props;
+
     initializeRentCriteria(rentBasis);
     showEditMode();
   }
 
   render() {
-    const {attributes, isEditMode, isFetching, rentBasis} = this.props;
+    const {attributes, isEditMode, isFetching, rentBasisData} = this.props;
+
+    const rentBasis = getContentRentBasis(rentBasisData);
 
     if(isFetching) {
       return (
@@ -120,7 +124,7 @@ class RentBasisPage extends Component {
               isSaveDisabled={false}
               onCancelClick={this.hideEditMode}
               onCopyClick={this.copyCriteria}
-              onEditClick={this.showEditMode}
+              onEditClick={() => this.showEditMode(rentBasis)}
               onSaveClick={this.saveCriteria}
               showCommentButton={false}
               showCopyButton={true}
@@ -156,7 +160,7 @@ const mapStateToProps = (state: RootState) => {
     editedCriteria: getRentBasisFormValues(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
-    rentBasis: getRentBasis(state),
+    rentBasisData: getRentBasis(state),
   };
 };
 

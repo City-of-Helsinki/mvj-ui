@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import ContentContainer from '$components/content/ContentContainer';
@@ -106,7 +105,7 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
                     return(
                       <Row key={index}>
                         <Column small={6} medium={4} large={2}>
-                          <p className='no-margin'>{getLabelOfOption(priceIntendedUseOptions, get(price, 'intended_use.id') || get(price, 'intended_use')) || '-'}</p>
+                          <p className='no-margin'>{getLabelOfOption(priceIntendedUseOptions, price.intended_use) || '-'}</p>
                         </Column>
                         <Column small={3} medium={4} large={1}>
                           <p className='no-margin'>{price.amount || '-'}</p>
