@@ -11,9 +11,9 @@ import LeaseList from '../leases/components/LeaseList';
 import LeasePage from '../leases/components/LeasePage';
 import LoginPage from '../auth/components/LoginPage';
 import NewContactPage from '../contacts/components/NewContactPage';
-import NewRentCriteriaPage from '../rentcriterias/components/NewRentCriteriaPage';
-import RentCriteriaList from '../rentcriterias/components/RentCriteriaList';
-import RentCriteriaPage from '../rentcriterias/components/RentCriteriaPage';
+import NewRentBasisPage from '../rentbasis/components/NewRentBasisPage';
+import RentBasisListPage from '../rentbasis/components/RentBasisListPage';
+import RentBasisPage from '../rentbasis/components/RentBasisPage';
 
 export const getRouteById = (id: string): string => {
   const routes = {
@@ -22,8 +22,8 @@ export const getRouteById = (id: string): string => {
     newcontact: '/uusiasiakas',
     leases: '/vuokraukset',
     logout: '/logout',
-    newrentcriteria: '/uusivuokrausperuste',
-    rentcriterias: '/vuokrausperusteet',
+    newrentbasis: '/uusivuokrausperuste',
+    rentbasis: '/vuokrausperusteet',
   };
   return routes[id] ? routes[id] : '';
 };
@@ -36,9 +36,9 @@ export default
   <Route path={getRouteById('newcontact')} components={NewContactPage} />
   <Route path={getRouteById('leases')} components={LeaseList} />
   <Route path={`${getRouteById('leases')}/:leaseId`} component={LeasePage}/>
-  <Route path={getRouteById('newrentcriteria')} components={NewRentCriteriaPage} />
-  <Route path={getRouteById('rentcriterias')} components={RentCriteriaList} />
-  <Route path={`${getRouteById('rentcriterias')}/:criteriaId`} components={RentCriteriaPage} />
+  <Route path={getRouteById('newrentbasis')} components={NewRentBasisPage} />
+  <Route path={getRouteById('rentbasis')} components={RentBasisListPage} />
+  <Route path={`${getRouteById('rentbasis')}/:rentBasisId`} components={RentBasisPage} />
   <Route path={getRouteById('callback')} components={CallbackPage} />
   <Route path={getRouteById('logout')} components={LoginPage} />
   <Route path="*" component={ErrorPage}/>

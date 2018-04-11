@@ -2,11 +2,16 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
-import {Row, Column} from 'react-foundation';
 
+import {fetchAttributes, fetchRentBasisList, initializeRentBasis} from '../actions';
+import {getAttributes, getIsFetching, getRentBasisList} from '../selectors';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {formatDateObj, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {getRouteById} from '$src/root/routes';
 import Button from '$components/button/Button';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
@@ -15,26 +20,19 @@ import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
 import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
-import {getRouteById} from '$src/root/routes';
-import {getContactList, getIsFetching} from '../selectors';
-import {
-  fetchContacts,
-  initializeContactForm,
-} from '../actions';
-import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {getSearchQuery} from '$src/util/helpers';
 
-import type {ContactList} from '../types';
-import type {RootState} from '../../root/types';
+import type {Attributes, RentBasisList} from '../types';
 
 const PAGE_SIZE = 25;
 
 type Props = {
-  contactList: ContactList,
-  fetchContacts: Function,
-  initializeContactForm: Function,
+  attributes: Attributes,
+  fetchAttributes: Function,
+  fetchRentBasisList: Function,
+  initializeRentBasis: Function,
   isFetching: boolean,
   receiveTopNavigationSettings: Function,
+  rentBasisListData: RentBasisList,
   router: Object,
 }
 
@@ -42,25 +40,26 @@ type State = {
   activePage: number,
 }
 
-class ContactListPage extends Component {
+class RentBasisListPage extends Component {
   props: Props
+
   state: State = {
     activePage: 1,
   }
-
-  search: any
 
   static contextTypes = {
     router: PropTypes.object,
   };
 
+  search: any
+
   componentWillMount() {
-    const {fetchContacts, receiveTopNavigationSettings} = this.props;
+    const {fetchAttributes, fetchRentBasisList, receiveTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('contacts'),
-      pageTitle: 'Asiakkaat',
+      linkUrl: getRouteById('rentbasis'),
+      pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
 
@@ -74,7 +73,9 @@ class ContactListPage extends Component {
       query.limit = PAGE_SIZE;
       query.offset = (page - 1) * PAGE_SIZE;
     }
-    fetchContacts(getSearchQuery(query));
+
+    fetchRentBasisList(getSearchQuery(query));
+    fetchAttributes();
   }
 
   componentDidMount = () => {
@@ -83,19 +84,8 @@ class ContactListPage extends Component {
     this.search.initialize(query);
   }
 
-  handleCreateButtonClick = () => {
-    const {initializeContactForm} = this.props;
-    const {router} = this.context;
-
-    initializeContactForm({});
-
-    return router.push({
-      pathname: getRouteById('newcontact'),
-    });
-  }
-
-  handleSearchChange = (query: any) => {
-    const {fetchContacts} = this.props;
+  handleSearchChange = (query) => {
+    const {fetchRentBasisList} = this.props;
     const {activePage} = this.state;
     const {router} = this.context;
 
@@ -109,14 +99,29 @@ class ContactListPage extends Component {
       query.offset = undefined;
     }
 
-    fetchContacts(getSearchQuery(query));
+    fetchRentBasisList(getSearchQuery(query));
 
     query.offset = undefined;
     query.limit = undefined;
 
     return router.push({
-      pathname: getRouteById('contacts'),
+      pathname: getRouteById('rentbasis'),
       query,
+    });
+  }
+
+  handleCreateButtonClick = () => {
+    const {initializeRentBasis} = this.props;
+    const {router} = this.context;
+
+    initializeRentBasis({
+      decisions: [{}],
+      property_identifiers: [{}],
+      rent_rates: [{}],
+    });
+
+    return router.push({
+      pathname: getRouteById('newrentbasis'),
     });
   }
 
@@ -125,14 +130,14 @@ class ContactListPage extends Component {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('contacts')}/${id}`,
+      pathname: `${getRouteById('rentbasis')}/${id}`,
       query,
     });
   };
 
   handlePageClick = (page: number) => {
     const {router} = this.context;
-    const {fetchContacts, router: {location: {query}}} = this.props;
+    const {fetchRentBasisList, router: {location: {query}}} = this.props;
 
     query.limit = PAGE_SIZE;
     if(page > 1) {
@@ -142,7 +147,7 @@ class ContactListPage extends Component {
       query.page = undefined;
       query.offset = undefined;
     }
-    fetchContacts(getSearchQuery(query));
+    fetchRentBasisList(getSearchQuery(query));
 
     this.setState({activePage: page});
 
@@ -150,21 +155,30 @@ class ContactListPage extends Component {
     query.limit = undefined;
 
     return router.push({
-      pathname: getRouteById('contacts'),
+      pathname: getRouteById('rentbasis'),
       query,
     });
   }
 
-  getContactCount = (contactList: ContactList) => {
-    return get(contactList, 'count', 0);
+  getRentBasisCount = (rentBasisList: RentBasisList) => {
+    return get(rentBasisList, 'count', 0);
   }
 
-  getContacts = (contactList: ContactList) => {
-    return get(contactList, 'results', []);
+  getRentBasisList = (rentBasisList: RentBasisList) => {
+    const items = get(rentBasisList, 'results', []);
+    return items.map((item) => {
+      return {
+        id: item.id,
+        property_identifier: get(item, 'property_identifiers[0].identifier'),
+        intended_use: get(item, 'rent_rates[0].intended_use.id') || get(item, 'rent_rates[0].intended_use'),
+        start_date: get(item, 'start_date'),
+        end_date: get(item, 'end_date'),
+      };
+    });
   }
 
-  getContactMaxPage = (contactList: ContactList) => {
-    const count = this.getContactCount(contactList);
+  getRentBasisMaxPage = (rentBasisList: RentBasisList) => {
+    const count = this.getRentBasisCount(rentBasisList);
     if(!count) {
       return 0;
     }
@@ -174,22 +188,23 @@ class ContactListPage extends Component {
   }
 
   render() {
-    const {contactList, isFetching} = this.props;
+    const {attributes, isFetching, rentBasisListData} = this.props;
     const {activePage} = this.state;
 
-    const count = this.getContactCount(contactList);
-    const contacts = this.getContacts(contactList);
-    const maxPage = this.getContactMaxPage(contactList);
+    const rentBasisList = this.getRentBasisList(rentBasisListData);
+    const maxPage = this.getRentBasisMaxPage(rentBasisListData);
 
-    return(
+    const intendedUseOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.intended_use');
+
+    return (
       <PageContainer>
         <SearchWrapper
           buttonComponent={
             <Button
               className='no-margin'
-              label='Luo uusi asiakas'
+              label='Luo vuokrausperuste'
               onClick={() => this.handleCreateButtonClick()}
-              title='Luo uusi asiakas'
+              title='Luo vuokrausperuste'
             />
           }
           searchComponent={
@@ -200,28 +215,19 @@ class ContactListPage extends Component {
           }
         />
 
-
-        {isFetching &&
-          <Row>
-            <Column>
-              <div className='loader__wrapper'><Loader isLoading={!!isFetching} /></div>
-            </Column>
-          </Row>
-        }
-
+        {isFetching && <Row><Column><div className='loader__wrapper'><Loader isLoading={isFetching} /></div></Column></Row>}
         {!isFetching &&
           <div>
             <TableControllers
-              title={`Löytyi ${count} kpl`}
+              title={`Viimeksi muokattuja`}
             />
             <Table
-              data={contacts}
+              data={rentBasisList}
               dataKeys={[
-                {key: 'first_name', label: 'Etunimi'},
-                {key: 'last_name', label: 'Sukunimi'},
-                {key: 'national_identification_number', label: 'Henkilötunnus'},
-                {key: 'business_name', label: 'Yritys'},
-                {key: 'business_id', label: 'Y-tunnus'},
+                {key: 'property_identifier', label: 'Kiinteistötunnus'},
+                {key: 'intended_use', label: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(intendedUseOptions, val) : '-'},
+                {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
+                {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
               ]}
               onRowClick={this.handleRowClick}
             />
@@ -239,16 +245,18 @@ class ContactListPage extends Component {
 
 export default flowRight(
   connect(
-    (state: RootState) => {
+    (state) => {
       return {
-        contactList: getContactList(state),
+        attributes: getAttributes(state),
         isFetching: getIsFetching(state),
+        rentBasisListData: getRentBasisList(state),
       };
     },
     {
-      fetchContacts,
-      initializeContactForm,
+      fetchAttributes,
+      fetchRentBasisList,
+      initializeRentBasis,
       receiveTopNavigationSettings,
     },
   ),
-)(ContactListPage);
+)(RentBasisListPage);

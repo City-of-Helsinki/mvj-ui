@@ -2,47 +2,45 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import {formatDate, getLabelOfOption} from '$util/helpers';
-import {financialMethodOptions,
-  managementMethodOptions,
-  plotTypeOptions,
-  purposeOptions,
-  priceTypeOptions,
-} from '$src/constants';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import ContentContainer from '$components/content/ContentContainer';
 import Divider from '$components/content/Divider';
 import GreenBox from '$components/content/GreenBox';
 import ListItems from '../../components/content/ListItems';
-// import MapLinkButton from '$components/content/MapLinkButton';
+
+import type {Attributes, RentBasis} from '../types';
 
 type Props = {
-  criteria: Object,
+  attributes: Attributes,
+  rentBasis: RentBasis,
 }
 
-const RentCriteriaReadonly = ({criteria}: Props) => {
+const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
+  const plotTypeOptions = getAttributeFieldOptions(attributes, 'plot_type');
+  const managementOptions = getAttributeFieldOptions(attributes, 'management');
+  const financingOptions = getAttributeFieldOptions(attributes, 'financing');
+  const priceIntendedUseOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.intended_use');
+  const pricePeriodOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.period');
+
   return (
     <ContentContainer>
       <h2>Vuokrausperuste</h2>
       <Divider />
       <GreenBox>
-        {/* <MapLinkButton
-          label='Kartta'
-          onClick={() => alert('TODO: Avaa kartta')}
-        /> */}
         <Row>
           <Column small={6} medium={4} large={3}>
             <label>Tonttityyppi</label>
-            <p>{getLabelOfOption(plotTypeOptions, criteria.plot_type) || '-'}</p>
+            <p>{getLabelOfOption(plotTypeOptions, rentBasis.plot_type) || '-'}</p>
           </Column>
           <Column small={6} medium={8} large={4}>
             <Row>
               <Column small={6}>
                 <label>Alkupvm</label>
-                <p>{formatDate(criteria.start_date) || '-'}</p>
+                <p>{formatDate(rentBasis.start_date) || '-'}</p>
               </Column>
               <Column small={6}>
                 <label>Loppupvm</label>
-                <p>{formatDate(criteria.end_date) || '-'}</p>
+                <p>{formatDate(rentBasis.end_date) || '-'}</p>
               </Column>
             </Row>
 
@@ -51,51 +49,55 @@ const RentCriteriaReadonly = ({criteria}: Props) => {
         <Row>
           <Column small={6} medium={4} large={3}>
             <label>Kiinteistötunnukset</label>
-            {criteria.real_estate_ids && !!criteria.real_estate_ids.length
+            {rentBasis.property_identifiers && !!rentBasis.property_identifiers.length
               ? (
-                criteria.real_estate_ids.map((item, index) => {
-                  return(<p key={index}>{item}</p>);
-                })
+                <ListItems>
+                  {rentBasis.property_identifiers.map((item, index) => {
+                    return(<p key={index} className='no-margin'>{item.identifier}</p>);
+                  })}
+                </ListItems>
               ) : <p>-</p>
             }
           </Column>
           <Column small={6} medium={4} large={2}>
             <label>Asemakaava</label>
-            <p>{criteria.plan || '-'}</p>
+            <p>{rentBasis.detailed_plan_identifier || '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <label>Hallintamuoto</label>
-            <p>{getLabelOfOption(managementMethodOptions, criteria.management_method) || '-'}</p>
+            <p>{getLabelOfOption(managementOptions, rentBasis.management) || '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <label>Hallintamuoto</label>
-            <p>{getLabelOfOption(financialMethodOptions, criteria.financial_method) || '-'}</p>
+            <p>{getLabelOfOption(financingOptions, rentBasis.financing) || '-'}</p>
           </Column>
         </Row>
         <Row>
           <Column small={6} medium={4} large={3}>
             <label>Päätökset</label>
-            {criteria.decisions && !!criteria.decisions.length
+            {rentBasis.decisions && !!rentBasis.decisions.length
               ? (
-                criteria.decisions.map((decision, index) => {
-                  return(<p key={index}>{decision}</p>);
-                })
+                <ListItems>
+                  {rentBasis.decisions.map((decision, index) => {
+                    return(<p className='no-margin' key={index}>{decision.identifier}</p>);
+                  })}
+                </ListItems>
               ) : <p>-</p>
             }
           </Column>
           <Column small={6} medium={4} large={2}>
-            <label>Asemakaava</label>
-            <p>{formatDate(criteria.rental_right_end_date) || '-'}</p>
+            <label>Vuokraoikeus päättyy</label>
+            <p>{formatDate(rentBasis.lease_rights_end_date) || '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <label>Indeksi</label>
-            <p>{criteria.index || '-'}</p>
+            <p>{rentBasis.index || '-'}</p>
           </Column>
         </Row>
         <Row>
           <Column>
             <p className='sub-title'>Hinnat</p>
-            {criteria.prices && !!criteria.prices.length
+            {rentBasis.rent_rates && !!rentBasis.rent_rates.length
               ? (
                 <ListItems>
                   <Row>
@@ -103,17 +105,17 @@ const RentCriteriaReadonly = ({criteria}: Props) => {
                     <Column small={3} medium={4} large={1}><label>Euroa</label></Column>
                     <Column small={3} medium={4} large={1}><label>Yksikkö</label></Column>
                   </Row>
-                  {criteria.prices.map((price, index) => {
+                  {rentBasis.rent_rates.map((price, index) => {
                     return(
                       <Row key={index}>
                         <Column small={6} medium={4} large={2}>
-                          <p className='no-margin'>{getLabelOfOption(purposeOptions, price.purpose) || '-'}</p>
+                          <p className='no-margin'>{getLabelOfOption(priceIntendedUseOptions, price.intended_use) || '-'}</p>
                         </Column>
                         <Column small={3} medium={4} large={1}>
                           <p className='no-margin'>{price.amount || '-'}</p>
                         </Column>
                         <Column small={3} medium={4} large={1}>
-                          <p className='no-margin'>{getLabelOfOption(priceTypeOptions, price.unit) || '-'}</p>
+                          <p className='no-margin'>{getLabelOfOption(pricePeriodOptions, price.period) || '-'}</p>
                         </Column>
                       </Row>
                     );
@@ -126,7 +128,7 @@ const RentCriteriaReadonly = ({criteria}: Props) => {
         <Row>
           <Column>
             <label>Kommentti</label>
-            <p>{criteria.comment || '-'}</p>
+            <p>{rentBasis.note || '-'}</p>
           </Column>
         </Row>
       </GreenBox>
@@ -134,4 +136,4 @@ const RentCriteriaReadonly = ({criteria}: Props) => {
   );
 };
 
-export default RentCriteriaReadonly;
+export default RentBasisReadonly;

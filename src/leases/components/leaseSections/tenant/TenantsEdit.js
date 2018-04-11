@@ -18,11 +18,11 @@ import type {Attributes, ContactModalSettings} from '$src/leases/types';
 type Props = {
   allContacts: ContactList,
   attributes: Attributes,
+  change: Function,
   contactAttributes: ContactAttributes,
   contactModalSettings: ContactModalSettings,
   contactFormValues: Object,
   createContact: Function,
-  dispatch: Function,
   editContact: Function,
   handleSubmit: Function,
   hideContactModal: Function,
@@ -50,9 +50,10 @@ class TenantsEdit extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {contactModalSettings} = nextProps;
-    const {dispatch, receiveContactModalSettings} = this.props;
+    const {change, receiveContactModalSettings} = this.props;
+
     if(contactModalSettings && contactModalSettings.contactId) {
-      dispatch(change('tenants-form', contactModalSettings.field, contactModalSettings.contactId));
+      change('tenants-form', contactModalSettings.field, contactModalSettings.contactId);
       receiveContactModalSettings(null);
     }
   }
@@ -126,6 +127,7 @@ export default flowRight(
       };
     },
     {
+      change,
       createContact,
       editContact,
       hideContactModal,

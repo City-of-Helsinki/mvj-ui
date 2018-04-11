@@ -26,8 +26,11 @@ const MODAL_WIDTH = 700;
 type Props = {
   billing: Object,
   bills: Array<Object>,
-  dispatch: Function,
+  destroy: Function,
+  editBill: Function,
   fields: any,
+  initialize: Function,
+  refundBill: Function,
 }
 
 type State = {
@@ -124,6 +127,7 @@ class BillsTableEdit extends Component {
   handleKeyCodeUp = () => {
     const {bills} = this.props;
     const {selectedBillIndex} = this.state;
+
     if(selectedBillIndex > 0) {
       const newIndex = selectedBillIndex - 1;
       this.setState({selectedBill: bills[newIndex], selectedBillIndex: newIndex, showModal: true});
@@ -132,9 +136,10 @@ class BillsTableEdit extends Component {
   }
 
   initilizeBillEditForm = (bill: Object) => {
-    const {dispatch} = this.props;
-    dispatch(destroy('billing-edit-bill-form'));
-    dispatch(initialize('billing-edit-bill-form', bill));
+    const {destroy, initialize} = this.props;
+
+    destroy('billing-edit-bill-form');
+    initialize('billing-edit-bill-form', bill);
   }
 
   showBillModal = (index: number) => {
@@ -148,6 +153,7 @@ class BillsTableEdit extends Component {
         showModal: true,
       });
       this.initilizeBillEditForm(bills[index]);
+
       setTimeout(() => {
         scrollToComponent(this.modal, {
           offset: -130,
@@ -159,19 +165,21 @@ class BillsTableEdit extends Component {
   }
 
   refundSingle = (bill: Object, index: ?number) => {
-    const {dispatch} = this.props;
+    const {refundBill} = this.props;
     const newBill:Object = formatBillingBillDb(bill);
+
     newBill.arrayIndex = index;
-    dispatch(refundBill(newBill));
+    refundBill(newBill);
 
     this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false});
   }
 
   saveBill = (bill: Object, index: ?number) => {
-    const {dispatch} = this.props;
+    const {editBill} = this.props;
     const newBill:Object = formatBillingBillDb(bill);
+
     newBill.arrayIndex = index;
-    dispatch(editBill(newBill));
+    editBill(newBill);
 
     this.setState({selectedBill: null, selectedBillIndex: -1, showModal: false});
   }
@@ -302,5 +310,11 @@ export default flowRight(
         billing: selector(state, 'billing'),
       };
     },
+    {
+      destroy,
+      editBill,
+      initialize,
+      refundBill,
+    }
   ),
 )(BillsTableEdit);

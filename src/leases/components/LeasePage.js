@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {destroy, reduxForm} from 'redux-form';
+import {destroy} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
@@ -75,6 +75,8 @@ import Billing from './leaseSections/billing/Billing';
 import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '$components/commentPanel/CommentPanel';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
+import Constructability from './leaseSections/constructability/Constructability';
+import ConstructabilityEdit from './leaseSections/constructability/ConstructabilityEdit';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtons from '$components/controlButtons/ControlButtons';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
@@ -99,8 +101,6 @@ import TabPane from '$components/tabs/TabPane';
 import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
-import Constructability from './leaseSections/constructability/Constructability';
-import ConstructabilityEdit from './leaseSections/constructability/ConstructabilityEdit';
 
 import type {UserList} from '$src/users/types';
 import type {
@@ -126,7 +126,7 @@ type Props = {
   currentLease: Object,
   decisionsFormTouched: boolean,
   decisionsFormValues: Object,
-  dispatch: Function,
+  destroy: Function,
   fetchAttributes: Function,
   fetchComments: Function,
   fetchCompleteContactList: Function,
@@ -182,7 +182,6 @@ class PreparerForm extends Component {
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
     isSaveLeaseModalOpen: false,
-    terms: [],
   }
 
   static contextTypes = {
@@ -198,11 +197,13 @@ class PreparerForm extends Component {
       fetchContactAttributes,
       fetchSingleLease,
       fetchUsers,
+      hideEditMode,
       location,
       params: {leaseId},
       receiveBilling,
       receiveTopNavigationSettings,
     } = this.props;
+
     const lease = mockData.leases[0];
 
     receiveTopNavigationSettings({
@@ -211,6 +212,7 @@ class PreparerForm extends Component {
       showSearch: true,
     });
 
+    hideEditMode();
     // Destroy forms to initialize new values when data is fetched
     this.destroyAllForms();
     clearFormValidFlags();
@@ -224,13 +226,14 @@ class PreparerForm extends Component {
     });
 
     receiveBilling(contentHelpers.getContentBilling(lease));
-    fetchAttributes();
-    fetchComments(leaseId);
-    fetchSingleLease(leaseId);
 
-    fetchUsers();
+    fetchSingleLease(leaseId);
+    fetchComments(leaseId);
+
+    fetchAttributes();
     fetchCompleteContactList();
     fetchContactAttributes();
+    fetchUsers();
   }
 
   showModal = (modalName: string) => {
@@ -249,10 +252,11 @@ class PreparerForm extends Component {
 
   cancel = () => {
     const {clearFormValidFlags, hideEditMode} = this.props;
-    hideEditMode();
+
     this.hideModal('CancelLease');
     this.destroyAllForms();
     clearFormValidFlags();
+    hideEditMode();
   }
 
   save = () => {
@@ -314,18 +318,18 @@ class PreparerForm extends Component {
   }
 
   destroyAllForms = () => {
-    const {dispatch} = this.props;
-    dispatch(destroy('lease-areas-form'));
-    dispatch(destroy('lease-info-form'));
-    dispatch(destroy('summary-form'));
-    dispatch(destroy('decisions-form'));
-    dispatch(destroy('contracts-form'));
-    dispatch(destroy('inspections-form'));
-    dispatch(destroy('constructability-form'));
-    dispatch(destroy('tenants-form'));
-    dispatch(destroy('rents-form'));
+    const {destroy} = this.props;
+    destroy('lease-areas-form');
+    destroy('lease-info-form');
+    destroy('summary-form');
+    destroy('decisions-form');
+    destroy('contracts-form');
+    destroy('inspections-form');
+    destroy('constructability-form');
+    destroy('tenants-form');
+    destroy('rents-form');
 
-    dispatch(destroy('billing-edit-form'));
+    destroy('billing-edit-form');
   }
 
   validateForms = () => {
@@ -374,26 +378,25 @@ class PreparerForm extends Component {
   isAnyFormTouched = () => {
     const {
       areasFormTouched,
-      leaseInfoFormTouched,
-      summaryFormTouched,
-      decisionsFormTouched,
-      contractsFormTouched,
-      inspectionsFormTouched,
       constructabilityFormTouched,
-      tenantsFormTouched,
+      contractsFormTouched,
+      decisionsFormTouched,
+      inspectionsFormTouched,
+      leaseInfoFormTouched,
       rentsFormTouched,
-
+      summaryFormTouched,
+      tenantsFormTouched,
     } = this.props;
 
     return areasFormTouched ||
-      leaseInfoFormTouched ||
-      summaryFormTouched ||
-      decisionsFormTouched ||
-      contractsFormTouched ||
-      inspectionsFormTouched ||
       constructabilityFormTouched ||
-      tenantsFormTouched ||
-      rentsFormTouched;
+      contractsFormTouched ||
+      decisionsFormTouched ||
+      inspectionsFormTouched ||
+      leaseInfoFormTouched ||
+      rentsFormTouched ||
+      summaryFormTouched ||
+      tenantsFormTouched;
   }
 
   render() {
@@ -412,7 +415,6 @@ class PreparerForm extends Component {
       commentsStore,
       contactAttributes,
       currentLease,
-      dispatch,
       isEditMode,
       isFetching,
       showEditMode,
@@ -469,7 +471,6 @@ class PreparerForm extends Component {
         />
         <CommentPanel
           comments={comments}
-          dispatch={dispatch}
           isOpen={isCommentPanelOpen}
           onClose={this.toggleCommentPanel}
         />
@@ -693,9 +694,6 @@ class PreparerForm extends Component {
 
 export default flowRight(
   withRouter,
-  reduxForm({
-    form: 'lease-main-page-form',
-  }),
   connect(
     (state) => {
       const user = getLoggedInUser(state);
@@ -741,6 +739,7 @@ export default flowRight(
     },
     {
       clearFormValidFlags,
+      destroy,
       fetchAttributes,
       fetchComments,
       fetchCompleteContactList,

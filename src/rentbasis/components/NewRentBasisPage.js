@@ -3,26 +3,32 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import EditRentCriteriaForm from './forms/EditRentCriteriaForm';
 
+import {createRentBasis, fetchAttributes} from '../actions';
+import {getAttributes, getIsFormValid, getRentBasisFormValues} from '../selectors';
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
+import Divider from '$components/content/Divider';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import PageContainer from '$components/content/PageContainer';
-import {createRentCriteria} from '../actions';
-import {getRentCriteria} from '../selectors';
+import RentBasisForm from './forms/RentBasisForm';
+
+import type {Attributes} from '../types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
-  createRentCriteria: Function,
-  criteria: ?Object,
+  attributes: Attributes,
+  createRentBasis: Function,
+  editedRentBasis: ?Object,
+  fetchAttributes: Function,
+  isFormValid: boolean,
   receiveTopNavigationSettings: Function,
 }
 
-class NewRentCriteriaPage extends Component {
+class NewRentBasisPage extends Component {
   props: Props
 
   static contextTypes = {
@@ -30,27 +36,34 @@ class NewRentCriteriaPage extends Component {
   };
 
   componentWillMount() {
-    const {receiveTopNavigationSettings} = this.props;
+    const {fetchAttributes, receiveTopNavigationSettings} = this.props;
+
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('rentcriterias'),
+      linkUrl: getRouteById('rentbasis'),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
+
+    fetchAttributes();
   }
 
   handleCancel = () => {
     const {router} = this.context;
+
     return router.push({
-      pathname: getRouteById('rentcriterias'),
+      pathname: getRouteById('rentbasis'),
     });
   }
 
   handleSave = () => {
-    const {createRentCriteria, criteria} = this.props;
-    createRentCriteria(criteria);
+    const {createRentBasis, editedRentBasis} = this.props;
+
+    createRentBasis(editedRentBasis);
   }
 
   render() {
+    const {attributes, isFormValid} = this.props;
+
     return (
       <PageContainer>
         <ControlButtonBar
@@ -58,7 +71,7 @@ class NewRentCriteriaPage extends Component {
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
-              isSaveDisabled={false}
+              isSaveDisabled={!isFormValid}
               onCancelClick={this.handleCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}
@@ -68,26 +81,23 @@ class NewRentCriteriaPage extends Component {
         />
         <ContentContainer>
           <h2>Uusi vuokrausperuste</h2>
-          <div className="divider" />
+          <Divider />
           <GreenBoxEdit>
-            <EditRentCriteriaForm
-              initialValues={{
-                decisions: [''],
-                prices: [{}],
-                real_estate_ids: [''],
-              }}
+            <RentBasisForm
+              attributes={attributes}
             />
           </GreenBoxEdit>
         </ContentContainer>
       </PageContainer>
-
     );
   }
 }
 
 const mapStateToProps = (state: RootState) => {
   return {
-    criteria: getRentCriteria(state),
+    attributes: getAttributes(state),
+    editedRentBasis: getRentBasisFormValues(state),
+    isFormValid: getIsFormValid(state),
   };
 };
 
@@ -95,8 +105,9 @@ export default flowRight(
   connect(
     mapStateToProps,
     {
-      createRentCriteria,
+      createRentBasis,
+      fetchAttributes,
       receiveTopNavigationSettings,
     },
   ),
-)(NewRentCriteriaPage);
+)(NewRentBasisPage);
