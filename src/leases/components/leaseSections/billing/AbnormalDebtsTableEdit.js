@@ -21,9 +21,11 @@ const MODAL_HEIGHT = 450;
 type Props = {
   abnormalDebts: Array<Object>,
   billing: Object,
-  dispatch: Function,
+  destroy: Function,
+  editAbnormalDebt: Function,
   fields: any,
   headers: Array<string>,
+  initialize: Function,
   onDeleteClick: Function,
 }
 
@@ -74,10 +76,10 @@ class AbnormalDebtsTableEdit extends Component {
   }
 
   initilizeAbnormalDebtForm = (debt: Object) => {
-    const {dispatch} = this.props;
+    const {destroy, initialize} = this.props;
 
-    dispatch(destroy('billing-edit-abnormal-debt-form'));
-    dispatch(initialize('billing-edit-abnormal-debt-form', debt));
+    destroy('billing-edit-abnormal-debt-form');
+    initialize('billing-edit-abnormal-debt-form', debt);
   }
 
   showDebtModal = (index: number) => {
@@ -101,11 +103,11 @@ class AbnormalDebtsTableEdit extends Component {
   }
 
   saveBill = (debt: Object, index: ?number) => {
-    const {dispatch} = this.props;
+    const {editAbnormalDebt} = this.props;
 
     const newDebt:Object = formatBillingBillDb(debt);
     newDebt.arrayIndex = index;
-    dispatch(editAbnormalDebt(newDebt));
+    editAbnormalDebt(newDebt);
 
     this.setState({selectedDebt: null, selectedDebtIndex: -1, showModal: false});
   }
@@ -177,4 +179,12 @@ class AbnormalDebtsTableEdit extends Component {
   }
 }
 
-export default connect(null, null, null, {withRef: true})(AbnormalDebtsTableEdit);
+export default connect(
+  null,
+  {
+    destroy,
+    editAbnormalDebt,
+    initialize,
+  },
+  null,
+  {withRef: true})(AbnormalDebtsTableEdit);

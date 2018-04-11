@@ -10,7 +10,7 @@ import Button from '$components/button/Button';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import {required} from '$components/form/validations';
-import {fetchDistricts, receiveDistricts} from '$src/leases/actions';
+import {fetchDistricts} from '$src/leases/actions';
 import {getDistricts} from '$src/leases/selectors';
 import {getAttributeFieldOptions, getSearchQuery} from '$util/helpers';
 
@@ -18,12 +18,12 @@ import type {DistrictList} from '$src/leases/types';
 
 type Props = {
   attributes: Object,
+  change: Function,
   district: string,
   districts: DistrictList,
   fetchDistricts: Function,
   municipality: string,
   onSubmit: Function,
-  receiveDistricts: Function,
   type: string,
   valid: boolean,
 }
@@ -33,8 +33,7 @@ class CreateLease extends Component {
 
   componentWillReceiveProps(nextProps) {
     if(this.props.municipality !== nextProps.municipality) {
-      const {fetchDistricts, receiveDistricts} = this.props;
-      receiveDistricts([]);
+      const {change, fetchDistricts} = this.props;
 
       if(nextProps.municipality) {
         const query = {
@@ -42,6 +41,7 @@ class CreateLease extends Component {
           municipality: nextProps.municipality,
         };
         fetchDistricts(getSearchQuery(query));
+        change('district', '');
       }
     }
   }
@@ -142,7 +142,6 @@ export default flowRight(
     },
     {
       fetchDistricts,
-      receiveDistricts,
     }
   ),
   reduxForm({

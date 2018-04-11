@@ -23,9 +23,9 @@ type Props = {
   attributes: Object,
   comments: Array<Object>,
   createComment: Function,
-  dispatch: Function,
   editComment: Function,
   fetchCommentAttributes: Function,
+  initialize: Function,
   isOpen: boolean,
   onClose: Function,
   params: Object,
@@ -90,8 +90,8 @@ class CommentPanel extends Component {
   }
 
   resetNewCommentField = () => {
-    const {dispatch} = this.props;
-    dispatch(initialize('new-comment-form', {text: '', topic: ''}));
+    const {initialize} = this.props;
+    initialize('new-comment-form', {text: '', topic: ''});
   }
 
   handleFilterChange = (value: Array<string>) => {
@@ -194,6 +194,7 @@ export default flowRight(
       createComment,
       editComment,
       fetchCommentAttributes,
+      initialize,
     },
   ),
 )(CommentPanel);

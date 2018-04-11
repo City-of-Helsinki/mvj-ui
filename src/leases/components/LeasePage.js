@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {destroy, reduxForm} from 'redux-form';
+import {destroy} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
@@ -126,7 +126,7 @@ type Props = {
   currentLease: Object,
   decisionsFormTouched: boolean,
   decisionsFormValues: Object,
-  dispatch: Function,
+  destroy: Function,
   fetchAttributes: Function,
   fetchComments: Function,
   fetchCompleteContactList: Function,
@@ -318,18 +318,18 @@ class PreparerForm extends Component {
   }
 
   destroyAllForms = () => {
-    const {dispatch} = this.props;
-    dispatch(destroy('lease-areas-form'));
-    dispatch(destroy('lease-info-form'));
-    dispatch(destroy('summary-form'));
-    dispatch(destroy('decisions-form'));
-    dispatch(destroy('contracts-form'));
-    dispatch(destroy('inspections-form'));
-    dispatch(destroy('constructability-form'));
-    dispatch(destroy('tenants-form'));
-    dispatch(destroy('rents-form'));
+    const {destroy} = this.props;
+    destroy('lease-areas-form');
+    destroy('lease-info-form');
+    destroy('summary-form');
+    destroy('decisions-form');
+    destroy('contracts-form');
+    destroy('inspections-form');
+    destroy('constructability-form');
+    destroy('tenants-form');
+    destroy('rents-form');
 
-    dispatch(destroy('billing-edit-form'));
+    destroy('billing-edit-form');
   }
 
   validateForms = () => {
@@ -415,7 +415,6 @@ class PreparerForm extends Component {
       commentsStore,
       contactAttributes,
       currentLease,
-      dispatch,
       isEditMode,
       isFetching,
       showEditMode,
@@ -472,7 +471,6 @@ class PreparerForm extends Component {
         />
         <CommentPanel
           comments={comments}
-          dispatch={dispatch}
           isOpen={isCommentPanelOpen}
           onClose={this.toggleCommentPanel}
         />
@@ -696,9 +694,6 @@ class PreparerForm extends Component {
 
 export default flowRight(
   withRouter,
-  reduxForm({
-    form: 'lease-main-page-form',
-  }),
   connect(
     (state) => {
       const user = getLoggedInUser(state);
@@ -744,6 +739,7 @@ export default flowRight(
     },
     {
       clearFormValidFlags,
+      destroy,
       fetchAttributes,
       fetchComments,
       fetchCompleteContactList,

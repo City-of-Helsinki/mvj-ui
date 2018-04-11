@@ -178,9 +178,9 @@ const renderRentRates = ({attributes, fields}: RentRatesProps) => {
 
 type Props = {
   attributes: Attributes,
+  handleSubmit: Function,
   initialValues: Object,
   isFormValid: boolean,
-  handleSubmit: Function,
   receiveFormValid: Function,
   valid: boolean,
 }

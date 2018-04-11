@@ -27,7 +27,6 @@ import {
 
 type Props = {
   bill: Object,
-  dispatch: Function,
   handleSubmit: Function,
   startDate: string,
 }

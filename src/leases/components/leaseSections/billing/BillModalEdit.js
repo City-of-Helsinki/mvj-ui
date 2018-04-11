@@ -18,7 +18,6 @@ const ARROW_DOWN_KEY = 40;
 type Props = {
   bill: Object,
   containerHeight: ?number,
-  dispatch: Function,
   errors: ?Object,
   newBill: ?Object,
   onClose: Function,

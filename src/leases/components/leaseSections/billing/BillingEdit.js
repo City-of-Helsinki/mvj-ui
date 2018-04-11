@@ -24,7 +24,6 @@ type Props = {
   createAbnormalDebt: Function,
   createBill: Function,
   deleteAbnormalDebt: Function,
-  dispatch: Function,
   startInvoicing: Function,
   stopInvoicing: Function,
 }
