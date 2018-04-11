@@ -16,6 +16,7 @@ import {
   receiveSingleRentBasis,
 } from './actions';
 import {
+  editRentBasis,
   fetchAttributes,
   fetchRentBasisList,
   fetchSingleRentBasis,
@@ -93,11 +94,30 @@ function* createRentCriteriasSaga({payload: criteria}): Generator<> {
   yield put(push(`${getRouteById('rentbasis')}/${dummyId}`));
 }
 
-function* editRentCriteriasSaga({payload: criteria}): Generator<> {
-  // TODO: Integrate with API
-  yield put(receiveSingleRentBasis(criteria));
-  yield put(hideEditMode());
-  displayUIMessage({title: 'Vuokrausperuste tallennettu', body: 'Vuokrausperuste on tallennettu onnistuneesti'});
+function* editRentBasisSaga({payload: rentBasis}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editRentBasis, rentBasis);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSingleRentBasis(bodyAsJson));
+        yield put(hideEditMode());
+        displayUIMessage({title: 'Vuokrausperuste tallennettu', body: 'Vuokrausperuste on tallennettu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson, _error: 'Virhe'})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
 }
 
 export default function*(): Generator<> {
@@ -106,7 +126,7 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/rentbasis/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/rentbasis/FETCH_ALL', fetchRentBasisListSaga);
       yield takeLatest('mvj/rentbasis/CREATE', createRentCriteriasSaga);
-      yield takeLatest('mvj/rentbasis/EDIT', editRentCriteriasSaga);
+      yield takeLatest('mvj/rentbasis/EDIT', editRentBasisSaga);
 
       yield takeLatest('mvj/rentbasis/FETCH_SINGLE', fetchSingleRentBasisSaga);
     }),

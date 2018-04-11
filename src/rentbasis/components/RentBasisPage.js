@@ -13,7 +13,7 @@ import RentBasisEdit from './RentBasisEdit';
 import RentBasisInfo from './RentBasisInfo';
 import RentBasisReadonly from './RentBasisReadonly';
 import {
-  editRentCriteria,
+  editRentBasis,
   fetchAttributes,
   fetchSingleRentBasis,
   hideEditMode,
@@ -37,7 +37,7 @@ import type {RootState} from '$src/root/types';
 type Props = {
   attributes: Attributes,
   editedRentBasis: Object,
-  editRentCriteria: Function,
+  editRentBasis: Function,
   fetchAttributes: Function,
   fetchSingleRentBasis: Function,
   hideEditMode: Function,
@@ -62,6 +62,7 @@ class RentBasisPage extends Component {
     const {
       fetchAttributes,
       fetchSingleRentBasis,
+      hideEditMode,
       params: {rentBasisId},
       receiveTopNavigationSettings,
     } = this.props;
@@ -71,6 +72,8 @@ class RentBasisPage extends Component {
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
+
+    hideEditMode();
 
     fetchSingleRentBasis(rentBasisId);
     fetchAttributes();
@@ -84,9 +87,9 @@ class RentBasisPage extends Component {
     });
   }
 
-  saveCriteria = () => {
-    const {editRentCriteria, editedRentBasis} = this.props;
-    editRentCriteria(editedRentBasis);
+  editRentBasis = () => {
+    const {editRentBasis, editedRentBasis} = this.props;
+    editRentBasis(editedRentBasis);
   }
 
   hideEditMode = () => {
@@ -125,7 +128,7 @@ class RentBasisPage extends Component {
               onCancelClick={this.hideEditMode}
               onCopyClick={this.copyCriteria}
               onEditClick={() => this.showEditMode(rentBasis)}
-              onSaveClick={this.saveCriteria}
+              onSaveClick={this.editRentBasis}
               showCommentButton={false}
               showCopyButton={true}
             />
@@ -157,7 +160,7 @@ class RentBasisPage extends Component {
 const mapStateToProps = (state: RootState) => {
   return {
     attributes: getAttributes(state),
-    editedCriteria: getRentBasisFormValues(state),
+    editedRentBasis: getRentBasisFormValues(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
     rentBasisData: getRentBasis(state),
@@ -169,7 +172,7 @@ export default flowRight(
   connect(
     mapStateToProps,
     {
-      editRentCriteria,
+      editRentBasis,
       fetchAttributes,
       fetchSingleRentBasis,
       hideEditMode,

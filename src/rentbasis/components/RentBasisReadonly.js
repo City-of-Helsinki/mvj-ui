@@ -51,9 +51,11 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
             <label>Kiinteistötunnukset</label>
             {rentBasis.property_identifiers && !!rentBasis.property_identifiers.length
               ? (
-                rentBasis.property_identifiers.map((item, index) => {
-                  return(<p key={index}>{item.identifier}</p>);
-                })
+                <ListItems>
+                  {rentBasis.property_identifiers.map((item, index) => {
+                    return(<p key={index} className='no-margin'>{item.identifier}</p>);
+                  })}
+                </ListItems>
               ) : <p>-</p>
             }
           </Column>
@@ -75,9 +77,11 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
             <label>Päätökset</label>
             {rentBasis.decisions && !!rentBasis.decisions.length
               ? (
-                rentBasis.decisions.map((decision, index) => {
-                  return(<p key={index}>{decision.identifier}</p>);
-                })
+                <ListItems>
+                  {rentBasis.decisions.map((decision, index) => {
+                    return(<p className='no-margin' key={index}>{decision.identifier}</p>);
+                  })}
+                </ListItems>
               ) : <p>-</p>
             }
           </Column>
