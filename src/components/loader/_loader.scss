@@ -10,11 +10,10 @@
   border-right: 5px solid lighten($tram, 50%);
   border-bottom: 5px solid lighten($tram, 50%);
   border-left: 5px solid $tram;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-animation: loaderSpinner .7s infinite linear;
+
+  @include transform(translateZ(0));
   animation: loaderSpinner .7s infinite linear;
+  -webkit-animation: loaderSpinner .7s infinite linear;
 
   &,
   &:after {
@@ -31,11 +30,18 @@
 
 @-webkit-keyframes loaderSpinner {
   0% {
-    -webkit-transform: rotate(0deg);
-    transform: rotate(0deg);
+    @include rotate(0deg);
   }
   100% {
-    -webkit-transform: rotate(360deg);
-    transform: rotate(360deg);
+    @include rotate(360deg);
+  }
+}
+
+@keyframes loaderSpinner {
+  0% {
+    @include rotate(0deg);
+  }
+  100% {
+    @include rotate(360deg);
   }
 }
