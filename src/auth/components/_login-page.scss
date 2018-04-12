@@ -36,6 +36,7 @@
   }
 
   .login-koro {
+    background-size: 96px 14px;
     @include rotate(180deg);
     height: rem-calc(14px);
     background: url(../assets/images/basic-wave-koro.svg);
