@@ -6,7 +6,7 @@
   }
 
   &__label {
-    font-size: $font-small;
+    font-size: rem-calc(13px);
     color: $dark-gray;
     line-height: normal;
     margin-bottom: 0;
@@ -33,28 +33,18 @@
 }
 
 .lease-info-edit {
-  display: flex;
-
-  &__column {
-    flex: 0 0 25%;
-    display: block;
-
-    &-wrapper {
-      padding-right: 10px;
-    }
-  }
+  width: 100%;
 
   &__label {
-    font-size: $font-small;
-    line-height: normal;
     color: $dark-gray;
-    margin-bottom: rem-calc(2px);
+    font-size: rem-calc(13px);
+    line-height: normal;
+    margin-bottom: 0;
   }
 
   &__number {
-    font-size: $font-xlarge;
-    font-weight: $semibold;
-    margin-right: 2rem;
-    line-height: rem-calc(30px);
+    line-height: rem-calc(24px);
+    margin-right: rem-calc(20px);
+    padding-top: 0 !important;
   }
 }

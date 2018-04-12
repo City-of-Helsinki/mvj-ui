@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Field, formValueSelector, reduxForm} from 'redux-form';
+import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
@@ -42,15 +43,15 @@ class LeaseInfoEdit extends Component {
 
     return (
       <form className='lease-info-edit'>
-        <div className='lease-info-edit__column'>
-          <p className='lease-info-edit__label'>Vuokratunnus</p>
-          <span className='lease-info-edit__number'>{leaseInfo.identifier || '-'}</span>
-        </div>
-        <div className='lease-info-edit__column'>
-          <div className='lease-info-edit__column-wrapper'>
+        <Row>
+          <Column>
+            <p className='lease-info-edit__label'>Vuokratunnus</p>
+            <h1 className='lease-info-edit__number'>{leaseInfo.identifier || '-'}</h1>
+          </Column>
+          <Column>
             <p className='lease-info-edit__label'>Tyyppi</p>
             <Field
-              className="no-margin"
+              className='no-margin'
               component={FieldTypeSelect}
               name='state'
               options={stateOptions}
@@ -58,10 +59,8 @@ class LeaseInfoEdit extends Component {
                 (value) => genericValidator(value, get(attributes, 'state')),
               ]}
             />
-          </div>
-        </div>
-        <div className='lease-info-edit__column'>
-          <div className='lease-info-edit__column-wrapper'>
+          </Column>
+          <Column>
             <p className='lease-info-edit__label'>Alkupvm</p>
             <Field
               className="no-margin"
@@ -71,10 +70,8 @@ class LeaseInfoEdit extends Component {
                 (value) => genericValidator(value, get(attributes, 'start_date')),
               ]}
             />
-          </div>
-        </div>
-        <div className='lease-info-edit__column'>
-          <div className='lease-info-edit__column-wrapper'>
+          </Column>
+          <Column>
             <p className='lease-info-edit__label'>Loppupvm</p>
             <Field
               className="no-margin"
@@ -86,8 +83,8 @@ class LeaseInfoEdit extends Component {
                 (value) => dateGreaterOrEqual(value, start_date),
               ]}
             />
-          </div>
-        </div>
+          </Column>
+        </Row>
       </form>
     );
   }
