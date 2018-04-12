@@ -62,8 +62,9 @@ class App extends Component {
     }
     // Fetch api token if user info is received but Api token is empty
     if(!nextProps.isApiTokenFetching &&
-      get(nextProps, 'user.access_token') !== undefined &&
-      isEmpty(nextProps.apiToken) || (get(this.props, 'user.accessToken') !== get(nextProps, 'user.accessToken'))
+      nextProps.user &&
+      nextProps.user.access_token &&
+      (isEmpty(nextProps.apiToken) || (get(this.props, 'user.access_token') !== get(nextProps, 'user.access_token')))
     ) {
       fetchApiToken(nextProps.user.access_token);
       return;

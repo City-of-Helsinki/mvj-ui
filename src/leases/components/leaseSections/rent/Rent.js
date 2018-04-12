@@ -42,7 +42,7 @@ class Rent extends Component {
     } = this.props;
     const query = {
       lease: leaseId,
-      imit: 1000,
+      limit: 1000,
     };
     const search = getSearchQuery(query);
     fetchDecisions(search);

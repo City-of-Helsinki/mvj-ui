@@ -6,6 +6,7 @@ import {destroy} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import {getLoggedInUser} from '$src/auth/selectors';
 import {receiveBilling} from './leaseSections/billing/actions';
@@ -24,6 +25,7 @@ import {
   getAreasFormTouched,
   getAreasFormValues,
   getAttributes,
+  getCommentAttributes,
   getComments,
   getContractsFormTouched,
   getContractsFormValues,
@@ -57,6 +59,7 @@ import {
 import {
   clearFormValidFlags,
   fetchAttributes,
+  fetchCommentAttributes,
   fetchComments,
   fetchSingleLease,
   hideEditMode,
@@ -102,6 +105,7 @@ import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 
+import type {Attributes} from '../types';
 import type {UserList} from '$src/users/types';
 import type {
   Attributes as ContactAttributes,
@@ -114,9 +118,10 @@ type Props = {
   allContacts: ContactList,
   areasFormTouched: boolean,
   areasFormValues: Object,
-  attributes: Object,
+  attributes: Attributes,
   billing: Object,
   clearFormValidFlags: Function,
+  commentAttributes: Attributes,
   commentsStore: Array<Object>,
   contactAttributes: ContactAttributes,
   contractsFormTouched: boolean,
@@ -128,6 +133,7 @@ type Props = {
   decisionsFormValues: Object,
   destroy: Function,
   fetchAttributes: Function,
+  fetchCommentAttributes: Function,
   fetchComments: Function,
   fetchCompleteContactList: Function,
   fetchContactAttributes: Function,
@@ -192,6 +198,7 @@ class PreparerForm extends Component {
     const {
       clearFormValidFlags,
       fetchAttributes,
+      fetchCommentAttributes,
       fetchComments,
       fetchCompleteContactList,
       fetchContactAttributes,
@@ -227,10 +234,12 @@ class PreparerForm extends Component {
 
     receiveBilling(contentHelpers.getContentBilling(lease));
 
+    fetchAttributes();
     fetchSingleLease(leaseId);
+
+    fetchCommentAttributes();
     fetchComments(leaseId);
 
-    fetchAttributes();
     fetchCompleteContactList();
     fetchContactAttributes();
     fetchUsers();
@@ -412,6 +421,7 @@ class PreparerForm extends Component {
       allContacts,
       attributes,
       billing,
+      commentAttributes,
       commentsStore,
       contactAttributes,
       currentLease,
@@ -450,6 +460,10 @@ class PreparerForm extends Component {
       );
     }
 
+    if(isEmpty(currentLease)) {
+      return null;
+    }
+
     return (
       <PageContainer className='lease-page'>
         <ConfirmationModal
@@ -470,6 +484,7 @@ class PreparerForm extends Component {
           title='Peruuta muutokset'
         />
         <CommentPanel
+          attributes={commentAttributes}
           comments={comments}
           isOpen={isCommentPanelOpen}
           onClose={this.toggleCommentPanel}
@@ -703,6 +718,7 @@ export default flowRight(
         areasFormValues: getAreasFormValues(state),
         attributes: getAttributes(state),
         billing: getBilling(state),
+        commentAttributes: getCommentAttributes(state),
         commentsStore: getComments(state),
         contactAttributes: getContactAttributes(state),
         contractsFormTouched: getContractsFormTouched(state),
@@ -741,6 +757,7 @@ export default flowRight(
       clearFormValidFlags,
       destroy,
       fetchAttributes,
+      fetchCommentAttributes,
       fetchComments,
       fetchCompleteContactList,
       fetchContactAttributes,

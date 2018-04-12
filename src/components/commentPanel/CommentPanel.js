@@ -11,11 +11,10 @@ import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
 import NewCommentForm from './forms/NewCommentForm';
 import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
-import {getCommentAttributes} from '$src/leases/selectors';
+
 import {
   createComment,
   editComment,
-  fetchCommentAttributes,
 } from '$src/leases/actions';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 
@@ -24,7 +23,6 @@ type Props = {
   comments: Array<Object>,
   createComment: Function,
   editComment: Function,
-  fetchCommentAttributes: Function,
   initialize: Function,
   isOpen: boolean,
   onClose: Function,
@@ -47,11 +45,6 @@ class CommentPanel extends Component {
 
   state: State = {
     selectedTopics: [],
-  }
-
-  componentWillMount() {
-    const {fetchCommentAttributes} = this.props;
-    fetchCommentAttributes();
   }
 
   getFilteredComments = (comments: Array<Object>) => {
@@ -185,15 +178,10 @@ class CommentPanel extends Component {
 export default flowRight(
   withRouter,
   connect(
-    (state) => {
-      return {
-        attributes: getCommentAttributes(state),
-      };
-    },
+    null,
     {
       createComment,
       editComment,
-      fetchCommentAttributes,
       initialize,
     },
   ),
