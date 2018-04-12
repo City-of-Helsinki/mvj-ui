@@ -461,12 +461,12 @@ class PreparerForm extends Component {
           title='Tallenna'
         />
         <ConfirmationModal
+          confirmButtonLabel='Vahvista'
           isOpen={isCancelLeaseModalOpen}
           label='Haluatko varmasti peruuttaa muutokset?'
           onCancel={() => this.hideModal('CancelLease')}
           onClose={() => this.hideModal('CancelLease')}
           onSave={this.cancel}
-          saveButtonLabel='Vahvista'
           title='Peruuta muutokset'
         />
         <CommentPanel
