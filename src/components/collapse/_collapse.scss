@@ -21,10 +21,13 @@
       background-image: url(../assets/icons/icon_accordion_close.svg);
       display: block;
       content: ' ';
-      height: rem-calc(20px);
-      width: rem-calc(20px);
+      height: rem-calc(15px);
+      width: rem-calc(15px);
       background-repeat: no-repeat;
       background-position: 0 50%;
+      background-size: rem-calc(15px 15px);
+
+      @include transition(0.4s, transform, ease-in-out);
     }
 
     .header-info-wrapper {
@@ -108,7 +111,7 @@
     overflow: hidden;
     padding: 0;
 
-    @include transition(0.5s, max-height, ease);
+    @include transition(0.4s, max-height, ease);
   }
 
   &__content-wrapper {
@@ -125,7 +128,8 @@
   &.open {
     .collapse__header {
       i.arrow-icon {
-        background-image: url(../assets/icons/icon_accordion_open.svg);
+        @include rotate(90deg);
+        // background-image: url(../assets/icons/icon_accordion_open.svg);
       }
     }
 
@@ -156,6 +160,7 @@
 
       i.arrow-icon {
         background-image: url(../assets/icons/icon_accordion_close.svg);
+        @include rotate(0deg);
       }
     }
 
@@ -163,7 +168,7 @@
       max-height: 0;
       overflow: hidden !important;
 
-      @include transition(0.5s, max-height, ease);
+      @include transition(0.4s, max-height, ease);
     }
 
     .collapse__content-wrapper {
@@ -188,7 +193,7 @@
 
       .collapse__header {
         i.arrow-icon {
-          background-image: url(../assets/icons/icon_accordion_open.svg);
+          @include rotate(90deg);
         }
       }
     }
