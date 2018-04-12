@@ -178,25 +178,19 @@ class RentEdit extends Component {
             </Collapse>
           }
 
-          {(rentType === RentTypes.INDEX ||
-            rentType === RentTypes.ONE_TIME ||
-            rentType === RentTypes.FIXED ||
-            rentType === RentTypes.MANUAL
-          ) &&
-            <Collapse
-              defaultOpen={true}
-              header={
-                <Row>
-                  <Column><h3 className='collapse__header-title'>Vuokranperusteet</h3></Column>
-                </Row>
-              }>
-              <FieldArray
-                attributes={attributes}
-                component={BasisOfRentsEdit}
-                name="basis_of_rents"
-              />
-            </Collapse>
-          }
+          <Collapse
+            defaultOpen={true}
+            header={
+              <Row>
+                <Column><h3 className='collapse__header-title'>Vuokranperusteet</h3></Column>
+              </Row>
+            }>
+            <FieldArray
+              attributes={attributes}
+              component={BasisOfRentsEdit}
+              name="basis_of_rents"
+            />
+          </Collapse>
         </FormSectionComponent>
       </form>
     );

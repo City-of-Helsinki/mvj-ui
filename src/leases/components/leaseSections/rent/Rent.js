@@ -155,24 +155,19 @@ class Rent extends Component {
           </Collapse>
         }
 
-        {(rentType === RentTypes.INDEX ||
-          rentType === RentTypes.ONE_TIME ||
-          rentType === RentTypes.FIXED ||
-          rentType === RentTypes.MANUAL) &&
-          <Collapse
-            className='no-content-top-padding'
-            defaultOpen={true}
-            header={
-              <Row>
-                <Column><h3 className='collapse__header-title'>Vuokranperusteet</h3></Column>
-              </Row>
-            }>
-            <BasisOfRents
-              attributes={attributes}
-              basisOfRents={basisOfRents}
-            />
-          </Collapse>
-        }
+        <Collapse
+          className='no-content-top-padding'
+          defaultOpen={true}
+          header={
+            <Row>
+              <Column><h3 className='collapse__header-title'>Vuokranperusteet</h3></Column>
+            </Row>
+          }>
+          <BasisOfRents
+            attributes={attributes}
+            basisOfRents={basisOfRents}
+          />
+        </Collapse>
       </div>
     );
   }

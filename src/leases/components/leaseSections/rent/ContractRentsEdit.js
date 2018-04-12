@@ -25,7 +25,7 @@ type Props = {
 
 const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
   const amountPeriodOptions = getAttributeFieldOptions(attributes,
-    'rents.child.children.contract_rents.child.children.amount_period');
+    'rents.child.children.contract_rents.child.children.period');
   const baseAmountPeriodOptions = getAttributeFieldOptions(attributes,
     'rents.child.children.contract_rents.child.children.base_amount_period');
   const intendedUseOptions = getAttributeFieldOptions(attributes,

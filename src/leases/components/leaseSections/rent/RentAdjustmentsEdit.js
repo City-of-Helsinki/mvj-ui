@@ -93,7 +93,7 @@ const RentAdjustmentsEdit = ({attributes, decisionOptions, fields}: Props) => {
                   </Row>
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <label className="mvj-form-field-label">Kokonaismäärä</label>
+                  <label className="mvj-form-field-label">Määrä</label>
                   <Row>
                     <Column small={6}>
                       <Field
