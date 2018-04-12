@@ -25,7 +25,7 @@
       width: rem-calc(15px);
       background-repeat: no-repeat;
       background-position: 0 50%;
-      background-size: rem-calc(15px 15px);
+      background-size: contain;
 
       @include transition(0.4s, transform, ease-in-out);
     }
