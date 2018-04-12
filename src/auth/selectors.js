@@ -7,8 +7,8 @@ import type {ApiToken, AuthState} from './types';
 export const getApiToken: Selector<ApiToken, void> = (state: Object): AuthState =>
   state.auth.apiToken['https://api.hel.fi/auth/mvj'];
 
-export const getApiTokenLoading: Selector<ApiToken, void> = (state: Object): AuthState =>
-  state.auth.isLoading;
+export const getIsFetching: Selector<ApiToken, void> = (state: Object): AuthState =>
+  state.auth.isFetching;
 
 export const getLoggedInUser: Selector<Object, void> = (state: Object): Object =>
   state.oidc.user;

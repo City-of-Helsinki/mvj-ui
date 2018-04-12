@@ -16,7 +16,7 @@ import {getError} from '../api/selectors';
 import {getLinkUrl, getPageTitle, getShowSearch} from '$components/topNavigation/selectors';
 import ApiErrorModal from '../api/ApiErrorModal';
 import {clearApiToken, fetchApiToken} from '../auth/actions';
-import {getApiToken, getApiTokenLoading, getLoggedInUser} from '../auth/selectors';
+import {getApiToken, getIsFetching, getLoggedInUser} from '../auth/selectors';
 import LoginPage from '../auth/components/LoginPage';
 import userManager from '../auth/util/user-manager';
 import Loader from '$components/loader/Loader';
@@ -30,12 +30,12 @@ import type {RootState} from '../root/types';
 type Props = {
   apiError: ApiError,
   apiToken: ApiToken,
-  apiTokenLoading: boolean,
   children: any,
   clearApiToken: Function,
   clearError: typeof clearError,
   closeReveal: Function,
   fetchApiToken: Function,
+  isApiTokenFetching: boolean,
   linkUrl: string,
   location: Object,
   params: Object,
@@ -61,7 +61,10 @@ class App extends Component {
       return;
     }
     // Fetch api token if user info is received but Api token is empty
-    if(nextProps.user !== null && nextProps.user.access_token !== null && isEmpty(nextProps.apiToken)) {
+    if(!nextProps.isApiTokenFetching &&
+      get(nextProps, 'user.access_token') !== undefined &&
+      isEmpty(nextProps.apiToken) || (get(this.props, 'user.accessToken') !== get(nextProps, 'user.accessToken'))
+    ) {
       fetchApiToken(nextProps.user.access_token);
       return;
     }
@@ -89,8 +92,8 @@ class App extends Component {
   render() {
     const {apiError,
       apiToken,
-      apiTokenLoading,
       children,
+      isApiTokenFetching,
       linkUrl,
       location,
       pageTitle,
@@ -105,8 +108,8 @@ class App extends Component {
             data={apiError}
             isOpen={Boolean(apiError)}
             handleDismiss={this.handleDismissErrorModal}/>
-          <LoginPage buttonDisabled={Boolean(apiTokenLoading)}/>
-          <Loader isLoading={Boolean(apiTokenLoading)} />
+          <LoginPage buttonDisabled={Boolean(isApiTokenFetching)}/>
+          <Loader isLoading={Boolean(isApiTokenFetching)} />
 
           {location.pathname === getRouteById('callback') &&
             children
@@ -168,7 +171,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     apiError: getError(state),
     apiToken: getApiToken(state),
-    apiTokenLoading: getApiTokenLoading(state),
+    isApiTokenFetching: getIsFetching(state),
     linkUrl: getLinkUrl(state),
     pageTitle: getPageTitle(state),
     showSearch: getShowSearch(state),

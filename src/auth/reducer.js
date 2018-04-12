@@ -7,7 +7,7 @@ import type {
   ReceiveApiTokenAction,
 } from './types';
 
-const isLoadingReducer: Reducer<boolean> = handleActions({
+const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/auth/FETCH_API_TOKEN': () => true,
   'mvj/auth/TOKEN_NOT_FOUND': () => false,
   'mvj/auth/RECEIVE_API_TOKEN': () => false,
@@ -19,5 +19,5 @@ const apiTokenReducer: Reducer<Object> = handleActions({
 
 export default combineReducers({
   apiToken: apiTokenReducer,
-  isLoading: isLoadingReducer,
+  isFetching: isFetchingReducer,
 });
