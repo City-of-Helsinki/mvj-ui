@@ -47,14 +47,8 @@ const OtherTenantItem = ({
     <Collapse
       className='collapse__secondary'
       defaultOpen={true}
-      header={
-        <Row>
-          <Column small={12}>
-            <h4 className='collapse__header-title'>
-              {getLabelOfOption(tenantTypeOptions, tenant.type)}
-            </h4>
-          </Column>
-        </Row>
+      headerTitle={
+        <h4 className='collapse__header-title'>{getLabelOfOption(tenantTypeOptions, tenant.type)}</h4>
       }>
       <Row>
         <Column small={12} medium={6} large={4}>

@@ -33,12 +33,8 @@ const DecisionConditionsEdit = ({
     <Collapse
       className='collapse__secondary'
       defaultOpen={true}
-      header={
-        <Row>
-          <Column small={3}>
-            <h4 className='collapse__header-title'>Ehdot</h4>
-          </Column>
-        </Row>
+      headerTitle={
+        <h4 className='collapse__header-title'>Ehdot</h4>
       }
     >
       <BoxItemContainer>

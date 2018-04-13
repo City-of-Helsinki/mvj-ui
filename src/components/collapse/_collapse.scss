@@ -8,13 +8,13 @@
 
   .collapse__header {
     padding: rem-calc(15px);
-    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
 
     .icon-wrapper {
       padding-right: rem-calc(15px);
+      cursor: pointer;
     }
 
     i.arrow-icon {
@@ -32,6 +32,11 @@
 
     .header-info-wrapper {
       flex: 1 1 0%;
+
+      .header-info-link {
+        display: inline-block;
+        cursor: pointer;
+      }
     }
 
     &-title {

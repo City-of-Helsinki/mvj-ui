@@ -33,12 +33,8 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
         <Collapse
            key={decision.id ? decision.id : `index_${index}`}
           defaultOpen={true}
-          header={
-            <Row>
-              <Column small={3}>
-                <h3 className='collapse__header-title'>Päätös {index + 1}</h3>
-              </Column>
-            </Row>
+          headerTitle={
+            <h3 className='collapse__header-title'>Päätös {index + 1}</h3>
           }
         >
           <BoxContentWrapper>

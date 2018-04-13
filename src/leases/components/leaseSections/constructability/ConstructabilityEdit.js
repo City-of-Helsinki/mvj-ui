@@ -130,39 +130,33 @@ const renderAreas = ({
             key={area.id ? area.id : `index_${index}`}
             defaultOpen={true}
             header={
-              <Row>
-                <Column small={3}>
-                  <h3  className='collapse__header-title'>
-                    {areas[index].identifier}
-                  </h3>
-                </Column>
-                <Column small={3}>
+              <div>
+                <Column>
                   <span className='collapse__header-subtitle'>
                     {getLabelOfOption(typeOptions, areas[index].type) || '-'}
                   </span>
                 </Column>
-                <Column small={3}>
+                <Column>
                   <span className='collapse__header-subtitle'>
                     {getFullAddress(areas[index])}
                   </span>
                 </Column>
-                <Column small={3}>
+                <Column>
                   <span className='collapse__header-subtitle'>
                     {areas[index].area || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areas[index].location) || '-'}
                   </span>
                 </Column>
-              </Row>
+              </div>
+            }
+            headerTitle={
+              <h3  className='collapse__header-title'>{areas[index].identifier}</h3>
             }
           >
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column small={12}>
-                    <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
-                  </Column>
-                </Row>
+              headerTitle={
+                <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
               }
             >
               <Row>
@@ -188,12 +182,8 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column small={12}>
-                    <h4 className='collapse__header-title'>Purku</h4>
-                  </Column>
-                </Row>
+              headerTitle={
+                <h4 className='collapse__header-title'>Purku</h4>
               }
             >
               <Row>
@@ -219,12 +209,8 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column small={12}>
-                    <h4 className='collapse__header-title'>PIMA</h4>
-                  </Column>
-                </Row>
+              headerTitle={
+                <h4 className='collapse__header-title'>PIMA</h4>
               }
             >
               <Row>
@@ -302,12 +288,8 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column small={12}>
-                    <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
-                  </Column>
-                </Row>
+              headerTitle={
+                <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
               }
             >
               <Row>
@@ -374,12 +356,8 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column small={12}>
-                    <h4 className='collapse__header-title'>Muut</h4>
-                  </Column>
-                </Row>
+              headerTitle={
+                <h4 className='collapse__header-title'>Muut</h4>
               }
             >
               <Row>

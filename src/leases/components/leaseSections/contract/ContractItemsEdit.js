@@ -37,12 +37,8 @@ const renderContractChanges = ({
     <Collapse
       className='collapse__secondary'
       defaultOpen={true}
-      header={
-        <Row>
-          <Column small={12}>
-            <h4 className='collapse__header-title'>{title}</h4>
-          </Column>
-        </Row>
+      headerTitle={
+        <h4 className='collapse__header-title'>{title}</h4>
       }
     >
       <BoxItemContainer>
@@ -259,12 +255,8 @@ const ContractItemsEdit = ({
           <Collapse
             key={contract.id ? contract.id : `index_${index}`}
             defaultOpen={true}
-            header={
-              <Row>
-                <Column small={12}>
-                  <h3 className='collapse__header-title'>Sopimus {index + 1}</h3>
-                </Column>
-              </Row>
+            headerTitle={
+              <h3 className='collapse__header-title'>Sopimus {index + 1}</h3>
             }
           >
             <BoxContentWrapper>

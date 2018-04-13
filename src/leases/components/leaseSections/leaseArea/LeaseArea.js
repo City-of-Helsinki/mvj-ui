@@ -55,12 +55,8 @@ const LeaseArea = ({area, attributes}: Props) => {
         <Collapse
           className='collapse__secondary'
           defaultOpen={true}
-          header={
-            <Row>
-              <Column small={12}>
-                <h4 className='collapse__header-title'>Kiinteistöt / määräalat sopimushetkellä</h4>
-              </Column>
-            </Row>
+          headerTitle={
+            <h4 className='collapse__header-title'>Kiinteistöt / määräalat sopimushetkellä</h4>
           }
         >
           <BoxItemContainer>
@@ -78,12 +74,8 @@ const LeaseArea = ({area, attributes}: Props) => {
         <Collapse
           className='collapse__secondary'
           defaultOpen={true}
-          header={
-            <Row>
-              <Column small={12}>
-                <h4 className='collapse__header-title'>Kiinteistöt / määräalat nykyhetkellä</h4>
-              </Column>
-            </Row>
+          headerTitle={
+            <h4 className='collapse__header-title'>Kiinteistöt / määräalat nykyhetkellä</h4>
           }
         >
           <BoxItemContainer>
@@ -101,12 +93,8 @@ const LeaseArea = ({area, attributes}: Props) => {
         <Collapse
           className='collapse__secondary'
           defaultOpen={true}
-          header={
-            <Row>
-              <Column small={12}>
-                <h4 className='collapse__header-title'>Kaavayksiköt sopimushetkellä</h4>
-              </Column>
-            </Row>
+          headerTitle={
+            <h4 className='collapse__header-title'>Kaavayksiköt sopimushetkellä</h4>
           }
         >
           <BoxItemContainer>
@@ -124,12 +112,8 @@ const LeaseArea = ({area, attributes}: Props) => {
         <Collapse
           className='collapse__secondary'
           defaultOpen={true}
-          header={
-            <Row>
-              <Column small={12}>
-                <h4 className='collapse__header-title'>Kaavayksiköt nykyhetkellä</h4>
-              </Column>
-            </Row>
+          headerTitle={
+            <h4 className='collapse__header-title'>Kaavayksiköt nykyhetkellä</h4>
           }
         >
           <BoxItemContainer>

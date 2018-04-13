@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import get from 'lodash/get';
-import {Row, Column} from 'react-foundation';
+import {Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
 import TenantItem from './TenantItem';
@@ -50,13 +50,8 @@ const Tenant = ({
   return (
     <Collapse
       header={
-        <Row>
-          <Column small={6} medium={4} large={4}>
-            <h3 className='collapse__header-title'>
-              {getFullName()}
-            </h3>
-          </Column>
-          <Column small={6} medium={6} large={6}>
+        <div>
+          <Column>
             <span className={classnames(
               'collapse__header-subtitle',
               // {'alert': (share_count !== tenant.tenant.share_divider)}
@@ -64,7 +59,10 @@ const Tenant = ({
               <i/> {get(tenant, 'share_numerator', '')} / {get(tenant, 'share_denominator', '')}
             </span>
           </Column>
-        </Row>
+        </div>
+      }
+      headerTitle={
+        <h3 className='collapse__header-title'>{getFullName()}</h3>
       }
     >
       <div>

@@ -39,12 +39,8 @@ const LeaseAreaItem = ({
           <Collapse
             key={index}
             defaultOpen={true}
-            header={
-              <Row>
-                <Column small={3}>
-                  <h3 className='collapse__header-title'>Vuokra-alue {index + 1}</h3>
-                </Column>
-              </Row>
+            headerTitle={
+              <h3 className='collapse__header-title'>Vuokra-alue {index + 1}</h3>
             }
           >
             <BoxContentWrapper>

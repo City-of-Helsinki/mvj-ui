@@ -44,12 +44,8 @@ const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
         <Collapse
           className='collapse__secondary'
           defaultOpen={true}
-          header={
-            <Row>
-              <Column small={12}>
-                <h4 className='collapse__header-title'>{title}</h4>
-              </Column>
-            </Row>
+          headerTitle={
+            <h4 className='collapse__header-title'>{title}</h4>
           }
         >
           <BoxItemContainer>

@@ -70,10 +70,8 @@ class Rent extends Component {
 
         <Collapse
           defaultOpen={true}
-          header={
-            <Row>
-              <Column><h3 className='collapse__header-title'>Vuokran perustiedot</h3></Column>
-            </Row>
+          headerTitle={
+            <h3 className='collapse__header-title'>Vuokran perustiedot</h3>
           }>
           <BasicInfo
             attributes={attributes}
@@ -87,10 +85,8 @@ class Rent extends Component {
           rentType === RentTypes.MANUAL) &&
           <Collapse
             defaultOpen={true}
-            header={
-              <Row>
-                <Column><h3 className='collapse__header-title'>Sopimusvuokra</h3></Column>
-              </Row>
+            headerTitle={
+              <h3 className='collapse__header-title'>Sopimusvuokra</h3>
             }>
             <ContractRents
               attributes={attributes}
@@ -104,10 +100,8 @@ class Rent extends Component {
           rentType === RentTypes.MANUAL) &&
           <Collapse
             defaultOpen={true}
-            header={
-              <Row>
-                <Column><h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3></Column>
-              </Row>
+            headerTitle={
+              <h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3>
             }>
             <IndexAdjustedRents
               attributes={attributes}
@@ -121,10 +115,8 @@ class Rent extends Component {
           rentType === RentTypes.MANUAL) &&
           <Collapse
             defaultOpen={true}
-            header={
-              <Row>
-                <Column><h3 className='collapse__header-title'>Alennukset ja korotukset</h3></Column>
-              </Row>
+            headerTitle={
+              <h3 className='collapse__header-title'>Alennukset ja korotukset</h3>
             }>
             <RentAdjustments
               attributes={attributes}
@@ -139,10 +131,8 @@ class Rent extends Component {
           rentType === RentTypes.MANUAL) &&
           <Collapse
             defaultOpen={true}
-            header={
-              <Row>
-                <Column><h3 className='collapse__header-title'>Perittävä vuokra</h3></Column>
-              </Row>
+            headerTitle={
+              <h3 className='collapse__header-title'>Perittävä vuokra</h3>
             }>
             <PayableRents
               payableRents={get(rents, 'payable_rents', [])}
@@ -152,10 +142,8 @@ class Rent extends Component {
 
         <Collapse
           defaultOpen={true}
-          header={
-            <Row>
-              <Column><h3 className='collapse__header-title'>Vuokranperusteet</h3></Column>
-            </Row>
+          headerTitle={
+            <h3 className='collapse__header-title'>Vuokranperusteet</h3>
           }>
           <BasisOfRents
             attributes={attributes}

@@ -99,18 +99,19 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         className='collapse__secondary'
         defaultOpen={false}
         header={
-          <Row>
-            <Column small={6}>
-              <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
-            </Column>
-            <Column small={6}>
-              <StatusIndicator
-                researchState={area.preconstruction_state}
-                stateOptions={stateOptions}
-              />
-            </Column>
-          </Row>
-        }>
+          <div>
+            <Column>
+                <StatusIndicator
+                  researchState={area.preconstruction_state}
+                  stateOptions={stateOptions}
+                />
+              </Column>
+          </div>
+        }
+        headerTitle={
+          <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
+        }
+      >
         <Comments
           comments={area.descriptionsPreconstruction}
           userOptions={userOptions}
@@ -121,18 +122,19 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         className='collapse__secondary'
         defaultOpen={false}
         header={
-          <Row>
-            <Column small={6}>
-              <h4 className='collapse__header-title'>Purku</h4>
-            </Column>
-            <Column small={6}>
+          <div>
+            <Column>
               <StatusIndicator
                 researchState={area.demolition_state}
                 stateOptions={stateOptions}
               />
             </Column>
-          </Row>
-        }>
+          </div>
+        }
+        headerTitle={
+          <h4 className='collapse__header-title'>Purku</h4>
+        }
+        >
         <Comments
           comments={area.descriptionsDemolition}
           userOptions={userOptions}
@@ -143,18 +145,19 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         className='collapse__secondary'
         defaultOpen={false}
         header={
-          <Row>
-            <Column small={6}>
-              <h4 className='collapse__header-title'>PIMA</h4>
-            </Column>
-            <Column small={6}>
+          <div>
+            <Column>
               <StatusIndicator
                 researchState={area.polluted_land_state}
                 stateOptions={stateOptions}
               />
             </Column>
-          </Row>
-        }>
+          </div>
+        }
+        headerTitle={
+          <h4 className='collapse__header-title'>Pima</h4>
+        }
+        >
         <div>
           <Row>
             <Column small={6} medium={3} large={2}>
@@ -189,17 +192,17 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         className='collapse__secondary'
         defaultOpen={false}
         header={
-          <Row>
-            <Column small={6}>
-              <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
-            </Column>
-            <Column small={6}>
+          <div>
+            <Column>
               <StatusIndicator
                 researchState={area.constructability_report_state}
                 stateOptions={stateOptions}
               />
             </Column>
-          </Row>
+          </div>
+        }
+        headerTitle={
+          <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
         }>
         <div>
           <Row>
@@ -231,17 +234,17 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         className='collapse__secondary'
         defaultOpen={false}
         header={
-          <Row>
-            <Column small={6}>
-              <h4 className='collapse__header-title'>Muut</h4>
-            </Column>
-            <Column small={6}>
+          <div>
+            <Column>
               <StatusIndicator
                 researchState={area.other_state}
                 stateOptions={stateOptions}
               />
             </Column>
-          </Row>
+          </div>
+        }
+        headerTitle={
+          <h4 className='collapse__header-title'>Muut</h4>
         }>
         <Comments
           comments={area.descriptionsOther}

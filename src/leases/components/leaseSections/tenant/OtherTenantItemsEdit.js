@@ -65,12 +65,8 @@ const OtherTenantItemsEdit = ({
             key={tenant.id ? tenant.id : `index_${index}`}
             className='collapse__secondary'
             defaultOpen={true}
-            header={
-              <Row>
-                <Column small={12}>
-                  <h4 className='collapse__header-title'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
-                </Column>
-              </Row>
+            headerTitle={
+              <h4 className='collapse__header-title'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
             }>
             <BoxContentWrapper>
               <RemoveButton

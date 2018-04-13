@@ -56,12 +56,8 @@ const DecisionItem = ({attributes, decision}: Props) => {
       <Collapse
         className='collapse__secondary'
         defaultOpen={true}
-        header={
-          <Row>
-            <Column small={12}>
-              <h4 className='collapse__header-title'>Ehdot</h4>
-            </Column>
-          </Row>
+        headerTitle={
+          <h4 className='collapse__header-title'>Ehdot</h4>
         }
       >
         {decision.conditions && decision.conditions.length

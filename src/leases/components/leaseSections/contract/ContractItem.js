@@ -114,12 +114,8 @@ const ContractItem = ({attributes, contract, decisionOptions}: Props) => {
       <Collapse
         className='collapse__secondary'
         defaultOpen={true}
-        header={
-          <Row>
-            <Column small={12}>
-              <h4 className='collapse__header-title'>Sopimuksen muutokset</h4>
-            </Column>
-          </Row>
+        headerTitle={
+          <h4 className='collapse__header-title'>Sopimuksen muutokset</h4>
         }
       >
         {(!contract.contract_changes || !contract.contract_changes.length) &&
