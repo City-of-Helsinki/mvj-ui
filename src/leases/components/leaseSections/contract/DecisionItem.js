@@ -4,8 +4,10 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import GreenBoxItem from '$components/content/GreenBoxItem';
+
 
 import type {Attributes} from '$src/leases/types';
 
@@ -52,21 +54,17 @@ const DecisionItem = ({attributes, decision}: Props) => {
       </Row>
 
       <Collapse
-        className='collapse__secondary no-content-top-padding'
+        className='collapse__secondary'
         defaultOpen={true}
-        header={
-          <Row>
-            <Column small={12}>
-              <h4 className='collapse__header-title'>Ehdot</h4>
-            </Column>
-          </Row>
+        headerTitle={
+          <h4 className='collapse__header-title'>Ehdot</h4>
         }
       >
         {decision.conditions && decision.conditions.length
           ? (
-            <div>
+            <BoxItemContainer>
               {decision.conditions.map((condition) =>
-                <GreenBoxItem key={condition.id} className='no-border-on-first-child'>
+                <BoxItem key={condition.id} className='no-border-on-first-child'>
                   <Row>
                     <Column small={6} medium={4} large={2}>
                       <label>Ehtotyyppi</label>
@@ -84,7 +82,7 @@ const DecisionItem = ({attributes, decision}: Props) => {
                         ) : <p>–</p>
                       }
                     </Column>
-                    <Column small={12} medium={4} large={2}>
+                    <Column small={6} medium={4} large={2}>
                       <label>Valvottu päivämäärä</label>
                       {condition.supervised_date
                         ? (
@@ -96,16 +94,14 @@ const DecisionItem = ({attributes, decision}: Props) => {
                         ) : <p>–</p>
                       }
                     </Column>
-                  </Row>
-                  <Row>
-                    <Column small={12}>
+                    <Column small={12} medium={12} large={6}>
                       <label>Selite</label>
                       <p>{condition.description || '–'}</p>
                     </Column>
                   </Row>
-                </GreenBoxItem>
+                </BoxItem>
               )}
-            </div>
+            </BoxItemContainer>
           ) : (
             <p>Ei ehtoja</p>
           )

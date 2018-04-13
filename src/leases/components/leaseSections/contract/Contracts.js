@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import get from 'lodash/get';
-import {Row, Column} from 'react-foundation';
+import {Column} from 'react-foundation';
 import moment from 'moment';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
@@ -48,26 +48,25 @@ const Contracts = ({attributes, contracts, decisionOptions}: Props) => {
       {contracts && !!contracts.length && contracts.map((contract, index) =>
         <Collapse
           key={index}
-          className='no-content-top-padding'
           defaultOpen={false}
           header={
-            <Row>
-              <Column small={3}>
-                <h3 className='collapse__header-title'>
-                  {getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}
-                </h3>
-              </Column>
-              <Column small={3}>
+            <div>
+              <Column>
                 <span className='collapse__header-subtitle'>
                   {formatDate(contract.signing_date) || '-'}
                 </span>
               </Column>
-              <Column small={3}>
+              <Column>
                 <span className='collapse__header-subtitle'>
                   {isContractActive(contract) ? 'Voimassa' : 'Ei voimassa'}
                 </span>
               </Column>
-            </Row>
+            </div>
+          }
+          headerTitle={
+            <h3 className='collapse__header-title'>
+              {getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}
+            </h3>
           }
         >
           <ContractItem

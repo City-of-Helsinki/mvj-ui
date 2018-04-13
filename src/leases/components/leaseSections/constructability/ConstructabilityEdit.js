@@ -12,12 +12,13 @@ import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {genericValidator} from '$components/form/validations';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FormSection from '$components/form/FormSection';
-import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
 
 import type {Attributes} from '$src/leases/types';
@@ -31,43 +32,45 @@ type CommentProps = {
 const renderComments = ({attributes, fields}: CommentProps) => {
   return (
     <div>
-      {fields && !!fields.length && fields.map((comment, index) => {
-        return (
-          <GreenBoxItem key={index}>
-            <BoxContentWrapper>
-              <RemoveButton
-                className='position-topright-no-padding'
-                onClick={() => fields.remove(index)}
-                title="Poista kommentti"
-              />
-              <Row>
-                <Column small={6} medium={9} large={10}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Selitys'
-                    name={`${comment}.text`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'lease_areas.child.children.constructability_descriptions.child.children.text')),
-                    ]}
-                  />
-                </Column>
-                <Column small={6} medium={3} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='AHJO diaarinumero'
-                    name={`${comment}.ahjo_reference_number`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')),
-                    ]}
-                  />
-                </Column>
-              </Row>
-            </BoxContentWrapper>
-          </GreenBoxItem>
-        );
-      })}
+      <BoxItemContainer>
+        {fields && !!fields.length && fields.map((comment, index) => {
+          return (
+            <BoxItem key={index}>
+              <BoxContentWrapper>
+                <RemoveButton
+                  className='position-topright-no-padding'
+                  onClick={() => fields.remove(index)}
+                  title="Poista kommentti"
+                />
+                <Row>
+                  <Column small={6} medium={9} large={10}>
+                    <Field
+                      component={FieldTypeText}
+                      label='Selitys'
+                      name={`${comment}.text`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'lease_areas.child.children.constructability_descriptions.child.children.text')),
+                      ]}
+                    />
+                  </Column>
+                  <Column small={6} medium={3} large={2}>
+                    <Field
+                      component={FieldTypeText}
+                      label='AHJO diaarinumero'
+                      name={`${comment}.ahjo_reference_number`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')),
+                      ]}
+                    />
+                  </Column>
+                </Row>
+              </BoxContentWrapper>
+            </BoxItem>
+          );
+        })}
+      </BoxItemContainer>
       <Row>
         <Column>
           <AddButtonSecondary
@@ -125,42 +128,35 @@ const renderAreas = ({
         return (
           <Collapse
             key={area.id ? area.id : `index_${index}`}
-            className='no-content-top-padding'
             defaultOpen={true}
             header={
-              <Row>
-                <Column small={3}>
-                  <h3  className='collapse__header-title'>
-                    {areas[index].identifier}
-                  </h3>
-                </Column>
-                <Column small={3}>
+              <div>
+                <Column>
                   <span className='collapse__header-subtitle'>
                     {getLabelOfOption(typeOptions, areas[index].type) || '-'}
                   </span>
                 </Column>
-                <Column small={3}>
+                <Column>
                   <span className='collapse__header-subtitle'>
                     {getFullAddress(areas[index])}
                   </span>
                 </Column>
-                <Column small={3}>
+                <Column>
                   <span className='collapse__header-subtitle'>
                     {areas[index].area || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areas[index].location) || '-'}
                   </span>
                 </Column>
-              </Row>
+              </div>
+            }
+            headerTitle={
+              <h3  className='collapse__header-title'>{areas[index].identifier}</h3>
             }
           >
             <Collapse
-              className='collapse__secondary no-content-top-padding'
+              className='collapse__secondary'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column small={12}>
-                    <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
-                  </Column>
-                </Row>
+              headerTitle={
+                <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
               }
             >
               <Row>
@@ -184,14 +180,10 @@ const renderAreas = ({
             </Collapse>
 
             <Collapse
-              className='collapse__secondary no-content-top-padding'
+              className='collapse__secondary'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column small={12}>
-                    <h4 className='collapse__header-title'>Purku</h4>
-                  </Column>
-                </Row>
+              headerTitle={
+                <h4 className='collapse__header-title'>Purku</h4>
               }
             >
               <Row>
@@ -215,14 +207,10 @@ const renderAreas = ({
             </Collapse>
 
             <Collapse
-              className='collapse__secondary no-content-top-padding'
+              className='collapse__secondary'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column small={12}>
-                    <h4 className='collapse__header-title'>PIMA</h4>
-                  </Column>
-                </Row>
+              headerTitle={
+                <h4 className='collapse__header-title'>PIMA</h4>
               }
             >
               <Row>
@@ -298,14 +286,10 @@ const renderAreas = ({
             </Collapse>
 
             <Collapse
-              className='collapse__secondary no-content-top-padding'
+              className='collapse__secondary'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column small={12}>
-                    <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
-                  </Column>
-                </Row>
+              headerTitle={
+                <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
               }
             >
               <Row>
@@ -370,14 +354,10 @@ const renderAreas = ({
             </Collapse>
 
             <Collapse
-              className='collapse__secondary no-content-top-padding'
+              className='collapse__secondary'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column small={12}>
-                    <h4 className='collapse__header-title'>Muut</h4>
-                  </Column>
-                </Row>
+              headerTitle={
+                <h4 className='collapse__header-title'>Muut</h4>
               }
             >
               <Row>

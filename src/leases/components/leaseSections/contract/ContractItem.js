@@ -2,8 +2,9 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import GreenBoxItem from '$components/content/GreenBoxItem';
 import ListItems from '$components/content/ListItems';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
 
@@ -111,58 +112,57 @@ const ContractItem = ({attributes, contract, decisionOptions}: Props) => {
       }
 
       <Collapse
-        className='collapse__secondary no-content-top-padding'
+        className='collapse__secondary'
         defaultOpen={true}
-        header={
-          <Row>
-            <Column small={12}>
-              <h4 className='collapse__header-title'>Sopimuksen muutokset</h4>
-            </Column>
-          </Row>
+        headerTitle={
+          <h4 className='collapse__header-title'>Sopimuksen muutokset</h4>
         }
       >
         {(!contract.contract_changes || !contract.contract_changes.length) &&
           <p>Ei sopimuksen muutoksia</p>
         }
         {contract.contract_changes && !!contract.contract_changes.length &&
-          contract.contract_changes.map((change) =>
-          <GreenBoxItem
-            key={change.id}
-            className='no-border-on-first-child'>
-            <Row>
-              <Column small={6} medium={4} large={2}>
-                <label>Allekirjoituspäivämäärä</label>
-                <p>{formatDate(change.signing_date) || '–'}</p>
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <label>Allekirjoitettava mennessä</label>
-                <p>{formatDate(change.sign_by_date) || '–'}</p>
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <label>1. kutsu lähetetty</label>
-                <p>{formatDate(change.first_call_sent) || '–'}</p>
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <label>2. kutsu lähetetty</label>
-                <p>{formatDate(change.second_call_sent) || '–'}</p>
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <label>3. kutsu lähetetty</label>
-                <p>{formatDate(change.third_call_sent) || '–'}</p>
-              </Column>
-            </Row>
-            <Row>
-              <Column small={6} medium={4} large={2}>
-                <label>Päätös</label>
-                <p>{getLabelOfOption(decisionOptions, change.decision) || '-'}</p>
-              </Column>
-              <Column small={6} medium={8} large={10}>
-                <label>Selite</label>
-                <p>{change.description  || '–'}</p>
-              </Column>
-            </Row>
-          </GreenBoxItem>
-        )}
+          <BoxItemContainer>
+            {contract.contract_changes.map((change) =>
+              <BoxItem
+                key={change.id}
+                className='no-border-on-first-child'>
+                <Row>
+                  <Column small={6} medium={4} large={2}>
+                    <label>Allekirjoituspäivämäärä</label>
+                    <p>{formatDate(change.signing_date) || '–'}</p>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <label>Allekirjoitettava mennessä</label>
+                    <p>{formatDate(change.sign_by_date) || '–'}</p>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <label>1. kutsu lähetetty</label>
+                    <p>{formatDate(change.first_call_sent) || '–'}</p>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <label>2. kutsu lähetetty</label>
+                    <p>{formatDate(change.second_call_sent) || '–'}</p>
+                  </Column>
+                  <Column small={6} medium={4} large={2}>
+                    <label>3. kutsu lähetetty</label>
+                    <p>{formatDate(change.third_call_sent) || '–'}</p>
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={6} medium={4} large={2}>
+                    <label>Päätös</label>
+                    <p>{getLabelOfOption(decisionOptions, change.decision) || '-'}</p>
+                  </Column>
+                  <Column small={6} medium={8} large={10}>
+                    <label>Selite</label>
+                    <p>{change.description  || '–'}</p>
+                  </Column>
+                </Row>
+              </BoxItem>
+            )}
+          </BoxItemContainer>
+        }
       </Collapse>
     </div>
   );

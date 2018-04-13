@@ -85,12 +85,9 @@ class RentEdit extends Component {
           <Divider />
 
           <Collapse
-            className='no-content-top-padding'
             defaultOpen={true}
-            header={
-              <Row>
-                <Column><h3 className='collapse__header-title'>Vuokran perustiedot</h3></Column>
-              </Row>
+            headerTitle={
+              <h3 className='collapse__header-title'>Vuokran perustiedot</h3>
             }>
             <FormSection name='rents'>
               <BasicInfoEdit
@@ -107,10 +104,8 @@ class RentEdit extends Component {
           ) &&
             <Collapse
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column><h3 className='collapse__header-title'>Sopimusvuokra</h3></Column>
-                </Row>
+              headerTitle={
+                <h3 className='collapse__header-title'>Sopimusvuokra</h3>
               }>
               <FieldArray
                 attributes={attributes}
@@ -125,12 +120,9 @@ class RentEdit extends Component {
             rentType === RentTypes.MANUAL
           ) &&
             <Collapse
-              className='no-content-top-padding'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column><h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3></Column>
-                </Row>
+              headerTitle={
+                <h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3>
               }>
               <IndexAdjustedRents
                 attributes={attributes}
@@ -144,12 +136,9 @@ class RentEdit extends Component {
             rentType === RentTypes.MANUAL
           ) &&
             <Collapse
-              className='no-content-top-padding'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column><h3 className='collapse__header-title'>Alennukset ja korotukset</h3></Column>
-                </Row>
+              headerTitle={
+                <h3 className='collapse__header-title'>Alennukset ja korotukset</h3>
               }>
               <FieldArray
                 attributes={attributes}
@@ -165,12 +154,9 @@ class RentEdit extends Component {
             rentType === RentTypes.MANUAL
           ) &&
             <Collapse
-              className='no-content-top-padding'
               defaultOpen={true}
-              header={
-                <Row>
-                  <Column><h3 className='collapse__header-title'>Perittävä vuokra</h3></Column>
-                </Row>
+              headerTitle={
+                <h3 className='collapse__header-title'>Perittävä vuokra</h3>
               }>
               <PayableRents
                 payableRents={get(rents, 'payable_rents', [])}
@@ -180,10 +166,8 @@ class RentEdit extends Component {
 
           <Collapse
             defaultOpen={true}
-            header={
-              <Row>
-                <Column><h3 className='collapse__header-title'>Vuokranperusteet</h3></Column>
-              </Row>
+            headerTitle={
+              <h3 className='collapse__header-title'>Vuokranperusteet</h3>
             }>
             <FieldArray
               attributes={attributes}

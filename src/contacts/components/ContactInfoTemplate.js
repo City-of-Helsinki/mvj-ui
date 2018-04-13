@@ -4,15 +4,15 @@ import {Row, Column} from 'react-foundation';
 
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
-import type {Attributes as ContactAttributes} from '$src/contacts/types';
+import type {Attributes} from '$src/contacts/types';
 
 type Props = {
   contact: ?Object,
-  contactAttributes: ContactAttributes,
+  attributes: Attributes,
 }
 
-const ContactInfo = ({contact, contactAttributes}: Props) => {
-  const languageOptions = getAttributeFieldOptions(contactAttributes, 'language');
+const ContactInfoTemplate = ({contact, attributes}: Props) => {
+  const languageOptions = getAttributeFieldOptions(attributes, 'language');
   if(!contact) {
     return null;
   }
@@ -23,26 +23,36 @@ const ContactInfo = ({contact, contactAttributes}: Props) => {
           <label>Yritys</label>
           <p>{contact.is_business ? 'Kyllä' : 'Ei'}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <label>Etunimi</label>
-          <p>{contact.first_name || '-'}</p>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <label>Sukunimi</label>
-          <p>{contact.last_name || '-'}</p>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <label>Henkilötunnus</label>
-          <p>{contact.national_identification_number || '-'}</p>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <label>Y-tunnus</label>
-          <p>{contact.business_id || '-'}</p>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <label>Yrityksen nimi</label>
-          <p>{contact.business_name || '-'}</p>
-        </Column>
+        {!contact.is_business &&
+          <Column small={6} medium={4} large={2}>
+            <label>Etunimi</label>
+            <p>{contact.first_name || '-'}</p>
+          </Column>
+        }
+        {!contact.is_business &&
+          <Column small={6} medium={4} large={2}>
+            <label>Sukunimi</label>
+            <p>{contact.last_name || '-'}</p>
+          </Column>
+        }
+        {!contact.is_business &&
+          <Column small={6} medium={4} large={2}>
+            <label>Henkilötunnus</label>
+            <p>{contact.national_identification_number || '-'}</p>
+          </Column>
+        }
+        {contact.is_business &&
+          <Column small={6} medium={4} large={2}>
+            <label>Yrityksen nimi</label>
+            <p>{contact.business_name || '-'}</p>
+          </Column>
+        }
+        {contact.is_business &&
+          <Column small={6} medium={4} large={2}>
+            <label>Y-tunnus</label>
+            <p>{contact.business_id || '-'}</p>
+          </Column>
+        }
       </Row>
       <Row>
         <Column small={12} medium={8} large={4}>
@@ -105,4 +115,4 @@ const ContactInfo = ({contact, contactAttributes}: Props) => {
   );
 };
 
-export default ContactInfo;
+export default ContactInfoTemplate;

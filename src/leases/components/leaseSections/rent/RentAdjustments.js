@@ -2,7 +2,8 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import GreenBoxItem from '$components/content/GreenBoxItem';
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
 import type {Attributes} from '$src/leases/types';
@@ -22,12 +23,12 @@ const RentAdjustments = ({attributes, decisionOptions, rentAdjustments}: Props) 
     'rents.child.children.rent_adjustments.child.children.amount_type');
 
   return (
-    <div>
+    <BoxItemContainer>
       {(!rentAdjustments || !rentAdjustments.length) && <p>Ei alennuksia tai korotuksia</p>}
       {rentAdjustments && !!rentAdjustments.length &&
         rentAdjustments.map((adjustment, index) => {
           return (
-            <GreenBoxItem  className='no-border-on-first-child' key={index}>
+            <BoxItem  className='no-border-on-first-child' key={index}>
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <label>Tyyppi</label>
@@ -68,11 +69,11 @@ const RentAdjustments = ({attributes, decisionOptions, rentAdjustments}: Props) 
                   <p>{adjustment.note || '-'}</p>
                 </Column>
               </Row>
-            </GreenBoxItem>
+            </BoxItem>
           );
         })
       }
-    </div>
+    </BoxItemContainer>
   );
 };
 

@@ -1,13 +1,15 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Component, cloneElement} from 'react';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
+import {Row, Column} from 'react-foundation';
 
 type Props = {
   children: Object,
   className?: string,
   defaultOpen: boolean,
-  header: string,
+  header?: any,
+  headerTitle: any,
 }
 
 type State = {
@@ -56,20 +58,39 @@ class Collapse extends Component {
     });
   };
 
+  getChildrenOfHeader = (header: any) => {
+    if(!header) {
+      return null;
+    }
+    return cloneElement(header).props.children;
+  }
+
   render() {
     const {isOpen, isVisible} = this.state;
-    const {children, className, header} = this.props;
-
+    const {children, className, header, headerTitle} = this.props;
     return (
       <div
         ref={(ref) => this.component = ref}
         className={classNames('collapse', className, {'open': isOpen})}
       >
-        <div className="collapse__header" onClick={this.handleToggle}>
-          <div className='icon-wrapper'>
+        <div className="collapse__header">
+          <div className='icon-wrapper' onClick={this.handleToggle}>
             <i className="arrow-icon"/>
           </div>
-          <div className='header-info-wrapper'>{header}</div>
+          <div className='header-info-wrapper'>
+            <Row>
+              {headerTitle &&
+                <Column>
+                  <a
+                    className='header-info-link'
+                    onClick={this.handleToggle}>
+                    {headerTitle}
+                  </a>
+                </Column>
+              }
+              {this.getChildrenOfHeader(header)}
+            </Row>
+          </div>
         </div>
         <div className={classNames('collapse__content', {'visible': isVisible})}>
           <div className="collapse__content-wrapper">

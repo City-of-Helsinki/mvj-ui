@@ -4,7 +4,6 @@ import {Row, Column} from 'react-foundation';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import ContentContainer from '$components/content/ContentContainer';
-import Divider from '$components/content/Divider';
 import GreenBox from '$components/content/GreenBox';
 import ListItems from '../../components/content/ListItems';
 
@@ -24,8 +23,6 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
 
   return (
     <ContentContainer>
-      <h2>Vuokrausperuste</h2>
-      <Divider />
       <GreenBox>
         <Row>
           <Column small={6} medium={4} large={3}>

@@ -9,7 +9,7 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddIcon from '$components/icons/AddIcon';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
-import ContactInfo from './ContactInfo';
+import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
 import EditIcon from '$components/icons/EditIcon';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
@@ -65,12 +65,8 @@ const OtherTenantItemsEdit = ({
             key={tenant.id ? tenant.id : `index_${index}`}
             className='collapse__secondary'
             defaultOpen={true}
-            header={
-              <Row>
-                <Column small={12}>
-                  <h4 className='collapse__header-title'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
-                </Column>
-              </Row>
+            headerTitle={
+              <h4 className='collapse__header-title'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
             }>
             <BoxContentWrapper>
               <RemoveButton
@@ -180,9 +176,9 @@ const OtherTenantItemsEdit = ({
                 </Column>
               </Row>
 
-              <ContactInfo
+              <ContactInfoTemplate
+                attributes={contactAttributes}
                 contact={contact}
-                contactAttributes={contactAttributes}
               />
             </BoxContentWrapper>
           </Collapse>
@@ -191,7 +187,6 @@ const OtherTenantItemsEdit = ({
       <Row>
         <Column>
           <AddButtonSecondary
-            className='uppercase-label'
             label='Lisää laskunsaaja tai yhteyshenkilö'
             onClick={() => fields.push({})}
             title='Lisää laskunsaaja tai yhteyshenkilö'

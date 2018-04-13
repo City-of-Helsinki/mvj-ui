@@ -57,9 +57,9 @@ class SummaryEdit extends Component {
 
     return (
       <form onSubmit={handleSubmit}>
-        <GreenBoxEdit className='no-margin'>
+        <GreenBoxEdit>
           <Row>
-            <Column small={12} medium={6} large={8}>
+            <Column small={12} medium={6} large={4}>
               <Field
                 component={FieldTypeSelect}
                 label="Vuokranantaja"
@@ -94,31 +94,7 @@ class SummaryEdit extends Component {
                 ]}
               />
             </Column>
-            <Column small={12} medium={6} large={4}>
-              <Field
-                component={FieldTypeSelect}
-                label="Erityisasunnot"
-                name="supportive_housing"
-                options={supportiveHousingOptions}
-                validate={[
-                  (value) => genericValidator(value, get(attributes, 'supportive_housing')),
-                ]}
-              />
-            </Column>
-            <Column small={12} medium={6} large={4}>
-              <Field
-                component={FieldTypeSelect}
-                label="Tilastollinen pääkäyttötarkoitus"
-                name="statistical_use"
-                options={statisticalUseOptions}
-                validate={[
-                  (value) => genericValidator(value, get(attributes, 'statistical_use')),
-                ]}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column small={12} medium={12} large={12}>
+            <Column small={12} medium={6} large={8}>
               <Field
                 component={FieldTypeText}
                 label="Vuokrauksen käyttötarkoitus selite"
@@ -166,33 +142,6 @@ class SummaryEdit extends Component {
                 ]}
               />
             </Column>
-          </Row>
-          <Row>
-            <Column small={12} medium={6} large={4}>
-              <Field
-                className='checkbox-inline'
-                component={FieldTypeCheckbox}
-                label='Sääntely'
-                name="regulated"
-                options= {[
-                  {value: true, label: 'Säännelty'},
-                ]}
-                validate={[
-                  (value) => genericValidator(value, get(attributes, 'regulated')),
-                ]}
-              />
-            </Column>
-            <Column small={12} medium={6} large={4}>
-              <Field
-                component={FieldTypeSelect}
-                label="Sääntelymuoto"
-                name="regulation"
-                options={regulationOptions}
-                validate={[
-                  (value) => genericValidator(value, get(attributes, 'regulation')),
-                ]}
-              />
-            </Column>
             <Column small={12} medium={6} large={4}>
               <Field
                 component={FieldTypeSelect}
@@ -224,6 +173,59 @@ class SummaryEdit extends Component {
                 name="notice_note"
                 validate={[
                   (value) => genericValidator(value, get(attributes, 'notice_note')),
+                ]}
+              />
+            </Column>
+          </Row>
+        </GreenBoxEdit>
+        <GreenBoxEdit className='no-margin'>
+          <Row>
+            <Column small={12} medium={6} large={4}>
+              <Field
+                component={FieldTypeSelect}
+                label="Erityisasunnot"
+                name="supportive_housing"
+                options={supportiveHousingOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'supportive_housing')),
+                ]}
+              />
+            </Column>
+            <Column small={12} medium={6} large={4}>
+              <Field
+                component={FieldTypeSelect}
+                label="Tilastollinen pääkäyttötarkoitus"
+                name="statistical_use"
+                options={statisticalUseOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'statistical_use')),
+                ]}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column small={12} medium={6} large={4}>
+              <Field
+                className='checkbox-inline'
+                component={FieldTypeCheckbox}
+                label='Sääntely'
+                name="regulated"
+                options= {[
+                  {value: true, label: 'Säännelty'},
+                ]}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'regulated')),
+                ]}
+              />
+            </Column>
+            <Column small={12} medium={6} large={4}>
+              <Field
+                component={FieldTypeSelect}
+                label="Sääntelymuoto"
+                name="regulation"
+                options={regulationOptions}
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'regulation')),
                 ]}
               />
             </Column>

@@ -61,7 +61,7 @@ const FieldTypeSelect = ({
           {...input}
           arrowRenderer={arrowRenderer}
           autoBlur={true}
-          clearable={true}
+          clearable={false}
           disabled={disabled}
           id={name}
           options={options}

@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import {Row, Column} from 'react-foundation';
+import {Column} from 'react-foundation';
 import {capitalize} from 'lodash';
 
 import Collapse from '$components/collapse/Collapse';
@@ -32,30 +32,29 @@ const LeaseAreas = ({areas, attributes}: Props) => {
       {areas && !!areas.length &&
         areas.map((area, index) =>
           <Collapse
-            className='no-content-top-padding'
             key={index}
             defaultOpen={true}
             header={
-              <Row>
-                <Column small={3}>
-                  <h3 className='collapse__header-title'>{area.identifier || '-'}</h3>
-                </Column>
-                <Column small={3}>
+              <div>
+                <Column>
                   <span className='collapse__header-subtitle'>
                     {getLabelOfOption(typeOptions, area.type) || '-'}
                   </span>
                 </Column>
-                <Column small={3}>
+                <Column>
                   <span className='collapse__header-subtitle'>
                     {getFullAddress(area)}
                   </span>
                 </Column>
-                <Column small={3}>
+                <Column>
                   <span className='collapse__header-subtitle'>
                     {getAreaLabel(area)}
                   </span>
                 </Column>
-              </Row>
+              </div>
+            }
+            headerTitle={
+              <h3 className='collapse__header-title'>{area.identifier || '-'}</h3>
             }
           >
             <LeaseArea

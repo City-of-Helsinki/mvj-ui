@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 
 import {formatDate} from '$util/helpers';
-import ContactInfo from './ContactInfo';
+import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
 
 import type {Attributes as ContactAttributes} from '$src/contacts/types';
 
@@ -73,9 +73,9 @@ const TenantItem = ({
           <p>{tenant.note || '-'}</p>
         </Column>
       </Row>
-      <ContactInfo
+      <ContactInfoTemplate
+        attributes={contactAttributes}
         contact={contact}
-        contactAttributes={contactAttributes}
       />
     </div>
   );

@@ -340,22 +340,29 @@ export const getFractionFromFloat = (float) => new Fraction(float).toFraction(tr
 // TODO: Only if the rent-type is fixed (monthly)
 export const getTenantsYearlyShare = ({share}, rents) => (getFullRent(rents) * 12) * parseFloat(share);
 
+export const addEmptyOption = (options: Array<Object>) =>
+  [{value: '', label: ''}, ...options];
+
 /**
  * Get options for attribute field
  * @param attributes
  * @param path
  */
-export const getAttributeFieldOptions = (attributes: Object, path: string) => {
-  const choices = get(attributes, `${path}.choices`);
+export const getAttributeFieldOptions = (attributes: Object, path: string, addEmpty: boolean = true) => {
+  let choices = get(attributes, `${path}.choices`);
   if(!choices || !choices.length) {
     return [];
   }
-  return choices.map((item) => {
+  const results = choices.map((item) => {
     return {
       value: item.value,
       label: item.display_name,
     };
   });
+  if(addEmpty) {
+    return addEmptyOption(results);
+  }
+  return results;
 };
 
 /**
@@ -366,13 +373,12 @@ export const getLessorOptions = (lessors: Array<Object>) => {
   if(!lessors || !lessors.length) {
     return [];
   }
-
-  return lessors.map((item) => {
+  return addEmptyOption(lessors.map((item) => {
     return {
       value: item.id,
       label: item.is_business ? item.business_name : `${item.last_name} ${item.first_name}`,
     };
-  });
+  }));
 };
 
 /**
@@ -384,7 +390,7 @@ export const getDecisionsOptions = (decisions: Array<Object>) => {
     return [];
   }
 
-  return decisions.map((item) => {
+  return addEmptyOption(decisions.map((item) => {
     if(!item.reference_number && !item.decision_date && !item.section) {
       return {
         value: item.id,
@@ -395,7 +401,7 @@ export const getDecisionsOptions = (decisions: Array<Object>) => {
       value: item.id,
       label: `${item.reference_number ? item.reference_number + ', ' : ''}${item.section ? item.section + ' §, ' : ''}${formatDate(item.decision_date)}`,
     };
-  });
+  }));
 };
 
 /**
@@ -407,7 +413,7 @@ export const getContactOptions = (contacts: Array<Object>) => {
     return [];
   }
 
-  return contacts.map((contact) => {
+  return addEmptyOption(contacts.map((contact) => {
     return {
       value: contact.id,
       label: contact.is_business ? contact.business_name : `${contact.last_name} ${contact.first_name}`,
@@ -418,5 +424,5 @@ export const getContactOptions = (contacts: Array<Object>) => {
     if(keyA < keyB) return -1;
     if(keyA > keyB) return 1;
     return 0;
-  });
+  }));
 };

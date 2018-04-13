@@ -1,8 +1,9 @@
 // @flow
 import React from 'react';
 
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
 import GreenBox from '$components/content/GreenBox';
-import GreenBoxItem from '$components/content/GreenBoxItem';
 import InspectionItem from './InspectionItem';
 
 type Props = {
@@ -15,17 +16,17 @@ const Inspections = ({inspections}: Props) => {
       <GreenBox>
         {inspections && !!inspections.length
           ? (
-            <div>
+            <BoxItemContainer>
               {inspections.map((inspection) =>
-                <GreenBoxItem
+                <BoxItem
                   className='no-border-on-first-child'
                   key={inspection.id}>
                   <InspectionItem
                     inspection={inspection}
                   />
-                </GreenBoxItem>
+                </BoxItem>
               )}
-            </div>
+            </BoxItemContainer>
           ) : <p>Ei tarkastuksia tai huomautuksia</p>
         }
       </GreenBox>

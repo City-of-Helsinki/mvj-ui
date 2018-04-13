@@ -9,7 +9,7 @@ import AddButton from '$components/form/AddButton';
 import AddIcon from '$components/icons/AddIcon';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
-import ContactInfo from './ContactInfo';
+import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
 import EditIcon from '$components/icons/EditIcon';
 import IconButton from '$components/button/IconButton';
 import OtherTenantItemsEdit from './OtherTenantItemsEdit';
@@ -63,17 +63,13 @@ const TenantItemsEdit = ({
           <Collapse
             key={tenant.id ? tenant.id : `index_${index}`}
             defaultOpen={true}
-            header={
-              <Row>
-                <Column small={3}>
-                  <h3 className='collapse__header-title'>Vuokralainen {index + 1}</h3>
-                </Column>
-              </Row>
+            headerTitle={
+              <h3 className='collapse__header-title'>Vuokralainen {index + 1}</h3>
             }
           >
             <BoxContentWrapper>
               <RemoveButton
-                className='position-topright-no-padding'
+                className='position-topright'
                 label='Poista vuokralainen'
                 onClick={() => fields.remove(index)}
                 title='Poista vuokralainen'
@@ -204,9 +200,9 @@ const TenantItemsEdit = ({
                 </Column>
               </Row>
 
-              <ContactInfo
+              <ContactInfoTemplate
+                attributes={contactAttributes}
                 contact={contact}
-                contactAttributes={contactAttributes}
               />
             </BoxContentWrapper>
 

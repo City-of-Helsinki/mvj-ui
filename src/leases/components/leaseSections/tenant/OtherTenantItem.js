@@ -5,7 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
-import ContactInfo from './ContactInfo';
+import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
 
 import type {
   Attributes as ContactAttributes,
@@ -45,16 +45,10 @@ const OtherTenantItem = ({
 
   return (
     <Collapse
-      className='collapse__secondary no-content-top-padding'
+      className='collapse__secondary'
       defaultOpen={true}
-      header={
-        <Row>
-          <Column small={12}>
-            <h4 className='collapse__header-title'>
-              {getLabelOfOption(tenantTypeOptions, tenant.type)}
-            </h4>
-          </Column>
-        </Row>
+      headerTitle={
+        <h4 className='collapse__header-title'>{getLabelOfOption(tenantTypeOptions, tenant.type)}</h4>
       }>
       <Row>
         <Column small={12} medium={6} large={4}>
@@ -80,9 +74,9 @@ const OtherTenantItem = ({
           <p>{tenant.note || '-'}</p>
         </Column>
       </Row>
-      <ContactInfo
+      <ContactInfoTemplate
+        attributes={contactAttributes}
         contact={contact}
-        contactAttributes={contactAttributes}
       />
     </Collapse>
   );

@@ -2,7 +2,7 @@
 import React from 'react';
 import Collapse from '$components/collapse/Collapse';
 import ConstructabilityItem from './ConstructabilityItem';
-import {Row, Column} from 'react-foundation';
+import {Column} from 'react-foundation';
 
 import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
 
@@ -30,29 +30,28 @@ const Constructability = ({areas, attributes, users}: Props) => {
       }
       {areas && !!areas.length && areas.map((area) =>
         <Collapse key={area.id}
-          className='no-content-top-padding'
           defaultOpen={true}
           header={
-            <Row>
-              <Column small={3}>
-                <h3 className='collapse__header-title'>{area.identifier || '-'}</h3>
-              </Column>
-              <Column small={3}>
+            <div>
+              <Column>
                 <span className='collapse__header-subtitle'>
                   {getLabelOfOption(typeOptions, area.type) || '-'}
                 </span>
               </Column>
-              <Column small={3}>
+              <Column>
                 <span className='collapse__header-subtitle'>
                   {getFullAddress(area)}
                 </span>
               </Column>
-              <Column small={3}>
+              <Column>
                 <span className='collapse__header-subtitle'>
                   {area.area} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location)}
                 </span>
               </Column>
-            </Row>
+            </div>
+          }
+          headerTitle={
+            <h3 className='collapse__header-title'>{area.identifier || '-'}</h3>
           }
         >
           <ConstructabilityItem
