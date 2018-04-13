@@ -272,6 +272,10 @@
       padding: rem-calc(15px) 0 rem-calc(5px);
       position: relative;
 
+      &:first-child {
+        margin-top: rem-calc(5px);
+      }
+
       &.no-border-on-first-child:first-child {
         border: none;
         padding-top: 0;
