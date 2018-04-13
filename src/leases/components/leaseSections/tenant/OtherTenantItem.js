@@ -5,7 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
-import ContactInfo from './ContactInfo';
+import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
 
 import type {
   Attributes as ContactAttributes,
@@ -80,9 +80,9 @@ const OtherTenantItem = ({
           <p>{tenant.note || '-'}</p>
         </Column>
       </Row>
-      <ContactInfo
+      <ContactInfoTemplate
+        attributes={contactAttributes}
         contact={contact}
-        contactAttributes={contactAttributes}
       />
     </Collapse>
   );

@@ -9,7 +9,7 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddIcon from '$components/icons/AddIcon';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
-import ContactInfo from './ContactInfo';
+import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
 import EditIcon from '$components/icons/EditIcon';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
@@ -180,9 +180,9 @@ const OtherTenantItemsEdit = ({
                 </Column>
               </Row>
 
-              <ContactInfo
+              <ContactInfoTemplate
+                attributes={contactAttributes}
                 contact={contact}
-                contactAttributes={contactAttributes}
               />
             </BoxContentWrapper>
           </Collapse>

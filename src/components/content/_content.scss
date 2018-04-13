@@ -111,30 +111,16 @@
 
   .right-subtitle {
     position: absolute;
-    top: rem-calc(20px);
-    right: rem-calc(20px);
+    top: rem-calc(15px);
+    right: rem-calc(15px);
     display: block;
-    line-height: rem-calc(25px);
+    line-height: rem-calc(24px);
     font-weight: $semibold;
     margin-bottom: 0;
   }
 
-  .list {
-    .list-item {
-      p {
-        margin-bottom: 0;
-      }
-    }
-
-    .list-item:last-child {
-      p {
-        margin-bottom: 20px;
-      }
-    }
-  }
-
   .list-items {
-    margin-bottom: rem-calc(15px);
+    margin-bottom: rem-calc(10px);
 
     &.list-items-edit {
       margin-bottom: rem-calc(10px);

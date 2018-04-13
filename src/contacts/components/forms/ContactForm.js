@@ -24,7 +24,7 @@ import type {RootState} from '$src/root/types';
 type Props = {
   attributes: Attributes,
   initialValues: Object,
-  is_business: boolean,
+  isBusiness: boolean,
   isContactFormValid: boolean,
   handleSubmit: Function,
   receiveContactFormValid: Function,
@@ -47,7 +47,7 @@ class ContactForm extends Component {
   }
 
   render() {
-    const {attributes, handleSubmit, is_business} = this.props;
+    const {attributes, handleSubmit, isBusiness} = this.props;
     const languageOptions = getAttributeFieldOptions(attributes, 'language');
 
     return(
@@ -68,59 +68,69 @@ class ContactForm extends Component {
                 ]}
               />
             </Column>
-            <Column small={6} medium={4} large={2}>
-              <Field
-                component={FieldTypeText}
-                label='Etunimi'
-                name='first_name'
-                validate={[
-                  (value) => is_business ? null : required(value),
-                  (value) => genericValidator(value, get(attributes, 'first_name')),
-                ]}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Field
-                component={FieldTypeText}
-                label='Sukunimi'
-                name='last_name'
-                validate={[
-                  (value) => is_business ? null : required(value),
-                  (value) => genericValidator(value, get(attributes, 'last_name')),
-                ]}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Field
-                component={FieldTypeText}
-                label='Henkilötunnus'
-                name='national_identification_number'
-                validate={[
-                  (value) => genericValidator(value, get(attributes, 'national_identification_number')),
-                ]}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Field
-                component={FieldTypeText}
-                label='Y-tunnus'
-                name='business_id'
-                validate={[
-                  (value) => genericValidator(value, get(attributes, 'business_id')),
-                ]}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <Field
-                component={FieldTypeText}
-                label='Yrityksen nimi'
-                name='business_name'
-                validate={[
-                  (value) => is_business ? required(value) : null,
-                  (value) => genericValidator(value, get(attributes, 'business_name')),
-                ]}
-              />
-            </Column>
+            {!isBusiness &&
+              <Column small={6} medium={4} large={2}>
+                <Field
+                  component={FieldTypeText}
+                  label='Etunimi'
+                  name='first_name'
+                  validate={[
+                    (value) => isBusiness ? null : required(value),
+                    (value) => genericValidator(value, get(attributes, 'first_name')),
+                  ]}
+                />
+              </Column>
+            }
+            {!isBusiness &&
+              <Column small={6} medium={4} large={2}>
+                <Field
+                  component={FieldTypeText}
+                  label='Sukunimi'
+                  name='last_name'
+                  validate={[
+                    (value) => isBusiness ? null : required(value),
+                    (value) => genericValidator(value, get(attributes, 'last_name')),
+                  ]}
+                />
+              </Column>
+            }
+            {!isBusiness &&
+              <Column small={6} medium={4} large={2}>
+                <Field
+                  component={FieldTypeText}
+                  label='Henkilötunnus'
+                  name='national_identification_number'
+                  validate={[
+                    (value) => genericValidator(value, get(attributes, 'national_identification_number')),
+                  ]}
+                />
+              </Column>
+            }
+            {isBusiness &&
+              <Column small={6} medium={4} large={2}>
+                <Field
+                  component={FieldTypeText}
+                  label='Yrityksen nimi'
+                  name='business_name'
+                  validate={[
+                    (value) => isBusiness ? required(value) : null,
+                    (value) => genericValidator(value, get(attributes, 'business_name')),
+                  ]}
+                />
+              </Column>
+            }
+            {isBusiness &&
+              <Column small={6} medium={4} large={2}>
+                <Field
+                  component={FieldTypeText}
+                  label='Y-tunnus'
+                  name='business_id'
+                  validate={[
+                    (value) => genericValidator(value, get(attributes, 'business_id')),
+                  ]}
+                />
+              </Column>
+            }
           </Row>
           <Row>
             <Column small={12} medium={8} large={4}>
@@ -268,7 +278,7 @@ const selector = formValueSelector(formName);
 
 const mapStateToProps = (state: RootState) => {
   return {
-    is_business: selector(state, 'is_business'),
+    isBusiness: selector(state, 'is_business'),
     isContactFormValid: getIsContactFormValid(state),
     initialValues: getInitialContactFormValues(state),
   };
