@@ -85,7 +85,6 @@ class RentEdit extends Component {
           <Divider />
 
           <Collapse
-            className='no-content-top-padding'
             defaultOpen={true}
             header={
               <Row>
@@ -125,7 +124,6 @@ class RentEdit extends Component {
             rentType === RentTypes.MANUAL
           ) &&
             <Collapse
-              className='no-content-top-padding'
               defaultOpen={true}
               header={
                 <Row>
@@ -144,7 +142,6 @@ class RentEdit extends Component {
             rentType === RentTypes.MANUAL
           ) &&
             <Collapse
-              className='no-content-top-padding'
               defaultOpen={true}
               header={
                 <Row>
@@ -165,7 +162,6 @@ class RentEdit extends Component {
             rentType === RentTypes.MANUAL
           ) &&
             <Collapse
-              className='no-content-top-padding'
               defaultOpen={true}
               header={
                 <Row>

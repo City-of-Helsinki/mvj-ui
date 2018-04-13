@@ -112,7 +112,7 @@ const ContractItem = ({attributes, contract, decisionOptions}: Props) => {
       }
 
       <Collapse
-        className='collapse__secondary no-content-top-padding'
+        className='collapse__secondary'
         defaultOpen={true}
         header={
           <Row>

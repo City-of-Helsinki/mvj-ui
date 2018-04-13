@@ -57,7 +57,7 @@ const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
               <BoxItem className='no-border-on-first-child'  key={plot.id ? plot.id : `index_${index}`}>
                 <BoxContentWrapper>
                   <RemoveButton
-                    className='position-topright-no-padding'
+                    className='position-topright'
                     onClick={() => fields.remove(index)}
                     title="Poista kiinteistö / määräala"
                   />

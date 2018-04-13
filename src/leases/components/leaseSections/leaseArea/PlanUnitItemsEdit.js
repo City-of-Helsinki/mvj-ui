@@ -61,7 +61,7 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
               <BoxItem className='no-border-on-first-child' key={planunit.id ? planunit.id : `index_${index}`}>
                 <BoxContentWrapper>
                   <RemoveButton
-                    className='position-topright-no-padding'
+                    className='position-topright'
                     onClick={() => fields.remove(index)}
                     title="Poista kaavayksikkö"
                   />

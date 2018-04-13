@@ -49,7 +49,7 @@ const LeaseAreaItem = ({
           >
             <BoxContentWrapper>
               <RemoveButton
-                className='position-topright-no-padding'
+                className='position-topright'
                 onClick={() => fields.remove(index)}
                 title="Poista vuokra-alue"
               />

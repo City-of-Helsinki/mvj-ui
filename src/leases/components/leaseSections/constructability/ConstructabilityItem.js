@@ -96,7 +96,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
   return (
     <div>
       <Collapse
-        className='collapse__secondary no-content-top-padding'
+        className='collapse__secondary'
         defaultOpen={false}
         header={
           <Row>
@@ -118,7 +118,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       </Collapse>
 
       <Collapse
-        className='collapse__secondary no-content-top-padding'
+        className='collapse__secondary'
         defaultOpen={false}
         header={
           <Row>
@@ -140,7 +140,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       </Collapse>
 
       <Collapse
-        className='collapse__secondary no-content-top-padding'
+        className='collapse__secondary'
         defaultOpen={false}
         header={
           <Row>
@@ -186,7 +186,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       </Collapse>
 
       <Collapse
-        className='collapse__secondary no-content-top-padding'
+        className='collapse__secondary'
         defaultOpen={false}
         header={
           <Row>
@@ -228,7 +228,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       </Collapse>
 
       <Collapse
-        className='collapse__secondary no-content-top-padding'
+        className='collapse__secondary'
         defaultOpen={false}
         header={
           <Row>

@@ -48,7 +48,6 @@ const Contracts = ({attributes, contracts, decisionOptions}: Props) => {
       {contracts && !!contracts.length && contracts.map((contract, index) =>
         <Collapse
           key={index}
-          className='no-content-top-padding'
           defaultOpen={false}
           header={
             <Row>

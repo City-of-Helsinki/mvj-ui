@@ -53,7 +53,7 @@ const LeaseArea = ({area, attributes}: Props) => {
 
       {area.plots_contract && !!area.plots_contract.length &&
         <Collapse
-          className='collapse__secondary no-content-top-padding'
+          className='collapse__secondary'
           defaultOpen={true}
           header={
             <Row>
@@ -76,7 +76,7 @@ const LeaseArea = ({area, attributes}: Props) => {
       }
       {area.plots_current && !!area.plots_current.length &&
         <Collapse
-          className='collapse__secondary no-content-top-padding'
+          className='collapse__secondary'
           defaultOpen={true}
           header={
             <Row>
@@ -99,7 +99,7 @@ const LeaseArea = ({area, attributes}: Props) => {
       }
       {area.plan_units_contract && !!area.plan_units_contract.length &&
         <Collapse
-          className='collapse__secondary no-content-top-padding'
+          className='collapse__secondary'
           defaultOpen={true}
           header={
             <Row>
@@ -122,7 +122,7 @@ const LeaseArea = ({area, attributes}: Props) => {
       }
       {area.plan_units_current && !!area.plan_units_current.length &&
         <Collapse
-          className='collapse__secondary no-content-top-padding'
+          className='collapse__secondary'
           defaultOpen={true}
           header={
             <Row>

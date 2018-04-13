@@ -69,7 +69,6 @@ class Rent extends Component {
         <Divider />
 
         <Collapse
-          className='no-content-top-padding'
           defaultOpen={true}
           header={
             <Row>
@@ -87,7 +86,6 @@ class Rent extends Component {
           rentType === RentTypes.FIXED ||
           rentType === RentTypes.MANUAL) &&
           <Collapse
-            className='no-content-top-padding'
             defaultOpen={true}
             header={
               <Row>
@@ -105,7 +103,6 @@ class Rent extends Component {
         {(rentType === RentTypes.INDEX ||
           rentType === RentTypes.MANUAL) &&
           <Collapse
-            className='no-content-top-padding'
             defaultOpen={true}
             header={
               <Row>
@@ -123,7 +120,6 @@ class Rent extends Component {
           rentType === RentTypes.FIXED ||
           rentType === RentTypes.MANUAL) &&
           <Collapse
-            className='no-content-top-padding'
             defaultOpen={true}
             header={
               <Row>
@@ -142,7 +138,6 @@ class Rent extends Component {
           rentType === RentTypes.FIXED ||
           rentType === RentTypes.MANUAL) &&
           <Collapse
-            className='no-content-top-padding'
             defaultOpen={true}
             header={
               <Row>
@@ -156,7 +151,6 @@ class Rent extends Component {
         }
 
         <Collapse
-          className='no-content-top-padding'
           defaultOpen={true}
           header={
             <Row>

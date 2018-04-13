@@ -128,7 +128,6 @@ const renderAreas = ({
         return (
           <Collapse
             key={area.id ? area.id : `index_${index}`}
-            className='no-content-top-padding'
             defaultOpen={true}
             header={
               <Row>
@@ -156,7 +155,7 @@ const renderAreas = ({
             }
           >
             <Collapse
-              className='collapse__secondary no-content-top-padding'
+              className='collapse__secondary'
               defaultOpen={true}
               header={
                 <Row>
@@ -187,7 +186,7 @@ const renderAreas = ({
             </Collapse>
 
             <Collapse
-              className='collapse__secondary no-content-top-padding'
+              className='collapse__secondary'
               defaultOpen={true}
               header={
                 <Row>
@@ -218,7 +217,7 @@ const renderAreas = ({
             </Collapse>
 
             <Collapse
-              className='collapse__secondary no-content-top-padding'
+              className='collapse__secondary'
               defaultOpen={true}
               header={
                 <Row>
@@ -301,7 +300,7 @@ const renderAreas = ({
             </Collapse>
 
             <Collapse
-              className='collapse__secondary no-content-top-padding'
+              className='collapse__secondary'
               defaultOpen={true}
               header={
                 <Row>
@@ -373,7 +372,7 @@ const renderAreas = ({
             </Collapse>
 
             <Collapse
-              className='collapse__secondary no-content-top-padding'
+              className='collapse__secondary'
               defaultOpen={true}
               header={
                 <Row>

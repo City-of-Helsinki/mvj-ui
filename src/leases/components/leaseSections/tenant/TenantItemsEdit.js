@@ -73,7 +73,7 @@ const TenantItemsEdit = ({
           >
             <BoxContentWrapper>
               <RemoveButton
-                className='position-topright-no-padding'
+                className='position-topright'
                 label='Poista vuokralainen'
                 onClick={() => fields.remove(index)}
                 title='Poista vuokralainen'

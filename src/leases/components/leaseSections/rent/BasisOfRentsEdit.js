@@ -34,7 +34,7 @@ const BasisOfRentsEdit = ({attributes, fields}: Props) => {
               className='no-border-on-first-child'>
               <BoxContentWrapper>
                 <RemoveButton
-                  className='position-topright-no-padding'
+                  className='position-topright'
                   onClick={() => fields.remove(index)}
                   title="Poista vuokranperuste"
                 />

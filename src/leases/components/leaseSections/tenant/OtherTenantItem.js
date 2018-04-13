@@ -45,7 +45,7 @@ const OtherTenantItem = ({
 
   return (
     <Collapse
-      className='collapse__secondary no-content-top-padding'
+      className='collapse__secondary'
       defaultOpen={true}
       header={
         <Row>

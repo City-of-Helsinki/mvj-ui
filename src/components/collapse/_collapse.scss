@@ -115,13 +115,7 @@
   }
 
   &__content-wrapper {
-    padding: rem-calc(10px) rem-calc(15px) rem-calc(5px);
-  }
-
-  &.no-content-top-padding {
-    .collapse__content-wrapper {
-      padding-top: 0;
-    }
+    padding: 0 rem-calc(15px) rem-calc(5px);
   }
 
   // Opened stage
@@ -172,13 +166,7 @@
     }
 
     .collapse__content-wrapper {
-      padding: rem-calc(10px) rem-calc(15px) rem-calc(5px);
-    }
-
-    &.no-content-top-padding {
-      .collapse__content-wrapper {
-        padding-top: 0;
-      }
+      padding: 0 rem-calc(15px) rem-calc(5px);
     }
 
     &.open {

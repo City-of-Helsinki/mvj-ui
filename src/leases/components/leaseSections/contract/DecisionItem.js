@@ -54,7 +54,7 @@ const DecisionItem = ({attributes, decision}: Props) => {
       </Row>
 
       <Collapse
-        className='collapse__secondary no-content-top-padding'
+        className='collapse__secondary'
         defaultOpen={true}
         header={
           <Row>
@@ -86,7 +86,7 @@ const DecisionItem = ({attributes, decision}: Props) => {
                         ) : <p>–</p>
                       }
                     </Column>
-                    <Column small={12} medium={4} large={2}>
+                    <Column small={6} medium={4} large={2}>
                       <label>Valvottu päivämäärä</label>
                       {condition.supervised_date
                         ? (
@@ -98,9 +98,7 @@ const DecisionItem = ({attributes, decision}: Props) => {
                         ) : <p>–</p>
                       }
                     </Column>
-                  </Row>
-                  <Row>
-                    <Column small={12}>
+                    <Column small={12} medium={12} large={6}>
                       <label>Selite</label>
                       <p>{condition.description || '–'}</p>
                     </Column>

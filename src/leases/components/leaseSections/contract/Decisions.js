@@ -22,7 +22,6 @@ const Decisions = ({attributes, decisions}: Props) => {
       {decisions && !!decisions.length && decisions.map((decision) =>
         <Collapse
           key={decision.id}
-          className='no-content-top-padding'
           defaultOpen={false}
           header={
             <Row>

@@ -30,7 +30,6 @@ const Constructability = ({areas, attributes, users}: Props) => {
       }
       {areas && !!areas.length && areas.map((area) =>
         <Collapse key={area.id}
-          className='no-content-top-padding'
           defaultOpen={true}
           header={
             <Row>

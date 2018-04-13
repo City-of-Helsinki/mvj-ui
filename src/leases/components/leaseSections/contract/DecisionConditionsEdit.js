@@ -88,9 +88,7 @@ const DecisionConditionsEdit = ({
                     ]}
                   />
                 </Column>
-              </Row>
-              <Row>
-                <Column small={12} >
+                <Column small={12} medium={12} large={6}>
                   <Field
                     component={FieldTypeText}
                     label='Selite'
