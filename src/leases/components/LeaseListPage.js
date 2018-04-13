@@ -221,7 +221,7 @@ class LeaseListPage extends Component {
     //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
     const filteredLeases = getLeasesFilteredByDocumentType(leases, documentType);
     const lessorOptions = getLessorOptions(lessors);
-    const stateOptions = getAttributeFieldOptions(attributes, 'state');
+    const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
 
     return (
       <PageContainer>

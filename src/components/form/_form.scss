@@ -157,7 +157,7 @@
       }
 
       .Select-value {
-        padding-right: 32px !important;
+        padding-right: 20px !important;
       }
 
       .Select-input {
@@ -199,6 +199,7 @@
     .Select-option {
       padding-top: rem-calc(2px);
       padding-bottom: rem-calc(2px);
+      min-height: 20px;
       font-size: rem-calc(14px) !important;
 
       &.is-focused, &.Select-option.is-selected {

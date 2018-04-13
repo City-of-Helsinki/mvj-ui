@@ -37,7 +37,7 @@
       .Select-value {
         margin-top: 0px;
         line-height: 28px;
-        padding-right: 20px;
+        padding-right: 24px;
       }
     }
     &.Select--multi {
@@ -59,8 +59,9 @@
       height: auto;
     }
     .Select-option {
-      padding-top: 0.2rem;
-      padding-bottom: 0.2rem;
+      padding-top: rem-calc(2px);
+      padding-bottom: rem-calc(2px);
+      min-height: 20px;
 
       &:hover, &:focus, &:active {
         background: $engel-lighter;

@@ -100,6 +100,7 @@ class CommentPanel extends Component {
     } = this.props;
 
     const topicOptions = getAttributeFieldOptions(attributes, 'topic');
+    const topicFilterOptions = getAttributeFieldOptions(attributes, 'topic', false);
     const {selectedTopics} = this.state;
 
     const filteredComments = this.getFilteredComments(comments);
@@ -128,7 +129,7 @@ class CommentPanel extends Component {
               <StyledCheckboxButtons
                 checkboxName='checkbox-buttons-document-type'
                 onChange={(value) => this.handleFilterChange(value)}
-                options={topicOptions}
+                options={topicFilterOptions}
                 selectAllButton
                 selectAllButtonLabel='Kaikki'
                 value={selectedTopics}
