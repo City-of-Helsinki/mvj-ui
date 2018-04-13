@@ -41,9 +41,10 @@ class Summary extends Component {
     const lessorOptions = getLessorOptions(lessors);
 
     return (
-      <GreenBox>
+      <div>
+      <GreenBox className='with-bottom-margin'>
         <Row>
-          <Column small={12} medium={6} large={8}>
+          <Column small={12} medium={6} large={4}>
             <label>Vuokranantaja</label>
             <p>{getLabelOfOption(lessorOptions, summary.lessor) || '-'}</p>
           </Column>
@@ -58,18 +59,7 @@ class Summary extends Component {
             <label>Vuokrauksen käyttötarkoitus</label>
             <p>{getLabelOfOption(intendedUseOptions, summary.intended_use) || '-'}</p>
           </Column>
-          <Column small={12} medium={6} large={4}>
-            <label>Erityisasunnot</label>
-            <p>{getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}</p>
-          </Column>
-          <Column small={12} medium={6} large={4}>
-            <label>Tilastollinen pääkäyttötarkoitus</label>
-            <p>{getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}</p>
-          </Column>
-        </Row>
-
-        <Row>
-          <Column small={12} medium={12} large={12}>
+          <Column small={12} medium={6} large={8}>
             <label>Vuokrauksen käyttötarkoitus selite</label>
             <ShowMore text={summary.intended_use_note || '-'} />
           </Column>
@@ -88,17 +78,6 @@ class Summary extends Component {
             <label>Siirto-oikeus</label>
             <p>{summary.transferable ? 'Kyllä' : 'Ei'}</p>
           </Column>
-        </Row>
-
-        <Row>
-          <Column small={12} medium={6} large={4}>
-            <label>Sääntely</label>
-            <p>{summary.regulated ? 'Kyllä' : 'Ei'}</p>
-          </Column>
-          <Column small={12} medium={6} large={4}>
-            <label>Sääntelymuoto</label>
-            <p>{getLabelOfOption(regulationOptions, summary.regulation) || '-'}</p>
-          </Column>
           <Column small={12} medium={6} large={4}>
             <label>Hitas</label>
             <p>{getLabelOfOption(hitasOptions, summary.hitas) || '-'}</p>
@@ -116,6 +95,33 @@ class Summary extends Component {
           </Column>
         </Row>
       </GreenBox>
+      <GreenBox>
+
+        <Row>
+          <Column small={12} medium={6} large={4}>
+            <label>Erityisasunnot</label>
+            <p>{getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}</p>
+          </Column>
+          <Column small={12} medium={6} large={4}>
+            <label>Tilastollinen pääkäyttötarkoitus</label>
+            <p>{getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}</p>
+          </Column>
+        </Row>
+
+
+        <Row>
+          <Column small={12} medium={6} large={4}>
+            <label>Sääntely</label>
+            <p>{summary.regulated ? 'Kyllä' : 'Ei'}</p>
+          </Column>
+          <Column small={12} medium={6} large={4}>
+            <label>Sääntelymuoto</label>
+            <p>{getLabelOfOption(regulationOptions, summary.regulation) || '-'}</p>
+          </Column>
+        </Row>
+
+      </GreenBox>
+    </div>
     );
   }
 }

@@ -171,6 +171,10 @@
       margin: 0;
     }
 
+    &.with-bottom-margin {
+      margin-bottom: rem-calc(15px);
+    }
+
     .map-link {
       .icon {
         width: rem-calc(22px);
