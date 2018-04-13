@@ -2,7 +2,6 @@
 import React from 'react';
 
 import ContentContainer from '$components/content/ContentContainer';
-import Divider from '$components/content/Divider';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import RentBasisForm from './forms/RentBasisForm';
 
@@ -14,9 +13,7 @@ type Props = {
 
 const RentBasisEdit = ({attributes}: Props) =>
   <ContentContainer>
-    <h1>Vuokrausperuste</h1>
-    <Divider />
-    <GreenBoxEdit>
+    <GreenBoxEdit className='no-margin'>
       <RentBasisForm
         attributes={attributes}
       />

@@ -11,7 +11,6 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
-import Divider from '$components/content/Divider';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import PageContainer from '$components/content/PageContainer';
 import RentBasisForm from './forms/RentBasisForm';
@@ -78,10 +77,11 @@ class NewRentBasisPage extends Component {
               showCopyButton={true}
             />
           }
+          infoComponent={
+            <h1>Uusi vuokrausperuste</h1>
+          }
         />
         <ContentContainer>
-          <h2>Uusi vuokrausperuste</h2>
-          <Divider />
           <GreenBoxEdit>
             <RentBasisForm
               attributes={attributes}
