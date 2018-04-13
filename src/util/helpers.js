@@ -208,6 +208,9 @@ export const fixedLengthNumber = (value: number, length: number = 2) => {
   return  value.toString();
 };
 
+export const getEpochTime = () =>
+  Math.round(new Date().getTime()/1000.0);
+
 export const formatDate = (date: string) => {
   if (!date) {
     return '';

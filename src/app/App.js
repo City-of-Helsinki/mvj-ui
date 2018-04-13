@@ -14,9 +14,10 @@ import {getRouteById} from '../root/routes';
 import {clearError} from '../api/actions';
 import {getError} from '../api/selectors';
 import {getLinkUrl, getPageTitle, getShowSearch} from '$components/topNavigation/selectors';
+import {getEpochTime} from '$util/helpers';
 import ApiErrorModal from '../api/ApiErrorModal';
 import {clearApiToken, fetchApiToken} from '../auth/actions';
-import {getApiToken, getIsFetching, getLoggedInUser} from '../auth/selectors';
+import {getApiToken, getApiTokenExpires, getIsFetching, getLoggedInUser} from '../auth/selectors';
 import LoginPage from '../auth/components/LoginPage';
 import userManager from '../auth/util/user-manager';
 import Loader from '$components/loader/Loader';
@@ -30,6 +31,7 @@ import type {RootState} from '../root/types';
 type Props = {
   apiError: ApiError,
   apiToken: ApiToken,
+  apiTokenExpires: number,
   children: any,
   clearApiToken: Function,
   clearError: typeof clearError,
@@ -55,6 +57,23 @@ class App extends Component {
     displaySideMenu: false,
   }
 
+  timerID: any
+
+  componentWillUnmount() {
+    this.stopApiTokenTimer();
+  }
+
+  startApiTokenTimer = () => {
+    this.timerID = setInterval(
+      () => this.checkApiToken(),
+      5000
+    );
+  }
+
+  stopApiTokenTimer = () => {
+    clearInterval(this.timerID);
+  }
+
   componentWillReceiveProps(nextProps) {
     const {apiError, clearApiToken, fetchApiToken} = this.props;
     if(apiError) {
@@ -67,16 +86,26 @@ class App extends Component {
       (isEmpty(nextProps.apiToken) || (get(this.props, 'user.access_token') !== get(nextProps, 'user.access_token')))
     ) {
       fetchApiToken(nextProps.user.access_token);
+      this.startApiTokenTimer();
       return;
     }
     // Clear API token when user has logged out
     if(!nextProps.user && !isEmpty(nextProps.apiToken)) {
       clearApiToken();
+      this.stopApiTokenTimer();
     }
   }
 
   logOut = () => {
     userManager.removeUser();
+  }
+
+  checkApiToken () {
+    const {apiTokenExpires, fetchApiToken} = this.props;
+
+    if((apiTokenExpires <= getEpochTime()) && get(this.props, 'user.access_token')) {
+      fetchApiToken(this.props.user.access_token);
+    }
   }
 
   toggleSideMenu = () => {
@@ -172,6 +201,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     apiError: getError(state),
     apiToken: getApiToken(state),
+    apiTokenExpires: getApiTokenExpires(state),
     isApiTokenFetching: getIsFetching(state),
     linkUrl: getLinkUrl(state),
     pageTitle: getPageTitle(state),

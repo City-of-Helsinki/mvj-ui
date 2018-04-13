@@ -5,6 +5,7 @@ import {call, fork, put} from 'redux-saga/effects';
 
 import {tokenNotFound, receiveApiToken} from './actions';
 import {receiveError} from '../api/actions';
+import {getEpochTime} from '$util/helpers';
 
 function* fetchApiTokenSaga({payload: token}): Generator<> {
   try {
@@ -17,6 +18,8 @@ function* fetchApiTokenSaga({payload: token}): Generator<> {
     switch (statusCode) {
       case 200: {
         const bodyAsJson = yield call([response, response.json]);
+        // Add expires_at time to fetch new api token after 9 minutes
+        bodyAsJson.expires_at = getEpochTime() + 9*60;
         yield put(receiveApiToken(bodyAsJson));
         break;
       }
