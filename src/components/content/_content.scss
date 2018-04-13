@@ -91,7 +91,7 @@
     line-height: rem-calc(16px);
     font-weight: normal;
     color: $black;
-    margin-bottom: rem-calc(15px);
+    margin-bottom: rem-calc(10px);
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 100%;
@@ -159,7 +159,7 @@
   .green-box {
     display: inline-block;
     width: 100%;
-    padding: rem-calc(15px) rem-calc(15px) 0;
+    padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
     background-color: $tram-lighter-solid;
     position: relative;
 
@@ -266,25 +266,21 @@
     }
   }
 
-  .green-box-item {
-    border-top: 1px dashed #009246;
-    padding: rem-calc(15px) 0 0;
-    position: relative;
+  .box-item-container {
+    .box-item {
+      border-top: 1px dashed #009246;
+      padding: rem-calc(15px) 0 rem-calc(5px);
+      position: relative;
 
-    &.no-border-on-first-child:first-child {
-      border: none;
-      padding-top: 0;
+      &.no-border-on-first-child:first-child {
+        border: none;
+        padding-top: 0;
+      }
+
+      &:last-child {
+        padding-bottom: 0;
+      }
     }
-  }
-
-  .green-box-item:last-child {
-    padding-bottom: 0;
-  }
-
-  .white-box-edit {
-    position: relative;
-    padding: rem-calc(15px) rem-calc(15px) 0;
-    background-color: white;
   }
 
   .box-content-wrapper {

@@ -12,12 +12,13 @@ import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {genericValidator} from '$components/form/validations';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FormSection from '$components/form/FormSection';
-import GreenBoxItem from '$components/content/GreenBoxItem';
 import RemoveButton from '$components/form/RemoveButton';
 
 import type {Attributes} from '$src/leases/types';
@@ -31,43 +32,45 @@ type CommentProps = {
 const renderComments = ({attributes, fields}: CommentProps) => {
   return (
     <div>
-      {fields && !!fields.length && fields.map((comment, index) => {
-        return (
-          <GreenBoxItem key={index}>
-            <BoxContentWrapper>
-              <RemoveButton
-                className='position-topright-no-padding'
-                onClick={() => fields.remove(index)}
-                title="Poista kommentti"
-              />
-              <Row>
-                <Column small={6} medium={9} large={10}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Selitys'
-                    name={`${comment}.text`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'lease_areas.child.children.constructability_descriptions.child.children.text')),
-                    ]}
-                  />
-                </Column>
-                <Column small={6} medium={3} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='AHJO diaarinumero'
-                    name={`${comment}.ahjo_reference_number`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')),
-                    ]}
-                  />
-                </Column>
-              </Row>
-            </BoxContentWrapper>
-          </GreenBoxItem>
-        );
-      })}
+      <BoxItemContainer>
+        {fields && !!fields.length && fields.map((comment, index) => {
+          return (
+            <BoxItem key={index}>
+              <BoxContentWrapper>
+                <RemoveButton
+                  className='position-topright-no-padding'
+                  onClick={() => fields.remove(index)}
+                  title="Poista kommentti"
+                />
+                <Row>
+                  <Column small={6} medium={9} large={10}>
+                    <Field
+                      component={FieldTypeText}
+                      label='Selitys'
+                      name={`${comment}.text`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'lease_areas.child.children.constructability_descriptions.child.children.text')),
+                      ]}
+                    />
+                  </Column>
+                  <Column small={6} medium={3} large={2}>
+                    <Field
+                      component={FieldTypeText}
+                      label='AHJO diaarinumero'
+                      name={`${comment}.ahjo_reference_number`}
+                      validate={[
+                        (value) => genericValidator(value, get(attributes,
+                          'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')),
+                      ]}
+                    />
+                  </Column>
+                </Row>
+              </BoxContentWrapper>
+            </BoxItem>
+          );
+        })}
+      </BoxItemContainer>
       <Row>
         <Column>
           <AddButtonSecondary

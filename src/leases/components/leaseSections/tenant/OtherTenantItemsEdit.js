@@ -191,7 +191,6 @@ const OtherTenantItemsEdit = ({
       <Row>
         <Column>
           <AddButtonSecondary
-            className='uppercase-label'
             label='Lisää laskunsaaja tai yhteyshenkilö'
             onClick={() => fields.push({})}
             title='Lisää laskunsaaja tai yhteyshenkilö'

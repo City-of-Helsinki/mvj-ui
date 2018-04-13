@@ -3,8 +3,9 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import GreenBoxItem from '$components/content/GreenBoxItem';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {ConstructabilityStatus} from '$src/leases/enums';
 
@@ -21,9 +22,9 @@ const Comments = ({comments, userOptions}: CommentsProps) => {
     <div>
       {comments && !!comments.length
         ? (
-          <div>
+          <BoxItemContainer>
             {comments.map((comment) =>
-              <GreenBoxItem
+              <BoxItem
                 key={comment.id}>
                 <Row>
                   <Column small={12}>
@@ -35,9 +36,9 @@ const Comments = ({comments, userOptions}: CommentsProps) => {
                     </p>
                   </Column>
                 </Row>
-              </GreenBoxItem>
+              </BoxItem>
             )}
-          </div>
+          </BoxItemContainer>
         ) : (
           <p><em>Ei selityksiä.</em></p>
         )

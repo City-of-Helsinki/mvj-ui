@@ -3,7 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
-import GreenBoxItem from '$components/content/GreenBoxItem';
+import BoxItem from '$components/content/BoxItem';
 
 type Props = {
   attributes: Object,
@@ -19,7 +19,7 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
     'lease_areas.child.children.plan_units.child.children.plan_unit_state');
 
   return (
-    <GreenBoxItem className='no-border-on-first-child'>
+    <BoxItem className='no-border-on-first-child'>
       <Row>
         <Column small={6} medium={4} large={2}>
           <label>Tunnus</label>
@@ -80,7 +80,7 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
           <p>{getLabelOfOption(planUnitStateOptions, planUnit.plan_unit_state) || '-'}</p>
         </Column>
       </Row>
-    </GreenBoxItem>
+    </BoxItem>
   );
 };
 

@@ -4,8 +4,10 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import BoxItem from '$components/content/BoxItem';
+import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import GreenBoxItem from '$components/content/GreenBoxItem';
+
 
 import type {Attributes} from '$src/leases/types';
 
@@ -64,9 +66,9 @@ const DecisionItem = ({attributes, decision}: Props) => {
       >
         {decision.conditions && decision.conditions.length
           ? (
-            <div>
+            <BoxItemContainer>
               {decision.conditions.map((condition) =>
-                <GreenBoxItem key={condition.id} className='no-border-on-first-child'>
+                <BoxItem key={condition.id} className='no-border-on-first-child'>
                   <Row>
                     <Column small={6} medium={4} large={2}>
                       <label>Ehtotyyppi</label>
@@ -103,9 +105,9 @@ const DecisionItem = ({attributes, decision}: Props) => {
                       <p>{condition.description || '–'}</p>
                     </Column>
                   </Row>
-                </GreenBoxItem>
+                </BoxItem>
               )}
-            </div>
+            </BoxItemContainer>
           ) : (
             <p>Ei ehtoja</p>
           )
