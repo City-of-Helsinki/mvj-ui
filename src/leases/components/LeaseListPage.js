@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
+import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
@@ -55,6 +56,7 @@ type Props = {
   fetchAttributes: Function,
   fetchLeases: Function,
   fetchLessors: Function,
+  initialize: Function,
   isFetching: boolean,
   leases: LeaseList,
   lessors: Array<Object>,
@@ -122,13 +124,16 @@ class LeaseListPage extends Component {
     this.search.getWrappedInstance().initialize(query);
   }
 
-  showModal = () => {
+  showCreateLeaseModal = () => {
+    const {initialize} = this.props;
+
     this.setState({
       isModalOpen: true,
     });
+    initialize('create-lease-form', {});
   }
 
-  hideModal = () => {
+  hideCreateLeaseModal = () => {
     this.setState({
       isModalOpen: false,
     });
@@ -227,7 +232,7 @@ class LeaseListPage extends Component {
       <PageContainer>
         <Modal
           isOpen={isModalOpen}
-          onClose={this.hideModal}
+          onClose={this.hideCreateLeaseModal}
           title={'Luo vuokratunnus'}
         >
           <CreateLease
@@ -241,7 +246,7 @@ class LeaseListPage extends Component {
             <Button
               className='no-margin full-width'
               label='Luo uusi vuokratunnus'
-              onClick={this.showModal}
+              onClick={this.showCreateLeaseModal}
               title='Luo uusi vuokratunnus'
             />
           }
@@ -318,6 +323,7 @@ export default flowRight(
       fetchAttributes,
       fetchLeases,
       fetchLessors,
+      initialize,
       receiveTopNavigationSettings,
     },
   ),
