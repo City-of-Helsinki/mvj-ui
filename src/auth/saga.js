@@ -1,5 +1,7 @@
 // @flow
 
+/* global OPENID_CONNECT_API_TOKEN_URL */
+
 import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
 
@@ -9,7 +11,8 @@ import {getEpochTime} from '$util/helpers';
 
 function* fetchApiTokenSaga({payload: token}): Generator<> {
   try {
-    const request = new Request('https://api.hel.fi/sso/api-tokens/', {
+    // $FlowFixMe
+    const request = new Request(OPENID_CONNECT_API_TOKEN_URL || 'https://api.hel.fi/sso/api-tokens/', {
       headers: {'Authorization': `Bearer ${token}`},
     });
     const response = yield call(fetch, request);

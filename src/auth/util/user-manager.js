@@ -1,9 +1,12 @@
 // @flow
 import {createUserManager} from 'redux-oidc';
+/* global OPENID_CONNECT_AUTHORITY_URL */
 /* global OPENID_CONNECT_CLIENT_ID */
+/* global OPENID_CONNECT_SCOPE */
 
 const userManagerConfig = {
-  authority: 'https://api.hel.fi/sso/openid/',
+  // $FlowFixMe
+  authority: OPENID_CONNECT_AUTHORITY_URL || 'https://api.hel.fi/sso/openid/',
   automaticSilentRenew: true,
   // $FlowFixMe
   client_id: OPENID_CONNECT_CLIENT_ID,
@@ -11,7 +14,8 @@ const userManagerConfig = {
   loadUserInfo: true,
   redirect_uri: `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}/callback`,
   response_type: 'id_token token',
-  scope: 'openid profile https://api.hel.fi/auth/mvj',
+  // $FlowFixMe
+  scope: OPENID_CONNECT_SCOPE || 'openid profile https://api.hel.fi/auth/mvj',
   silent_redirect_uri: `${window.location.protocol}//${window.location.hostname}${window.location.port ? `:${window.location.port}` : ''}/silent_renew.html`,
 };
 

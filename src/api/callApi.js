@@ -3,7 +3,7 @@
 import {call, put, select} from 'redux-saga/effects';
 import {receiveError} from './actions';
 
-export const getApiToken = (state: any) => state.auth.apiToken['https://api.hel.fi/auth/mvj'];
+import {getApiToken} from '../auth/selectors';
 
 function* callApi(request: Request): Generator<> {
   const apiToken = yield select(getApiToken);

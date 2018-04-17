@@ -50,6 +50,11 @@ export default createConfig({
   },
   plugins: [
     new webpack.DefinePlugin(mapValues({
+      ['OPENID_CONNECT_API_TOKEN_KEY']: process.env.OPENID_CONNECT_API_TOKEN_KEY || '',
+      ['OPENID_CONNECT_API_TOKEN_URL']: process.env.OPENID_CONNECT_API_TOKEN_URL || '',
+      ['OPENID_CONNECT_AUTHORITY_URL']: process.env.OPENID_CONNECT_AUTHORITY_URL || '',
+      ['OPENID_CONNECT_CLIENT_ID']: process.env.OPENID_CONNECT_CLIENT_ID,
+      ['OPENID_CONNECT_SCOPE']: process.env.OPENID_CONNECT_SCOPE || '',
       ...readDotenv(context),
       ['process.env.NODE_ENV']: 'development',
     }, (v) => JSON.stringify(v))),

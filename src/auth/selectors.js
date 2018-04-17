@@ -2,10 +2,12 @@
 
 import type {Selector} from '../types';
 import type {ApiToken, AuthState} from './types';
+/* global OPENID_CONNECT_API_TOKEN_KEY */
 
 // Helper functions to select state
 export const getApiToken: Selector<ApiToken, void> = (state: Object): AuthState =>
-  state.auth.apiToken['https://api.hel.fi/auth/mvj'];
+  // $FlowFixMe
+  state.auth.apiToken[OPENID_CONNECT_API_TOKEN_KEY || 'https://api.hel.fi/auth/mvj'];
 
 export const getApiTokenExpires: Selector<ApiToken, void> = (state: Object): AuthState =>
   state.auth.apiToken['expires_at'];
