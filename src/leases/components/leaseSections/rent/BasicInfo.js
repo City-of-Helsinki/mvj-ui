@@ -17,11 +17,11 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
-  rents: Object,
+  rent: Object,
   rentType: ?string,
 }
 
-const BasicInfoIndex = ({attributes, rents}: Props) => {
+const BasicInfoIndex = ({attributes, rent}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
   const cycleOptions = getAttributeFieldOptions(attributes, 'rents.child.children.cycle');
   const indexTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.index_type');
@@ -31,22 +31,30 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
       <Row>
         <Column small={6} medium={4} large={2}>
           <label>Vuokralaji</label>
-          <p>{getLabelOfOption(typeOptions, rents.type) || '-'}</p>
+          <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <label>Alkupvm</label>
+          <p>{formatDate(rent.start_date) || '-'}</p>
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <label>Loppupvm</label>
+          <p>{formatDate(rent.end_date) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Vuokrakausi</label>
-          <p>{getLabelOfOption(cycleOptions, rents.cycle) || '-'}</p>
+          <p>{getLabelOfOption(cycleOptions, rent.cycle) || '-'}</p>
         </Column>
-        <Column small={6} medium={4} large={4}>
-          <label>Indeksin tunnusnumero (laskentalaji)</label>
-          <p>{getLabelOfOption(indexTypeOptions, rents.index_type) || '-'}</p>
+        <Column small={6} medium={4} large={2}>
+          <label>Indeksin tunnusnumero</label>
+          <p>{getLabelOfOption(indexTypeOptions, rent.index_type) || '-'}</p>
         </Column>
-        {rents.due_dates_type === RentDueDateTypes.CUSTOM &&
+        {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
             <label>Eräpäivät</label>
             <ListItems>
-              {rents.due_dates && !!rents.due_dates.length
-                ? (rents.due_dates.map((date, index) => {
+              {rent.due_dates && !!rent.due_dates.length
+                ? (rent.due_dates.map((date, index) => {
                   return (<p className='no-margin' key={index}>{`${date.day}.${date.month}`}</p>);
                 }))
                 : <p className='no-margin'>Ei eräpäiviä</p>
@@ -54,36 +62,36 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
             </ListItems>
           </Column>
         }
-        {rents.due_dates_type === RentDueDateTypes.FIXED &&
+        {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <label>Laskut kpl / vuodessa</label>
-            <p>{rents.due_dates_per_year || '-'}</p>
+            <p>{rent.due_dates_per_year || '-'}</p>
           </Column>
         }
       </Row>
       <Row>
         <Column small={12} medium={4} large={2}>
           <label>Perusindeksi/pyöristys</label>
-          <p>{rents.elementary_index || '-'} / {rents.index_rounding || '-'}</p>
+          <p>{rent.elementary_index || '-'} / {rent.index_rounding || '-'}</p>
         </Column>
         <Column small={4} medium={2} large={1}>
           <label>X-luku</label>
-          <p>{rents.x_value || '-'}</p>
+          <p>{rent.x_value || '-'}</p>
         </Column>
         <Column small={4} medium={2} large={1}>
           <label>Y-luku</label>
-          <p>{rents.y_value || '-'}</p>
+          <p>{rent.y_value || '-'}</p>
         </Column>
         <Column small={4} medium={2} large={1}>
           <label>Y-alkaen</label>
-          <p>{rents.y_value_start || '-'}</p>
+          <p>{rent.y_value_start || '-'}</p>
         </Column>
         <Column small={12} medium={4} large={2}>
           <label>Tasaus pvm</label>
-          <p>{formatDateRange(rents.equalization_start_date, rents.equalization_end_date) || '-'}</p>
+          <p>{formatDateRange(rent.equalization_start_date, rent.equalization_end_date) || '-'}</p>
         </Column>
       </Row>
-      {rents.fixed_initial_year_rents && !!rents.fixed_initial_year_rents.length &&
+      {rent.fixed_initial_year_rents && !!rent.fixed_initial_year_rents.length &&
         <ListItems>
           <p className='sub-title'>Kiinteät alkuvuosivuokrat</p>
           <Row>
@@ -97,17 +105,17 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
               <label>Loppupvm</label>
             </Column>
           </Row>
-          {rents.fixed_initial_year_rents.map((rent, index) => {
+          {rent.fixed_initial_year_rents.map((item, index) => {
             return (
               <Row key={index}>
                 <Column small={4} medium={4} large={2}>
-                  <p className='no-margin'>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.amount), '.') || '-'}</p>
+                  <p className='no-margin'>{formatNumberWithThousandSeparator(formatDecimalNumber(item.amount), '.') || '-'}</p>
                 </Column>
                 <Column small={4} medium={2} large={2}>
-                  <p className='no-margin'>{formatDate(rent.start_date) || '-'}</p>
+                  <p className='no-margin'>{formatDate(item.start_date) || '-'}</p>
                 </Column>
                 <Column small={4} medium={2} large={2}>
-                  <p className='no-margin'>{formatDate(rent.end_date) || '-'}</p>
+                  <p className='no-margin'>{formatDate(item.end_date) || '-'}</p>
                 </Column>
               </Row>
             );
@@ -117,14 +125,14 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{rents.note || '-'}</p>
+          <p>{rent.note || '-'}</p>
         </Column>
       </Row>
     </div>
   );
 };
 
-const BasicInfoOneTime = ({attributes, rents}: Props) => {
+const BasicInfoOneTime = ({attributes, rent}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
 
   return (
@@ -132,24 +140,24 @@ const BasicInfoOneTime = ({attributes, rents}: Props) => {
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
-          <p>{getLabelOfOption(typeOptions, rents.type) || '-'}</p>
+          <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
         <Column medium={3}>
           <label>Kertakaikkinen vuokra</label>
-          <p>{formatNumberWithThousandSeparator(formatDecimalNumber(rents.amount)) || '-'}</p>
+          <p>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.amount)) || '-'}</p>
         </Column>
       </Row>
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{rents.note || '-'}</p>
+          <p>{rent.note || '-'}</p>
         </Column>
       </Row>
     </div>
   );
 };
 
-const BasicInfoFixed = ({attributes, rents}: Props) => {
+const BasicInfoFixed = ({attributes, rent}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
 
   return (
@@ -157,18 +165,18 @@ const BasicInfoFixed = ({attributes, rents}: Props) => {
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
-          <p>{getLabelOfOption(typeOptions, rents.type) || '-'}</p>
+          <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
         <Column medium={3}>
           <label>Kertakaikkinen vuokra</label>
-          <p>{formatNumberWithThousandSeparator(formatDecimalNumber(rents.amount)) || '-'}</p>
+          <p>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.amount)) || '-'}</p>
         </Column>
-        {rents.due_dates_type === RentDueDateTypes.CUSTOM &&
+        {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
             <label>Eräpäivät</label>
             <ListItems>
-              {rents.due_dates && !!rents.due_dates.length
-                ? (rents.due_dates.map((date, index) => {
+              {rent.due_dates && !!rent.due_dates.length
+                ? (rent.due_dates.map((date, index) => {
                   return (<p className='no-margin' key={index}>{`${date.day}.${date.month}`}</p>);
                 }))
                 : <p className='no-margin'>Ei eräpäiviä</p>
@@ -176,24 +184,24 @@ const BasicInfoFixed = ({attributes, rents}: Props) => {
             </ListItems>
           </Column>
         }
-        {rents.due_dates_type === RentDueDateTypes.FIXED &&
+        {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <label>Laskut kpl / vuodessa</label>
-            <p>{rents.due_dates_per_year || '-'}</p>
+            <p>{rent.due_dates_per_year || '-'}</p>
           </Column>
         }
       </Row>
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{rents.note || '-'}</p>
+          <p>{rent.note || '-'}</p>
         </Column>
       </Row>
     </div>
   );
 };
 
-const BasicInfoFree = ({attributes, rents}: Props) => {
+const BasicInfoFree = ({attributes, rent}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
 
   return (
@@ -201,20 +209,20 @@ const BasicInfoFree = ({attributes, rents}: Props) => {
       <Row>
         <Column medium={3}>
           <label>Vuokralaji</label>
-          <p>{getLabelOfOption(typeOptions, rents.type) || '-'}</p>
+          <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
       </Row>
       <Row>
         <Column>
           <label>Kommentti</label>
-          <p>{rents.note || '-'}</p>
+          <p>{rent.note || '-'}</p>
         </Column>
       </Row>
     </div>
   );
 };
 
-const BasicInfo = ({attributes, rents, rentType}: Props) => {
+const BasicInfo = ({attributes, rent, rentType}: Props) => {
   return (
     <div>
       {!rentType &&
@@ -223,35 +231,35 @@ const BasicInfo = ({attributes, rents, rentType}: Props) => {
       {rentType === RentTypes.INDEX &&
         <BasicInfoIndex
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.ONE_TIME &&
         <BasicInfoOneTime
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.FIXED &&
         <BasicInfoFixed
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.FREE &&
         <BasicInfoFree
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.MANUAL &&
         <BasicInfoIndex
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }

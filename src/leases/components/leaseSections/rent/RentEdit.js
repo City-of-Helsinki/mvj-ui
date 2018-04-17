@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
-import {formValueSelector, reduxForm, Field, FieldArray, FormSection} from 'redux-form';
+import {formValueSelector, reduxForm, FieldArray, FormSection} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -14,10 +14,8 @@ import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import FormSectionComponent from '$components/form/FormSection';
 import IndexAdjustedRents from './IndexAdjustedRents';
-import FieldTypeSwitch from '$components/form/FieldTypeSwitch';
 import PayableRents from './PayableRents';
 import RentAdjustmentsEdit from './RentAdjustmentsEdit';
-import RightSubtitle from '$components/content/RightSubtitle';
 import {RentTypes} from '$src/leases/enums';
 import {fetchDecisions, receiveRentsFormValid} from '$src/leases/actions';
 import {getDecisions, getIsRentsFormValid} from '$src/leases/selectors';
@@ -71,7 +69,7 @@ class RentEdit extends Component {
           <Row>
             <Column>
               <h2>Vuokra</h2>
-              <RightSubtitle
+              {/* <RightSubtitle
                 text={
                   <Field
                     component={FieldTypeSwitch}
@@ -79,7 +77,7 @@ class RentEdit extends Component {
                     optionLabel="Vuokratiedot kunnossa"
                   />
                 }
-              />
+              /> */}
             </Column>
           </Row>
           <Divider />

@@ -220,7 +220,7 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
         <Column small={6} medium={4} large={4}>
           <Field
             component={FieldTypeSelect}
-            label="Indeksin tunnusnumero (laskentalaji)"
+            label="Indeksin tunnusnumero"
             name="index_type"
             options={indexTypeOptions}
             validate={[
