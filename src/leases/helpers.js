@@ -535,31 +535,36 @@ export const getContentRentDueDate = (rent: Object) => {
 };
 
 export const getContentRents = (lease: Object) => {
-  const rent = get(lease, 'rents[0]', {});
-  return {
-    id: rent.id || undefined,
-    type: get(rent, 'type'),
-    cycle: get(rent, 'cycle'),
-    index_type: get(rent, 'index_type'),
-    due_dates_type: get(rent, 'due_dates_type'),
-    due_dates_per_year: get(rent, 'due_dates_per_year'),
-    elementary_index: get(rent, 'elementary_index'),
-    index_rounding: get(rent, 'index_rounding'),
-    x_value: get(rent, 'x_value'),
-    y_value: get(rent, 'y_value'),
-    y_value_start: get(rent, 'y_value_start'),
-    equalization_start_date: get(rent, 'equalization_start_date'),
-    equalization_end_date: get(rent, 'equalization_end_date'),
-    amount: get(rent, 'amount'),
-    note: get(rent, 'note'),
-    is_active: get(rent, 'is_active'),
-    due_dates: getContentRentDueDate(rent),
-    fixed_initial_year_rents: getContentFixedInitialYearRents(rent),
-    contract_rents: getContentContractRents(rent),
-    index_adjusted_rents: getContentIndexAdjustedRents(rent),
-    rent_adjustments: getContentRentAdjustments(rent),
-    payable_rents: getContentPayableRents(rent),
-  };
+  const rents = get(lease, 'rents', []);
+
+  return rents.map((rent) => {
+    return {
+      id: rent.id || undefined,
+      type: get(rent, 'type'),
+      start_date: get(rent, 'start_date'),
+      end_date: get(rent, 'end_date'),
+      cycle: get(rent, 'cycle'),
+      index_type: get(rent, 'index_type'),
+      due_dates_type: get(rent, 'due_dates_type'),
+      due_dates_per_year: get(rent, 'due_dates_per_year'),
+      elementary_index: get(rent, 'elementary_index'),
+      index_rounding: get(rent, 'index_rounding'),
+      x_value: get(rent, 'x_value'),
+      y_value: get(rent, 'y_value'),
+      y_value_start: get(rent, 'y_value_start'),
+      equalization_start_date: get(rent, 'equalization_start_date'),
+      equalization_end_date: get(rent, 'equalization_end_date'),
+      amount: get(rent, 'amount'),
+      note: get(rent, 'note'),
+      is_active: get(rent, 'is_active'),
+      due_dates: getContentRentDueDate(rent),
+      fixed_initial_year_rents: getContentFixedInitialYearRents(rent),
+      contract_rents: getContentContractRents(rent),
+      index_adjusted_rents: getContentIndexAdjustedRents(rent),
+      rent_adjustments: getContentRentAdjustments(rent),
+      payable_rents: getContentPayableRents(rent),
+    };
+  });
 };
 
 export const getContentBasisOfRents = (lease: Object) => {
@@ -579,8 +584,8 @@ export const getContentBasisOfRents = (lease: Object) => {
     };
   });
 };
-//
-//
+
+
 // OLD HELPER FUNCTIONS
 //TODO: Remove mock data helper function when contruction eligibility tab is added to API
 export const getContentBillingTenant = (tenant: Object) => {
@@ -1181,6 +1186,8 @@ export const getContentRentDueDatesForDb = (rent: Object) => {
 };
 
 export const addRentsFormValues = (payload: Object, values: Object) => {
+  payload.is_rent_info_complete = values.is_rent_info_complete ? true : false;
+
   const basisOfRents = get(values, 'basis_of_rents', {});
   if(!basisOfRents.length) {
     payload.basis_of_rents = [];
@@ -1199,11 +1206,14 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       };
     });
   }
-  const rent = get(values, 'rents', {});
-  payload.rents = [
-    {
+
+  const rents = get(values, 'rents', []);
+  payload.rents = rents.map((rent) => {
+    return {
       id: rent.id || undefined,
       type: get(rent, 'type'),
+      start_date: get(rent, 'start_date'),
+      end_date: get(rent, 'end_date'),
       cycle: get(rent, 'cycle'),
       index_type: get(rent, 'index_type'),
       due_dates_type: get(rent, 'due_dates_type'),
@@ -1222,8 +1232,8 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       fixed_initial_year_rents: getContentFixedInitialYearRentsForDb(rent),
       contract_rents: getContentContractRentsForDb(rent),
       rent_adjustments: getContentRentAdjustmentsForDb(rent),
-    },
-  ];
+    };
+  });
 
   return payload;
 };

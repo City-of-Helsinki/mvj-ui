@@ -1,5 +1,5 @@
 // @flow
-import React, {Component, cloneElement} from 'react';
+import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
@@ -62,12 +62,13 @@ class Collapse extends Component {
     if(!header) {
       return null;
     }
-    return cloneElement(header).props.children;
+    return header.props.children;
   }
 
   render() {
     const {isOpen, isVisible} = this.state;
     const {children, className, header, headerTitle} = this.props;
+
     return (
       <div
         ref={(ref) => this.component = ref}

@@ -157,7 +157,7 @@ const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRents
 
 type Props = {
   attributes: Attributes,
-  rents: Object,
+  rent: Object,
   rentType: ?string,
 }
 
@@ -184,7 +184,7 @@ const BasicInfoEmpty = ({attributes}: Props) => {
   );
 };
 
-const BasicInfoIndex = ({attributes, rents}: Props) => {
+const BasicInfoIndex = ({attributes, rent}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
   const cycleOptions = getAttributeFieldOptions(attributes, 'rents.child.children.cycle');
   const indexTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.index_type');
@@ -205,6 +205,28 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
             ]}
           />
         </Column>
+        <Column small={3} medium={2} large={1}>
+          <Field
+            component={FieldTypeDatePicker}
+            label="Alkupvm"
+            name="start_date"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.start_date')),
+            ]}
+          />
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <Field
+            component={FieldTypeDatePicker}
+            label="Loppupvm"
+            name="end_date"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.start_date')),
+            ]}
+          />
+        </Column>
         <Column small={6} medium={4} large={2}>
           <Field
             component={FieldTypeSelect}
@@ -217,10 +239,10 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
             ]}
           />
         </Column>
-        <Column small={6} medium={4} large={4}>
+        <Column small={6} medium={4} large={2}>
           <Field
             component={FieldTypeSelect}
-            label="Indeksin tunnusnumero (laskentalaji)"
+            label="Indeksin tunnusnumero"
             name="index_type"
             options={indexTypeOptions}
             validate={[
@@ -241,7 +263,7 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
             ]}
           />
         </Column>
-        {rents.due_dates_type === RentDueDateTypes.CUSTOM &&
+        {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
             <FieldArray
               attributes={attributes}
@@ -250,7 +272,7 @@ const BasicInfoIndex = ({attributes, rents}: Props) => {
             />
           </Column>
         }
-        {rents.due_dates_type === RentDueDateTypes.FIXED &&
+        {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeText}
@@ -394,6 +416,28 @@ const BasicInfoOneTime = ({attributes}: Props) => {
             ]}
           />
         </Column>
+        <Column small={3} medium={2} large={1}>
+          <Field
+            component={FieldTypeDatePicker}
+            label="Alkupvm"
+            name="start_date"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.start_date')),
+            ]}
+          />
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <Field
+            component={FieldTypeDatePicker}
+            label="Loppupvm"
+            name="end_date"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.start_date')),
+            ]}
+          />
+        </Column>
         <Column small={6} medium={4} large={2}>
           <Field
             component={FieldTypeText}
@@ -423,7 +467,7 @@ const BasicInfoOneTime = ({attributes}: Props) => {
   );
 };
 
-const BasicInfoFixed = ({attributes, rents}: Props) => {
+const BasicInfoFixed = ({attributes, rent}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
   const dueDatesTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.due_dates_type');
 
@@ -442,14 +486,25 @@ const BasicInfoFixed = ({attributes, rents}: Props) => {
             ]}
           />
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={3} medium={2} large={1}>
           <Field
-            component={FieldTypeText}
-            label="Kertakaikkinen vuokra"
-            name="amount"
+            component={FieldTypeDatePicker}
+            label="Alkupvm"
+            name="start_date"
             validate={[
               (value) => genericValidator(value, get(attributes,
-                'rents.child.children.amount')),
+                'rents.child.children.start_date')),
+            ]}
+          />
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <Field
+            component={FieldTypeDatePicker}
+            label="Loppupvm"
+            name="end_date"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.start_date')),
             ]}
           />
         </Column>
@@ -465,7 +520,7 @@ const BasicInfoFixed = ({attributes, rents}: Props) => {
             ]}
           />
         </Column>
-        {rents.due_dates_type === RentDueDateTypes.CUSTOM &&
+        {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
             <FieldArray
               attributes={attributes}
@@ -474,7 +529,7 @@ const BasicInfoFixed = ({attributes, rents}: Props) => {
             />
           </Column>
         }
-        {rents.due_dates_type === RentDueDateTypes.FIXED &&
+        {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <Field
               component={FieldTypeText}
@@ -523,6 +578,28 @@ const BasicInfoFree = ({attributes}: Props) => {
             ]}
           />
         </Column>
+        <Column small={3} medium={2} large={1}>
+          <Field
+            component={FieldTypeDatePicker}
+            label="Alkupvm"
+            name="start_date"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.start_date')),
+            ]}
+          />
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <Field
+            component={FieldTypeDatePicker}
+            label="Loppupvm"
+            name="end_date"
+            validate={[
+              (value) => genericValidator(value, get(attributes,
+                'rents.child.children.start_date')),
+            ]}
+          />
+        </Column>
       </Row>
       <Row>
         <Column>
@@ -541,48 +618,48 @@ const BasicInfoFree = ({attributes}: Props) => {
   );
 };
 
-const BasicInfoEdit = ({attributes, rents, rentType}: Props) => {
+const BasicInfoEdit = ({attributes, rent, rentType}: Props) => {
   return (
     <div>
       {!rentType &&
         <BasicInfoEmpty
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.INDEX &&
         <BasicInfoIndex
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.ONE_TIME &&
         <BasicInfoOneTime
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.FIXED &&
         <BasicInfoFixed
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.FREE &&
         <BasicInfoFree
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.MANUAL &&
         <BasicInfoIndex
           attributes={attributes}
-          rents={rents}
+          rent={rent}
           rentType={rentType}
         />
       }

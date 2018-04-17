@@ -35,6 +35,7 @@
 
       .header-info-link {
         display: inline-block;
+        float: left;
         cursor: pointer;
       }
     }
@@ -144,6 +145,9 @@
     }
   }
 
+  &.not-active {
+    background-color: $medium-gray;
+  }
 
   &.collapse__secondary {
     width: 100%;

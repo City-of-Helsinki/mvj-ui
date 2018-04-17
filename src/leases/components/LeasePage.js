@@ -94,8 +94,8 @@ import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
-import Rent from './leaseSections/rent/Rent';
-import RentEdit from './leaseSections/rent/RentEdit';
+import Rents from './leaseSections/rent/Rents';
+import RentsEdit from './leaseSections/rent/RentsEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import Summary from './leaseSections/summary/Summary';
 import SummaryEdit from './leaseSections/summary/SummaryEdit';
@@ -533,7 +533,7 @@ class PreparerForm extends Component {
             'Yhteenveto',
             'Vuokra-alue',
             'Vuokralaiset',
-            'Vuokra',
+            'Vuokrat',
             'Päätökset ja sopimukset',
             'Rakentamiskelpoisuus',
             'Laskutus',
@@ -625,17 +625,19 @@ class PreparerForm extends Component {
             <ContentContainer>
               {isEditMode
                 ? (
-                  <RentEdit
+                  <RentsEdit
                     attributes={attributes}
                     initialValues={{
                       basis_of_rents: basisOfRents,
+                      is_rent_info_complete: currentLease.is_rent_info_complete,
                       rents: rents,
                     }}
                   />
                 ) : (
-                  <Rent
+                  <Rents
                     attributes={attributes}
                     basisOfRents={basisOfRents}
+                    isRentInfoComplete={currentLease.is_rent_info_complete}
                     rents={rents} />
                 )
               }
