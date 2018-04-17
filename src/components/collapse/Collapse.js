@@ -13,6 +13,7 @@ type Props = {
 }
 
 type State = {
+  contentHeight: number,
   isOpen: boolean,
   isVisible: boolean,
 }
@@ -20,12 +21,10 @@ type State = {
 class Collapse extends Component {
   props: Props;
 
-  state: State = {
-    isOpen: false,
-    isVisible: false,
-  };
+  state: State;
 
   component: any
+  content: any
 
   static defaultProps = {
     defaulOpen: false,
@@ -41,10 +40,33 @@ class Collapse extends Component {
 
   componentDidMount() {
     this.component.addEventListener('transitionend', this.transitionEnds);
+    this.calculateHeight();
   }
 
   componentWillUnmount() {
     this.component.removeEventListener('transitionend', this.transitionEnds);
+  }
+
+  componentDidUpdate = (nextProps: Object, nextState: Object) => {
+    if(this.state.isOpen !== nextState.isOpen) {
+      this.calculateHeight();
+    }
+  }
+
+  shouldComponentUpdate(nextProps: Object, nextState: Object) {
+    return (
+      this.state.isOpen !== nextState.isOpen ||
+      this.state.contentHeight !== nextState.contentHeight ||
+      this.state.isVisible !== nextState.isVisible ||
+      this.props !== nextProps
+    );
+  }
+
+  calculateHeight = () => {
+    const {clientHeight} = this.content;
+    const {isOpen} = this.state;
+
+    this.setState({contentHeight: isOpen ? clientHeight : 0});
   }
 
   transitionEnds = () => {
@@ -66,7 +88,7 @@ class Collapse extends Component {
   }
 
   render() {
-    const {isOpen, isVisible} = this.state;
+    const {contentHeight, isOpen, isVisible} = this.state;
     const {children, className, header, headerTitle} = this.props;
 
     return (
@@ -93,8 +115,12 @@ class Collapse extends Component {
             </Row>
           </div>
         </div>
-        <div className={classNames('collapse__content', {'visible': isVisible})}>
-          <div className="collapse__content-wrapper">
+        <div
+          className={classNames('collapse__content', {'visible': isVisible})}
+          style={{maxHeight: contentHeight}}>
+          <div
+            ref={(ref) => this.content = ref}
+            className="collapse__content-wrapper">
             {children}
           </div>
         </div>

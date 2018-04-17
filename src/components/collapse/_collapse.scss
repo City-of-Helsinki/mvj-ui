@@ -135,7 +135,6 @@
 
     .collapse__content {
       height: auto;
-      max-height: 2000px;
 
       @include transition(0.4s, max-height, ease);
 
@@ -180,7 +179,6 @@
 
     &.open {
       .collapse__content {
-        max-height: 2000px;
         @include transition(0.4s, max-height, ease);
 
         &.visible {
