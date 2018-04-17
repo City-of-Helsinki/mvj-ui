@@ -128,7 +128,6 @@
     .collapse__header {
       i.arrow-icon {
         @include rotate(90deg);
-        // background-image: url(../assets/icons/icon_accordion_open.svg);
       }
     }
 
@@ -158,6 +157,12 @@
     margin: rem-calc(5px) 0 rem-calc(10px);
     padding: 0;
 
+    .collapse__header {
+      i.arrow-icon {
+        @include rotate(0deg);
+      }
+    }
+
     .collapse__content {
       overflow: hidden !important;
 
@@ -168,7 +173,13 @@
       padding: 0 rem-calc(15px) rem-calc(5px);
     }
 
+
     &.open {
+      .collapse__header {
+        i.arrow-icon {
+          @include rotate(90deg);
+        }
+      }
       .collapse__content {
         @include transition(0.4s, max-height, ease);
 
