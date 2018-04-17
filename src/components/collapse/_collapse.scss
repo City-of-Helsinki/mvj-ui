@@ -113,7 +113,6 @@
   }
 
   &__content {
-    max-height: 0;
     overflow: hidden;
     padding: 0;
 
@@ -148,26 +147,18 @@
     background-color: $medium-gray;
   }
 
+  &.is-resizing {
+    .collapse__content {
+      @include transition(null);
+    }
+  }
+
   &.collapse__secondary {
-    width: 100%;
-    display: inline-block;
     background-color: rgba(255, 255, 255, 0.8);;
-    border-top: none;
     margin: rem-calc(5px) 0 rem-calc(10px);
-    align-items: baseline;
     padding: 0;
 
-    .collapse__header {
-      padding: rem-calc(15px);
-
-      i.arrow-icon {
-        background-image: url(../assets/icons/icon_accordion_close.svg);
-        @include rotate(0deg);
-      }
-    }
-
     .collapse__content {
-      max-height: 0;
       overflow: hidden !important;
 
       @include transition(0.4s, max-height, ease);
@@ -185,11 +176,11 @@
           overflow: visible !important;
         }
       }
+    }
 
-      .collapse__header {
-        i.arrow-icon {
-          @include rotate(90deg);
-        }
+    &.is-resizing {
+      .collapse__content {
+        @include transition(null);
       }
     }
   }
