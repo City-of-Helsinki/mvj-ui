@@ -1186,6 +1186,8 @@ export const getContentRentDueDatesForDb = (rent: Object) => {
 };
 
 export const addRentsFormValues = (payload: Object, values: Object) => {
+  payload.is_rent_info_complete = values.is_rent_info_complete ? true : false;
+
   const basisOfRents = get(values, 'basis_of_rents', {});
   if(!basisOfRents.length) {
     payload.basis_of_rents = [];
@@ -1204,6 +1206,7 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       };
     });
   }
+
   const rents = get(values, 'rents', []);
   payload.rents = rents.map((rent) => {
     return {

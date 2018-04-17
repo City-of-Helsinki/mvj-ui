@@ -21,6 +21,7 @@ type Props = {
   basisOfRents: Array<Object>,
   decisionsOptionData: Array<Object>,
   fetchDecisions: Function,
+  isRentInfoComplete: boolean,
   params: Object,
   rents: Object,
 }
@@ -42,14 +43,20 @@ class Rents extends Component {
   }
 
   render() {
-    const {attributes, basisOfRents, decisionsOptionData, rents} = this.props;
+    const {
+      attributes,
+      basisOfRents,
+      decisionsOptionData,
+      isRentInfoComplete,
+      rents,
+    } = this.props;
     const decisionOptions = getDecisionsOptions(decisionsOptionData);
 
     return (
       <div className="rent-section">
         <h2>Vuokrat</h2>
         <RightSubtitle
-          text={rents.is_ready
+          text={isRentInfoComplete
             ? <span className="success">Vuokratiedot kunnossa<i /></span>
             : <span className="alert">Vaatii toimenpiteitä<i /></span>
           }

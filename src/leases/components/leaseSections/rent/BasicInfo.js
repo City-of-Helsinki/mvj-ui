@@ -138,11 +138,19 @@ const BasicInfoOneTime = ({attributes, rent}: Props) => {
   return (
     <div>
       <Row>
-        <Column medium={3}>
+        <Column small={6} medium={4} large={2}>
           <label>Vuokralaji</label>
           <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
-        <Column medium={3}>
+        <Column small={3} medium={2} large={1}>
+          <label>Alkupvm</label>
+          <p>{formatDate(rent.start_date) || '-'}</p>
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <label>Loppupvm</label>
+          <p>{formatDate(rent.end_date) || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
           <label>Kertakaikkinen vuokra</label>
           <p>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.amount)) || '-'}</p>
         </Column>
@@ -163,13 +171,17 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
   return (
     <div>
       <Row>
-        <Column medium={3}>
+        <Column small={6} medium={4} large={2}>
           <label>Vuokralaji</label>
           <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
-        <Column medium={3}>
-          <label>Kertakaikkinen vuokra</label>
-          <p>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.amount)) || '-'}</p>
+        <Column small={3} medium={2} large={1}>
+          <label>Alkupvm</label>
+          <p>{formatDate(rent.start_date) || '-'}</p>
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <label>Loppupvm</label>
+          <p>{formatDate(rent.end_date) || '-'}</p>
         </Column>
         {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
@@ -207,11 +219,19 @@ const BasicInfoFree = ({attributes, rent}: Props) => {
   return (
     <div>
       <Row>
-        <Column medium={3}>
+        <Column small={6} medium={4} large={2}>
           <label>Vuokralaji</label>
           <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
       </Row>
+      <Column small={3} medium={2} large={1}>
+        <label>Alkupvm</label>
+        <p>{formatDate(rent.start_date) || '-'}</p>
+      </Column>
+      <Column small={3} medium={2} large={1}>
+        <label>Loppupvm</label>
+        <p>{formatDate(rent.end_date) || '-'}</p>
+      </Column>
       <Row>
         <Column>
           <label>Kommentti</label>

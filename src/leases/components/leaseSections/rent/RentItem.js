@@ -2,6 +2,8 @@
 import React, {Component} from 'react';
 import {Column} from 'react-foundation';
 import get from 'lodash/get';
+import classNames from 'classnames';
+import moment from 'moment';
 
 import BasicInfo from './BasicInfo';
 import Collapse from '$components/collapse/Collapse';
@@ -20,17 +22,41 @@ type Props = {
   rent: Object,
 }
 
+type State = {
+  isActive: boolean,
+}
+
 class RentItem extends Component {
   props: Props
+  state: State
+
+  componentWillMount() {
+    this.setState({isActive: this.isRentActive()});
+  }
+
+  isRentActive = () => {
+    const {rent} = this.props;
+    const now = moment();
+    const startDate = get(rent, 'start_date');
+    const endDate = get(rent, 'end_date');
+
+    if(startDate && now.isSameOrAfter(startDate) && endDate && moment(endDate).isSameOrAfter(now)) {
+      return true;
+    }
+
+    return false;
+  }
 
   render() {
     const {attributes, decisionOptions, rent} = this.props;
+    const {isActive} = this.state;
     const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
     const rentType = get(rent, 'type');
 
     return (
       <Collapse
-        defaultOpen={true}
+        className={classNames({'not-active': !isActive})}
+        defaultOpen={!!isActive}
         header={
           <div>
             <Column>
@@ -56,7 +82,7 @@ class RentItem extends Component {
             className='collapse__secondary'
             defaultOpen={true}
             headerTitle={
-              <h3 className='collapse__header-title'>Sopimusvuokra</h3>
+              <h4 className='collapse__header-title'>Sopimusvuokra</h4>
             }>
             <ContractRents
               attributes={attributes}
@@ -72,7 +98,7 @@ class RentItem extends Component {
             className='collapse__secondary'
             defaultOpen={true}
             headerTitle={
-              <h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3>
+              <h4 className='collapse__header-title'>Indeksitarkistettu vuokra</h4>
             }>
             <IndexAdjustedRents
               attributes={attributes}
@@ -88,7 +114,7 @@ class RentItem extends Component {
             className='collapse__secondary'
             defaultOpen={true}
             headerTitle={
-              <h3 className='collapse__header-title'>Alennukset ja korotukset</h3>
+              <h4 className='collapse__header-title'>Alennukset ja korotukset</h4>
             }>
             <RentAdjustments
               attributes={attributes}
@@ -105,7 +131,7 @@ class RentItem extends Component {
             className='collapse__secondary'
             defaultOpen={true}
             headerTitle={
-              <h3 className='collapse__header-title'>Perittävä vuokra</h3>
+              <h4 className='collapse__header-title'>Perittävä vuokra</h4>
             }>
             <PayableRents
               payableRents={get(rent, 'payable_rents', [])}
