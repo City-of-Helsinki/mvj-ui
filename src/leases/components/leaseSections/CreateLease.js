@@ -58,7 +58,7 @@ class CreateLease extends Component {
     } = this.props;
 
     const districtOptions = getDistrictOptions(districts);
-    const municipalityOptions = getAttributeFieldOptions(attributes, 'municipality');
+    const municipalityOptions = getAttributeFieldOptions(attributes, 'municipality', true, true);
     const typeOptions = getAttributeFieldOptions(attributes, 'type');
 
     return (

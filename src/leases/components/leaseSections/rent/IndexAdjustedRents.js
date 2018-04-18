@@ -42,6 +42,7 @@ const getTableBody = (indexAdjustedRents: Array<Object>, intendedUseOptions: Arr
 const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
   const intendedUseOptions = getAttributeFieldOptions(attributes,
     'rents.child.children.index_adjusted_rents.child.children.intended_use');
+
   return (
     <TableFixedHeader
       headers={[

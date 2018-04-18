@@ -695,12 +695,12 @@ export const getDistrictOptions = (districts: Array<Object>) => {
     return [];
   }
 
-  return districts.map((choice) => {
+  return [{value: '', label: ''}, ...districts.map((choice) => {
     return {
       value: get(choice, 'id'),
       label: `${get(choice, 'name')} (${get(choice, 'identifier')})`,
     };
-  });
+  })];
 };
 
 const formatBillingBillTenant = (tenant: Object) => {

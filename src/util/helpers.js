@@ -348,7 +348,7 @@ export const addEmptyOption = (options: Array<Object>) =>
  * @param attributes
  * @param path
  */
-export const getAttributeFieldOptions = (attributes: Object, path: string, addEmpty: boolean = true) => {
+export const getAttributeFieldOptions = (attributes: Object, path: string, addEmpty: boolean = true, showValue: boolean = false) => {
   let choices = get(attributes, `${path}.choices`);
   if(!choices || !choices.length) {
     return [];
@@ -356,9 +356,10 @@ export const getAttributeFieldOptions = (attributes: Object, path: string, addEm
   const results = choices.map((item) => {
     return {
       value: item.value,
-      label: item.display_name,
+      label: showValue ? `${item.display_name} (${item.value})`: item.display_name,
     };
   });
+
   if(addEmpty) {
     return addEmptyOption(results);
   }
