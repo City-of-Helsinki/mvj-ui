@@ -2,6 +2,7 @@
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
+import moment from 'moment';
 
 import {
   ConstructabilityType,
@@ -1236,4 +1237,17 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
   });
 
   return payload;
+};
+
+// GERERIC LEASE HELPER FUNCTIONS
+export const isRentActive = (rent: Object) => {
+  const now = moment();
+  const startDate = get(rent, 'start_date');
+  const endDate = get(rent, 'end_date');
+
+  if(startDate && moment(startDate).isAfter(now) || endDate && now.isAfter(endDate)) {
+    return false;
+  }
+
+  return true;
 };

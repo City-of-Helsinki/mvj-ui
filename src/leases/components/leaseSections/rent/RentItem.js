@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import {Column} from 'react-foundation';
 import get from 'lodash/get';
 import classNames from 'classnames';
-import moment from 'moment';
 
 import BasicInfo from './BasicInfo';
 import Collapse from '$components/collapse/Collapse';
@@ -12,6 +11,7 @@ import IndexAdjustedRents from './IndexAdjustedRents';
 import PayableRents from './PayableRents';
 import RentAdjustments from './RentAdjustments';
 import {RentTypes} from '$src/leases/enums';
+import {isRentActive} from '$src/leases/helpers';
 import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
 import type {Attributes} from '$src/leases/types';
@@ -31,20 +31,8 @@ class RentItem extends Component {
   state: State
 
   componentWillMount() {
-    this.setState({isActive: this.isRentActive()});
-  }
-
-  isRentActive = () => {
     const {rent} = this.props;
-    const now = moment();
-    const startDate = get(rent, 'start_date');
-    const endDate = get(rent, 'end_date');
-
-    if(startDate && now.isSameOrAfter(startDate) && endDate && moment(endDate).isSameOrAfter(now)) {
-      return true;
-    }
-
-    return false;
+    this.setState({isActive: isRentActive(rent)});
   }
 
   render() {
