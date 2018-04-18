@@ -364,6 +364,7 @@ export const getContentConstructability = (lease: Object) => {
   if(!lease_areas.length) {
     return [];
   }
+
   return lease_areas.map((area) => {
     return {
       id: get(area, 'id'),
@@ -693,10 +694,11 @@ export const getDistrictOptions = (districts: Array<Object>) => {
   if(!districts || !districts.length) {
     return [];
   }
+
   return districts.map((choice) => {
     return {
-      value: get(choice, 'identifier'),
-      label: get(choice, 'name'),
+      value: get(choice, 'id'),
+      label: `${get(choice, 'name')} (${get(choice, 'identifier')})`,
     };
   });
 };
