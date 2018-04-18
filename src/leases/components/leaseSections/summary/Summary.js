@@ -45,7 +45,7 @@ class Summary extends Component {
         <Collapse
           defaultOpen={true}
           headerTitle={
-            <h4 className='collapse__header-title'>Perustiedot</h4>
+            <h3 className='collapse__header-title'>Perustiedot</h3>
           }
         >
           <Row>
@@ -101,7 +101,7 @@ class Summary extends Component {
         <Collapse
           defaultOpen={true}
           headerTitle={
-            <h4 className='collapse__header-title'>Tilastotiedot</h4>
+            <h3 className='collapse__header-title'>Tilastotiedot</h3>
           }
         >
           <Row>
