@@ -26,3 +26,6 @@ export const getIsFormValid: Selector<boolean, void> = (state: RentBasisState): 
 
 export const getRentBasisFormValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
   get(state, 'form.rent-basis-form.values');
+
+export const getRentBasisFormTouched: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
+  get(state, 'form.rent-basis-form.anyTouched');

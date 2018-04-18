@@ -8,8 +8,9 @@ import isEmpty from 'lodash/isEmpty';
 
 import {getRouteById} from '$src/root/routes';
 import {createContact, fetchAttributes} from '../actions';
-import {getAttributes, getContactFormValues, getIsContactFormValid} from '../selectors';
+import {getAttributes, getContactFormTouched, getContactFormValues, getIsContactFormValid} from '../selectors';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactForm from './forms/ContactForm';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
@@ -26,12 +27,21 @@ type Props = {
   contactFormValues: Contact,
   createContact: Function,
   fetchAttributes: Function,
+  isContactFormTouched: boolean,
   isContactFormValid: boolean,
   receiveTopNavigationSettings: Function,
 }
 
+type State = {
+  isCancelModalOpen: boolean,
+}
+
 class NewContactPage extends Component {
   props: Props
+
+  state: State = {
+    isCancelModalOpen: false,
+  }
 
   static contextTypes = {
     router: PropTypes.object,
@@ -60,16 +70,28 @@ class NewContactPage extends Component {
   }
 
   render() {
-    const {attributes, isContactFormValid} = this.props;
+    const {attributes, isContactFormTouched, isContactFormValid} = this.props;
+    const {isCancelModalOpen} = this.state;
+
     return (
       <PageContainer>
+        <ConfirmationModal
+          confirmButtonLabel='Vahvista'
+          isOpen={isCancelModalOpen}
+          label='Haluatko varmasti peruuttaa muutokset?'
+          onCancel={() => this.setState({isCancelModalOpen: false})}
+          onClose={() => this.setState({isCancelModalOpen: false})}
+          onSave={this.handleCancel}
+          title='Peruuta muutokset'
+        />
+
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={!isContactFormValid}
-              onCancelClick={this.handleCancel}
+              onCancelClick={isContactFormTouched ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}
               showCopyButton={true}
@@ -103,6 +125,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     attributes: getAttributes(state),
     contactFormValues: getContactFormValues(state),
+    isContactFormTouched: getContactFormTouched(state),
     isContactFormValid: getIsContactFormValid(state),
   };
 };
