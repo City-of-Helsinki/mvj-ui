@@ -6,10 +6,10 @@ import {Field, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import Collapse from '$components/collapse/Collapse';
 import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import {getAttributeFieldOptions, getLessorOptions} from '$src/util/helpers';
 import {genericValidator} from '$components/form/validations';
 import {getIsSummaryFormValid, getLessors} from '$src/leases/selectors';
@@ -57,7 +57,12 @@ class SummaryEdit extends Component {
 
     return (
       <form onSubmit={handleSubmit}>
-        <GreenBoxEdit>
+        <Collapse
+          defaultOpen={true}
+          headerTitle={
+            <h4 className='collapse__header-title'>Perustiedot</h4>
+          }
+        >
           <Row>
             <Column small={12} medium={6} large={4}>
               <Field
@@ -177,8 +182,14 @@ class SummaryEdit extends Component {
               />
             </Column>
           </Row>
-        </GreenBoxEdit>
-        <GreenBoxEdit className='no-margin'>
+        </Collapse>
+
+        <Collapse
+          defaultOpen={true}
+          headerTitle={
+            <h4 className='collapse__header-title'>Tilastotiedot</h4>
+          }
+        >
           <Row>
             <Column small={12} medium={6} large={4}>
               <Field
@@ -230,7 +241,7 @@ class SummaryEdit extends Component {
               />
             </Column>
           </Row>
-        </GreenBoxEdit>
+        </Collapse>
       </form>
     );
   }
