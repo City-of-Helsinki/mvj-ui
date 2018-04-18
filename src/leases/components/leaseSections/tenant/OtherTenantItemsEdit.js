@@ -3,6 +3,7 @@ import React from 'react';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
+import classNames from 'classnames';
 import get from 'lodash/get';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -16,6 +17,7 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import IconButton from '$components/button/IconButton';
 import RemoveButton from '$components/form/RemoveButton';
+import {isTenantActive} from '$src/leases/helpers';
 import {getTenantsFormValues} from '$src/leases/selectors';
 import {getAttributeFieldOptions, getContactOptions} from '$util/helpers';
 import {TenantContactType} from '$src/leases/enums';
@@ -56,15 +58,18 @@ const OtherTenantItemsEdit = ({
   const contactOptions = getContactOptions(allContacts);
   const tenantTypeOptions = getAttributeFieldOptions(attributes,
     'tenants.child.children.tenantcontact_set.child.children.type').filter((x) => x.value !== TenantContactType.TENANT);
+
   return (
     <div>
       {fields && !!fields.length && fields.map((tenant, index) => {
         const contact = findContact(get(formValues, `${tenant}.contact`));
+        const isActive = isTenantActive(get(formValues, tenant));
+
         return (
           <Collapse
             key={tenant.id ? tenant.id : `index_${index}`}
-            className='collapse__secondary'
-            defaultOpen={true}
+            className={classNames('collapse__secondary', {'not-active': !isActive})}
+            defaultOpen={isActive}
             headerTitle={
               <h4 className='collapse__header-title'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
             }>

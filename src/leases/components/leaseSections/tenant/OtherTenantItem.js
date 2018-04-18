@@ -2,10 +2,12 @@
 import React from 'react';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
+import classNames from 'classnames';
 
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
+import {isTenantActive} from '$src/leases/helpers';
 
 import type {
   Attributes as ContactAttributes,
@@ -42,11 +44,21 @@ const OtherTenantItem = ({
   };
 
   const contact: Object = findContact();
+  const isActive = isTenantActive(tenant);
 
   return (
     <Collapse
-      className='collapse__secondary'
-      defaultOpen={true}
+      className={classNames('collapse__secondary', {'not-active': !isActive})}
+      defaultOpen={isActive}
+      header={
+        <div>
+          <Column>
+            <span className={'collapse__header-subtitle'}>
+              {formatDateRange(get(tenant, 'start_date'), get(tenant, 'end_date')) || '-'}
+            </span>
+          </Column>
+        </div>
+      }
       headerTitle={
         <h4 className='collapse__header-title'>{getLabelOfOption(tenantTypeOptions, tenant.type)}</h4>
       }>

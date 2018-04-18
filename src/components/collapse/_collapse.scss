@@ -32,11 +32,13 @@
 
     .header-info-wrapper {
       flex: 1 1 0%;
+      margin-left: rem-calc(-22px);
 
       .header-info-link {
         display: inline-block;
         float: left;
         cursor: pointer;
+        padding-left: rem-calc(22px);
       }
     }
 
@@ -48,8 +50,10 @@
     }
 
     &-subtitle {
+      display: inline-block;
+      float: left;
       font-size: rem-calc(14px);
-      line-height: rem-calc(16px);
+      line-height: rem-calc(22px);
       overflow: hidden;
       max-width: 100%;
       white-space: nowrap;
@@ -153,11 +157,19 @@
   }
 
   &.collapse__secondary {
-    background-color: rgba(255, 255, 255, 0.8);;
+    background-color: rgba(255, 255, 255, 0.8);
     margin: rem-calc(5px) 0 rem-calc(10px);
     padding: 0;
 
+    &.not-active {
+      background-color: rgba(240, 240, 240, 0.8);
+    }
+
     .collapse__header {
+      &-subtitle {
+        line-height: rem-calc(18px);
+      }
+
       i.arrow-icon {
         @include rotate(0deg);
       }
