@@ -2,6 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Field, FieldArray} from 'redux-form';
+import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
@@ -17,6 +18,7 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
+import {isTenantActive} from '$src/leases/helpers';
 import {getContactOptions} from '$util/helpers';
 import {getTenantsFormValues} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
@@ -59,10 +61,13 @@ const TenantItemsEdit = ({
     <div>
       {fields && !!fields.length && fields.map((tenant, index) => {
         const contact = findContact(get(formValues, `${tenant}.tenant.contact`));
+        const isActive = isTenantActive(get(formValues, `${tenant}.tenant`));
+
         return (
           <Collapse
             key={tenant.id ? tenant.id : `index_${index}`}
-            defaultOpen={true}
+            className={classNames({'not-active': !isActive})}
+            defaultOpen={isActive}
             headerTitle={
               <h3 className='collapse__header-title'>Vuokralainen {index + 1}</h3>
             }

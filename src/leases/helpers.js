@@ -1253,3 +1253,15 @@ export const isRentActive = (rent: Object) => {
 
   return true;
 };
+
+export const isTenantActive = (tenant: Object) => {
+  const now = moment();
+  const startDate = get(tenant, 'start_date');
+  const endDate = get(tenant, 'end_date');
+
+  if(startDate && moment(startDate).isAfter(now) || endDate && now.isAfter(endDate)) {
+    return false;
+  }
+
+  return true;
+};

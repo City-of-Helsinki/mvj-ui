@@ -2,12 +2,13 @@
 import React from 'react';
 import get from 'lodash/get';
 import {Column} from 'react-foundation';
+import classNames from 'classnames';
 
 import Collapse from '$components/collapse/Collapse';
-import TenantItem from './TenantItem';
-import classnames from 'classnames';
-
 import OtherTenantItem from './OtherTenantItem';
+import TenantItem from './TenantItem';
+import {formatDateRange} from '$util/helpers';
+import {isTenantActive} from '$src/leases/helpers';
 
 import type {
   Attributes as ContactAttributes,
@@ -39,6 +40,7 @@ const Tenant = ({
   };
 
   const contact: Object = findContact();
+  const isActive = isTenantActive(get(tenant, 'tenant'));
 
   const getFullName = () => {
     if(!contact) {
@@ -49,14 +51,18 @@ const Tenant = ({
 
   return (
     <Collapse
+      className={classNames({'not-active': !isActive})}
+      defaultOpen={isActive}
       header={
         <div>
           <Column>
-            <span className={classnames(
-              'collapse__header-subtitle',
-              // {'alert': (share_count !== tenant.tenant.share_divider)}
-            )}>
+            <span className={'collapse__header-subtitle'}>
               <i/> {get(tenant, 'share_numerator', '')} / {get(tenant, 'share_denominator', '')}
+            </span>
+          </Column>
+          <Column>
+            <span className={'collapse__header-subtitle'}>
+              {formatDateRange(get(tenant, 'tenant.start_date'), get(tenant, 'tenant.end_date')) || '-'}
             </span>
           </Column>
         </div>

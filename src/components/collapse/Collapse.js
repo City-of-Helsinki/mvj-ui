@@ -43,6 +43,7 @@ class Collapse extends Component {
 
   componentDidMount() {
     this.component.addEventListener('transitionend', this.transitionEnds);
+    this.calculateHeight();
   }
 
   componentWillUnmount() {
