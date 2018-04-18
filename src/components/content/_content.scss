@@ -50,6 +50,24 @@
     margin: 0;
   }
 
+  p {
+    font-size: rem-calc(14px);
+    line-height: rem-calc(16px);
+    font-weight: normal;
+    color: $black;
+    margin-bottom: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  label.mvj-form-field-label {
+    font-size: rem-calc(13px);
+    line-height: rem-calc(15px);
+    font-weight: normal;
+    color: $dark-gray;
+  }
+
   a {
     color: $tram;
   }
@@ -213,24 +231,6 @@
       font-weight: $semibold;
       color: $tram;
       margin: 0 0 rem-calc(5px);
-    }
-  }
-
-  .bordered-box-edit {
-    background-color: $white;
-    border: 1px solid #d7d5d5;
-    padding: rem-calc(20px);
-    margin: rem-calc(10px) 0;
-
-    &.no-margin {
-      margin: 0;
-    }
-
-    .mvj-form-field-label {
-      font-size: rem-calc(13px);
-      line-height: rem-calc(15px);
-      font-weight: $semibold;
-      color: $black;
     }
   }
 

@@ -520,6 +520,7 @@ class PreparerForm extends Component {
               />
             ) : (
               <LeaseInfo
+                attributes={attributes}
                 leaseInfo={leaseInfo}
               />
             )

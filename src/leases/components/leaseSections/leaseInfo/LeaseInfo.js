@@ -1,28 +1,40 @@
 // @flow
 import React from 'react';
+import {Row, Column} from 'react-foundation';
 
-import * as utilHelpers from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
 type Props = {
+  attributes: Object,
   leaseInfo: Object,
 }
 
-const LeaseInfo = ({leaseInfo}: Props) => {
+const LeaseInfo = ({attributes, leaseInfo}: Props) => {
   if(!LeaseInfo) {
     return null;
   }
-  const dateRange = utilHelpers.formatDateRange(leaseInfo.start_date, leaseInfo.end_date);
+  const stateOptions = getAttributeFieldOptions(attributes, 'state');
+
   return (
     <div className='lease-info'>
-      <div className='lease-info__identifier-wrapper'>
-        <p className='lease-info__label'>Vuokratunnus</p>
-        <h1 className='lease-info__number'>{leaseInfo.identifier || '-'}</h1>
-      </div>
-      {dateRange &&
-        <div className='lease-info__date-wrapper'>
-          <p className='lease-info__date'>Vuokraus ajalle {dateRange}</p>
-        </div>
-      }
+      <Row>
+        <Column>
+          <label className='mvj-form-field-label'>Vuokratunnus</label>
+          <h1 className='lease-info-edit__number'>{leaseInfo.identifier || '-'}</h1>
+        </Column>
+        <Column>
+          <label className='mvj-form-field-label'>Tyyppi</label>
+          <p>{getLabelOfOption(stateOptions, leaseInfo.state) || '-'}</p>
+        </Column>
+        <Column>
+          <label className='mvj-form-field-label'>Alkupäivämäärä</label>
+          <p>{formatDate(leaseInfo.start_date) || '-'}</p>
+        </Column>
+        <Column>
+          <label className='mvj-form-field-label'>Loppupäivämäärä</label>
+          <p>{formatDate(leaseInfo.end_date) || '-'}</p>
+        </Column>
+      </Row>
     </div>
   );
 };

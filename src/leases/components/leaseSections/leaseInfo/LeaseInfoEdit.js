@@ -45,11 +45,11 @@ class LeaseInfoEdit extends Component {
       <form className='lease-info-edit'>
         <Row>
           <Column>
-            <p className='lease-info-edit__label'>Vuokratunnus</p>
+            <label className='mvj-form-field-label'>Vuokratunnus</label>
             <h1 className='lease-info-edit__number'>{leaseInfo.identifier || '-'}</h1>
           </Column>
           <Column>
-            <p className='lease-info-edit__label'>Tyyppi</p>
+            <label className='mvj-form-field-label'>Tyyppi</label>
             <Field
               className='no-margin'
               component={FieldTypeSelect}
@@ -61,7 +61,7 @@ class LeaseInfoEdit extends Component {
             />
           </Column>
           <Column>
-            <p className='lease-info-edit__label'>Alkupvm</p>
+            <label className='mvj-form-field-label'>Alkupäivämäärä</label>
             <Field
               className="no-margin"
               component={FieldTypeDatePicker}
@@ -72,7 +72,7 @@ class LeaseInfoEdit extends Component {
             />
           </Column>
           <Column>
-            <p className='lease-info-edit__label'>Loppupvm</p>
+            <label className='mvj-form-field-label'>Loppupäivämäärä</label>
             <Field
               className="no-margin"
               component={FieldTypeDatePicker}
