@@ -486,7 +486,7 @@ export const getContentIndexAdjustedRents = (rent: Object) => {
     return {
       item: item.id || undefined,
       amount: get(item, 'amount'),
-      intended_use: get(item, 'intended_use.id') || get(rent, 'intended_use'),
+      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
       start_date: get(item, 'start_date'),
       end_date: get(item, 'end_date'),
       factor: get(item, 'factor'),
