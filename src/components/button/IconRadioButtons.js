@@ -23,11 +23,13 @@ class StyledRadioButtons extends Component {
       <div className='icon-radio-buttons'>
         {options.map((option, index) => {
           return (
-            <label className='label' key={index}>
-              <input className='radio' type='radio' name={radioName} checked={value === option.value} value={option.value} onChange={this.handleChange} />
-              <span className='option-label'>{option.label}</span>
-              <img src={(value === option.value) ? option.iconSelected : option.icon} />
-            </label>
+            <div className='option' key={index}>
+              <label className='label'>
+                <input className='radio' type='radio' name={radioName} checked={value === option.value} value={option.value} onChange={this.handleChange} />
+                <span className='option-label'>{option.label}</span>
+                {option.icon}
+              </label>
+            </div>
           );
         })}
       </div>

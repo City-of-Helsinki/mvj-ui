@@ -5,21 +5,6 @@
   width: rem-calc(25px);
   margin-right: rem-calc(10px);
 
-  &:hover {
-    fill: $tram;
-  }
-  &.doc-icon, &.map-icon {
-    fill: $black;
-    vertical-align: sub;
-    height: rem-calc(25px);
-    width: rem-calc(25px);
-    margin-right: rem-calc(10px);
-
-    &:hover {
-      fill: $tram;
-    }
-  }
-
   &.icon-medium {
     height: rem-calc(20px);
     width: rem-calc(20px);
