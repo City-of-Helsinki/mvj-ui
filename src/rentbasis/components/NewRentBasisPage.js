@@ -5,9 +5,10 @@ import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
 import {createRentBasis, fetchAttributes} from '../actions';
-import {getAttributes, getIsFormValid, getRentBasisFormValues} from '../selectors';
+import {getAttributes, getIsFormValid, getRentBasisFormTouched, getRentBasisFormValues} from '../selectors';
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
@@ -23,12 +24,21 @@ type Props = {
   createRentBasis: Function,
   editedRentBasis: ?Object,
   fetchAttributes: Function,
+  isFormTouched: boolean,
   isFormValid: boolean,
   receiveTopNavigationSettings: Function,
 }
 
+type State = {
+  isCancelModalOpen: boolean,
+}
+
 class NewRentBasisPage extends Component {
   props: Props
+
+  state: State = {
+    isCancelModalOpen: false,
+  }
 
   static contextTypes = {
     router: PropTypes.object,
@@ -61,17 +71,28 @@ class NewRentBasisPage extends Component {
   }
 
   render() {
-    const {attributes, isFormValid} = this.props;
+    const {attributes, isFormTouched, isFormValid} = this.props;
+    const {isCancelModalOpen} = this.state;
 
     return (
       <PageContainer>
+        <ConfirmationModal
+          confirmButtonLabel='Vahvista'
+          isOpen={isCancelModalOpen}
+          label='Haluatko varmasti peruuttaa muutokset?'
+          onCancel={() => this.setState({isCancelModalOpen: false})}
+          onClose={() => this.setState({isCancelModalOpen: false})}
+          onSave={this.handleCancel}
+          title='Peruuta muutokset'
+        />
+
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={!isFormValid}
-              onCancelClick={this.handleCancel}
+              onCancelClick={isFormTouched ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}
               showCopyButton={true}
@@ -97,6 +118,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     attributes: getAttributes(state),
     editedRentBasis: getRentBasisFormValues(state),
+    isFormTouched: getRentBasisFormTouched(state),
     isFormValid: getIsFormValid(state),
   };
 };

@@ -12,7 +12,7 @@ const RentBasisInfo = ({identifier}: Props) => {
 
   return (
     <div className='rent-basis-page_info'>
-      <p className='rent-basis-page__info_label'>Vuokrausperustetunnus</p>
+      <label className='mvj-form-field-label'>Vuokrausperustetunnus</label>
       <h1 className='rent-basis-page__info_identifier'>{identifier}</h1>
     </div>
   );

@@ -2,8 +2,9 @@
   display:inline-block;
 
   .label {
-    padding: 0 rem-calc(5px) rem-calc(5px) 0;
+    padding: 0 rem-calc(5px);
     background: none;
+    margin-bottom: rem-calc(5px);
   }
 
   .label:first-child {

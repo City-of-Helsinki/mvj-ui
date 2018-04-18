@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactEdit from './ContactEdit';
 import ContactReadonly from './ContactReadonly';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
@@ -21,7 +22,7 @@ import {
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getContactFormValues, getCurrentContact, getIsEditMode, getIsFetching} from '../selectors';
+import {getAttributes, getContactFormTouched, getContactFormValues, getCurrentContact, getIsEditMode, getIsFetching} from '../selectors';
 
 import type {RootState} from '$src/root/types';
 import type {Attributes, Contact} from '../types';
@@ -35,6 +36,7 @@ type Props = {
   fetchSingleContact: Function,
   hideEditMode: Function,
   initializeContactForm: Function,
+  isContactFormTouched: boolean,
   isEditMode: boolean,
   isFetching: boolean,
   location: Object,
@@ -44,8 +46,16 @@ type Props = {
   showEditMode: Function,
 }
 
+type State = {
+  isCancelModalOpen: boolean,
+}
+
 class ContactPage extends Component {
   props: Props
+
+  state: State = {
+    isCancelModalOpen: false,
+  }
 
   static contextTypes = {
     router: PropTypes.object,
@@ -88,6 +98,13 @@ class ContactPage extends Component {
     hideEditMode();
   }
 
+  handleCancel = () => {
+    const {hideEditMode} = this.props;
+
+    this.setState({isCancelModalOpen: false});
+    hideEditMode();
+  }
+
   showEditMode = () => {
     const {
       contact,
@@ -112,7 +129,9 @@ class ContactPage extends Component {
 
 
   render() {
-    const {attributes, contact, isEditMode, isFetching} = this.props;
+    const {attributes, contact, isContactFormTouched, isEditMode, isFetching} = this.props;
+    const {isCancelModalOpen} = this.state;
+
     const nameInfo = this.getContactNameInfo();
 
     if(isFetching) {
@@ -125,13 +144,23 @@ class ContactPage extends Component {
 
     return (
       <PageContainer>
+        <ConfirmationModal
+          confirmButtonLabel='Vahvista'
+          isOpen={isCancelModalOpen}
+          label='Haluatko varmasti peruuttaa muutokset?'
+          onCancel={() => this.setState({isCancelModalOpen: false})}
+          onClose={() => this.setState({isCancelModalOpen: false})}
+          onSave={this.handleCancel}
+          title='Peruuta muutokset'
+        />
+
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={false}
-              onCancelClick={this.hideEditMode}
+              onCancelClick={isContactFormTouched ? () => this.setState({isCancelModalOpen: true}) : this.hideEditMode}
               onCopyClick={this.copyContact}
               onEditClick={this.showEditMode}
               onSaveClick={this.saveContact}
@@ -160,6 +189,7 @@ const mapStateToProps = (state: RootState) => {
     attributes: getAttributes(state),
     contact: getCurrentContact(state),
     contactFormValues: getContactFormValues(state),
+    isContactFormTouched: getContactFormTouched(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
   };

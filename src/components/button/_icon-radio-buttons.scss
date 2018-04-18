@@ -1,8 +1,16 @@
 .icon-radio-buttons {
   display:inline-block;
 
+  .option {
+    display: inline-block;
+    margin-bottom: rem-calc(5px);
+  }
+
   .label {
-    padding: 0 0.25rem;
+    height: rem-calc(30px);
+    display: flex;
+    align-items: center;
+    padding: rem-calc(0 5px);
     background: none;
     cursor: pointer;
   }
@@ -21,30 +29,28 @@
   }
 
   .option-label {
-    color: $black;
+    color: $tram;
     text-transform: uppercase;
     background-color: transparent;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: $semibold;
     display: inline-block;
     text-align: center;
-    height: rem-calc(30px);
-    line-height: rem-calc(30px);
     border-radius: 0;
-    padding: 0 0.5rem;
-
-    @include transition(0.2s, all, ease);
+    padding: rem-calc(0 5px);
   }
 
+  .icons {
+    fill: $tram !important;
+  }
 
   .radio:checked + .option-label {
+    color: $black;
     background: transparent;
     border: none;
-    color: $tram;
   }
-  img {
-    margin-bottom: 3px;
-    height: 24px;
-    width: 24px;
+
+  .radio:checked ~ .icons {
+    fill: $black !important;
   }
 }

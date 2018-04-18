@@ -4,7 +4,6 @@ import {FieldArray, FormSection} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import classNames from 'classnames';
-import moment from 'moment';
 
 import AddButton from '$components/form/AddButton';
 import BasicInfoEdit from './BasicInfoEdit';
@@ -15,6 +14,7 @@ import IndexAdjustedRents from './IndexAdjustedRents';
 import PayableRents from './PayableRents';
 import RemoveButton from '$components/form/RemoveButton';
 import RentAdjustmentsEdit from './RentAdjustmentsEdit';
+import {isRentActive} from '$src/leases/helpers';
 import {RentTypes} from '$src/leases/enums';
 
 import type {Attributes} from '$src/leases/types';
@@ -29,16 +29,6 @@ type Props = {
 class RentItemEdit extends Component {
   props: Props
 
-  isRentActive = (rent: Object) => {
-    const now = moment();
-    const startDate = get(rent, 'start_date');
-    const endDate = get(rent, 'end_date');
-    if(startDate && now.isSameOrAfter(startDate) && endDate && moment(endDate).isSameOrAfter(now)) {
-      return true;
-    }
-    return false;
-  }
-
   render() {
     const {attributes, decisionOptions, fields, rentsFormValues} = this.props;
 
@@ -52,7 +42,7 @@ class RentItemEdit extends Component {
             return (
               <Collapse
                 key={item.id ? item.id : `index_${index}`}
-                className={classNames({'not-active': !this.isRentActive(rent)})}
+                className={classNames({'not-active': !isRentActive(rent)})}
                 defaultOpen={true}
                 headerTitle={
                   <h3 className='collapse__header-title'>Vuokra {index + 1}</h3>

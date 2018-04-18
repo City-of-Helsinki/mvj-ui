@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 
+import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
 import Loader from '$components/loader/Loader';
@@ -26,6 +27,7 @@ import {
   getIsFetching,
   getIsFormValid,
   getRentBasis,
+  getRentBasisFormTouched,
   getRentBasisFormValues,
 } from '../selectors';
 import {getContentCopiedRentBasis, getContentRentBasis} from '../helpers';
@@ -45,6 +47,7 @@ type Props = {
   initializeRentBasis: Function,
   isEditMode: boolean,
   isFetching: boolean,
+  isFormTouched: boolean,
   isFormValid: boolean,
   params: Object,
   receiveTopNavigationSettings: Function,
@@ -53,8 +56,16 @@ type Props = {
   showEditMode: Function,
 }
 
+type State = {
+  isCancelModalOpen: boolean,
+}
+
 class RentBasisPage extends Component {
   props: Props
+
+  state: State = {
+    isCancelModalOpen: false,
+  }
 
   static contextTypes = {
     router: PropTypes.object,
@@ -97,6 +108,13 @@ class RentBasisPage extends Component {
     editRentBasis(editedRentBasis);
   }
 
+  handleCancel = () => {
+    const {hideEditMode} = this.props;
+
+    this.setState({isCancelModalOpen: false});
+    hideEditMode();
+  }
+
   showEditMode = (rentBasis: Object) => {
     const {initializeRentBasis, showEditMode} = this.props;
 
@@ -110,9 +128,12 @@ class RentBasisPage extends Component {
       hideEditMode,
       isEditMode,
       isFetching,
+      isFormTouched,
       isFormValid,
       rentBasisData,
     } = this.props;
+
+    const {isCancelModalOpen} = this.state;
 
     const rentBasis = getContentRentBasis(rentBasisData);
 
@@ -126,13 +147,22 @@ class RentBasisPage extends Component {
 
     return (
       <PageContainer>
+        <ConfirmationModal
+          confirmButtonLabel='Vahvista'
+          isOpen={isCancelModalOpen}
+          label='Haluatko varmasti peruuttaa muutokset?'
+          onCancel={() => this.setState({isCancelModalOpen: false})}
+          onClose={() => this.setState({isCancelModalOpen: false})}
+          onSave={this.handleCancel}
+          title='Peruuta muutokset'
+        />
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={!isFormValid}
-              onCancelClick={hideEditMode}
+              onCancelClick={isFormTouched ? () => this.setState({isCancelModalOpen: true}) : hideEditMode}
               onCopyClick={this.copyRentBasis}
               onEditClick={() => this.showEditMode(rentBasis)}
               onSaveClick={this.editRentBasis}
@@ -169,6 +199,7 @@ const mapStateToProps = (state: RootState) => {
     editedRentBasis: getRentBasisFormValues(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
+    isFormTouched: getRentBasisFormTouched(state),
     isFormValid: getIsFormValid(state),
     rentBasisData: getRentBasis(state),
   };

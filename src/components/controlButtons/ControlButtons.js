@@ -48,9 +48,9 @@ const ControlButtons = ({
             {showCopyButton &&
               <Button
                 disabled={isCopyDisabled}
-                label='Kopio'
+                label='Kopioi'
                 onClick={onCopyClick}
-                title='Kopio'
+                title='Kopioi'
               />
             }
             <Button

@@ -1,15 +1,12 @@
 .lease-info {
-  display: flex;
+  width: 100%;
+
+  label.mvj-form-field-label {
+    margin-bottom: rem-calc(2px);
+  }
 
   &__identifier-wrapper {
     padding-right: rem-calc(20px);
-  }
-
-  &__label {
-    font-size: rem-calc(13px);
-    color: $dark-gray;
-    line-height: normal;
-    margin-bottom: 0;
   }
 
   h1.lease-info__number {
@@ -17,29 +14,19 @@
     margin: 0;
   }
 
-  &__date-wrapper {
-    align-self: flex-end
-  }
-
-  &__date {
+  p {
+    margin-bottom: 0;
+    font-size: rem-calc(16px);
+    line-height: rem-calc(18px);
     font-weight: $semibold;
-    margin-bottom: 0;
-  }
-
-  &__type {
-    margin-bottom: 0;
-    line-height: 1.2;
   }
 }
 
 .lease-info-edit {
   width: 100%;
 
-  &__label {
-    color: $dark-gray;
-    font-size: rem-calc(13px);
-    line-height: normal;
-    margin-bottom: 0;
+  label.mvj-form-field-label {
+    margin-bottom: rem-calc(2px);
   }
 
   &__number {

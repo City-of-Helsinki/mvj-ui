@@ -33,6 +33,7 @@ import Button from '$components/button/Button';
 import CreateLease from './leaseSections/CreateLease';
 import EditableMap from '$components/map/EditableMap';
 import Loader from '$components/loader/Loader';
+import MapIcon from '$components/icons/MapIcon';
 import Modal from '$components/modal/Modal';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
@@ -40,11 +41,7 @@ import SearchWrapper from '$components/search/SearchWrapper';
 import Search from './search/Search';
 import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
-
-import mapGreenIcon from '$assets/icons/map-green.svg';
-import mapIcon from '$assets/icons/map.svg';
-import tableGreenIcon from '$assets/icons/table-green.svg';
-import tableIcon from '$assets/icons/table.svg';
+import TableIcon from '$components/icons/TableIcon';
 
 import type {LeaseList} from '../types';
 
@@ -227,7 +224,6 @@ class LeaseListPage extends Component {
     const filteredLeases = getLeasesFilteredByDocumentType(leases, documentType);
     const lessorOptions = getLessorOptions(lessors);
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
-
     return (
       <PageContainer>
         <Modal
@@ -263,9 +259,9 @@ class LeaseListPage extends Component {
           buttonSelectorValue={documentType}
           onButtonSelectorChange={(value) => {this.setState({documentType: value});}}
           iconSelectorOptions={[
-            {value: 'table', label: 'Taulukko', icon: tableIcon, iconSelected: tableGreenIcon},
-            {value: 'map', label: 'Kartta', icon: mapIcon, iconSelected: mapGreenIcon}]
-          }
+            {value: 'table', label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
+            {value: 'map', label: 'Kartta', icon: <MapIcon className='icon-medium' />},
+          ]}
           iconSelectorValue={visualizationType}
           onIconSelectorChange={
             (value) => this.setState({visualizationType: value})
