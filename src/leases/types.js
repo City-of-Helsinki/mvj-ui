@@ -27,6 +27,8 @@ export type FetchSingleLeaseAction = Action<'mvj/leases/FETCH_SINGLE', LeaseId>;
 export type ReceiveSingleLeaseAction = Action<'mvj/leases/RECEIVE_SINGLE', Lease>;
 export type CreateLeaseAction = Action<'mvj/leases/CREATE', Lease>;
 export type PatchLeaseAction = Action<'mvj/leases/PATCH', Lease>;
+export type StartInvoicingAction = Action<'mvj/leases/START_INVOICING', LeaseId>;
+export type StopInvoicingAction = Action<'mvj/leases/STOP_INVOICING', LeaseId>;
 export type LeaseNotFoundAction = Action<'mvj/leases/NOT_FOUND', void>;
 
 export type HideContactModalAction = Action<'mvj/leases/HIDE_CONTACT_MODAL', void>;

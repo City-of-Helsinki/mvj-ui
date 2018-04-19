@@ -164,6 +164,66 @@ function* patchLeaseSaga({payload: lease}): Generator<> {
   }
 }
 
+function* startInvoicingSaga({payload: leaseId}): Generator<> {
+  try {
+    const lease = {
+      id: leaseId,
+      is_invoicing_enabled: true,
+    };
+    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSingleLease(bodyAsJson));
+        yield put(hideEditMode());
+        displayUIMessage({title: 'Laskutus', body: 'laskutus on käynnistetty onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to start invoicing with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* stopInvoicingSaga({payload: leaseId}): Generator<> {
+  try {
+    const lease = {
+      id: leaseId,
+      is_invoicing_enabled: false,
+    };
+    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSingleLease(bodyAsJson));
+        yield put(hideEditMode());
+        displayUIMessage({title: 'Laskutus', body: 'laskutus on käynnistetty onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to start invoicing with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 function* createContactSaga({payload: contact}): Generator<> {
   try {
     const contactModalSettings = yield select(getContactModalSettings);
@@ -403,6 +463,8 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
+      yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);
+      yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/leases/CREATE_CONTACT', createContactSaga);
       yield takeLatest('mvj/leases/EDIT_CONTACT', editContactSaga);
       yield takeLatest('mvj/leases/FETCH_DECISIONS', fetchDecisionsSaga);

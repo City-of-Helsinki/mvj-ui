@@ -1,5 +1,6 @@
 // @flow
 import React, {Component} from 'react';
+import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
@@ -11,12 +12,12 @@ import InvoicesTableEdit from './InvoicesTableEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {formatBillingNewBill} from '$src/leases/helpers';
 import {
-  createAbnormalDebt,
   createBill,
-  deleteAbnormalDebt,
+} from './actions';
+import {
   startInvoicing,
   stopInvoicing,
-} from './actions';
+} from '$src/leases/actions';
 
 import type {InvoiceList} from '$src/leases/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
@@ -28,6 +29,7 @@ type Props = {
   invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
   isInvoicingEnabled: boolean,
+  params: Object,
   startInvoicing: Function,
   stopInvoicing: Function,
 }
@@ -106,15 +108,23 @@ class BillingEdit extends Component {
   }
 
   startBilling = () => {
-    const {startInvoicing} = this.props;
+    const {
+      params: {leaseId},
+      startInvoicing,
+    } = this.props;
+
     this.hideModal('StartInvoicing');
-    startInvoicing();
+    startInvoicing(leaseId);
   }
 
   stopBilling = () => {
-    const {stopInvoicing} = this.props;
+    const {
+      params: {leaseId},
+      stopInvoicing,
+    } = this.props;
+
     this.hideModal('StopInvoicing');
-    stopInvoicing();
+    stopInvoicing(leaseId);
   }
 
   render() {
@@ -196,12 +206,11 @@ class BillingEdit extends Component {
 }
 
 export default flowRight(
+  withRouter,
   connect(
     null,
     {
-      createAbnormalDebt,
       createBill,
-      deleteAbnormalDebt,
       startInvoicing,
       stopInvoicing,
     }
