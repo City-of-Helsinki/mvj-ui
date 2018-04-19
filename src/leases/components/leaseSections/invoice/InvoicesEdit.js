@@ -186,7 +186,7 @@ class BillingEdit extends Component {
             <h3 className='collapse__header-title'>Laskut</h3>
           }>
           <InvoicesTableEdit
-            incoiceAttributes={invoiceAttributes}
+            invoiceAttributes={invoiceAttributes}
             invoices={invoices}
           />
 

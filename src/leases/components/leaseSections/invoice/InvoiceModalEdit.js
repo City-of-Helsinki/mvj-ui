@@ -91,6 +91,7 @@ class BillModalEdit extends Component {
                   ? (
                     <EditInvoiceForm
                       invoice={invoice}
+                      invoiceAttributes={invoiceAttributes}
                       initialValues={{...invoice}}
                     />
                   ) : (

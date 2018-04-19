@@ -19,7 +19,7 @@ import {
 import type {InvoiceList} from '$src/leases/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
-const MODAL_HEIGHT = 530;
+const MODAL_HEIGHT = 480;
 const MODAL_WIDTH = 700;
 
 type Props = {

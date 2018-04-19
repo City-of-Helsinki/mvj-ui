@@ -175,7 +175,6 @@ function* startInvoicingSaga({payload: leaseId}): Generator<> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
-        yield put(hideEditMode());
         displayUIMessage({title: 'Laskutus', body: 'laskutus on käynnistetty onnistuneesti'});
         break;
       case 400:
@@ -205,7 +204,6 @@ function* stopInvoicingSaga({payload: leaseId}): Generator<> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
-        yield put(hideEditMode());
         displayUIMessage({title: 'Laskutus', body: 'laskutus on käynnistetty onnistuneesti'});
         break;
       case 400:

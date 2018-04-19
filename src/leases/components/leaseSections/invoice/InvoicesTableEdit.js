@@ -25,7 +25,7 @@ import {
 import type {InvoiceList} from '$src/leases/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
-const MODAL_HEIGHT = 610;
+const MODAL_HEIGHT = 480;
 const MODAL_WIDTH = 700;
 
 type Props = {
@@ -316,7 +316,7 @@ class InvoicesTableEdit extends Component {
         </div>
         <InvoiceModalEdit
           ref={(ref) => this.modal = ref}
-          containerHeight={isNumber(tableHeight) ? tableHeight + 33 : null}
+          containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
           invoice={selectedInvoice}
           invoiceAttributes={invoiceAttributes}
           onClose={() => this.setState({

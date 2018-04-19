@@ -500,8 +500,8 @@ class PreparerForm extends Component {
           buttonComponent={
             <ControlButtons
               commentAmount={comments ? comments.length : 0}
-              isCancelDisabled={activeTab.toString() === '6'}
-              isEditDisabled={activeTab.toString() === '6'}
+              isCancelDisabled={false}
+              isEditDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={!areFormsValid || activeTab.toString() === '6'}
               onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
@@ -699,7 +699,7 @@ class PreparerForm extends Component {
 
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
-              {!isEditMode
+              {isEditMode
                 ? (
                   <InvoicesEdit
                     invoiceAttributes={invoiceAttributes}
