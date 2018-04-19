@@ -14,13 +14,11 @@ import {
   formatDecimalNumberForDb,
 } from '$util/helpers';
 
-import type {Contact} from '$src/contacts/types';
-
 export const getContentLeaseIdentifier = (item:Object) => {
   if(isEmpty(item)) {
     return null;
   }
-  const unit = `${get(item, 'type.identifier')}${get(item, 'municipality.identifier')}${fixedLengthNumber(get(item, 'district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
+  const unit = `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
   return unit;
 };
 
@@ -1244,22 +1242,6 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
 };
 
 // GERERIC LEASE HELPER FUNCTIONS
-export const getContactFullName = (contact: ?Object) => {
-  if(!contact) {
-    return '';
-  }
-  return contact.is_business
-    ? contact.business_name
-    : `${contact.last_name} ${contact.first_name}`;
-};
-
-export const getContactById = (allContacts: Array<Contact>, contactId: string) => {
-  if(!allContacts || !allContacts.length) {
-    return {};
-  }
-  return allContacts.find((x) => x.id === contactId);
-};
-
 export const isRentActive = (rent: Object) => {
   const now = moment();
   const startDate = get(rent, 'start_date');

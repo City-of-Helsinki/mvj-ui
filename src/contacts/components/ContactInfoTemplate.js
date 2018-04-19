@@ -3,6 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {ContactType} from '../enums';
 
 import type {Attributes} from '$src/contacts/types';
 
@@ -12,6 +13,7 @@ type Props = {
 }
 
 const ContactInfoTemplate = ({contact, attributes}: Props) => {
+  const typeOptions = getAttributeFieldOptions(attributes, 'type');
   const languageOptions = getAttributeFieldOptions(attributes, 'language');
   if(!contact) {
     return null;
@@ -20,34 +22,30 @@ const ContactInfoTemplate = ({contact, attributes}: Props) => {
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <label>Yritys</label>
-          <p>{contact.is_business ? 'Kyllä' : 'Ei'}</p>
+          <label>Asiakastyyppi</label>
+          <p>{getLabelOfOption(typeOptions, contact.type) || '-'}</p>
         </Column>
-        {!contact.is_business &&
-          <Column small={6} medium={4} large={2}>
-            <label>Etunimi</label>
-            <p>{contact.first_name || '-'}</p>
-          </Column>
-        }
-        {!contact.is_business &&
-          <Column small={6} medium={4} large={2}>
-            <label>Sukunimi</label>
-            <p>{contact.last_name || '-'}</p>
-          </Column>
-        }
-        {!contact.is_business &&
+        <Column small={6} medium={4} large={2}>
+          <label>Etunimi</label>
+          <p>{contact.first_name || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <label>Sukunimi</label>
+          <p>{contact.last_name || '-'}</p>
+        </Column>
+        {contact.type === ContactType.PERSON &&
           <Column small={6} medium={4} large={2}>
             <label>Henkilötunnus</label>
             <p>{contact.national_identification_number || '-'}</p>
           </Column>
         }
-        {contact.is_business &&
+        {contact.type && contact.type !== ContactType.PERSON &&
           <Column small={6} medium={4} large={2}>
             <label>Yrityksen nimi</label>
-            <p>{contact.business_name || '-'}</p>
+            <p>{contact.name || '-'}</p>
           </Column>
         }
-        {contact.is_business &&
+        {contact.type && contact.type !== ContactType.PERSON &&
           <Column small={6} medium={4} large={2}>
             <label>Y-tunnus</label>
             <p>{contact.business_id || '-'}</p>

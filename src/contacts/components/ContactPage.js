@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactEdit from './ContactEdit';
@@ -22,7 +21,15 @@ import {
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getContactFormTouched, getContactFormValues, getCurrentContact, getIsEditMode, getIsFetching} from '../selectors';
+import {
+  getAttributes,
+  getContactFormTouched,
+  getContactFormValues,
+  getCurrentContact,
+  getIsEditMode,
+  getIsFetching,
+} from '../selectors';
+import {getContactFullName} from '../helpers';
 
 import type {RootState} from '$src/root/types';
 import type {Attributes, Contact} from '../types';
@@ -115,24 +122,11 @@ class ContactPage extends Component {
     showEditMode();
   }
 
-  getContactNameInfo = () => {
-    const {contact} = this.props;
-    if(!contact) {
-      return '';
-    }
-
-    if(contact.is_business) {
-      return get(contact, 'business_name', '');
-    }
-    return `${get(contact, 'first_name', '')} ${get(contact, 'last_name', '')}`;
-  }
-
-
   render() {
     const {attributes, contact, isContactFormTouched, isEditMode, isFetching} = this.props;
     const {isCancelModalOpen} = this.state;
 
-    const nameInfo = this.getContactNameInfo();
+    const nameInfo = getContactFullName(contact);
 
     if(isFetching) {
       return (

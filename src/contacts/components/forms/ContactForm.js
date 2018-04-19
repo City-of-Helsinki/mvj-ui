@@ -15,7 +15,8 @@ import {
   getInitialContactFormValues,
   getIsContactFormValid,
 } from '../../selectors';
-import {genericValidator, required} from '$components/form/validations';
+import {ContactType} from '$src/contacts/enums';
+import {genericValidator} from '$components/form/validations';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 
 import type {Attributes} from '../../types';
@@ -24,10 +25,10 @@ import type {RootState} from '$src/root/types';
 type Props = {
   attributes: Attributes,
   initialValues: Object,
-  isBusiness: boolean,
   isContactFormValid: boolean,
   handleSubmit: Function,
   receiveContactFormValid: Function,
+  type: ?string,
   valid: boolean,
 }
 
@@ -47,7 +48,8 @@ class ContactForm extends Component {
   }
 
   render() {
-    const {attributes, handleSubmit, isBusiness} = this.props;
+    const {attributes, handleSubmit, type} = this.props;
+    const typeOptions = getAttributeFieldOptions(attributes, 'type');
     const languageOptions = getAttributeFieldOptions(attributes, 'language');
 
     return(
@@ -56,45 +58,36 @@ class ContactForm extends Component {
           <Row>
             <Column small={6} medium={4} large={2}>
               <Field
-                className='checkbox-inline'
-                component={FieldTypeCheckbox}
-                label='Yritys'
-                name="is_business"
-                options= {[
-                  {value: 'true', label: 'Yritys'},
-                ]}
+                component={FieldTypeSelect}
+                label='Asiakastyyppi'
+                name='type'
+                options={typeOptions}
                 validate={[
-                  (value) => genericValidator(value, get(attributes, 'is_business')),
+                  (value) => genericValidator(value, get(attributes, 'type')),
                 ]}
               />
             </Column>
-            {!isBusiness &&
-              <Column small={6} medium={4} large={2}>
-                <Field
-                  component={FieldTypeText}
-                  label='Etunimi'
-                  name='first_name'
-                  validate={[
-                    (value) => isBusiness ? null : required(value),
-                    (value) => genericValidator(value, get(attributes, 'first_name')),
-                  ]}
-                />
-              </Column>
-            }
-            {!isBusiness &&
-              <Column small={6} medium={4} large={2}>
-                <Field
-                  component={FieldTypeText}
-                  label='Sukunimi'
-                  name='last_name'
-                  validate={[
-                    (value) => isBusiness ? null : required(value),
-                    (value) => genericValidator(value, get(attributes, 'last_name')),
-                  ]}
-                />
-              </Column>
-            }
-            {!isBusiness &&
+            <Column small={6} medium={4} large={2}>
+              <Field
+                component={FieldTypeText}
+                label='Etunimi'
+                name='first_name'
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'first_name')),
+                ]}
+              />
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <Field
+                component={FieldTypeText}
+                label='Sukunimi'
+                name='last_name'
+                validate={[
+                  (value) => genericValidator(value, get(attributes, 'last_name')),
+                ]}
+              />
+            </Column>
+            {type === ContactType.PERSON &&
               <Column small={6} medium={4} large={2}>
                 <Field
                   component={FieldTypeText}
@@ -106,20 +99,19 @@ class ContactForm extends Component {
                 />
               </Column>
             }
-            {isBusiness &&
+            {type && type !== ContactType.PERSON &&
               <Column small={6} medium={4} large={2}>
                 <Field
                   component={FieldTypeText}
                   label='Yrityksen nimi'
-                  name='business_name'
+                  name='name'
                   validate={[
-                    (value) => isBusiness ? required(value) : null,
                     (value) => genericValidator(value, get(attributes, 'business_name')),
                   ]}
                 />
               </Column>
             }
-            {isBusiness &&
+            {type && type !== ContactType.PERSON &&
               <Column small={6} medium={4} large={2}>
                 <Field
                   component={FieldTypeText}
@@ -278,9 +270,9 @@ const selector = formValueSelector(formName);
 
 const mapStateToProps = (state: RootState) => {
   return {
-    isBusiness: selector(state, 'is_business'),
     isContactFormValid: getIsContactFormValid(state),
     initialValues: getInitialContactFormValues(state),
+    type: selector(state, 'type'),
   };
 };
 

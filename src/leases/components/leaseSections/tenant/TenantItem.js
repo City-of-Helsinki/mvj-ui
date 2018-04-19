@@ -4,7 +4,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 
-import {getContactFullName} from '$src/leases/helpers';
+import {getContactFullName} from '$src/contacts/helpers';
 import {formatDate} from '$util/helpers';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
 

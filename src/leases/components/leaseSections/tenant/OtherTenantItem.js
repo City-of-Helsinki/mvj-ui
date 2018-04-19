@@ -7,7 +7,8 @@ import classNames from 'classnames';
 import {formatDate, formatDateRange, getAttributeFieldOptions, getContactById, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
-import {getContactFullName, isTenantActive} from '$src/leases/helpers';
+import {getContactFullName} from '$src/contacts/helpers';
+import {isTenantActive} from '$src/leases/helpers';
 
 import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';

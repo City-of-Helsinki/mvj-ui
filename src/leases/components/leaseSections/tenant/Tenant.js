@@ -8,7 +8,8 @@ import Collapse from '$components/collapse/Collapse';
 import OtherTenantItem from './OtherTenantItem';
 import TenantItem from './TenantItem';
 import {formatDateRange} from '$util/helpers';
-import {getContactById, getContactFullName, isTenantActive} from '$src/leases/helpers';
+import {getContactById, getContactFullName} from '$src/contacts/helpers';
+import {isTenantActive} from '$src/leases/helpers';
 
 import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';

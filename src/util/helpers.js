@@ -196,7 +196,10 @@ export const displayUIMessage = (message, opts = {type: 'success'}) => {
  * @param value
  * @param length
  */
-export const fixedLengthNumber = (value: number, length: number = 2) => {
+export const fixedLengthNumber = (value: ?number, length: number = 2) => {
+  if (value !== 0 && !value) {
+    return '';
+  }
   const size = value.toString().length;
   if (size < length) {
     let prefix = '';

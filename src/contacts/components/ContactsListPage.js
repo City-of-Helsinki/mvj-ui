@@ -16,21 +16,24 @@ import SearchWrapper from '$components/search/SearchWrapper';
 import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
 import {getRouteById} from '$src/root/routes';
-import {getContactList, getIsFetching} from '../selectors';
+import {getAttributes, getContactList, getIsFetching} from '../selectors';
 import {
   fetchContacts,
+  fetchAttributes,
   initializeContactForm,
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {getSearchQuery} from '$src/util/helpers';
+import {getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$src/util/helpers';
 
-import type {ContactList} from '../types';
+import type {Attributes, ContactList} from '../types';
 import type {RootState} from '../../root/types';
 
 const PAGE_SIZE = 25;
 
 type Props = {
+  attributes: Attributes,
   contactList: ContactList,
+  fetchAttributes: Function,
   fetchContacts: Function,
   initializeContactForm: Function,
   isFetching: boolean,
@@ -55,7 +58,7 @@ class ContactListPage extends Component {
   };
 
   componentWillMount() {
-    const {fetchContacts, receiveTopNavigationSettings} = this.props;
+    const {fetchAttributes, fetchContacts, receiveTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
 
     receiveTopNavigationSettings({
@@ -76,6 +79,8 @@ class ContactListPage extends Component {
 
     fetchContacts(getSearchQuery(query));
     delete query.limit;
+
+    fetchAttributes();
   }
 
   componentDidMount = () => {
@@ -166,8 +171,9 @@ class ContactListPage extends Component {
   }
 
   render() {
-    const {contactList, isFetching} = this.props;
+    const {attributes, contactList, isFetching} = this.props;
     const {activePage} = this.state;
+    const typeOptions = getAttributeFieldOptions(attributes, 'type');
 
     const count = this.getContactCount(contactList);
     const contacts = this.getContacts(contactList);
@@ -209,10 +215,11 @@ class ContactListPage extends Component {
             <Table
               data={contacts}
               dataKeys={[
+                {key: 'type', label: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)},
                 {key: 'first_name', label: 'Etunimi'},
                 {key: 'last_name', label: 'Sukunimi'},
                 {key: 'national_identification_number', label: 'Henkilötunnus'},
-                {key: 'business_name', label: 'Yritys'},
+                {key: 'name', label: 'Yrityksen nimi'},
                 {key: 'business_id', label: 'Y-tunnus'},
               ]}
               onRowClick={this.handleRowClick}
@@ -233,11 +240,13 @@ export default flowRight(
   connect(
     (state: RootState) => {
       return {
+        attributes: getAttributes(state),
         contactList: getContactList(state),
         isFetching: getIsFetching(state),
       };
     },
     {
+      fetchAttributes,
       fetchContacts,
       initializeContactForm,
       receiveTopNavigationSettings,
