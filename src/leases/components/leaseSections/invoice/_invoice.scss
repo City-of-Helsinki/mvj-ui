@@ -30,6 +30,9 @@
       table tbody tr {
         cursor: pointer;
 
+        &:hover {
+          background-color: #D9EFE4;
+        }
         &.selected {
           background-color: #D9EFE4;
         }

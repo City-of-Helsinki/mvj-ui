@@ -181,6 +181,7 @@ class BillsTable extends Component {
     const {invoiceAttributes, invoices} = this.props;
     const {
       selectedInvoice,
+      selectedInvoiceIndex,
       showAllColumns,
       showModal,
       tableHeight,
@@ -216,7 +217,7 @@ class BillsTable extends Component {
                     {invoices.map((invoice, index) => {
                       return (
                         <tr
-                          className={classNames({'selected': selectedInvoice === invoice})}
+                          className={classNames({'selected': selectedInvoiceIndex === index})}
                           key={index}
                           onClick={() => {
                             this.setState({

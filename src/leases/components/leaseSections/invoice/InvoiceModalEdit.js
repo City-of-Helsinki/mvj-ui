@@ -2,24 +2,27 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import classNames from 'classnames';
 
 import CloseButton from '$components/button/CloseButton';
 
-import {getEditBillFormErrors, getEditBillFormValues} from './selectors';
+import {getEditInvoiceFormErrors, getEditInvoiceFormValues} from './selectors';
 import Button from '$components/button/Button';
-import EditBillForm from './forms/EditBillForm';
+import EditInvoiceForm from './forms/EditInvoiceForm';
+import InvoiceTemplate from './InvoiceTemplate';
+
+import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
 
 type Props = {
-  bill: Object,
   containerHeight: ?number,
+  editedInvoice: ?Object,
   errors: ?Object,
-  newBill: ?Object,
+  invoice: Object,
+  invoiceAttributes: InvoiceAttributes,
   onClose: Function,
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
@@ -58,10 +61,11 @@ class BillModalEdit extends Component {
 
   render() {
     const {
-      bill,
       containerHeight,
+      editedInvoice,
       errors,
-      newBill,
+      invoice,
+      invoiceAttributes,
       onClose,
       onRefund,
       onSave,
@@ -82,25 +86,36 @@ class BillModalEdit extends Component {
 
           <div className="invoice-modal__body with-footer">
             {show &&
-              <EditBillForm
-                bill={bill}
-                initialValues={{...bill}}
-              />
+              <div>
+                {(!invoice || !invoice.sap_id)
+                  ? (
+                    <EditInvoiceForm
+                      invoice={invoice}
+                      initialValues={{...invoice}}
+                    />
+                  ) : (
+                    <InvoiceTemplate
+                      invoice={invoice}
+                      invoiceAttributes={invoiceAttributes}
+                    />
+                  )
+                }
+              </div>
             }
           </div>
           <div className='invoice-modal__footer'>
             <Button
               className="button-green no-margin"
               label='Hyvitä'
-              onClick={() => onRefund(newBill)}
+              onClick={() => onRefund(editedInvoice)}
               title='Hyvitä'
             />
-            {!get(bill, 'SAP_number') &&
+            {(!invoice || !invoice.sap_id) &&
               <Button
                 className="button-green no-margin pull-right"
                 disabled={!isEmpty(errors)}
                 label='Tallenna'
-                onClick={() => onSave(newBill)}
+                onClick={() => onSave(editedInvoice)}
                 title='Tallenna'
               />
             }
@@ -115,8 +130,8 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        newBill: getEditBillFormValues(state),
-        errors: getEditBillFormErrors(state),
+        editedInvoice: getEditInvoiceFormValues(state),
+        errors: getEditInvoiceFormErrors(state),
       };
     }
   ),

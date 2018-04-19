@@ -7,17 +7,11 @@ import get from 'lodash/get';
 export const getBilling: Selector<Object, void> = (state: BillingState): Object =>
   state.invoice.billing;
 
-export const getEditAbnormalDebtFormErrors: Selector<Object, void> = (state: BillingState): Object =>
-  get(state, 'form.billing-edit-abnormal-debt-form.syncErrors');
+export const getEditInvoiceFormErrors: Selector<Object, void> = (state: BillingState): Object =>
+  get(state, 'form.edit-invoice-form.syncErrors');
 
-export const getEditAbnormalDebtFormValues: Selector<Object, void> = (state: BillingState): Object =>
-  get(state, 'form.billing-edit-abnormal-debt-form.values');
-
-export const getEditBillFormErrors: Selector<Object, void> = (state: BillingState): Object =>
-  get(state, 'form.billing-edit-bill-form.syncErrors');
-
-export const getEditBillFormValues: Selector<Object, void> = (state: BillingState): Object =>
-  get(state, 'form.billing-edit-bill-form.values');
+export const getEditInvoiceFormValues: Selector<Object, void> = (state: BillingState): Object =>
+  get(state, 'form.edit-invoice-form.values');
 
 export const getNewBillFormErrors: Selector<Object, void> = (state: BillingState): Object =>
   get(state, 'form.billing-new-bill-form.syncErrors');

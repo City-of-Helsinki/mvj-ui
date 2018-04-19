@@ -2,13 +2,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 
-import AbnormalDebtsTableEdit from './AbnormalDebtsTableEdit';
 import AddBillComponent from './AddBillComponent';
-import BillsTableEdit from './BillsTableEdit';
+import Collapse from '$components/collapse/Collapse';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Divider from '$components/content/Divider';
+import InvoicesTableEdit from './InvoicesTableEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {formatBillingNewBill} from '$src/leases/helpers';
 import {
@@ -19,11 +18,16 @@ import {
   stopInvoicing,
 } from './actions';
 
+import type {InvoiceList} from '$src/leases/types';
+import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+
 type Props = {
-  billing: Object,
   createAbnormalDebt: Function,
   createBill: Function,
   deleteAbnormalDebt: Function,
+  invoiceAttributes: InvoiceAttributes,
+  invoices: InvoiceList,
+  isInvoicingEnabled: boolean,
   startInvoicing: Function,
   stopInvoicing: Function,
 }
@@ -115,7 +119,9 @@ class BillingEdit extends Component {
 
   render() {
     const {
-      billing,
+      invoiceAttributes,
+      invoices,
+      isInvoicingEnabled,
     } = this.props;
     const {
       isAddBillEditMode,
@@ -157,44 +163,33 @@ class BillingEdit extends Component {
         <h2>Laskutus</h2>
         <RightSubtitle
           className='invoicing-status'
-          text={billing.invoicing_started
+          text={isInvoicingEnabled
             ? <p className="success">Laskutus käynnissä<i /></p>
             : <p className="alert">Laskutus ei käynnissä<i /></p>
           }
         />
         <Divider />
 
-        <h3>Laskut</h3>
-        <BillsTableEdit
-          bills={get(billing, 'bills', [])}
-        />
+        <Collapse
+          defaultOpen={true}
+          headerTitle={
+            <h3 className='collapse__header-title'>Laskut</h3>
+          }>
+          <InvoicesTableEdit
+            incoiceAttributes={invoiceAttributes}
+            invoices={invoices}
+          />
 
-        <AddBillComponent
-          editMode={isAddBillEditMode}
-          onAdd={() => this.showAddBillEditMode()}
-          onClose={() => this.hideAddBillEditMode()}
-          onSave={(bill) => this.saveNewBill(bill)}
-          onStartInvoicing={() => this.showModal('StartInvoicing')}
-          onStopInvoicing={() => this.showModal('StopInvoicing')}
-          showStartInvoicingButton={!get(billing, 'invoicing_started', false)}
-        />
-
-        <h3>Poikkeavat perinnät</h3>
-        <AbnormalDebtsTableEdit
-          ref={(input) => this.abnormalDebtTable = input}
-          abnormalDebts={get(billing, 'abnormal_debts', [])}
-          headers={[
-            'Vuokraaja',
-            'Hallintaosuus',
-            'Eräpäivä',
-            'Määrä',
-            'Aikaväli',
-          ]}
-          onDeleteClick={(index) => this.setState({
-            isDeleteAbnormalDebtModalOpen: true,
-            selectedDebtToDeleteIndex: index,
-          })}
-        />
+          <AddBillComponent
+            editMode={isAddBillEditMode}
+            onAdd={() => this.showAddBillEditMode()}
+            onClose={() => this.hideAddBillEditMode()}
+            onSave={(bill) => this.saveNewBill(bill)}
+            onStartInvoicing={() => this.showModal('StartInvoicing')}
+            onStopInvoicing={() => this.showModal('StopInvoicing')}
+            showStartInvoicingButton={!isInvoicingEnabled}
+          />
+        </Collapse>
       </div>
     );
   }

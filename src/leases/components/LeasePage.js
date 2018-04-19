@@ -9,8 +9,6 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import {getLoggedInUser} from '$src/auth/selectors';
-import {receiveBilling} from './leaseSections/invoice/actions';
-import {getBilling} from './leaseSections/invoice/selectors';
 import {fetchUsers} from '$src/users/actions';
 import {getUsers} from '$src/users/selectors';
 import {
@@ -79,7 +77,6 @@ import {
   getSearchQuery,
 } from '$util/helpers';
 
-import BillingEdit from './leaseSections/invoice/BillingEdit';
 import CommentPanel from '$components/commentPanel/CommentPanel';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Constructability from './leaseSections/constructability/Constructability';
@@ -92,6 +89,7 @@ import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
 import Divider from '$components/content/Divider';
 import EditableMap from '$components/map/EditableMap';
 import Invoices from './leaseSections/invoice/Invoices';
+import InvoicesEdit from './leaseSections/invoice/InvoicesEdit';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
 import LeaseHistory from './leaseSections/summary/LeaseHistory';
@@ -125,7 +123,6 @@ type Props = {
   areasFormTouched: boolean,
   areasFormValues: Object,
   attributes: Attributes,
-  billing: Object,
   clearFormValidFlags: Function,
   commentAttributes: Attributes,
   commentsStore: Array<Object>,
@@ -168,7 +165,6 @@ type Props = {
   location: Object,
   params: Object,
   patchLease: Function,
-  receiveBilling: Function,
   receiveTopNavigationSettings: Function,
   rentsFormTouched: boolean,
   rentsFormValues: Object,
@@ -219,7 +215,6 @@ class PreparerForm extends Component {
       hideEditMode,
       location,
       params: {leaseId},
-      receiveBilling,
       receiveTopNavigationSettings,
     } = this.props;
 
@@ -243,8 +238,6 @@ class PreparerForm extends Component {
     this.setState({
       history: contentHelpers.getContentHistory(lease),
     });
-
-    receiveBilling(contentHelpers.getContentBilling(lease));
 
     fetchAttributes();
     fetchSingleLease(leaseId);
@@ -352,8 +345,6 @@ class PreparerForm extends Component {
     destroy('constructability-form');
     destroy('tenants-form');
     destroy('rents-form');
-
-    destroy('billing-edit-form');
   }
 
   validateForms = () => {
@@ -435,7 +426,6 @@ class PreparerForm extends Component {
     const {
       allContacts,
       attributes,
-      billing,
       commentAttributes,
       commentsStore,
       contactAttributes,
@@ -480,7 +470,7 @@ class PreparerForm extends Component {
     if(isEmpty(currentLease)) {
       return null;
     }
-    console.log('invoices', invoices);
+
     return (
       <PageContainer className='lease-page'>
         <ConfirmationModal
@@ -709,8 +699,14 @@ class PreparerForm extends Component {
 
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
-              {isEditMode
-                ? <BillingEdit billing={billing}/>
+              {!isEditMode
+                ? (
+                  <InvoicesEdit
+                    invoiceAttributes={invoiceAttributes}
+                    invoices={invoices}
+                    isInvoicingEnabled={currentLease.is_invoicing_enabled}
+                  />
+                )
                 : (
                   <Invoices
                     invoiceAttributes={invoiceAttributes}
@@ -743,7 +739,6 @@ export default flowRight(
         areasFormTouched: getAreasFormTouched(state),
         areasFormValues: getAreasFormValues(state),
         attributes: getAttributes(state),
-        billing: getBilling(state),
         commentAttributes: getCommentAttributes(state),
         commentsStore: getComments(state),
         contactAttributes: getContactAttributes(state),
@@ -795,7 +790,6 @@ export default flowRight(
       fetchUsers,
       hideEditMode,
       patchLease,
-      receiveBilling,
       receiveTopNavigationSettings,
       showEditMode,
     }
