@@ -20,6 +20,8 @@
     }
 
     .invoice-fixed-table {
+      border: none;
+
       .table-fixed-header__container {
         height: 1000px;
         overflow: auto;
@@ -29,11 +31,11 @@
         cursor: pointer;
 
         &.selected {
-          background-color: $tram-lighter-solid;
+          background-color: #D9EFE4;
         }
 
         &.active {
-          background-color: $tram-lighter-solid;
+          background-color: #D9EFE4;
         }
 
         &.no-data {

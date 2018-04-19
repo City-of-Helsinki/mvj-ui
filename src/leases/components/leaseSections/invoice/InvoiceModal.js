@@ -1,7 +1,6 @@
 // @flow
 import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 import classNames from 'classnames';
 
 import CloseButton from '$components/button/CloseButton';
@@ -11,29 +10,29 @@ import {
   formatDateRange,
   formatDecimalNumber,
   formatNumberWithThousandSeparator,
+  getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {
-  billingInvoiceMethodOptions,
-  billingInvoiceTypeOptions,
-  billingStatusOptions,
-  billingTypeOptions,
-} from '../constants';
+import {getInvoiceSharePercentage} from '$src/leases/helpers';
+import {getContactFullName} from '$src/contacts/helpers';
+
+import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
 
 
 type Props = {
-  bill: Object,
   containerHeight: ?number,
+  invoice: Object,
+  invoiceAttributes: InvoiceAttributes,
   onClose: Function,
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
   show: boolean,
 }
 
-class BillModal extends Component {
+class InvoiceModal extends Component {
   props: Props
 
   componentWillMount(){
@@ -62,12 +61,17 @@ class BillModal extends Component {
   }
 
   render() {
-    const {bill, containerHeight, onClose, show} = this.props;
+    const {containerHeight, invoice, invoiceAttributes, onClose, show} = this.props;
+
+    const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'receivable_type');
+    const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
+    const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
+    const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
 
     return(
-      <div className={classNames('bill-modal', {'is-open': show})} style={{height: containerHeight}}>
-        <div className="bill-modal__container">
-          <div className='bill-modal__header'>
+      <div className={classNames('invoice-modal', {'is-open': show})} style={{height: containerHeight}}>
+        <div className="invoice-modal__container">
+          <div className='invoice-modal__header'>
             <h1>Laskun tiedot</h1>
             <CloseButton
               className='position-topright'
@@ -76,100 +80,122 @@ class BillModal extends Component {
             />
           </div>
 
-          <div className="bill-modal__body">
+          <div className="invoice-modal__body">
             <Row>
               <Column medium={4}>
                 <label>Laskunsaaja</label>
-                {(get(bill, 'tenant.firstname') || get(bill, 'tenant.lastname'))
-                  ? <p>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</p>
-                  : <p>-</p>
-                }
+                <p>{getContactFullName(invoice.recipient) || '-'}</p>
               </Column>
               <Column medium={4}>
                 <label>Lähetetty SAP:iin</label>
-                <p>{bill.sent_to_SAP_date ? formatDate(bill.sent_to_SAP_date) : '-'}</p>
+                <p>{formatDate(invoice.sent_to_sap_at) || '-'}</p>
               </Column>
               <Column medium={4}>
                 <label>SAP numero</label>
-                <p>{bill.SAP_number ? bill.SAP_number : '-'}</p>
+                <p>{invoice.sap_id || '-'}</p>
               </Column>
             </Row>
             <Row>
               <Column medium={4}>
                 <label>Eräpäivä</label>
-                <p>{bill.due_date ? formatDate(bill.due_date) : '-'}</p>
+                <p>{formatDate(invoice.due_date) || '-'}</p>
               </Column>
               <Column medium={4}>
                 <label>Laskutuspvm</label>
-                <p>{bill.invoicing_date ? formatDate(bill.invoicing_date) : '-'}</p>
+                <p>{formatDate(invoice.invoicing_date) || '-'}</p>
               </Column>
               <Column medium={4}>
                 <label>Saamislaji</label>
-                <p>{bill.type ? getLabelOfOption(billingTypeOptions, bill.type) : '-'}</p>
+                <p>{getLabelOfOption(receivableTypeOptions, invoice.receivable_type) || '-'}</p>
               </Column>
             </Row>
             <Row>
               <Column medium={4}>
                 <label>Laskun tila</label>
-                <p>{bill.status ? getLabelOfOption(billingStatusOptions, bill.status) : '-'}</p>
+                <p>{getLabelOfOption(stateOptions, invoice.state) || '-'}</p>
               </Column>
               <Column medium={4}>
                 <label>Laskutuskausi</label>
-                <p>{formatDateRange(bill.billing_period_start_date, bill.billing_period_end_date)}</p>
+                <p>{formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}</p>
               </Column>
               <Column medium={4}>
                 <label>Lykkäyspvm</label>
-                <p>{bill.suspension_date ? formatDate(bill.suspension_date) : '-'}</p>
+                <p>{formatDate(invoice.postpone_date) || '-'}</p>
               </Column>
             </Row>
             <Row>
               <Column medium={4}>
                 <label>Laskun pääoma</label>
-                <p>{bill.capital_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.capital_amount))} €` : '-'}</p>
+                <p>
+                  {invoice.total_amount
+                    ? `${formatNumberWithThousandSeparator(formatDecimalNumber(invoice.total_amount))} €`
+                    : '-'
+                  }
+                </p>
               </Column>
               <Column medium={4}>
                 <label>Laskun osuus</label>
-                <p>{get(bill, 'tenant.bill_share') ? `${bill.tenant.bill_share} %` : '-'}</p>
+                <p>
+                  {getInvoiceSharePercentage(invoice)
+                    ? `${getInvoiceSharePercentage(invoice)} %`
+                    : '-'
+                  }
+                </p>
               </Column>
             </Row>
             <Row>
               <Column medium={4}>
                 <label>Laskutettu määrä</label>
-                <p>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.invoiced_amount))} €` : '-'}</p>
+                <p>
+                  {invoice.billed_amount
+                    ? `${formatNumberWithThousandSeparator(formatDecimalNumber(invoice.billed_amount))} €`
+                    : '-'
+                  }
+                </p>
               </Column>
               <Column medium={4}>
                 <label>Maksamaton määrä</label>
-                <p>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</p>
+                <p>
+                  {invoice.outstanding_amount
+                    ? `${formatNumberWithThousandSeparator(formatDecimalNumber(invoice.outstanding_amount))} €`
+                    : '-'
+                  }
+                </p>
               </Column>
             </Row>
             <Row>
               <Column medium={4}>
                 <label>Maksukehotuspvm</label>
-                <p>{bill.demand_date ? formatDate(bill.demand_date) : '-'}</p>
+                <p>{formatDate(invoice.payment_notification_date) || '-'}</p>
               </Column>
               <Column medium={4}>
                 <label>Perintäkulu</label>
-                <p>{bill.recovery_cost ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.recovery_cost))} €` : '-'}</p>
+                <p>
+                  {invoice.collection_charge
+                    ? `${formatNumberWithThousandSeparator(formatDecimalNumber(invoice.collection_charge))} €`
+                    : '-'
+                  }
+                </p>
               </Column>
               <Column medium={4}>
                 <label>Maksukehotus luettelo</label>
-                <p>{bill.payment_demand_list ? bill.payment_demand_list : '-'}</p>
+                <p>{formatDate(invoice.payment_notification_catalog_date) || '-'}</p>
               </Column>
             </Row>
             <Row>
               <Column medium={4}>
                 <label>E vai paperilasku</label>
-                <p>{bill.invoice_method ? getLabelOfOption(billingInvoiceMethodOptions, bill.invoice_method) : '-'}</p>
+                <p>{getLabelOfOption(deliveryMethodOptions, invoice.delivery_method) || '-'}</p>
               </Column>
               <Column medium={4}>
                 <label>Laskun tyyppi</label>
-                <p>{bill.invoice_type ? getLabelOfOption(billingInvoiceTypeOptions, bill.invoice_type) : '-'}</p>
+                <p>{getLabelOfOption(typeOptions, invoice.type) || '-'}</p>
               </Column>
             </Row>
             <Row>
               <Column medium={12}>
                 <label>Tiedote</label>
-                <p>{bill.info ? bill.info : '-'}</p>
+                <p>{invoice.notes || '-'}</p>
               </Column>
             </Row>
           </div>
@@ -179,4 +205,4 @@ class BillModal extends Component {
   }
 }
 
-export default BillModal;
+export default InvoiceModal;

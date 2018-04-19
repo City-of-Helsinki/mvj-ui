@@ -4,7 +4,7 @@ import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import scrollToComponent from 'react-scroll-to-component';
 
-import BillModal from './BillModal';
+import InvoiceModal from './InvoiceModal';
 import {getInvoiceSharePercentage} from '$src/leases/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
@@ -262,10 +262,11 @@ class BillsTable extends Component {
             </div>
           </div>
         </div>
-        <BillModal
+        <InvoiceModal
           ref={(ref) => this.modal = ref}
-          bill={selectedInvoice}
-          containerHeight={isNumber(tableHeight) ? tableHeight + 33 : null}
+          containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
+          invoice={selectedInvoice}
+          invoiceAttributes={invoiceAttributes}
           onClose={() => this.setState({
             selectedInvoice: {},
             selectedInvoiceIndex: -1,

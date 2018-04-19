@@ -69,9 +69,9 @@ class BillModalEdit extends Component {
     } = this.props;
 
     return (
-      <div className={classNames('bill-modal', {'is-open': show})} style={{height: containerHeight}}>
-        <div className="bill-modal__container">
-          <div className='bill-modal__header'>
+      <div className={classNames('invoice-modal', {'is-open': show})} style={{height: containerHeight}}>
+        <div className="invoice-modal__container">
+          <div className='invoice-modal__header'>
             <h1>Laskun tiedot</h1>
             <CloseButton
               className='position-topright'
@@ -80,7 +80,7 @@ class BillModalEdit extends Component {
             />
           </div>
 
-          <div className="bill-modal__body with-footer">
+          <div className="invoice-modal__body with-footer">
             {show &&
               <EditBillForm
                 bill={bill}
@@ -88,7 +88,7 @@ class BillModalEdit extends Component {
               />
             }
           </div>
-          <div className='bill-modal__footer'>
+          <div className='invoice-modal__footer'>
             <Button
               className="button-green no-margin"
               label='Hyvitä'

@@ -1,4 +1,4 @@
-.bill-modal {
+.invoice-modal {
   position: absolute;
   width: 700px;
   max-width: 100%;
@@ -7,7 +7,6 @@
   right: -700px;
   z-index: 2;
   border: none;
-  background-color: $white;
   overflow: hidden;
   margin-left: 10px;
 
@@ -15,7 +14,7 @@
 
   &__container {
     padding: rem-calc(20px);
-    background-color: $tram-lighter-solid;
+    background-color: $white;
     height: 100%;
   }
 
@@ -37,6 +36,7 @@
       color: $tram;
     }
   }
+
   &__body {
     max-height: calc(100% - 30px);
     overflow-y: auto;
@@ -46,6 +46,7 @@
       max-height: calc(100% - 60px);
     }
   }
+
   &__footer {
     position: absolute;
     bottom: 0;
