@@ -5,7 +5,7 @@ import type {BillingState} from './types';
 import get from 'lodash/get';
 
 export const getBilling: Selector<Object, void> = (state: BillingState): Object =>
-  state.billing.billing;
+  state.invoice.billing;
 
 export const getEditAbnormalDebtFormErrors: Selector<Object, void> = (state: BillingState): Object =>
   get(state, 'form.billing-edit-abnormal-debt-form.syncErrors');

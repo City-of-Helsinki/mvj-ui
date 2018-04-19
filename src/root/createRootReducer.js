@@ -7,7 +7,7 @@ import {reducer as toastrReducer} from 'react-redux-toastr';
 import {routerReducer} from 'react-router-redux';
 import apiReducer from '../api/reducer';
 import authReducer from '../auth/reducer';
-import billingReducer from '../leases/components/leaseSections/billing/reducer';
+import invoiceReducer from '../leases/components/leaseSections/invoice/reducer';
 import contactsReducer from '../contacts/reducer';
 import leaseReducer from '../leases/reducer';
 import rentBasisReducer from '../rentbasis/reducer';
@@ -21,7 +21,7 @@ export default (): Reducer<RootState> =>
   combineReducers({
     api: apiReducer,
     auth: authReducer,
-    billing: billingReducer,
+    invoice: invoiceReducer,
     contacts: contactsReducer,
     form: formReducer,
     lease: leaseReducer,

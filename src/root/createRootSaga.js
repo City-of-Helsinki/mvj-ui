@@ -2,7 +2,7 @@
 
 import {fork} from 'redux-saga/effects';
 import authSaga from '../auth/saga';
-import billingSaga from '../leases/components/leaseSections/billing/saga';
+import invoiceSaga from '../leases/components/leaseSections/invoice/saga';
 import contactSaga from '../contacts/saga';
 import leaseSaga from '../leases/saga';
 import rentBasisSaga from '../rentbasis/saga';
@@ -13,7 +13,7 @@ export default () =>
   function* rootSaga() {
     yield [
       fork(authSaga),
-      fork(billingSaga),
+      fork(invoiceSaga),
       fork(contactSaga),
       fork(leaseSaga),
       fork(rentBasisSaga),

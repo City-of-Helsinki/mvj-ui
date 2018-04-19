@@ -9,8 +9,8 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import {getLoggedInUser} from '$src/auth/selectors';
-import {receiveBilling} from './leaseSections/billing/actions';
-import {getBilling} from './leaseSections/billing/selectors';
+import {receiveBilling} from './leaseSections/invoice/actions';
+import {getBilling} from './leaseSections/invoice/selectors';
 import {fetchUsers} from '$src/users/actions';
 import {getUsers} from '$src/users/selectors';
 import {
@@ -36,6 +36,7 @@ import {
   getDecisionsFormValues,
   getInspectionsFormTouched,
   getInspectionsFormValues,
+  getInvoices,
   getIsEditMode,
   getIsFetching,
   getIsConstructabilityFormValid,
@@ -61,6 +62,7 @@ import {
   fetchAttributes,
   fetchCommentAttributes,
   fetchComments,
+  fetchInvoices,
   fetchSingleLease,
   hideEditMode,
   patchLease,
@@ -72,10 +74,11 @@ import * as contentHelpers from '../helpers';
 import {
   getAttributeFieldOptions,
   getLabelOfOption,
+  getSearchQuery,
 } from '$util/helpers';
 
-import Billing from './leaseSections/billing/Billing';
-import BillingEdit from './leaseSections/billing/BillingEdit';
+import Billing from './leaseSections/invoice/Billing';
+import BillingEdit from './leaseSections/invoice/BillingEdit';
 import CommentPanel from '$components/commentPanel/CommentPanel';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Constructability from './leaseSections/constructability/Constructability';
@@ -105,7 +108,7 @@ import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 
-import type {Attributes} from '../types';
+import type {Attributes, InvoiceList} from '../types';
 import type {UserList} from '$src/users/types';
 import type {
   Attributes as ContactAttributes,
@@ -137,11 +140,13 @@ type Props = {
   fetchComments: Function,
   fetchCompleteContactList: Function,
   fetchContactAttributes: Function,
+  fetchInvoices: Function,
   fetchSingleLease: Function,
   fetchUsers: Function,
   hideEditMode: Function,
   inspectionsFormValues: Object,
   inspectionsFormTouched: boolean,
+  invoices: InvoiceList,
   isEditMode: boolean,
   isFetching: boolean,
   isConstructabilityFormValid: boolean,
@@ -202,6 +207,7 @@ class PreparerForm extends Component {
       fetchComments,
       fetchCompleteContactList,
       fetchContactAttributes,
+      fetchInvoices,
       fetchSingleLease,
       fetchUsers,
       hideEditMode,
@@ -243,6 +249,7 @@ class PreparerForm extends Component {
     fetchCompleteContactList();
     fetchContactAttributes();
     fetchUsers();
+    fetchInvoices(getSearchQuery({lease: leaseId}));
   }
 
   showModal = (modalName: string) => {
@@ -425,11 +432,14 @@ class PreparerForm extends Component {
       commentsStore,
       contactAttributes,
       currentLease,
+      invoices,
       isEditMode,
       isFetching,
       showEditMode,
       users,
     } = this.props;
+
+    console.log(invoices);
 
     const areFormsValid = this.validateForms();
     const isAnyFormTouched = this.isAnyFormTouched();
@@ -731,6 +741,7 @@ export default flowRight(
         decisionsFormValues: getDecisionsFormValues(state),
         constructabilityFormTouched: getConstructabilityFormTouched(state),
         constructabilityFormValues: getConstructabilityFormValues(state),
+        invoices: getInvoices(state),
         isEditMode: getIsEditMode(state),
         isConstructabilityFormValid: getIsConstructabilityFormValid(state),
         isContractsFormValid: getIsContractsFormValid(state),
@@ -764,6 +775,7 @@ export default flowRight(
       fetchComments,
       fetchCompleteContactList,
       fetchContactAttributes,
+      fetchInvoices,
       fetchSingleLease,
       fetchUsers,
       hideEditMode,

@@ -12,6 +12,7 @@ export type Lease = Object;
 export type LeaseList = Object;
 export type DecisionList = Array<Object>;
 export type DistrictList = Array<Object>;
+export type InvoiceList = Array<Object>;
 export type LeaseId = number;
 export type LessorList = Array<Object>;
 export type Comment = Object;
@@ -42,6 +43,9 @@ export type ReceiveDistrictsAction = Action<'mvj/leases/RECEIVE_DISTRICTS', Dist
 
 export type FetchLessorsAction = Action<'mvj/leases/FETCH_LESSORS', void>;
 export type ReceiveLessorsAction = Action<'mvj/leases/RECEIVE_LESSORS', LessorList>;
+
+export type FetchInvoicesAction = Action<'mvj/leases/FETCH_INVOICES', string>;
+export type ReceiveInvoicesAction = Action<'mvj/leases/RECEIVE_INVOICES', InvoiceList>;
 
 export type FetchCommentAttributesAction = Action<'mvj/leases/FETCH_COMMENT_ATTRIBUTES', void>;
 export type ReceiveCommentAttributesAction = Action<'mvj/leases/RECEIVE_COMMENT_ATTRIBUTES', Attributes>;

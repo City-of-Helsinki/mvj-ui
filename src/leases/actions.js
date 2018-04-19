@@ -37,6 +37,11 @@ import type {
   ReceiveDistrictsAction,
 } from './types';
 import type {
+  InvoiceList,
+  FetchInvoicesAction,
+  ReceiveInvoicesAction,
+} from './types';
+import type {
   LessorList,
   FetchLessorsAction,
   ReceiveLessorsAction,
@@ -121,6 +126,12 @@ export const fetchDistricts = (search: string): FetchDistrictsAction =>
 
 export const receiveDistricts = (districts: DistrictList): ReceiveDistrictsAction =>
   createAction('mvj/leases/RECEIVE_DISTRICTS')(districts);
+
+export const fetchInvoices = (search: string): FetchInvoicesAction =>
+  createAction('mvj/leases/FETCH_INVOICES')(search);
+
+export const receiveInvoices = (invoices: InvoiceList): ReceiveInvoicesAction =>
+  createAction('mvj/leases/RECEIVE_INVOICES')(invoices);
 
 export const fetchLessors = (): FetchLessorsAction =>
   createAction('mvj/leases/FETCH_LESSORS')();

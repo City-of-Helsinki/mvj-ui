@@ -11,12 +11,14 @@ import type {
   LessorList,
   DecisionList,
   DistrictList,
+  InvoiceList,
   ReceiveAttributesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
   ReceiveLessorsAction,
   ReceiveDecisionsAction,
   ReceiveDistrictsAction,
+  ReceiveInvoicesAction,
   ReceiveCommentsAction,
   ReceiveCommentAttributesAction,
   ReceiveCreatedCommentAction,
@@ -119,6 +121,12 @@ const districtsReducer: Reducer<DistrictList> = handleActions({
   },
 }, []);
 
+const invoicesReducer: Reducer<InvoiceList> = handleActions({
+  ['mvj/leases/RECEIVE_INVOICES']: (state: InvoiceList, {payload: invoices}: ReceiveInvoicesAction) => {
+    return invoices;
+  },
+}, []);
+
 const constructabilityFormValidReducer: Reducer<boolean> = handleActions({
   ['mvj/leases/RECEIVE_CONSTRUCTABILITY_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveConstructabilityFormValidAction) => {
     return valid;
@@ -188,6 +196,7 @@ export default combineReducers({
   commentAttributes: commentAttributesReducer,
   contactModalSettings: contactModalSettingsReducer,
   current: currentLeaseReducer,
+  invoices: invoicesReducer,
   isContactModalOpen: isContactModalOpenReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
