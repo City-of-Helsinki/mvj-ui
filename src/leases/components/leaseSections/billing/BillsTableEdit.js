@@ -234,13 +234,13 @@ class BillsTableEdit extends Component {
               <table
                 ref={(ref) => this.tableElement = ref}>
                 <thead>
-                  {headers && headers.length > 0 &&
+                  {headers && !!headers.length &&
                     <tr>
                       {headers.map((header, index) => <th key={index}>{header}<div>{header}</div></th>)}
                     </tr>
                   }
                 </thead>
-                {bills && bills.length > 0 &&
+                {bills && !!bills.length &&
                   <tbody>
                     {bills.map((bill, index) => {
                       return (

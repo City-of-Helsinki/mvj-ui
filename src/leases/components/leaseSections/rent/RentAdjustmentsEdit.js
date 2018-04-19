@@ -34,7 +34,7 @@ const RentAdjustmentsEdit = ({attributes, decisionOptions, fields}: Props) => {
   return (
     <div>
       <BoxItemContainer>
-        {fields && fields.length > 0 && fields.map((discount, index) => {
+        {fields && !!fields.length && fields.map((discount, index) => {
           return (
             <BoxItem className='no-border-on-first-child' key={index}>
               <BoxContentWrapper>

@@ -34,7 +34,7 @@ const LeaseAreaItem = ({
 
   return (
     <div>
-      {fields && fields.length > 0 && fields.map((area, index) => {
+      {fields && !!fields.length && fields.map((area, index) => {
         return (
           <Collapse
             key={index}

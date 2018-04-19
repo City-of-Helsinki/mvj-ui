@@ -4,13 +4,14 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 
+import {getContactFullName} from '$src/leases/helpers';
 import {formatDate} from '$util/helpers';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
 
 import type {Attributes as ContactAttributes} from '$src/contacts/types';
 
 type Props = {
-  contact: Object,
+  contact: ?Object,
   contactAttributes: ContactAttributes,
   tenant: Object,
 };
@@ -20,10 +21,6 @@ const TenantItem = ({
   contactAttributes,
   tenant,
 }: Props) => {
-  const getFullName = () => {
-    return contact.is_business ? contact.business_name : `${contact.last_name} ${contact.first_name}`;
-  };
-
   const getInvoiceManagementShare = () => {
     if(!tenant ||
       !tenant.share_numerator ||
@@ -44,7 +41,7 @@ const TenantItem = ({
       <Row>
         <Column small={12} medium={6} large={4}>
           <label>Asiakas</label>
-          <p>{getFullName()}</p>
+          <p>{getContactFullName(contact)}</p>
         </Column>
         <Column small={12} medium={6} large={2}>
           <label>Osuus murtolukuna</label>

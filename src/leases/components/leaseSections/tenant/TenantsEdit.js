@@ -12,11 +12,11 @@ import {getContactModalSettings, getIsContactModalOpen, getIsTenantsFormValid} f
 import {createContact, editContact, hideContactModal, receiveContactModalSettings, receiveTenantsFormValid} from '$src/leases/actions';
 import {getContactFormValues} from '$src/contacts/selectors';
 
-import type {Attributes as ContactAttributes, ContactList} from '$src/contacts/types';
+import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 import type {Attributes, ContactModalSettings} from '$src/leases/types';
 
 type Props = {
-  allContacts: ContactList,
+  allContacts: Array<Contact>,
   attributes: Attributes,
   change: Function,
   contactAttributes: ContactAttributes,

@@ -29,7 +29,7 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
     'decisions.child.children.type');
   return(
     <div>
-      {fields && fields.length > 0 && fields.map((decision, index) =>
+      {fields && !!fields.length && fields.map((decision, index) =>
         <Collapse
            key={decision.id ? decision.id : `index_${index}`}
           defaultOpen={true}

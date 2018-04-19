@@ -29,7 +29,7 @@ const InspectionItemsEdit = ({
   return(
     <GreenBoxEdit>
       <BoxItemContainer>
-        {fields && fields.length > 0 && fields.map((inspection, index) =>
+        {fields && !!fields.length && fields.map((inspection, index) =>
           <BoxItem
             className='no-border-on-first-child'
             key={inspection.id ? inspection.id : `index_${index}`}>

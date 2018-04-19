@@ -42,7 +42,7 @@ const renderContractChanges = ({
       }
     >
       <BoxItemContainer>
-        {fields && fields.length > 0 && fields.map((change, index) => {
+        {fields && fields.length && fields.map((change, index) => {
           return (
             <BoxItem
               key={change.id ? change.id : `index_${index}`}
@@ -163,7 +163,7 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps) =
   return(
     <div>
       <p className='sub-title'>Panttikirjat</p>
-      {fields && fields.length > 0 &&
+      {fields && fields.length &&
         <div>
           <Row>
             <Column small={4} medium={4} large={2}>
@@ -250,7 +250,7 @@ const ContractItemsEdit = ({
 
   return (
     <div>
-      {fields && fields.length > 0 && fields.map((contract, index) => {
+      {fields && !!fields.length && fields.map((contract, index) => {
         return(
           <Collapse
             key={contract.id ? contract.id : `index_${index}`}

@@ -50,7 +50,7 @@ export const receiveContacts = (contacts: ContactList): ReceiveContactsAction =>
 export const fetchCompleteContactList = (search: string): FetchCompleteContactListAction =>
   createAction('mvj/contacts/FETCH_COMPLETE')(search);
 
-export const receiveCompleteContactList = (contacts: ContactList): ReceiveCompleteContactListAction =>
+export const receiveCompleteContactList = (contacts: Array<Contact>): ReceiveCompleteContactListAction =>
   createAction('mvj/contacts/RECEIVE_COMPLETE')(contacts);
 
 export const receiveNewContactToCompleteList = (contact: Contact): ReceiveNewContactToCompleteListAction =>

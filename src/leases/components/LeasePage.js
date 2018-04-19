@@ -109,13 +109,13 @@ import type {Attributes} from '../types';
 import type {UserList} from '$src/users/types';
 import type {
   Attributes as ContactAttributes,
-  ContactList,
+  Contact,
 } from '$src/contacts/types';
 
 import mockData from '../mock-data.json';
 
 type Props = {
-  allContacts: ContactList,
+  allContacts: Array<Contact>,
   areasFormTouched: boolean,
   areasFormValues: Object,
   attributes: Attributes,
@@ -450,7 +450,7 @@ class PreparerForm extends Component {
     const comments = contentHelpers.getContentComments(commentsStore);
 
     let sum_areas = 0;
-    areas && areas.length > 0 && areas.map((area) =>
+    areas && !!areas.length && areas.map((area) =>
       sum_areas = sum_areas + area.area
     );
 

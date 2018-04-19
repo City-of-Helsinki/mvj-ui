@@ -92,7 +92,7 @@ class Search extends Component {
       type: query.type ? query.type.toUpperCase() : '',
     });
 
-    if(toArray(query).length > 0 && !query.keyword) {
+    if(!!toArray(query).length && !query.keyword) {
       this.setState({
         isBasicSearch: false,
       });

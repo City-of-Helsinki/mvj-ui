@@ -18,18 +18,18 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
-import {isTenantActive} from '$src/leases/helpers';
+import {getContactById, isTenantActive} from '$src/leases/helpers';
 import {getContactOptions} from '$util/helpers';
 import {getTenantsFormValues} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
 import {initializeContactForm} from '$src/contacts/actions';
 
-import type {Attributes as ContactAttributes, ContactList} from '$src/contacts/types';
+import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  allContacts: ContactList,
+  allContacts: Array<Contact>,
   attributes: Attributes,
   contactAttributes: ContactAttributes,
   fields: any,
@@ -49,18 +49,12 @@ const TenantItemsEdit = ({
   receiveContactModalSettings,
   showContactModal,
 }: Props) => {
-
-  const findContact = (id: string) => {
-    if(!allContacts || !allContacts.length) {
-      return null;
-    }
-    return allContacts.find((x) => x.id === id);
-  };
   const contactOptions = getContactOptions(allContacts);
+
   return (
     <div>
       {fields && !!fields.length && fields.map((tenant, index) => {
-        const contact = findContact(get(formValues, `${tenant}.tenant.contact`));
+        const contact = getContactById(allContacts, get(formValues, `${tenant}.tenant.contact`));
         const isActive = isTenantActive(get(formValues, `${tenant}.tenant`));
 
         return (

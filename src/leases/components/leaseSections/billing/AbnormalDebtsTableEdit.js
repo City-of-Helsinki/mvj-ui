@@ -131,7 +131,7 @@ class AbnormalDebtsTableEdit extends Component {
             <div className="table-fixed-header__header-border" />
             <table ref={(ref) => this.tableElement = ref}>
               <thead>
-                {headers && headers.length > 0 &&
+                {headers && !!headers.length &&
                   <tr>
                     {headers.map((header, index) => <th key={index}>{header}<div>{header}</div></th>)}
                   </tr>

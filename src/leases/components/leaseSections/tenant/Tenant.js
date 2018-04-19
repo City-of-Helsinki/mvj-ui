@@ -8,18 +8,13 @@ import Collapse from '$components/collapse/Collapse';
 import OtherTenantItem from './OtherTenantItem';
 import TenantItem from './TenantItem';
 import {formatDateRange} from '$util/helpers';
-import {isTenantActive} from '$src/leases/helpers';
+import {getContactById, getContactFullName, isTenantActive} from '$src/leases/helpers';
 
-import type {
-  Attributes as ContactAttributes,
-  ContactList,
-} from '$src/contacts/types';
-import type {
-  Attributes,
-} from '$src/leases/types';
+import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  allContacts: ContactList,
+  allContacts: Array<Contact>,
   attributes: Attributes,
   contactAttributes: ContactAttributes,
   tenant: Object,
@@ -31,23 +26,8 @@ const Tenant = ({
   contactAttributes,
   tenant,
 }: Props) => {
-  // const {other_persons} = tenant;
-  const findContact = () => {
-    if(!allContacts || !allContacts.length) {
-      return {};
-    }
-    return allContacts.find((x) => x.id === get(tenant, 'tenant.contact'));
-  };
-
-  const contact: Object = findContact();
+  const contact = getContactById(allContacts, get(tenant, 'tenant.contact'));
   const isActive = isTenantActive(get(tenant, 'tenant'));
-
-  const getFullName = () => {
-    if(!contact) {
-      return '';
-    }
-    return contact.is_business ? contact.business_name : `${contact.last_name} ${contact.first_name}`;
-  };
 
   return (
     <Collapse
@@ -68,7 +48,7 @@ const Tenant = ({
         </div>
       }
       headerTitle={
-        <h3 className='collapse__header-title'>{getFullName()}</h3>
+        <h3 className='collapse__header-title'>{getContactFullName(contact)}</h3>
       }
     >
       <div>

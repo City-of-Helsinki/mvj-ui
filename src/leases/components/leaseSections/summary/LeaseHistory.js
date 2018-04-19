@@ -10,7 +10,7 @@ type Props = {
 const LeaseHistory = ({history}: Props) => {
   return (
     <div className="lease-history__component">
-      {history && history.length > 0 && history.map((historyItem, index) => {
+      {history && !!history.length && history.map((historyItem, index) => {
         return (
           <LeaseHistoryItem
             key={index}

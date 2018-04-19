@@ -17,19 +17,19 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import IconButton from '$components/button/IconButton';
 import RemoveButton from '$components/form/RemoveButton';
-import {isTenantActive} from '$src/leases/helpers';
-import {getTenantsFormValues} from '$src/leases/selectors';
-import {getAttributeFieldOptions, getContactOptions} from '$util/helpers';
-import {TenantContactType} from '$src/leases/enums';
 import {genericValidator} from '$components/form/validations';
 import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
+import {getTenantsFormValues} from '$src/leases/selectors';
+import {TenantContactType} from '$src/leases/enums';
 import {initializeContactForm} from '$src/contacts/actions';
+import {getContactById, isTenantActive} from '$src/leases/helpers';
+import {getAttributeFieldOptions, getContactOptions} from '$util/helpers';
 
-import type {Attributes as ContactAttributes, ContactList} from '$src/contacts/types';
+import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  allContacts: ContactList,
+  allContacts: Array<Contact>,
   attributes: Attributes,
   contactAttributes: ContactAttributes,
   fields: any,
@@ -49,12 +49,6 @@ const OtherTenantItemsEdit = ({
   receiveContactModalSettings,
   showContactModal,
 }: Props) => {
-  const findContact = (id: string) => {
-    if(!allContacts || !allContacts.length) {
-      return null;
-    }
-    return allContacts.find((x) => x.id === id);
-  };
   const contactOptions = getContactOptions(allContacts);
   const tenantTypeOptions = getAttributeFieldOptions(attributes,
     'tenants.child.children.tenantcontact_set.child.children.type').filter((x) => x.value !== TenantContactType.TENANT);
@@ -62,7 +56,7 @@ const OtherTenantItemsEdit = ({
   return (
     <div>
       {fields && !!fields.length && fields.map((tenant, index) => {
-        const contact = findContact(get(formValues, `${tenant}.contact`));
+        const contact = getContactById(allContacts, get(formValues, `${tenant}.contact`));
         const isActive = isTenantActive(get(formValues, tenant));
 
         return (

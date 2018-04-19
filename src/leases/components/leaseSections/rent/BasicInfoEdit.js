@@ -28,7 +28,7 @@ const renderDueDates = ({attributes, fields}: DueDatesProps) => {
           <label className="mvj-form-field-label">Eräpäivät</label>
         </Column>
       </Row>
-      {fields && fields.length > 0 && fields.map((due_date, index) => {
+      {fields && !!fields.length && fields.map((due_date, index) => {
         return (
           <Row key={index}>
             <Column small={9}>

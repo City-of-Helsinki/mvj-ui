@@ -43,16 +43,16 @@ const contactsListReducer: Reducer<ContactList> = handleActions({
   },
 }, {});
 
-const completeContactListReducer: Reducer<ContactList> = handleActions({
-  ['mvj/contacts/RECEIVE_COMPLETE']: (state: ContactList, {payload: contacts}: ReceiveCompleteContactListAction) => {
+const completeContactListReducer: Reducer<Array<Contact>> = handleActions({
+  ['mvj/contacts/RECEIVE_COMPLETE']: (state: Array<Contact>, {payload: contacts}: ReceiveCompleteContactListAction) => {
     return contacts;
   },
-  ['mvj/contacts/RECEIVE_NEW_TO_COMPLETE']: (state: ContactList, {payload: contact}: ReceiveNewContactToCompleteListAction) => {
+  ['mvj/contacts/RECEIVE_NEW_TO_COMPLETE']: (state: Array<Contact>, {payload: contact}: ReceiveNewContactToCompleteListAction) => {
     const contacts = [...state];
     contacts.push(contact);
     return contacts;
   },
-  ['mvj/contacts/RECEIVE_EDITED_TO_COMPLETE']: (state: ContactList, {payload: contact}: ReceiveEditedContactToCompleteListAction) => {
+  ['mvj/contacts/RECEIVE_EDITED_TO_COMPLETE']: (state: Array<Contact>, {payload: contact}: ReceiveEditedContactToCompleteListAction) => {
     const contacts = [...state];
     const index = findIndex(contacts, (x) => x.id === contact.id);
     if(index !== -1) {
@@ -60,7 +60,7 @@ const completeContactListReducer: Reducer<ContactList> = handleActions({
     }
     return contacts;
   },
-}, {});
+}, []);
 
 const contactReducer: Reducer<Contact> = handleActions({
   ['mvj/contacts/RECEIVE_SINGLE']: (state: Contact, {payload: contact}: ReceiveSingleContactAction) => {

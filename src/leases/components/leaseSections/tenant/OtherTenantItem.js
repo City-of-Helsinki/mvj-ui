@@ -4,19 +4,16 @@ import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
-import {formatDate, formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, formatDateRange, getAttributeFieldOptions, getContactById, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
-import {isTenantActive} from '$src/leases/helpers';
+import {getContactFullName, isTenantActive} from '$src/leases/helpers';
 
-import type {
-  Attributes as ContactAttributes,
-  ContactList,
-} from '$src/contacts/types';
+import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  allContacts: ContactList,
+  allContacts: Array<Contact>,
   attributes: Attributes,
   contactAttributes: ContactAttributes,
   tenant: Object,
@@ -28,22 +25,8 @@ const OtherTenantItem = ({
   contactAttributes,
   tenant,
 }: Props) => {
-  const getFullName = (contact: Object) => {
-    if(!contact) {
-      return '';
-    }
-    return contact.is_business ? contact.business_name : `${contact.last_name} ${contact.first_name}`;
-  };
   const tenantTypeOptions = getAttributeFieldOptions(attributes, 'tenants.child.children.tenantcontact_set.child.children.type');
-
-  const findContact = () => {
-    if(!allContacts || !allContacts.length) {
-      return {};
-    }
-    return allContacts.find((x) => x.id === get(tenant, 'contact'));
-  };
-
-  const contact: Object = findContact();
+  const contact = getContactById(allContacts, get(tenant, 'contact'));
   const isActive = isTenantActive(tenant);
 
   return (
@@ -65,7 +48,7 @@ const OtherTenantItem = ({
       <Row>
         <Column small={12} medium={6} large={4}>
           <label>Asiakas</label>
-          <p>{getFullName(contact)}</p>
+          <p>{getContactFullName(contact)}</p>
         </Column>
         <Column small={12} medium={6} large={2}>
           <label>Rooli</label>

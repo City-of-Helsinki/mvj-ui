@@ -3,11 +3,11 @@ import React from 'react';
 
 import Tenant from './Tenant';
 
-import type {Attributes as ContactAttributes, ContactList} from '$src/contacts/types';
+import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  allContacts: ContactList,
+  allContacts: Array<Contact>,
   attributes: Attributes,
   contactAttributes: ContactAttributes,
   tenants: Array<Object>,
