@@ -1,5 +1,5 @@
-.billing {
-  &__add-bill {
+.invoice {
+  &__add-invoice {
     margin-top: 0;
     margin-bottom: rem-calc(30px);
   }
@@ -8,7 +8,7 @@
     margin-top: rem-calc(20px);
   }
 
-  &__bill-table {
+  &__invoice-table {
     position: relative;
     z-index: 3;
     overflow: hidden;
@@ -19,18 +19,10 @@
       @include transition(0.5s, all, ease-in-out);
     }
 
-    .billing-fixed-table {
+    .invoice-fixed-table {
       .table-fixed-header__container {
         height: 1000px;
         overflow: auto;
-
-        // @include transition(0.5s, max-height, ease-in-out);
-      }
-
-      &.is-open {
-        .table-fixed-header__container {
-          // @include transition(0.5s, max-height, ease-in-out);
-        }
       }
 
       table tbody tr {

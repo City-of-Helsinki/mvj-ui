@@ -1242,6 +1242,16 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
 };
 
 // GERERIC LEASE HELPER FUNCTIONS
+export const getInvoiceSharePercentage = (invoice: Object, precision: number = 0) => {
+  const numerator = get(invoice, 'share_numerator');
+  const denominator = get(invoice, 'share_denominator');
+
+  if((numerator !== 0 && !numerator || !denominator)) {
+    return '';
+  }
+  return (Number(numerator)/Number(denominator)*100).toFixed(precision);
+};
+
 export const isRentActive = (rent: Object) => {
   const now = moment();
   const startDate = get(rent, 'start_date');

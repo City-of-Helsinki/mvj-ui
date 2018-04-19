@@ -21,6 +21,8 @@ import {
   getAttributes as getContactAttributes,
   getCompleteContactList,
 } from '$src/contacts/selectors';
+import {fetchAttributes as fetchInvoiceAttributes} from '$src/invoices/actions';
+import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 import {
   getAreasFormTouched,
   getAreasFormValues,
@@ -77,7 +79,6 @@ import {
   getSearchQuery,
 } from '$util/helpers';
 
-import Billing from './leaseSections/invoice/Billing';
 import BillingEdit from './leaseSections/invoice/BillingEdit';
 import CommentPanel from '$components/commentPanel/CommentPanel';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
@@ -90,6 +91,7 @@ import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
 import Divider from '$components/content/Divider';
 import EditableMap from '$components/map/EditableMap';
+import Invoices from './leaseSections/invoice/Invoices';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
 import LeaseHistory from './leaseSections/summary/LeaseHistory';
@@ -114,6 +116,7 @@ import type {
   Attributes as ContactAttributes,
   Contact,
 } from '$src/contacts/types';
+import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 import mockData from '../mock-data.json';
 
@@ -140,12 +143,14 @@ type Props = {
   fetchComments: Function,
   fetchCompleteContactList: Function,
   fetchContactAttributes: Function,
+  fetchInvoiceAttributes: Function,
   fetchInvoices: Function,
   fetchSingleLease: Function,
   fetchUsers: Function,
   hideEditMode: Function,
   inspectionsFormValues: Object,
   inspectionsFormTouched: boolean,
+  invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
   isEditMode: boolean,
   isFetching: boolean,
@@ -207,6 +212,7 @@ class PreparerForm extends Component {
       fetchComments,
       fetchCompleteContactList,
       fetchContactAttributes,
+      fetchInvoiceAttributes,
       fetchInvoices,
       fetchSingleLease,
       fetchUsers,
@@ -249,6 +255,8 @@ class PreparerForm extends Component {
     fetchCompleteContactList();
     fetchContactAttributes();
     fetchUsers();
+
+    fetchInvoiceAttributes();
     fetchInvoices(getSearchQuery({lease: leaseId}));
   }
 
@@ -432,14 +440,13 @@ class PreparerForm extends Component {
       commentsStore,
       contactAttributes,
       currentLease,
+      invoiceAttributes,
       invoices,
       isEditMode,
       isFetching,
       showEditMode,
       users,
     } = this.props;
-
-    console.log(invoices);
 
     const areFormsValid = this.validateForms();
     const isAnyFormTouched = this.isAnyFormTouched();
@@ -473,7 +480,7 @@ class PreparerForm extends Component {
     if(isEmpty(currentLease)) {
       return null;
     }
-
+    console.log('invoices', invoices);
     return (
       <PageContainer className='lease-page'>
         <ConfirmationModal
@@ -704,7 +711,13 @@ class PreparerForm extends Component {
             <ContentContainer>
               {isEditMode
                 ? <BillingEdit billing={billing}/>
-                : <Billing billing={billing}/>
+                : (
+                  <Invoices
+                    invoiceAttributes={invoiceAttributes}
+                    invoices={invoices}
+                    isInvoicingEnabled={currentLease.is_invoicing_enabled}
+                  />
+                )
               }
             </ContentContainer>
           </TabPane>
@@ -741,6 +754,7 @@ export default flowRight(
         decisionsFormValues: getDecisionsFormValues(state),
         constructabilityFormTouched: getConstructabilityFormTouched(state),
         constructabilityFormValues: getConstructabilityFormValues(state),
+        invoiceAttributes: getInvoiceAttributes(state),
         invoices: getInvoices(state),
         isEditMode: getIsEditMode(state),
         isConstructabilityFormValid: getIsConstructabilityFormValid(state),
@@ -775,6 +789,7 @@ export default flowRight(
       fetchComments,
       fetchCompleteContactList,
       fetchContactAttributes,
+      fetchInvoiceAttributes,
       fetchInvoices,
       fetchSingleLease,
       fetchUsers,
