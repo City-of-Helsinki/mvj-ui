@@ -2,7 +2,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {destroy, initialize} from 'redux-form';
+import findIndex from 'lodash/findIndex';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
@@ -10,9 +12,10 @@ import scrollToComponent from 'react-scroll-to-component';
 
 // import {formatBillingBillDb} from '$src/leases/helpers';
 // import {editBill, refundBill} from './actions';
+import {patchInvoice} from '$src/invoices/actions';
 import InvoiceModalEdit from './InvoiceModalEdit';
-import {getInvoiceSharePercentage} from '$src/leases/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
+import {getEditedInvoiceForDb, getInvoiceSharePercentage} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDateRange,
@@ -22,8 +25,7 @@ import {
   getLabelOfOption,
 } from '$util/helpers';
 
-import type {InvoiceList} from '$src/leases/types';
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
 const MODAL_HEIGHT = 480;
 const MODAL_WIDTH = 700;
@@ -34,12 +36,12 @@ type Props = {
   initialize: Function,
   invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
+  patchInvoice: Function,
   refundBill: Function,
 }
 
 type State = {
   selectedInvoice: ?Object,
-  selectedInvoiceIndex: number,
   showAllColumns: boolean,
   showModal: boolean,
   tableHeight: ?number,
@@ -56,7 +58,6 @@ class InvoicesTableEdit extends Component {
 
   state: State = {
     selectedInvoice: null,
-    selectedInvoiceIndex: -1,
     showAllColumns: true,
     showModal: false,
     tableHeight: null,
@@ -120,13 +121,14 @@ class InvoicesTableEdit extends Component {
 
   handleKeyCodeDown = () => {
     const {invoices} = this.props;
-    const {selectedInvoiceIndex} = this.state;
+    const {selectedInvoice} = this.state;
 
-    if(selectedInvoiceIndex < invoices.length - 1) {
-      const newIndex = selectedInvoiceIndex + 1;
+    const index = findIndex(invoices, (x) => x.id === get(selectedInvoice, 'id'));
+
+    if(index < invoices.length - 1) {
+      const newIndex = index + 1;
       this.setState({
         selectedInvoice: invoices[newIndex],
-        selectedInvoiceIndex: newIndex,
         showModal: true,
       });
       this.initilizeEditInvoiceForm(invoices[newIndex]);
@@ -135,13 +137,13 @@ class InvoicesTableEdit extends Component {
 
   handleKeyCodeUp = () => {
     const {invoices} = this.props;
-    const {selectedInvoiceIndex} = this.state;
+    const {selectedInvoice} = this.state;
 
-    if(selectedInvoiceIndex > 0) {
-      const newIndex = selectedInvoiceIndex - 1;
+    const index = findIndex(invoices, (x) => x.id === get(selectedInvoice, 'id'));
+    if(index > 0) {
+      const newIndex = index - 1;
       this.setState({
         selectedInvoice: invoices[newIndex],
-        selectedInvoiceIndex: newIndex,
         showModal: true,
       });
       this.initilizeEditInvoiceForm(invoices[newIndex]);
@@ -161,7 +163,6 @@ class InvoicesTableEdit extends Component {
     if(invoices && !!invoices.length) {
       this.setState({
         selectedInvoice: invoices[index],
-        selectedInvoiceIndex: index,
         showAllColumns: false,
         showModal: true,
       });
@@ -186,27 +187,20 @@ class InvoicesTableEdit extends Component {
     //
     // this.setState({
     //   selectedInvoice: null,
-    //   selectedInvoiceIndex: -1,
     //   showModal: false,
     // });
     console.log(invoice);
     alert('TODO: Refund invoice');
   }
 
-  saveInvoice = (invoice: Object) => {
-    // const {editBill} = this.props;
-    // const newBill:Object = formatBillingBillDb(invoice);
-    //
-    // newBill.arrayIndex = index;
-    // editBill(newBill);
-    //
+  editInvoice = (invoice: Object) => {
     // this.setState({
     //   selectedInvoice: null,
-    //   selectedInvoiceIndex: -1,
     //   showModal: false,
     // });
-    console.log(invoice);
-    alert('TODO: Save invoice');
+    const {patchInvoice} = this.props;
+
+    patchInvoice(getEditedInvoiceForDb(invoice));
   }
 
   getTableHeaders = () => {
@@ -242,7 +236,6 @@ class InvoicesTableEdit extends Component {
     } = this.props;
     const {
       selectedInvoice,
-      selectedInvoiceIndex,
       showAllColumns,
       showModal,
       tableHeight,
@@ -275,7 +268,7 @@ class InvoicesTableEdit extends Component {
                     {invoices.map((invoice, index) => {
                       return (
                         <tr
-                          className={classNames({'selected': selectedInvoiceIndex === index})}
+                          className={classNames({'selected': invoice.id === get(selectedInvoice, 'id')})}
                           key={index}
                           onClick={() => {this.showBillModal(index);}}
                           >
@@ -321,13 +314,12 @@ class InvoicesTableEdit extends Component {
           invoiceAttributes={invoiceAttributes}
           onClose={() => this.setState({
             selectedInvoice: null,
-            selectedInvoiceIndex: -1,
             showModal: false,
           })}
           onKeyCodeDown={() => this.handleKeyCodeDown()}
           onKeyCodeUp={() => this.handleKeyCodeUp()}
           onRefund={(invoice) => this.refundSingle(invoice)}
-          onSave={(invoice) => this.saveInvoice(invoice)}
+          onSave={(invoice) => this.editInvoice(invoice)}
           show={showModal}
         />
       </div>
@@ -340,8 +332,8 @@ export default flowRight(
     null,
     {
       destroy,
-      // editBill,
       initialize,
+      patchInvoice,
       // refundBill,
     }
   ),

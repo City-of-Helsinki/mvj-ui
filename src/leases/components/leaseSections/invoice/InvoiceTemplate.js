@@ -10,8 +10,8 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {getInvoiceSharePercentage} from '$src/leases/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
+import {getInvoiceSharePercentage} from '$src/invoices/helpers';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 

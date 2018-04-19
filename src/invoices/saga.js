@@ -2,10 +2,21 @@
 
 import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
+import {SubmissionError} from 'redux-form';
 
-import {receiveAttributes} from './actions';
-import {fetchAttributes} from './requests';
-import {receiveError} from '../api/actions';
+import {displayUIMessage, getSearchQuery} from '$util/helpers';
+import {
+  fetchInvoices as fetchInvoicesAction,
+  receiveAttributes,
+  receiveInvoices,
+  notFound,
+} from './actions';
+import {
+  fetchAttributes,
+  fetchInvoices,
+  patchInvoice,
+} from './requests';
+import {receiveError} from '$src/api/actions';
 
 function* fetchAttributesSaga(): Generator<> {
   try {
@@ -26,10 +37,62 @@ function* fetchAttributesSaga(): Generator<> {
   }
 }
 
+function* fetchInvoicesSaga({payload: search}): Generator<> {
+  try {
+    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchInvoices, search);
+    let invoices = body.results;
+    while(statusCode === 200 && body.next) {
+      const {response: {status}, bodyAsJson} = yield call(fetchInvoices, `?${body.next.split('?').pop()}`);
+      statusCode = status;
+      body = bodyAsJson;
+      invoices = [...invoices, ...body.results];
+    }
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveInvoices(invoices));
+        break;
+      case 404:
+      case 500:
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch lessors with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
+function* patchInvoiceSaga({payload: invoice}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(patchInvoice, invoice);
+
+    switch (statusCode) {
+      case 200:
+        yield put(fetchInvoicesAction(getSearchQuery({lease: invoice.lease})));
+        displayUIMessage({title: 'Lasku tallennettu', body: 'Lasku on tallennettu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
       yield takeLatest('mvj/invoices/FETCH_ATTRIBUTES', fetchAttributesSaga);
+      yield takeLatest('mvj/invoices/FETCH_ALL', fetchInvoicesSaga);
+      yield takeLatest('mvj/invoices/PATCH', patchInvoiceSaga);
     }),
   ];
 }

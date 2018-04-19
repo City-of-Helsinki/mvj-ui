@@ -19,7 +19,6 @@ import {
   receiveDecisions,
   receiveDistricts,
   receiveEditedComment,
-  receiveInvoices,
   receiveLeases,
   receiveLessors,
   receiveSingleLease,
@@ -33,7 +32,6 @@ import {
   fetchComments,
   fetchDecisions,
   fetchDistricts,
-  fetchInvoices,
   fetchLeases,
   fetchLessors,
   fetchSingleLease,
@@ -321,31 +319,6 @@ function* fetchDistrictsSaga({payload: search}): Generator<> {
   }
 }
 
-function* fetchInvoicesSaga({payload: search}): Generator<> {
-  try {
-    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchInvoices, search);
-    let invoices = body.results;
-    while(statusCode === 200 && body.next) {
-      const {response: {status}, bodyAsJson} = yield call(fetchInvoices, `?${body.next.split('?').pop()}`);
-      statusCode = status;
-      body = bodyAsJson;
-      invoices = [...invoices, ...body.results];
-    }
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveInvoices(invoices));
-        break;
-      case 404:
-      case 500:
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch lessors with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
 function* fetchLessorsSaga(): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLessors);
@@ -467,7 +440,6 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/EDIT_CONTACT', editContactSaga);
       yield takeLatest('mvj/leases/FETCH_DECISIONS', fetchDecisionsSaga);
       yield takeLatest('mvj/leases/FETCH_DISTRICTS', fetchDistrictsSaga);
-      yield takeLatest('mvj/leases/FETCH_INVOICES', fetchInvoicesSaga);
       yield takeLatest('mvj/leases/FETCH_LESSORS', fetchLessorsSaga);
       yield takeLatest('mvj/leases/FETCH_COMMENT_ATTRIBUTES', fetchCommentAttributesSaga);
       yield takeLatest('mvj/leases/FETCH_COMMENTS', fetchCommentsSaga);

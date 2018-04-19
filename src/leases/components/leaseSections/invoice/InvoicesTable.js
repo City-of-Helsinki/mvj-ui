@@ -5,8 +5,8 @@ import classNames from 'classnames';
 import scrollToComponent from 'react-scroll-to-component';
 
 import InvoiceModal from './InvoiceModal';
-import {getInvoiceSharePercentage} from '$src/leases/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
+import {getInvoiceSharePercentage} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDateRange,
@@ -16,8 +16,7 @@ import {
   getLabelOfOption,
 } from '$util/helpers';
 
-import type {InvoiceList} from '$src/leases/types';
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
 const MODAL_HEIGHT = 480;
 const MODAL_WIDTH = 700;

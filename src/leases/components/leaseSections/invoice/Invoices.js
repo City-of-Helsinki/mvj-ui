@@ -6,8 +6,7 @@ import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import RightSubtitle from '$components/content/RightSubtitle';
 
-import type {InvoiceList} from '$src/leases/types';
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
 type Props = {
   invoiceAttributes: InvoiceAttributes,

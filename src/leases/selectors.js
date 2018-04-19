@@ -8,7 +8,6 @@ import type {
   ContactModalSettings,
   DecisionList,
   DistrictList,
-  InvoiceList,
   Lease,
   LeaseList,
   LeaseState,
@@ -68,9 +67,6 @@ export const getDecisions: Selector<DecisionList, void> = (state: LeaseState): D
 
 export const getDistricts: Selector<DistrictList, void> = (state: LeaseState): DistrictList =>
   state.lease.districts;
-
-export const getInvoices: Selector<InvoiceList, void> = (state: LeaseState): InvoiceList =>
-  state.lease.invoices;
 
 export const getLessors: Selector<LessorList, void> = (state: LeaseState): LessorList =>
   state.lease.lessors;

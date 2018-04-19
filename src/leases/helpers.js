@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
+import {getContactFullName} from '$src/contacts/helpers';
 import {
   ConstructabilityType,
   TenantContactType,
@@ -31,7 +32,8 @@ export const getContentLeaseTenant = (lease: Object) => {
   if(!tenant) {
     return null;
   }
-  return get(tenant, 'contact.is_business') ? get(tenant, 'contact.business_name') : `${get(tenant, 'contact.last_name', '')} ${get(tenant, 'contact.first_name', '')}`;
+
+  return getContactFullName(tenant.contact);
 };
 
 export const getContentLeaseAddress = (lease: Object) => {
@@ -590,89 +592,6 @@ export const getContentBasisOfRents = (lease: Object) => {
 
 // OLD HELPER FUNCTIONS
 //TODO: Remove mock data helper function when contruction eligibility tab is added to API
-export const getContentBillingTenant = (tenant: Object) => {
-  return {
-    bill_share: get(tenant, 'bill_share'),
-    bill_share_amount: get(tenant, 'bill_share_amount'),
-    firstname: get(tenant, 'firstname'),
-    lastname: get(tenant, 'lastname'),
-  };
-};
-export const getContentBillingAbnormalDebts = (debts: Array<Object>) => {
-  if(!debts || debts.length === 0) {
-    return [];
-  }
-
-  return debts.map((debt) => {
-    return {
-      bill_number: get(debt, 'bill_number'),
-      billing_period_end_date: get(debt, 'billing_period_end_date'),
-      billing_period_start_date: get(debt, 'billing_period_start_date'),
-      capital_amount: get(debt, 'capital_amount'),
-      demand_date: get(debt, 'demand_date'),
-      due_date: get(debt, 'due_date'),
-      info: get(debt, 'info'),
-      invoiced_amount: get(debt, 'invoiced_amount'),
-      invoicing_date: get(debt, 'invoicing_date'),
-      invoice_method: get(debt, 'invoice_method'),
-      invoice_type: get(debt, 'invoice_type'),
-      payment_demand_list: get(debt, 'payment_demand_list'),
-      recovery_cost: get(debt, 'recovery_cost'),
-      SAP_number: get(debt, 'SAP_number'),
-      sent_to_SAP_date: debt.sent_to_SAP_date,
-      status: get(debt, 'status'),
-      suspension_date: debt.suspension_date,
-      tenant: getContentBillingTenant(get(debt, 'tenant')),
-      type: get(debt, 'type'),
-      unpaid_amount: get(debt, 'unpaid_amount'),
-    };
-  });
-};
-
-export const getContentBillingBills = (bills: Array<Object>) => {
-  if(!bills || bills.length === 0) {
-    return [];
-  }
-
-  return bills.map((bill) => {
-    return {
-      bill_number: get(bill, 'bill_number'),
-      billing_period_end_date: get(bill, 'billing_period_end_date'),
-      billing_period_start_date: get(bill, 'billing_period_start_date'),
-      capital_amount: get(bill, 'capital_amount'),
-      demand_date: get(bill, 'demand_date'),
-      due_date: get(bill, 'due_date'),
-      info: get(bill, 'info'),
-      invoiced_amount: get(bill, 'invoiced_amount'),
-      invoicing_date: get(bill, 'invoicing_date'),
-      invoice_method: get(bill, 'invoice_method'),
-      invoice_type: get(bill, 'invoice_type'),
-      payment_demand_list: get(bill, 'payment_demand_list'),
-      recovery_cost: get(bill, 'recovery_cost'),
-      SAP_number: get(bill, 'SAP_number'),
-      sent_to_SAP_date: get(bill, 'sent_to_SAP_date'),
-      status: get(bill, 'status'),
-      suspension_date: get(bill, 'suspension_date'),
-      tenant: getContentBillingTenant(get(bill, 'tenant')),
-      type: get(bill, 'type'),
-      unpaid_amount: get(bill, 'unpaid_amount'),
-    };
-  });
-};
-
-export const getContentBilling = (lease: Object) => {
-  const billing = get(lease, 'billing');
-  if(!billing) {
-    return {};
-  }
-
-  return {
-    abnormal_debts: getContentBillingAbnormalDebts(get(billing, 'abnormal_debts')),
-    invoicing_started: get(billing, 'invoicing_started'),
-    bills: getContentBillingBills(get(billing, 'bills')),
-  };
-};
-
 export const getFullAddress = (item: Object) => {
   if(!get(item, 'zip_code') && !get(item, 'town')) {
     return get(item, 'address');
@@ -727,31 +646,6 @@ export const formatBillingNewBill = (bill: Object) => {
     SAP_number: formatDecimalNumberForDb(get(bill, 'SAP_number')),
     sent_to_SAP_date: formatDateDb(get(bill, 'sent_to_SAP_date')),
     status: get(bill, 'status'),
-    tenant: formatBillingBillTenant(get(bill, 'tenant', {})),
-    type: get(bill, 'type'),
-    unpaid_amount: formatDecimalNumberForDb(get(bill, 'unpaid_amount')),
-  };
-};
-
-export const formatBillingBillDb = (bill: Object) => {
-  return {
-    bill_number: formatDecimalNumberForDb(get(bill, 'bill_number')),
-    billing_period_end_date: formatDateDb(get(bill, 'billing_period_end_date')),
-    billing_period_start_date: formatDateDb(get(bill, 'billing_period_start_date')),
-    capital_amount: formatDecimalNumberForDb(get(bill, 'capital_amount')),
-    demand_date: formatDateDb(get(bill, 'demand_date')),
-    due_date: formatDateDb(get(bill, 'due_date')),
-    info: get(bill, 'info'),
-    invoiced_amount: formatDecimalNumberForDb(get(bill, 'invoiced_amount')),
-    invoicing_date: formatDateDb(get(bill, 'invoicing_date')),
-    invoice_method: get(bill, 'invoice_method'),
-    invoice_type: get(bill, 'invoice_type'),
-    payment_demand_list: get(bill, 'payment_demand_list'),
-    recovery_cost: formatDecimalNumberForDb(get(bill, 'recovery_cost')),
-    SAP_number: formatDecimalNumberForDb(get(bill, 'SAP_number')),
-    sent_to_SAP_date: formatDateDb(get(bill, 'sent_to_SAP_date')),
-    status: get(bill, 'status'),
-    suspension_date: formatDateDb(get(bill, 'suspension_date')),
     tenant: formatBillingBillTenant(get(bill, 'tenant', {})),
     type: get(bill, 'type'),
     unpaid_amount: formatDecimalNumberForDb(get(bill, 'unpaid_amount')),
@@ -1242,16 +1136,6 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
 };
 
 // GERERIC LEASE HELPER FUNCTIONS
-export const getInvoiceSharePercentage = (invoice: Object, precision: number = 0) => {
-  const numerator = get(invoice, 'share_numerator');
-  const denominator = get(invoice, 'share_denominator');
-
-  if((numerator !== 0 && !numerator || !denominator)) {
-    return '';
-  }
-  return (Number(numerator)/Number(denominator)*100).toFixed(precision);
-};
-
 export const isRentActive = (rent: Object) => {
   const now = moment();
   const startDate = get(rent, 'start_date');

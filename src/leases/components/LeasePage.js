@@ -19,8 +19,8 @@ import {
   getAttributes as getContactAttributes,
   getCompleteContactList,
 } from '$src/contacts/selectors';
-import {fetchAttributes as fetchInvoiceAttributes} from '$src/invoices/actions';
-import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
+import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
+import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/selectors';
 import {
   getAreasFormTouched,
   getAreasFormValues,
@@ -36,7 +36,6 @@ import {
   getDecisionsFormValues,
   getInspectionsFormTouched,
   getInspectionsFormValues,
-  getInvoices,
   getIsEditMode,
   getIsFetching,
   getIsConstructabilityFormValid,
@@ -62,7 +61,6 @@ import {
   fetchAttributes,
   fetchCommentAttributes,
   fetchComments,
-  fetchInvoices,
   fetchSingleLease,
   hideEditMode,
   patchLease,
@@ -108,13 +106,10 @@ import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 
-import type {Attributes, InvoiceList} from '../types';
+import type {Attributes} from '../types';
 import type {UserList} from '$src/users/types';
-import type {
-  Attributes as ContactAttributes,
-  Contact,
-} from '$src/contacts/types';
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
+import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
 import mockData from '../mock-data.json';
 

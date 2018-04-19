@@ -7,7 +7,6 @@ import flowRight from 'lodash/flowRight';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FieldTypeTextArea from '$components/form/FieldTypeTextArea';
-
 import {
   formatDate,
   formatDecimalNumber,
@@ -15,8 +14,8 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {getInvoiceSharePercentage} from '$src/leases/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
+import {getInvoiceSharePercentage} from '$src/invoices/helpers';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
@@ -170,7 +169,7 @@ const EditBillForm = ({
           <Field
             component={FieldTypeTextArea}
             label="Tiedote"
-            name="info"
+            name="notes"
             rows={2}
           />
         </Column>

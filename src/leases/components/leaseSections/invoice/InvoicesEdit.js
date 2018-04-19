@@ -19,8 +19,7 @@ import {
   stopInvoicing,
 } from '$src/leases/actions';
 
-import type {InvoiceList} from '$src/leases/types';
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
 type Props = {
   createAbnormalDebt: Function,
@@ -36,7 +35,6 @@ type Props = {
 
 type State = {
   isAddBillEditMode: boolean,
-  isDeleteAbnormalDebtModalOpen: boolean,
   isStartInvoicingModalOpen: boolean,
   isStopInvoicingModalOpen: boolean,
   selectedDebtIndex: number,
@@ -48,7 +46,6 @@ class BillingEdit extends Component {
 
   state: State = {
     isAddBillEditMode: false,
-    isDeleteAbnormalDebtModalOpen: false,
     isStartInvoicingModalOpen: false,
     isStopInvoicingModalOpen: false,
     selectedDebtIndex: -1,
@@ -96,17 +93,6 @@ class BillingEdit extends Component {
     this.setState({isAddBillEditMode: true});
   }
 
-  deleteAbnormalDebt = () => {
-    const {deleteAbnormalDebt} = this.props;
-    const {selectedDebtToDeleteIndex} = this.state;
-    deleteAbnormalDebt(selectedDebtToDeleteIndex);
-    this.setState({
-      isDeleteAbnormalDebtModalOpen: false,
-      selectedDebtToDeleteIndex: -1,
-    });
-    this.abnormalDebtTable.getWrappedInstance().onDeleteCallBack(selectedDebtToDeleteIndex);
-  }
-
   startBilling = () => {
     const {
       params: {leaseId},
@@ -137,7 +123,6 @@ class BillingEdit extends Component {
       isAddBillEditMode,
       isStartInvoicingModalOpen,
       isStopInvoicingModalOpen,
-      isDeleteAbnormalDebtModalOpen,
     } = this.state;
 
     return (
@@ -159,15 +144,6 @@ class BillingEdit extends Component {
           onClose={() => this.hideModal('StopInvoicing')}
           onSave={this.stopBilling}
           title='Keskeytä laskutus'
-        />
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteAbnormalDebtModalOpen}
-          label='Haluatko varmasti poistaa poikkeavan perinnän?'
-          onCancel={() => this.hideModal('DeleteAbnormalDebt')}
-          onClose={() => this.hideModal('DeleteAbnormalDebt')}
-          onSave={this.deleteAbnormalDebt}
-          title='Poista poikkeava perintä'
         />
 
         <h2>Laskutus</h2>
