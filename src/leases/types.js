@@ -14,9 +14,6 @@ export type DecisionList = Array<Object>;
 export type DistrictList = Array<Object>;
 export type LeaseId = number;
 export type LessorList = Array<Object>;
-export type Comment = Object;
-export type CommentList = Array<Object>;
-export type CommentId = number;
 
 export type FetchAttributesAction = Action<'mvj/leases/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/leases/RECEIVE_ATTRIBUTES', Attributes>;
@@ -44,15 +41,6 @@ export type ReceiveDistrictsAction = Action<'mvj/leases/RECEIVE_DISTRICTS', Dist
 
 export type FetchLessorsAction = Action<'mvj/leases/FETCH_LESSORS', void>;
 export type ReceiveLessorsAction = Action<'mvj/leases/RECEIVE_LESSORS', LessorList>;
-
-export type FetchCommentAttributesAction = Action<'mvj/leases/FETCH_COMMENT_ATTRIBUTES', void>;
-export type ReceiveCommentAttributesAction = Action<'mvj/leases/RECEIVE_COMMENT_ATTRIBUTES', Attributes>;
-export type FetchCommentsAction = Action<'mvj/leases/FETCH_COMMENTS', LeaseId>;
-export type ReceiveCommentsAction = Action<'mvj/leases/RECEIVE_COMMENTS', Array<Comment>>;
-export type CreateCommentAction = Action<'mvj/leases/CREATE_COMMENT', Comment>;
-export type ReceiveCreatedCommentAction = Action<'mvj/leases/RECEIVE_CREATED_COMMENT', Comment>;
-export type EditCommentAction = Action<'mvj/leases/EDIT_COMMENT', Comment>;
-export type ReceiveEditedCommentAction = Action<'mvj/leases/RECEIVE_EDITED_COMMENT', Comment>;
 
 export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;

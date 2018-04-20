@@ -11,16 +11,16 @@ import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
 import NewCommentForm from './forms/NewCommentForm';
 import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
-
-import {
-  createComment,
-  editComment,
-} from '$src/leases/actions';
+import {getAttributes, getComments} from '$src/comments/selectors';
+import {createComment, editComment} from '$src/comments/actions';
 import {getAttributeFieldOptions} from '$src/util/helpers';
+import {getContentComments} from '$src/leases/helpers';
+
+import type {CommentList} from '$src/comments/types';
 
 type Props = {
   attributes: Object,
-  comments: Array<Object>,
+  commentList: CommentList,
   createComment: Function,
   editComment: Function,
   initialize: Function,
@@ -72,12 +72,12 @@ class CommentPanel extends Component {
     this.resetNewCommentField();
   }
 
-  editComment = (comment: Object, newText: string) => {
+  editComment = (comment: Object, text: string) => {
     const {editComment} = this.props;
     editComment({
       id: get(comment, 'id'),
       lease: get(comment, 'lease'),
-      text: newText,
+      text: text,
       topic: get(comment, 'topic'),
     });
   }
@@ -94,15 +94,15 @@ class CommentPanel extends Component {
   render () {
     const {
       attributes,
-      comments,
+      commentList,
       isOpen,
       onClose,
     } = this.props;
-
-    const topicOptions = getAttributeFieldOptions(attributes, 'topic');
-    const topicFilterOptions = getAttributeFieldOptions(attributes, 'topic', false);
     const {selectedTopics} = this.state;
 
+    const comments = getContentComments(commentList);
+    const topicOptions = getAttributeFieldOptions(attributes, 'topic');
+    const topicFilterOptions = getAttributeFieldOptions(attributes, 'topic', false);
     const filteredComments = this.getFilteredComments(comments);
 
     return (
@@ -179,7 +179,12 @@ class CommentPanel extends Component {
 export default flowRight(
   withRouter,
   connect(
-    null,
+    (state) => {
+      return {
+        attributes: getAttributes(state),
+        commentList: getComments(state),
+      };
+    },
     {
       createComment,
       editComment,

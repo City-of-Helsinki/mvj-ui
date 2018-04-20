@@ -15,6 +15,7 @@ import {
   fetchAttributes as fetchContactAttributes,
   fetchCompleteContactList,
 } from '$src/contacts/actions';
+import {getComments} from '$src/comments/selectors';
 import {
   getAttributes as getContactAttributes,
   getCompleteContactList,
@@ -24,8 +25,6 @@ import {
   getAreasFormTouched,
   getAreasFormValues,
   getAttributes,
-  getCommentAttributes,
-  getComments,
   getContractsFormTouched,
   getContractsFormValues,
   getConstructabilityFormTouched,
@@ -58,13 +57,12 @@ import {
 import {
   clearFormValidFlags,
   fetchAttributes,
-  fetchCommentAttributes,
-  fetchComments,
   fetchSingleLease,
   hideEditMode,
   patchLease,
   showEditMode,
 } from '../actions';
+import {fetchAttributes as fetchCommentAttributes, fetchComments} from '$src/comments/actions';
 import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
@@ -73,7 +71,6 @@ import {
   getLabelOfOption,
   getSearchQuery,
 } from '$util/helpers';
-
 import CommentPanel from '$components/commentPanel/CommentPanel';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Constructability from './leaseSections/constructability/Constructability';
@@ -107,6 +104,7 @@ import Tenants from './leaseSections/tenant/Tenants';
 
 import type {Attributes} from '../types';
 import type {UserList} from '$src/users/types';
+import type {CommentList} from '$src/comments/types';
 import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 
 import mockData from '../mock-data.json';
@@ -117,8 +115,7 @@ type Props = {
   areasFormValues: Object,
   attributes: Attributes,
   clearFormValidFlags: Function,
-  commentAttributes: Attributes,
-  commentsStore: Array<Object>,
+  comments: CommentList,
   contactAttributes: ContactAttributes,
   contractsFormTouched: boolean,
   contractsFormValues: Object,
@@ -234,7 +231,7 @@ class PreparerForm extends Component {
     fetchSingleLease(leaseId);
 
     fetchCommentAttributes();
-    fetchComments(leaseId);
+    fetchComments(getSearchQuery({lease: leaseId}));
 
     fetchCompleteContactList();
     fetchContactAttributes();
@@ -417,8 +414,7 @@ class PreparerForm extends Component {
     const {
       allContacts,
       attributes,
-      commentAttributes,
-      commentsStore,
+      comments,
       contactAttributes,
       currentLease,
       isEditMode,
@@ -442,8 +438,6 @@ class PreparerForm extends Component {
     const tenants = contentHelpers.getContentTenants(currentLease);
     const rents = contentHelpers.getContentRents(currentLease);
     const basisOfRents = contentHelpers.getContentBasisOfRents(currentLease);
-
-    const comments = contentHelpers.getContentComments(commentsStore);
 
     let sum_areas = 0;
     areas && !!areas.length && areas.map((area) =>
@@ -480,8 +474,6 @@ class PreparerForm extends Component {
           title='Peruuta muutokset'
         />
         <CommentPanel
-          attributes={commentAttributes}
-          comments={comments}
           isOpen={isCommentPanelOpen}
           onClose={this.toggleCommentPanel}
         />
@@ -724,8 +716,7 @@ export default flowRight(
         areasFormTouched: getAreasFormTouched(state),
         areasFormValues: getAreasFormValues(state),
         attributes: getAttributes(state),
-        commentAttributes: getCommentAttributes(state),
-        commentsStore: getComments(state),
+        comments: getComments(state),
         contactAttributes: getContactAttributes(state),
         contractsFormTouched: getContractsFormTouched(state),
         contractsFormValues: getContractsFormValues(state),
