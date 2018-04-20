@@ -4,16 +4,12 @@ import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
-import AddBillComponent from './AddBillComponent';
+import AddInvoiceComponent from './AddInvoiceComponent';
 import Collapse from '$components/collapse/Collapse';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Divider from '$components/content/Divider';
 import InvoicesTableEdit from './InvoicesTableEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {formatBillingNewBill} from '$src/leases/helpers';
-import {
-  createBill,
-} from './actions';
 import {
   startInvoicing,
   stopInvoicing,
@@ -23,7 +19,6 @@ import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/t
 
 type Props = {
   createAbnormalDebt: Function,
-  createBill: Function,
   deleteAbnormalDebt: Function,
   invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
@@ -34,7 +29,7 @@ type Props = {
 }
 
 type State = {
-  isAddBillEditMode: boolean,
+  isAddInvoiceEditMode: boolean,
   isStartInvoicingModalOpen: boolean,
   isStopInvoicingModalOpen: boolean,
   selectedDebtIndex: number,
@@ -45,7 +40,7 @@ class BillingEdit extends Component {
   props: Props
 
   state: State = {
-    isAddBillEditMode: false,
+    isAddInvoiceEditMode: false,
     isStartInvoicingModalOpen: false,
     isStopInvoicingModalOpen: false,
     selectedDebtIndex: -1,
@@ -69,28 +64,17 @@ class BillingEdit extends Component {
     });
   }
 
-  saveNewBill = (bill: Object) => {
-    const {createAbnormalDebt, createBill} = this.props;
-    const tenant = {};
-    tenant.bill_share = 50;
-    tenant.firstname = 'Mikko';
-    tenant.lastname = 'Koskinen';
-    bill.tenant = tenant;
-    bill.status = '0';
-    if(bill.is_abnormal_debt) {
-      createAbnormalDebt(formatBillingNewBill(bill));
-    } else {
-      createBill(formatBillingNewBill(bill));
-    }
-    this.setState({isAddBillEditMode: false});
+  createInvoice = (invoice: Object) => {
+    console.log(invoice);
+    alert('TODO: Create invoice');
   }
 
   hideAddBillEditMode = () => {
-    this.setState({isAddBillEditMode: false});
+    this.setState({isAddInvoiceEditMode: false});
   }
 
   showAddBillEditMode = () => {
-    this.setState({isAddBillEditMode: true});
+    this.setState({isAddInvoiceEditMode: true});
   }
 
   startBilling = () => {
@@ -120,7 +104,7 @@ class BillingEdit extends Component {
       isInvoicingEnabled,
     } = this.props;
     const {
-      isAddBillEditMode,
+      isAddInvoiceEditMode,
       isStartInvoicingModalOpen,
       isStopInvoicingModalOpen,
     } = this.state;
@@ -166,11 +150,11 @@ class BillingEdit extends Component {
             invoices={invoices}
           />
 
-          <AddBillComponent
-            editMode={isAddBillEditMode}
+          <AddInvoiceComponent
+            editMode={isAddInvoiceEditMode}
             onAdd={() => this.showAddBillEditMode()}
             onClose={() => this.hideAddBillEditMode()}
-            onSave={(bill) => this.saveNewBill(bill)}
+            onSave={(invoice) => this.createInvoice(invoice)}
             onStartInvoicing={() => this.showModal('StartInvoicing')}
             onStopInvoicing={() => this.showModal('StopInvoicing')}
             showStartInvoicingButton={!isInvoicingEnabled}
@@ -186,7 +170,6 @@ export default flowRight(
   connect(
     null,
     {
-      createBill,
       startInvoicing,
       stopInvoicing,
     }

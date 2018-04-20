@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import CloseButton from '$components/button/CloseButton';
 
-import {getEditInvoiceFormErrors, getEditInvoiceFormValues} from './selectors';
+import {getEditInvoiceFormErrors, getEditInvoiceFormValues} from '$src/leases/selectors';
 import Button from '$components/button/Button';
 import EditInvoiceForm from './forms/EditInvoiceForm';
 import InvoiceTemplate from './InvoiceTemplate';

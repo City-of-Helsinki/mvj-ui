@@ -3,6 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import {Field, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeText from '$components/form/FieldTypeText';
@@ -16,6 +17,7 @@ import {
 } from '$util/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceSharePercentage} from '$src/invoices/helpers';
+import {genericValidator} from '$components/form/validations';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
@@ -59,6 +61,9 @@ const EditBillForm = ({
             component={FieldTypeDatePicker}
             label="Eräpäivä"
             name="due_date"
+            validate={[
+              (value) => genericValidator(value, get(invoiceAttributes, 'due_date')),
+            ]}
           />
         </Column>
         <Column medium={4}>
@@ -81,12 +86,18 @@ const EditBillForm = ({
               <Field
                 component={FieldTypeDatePicker}
                 name="billing_period_start_date"
+                validate={[
+                  (value) => genericValidator(value, get(invoiceAttributes, 'billing_period_start_date')),
+                ]}
               />
             </Column>
             <Column medium={6}>
               <Field
                 component={FieldTypeDatePicker}
                 name="billing_period_end_date"
+                validate={[
+                  (value) => genericValidator(value, get(invoiceAttributes, 'billing_period_end_date')),
+                ]}
               />
             </Column>
           </Row>
@@ -101,8 +112,10 @@ const EditBillForm = ({
           <Field
             component={FieldTypeText}
             label="Laskun pääoma"
-            labelClassName='required'
             name="total_amount"
+            validate={[
+              (value) => genericValidator(value, get(invoiceAttributes, 'total_amount')),
+            ]}
           />
         </Column>
         <Column medium={4}>
@@ -171,6 +184,9 @@ const EditBillForm = ({
             label="Tiedote"
             name="notes"
             rows={2}
+            validate={[
+              (value) => genericValidator(value, get(invoiceAttributes, 'notes')),
+            ]}
           />
         </Column>
       </Row>

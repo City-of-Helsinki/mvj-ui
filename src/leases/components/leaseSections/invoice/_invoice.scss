@@ -1,11 +1,7 @@
 .invoice {
   &__add-invoice {
-    margin-top: 0;
-    margin-bottom: rem-calc(30px);
-  }
-
-  &__edit-abnormal-debt {
-    margin-top: rem-calc(20px);
+    margin-top: rem-calc(5px);
+    margin-bottom: rem-calc(10px);
   }
 
   &__invoice-table {

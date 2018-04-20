@@ -14,12 +14,12 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FormSection from '$components/form/FormSection';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {dateGreaterOrEqual, decimalNumber, required} from '$components/form/validations';
-import {
-  getNewBillFormErrors,
-  getNewBillFormValues,
-} from '../selectors';
+// import {
+//   getNewBillFormErrors,
+//   getNewBillFormValues,
+// } from '$src/leases/selectors';
 import {billingTypeOptions} from '../../constants';
 
 type Props = {
@@ -31,7 +31,7 @@ type Props = {
   startDate: string,
 }
 
-const NewBillForm = ({
+const NewInvoiceForm = ({
   bill,
   errors,
   handleSubmit,
@@ -42,13 +42,9 @@ const NewBillForm = ({
   return (
     <form onSubmit={handleSubmit} className='billing__add-bill'>
       <FormSection>
-        <Row>
-          <Column>
-            <h3>Luo uusi lasku</h3>
-          </Column>
-        </Row>
-        <GreenBoxEdit>
+        <WhiteBoxEdit>
           <BoxContentWrapper>
+            <h3>Luo uusi lasku</h3>
             <CloseButton
               className="position-topright"
               onClick={() => onClose()}
@@ -156,7 +152,7 @@ const NewBillForm = ({
               </Column>
             </Row>
           </BoxContentWrapper>
-        </GreenBoxEdit>
+        </WhiteBoxEdit>
       </FormSection>
     </form>
   );
@@ -169,8 +165,8 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        bill: getNewBillFormValues(state),
-        errors: getNewBillFormErrors(state),
+        // bill: getNewBillFormValues(state),
+        // errors: getNewBillFormErrors(state),
         startDate: selector(state, 'billing_period_start_date'),
       };
     }
@@ -178,4 +174,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-)(NewBillForm);
+)(NewInvoiceForm);
