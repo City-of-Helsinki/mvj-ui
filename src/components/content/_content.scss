@@ -252,6 +252,20 @@
     }
   }
 
+  .white-box-edit {
+    padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
+    background-color: $white;
+    margin-bottom: rem-calc(10px);
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    h3 {
+      margin-bottom: rem-calc(15px);
+    }
+  }
+
   .box-item-container {
     .box-item {
       border-top: 1px dashed #009246;

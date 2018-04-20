@@ -1,35 +1,44 @@
 // @flow
 import React, {Component} from 'react';
-import get from 'lodash/get';
+import {connect} from 'react-redux';
+import flowRight from 'lodash/flowRight';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import scrollToComponent from 'react-scroll-to-component';
 
-import {formatDate,
+import InvoiceModal from './InvoiceModal';
+import {getContactFullName} from '$src/contacts/helpers';
+import {getInvoiceSharePercentage} from '$src/invoices/helpers';
+import {
+  formatDate,
   formatDateRange,
   formatDecimalNumber,
-  formatNumberWithThousandSeparator} from '$util/helpers';
-import BillModal from './BillModal';
-import {getLabelOfOption} from '$util/helpers';
-import {billingStatusOptions, billingTypeOptions} from '../constants';
+  formatNumberWithThousandSeparator,
+  getAttributeFieldOptions,
+  getLabelOfOption,
+} from '$util/helpers';
+import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/selectors';
 
-const MODAL_HEIGHT = 530;
+import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
+
+const MODAL_HEIGHT = 480;
 const MODAL_WIDTH = 700;
 
 type Props = {
-  bills: Array<Object>,
+  invoiceAttributes: InvoiceAttributes,
+  invoices: InvoiceList,
 }
 
 type State = {
-  selectedBill: Object,
-  selectedBillIndex: number,
+  selectedInvoice: Object,
+  selectedInvoiceIndex: number,
   showAllColumns: boolean,
   showModal: boolean,
   tableHeight: ?number,
   tableWidth: ?number,
 }
 
-class BillsTable extends Component {
+class InvoicesTable extends Component {
   props: Props
 
   container: any
@@ -38,8 +47,8 @@ class BillsTable extends Component {
   tableWrapper : any
 
   state: State = {
-    selectedBill: {},
-    selectedBillIndex: -1,
+    selectedInvoice: {},
+    selectedInvoiceIndex: -1,
     showAllColumns: true,
     showModal: false,
     tableHeight: null,
@@ -91,10 +100,11 @@ class BillsTable extends Component {
 
   shouldComponentUpdate(nextProps: Object, nextState: Object) {
     return (
+      this.props.invoices !== nextProps.invoices ||
       this.state.containerWidth !== nextState.containerWidth ||
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
-      this.state.selectedBill !== nextState.selectedBill ||
+      this.state.selectedInvoice !== nextState.selectedInvoice ||
       this.state.showModal !== nextState.showModal
     );
   }
@@ -114,21 +124,31 @@ class BillsTable extends Component {
   }
 
   handleKeyCodeDown = () => {
-    const {bills} = this.props;
-    const {selectedBillIndex} = this.state;
-    if(selectedBillIndex < bills.length - 1) {
-      const newIndex = selectedBillIndex + 1;
-      this.setState({selectedBill: bills[newIndex], selectedBillIndex: newIndex, showModal: true});
+    const {invoices} = this.props;
+    const {selectedInvoiceIndex} = this.state;
+
+    if(selectedInvoiceIndex < invoices.length - 1) {
+      const newIndex = selectedInvoiceIndex + 1;
+      this.setState({
+        selectedInvoice: invoices[newIndex],
+        selectedInvoiceIndex: newIndex,
+        showModal: true,
+      });
       this.scrolToModal();
     }
   }
 
   handleKeyCodeUp = () => {
-    const {bills} = this.props;
-    const {selectedBillIndex} = this.state;
-    if(selectedBillIndex > 0) {
-      const newIndex = selectedBillIndex - 1;
-      this.setState({selectedBill: bills[newIndex], selectedBillIndex: newIndex, showModal: true});
+    const {invoices} = this.props;
+    const {selectedInvoiceIndex} = this.state;
+
+    if(selectedInvoiceIndex > 0) {
+      const newIndex = selectedInvoiceIndex - 1;
+      this.setState({
+        selectedInvoice: invoices[newIndex],
+        selectedInvoiceIndex: newIndex,
+        showModal: true,
+      });
       this.scrolToModal();
     }
   }
@@ -160,19 +180,29 @@ class BillsTable extends Component {
   }
 
   render () {
-    const {bills} = this.props;
-    const {selectedBill, showAllColumns, showModal, tableHeight, tableWidth} = this.state;
+    const {invoiceAttributes, invoices} = this.props;
+    const {
+      selectedInvoice,
+      selectedInvoiceIndex,
+      showAllColumns,
+      showModal,
+      tableHeight,
+      tableWidth,
+    } = this.state;
     const headers = this.getTableHeaders();
+    const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'receivable_type');
+    const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
+
 
     return (
       <div
-        className='billing__bill-table'
+        className='invoice__invoice-table'
         ref={(ref) => this.container = ref}>
         <div
           className='table-wrapper'
           ref={(ref) => this.tableWrapper = ref}
           style={{maxWidth: tableWidth}}>
-          <div className={classNames('table-fixed-header', 'billing-fixed-table', {'is-open': showModal})}>
+          <div className={classNames('table-fixed-header', 'invoice-fixed-table', {'is-open': showModal})}>
             <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
               <div className="table-fixed-header__header-border" />
               <table
@@ -184,62 +214,66 @@ class BillsTable extends Component {
                     </tr>
                   }
                 </thead>
-                {bills && !!bills.length &&
+                {invoices && !!invoices.length &&
                   <tbody>
-                    {bills.map((bill, index) => {
+                    {invoices.map((invoice, index) => {
                       return (
                         <tr
-                          className={classNames({'selected': selectedBill === bill})}
+                          className={classNames({'selected': selectedInvoiceIndex === index})}
                           key={index}
                           onClick={() => {
                             this.setState({
                               showAllColumns: false,
-                              selectedBill: bill,
-                              selectedBillIndex: index,
+                              selectedInvoice: invoice,
+                              selectedInvoiceIndex: index,
                               showModal: true});
                             this.scrolToModal();
                           }}
                           >
-                          <td>{`${get(bill, 'tenant.lastname')} ${get(bill, 'tenant.firstname')}`}</td>
-                          <td>{bill.due_date ? formatDate(bill.due_date) : '-'}</td>
-                          <td>{bill.bill_number ? bill.bill_number : '-'}</td>
-                          <td>{get(bill, 'tenant.bill_share') ? `${get(bill, 'tenant.bill_share')} %` : '-'}</td>
+                          <td>{getContactFullName(invoice.recipient) || '-'}</td>
+                          <td>{formatDate(invoice.due_date) || '-'}</td>
+                          <td>{invoice.id || '-'}</td>
+                          <td>{getInvoiceSharePercentage(invoice) ? `${getInvoiceSharePercentage(invoice)} %` : '-'}</td>
                           {showAllColumns &&
-                            <td>{formatDateRange(bill.billing_period_start_date, bill.billing_period_end_date)}</td>
+                            <td>{formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}</td>
                           }
                           {showAllColumns &&
-                            <td>{bill.type ? getLabelOfOption(billingTypeOptions, bill.type) : '-'}</td>
+                            <td>{getLabelOfOption(receivableTypeOptions, invoice.receivable_type) || '-'}</td>
                           }
                           {showAllColumns &&
-                            <td>{bill.status ? getLabelOfOption(billingStatusOptions, bill.status) : '-'}</td>
+                            <td>{getLabelOfOption(stateOptions, invoice.state) || '-'}</td>
                           }
                           {showAllColumns &&
-                            <td>{bill.invoiced_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.invoiced_amount))} €` : '-'}</td>
+                            <td>{formatNumberWithThousandSeparator(formatDecimalNumber(invoice.billed_amount)) || '-'}</td>
                           }
                           {showAllColumns &&
-                            <td>{bill.unpaid_amount ? `${formatNumberWithThousandSeparator(formatDecimalNumber(bill.unpaid_amount))} €` : '-'}</td>
+                            <td>{formatNumberWithThousandSeparator(formatDecimalNumber(invoice.outstanding_amount)) || '-'}</td>
                           }
                           {showAllColumns &&
-                            <td>{bill.info ? 'Kyllä' : 'Ei'}</td>
+                            <td>{invoice.notes ? 'Kyllä' : 'Ei'}</td>
                           }
                           {showAllColumns &&
-                            <td>{bill.sent_to_SAP_date ? formatDate(bill.sent_to_SAP_date) : '-'}</td>
+                            <td>{formatDate(invoice.sent_to_sap_at) || '-'}</td>
                           }
                         </tr>
                       );
                     })}
                   </tbody>
                 }
-                {!bills || !bills.length && <tbody><tr className='no-data'><td colSpan={showAllColumns ? 11 : 4}>Ei laskuja</td></tr></tbody>}
+                {!invoices || !invoices.length && <tbody><tr className='no-data'><td colSpan={showAllColumns ? 11 : 4}>Ei laskuja</td></tr></tbody>}
               </table>
             </div>
           </div>
         </div>
-        <BillModal
+        <InvoiceModal
           ref={(ref) => this.modal = ref}
-          bill={selectedBill}
-          containerHeight={isNumber(tableHeight) ? tableHeight + 33 : null}
-          onClose={() => this.setState({selectedBill: {}, selectedBillIndex: -1, showModal: false})}
+          containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
+          invoice={selectedInvoice}
+          onClose={() => this.setState({
+            selectedInvoice: {},
+            selectedInvoiceIndex: -1,
+            showModal: false,
+          })}
           onKeyCodeDown={() => this.handleKeyCodeDown()}
           onKeyCodeUp={() => this.handleKeyCodeUp()}
           show={showModal}
@@ -249,4 +283,13 @@ class BillsTable extends Component {
   }
 }
 
-export default BillsTable;
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        invoiceAttributes: getInvoiceAttributes(state),
+        invoices: getInvoices(state),
+      };
+    }
+  )
+)(InvoicesTable);

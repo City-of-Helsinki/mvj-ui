@@ -17,6 +17,8 @@ import type {
   FetchSingleLeaseAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
+  StartInvoicingAction,
+  StopInvoicingAction,
 } from './types';
 import type {
   HideContactModalAction,
@@ -91,6 +93,12 @@ export const createLease = (lease: Lease): CreateLeaseAction =>
 
 export const patchLease = (lease: Lease): PatchLeaseAction =>
   createAction('mvj/leases/PATCH')(lease);
+
+export const startInvoicing = (id: LeaseId): StartInvoicingAction =>
+  createAction('mvj/leases/START_INVOICING')(id);
+
+export const stopInvoicing = (id: LeaseId): StopInvoicingAction =>
+  createAction('mvj/leases/STOP_INVOICING')(id);
 
 export const notFound = (): LeaseNotFoundAction =>
   createAction('mvj/leases/NOT_FOUND')();

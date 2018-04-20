@@ -9,8 +9,6 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import {getLoggedInUser} from '$src/auth/selectors';
-import {receiveBilling} from './leaseSections/billing/actions';
-import {getBilling} from './leaseSections/billing/selectors';
 import {fetchUsers} from '$src/users/actions';
 import {getUsers} from '$src/users/selectors';
 import {
@@ -21,6 +19,7 @@ import {
   getAttributes as getContactAttributes,
   getCompleteContactList,
 } from '$src/contacts/selectors';
+import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
 import {
   getAreasFormTouched,
   getAreasFormValues,
@@ -72,10 +71,9 @@ import * as contentHelpers from '../helpers';
 import {
   getAttributeFieldOptions,
   getLabelOfOption,
+  getSearchQuery,
 } from '$util/helpers';
 
-import Billing from './leaseSections/billing/Billing';
-import BillingEdit from './leaseSections/billing/BillingEdit';
 import CommentPanel from '$components/commentPanel/CommentPanel';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Constructability from './leaseSections/constructability/Constructability';
@@ -87,6 +85,8 @@ import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
 import Divider from '$components/content/Divider';
 import EditableMap from '$components/map/EditableMap';
+import Invoices from './leaseSections/invoice/Invoices';
+import InvoicesEdit from './leaseSections/invoice/InvoicesEdit';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
 import LeaseHistory from './leaseSections/summary/LeaseHistory';
@@ -107,10 +107,7 @@ import Tenants from './leaseSections/tenant/Tenants';
 
 import type {Attributes} from '../types';
 import type {UserList} from '$src/users/types';
-import type {
-  Attributes as ContactAttributes,
-  Contact,
-} from '$src/contacts/types';
+import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 
 import mockData from '../mock-data.json';
 
@@ -119,7 +116,6 @@ type Props = {
   areasFormTouched: boolean,
   areasFormValues: Object,
   attributes: Attributes,
-  billing: Object,
   clearFormValidFlags: Function,
   commentAttributes: Attributes,
   commentsStore: Array<Object>,
@@ -137,6 +133,8 @@ type Props = {
   fetchComments: Function,
   fetchCompleteContactList: Function,
   fetchContactAttributes: Function,
+  fetchInvoiceAttributes: Function,
+  fetchInvoices: Function,
   fetchSingleLease: Function,
   fetchUsers: Function,
   hideEditMode: Function,
@@ -158,7 +156,6 @@ type Props = {
   location: Object,
   params: Object,
   patchLease: Function,
-  receiveBilling: Function,
   receiveTopNavigationSettings: Function,
   rentsFormTouched: boolean,
   rentsFormValues: Object,
@@ -202,12 +199,13 @@ class PreparerForm extends Component {
       fetchComments,
       fetchCompleteContactList,
       fetchContactAttributes,
+      fetchInvoiceAttributes,
+      fetchInvoices,
       fetchSingleLease,
       fetchUsers,
       hideEditMode,
       location,
       params: {leaseId},
-      receiveBilling,
       receiveTopNavigationSettings,
     } = this.props;
 
@@ -232,8 +230,6 @@ class PreparerForm extends Component {
       history: contentHelpers.getContentHistory(lease),
     });
 
-    receiveBilling(contentHelpers.getContentBilling(lease));
-
     fetchAttributes();
     fetchSingleLease(leaseId);
 
@@ -243,6 +239,9 @@ class PreparerForm extends Component {
     fetchCompleteContactList();
     fetchContactAttributes();
     fetchUsers();
+
+    fetchInvoiceAttributes();
+    fetchInvoices(getSearchQuery({lease: leaseId}));
   }
 
   showModal = (modalName: string) => {
@@ -337,8 +336,6 @@ class PreparerForm extends Component {
     destroy('constructability-form');
     destroy('tenants-form');
     destroy('rents-form');
-
-    destroy('billing-edit-form');
   }
 
   validateForms = () => {
@@ -420,7 +417,6 @@ class PreparerForm extends Component {
     const {
       allContacts,
       attributes,
-      billing,
       commentAttributes,
       commentsStore,
       contactAttributes,
@@ -493,8 +489,8 @@ class PreparerForm extends Component {
           buttonComponent={
             <ControlButtons
               commentAmount={comments ? comments.length : 0}
-              isCancelDisabled={activeTab.toString() === '6'}
-              isEditDisabled={activeTab.toString() === '6'}
+              isCancelDisabled={false}
+              isEditDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={!areFormsValid || activeTab.toString() === '6'}
               onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
@@ -693,8 +689,16 @@ class PreparerForm extends Component {
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
               {isEditMode
-                ? <BillingEdit billing={billing}/>
-                : <Billing billing={billing}/>
+                ? (
+                  <InvoicesEdit
+                    isInvoicingEnabled={currentLease.is_invoicing_enabled}
+                  />
+                )
+                : (
+                  <Invoices
+                    isInvoicingEnabled={currentLease.is_invoicing_enabled}
+                  />
+                )
               }
             </ContentContainer>
           </TabPane>
@@ -720,7 +724,6 @@ export default flowRight(
         areasFormTouched: getAreasFormTouched(state),
         areasFormValues: getAreasFormValues(state),
         attributes: getAttributes(state),
-        billing: getBilling(state),
         commentAttributes: getCommentAttributes(state),
         commentsStore: getComments(state),
         contactAttributes: getContactAttributes(state),
@@ -764,11 +767,12 @@ export default flowRight(
       fetchComments,
       fetchCompleteContactList,
       fetchContactAttributes,
+      fetchInvoiceAttributes,
+      fetchInvoices,
       fetchSingleLease,
       fetchUsers,
       hideEditMode,
       patchLease,
-      receiveBilling,
       receiveTopNavigationSettings,
       showEditMode,
     }

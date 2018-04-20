@@ -10,6 +10,7 @@ import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
 import L from 'leaflet';
 import Fraction from 'fraction.js';
+
 // import i18n from '../root/i18n';
 
 /**
@@ -223,15 +224,6 @@ export const formatDate = (date: string) => {
   return d.format('DD.MM.YYYY');
 };
 
-export const formatDateDb = (date: string) => {
-  if (!date) {
-    return '';
-  }
-
-  const d = isNumber(date) ? moment.unix(date) : moment(date);
-  return d.format('YYYY-MM-DD');
-};
-
 export const formatDecimalNumber = (x) => {
   if(x === null || x === undefined || !isNumber(Number(x))) {
     return null;
@@ -405,28 +397,5 @@ export const getDecisionsOptions = (decisions: Array<Object>) => {
       value: item.id,
       label: `${item.reference_number ? item.reference_number + ', ' : ''}${item.section ? item.section + ' §, ' : ''}${formatDate(item.decision_date)}`,
     };
-  }));
-};
-
-/**
- * Get options for contact field
- * @param decisions
- */
-export const getContactOptions = (contacts: Array<Object>) => {
-  if(!contacts || !contacts.length) {
-    return [];
-  }
-
-  return addEmptyOption(contacts.map((contact) => {
-    return {
-      value: contact.id,
-      label: contact.is_business ? contact.business_name : `${contact.last_name} ${contact.first_name}`,
-    };
-  }).sort(function(a, b){
-    const keyA = a.label,
-      keyB = b.label;
-    if(keyA < keyB) return -1;
-    if(keyA > keyB) return 1;
-    return 0;
   }));
 };

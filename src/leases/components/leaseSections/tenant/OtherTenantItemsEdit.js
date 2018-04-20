@@ -22,9 +22,9 @@ import {receiveContactModalSettings, showContactModal} from '$src/leases/actions
 import {getTenantsFormValues} from '$src/leases/selectors';
 import {TenantContactType} from '$src/leases/enums';
 import {initializeContactForm} from '$src/contacts/actions';
-import {getContactById} from '$src/contacts/helpers';
+import {getContactById, getContactOptions} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
-import {getAttributeFieldOptions, getContactOptions} from '$util/helpers';
+import {getAttributeFieldOptions} from '$util/helpers';
 
 import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';

@@ -130,3 +130,15 @@ export const getTenantsFormTouched: Selector<boolean, void> = (state: Object): b
 
 export const getTenantsFormValues: Selector<Object, void> = (state: Object): Object =>
   get(state, 'form.tenants-form.values');
+
+export const getEditInvoiceFormErrors: Selector<Object, void> = (state: Object): Object =>
+  get(state, 'form.edit-invoice-form.syncErrors');
+
+export const getEditInvoiceFormValues: Selector<Object, void> = (state: Object): Object =>
+  get(state, 'form.edit-invoice-form.values');
+
+export const getNewInvoiceFormErrors: Selector<Object, void> = (state: Object): Object =>
+  get(state, 'form.new-invoice-form.syncErrors');
+
+export const getNewInvoiceFormValues: Selector<Object, void> = (state: Object): Object =>
+  get(state, 'form.new-invoice-form.values');
