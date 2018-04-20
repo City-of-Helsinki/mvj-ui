@@ -15,12 +15,11 @@ import {
   stopInvoicing,
 } from '$src/leases/actions';
 
-import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
+import type {InvoiceList} from '$src/invoices/types';
 
 type Props = {
   createAbnormalDebt: Function,
   deleteAbnormalDebt: Function,
-  invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
   isInvoicingEnabled: boolean,
   params: Object,
@@ -99,7 +98,6 @@ class BillingEdit extends Component {
 
   render() {
     const {
-      invoiceAttributes,
       invoices,
       isInvoicingEnabled,
     } = this.props;
@@ -146,7 +144,6 @@ class BillingEdit extends Component {
             <h3 className='collapse__header-title'>Laskut</h3>
           }>
           <InvoicesTableEdit
-            invoiceAttributes={invoiceAttributes}
             invoices={invoices}
           />
 

@@ -1,5 +1,7 @@
 // @flow
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import flowRight from 'lodash/flowRight';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import scrollToComponent from 'react-scroll-to-component';
@@ -15,6 +17,7 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
+import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
 import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
@@ -266,7 +269,6 @@ class BillsTable extends Component {
           ref={(ref) => this.modal = ref}
           containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
           invoice={selectedInvoice}
-          invoiceAttributes={invoiceAttributes}
           onClose={() => this.setState({
             selectedInvoice: {},
             selectedInvoiceIndex: -1,
@@ -281,4 +283,12 @@ class BillsTable extends Component {
   }
 }
 
-export default BillsTable;
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        invoiceAttributes: getInvoiceAttributes(state),
+      };
+    }
+  )
+)(BillsTable);

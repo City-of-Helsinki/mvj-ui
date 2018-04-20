@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import flowRight from 'lodash/flowRight';
 
 import {
   formatDate,
@@ -12,6 +14,7 @@ import {
 } from '$util/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceSharePercentage} from '$src/invoices/helpers';
+import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
@@ -148,4 +151,12 @@ const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
   );
 };
 
-export default InvoiceTemplate;
+export default flowRight(
+  connect(
+    (state) => {
+      return {
+        invoiceAttributes: getInvoiceAttributes(state),
+      };
+    },
+  )
+)(InvoiceTemplate);

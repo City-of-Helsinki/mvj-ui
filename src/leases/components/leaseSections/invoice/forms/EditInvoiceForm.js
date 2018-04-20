@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
+import {connect} from 'react-redux';
 import {Field, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -18,6 +19,7 @@ import {
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceSharePercentage} from '$src/invoices/helpers';
 import {genericValidator} from '$components/form/validations';
+import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
@@ -197,6 +199,13 @@ const EditBillForm = ({
 const formName = 'edit-invoice-form';
 
 export default flowRight(
+  connect(
+    (state) => {
+      return {
+        invoiceAttributes: getInvoiceAttributes(state),
+      };
+    },
+  ),
   reduxForm({
     form: formName,
   }),

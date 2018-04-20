@@ -20,7 +20,7 @@ import {
   getCompleteContactList,
 } from '$src/contacts/selectors';
 import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
-import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/selectors';
+import {getInvoices} from '$src/invoices/selectors';
 import {
   getAreasFormTouched,
   getAreasFormValues,
@@ -109,7 +109,7 @@ import Tenants from './leaseSections/tenant/Tenants';
 import type {Attributes} from '../types';
 import type {UserList} from '$src/users/types';
 import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
-import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
+import type {InvoiceList} from '$src/invoices/types';
 
 import mockData from '../mock-data.json';
 
@@ -142,7 +142,6 @@ type Props = {
   hideEditMode: Function,
   inspectionsFormValues: Object,
   inspectionsFormTouched: boolean,
-  invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
   isEditMode: boolean,
   isFetching: boolean,
@@ -425,7 +424,6 @@ class PreparerForm extends Component {
       commentsStore,
       contactAttributes,
       currentLease,
-      invoiceAttributes,
       invoices,
       isEditMode,
       isFetching,
@@ -697,14 +695,12 @@ class PreparerForm extends Component {
               {isEditMode
                 ? (
                   <InvoicesEdit
-                    invoiceAttributes={invoiceAttributes}
                     invoices={invoices}
                     isInvoicingEnabled={currentLease.is_invoicing_enabled}
                   />
                 )
                 : (
                   <Invoices
-                    invoiceAttributes={invoiceAttributes}
                     invoices={invoices}
                     isInvoicingEnabled={currentLease.is_invoicing_enabled}
                   />
@@ -744,7 +740,6 @@ export default flowRight(
         decisionsFormValues: getDecisionsFormValues(state),
         constructabilityFormTouched: getConstructabilityFormTouched(state),
         constructabilityFormValues: getConstructabilityFormValues(state),
-        invoiceAttributes: getInvoiceAttributes(state),
         invoices: getInvoices(state),
         isEditMode: getIsEditMode(state),
         isConstructabilityFormValid: getIsConstructabilityFormValid(state),

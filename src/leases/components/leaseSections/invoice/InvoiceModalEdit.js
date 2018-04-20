@@ -12,8 +12,6 @@ import Button from '$components/button/Button';
 import EditInvoiceForm from './forms/EditInvoiceForm';
 import InvoiceTemplate from './InvoiceTemplate';
 
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
-
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
 
@@ -22,7 +20,6 @@ type Props = {
   editedInvoice: ?Object,
   errors: ?Object,
   invoice: Object,
-  invoiceAttributes: InvoiceAttributes,
   onClose: Function,
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
@@ -65,7 +62,6 @@ class BillModalEdit extends Component {
       editedInvoice,
       errors,
       invoice,
-      invoiceAttributes,
       onClose,
       onRefund,
       onSave,
@@ -91,13 +87,11 @@ class BillModalEdit extends Component {
                   ? (
                     <EditInvoiceForm
                       invoice={invoice}
-                      invoiceAttributes={invoiceAttributes}
                       initialValues={{...invoice}}
                     />
                   ) : (
                     <InvoiceTemplate
                       invoice={invoice}
-                      invoiceAttributes={invoiceAttributes}
                     />
                   )
                 }

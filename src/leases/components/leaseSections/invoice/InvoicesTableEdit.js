@@ -10,8 +10,6 @@ import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import scrollToComponent from 'react-scroll-to-component';
 
-// import {formatBillingBillDb} from '$src/leases/helpers';
-// import {editBill, refundBill} from './actions';
 import {patchInvoice} from '$src/invoices/actions';
 import InvoiceModalEdit from './InvoiceModalEdit';
 import {getContactFullName} from '$src/contacts/helpers';
@@ -24,6 +22,7 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
+import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
 import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
@@ -311,7 +310,6 @@ class InvoicesTableEdit extends Component {
           ref={(ref) => this.modal = ref}
           containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
           invoice={selectedInvoice}
-          invoiceAttributes={invoiceAttributes}
           onClose={() => this.setState({
             selectedInvoice: null,
             showModal: false,
@@ -329,12 +327,15 @@ class InvoicesTableEdit extends Component {
 
 export default flowRight(
   connect(
-    null,
+    (state) => {
+      return {
+        invoiceAttributes: getInvoiceAttributes(state),
+      };
+    },
     {
       destroy,
       initialize,
       patchInvoice,
-      // refundBill,
     }
   ),
 )(InvoicesTableEdit);

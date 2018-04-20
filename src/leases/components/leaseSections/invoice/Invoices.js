@@ -6,15 +6,14 @@ import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import RightSubtitle from '$components/content/RightSubtitle';
 
-import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
+import type {InvoiceList} from '$src/invoices/types';
 
 type Props = {
-  invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
   isInvoicingEnabled: boolean,
 }
 
-const Invoices = ({invoiceAttributes, invoices, isInvoicingEnabled}: Props) => {
+const Invoices = ({invoices, isInvoicingEnabled}: Props) => {
   return (
     <div>
       <h2>Laskutus</h2>
@@ -33,7 +32,6 @@ const Invoices = ({invoiceAttributes, invoices, isInvoicingEnabled}: Props) => {
         }>
 
         <InvoicesTable
-          invoiceAttributes={invoiceAttributes}
           invoices={invoices}
         />
       </Collapse>

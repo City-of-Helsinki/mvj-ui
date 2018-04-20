@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import CloseButton from '$components/button/CloseButton';
 import InvoiceTemplate from './InvoiceTemplate';
 
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
@@ -14,7 +13,6 @@ const ARROW_DOWN_KEY = 40;
 type Props = {
   containerHeight: ?number,
   invoice: Object,
-  invoiceAttributes: InvoiceAttributes,
   onClose: Function,
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
@@ -50,7 +48,7 @@ class InvoiceModal extends Component {
   }
 
   render() {
-    const {containerHeight, invoice, invoiceAttributes, onClose, show} = this.props;
+    const {containerHeight, invoice, onClose, show} = this.props;
 
     return(
       <div className={classNames('invoice-modal', {'is-open': show})} style={{height: containerHeight}}>
@@ -67,7 +65,6 @@ class InvoiceModal extends Component {
           <div className="invoice-modal__body">
             <InvoiceTemplate
               invoice={invoice}
-              invoiceAttributes={invoiceAttributes}
             />
           </div>
         </div>
