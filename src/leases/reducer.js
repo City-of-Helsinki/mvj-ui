@@ -5,7 +5,6 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {
   Attributes,
-  CommentList,
   Lease,
   LeaseList,
   LessorList,
@@ -17,10 +16,6 @@ import type {
   ReceiveLessorsAction,
   ReceiveDecisionsAction,
   ReceiveDistrictsAction,
-  ReceiveCommentsAction,
-  ReceiveCommentAttributesAction,
-  ReceiveCreatedCommentAction,
-  ReceiveEditedCommentAction,
   ContactModalSettings,
   ReceiveContactModalSettingsAction,
   ReceiveConstructabilityFormValidAction,
@@ -76,28 +71,6 @@ const leasesListReducer: Reducer<LeaseList> = handleActions({
 const currentLeaseReducer: Reducer<Lease> = handleActions({
   ['mvj/leases/RECEIVE_SINGLE']: (state: Lease, {payload: lease}: ReceiveSingleLeaseAction) => {
     return lease;
-  },
-}, {});
-
-const commentsReducer: Reducer<CommentList> = handleActions({
-  ['mvj/leases/RECEIVE_COMMENTS']: (state: CommentList, {payload: comments}: ReceiveCommentsAction) => {
-    return comments;
-  },
-  ['mvj/leases/RECEIVE_CREATED_COMMENT']: (state: CommentList, {payload: comment}: ReceiveCreatedCommentAction) => {
-    const comments = [comment, ...state];
-    return comments;
-  },
-  ['mvj/leases/RECEIVE_EDITED_COMMENT']: (state: CommentList, {payload: comment}: ReceiveEditedCommentAction) => {
-    const comments = [...state];
-    const index = comments.findIndex((item) => item.id === comment.id);
-    comments[index] = comment;
-    return comments;
-  },
-}, []);
-
-const commentAttributesReducer: Reducer<Attributes> = handleActions({
-  ['mvj/leases/RECEIVE_COMMENT_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveCommentAttributesAction) => {
-    return attributes;
   },
 }, {});
 
@@ -184,8 +157,6 @@ const tenantsFormValidReducer: Reducer<boolean> = handleActions({
 
 export default combineReducers({
   attributes: attributesReducer,
-  comments: commentsReducer,
-  commentAttributes: commentAttributesReducer,
   contactModalSettings: contactModalSettingsReducer,
   current: currentLeaseReducer,
   isContactModalOpen: isContactModalOpenReducer,

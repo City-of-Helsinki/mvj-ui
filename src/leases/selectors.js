@@ -4,7 +4,6 @@ import type {Selector} from '../types';
 import get from 'lodash/get';
 import type {
   Attributes,
-  CommentList,
   ContactModalSettings,
   DecisionList,
   DistrictList,
@@ -70,12 +69,6 @@ export const getDistricts: Selector<DistrictList, void> = (state: LeaseState): D
 
 export const getLessors: Selector<LessorList, void> = (state: LeaseState): LessorList =>
   state.lease.lessors;
-
-export const getCommentAttributes: Selector<Attributes, void> = (state: LeaseState): Attributes =>
-  state.lease.commentAttributes;
-
-export const getComments: Selector<CommentList, void> = (state: LeaseState): CommentList =>
-  state.lease.comments;
 
 export const getAreasFormTouched: Selector<boolean, void> = (state: Object): boolean =>
   get(state, 'form.lease-areas-form.anyTouched');

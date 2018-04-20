@@ -12,24 +12,16 @@ import {
   hideEditMode,
   notFound,
   receiveAttributes,
-  receiveCommentAttributes,
-  receiveComments,
   receiveContactModalSettings,
-  receiveCreatedComment,
   receiveDecisions,
   receiveDistricts,
-  receiveEditedComment,
   receiveLeases,
   receiveLessors,
   receiveSingleLease,
 } from './actions';
 import {
-  createComment,
   createLease,
-  editComment,
   fetchAttributes,
-  fetchCommentAttributes,
-  fetchComments,
   fetchDecisions,
   fetchDistricts,
   fetchLeases,
@@ -338,94 +330,6 @@ function* fetchLessorsSaga(): Generator<> {
   }
 }
 
-function* fetchCommentAttributesSaga(): Generator<> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchCommentAttributes);
-    const attributes = bodyAsJson.fields;
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveCommentAttributes(attributes));
-        break;
-      case 404:
-      case 500:
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch identifiers with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
-function* fetchCommentsSaga({payload: id}): Generator<> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield yield call(fetchComments, id);
-    const comments = bodyAsJson.results;
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveComments(comments));
-        break;
-      case 404:
-      case 500:
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch comments with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
-function* createCommentSaga({payload: comment}): Generator<> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(createComment, comment);
-
-    switch (statusCode) {
-      case 201:
-        yield put(receiveCreatedComment(bodyAsJson));
-        displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
-        break;
-      case 400:
-        yield put(notFound());
-        yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to create lease with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
-function* editCommentSaga({payload: comment}): Generator<> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editComment, comment);
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveEditedComment(bodyAsJson));
-        displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
-        break;
-      case 400:
-        yield put(notFound());
-        yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to edit lease with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
@@ -441,11 +345,6 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/FETCH_DECISIONS', fetchDecisionsSaga);
       yield takeLatest('mvj/leases/FETCH_DISTRICTS', fetchDistrictsSaga);
       yield takeLatest('mvj/leases/FETCH_LESSORS', fetchLessorsSaga);
-      yield takeLatest('mvj/leases/FETCH_COMMENT_ATTRIBUTES', fetchCommentAttributesSaga);
-      yield takeLatest('mvj/leases/FETCH_COMMENTS', fetchCommentsSaga);
-      yield takeLatest('mvj/leases/CREATE_COMMENT', createCommentSaga);
-      yield takeLatest('mvj/leases/EDIT_COMMENT', editCommentSaga);
-
     }),
   ];
 }

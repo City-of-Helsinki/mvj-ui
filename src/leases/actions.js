@@ -43,17 +43,6 @@ import type {
   FetchLessorsAction,
   ReceiveLessorsAction,
 } from './types';
-import type {
-  Comment,
-  FetchCommentAttributesAction,
-  ReceiveCommentAttributesAction,
-  FetchCommentsAction,
-  CreateCommentAction,
-  EditCommentAction,
-  ReceiveCommentsAction,
-  ReceiveCreatedCommentAction,
-  ReceiveEditedCommentAction,
-} from './types';
 
 import type {
   HideEditModeAction,
@@ -135,30 +124,6 @@ export const fetchLessors = (): FetchLessorsAction =>
 
 export const receiveLessors = (lessors: LessorList): ReceiveLessorsAction =>
   createAction('mvj/leases/RECEIVE_LESSORS')(lessors);
-
-export const fetchCommentAttributes = (): FetchCommentAttributesAction =>
-  createAction('mvj/leases/FETCH_COMMENT_ATTRIBUTES')();
-
-export const receiveCommentAttributes = (identifiers: Attributes): ReceiveCommentAttributesAction =>
-  createAction('mvj/leases/RECEIVE_COMMENT_ATTRIBUTES')(identifiers);
-
-export const fetchComments = (leaseId: LeaseId): FetchCommentsAction =>
-  createAction('mvj/leases/FETCH_COMMENTS')(leaseId);
-
-export const receiveComments = (comments: Array<Comment>): ReceiveCommentsAction =>
-  createAction('mvj/leases/RECEIVE_COMMENTS')(comments);
-
-export const createComment = (comment: Comment): CreateCommentAction =>
-  createAction('mvj/leases/CREATE_COMMENT')(comment);
-
-export const receiveCreatedComment = (comment: Comment): ReceiveCreatedCommentAction =>
-  createAction('mvj/leases/RECEIVE_CREATED_COMMENT')(comment);
-
-export const editComment = (comment: Comment): EditCommentAction =>
-  createAction('mvj/leases/EDIT_COMMENT')(comment);
-
-export const receiveEditedComment = (comment: Comment): ReceiveEditedCommentAction =>
-  createAction('mvj/leases/RECEIVE_EDITED_COMMENT')(comment);
 
 export const hideEditMode = (): HideEditModeAction =>
   createAction('mvj/leases/HIDE_EDIT')();
