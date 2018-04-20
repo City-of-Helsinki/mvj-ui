@@ -20,7 +20,6 @@ import {
   getCompleteContactList,
 } from '$src/contacts/selectors';
 import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
-import {getInvoices} from '$src/invoices/selectors';
 import {
   getAreasFormTouched,
   getAreasFormValues,
@@ -109,7 +108,6 @@ import Tenants from './leaseSections/tenant/Tenants';
 import type {Attributes} from '../types';
 import type {UserList} from '$src/users/types';
 import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
-import type {InvoiceList} from '$src/invoices/types';
 
 import mockData from '../mock-data.json';
 
@@ -142,7 +140,6 @@ type Props = {
   hideEditMode: Function,
   inspectionsFormValues: Object,
   inspectionsFormTouched: boolean,
-  invoices: InvoiceList,
   isEditMode: boolean,
   isFetching: boolean,
   isConstructabilityFormValid: boolean,
@@ -424,7 +421,6 @@ class PreparerForm extends Component {
       commentsStore,
       contactAttributes,
       currentLease,
-      invoices,
       isEditMode,
       isFetching,
       showEditMode,
@@ -695,13 +691,11 @@ class PreparerForm extends Component {
               {isEditMode
                 ? (
                   <InvoicesEdit
-                    invoices={invoices}
                     isInvoicingEnabled={currentLease.is_invoicing_enabled}
                   />
                 )
                 : (
                   <Invoices
-                    invoices={invoices}
                     isInvoicingEnabled={currentLease.is_invoicing_enabled}
                   />
                 )
@@ -740,7 +734,6 @@ export default flowRight(
         decisionsFormValues: getDecisionsFormValues(state),
         constructabilityFormTouched: getConstructabilityFormTouched(state),
         constructabilityFormValues: getConstructabilityFormValues(state),
-        invoices: getInvoices(state),
         isEditMode: getIsEditMode(state),
         isConstructabilityFormValid: getIsConstructabilityFormValid(state),
         isContractsFormValid: getIsContractsFormValid(state),

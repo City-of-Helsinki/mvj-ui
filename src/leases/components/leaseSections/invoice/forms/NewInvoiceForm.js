@@ -15,15 +15,19 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FormSection from '$components/form/FormSection';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
+import {getCompleteContactList} from '$src/contacts/selectors';
 import {getCurrentLease, getNewInvoiceFormErrors, getNewInvoiceFormValues} from '$src/leases/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
+import {getInvoiceRecipientOptions} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {genericValidator} from '$components/form/validations';
 
+import type {Contact} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 type Props = {
+  contacts: Array<Contact>,
   errors: ?Object,
   formValues: Object,
   handleSubmit: Function,
@@ -31,19 +35,21 @@ type Props = {
   lease: Lease,
   onClose: Function,
   onSave: Function,
-  recipientOptions: Array<Object>,
 }
 
 const NewInvoiceForm = ({
+  contacts,
   errors,
   formValues,
   handleSubmit,
   invoiceAttributes,
+  lease,
   onClose,
   onSave,
-  recipientOptions,
 }: Props) => {
+  const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
   const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'receivable_type');
+  const recipientOptions = getInvoiceRecipientOptions(lease, contacts);
 
   return (
     <form onSubmit={handleSubmit} className='invoice__add-bill'>
@@ -65,6 +71,17 @@ const NewInvoiceForm = ({
                   options={recipientOptions}
                   validate={[
                     (value) => genericValidator(value, get(invoiceAttributes, 'recipient')),
+                  ]}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <Field
+                  component={FieldTypeSelect}
+                  label='Tyyppi'
+                  name='type'
+                  options={typeOptions}
+                  validate={[
+                    (value) => genericValidator(value, get(invoiceAttributes, 'type')),
                   ]}
                 />
               </Column>
@@ -159,6 +176,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        contacts: getCompleteContactList(state),
         errors: getNewInvoiceFormErrors(state),
         formValues: getNewInvoiceFormValues(state),
         invoiceAttributes: getInvoiceAttributes(state),

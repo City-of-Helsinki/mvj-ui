@@ -13,6 +13,15 @@ export const fetchInvoices = (search: string): Generator<> => {
   return callApi(new Request(createUrl(`invoice/${search || ''}`)));
 };
 
+export const createInvoice = (invoice: Invoice): Generator<> => {
+  const body = JSON.stringify(invoice);
+
+  return callApi(new Request(createUrl(`invoice/`), {
+    method: 'POST',
+    body,
+  }));
+};
+
 export const patchInvoice = (invoice: Invoice): Generator<> => {
   const {id} = invoice;
   const body = JSON.stringify(invoice);

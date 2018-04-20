@@ -24,3 +24,21 @@ export const getEditedInvoiceForDb = (invoice: Object) => {
     notes: get(invoice, 'notes'),
   };
 };
+
+export const getNewInvoiceForDb = (invoice: Object) => {
+  return {
+    recipient: get(invoice, 'recipient'),
+    billed_amount: get(invoice, 'billed_amount'),
+    due_date: get(invoice, 'due_date'),
+    lease: invoice.lease,
+    share_numerator: get(invoice, 'share_numerator'),
+    billing_period_end_date: get(invoice, 'billing_period_end_date'),
+    type: get(invoice, 'type'),
+    receivable_type: get(invoice, 'receivable_type'),
+    billing_period_start_date: get(invoice, 'billing_period_start_date'),
+    share_denominator: get(invoice, 'share_denominator'),
+    state: get(invoice, 'state'),
+    total_amount: formatDecimalNumberForDb(get(invoice, 'total_amount')),
+    notes: get(invoice, 'notes'),
+  };
+};

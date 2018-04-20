@@ -8,6 +8,7 @@ import type {
   ReceiveAttributesAction,
   InvoiceList,
   ReceiveInvoicesAction,
+  ReceiveIsCreateOpenAction,
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -16,6 +17,12 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/FETCH_ALL': () => true,
   'mvj/leases/NOT_FOUND': () => false,
   'mvj/leases/RECEIVE_ALL': () => false,
+}, false);
+
+const isCreateOpenReducer: Reducer<boolean> = handleActions({
+  ['mvj/invoices/RECEIVE_IS_CREATE_OPEN']: (state: boolean, {payload: isOpen}: ReceiveIsCreateOpenAction) => {
+    return isOpen;
+  },
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -33,5 +40,6 @@ const invoicesReducer: Reducer<InvoiceList> = handleActions({
 export default combineReducers({
   attributes: attributesReducer,
   invoices: invoicesReducer,
+  isCreateOpen: isCreateOpenReducer,
   isFetching: isFetchingReducer,
 });

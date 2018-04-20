@@ -22,7 +22,7 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
+import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/selectors';
 
 import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
@@ -330,6 +330,7 @@ export default flowRight(
     (state) => {
       return {
         invoiceAttributes: getInvoiceAttributes(state),
+        invoices: getInvoices(state),
       };
     },
     {

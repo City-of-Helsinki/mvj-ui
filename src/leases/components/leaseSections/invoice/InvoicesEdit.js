@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import AddInvoiceComponent from './AddInvoiceComponent';
 import Collapse from '$components/collapse/Collapse';
@@ -14,21 +15,31 @@ import {
   startInvoicing,
   stopInvoicing,
 } from '$src/leases/actions';
+import {getIsCreateOpen} from '$src/invoices/selectors';
+import {getCompleteContactList} from '$src/contacts/selectors';
+import {createInvoice, receiveIsCreateOpen} from '$src/invoices/actions';
+import {getCurrentLease} from '$src/leases/selectors';
+import {getContentTenants} from '$src/leases/helpers';
+import {getNewInvoiceForDb} from '$src/invoices/helpers';
+import {getContactById} from '$src/contacts/helpers';
+import {InvoiceState} from '$src/invoices/enums';
 
-import type {InvoiceList} from '$src/invoices/types';
+import type {Contact} from '$src/contacts/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
-  createAbnormalDebt: Function,
-  deleteAbnormalDebt: Function,
-  invoices: InvoiceList,
+  contacts: Array<Contact>,
+  createInvoice: Function,
+  isCreateOpen: boolean,
   isInvoicingEnabled: boolean,
+  lease: Lease,
   params: Object,
+  receiveIsCreateOpen: Function,
   startInvoicing: Function,
   stopInvoicing: Function,
 }
 
 type State = {
-  isAddInvoiceEditMode: boolean,
   isStartInvoicingModalOpen: boolean,
   isStopInvoicingModalOpen: boolean,
   selectedDebtIndex: number,
@@ -39,7 +50,6 @@ class BillingEdit extends Component {
   props: Props
 
   state: State = {
-    isAddInvoiceEditMode: false,
     isStartInvoicingModalOpen: false,
     isStopInvoicingModalOpen: false,
     selectedDebtIndex: -1,
@@ -47,6 +57,11 @@ class BillingEdit extends Component {
   }
 
   abnormalDebtTable: any
+
+  componentWillMount = () => {
+    const {receiveIsCreateOpen} = this.props;
+    receiveIsCreateOpen(false);
+  }
 
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
@@ -64,16 +79,26 @@ class BillingEdit extends Component {
   }
 
   createInvoice = (invoice: Object) => {
-    console.log(invoice);
-    alert('TODO: Create invoice');
-  }
+    const {
+      contacts,
+      createInvoice,
+      lease,
+      params: {leaseId},
+    } = this.props;
 
-  hideAddBillEditMode = () => {
-    this.setState({isAddInvoiceEditMode: false});
-  }
+    const recipients = getContentTenants(lease);
+    const recipient = recipients.find(x => x.id === invoice.recipient);
+    const contact = getContactById(contacts, get(recipient, 'tenant.contact'));
+    const recObj = {id: get(contact, 'id'), type: get(contact, 'type')};
 
-  showAddBillEditMode = () => {
-    this.setState({isAddInvoiceEditMode: true});
+    invoice.recipient = recObj;
+    invoice.share_numerator = get(recipient, 'share_numerator');
+    invoice.share_denominator = get(recipient, 'share_denominator');
+    invoice.lease = leaseId;
+    invoice.billed_amount = invoice.total_amount;
+    invoice.state = InvoiceState.OPEN;
+
+    createInvoice(getNewInvoiceForDb(invoice));
   }
 
   startBilling = () => {
@@ -98,11 +123,11 @@ class BillingEdit extends Component {
 
   render() {
     const {
-      invoices,
+      isCreateOpen,
       isInvoicingEnabled,
+      receiveIsCreateOpen,
     } = this.props;
     const {
-      isAddInvoiceEditMode,
       isStartInvoicingModalOpen,
       isStopInvoicingModalOpen,
     } = this.state;
@@ -143,14 +168,12 @@ class BillingEdit extends Component {
           headerTitle={
             <h3 className='collapse__header-title'>Laskut</h3>
           }>
-          <InvoicesTableEdit
-            invoices={invoices}
-          />
+          <InvoicesTableEdit/>
 
           <AddInvoiceComponent
-            editMode={isAddInvoiceEditMode}
-            onAdd={() => this.showAddBillEditMode()}
-            onClose={() => this.hideAddBillEditMode()}
+            editMode={isCreateOpen}
+            onAdd={() => receiveIsCreateOpen(true)}
+            onClose={() => receiveIsCreateOpen(false)}
             onSave={(invoice) => this.createInvoice(invoice)}
             onStartInvoicing={() => this.showModal('StartInvoicing')}
             onStopInvoicing={() => this.showModal('StopInvoicing')}
@@ -165,8 +188,16 @@ class BillingEdit extends Component {
 export default flowRight(
   withRouter,
   connect(
-    null,
+    (state) => {
+      return {
+        contacts: getCompleteContactList(state),
+        isCreateOpen: getIsCreateOpen(state),
+        lease: getCurrentLease(state),
+      };
+    },
     {
+      createInvoice,
+      receiveIsCreateOpen,
       startInvoicing,
       stopInvoicing,
     }

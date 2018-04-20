@@ -4,16 +4,17 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
-import {getContactFullName} from '$src/contacts/helpers';
+import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {
   ConstructabilityType,
   TenantContactType,
 } from './enums';
 import {
   fixedLengthNumber,
-  formatDateDb,
   formatDecimalNumberForDb,
 } from '$util/helpers';
+
+import type {Contact} from '$src/contacts/types';
 
 export const getContentLeaseIdentifier = (item:Object) => {
   if(isEmpty(item)) {
@@ -622,34 +623,15 @@ export const getDistrictOptions = (districts: Array<Object>) => {
   })];
 };
 
-const formatBillingBillTenant = (tenant: Object) => {
-  return {
-    bill_share: formatDecimalNumberForDb(get(tenant, 'bill_share')),
-    bill_share_amount: formatDecimalNumberForDb(get(tenant, 'bill_share_amount')),
-    firstname: get(tenant, 'firstname'),
-    lastname: get(tenant, 'lastname'),
-  };
-};
 
-export const formatBillingNewBill = (bill: Object) => {
-  return {
-    billing_period_end_date: formatDateDb(get(bill, 'billing_period_end_date')),
-    billing_period_start_date: formatDateDb(get(bill, 'billing_period_start_date')),
-    capital_amount: formatDecimalNumberForDb(get(bill, 'capital_amount')),
-    due_date: formatDateDb(get(bill, 'due_date')),
-    info: get(bill, 'info'),
-    invoiced_amount: formatDecimalNumberForDb(get(bill, 'invoiced_amount')),
-    invoicing_date: formatDateDb(get(bill, 'invoicing_date')),
-    invoice_method: get(bill, 'invoice_method'),
-    invoice_type: get(bill, 'invoice_type'),
-    is_utter: get(bill, 'is_utter'),
-    SAP_number: formatDecimalNumberForDb(get(bill, 'SAP_number')),
-    sent_to_SAP_date: formatDateDb(get(bill, 'sent_to_SAP_date')),
-    status: get(bill, 'status'),
-    tenant: formatBillingBillTenant(get(bill, 'tenant', {})),
-    type: get(bill, 'type'),
-    unpaid_amount: formatDecimalNumberForDb(get(bill, 'unpaid_amount')),
-  };
+export const getInvoiceRecipientOptions = (lease: Object, contacts: Array<Contact>) =>{
+  const items = getContentTenants(lease);
+  return items.map((item) => {
+    return {
+      value: item.id,
+      label: getContactFullName(getContactById(contacts, get(item, 'tenant.contact'))),
+    };
+  });
 };
 
 export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {

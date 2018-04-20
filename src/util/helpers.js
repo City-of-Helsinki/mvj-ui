@@ -224,15 +224,6 @@ export const formatDate = (date: string) => {
   return d.format('DD.MM.YYYY');
 };
 
-export const formatDateDb = (date: string) => {
-  if (!date) {
-    return '';
-  }
-
-  const d = isNumber(date) ? moment.unix(date) : moment(date);
-  return d.format('YYYY-MM-DD');
-};
-
 export const formatDecimalNumber = (x) => {
   if(x === null || x === undefined || !isNumber(Number(x))) {
     return null;

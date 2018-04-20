@@ -9,11 +9,13 @@ import {
   fetchInvoices as fetchInvoicesAction,
   receiveAttributes,
   receiveInvoices,
+  receiveIsCreateOpen,
   notFound,
 } from './actions';
 import {
   fetchAttributes,
   fetchInvoices,
+  createInvoice,
   patchInvoice,
 } from './requests';
 import {receiveError} from '$src/api/actions';
@@ -62,6 +64,32 @@ function* fetchInvoicesSaga({payload: search}): Generator<> {
   }
 }
 
+function* createInvoiceSaga({payload: invoice}): Generator<> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createInvoice, invoice);
+
+    switch (statusCode) {
+      case 201:
+        yield put(fetchInvoicesAction(getSearchQuery({lease: invoice.lease})));
+        yield put(receiveIsCreateOpen(false));
+        displayUIMessage({title: 'Lasku luotu', body: 'Lasku on luotu onnistuneesti'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create invoice with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 function* patchInvoiceSaga({payload: invoice}): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(patchInvoice, invoice);
@@ -92,6 +120,7 @@ export default function*(): Generator<> {
     fork(function*(): Generator<> {
       yield takeLatest('mvj/invoices/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/invoices/FETCH_ALL', fetchInvoicesSaga);
+      yield takeLatest('mvj/invoices/CREATE', createInvoiceSaga);
       yield takeLatest('mvj/invoices/PATCH', patchInvoiceSaga);
     }),
   ];
