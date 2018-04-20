@@ -38,7 +38,7 @@ type State = {
   tableWidth: ?number,
 }
 
-class BillsTable extends Component {
+class InvoicesTable extends Component {
   props: Props
 
   container: any
@@ -292,4 +292,4 @@ export default flowRight(
       };
     }
   )
-)(BillsTable);
+)(InvoicesTable);

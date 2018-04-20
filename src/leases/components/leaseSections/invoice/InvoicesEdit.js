@@ -46,7 +46,7 @@ type State = {
   selectedDebtToDeleteIndex: number,
 }
 
-class BillingEdit extends Component {
+class InvoicesEdit extends Component {
   props: Props
 
   state: State = {
@@ -101,7 +101,7 @@ class BillingEdit extends Component {
     createInvoice(getNewInvoiceForDb(invoice));
   }
 
-  startBilling = () => {
+  startInvoicing = () => {
     const {
       params: {leaseId},
       startInvoicing,
@@ -111,7 +111,7 @@ class BillingEdit extends Component {
     startInvoicing(leaseId);
   }
 
-  stopBilling = () => {
+  stopInvoicing = () => {
     const {
       params: {leaseId},
       stopInvoicing,
@@ -140,7 +140,7 @@ class BillingEdit extends Component {
           label='Haluatko varmasti käynnistää laskutuksen?'
           onCancel={() => this.hideModal('StartInvoicing')}
           onClose={() => this.hideModal('StartInvoicing')}
-          onSave={this.startBilling}
+          onSave={this.startInvoicing}
           title='Käynnistä laskutus'
         />
         <ConfirmationModal
@@ -149,7 +149,7 @@ class BillingEdit extends Component {
           label='Haluatko varmasti keskeyttää laskutuksen?'
           onCancel={() => this.hideModal('StopInvoicing')}
           onClose={() => this.hideModal('StopInvoicing')}
-          onSave={this.stopBilling}
+          onSave={this.stopInvoicing}
           title='Keskeytä laskutus'
         />
 
@@ -202,4 +202,4 @@ export default flowRight(
       stopInvoicing,
     }
   ),
-)(BillingEdit);
+)(InvoicesEdit);

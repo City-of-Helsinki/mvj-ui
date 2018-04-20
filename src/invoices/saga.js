@@ -59,7 +59,7 @@ function* fetchInvoicesSaga({payload: search}): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch lessors with error "%s"', error);
+    console.error('Failed to fetch invoices with error "%s"', error);
     yield put(receiveError(error));
   }
 }
@@ -109,7 +109,7 @@ function* patchInvoiceSaga({payload: invoice}): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to edit lease with error "%s"', error);
+    console.error('Failed to edit invoice with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }

@@ -28,7 +28,7 @@ type Props = {
   show: boolean,
 }
 
-class BillModalEdit extends Component {
+class InvoiceModalEdit extends Component {
   props: Props
 
   componentWillMount(){
@@ -130,4 +130,4 @@ export default flowRight(
       };
     }
   ),
-)(BillModalEdit);
+)(InvoiceModalEdit);

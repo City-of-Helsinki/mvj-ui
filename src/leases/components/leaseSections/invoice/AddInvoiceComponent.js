@@ -17,7 +17,7 @@ type Props = {
   showStartInvoicingButton: boolean,
 }
 
-class AddBillComponent extends Component {
+class AddInvoiceComponent extends Component {
   props: Props
 
   panel: any
@@ -88,4 +88,4 @@ class AddBillComponent extends Component {
   }
 }
 
-export default AddBillComponent;
+export default AddInvoiceComponent;

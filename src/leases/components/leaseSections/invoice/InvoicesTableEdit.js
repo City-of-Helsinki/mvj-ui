@@ -31,7 +31,6 @@ const MODAL_WIDTH = 700;
 
 type Props = {
   destroy: Function,
-  editBill: Function,
   initialize: Function,
   invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
@@ -149,14 +148,14 @@ class InvoicesTableEdit extends Component {
     }
   }
 
-  initilizeEditInvoiceForm = (bill: Object) => {
+  initilizeEditInvoiceForm = (invoice: Object) => {
     const {destroy, initialize} = this.props;
 
     destroy('edit-invoice-form');
-    initialize('edit-invoice-form', bill);
+    initialize('edit-invoice-form', invoice);
   }
 
-  showBillModal = (index: number) => {
+  showInvoiceModal = (index: number) => {
     const {invoices} = this.props;
 
     if(invoices && !!invoices.length) {
@@ -269,7 +268,7 @@ class InvoicesTableEdit extends Component {
                         <tr
                           className={classNames({'selected': invoice.id === get(selectedInvoice, 'id')})}
                           key={index}
-                          onClick={() => {this.showBillModal(index);}}
+                          onClick={() => {this.showInvoiceModal(index);}}
                           >
                             <td>{getContactFullName(invoice.recipient) || '-'}</td>
                             <td>{formatDate(invoice.due_date) || '-'}</td>

@@ -24,14 +24,13 @@ import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 type Props = {
-  bill: Object,
   handleSubmit: Function,
   invoice: Object,
   invoiceAttributes: InvoiceAttributes,
   startDate: string,
 }
 
-const EditBillForm = ({
+const EditInvoiceForm = ({
   handleSubmit,
   invoice,
   invoiceAttributes,
@@ -209,4 +208,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-)(EditBillForm);
+)(EditInvoiceForm);
