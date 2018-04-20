@@ -28,7 +28,7 @@ export const getEditedInvoiceForDb = (invoice: Object) => {
 export const getNewInvoiceForDb = (invoice: Object) => {
   return {
     recipient: get(invoice, 'recipient'),
-    billed_amount: get(invoice, 'billed_amount'),
+    billed_amount: formatDecimalNumberForDb(get(invoice, 'billed_amount')),
     due_date: get(invoice, 'due_date'),
     lease: invoice.lease,
     share_numerator: get(invoice, 'share_numerator'),
