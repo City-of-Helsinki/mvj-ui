@@ -1,9 +1,9 @@
 // @flow
 import React from 'react';
 
-import InvoicesTable from './InvoicesTable';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
+import InvoicesTable from './InvoicesTable';
 import RightSubtitle from '$components/content/RightSubtitle';
 
 type Props = {

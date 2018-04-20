@@ -5,10 +5,8 @@ import classNames from 'classnames';
 import CloseButton from '$components/button/CloseButton';
 import InvoiceTemplate from './InvoiceTemplate';
 
-
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
-
 
 type Props = {
   containerHeight: ?number,

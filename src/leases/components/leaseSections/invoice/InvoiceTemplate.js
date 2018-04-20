@@ -18,7 +18,6 @@ import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
-
 type Props = {
   invoice: Object,
   invoiceAttributes: InvoiceAttributes,

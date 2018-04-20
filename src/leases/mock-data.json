@@ -1,0 +1,29 @@
+{
+  "leases": [
+    {
+      "history": [
+        {
+          "active": true,
+          "end_date": "2070-01-12",
+          "identifier": "A1000-7657",
+          "start_date": "2010-01-12",
+          "type": "Vuokraus"
+        },
+        {
+          "active": false,
+          "end_date": "2010-01-12",
+          "identifier": "A1000-7657",
+          "start_date": "2002-01-12",
+          "type": "Vuokraus"
+        },
+        {
+          "active": false,
+          "end_date": "2002-01-12",
+          "identifier": "A1000-6899",
+          "start_date": "2001-01-12",
+          "type": "Varaus"
+        }
+      ],
+    }
+  ]
+}
