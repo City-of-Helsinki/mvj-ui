@@ -113,7 +113,6 @@ const formName = 'tenants-form';
 export default flowRight(
   connect(
     (state) => {
-      console.log(getFormInitialValues(formName)(state));
       return {
         contactModalSettings: getContactModalSettings(state),
         contactFormValues: getContactFormValues(state),

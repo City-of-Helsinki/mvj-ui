@@ -1,13 +1,17 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import {getUserOptions} from '$src/users/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {ConstructabilityStatus} from '$src/leases/enums';
+import {getAttributes} from '$src/leases/selectors';
+import {getUsers} from '$src/users/selectors';
 
 import type {Attributes} from '$src/leases/types';
 import type {UserList} from '$src/users/types';
@@ -76,18 +80,6 @@ type Props = {
 }
 
 const ConstructabilityItem = ({area, attributes, users}: Props) => {
-  const getUserOptions = (users: UserList) => {
-    if(!users || !users.length) {
-      return [];
-    }
-    return users.map((user) => {
-      return {
-        value: user.id,
-        label: `${user.first_name} ${user.last_name}`,
-      };
-    });
-  };
-
   const stateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.preconstruction_state');
   const pollutedLandConditionStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state');
   const constructabilityReportStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.constructability_report_investigation_state');
@@ -255,4 +247,11 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
   );
 };
 
-export default ConstructabilityItem;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      users: getUsers(state),
+    };
+  },
+)(ConstructabilityItem);

@@ -1,27 +1,31 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {reduxForm, Field, FieldArray} from 'redux-form';
+import {getFormInitialValues, Field, FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
-import {getIsConstructabilityFormValid} from '$src/leases/selectors';
 import {receiveConstructabilityFormValid} from '$src/leases/actions';
+import {getContentConstructability} from '$src/leases/helpers';
+import {getUserOptions} from '$src/users/helpers';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes, getCurrentLease, getIsConstructabilityFormValid} from '$src/leases/selectors';
+import {getUsers} from '$src/users/selectors';
 import {genericValidator} from '$components/form/validations';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import Divider from '$components/content/Divider';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes, Lease} from '$src/leases/types';
 import type {UserList} from '$src/users/types';
 
 type CommentProps = {
@@ -101,17 +105,7 @@ const renderAreas = ({
   const getFullAddress = (item: Object) => {
     return `${item.address}, ${item.postal_code} ${item.city}`;
   };
-  const getUserOptions = (users: UserList) => {
-    if(!users || !users.length) {
-      return [];
-    }
-    return users.map((user) => {
-      return {
-        value: user.id,
-        label: `${user.first_name} ${user.last_name}`,
-      };
-    });
-  };
+
   const stateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.preconstruction_state');
   const pollutedLandConditionStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state');
   const constructabilityReportStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.constructability_report_investigation_state');
@@ -387,8 +381,8 @@ const renderAreas = ({
 };
 
 type Props = {
-  areas: Array<Object>,
   attributes: Attributes,
+  currentLease: Lease,
   handleSubmit: Function,
   isConstructabilityFormValid: boolean,
   receiveConstructabilityFormValid: Function,
@@ -407,10 +401,15 @@ class ConstructabilityEdit extends Component {
   }
 
   render () {
-    const {areas, attributes, handleSubmit, users} = this.props;
+    const {attributes, currentLease, handleSubmit, users} = this.props;
+    const areas = getContentConstructability(currentLease);
+
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
+          <h2>Rakentamiskelpoisuus</h2>
+          <Divider />
+
           <FieldArray
             areas={areas}
             attributes={attributes}
@@ -430,7 +429,11 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        attributes: getAttributes(state),
+        currentLease: getCurrentLease(state),
+        initialValues: getFormInitialValues(formName)(state),
         isConstructabilityFormValid: getIsConstructabilityFormValid(state),
+        users: getUsers(state),
       };
     },
     {
