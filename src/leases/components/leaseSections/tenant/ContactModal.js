@@ -8,11 +8,9 @@ import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import Modal from '$components/modal/Modal';
 import {getIsContactFormValid} from '$src/contacts/selectors';
 
-import type {Attributes as ContactAttributes} from '$src/contacts/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
-  contactAttributes: ContactAttributes,
   isContactFormValid: boolean,
   isOpen: boolean,
   onCancel: Function,
@@ -23,7 +21,6 @@ type Props = {
 }
 
 const ContactModal = ({
-  contactAttributes,
   isContactFormValid,
   isOpen,
   onCancel,
@@ -45,9 +42,7 @@ const ContactModal = ({
             className='no-margin'
           >
             {isOpen &&
-              <ContactForm
-                attributes={contactAttributes}
-              />
+              <ContactForm />
             }
 
           </GreenBoxEdit>

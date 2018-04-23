@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import {change, reduxForm, FieldArray} from 'redux-form';
+import {change, reduxForm, FieldArray, getFormInitialValues} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import ContactModal from './ContactModal';
@@ -12,14 +12,10 @@ import {getContactModalSettings, getIsContactModalOpen, getIsTenantsFormValid} f
 import {createContact, editContact, hideContactModal, receiveContactModalSettings, receiveTenantsFormValid} from '$src/leases/actions';
 import {getContactFormValues} from '$src/contacts/selectors';
 
-import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
-import type {Attributes, ContactModalSettings} from '$src/leases/types';
+import type {ContactModalSettings} from '$src/leases/types';
 
 type Props = {
-  allContacts: Array<Contact>,
-  attributes: Attributes,
   change: Function,
-  contactAttributes: ContactAttributes,
   contactModalSettings: ContactModalSettings,
   contactFormValues: Object,
   createContact: Function,
@@ -60,9 +56,6 @@ class TenantsEdit extends Component {
 
   render () {
     const {
-      allContacts,
-      attributes,
-      contactAttributes,
       contactModalSettings,
       contactFormValues,
       createContact,
@@ -76,7 +69,6 @@ class TenantsEdit extends Component {
     return (
       <div>
         <ContactModal
-          contactAttributes={contactAttributes}
           isOpen={isContactModalOpen}
           onCancel={() => {
             hideContactModal();
@@ -104,10 +96,7 @@ class TenantsEdit extends Component {
             <Row>
               <Column>
                 <FieldArray
-                  allContacts={allContacts}
-                  attributes={attributes}
                   component={TenantItemsEdit}
-                  contactAttributes={contactAttributes}
                   name="tenants"
                 />
               </Column>
@@ -124,9 +113,11 @@ const formName = 'tenants-form';
 export default flowRight(
   connect(
     (state) => {
+      console.log(getFormInitialValues(formName)(state));
       return {
         contactModalSettings: getContactModalSettings(state),
         contactFormValues: getContactFormValues(state),
+        initialValues: getFormInitialValues(formName)(state),
         isContactModalOpen: getIsContactModalOpen(state),
         isTenantsFormValid: getIsTenantsFormValid(state),
       };

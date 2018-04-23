@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {destroy} from 'redux-form';
+import {destroy, initialize} from 'redux-form';
 import {withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
@@ -16,10 +16,6 @@ import {
   fetchCompleteContactList,
 } from '$src/contacts/actions';
 import {getComments} from '$src/comments/selectors';
-import {
-  getAttributes as getContactAttributes,
-  getCompleteContactList,
-} from '$src/contacts/selectors';
 import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
 import {
   getAreasFormTouched,
@@ -102,21 +98,18 @@ import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 
-import type {Attributes} from '../types';
+import type {Attributes, Lease} from '../types';
 import type {UserList} from '$src/users/types';
 import type {CommentList} from '$src/comments/types';
-import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
 
 import mockData from '../mock-data.json';
 
 type Props = {
-  allContacts: Array<Contact>,
   areasFormTouched: boolean,
   areasFormValues: Object,
   attributes: Attributes,
   clearFormValidFlags: Function,
   comments: CommentList,
-  contactAttributes: ContactAttributes,
   contractsFormTouched: boolean,
   contractsFormValues: Object,
   constructabilityFormTouched: boolean,
@@ -135,6 +128,7 @@ type Props = {
   fetchSingleLease: Function,
   fetchUsers: Function,
   hideEditMode: Function,
+  initialize: Function,
   inspectionsFormValues: Object,
   inspectionsFormTouched: boolean,
   isEditMode: boolean,
@@ -255,12 +249,37 @@ class PreparerForm extends Component {
     });
   }
 
+  openEditMode = () => {
+    const {clearFormValidFlags, currentLease, showEditMode} = this.props;
+
+    this.destroyAllForms();
+    this.initializeForms(currentLease);
+    clearFormValidFlags();
+    showEditMode();
+  }
+
+  destroyAllForms = () => {
+    const {destroy} = this.props;
+    destroy('lease-areas-form');
+    destroy('lease-info-form');
+    destroy('summary-form');
+    destroy('decisions-form');
+    destroy('contracts-form');
+    destroy('inspections-form');
+    destroy('constructability-form');
+    destroy('rents-form');
+    destroy('tenants-form');
+  }
+
+  initializeForms = (lease: Lease) => {
+    const {initialize} = this.props;
+    initialize('tenants-form', {tenants: contentHelpers.getContentTenants(lease)});
+  }
+
   cancel = () => {
-    const {clearFormValidFlags, hideEditMode} = this.props;
+    const {hideEditMode} = this.props;
 
     this.hideModal('CancelLease');
-    this.destroyAllForms();
-    clearFormValidFlags();
     hideEditMode();
   }
 
@@ -320,19 +339,6 @@ class PreparerForm extends Component {
 
     patchLease(payload);
     this.hideModal('SaveLease');
-  }
-
-  destroyAllForms = () => {
-    const {destroy} = this.props;
-    destroy('lease-areas-form');
-    destroy('lease-info-form');
-    destroy('summary-form');
-    destroy('decisions-form');
-    destroy('contracts-form');
-    destroy('inspections-form');
-    destroy('constructability-form');
-    destroy('tenants-form');
-    destroy('rents-form');
   }
 
   validateForms = () => {
@@ -412,14 +418,11 @@ class PreparerForm extends Component {
     } = this.state;
 
     const {
-      allContacts,
       attributes,
       comments,
-      contactAttributes,
       currentLease,
       isEditMode,
       isFetching,
-      showEditMode,
       users,
     } = this.props;
 
@@ -435,7 +438,7 @@ class PreparerForm extends Component {
     const contracts = contentHelpers.getContentContracts(currentLease);
     const inspections = contentHelpers.getContentInspections(currentLease);
     const constructability = contentHelpers.getContentConstructability(currentLease);
-    const tenants = contentHelpers.getContentTenants(currentLease);
+    // const tenants = contentHelpers.getContentTenants(currentLease);
     const rents = contentHelpers.getContentRents(currentLease);
     const basisOfRents = contentHelpers.getContentBasisOfRents(currentLease);
 
@@ -487,11 +490,7 @@ class PreparerForm extends Component {
               isSaveDisabled={!areFormsValid || activeTab.toString() === '6'}
               onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
               onCommentClick={this.toggleCommentPanel}
-              onEditClick={() => {
-                this.destroyAllForms();
-                clearFormValidFlags();
-                showEditMode();
-              }}
+              onEditClick={this.openEditMode}
               onSaveClick={() => this.showModal('SaveLease')}
             />
           }
@@ -590,17 +589,8 @@ class PreparerForm extends Component {
               <h2>Vuokralaiset</h2>
               <Divider />
               {isEditMode
-                ? (
-                  <TenantsEdit
-                    allContacts={allContacts}
-                    attributes={attributes}
-                    contactAttributes={contactAttributes}
-                    initialValues={{tenants: tenants}}
-                  />
-                )
-                : (
-                  <Tenants />
-                )
+                ? <TenantsEdit />
+                : <Tenants />
               }
             </ContentContainer>
           </TabPane>
@@ -707,12 +697,10 @@ export default flowRight(
     (state) => {
       const user = getLoggedInUser(state);
       return {
-        allContacts: getCompleteContactList(state),
         areasFormTouched: getAreasFormTouched(state),
         areasFormValues: getAreasFormValues(state),
         attributes: getAttributes(state),
         comments: getComments(state),
-        contactAttributes: getContactAttributes(state),
         contractsFormTouched: getContractsFormTouched(state),
         contractsFormValues: getContractsFormValues(state),
         currentLease: getCurrentLease(state),
@@ -758,6 +746,7 @@ export default flowRight(
       fetchSingleLease,
       fetchUsers,
       hideEditMode,
+      initialize,
       patchLease,
       receiveTopNavigationSettings,
       showEditMode,

@@ -17,20 +17,20 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
+import {initializeContactForm} from '$src/contacts/actions';
+import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
 import {getContactById, getContactOptions} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
-import {getTenantsFormValues} from '$src/leases/selectors';
+import {getCompleteContactList} from '$src/contacts/selectors';
+import {getAttributes, getTenantsFormValues} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
-import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
-import {initializeContactForm} from '$src/contacts/actions';
 
-import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
+import type {Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   allContacts: Array<Contact>,
   attributes: Attributes,
-  contactAttributes: ContactAttributes,
   fields: any,
   formValues: Object,
   initializeContactForm: Function,
@@ -41,7 +41,6 @@ type Props = {
 const TenantItemsEdit = ({
   allContacts,
   attributes,
-  contactAttributes,
   fields,
   formValues,
   initializeContactForm,
@@ -189,7 +188,6 @@ const TenantItemsEdit = ({
                   </IconButton>
                 }
                 <ContactInfoTemplate
-                  attributes={contactAttributes}
                   contact={contact}
                 />
               </BoxContentWrapper>
@@ -221,10 +219,7 @@ const TenantItemsEdit = ({
             </BoxContentWrapper>
 
             <FieldArray
-              allContacts={allContacts}
-              attributes={attributes}
               component={OtherTenantItemsEdit}
-              contactAttributes={contactAttributes}
               name={`${tenant}.tenantcontact_set`}
             />
           </Collapse>
@@ -248,6 +243,8 @@ const TenantItemsEdit = ({
 export default connect(
   (state) => {
     return {
+      allContacts: getCompleteContactList(state),
+      attributes: getAttributes(state),
       formValues: getTenantsFormValues(state),
     };
   },

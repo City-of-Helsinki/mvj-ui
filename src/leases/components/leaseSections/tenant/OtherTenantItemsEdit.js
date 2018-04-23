@@ -17,21 +17,21 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import IconButton from '$components/button/IconButton';
 import RemoveButton from '$components/form/RemoveButton';
 import {genericValidator} from '$components/form/validations';
-import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
-import {getTenantsFormValues} from '$src/leases/selectors';
-import {TenantContactType} from '$src/leases/enums';
 import {initializeContactForm} from '$src/contacts/actions';
+import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
+import {TenantContactType} from '$src/leases/enums';
+import {getCompleteContactList} from '$src/contacts/selectors';
+import {getAttributes, getTenantsFormValues} from '$src/leases/selectors';
 import {getContactById, getContactOptions} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 
-import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
+import type {Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   allContacts: Array<Contact>,
   attributes: Attributes,
-  contactAttributes: ContactAttributes,
   fields: any,
   formValues: Object,
   initializeContactForm: Function,
@@ -42,7 +42,6 @@ type Props = {
 const OtherTenantItemsEdit = ({
   allContacts,
   attributes,
-  contactAttributes,
   fields,
   formValues,
   initializeContactForm,
@@ -174,7 +173,6 @@ const OtherTenantItemsEdit = ({
                   </IconButton>
                 }
                 <ContactInfoTemplate
-                  attributes={contactAttributes}
                   contact={contact}
                 />
               </BoxContentWrapper>
@@ -212,6 +210,8 @@ const OtherTenantItemsEdit = ({
 export default connect(
   (state) => {
     return {
+      allContacts: getCompleteContactList(state),
+      attributes: getAttributes(state),
       formValues: getTenantsFormValues(state),
     };
   },
