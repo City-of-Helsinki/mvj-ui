@@ -7,7 +7,6 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
-import AddIcon from '$components/icons/AddIcon';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
@@ -65,8 +64,44 @@ const OtherTenantItemsEdit = ({
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames('collapse__secondary', {'not-active': !isActive})}
             defaultOpen={isActive}
+            header={
+              <div>
+                <Column></Column>
+                <Column>
+                  <div className='collapse__header_field-wrapper'>
+                    <div className='collapse__header_field-label-wrapper'>
+                      <label>Välillä</label>
+                    </div>
+                    <div className='collapse__header_field-input-wrapper'>
+                      <Column>
+                        <Field
+                          className='no-margin'
+                          component={FieldTypeDatePicker}
+                          name={`${tenant}.start_date`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.tenantcontact_set.child.children.start_date')),
+                          ]}
+                        />
+                      </Column>
+                      <Column>
+                        <Field
+                          className='with-dash no-margin'
+                          component={FieldTypeDatePicker}
+                          name={`${tenant}.end_date`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.tenantcontact_set.child.children.end_date')),
+                          ]}
+                        />
+                      </Column>
+                    </div>
+                  </div>
+                </Column>
+              </div>
+            }
             headerTitle={
-              <h4 className='collapse__header-title'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
+              <h4 className='collapse__header-title edit-row'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
             }>
             <BoxContentWrapper>
               <RemoveButton
@@ -92,37 +127,15 @@ const OtherTenantItemsEdit = ({
                     </Column>
                     <Column small={3} medium={4} large={4}>
                       <div className='contact-buttons-wrapper'>
-                        <IconButton
-                          onClick={() => {
-                            initializeContactForm({});
-                            receiveContactModalSettings({
-                              field: `${tenant}.contact`,
-                              contactId: null,
-                              isNew: true,
-                            });
-                            showContactModal();
-                          }}
-                        >
-                          <AddIcon
-                            className='icon-medium'
-                          />
-                        </IconButton>
-                        <IconButton
-                          disabled={!contact}
-                          onClick={() => {
-                            initializeContactForm({...contact});
-                            receiveContactModalSettings({
-                              field: `${tenant}.contact`,
-                              contactId: null,
-                              isNew: false,
-                            });
-                            showContactModal();
-                          }}
-                        >
-                          <EditIcon
-                            className='icon-medium'
-                          />
-                        </IconButton>
+                        <a onClick={() => {
+                          initializeContactForm({});
+                          receiveContactModalSettings({
+                            field: `${tenant}.contact`,
+                            contactId: null,
+                            isNew: true,
+                          });
+                          showContactModal();
+                        }}>Luo uusi asiakas</a>
                       </div>
                     </Column>
                   </Row>
@@ -139,29 +152,33 @@ const OtherTenantItemsEdit = ({
                     ]}
                   />
                 </Column>
-                <Column small={12} medium={6} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Alkupäivämäärä'
-                    name={`${tenant}.start_date`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'tenants.child.children.tenantcontact_set.child.children.start_date')),
-                    ]}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Loppupäivämäärä'
-                    name={`${tenant}.end_date`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'tenants.child.children.tenantcontact_set.child.children.end_date')),
-                    ]}
-                  />
-                </Column>
               </Row>
+              <BoxContentWrapper>
+                {!!contact &&
+                  <IconButton
+                    className='position-topright'
+                    disabled={!contact}
+                    onClick={() => {
+                      initializeContactForm({...contact});
+                      receiveContactModalSettings({
+                        field: `${tenant}.contact`,
+                        contactId: null,
+                        isNew: false,
+                      });
+                      showContactModal();
+                    }}
+                  >
+                    <EditIcon
+                      className='icon-medium'
+                    />
+                  </IconButton>
+                }
+                <ContactInfoTemplate
+                  attributes={contactAttributes}
+                  contact={contact}
+                />
+              </BoxContentWrapper>
+
               <Row>
                 <Column small={12}>
                   <Field
@@ -175,11 +192,6 @@ const OtherTenantItemsEdit = ({
                   />
                 </Column>
               </Row>
-
-              <ContactInfoTemplate
-                attributes={contactAttributes}
-                contact={contact}
-              />
             </BoxContentWrapper>
           </Collapse>
         );

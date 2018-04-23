@@ -4,10 +4,10 @@ import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
-import {formatDate, formatDateRange, getAttributeFieldOptions, getContactById, getLabelOfOption} from '$util/helpers';
+import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
-import {getContactFullName} from '$src/contacts/helpers';
+import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 
 import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
@@ -36,8 +36,10 @@ const OtherTenantItem = ({
       defaultOpen={isActive}
       header={
         <div>
+          <Column></Column>
           <Column>
             <span className={'collapse__header-subtitle'}>
+              <label>Välillä:</label>
               {formatDateRange(get(tenant, 'start_date'), get(tenant, 'end_date')) || '-'}
             </span>
           </Column>
@@ -54,14 +56,6 @@ const OtherTenantItem = ({
         <Column small={12} medium={6} large={2}>
           <label>Rooli</label>
           <p>{getLabelOfOption(tenantTypeOptions, tenant.type)}</p>
-        </Column>
-        <Column small={12} medium={6} large={2}>
-          <label>Alkupäivämäärä</label>
-          <p>{formatDate(get(tenant, 'start_date')) || '-'}</p>
-        </Column>
-        <Column small={12} medium={6} large={2}>
-          <label>Loppupäivämäärä</label>
-          <p>{formatDate(get(tenant, 'end_date')) || '-'}</p>
         </Column>
       </Row>
       <Row>
