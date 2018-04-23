@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {destroy, initialize} from 'redux-form';
 import {withRouter} from 'react-router';
-import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
@@ -63,8 +62,6 @@ import {getRouteById} from '$src/root/routes';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import * as contentHelpers from '../helpers';
 import {
-  getAttributeFieldOptions,
-  getLabelOfOption,
   getSearchQuery,
 } from '$util/helpers';
 import CommentPanel from '$components/commentPanel/CommentPanel';
@@ -82,7 +79,6 @@ import Invoices from './leaseSections/invoice/Invoices';
 import InvoicesEdit from './leaseSections/invoice/InvoicesEdit';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
-import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '$components/loader/Loader';
@@ -260,19 +256,23 @@ class PreparerForm extends Component {
 
   destroyAllForms = () => {
     const {destroy} = this.props;
+
     destroy('lease-areas-form');
     destroy('lease-info-form');
-    destroy('summary-form');
     destroy('decisions-form');
     destroy('contracts-form');
     destroy('inspections-form');
     destroy('constructability-form');
     destroy('rents-form');
+
+    destroy('summary-form');
     destroy('tenants-form');
   }
 
   initializeForms = (lease: Lease) => {
     const {initialize} = this.props;
+
+    initialize('summary-form', contentHelpers.getContentSummary(lease));
     initialize('tenants-form', {tenants: contentHelpers.getContentTenants(lease)});
   }
 
@@ -429,16 +429,12 @@ class PreparerForm extends Component {
     const areFormsValid = this.validateForms();
     const isAnyFormTouched = this.isAnyFormTouched();
 
-    const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
-
     const leaseInfo = contentHelpers.getContentLeaseInfo(currentLease);
-    const summary = contentHelpers.getContentSummary(currentLease);
     const areas = contentHelpers.getContentLeaseAreas(currentLease);
     const decisions = contentHelpers.getContentDecisions(currentLease);
     const contracts = contentHelpers.getContentContracts(currentLease);
     const inspections = contentHelpers.getContentInspections(currentLease);
     const constructability = contentHelpers.getContentConstructability(currentLease);
-    // const tenants = contentHelpers.getContentTenants(currentLease);
     const rents = contentHelpers.getContentRents(currentLease);
     const basisOfRents = contentHelpers.getContentBasisOfRents(currentLease);
 
@@ -533,34 +529,10 @@ class PreparerForm extends Component {
         <TabContent active={activeTab}>
           <TabPane>
             <ContentContainer>
-              <h2>Yhteenveto</h2>
-              {!isEditMode &&
-                <RightSubtitle
-                  className='publicity-label'
-                  text={summary.classification
-                    ? getLabelOfOption(classificationOptions, summary.classification)
-                    : '-'
-                  }
-                />
+              {isEditMode
+                ? <SummaryEdit history={history} />
+                : <Summary history={history} />
               }
-              <Divider />
-              <Row>
-                <Column medium={9}>
-                  {isEditMode
-                    ? <SummaryEdit
-                        attributes={attributes}
-                        initialValues={{...summary}}
-                      />
-                    : <Summary
-                        attributes={attributes}
-                        summary={summary}
-                      />
-                  }
-                  </Column>
-                <Column medium={3}>
-                  <LeaseHistory history={history}/>
-                </Column>
-              </Row>
             </ContentContainer>
           </TabPane>
 
