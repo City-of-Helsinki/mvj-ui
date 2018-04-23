@@ -3,20 +3,16 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import isNumber from 'lodash/isNumber';
 
-import {getContactFullName} from '$src/contacts/helpers';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
-
-import type {Attributes as ContactAttributes} from '$src/contacts/types';
+import {getContactFullName} from '$src/contacts/helpers';
 
 type Props = {
   contact: ?Object,
-  contactAttributes: ContactAttributes,
   tenant: Object,
 };
 
 const TenantItem = ({
   contact,
-  contactAttributes,
   tenant,
 }: Props) => {
   const getInvoiceManagementShare = () => {
@@ -47,7 +43,6 @@ const TenantItem = ({
         </Column>
       </Row>
       <ContactInfoTemplate
-        attributes={contactAttributes}
         contact={contact}
       />
       <Row>

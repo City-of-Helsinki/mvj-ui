@@ -53,7 +53,7 @@ class TenantsEdit extends Component {
     const {change, receiveContactModalSettings} = this.props;
 
     if(contactModalSettings && contactModalSettings.contactId) {
-      change('tenants-form', contactModalSettings.field, contactModalSettings.contactId);
+      change(contactModalSettings.field, contactModalSettings.contactId);
       receiveContactModalSettings(null);
     }
   }
@@ -93,6 +93,11 @@ class TenantsEdit extends Component {
               editContact(contactFormValues);
             }
           }}
+          onSaveAndAdd={() => {
+            contactFormValues.isSelected = true;
+            createContact(contactFormValues);
+          }}
+          showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
         />
         <form onSubmit={handleSubmit}>
           <FormSection>

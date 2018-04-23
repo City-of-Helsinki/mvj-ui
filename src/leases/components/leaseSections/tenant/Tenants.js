@@ -1,24 +1,22 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 
 import Tenant from './Tenant';
+import {getContentTenants} from '$src/leases/helpers';
+import {getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
-import type {Attributes} from '$src/leases/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
-  allContacts: Array<Contact>,
-  attributes: Attributes,
-  contactAttributes: ContactAttributes,
-  tenants: Array<Object>,
+  currentLease: Lease,
 }
 
 const Tenants = ({
-  allContacts,
-  attributes,
-  contactAttributes,
-  tenants,
+  currentLease,
 }: Props) => {
+  const tenants = getContentTenants(currentLease);
+
   return (
     <div>
       {(!tenants || !tenants.length) &&
@@ -27,9 +25,6 @@ const Tenants = ({
       {tenants && !!tenants.length && tenants.map((tenant) =>
         <Tenant
           key={tenant.id}
-          allContacts={allContacts}
-          attributes={attributes}
-          contactAttributes={contactAttributes}
           tenant={tenant}
         />
       )}
@@ -37,4 +32,10 @@ const Tenants = ({
   );
 };
 
-export default Tenants;
+export default connect(
+  (state) => {
+    return {
+      currentLease: getCurrentLease(state),
+    };
+  }
+)(Tenants);

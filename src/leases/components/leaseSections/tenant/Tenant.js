@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import get from 'lodash/get';
 import {Column} from 'react-foundation';
 import classNames from 'classnames';
@@ -7,24 +8,20 @@ import classNames from 'classnames';
 import Collapse from '$components/collapse/Collapse';
 import OtherTenantItem from './OtherTenantItem';
 import TenantItem from './TenantItem';
-import {formatDateRange} from '$util/helpers';
 import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
+import {formatDateRange} from '$util/helpers';
+import {getCompleteContactList} from '$src/contacts/selectors';
 
-import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
-import type {Attributes} from '$src/leases/types';
+import type {Contact} from '$src/contacts/types';
 
 type Props = {
   allContacts: Array<Contact>,
-  attributes: Attributes,
-  contactAttributes: ContactAttributes,
   tenant: Object,
 }
 
 const Tenant = ({
   allContacts,
-  attributes,
-  contactAttributes,
   tenant,
 }: Props) => {
   const contact = getContactById(allContacts, get(tenant, 'tenant.contact'));
@@ -57,7 +54,6 @@ const Tenant = ({
       <div>
         <TenantItem
           contact={contact}
-          contactAttributes={contactAttributes}
           tenant={tenant}
         />
         {tenant.tenantcontact_set && !!tenant.tenantcontact_set.length &&
@@ -65,9 +61,6 @@ const Tenant = ({
             return (
               <OtherTenantItem
                 key={person.id}
-                allContacts={allContacts}
-                attributes={attributes}
-                contactAttributes={contactAttributes}
                 tenant={person}
               />
             );
@@ -78,4 +71,10 @@ const Tenant = ({
   );
 };
 
-export default Tenant;
+export default connect(
+  (state) => {
+    return {
+      allContacts: getCompleteContactList(state),
+    };
+  },
+)(Tenant);

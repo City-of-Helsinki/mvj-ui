@@ -1,8 +1,10 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes} from '$src/contacts/selectors';
 import {ContactType} from '../enums';
 
 import type {Attributes} from '$src/contacts/types';
@@ -113,4 +115,10 @@ const ContactInfoTemplate = ({contact, attributes}: Props) => {
   );
 };
 
-export default ContactInfoTemplate;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  }
+)(ContactInfoTemplate);
