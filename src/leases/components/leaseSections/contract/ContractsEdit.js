@@ -2,18 +2,15 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import {reduxForm, FieldArray} from 'redux-form';
+import {FieldArray, getFormInitialValues, reduxForm} from 'redux-form';
 
 import ContractItemsEdit from './ContractItemsEdit';
 import FormSection from '$components/form/FormSection';
-import {getIsContractsFormValid} from '$src/leases/selectors';
 import {receiveContractsFormValid} from '$src/leases/actions';
-
-import type {Attributes} from '$src/leases/types';
+import {FormNames} from '$src/leases/enums';
+import {getIsContractsFormValid} from '$src/leases/selectors';
 
 type Props = {
-  attributes: Attributes,
-  decisionOptions: Array<Object>,
   handleSubmit: Function,
   isContractsFormValid: boolean,
   receiveContractsFormValid: Function,
@@ -31,19 +28,13 @@ class ContractsEdit extends Component {
   }
 
   render() {
-    const {
-      attributes,
-      decisionOptions,
-      handleSubmit,
-    } = this.props;
+    const {handleSubmit} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <FieldArray
-            attributes={attributes}
             component={ContractItemsEdit}
-            decisionOptions={decisionOptions}
             name="contracts"
           />
         </FormSection>
@@ -52,12 +43,13 @@ class ContractsEdit extends Component {
   }
 }
 
-const formName = 'contracts-form';
+const formName = FormNames.CONTRACTS;
 
 export default flowRight(
   connect(
     (state) => {
       return {
+        initialValues: getFormInitialValues(formName)(state),
         isContractsFormValid: getIsContractsFormValid(state),
       };
     },

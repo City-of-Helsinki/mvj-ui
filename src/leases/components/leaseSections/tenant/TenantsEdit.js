@@ -8,9 +8,10 @@ import {Row, Column} from 'react-foundation';
 import ContactModal from './ContactModal';
 import FormSection from '$components/form/FormSection';
 import TenantItemsEdit from './TenantItemsEdit';
-import {getContactModalSettings, getIsContactModalOpen, getIsTenantsFormValid} from '$src/leases/selectors';
 import {createContact, editContact, hideContactModal, receiveContactModalSettings, receiveTenantsFormValid} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
 import {getContactFormValues} from '$src/contacts/selectors';
+import {getContactModalSettings, getIsContactModalOpen, getIsTenantsFormValid} from '$src/leases/selectors';
 
 import type {ContactModalSettings} from '$src/leases/types';
 
@@ -108,7 +109,7 @@ class TenantsEdit extends Component {
   }
 }
 
-const formName = 'tenants-form';
+const formName = FormNames.TENANTS;
 
 export default flowRight(
   connect(

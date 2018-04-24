@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -12,8 +13,9 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
-import {genericValidator} from '$components/form/validations';
+import {getAttributes} from '$src/leases/selectors';
 import {getAttributeFieldOptions} from '$src/util/helpers';
+import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -23,6 +25,7 @@ type Props = {
 }
 
 const RuleItemsEdit = ({attributes, fields}: Props) => {
+  console.log(attributes);
   const decisionMakerOptions = getAttributeFieldOptions(attributes,
     'decisions.child.children.decision_maker');
   const typeOptions = getAttributeFieldOptions(attributes,
@@ -118,7 +121,6 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
           </BoxContentWrapper>
 
           <FieldArray
-            attributes={attributes}
             component={DecisionConditionsEdit}
             name={`${decision}.conditions`}
           />
@@ -137,4 +139,10 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
   );
 };
 
-export default RuleItemsEdit;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  },
+)(RuleItemsEdit);

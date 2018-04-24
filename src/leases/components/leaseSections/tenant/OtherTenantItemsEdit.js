@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import {Field} from 'redux-form';
+import {Field, getFormValues} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
@@ -19,12 +19,12 @@ import RemoveButton from '$components/form/RemoveButton';
 import {genericValidator} from '$components/form/validations';
 import {initializeContactForm} from '$src/contacts/actions';
 import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
-import {TenantContactType} from '$src/leases/enums';
-import {getCompleteContactList} from '$src/contacts/selectors';
-import {getAttributes, getTenantsFormValues} from '$src/leases/selectors';
+import {FormNames, TenantContactType} from '$src/leases/enums';
 import {getContactById, getContactOptions} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
+import {getCompleteContactList} from '$src/contacts/selectors';
+import {getAttributes} from '$src/leases/selectors';
 
 import type {Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
@@ -212,7 +212,7 @@ export default connect(
     return {
       allContacts: getCompleteContactList(state),
       attributes: getAttributes(state),
-      formValues: getTenantsFormValues(state),
+      formValues: getFormValues(FormNames.TENANTS)(state),
     };
   },
   {

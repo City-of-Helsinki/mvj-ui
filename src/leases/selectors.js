@@ -29,7 +29,7 @@ export const getIsConstructabilityFormValid: Selector<boolean, void> = (state: L
   state.lease.isConstructabilityFormValid;
 
 export const getIsContractsFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isConstructabilityFormValid;
+  state.lease.isContractsFormValid;
 
 export const getIsDecisionsFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isDecisionsFormValid;
@@ -85,20 +85,11 @@ export const getContractsFormValues: Selector<Object, void> = (state: Object): O
 export const getConstructabilityFormTouched: Selector<boolean, void> = (state: Object): boolean =>
   get(state, 'form.constructability-form.anyTouched');
 
-export const getConstructabilityFormValues: Selector<Object, void> = (state: Object): Object =>
-  get(state, 'form.constructability-form.values');
-
 export const getDecisionsFormTouched: Selector<boolean, void> = (state: Object): boolean =>
   get(state, 'form.decisions-form.anyTouched');
 
-export const getDecisionsFormValues: Selector<Object, void> = (state: Object): Object =>
-  get(state, 'form.decisions-form.values');
-
 export const getInspectionsFormTouched: Selector<boolean, void> = (state: Object): boolean =>
   get(state, 'form.inspections-form.anyTouched');
-
-export const getInspectionsFormValues: Selector<Object, void> = (state: Object): Object =>
-  get(state, 'form.inspections-form.values');
 
 export const getLeaseInfoFormTouched: Selector<boolean, void> = (state: Object): boolean =>
   get(state, 'form.lease-info-form.anyTouched');
@@ -115,14 +106,8 @@ export const getRentsFormValues: Selector<any, void> = (state: Object): Object =
 export const getSummaryFormTouched: Selector<boolean, void> = (state: Object): boolean =>
   get(state, 'form.summary-form.anyTouched');
 
-export const getSummaryFormValues: Selector<Object, void> = (state: Object): Object =>
-  get(state, 'form.summary-form.values');
-
 export const getTenantsFormTouched: Selector<boolean, void> = (state: Object): boolean =>
   get(state, 'form.tenants-form.anyTouched');
-
-export const getTenantsFormValues: Selector<Object, void> = (state: Object): Object =>
-  get(state, 'form.tenants-form.values');
 
 export const getEditInvoiceFormErrors: Selector<Object, void> = (state: Object): Object =>
   get(state, 'form.edit-invoice-form.syncErrors');

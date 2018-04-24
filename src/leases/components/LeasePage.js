@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {destroy, initialize} from 'redux-form';
+import {destroy, getFormValues, initialize} from 'redux-form';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
@@ -23,6 +23,7 @@ import {
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchUsers} from '$src/users/actions';
+import {FormNames} from '../enums';
 import * as contentHelpers from '../helpers';
 import {getSearchQuery} from '$util/helpers';
 import {getLoggedInUser} from '$src/auth/selectors';
@@ -32,14 +33,10 @@ import {
   getAreasFormValues,
   getAttributes,
   getContractsFormTouched,
-  getContractsFormValues,
   getConstructabilityFormTouched,
-  getConstructabilityFormValues,
   getCurrentLease,
   getDecisionsFormTouched,
-  getDecisionsFormValues,
   getInspectionsFormTouched,
-  getInspectionsFormValues,
   getIsEditMode,
   getIsFetching,
   getIsConstructabilityFormValid,
@@ -56,9 +53,7 @@ import {
   getRentsFormTouched,
   getRentsFormValues,
   getSummaryFormTouched,
-  getSummaryFormValues,
   getTenantsFormTouched,
-  getTenantsFormValues,
 } from '../selectors';
 import {getRouteById} from '$src/root/routes';
 import CommentPanel from '$components/commentPanel/CommentPanel';
@@ -251,22 +246,25 @@ class LeasePage extends Component {
 
     destroy('lease-areas-form');
     destroy('lease-info-form');
-    destroy('decisions-form');
-    destroy('contracts-form');
-    destroy('inspections-form');
     destroy('rents-form');
 
-    destroy('constructability-form');
-    destroy('summary-form');
-    destroy('tenants-form');
+    destroy(FormNames.CONSTRUCTABILITY);
+    destroy(FormNames.CONTRACTS);
+    destroy(FormNames.DECISIONS);
+    destroy(FormNames.INSPECTION);
+    destroy(FormNames.SUMMARY);
+    destroy(FormNames.TENANTS);
   }
 
   initializeForms = (lease: Lease) => {
     const {initialize} = this.props;
 
-    initialize('constructability-form', {lease_areas: contentHelpers.getContentConstructability(lease)});
-    initialize('summary-form', contentHelpers.getContentSummary(lease));
-    initialize('tenants-form', {tenants: contentHelpers.getContentTenants(lease)});
+    initialize(FormNames.CONSTRUCTABILITY, {lease_areas: contentHelpers.getContentConstructability(lease)});
+    initialize(FormNames.CONTRACTS, {contracts: contentHelpers.getContentContracts(lease)});
+    initialize(FormNames.DECISIONS, {decisions: contentHelpers.getContentDecisions(lease)});
+    initialize(FormNames.INSPECTION, {inspections: contentHelpers.getContentInspections(lease)});
+    initialize(FormNames.SUMMARY, contentHelpers.getContentSummary(lease));
+    initialize(FormNames.TENANTS, {tenants: contentHelpers.getContentTenants(lease)});
   }
 
   cancel = () => {
@@ -422,9 +420,7 @@ class LeasePage extends Component {
 
     const leaseInfo = contentHelpers.getContentLeaseInfo(currentLease);
     const areas = contentHelpers.getContentLeaseAreas(currentLease);
-    const decisions = contentHelpers.getContentDecisions(currentLease);
     const contracts = contentHelpers.getContentContracts(currentLease);
-    const inspections = contentHelpers.getContentInspections(currentLease);
     const rents = contentHelpers.getContentRents(currentLease);
     const basisOfRents = contentHelpers.getContentBasisOfRents(currentLease);
 
@@ -587,16 +583,9 @@ class LeasePage extends Component {
                   <DecisionsMainEdit
                     attributes={attributes}
                     contracts={contracts}
-                    decisions={decisions}
-                    inspections={inspections}
                   />
                 ) : (
-                  <DecisionsMain
-                    attributes={attributes}
-                    contracts={contracts}
-                    decisions={decisions}
-                    inspections={inspections}
-                  />
+                  <DecisionsMain />
                 )
               }
             </ContentContainer>
@@ -649,13 +638,15 @@ export default flowRight(
         areasFormValues: getAreasFormValues(state),
         attributes: getAttributes(state),
         comments: getComments(state),
+        constructabilityFormTouched: getConstructabilityFormTouched(state),
+        constructabilityFormValues: getFormValues(FormNames.CONSTRUCTABILITY)(state),
         contractsFormTouched: getContractsFormTouched(state),
-        contractsFormValues: getContractsFormValues(state),
+        contractsFormValues: getFormValues(FormNames.CONTRACTS)(state),
         currentLease: getCurrentLease(state),
         decisionsFormTouched: getDecisionsFormTouched(state),
-        decisionsFormValues: getDecisionsFormValues(state),
-        constructabilityFormTouched: getConstructabilityFormTouched(state),
-        constructabilityFormValues: getConstructabilityFormValues(state),
+        decisionsFormValues: getFormValues(FormNames.DECISIONS)(state),
+        inspectionFormTouched: getInspectionsFormTouched(state),
+        inspectionsFormValues: getFormValues(FormNames.INSPECTION)(state),
         isEditMode: getIsEditMode(state),
         isConstructabilityFormValid: getIsConstructabilityFormValid(state),
         isContractsFormValid: getIsContractsFormValid(state),
@@ -666,17 +657,15 @@ export default flowRight(
         isRentsFormValid: getIsRentsFormValid(state),
         isSummaryFormValid: getIsSummaryFormValid(state),
         isTenantsFormValid: getIsTenantsFormValid(state),
-        inspectionFormTouched: getInspectionsFormTouched(state),
-        inspectionsFormValues: getInspectionsFormValues(state),
         isFetching: getIsFetching(state),
         leaseInfoFormTouched: getLeaseInfoFormTouched(state),
         leaseInfoFormValues: getLeaseInfoFormValues(state),
         rentsFormTouched: getRentsFormTouched(state),
         rentsFormValues: getRentsFormValues(state),
         summaryFormTouched: getSummaryFormTouched(state),
-        summaryFormValues: getSummaryFormValues(state),
+        summaryFormValues: getFormValues(FormNames.SUMMARY)(state),
         tenantsFormTouched: getTenantsFormTouched(state),
-        tenantsFormValues: getTenantsFormValues(state),
+        tenantsFormValues: getFormValues(FormNames.TENANTS)(state),
         user,
       };
     },

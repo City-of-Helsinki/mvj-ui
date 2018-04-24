@@ -1,11 +1,10 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
-import {getAttributeFieldOptions} from '$util/helpers';
-import {genericValidator} from '$components/form/validations';
 import AddButton from '$components/form/AddButton';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -17,6 +16,9 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
+import {getAttributeFieldOptions, getDecisionsOptions} from '$util/helpers';
+import {getAttributes, getDecisions} from '$src/leases/selectors';
+import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -42,7 +44,7 @@ const renderContractChanges = ({
       }
     >
       <BoxItemContainer>
-        {fields && fields.length && fields.map((change, index) => {
+        {fields && !!fields.length && fields.map((change, index) => {
           return (
             <BoxItem
               key={change.id ? change.id : `index_${index}`}
@@ -163,7 +165,7 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps) =
   return(
     <div>
       <p className='sub-title'>Panttikirjat</p>
-      {fields && fields.length &&
+      {fields && !!fields.length &&
         <div>
           <Row>
             <Column small={4} medium={4} large={2}>
@@ -236,16 +238,16 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps) =
 
 type Props = {
   attributes: Attributes,
+  decisions: Array<Object>,
   fields: any,
-  contracts: Array<Object>,
-  decisionOptions: Array<Object>,
 }
 
 const ContractItemsEdit = ({
   attributes,
+  decisions,
   fields,
-  decisionOptions,
 }: Props) => {
+  const decisionOptions = getDecisionsOptions(decisions);
   const typeOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.type');
 
   return (
@@ -444,4 +446,11 @@ const ContractItemsEdit = ({
   );
 };
 
-export default ContractItemsEdit;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      decisions: getDecisions(state),
+    };
+  },
+)(ContractItemsEdit);

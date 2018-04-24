@@ -6,13 +6,6 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
-import {receiveConstructabilityFormValid} from '$src/leases/actions';
-import {getContentConstructability} from '$src/leases/helpers';
-import {getUserOptions} from '$src/users/helpers';
-import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
-import {getAttributes, getCurrentLease, getIsConstructabilityFormValid} from '$src/leases/selectors';
-import {getUsers} from '$src/users/selectors';
-import {genericValidator} from '$components/form/validations';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -24,6 +17,14 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
+import {receiveConstructabilityFormValid} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
+import {getContentConstructability} from '$src/leases/helpers';
+import {getUserOptions} from '$src/users/helpers';
+import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes, getCurrentLease, getIsConstructabilityFormValid} from '$src/leases/selectors';
+import {getUsers} from '$src/users/selectors';
+import {genericValidator} from '$components/form/validations';
 
 import type {Attributes, Lease} from '$src/leases/types';
 import type {UserList} from '$src/users/types';
@@ -423,7 +424,7 @@ class ConstructabilityEdit extends Component {
   }
 }
 
-const formName = 'constructability-form';
+const formName = FormNames.CONSTRUCTABILITY;
 
 export default flowRight(
   connect(

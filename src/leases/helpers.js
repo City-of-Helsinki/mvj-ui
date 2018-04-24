@@ -1118,6 +1118,18 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
 };
 
 // GERERIC LEASE HELPER FUNCTIONS
+export const isContractActive = (contract: Object) => {
+  const now = moment();
+  const startDate = get(contract, 'collateral_start_date');
+  const endDate = get(contract, 'collateral_end_date');
+
+  if(startDate && moment(startDate).isAfter(now) || endDate && now.isAfter(endDate)) {
+    return false;
+  }
+
+  return true;
+};
+
 export const isRentActive = (rent: Object) => {
   const now = moment();
   const startDate = get(rent, 'start_date');

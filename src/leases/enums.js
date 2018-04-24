@@ -55,3 +55,17 @@ export const RentDueDateTypes = {
   CUSTOM: 'custom',
   FIXED: 'fixed',
 };
+
+/**
+ * Rent type enumerable.
+ *
+ * @type {{CONSTRUCTABILITY: string, CONTRACTS: string, DECISIONS: string, INSPECTION: string, SUMMARY: string, TENANTS: string}}
+ */
+export const FormNames = {
+  CONSTRUCTABILITY: 'constructability-form',
+  CONTRACTS: 'contracts-form',
+  DECISIONS: 'decisions-form',
+  INSPECTION: 'inspections-form',
+  SUMMARY: 'summary-form',
+  TENANTS: 'tenants-form',
+};

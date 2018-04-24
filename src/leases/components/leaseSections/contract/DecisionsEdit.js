@@ -1,18 +1,16 @@
 // @flow
 import React, {Component} from 'react';
-import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
-import {reduxForm, FieldArray} from 'redux-form';
+import {FieldArray, getFormInitialValues, reduxForm} from 'redux-form';
+import flowRight from 'lodash/flowRight';
 
-import {getIsDecisionsFormValid} from '../../../selectors';
-import {receiveDecisionsFormValid} from '../../../actions';
+import {receiveDecisionsFormValid} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
+import {getIsDecisionsFormValid} from '$src/leases/selectors';
 import FormSection from '$components/form/FormSection';
 import DecisionItemsEdit from './DecisionItemsEdit';
 
-import type {Attributes} from '$src/leases/types';
-
 type Props = {
-  attributes: Attributes,
   handleSubmit: Function,
   isDecisionsFormValid: boolean,
   receiveDecisionsFormValid: Function,
@@ -30,13 +28,12 @@ class DecisionsEdit extends Component {
   }
 
   render() {
-    const {attributes, handleSubmit} = this.props;
+    const {handleSubmit} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <FieldArray
-            attributes={attributes}
             component={DecisionItemsEdit}
             name="decisions"
           />
@@ -46,12 +43,13 @@ class DecisionsEdit extends Component {
   }
 }
 
-const formName = 'decisions-form';
+const formName = FormNames.DECISIONS;
 
 export default flowRight(
   connect(
     (state) => {
       return {
+        initialValues: getFormInitialValues(formName)(state),
         isDecisionsFormValid: getIsDecisionsFormValid(state),
       };
     },
