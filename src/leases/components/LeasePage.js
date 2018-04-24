@@ -2,25 +2,31 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {destroy} from 'redux-form';
+import {destroy, initialize} from 'redux-form';
 import {withRouter} from 'react-router';
-import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import {getLoggedInUser} from '$src/auth/selectors';
-import {fetchUsers} from '$src/users/actions';
-import {getUsers} from '$src/users/selectors';
+import {fetchAttributes as fetchCommentAttributes, fetchComments} from '$src/comments/actions';
 import {
   fetchAttributes as fetchContactAttributes,
   fetchCompleteContactList,
 } from '$src/contacts/actions';
-import {getComments} from '$src/comments/selectors';
-import {
-  getAttributes as getContactAttributes,
-  getCompleteContactList,
-} from '$src/contacts/selectors';
 import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
+import {
+  clearFormValidFlags,
+  fetchAttributes,
+  fetchSingleLease,
+  hideEditMode,
+  patchLease,
+  showEditMode,
+} from '../actions';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {fetchUsers} from '$src/users/actions';
+import * as contentHelpers from '../helpers';
+import {getSearchQuery} from '$util/helpers';
+import {getLoggedInUser} from '$src/auth/selectors';
+import {getComments} from '$src/comments/selectors';
 import {
   getAreasFormTouched,
   getAreasFormValues,
@@ -54,23 +60,7 @@ import {
   getTenantsFormTouched,
   getTenantsFormValues,
 } from '../selectors';
-import {
-  clearFormValidFlags,
-  fetchAttributes,
-  fetchSingleLease,
-  hideEditMode,
-  patchLease,
-  showEditMode,
-} from '../actions';
-import {fetchAttributes as fetchCommentAttributes, fetchComments} from '$src/comments/actions';
 import {getRouteById} from '$src/root/routes';
-import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import * as contentHelpers from '../helpers';
-import {
-  getAttributeFieldOptions,
-  getLabelOfOption,
-  getSearchQuery,
-} from '$util/helpers';
 import CommentPanel from '$components/commentPanel/CommentPanel';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Constructability from './leaseSections/constructability/Constructability';
@@ -86,7 +76,6 @@ import Invoices from './leaseSections/invoice/Invoices';
 import InvoicesEdit from './leaseSections/invoice/InvoicesEdit';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
-import LeaseHistory from './leaseSections/summary/LeaseHistory';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '$components/loader/Loader';
@@ -102,21 +91,17 @@ import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 
-import type {Attributes} from '../types';
-import type {UserList} from '$src/users/types';
 import type {CommentList} from '$src/comments/types';
-import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
+import type {Attributes, Lease} from '../types';
 
 import mockData from '../mock-data.json';
 
 type Props = {
-  allContacts: Array<Contact>,
   areasFormTouched: boolean,
   areasFormValues: Object,
   attributes: Attributes,
   clearFormValidFlags: Function,
   comments: CommentList,
-  contactAttributes: ContactAttributes,
   contractsFormTouched: boolean,
   contractsFormValues: Object,
   constructabilityFormTouched: boolean,
@@ -135,6 +120,7 @@ type Props = {
   fetchSingleLease: Function,
   fetchUsers: Function,
   hideEditMode: Function,
+  initialize: Function,
   inspectionsFormValues: Object,
   inspectionsFormTouched: boolean,
   isEditMode: boolean,
@@ -162,7 +148,6 @@ type Props = {
   tenantsFormTouched: boolean,
   tenantsFormValues: Object,
   user: Object,
-  users: UserList,
 }
 
 type State = {
@@ -173,7 +158,7 @@ type State = {
   isSaveLeaseModalOpen: boolean,
 };
 
-class PreparerForm extends Component {
+class LeasePage extends Component {
   props: Props
 
   state: State = {
@@ -190,7 +175,6 @@ class PreparerForm extends Component {
 
   componentWillMount() {
     const {
-      clearFormValidFlags,
       fetchAttributes,
       fetchCommentAttributes,
       fetchComments,
@@ -215,9 +199,6 @@ class PreparerForm extends Component {
     });
 
     hideEditMode();
-    // Destroy forms to initialize new values when data is fetched
-    this.destroyAllForms();
-    clearFormValidFlags();
 
     if (location.query.tab) {
       this.setState({activeTab: location.query.tab});
@@ -233,8 +214,9 @@ class PreparerForm extends Component {
     fetchCommentAttributes();
     fetchComments(getSearchQuery({lease: leaseId}));
 
-    fetchCompleteContactList();
     fetchContactAttributes();
+    fetchCompleteContactList();
+
     fetchUsers();
 
     fetchInvoiceAttributes();
@@ -255,29 +237,58 @@ class PreparerForm extends Component {
     });
   }
 
+  openEditMode = () => {
+    const {clearFormValidFlags, currentLease, showEditMode} = this.props;
+
+    this.destroyAllForms();
+    this.initializeForms(currentLease);
+    clearFormValidFlags();
+    showEditMode();
+  }
+
+  destroyAllForms = () => {
+    const {destroy} = this.props;
+
+    destroy('lease-areas-form');
+    destroy('lease-info-form');
+    destroy('decisions-form');
+    destroy('contracts-form');
+    destroy('inspections-form');
+    destroy('rents-form');
+
+    destroy('constructability-form');
+    destroy('summary-form');
+    destroy('tenants-form');
+  }
+
+  initializeForms = (lease: Lease) => {
+    const {initialize} = this.props;
+
+    initialize('constructability-form', {lease_areas: contentHelpers.getContentConstructability(lease)});
+    initialize('summary-form', contentHelpers.getContentSummary(lease));
+    initialize('tenants-form', {tenants: contentHelpers.getContentTenants(lease)});
+  }
+
   cancel = () => {
-    const {clearFormValidFlags, hideEditMode} = this.props;
+    const {hideEditMode} = this.props;
 
     this.hideModal('CancelLease');
-    this.destroyAllForms();
-    clearFormValidFlags();
     hideEditMode();
   }
 
   save = () => {
     const {
       areasFormValues,
-      leaseInfoFormValues,
-      summaryFormValues,
-      decisionsFormValues,
-      contractsFormValues,
-      inspectionsFormValues,
       constructabilityFormValues,
-      rentsFormValues,
-      tenantsFormValues,
-
+      contractsFormValues,
       currentLease,
+      decisionsFormValues,
+      inspectionsFormValues,
+      leaseInfoFormValues,
       patchLease,
+      rentsFormValues,
+      summaryFormValues,
+      tenantsFormValues,
     } = this.props;
 
     let payload: Object = {id: currentLease.id};
@@ -320,19 +331,6 @@ class PreparerForm extends Component {
 
     patchLease(payload);
     this.hideModal('SaveLease');
-  }
-
-  destroyAllForms = () => {
-    const {destroy} = this.props;
-    destroy('lease-areas-form');
-    destroy('lease-info-form');
-    destroy('summary-form');
-    destroy('decisions-form');
-    destroy('contracts-form');
-    destroy('inspections-form');
-    destroy('constructability-form');
-    destroy('tenants-form');
-    destroy('rents-form');
   }
 
   validateForms = () => {
@@ -412,30 +410,21 @@ class PreparerForm extends Component {
     } = this.state;
 
     const {
-      allContacts,
       attributes,
       comments,
-      contactAttributes,
       currentLease,
       isEditMode,
       isFetching,
-      showEditMode,
-      users,
     } = this.props;
 
     const areFormsValid = this.validateForms();
     const isAnyFormTouched = this.isAnyFormTouched();
 
-    const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
-
     const leaseInfo = contentHelpers.getContentLeaseInfo(currentLease);
-    const summary = contentHelpers.getContentSummary(currentLease);
     const areas = contentHelpers.getContentLeaseAreas(currentLease);
     const decisions = contentHelpers.getContentDecisions(currentLease);
     const contracts = contentHelpers.getContentContracts(currentLease);
     const inspections = contentHelpers.getContentInspections(currentLease);
-    const constructability = contentHelpers.getContentConstructability(currentLease);
-    const tenants = contentHelpers.getContentTenants(currentLease);
     const rents = contentHelpers.getContentRents(currentLease);
     const basisOfRents = contentHelpers.getContentBasisOfRents(currentLease);
 
@@ -487,11 +476,7 @@ class PreparerForm extends Component {
               isSaveDisabled={!areFormsValid || activeTab.toString() === '6'}
               onCancelClick={isAnyFormTouched ? () => this.showModal('CancelLease') : this.cancel}
               onCommentClick={this.toggleCommentPanel}
-              onEditClick={() => {
-                this.destroyAllForms();
-                clearFormValidFlags();
-                showEditMode();
-              }}
+              onEditClick={this.openEditMode}
               onSaveClick={() => this.showModal('SaveLease')}
             />
           }
@@ -534,34 +519,10 @@ class PreparerForm extends Component {
         <TabContent active={activeTab}>
           <TabPane>
             <ContentContainer>
-              <h2>Yhteenveto</h2>
-              {!isEditMode &&
-                <RightSubtitle
-                  className='publicity-label'
-                  text={summary.classification
-                    ? getLabelOfOption(classificationOptions, summary.classification)
-                    : '-'
-                  }
-                />
+              {isEditMode
+                ? <SummaryEdit history={history} />
+                : <Summary history={history} />
               }
-              <Divider />
-              <Row>
-                <Column medium={9}>
-                  {isEditMode
-                    ? <SummaryEdit
-                        attributes={attributes}
-                        initialValues={{...summary}}
-                      />
-                    : <Summary
-                        attributes={attributes}
-                        summary={summary}
-                      />
-                  }
-                  </Column>
-                <Column medium={3}>
-                  <LeaseHistory history={history}/>
-                </Column>
-              </Row>
             </ContentContainer>
           </TabPane>
 
@@ -590,22 +551,8 @@ class PreparerForm extends Component {
               <h2>Vuokralaiset</h2>
               <Divider />
               {isEditMode
-                ? (
-                  <TenantsEdit
-                    allContacts={allContacts}
-                    attributes={attributes}
-                    contactAttributes={contactAttributes}
-                    initialValues={{tenants: tenants}}
-                  />
-                )
-                : (
-                  <Tenants
-                    allContacts={allContacts}
-                    attributes={attributes}
-                    contactAttributes={contactAttributes}
-                    tenants={tenants}
-                  />
-                )
+                ? <TenantsEdit />
+                : <Tenants />
               }
             </ContentContainer>
           </TabPane>
@@ -657,23 +604,9 @@ class PreparerForm extends Component {
 
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
-              <h2>Rakentamiskelpoisuus</h2>
-              <Divider />
               {isEditMode
-                ? (
-                  <ConstructabilityEdit
-                    areas={constructability}
-                    attributes={attributes}
-                    initialValues={{lease_areas: constructability}}
-                    users={users}
-                  />
-                ) : (
-                  <Constructability
-                    areas={constructability}
-                    attributes={attributes}
-                    users={users}
-                  />
-                )
+                ? <ConstructabilityEdit />
+                : <Constructability />
               }
             </ContentContainer>
           </TabPane>
@@ -712,12 +645,10 @@ export default flowRight(
     (state) => {
       const user = getLoggedInUser(state);
       return {
-        allContacts: getCompleteContactList(state),
         areasFormTouched: getAreasFormTouched(state),
         areasFormValues: getAreasFormValues(state),
         attributes: getAttributes(state),
         comments: getComments(state),
-        contactAttributes: getContactAttributes(state),
         contractsFormTouched: getContractsFormTouched(state),
         contractsFormValues: getContractsFormValues(state),
         currentLease: getCurrentLease(state),
@@ -747,7 +678,6 @@ export default flowRight(
         tenantsFormTouched: getTenantsFormTouched(state),
         tenantsFormValues: getTenantsFormValues(state),
         user,
-        users: getUsers(state),
       };
     },
     {
@@ -763,9 +693,10 @@ export default flowRight(
       fetchSingleLease,
       fetchUsers,
       hideEditMode,
+      initialize,
       patchLease,
       receiveTopNavigationSettings,
       showEditMode,
     }
   ),
-)(PreparerForm);
+)(LeasePage);

@@ -1,30 +1,35 @@
 // @flow
 import React from 'react';
-import Collapse from '$components/collapse/Collapse';
-import ConstructabilityItem from './ConstructabilityItem';
+import {connect} from 'react-redux';
 import {Column} from 'react-foundation';
 
+import Collapse from '$components/collapse/Collapse';
+import ConstructabilityItem from './ConstructabilityItem';
+import Divider from '$components/content/Divider';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getContentConstructability} from '$src/leases/helpers';
 import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
 
-import type {Attributes} from '$src/leases/types';
-import type {UserList} from '$src/users/types';
+import type {Attributes, Lease} from '$src/leases/types';
 
 type Props = {
-  areas: Array<Object>,
   attributes: Attributes,
-  users: UserList,
+  currentLease: Lease,
 }
 
-const Constructability = ({areas, attributes, users}: Props) => {
+const Constructability = ({attributes, currentLease}: Props) => {
   const getFullAddress = (item: Object) => {
     return `${item.address}, ${item.postal_code} ${item.city}`;
   };
-
+  const areas = getContentConstructability(currentLease);
   const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
   const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
 
   return (
     <div>
+      <h2>Rakentamiskelpoisuus</h2>
+      <Divider />
+
       {!areas || !areas.length &&
         <p className='no-margin'>Ei vuokra-alueita</p>
       }
@@ -56,8 +61,6 @@ const Constructability = ({areas, attributes, users}: Props) => {
         >
           <ConstructabilityItem
             area={area}
-            attributes={attributes}
-            users={users}
           />
         </Collapse>
       )}
@@ -65,4 +68,11 @@ const Constructability = ({areas, attributes, users}: Props) => {
   );
 };
 
-export default Constructability;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      currentLease: getCurrentLease(state),
+    };
+  },
+)(Constructability);

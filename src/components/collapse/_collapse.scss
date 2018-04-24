@@ -12,6 +12,25 @@
     align-items: center;
     justify-content: space-between;
 
+    &_field-wrapper {
+      display: flex;
+      padding: rem-calc(2px 0);
+
+      label {
+        line-height: rem-calc(20px);
+      }
+    }
+
+    &_field-label-wrapper {
+      flex: 0;
+    }
+
+    &_field-input-wrapper {
+      flex: 1 1 0%;
+      display: flex;
+      max-width: 200px;
+    }
+
     .icon-wrapper {
       padding-right: rem-calc(15px);
       cursor: pointer;
@@ -57,7 +76,12 @@
       overflow: hidden;
       max-width: 100%;
       white-space: nowrap;
-      text-overflow: ellipsis
+      text-overflow: ellipsis;
+
+      label {
+        display: inline-block;
+        padding-right: rem-calc(7.5px);
+      }
     }
 
     &-neutral {
@@ -166,8 +190,18 @@
     }
 
     .collapse__header {
+      &-title {
+
+        &.edit-row {
+          line-height: rem-calc(20px);
+        }
+      }
       &-subtitle {
         line-height: rem-calc(18px);
+      }
+
+      &_field-wrapper {
+        padding: 0;
       }
 
       i.arrow-icon {

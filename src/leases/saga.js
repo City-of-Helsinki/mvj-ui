@@ -215,13 +215,18 @@ function* stopInvoicingSaga({payload: leaseId}): Generator<> {
 function* createContactSaga({payload: contact}): Generator<> {
   try {
     const contactModalSettings = yield select(getContactModalSettings);
+    const isSelected = contact.isSelected ? true : false;
+    contact.isSelected = undefined;
+
     const {response: {status: statusCode}, bodyAsJson} = yield call(createContact, contact);
 
     switch (statusCode) {
       case 201:
         yield put(receiveNewContactToCompleteList(bodyAsJson));
-        contactModalSettings.contactId = bodyAsJson.id;
-        yield put(receiveContactModalSettings(contactModalSettings));
+        if (isSelected) {
+          contactModalSettings.contactId = bodyAsJson.id;
+          yield put(receiveContactModalSettings(contactModalSettings));
+        }
         yield put(hideContactModal());
         displayUIMessage({title: 'Asiakas tallennettu', body: 'Asiakas on tallennettu onnistuneesti'});
         break;

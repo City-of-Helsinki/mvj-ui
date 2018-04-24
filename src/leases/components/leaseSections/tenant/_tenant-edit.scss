@@ -10,5 +10,11 @@
 }
 
 .contact-buttons-wrapper {
-  padding-top: rem-calc(14px);
+  padding-top: rem-calc(15px);
+  line-height: 1;
+
+  a {
+    font-size: rem-calc(14px);
+    line-height: rem-calc(20px);
+  }
 }

@@ -1,24 +1,18 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 
-import {getContactFullName} from '$src/contacts/helpers';
-import {formatDate} from '$util/helpers';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
-
-import type {Attributes as ContactAttributes} from '$src/contacts/types';
+import {getContactFullName} from '$src/contacts/helpers';
 
 type Props = {
   contact: ?Object,
-  contactAttributes: ContactAttributes,
   tenant: Object,
 };
 
 const TenantItem = ({
   contact,
-  contactAttributes,
   tenant,
 }: Props) => {
   const getInvoiceManagementShare = () => {
@@ -44,22 +38,13 @@ const TenantItem = ({
           <p>{getContactFullName(contact)}</p>
         </Column>
         <Column small={12} medium={6} large={2}>
-          <label>Osuus murtolukuna</label>
-          <p>{tenant.share_numerator || ''} / {tenant.share_denominator || ''}</p>
-        </Column>
-        <Column small={12} medium={6} large={2}>
           <label>Laskun hallintaosuus</label>
           <p>{getInvoiceManagementShare()}</p>
         </Column>
-        <Column small={12} medium={6} large={2}>
-          <label>Alkupäivämäärä</label>
-          <p>{formatDate(get(tenant, 'tenant.start_date')) || '-'}</p>
-        </Column>
-        <Column small={12} medium={6} large={2}>
-          <label>Loppupäivämäärä</label>
-          <p>{formatDate(get(tenant, 'tenant.end_date')) || '-'}</p>
-        </Column>
       </Row>
+      <ContactInfoTemplate
+        contact={contact}
+      />
       <Row>
         <Column small={6} medium={4} large={4}>
           <label>Viite</label>
@@ -70,10 +55,6 @@ const TenantItem = ({
           <p>{tenant.note || '-'}</p>
         </Column>
       </Row>
-      <ContactInfoTemplate
-        attributes={contactAttributes}
-        contact={contact}
-      />
     </div>
   );
 };

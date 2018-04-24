@@ -7,7 +7,6 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import AddButton from '$components/form/AddButton';
-import AddIcon from '$components/icons/AddIcon';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
@@ -18,20 +17,20 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
+import {initializeContactForm} from '$src/contacts/actions';
+import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
 import {getContactById, getContactOptions} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
-import {getTenantsFormValues} from '$src/leases/selectors';
+import {getCompleteContactList} from '$src/contacts/selectors';
+import {getAttributes, getTenantsFormValues} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
-import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
-import {initializeContactForm} from '$src/contacts/actions';
 
-import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
+import type {Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   allContacts: Array<Contact>,
   attributes: Attributes,
-  contactAttributes: ContactAttributes,
   fields: any,
   formValues: Object,
   initializeContactForm: Function,
@@ -42,7 +41,6 @@ type Props = {
 const TenantItemsEdit = ({
   allContacts,
   attributes,
-  contactAttributes,
   fields,
   formValues,
   initializeContactForm,
@@ -62,6 +60,72 @@ const TenantItemsEdit = ({
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames({'not-active': !isActive})}
             defaultOpen={isActive}
+            header={
+              <div>
+                <Column>
+                  <div className='collapse__header_field-wrapper'>
+                    <div className='collapse__header_field-label-wrapper'>
+                      <label>Osuus murtolukuna</label>
+                    </div>
+                    <div className='collapse__header_field-input-wrapper'>
+                      <Column>
+                        <Field
+                          className='no-margin'
+                          component={FieldTypeText}
+                          name={`${tenant}.share_numerator`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.share_numerator')),
+                          ]}
+                        />
+                      </Column>
+                      <Column>
+                        <Field
+                          className='with-slash no-margin'
+                          component={FieldTypeText}
+                          name={`${tenant}.share_denominator`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.share_denominator')),
+                          ]}
+                        />
+                      </Column>
+                    </div>
+                  </div>
+                </Column>
+                <Column>
+                  <div className='collapse__header_field-wrapper'>
+                    <div className='collapse__header_field-label-wrapper'>
+                      <label>Välillä</label>
+                    </div>
+                    <div className='collapse__header_field-input-wrapper'>
+                      <Column>
+                        <Field
+                          className='no-margin'
+                          component={FieldTypeDatePicker}
+                          name={`${tenant}.tenant.start_date`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.tenantcontact_set.child.children.start_date')),
+                          ]}
+                        />
+                      </Column>
+                      <Column>
+                        <Field
+                          className='with-dash no-margin'
+                          component={FieldTypeDatePicker}
+                          name={`${tenant}.tenant.end_date`}
+                          validate={[
+                            (value) => genericValidator(value, get(attributes,
+                              'tenants.child.children.tenantcontact_set.child.children.end_date')),
+                          ]}
+                        />
+                      </Column>
+                    </div>
+                  </div>
+                </Column>
+              </div>
+            }
             headerTitle={
               <h3 className='collapse__header-title'>Vuokralainen {index + 1}</h3>
             }
@@ -90,90 +154,44 @@ const TenantItemsEdit = ({
                     </Column>
                     <Column small={3} medium={4} large={4}>
                       <div className='contact-buttons-wrapper'>
-                        <IconButton
-                          onClick={() => {
-                            initializeContactForm({});
-                            receiveContactModalSettings({
-                              field: `${tenant}.tenant.contact`,
-                              contactId: null,
-                              isNew: true,
-                            });
-                            showContactModal();
-                          }}
-                        >
-                          <AddIcon
-                            className='icon-medium'
-                          />
-                        </IconButton>
-                        <IconButton
-                          disabled={!contact}
-                          onClick={() => {
-                            initializeContactForm({...contact});
-                            receiveContactModalSettings({
-                              field: `${tenant}.tenant.contact`,
-                              contactId: null,
-                              isNew: false,
-                            });
-                            showContactModal();
-                          }}
-                        >
-                          <EditIcon
-                            className='icon-medium'
-                          />
-                        </IconButton>
+                        <a onClick={() => {
+                          initializeContactForm({});
+                          receiveContactModalSettings({
+                            field: `${tenant}.tenant.contact`,
+                            contactId: null,
+                            isNew: true,
+                          });
+                          showContactModal();
+                        }}>Luo uusi asiakas</a>
                       </div>
                     </Column>
                   </Row>
                 </Column>
-                <Column small={12} medium={6} large={2}>
-                  <label className='mvj-form-field-label'>Osuus murtolukuna</label>
-                  <Row>
-                    <Column small={6}>
-                      <Field
-                        component={FieldTypeText}
-                        name={`${tenant}.share_numerator`}
-                        validate={[
-                          (value) => genericValidator(value, get(attributes,
-                            'tenants.child.children.share_numerator')),
-                        ]}
-                      />
-                    </Column>
-                    <Column small={6}>
-                      <Field
-                        className='with-slash'
-                        component={FieldTypeText}
-                        name={`${tenant}.share_denominator`}
-                        validate={[
-                          (value) => genericValidator(value, get(attributes,
-                            'tenants.child.children.share_denominator')),
-                        ]}
-                      />
-                    </Column>
-                  </Row>
-                </Column>
-                <Column small={12} medium={6} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Alkupäivämäärä'
-                    name={`${tenant}.tenant.start_date`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'tenants.child.children.tenantcontact_set.child.children.start_date')),
-                    ]}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Loppupäivämäärä'
-                    name={`${tenant}.tenant.end_date`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'tenants.child.children.tenantcontact_set.child.children.end_date')),
-                    ]}
-                  />
-                </Column>
               </Row>
+              <BoxContentWrapper>
+                {!!contact &&
+                  <IconButton
+                    className='position-topright'
+                    onClick={() => {
+                      initializeContactForm({...contact});
+                      receiveContactModalSettings({
+                        field: `${tenant}.tenant.contact`,
+                        contactId: null,
+                        isNew: false,
+                      });
+                      showContactModal();
+                    }}
+                  >
+                    <EditIcon
+                      className='icon-medium'
+                    />
+                  </IconButton>
+                }
+                <ContactInfoTemplate
+                  contact={contact}
+                />
+              </BoxContentWrapper>
+
               <Row>
                 <Column small={6} medium={4} large={4}>
                   <Field
@@ -198,18 +216,10 @@ const TenantItemsEdit = ({
                   />
                 </Column>
               </Row>
-
-              <ContactInfoTemplate
-                attributes={contactAttributes}
-                contact={contact}
-              />
             </BoxContentWrapper>
 
             <FieldArray
-              allContacts={allContacts}
-              attributes={attributes}
               component={OtherTenantItemsEdit}
-              contactAttributes={contactAttributes}
               name={`${tenant}.tenantcontact_set`}
             />
           </Collapse>
@@ -233,6 +243,8 @@ const TenantItemsEdit = ({
 export default connect(
   (state) => {
     return {
+      allContacts: getCompleteContactList(state),
+      attributes: getAttributes(state),
       formValues: getTenantsFormValues(state),
     };
   },

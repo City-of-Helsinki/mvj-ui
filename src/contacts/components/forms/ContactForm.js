@@ -10,16 +10,13 @@ import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FormSection from '$components/form/FormSection';
-import {receiveContactFormValid} from '../../actions';
-import {
-  getInitialContactFormValues,
-  getIsContactFormValid,
-} from '../../selectors';
+import {receiveContactFormValid} from '$src/contacts/actions';
 import {ContactType} from '$src/contacts/enums';
-import {genericValidator} from '$components/form/validations';
 import {getAttributeFieldOptions} from '$src/util/helpers';
+import {getAttributes, getInitialContactFormValues, getIsContactFormValid} from '$src/contacts/selectors';
+import {genericValidator} from '$components/form/validations';
 
-import type {Attributes} from '../../types';
+import type {Attributes} from '$src/contacts/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
@@ -270,6 +267,7 @@ const selector = formValueSelector(formName);
 
 const mapStateToProps = (state: RootState) => {
   return {
+    attributes: getAttributes(state),
     isContactFormValid: getIsContactFormValid(state),
     initialValues: getInitialContactFormValues(state),
     type: selector(state, 'type'),

@@ -1,29 +1,30 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
-import {formatDate, formatDateRange, getAttributeFieldOptions, getContactById, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
 import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
-import {getContactFullName} from '$src/contacts/helpers';
+import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
+import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getCompleteContactList} from '$src/contacts/selectors';
+import {getAttributes} from '$src/leases/selectors';
 
-import type {Attributes as ContactAttributes, Contact} from '$src/contacts/types';
+import type {Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   allContacts: Array<Contact>,
   attributes: Attributes,
-  contactAttributes: ContactAttributes,
   tenant: Object,
 };
 
 const OtherTenantItem = ({
   allContacts,
   attributes,
-  contactAttributes,
   tenant,
 }: Props) => {
   const tenantTypeOptions = getAttributeFieldOptions(attributes, 'tenants.child.children.tenantcontact_set.child.children.type');
@@ -36,8 +37,10 @@ const OtherTenantItem = ({
       defaultOpen={isActive}
       header={
         <div>
+          <Column></Column>
           <Column>
             <span className={'collapse__header-subtitle'}>
+              <label>Välillä:</label>
               {formatDateRange(get(tenant, 'start_date'), get(tenant, 'end_date')) || '-'}
             </span>
           </Column>
@@ -55,14 +58,6 @@ const OtherTenantItem = ({
           <label>Rooli</label>
           <p>{getLabelOfOption(tenantTypeOptions, tenant.type)}</p>
         </Column>
-        <Column small={12} medium={6} large={2}>
-          <label>Alkupäivämäärä</label>
-          <p>{formatDate(get(tenant, 'start_date')) || '-'}</p>
-        </Column>
-        <Column small={12} medium={6} large={2}>
-          <label>Loppupäivämäärä</label>
-          <p>{formatDate(get(tenant, 'end_date')) || '-'}</p>
-        </Column>
       </Row>
       <Row>
         <Column small={12}>
@@ -71,11 +66,17 @@ const OtherTenantItem = ({
         </Column>
       </Row>
       <ContactInfoTemplate
-        attributes={contactAttributes}
         contact={contact}
       />
     </Collapse>
   );
 };
 
-export default OtherTenantItem;
+export default connect(
+  (state) => {
+    return {
+      allContacts: getCompleteContactList(state),
+      attributes: getAttributes(state),
+    };
+  }
+)(OtherTenantItem);
