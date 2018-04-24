@@ -1,8 +1,10 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import ListItems from '$components/content/ListItems';
+import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {
   formatDate,
   formatDateRange,
@@ -11,7 +13,7 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -287,4 +289,10 @@ const BasicInfo = ({attributes, rent, rentType}: Props) => {
   );
 };
 
-export default BasicInfo;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  },
+)(BasicInfo);

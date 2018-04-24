@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {getFormInitialValues, Field, FieldArray, reduxForm} from 'redux-form';
+import {Field, FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -432,7 +432,6 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
-        initialValues: getFormInitialValues(formName)(state),
         isConstructabilityFormValid: getIsConstructabilityFormValid(state),
         users: getUsers(state),
       };

@@ -10,53 +10,40 @@ import GreenBox from '$components/content/GreenBox';
 import RentItem from './RentItem';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {fetchDecisions} from '$src/leases/actions';
-import {getDecisions} from '$src/leases/selectors';
-import {getDecisionsOptions, getSearchQuery} from '$util/helpers';
+import {getContentRents} from '$src/leases/helpers';
+import {getSearchQuery} from '$util/helpers';
+import {getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Lease} from '$src/leases/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
-  attributes: Attributes,
-  basisOfRents: Array<Object>,
-  decisionsOptionData: Array<Object>,
+  currentLease: Lease,
   fetchDecisions: Function,
-  isRentInfoComplete: boolean,
   params: Object,
-  rents: Object,
 }
 
 class Rents extends Component {
   props: Props
 
   componentWillMount() {
-    const {
-      fetchDecisions,
-      params: {leaseId},
-    } = this.props;
+    const {fetchDecisions, params: {leaseId}} = this.props;
     const query = {
       lease: leaseId,
       limit: 1000,
     };
-    const search = getSearchQuery(query);
-    fetchDecisions(search);
+    fetchDecisions(getSearchQuery(query));
   }
 
   render() {
-    const {
-      attributes,
-      basisOfRents,
-      decisionsOptionData,
-      isRentInfoComplete,
-      rents,
-    } = this.props;
-    const decisionOptions = getDecisionsOptions(decisionsOptionData);
+    const {currentLease} = this.props;
+    const rents = getContentRents(currentLease);
 
     return (
       <div className="rent-section">
         <h2>Vuokrat</h2>
         <RightSubtitle
-          text={isRentInfoComplete
+          text={currentLease.is_rent_info_complete
             ? <span className="success">Vuokratiedot kunnossa<i /></span>
             : <span className="alert">Vaatii toimenpiteitä<i /></span>
           }
@@ -70,8 +57,6 @@ class Rents extends Component {
               return (
                 <RentItem
                   key={rent.id}
-                  attributes={attributes}
-                  decisionOptions={decisionOptions}
                   rent={rent}
                 />
               );
@@ -82,10 +67,7 @@ class Rents extends Component {
         <h2>Vuokranperusteet</h2>
         <Divider />
         <GreenBox>
-          <BasisOfRents
-            attributes={attributes}
-            basisOfRents={basisOfRents}
-          />
+          <BasisOfRents />
         </GreenBox>
       </div>
     );
@@ -94,7 +76,7 @@ class Rents extends Component {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    decisionsOptionData: getDecisions(state),
+    currentLease: getCurrentLease(state),
   };
 };
 

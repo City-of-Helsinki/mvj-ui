@@ -1,23 +1,28 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 
+import Table from '$components/table/Table';
+import {getContentBasisOfRents} from '$src/leases/helpers';
 import {
   formatNumberWithThousandSeparator,
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import Table from '$components/table/Table';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes, Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
-  basisOfRents: Array<Object>,
+  currentLease: Lease,
 }
 
-const BasisOfRents = ({attributes, basisOfRents}: Props) => {
+const BasisOfRents = ({attributes, currentLease}: Props) => {
+  const basisOfRents = getContentBasisOfRents(currentLease);
   const intendedUseOptions = getAttributeFieldOptions(attributes,
     'basis_of_rents.child.children.intended_use');
+
   return (
     <div>
       <Table
@@ -39,4 +44,11 @@ const BasisOfRents = ({attributes, basisOfRents}: Props) => {
   );
 };
 
-export default BasisOfRents;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      currentLease: getCurrentLease(state),
+    };
+  },
+)(BasisOfRents);

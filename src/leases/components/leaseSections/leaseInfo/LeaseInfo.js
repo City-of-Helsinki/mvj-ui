@@ -1,18 +1,25 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import {getContentLeaseInfo} from '$src/leases/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+
+import type {Attributes, Lease} from '$src/leases/types';
 
 type Props = {
-  attributes: Object,
-  leaseInfo: Object,
+  attributes: Attributes,
+  currentLease: Lease,
 }
 
-const LeaseInfo = ({attributes, leaseInfo}: Props) => {
+const LeaseInfo = ({attributes, currentLease}: Props) => {
+  const leaseInfo = getContentLeaseInfo(currentLease);
   if(!LeaseInfo) {
     return null;
   }
+
   const stateOptions = getAttributeFieldOptions(attributes, 'state');
 
   return (
@@ -39,4 +46,11 @@ const LeaseInfo = ({attributes, leaseInfo}: Props) => {
   );
 };
 
-export default LeaseInfo;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      currentLease: getCurrentLease(state),
+    };
+  }
+)(LeaseInfo);

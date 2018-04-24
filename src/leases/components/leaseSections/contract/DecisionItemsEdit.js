@@ -25,16 +25,16 @@ type Props = {
 }
 
 const RuleItemsEdit = ({attributes, fields}: Props) => {
-  console.log(attributes);
   const decisionMakerOptions = getAttributeFieldOptions(attributes,
     'decisions.child.children.decision_maker');
   const typeOptions = getAttributeFieldOptions(attributes,
     'decisions.child.children.type');
+
   return(
     <div>
       {fields && !!fields.length && fields.map((decision, index) =>
         <Collapse
-           key={decision.id ? decision.id : `index_${index}`}
+          key={decision.id ? decision.id : `index_${index}`}
           defaultOpen={true}
           headerTitle={
             <h3 className='collapse__header-title'>Päätös {index + 1}</h3>

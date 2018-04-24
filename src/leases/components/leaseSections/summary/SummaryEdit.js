@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Field, getFormInitialValues, reduxForm} from 'redux-form';
+import {Field, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
@@ -270,7 +270,6 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
-        initialValues: getFormInitialValues(formName)(state),
         isSummaryFormValid: getIsSummaryFormValid(state),
         lessors: getLessors(state),
       };

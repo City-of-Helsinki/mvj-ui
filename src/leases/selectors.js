@@ -94,14 +94,8 @@ export const getInspectionsFormTouched: Selector<boolean, void> = (state: Object
 export const getLeaseInfoFormTouched: Selector<boolean, void> = (state: Object): boolean =>
   get(state, 'form.lease-info-form.anyTouched');
 
-export const getLeaseInfoFormValues: Selector<Object, void> = (state: Object): Object =>
-  get(state, 'form.lease-info-form.values');
-
 export const getRentsFormTouched: Selector<boolean, void> = (state: Object): boolean =>
   get(state, 'form.rents-form.anyTouched');
-
-export const getRentsFormValues: Selector<any, void> = (state: Object): Object =>
-  get(state, 'form.rents-form.values');
 
 export const getSummaryFormTouched: Selector<boolean, void> = (state: Object): boolean =>
   get(state, 'form.summary-form.anyTouched');

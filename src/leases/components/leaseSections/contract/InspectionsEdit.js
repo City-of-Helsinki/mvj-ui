@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
-import {FieldArray, getFormInitialValues, reduxForm} from 'redux-form';
+import {FieldArray, reduxForm} from 'redux-form';
 
 import FormSection from '$components/form/FormSection';
 import InspectionItemsEdit from './InspectionItemsEdit';
@@ -49,7 +49,6 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        initialValues: getFormInitialValues(formName)(state),
         isInspectionsFormValid: getIsInspectionsFormValid(state),
       };
     },

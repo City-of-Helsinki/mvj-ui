@@ -1,20 +1,23 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getDecisionsOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes, getDecisions} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
-  decisionOptions: Array<Object>,
+  decisions: Array<Object>,
   rentAdjustments: Array<Object>,
 }
 
-const RentAdjustments = ({attributes, decisionOptions, rentAdjustments}: Props) => {
+const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
+  const decisionOptions = getDecisionsOptions(decisions);
   const typeOptions = getAttributeFieldOptions(attributes,
     'rents.child.children.rent_adjustments.child.children.type');
   const intendedUseOptions = getAttributeFieldOptions(attributes,
@@ -77,4 +80,11 @@ const RentAdjustments = ({attributes, decisionOptions, rentAdjustments}: Props) 
   );
 };
 
-export default RentAdjustments;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      decisions: getDecisions(state),
+    };
+  }
+)(RentAdjustments);

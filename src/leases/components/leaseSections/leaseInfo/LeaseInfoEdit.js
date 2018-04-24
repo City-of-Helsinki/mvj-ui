@@ -1,24 +1,26 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Field, formValueSelector, reduxForm} from 'redux-form';
+import {Field, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import {dateGreaterOrEqual, genericValidator} from '$components/form/validations';
+import {receiveLeaseInfoFormValid} from '$src/leases/actions';
+import {getContentLeaseInfo} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$src/util/helpers';
-import {receiveLeaseInfoFormValid} from '../../../actions';
-import {getIsLeaseInfoFormValid} from '../../../selectors';
+import {getAttributes, getCurrentLease, getIsLeaseInfoFormValid} from '$src/leases/selectors';
+import {genericValidator} from '$components/form/validations';
+
+import type {Attributes, Lease} from '$src/leases/types';
 
 type Props = {
-  attributes: Object,
+  attributes: Attributes,
+  currentLease: Lease,
   isLeaseInfoFormValid: boolean,
-  leaseInfo: Object,
   receiveLeaseInfoFormValid: Function,
-  start_date: string,
   valid: boolean,
 }
 
@@ -35,10 +37,9 @@ class LeaseInfoEdit extends Component {
   render () {
     const {
       attributes,
-      leaseInfo,
-      start_date,
+      currentLease,
     } = this.props;
-
+    const leaseInfo = getContentLeaseInfo(currentLease);
     const stateOptions = getAttributeFieldOptions(attributes, 'state');
 
     return (
@@ -80,7 +81,6 @@ class LeaseInfoEdit extends Component {
               disableTouched
               validate={[
                 (value) => genericValidator(value, get(attributes, 'end_date')),
-                (value) => dateGreaterOrEqual(value, start_date),
               ]}
             />
           </Column>
@@ -91,14 +91,14 @@ class LeaseInfoEdit extends Component {
 }
 
 const formName = 'lease-info-form';
-const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
     (state) => {
       return {
+        attributes: getAttributes(state),
+        currentLease: getCurrentLease(state),
         isLeaseInfoFormValid: getIsLeaseInfoFormValid(state),
-        start_date: selector(state, 'start_date'),
       };
     },
     {

@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, getFormInitialValues, reduxForm} from 'redux-form';
+import {FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import {receiveDecisionsFormValid} from '$src/leases/actions';
@@ -49,7 +49,6 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        initialValues: getFormInitialValues(formName)(state),
         isDecisionsFormValid: getIsDecisionsFormValid(state),
       };
     },

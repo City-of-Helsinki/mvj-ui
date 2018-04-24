@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 
+import {RentTypes} from '$src/leases/enums';
 import {
   formatDateRange,
   formatDecimalNumber,
@@ -8,7 +10,7 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {RentTypes} from '$src/leases/enums';
+import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -81,4 +83,10 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
   );
 };
 
-export default ContractRents;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  },
+)(ContractRents);

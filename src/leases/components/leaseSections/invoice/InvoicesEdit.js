@@ -30,9 +30,9 @@ import type {Lease} from '$src/leases/types';
 type Props = {
   contacts: Array<Contact>,
   createInvoice: Function,
+  currentLease: Lease,
   isCreateOpen: boolean,
   isInvoicingEnabled: boolean,
-  lease: Lease,
   params: Object,
   receiveIsCreateOpen: Function,
   startInvoicing: Function,
@@ -82,11 +82,11 @@ class InvoicesEdit extends Component {
     const {
       contacts,
       createInvoice,
-      lease,
+      currentLease,
       params: {leaseId},
     } = this.props;
 
-    const recipients = getContentTenants(lease);
+    const recipients = getContentTenants(currentLease);
     const recipient = recipients.find(x => x.id === invoice.recipient);
     const contact = getContactById(contacts, get(recipient, 'tenant.contact'));
     const recObj = {id: get(contact, 'id'), type: get(contact, 'type')};
@@ -123,6 +123,7 @@ class InvoicesEdit extends Component {
 
   render() {
     const {
+      currentLease,
       isCreateOpen,
       isInvoicingEnabled,
       receiveIsCreateOpen,
@@ -156,7 +157,7 @@ class InvoicesEdit extends Component {
         <h2>Laskutus</h2>
         <RightSubtitle
           className='invoicing-status'
-          text={isInvoicingEnabled
+          text={currentLease.is_invoicing_enabled
             ? <p className="success">Laskutus käynnissä<i /></p>
             : <p className="alert">Laskutus ei käynnissä<i /></p>
           }
@@ -192,7 +193,7 @@ export default flowRight(
       return {
         contacts: getCompleteContactList(state),
         isCreateOpen: getIsCreateOpen(state),
-        lease: getCurrentLease(state),
+        currentLease: getCurrentLease(state),
       };
     },
     {

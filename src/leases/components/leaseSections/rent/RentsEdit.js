@@ -13,20 +13,16 @@ import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {fetchDecisions, receiveRentsFormValid} from '$src/leases/actions';
-import {getDecisions, getIsRentsFormValid, getRentsFormValues} from '$src/leases/selectors';
-import {getDecisionsOptions, getSearchQuery} from '$util/helpers';
-
-import type {Attributes} from '$src/leases/types';
+import {FormNames} from '$src/leases/enums';
+import {getSearchQuery} from '$util/helpers';
+import {getIsRentsFormValid} from '$src/leases/selectors';
 
 type Props = {
-  attributes: Attributes,
-  decisionOptionsData: Array<Object>,
   fetchDecisions: Function,
   handleSubmit: Function,
   isRentsFormValid: boolean,
   params: Object,
   receiveRentsFormValid: Function,
-  rentsFormValues: Object,
   valid: boolean,
 }
 
@@ -34,16 +30,13 @@ class RentsEdit extends Component {
   props: Props
 
   componentWillMount() {
-    const {
-      fetchDecisions,
-      params: {leaseId},
-    } = this.props;
+    const {fetchDecisions, params: {leaseId}} = this.props;
     const query = {
       lease: leaseId,
       limit: 1000,
     };
-    const search = getSearchQuery(query);
-    fetchDecisions(search);
+
+    fetchDecisions(getSearchQuery(query));
   }
 
   componentDidUpdate() {
@@ -54,8 +47,7 @@ class RentsEdit extends Component {
   }
 
   render() {
-    const {attributes, decisionOptionsData, handleSubmit, rentsFormValues} = this.props;
-    const decisionOptions = getDecisionsOptions(decisionOptionsData);
+    const {handleSubmit} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -73,11 +65,8 @@ class RentsEdit extends Component {
           <Divider />
 
           <FieldArray
-            attributes={attributes}
             component={RentItemEdit}
-            decisionOptions={decisionOptions}
             name='rents'
-            rentsFormValues={rentsFormValues}
           />
 
           <h2>Vuokranperusteet</h2>
@@ -85,7 +74,6 @@ class RentsEdit extends Component {
 
           <GreenBoxEdit>
             <FieldArray
-              attributes={attributes}
               component={BasisOfRentsEdit}
               name="basis_of_rents"
             />
@@ -97,15 +85,13 @@ class RentsEdit extends Component {
   }
 }
 
-const formName = 'rents-form';
+const formName = FormNames.RENTS;
 
 export default flowRight(
   connect(
     (state) => {
       return {
-        decisionOptionsData: getDecisions(state),
         isRentsFormValid: getIsRentsFormValid(state),
-        rentsFormValues: getRentsFormValues(state),
       };
     },
     {
