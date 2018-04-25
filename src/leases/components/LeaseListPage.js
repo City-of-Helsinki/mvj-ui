@@ -30,11 +30,10 @@ import {
   getSearchQuery,
 } from '$util/helpers';
 import Button from '$components/button/Button';
-import CreateLease from './leaseSections/CreateLease';
+import CreateLeaseModal from './createLease/CreateLeaseModal';
 import EditableMap from '$components/map/EditableMap';
 import Loader from '$components/loader/Loader';
 import MapIcon from '$components/icons/MapIcon';
-import Modal from '$components/modal/Modal';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import SearchWrapper from '$components/search/SearchWrapper';
@@ -224,19 +223,14 @@ class LeaseListPage extends Component {
     const filteredLeases = getLeasesFilteredByDocumentType(leases, documentType);
     const lessorOptions = getLessorOptions(lessors);
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
+
     return (
       <PageContainer>
-        <Modal
+        <CreateLeaseModal
           isOpen={isModalOpen}
           onClose={this.hideCreateLeaseModal}
-          title={'Luo vuokratunnus'}
-        >
-          <CreateLease
-            attributes={attributes}
-            lessors={lessors}
-            onSubmit={(lease) => createLease(lease)}
-          />
-        </Modal>
+          onSubmit={(lease) => createLease(lease)}
+        />
         <SearchWrapper
           buttonComponent={
             <Button
