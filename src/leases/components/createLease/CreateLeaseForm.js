@@ -39,11 +39,6 @@ type Props = {
 class CreateLeaseForm extends Component {
   props: Props
 
-  componentDidUpdate() {
-    const {valid} = this.props;
-    console.log(valid);
-  }
-
   componentWillReceiveProps(nextProps) {
     if(!nextProps.municipality) {
       const {change, receiveDistricts} = this.props;
