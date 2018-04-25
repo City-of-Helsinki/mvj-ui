@@ -26,7 +26,6 @@ import {fetchUsers} from '$src/users/actions';
 import {FormNames} from '../enums';
 import * as contentHelpers from '../helpers';
 import {getSearchQuery} from '$util/helpers';
-import {getLoggedInUser} from '$src/auth/selectors';
 import {getComments} from '$src/comments/selectors';
 import {
   getCurrentLease,
@@ -126,7 +125,6 @@ type Props = {
   showEditMode: Function,
   summaryFormValues: Object,
   tenantsFormValues: Object,
-  user: Object,
 }
 
 type State = {
@@ -585,7 +583,6 @@ export default flowRight(
         rentsFormValues: getFormValues(FormNames.RENTS)(state),
         summaryFormValues: getFormValues(FormNames.SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.TENANTS)(state),
-        user: getLoggedInUser(state),
       };
     },
     {
