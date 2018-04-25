@@ -13,7 +13,8 @@ import ContactTemplate from '$src/contacts/components/templates/ContactTemplate'
 import EditIcon from '$components/icons/EditIcon';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormWrapper from '$components/form/FormWrapper';
+import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import IconButton from '$components/button/IconButton';
 import RemoveButton from '$components/form/RemoveButton';
 import {genericValidator} from '$components/form/validations';
@@ -109,49 +110,54 @@ const OtherTenantItemsEdit = ({
                 onClick={() => fields.remove(index)}
                 title='Poista henkilö'
               />
-              <Row>
-                <Column small={12} medium={6} large={4}>
+              <FormWrapper>
+                <FormWrapperLeft>
                   <Row>
-                    <Column small={9} medium={8} large={8}>
+                    <Column small={12} medium={12} large={8}>
+                      <Row>
+                        <Column small={9} medium={8} large={8}>
+                          <Field
+                            name={`${tenant}.contact`}
+                            component={FieldTypeSelect}
+                            label='Asiakas'
+                            options={contactOptions}
+                            validate={[
+                              (value) => genericValidator(value, get(attributes,
+                                'tenants.child.children.tenantcontact_set.child.children.contact')),
+                            ]}
+                          />
+                        </Column>
+                        <Column small={3} medium={4} large={4}>
+                          <div className='contact-buttons-wrapper'>
+                            <a onClick={() => {
+                              initializeContactForm({});
+                              receiveContactModalSettings({
+                                field: `${tenant}.contact`,
+                                contactId: null,
+                                isNew: true,
+                              });
+                              showContactModal();
+                            }}>Luo uusi asiakas</a>
+                          </div>
+                        </Column>
+                      </Row>
+                    </Column>
+                    <Column small={12} medium={6} large={4}>
                       <Field
-                        name={`${tenant}.contact`}
                         component={FieldTypeSelect}
-                        label='Asiakas'
-                        options={contactOptions}
+                        label='Rooli'
+                        name={`${tenant}.type`}
+                        options={tenantTypeOptions}
                         validate={[
                           (value) => genericValidator(value, get(attributes,
-                            'tenants.child.children.tenantcontact_set.child.children.contact')),
+                            'tenants.child.children.tenantcontact_set.child.children.type')),
                         ]}
                       />
                     </Column>
-                    <Column small={3} medium={4} large={4}>
-                      <div className='contact-buttons-wrapper'>
-                        <a onClick={() => {
-                          initializeContactForm({});
-                          receiveContactModalSettings({
-                            field: `${tenant}.contact`,
-                            contactId: null,
-                            isNew: true,
-                          });
-                          showContactModal();
-                        }}>Luo uusi asiakas</a>
-                      </div>
-                    </Column>
                   </Row>
-                </Column>
-                <Column small={12} medium={6} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Rooli'
-                    name={`${tenant}.type`}
-                    options={tenantTypeOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'tenants.child.children.tenantcontact_set.child.children.type')),
-                    ]}
-                  />
-                </Column>
-              </Row>
+                </FormWrapperLeft>
+              </FormWrapper>
+
               <BoxContentWrapper>
                 {!!contact &&
                   <IconButton
@@ -176,20 +182,6 @@ const OtherTenantItemsEdit = ({
                   contact={contact}
                 />
               </BoxContentWrapper>
-
-              <Row>
-                <Column small={12}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Kommentti'
-                    name={`${tenant}.note`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'tenants.child.children.tenantcontact_set.child.children.note')),
-                    ]}
-                  />
-                </Column>
-              </Row>
             </BoxContentWrapper>
           </Collapse>
         );

@@ -7,6 +7,8 @@ import classNames from 'classnames';
 
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
+import FormWrapper from '$components/form/FormWrapper';
+import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
@@ -49,22 +51,20 @@ const OtherTenantItem = ({
       headerTitle={
         <h4 className='collapse__header-title'>{getLabelOfOption(tenantTypeOptions, tenant.type)}</h4>
       }>
-      <Row>
-        <Column small={12} medium={6} large={4}>
-          <label>Asiakas</label>
-          <p>{getContactFullName(contact)}</p>
-        </Column>
-        <Column small={12} medium={6} large={2}>
-          <label>Rooli</label>
-          <p>{getLabelOfOption(tenantTypeOptions, tenant.type)}</p>
-        </Column>
-      </Row>
-      <Row>
-        <Column small={12}>
-          <label>Kommentti</label>
-          <p>{tenant.note || '-'}</p>
-        </Column>
-      </Row>
+      <FormWrapper>
+        <FormWrapperLeft>
+          <Row>
+            <Column small={12} medium={6} large={8}>
+              <label>Asiakas</label>
+              <p>{getContactFullName(contact)}</p>
+            </Column>
+            <Column small={12} medium={6} large={4}>
+              <label>Rooli</label>
+              <p>{getLabelOfOption(tenantTypeOptions, tenant.type)}</p>
+            </Column>
+          </Row>
+        </FormWrapperLeft>
+      </FormWrapper>
       <ContactTemplate
         contact={contact}
       />

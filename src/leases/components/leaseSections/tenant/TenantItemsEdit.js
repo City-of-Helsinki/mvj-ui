@@ -16,6 +16,8 @@ import OtherTenantItemsEdit from './OtherTenantItemsEdit';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
+import FormWrapper from '$components/form/FormWrapper';
+import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import RemoveButton from '$components/form/RemoveButton';
 import {initializeContactForm} from '$src/contacts/actions';
 import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
@@ -138,37 +140,42 @@ const TenantItemsEdit = ({
                 onClick={() => fields.remove(index)}
                 title='Poista vuokralainen'
               />
-              <Row>
-                <Column small={12} medium={6} large={4}>
+              <FormWrapper>
+                <FormWrapperLeft>
                   <Row>
-                    <Column small={9} medium={8} large={8}>
-                      <Field
-                        component={FieldTypeSelect}
-                        label='Asiakas'
-                        name={`${tenant}.tenant.contact`}
-                        options={contactOptions}
-                        validate={[
-                          (value) => genericValidator(value, get(attributes,
-                            'tenants.child.children.tenantcontact_set.child.children.contact')),
-                        ]}
-                      />
-                    </Column>
-                    <Column small={3} medium={4} large={4}>
-                      <div className='contact-buttons-wrapper'>
-                        <a onClick={() => {
-                          initializeContactForm({});
-                          receiveContactModalSettings({
-                            field: `${tenant}.tenant.contact`,
-                            contactId: null,
-                            isNew: true,
-                          });
-                          showContactModal();
-                        }}>Luo uusi asiakas</a>
-                      </div>
+                    <Column small={12} large={8}>
+                      <Row>
+                        <Column small={9} medium={8} large={8}>
+                          <Field
+                            component={FieldTypeSelect}
+                            label='Asiakas'
+                            name={`${tenant}.tenant.contact`}
+                            options={contactOptions}
+                            validate={[
+                              (value) => genericValidator(value, get(attributes,
+                                'tenants.child.children.tenantcontact_set.child.children.contact')),
+                            ]}
+                          />
+                        </Column>
+                        <Column small={3} medium={4} large={4}>
+                          <div className='contact-buttons-wrapper'>
+                            <a onClick={() => {
+                              initializeContactForm({});
+                              receiveContactModalSettings({
+                                field: `${tenant}.tenant.contact`,
+                                contactId: null,
+                                isNew: true,
+                              });
+                              showContactModal();
+                            }}>Luo uusi asiakas</a>
+                          </div>
+                        </Column>
+                      </Row>
                     </Column>
                   </Row>
-                </Column>
-              </Row>
+                </FormWrapperLeft>
+              </FormWrapper>
+
               <BoxContentWrapper>
                 {!!contact &&
                   <IconButton
@@ -193,30 +200,23 @@ const TenantItemsEdit = ({
                 />
               </BoxContentWrapper>
 
-              <Row>
-                <Column small={6} medium={4} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Viite'
-                    name={`${tenant}.tenant.reference`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'tenants.child.children.reference')),
-                    ]}
-                  />
-                </Column>
-                <Column small={6} medium={8} large={8}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Kommentti'
-                    name={`${tenant}.tenant.note`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes,
-                        'tenants.child.children.note')),
-                    ]}
-                  />
-                </Column>
-              </Row>
+              <FormWrapper>
+                <FormWrapperLeft>
+                  <Row>
+                    <Column>
+                      <Field
+                        component={FieldTypeText}
+                        label='Viite'
+                        name={`${tenant}.tenant.reference`}
+                        validate={[
+                          (value) => genericValidator(value, get(attributes,
+                            'tenants.child.children.reference')),
+                        ]}
+                      />
+                    </Column>
+                  </Row>
+                </FormWrapperLeft>
+              </FormWrapper>
             </BoxContentWrapper>
 
             <FieldArray
