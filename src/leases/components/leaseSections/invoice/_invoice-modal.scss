@@ -8,7 +8,7 @@
   z-index: 2;
   border: none;
   overflow: hidden;
-  margin-left: 10px;
+  border-left: rem-calc(15px) solid $tram-lighter-solid;
 
   @include transition(0.5s, right, ease-in-out);
 

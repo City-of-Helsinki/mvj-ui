@@ -70,10 +70,10 @@ class InvoicesTable extends Component {
     const {showModal} = this.state;
 
     if(showModal) {
-      if(clientWidth - MODAL_WIDTH - 10 <= 0) {
+      if(clientWidth - MODAL_WIDTH <= 0) {
         clientWidth = 0;
       } else {
-        clientWidth = clientWidth - MODAL_WIDTH - 10;
+        clientWidth = clientWidth - MODAL_WIDTH;
       }
     }
     this.setState({tableWidth: clientWidth});

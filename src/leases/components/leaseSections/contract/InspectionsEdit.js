@@ -43,7 +43,7 @@ class InspectionsEdit extends Component {
   }
 }
 
-const formName = FormNames.INSPECTION;
+const formName = FormNames.INSPECTIONS;
 
 export default flowRight(
   connect(
