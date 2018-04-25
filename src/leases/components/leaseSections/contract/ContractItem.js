@@ -1,22 +1,25 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import ListItems from '$components/content/ListItems';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
+import {formatDate, getAttributeFieldOptions, getDecisionsOptions, getLabelOfOption} from '$src/util/helpers';
+import {getAttributes, getDecisions} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   contract: Object,
-  decisionOptions: Array<Object>,
+  decisions: Array<Object>,
 }
 
-const ContractItem = ({attributes, contract, decisionOptions}: Props) => {
+const ContractItem = ({attributes, contract, decisions}: Props) => {
+  const decisionOptions = getDecisionsOptions(decisions);
   const typeOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.type');
   return (
     <div>
@@ -168,4 +171,11 @@ const ContractItem = ({attributes, contract, decisionOptions}: Props) => {
   );
 };
 
-export default ContractItem;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      decisions: getDecisions(state),
+    };
+  }
+)(ContractItem);

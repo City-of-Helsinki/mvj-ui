@@ -9,81 +9,48 @@ import Divider from '$components/content/Divider';
 import Inspections from './Inspections';
 import Decisions from './Decisions';
 import {fetchDecisions} from '../../../actions';
-import {getDecisionsOptions, getSearchQuery} from '$src/util/helpers';
-import {getDecisions} from '$src/leases/selectors';
-
-import type {Attributes} from '$src/leases/types';
-import type {RootState} from '$src/root/types';
+import {getSearchQuery} from '$src/util/helpers';
 
 type Props = {
-  attributes: Attributes,
-  contracts: Array<Object>,
-  decisions: Array<Object>,
-  decisionsOptionData: Array<Object>,
   fetchDecisions: Function,
-  inspections: Array<Object>,
   params: Object,
 }
 class DecisionsMain extends Component {
   props: Props
 
   componentWillMount() {
-    const {
-      fetchDecisions,
-      params: {leaseId},
-    } = this.props;
+    const {fetchDecisions, params: {leaseId}} = this.props;
     const query = {
       lease: leaseId,
       limit: 1000,
     };
-    const search = getSearchQuery(query);
-    fetchDecisions(search);
+
+    fetchDecisions(getSearchQuery(query));
   }
 
   render () {
-    const {
-      attributes,
-      contracts,
-      decisions,
-      decisionsOptionData,
-      inspections,
-    } = this.props;
-    const decisionOptions = getDecisionsOptions(decisionsOptionData);
-
     return (
       <div>
         <h2>Päätökset</h2>
         <Divider />
-        <Decisions
-          attributes={attributes}
-          decisions={decisions}
-        />
+        <Decisions />
 
         <h2>Sopimukset</h2>
         <Divider />
-        <Contracts
-          attributes={attributes}
-          contracts={contracts}
-          decisionOptions={decisionOptions}
-        />
+        <Contracts/>
 
         <h2>Tarkastukset ja huomautukset</h2>
         <Divider />
-        <Inspections inspections={inspections}/>
+        <Inspections/>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    decisionsOptionData: getDecisions(state),
-  };
-};
 
 export default flowRight(
   connect(
-    mapStateToProps,
+    null,
     {
       fetchDecisions,
     }

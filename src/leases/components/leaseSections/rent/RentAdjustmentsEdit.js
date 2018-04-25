@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -12,7 +13,8 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
-import {getAttributeFieldOptions} from '$util/helpers';
+import {getAttributeFieldOptions, getDecisionsOptions} from '$util/helpers';
+import {getAttributes, getDecisions} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
@@ -20,10 +22,11 @@ import type {Attributes} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   fields: any,
-  decisionOptions: Array<Object>,
+  decisions: Array<Object>,
 }
 
-const RentAdjustmentsEdit = ({attributes, decisionOptions, fields}: Props) => {
+const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
+  const decisionOptions = getDecisionsOptions(decisions);
   const typeOptions = getAttributeFieldOptions(attributes,
     'rents.child.children.rent_adjustments.child.children.type');
   const intendedUseOptions = getAttributeFieldOptions(attributes,
@@ -177,4 +180,11 @@ const RentAdjustmentsEdit = ({attributes, decisionOptions, fields}: Props) => {
   );
 };
 
-export default RentAdjustmentsEdit;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      decisions: getDecisions(state),
+    };
+  },
+)(RentAdjustmentsEdit);

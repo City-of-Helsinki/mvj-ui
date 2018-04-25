@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -14,6 +15,7 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
 import {RentTypes} from '$src/leases/enums';
 import {getAttributeFieldOptions} from '$util/helpers';
+import {getAttributes} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
@@ -63,11 +65,11 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                       <Column small={6}>
                         <Field
                           component={FieldTypeSelect}
-                          name={`${rent}.amount_period`}
+                          name={`${rent}.period`}
                           options={amountPeriodOptions}
                           validate={[
                             (value) => genericValidator(value, get(attributes,
-                              'rents.child.children.contract_rents.child.children.amount_period')),
+                              'rents.child.children.contract_rents.child.children.period')),
                           ]}
                         />
                       </Column>
@@ -172,4 +174,10 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
   );
 };
 
-export default ContractRentsEdit;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  },
+)(ContractRentsEdit);

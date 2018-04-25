@@ -9,23 +9,29 @@ import get from 'lodash/get';
 import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
+import Divider from '$components/content/Divider';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FormSection from '$components/form/FormSection';
 import PlotItemsEdit from './PlotItemsEdit';
 import PlanUnitItemsEdit from './PlanUnitItemsEdit';
 import RemoveButton from '$components/form/RemoveButton';
-import {getAttributeFieldOptions} from '$src/util/helpers';
+import RightSubtitle from '$components/content/RightSubtitle';
+import {receiveLeaseAreasFormValid} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
+import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {getAttributes, getCurrentLease, getIsLeaseAreasFormValid} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
-import {getIsLeaseAreasFormValid} from '../../../selectors';
-import {receiveLeaseAreasFormValid} from '../../../actions';
+
+import type {Attributes, Lease} from '$src/leases/types';
 
 type AreaItemProps = {
-  attributes: Object,
+  attributes: Attributes,
   fields: any,
 }
 
-const LeaseAreaItem = ({
+const LeaseAreaItems = ({
   attributes,
   fields,
 }: AreaItemProps) => {
@@ -135,28 +141,24 @@ const LeaseAreaItem = ({
               </Row>
             </BoxContentWrapper>
             <FieldArray
-              attributes={attributes}
               buttonTitle='Lisää kiinteistö/määräala sopimushetkellä'
               component={PlotItemsEdit}
               name={`${area}.plots_contract`}
               title='Kiinteistöt / määräalat sopimushetkellä'
             />
             <FieldArray
-              attributes={attributes}
               buttonTitle='Lisää kiinteistö/määräala nykyhetkellä'
               component={PlotItemsEdit}
               name={`${area}.plots_current`}
               title='Kiinteistöt / määräalat nykyhetkellä'
             />
             <FieldArray
-              attributes={attributes}
               buttonTitle='Lisää kaavayksiköt sopimushetkellä'
               component={PlanUnitItemsEdit}
               name={`${area}.plan_units_contract`}
               title='Kaavayksiköt sopimushetkellä'
             />
             <FieldArray
-              attributes={attributes}
               buttonTitle='Lisää kaavayksiköt nykyhetkellä'
               component={PlanUnitItemsEdit}
               name={`${area}.plan_units_current`}
@@ -179,8 +181,8 @@ const LeaseAreaItem = ({
 };
 
 type Props = {
-  areas: Array<Object>,
-  attributes: Object,
+  attributes: Attributes,
+  currentLease: Lease,
   handleSubmit: Function,
   isLeaseAreasFormValid: boolean,
   receiveLeaseAreasFormValid: Function,
@@ -198,15 +200,22 @@ class LeaseAreasEdit extends Component {
   }
 
   render () {
-    const {areas, attributes, handleSubmit} = this.props;
+    const {attributes, currentLease, handleSubmit} = this.props;
+    const areas = getContentLeaseAreas(currentLease);
+    const areasSum = getAreasSum(areas);
 
     return (
       <form onSubmit={handleSubmit}>
+        <h2>Vuokra-alue</h2>
+        <RightSubtitle
+          text={<span>{areasSum || '-'} m<sup>2</sup></span>}
+        />
+        <Divider />
+
         <FormSection>
           <FieldArray
-            areas={areas}
             attributes={attributes}
-            component={LeaseAreaItem}
+            component={LeaseAreaItems}
             name="lease_areas"
           />
         </FormSection>
@@ -215,12 +224,14 @@ class LeaseAreasEdit extends Component {
   }
 }
 
-const formName = 'lease-areas-form';
+const formName = FormNames.LEASE_AREAS;
 
 export default flowRight(
   connect(
     (state) => {
       return {
+        attributes: getAttributes(state),
+        currentLease: getCurrentLease(state),
         isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
       };
     },

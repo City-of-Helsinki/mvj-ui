@@ -1,5 +1,6 @@
 // @flow
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
 import {Column} from 'react-foundation';
 import get from 'lodash/get';
 import classNames from 'classnames';
@@ -13,12 +14,12 @@ import RentAdjustments from './RentAdjustments';
 import {RentTypes} from '$src/leases/enums';
 import {isRentActive} from '$src/leases/helpers';
 import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
-  decisionOptions: Array<Object>,
   rent: Object,
 }
 
@@ -36,7 +37,7 @@ class RentItem extends Component {
   }
 
   render() {
-    const {attributes, decisionOptions, rent} = this.props;
+    const {attributes, rent} = this.props;
     const {isActive} = this.state;
     const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
     const rentType = get(rent, 'type');
@@ -58,7 +59,6 @@ class RentItem extends Component {
           <h3 className='collapse__header-title'>{getLabelOfOption(typeOptions, rentType) || '-'}</h3>
         }>
         <BasicInfo
-          attributes={attributes}
           rent={rent}
           rentType={rentType}
         />
@@ -73,7 +73,6 @@ class RentItem extends Component {
               <h4 className='collapse__header-title'>Sopimusvuokra</h4>
             }>
             <ContractRents
-              attributes={attributes}
               contractRents={get(rent, 'contract_rents', [])}
               rentType={rentType}
             />
@@ -89,7 +88,6 @@ class RentItem extends Component {
               <h4 className='collapse__header-title'>Indeksitarkistettu vuokra</h4>
             }>
             <IndexAdjustedRents
-              attributes={attributes}
               indexAdjustedRents={get(rent, 'index_adjusted_rents', [])}
             />
           </Collapse>
@@ -105,8 +103,6 @@ class RentItem extends Component {
               <h4 className='collapse__header-title'>Alennukset ja korotukset</h4>
             }>
             <RentAdjustments
-              attributes={attributes}
-              decisionOptions={decisionOptions}
               rentAdjustments={get(rent, 'rent_adjustments', [])}
             />
           </Collapse>
@@ -131,4 +127,10 @@ class RentItem extends Component {
   }
 }
 
-export default RentItem;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  },
+)(RentItem);

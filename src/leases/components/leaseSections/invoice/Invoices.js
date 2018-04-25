@@ -1,22 +1,26 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import InvoicesTable from './InvoicesTable';
 import RightSubtitle from '$components/content/RightSubtitle';
+import {getCurrentLease} from '$src/leases/selectors';
+
+import type {Lease} from '$src/leases/types';
 
 type Props = {
-  isInvoicingEnabled: boolean,
+  currentLease: Lease,
 }
 
-const Invoices = ({isInvoicingEnabled}: Props) => {
+const Invoices = ({currentLease}: Props) => {
   return (
     <div>
       <h2>Laskutus</h2>
       <RightSubtitle
         className='invoicing-status'
-        text={isInvoicingEnabled
+        text={currentLease.is_invoicing_enabled
           ? <p className="success">Laskutus käynnissä<i /></p>
           : <p className="alert">Laskutus ei käynnissä<i /></p>
         }
@@ -34,4 +38,10 @@ const Invoices = ({isInvoicingEnabled}: Props) => {
   );
 };
 
-export default Invoices;
+export default connect(
+  (state) => {
+    return {
+      currentLease: getCurrentLease(state),
+    };
+  },
+)(Invoices);

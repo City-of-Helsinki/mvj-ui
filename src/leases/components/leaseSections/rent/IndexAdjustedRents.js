@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 
+import TableFixedHeader from '$components/table/TableFixedHeader';
 import {
   formatDateRange,
   formatNumberWithThousandSeparator,
@@ -8,7 +10,7 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import TableFixedHeader from '$components/table/TableFixedHeader';
+import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -56,4 +58,10 @@ const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
   );
 };
 
-export default IndexAdjustedRents;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  },
+)(IndexAdjustedRents);

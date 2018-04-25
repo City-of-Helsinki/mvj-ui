@@ -1,13 +1,14 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -111,4 +112,10 @@ const DecisionItem = ({attributes, decision}: Props) => {
   );
 };
 
-export default DecisionItem;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  },
+)(DecisionItem);

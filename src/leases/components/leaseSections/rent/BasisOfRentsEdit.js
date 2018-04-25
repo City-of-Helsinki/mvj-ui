@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -12,6 +13,7 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
 import {getAttributeFieldOptions} from '$util/helpers';
+import {getAttributes} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
@@ -24,6 +26,7 @@ type Props = {
 const BasisOfRentsEdit = ({attributes, fields}: Props) => {
   const intendedUseOptions = getAttributeFieldOptions(attributes,
     'basis_of_rents.child.children.intended_use');
+
   return (
     <div>
       <BoxItemContainer>
@@ -147,4 +150,10 @@ const BasisOfRentsEdit = ({attributes, fields}: Props) => {
   );
 };
 
-export default BasisOfRentsEdit;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  },
+)(BasisOfRentsEdit);

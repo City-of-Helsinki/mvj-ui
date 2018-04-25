@@ -2,15 +2,17 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import {change, reduxForm, FieldArray, getFormInitialValues} from 'redux-form';
+import {change, reduxForm, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import ContactModal from './ContactModal';
+import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
 import TenantItemsEdit from './TenantItemsEdit';
-import {getContactModalSettings, getIsContactModalOpen, getIsTenantsFormValid} from '$src/leases/selectors';
 import {createContact, editContact, hideContactModal, receiveContactModalSettings, receiveTenantsFormValid} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
 import {getContactFormValues} from '$src/contacts/selectors';
+import {getContactModalSettings, getIsContactModalOpen, getIsTenantsFormValid} from '$src/leases/selectors';
 
 import type {ContactModalSettings} from '$src/leases/types';
 
@@ -92,6 +94,9 @@ class TenantsEdit extends Component {
           showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
         />
         <form onSubmit={handleSubmit}>
+          <h2>Vuokralaiset</h2>
+          <Divider />
+
           <FormSection>
             <Row>
               <Column>
@@ -108,7 +113,7 @@ class TenantsEdit extends Component {
   }
 }
 
-const formName = 'tenants-form';
+const formName = FormNames.TENANTS;
 
 export default flowRight(
   connect(
@@ -116,7 +121,6 @@ export default flowRight(
       return {
         contactModalSettings: getContactModalSettings(state),
         contactFormValues: getContactFormValues(state),
-        initialValues: getFormInitialValues(formName)(state),
         isContactModalOpen: getIsContactModalOpen(state),
         isTenantsFormValid: getIsTenantsFormValid(state),
       };

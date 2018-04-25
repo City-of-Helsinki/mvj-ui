@@ -1,25 +1,24 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
+import {getFormValues, isValid} from 'redux-form';
 import classNames from 'classnames';
+import flowRight from 'lodash/flowRight';
 
-import CloseButton from '$components/button/CloseButton';
-
-import {getEditInvoiceFormErrors, getEditInvoiceFormValues} from '$src/leases/selectors';
 import Button from '$components/button/Button';
+import CloseButton from '$components/button/CloseButton';
 import EditInvoiceForm from './forms/EditInvoiceForm';
 import InvoiceTemplate from './InvoiceTemplate';
+import {FormNames} from '$src/leases/enums';
 
 const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
 
 type Props = {
   containerHeight: ?number,
-  editedInvoice: ?Object,
-  errors: ?Object,
+  editedInvoice: Object,
   invoice: Object,
+  isValid: boolean,
   onClose: Function,
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
@@ -60,8 +59,8 @@ class InvoiceModalEdit extends Component {
     const {
       containerHeight,
       editedInvoice,
-      errors,
       invoice,
+      isValid,
       onClose,
       onRefund,
       onSave,
@@ -108,7 +107,7 @@ class InvoiceModalEdit extends Component {
             {(!invoice || !invoice.sap_id) &&
               <Button
                 className="button-green no-margin pull-right"
-                disabled={!isEmpty(errors)}
+                disabled={!isValid}
                 label='Tallenna'
                 onClick={() => onSave(editedInvoice)}
                 title='Tallenna'
@@ -125,8 +124,8 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        editedInvoice: getEditInvoiceFormValues(state),
-        errors: getEditInvoiceFormErrors(state),
+        editedInvoice: getFormValues(FormNames.INVOICE_EDIT)(state),
+        isValid: isValid(FormNames.INVOICE_EDIT)(state),
       };
     }
   ),

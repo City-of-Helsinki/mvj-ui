@@ -1,21 +1,26 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Column} from 'react-foundation';
 
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
 import DecisionItem from './DecisionItem';
+import {getContentDecisions} from '$src/leases/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes, Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
-  decisions: Array<Object>,
+  currentLease: Lease,
 }
 
-const Decisions = ({attributes, decisions}: Props) => {
+const Decisions = ({attributes, currentLease}: Props) => {
+  const decisions = getContentDecisions(currentLease);
   const decisionMakerOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker');
   const typeOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.type');
+
   return (
     <div>
       {!decisions || !decisions.length && <p className='no-margin'>Ei päätöksiä</p>}
@@ -49,7 +54,6 @@ const Decisions = ({attributes, decisions}: Props) => {
           }
         >
           <DecisionItem
-            attributes={attributes}
             decision={decision}
           />
         </Collapse>
@@ -58,4 +62,11 @@ const Decisions = ({attributes, decisions}: Props) => {
   );
 };
 
-export default Decisions;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      currentLease: getCurrentLease(state),
+    };
+  },
+)(Decisions);

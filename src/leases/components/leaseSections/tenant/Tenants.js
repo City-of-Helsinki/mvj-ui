@@ -2,6 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import Divider from '$components/content/Divider';
 import Tenant from './Tenant';
 import {getContentTenants} from '$src/leases/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -19,6 +20,8 @@ const Tenants = ({
 
   return (
     <div>
+      <h2>Vuokralaiset</h2>
+      <Divider />
       {(!tenants || !tenants.length) &&
         <p className='no-margin'>Ei vuokralaisia</p>
       }

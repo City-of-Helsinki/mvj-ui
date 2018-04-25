@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -9,8 +10,9 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
-import {getAttributeFieldOptions} from '$util/helpers';
 import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {getAttributes} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
@@ -667,4 +669,10 @@ const BasicInfoEdit = ({attributes, rent, rentType}: Props) => {
   );
 };
 
-export default BasicInfoEdit;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  },
+)(BasicInfoEdit);

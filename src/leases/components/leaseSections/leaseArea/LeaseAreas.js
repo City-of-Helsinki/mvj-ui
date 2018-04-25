@@ -1,21 +1,25 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Column} from 'react-foundation';
 import {capitalize} from 'lodash';
 
 import Collapse from '$components/collapse/Collapse';
+import Divider from '$components/content/Divider';
 import LeaseArea from './LeaseArea';
+import RightSubtitle from '$components/content/RightSubtitle';
+import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
 import {getAttributeFieldOptions, getLabelOfOption}  from '$util/helpers';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+
+import type {Attributes, Lease} from '$src/leases/types';
 
 type Props = {
-  areas: Array<Object>,
-  attributes: Object,
+  attributes: Attributes,
+  currentLease: Lease,
 }
 
-const LeaseAreas = ({areas, attributes}: Props) => {
-  const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
-  const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
-
+const LeaseAreas = ({attributes, currentLease}: Props) => {
   const getFullAddress = (area: Object) => {
     return `${capitalize(area.address)}, ${area.postal_code} ${capitalize(area.city)}`;
   };
@@ -26,8 +30,19 @@ const LeaseAreas = ({areas, attributes}: Props) => {
     );
   };
 
+  const areas = getContentLeaseAreas(currentLease);
+  const areasSum = getAreasSum(areas);
+  const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
+  const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
+
   return (
     <div>
+      <h2>Vuokra-alue</h2>
+      <RightSubtitle
+        text={<span>{areasSum || '-'} m<sup>2</sup></span>}
+      />
+      <Divider />
+
       {!areas || !areas.length && <p className='no-margin'>Ei vuokra-alueita</p>}
       {areas && !!areas.length &&
         areas.map((area, index) =>
@@ -53,14 +68,9 @@ const LeaseAreas = ({areas, attributes}: Props) => {
                 </Column>
               </div>
             }
-            headerTitle={
-              <h3 className='collapse__header-title'>{area.identifier || '-'}</h3>
-            }
+            headerTitle={<h3 className='collapse__header-title'>{area.identifier || '-'}</h3>}
           >
-            <LeaseArea
-              area={area}
-              attributes={attributes}
-            />
+            <LeaseArea area={area} />
           </Collapse>
         )
       }
@@ -68,4 +78,11 @@ const LeaseAreas = ({areas, attributes}: Props) => {
   );
 };
 
-export default LeaseAreas;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      currentLease: getCurrentLease(state),
+    };
+  }
+)(LeaseAreas);

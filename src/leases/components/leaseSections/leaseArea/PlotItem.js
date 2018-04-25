@@ -1,12 +1,16 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import BoxItem from '$components/content/BoxItem';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes} from '$src/leases/selectors';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  attributes: Object,
+  attributes: Attributes,
   plot: Object,
 }
 
@@ -56,4 +60,10 @@ const PlotItem = ({attributes, plot}: Props) => {
   );
 };
 
-export default PlotItem;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  }
+)(PlotItem);

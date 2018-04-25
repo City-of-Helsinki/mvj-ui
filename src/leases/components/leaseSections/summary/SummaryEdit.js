@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Field, getFormInitialValues, reduxForm} from 'redux-form';
+import {Field, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
@@ -13,9 +13,11 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import LeaseHistory from './LeaseHistory';
 import {getAttributeFieldOptions, getLessorOptions} from '$src/util/helpers';
-import {genericValidator} from '$components/form/validations';
-import {getAttributes, getIsSummaryFormValid, getLessors} from '$src/leases/selectors';
 import {fetchLessors, receiveSummaryFormValid} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
+import {getAttributes, getIsSummaryFormValid, getLessors} from '$src/leases/selectors';
+import {genericValidator} from '$components/form/validations';
+
 
 type Props = {
   attributes: Object,
@@ -261,14 +263,13 @@ class SummaryEdit extends Component {
   }
 }
 
-const formName = 'summary-form';
+const formName = FormNames.SUMMARY;
 
 export default flowRight(
   connect(
     (state) => {
       return {
         attributes: getAttributes(state),
-        initialValues: getFormInitialValues(formName)(state),
         isSummaryFormValid: getIsSummaryFormValid(state),
         lessors: getLessors(state),
       };

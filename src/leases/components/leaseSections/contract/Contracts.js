@@ -1,46 +1,26 @@
 // @flow
 import React from 'react';
-import get from 'lodash/get';
+import {connect} from 'react-redux';
 import {Column} from 'react-foundation';
-import moment from 'moment';
+import get from 'lodash/get';
 
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import Collapse from '$components/collapse/Collapse';
 import ContractItem from './ContractItem';
+import {getContentContracts} from '$src/leases/helpers';
+import {isContractActive} from '$src/leases/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes, Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
-  contracts: Array<Object>,
+  currentLease: Lease,
   decisionOptions: Array<Object>,
 }
-const Contracts = ({attributes, contracts, decisionOptions}: Props) => {
+const Contracts = ({attributes, currentLease}: Props) => {
+  const contracts = getContentContracts(currentLease);
   const typeOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.type');
-
-  const isContractActive = (item) => {
-    const start_date = item.collateral_start_date;
-    const end_date = item.collateral_end_date;
-    if(!start_date && !end_date) {
-      return false;
-    }
-    const now = moment();
-    if(!!start_date && moment(start_date).isAfter(now)) {
-      return false;
-    } else if (!!start_date && !moment(start_date).isAfter(now)){
-      if(!end_date) {
-        return true;
-      } else if(!now.isAfter(moment(end_date))) {
-        return true;
-      }
-      return false;
-    } else {
-      if(now.isAfter(moment(end_date))) {
-        return false;
-      }
-      return true;
-    }
-  };
 
   return (
     <div>
@@ -70,9 +50,7 @@ const Contracts = ({attributes, contracts, decisionOptions}: Props) => {
           }
         >
           <ContractItem
-            attributes={attributes}
             contract={contract}
-            decisionOptions={decisionOptions}
           />
         </Collapse>
       )}
@@ -80,4 +58,11 @@ const Contracts = ({attributes, contracts, decisionOptions}: Props) => {
   );
 };
 
-export default Contracts;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+      currentLease: getCurrentLease(state),
+    };
+  },
+)(Contracts);

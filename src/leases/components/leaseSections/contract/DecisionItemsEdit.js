@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Field, FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -12,8 +13,9 @@ import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
-import {genericValidator} from '$components/form/validations';
+import {getAttributes} from '$src/leases/selectors';
 import {getAttributeFieldOptions} from '$src/util/helpers';
+import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -27,11 +29,12 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
     'decisions.child.children.decision_maker');
   const typeOptions = getAttributeFieldOptions(attributes,
     'decisions.child.children.type');
+
   return(
     <div>
       {fields && !!fields.length && fields.map((decision, index) =>
         <Collapse
-           key={decision.id ? decision.id : `index_${index}`}
+          key={decision.id ? decision.id : `index_${index}`}
           defaultOpen={true}
           headerTitle={
             <h3 className='collapse__header-title'>Päätös {index + 1}</h3>
@@ -118,7 +121,6 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
           </BoxContentWrapper>
 
           <FieldArray
-            attributes={attributes}
             component={DecisionConditionsEdit}
             name={`${decision}.conditions`}
           />
@@ -137,4 +139,10 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
   );
 };
 
-export default RuleItemsEdit;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  },
+)(RuleItemsEdit);

@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {Field, FieldArray} from 'redux-form';
+import {Field, FieldArray, getFormValues} from 'redux-form';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -19,10 +19,11 @@ import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
 import {initializeContactForm} from '$src/contacts/actions';
 import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
 import {getContactById, getContactOptions} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {getCompleteContactList} from '$src/contacts/selectors';
-import {getAttributes, getTenantsFormValues} from '$src/leases/selectors';
+import {getAttributes} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 
 import type {Contact} from '$src/contacts/types';
@@ -245,7 +246,7 @@ export default connect(
     return {
       allContacts: getCompleteContactList(state),
       attributes: getAttributes(state),
-      formValues: getTenantsFormValues(state),
+      formValues: getFormValues(FormNames.TENANTS)(state),
     };
   },
   {

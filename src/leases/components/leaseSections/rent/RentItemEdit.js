@@ -1,9 +1,11 @@
 // @flow
 import React, {Component} from 'react';
-import {FieldArray, FormSection} from 'redux-form';
+import {connect} from 'react-redux';
+import {FieldArray, FormSection, getFormValues} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 import classNames from 'classnames';
+import get from 'lodash/get';
+
 
 import AddButton from '$components/form/AddButton';
 import BasicInfoEdit from './BasicInfoEdit';
@@ -15,29 +17,25 @@ import PayableRents from './PayableRents';
 import RemoveButton from '$components/form/RemoveButton';
 import RentAdjustmentsEdit from './RentAdjustmentsEdit';
 import {isRentActive} from '$src/leases/helpers';
-import {RentTypes} from '$src/leases/enums';
-
-import type {Attributes} from '$src/leases/types';
+import {FormNames, RentTypes} from '$src/leases/enums';
 
 type Props = {
-  attributes: Attributes,
-  decisionOptions: Array<Object>,
   fields: any,
-  rentsFormValues: Array<Object>,
+  formValues: Array<Object>,
 }
 
 class RentItemEdit extends Component {
   props: Props
 
   render() {
-    const {attributes, decisionOptions, fields, rentsFormValues} = this.props;
+    const {fields, formValues} = this.props;
 
     return (
       <div>
         {fields && !!fields.length &&
           fields.map((item, index) => {
-            const rent = get(rentsFormValues, item);
-            const rentType = get(rentsFormValues, `${item}.type`);
+            const rent = get(formValues, item);
+            const rentType = get(formValues, `${item}.type`);
 
             return (
               <Collapse
@@ -55,7 +53,6 @@ class RentItemEdit extends Component {
                       title="Poista alennus/korotus"
                     />
                     <BasicInfoEdit
-                      attributes={attributes}
                       rent={rent}
                       rentType={rentType}
                     />
@@ -74,7 +71,6 @@ class RentItemEdit extends Component {
                       <h3 className='collapse__header-title'>Sopimusvuokra</h3>
                     }>
                     <FieldArray
-                      attributes={attributes}
                       component={ContractRentsEdit}
                       name={`${item}.contract_rents`}
                       rentType={rentType}
@@ -92,7 +88,6 @@ class RentItemEdit extends Component {
                       <h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3>
                     }>
                     <IndexAdjustedRents
-                      attributes={attributes}
                       indexAdjustedRents={get(rent, 'index_adjusted_rents', [])}
                     />
                   </Collapse>
@@ -109,9 +104,7 @@ class RentItemEdit extends Component {
                       <h3 className='collapse__header-title'>Alennukset ja korotukset</h3>
                     }>
                     <FieldArray
-                      attributes={attributes}
                       component={RentAdjustmentsEdit}
-                      decisionOptions={decisionOptions}
                       name={`${item}.rent_adjustments`}
                     />
                   </Collapse>
@@ -150,4 +143,10 @@ class RentItemEdit extends Component {
   }
 }
 
-export default RentItemEdit;
+export default connect(
+  (state) => {
+    return {
+      formValues: getFormValues(FormNames.RENTS)(state),
+    };
+  },
+)(RentItemEdit);

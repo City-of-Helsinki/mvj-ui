@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import BoxItemContainer from '$components/content/BoxItemContainer';
@@ -7,15 +8,19 @@ import Collapse from '$components/collapse/Collapse';
 import PlanUnitItem from './PlanUnitItem';
 import PlotItem from './PlotItem';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes} from '$src/leases/selectors';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
   area: Object,
-  attributes: Object,
+  attributes: Attributes,
 }
 
 const LeaseArea = ({area, attributes}: Props) => {
   const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
   const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
+
   return (
     <div>
       <Row>
@@ -63,7 +68,6 @@ const LeaseArea = ({area, attributes}: Props) => {
             {area.plots_contract.map((item, index) =>
               <PlotItem
                 key={index}
-                attributes={attributes}
                 plot={item}
               />
             )}
@@ -82,7 +86,6 @@ const LeaseArea = ({area, attributes}: Props) => {
             {area.plots_current.map((item, index) =>
               <PlotItem
                 key={index}
-                attributes={attributes}
                 plot={item}
               />
             )}
@@ -101,7 +104,6 @@ const LeaseArea = ({area, attributes}: Props) => {
             {area.plan_units_contract.map((item, index) =>
               <PlanUnitItem
                 key={index}
-                attributes={attributes}
                 planUnit={item}
               />
             )}
@@ -120,7 +122,6 @@ const LeaseArea = ({area, attributes}: Props) => {
             {area.plan_units_current.map((item, index) =>
               <PlanUnitItem
                 key={index}
-                attributes={attributes}
                 planUnit={item}
               />
             )}
@@ -131,4 +132,10 @@ const LeaseArea = ({area, attributes}: Props) => {
   );
 };
 
-export default LeaseArea;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  }
+)(LeaseArea);
