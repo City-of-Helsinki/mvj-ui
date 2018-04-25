@@ -87,11 +87,14 @@ class ContactPage extends Component {
 
   copyContact = () => {
     const {contact, hideEditMode, initializeContactForm, router} = this.props;
+    const {router: {location: {query}}} = this.props;
     contact.id = undefined;
     initializeContactForm(contact);
     hideEditMode();
+
     return router.push({
       pathname: getRouteById('newcontact'),
+      query,
     });
   }
 
@@ -103,6 +106,16 @@ class ContactPage extends Component {
   hideEditMode = () => {
     const {hideEditMode} = this.props;
     hideEditMode();
+  }
+
+  handleBack = () => {
+    const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
+
+    return router.push({
+      pathname: `${getRouteById('contacts')}`,
+      query,
+    });
   }
 
   handleCancel = () => {
@@ -163,6 +176,7 @@ class ContactPage extends Component {
             />
           }
           infoComponent={<h1>{nameInfo}</h1>}
+          onBack={this.handleBack}
         />
         {isEditMode
           ? <ContactEdit

@@ -95,17 +95,29 @@ class RentBasisPage extends Component {
   copyRentBasis = () => {
     const {initializeRentBasis, rentBasisData, router} = this.props;
     const rentBasis = getContentCopiedRentBasis(rentBasisData);
+    const {router: {location: {query}}} = this.props;
 
     initializeRentBasis(rentBasis);
 
     return router.push({
       pathname: getRouteById('newrentbasis'),
+      query,
     });
   }
 
   editRentBasis = () => {
     const {editRentBasis, editedRentBasis} = this.props;
     editRentBasis(editedRentBasis);
+  }
+
+  handleBack = () => {
+    const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
+
+    return router.push({
+      pathname: `${getRouteById('rentbasis')}`,
+      query,
+    });
   }
 
   handleCancel = () => {
@@ -175,6 +187,7 @@ class RentBasisPage extends Component {
               identifier={rentBasis.id}
             />
           }
+          onBack={this.handleBack}
         />
         {isEditMode
           ? (

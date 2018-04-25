@@ -27,6 +27,7 @@ type Props = {
   isFormTouched: boolean,
   isFormValid: boolean,
   receiveTopNavigationSettings: Function,
+  router: Object,
 }
 
 type State = {
@@ -54,6 +55,16 @@ class NewRentBasisPage extends Component {
     });
 
     fetchAttributes();
+  }
+
+  handleBack = () => {
+    const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
+
+    return router.push({
+      pathname: `${getRouteById('rentbasis')}`,
+      query,
+    });
   }
 
   handleCancel = () => {
@@ -101,6 +112,7 @@ class NewRentBasisPage extends Component {
           infoComponent={
             <h1>Uusi vuokrausperuste</h1>
           }
+          onBack={this.handleBack}
         />
         <ContentContainer>
           <GreenBoxEdit>

@@ -24,6 +24,9 @@ const Pagination = ({
     }
     return pages;
   };
+  if(!maxPage || maxPage === 1) {
+    return null;
+  }
 
   return (
     <ul className='pagination'>

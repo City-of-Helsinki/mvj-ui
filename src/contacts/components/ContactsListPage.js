@@ -91,11 +91,13 @@ class ContactListPage extends Component {
   handleCreateButtonClick = () => {
     const {initializeContactForm} = this.props;
     const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
 
     initializeContactForm({});
 
     return router.push({
       pathname: getRouteById('newcontact'),
+      query,
     });
   }
 

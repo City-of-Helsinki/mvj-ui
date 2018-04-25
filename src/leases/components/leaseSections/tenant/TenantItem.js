@@ -3,7 +3,9 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import isNumber from 'lodash/isNumber';
 
-import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
+import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
+import FormWrapper from '$components/form/FormWrapper';
+import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import {getContactFullName} from '$src/contacts/helpers';
 
 type Props = {
@@ -32,29 +34,33 @@ const TenantItem = ({
 
   return (
     <div>
-      <Row>
-        <Column small={12} medium={6} large={4}>
-          <label>Asiakas</label>
-          <p>{getContactFullName(contact)}</p>
-        </Column>
-        <Column small={12} medium={6} large={2}>
-          <label>Laskun hallintaosuus</label>
-          <p>{getInvoiceManagementShare()}</p>
-        </Column>
-      </Row>
-      <ContactInfoTemplate
+      <FormWrapper>
+        <FormWrapperLeft>
+          <Row>
+            <Column small={12} medium={6} large={8}>
+              <label>Asiakas</label>
+              <p>{getContactFullName(contact)}</p>
+            </Column>
+            <Column small={12} medium={6} large={4}>
+              <label>Laskun hallintaosuus</label>
+              <p>{getInvoiceManagementShare()}</p>
+            </Column>
+          </Row>
+        </FormWrapperLeft>
+      </FormWrapper>
+      <ContactTemplate
         contact={contact}
       />
-      <Row>
-        <Column small={6} medium={4} large={4}>
-          <label>Viite</label>
-          <p>{tenant.reference || '-'}</p>
-        </Column>
-        <Column small={6} medium={8} large={8}>
-          <label>Kommentti</label>
-          <p>{tenant.note || '-'}</p>
-        </Column>
-      </Row>
+      <FormWrapper>
+        <FormWrapperLeft>
+          <Row>
+            <Column>
+              <label>Viite</label>
+              <p>{tenant.reference || '-'}</p>
+            </Column>
+          </Row>
+        </FormWrapperLeft>
+      </FormWrapper>
     </div>
   );
 };
