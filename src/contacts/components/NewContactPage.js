@@ -30,6 +30,7 @@ type Props = {
   isContactFormTouched: boolean,
   isContactFormValid: boolean,
   receiveTopNavigationSettings: Function,
+  router: Object,
 }
 
 type State = {
@@ -55,6 +56,16 @@ class NewContactPage extends Component {
       showSearch: false,
     });
     fetchAttributes();
+  }
+
+  handleBack = () => {
+    const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
+
+    return router.push({
+      pathname: `${getRouteById('contacts')}`,
+      query,
+    });
   }
 
   handleCancel = () => {
@@ -98,6 +109,7 @@ class NewContactPage extends Component {
             />
           }
           infoComponent={<h1>Uusi asiakas</h1>}
+          onBack={this.handleBack}
         />
         <ContentContainer>
           {isEmpty(attributes) &&

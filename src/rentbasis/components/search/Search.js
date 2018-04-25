@@ -22,7 +22,7 @@ class Search extends Component {
 
   initialize = (query: Object) => {
     this.setState({
-      search: query.keyword ? query.keyword : '',
+      search: query.search || '',
     });
   }
 

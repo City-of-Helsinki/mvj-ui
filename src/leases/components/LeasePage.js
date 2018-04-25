@@ -122,6 +122,7 @@ type Props = {
   patchLease: Function,
   receiveTopNavigationSettings: Function,
   rentsFormValues: Object,
+  router: Object,
   showEditMode: Function,
   summaryFormValues: Object,
   tenantsFormValues: Object,
@@ -340,14 +341,28 @@ class LeasePage extends Component {
     );
   }
 
+  handleBack = () => {
+    const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
+
+    query.tab = undefined;
+    return router.push({
+      pathname: `${getRouteById('leases')}`,
+      query,
+    });
+  }
+
   handleTabClick = (tabId) => {
     const {router} = this.context;
     const {location} = this.props;
+    const {router: {location: {query}}} = this.props;
+
 
     this.setState({activeTab: tabId}, () => {
+      query.tab = tabId;
       return router.push({
         ...location,
-        query: {tab: tabId},
+        query,
       });
     });
   };
@@ -454,6 +469,7 @@ class LeasePage extends Component {
             ? <LeaseInfoEdit />
             : <LeaseInfo />
           }
+          onBack={this.handleBack}
         />
 
         <Tabs

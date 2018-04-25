@@ -30,7 +30,6 @@ type State = {
   finished: boolean,
   inEffect: boolean,
   isBasicSearch: boolean,
-  keyword: string,
   municipality: string,
   oldCustomer: boolean,
   propertyDistrict: string,
@@ -38,6 +37,7 @@ type State = {
   propertySequence: string,
   propertyType: string,
   roles: Array<string>,
+  search: string,
   sequence: string,
   type: string,
   types: Array<string>,
@@ -54,7 +54,6 @@ class Search extends Component {
     finished: false,
     inEffect: false,
     isBasicSearch: true,
-    keyword: '',
     municipality: '',
     oldCustomer: false,
     propertyDistrict: '',
@@ -62,6 +61,7 @@ class Search extends Component {
     propertySequence: '',
     propertyType: '',
     roles: [],
+    search: '',
     sequence: '',
     type: '',
     types: [],
@@ -85,14 +85,14 @@ class Search extends Component {
 
   initialize = (query: Object) => {
     this.setState({
-      district: query.district ? query.district : '',
-      keyword: query.keyword ? query.keyword : '',
-      municipality: query.municipality ? query.municipality : '',
-      sequence: query.sequence ? query.sequence : '',
-      type: query.type ? query.type.toUpperCase() : '',
+      district: query.district || '',
+      search: query.search || '',
+      municipality: query.municipality || '',
+      sequence: query.sequence || '',
+      type: query.type || '',
     });
 
-    if(!!toArray(query).length && !query.keyword) {
+    if(!!toArray(query).length && !query.search) {
       this.setState({
         isBasicSearch: false,
       });
@@ -104,7 +104,7 @@ class Search extends Component {
     const {
       district,
       isBasicSearch,
-      // keyword,
+      // search,
       municipality,
       sequence,
       type} = this.state;
@@ -113,15 +113,15 @@ class Search extends Component {
     if(isBasicSearch) {
       console.log('Basic search');
       //TODO: Uncomment when backend is implemented
-      // if(keyword) {
-      //   filters.keyword = keyword ? keyword : undefined;
+      // if(search) {
+      //   filters.search = search || undefined;
       // }
 
     } else {
       filters.district = district ? district : undefined;
       filters.municipality = municipality ? municipality : undefined;
       filters.sequence = sequence ? sequence : undefined;
-      filters.type = type ? type.toUpperCase() : undefined;
+      filters.type = type || undefined;
     }
     onSearch(filters);
   }, 300);
@@ -168,7 +168,6 @@ class Search extends Component {
       finished,
       inEffect,
       isBasicSearch,
-      keyword,
       municipality,
       oldCustomer,
       propertyDistrict,
@@ -176,6 +175,7 @@ class Search extends Component {
       propertySequence,
       propertyType,
       roles,
+      search,
       sequence,
       type,
       types,
@@ -191,7 +191,7 @@ class Search extends Component {
           <div>
             <Row>
               <Column large={12}>
-                <TextInput disabled placeholder={'Hae hakusanalla'} onChange={(e) => this.handleTextInputChange(e, 'keyword')} value={keyword}/>
+                <TextInput disabled placeholder={'Hae hakusanalla'} onChange={(e) => this.handleTextInputChange(e, 'search')} value={search}/>
               </Column>
             </Row>
           </div>

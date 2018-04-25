@@ -105,6 +105,7 @@ class RentBasisListPage extends Component {
   handleCreateButtonClick = () => {
     const {initializeRentBasis} = this.props;
     const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
 
     initializeRentBasis({
       decisions: [{}],
@@ -114,6 +115,7 @@ class RentBasisListPage extends Component {
 
     return router.push({
       pathname: getRouteById('newrentbasis'),
+      query,
     });
   }
 

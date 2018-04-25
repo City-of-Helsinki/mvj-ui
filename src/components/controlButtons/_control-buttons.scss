@@ -41,9 +41,24 @@
   justify-content: space-between;
   margin-bottom: rem-calc(15px);
 
+  .back-button-wrapper {
+    flex: 0 0 0;
+    align-self: flex-end;
+    padding-right: rem-calc(15px);
+
+    button {
+      cursor: pointer;
+    }
+
+    .icons {
+      fill: $tram;
+    }
+  }
+
   .info-component-wrapper {
     flex: 1 1 0%;
     padding-right: rem-calc(7.5px);
+    align-self: center;
 
     h1 {
       font-family: $font-family-source;
