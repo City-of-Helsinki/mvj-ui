@@ -2,10 +2,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Field, reduxForm} from 'redux-form';
+import {Field, getFormValues, isValid, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
 
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Button from '$components/button/Button';
@@ -15,11 +14,12 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FormSection from '$components/form/FormSection';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
-import {getCompleteContactList} from '$src/contacts/selectors';
-import {getCurrentLease, getNewInvoiceFormErrors, getNewInvoiceFormValues} from '$src/leases/selectors';
-import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
+import {FormNames} from '$src/leases/enums';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
+import {getCompleteContactList} from '$src/contacts/selectors';
+import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 
 import type {Contact} from '$src/contacts/types';
@@ -28,10 +28,10 @@ import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 type Props = {
   contacts: Array<Contact>,
-  errors: ?Object,
   formValues: Object,
   handleSubmit: Function,
   invoiceAttributes: InvoiceAttributes,
+  isValid: boolean,
   lease: Lease,
   onClose: Function,
   onSave: Function,
@@ -39,10 +39,10 @@ type Props = {
 
 const NewInvoiceForm = ({
   contacts,
-  errors,
   formValues,
   handleSubmit,
   invoiceAttributes,
+  isValid,
   lease,
   onClose,
   onSave,
@@ -156,7 +156,7 @@ const NewInvoiceForm = ({
               <Column>
                 <Button
                   className='button-green no-margin pull-right'
-                  disabled={!isEmpty(errors)}
+                  disabled={!isValid}
                   label='Tallenna'
                   onClick={() => onSave(formValues)}
                   title='Tallenna'
@@ -170,16 +170,16 @@ const NewInvoiceForm = ({
   );
 };
 
-const formName = 'new-invoice-form';
+const formName = FormNames.INVOICE_NEW;
 
 export default flowRight(
   connect(
     (state) => {
       return {
         contacts: getCompleteContactList(state),
-        errors: getNewInvoiceFormErrors(state),
-        formValues: getNewInvoiceFormValues(state),
+        formValues: getFormValues(formName)(state),
         invoiceAttributes: getInvoiceAttributes(state),
+        isValid: isValid(formName)(state),
         lease: getCurrentLease(state),
       };
     }

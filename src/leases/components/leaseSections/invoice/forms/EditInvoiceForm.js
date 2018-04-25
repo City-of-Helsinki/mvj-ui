@@ -9,6 +9,9 @@ import get from 'lodash/get';
 import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
 import FieldTypeText from '$components/form/FieldTypeText';
 import FieldTypeTextArea from '$components/form/FieldTypeTextArea';
+import {FormNames} from '$src/leases/enums';
+import {getContactFullName} from '$src/contacts/helpers';
+import {getInvoiceSharePercentage} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDecimalNumber,
@@ -16,10 +19,8 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {getContactFullName} from '$src/contacts/helpers';
-import {getInvoiceSharePercentage} from '$src/invoices/helpers';
-import {genericValidator} from '$components/form/validations';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
+import {genericValidator} from '$components/form/validations';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
@@ -195,7 +196,7 @@ const EditInvoiceForm = ({
   );
 };
 
-const formName = 'edit-invoice-form';
+const formName = FormNames.INVOICE_EDIT;
 
 export default flowRight(
   connect(

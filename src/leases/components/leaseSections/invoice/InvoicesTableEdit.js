@@ -2,16 +2,16 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {destroy, initialize} from 'redux-form';
+import classNames from 'classnames';
+import scrollToComponent from 'react-scroll-to-component';
 import findIndex from 'lodash/findIndex';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
-
 import isNumber from 'lodash/isNumber';
-import classNames from 'classnames';
-import scrollToComponent from 'react-scroll-to-component';
 
-import {patchInvoice} from '$src/invoices/actions';
 import InvoiceModalEdit from './InvoiceModalEdit';
+import {patchInvoice} from '$src/invoices/actions';
+import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getEditedInvoiceForDb, getInvoiceSharePercentage} from '$src/invoices/helpers';
 import {
@@ -151,8 +151,8 @@ class InvoicesTableEdit extends Component {
   initilizeEditInvoiceForm = (invoice: Object) => {
     const {destroy, initialize} = this.props;
 
-    destroy('edit-invoice-form');
-    initialize('edit-invoice-form', invoice);
+    destroy(FormNames.INVOICE_EDIT);
+    initialize(FormNames.INVOICE_EDIT, invoice);
   }
 
   showInvoiceModal = (index: number) => {

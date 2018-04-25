@@ -1,7 +1,6 @@
 // @flow
 
 import type {Selector} from '../types';
-import get from 'lodash/get';
 import type {
   Attributes,
   ContactModalSettings,
@@ -69,15 +68,3 @@ export const getDistricts: Selector<DistrictList, void> = (state: LeaseState): D
 
 export const getLessors: Selector<LessorList, void> = (state: LeaseState): LessorList =>
   state.lease.lessors;
-
-export const getEditInvoiceFormErrors: Selector<Object, void> = (state: Object): Object =>
-  get(state, 'form.edit-invoice-form.syncErrors');
-
-export const getEditInvoiceFormValues: Selector<Object, void> = (state: Object): Object =>
-  get(state, 'form.edit-invoice-form.values');
-
-export const getNewInvoiceFormErrors: Selector<Object, void> = (state: Object): Object =>
-  get(state, 'form.new-invoice-form.syncErrors');
-
-export const getNewInvoiceFormValues: Selector<Object, void> = (state: Object): Object =>
-  get(state, 'form.new-invoice-form.values');
