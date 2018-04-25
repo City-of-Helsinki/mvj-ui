@@ -5,7 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes} from '$src/contacts/selectors';
-import {ContactType} from '../enums';
+import {ContactType} from '$src/contacts/enums';
 
 import type {Attributes} from '$src/contacts/types';
 
@@ -14,7 +14,7 @@ type Props = {
   attributes: Attributes,
 }
 
-const ContactInfoTemplate = ({contact, attributes}: Props) => {
+const ContactTemplate = ({contact, attributes}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'type');
   const languageOptions = getAttributeFieldOptions(attributes, 'language');
   if(!contact) {
@@ -121,4 +121,4 @@ export default connect(
       attributes: getAttributes(state),
     };
   }
-)(ContactInfoTemplate);
+)(ContactTemplate);

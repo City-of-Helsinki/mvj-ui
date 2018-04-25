@@ -9,7 +9,7 @@ import get from 'lodash/get';
 import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
-import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
+import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditIcon from '$components/icons/EditIcon';
 import IconButton from '$components/button/IconButton';
 import OtherTenantItemsEdit from './OtherTenantItemsEdit';
@@ -188,7 +188,7 @@ const TenantItemsEdit = ({
                     />
                   </IconButton>
                 }
-                <ContactInfoTemplate
+                <ContactTemplate
                   contact={contact}
                 />
               </BoxContentWrapper>

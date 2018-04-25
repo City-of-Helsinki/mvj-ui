@@ -3,7 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import isNumber from 'lodash/isNumber';
 
-import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
+import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import {getContactFullName} from '$src/contacts/helpers';
 
 type Props = {
@@ -42,7 +42,7 @@ const TenantItem = ({
           <p>{getInvoiceManagementShare()}</p>
         </Column>
       </Row>
-      <ContactInfoTemplate
+      <ContactTemplate
         contact={contact}
       />
       <Row>

@@ -10,28 +10,28 @@ type Props = {
 }
 
 type State = {
-  keyword: string,
+  search: string,
 }
 
 class Search extends Component {
   props: Props
 
   state: State = {
-    keyword: '',
+    search: '',
   }
 
   initialize = (query: Object) => {
     this.setState({
-      keyword: query.keyword ? query.keyword : '',
+      search: query.keyword ? query.keyword : '',
     });
   }
 
   onSearchChange = debounce(() => {
     const {onSearch} = this.props;
-    const {keyword} = this.state;
+    const {search} = this.state;
 
     const filters = {};
-    filters.keyword = keyword ? keyword : undefined;
+    filters.search = search || undefined;
     onSearch(filters);
   }, 300);
 
@@ -41,7 +41,7 @@ class Search extends Component {
   }
 
   render () {
-    const {keyword} = this.state;
+    const {search} = this.state;
 
     return (
       <div className='search'>
@@ -49,8 +49,8 @@ class Search extends Component {
           <Column>
             <TextInput
               placeholder={'Hae hakusanalla'}
-              onChange={(e) => this.handleTextInputChange(e, 'keyword')}
-              value={keyword}
+              onChange={(e) => this.handleTextInputChange(e, 'search')}
+              value={search}
             />
           </Column>
         </Row>

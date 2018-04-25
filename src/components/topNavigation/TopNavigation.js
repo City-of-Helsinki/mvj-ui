@@ -16,14 +16,14 @@ type Props = {
 }
 
 type State = {
-  keyword: string,
+  search: string,
 }
 
 class TopNavigation extends Component {
   props: Props
 
   state: State = {
-    keyword: '',
+    search: '',
   }
 
   static contextTypes = {
@@ -31,7 +31,7 @@ class TopNavigation extends Component {
   };
 
   handleSearchChange = (e: any) => {
-    this.setState({keyword: e.target.value});
+    this.setState({search: e.target.value});
   }
 
   onKeyUp = (e: any) => {
@@ -41,11 +41,11 @@ class TopNavigation extends Component {
   }
 
   search = () => {
-    const {keyword} = this.state,
+    const {search} = this.state,
       {router} = this.context;
 
-    if(keyword) {
-      const query = {keyword: keyword};
+    if(search) {
+      const query = {search: search};
       return router.push({
         pathname: getRouteById('leases'),
         query,
@@ -62,7 +62,7 @@ class TopNavigation extends Component {
       toggleSideMenu,
       username,
     } = this.props;
-    const {keyword} = this.state;
+    const {search} = this.state;
 
     return (
       <section className="top-navigation">
@@ -84,7 +84,7 @@ class TopNavigation extends Component {
                 onChange={this.handleSearchChange}
                 onKeyUp={this.onKeyUp}
                 onSubmit={this.search}
-                value={keyword}
+                value={search}
               />
             </div>
           }

@@ -2,7 +2,7 @@
 import React from 'react';
 
 import ContentContainer from '$components/content/ContentContainer';
-import ContactInfoTemplate from './ContactInfoTemplate';
+import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import GreenBox from '$components/content/GreenBox';
 
 import type {Attributes, Contact} from '../types';
@@ -16,7 +16,7 @@ const ContactReadonly = ({attributes, contact}: Props) => {
   return (
     <ContentContainer>
       <GreenBox>
-        <ContactInfoTemplate
+        <ContactTemplate
           attributes={attributes}
           contact={contact}
         />

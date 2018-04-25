@@ -6,7 +6,7 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
 import Collapse from '$components/collapse/Collapse';
-import ContactInfoTemplate from '$src/contacts/components/ContactInfoTemplate';
+import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
@@ -65,7 +65,7 @@ const OtherTenantItem = ({
           <p>{tenant.note || '-'}</p>
         </Column>
       </Row>
-      <ContactInfoTemplate
+      <ContactTemplate
         contact={contact}
       />
     </Collapse>
