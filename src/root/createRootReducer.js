@@ -11,6 +11,7 @@ import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
 import invoiceReducer from '$src/invoices/reducer';
 import leaseReducer from '../leases/reducer';
+import noticePeriodReducer from '../noticePeriod/reducer';
 import rentBasisReducer from '../rentbasis/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
 import usersReducer from '../users/reducer';
@@ -27,6 +28,7 @@ export default (): Reducer<RootState> =>
     form: formReducer,
     invoice: invoiceReducer,
     lease: leaseReducer,
+    noticePeriod: noticePeriodReducer,
     oidc,
     rentbasis: rentBasisReducer,
     routing: routerReducer,

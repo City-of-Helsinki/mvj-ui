@@ -10,6 +10,17 @@ export const TenantContactType = {
 };
 
 /**
+ * Classification enumerable.
+ *
+ * @type {{}}
+ */
+export const Classification = {
+  PUBLIC: 'public',
+  CONFIDENTIAL: 'confidential',
+  OFFICIAL: 'official',
+};
+
+/**
  * Constructability type enumerable.
  *
  * @type {{PRECONSTRUCTION: string, DEMOLITION: string, POLLLUTED_LAND: string, REPORT: string, OTHER: string}}

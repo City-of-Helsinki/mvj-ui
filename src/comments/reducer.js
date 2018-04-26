@@ -14,8 +14,8 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/comments/CREATE': () => true,
   'mvj/comments/EDIT': () => true,
   'mvj/comments/FETCH_ALL': () => true,
-  'mvj/leases/NOT_FOUND': () => false,
-  'mvj/leases/RECEIVE_ALL': () => false,
+  'mvj/comments/NOT_FOUND': () => false,
+  'mvj/comments/RECEIVE_ALL': () => false,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -32,6 +32,6 @@ const commentsReducer: Reducer<CommentList> = handleActions({
 
 export default combineReducers({
   attributes: attributesReducer,
-  comments: commentsReducer,
   isFetching: isFetchingReducer,
+  list: commentsReducer,
 });

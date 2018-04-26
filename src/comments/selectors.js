@@ -15,4 +15,4 @@ export const getAttributes: Selector<Attributes, void> = (state: CommentState): 
   state.comment.attributes;
 
 export const getComments: Selector<CommentList, void> = (state: CommentState): CommentList =>
-  state.comment.comments;
+  state.comment.list;

@@ -10,7 +10,7 @@ import Button from '$components/button/Button';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import {fetchDistricts, receiveDistricts} from '$src/leases/actions';
-import {FormNames} from '$src/leases/enums';
+import {Classification, FormNames} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/leases/helpers';
 import {getAttributeFieldOptions, getSearchQuery} from '$util/helpers';
 import {getAttributes, getDistricts} from '$src/leases/selectors';
@@ -77,6 +77,7 @@ class CreateLeaseForm extends Component {
       district: district,
       reference_number: reference_number,
       note: note,
+      classification: Classification.PUBLIC,
     });
   };
 

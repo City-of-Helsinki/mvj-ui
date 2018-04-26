@@ -3,17 +3,20 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import {fetchLessors} from '$src/leases/actions';
-import {getContentSummary} from '$src/leases/helpers';
-import {getAttributeFieldOptions, getLabelOfOption, getLessorOptions} from '$util/helpers';
-import {getAttributes, getCurrentLease, getLessors} from '$src/leases/selectors';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import LeaseHistory from './LeaseHistory';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
+import {fetchLessors} from '$src/leases/actions';
+import {getContentSummary} from '$src/leases/helpers';
+import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
+import {getAttributeFieldOptions, getLabelOfOption, getLessorOptions} from '$util/helpers';
+import {getAttributes, getCurrentLease, getLessors} from '$src/leases/selectors';
+import {getNoticePeriods} from '$src/noticePeriod/selectors';
 
 import type {Lease} from '$src/leases/types';
+import type {NoticePeriodList} from '$src/NoticePeriod/types';
 
 type Props = {
   attributes: Object,
@@ -21,6 +24,7 @@ type Props = {
   fetchLessors: Function,
   history: Array<Object>,
   lessors: Array<Object>,
+  noticePeriods: NoticePeriodList,
   summary: Object,
 }
 
@@ -34,7 +38,7 @@ class Summary extends Component {
   }
 
   render() {
-    const {attributes, currentLease, history, lessors} = this.props;
+    const {attributes, currentLease, history, lessors, noticePeriods} = this.props;
     const summary = getContentSummary(currentLease);
     const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
     const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
@@ -44,8 +48,7 @@ class Summary extends Component {
     const managementOptions = getAttributeFieldOptions(attributes, 'management');
     const regulationOptions = getAttributeFieldOptions(attributes, 'regulation');
     const hitasOptions = getAttributeFieldOptions(attributes, 'hitas');
-    const noticePeriodOptions = getAttributeFieldOptions(attributes, 'notice_period');
-
+    const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
 
     const lessorOptions = getLessorOptions(lessors);
 
@@ -164,6 +167,7 @@ export default connect(
       attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
       lessors: getLessors(state),
+      noticePeriods: getNoticePeriods(state),
     };
   },
   {

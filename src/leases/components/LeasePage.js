@@ -8,10 +8,7 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import {fetchAttributes as fetchCommentAttributes, fetchComments} from '$src/comments/actions';
-import {
-  fetchAttributes as fetchContactAttributes,
-  fetchCompleteContactList,
-} from '$src/contacts/actions';
+import {fetchAttributes as fetchContactAttributes, fetchCompleteContactList} from '$src/contacts/actions';
 import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
 import {
   clearFormValidFlags,
@@ -20,7 +17,8 @@ import {
   hideEditMode,
   patchLease,
   showEditMode,
-} from '../actions';
+} from '$src/leases/actions';
+import {fetchNoticePeriods} from '$src/noticePeriod/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchUsers} from '$src/users/actions';
 import {FormNames} from '../enums';
@@ -91,6 +89,7 @@ type Props = {
   fetchContactAttributes: Function,
   fetchInvoiceAttributes: Function,
   fetchInvoices: Function,
+  fetchNoticePeriods: Function,
   fetchSingleLease: Function,
   fetchUsers: Function,
   hideEditMode: Function,
@@ -160,6 +159,7 @@ class LeasePage extends Component {
       fetchContactAttributes,
       fetchInvoiceAttributes,
       fetchInvoices,
+      fetchNoticePeriods,
       fetchSingleLease,
       fetchUsers,
       hideEditMode,
@@ -193,6 +193,7 @@ class LeasePage extends Component {
     fetchUsers();
     fetchInvoiceAttributes();
     fetchInvoices(getSearchQuery({lease: leaseId}));
+    fetchNoticePeriods();
   }
 
   showModal = (modalName: string) => {
@@ -611,6 +612,7 @@ export default flowRight(
       fetchContactAttributes,
       fetchInvoiceAttributes,
       fetchInvoices,
+      fetchNoticePeriods,
       fetchSingleLease,
       fetchUsers,
       hideEditMode,

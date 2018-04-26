@@ -12,12 +12,15 @@ import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import LeaseHistory from './LeaseHistory';
-import {getAttributeFieldOptions, getLessorOptions} from '$src/util/helpers';
 import {fetchLessors, receiveSummaryFormValid} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
+import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
+import {getAttributeFieldOptions, getLessorOptions} from '$src/util/helpers';
 import {getAttributes, getIsSummaryFormValid, getLessors} from '$src/leases/selectors';
+import {getNoticePeriods} from '$src/noticePeriod/selectors';
 import {genericValidator} from '$components/form/validations';
 
+import type {NoticePeriodList} from '$src/noticePeriod/types';
 
 type Props = {
   attributes: Object,
@@ -26,6 +29,7 @@ type Props = {
   history: Array<Object>,
   isSummaryFormValid: boolean,
   lessors: Array<Object>,
+  noticePeriods: NoticePeriodList,
   receiveSummaryFormValid: Function,
   valid: boolean,
 }
@@ -47,7 +51,7 @@ class SummaryEdit extends Component {
   }
 
   render () {
-    const {attributes, handleSubmit, history, lessors} = this.props;
+    const {attributes, handleSubmit, history, lessors, noticePeriods} = this.props;
     const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
     const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
     const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
@@ -56,7 +60,7 @@ class SummaryEdit extends Component {
     const managementOptions = getAttributeFieldOptions(attributes, 'management');
     const regulationOptions = getAttributeFieldOptions(attributes, 'regulation');
     const hitasOptions = getAttributeFieldOptions(attributes, 'hitas');
-    const noticePeriodOptions = getAttributeFieldOptions(attributes, 'notice_period');
+    const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
 
     const lessorOptions = getLessorOptions(lessors);
 
@@ -272,6 +276,7 @@ export default flowRight(
         attributes: getAttributes(state),
         isSummaryFormValid: getIsSummaryFormValid(state),
         lessors: getLessors(state),
+        noticePeriods: getNoticePeriods(state),
       };
     },
     {
