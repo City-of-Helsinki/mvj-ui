@@ -70,7 +70,7 @@ export const RentDueDateTypes = {
 /**
  * Rent type enumerable.
  *
- * @type {{CONSTRUCTABILITY: string, CONTRACTS: string, CREATE_LEASE: string, DECISIONS: string, INSPECTION: string, INVOICE_EDIT: string, INVOICE_NEW: string, LEASE_AREAS: string, LEASE_INFO: string, RENTS: string, SUMMARY: string, TENANTS: string}}
+ * @type {{CONSTRUCTABILITY: string, CONTRACTS: string, CREATE_LEASE: string, DECISIONS: string, INSPECTION: string, INVOICE_EDIT: string, INVOICE_NEW: string, LEASE_AREAS: string, LEASE_INFO: string, RENTS: string, SEARCH: string, SUMMARY: string, TENANTS: string}}
  */
 export const FormNames = {
   CONSTRUCTABILITY: 'constructability-form',
@@ -83,6 +83,7 @@ export const FormNames = {
   LEASE_AREAS: 'lease-areas-form',
   LEASE_INFO: 'lease-info-form',
   RENTS: 'rents-form',
+  SEARCH: 'lease-search-form',
   SUMMARY: 'summary-form',
   TENANTS: 'tenants-form',
 };

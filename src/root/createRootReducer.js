@@ -9,6 +9,7 @@ import apiReducer from '../api/reducer';
 import authReducer from '../auth/reducer';
 import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
+import districtsReducer from '../district/reducer';
 import invoiceReducer from '$src/invoices/reducer';
 import leaseReducer from '../leases/reducer';
 import noticePeriodReducer from '../noticePeriod/reducer';
@@ -25,6 +26,7 @@ export default (): Reducer<RootState> =>
     auth: authReducer,
     comment: commentsReducer,
     contacts: contactsReducer,
+    district: districtsReducer,
     form: formReducer,
     invoice: invoiceReducer,
     lease: leaseReducer,

@@ -9,15 +9,18 @@ import get from 'lodash/get';
 import Button from '$components/button/Button';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
+import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {fetchDistricts, receiveDistricts} from '$src/leases/actions';
 import {Classification, FormNames} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/leases/helpers';
-import {getAttributeFieldOptions, getSearchQuery} from '$util/helpers';
-import {getAttributes, getDistricts} from '$src/leases/selectors';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {getDistrictsByMunicipality} from '$src/district/selectors';
+import {getAttributes} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 
+import type {DistrictList} from '$src/district/types';
 
-import type {Attributes, DistrictList} from '$src/leases/types';
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
@@ -25,6 +28,7 @@ type Props = {
   district: string,
   districts: DistrictList,
   fetchDistricts: Function,
+  fetchDistrictsByMunicipality: Function,
   handleSubmit: Function,
   municipality: string,
   note: string,
@@ -41,21 +45,13 @@ class CreateLeaseForm extends Component {
 
   componentWillReceiveProps(nextProps) {
     if(!nextProps.municipality) {
-      const {change, receiveDistricts} = this.props;
-
-      receiveDistricts([]);
+      const {change} = this.props;
       change('district', '');
     } else if(this.props.municipality !== nextProps.municipality) {
-      const {change, fetchDistricts} = this.props;
+      const {change, fetchDistrictsByMunicipality} = this.props;
 
-      if(nextProps.municipality) {
-        const query = {
-          limit: 1000,
-          municipality: nextProps.municipality,
-        };
-        fetchDistricts(getSearchQuery(query));
-        change('district', '');
-      }
+      fetchDistrictsByMunicipality(nextProps.municipality);
+      change('district', '');
     }
   }
 
@@ -188,11 +184,12 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     (state) => {
+      const municipality = selector(state, 'municipality');
       return {
         attributes: getAttributes(state),
         district: selector(state, 'district'),
-        districts: getDistricts(state),
-        municipality: selector(state, 'municipality'),
+        districts: getDistrictsByMunicipality(state, municipality),
+        municipality: municipality,
         note: selector(state, 'note'),
         reference_number: selector(state, 'reference_number'),
         state: selector(state, 'state'),
@@ -202,6 +199,7 @@ export default flowRight(
     {
       change,
       fetchDistricts,
+      fetchDistrictsByMunicipality,
       receiveDistricts,
     }
   ),

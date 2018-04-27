@@ -3,7 +3,6 @@
 import type {Action} from '../types';
 
 export type NoticePeriodState = Object;
-
 export type NoticePeriodList = Array<Object>;
 
 export type FetchNoticePeriodsAction = Action<'mvj/noticePeriod/FETCH_ALL', void>;
