@@ -36,10 +36,6 @@ export const patchLease = (lease: Lease): Generator<> => {
   }));
 };
 
-export const fetchDecisions = (search: string): Generator<> => {
-  return callApi(new Request(createUrl(`decision/${search || ''}`)));
-};
-
 export const fetchLessors = () => {
   return callApi(new Request(createUrl('contact/?is_lessor=true&limit=1000')));
 };

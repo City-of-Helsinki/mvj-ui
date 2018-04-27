@@ -10,7 +10,6 @@ export type ContactModalSettings = Object | null;
 export type Attributes = Object;
 export type Lease = Object;
 export type LeaseList = Object;
-export type DecisionList = Array<Object>;
 export type LeaseId = number;
 export type LessorList = Array<Object>;
 
@@ -31,9 +30,6 @@ export type ShowContactModalAction = Action<'mvj/leases/SHOW_CONTACT_MODAL', voi
 export type ReceiveContactModalSettingsAction = Action<'mvj/leases/RECEIVE_CONTACT_SETTINGS', ContactModalSettings>;
 export type CreateContactAction = Action<'mvj/leases/CREATE_CONTACT', Contact>;
 export type EditContactAction = Action<'mvj/leases/EDIT_CONTACT', Contact>;
-
-export type FetchDecisionsAction = Action<'mvj/leases/FETCH_DECISIONS', string>;
-export type ReceiveDecisionsAction = Action<'mvj/leases/RECEIVE_DECISIONS', DecisionList>;
 
 export type FetchLessorsAction = Action<'mvj/leases/FETCH_LESSORS', void>;
 export type ReceiveLessorsAction = Action<'mvj/leases/RECEIVE_LESSORS', LessorList>;

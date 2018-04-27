@@ -6,7 +6,8 @@ import {Row, Column} from 'react-foundation';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import {formatDate, getAttributeFieldOptions, getDecisionsOptions, getLabelOfOption} from '$util/helpers';
-import {getAttributes, getDecisions} from '$src/leases/selectors';
+import {getDecisionsByLease} from '$src/decision/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -82,9 +83,11 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
 
 export default connect(
   (state) => {
+    const currentLease = getCurrentLease(state);
+
     return {
       attributes: getAttributes(state),
-      decisions: getDecisions(state),
+      decisions: getDecisionsByLease(state, currentLease.id),
     };
   }
 )(RentAdjustments);

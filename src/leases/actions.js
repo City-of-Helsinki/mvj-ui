@@ -29,11 +29,6 @@ import type {
   EditContactAction,
 } from './types';
 import type {
-  DecisionList,
-  FetchDecisionsAction,
-  ReceiveDecisionsAction,
-} from './types';
-import type {
   LessorList,
   FetchLessorsAction,
   ReceiveLessorsAction,
@@ -101,12 +96,6 @@ export const createContact = (contact: Contact): CreateContactAction =>
 
 export const editContact = (contact: Contact): EditContactAction =>
   createAction('mvj/leases/EDIT_CONTACT')(contact);
-
-export const fetchDecisions = (search: string): FetchDecisionsAction =>
-  createAction('mvj/leases/FETCH_DECISIONS')(search);
-
-export const receiveDecisions = (decisions: DecisionList): ReceiveDecisionsAction =>
-  createAction('mvj/leases/RECEIVE_DECISIONS')(decisions);
 
 export const fetchLessors = (): FetchLessorsAction =>
   createAction('mvj/leases/FETCH_LESSORS')();

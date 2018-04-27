@@ -9,6 +9,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import {fetchAttributes as fetchCommentAttributes, fetchCommentsByLease} from '$src/comments/actions';
 import {fetchAttributes as fetchContactAttributes, fetchCompleteContactList} from '$src/contacts/actions';
+import {fetchDecisionsByLease} from '$src/decision/actions';
 import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
 import {
   clearFormValidFlags,
@@ -87,6 +88,7 @@ type Props = {
   fetchCommentsByLease: Function,
   fetchCompleteContactList: Function,
   fetchContactAttributes: Function,
+  fetchDecisionsByLease: Function,
   fetchInvoiceAttributes: Function,
   fetchInvoices: Function,
   fetchNoticePeriods: Function,
@@ -157,6 +159,7 @@ class LeasePage extends Component {
       fetchCommentsByLease,
       fetchCompleteContactList,
       fetchContactAttributes,
+      fetchDecisionsByLease,
       fetchInvoiceAttributes,
       fetchInvoices,
       fetchNoticePeriods,
@@ -190,10 +193,18 @@ class LeasePage extends Component {
     fetchCommentsByLease(leaseId);
     fetchContactAttributes();
     fetchCompleteContactList();
-    fetchUsers();
+    fetchDecisionsByLease(leaseId);
     fetchInvoiceAttributes();
     fetchInvoices(getSearchQuery({lease: leaseId}));
     fetchNoticePeriods();
+    fetchUsers();
+  }
+
+  componentWillReceiveProps(nextProps: Object) {
+    if(this.props.currentLease !== nextProps.currentLease) {
+      const {fetchDecisionsByLease, params: {leaseId}} = this.props;
+      fetchDecisionsByLease(leaseId);
+    }
   }
 
   showModal = (modalName: string) => {
@@ -611,6 +622,7 @@ export default flowRight(
       fetchCommentsByLease,
       fetchCompleteContactList,
       fetchContactAttributes,
+      fetchDecisionsByLease,
       fetchInvoiceAttributes,
       fetchInvoices,
       fetchNoticePeriods,

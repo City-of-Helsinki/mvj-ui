@@ -14,9 +14,9 @@ import type {
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/comments/CREATE': () => true,
   'mvj/comments/EDIT': () => true,
-  'mvj/comments/FETCH_ALL': () => true,
+  'mvj/comments/FETCH_BY_LEASE': () => true,
   'mvj/comments/NOT_FOUND': () => false,
-  'mvj/comments/RECEIVE_ALL': () => false,
+  'mvj/comments/RECEIVE_BY_LEASE': () => false,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({

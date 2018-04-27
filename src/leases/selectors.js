@@ -4,7 +4,6 @@ import type {Selector} from '../types';
 import type {
   Attributes,
   ContactModalSettings,
-  DecisionList,
   Lease,
   LeaseList,
   LeaseState,
@@ -58,9 +57,6 @@ export const getLeasesList: Selector<LeaseList, void> = (state: LeaseState): Lea
 
 export const getCurrentLease: Selector<Lease, void> = (state: LeaseState): Lease =>
   state.lease.current;
-
-export const getDecisions: Selector<DecisionList, void> = (state: LeaseState): DecisionList =>
-  state.lease.decisions;
 
 export const getLessors: Selector<LessorList, void> = (state: LeaseState): LessorList =>
   state.lease.lessors;

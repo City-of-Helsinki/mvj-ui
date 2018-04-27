@@ -4,6 +4,7 @@ import {fork} from 'redux-saga/effects';
 import authSaga from '../auth/saga';
 import commentSaga from '../comments/saga';
 import contactSaga from '../contacts/saga';
+import decisionSaga from '../decision/saga';
 import districtSaga from '../district/saga';
 import invoiceSaga from '../invoices/saga';
 import leaseSaga from '../leases/saga';
@@ -18,6 +19,7 @@ export default () =>
       fork(authSaga),
       fork(commentSaga),
       fork(contactSaga),
+      fork(decisionSaga),
       fork(districtSaga),
       fork(invoiceSaga),
       fork(leaseSaga),

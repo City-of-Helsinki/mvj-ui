@@ -12,13 +12,11 @@ import FormSectionComponent from '$components/form/FormSection';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {fetchDecisions, receiveRentsFormValid} from '$src/leases/actions';
+import {receiveRentsFormValid} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getSearchQuery} from '$util/helpers';
 import {getIsRentsFormValid} from '$src/leases/selectors';
 
 type Props = {
-  fetchDecisions: Function,
   handleSubmit: Function,
   isRentsFormValid: boolean,
   params: Object,
@@ -28,16 +26,6 @@ type Props = {
 
 class RentsEdit extends Component {
   props: Props
-
-  componentWillMount() {
-    const {fetchDecisions, params: {leaseId}} = this.props;
-    const query = {
-      lease: leaseId,
-      limit: 1000,
-    };
-
-    fetchDecisions(getSearchQuery(query));
-  }
 
   componentDidUpdate() {
     const {isRentsFormValid, receiveRentsFormValid, valid} = this.props;
@@ -95,7 +83,6 @@ export default flowRight(
       };
     },
     {
-      fetchDecisions,
       receiveRentsFormValid,
     }
   ),

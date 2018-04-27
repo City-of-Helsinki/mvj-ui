@@ -13,7 +13,6 @@ import {
   notFound,
   receiveAttributes,
   receiveContactModalSettings,
-  receiveDecisions,
   receiveLeases,
   receiveLessors,
   receiveSingleLease,
@@ -21,7 +20,6 @@ import {
 import {
   createLease,
   fetchAttributes,
-  fetchDecisions,
   fetchLeases,
   fetchLessors,
   fetchSingleLease,
@@ -270,25 +268,6 @@ function* editContactSaga({payload: contact}): Generator<> {
   }
 }
 
-function* fetchDecisionsSaga({payload: search}): Generator<> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchDecisions, search);
-    const decisions = bodyAsJson.results;
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveDecisions(decisions));
-        break;
-      case 404:
-      case 500:
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch lessors with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
 function* fetchLessorsSaga(): Generator<> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLessors);
@@ -320,7 +299,6 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/leases/CREATE_CONTACT', createContactSaga);
       yield takeLatest('mvj/leases/EDIT_CONTACT', editContactSaga);
-      yield takeLatest('mvj/leases/FETCH_DECISIONS', fetchDecisionsSaga);
       yield takeLatest('mvj/leases/FETCH_LESSORS', fetchLessorsSaga);
     }),
   ];
