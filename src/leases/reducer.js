@@ -9,13 +9,11 @@ import type {
   LeaseList,
   LessorList,
   DecisionList,
-  DistrictList,
   ReceiveAttributesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
   ReceiveLessorsAction,
   ReceiveDecisionsAction,
-  ReceiveDistrictsAction,
   ContactModalSettings,
   ReceiveContactModalSettingsAction,
   ReceiveConstructabilityFormValidAction,
@@ -83,12 +81,6 @@ const lessorsReducer: Reducer<LessorList> = handleActions({
 const decisionsReducer: Reducer<DecisionList> = handleActions({
   ['mvj/leases/RECEIVE_DECISIONS']: (state: DecisionList, {payload: decisions}: ReceiveDecisionsAction) => {
     return decisions;
-  },
-}, []);
-
-const districtsReducer: Reducer<DistrictList> = handleActions({
-  ['mvj/leases/RECEIVE_DISTRICTS']: (state: DistrictList, {payload: districts}: ReceiveDistrictsAction) => {
-    return districts;
   },
 }, []);
 
@@ -174,5 +166,4 @@ export default combineReducers({
   list: leasesListReducer,
   lessors: lessorsReducer,
   decisions: decisionsReducer,
-  districts: districtsReducer,
 });

@@ -12,7 +12,6 @@ import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
-import {receiveDistricts} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
@@ -30,7 +29,6 @@ type Props = {
   initialize: Function,
   municipality: string,
   onSearch: Function,
-  receiveDistricts: Function,
   router: Object,
   search: string,
 }
@@ -57,7 +55,7 @@ class Search extends Component {
   }
 
   componentWillUpdate(nextProps: Object) {
-    const {change, fetchDistrictsByMunicipality, receiveDistricts} = this.props;
+    const {change, fetchDistrictsByMunicipality} = this.props;
     if (Number(this.props.municipality) !== Number(nextProps.municipality)) {
       if(nextProps.municipality) {
         fetchDistrictsByMunicipality(nextProps.municipality);
@@ -65,7 +63,6 @@ class Search extends Component {
           change('district', '');
         }
       } else {
-        receiveDistricts([]);
         change('district', '');
       }
     }
@@ -315,7 +312,6 @@ export default flowRight(
       change,
       fetchDistrictsByMunicipality,
       initialize,
-      receiveDistricts,
     }
   ),
   reduxForm({

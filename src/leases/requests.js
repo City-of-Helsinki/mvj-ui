@@ -40,10 +40,6 @@ export const fetchDecisions = (search: string): Generator<> => {
   return callApi(new Request(createUrl(`decision/${search || ''}`)));
 };
 
-export const fetchDistricts = (search: string): Generator<> => {
-  return callApi(new Request(createUrl(`district/${search || ''}`)));
-};
-
 export const fetchLessors = () => {
   return callApi(new Request(createUrl('contact/?is_lessor=true&limit=1000')));
 };

@@ -10,7 +10,6 @@ import Button from '$components/button/Button';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
-import {fetchDistricts, receiveDistricts} from '$src/leases/actions';
 import {Classification, FormNames} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
@@ -27,13 +26,11 @@ type Props = {
   change: Function,
   district: string,
   districts: DistrictList,
-  fetchDistricts: Function,
   fetchDistrictsByMunicipality: Function,
   handleSubmit: Function,
   municipality: string,
   note: string,
   onSubmit: Function,
-  receiveDistricts: Function,
   reference_number: string,
   state: string,
   type: string,
@@ -44,14 +41,15 @@ class CreateLeaseForm extends Component {
   props: Props
 
   componentWillReceiveProps(nextProps) {
-    if(!nextProps.municipality) {
-      const {change} = this.props;
-      change('district', '');
-    } else if(this.props.municipality !== nextProps.municipality) {
+    if(this.props.municipality !== nextProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
 
-      fetchDistrictsByMunicipality(nextProps.municipality);
-      change('district', '');
+      if(nextProps.municipality) {
+        fetchDistrictsByMunicipality(nextProps.municipality);
+        change('district', '');
+      } else {
+        change('district', '');
+      }
     }
   }
 
@@ -198,9 +196,7 @@ export default flowRight(
     },
     {
       change,
-      fetchDistricts,
       fetchDistrictsByMunicipality,
-      receiveDistricts,
     }
   ),
   reduxForm({

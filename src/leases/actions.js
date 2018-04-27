@@ -34,11 +34,6 @@ import type {
   ReceiveDecisionsAction,
 } from './types';
 import type {
-  DistrictList,
-  FetchDistrictsAction,
-  ReceiveDistrictsAction,
-} from './types';
-import type {
   LessorList,
   FetchLessorsAction,
   ReceiveLessorsAction,
@@ -112,12 +107,6 @@ export const fetchDecisions = (search: string): FetchDecisionsAction =>
 
 export const receiveDecisions = (decisions: DecisionList): ReceiveDecisionsAction =>
   createAction('mvj/leases/RECEIVE_DECISIONS')(decisions);
-
-export const fetchDistricts = (search: string): FetchDistrictsAction =>
-  createAction('mvj/leases/FETCH_DISTRICTS')(search);
-
-export const receiveDistricts = (districts: DistrictList): ReceiveDistrictsAction =>
-  createAction('mvj/leases/RECEIVE_DISTRICTS')(districts);
 
 export const fetchLessors = (): FetchLessorsAction =>
   createAction('mvj/leases/FETCH_LESSORS')();

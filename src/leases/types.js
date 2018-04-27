@@ -11,7 +11,6 @@ export type Attributes = Object;
 export type Lease = Object;
 export type LeaseList = Object;
 export type DecisionList = Array<Object>;
-export type DistrictList = Array<Object>;
 export type LeaseId = number;
 export type LessorList = Array<Object>;
 
@@ -35,9 +34,6 @@ export type EditContactAction = Action<'mvj/leases/EDIT_CONTACT', Contact>;
 
 export type FetchDecisionsAction = Action<'mvj/leases/FETCH_DECISIONS', string>;
 export type ReceiveDecisionsAction = Action<'mvj/leases/RECEIVE_DECISIONS', DecisionList>;
-
-export type FetchDistrictsAction = Action<'mvj/leases/FETCH_DISTRICTS', string>;
-export type ReceiveDistrictsAction = Action<'mvj/leases/RECEIVE_DISTRICTS', DistrictList>;
 
 export type FetchLessorsAction = Action<'mvj/leases/FETCH_LESSORS', void>;
 export type ReceiveLessorsAction = Action<'mvj/leases/RECEIVE_LESSORS', LessorList>;
