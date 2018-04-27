@@ -12,11 +12,13 @@ import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import LeaseHistory from './LeaseHistory';
-import {fetchLessors, receiveSummaryFormValid} from '$src/leases/actions';
+import {fetchLessors} from '$src/contacts/actions';
+import {receiveSummaryFormValid} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
 import {getAttributeFieldOptions, getLessorOptions} from '$src/util/helpers';
-import {getAttributes, getIsSummaryFormValid, getLessors} from '$src/leases/selectors';
+import {getLessors} from '$src/contacts/selectors';
+import {getAttributes, getIsSummaryFormValid} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 import {genericValidator} from '$components/form/validations';
 

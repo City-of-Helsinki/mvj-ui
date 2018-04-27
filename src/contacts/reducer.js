@@ -12,6 +12,7 @@ import type {
   ReceiveAttributesAction,
   ReceiveContactsAction,
   ReceiveCompleteContactListAction,
+  ReceiveLessorsAction,
   ReceiveNewContactToCompleteListAction,
   ReceiveEditedContactToCompleteListAction,
   ReceiveSingleContactAction,
@@ -68,6 +69,12 @@ const contactReducer: Reducer<Contact> = handleActions({
   },
 }, {});
 
+const lessorsReducer: Reducer<Array<Contact>> = handleActions({
+  ['mvj/contacts/RECEIVE_LESSORS']: (state: Array<Contact>, {payload: lessors}: ReceiveLessorsAction) => {
+    return lessors;
+  },
+}, []);
+
 const initialValuesReducer: Reducer<Contact> = handleActions({
   ['mvj/contacts/INITIALIZE_FORM']: (state: Contact, {payload: contact}: InitializeContactFormValuesAction) => {
     return contact;
@@ -92,5 +99,6 @@ export default combineReducers({
   isContactFormValid: isContactFormValidReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  lessors: lessorsReducer,
   list: contactsListReducer,
 });

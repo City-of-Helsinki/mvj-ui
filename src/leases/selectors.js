@@ -7,7 +7,6 @@ import type {
   Lease,
   LeaseList,
   LeaseState,
-  LessorList,
 } from './types';
 
 export const getIsContactModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
@@ -57,6 +56,3 @@ export const getLeasesList: Selector<LeaseList, void> = (state: LeaseState): Lea
 
 export const getCurrentLease: Selector<Lease, void> = (state: LeaseState): Lease =>
   state.lease.current;
-
-export const getLessors: Selector<LessorList, void> = (state: LeaseState): LessorList =>
-  state.lease.lessors;

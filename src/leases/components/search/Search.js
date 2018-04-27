@@ -124,6 +124,7 @@ class Search extends Component {
               <Column large={12}>
                 <Field
                   component={FieldTypeText}
+                  disableDirty
                   name="search"
                   placeholder='Hae hakusanalla'
                 />

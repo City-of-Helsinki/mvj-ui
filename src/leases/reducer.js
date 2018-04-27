@@ -7,11 +7,9 @@ import type {
   Attributes,
   Lease,
   LeaseList,
-  LessorList,
   ReceiveAttributesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
-  ReceiveLessorsAction,
   ContactModalSettings,
   ReceiveContactModalSettingsAction,
   ReceiveConstructabilityFormValidAction,
@@ -69,12 +67,6 @@ const currentLeaseReducer: Reducer<Lease> = handleActions({
     return lease;
   },
 }, {});
-
-const lessorsReducer: Reducer<LessorList> = handleActions({
-  ['mvj/leases/RECEIVE_LESSORS']: (state: LessorList, {payload: lessors}: ReceiveLessorsAction) => {
-    return lessors;
-  },
-}, []);
 
 const constructabilityFormValidReducer: Reducer<boolean> = handleActions({
   ['mvj/leases/RECEIVE_CONSTRUCTABILITY_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveConstructabilityFormValidAction) => {
@@ -156,5 +148,4 @@ export default combineReducers({
   isSummaryFormValid: summaryFormValidReducer,
   isTenantsFormValid: tenantsFormValidReducer,
   list: leasesListReducer,
-  lessors: lessorsReducer,
 });

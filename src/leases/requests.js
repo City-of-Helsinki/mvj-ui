@@ -35,7 +35,3 @@ export const patchLease = (lease: Lease): Generator<> => {
     body,
   }));
 };
-
-export const fetchLessors = () => {
-  return callApi(new Request(createUrl('contact/?is_lessor=true&limit=1000')));
-};

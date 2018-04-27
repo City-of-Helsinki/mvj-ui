@@ -31,9 +31,6 @@ export type ReceiveContactModalSettingsAction = Action<'mvj/leases/RECEIVE_CONTA
 export type CreateContactAction = Action<'mvj/leases/CREATE_CONTACT', Contact>;
 export type EditContactAction = Action<'mvj/leases/EDIT_CONTACT', Contact>;
 
-export type FetchLessorsAction = Action<'mvj/leases/FETCH_LESSORS', void>;
-export type ReceiveLessorsAction = Action<'mvj/leases/RECEIVE_LESSORS', LessorList>;
-
 export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;
 

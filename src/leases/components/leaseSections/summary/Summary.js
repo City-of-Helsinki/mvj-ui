@@ -8,11 +8,12 @@ import Divider from '$components/content/Divider';
 import LeaseHistory from './LeaseHistory';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
-import {fetchLessors} from '$src/leases/actions';
+import {fetchLessors} from '$src/contacts/actions';
 import {getContentSummary} from '$src/leases/helpers';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
 import {getAttributeFieldOptions, getLabelOfOption, getLessorOptions} from '$util/helpers';
-import {getAttributes, getCurrentLease, getLessors} from '$src/leases/selectors';
+import {getLessors} from '$src/contacts/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 
 import type {Lease} from '$src/leases/types';

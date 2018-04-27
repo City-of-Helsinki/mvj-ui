@@ -28,11 +28,6 @@ import type {
   CreateContactAction,
   EditContactAction,
 } from './types';
-import type {
-  LessorList,
-  FetchLessorsAction,
-  ReceiveLessorsAction,
-} from './types';
 
 import type {
   HideEditModeAction,
@@ -96,12 +91,6 @@ export const createContact = (contact: Contact): CreateContactAction =>
 
 export const editContact = (contact: Contact): EditContactAction =>
   createAction('mvj/leases/EDIT_CONTACT')(contact);
-
-export const fetchLessors = (): FetchLessorsAction =>
-  createAction('mvj/leases/FETCH_LESSORS')();
-
-export const receiveLessors = (lessors: LessorList): ReceiveLessorsAction =>
-  createAction('mvj/leases/RECEIVE_LESSORS')(lessors);
 
 export const hideEditMode = (): HideEditModeAction =>
   createAction('mvj/leases/HIDE_EDIT')();

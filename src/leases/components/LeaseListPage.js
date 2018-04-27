@@ -23,11 +23,11 @@ import TableIcon from '$components/icons/TableIcon';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
 import {getRouteById} from '$src/root/routes';
+import {fetchLessors} from '$src/contacts/actions';
 import {
   createLease,
   fetchAttributes,
   fetchLeases,
-  fetchLessors,
 } from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '$src/leases/helpers';
@@ -36,11 +36,11 @@ import {
   getLessorOptions,
   getSearchQuery,
 } from '$util/helpers';
+import {getLessors} from '$src/contacts/selectors';
 import {
   getAttributes,
   getIsFetching,
   getLeasesList,
-  getLessors,
 } from '$src/leases/selectors';
 
 import type {LeaseList} from '../types';
