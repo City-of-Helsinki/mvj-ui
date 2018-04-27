@@ -7,6 +7,7 @@ import type {
   CommentList,
   CommentState,
 } from './types';
+import type {LeaseId} from '$src/leases/types';
 
 export const getIsFetching: Selector<boolean, void> = (state: CommentState): boolean =>
   state.comment.isFetching;
@@ -14,5 +15,5 @@ export const getIsFetching: Selector<boolean, void> = (state: CommentState): boo
 export const getAttributes: Selector<Attributes, void> = (state: CommentState): Attributes =>
   state.comment.attributes;
 
-export const getComments: Selector<CommentList, void> = (state: CommentState): CommentList =>
-  state.comment.list;
+export const getCommentsByLease: Selector<CommentList, LeaseId> = (state: CommentState, leaseId: LeaseId): CommentList =>
+  state.comment.byLease[leaseId];

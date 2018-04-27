@@ -46,7 +46,7 @@ class Search extends Component {
 
   componentDidMount = () => {
     const {router: {location: {query}}} = this.props;
-    console.log('did mount');
+
     if(!!toArray(query).length && !query.search) {
       this.setState({
         isBasicSearch: false,

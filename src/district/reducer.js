@@ -1,7 +1,6 @@
 // @flow
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
-import get from 'lodash/get';
 
 import type {Reducer} from '../types';
 import type {
@@ -21,7 +20,7 @@ const byMunicipalityReducer: Reducer<DistrictListMap> = handleActions({
   ['mvj/district/RECEIVE_BY_MUNICIPALITY']: (state: DistrictState, {payload: list}: ReceiveDistrictsByMunicipalityAction) => {
     return {
       ...state,
-      [get(list, 'municipality')]: get(list, 'districts'),
+      [list.municipality]: list.districts,
     };
   },
 }, {});

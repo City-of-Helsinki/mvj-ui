@@ -5,9 +5,10 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {
   Attributes,
-  CommentList,
+  CommentState,
+  CommentListMap,
   ReceiveAttributesAction,
-  ReceiveCommentsAction,
+  ReceiveCommentsByLeaseAction,
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -24,14 +25,17 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   },
 }, {});
 
-const commentsReducer: Reducer<CommentList> = handleActions({
-  ['mvj/comments/RECEIVE_ALL']: (state: CommentList, {payload: comments}: ReceiveCommentsAction) => {
-    return comments;
+const byLeaseReducer: Reducer<CommentListMap> = handleActions({
+  ['mvj/comments/RECEIVE_BY_LEASE']: (state: CommentState, {payload: list}: ReceiveCommentsByLeaseAction) => {
+    return {
+      ...state,
+      [list.leaseId]: list.comments,
+    };
   },
-}, []);
+}, {});
 
 export default combineReducers({
   attributes: attributesReducer,
+  byLease: byLeaseReducer,
   isFetching: isFetchingReducer,
-  list: commentsReducer,
 });

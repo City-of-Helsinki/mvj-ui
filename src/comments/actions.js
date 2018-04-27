@@ -9,10 +9,10 @@ import type {
   Comment,
   FetchAttributesAction,
   ReceiveAttributesAction,
-  FetchCommentsAction,
+  FetchCommentsByLeaseAction,
   CreateCommentAction,
   EditCommentAction,
-  ReceiveCommentsAction,
+  ReceiveCommentsByLeaseAction,
   CommentNotFoundAction,
 } from './types';
 
@@ -25,11 +25,11 @@ export const fetchAttributes = (): FetchAttributesAction =>
 export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAction =>
   createAction('mvj/comments/RECEIVE_ATTRIBUTES')(identifiers);
 
-export const fetchComments = (leaseId: LeaseId): FetchCommentsAction =>
-  createAction('mvj/comments/FETCH_ALL')(leaseId);
+export const fetchCommentsByLease = (leaseId: LeaseId): FetchCommentsByLeaseAction =>
+  createAction('mvj/comments/FETCH_BY_LEASE')(leaseId);
 
-export const receiveComments = (comments: Array<Comment>): ReceiveCommentsAction =>
-  createAction('mvj/comments/RECEIVE_ALL')(comments);
+export const receiveCommentsByLease = (comments: Comment): ReceiveCommentsByLeaseAction =>
+  createAction('mvj/comments/RECEIVE_BY_LEASE')(comments);
 
 export const createComment = (comment: Comment): CreateCommentAction =>
   createAction('mvj/comments/CREATE')(comment);
