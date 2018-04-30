@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
+import {LeaseStatus} from './enums';
 import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {
   ConstructabilityType,
@@ -74,6 +75,20 @@ export const getContentLeaseInfo = (lease: Object) => {
     start_date: get(lease, 'start_date'),
     state: get(lease, 'state'),
   };
+};
+
+export const getContentLeaseStatus = (lease: Object) => {
+  const now = moment();
+  const startDate = get(lease, 'start_date');
+  const endDate = get(lease, 'end_date');
+  if(endDate && now.isAfter(endDate)) {
+    return LeaseStatus.FINISHED;
+  }
+  if((!endDate && !startDate) || moment(startDate).isAfter(now)) {
+    return LeaseStatus.PREPARATION;
+  }
+
+  return LeaseStatus.IN_EFFECT;
 };
 
 export const getContentHistory = (lease: Object) => {

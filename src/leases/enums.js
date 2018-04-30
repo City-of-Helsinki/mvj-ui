@@ -55,6 +55,17 @@ export const ConstructabilityStatus = {
 };
 
 /**
+ * Lease status enumerable.
+ *
+ * @type {{PREPARATION: string, IN_EFFECT: string, FINISHED: string}}
+ */
+export const LeaseStatus = {
+  PREPARATION: 'Valmisteilla',
+  IN_EFFECT: 'Voimassa',
+  FINISHED: 'Päättynyt',
+};
+
+/**
  * Rent type enumerable.
  *
  * @type {{INDEX: string, ONE_TIME: string, FIXED: string, FREE: string, MANUAL: string}}

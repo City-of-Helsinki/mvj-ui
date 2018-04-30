@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import {getContentLeaseInfo} from '$src/leases/helpers';
+import {getContentLeaseInfo, getContentLeaseStatus} from '$src/leases/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -40,6 +40,10 @@ const LeaseInfo = ({attributes, currentLease}: Props) => {
         <Column>
           <label className='mvj-form-field-label'>Loppupäivämäärä</label>
           <p>{formatDate(leaseInfo.end_date) || '-'}</p>
+        </Column>
+        <Column>
+          <label className='mvj-form-field-label'>Olotila</label>
+          <p>{getContentLeaseStatus(leaseInfo) || '-'}</p>
         </Column>
       </Row>
     </div>
