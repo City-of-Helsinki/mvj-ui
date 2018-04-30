@@ -367,22 +367,6 @@ export const getAttributeFieldOptions = (attributes: Object, path: string, addEm
 };
 
 /**
- * Get options for lessor field
- * @param lessors
- */
-export const getLessorOptions = (lessors: Array<Object>) => {
-  if(!lessors || !lessors.length) {
-    return [];
-  }
-  return addEmptyOption(lessors.map((item) => {
-    return {
-      value: item.id,
-      label: item.is_business ? item.business_name : `${item.last_name} ${item.first_name}`,
-    };
-  }));
-};
-
-/**
  * Get options for decisions field
  * @param decisions
  */

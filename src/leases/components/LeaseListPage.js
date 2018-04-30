@@ -30,12 +30,9 @@ import {
   fetchLeases,
 } from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
+import {getLessorOptions} from '$src/contacts/helpers';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '$src/leases/helpers';
-import {
-  formatDate,
-  getLessorOptions,
-  getSearchQuery,
-} from '$util/helpers';
+import {formatDate, getSearchQuery} from '$util/helpers';
 import {getLessors} from '$src/contacts/selectors';
 import {
   getAttributes,
