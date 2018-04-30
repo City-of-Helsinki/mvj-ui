@@ -4,12 +4,12 @@ import {takeLatest} from 'redux-saga';
 import {call, fork, put} from 'redux-saga/effects';
 import {SubmissionError} from 'redux-form';
 
-import {displayUIMessage, getSearchQuery} from '$util/helpers';
+import {displayUIMessage} from '$util/helpers';
 import {
   notFound,
-  fetchComments as fetchCommentsAction,
+  fetchCommentsByLease,
   receiveAttributes,
-  receiveComments,
+  receiveCommentsByLease,
 } from './actions';
 import {
   createComment,
@@ -33,14 +33,14 @@ function* fetchAttributesSaga(): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch identifiers with error "%s"', error);
+    console.error('Failed to fetch  comment identifiers with error "%s"', error);
     yield put(receiveError(error));
   }
 }
 
-function* fetchCommentsSaga({payload: search}): Generator<> {
+function* fetchCommentsByLeaseSaga({payload: leaseId}): Generator<> {
   try {
-    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchComments, search);
+    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchComments, `?lease=${leaseId}`);
     let comments = body.results;
     while(statusCode === 200 && body.next) {
       const {response: {status}, bodyAsJson} = yield call(fetchComments, `?${body.next.split('?').pop()}`);
@@ -51,7 +51,7 @@ function* fetchCommentsSaga({payload: search}): Generator<> {
 
     switch (statusCode) {
       case 200:
-        yield put(receiveComments(comments));
+        yield put(receiveCommentsByLease({leaseId: leaseId, comments: comments}));
         break;
       case 404:
       case 500:
@@ -59,7 +59,7 @@ function* fetchCommentsSaga({payload: search}): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch leases with error "%s"', error);
+    console.error('Failed to fetch comments by lease with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -71,7 +71,7 @@ function* createCommentSaga({payload: comment}): Generator<> {
 
     switch (statusCode) {
       case 201:
-        yield put(fetchCommentsAction(getSearchQuery({lease: bodyAsJson.lease})));
+        yield put(fetchCommentsByLease(bodyAsJson.lease));
         displayUIMessage({title: 'Kommentti luotu', body: 'Kommentti on luotu onnistuneesti'});
         break;
       case 400:
@@ -96,7 +96,7 @@ function* editCommentSaga({payload: comment}): Generator<> {
 
     switch (statusCode) {
       case 200:
-        yield put(fetchCommentsAction(getSearchQuery({lease: bodyAsJson.lease})));
+        yield put(fetchCommentsByLease(bodyAsJson.lease));
         displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
         break;
       case 400:
@@ -109,7 +109,7 @@ function* editCommentSaga({payload: comment}): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to edit lease with error "%s"', error);
+    console.error('Failed to edit comment with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -119,7 +119,7 @@ export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
       yield takeLatest('mvj/comments/FETCH_ATTRIBUTES', fetchAttributesSaga);
-      yield takeLatest('mvj/comments/FETCH_ALL', fetchCommentsSaga);
+      yield takeLatest('mvj/comments/FETCH_BY_LEASE', fetchCommentsByLeaseSaga);
       yield takeLatest('mvj/comments/CREATE', createCommentSaga);
       yield takeLatest('mvj/comments/EDIT', editCommentSaga);
 

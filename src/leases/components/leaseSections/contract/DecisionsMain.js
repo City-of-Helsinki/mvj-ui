@@ -1,59 +1,27 @@
 // @flow
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import flowRight from 'lodash/flowRight';
-import {withRouter} from 'react-router';
+import React from 'react';
 
 import Contracts from './Contracts';
+import Decisions from './Decisions';
 import Divider from '$components/content/Divider';
 import Inspections from './Inspections';
-import Decisions from './Decisions';
-import {fetchDecisions} from '../../../actions';
-import {getSearchQuery} from '$src/util/helpers';
 
-type Props = {
-  fetchDecisions: Function,
-  params: Object,
-}
-class DecisionsMain extends Component {
-  props: Props
+const DecisionsMain = () => {
+  return (
+    <div>
+      <h2>Päätökset</h2>
+      <Divider />
+      <Decisions />
 
-  componentWillMount() {
-    const {fetchDecisions, params: {leaseId}} = this.props;
-    const query = {
-      lease: leaseId,
-      limit: 1000,
-    };
+      <h2>Sopimukset</h2>
+      <Divider />
+      <Contracts/>
 
-    fetchDecisions(getSearchQuery(query));
-  }
+      <h2>Tarkastukset ja huomautukset</h2>
+      <Divider />
+      <Inspections/>
+    </div>
+  );
+};
 
-  render () {
-    return (
-      <div>
-        <h2>Päätökset</h2>
-        <Divider />
-        <Decisions />
-
-        <h2>Sopimukset</h2>
-        <Divider />
-        <Contracts/>
-
-        <h2>Tarkastukset ja huomautukset</h2>
-        <Divider />
-        <Inspections/>
-      </div>
-    );
-  }
-}
-
-
-export default flowRight(
-  connect(
-    null,
-    {
-      fetchDecisions,
-    }
-  ),
-  withRouter,
-)(DecisionsMain);
+export default DecisionsMain;

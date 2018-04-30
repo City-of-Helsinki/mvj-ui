@@ -1,9 +1,30 @@
-.search {
+.lease-search {
   .readme-link {
     color: $tram;
     text-decoration: none;
     font-size: rem-calc(14px);
   }
+
+  label {
+    line-height: rem-calc(20px);
+  }
+
+  &__row-wrapper {
+    display: flex;
+    flex-flow: row wrap;
+  }
+
+  &__label {
+    min-width: rem-calc(90px);
+    text-align: left;
+  }
+
+  &__input-wrapper {
+    flex: 1 1 0%;
+  }
+}
+.search {
+
 
   .search-box {
     padding-right: 0.6rem;
@@ -75,10 +96,7 @@
       margin-right: rem-calc(10px);
     }
 
-    label.label-long {
-      min-width: 5rem;
-      text-align: left;
-    }
+
 
     label.label-medium {
       min-width: 3rem;

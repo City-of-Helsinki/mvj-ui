@@ -28,21 +28,6 @@ import type {
   CreateContactAction,
   EditContactAction,
 } from './types';
-import type {
-  DecisionList,
-  FetchDecisionsAction,
-  ReceiveDecisionsAction,
-} from './types';
-import type {
-  DistrictList,
-  FetchDistrictsAction,
-  ReceiveDistrictsAction,
-} from './types';
-import type {
-  LessorList,
-  FetchLessorsAction,
-  ReceiveLessorsAction,
-} from './types';
 
 import type {
   HideEditModeAction,
@@ -106,24 +91,6 @@ export const createContact = (contact: Contact): CreateContactAction =>
 
 export const editContact = (contact: Contact): EditContactAction =>
   createAction('mvj/leases/EDIT_CONTACT')(contact);
-
-export const fetchDecisions = (search: string): FetchDecisionsAction =>
-  createAction('mvj/leases/FETCH_DECISIONS')(search);
-
-export const receiveDecisions = (decisions: DecisionList): ReceiveDecisionsAction =>
-  createAction('mvj/leases/RECEIVE_DECISIONS')(decisions);
-
-export const fetchDistricts = (search: string): FetchDistrictsAction =>
-  createAction('mvj/leases/FETCH_DISTRICTS')(search);
-
-export const receiveDistricts = (districts: DistrictList): ReceiveDistrictsAction =>
-  createAction('mvj/leases/RECEIVE_DISTRICTS')(districts);
-
-export const fetchLessors = (): FetchLessorsAction =>
-  createAction('mvj/leases/FETCH_LESSORS')();
-
-export const receiveLessors = (lessors: LessorList): ReceiveLessorsAction =>
-  createAction('mvj/leases/RECEIVE_LESSORS')(lessors);
 
 export const hideEditMode = (): HideEditModeAction =>
   createAction('mvj/leases/HIDE_EDIT')();

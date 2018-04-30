@@ -7,15 +7,9 @@ import type {
   Attributes,
   Lease,
   LeaseList,
-  LessorList,
-  DecisionList,
-  DistrictList,
   ReceiveAttributesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
-  ReceiveLessorsAction,
-  ReceiveDecisionsAction,
-  ReceiveDistrictsAction,
   ContactModalSettings,
   ReceiveContactModalSettingsAction,
   ReceiveConstructabilityFormValidAction,
@@ -73,24 +67,6 @@ const currentLeaseReducer: Reducer<Lease> = handleActions({
     return lease;
   },
 }, {});
-
-const lessorsReducer: Reducer<LessorList> = handleActions({
-  ['mvj/leases/RECEIVE_LESSORS']: (state: LessorList, {payload: lessors}: ReceiveLessorsAction) => {
-    return lessors;
-  },
-}, []);
-
-const decisionsReducer: Reducer<DecisionList> = handleActions({
-  ['mvj/leases/RECEIVE_DECISIONS']: (state: DecisionList, {payload: decisions}: ReceiveDecisionsAction) => {
-    return decisions;
-  },
-}, []);
-
-const districtsReducer: Reducer<DistrictList> = handleActions({
-  ['mvj/leases/RECEIVE_DISTRICTS']: (state: DistrictList, {payload: districts}: ReceiveDistrictsAction) => {
-    return districts;
-  },
-}, []);
 
 const constructabilityFormValidReducer: Reducer<boolean> = handleActions({
   ['mvj/leases/RECEIVE_CONSTRUCTABILITY_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveConstructabilityFormValidAction) => {
@@ -172,7 +148,4 @@ export default combineReducers({
   isSummaryFormValid: summaryFormValidReducer,
   isTenantsFormValid: tenantsFormValidReducer,
   list: leasesListReducer,
-  lessors: lessorsReducer,
-  decisions: decisionsReducer,
-  districts: districtsReducer,
 });

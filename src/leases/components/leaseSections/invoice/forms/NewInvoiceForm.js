@@ -161,6 +161,12 @@ const NewInvoiceForm = ({
                   onClick={() => onSave(formValues)}
                   title='Tallenna'
                 />
+                <Button
+                  className='button-red pull-right'
+                  label='Peruuta'
+                  onClick={onClose}
+                  title='Peruuta'
+                />
               </Column>
             </Row>
           </BoxContentWrapper>

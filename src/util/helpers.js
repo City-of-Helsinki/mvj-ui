@@ -219,6 +219,13 @@ export const formatDate = (date: string) => {
   return d.format('DD.MM.YYYY');
 };
 
+export const formatNumberWithThousandSeparator = (x, separator = ' ') => {
+  if(x === null || x === undefined || !isNumber(Number(x))) {
+    return null;
+  }
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+};
+
 export const formatDecimalNumber = (x) => {
   if(x === null || x === undefined || !isNumber(Number(x))) {
     return null;
@@ -226,18 +233,18 @@ export const formatDecimalNumber = (x) => {
   return parseFloat(x).toFixed(2).toString().replace('.', ',');
 };
 
+export const formatNumber = (x) => {
+  if(x === null || x === undefined || !isNumber(Number(x))) {
+    return null;
+  }
+  return formatNumberWithThousandSeparator(formatDecimalNumber(x));
+};
+
 export const formatDecimalNumberForDb = (x) => {
   if(x === null || x === undefined || !isNumber(Number(x))) {
     return null;
   }
   return Number(x.toString().replace(',', '.'));
-};
-
-export const formatNumberWithThousandSeparator = (x, separator = ' ') => {
-  if(x === null || x === undefined || !isNumber(Number(x))) {
-    return null;
-  }
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 };
 
 export const formatDateRange = (startDate: any, endDate: any) => {
@@ -360,22 +367,6 @@ export const getAttributeFieldOptions = (attributes: Object, path: string, addEm
 };
 
 /**
- * Get options for lessor field
- * @param lessors
- */
-export const getLessorOptions = (lessors: Array<Object>) => {
-  if(!lessors || !lessors.length) {
-    return [];
-  }
-  return addEmptyOption(lessors.map((item) => {
-    return {
-      value: item.id,
-      label: item.is_business ? item.business_name : `${item.last_name} ${item.first_name}`,
-    };
-  }));
-};
-
-/**
  * Get options for decisions field
  * @param decisions
  */
@@ -396,4 +387,12 @@ export const getDecisionsOptions = (decisions: Array<Object>) => {
       label: `${item.reference_number ? item.reference_number + ', ' : ''}${item.section ? item.section + ' §, ' : ''}${formatDate(item.decision_date)}`,
     };
   }));
+};
+
+export const sortAlphaAsc = (a, b) => {
+  const keyA = a.label.toLowerCase(),
+    keyB = b.label.toLowerCase();
+  if(keyA < keyB) return -1;
+  if(keyA > keyB) return 1;
+  return 0;
 };

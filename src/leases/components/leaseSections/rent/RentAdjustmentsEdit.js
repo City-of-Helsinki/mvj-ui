@@ -14,7 +14,8 @@ import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import RemoveButton from '$components/form/RemoveButton';
 import {getAttributeFieldOptions, getDecisionsOptions} from '$util/helpers';
-import {getAttributes, getDecisions} from '$src/leases/selectors';
+import {getDecisionsByLease} from '$src/decision/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
@@ -182,9 +183,10 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
 
 export default connect(
   (state) => {
+    const currentLease = getCurrentLease(state);
     return {
       attributes: getAttributes(state),
-      decisions: getDecisions(state),
+      decisions: getDecisionsByLease(state, currentLease.id),
     };
   },
 )(RentAdjustmentsEdit);

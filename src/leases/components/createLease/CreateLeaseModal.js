@@ -30,6 +30,7 @@ class CreateLease extends Component {
       >
         {isOpen &&
           <CreateLeaseForm
+            onClose={onClose}
             onSubmit={(lease) => onSubmit(lease)}
           />
         }

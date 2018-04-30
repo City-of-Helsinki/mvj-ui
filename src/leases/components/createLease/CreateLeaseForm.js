@@ -9,27 +9,29 @@ import get from 'lodash/get';
 import Button from '$components/button/Button';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
-import {fetchDistricts, receiveDistricts} from '$src/leases/actions';
-import {FormNames} from '$src/leases/enums';
+import {fetchDistrictsByMunicipality} from '$src/district/actions';
+import {Classification, FormNames} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/leases/helpers';
-import {getAttributeFieldOptions, getSearchQuery} from '$util/helpers';
-import {getAttributes, getDistricts} from '$src/leases/selectors';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {getDistrictsByMunicipality} from '$src/district/selectors';
+import {getAttributes} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 
+import type {DistrictList} from '$src/district/types';
 
-import type {Attributes, DistrictList} from '$src/leases/types';
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   change: Function,
   district: string,
   districts: DistrictList,
-  fetchDistricts: Function,
+  fetchDistrictsByMunicipality: Function,
   handleSubmit: Function,
   municipality: string,
   note: string,
+  onClose: Function,
   onSubmit: Function,
-  receiveDistricts: Function,
   reference_number: string,
   state: string,
   type: string,
@@ -40,20 +42,13 @@ class CreateLeaseForm extends Component {
   props: Props
 
   componentWillReceiveProps(nextProps) {
-    if(!nextProps.municipality) {
-      const {change, receiveDistricts} = this.props;
-
-      receiveDistricts([]);
-      change('district', '');
-    } else if(this.props.municipality !== nextProps.municipality) {
-      const {change, fetchDistricts} = this.props;
+    if(this.props.municipality !== nextProps.municipality) {
+      const {change, fetchDistrictsByMunicipality} = this.props;
 
       if(nextProps.municipality) {
-        const query = {
-          limit: 1000,
-          municipality: nextProps.municipality,
-        };
-        fetchDistricts(getSearchQuery(query));
+        fetchDistrictsByMunicipality(nextProps.municipality);
+        change('district', '');
+      } else {
         change('district', '');
       }
     }
@@ -77,6 +72,7 @@ class CreateLeaseForm extends Component {
       district: district,
       reference_number: reference_number,
       note: note,
+      classification: Classification.PUBLIC,
     });
   };
 
@@ -85,6 +81,7 @@ class CreateLeaseForm extends Component {
       attributes,
       districts,
       handleSubmit,
+      onClose,
       valid,
     } = this.props;
 
@@ -174,6 +171,12 @@ class CreateLeaseForm extends Component {
               onClick={this.handleCreate}
               title='Luo tunnus'
             />
+            <Button
+              className='button-red pull-right'
+              label='Peruuta'
+              onClick={onClose}
+              title='Peruuta'
+            />
           </Column>
         </Row>
       </form>
@@ -187,11 +190,12 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     (state) => {
+      const municipality = selector(state, 'municipality');
       return {
         attributes: getAttributes(state),
         district: selector(state, 'district'),
-        districts: getDistricts(state),
-        municipality: selector(state, 'municipality'),
+        districts: getDistrictsByMunicipality(state, municipality),
+        municipality: municipality,
         note: selector(state, 'note'),
         reference_number: selector(state, 'reference_number'),
         state: selector(state, 'state'),
@@ -200,8 +204,7 @@ export default flowRight(
     },
     {
       change,
-      fetchDistricts,
-      receiveDistricts,
+      fetchDistrictsByMunicipality,
     }
   ),
   reduxForm({

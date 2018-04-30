@@ -1,96 +1,51 @@
 // @flow
 import React, {Component} from 'react';
+import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
+import {change, Field, formValueSelector, getFormValues, initialize, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
-import toArray from 'lodash/toArray';
 import debounce from 'lodash/debounce';
+import flowRight from 'lodash/flowRight';
+import toArray from 'lodash/toArray';
 
+import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
+import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FieldTypeText from '$components/form/FieldTypeText';
+import {fetchDistrictsByMunicipality} from '$src/district/actions';
+import {FormNames} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/leases/helpers';
-import {getAttributeFieldOptions, getSearchQuery} from '$util/helpers';
-import {fetchDistricts, receiveDistricts} from '$src/leases/actions';
-import {getDistricts} from '$src/leases/selectors';
-import SelectInput from '$components/inputs/SelectInput';
-import SingleCheckboxInput from '$components/inputs/SingleCheckboxInput';
-import TextInput from '$components/inputs/TextInput';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {getDistrictsByMunicipality} from '$src/district/selectors';
+import {getAttributes} from '$src/leases/selectors';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  attributes: Object,
+  attributes: Attributes,
+  change: Function,
   districts: Array<Object>,
-  fetchDistricts: Function,
+  fetchDistrictsByMunicipality: Function,
+  formValues: Object,
+  initialize: Function,
+  municipality: string,
   onSearch: Function,
-  receiveDistricts: Function,
+  router: Object,
+  search: string,
 }
 
 type State = {
-  address: string,
-  customer: string,
-  district: string,
-  documentType: string,
-  finished: boolean,
-  inEffect: boolean,
   isBasicSearch: boolean,
-  municipality: string,
-  oldCustomer: boolean,
-  propertyDistrict: string,
-  propertyMunicipality: string,
-  propertySequence: string,
-  propertyType: string,
-  roles: Array<string>,
-  search: string,
-  sequence: string,
-  type: string,
-  types: Array<string>,
 }
 
 class Search extends Component {
   props: Props
 
   state: State = {
-    address: '',
-    customer: '',
-    district: '',
-    documentType: 'all',
-    finished: false,
-    inEffect: false,
     isBasicSearch: true,
-    municipality: '',
-    oldCustomer: false,
-    propertyDistrict: '',
-    propertyMunicipality: '',
-    propertySequence: '',
-    propertyType: '',
-    roles: [],
-    search: '',
-    sequence: '',
-    type: '',
-    types: [],
   }
 
-  componentWillUpdate(nextProps: Object, nextState: Object) {
-    const {fetchDistricts, receiveDistricts} = this.props;
-    if (this.state.municipality !== nextState.municipality) {
-      receiveDistricts([]);
-      if(nextState.municipality) {
-        const query = {
-          limit: 1000,
-          municipality: nextState.municipality,
-        };
-        fetchDistricts(getSearchQuery(query));
-      } else {
-        this.setState({district: ''});
-      }
-    }
-  }
-
-  initialize = (query: Object) => {
-    this.setState({
-      district: query.district || '',
-      search: query.search || '',
-      municipality: query.municipality || '',
-      sequence: query.sequence || '',
-      type: query.type || '',
-    });
+  componentDidMount = () => {
+    const {router: {location: {query}}} = this.props;
 
     if(!!toArray(query).length && !query.search) {
       this.setState({
@@ -99,57 +54,46 @@ class Search extends Component {
     }
   }
 
+  componentWillUpdate(nextProps: Object) {
+    const {change, fetchDistrictsByMunicipality} = this.props;
+    if (Number(this.props.municipality) !== Number(nextProps.municipality)) {
+      if(nextProps.municipality) {
+        fetchDistrictsByMunicipality(nextProps.municipality);
+        if(this.props.municipality) {
+          change('district', '');
+        }
+      } else {
+        change('district', '');
+      }
+    }
+
+    if(this.props.formValues !== nextProps.formValues) {
+      this.onSearchChange();
+    }
+  }
+
   onSearchChange = debounce(() => {
-    const {onSearch} = this.props;
     const {
-      district,
-      isBasicSearch,
-      // search,
-      municipality,
-      sequence,
-      type} = this.state;
+      formValues,
+      onSearch,
+      search,
+    } = this.props;
+    const {isBasicSearch} = this.state;
 
-    const filters = {};
+    let filters = {};
     if(isBasicSearch) {
-      console.log('Basic search');
-      //TODO: Uncomment when backend is implemented
-      // if(search) {
-      //   filters.search = search || undefined;
-      // }
-
+      if(search) {
+        filters.search = search || undefined;
+      }
     } else {
-      filters.district = district ? district : undefined;
-      filters.municipality = municipality ? municipality : undefined;
-      filters.sequence = sequence ? sequence : undefined;
-      filters.type = type || undefined;
+      filters = formValues || {};
+      filters.type = filters.type ? Number(filters.type) : undefined;
+      filters.municipality = filters.municipality ? Number(filters.municipality) : undefined;
+      filters.district = filters.district ? Number(filters.district) : undefined;
+      filters.search = undefined;
     }
     onSearch(filters);
   }, 300);
-
-  handleTextInputChange = (e: any, id: string) => {
-    this.setState({[id]: e.target.value});
-    this.onSearchChange();
-  }
-
-  handleCheckboxChange = (id:string) => {
-    this.setState({[id]: !this.state[id]});
-    this.onSearchChange();
-  }
-
-  handleSelectInputChange = (selectedOption: Object, id: string) => {
-    this.setState({[id]: get(selectedOption, 'value')});
-    this.onSearchChange();
-  }
-
-  handleMultiSelectInputChange = (selectedOptions: Array<Object>, id: string) => {
-    const options = selectedOptions.map((option) => {
-      return (
-        get(option, 'value')
-      );
-    });
-    this.setState({[id]: options});
-    this.onSearchChange();
-  }
 
   toggleSearchType = () => {
     this.onSearchChange();
@@ -162,36 +106,28 @@ class Search extends Component {
       districts,
     } = this.props;
     const {
-      address,
-      customer,
-      district,
-      finished,
-      inEffect,
       isBasicSearch,
-      municipality,
-      oldCustomer,
-      propertyDistrict,
-      propertyMunicipality,
-      propertySequence,
-      propertyType,
-      roles,
-      search,
-      sequence,
-      type,
-      types,
     } = this.state;
 
+    const tenantTypeOptions = getAttributeFieldOptions(attributes, 'tenants.child.children.tenantcontact_set.child.children.type');
     const districtOptions = getDistrictOptions(districts);
     const municipalityOptions = getAttributeFieldOptions(attributes, 'municipality');
     const typeOptions = getAttributeFieldOptions(attributes, 'type');
+    const stateOptions = getAttributeFieldOptions(attributes, 'state');
+
 
     return (
-      <div className='search'>
+      <div className='lease-search'>
         {isBasicSearch && (
           <div>
             <Row>
               <Column large={12}>
-                <TextInput disabled placeholder={'Hae hakusanalla'} onChange={(e) => this.handleTextInputChange(e, 'search')} value={search}/>
+                <Field
+                  component={FieldTypeText}
+                  disableDirty
+                  name="search"
+                  placeholder='Hae hakusanalla'
+                />
               </Column>
             </Row>
           </div>
@@ -199,134 +135,148 @@ class Search extends Component {
         {!isBasicSearch && (
           <div>
             <Row>
-              <Column large={12}>
-                <div className='advanced-search-row-wrapper'>
-                  <div className='column-text-input-first'>
-                    <label className='label-long'>Vuokralainen</label>
-                    <TextInput disabled placeholder={'Vuokralainen'} onChange={(e) => this.handleTextInputChange(e, 'customer')} value={customer}/>
-                  </div>
-                  <div className='column-checkbox'>
-                    <SingleCheckboxInput
-                      disabled
-                      isChecked={oldCustomer}
-                      onChange={() => this.handleCheckboxChange('oldCustomer')}
-                      label='Vain entiset asiakkaat'
+              <Column small={12} medium={6}>
+                <div className='lease-search__row-wrapper'>
+                  <label className='lease-search__label'>Vuokralainen</label>
+                  <div className='lease-search__input-wrapper'>
+                    <Field
+                      component={FieldTypeText}
+                      disableDirty
+                      name="tenant"
                     />
                   </div>
-                  <div className='column-select'>
-                    <label className='label-medium'>Rooli</label>
-                    <SelectInput
-                      disabled
-                      multi={true}
-                      onChange={(e) => this.handleMultiSelectInputChange(e, 'roles')}
-                      options={[
-                        {value: '1', label: 'Vuokralainen'},
-                        {value: '2', label: 'Laskun saaja'},
-                        {value: '3', label: 'Yhteyshenkilö'},
-                      ]}
-                      searchable={false}
-                      value={roles}
+                </div>
+              </Column>
+              <Column small={12} medium={3}>
+                <Field
+                  className='checkbox-inline'
+                  component={FieldTypeCheckbox}
+                  disableDirty
+                  name="only_past_tentants"
+                  options= {[
+                    {value: true, label: 'Vain entiset asiakkaat'},
+                  ]}
+                />
+              </Column>
+              <Column small={12} medium={3}>
+                <div className='lease-search__row-wrapper'>
+                  <label className='lease-search__label'>Rooli</label>
+                  <div className='lease-search__input-wrapper'>
+                    <Field
+                      component={FieldTypeSelect}
+                      disableDirty
+                      name='tenant_role'
+                      options={tenantTypeOptions}
                     />
                   </div>
                 </div>
               </Column>
             </Row>
             <Row>
-              <Column large={12}>
-                <div className='advanced-search-row-wrapper'>
-                  <div className='column-text-input-first'>
-                    <label className='label-long'>Vuokraus</label>
-                    <div className='short-input'>
-                      <SelectInput
-                        multi={false}
-                        onChange={(e) => this.handleSelectInputChange(e, 'type')}
-                        options={typeOptions}
-                        placeholder=''
-                        searchable={true}
-                        value={type}
-                      />
-                    </div>
-                    <div className='short-input'>
-                      <SelectInput
-                        multi={false}
-                        onChange={(e) => this.handleSelectInputChange(e, 'municipality')}
-                        options={municipalityOptions}
-                        placeholder=''
-                        searchable={true}
-                        value={municipality}
-                      />
-                    </div>
-                    <div className='short-input'>
-                      <SelectInput
-                        multi={false}
-                        onChange={(e) => this.handleSelectInputChange(e, 'district')}
-                        options={districtOptions}
-                        placeholder=''
-                        searchable={true}
-                        value={district}
-                      />
-                    </div>
-                    <div className='short-input'>
-                      <TextInput onChange={(e) => this.handleTextInputChange(e, 'sequence')} value={sequence}/>
-                    </div>
+              <Column small={12} medium={6}>
+                <div className='lease-search__row-wrapper'>
+                  <label className='lease-search__label'>Vuokraus</label>
+                  <div className='lease-search__input-wrapper'>
+                    <Row>
+                      <Column>
+                        <Field
+                          component={FieldTypeSelect}
+                          disableDirty
+                          name='type'
+                          options={typeOptions}
+                        />
+                      </Column>
+                      <Column>
+                        <Field
+                          component={FieldTypeSelect}
+                          disableDirty
+                          name='municipality'
+                          options={municipalityOptions}
+                        />
+                      </Column>
+                      <Column>
+                        <Field
+                          component={FieldTypeSelect}
+                          disableDirty
+                          name='district'
+                          options={districtOptions}
+                        />
+                      </Column>
+                      <Column>
+                        <Field
+                          component={FieldTypeText}
+                          disableDirty
+                          name="sequence"
+                        />
+                      </Column>
+                    </Row>
                   </div>
-                  <div className='column-checkbox'>
-                    <SingleCheckboxInput
-                      disabled
-                      isChecked={inEffect}
-                      onChange={() => this.handleCheckboxChange('inEffect')}
-                      label='Voimassa'
-                    />
-                    <SingleCheckboxInput
-                      disabled
-                      isChecked={finished}
-                      onChange={() => this.handleCheckboxChange('finished')}
-                      label='Päättyneet'
-                    />
-                  </div>
-                  <div className='column-select'>
-                    <label className='label-medium'>Tyyppi</label>
-                    <SelectInput
-                      disabled
-                      multi={true}
-                      onChange={(e) => this.handleMultiSelectInputChange(e, 'types')}
-                      options={[
-                        {value: '1', label: 'Hakemus'},
-                        {value: '2', label: 'Varaus'},
-                        {value: '3', label: 'Vuokraus'},
-                        {value: '4', label: 'Lupa'},
-                        {value: '5', label: 'Muistettavat ehdot'},
+                </div>
+              </Column>
+              <Column small={12} medium={3}>
+                <Row>
+                  <Column>
+                    <Field
+                      className='checkbox-inline'
+                      component={FieldTypeCheckbox}
+                      disableDirty
+                      name="on_going"
+                      options= {[
+                        {value: true, label: 'Voimassa'},
                       ]}
-                      searchable={false}
-                      value={types}
+                    />
+                  </Column>
+                  <Column>
+                    <Field
+                      className='checkbox-inline'
+                      component={FieldTypeCheckbox}
+                      disableDirty
+                      name="expired"
+                      options= {[
+                        {value: true, label: 'Päättyneet'},
+                      ]}
+                    />
+                  </Column>
+                </Row>
+
+              </Column>
+              <Column small={12} medium={3}>
+                <div className='lease-search__row-wrapper'>
+                  <label className='lease-search__label'>Tyyppi</label>
+                  <div className='lease-search__input-wrapper'>
+                    <Field
+                      component={FieldTypeSelect}
+                      disableDirty
+                      name='state'
+                      options={stateOptions}
+                    />
+                  </div>
+                </div>
+
+              </Column>
+            </Row>
+            <Row>
+              <Column small={12} medium={6}>
+                <div className='lease-search__row-wrapper'>
+                  <label className='lease-search__label'>Kiinteistö</label>
+                  <div className='lease-search__input-wrapper'>
+                    <Field
+                      component={FieldTypeText}
+                      disableDirty
+                      name="identifier"
                     />
                   </div>
                 </div>
               </Column>
-            </Row>
-            <Row>
-              <Column large={12}>
-                <div className='advanced-search-row-wrapper'>
-                  <div className='column-text-input-first'>
-                    <label className='label-long'>Kiinteistö</label>
-                    <div className='short-input'>
-                      <TextInput disabled onChange={(e) => this.handleTextInputChange(e, 'propertyType')} value={propertyType}/>
-                    </div>
-                    <div className='short-input'>
-                      <TextInput disabled onChange={(e) => this.handleTextInputChange(e, 'propertyMunicipality')} value={propertyMunicipality}/>
-                    </div>
-                    <div className='short-input'>
-                      <TextInput disabled onChange={(e) => this.handleTextInputChange(e, 'propertyDistrict')} value={propertyDistrict}/>
-                    </div>
-                    <div className='short-input'>
-                      <TextInput disabled onChange={(e) => this.handleTextInputChange(e, 'propertySequence')} value={propertySequence}/>
-                    </div>
-                  </div>
-                  <div className='column-text-input-second'>
-                    <label className='label-small'>Osoite</label>
-                    <div className='nomargin-input'>
-                      <TextInput disabled placeholder={'Osoite'} onChange={(e) => this.handleTextInputChange(e, 'address')} value={address}/>
-                    </div>
+              <Column small={12} medium={6}>
+                <div className='lease-search__row-wrapper'>
+                  <label className='lease-search__label'>Osoite</label>
+                  <div className='lease-search__input-wrapper'>
+                    <Field
+                      component={FieldTypeText}
+                      disableDirty
+                      name="address"
+                    />
                   </div>
                 </div>
               </Column>
@@ -343,16 +293,30 @@ class Search extends Component {
   }
 }
 
-export default connect(
-  state => {
-    return {
-      districts: getDistricts(state),
-    };
-  },
-  {
-    fetchDistricts,
-    receiveDistricts,
-  },
-  null,
-  {withRef: true},
+const formName = FormNames.SEARCH;
+const selector = formValueSelector(formName);
+
+export default flowRight(
+  connect(
+    state => {
+      const municipality = selector(state, 'municipality');
+
+      return {
+        attributes: getAttributes(state),
+        districts: getDistrictsByMunicipality(state, municipality),
+        formValues: getFormValues(formName)(state),
+        municipality: municipality,
+        search: selector(state, 'search'),
+      };
+    },
+    {
+      change,
+      fetchDistrictsByMunicipality,
+      initialize,
+    }
+  ),
+  reduxForm({
+    form: formName,
+  }),
+  withRouter,
 )(Search);

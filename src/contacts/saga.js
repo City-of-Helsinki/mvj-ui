@@ -14,6 +14,7 @@ import {
   receiveAttributes,
   receiveContacts,
   receiveCompleteContactList,
+  receiveLessors,
   receiveSingleContact,
   notFound,
 } from './actions';
@@ -172,6 +173,31 @@ function* editContactSaga({payload: contact}): Generator<> {
   }
 }
 
+function* fetchLessorsSaga(): Generator<> {
+  try {
+    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchContacts, '?is_lessor=true&limit=500');
+    let lessors = body.results;
+    while(statusCode === 200 && body.next) {
+      const {response: {status}, bodyAsJson} = yield call(fetchContacts, `?${body.next.split('?').pop()}`);
+      statusCode = status;
+      body = bodyAsJson;
+      lessors = [...lessors, ...body.results];
+    }
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveLessors(lessors));
+        break;
+      case 404:
+      case 500:
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch lessors with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
@@ -179,6 +205,7 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/contacts/FETCH_ALL', fetchContactsSaga);
       yield takeLatest('mvj/contacts/FETCH_COMPLETE', fetchCompleteContactListSaga);
       yield takeLatest('mvj/contacts/FETCH_SINGLE', fetchSingleContactSaga);
+      yield takeLatest('mvj/contacts/FETCH_LESSORS', fetchLessorsSaga);
       yield takeLatest('mvj/contacts/CREATE', createContactSaga);
       yield takeLatest('mvj/contacts/EDIT', editContactSaga);
     }),

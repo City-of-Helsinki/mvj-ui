@@ -3,17 +3,22 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import {fetchLessors} from '$src/leases/actions';
-import {getContentSummary} from '$src/leases/helpers';
-import {getAttributeFieldOptions, getLabelOfOption, getLessorOptions} from '$util/helpers';
-import {getAttributes, getCurrentLease, getLessors} from '$src/leases/selectors';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import LeaseHistory from './LeaseHistory';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
+import {fetchLessors} from '$src/contacts/actions';
+import {getLessorOptions} from '$src/contacts/helpers';
+import {getContentSummary} from '$src/leases/helpers';
+import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
+import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getLessors} from '$src/contacts/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getNoticePeriods} from '$src/noticePeriod/selectors';
 
 import type {Lease} from '$src/leases/types';
+import type {NoticePeriodList} from '$src/NoticePeriod/types';
 
 type Props = {
   attributes: Object,
@@ -21,6 +26,7 @@ type Props = {
   fetchLessors: Function,
   history: Array<Object>,
   lessors: Array<Object>,
+  noticePeriods: NoticePeriodList,
   summary: Object,
 }
 
@@ -34,8 +40,9 @@ class Summary extends Component {
   }
 
   render() {
-    const {attributes, currentLease, history, lessors} = this.props;
+    const {attributes, currentLease, history, lessors, noticePeriods} = this.props;
     const summary = getContentSummary(currentLease);
+    const preparerOptions = getAttributeFieldOptions(attributes, 'preparer');
     const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
     const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
     const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
@@ -44,8 +51,7 @@ class Summary extends Component {
     const managementOptions = getAttributeFieldOptions(attributes, 'management');
     const regulationOptions = getAttributeFieldOptions(attributes, 'regulation');
     const hitasOptions = getAttributeFieldOptions(attributes, 'hitas');
-    const noticePeriodOptions = getAttributeFieldOptions(attributes, 'notice_period');
-
+    const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
 
     const lessorOptions = getLessorOptions(lessors);
 
@@ -72,6 +78,10 @@ class Summary extends Component {
                 <Column small={12} medium={6} large={4}>
                   <label>Vuokranantaja</label>
                   <p>{getLabelOfOption(lessorOptions, summary.lessor) || '-'}</p>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <label>Valmistelija</label>
+                  <p>{getLabelOfOption(preparerOptions, summary.preparer) || '-'}</p>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <label>Julkisuusluokka</label>
@@ -114,6 +124,16 @@ class Summary extends Component {
                 <Column small={12} medium={6} large={8}>
                   <label>Irtisanomisajan selite</label>
                   <ShowMore text={summary.notice_note || '-'} />
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <label>Diaarinumero</label>
+                  <p>{summary.reference_number || '-'}</p>
+                </Column>
+                <Column small={12} medium={6} large={8}>
+                  <label>Kommentti</label>
+                  <ShowMore text={summary.note || '-'} />
                 </Column>
               </Row>
             </Collapse>
@@ -164,6 +184,7 @@ export default connect(
       attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
       lessors: getLessors(state),
+      noticePeriods: getNoticePeriods(state),
     };
   },
   {

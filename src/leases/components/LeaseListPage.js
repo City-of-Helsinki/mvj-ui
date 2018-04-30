@@ -8,27 +8,6 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 
-import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
-import {getRouteById} from '$src/root/routes';
-import {
-  createLease,
-  fetchAttributes,
-  fetchLeases,
-  fetchLessors,
-} from '../actions';
-import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {
-  getAttributes,
-  getIsFetching,
-  getLeasesList,
-  getLessors,
-} from '../selectors';
-import {getContentLeases, getLeasesFilteredByDocumentType} from '../helpers';
-import {
-  formatDate,
-  getLessorOptions,
-  getSearchQuery,
-} from '$util/helpers';
 import Button from '$components/button/Button';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
 import EditableMap from '$components/map/EditableMap';
@@ -41,6 +20,25 @@ import Search from './search/Search';
 import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
 import TableIcon from '$components/icons/TableIcon';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
+import {getRouteById} from '$src/root/routes';
+import {fetchLessors} from '$src/contacts/actions';
+import {
+  createLease,
+  fetchAttributes,
+  fetchLeases,
+} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
+import {getLessorOptions} from '$src/contacts/helpers';
+import {getContentLeases, getLeasesFilteredByDocumentType} from '$src/leases/helpers';
+import {formatDate, getSearchQuery} from '$util/helpers';
+import {getLessors} from '$src/contacts/selectors';
+import {
+  getAttributes,
+  getIsFetching,
+  getLeasesList,
+} from '$src/leases/selectors';
 
 import type {LeaseList} from '../types';
 
@@ -116,8 +114,8 @@ class LeaseListPage extends Component {
   }
 
   componentDidMount = () => {
-    const {router: {location: {query}}} = this.props;
-    this.search.getWrappedInstance().initialize(query);
+    const {initialize, router: {location: {query}}} = this.props;
+    initialize(FormNames.SEARCH, query);
   }
 
   showCreateLeaseModal = () => {
@@ -126,7 +124,7 @@ class LeaseListPage extends Component {
     this.setState({
       isModalOpen: true,
     });
-    initialize('create-lease-form', {});
+    initialize(FormNames.CREATE_LEASE, {});
   }
 
   hideCreateLeaseModal = () => {

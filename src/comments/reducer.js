@@ -5,17 +5,18 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {
   Attributes,
-  CommentList,
+  CommentState,
+  CommentListMap,
   ReceiveAttributesAction,
-  ReceiveCommentsAction,
+  ReceiveCommentsByLeaseAction,
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/comments/CREATE': () => true,
   'mvj/comments/EDIT': () => true,
-  'mvj/comments/FETCH_ALL': () => true,
-  'mvj/leases/NOT_FOUND': () => false,
-  'mvj/leases/RECEIVE_ALL': () => false,
+  'mvj/comments/FETCH_BY_LEASE': () => true,
+  'mvj/comments/NOT_FOUND': () => false,
+  'mvj/comments/RECEIVE_BY_LEASE': () => false,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -24,14 +25,17 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   },
 }, {});
 
-const commentsReducer: Reducer<CommentList> = handleActions({
-  ['mvj/comments/RECEIVE_ALL']: (state: CommentList, {payload: comments}: ReceiveCommentsAction) => {
-    return comments;
+const byLeaseReducer: Reducer<CommentListMap> = handleActions({
+  ['mvj/comments/RECEIVE_BY_LEASE']: (state: CommentState, {payload: list}: ReceiveCommentsByLeaseAction) => {
+    return {
+      ...state,
+      [list.leaseId]: list.comments,
+    };
   },
-}, []);
+}, {});
 
 export default combineReducers({
   attributes: attributesReducer,
-  comments: commentsReducer,
+  byLease: byLeaseReducer,
   isFetching: isFetchingReducer,
 });

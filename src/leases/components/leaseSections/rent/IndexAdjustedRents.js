@@ -5,8 +5,7 @@ import {connect} from 'react-redux';
 import TableFixedHeader from '$components/table/TableFixedHeader';
 import {
   formatDateRange,
-  formatNumberWithThousandSeparator,
-  formatDecimalNumber,
+  formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
@@ -25,10 +24,10 @@ const getTableBody = (indexAdjustedRents: Array<Object>, intendedUseOptions: Arr
       <tbody>
         {indexAdjustedRents.map((rent, index) => (
           <tr key={index}>
-            <td>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.amount), '.') || '-'}</td>
+            <td>{formatNumber(rent.amount) || '-'}</td>
             <td>{getLabelOfOption(intendedUseOptions, rent.intended_use) || '-'}</td>
             <td>{formatDateRange(rent.start_date, rent.end_date)}</td>
-            <td>{formatDecimalNumber(rent.factor) || '-'}</td>
+            <td>{formatNumber(rent.factor) || '-'}</td>
           </tr>
         ))}
       </tbody>

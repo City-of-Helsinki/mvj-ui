@@ -5,8 +5,7 @@ import {connect} from 'react-redux';
 import {RentTypes} from '$src/leases/enums';
 import {
   formatDateRange,
-  formatDecimalNumber,
-  formatNumberWithThousandSeparator,
+  formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
@@ -33,7 +32,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
       return null;
     }
 
-    return `${formatNumberWithThousandSeparator(formatDecimalNumber(rent.amount), '.')} ${getLabelOfOption(amountPeriodOptions, rent.amount_period)}`;
+    return `${formatNumber(rent.amount)} ${getLabelOfOption(amountPeriodOptions, rent.amount_period)}`;
   };
 
   const getBaseAmount = (rent: Object) => {
@@ -41,7 +40,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
       return null;
     }
 
-    return `${formatNumberWithThousandSeparator(formatDecimalNumber(rent.base_amount), '.')} ${getLabelOfOption(baseAmountPeriodOptions, rent.base_amount_period)}`;
+    return `${formatNumber(rent.base_amount)} ${getLabelOfOption(baseAmountPeriodOptions, rent.base_amount_period)}`;
   };
 
   return (
@@ -72,7 +71,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
                 <td>{getBaseAmount(rent) || '-'}</td>
               }
               {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
-                <td>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.base_year_rent), '.') || '-'}</td>
+                <td>{formatNumber(rent.base_year_rent) || '-'}</td>
               }
               <td>{formatDateRange(rent.start_date, rent.end_date) || '-'}</td>
             </tr>

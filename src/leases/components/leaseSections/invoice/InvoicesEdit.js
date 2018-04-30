@@ -125,7 +125,6 @@ class InvoicesEdit extends Component {
     const {
       currentLease,
       isCreateOpen,
-      isInvoicingEnabled,
       receiveIsCreateOpen,
     } = this.props;
     const {
@@ -178,7 +177,7 @@ class InvoicesEdit extends Component {
             onSave={(invoice) => this.createInvoice(invoice)}
             onStartInvoicing={() => this.showModal('StartInvoicing')}
             onStopInvoicing={() => this.showModal('StopInvoicing')}
-            showStartInvoicingButton={!isInvoicingEnabled}
+            showStartInvoicingButton={!currentLease.is_invoicing_enabled}
           />
         </Collapse>
       </div>
@@ -192,8 +191,8 @@ export default flowRight(
     (state) => {
       return {
         contacts: getCompleteContactList(state),
-        isCreateOpen: getIsCreateOpen(state),
         currentLease: getCurrentLease(state),
+        isCreateOpen: getIsCreateOpen(state),
       };
     },
     {

@@ -9,8 +9,11 @@ import apiReducer from '../api/reducer';
 import authReducer from '../auth/reducer';
 import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
+import decisionsReducer from '../decision/reducer';
+import districtsReducer from '../district/reducer';
 import invoiceReducer from '$src/invoices/reducer';
 import leaseReducer from '../leases/reducer';
+import noticePeriodReducer from '../noticePeriod/reducer';
 import rentBasisReducer from '../rentbasis/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
 import usersReducer from '../users/reducer';
@@ -24,9 +27,12 @@ export default (): Reducer<RootState> =>
     auth: authReducer,
     comment: commentsReducer,
     contacts: contactsReducer,
+    decision: decisionsReducer,
+    district: districtsReducer,
     form: formReducer,
     invoice: invoiceReducer,
     lease: leaseReducer,
+    noticePeriod: noticePeriodReducer,
     oidc,
     rentbasis: rentBasisReducer,
     routing: routerReducer,

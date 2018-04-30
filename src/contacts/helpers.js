@@ -41,3 +41,19 @@ export const getContactOptions = (contacts: Array<Object>) => {
     return 0;
   }));
 };
+
+/**
+ * Get options for lessor field
+ * @param lessors
+ */
+export const getLessorOptions = (lessors: Array<Object>) => {
+  if(!lessors || !lessors.length) {
+    return [];
+  }
+  return addEmptyOption(lessors.map((item) => {
+    return {
+      value: item.id,
+      label: getContactFullName(item),
+    };
+  }));
+};

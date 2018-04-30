@@ -5,7 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import BoxItem from '$components/content/BoxItem';
 import {getAttributes} from '$src/leases/selectors';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
@@ -34,11 +34,11 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Kokonaisala</label>
-          <p>{planUnit.area || '-'}</p>
+          <p>{formatNumber(planUnit.area) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Leikkausala</label>
-          <p>{planUnit.section_area || '-'}</p>
+          <p>{formatNumber(planUnit.section_area) || '-'}</p>
         </Column>
       </Row>
       <Row>

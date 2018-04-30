@@ -5,7 +5,7 @@ import {connect} from 'react-redux';
 import Table from '$components/table/Table';
 import {getContentBasisOfRents} from '$src/leases/helpers';
 import {
-  formatNumberWithThousandSeparator,
+  formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
@@ -30,13 +30,13 @@ const BasisOfRents = ({attributes, currentLease}: Props) => {
         data={basisOfRents}
         dataKeys={[
           {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val) || '-'},
-          {key: 'floor_m2', label: 'K-m2', renderer: (val) => formatNumberWithThousandSeparator(val) || '-'},
-          {key: 'index', label: 'Indeksi', renderer: (val) => formatNumberWithThousandSeparator(val) || '-'},
-          {key: 'amount_per_floor_m2_index_100', label: '€/k-m2 (ind 100)', renderer: (val) => formatNumberWithThousandSeparator(val) || '-'},
-          {key: 'amount_per_floor_m2_index', label: '€/k-m2 (ind)', renderer: (val) => formatNumberWithThousandSeparator(val) || '-'},
-          {key: 'percent', label: 'Prosenttia', renderer: (val) => val ? `${formatNumberWithThousandSeparator(val)} %` : '-'},
-          {key: 'year_rent_index_100', label: 'Perusvuosivuokra €/v (ind 100)', renderer: (val) => formatNumberWithThousandSeparator(val) || '-'},
-          {key: 'year_rent_index', label: 'Alkuvuosivuokra €/v (ind)', renderer: (val) => formatNumberWithThousandSeparator(val) || '-'},
+          {key: 'floor_m2', label: 'K-m2', renderer: (val) => formatNumber(val) || '-'},
+          {key: 'index', label: 'Indeksi', renderer: (val) => formatNumber(val) || '-'},
+          {key: 'amount_per_floor_m2_index_100', label: '€/k-m2 (ind 100)', renderer: (val) => formatNumber(val) || '-'},
+          {key: 'amount_per_floor_m2_index', label: '€/k-m2 (ind)', renderer: (val) => formatNumber(val) || '-'},
+          {key: 'percent', label: 'Prosenttia', renderer: (val) => val ? `${formatNumber(val)} %` : '-'},
+          {key: 'year_rent_index_100', label: 'Perusvuosivuokra €/v (ind 100)', renderer: (val) => formatNumber(val) || '-'},
+          {key: 'year_rent_index', label: 'Alkuvuosivuokra €/v (ind)', renderer: (val) => formatNumber(val) || '-'},
         ]}
         noDataText='Ei vuokranperusteita'
       />

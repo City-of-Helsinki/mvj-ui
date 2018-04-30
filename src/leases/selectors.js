@@ -4,12 +4,9 @@ import type {Selector} from '../types';
 import type {
   Attributes,
   ContactModalSettings,
-  DecisionList,
-  DistrictList,
   Lease,
   LeaseList,
   LeaseState,
-  LessorList,
 } from './types';
 
 export const getIsContactModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
@@ -59,12 +56,3 @@ export const getLeasesList: Selector<LeaseList, void> = (state: LeaseState): Lea
 
 export const getCurrentLease: Selector<Lease, void> = (state: LeaseState): Lease =>
   state.lease.current;
-
-export const getDecisions: Selector<DecisionList, void> = (state: LeaseState): DecisionList =>
-  state.lease.decisions;
-
-export const getDistricts: Selector<DistrictList, void> = (state: LeaseState): DistrictList =>
-  state.lease.districts;
-
-export const getLessors: Selector<LessorList, void> = (state: LeaseState): LessorList =>
-  state.lease.lessors;

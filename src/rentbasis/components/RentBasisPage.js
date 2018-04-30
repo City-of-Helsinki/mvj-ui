@@ -160,13 +160,13 @@ class RentBasisPage extends Component {
     return (
       <PageContainer>
         <ConfirmationModal
-          confirmButtonLabel='Vahvista'
+          confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelModalOpen}
-          label='Haluatko varmasti peruuttaa muutokset?'
+          label='Haluatko varmasti hylätä muutokset?'
           onCancel={() => this.setState({isCancelModalOpen: false})}
           onClose={() => this.setState({isCancelModalOpen: false})}
           onSave={this.handleCancel}
-          title='Peruuta muutokset'
+          title='Hylkää muutokset'
         />
         <ControlButtonBar
           buttonComponent={

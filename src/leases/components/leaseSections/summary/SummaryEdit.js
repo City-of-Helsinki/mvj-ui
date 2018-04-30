@@ -12,12 +12,18 @@ import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import LeaseHistory from './LeaseHistory';
-import {getAttributeFieldOptions, getLessorOptions} from '$src/util/helpers';
-import {fetchLessors, receiveSummaryFormValid} from '$src/leases/actions';
+import {fetchLessors} from '$src/contacts/actions';
+import {receiveSummaryFormValid} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getAttributes, getIsSummaryFormValid, getLessors} from '$src/leases/selectors';
+import {getLessorOptions} from '$src/contacts/helpers';
+import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
+import {getAttributeFieldOptions, sortAlphaAsc} from '$src/util/helpers';
+import {getLessors} from '$src/contacts/selectors';
+import {getAttributes, getIsSummaryFormValid} from '$src/leases/selectors';
+import {getNoticePeriods} from '$src/noticePeriod/selectors';
 import {genericValidator} from '$components/form/validations';
 
+import type {NoticePeriodList} from '$src/noticePeriod/types';
 
 type Props = {
   attributes: Object,
@@ -26,6 +32,7 @@ type Props = {
   history: Array<Object>,
   isSummaryFormValid: boolean,
   lessors: Array<Object>,
+  noticePeriods: NoticePeriodList,
   receiveSummaryFormValid: Function,
   valid: boolean,
 }
@@ -47,7 +54,8 @@ class SummaryEdit extends Component {
   }
 
   render () {
-    const {attributes, handleSubmit, history, lessors} = this.props;
+    const {attributes, handleSubmit, history, lessors, noticePeriods} = this.props;
+    const preparerOptions = getAttributeFieldOptions(attributes, 'preparer').sort(sortAlphaAsc);
     const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
     const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
     const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
@@ -56,7 +64,7 @@ class SummaryEdit extends Component {
     const managementOptions = getAttributeFieldOptions(attributes, 'management');
     const regulationOptions = getAttributeFieldOptions(attributes, 'regulation');
     const hitasOptions = getAttributeFieldOptions(attributes, 'hitas');
-    const noticePeriodOptions = getAttributeFieldOptions(attributes, 'notice_period');
+    const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
 
     const lessorOptions = getLessorOptions(lessors);
 
@@ -81,6 +89,17 @@ class SummaryEdit extends Component {
                     options={lessorOptions}
                     validate={[
                       (value) => genericValidator(value, get(attributes, 'lessor')),
+                    ]}
+                  />
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label="Valmistelija"
+                    name="preparer"
+                    options={preparerOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'preparer')),
                     ]}
                   />
                 </Column>
@@ -191,6 +210,28 @@ class SummaryEdit extends Component {
                   />
                 </Column>
               </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Field
+                    component={FieldTypeText}
+                    label="Diaarinumero"
+                    name="reference_number"
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'reference_number')),
+                    ]}
+                  />
+                </Column>
+                <Column small={12} medium={6} large={8}>
+                  <Field
+                    component={FieldTypeText}
+                    label="Kommentti"
+                    name="note"
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'note')),
+                    ]}
+                  />
+                </Column>
+              </Row>
             </Collapse>
 
             <Collapse
@@ -272,6 +313,7 @@ export default flowRight(
         attributes: getAttributes(state),
         isSummaryFormValid: getIsSummaryFormValid(state),
         lessors: getLessors(state),
+        noticePeriods: getNoticePeriods(state),
       };
     },
     {

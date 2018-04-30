@@ -13,19 +13,13 @@ import {
   notFound,
   receiveAttributes,
   receiveContactModalSettings,
-  receiveDecisions,
-  receiveDistricts,
   receiveLeases,
-  receiveLessors,
   receiveSingleLease,
 } from './actions';
 import {
   createLease,
   fetchAttributes,
-  fetchDecisions,
-  fetchDistricts,
   fetchLeases,
-  fetchLessors,
   fetchSingleLease,
   patchLease,
 } from './requests';
@@ -272,69 +266,6 @@ function* editContactSaga({payload: contact}): Generator<> {
   }
 }
 
-function* fetchDecisionsSaga({payload: search}): Generator<> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchDecisions, search);
-    const decisions = bodyAsJson.results;
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveDecisions(decisions));
-        break;
-      case 404:
-      case 500:
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch lessors with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
-function* fetchDistrictsSaga({payload: search}): Generator<> {
-  try {
-    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchDistricts, search);
-    let districts = body.results;
-    while(statusCode === 200 && body.next) {
-      const {response: {status}, bodyAsJson} = yield call(fetchDistricts, `?${body.next.split('?').pop()}`);
-      statusCode = status;
-      body = bodyAsJson;
-      districts = [...districts, ...body.results];
-    }
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveDistricts(districts));
-        break;
-      case 404:
-      case 500:
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch lessors with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
-function* fetchLessorsSaga(): Generator<> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLessors);
-    const lessors = bodyAsJson.results;
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveLessors(lessors));
-        break;
-      case 404:
-      case 500:
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch lessors with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
 export default function*(): Generator<> {
   yield [
     fork(function*(): Generator<> {
@@ -347,9 +278,6 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/leases/CREATE_CONTACT', createContactSaga);
       yield takeLatest('mvj/leases/EDIT_CONTACT', editContactSaga);
-      yield takeLatest('mvj/leases/FETCH_DECISIONS', fetchDecisionsSaga);
-      yield takeLatest('mvj/leases/FETCH_DISTRICTS', fetchDistrictsSaga);
-      yield takeLatest('mvj/leases/FETCH_LESSORS', fetchLessorsSaga);
     }),
   ];
 }

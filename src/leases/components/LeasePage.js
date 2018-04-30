@@ -7,11 +7,9 @@ import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import {fetchAttributes as fetchCommentAttributes, fetchComments} from '$src/comments/actions';
-import {
-  fetchAttributes as fetchContactAttributes,
-  fetchCompleteContactList,
-} from '$src/contacts/actions';
+import {fetchAttributes as fetchCommentAttributes, fetchCommentsByLease} from '$src/comments/actions';
+import {fetchAttributes as fetchContactAttributes, fetchCompleteContactList} from '$src/contacts/actions';
+import {fetchDecisionsByLease} from '$src/decision/actions';
 import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
 import {
   clearFormValidFlags,
@@ -20,13 +18,14 @@ import {
   hideEditMode,
   patchLease,
   showEditMode,
-} from '../actions';
+} from '$src/leases/actions';
+import {fetchNoticePeriods} from '$src/noticePeriod/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchUsers} from '$src/users/actions';
 import {FormNames} from '../enums';
 import * as contentHelpers from '../helpers';
 import {getSearchQuery} from '$util/helpers';
-import {getComments} from '$src/comments/selectors';
+import {getCommentsByLease} from '$src/comments/selectors';
 import {
   getCurrentLease,
   getIsEditMode,
@@ -86,11 +85,13 @@ type Props = {
   destroy: Function,
   fetchAttributes: Function,
   fetchCommentAttributes: Function,
-  fetchComments: Function,
+  fetchCommentsByLease: Function,
   fetchCompleteContactList: Function,
   fetchContactAttributes: Function,
+  fetchDecisionsByLease: Function,
   fetchInvoiceAttributes: Function,
   fetchInvoices: Function,
+  fetchNoticePeriods: Function,
   fetchSingleLease: Function,
   fetchUsers: Function,
   hideEditMode: Function,
@@ -155,11 +156,13 @@ class LeasePage extends Component {
     const {
       fetchAttributes,
       fetchCommentAttributes,
-      fetchComments,
+      fetchCommentsByLease,
       fetchCompleteContactList,
       fetchContactAttributes,
+      fetchDecisionsByLease,
       fetchInvoiceAttributes,
       fetchInvoices,
+      fetchNoticePeriods,
       fetchSingleLease,
       fetchUsers,
       hideEditMode,
@@ -187,12 +190,21 @@ class LeasePage extends Component {
     fetchAttributes();
     fetchSingleLease(leaseId);
     fetchCommentAttributes();
-    fetchComments(getSearchQuery({lease: leaseId}));
+    fetchCommentsByLease(leaseId);
     fetchContactAttributes();
     fetchCompleteContactList();
-    fetchUsers();
+    fetchDecisionsByLease(leaseId);
     fetchInvoiceAttributes();
     fetchInvoices(getSearchQuery({lease: leaseId}));
+    fetchNoticePeriods();
+    fetchUsers();
+  }
+
+  componentWillReceiveProps(nextProps: Object) {
+    if(this.props.currentLease !== nextProps.currentLease) {
+      const {fetchDecisionsByLease, params: {leaseId}} = this.props;
+      fetchDecisionsByLease(leaseId);
+    }
   }
 
   showModal = (modalName: string) => {
@@ -439,13 +451,13 @@ class LeasePage extends Component {
           title='Tallenna'
         />
         <ConfirmationModal
-          confirmButtonLabel='Vahvista'
+          confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelLeaseModalOpen}
-          label='Haluatko varmasti peruuttaa muutokset?'
+          label='Haluatko varmasti hylätä muutokset?'
           onCancel={() => this.hideModal('CancelLease')}
           onClose={() => this.hideModal('CancelLease')}
           onSave={this.cancel}
-          title='Peruuta muutokset'
+          title='Hylkää muutokset'
         />
         <CommentPanel
           isOpen={isCommentPanelOpen}
@@ -567,12 +579,13 @@ export default flowRight(
   withRouter,
   connect(
     (state) => {
+      const currentLease = getCurrentLease(state);
       return {
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
-        comments: getComments(state),
+        comments: getCommentsByLease(state, currentLease.id),
         constructabilityFormValues: getFormValues(FormNames.CONSTRUCTABILITY)(state),
         contractsFormValues: getFormValues(FormNames.CONTRACTS)(state),
-        currentLease: getCurrentLease(state),
+        currentLease: currentLease,
         decisionsFormValues: getFormValues(FormNames.DECISIONS)(state),
         inspectionsFormValues: getFormValues(FormNames.INSPECTIONS)(state),
         isEditMode: getIsEditMode(state),
@@ -606,11 +619,13 @@ export default flowRight(
       destroy,
       fetchAttributes,
       fetchCommentAttributes,
-      fetchComments,
+      fetchCommentsByLease,
       fetchCompleteContactList,
       fetchContactAttributes,
+      fetchDecisionsByLease,
       fetchInvoiceAttributes,
       fetchInvoices,
+      fetchNoticePeriods,
       fetchSingleLease,
       fetchUsers,
       hideEditMode,

@@ -10,6 +10,27 @@ export const TenantContactType = {
 };
 
 /**
+ * Area location enumerable.
+ *
+ * @type {{SURFACE: string, UNDERGROUND: string}}
+ */
+export const AreaLocation = {
+  SURFACE: 'surface',
+  UNDERGROUND: 'underground',
+};
+
+/**
+ * Classification enumerable.
+ *
+ * @type {{}}
+ */
+export const Classification = {
+  PUBLIC: 'public',
+  CONFIDENTIAL: 'confidential',
+  OFFICIAL: 'official',
+};
+
+/**
  * Constructability type enumerable.
  *
  * @type {{PRECONSTRUCTION: string, DEMOLITION: string, POLLLUTED_LAND: string, REPORT: string, OTHER: string}}
@@ -31,6 +52,17 @@ export const ConstructabilityStatus = {
   UNVERIFIED: 'unverified',
   REQUIRES_MEASURES: 'requires_measures',
   COMPLETE: 'complete',
+};
+
+/**
+ * Lease status enumerable.
+ *
+ * @type {{PREPARATION: string, IN_EFFECT: string, FINISHED: string}}
+ */
+export const LeaseStatus = {
+  PREPARATION: 'Valmisteilla',
+  IN_EFFECT: 'Voimassa',
+  FINISHED: 'Päättynyt',
 };
 
 /**
@@ -59,7 +91,7 @@ export const RentDueDateTypes = {
 /**
  * Rent type enumerable.
  *
- * @type {{CONSTRUCTABILITY: string, CONTRACTS: string, CREATE_LEASE: string, DECISIONS: string, INSPECTION: string, INVOICE_EDIT: string, INVOICE_NEW: string, LEASE_AREAS: string, LEASE_INFO: string, RENTS: string, SUMMARY: string, TENANTS: string}}
+ * @type {{CONSTRUCTABILITY: string, CONTRACTS: string, CREATE_LEASE: string, DECISIONS: string, INSPECTION: string, INVOICE_EDIT: string, INVOICE_NEW: string, LEASE_AREAS: string, LEASE_INFO: string, RENTS: string, SEARCH: string, SUMMARY: string, TENANTS: string}}
  */
 export const FormNames = {
   CONSTRUCTABILITY: 'constructability-form',
@@ -72,6 +104,7 @@ export const FormNames = {
   LEASE_AREAS: 'lease-areas-form',
   LEASE_INFO: 'lease-info-form',
   RENTS: 'rents-form',
+  SEARCH: 'lease-search-form',
   SUMMARY: 'summary-form',
   TENANTS: 'tenants-form',
 };

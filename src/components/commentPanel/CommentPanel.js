@@ -11,10 +11,11 @@ import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
 import NewCommentForm from './forms/NewCommentForm';
 import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
-import {getAttributes, getComments} from '$src/comments/selectors';
 import {createComment, editComment} from '$src/comments/actions';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 import {getContentComments} from '$src/leases/helpers';
+import {getAttributes, getCommentsByLease} from '$src/comments/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
 
 import type {CommentList} from '$src/comments/types';
 
@@ -180,9 +181,10 @@ export default flowRight(
   withRouter,
   connect(
     (state) => {
+      const currentLease = getCurrentLease(state);
       return {
         attributes: getAttributes(state),
-        commentList: getComments(state),
+        commentList: getCommentsByLease(state, currentLease.id),
       };
     },
     {

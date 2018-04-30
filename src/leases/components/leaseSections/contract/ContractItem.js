@@ -8,7 +8,8 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import ListItems from '$components/content/ListItems';
 import {formatDate, getAttributeFieldOptions, getDecisionsOptions, getLabelOfOption} from '$src/util/helpers';
-import {getAttributes, getDecisions} from '$src/leases/selectors';
+import {getDecisionsByLease} from '$src/decision/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -173,9 +174,11 @@ const ContractItem = ({attributes, contract, decisions}: Props) => {
 
 export default connect(
   (state) => {
+    const currentLease = getCurrentLease(state);
+
     return {
       attributes: getAttributes(state),
-      decisions: getDecisions(state),
+      decisions: getDecisionsByLease(state, currentLease.id),
     };
   }
 )(ContractItem);

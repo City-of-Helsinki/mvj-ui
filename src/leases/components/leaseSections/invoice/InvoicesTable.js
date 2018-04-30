@@ -12,8 +12,7 @@ import {getInvoiceSharePercentage} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDateRange,
-  formatDecimalNumber,
-  formatNumberWithThousandSeparator,
+  formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
@@ -244,10 +243,10 @@ class InvoicesTable extends Component {
                             <td>{getLabelOfOption(stateOptions, invoice.state) || '-'}</td>
                           }
                           {showAllColumns &&
-                            <td>{formatNumberWithThousandSeparator(formatDecimalNumber(invoice.billed_amount)) || '-'}</td>
+                            <td>{formatNumber(invoice.billed_amount) || '-'}</td>
                           }
                           {showAllColumns &&
-                            <td>{formatNumberWithThousandSeparator(formatDecimalNumber(invoice.outstanding_amount)) || '-'}</td>
+                            <td>{formatNumber(invoice.outstanding_amount) || '-'}</td>
                           }
                           {showAllColumns &&
                             <td>{invoice.notes ? 'Kyllä' : 'Ei'}</td>
