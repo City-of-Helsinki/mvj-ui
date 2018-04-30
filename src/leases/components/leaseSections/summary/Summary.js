@@ -41,6 +41,7 @@ class Summary extends Component {
   render() {
     const {attributes, currentLease, history, lessors, noticePeriods} = this.props;
     const summary = getContentSummary(currentLease);
+    const preparerOptions = getAttributeFieldOptions(attributes, 'preparer');
     const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
     const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
     const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
@@ -76,6 +77,10 @@ class Summary extends Component {
                 <Column small={12} medium={6} large={4}>
                   <label>Vuokranantaja</label>
                   <p>{getLabelOfOption(lessorOptions, summary.lessor) || '-'}</p>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <label>Valmistelija</label>
+                  <p>{getLabelOfOption(preparerOptions, summary.preparer) || '-'}</p>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <label>Julkisuusluokka</label>
@@ -118,6 +123,16 @@ class Summary extends Component {
                 <Column small={12} medium={6} large={8}>
                   <label>Irtisanomisajan selite</label>
                   <ShowMore text={summary.notice_note || '-'} />
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <label>Diaarinumero</label>
+                  <p>{summary.reference_number || '-'}</p>
+                </Column>
+                <Column small={12} medium={6} large={8}>
+                  <label>Kommentti</label>
+                  <ShowMore text={summary.note || '-'} />
                 </Column>
               </Row>
             </Collapse>

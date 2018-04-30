@@ -16,7 +16,7 @@ import {fetchLessors} from '$src/contacts/actions';
 import {receiveSummaryFormValid} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
-import {getAttributeFieldOptions, getLessorOptions} from '$src/util/helpers';
+import {getAttributeFieldOptions, getLessorOptions, sortAlphaAsc} from '$src/util/helpers';
 import {getLessors} from '$src/contacts/selectors';
 import {getAttributes, getIsSummaryFormValid} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
@@ -54,6 +54,7 @@ class SummaryEdit extends Component {
 
   render () {
     const {attributes, handleSubmit, history, lessors, noticePeriods} = this.props;
+    const preparerOptions = getAttributeFieldOptions(attributes, 'preparer').sort(sortAlphaAsc);
     const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
     const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
     const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
@@ -87,6 +88,17 @@ class SummaryEdit extends Component {
                     options={lessorOptions}
                     validate={[
                       (value) => genericValidator(value, get(attributes, 'lessor')),
+                    ]}
+                  />
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Field
+                    component={FieldTypeSelect}
+                    label="Valmistelija"
+                    name="preparer"
+                    options={preparerOptions}
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'preparer')),
                     ]}
                   />
                 </Column>
@@ -193,6 +205,28 @@ class SummaryEdit extends Component {
                     name="notice_note"
                     validate={[
                       (value) => genericValidator(value, get(attributes, 'notice_note')),
+                    ]}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Field
+                    component={FieldTypeText}
+                    label="Diaarinumero"
+                    name="reference_number"
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'reference_number')),
+                    ]}
+                  />
+                </Column>
+                <Column small={12} medium={6} large={8}>
+                  <Field
+                    component={FieldTypeText}
+                    label="Kommentti"
+                    name="note"
+                    validate={[
+                      (value) => genericValidator(value, get(attributes, 'note')),
                     ]}
                   />
                 </Column>

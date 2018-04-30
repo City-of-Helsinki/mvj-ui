@@ -96,6 +96,7 @@ export const getContentHistory = (lease: Object) => {
 export const getContentSummary = (lease: Object) => {
   return {
     lessor: get(lease, 'lessor.id'),
+    preparer: get(lease, 'preparer.id') || get(lease, 'preparer'),
     classification: get(lease, 'classification'),
     intended_use: get(lease, 'intended_use'),
     supportive_housing: get(lease, 'supportive_housing'),
@@ -109,6 +110,8 @@ export const getContentSummary = (lease: Object) => {
     hitas: get(lease, 'hitas'),
     notice_period: get(lease, 'notice_period'),
     notice_note: get(lease, 'notice_note'),
+    reference_number: get(lease, 'reference_number'),
+    note: get(lease, 'note'),
   };
 };
 
@@ -643,6 +646,7 @@ export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {
 
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
   payload.lessor = get(summary, 'lessor');
+  payload.preparer = get(summary, 'preparer');
   payload.classification = get(summary, 'classification');
   payload.intended_use = get(summary, 'intended_use');
   payload.supportive_housing = get(summary, 'supportive_housing');
@@ -656,6 +660,8 @@ export const addSummaryFormValues = (payload: Object, summary: Object) => {
   payload.hitas = get(summary, 'hitas');
   payload.notice_period = get(summary, 'notice_period');
   payload.notice_note = get(summary, 'notice_note');
+  payload.reference_number = get(summary, 'reference_number');
+  payload.note = get(summary, 'note');
   return payload;
 };
 

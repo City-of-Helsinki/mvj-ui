@@ -404,3 +404,11 @@ export const getDecisionsOptions = (decisions: Array<Object>) => {
     };
   }));
 };
+
+export const sortAlphaAsc = (a, b) => {
+  const keyA = a.label.toLowerCase(),
+    keyB = b.label.toLowerCase();
+  if(keyA < keyB) return -1;
+  if(keyA > keyB) return 1;
+  return 0;
+};
