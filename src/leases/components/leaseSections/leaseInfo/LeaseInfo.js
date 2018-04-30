@@ -43,7 +43,7 @@ const LeaseInfo = ({attributes, currentLease}: Props) => {
         </Column>
         <Column>
           <label className='mvj-form-field-label'>Olotila</label>
-          <p>{getContentLeaseStatus(leaseInfo) || '-'}</p>
+          <p>{getContentLeaseStatus(currentLease) || '-'}</p>
         </Column>
       </Row>
     </div>
