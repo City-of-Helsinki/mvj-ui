@@ -113,6 +113,14 @@ class InvoiceModalEdit extends Component {
                 title='Tallenna'
               />
             }
+            {(!invoice || !invoice.sap_id) &&
+              <Button
+                className="button-red pull-right"
+                label='Peruuta'
+                onClick={onClose}
+                title='Peruuta'
+              />
+            }
           </div>
         </div>
       </div>

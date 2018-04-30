@@ -451,13 +451,13 @@ class LeasePage extends Component {
           title='Tallenna'
         />
         <ConfirmationModal
-          confirmButtonLabel='Vahvista'
+          confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelLeaseModalOpen}
-          label='Haluatko varmasti peruuttaa muutokset?'
+          label='Haluatko varmasti hylätä muutokset?'
           onCancel={() => this.hideModal('CancelLease')}
           onClose={() => this.hideModal('CancelLease')}
           onSave={this.cancel}
-          title='Peruuta muutokset'
+          title='Hylkää muutokset'
         />
         <CommentPanel
           isOpen={isCommentPanelOpen}

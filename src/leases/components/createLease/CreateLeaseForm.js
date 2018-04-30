@@ -30,6 +30,7 @@ type Props = {
   handleSubmit: Function,
   municipality: string,
   note: string,
+  onClose: Function,
   onSubmit: Function,
   reference_number: string,
   state: string,
@@ -80,6 +81,7 @@ class CreateLeaseForm extends Component {
       attributes,
       districts,
       handleSubmit,
+      onClose,
       valid,
     } = this.props;
 
@@ -168,6 +170,12 @@ class CreateLeaseForm extends Component {
               label='Luo tunnus'
               onClick={this.handleCreate}
               title='Luo tunnus'
+            />
+            <Button
+              className='button-red pull-right'
+              label='Peruuta'
+              onClick={onClose}
+              title='Peruuta'
             />
           </Column>
         </Row>

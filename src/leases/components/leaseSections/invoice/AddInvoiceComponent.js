@@ -47,33 +47,32 @@ class AddInvoiceComponent extends Component {
     return (
       <div className='invoice__add-invoice'>
         <FormSection>
-          {!editMode &&
-            <div>
-              <Button
-                className='button-green no-margin'
-                label='+ Luo uusi lasku'
-                onClick={this.handleOnAdd}
-                title='Luo uusi lasku'
-              />
-              {showStartInvoicingButton
-                ? (
-                  <Button
-                    className='button-green'
-                    label='Käynnistä laskutus'
-                    onClick={() => onStartInvoicing()}
-                    title='Käynnistä laskutus'
-                  />
-                ) : (
-                  <Button
-                    className='button-red'
-                    label='Keskeytä laskutus'
-                    onClick={() => onStopInvoicing()}
-                    title='Keskeytä laskutus'
-                  />
-                )
-              }
-            </div>
-          }
+          <div style={{marginBottom: 15}}>
+            <Button
+              className='button-green no-margin'
+              disabled={editMode}
+              label='+ Luo uusi lasku'
+              onClick={this.handleOnAdd}
+              title='Luo uusi lasku'
+            />
+            {showStartInvoicingButton
+              ? (
+                <Button
+                  className='button-green'
+                  label='Käynnistä laskutus'
+                  onClick={() => onStartInvoicing()}
+                  title='Käynnistä laskutus'
+                />
+              ) : (
+                <Button
+                  className='button-red'
+                  label='Keskeytä laskutus'
+                  onClick={() => onStopInvoicing()}
+                  title='Keskeytä laskutus'
+                />
+              )
+            }
+          </div>
           <div ref={(ref) => this.panel = ref}>
             {editMode &&
               <NewInvoiceForm
