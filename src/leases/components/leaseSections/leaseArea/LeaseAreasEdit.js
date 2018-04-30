@@ -18,9 +18,9 @@ import PlanUnitItemsEdit from './PlanUnitItemsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveLeaseAreasFormValid} from '$src/leases/actions';
-import {FormNames} from '$src/leases/enums';
+import {AreaLocation, FormNames} from '$src/leases/enums';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
+import {formatNumber, getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease, getIsLeaseAreasFormValid} from '$src/leases/selectors';
 import {genericValidator} from '$components/form/validations';
 
@@ -71,7 +71,7 @@ const LeaseAreaItems = ({
                 <Column small={6} medium={4} large={2}>
                   <Field
                     component={FieldTypeSelect}
-                    label='Selite'
+                    label='Määritelmä'
                     name={`${area}.type`}
                     options={typeOptions}
                     validate={[
@@ -171,7 +171,9 @@ const LeaseAreaItems = ({
         <Column>
           <AddButton
             label='Lisää uusi kohde'
-            onClick={() => fields.push({})}
+            onClick={() => fields.push({
+              location: AreaLocation.SURFACE,
+            })}
             title='Lisää uusi kohde'
           />
         </Column>
@@ -208,7 +210,7 @@ class LeaseAreasEdit extends Component {
       <form onSubmit={handleSubmit}>
         <h2>Vuokra-alue</h2>
         <RightSubtitle
-          text={<span>{areasSum || '-'} m<sup>2</sup></span>}
+          text={<span>{formatNumber(areasSum) || '-'} m<sup>2</sup></span>}
         />
         <Divider />
 

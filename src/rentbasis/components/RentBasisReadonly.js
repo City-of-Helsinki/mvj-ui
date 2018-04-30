@@ -2,10 +2,10 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import ContentContainer from '$components/content/ContentContainer';
 import GreenBox from '$components/content/GreenBox';
 import ListItems from '../../components/content/ListItems';
+import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
 import type {Attributes, RentBasis} from '../types';
 
@@ -109,7 +109,7 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
                           <p className='no-margin'>{getLabelOfOption(priceIntendedUseOptions, price.intended_use) || '-'}</p>
                         </Column>
                         <Column small={3} medium={4} large={1}>
-                          <p className='no-margin'>{price.amount || '-'}</p>
+                          <p className='no-margin'>{formatNumber(price.amount) || '-'}</p>
                         </Column>
                         <Column small={3} medium={4} large={1}>
                           <p className='no-margin'>{getLabelOfOption(pricePeriodOptions, price.period) || '-'}</p>

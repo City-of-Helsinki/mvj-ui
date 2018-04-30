@@ -8,8 +8,7 @@ import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {
   formatDate,
   formatDateRange,
-  formatDecimalNumber,
-  formatNumberWithThousandSeparator,
+  formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
@@ -111,7 +110,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
             return (
               <Row key={index}>
                 <Column small={4} medium={4} large={2}>
-                  <p className='no-margin'>{formatNumberWithThousandSeparator(formatDecimalNumber(item.amount), '.') || '-'}</p>
+                  <p className='no-margin'>{formatNumber(item.amount) || '-'}</p>
                 </Column>
                 <Column small={4} medium={2} large={2}>
                   <p className='no-margin'>{formatDate(item.start_date) || '-'}</p>
@@ -154,7 +153,7 @@ const BasicInfoOneTime = ({attributes, rent}: Props) => {
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Kertakaikkinen vuokra</label>
-          <p>{formatNumberWithThousandSeparator(formatDecimalNumber(rent.amount)) || '-'}</p>
+          <p>{formatNumber(rent.amount) || '-'}</p>
         </Column>
       </Row>
       <Row>

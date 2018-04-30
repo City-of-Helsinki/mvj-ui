@@ -219,6 +219,13 @@ export const formatDate = (date: string) => {
   return d.format('DD.MM.YYYY');
 };
 
+export const formatNumberWithThousandSeparator = (x, separator = ' ') => {
+  if(x === null || x === undefined || !isNumber(Number(x))) {
+    return null;
+  }
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
+};
+
 export const formatDecimalNumber = (x) => {
   if(x === null || x === undefined || !isNumber(Number(x))) {
     return null;
@@ -226,18 +233,18 @@ export const formatDecimalNumber = (x) => {
   return parseFloat(x).toFixed(2).toString().replace('.', ',');
 };
 
+export const formatNumber = (x) => {
+  if(x === null || x === undefined || !isNumber(Number(x))) {
+    return null;
+  }
+  return formatNumberWithThousandSeparator(formatDecimalNumber(x));
+};
+
 export const formatDecimalNumberForDb = (x) => {
   if(x === null || x === undefined || !isNumber(Number(x))) {
     return null;
   }
   return Number(x.toString().replace(',', '.'));
-};
-
-export const formatNumberWithThousandSeparator = (x, separator = ' ') => {
-  if(x === null || x === undefined || !isNumber(Number(x))) {
-    return null;
-  }
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
 };
 
 export const formatDateRange = (startDate: any, endDate: any) => {

@@ -14,8 +14,7 @@ import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceSharePercentage} from '$src/invoices/helpers';
 import {
   formatDate,
-  formatDecimalNumber,
-  formatNumberWithThousandSeparator,
+  formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
@@ -135,7 +134,7 @@ const EditInvoiceForm = ({
           <label>Laskutettu määrä</label>
           <p>
             {invoice.billed_amount
-              ? `${formatNumberWithThousandSeparator(formatDecimalNumber(invoice.billed_amount))} €`
+              ? `${formatNumber(invoice.billed_amount)} €`
               : '-'
             }
           </p>
@@ -144,7 +143,7 @@ const EditInvoiceForm = ({
           <label>Maksamaton määrä</label>
           <p>
             {invoice.outstanding_amount
-              ? `${formatNumberWithThousandSeparator(formatDecimalNumber(invoice.outstanding_amount))} €`
+              ? `${formatNumber(invoice.outstanding_amount)} €`
               : '-'
             }
           </p>
@@ -159,7 +158,7 @@ const EditInvoiceForm = ({
           <label>Perintäkulu</label>
           <p>
             {invoice.collection_charge
-              ? `${formatNumberWithThousandSeparator(formatDecimalNumber(invoice.collection_charge))} €`
+              ? `${formatNumber(invoice.collection_charge)} €`
               : '-'
             }
           </p>

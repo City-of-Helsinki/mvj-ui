@@ -10,6 +10,16 @@ export const TenantContactType = {
 };
 
 /**
+ * Area location enumerable.
+ *
+ * @type {{SURFACE: string, UNDERGROUND: string}}
+ */
+export const AreaLocation = {
+  SURFACE: 'surface',
+  UNDERGROUND: 'underground',
+};
+
+/**
  * Classification enumerable.
  *
  * @type {{}}

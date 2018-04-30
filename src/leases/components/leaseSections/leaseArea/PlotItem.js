@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import BoxItem from '$components/content/BoxItem';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -26,16 +26,16 @@ const PlotItem = ({attributes, plot}: Props) => {
           <p><strong>{plot.identifier || '-'}</strong></p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Selite</label>
+          <label>Määritelmä</label>
           <p>{getLabelOfOption(typeOptions, plot.type) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Kokonaisala</label>
-          <p>{plot.area || '-'}</p>
+          <p>{formatNumber(plot.area) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Leikkausala</label>
-          <p>{plot.section_area || '-'}</p>
+          <p>{formatNumber(plot.section_area) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Rekisteröintipäivä</label>

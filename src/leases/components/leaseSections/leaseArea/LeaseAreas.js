@@ -9,7 +9,7 @@ import Divider from '$components/content/Divider';
 import LeaseArea from './LeaseArea';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
-import {getAttributeFieldOptions, getLabelOfOption}  from '$util/helpers';
+import {formatNumber, getAttributeFieldOptions, getLabelOfOption}  from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
@@ -26,7 +26,7 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
 
   const getAreaLabel = (area: Object) => {
     return (
-      <span>{area.area} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location) || '-'}</span>
+      <span>{formatNumber(area.area)} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location) || '-'}</span>
     );
   };
 
@@ -39,7 +39,7 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
     <div>
       <h2>Vuokra-alue</h2>
       <RightSubtitle
-        text={<span>{areasSum || '-'} m<sup>2</sup></span>}
+        text={<span>{formatNumber(areasSum) || '-'} m<sup>2</sup></span>}
       />
       <Divider />
 

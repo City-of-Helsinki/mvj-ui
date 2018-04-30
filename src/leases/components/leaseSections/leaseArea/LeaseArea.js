@@ -7,7 +7,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import PlanUnitItem from './PlanUnitItem';
 import PlotItem from './PlotItem';
-import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -29,12 +29,12 @@ const LeaseArea = ({area, attributes}: Props) => {
           <p>{area.identifier || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Selite</label>
+          <label>Määritelmä</label>
           <p>{getLabelOfOption(typeOptions, area.type) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Pinta-ala</label>
-          <p>{area.area || '-'}</p>
+          <p>{formatNumber(area.area) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Sijainti</label>

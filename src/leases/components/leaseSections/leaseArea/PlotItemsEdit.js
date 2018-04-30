@@ -76,7 +76,7 @@ const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
                     <Column small={6} medium={4} large={2}>
                       <Field
                         component={FieldTypeSelect}
-                        label='Selite'
+                        label='Määritelmä'
                         name={`${plot}.type`}
                         options={typeOptions}
                         validate={[
