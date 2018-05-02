@@ -32,8 +32,11 @@ class FieldTypeDatePicker extends Component {
   handleSelect = (val: any, e: any) => {
     const {input: {onChange}} = this.props;
 
-    if(e && e.target.value) {
+    if((e && e.target.value)) {
       const date = moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']);
+      onChange(date.isValid() ? date.format('YYYY-MM-DD') : null);
+    } else if (val) {
+      const date = moment(val, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']);
       onChange(date.isValid() ? date.format('YYYY-MM-DD') : null);
     } else {
       onChange(null);
