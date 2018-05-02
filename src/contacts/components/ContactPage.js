@@ -25,6 +25,7 @@ import {
   getContactFormTouched,
   getContactFormValues,
   getCurrentContact,
+  getIsContactFormValid,
   getIsEditMode,
   getIsFetching,
 } from '../selectors';
@@ -42,6 +43,7 @@ type Props = {
   hideEditMode: Function,
   initializeContactForm: Function,
   isContactFormTouched: boolean,
+  isContactFormValid: boolean,
   isEditMode: boolean,
   isFetching: boolean,
   location: Object,
@@ -134,7 +136,7 @@ class ContactPage extends Component {
   }
 
   render() {
-    const {contact, isContactFormTouched, isEditMode, isFetching} = this.props;
+    const {contact, isContactFormTouched, isContactFormValid, isEditMode, isFetching} = this.props;
     const {isCancelModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
@@ -164,7 +166,7 @@ class ContactPage extends Component {
             <ControlButtons
               isCopyDisabled={false}
               isEditMode={isEditMode}
-              isSaveDisabled={false}
+              isSaveDisabled={!isContactFormValid}
               onCancelClick={isContactFormTouched ? () => this.setState({isCancelModalOpen: true}) : this.hideEditMode}
               onCopyClick={this.copyContact}
               onEditClick={this.showEditMode}
@@ -190,6 +192,7 @@ const mapStateToProps = (state: RootState) => {
     contact: getCurrentContact(state),
     contactFormValues: getContactFormValues(state),
     isContactFormTouched: getContactFormTouched(state),
+    isContactFormValid: getIsContactFormValid(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
   };
