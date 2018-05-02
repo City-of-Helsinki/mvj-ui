@@ -1,10 +1,11 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {Row, Column} from 'react-foundation';
 import {Field, formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
-import {Row, Column} from 'react-foundation';
+import isEmpty from 'lodash/isEmpty';
 
 import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
@@ -14,7 +15,7 @@ import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {receiveContactFormValid} from '$src/contacts/actions';
-import {ContactType} from '$src/contacts/enums';
+import {ContactType, FormNames} from '$src/contacts/enums';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 import {getAttributes, getInitialContactFormValues, getIsContactFormValid} from '$src/contacts/selectors';
 import {genericValidator} from '$components/form/validations';
@@ -51,6 +52,9 @@ class ContactForm extends Component {
     const {attributes, handleSubmit, type} = this.props;
     const typeOptions = getAttributeFieldOptions(attributes, 'type');
     const languageOptions = getAttributeFieldOptions(attributes, 'language');
+    if (isEmpty(attributes)) {
+      return null;
+    }
 
     return(
       <form onSubmit={handleSubmit}>
@@ -305,7 +309,7 @@ class ContactForm extends Component {
   }
 }
 
-const formName = 'contact-form';
+const formName = FormNames.CONTACT;
 const selector = formValueSelector(formName);
 
 const mapStateToProps = (state: RootState) => {

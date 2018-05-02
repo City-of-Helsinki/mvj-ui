@@ -64,7 +64,7 @@ function* fetchContactsSaga({payload: search}): Generator<> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch leases with error "%s"', error);
+    console.error('Failed to fetch contacts with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }

@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import ConfirmationModal from '$components/modal/ConfirmationModal';
@@ -20,22 +21,20 @@ import {
   showEditMode,
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {FormNames} from '../enums';
 import {getRouteById} from '$src/root/routes';
 import {
-  getAttributes,
-  getContactFormTouched,
-  getContactFormValues,
   getCurrentContact,
+  getIsContactFormValid,
   getIsEditMode,
   getIsFetching,
 } from '../selectors';
 import {getContactFullName} from '../helpers';
 
 import type {RootState} from '$src/root/types';
-import type {Attributes, Contact} from '../types';
+import type {Contact} from '../types';
 
 type Props = {
-  attributes: Attributes,
   contact: Contact,
   contactFormValues: Contact,
   editContact: Function,
@@ -43,7 +42,8 @@ type Props = {
   fetchSingleContact: Function,
   hideEditMode: Function,
   initializeContactForm: Function,
-  isContactFormTouched: boolean,
+  isContactFormDirty: boolean,
+  isContactFormValid: boolean,
   isEditMode: boolean,
   isFetching: boolean,
   location: Object,
@@ -136,7 +136,7 @@ class ContactPage extends Component {
   }
 
   render() {
-    const {attributes, contact, isContactFormTouched, isEditMode, isFetching} = this.props;
+    const {contact, isContactFormDirty, isContactFormValid, isEditMode, isFetching} = this.props;
     const {isCancelModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
@@ -166,8 +166,8 @@ class ContactPage extends Component {
             <ControlButtons
               isCopyDisabled={false}
               isEditMode={isEditMode}
-              isSaveDisabled={false}
-              onCancelClick={isContactFormTouched ? () => this.setState({isCancelModalOpen: true}) : this.hideEditMode}
+              isSaveDisabled={!isContactFormValid}
+              onCancelClick={isContactFormDirty ? () => this.setState({isCancelModalOpen: true}) : this.hideEditMode}
               onCopyClick={this.copyContact}
               onEditClick={this.showEditMode}
               onSaveClick={this.saveContact}
@@ -179,13 +179,8 @@ class ContactPage extends Component {
           onBack={this.handleBack}
         />
         {isEditMode
-          ? <ContactEdit
-              attributes={attributes}
-            />
-          : <ContactReadonly
-              attributes={attributes}
-              contact={contact}
-            />
+          ? <ContactEdit />
+          : <ContactReadonly contact={contact} />
         }
       </PageContainer>
     );
@@ -194,10 +189,10 @@ class ContactPage extends Component {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    attributes: getAttributes(state),
     contact: getCurrentContact(state),
-    contactFormValues: getContactFormValues(state),
-    isContactFormTouched: getContactFormTouched(state),
+    contactFormValues: getFormValues(FormNames.CONTACT)(state),
+    isContactFormDirty: isDirty(FormNames.CONTACT)(state),
+    isContactFormValid: getIsContactFormValid(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
   };

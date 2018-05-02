@@ -2,14 +2,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {getFormValues, isDirty} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import {getRouteById} from '$src/root/routes';
-import {createContact, fetchAttributes} from '../actions';
-import {getAttributes, getContactFormTouched, getContactFormValues, getIsContactFormValid} from '../selectors';
-import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactForm from './forms/ContactForm';
 import ContentContainer from '$components/content/ContentContainer';
@@ -18,6 +15,11 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
+import {createContact, fetchAttributes} from '../actions';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {FormNames} from '../enums';
+import {getRouteById} from '$src/root/routes';
+import {getAttributes, getIsContactFormValid} from '../selectors';
 
 import type {RootState} from '$src/root/types';
 import type {Attributes, Contact} from '../types';
@@ -27,7 +29,7 @@ type Props = {
   contactFormValues: Contact,
   createContact: Function,
   fetchAttributes: Function,
-  isContactFormTouched: boolean,
+  isContactFormDirty: boolean,
   isContactFormValid: boolean,
   receiveTopNavigationSettings: Function,
   router: Object,
@@ -81,7 +83,7 @@ class NewContactPage extends Component {
   }
 
   render() {
-    const {attributes, isContactFormTouched, isContactFormValid} = this.props;
+    const {attributes, isContactFormDirty, isContactFormValid} = this.props;
     const {isCancelModalOpen} = this.state;
 
     return (
@@ -102,7 +104,7 @@ class NewContactPage extends Component {
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={!isContactFormValid}
-              onCancelClick={isContactFormTouched ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
+              onCancelClick={isContactFormDirty ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}
               showCopyButton={true}
@@ -121,12 +123,9 @@ class NewContactPage extends Component {
           }
           {!isEmpty(attributes) &&
             <GreenBoxEdit className='no-margin'>
-              <ContactForm
-                attributes={attributes}
-              />
+              <ContactForm />
             </GreenBoxEdit>
           }
-
         </ContentContainer>
       </PageContainer>
     );
@@ -136,8 +135,8 @@ class NewContactPage extends Component {
 const mapStateToProps = (state: RootState) => {
   return {
     attributes: getAttributes(state),
-    contactFormValues: getContactFormValues(state),
-    isContactFormTouched: getContactFormTouched(state),
+    contactFormValues: getFormValues(FormNames.CONTACT)(state),
+    isContactFormDirty: isDirty(FormNames.CONTACT)(state),
     isContactFormValid: getIsContactFormValid(state),
   };
 };

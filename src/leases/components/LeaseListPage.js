@@ -242,7 +242,6 @@ class LeaseListPage extends Component {
             <Search
               attributes={attributes}
               onSearch={(query) => this.handleSearchChange(query)}
-              ref={(input) => { this.search = input; }}
             />
           }
         />

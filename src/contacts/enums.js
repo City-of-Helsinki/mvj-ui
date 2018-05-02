@@ -10,3 +10,13 @@ export const ContactType = {
   ASSOCIATION: 'association',
   OTHER: 'other',
 };
+
+/**
+ * Lease form names enumerable.
+ *
+ * @type {{CONSTRUCTABILITY: string, SEARCH: string,}}
+ */
+export const FormNames = {
+  CONTACT: 'contact-form',
+  SEARCH: 'contact-search-form',
+};

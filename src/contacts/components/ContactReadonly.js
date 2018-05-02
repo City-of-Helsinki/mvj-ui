@@ -5,19 +5,17 @@ import ContentContainer from '$components/content/ContentContainer';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import GreenBox from '$components/content/GreenBox';
 
-import type {Attributes, Contact} from '../types';
+import type {Contact} from '../types';
 
 type Props = {
-  attributes: Attributes,
   contact: Contact,
 }
 
-const ContactReadonly = ({attributes, contact}: Props) => {
+const ContactReadonly = ({contact}: Props) => {
   return (
     <ContentContainer>
       <GreenBox>
         <ContactTemplate
-          attributes={attributes}
           contact={contact}
         />
       </GreenBox>

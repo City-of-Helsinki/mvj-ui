@@ -1,7 +1,6 @@
 // @flow
 
 import type {Selector} from '../types';
-import get from 'lodash/get';
 
 import type {Attributes, Contact, ContactState, ContactList} from './types';
 
@@ -31,9 +30,3 @@ export const getCompleteContactList: Selector<Array<Contact>, void> = (state: Co
 
 export const getCurrentContact: Selector<Contact, void> = (state: ContactState): Contact =>
   state.contacts.current;
-
-export const getContactFormTouched: Selector<Contact, void> = (state: ContactState): Contact =>
-  get(state, 'form.contact-form.anyTouched');
-
-export const getContactFormValues: Selector<Contact, void> = (state: ContactState): Contact =>
-  get(state, 'form.contact-form.values');

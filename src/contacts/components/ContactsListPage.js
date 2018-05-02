@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
@@ -15,15 +16,16 @@ import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
 import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
-import {getRouteById} from '$src/root/routes';
-import {getAttributes, getContactList, getIsFetching} from '../selectors';
 import {
   fetchContacts,
   fetchAttributes,
   initializeContactForm,
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {FormNames} from '../enums';
 import {getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$src/util/helpers';
+import {getRouteById} from '$src/root/routes';
+import {getAttributes, getContactList, getIsFetching} from '../selectors';
 
 import type {Attributes, ContactList} from '../types';
 import type {RootState} from '../../root/types';
@@ -36,6 +38,7 @@ type Props = {
   fetchAttributes: Function,
   fetchContacts: Function,
   initializeContactForm: Function,
+  initialize: Function,
   isFetching: boolean,
   receiveTopNavigationSettings: Function,
   router: Object,
@@ -84,8 +87,8 @@ class ContactListPage extends Component {
   }
 
   componentDidMount = () => {
-    const {router: {location: {query}}} = this.props;
-    this.search.initialize(query);
+    const {initialize, router: {location: {query}}} = this.props;
+    initialize(FormNames.SEARCH, query);
   }
 
   handleCreateButtonClick = () => {
@@ -194,7 +197,6 @@ class ContactListPage extends Component {
           }
           searchComponent={
             <Search
-              ref={(input) => { this.search = input; }}
               onSearch={(query) => this.handleSearchChange(query)}
             />
           }
@@ -250,6 +252,7 @@ export default flowRight(
     {
       fetchAttributes,
       fetchContacts,
+      initialize,
       initializeContactForm,
       receiveTopNavigationSettings,
     },
