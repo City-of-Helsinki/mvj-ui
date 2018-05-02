@@ -121,12 +121,9 @@ class NewContactPage extends Component {
           }
           {!isEmpty(attributes) &&
             <GreenBoxEdit className='no-margin'>
-              <ContactForm
-                attributes={attributes}
-              />
+              <ContactForm />
             </GreenBoxEdit>
           }
-
         </ContentContainer>
       </PageContainer>
     );
