@@ -13,7 +13,7 @@
   @include transition(0.5s, right, ease-in-out);
 
   &__container {
-    padding: rem-calc(20px);
+    padding: rem-calc(15px);
     background-color: $white;
     height: 100%;
   }
@@ -38,13 +38,13 @@
   }
 
   &__body {
-    max-height: calc(100% - 30px);
+    max-height: calc(100% - 45px);
     overflow-y: auto;
     overflow-x: hidden;
-    height: auto;
+    height: 100%;
 
     &.with-footer {
-      max-height: calc(100% - 60px);
+      max-height: calc(100% - 90px);
     }
   }
 
@@ -53,6 +53,6 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    padding: rem-calc(10px) rem-calc(20px) rem-calc(20px);
+    padding: rem-calc(10px) rem-calc(15px) rem-calc(15px);
   }
 }
