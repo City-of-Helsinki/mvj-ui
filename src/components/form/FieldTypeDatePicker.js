@@ -18,13 +18,23 @@ type Props = {
 class FieldTypeDatePicker extends Component {
   props: Props
 
-  handleChange = (e: any) => {
+  handleBlur = (e: any) => {
     const {input: {onBlur}} = this.props;
-    const {target: {value}} = e;
-    if(value) {
-      onBlur(moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD'));
+
+    if(e) {
+      onBlur(moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD'));
     } else {
       onBlur(null);
+    }
+  }
+
+  handleSelect = (val: any, e: any) => {
+    const {input: {onChange}} = this.props;
+
+    if(e) {
+      onChange(moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD'));
+    } else {
+      onChange(null);
     }
   }
 
@@ -38,7 +48,8 @@ class FieldTypeDatePicker extends Component {
       label,
       labelClassName,
       meta: {dirty, error, touched},
-      placeholder} = this.props;
+      placeholder,
+    } = this.props;
 
     return (
       <div className={classNames('mvj-form-field', className)}>
@@ -51,11 +62,12 @@ class FieldTypeDatePicker extends Component {
           {'is-dirty': (!disableDirty && dirty)})}>
           <DatePicker
             {...input}
-            placeholder={placeholder}
             disabledKeyboardNavigation
             locale='fi'
+            onBlur={this.handleBlur}
+            onSelect={this.handleSelect}
+            placeholder={placeholder}
             selected={value ? moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']) : null}
-            onBlur={this.handleChange}
           />
           {(touched || disableTouched) && error && <span className={'error'}>{error}</span>}
         </div>
