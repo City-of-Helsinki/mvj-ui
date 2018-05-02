@@ -8,7 +8,7 @@ import get from 'lodash/get';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
-import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
+import FieldTypeRadio from '$components/form/FieldTypeRadio';
 import FieldTypeSelect from '$components/form/FieldTypeSelect';
 import FieldTypeText from '$components/form/FieldTypeText';
 import LeaseHistory from './LeaseHistory';
@@ -65,7 +65,6 @@ class SummaryEdit extends Component {
     const regulationOptions = getAttributeFieldOptions(attributes, 'regulation');
     const hitasOptions = getAttributeFieldOptions(attributes, 'hitas');
     const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
-
     const lessorOptions = getLessorOptions(lessors);
 
     return (
@@ -164,11 +163,12 @@ class SummaryEdit extends Component {
                 <Column small={12} medium={6} large={4}>
                   <Field
                     className='checkbox-inline'
-                    component={FieldTypeCheckbox}
+                    component={FieldTypeRadio}
                     label='Siirto-oikeus'
                     name="transferable"
                     options= {[
-                      {value: 'true', label: 'Siirto-oikeus'},
+                      {value: 'false', label: 'Ei'},
+                      {value: 'true', label: 'Kyllä'},
                     ]}
                     validate={[
                       (value) => genericValidator(value, get(attributes, 'transferable')),
@@ -268,11 +268,12 @@ class SummaryEdit extends Component {
                 <Column small={12} medium={6} large={4}>
                   <Field
                     className='checkbox-inline'
-                    component={FieldTypeCheckbox}
+                    component={FieldTypeRadio}
                     label='Sääntely'
                     name="regulated"
                     options= {[
-                      {value: true, label: 'Säännelty'},
+                      {value: 'false', label: 'Ei'},
+                      {value: 'true', label: 'Kyllä'},
                     ]}
                     validate={[
                       (value) => genericValidator(value, get(attributes, 'regulated')),
