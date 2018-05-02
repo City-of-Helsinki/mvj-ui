@@ -4,15 +4,17 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 
-import {LeaseStatus} from './enums';
-import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {
   ConstructabilityType,
+  LeaseStatus,
   TenantContactType,
 } from './enums';
+import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {
   fixedLengthNumber,
+  formatBooleanToString,
   formatDecimalNumberForDb,
+  formatStringToBoolean,
 } from '$util/helpers';
 
 import type {Contact} from '$src/contacts/types';
@@ -119,8 +121,8 @@ export const getContentSummary = (lease: Object) => {
     intended_use_note: get(lease, 'intended_use_note'),
     financing: get(lease, 'financing'),
     management: get(lease, 'management'),
-    transferable: get(lease, 'transferable'),
-    regulated: get(lease, 'regulated'),
+    transferable: formatBooleanToString(get(lease, 'transferable')),
+    regulated: formatBooleanToString(get(lease, 'regulated')),
     regulation: get(lease, 'regulation'),
     hitas: get(lease, 'hitas'),
     notice_period: get(lease, 'notice_period'),
@@ -669,8 +671,8 @@ export const addSummaryFormValues = (payload: Object, summary: Object) => {
   payload.intended_use_note = get(summary, 'intended_use_note');
   payload.financing = get(summary, 'financing');
   payload.management = get(summary, 'management');
-  payload.transferable = get(summary, 'transferable');
-  payload.regulated = get(summary, 'regulated');
+  payload.transferable = formatStringToBoolean(get(summary, 'transferable'));
+  payload.regulated = formatStringToBoolean(get(summary, 'regulated'));
   payload.regulation = get(summary, 'regulation');
   payload.hitas = get(summary, 'hitas');
   payload.notice_period = get(summary, 'notice_period');

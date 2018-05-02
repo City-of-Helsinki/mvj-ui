@@ -11,12 +11,10 @@ type Props = {
   type: string,
 }
 
-const FieldTypeRadio = ({input, displayError, disabled, options, type}: Props) => {
-  const {name, onChange} = input;
-
+const FieldTypeRadio = ({input: {name, onChange}, displayError, disabled, options, type}: Props) => {
   return (
     <fieldset
-      id={input.name}
+      id={name}
       className={classNames(`form-field__${type}`, {'has-error': displayError})}
       disabled={disabled}
     >
@@ -24,9 +22,10 @@ const FieldTypeRadio = ({input, displayError, disabled, options, type}: Props) =
         <label key={index}>
           <input
             name={name}
+            onChange={(event) => onChange(event.target.value)}
             type={type}
             value={label}
-            onChange={(event) => onChange(event.target.value)}
+
           />
           {label}
         </label>

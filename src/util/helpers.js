@@ -207,6 +207,20 @@ export const fixedLengthNumber = (value: ?number, length: number = 2) => {
   return  value.toString();
 };
 
+export const formatBooleanToString = (value: ?boolean) => {
+  if (value === null) {
+    return value;
+  }
+  return value.toString();
+};
+
+export const formatStringToBoolean = (value: ?string) => {
+  if (value === null) {
+    return value;
+  }
+  return value === 'true' ? true : false;
+};
+
 export const getEpochTime = () =>
   Math.round(new Date().getTime()/1000.0);
 
