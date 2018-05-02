@@ -21,8 +21,9 @@ class FieldTypeDatePicker extends Component {
   handleBlur = (e: any) => {
     const {input: {onBlur}} = this.props;
 
-    if(e) {
-      onBlur(moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD'));
+    if(e && e.target.value) {
+      const date = moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']);
+      onBlur(date.isValid() ? date.format('YYYY-MM-DD') : null);
     } else {
       onBlur(null);
     }
@@ -31,8 +32,9 @@ class FieldTypeDatePicker extends Component {
   handleSelect = (val: any, e: any) => {
     const {input: {onChange}} = this.props;
 
-    if(e) {
-      onChange(moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).format('YYYY-MM-DD'));
+    if(e && e.target.value) {
+      const date = moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']);
+      onChange(date.isValid() ? date.format('YYYY-MM-DD') : null);
     } else {
       onChange(null);
     }
