@@ -79,7 +79,7 @@ export const RentTypes = {
 };
 
 /**
- * Rent type enumerable.
+ * Rent due date type enumerable.
  *
  * @type {{CUSTOM: string, FIXED: string,}}
  */
@@ -89,7 +89,7 @@ export const RentDueDateTypes = {
 };
 
 /**
- * Rent type enumerable.
+ * Lease form names enumerable.
  *
  * @type {{CONSTRUCTABILITY: string, CONTRACTS: string, CREATE_LEASE: string, DECISIONS: string, INSPECTION: string, INVOICE_EDIT: string, INVOICE_NEW: string, LEASE_AREAS: string, LEASE_INFO: string, RENTS: string, SEARCH: string, SUMMARY: string, TENANTS: string}}
  */

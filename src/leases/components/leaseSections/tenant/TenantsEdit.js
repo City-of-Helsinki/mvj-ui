@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import {change, reduxForm, FieldArray} from 'redux-form';
+import {change, FieldArray, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
 import ContactModal from './ContactModal';
@@ -11,7 +11,6 @@ import FormSection from '$components/form/FormSection';
 import TenantItemsEdit from './TenantItemsEdit';
 import {createContact, editContact, hideContactModal, receiveContactModalSettings, receiveTenantsFormValid} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getContactFormValues} from '$src/contacts/selectors';
 import {getContactModalSettings, getIsContactModalOpen, getIsTenantsFormValid} from '$src/leases/selectors';
 
 import type {ContactModalSettings} from '$src/leases/types';
@@ -120,7 +119,7 @@ export default flowRight(
     (state) => {
       return {
         contactModalSettings: getContactModalSettings(state),
-        contactFormValues: getContactFormValues(state),
+        contactFormValues: getFormValues(formName)(state),
         isContactModalOpen: getIsContactModalOpen(state),
         isTenantsFormValid: getIsTenantsFormValid(state),
       };

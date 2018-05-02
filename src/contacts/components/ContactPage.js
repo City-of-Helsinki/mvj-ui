@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {getFormValues} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import ConfirmationModal from '$components/modal/ConfirmationModal';
@@ -20,10 +21,10 @@ import {
   showEditMode,
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {FormNames} from '../enums';
 import {getRouteById} from '$src/root/routes';
 import {
   getContactFormTouched,
-  getContactFormValues,
   getCurrentContact,
   getIsContactFormValid,
   getIsEditMode,
@@ -190,7 +191,7 @@ class ContactPage extends Component {
 const mapStateToProps = (state: RootState) => {
   return {
     contact: getCurrentContact(state),
-    contactFormValues: getContactFormValues(state),
+    contactFormValues: getFormValues(FormNames.CONTACT)(state),
     isContactFormTouched: getContactFormTouched(state),
     isContactFormValid: getIsContactFormValid(state),
     isEditMode: getIsEditMode(state),

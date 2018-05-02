@@ -15,7 +15,7 @@ import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {receiveContactFormValid} from '$src/contacts/actions';
-import {ContactType} from '$src/contacts/enums';
+import {ContactType, FormNames} from '$src/contacts/enums';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 import {getAttributes, getInitialContactFormValues, getIsContactFormValid} from '$src/contacts/selectors';
 import {genericValidator} from '$components/form/validations';
@@ -309,7 +309,7 @@ class ContactForm extends Component {
   }
 }
 
-const formName = 'contact-form';
+const formName = FormNames.CONTACT;
 const selector = formValueSelector(formName);
 
 const mapStateToProps = (state: RootState) => {

@@ -34,6 +34,3 @@ export const getCurrentContact: Selector<Contact, void> = (state: ContactState):
 
 export const getContactFormTouched: Selector<Contact, void> = (state: ContactState): Contact =>
   get(state, 'form.contact-form.anyTouched');
-
-export const getContactFormValues: Selector<Contact, void> = (state: ContactState): Contact =>
-  get(state, 'form.contact-form.values');
