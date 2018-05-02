@@ -14,8 +14,9 @@ export const ContactType = {
 /**
  * Lease form names enumerable.
  *
- * @type {{CONSTRUCTABILITY: string,}}
+ * @type {{CONSTRUCTABILITY: string, SEARCH: string,}}
  */
 export const FormNames = {
   CONTACT: 'contact-form',
+  SEARCH: 'contact-search-form',
 };

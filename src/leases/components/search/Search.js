@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
-import {change, Field, formValueSelector, getFormValues, initialize, reduxForm} from 'redux-form';
+import {change, Field, formValueSelector, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
@@ -26,7 +26,6 @@ type Props = {
   districts: Array<Object>,
   fetchDistrictsByMunicipality: Function,
   formValues: Object,
-  initialize: Function,
   municipality: string,
   onSearch: Function,
   router: Object,
@@ -44,14 +43,21 @@ class Search extends Component {
     isBasicSearch: true,
   }
 
+  _isMounted: boolean;
+
   componentDidMount = () => {
     const {router: {location: {query}}} = this.props;
+    this._isMounted = true;
 
     if(!!toArray(query).length && !query.search) {
       this.setState({
         isBasicSearch: false,
       });
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   componentWillUpdate(nextProps: Object) {
@@ -73,6 +79,10 @@ class Search extends Component {
   }
 
   onSearchChange = debounce(() => {
+    if(!this._isMounted) {
+      return;
+    }
+
     const {
       formValues,
       onSearch,
@@ -312,7 +322,6 @@ export default flowRight(
     {
       change,
       fetchDistrictsByMunicipality,
-      initialize,
     }
   ),
   reduxForm({
