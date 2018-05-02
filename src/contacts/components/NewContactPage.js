@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {getFormValues} from 'redux-form';
+import {getFormValues, isDirty} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
@@ -19,7 +19,7 @@ import {createContact, fetchAttributes} from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '../enums';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getContactFormTouched, getIsContactFormValid} from '../selectors';
+import {getAttributes, getIsContactFormValid} from '../selectors';
 
 import type {RootState} from '$src/root/types';
 import type {Attributes, Contact} from '../types';
@@ -29,7 +29,7 @@ type Props = {
   contactFormValues: Contact,
   createContact: Function,
   fetchAttributes: Function,
-  isContactFormTouched: boolean,
+  isContactFormDirty: boolean,
   isContactFormValid: boolean,
   receiveTopNavigationSettings: Function,
   router: Object,
@@ -83,7 +83,7 @@ class NewContactPage extends Component {
   }
 
   render() {
-    const {attributes, isContactFormTouched, isContactFormValid} = this.props;
+    const {attributes, isContactFormDirty, isContactFormValid} = this.props;
     const {isCancelModalOpen} = this.state;
 
     return (
@@ -104,7 +104,7 @@ class NewContactPage extends Component {
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={!isContactFormValid}
-              onCancelClick={isContactFormTouched ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
+              onCancelClick={isContactFormDirty ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}
               showCopyButton={true}
@@ -136,7 +136,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     attributes: getAttributes(state),
     contactFormValues: getFormValues(FormNames.CONTACT)(state),
-    isContactFormTouched: getContactFormTouched(state),
+    isContactFormDirty: isDirty(FormNames.CONTACT)(state),
     isContactFormValid: getIsContactFormValid(state),
   };
 };

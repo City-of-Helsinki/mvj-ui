@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {getFormValues} from 'redux-form';
+import {getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import ConfirmationModal from '$components/modal/ConfirmationModal';
@@ -24,7 +24,6 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '../enums';
 import {getRouteById} from '$src/root/routes';
 import {
-  getContactFormTouched,
   getCurrentContact,
   getIsContactFormValid,
   getIsEditMode,
@@ -43,7 +42,7 @@ type Props = {
   fetchSingleContact: Function,
   hideEditMode: Function,
   initializeContactForm: Function,
-  isContactFormTouched: boolean,
+  isContactFormDirty: boolean,
   isContactFormValid: boolean,
   isEditMode: boolean,
   isFetching: boolean,
@@ -137,7 +136,7 @@ class ContactPage extends Component {
   }
 
   render() {
-    const {contact, isContactFormTouched, isContactFormValid, isEditMode, isFetching} = this.props;
+    const {contact, isContactFormDirty, isContactFormValid, isEditMode, isFetching} = this.props;
     const {isCancelModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
@@ -168,7 +167,7 @@ class ContactPage extends Component {
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={!isContactFormValid}
-              onCancelClick={isContactFormTouched ? () => this.setState({isCancelModalOpen: true}) : this.hideEditMode}
+              onCancelClick={isContactFormDirty ? () => this.setState({isCancelModalOpen: true}) : this.hideEditMode}
               onCopyClick={this.copyContact}
               onEditClick={this.showEditMode}
               onSaveClick={this.saveContact}
@@ -192,7 +191,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     contact: getCurrentContact(state),
     contactFormValues: getFormValues(FormNames.CONTACT)(state),
-    isContactFormTouched: getContactFormTouched(state),
+    isContactFormDirty: isDirty(FormNames.CONTACT)(state),
     isContactFormValid: getIsContactFormValid(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
