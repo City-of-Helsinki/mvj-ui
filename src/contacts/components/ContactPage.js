@@ -22,7 +22,6 @@ import {
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
 import {
-  getAttributes,
   getContactFormTouched,
   getContactFormValues,
   getCurrentContact,
@@ -32,10 +31,9 @@ import {
 import {getContactFullName} from '../helpers';
 
 import type {RootState} from '$src/root/types';
-import type {Attributes, Contact} from '../types';
+import type {Contact} from '../types';
 
 type Props = {
-  attributes: Attributes,
   contact: Contact,
   contactFormValues: Contact,
   editContact: Function,
@@ -136,7 +134,7 @@ class ContactPage extends Component {
   }
 
   render() {
-    const {attributes, contact, isContactFormTouched, isEditMode, isFetching} = this.props;
+    const {contact, isContactFormTouched, isEditMode, isFetching} = this.props;
     const {isCancelModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
@@ -179,13 +177,8 @@ class ContactPage extends Component {
           onBack={this.handleBack}
         />
         {isEditMode
-          ? <ContactEdit
-              attributes={attributes}
-            />
-          : <ContactReadonly
-              attributes={attributes}
-              contact={contact}
-            />
+          ? <ContactEdit />
+          : <ContactReadonly contact={contact} />
         }
       </PageContainer>
     );
@@ -194,7 +187,6 @@ class ContactPage extends Component {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    attributes: getAttributes(state),
     contact: getCurrentContact(state),
     contactFormValues: getContactFormValues(state),
     isContactFormTouched: getContactFormTouched(state),
