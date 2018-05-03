@@ -271,9 +271,9 @@ class LeaseListPage extends Component {
                   dataKeys={[
                     {key: 'identifier', label: 'Vuokratunnus'},
                     {key: 'real_property_unit', label: 'Vuokrakohde'},
+                    {key: 'address', label: 'Osoite'},
                     {key: 'tenant', label: 'Vuokralainen'},
                     {key: 'lessor', label: 'Vuokranantaja', renderer: (val) => getLabelOfOption(lessorOptions, val)},
-                    {key: 'address', label: 'Osoite'},
                     {key: 'state', label: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
                     {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val)},
                     {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
