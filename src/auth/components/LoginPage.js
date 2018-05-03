@@ -1,26 +1,26 @@
-import React from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import {getRouteById} from '$src/root/routes';
+import {setRedirectUrlToSessionStorage} from '../helpers';
 import userManager from '../util/user-manager';
 
 type Props = {
-  buttonDisabled: PropTypes.boolean,
-  location: Object,
+  buttonDisabled: boolean,
 }
 
-class LoginPage extends React.Component {
+class LoginPage extends Component {
   props: Props
-  onLoginButtonClick(event) {
+
+  static contextTypes = {
+    router: PropTypes.object,
+  };
+
+  onLoginButtonClick = (event) => {
+    const {router: {location: {pathname, search}}} = this.context;
     event.preventDefault();
     userManager.signinRedirect();
-  }
 
-  componentDidMount() {
-    const {location} = this.props;
-    if (location && location.pathname == getRouteById('logout')) {
-      userManager.removeUser();
-    }
+    setRedirectUrlToSessionStorage(`${pathname}${search}` || '/');
   }
 
   render() {
