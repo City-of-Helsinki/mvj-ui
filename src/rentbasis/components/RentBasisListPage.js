@@ -2,16 +2,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 
-import {fetchAttributes, fetchRentBasisList, initializeRentBasis} from '../actions';
-import {getAttributes, getIsFetching, getRentBasisList} from '../selectors';
-import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {formatDateObj, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
-import {getRouteById} from '$src/root/routes';
 import Button from '$components/button/Button';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
@@ -21,14 +17,21 @@ import SearchWrapper from '$components/search/SearchWrapper';
 import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
 
-import type {Attributes, RentBasisList} from '../types';
+import {fetchAttributes, fetchRentBasisList, initializeRentBasis} from '$src/rentbasis/actions';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {TABLE_PAGE_SIZE} from '$src/rentbasis/constants';
+import {FormNames} from '$src/rentbasis/enums';
+import {formatDateObj, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {getRouteById} from '$src/root/routes';
+import {getAttributes, getIsFetching, getRentBasisList} from '$src/rentbasis/selectors';
 
-const PAGE_SIZE = 25;
+import type {Attributes, RentBasisList} from '../types';
 
 type Props = {
   attributes: Attributes,
   fetchAttributes: Function,
   fetchRentBasisList: Function,
+  initialize: Function,
   initializeRentBasis: Function,
   isFetching: boolean,
   receiveTopNavigationSettings: Function,
@@ -51,8 +54,6 @@ class RentBasisListPage extends Component {
     router: PropTypes.object,
   };
 
-  search: any
-
   componentWillMount() {
     const {fetchAttributes, fetchRentBasisList, receiveTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
@@ -69,9 +70,9 @@ class RentBasisListPage extends Component {
       this.setState({activePage: 1});
     } else {
       this.setState({activePage: page});
-      query.offset = (page - 1) * PAGE_SIZE;
+      query.offset = (page - 1) * TABLE_PAGE_SIZE;
     }
-    query.limit = PAGE_SIZE;
+    query.limit = TABLE_PAGE_SIZE;
 
     fetchRentBasisList(getSearchQuery(query));
     delete query.limit;
@@ -80,15 +81,15 @@ class RentBasisListPage extends Component {
   }
 
   componentDidMount = () => {
-    const {router: {location: {query}}} = this.props;
-    this.search.initialize(query);
+    const {initialize, router: {location: {query}}} = this.props;
+    initialize(FormNames.SEARCH, query);
   }
 
   handleSearchChange = (query) => {
     const {fetchRentBasisList} = this.props;
     const {router} = this.context;
 
-    query.limit = PAGE_SIZE;
+    query.limit = TABLE_PAGE_SIZE;
     fetchRentBasisList(getSearchQuery(query));
 
     this.setState({activePage: 1});
@@ -135,12 +136,12 @@ class RentBasisListPage extends Component {
 
     if(page > 1) {
       query.page = page;
-      query.offset = (page - 1) * PAGE_SIZE;
+      query.offset = (page - 1) * TABLE_PAGE_SIZE;
     } else {
       query.page = undefined;
       query.offset = undefined;
     }
-    query.limit = PAGE_SIZE;
+    query.limit = TABLE_PAGE_SIZE;
 
     fetchRentBasisList(getSearchQuery(query));
 
@@ -177,7 +178,7 @@ class RentBasisListPage extends Component {
       return 0;
     }
     else {
-      return Math.ceil(count/PAGE_SIZE);
+      return Math.ceil(count/TABLE_PAGE_SIZE);
     }
   }
 
@@ -203,7 +204,6 @@ class RentBasisListPage extends Component {
           }
           searchComponent={
             <Search
-              ref={(input) => { this.search = input; }}
               onSearch={(query) => this.handleSearchChange(query)}
             />
           }
@@ -249,6 +249,7 @@ export default flowRight(
     {
       fetchAttributes,
       fetchRentBasisList,
+      initialize,
       initializeRentBasis,
       receiveTopNavigationSettings,
     },

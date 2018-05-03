@@ -1,56 +1,58 @@
 // @flow
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Field, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
+import flowRight from 'lodash/flowRight';
 
-import TextInput from '$components/inputs/TextInput';
+import FieldTypeText from '$components/form/FieldTypeText';
+import {FormNames} from '$src/rentbasis/enums';
 
 type Props = {
   onSearch: Function,
-}
-
-type State = {
   search: string,
 }
 
 class Search extends Component {
   props: Props
 
-  state: State = {
-    search: '',
+  _isMounted: boolean;
+
+  componentDidMount() {
+    this._isMounted = true;
   }
 
-  initialize = (query: Object) => {
-    this.setState({
-      search: query.search || '',
-    });
+  componentWillUnmount() {
+    this._isMounted = true;
+  }
+
+  componentWillUpdate(nextProps: Object) {
+    if(this.props.search !== nextProps.search) {
+      this.onSearchChange();
+    }
   }
 
   onSearchChange = debounce(() => {
-    const {onSearch} = this.props;
-    const {search} = this.state;
-
+    if(!this._isMounted) {
+      return;
+    }
+    const {onSearch, search} = this.props;
     const filters = {};
     filters.search = search || undefined;
     onSearch(filters);
   }, 300);
 
-  handleTextInputChange = (e: any, id: string) => {
-    this.setState({[id]: e.target.value});
-    this.onSearchChange();
-  }
-
   render () {
-    const {search} = this.state;
-
     return (
       <div className='search'>
         <Row>
-          <Column>
-            <TextInput
-              placeholder={'Hae hakusanalla'}
-              onChange={(e) => this.handleTextInputChange(e, 'search')}
-              value={search}
+          <Column large={12}>
+            <Field
+              component={FieldTypeText}
+              disableDirty
+              name="search"
+              placeholder='Hae hakusanalla'
             />
           </Column>
         </Row>
@@ -59,4 +61,19 @@ class Search extends Component {
   }
 }
 
-export default Search;
+
+const formName = FormNames.SEARCH;
+const selector = formValueSelector(formName);
+export default flowRight(
+  connect(
+    state => {
+
+      return {
+        search: selector(state, 'search'),
+      };
+    },
+  ),
+  reduxForm({
+    form: formName,
+  }),
+)(Search);

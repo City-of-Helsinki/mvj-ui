@@ -45,7 +45,7 @@ class Search extends Component {
 
   _isMounted: boolean;
 
-  componentDidMount = () => {
+  componentDidMount() {
     const {router: {location: {query}}} = this.props;
     this._isMounted = true;
 
@@ -82,7 +82,6 @@ class Search extends Component {
     if(!this._isMounted) {
       return;
     }
-
     const {
       formValues,
       onSearch,

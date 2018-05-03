@@ -75,8 +75,6 @@ class LeaseListPage extends Component {
     visualizationType: 'table',
   }
 
-  search: any
-
   static contextTypes = {
     router: PropTypes.object,
   };

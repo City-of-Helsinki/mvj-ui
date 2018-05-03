@@ -16,13 +16,11 @@ import {createRentBasis, fetchAttributes} from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/rentbasis/enums';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getIsFormValid} from '../selectors';
+import {getIsFormValid} from '../selectors';
 
-import type {Attributes} from '../types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
-  attributes: Attributes,
   createRentBasis: Function,
   editedRentBasis: ?Object,
   fetchAttributes: Function,
@@ -79,12 +77,11 @@ class NewRentBasisPage extends Component {
 
   handleSave = () => {
     const {createRentBasis, editedRentBasis} = this.props;
-
     createRentBasis(editedRentBasis);
   }
 
   render() {
-    const {attributes, isFormDirty, isFormValid} = this.props;
+    const {isFormDirty, isFormValid} = this.props;
     const {isCancelModalOpen} = this.state;
 
     return (
@@ -111,16 +108,12 @@ class NewRentBasisPage extends Component {
               showCopyButton={true}
             />
           }
-          infoComponent={
-            <h1>Uusi vuokrausperuste</h1>
-          }
+          infoComponent={<h1>Uusi vuokrausperuste</h1>}
           onBack={this.handleBack}
         />
         <ContentContainer>
-          <GreenBoxEdit>
-            <RentBasisForm
-              attributes={attributes}
-            />
+          <GreenBoxEdit className='no-margin'>
+            <RentBasisForm />
           </GreenBoxEdit>
         </ContentContainer>
       </PageContainer>
@@ -130,7 +123,6 @@ class NewRentBasisPage extends Component {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    attributes: getAttributes(state),
     editedRentBasis: getFormValues(FormNames.RENT_BASIS)(state),
     isFormDirty: isDirty(FormNames.RENT_BASIS)(state),
     isFormValid: getIsFormValid(state),
