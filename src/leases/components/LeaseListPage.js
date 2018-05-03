@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
@@ -75,14 +76,13 @@ class LeaseListPage extends Component {
     visualizationType: 'table',
   }
 
-  search: any
-
   static contextTypes = {
     router: PropTypes.object,
   };
 
   componentWillMount() {
     const {
+      attributes,
       fetchAttributes,
       fetchLeases,
       fetchLessors,
@@ -96,9 +96,6 @@ class LeaseListPage extends Component {
       showSearch: false,
     });
 
-    fetchAttributes();
-    fetchLessors();
-
     const page = Number(query.page);
 
     if(!page || !isNumber(page) || query.page <= 1) {
@@ -111,6 +108,11 @@ class LeaseListPage extends Component {
 
     fetchLeases(getSearchQuery(query));
     delete query.limit;
+
+    if(isEmpty(attributes)) {
+      fetchAttributes();
+    }
+    fetchLessors();
   }
 
   componentDidMount = () => {
@@ -269,9 +271,9 @@ class LeaseListPage extends Component {
                   dataKeys={[
                     {key: 'identifier', label: 'Vuokratunnus'},
                     {key: 'real_property_unit', label: 'Vuokrakohde'},
+                    {key: 'address', label: 'Osoite'},
                     {key: 'tenant', label: 'Vuokralainen'},
                     {key: 'lessor', label: 'Vuokranantaja', renderer: (val) => getLabelOfOption(lessorOptions, val)},
-                    {key: 'address', label: 'Osoite'},
                     {key: 'state', label: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
                     {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val)},
                     {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},

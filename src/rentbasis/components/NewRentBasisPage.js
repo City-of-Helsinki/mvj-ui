@@ -2,12 +2,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
-import {createRentBasis, fetchAttributes} from '../actions';
-import {getAttributes, getIsFormValid, getRentBasisFormTouched, getRentBasisFormValues} from '../selectors';
-import {getRouteById} from '$src/root/routes';
-import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
@@ -15,16 +13,21 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import PageContainer from '$components/content/PageContainer';
 import RentBasisForm from './forms/RentBasisForm';
+import {createRentBasis, fetchAttributes} from '$src/rentbasis/actions';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {FormNames} from '$src/rentbasis/enums';
+import {getRouteById} from '$src/root/routes';
+import {getAttributes, getIsFormValid} from '$src/rentbasis/selectors';
 
-import type {Attributes} from '../types';
 import type {RootState} from '$src/root/types';
+import type {Attributes} from '$src/rentbasis/types';
 
 type Props = {
   attributes: Attributes,
   createRentBasis: Function,
   editedRentBasis: ?Object,
   fetchAttributes: Function,
-  isFormTouched: boolean,
+  isFormDirty: boolean,
   isFormValid: boolean,
   receiveTopNavigationSettings: Function,
   router: Object,
@@ -46,15 +49,16 @@ class NewRentBasisPage extends Component {
   };
 
   componentWillMount() {
-    const {fetchAttributes, receiveTopNavigationSettings} = this.props;
+    const {attributes, fetchAttributes, receiveTopNavigationSettings} = this.props;
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById('rentbasis'),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
-
-    fetchAttributes();
+    if(isEmpty(attributes)) {
+      fetchAttributes();
+    }
   }
 
   handleBack = () => {
@@ -77,12 +81,11 @@ class NewRentBasisPage extends Component {
 
   handleSave = () => {
     const {createRentBasis, editedRentBasis} = this.props;
-
     createRentBasis(editedRentBasis);
   }
 
   render() {
-    const {attributes, isFormTouched, isFormValid} = this.props;
+    const {isFormDirty, isFormValid} = this.props;
     const {isCancelModalOpen} = this.state;
 
     return (
@@ -103,22 +106,18 @@ class NewRentBasisPage extends Component {
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={!isFormValid}
-              onCancelClick={isFormTouched ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
+              onCancelClick={isFormDirty ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}
               showCopyButton={true}
             />
           }
-          infoComponent={
-            <h1>Uusi vuokrausperuste</h1>
-          }
+          infoComponent={<h1>Uusi vuokrausperuste</h1>}
           onBack={this.handleBack}
         />
         <ContentContainer>
-          <GreenBoxEdit>
-            <RentBasisForm
-              attributes={attributes}
-            />
+          <GreenBoxEdit className='no-margin'>
+            <RentBasisForm />
           </GreenBoxEdit>
         </ContentContainer>
       </PageContainer>
@@ -129,8 +128,8 @@ class NewRentBasisPage extends Component {
 const mapStateToProps = (state: RootState) => {
   return {
     attributes: getAttributes(state),
-    editedRentBasis: getRentBasisFormValues(state),
-    isFormTouched: getRentBasisFormTouched(state),
+    editedRentBasis: getFormValues(FormNames.RENT_BASIS)(state),
+    isFormDirty: isDirty(FormNames.RENT_BASIS)(state),
     isFormValid: getIsFormValid(state),
   };
 };

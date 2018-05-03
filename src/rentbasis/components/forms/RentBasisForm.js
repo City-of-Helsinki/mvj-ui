@@ -15,7 +15,8 @@ import RemoveButton from '$components/form/RemoveButton';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {genericValidator} from '$components/form/validations';
 import {receiveFormValid} from '$src/rentbasis/actions';
-import {getIsFormValid, getRentBasisInitialValues} from '$src/rentbasis/selectors';
+import {FormNames} from '$src/rentbasis/enums';
+import {getAttributes, getIsFormValid, getRentBasisInitialValues} from '$src/rentbasis/selectors';
 
 import type {Attributes} from '$src/rentbasis/types';
 import type {RootState} from '$src/root/types';
@@ -342,12 +343,13 @@ class RentBasisForm extends Component {
 
 const mapStateToProps = (state: RootState) => {
   return {
+    attributes: getAttributes(state),
     initialValues: getRentBasisInitialValues(state),
     isFormValid: getIsFormValid(state),
   };
 };
 
-const formName = 'rent-basis-form';
+const formName = FormNames.RENT_BASIS;
 
 export default flowRight(
   connect(

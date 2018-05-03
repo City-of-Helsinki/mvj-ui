@@ -22,11 +22,14 @@ import {
 import {fetchNoticePeriods} from '$src/noticePeriod/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchUsers} from '$src/users/actions';
-import {FormNames} from '../enums';
-import * as contentHelpers from '../helpers';
+import {FormNames} from '$src/leases/enums';
+import * as contentHelpers from '$src/leases/helpers';
 import {getSearchQuery} from '$util/helpers';
-import {getCommentsByLease} from '$src/comments/selectors';
+import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
+import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
+import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 import {
+  getAttributes,
   getCurrentLease,
   getIsEditMode,
   getIsFetching,
@@ -39,7 +42,7 @@ import {
   getIsRentsFormValid,
   getIsSummaryFormValid,
   getIsTenantsFormValid,
-} from '../selectors';
+} from '$src/leases/selectors';
 import {getRouteById} from '$src/root/routes';
 import CommentPanel from '$components/commentPanel/CommentPanel';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
@@ -69,15 +72,20 @@ import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 
-import type {CommentList} from '$src/comments/types';
-import type {Lease} from '../types';
+import type {Attributes as CommentAttributes, CommentList} from '$src/comments/types';
+import type {Attributes as ContactAttributes} from '$src/contacts/types';
+import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes, Lease} from '$src/leases/types';
 
 import mockData from '../mock-data.json';
 
 type Props = {
   areasFormValues: Object,
+  attributes: Attributes,
   clearFormValidFlags: Function,
+  commentAttributes: CommentAttributes,
   comments: CommentList,
+  contactAttributes: ContactAttributes,
   contractsFormValues: Object,
   constructabilityFormValues: Object,
   currentLease: Object,
@@ -97,6 +105,7 @@ type Props = {
   hideEditMode: Function,
   initialize: Function,
   inspectionsFormValues: Object,
+  invoiceAttributes: InvoiceAttributes,
   isEditMode: boolean,
   isFetching: boolean,
   isAreasFormDirty: boolean,
@@ -154,6 +163,9 @@ class LeasePage extends Component {
 
   componentWillMount() {
     const {
+      attributes,
+      commentAttributes,
+      contactAttributes,
       fetchAttributes,
       fetchCommentAttributes,
       fetchCommentsByLease,
@@ -166,6 +178,7 @@ class LeasePage extends Component {
       fetchSingleLease,
       fetchUsers,
       hideEditMode,
+      invoiceAttributes,
       location,
       params: {leaseId},
       receiveTopNavigationSettings,
@@ -187,14 +200,23 @@ class LeasePage extends Component {
       this.setState({activeTab: location.query.tab});
     }
 
-    fetchAttributes();
+    if(isEmpty(attributes)) {
+      fetchAttributes();
+    }
+    if(isEmpty(commentAttributes)) {
+      fetchCommentAttributes();
+    }
+    if(isEmpty(contactAttributes)) {
+      fetchContactAttributes();
+    }
+    if(isEmpty(invoiceAttributes)) {
+      fetchInvoiceAttributes();
+    }
+
     fetchSingleLease(leaseId);
-    fetchCommentAttributes();
     fetchCommentsByLease(leaseId);
-    fetchContactAttributes();
     fetchCompleteContactList();
     fetchDecisionsByLease(leaseId);
-    fetchInvoiceAttributes();
     fetchInvoices(getSearchQuery({lease: leaseId}));
     fetchNoticePeriods();
     fetchUsers();
@@ -582,12 +604,16 @@ export default flowRight(
       const currentLease = getCurrentLease(state);
       return {
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
+        attributes: getAttributes(state),
+        commentAttributes: getCommentAttributes(state),
         comments: getCommentsByLease(state, currentLease.id),
         constructabilityFormValues: getFormValues(FormNames.CONSTRUCTABILITY)(state),
+        contactAttributes: getContactAttributes(state),
         contractsFormValues: getFormValues(FormNames.CONTRACTS)(state),
         currentLease: currentLease,
         decisionsFormValues: getFormValues(FormNames.DECISIONS)(state),
         inspectionsFormValues: getFormValues(FormNames.INSPECTIONS)(state),
+        invoiceAttributes: getInvoiceAttributes(state),
         isEditMode: getIsEditMode(state),
         isAreasFormDirty: isDirty(FormNames.LEASE_AREAS)(state),
         isConstructabilityFormDirty: isDirty(FormNames.CONSTRUCTABILITY)(state),

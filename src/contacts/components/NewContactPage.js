@@ -51,13 +51,16 @@ class NewContactPage extends Component {
   };
 
   componentWillMount() {
-    const {fetchAttributes, receiveTopNavigationSettings} = this.props;
+    const {attributes, fetchAttributes, receiveTopNavigationSettings} = this.props;
     receiveTopNavigationSettings({
       linkUrl: getRouteById('contacts'),
       pageTitle: 'Asiakkaat',
       showSearch: false,
     });
-    fetchAttributes();
+
+    if(isEmpty(attributes)) {
+      fetchAttributes();
+    }
   }
 
   handleBack = () => {

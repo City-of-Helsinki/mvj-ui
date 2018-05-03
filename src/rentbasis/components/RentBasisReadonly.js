@@ -1,11 +1,13 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import ContentContainer from '$components/content/ContentContainer';
 import GreenBox from '$components/content/GreenBox';
-import ListItems from '../../components/content/ListItems';
+import ListItems from '$components/content/ListItems';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributes} from '$src/rentbasis/selectors';
 
 import type {Attributes, RentBasis} from '../types';
 
@@ -133,4 +135,10 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
   );
 };
 
-export default RentBasisReadonly;
+export default connect(
+  (state) => {
+    return {
+      attributes: getAttributes(state),
+    };
+  }
+)(RentBasisReadonly);

@@ -12,7 +12,7 @@ export const ContactType = {
 };
 
 /**
- * Lease form names enumerable.
+ * Contact form names enumerable.
  *
  * @type {{CONSTRUCTABILITY: string, SEARCH: string,}}
  */

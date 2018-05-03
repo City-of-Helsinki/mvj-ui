@@ -1,6 +1,6 @@
 // @flow
-
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import ReduxToastr from 'react-redux-toastr';
 import {withRouter} from 'react-router';
@@ -57,6 +57,10 @@ class App extends Component {
     displaySideMenu: false,
   }
 
+  static contextTypes = {
+    router: PropTypes.object,
+  };
+
   timerID: any
 
   componentWillUnmount() {
@@ -97,7 +101,11 @@ class App extends Component {
   }
 
   logOut = () => {
+    const {router} = this.context;
+    router.push('/');
+
     userManager.removeUser();
+    sessionStorage.clear();
   }
 
   checkApiToken () {

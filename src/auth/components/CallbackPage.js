@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {CallbackComponent} from 'redux-oidc';
 
+import {getRedirectUrlFromSessionStorage} from '../helpers';
 import userManager from '../util/user-manager';
 
 class CallbackPage extends React.Component {
@@ -9,9 +10,9 @@ class CallbackPage extends React.Component {
     router: PropTypes.object,
   };
 
-  // just redirect to '/' in both cases
   successCallback = () => {
-    this.context.router.push('/');
+    const {router} = this.context;
+    router.push(getRedirectUrlFromSessionStorage() || '/');
   }
 
   render() {
