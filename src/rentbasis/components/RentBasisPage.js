@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
+import {getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import ConfirmationModal from '$components/modal/ConfirmationModal';
@@ -20,25 +21,22 @@ import {
   hideEditMode,
   initializeRentBasis,
   showEditMode,
-} from '../actions';
+} from '$src/rentbasis/actions';
+import {FormNames} from '$src/rentbasis/enums';
 import {
-  getAttributes,
   getIsEditMode,
   getIsFetching,
   getIsFormValid,
   getRentBasis,
-  getRentBasisFormTouched,
-  getRentBasisFormValues,
-} from '../selectors';
-import {getContentCopiedRentBasis, getContentRentBasis} from '../helpers';
+} from '$src/rentbasis/selectors';
+import {getContentCopiedRentBasis, getContentRentBasis} from '$src/rentbasis/helpers';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
 
-import type {Attributes, RentBasis} from '../types';
+import type {RentBasis} from '../types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
-  attributes: Attributes,
   editedRentBasis: Object,
   editRentBasis: Function,
   fetchAttributes: Function,
@@ -47,7 +45,7 @@ type Props = {
   initializeRentBasis: Function,
   isEditMode: boolean,
   isFetching: boolean,
-  isFormTouched: boolean,
+  isFormDirty: boolean,
   isFormValid: boolean,
   params: Object,
   receiveTopNavigationSettings: Function,
@@ -136,11 +134,10 @@ class RentBasisPage extends Component {
 
   render() {
     const {
-      attributes,
       hideEditMode,
       isEditMode,
       isFetching,
-      isFormTouched,
+      isFormDirty,
       isFormValid,
       rentBasisData,
     } = this.props;
@@ -174,7 +171,7 @@ class RentBasisPage extends Component {
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={!isFormValid}
-              onCancelClick={isFormTouched ? () => this.setState({isCancelModalOpen: true}) : hideEditMode}
+              onCancelClick={isFormDirty ? () => this.setState({isCancelModalOpen: true}) : hideEditMode}
               onCopyClick={this.copyRentBasis}
               onEditClick={() => this.showEditMode(rentBasis)}
               onSaveClick={this.editRentBasis}
@@ -190,16 +187,10 @@ class RentBasisPage extends Component {
           onBack={this.handleBack}
         />
         {isEditMode
-          ? (
-            <RentBasisEdit
-              attributes={attributes}
-            />
-          ) : (
-            <RentBasisReadonly
-              attributes={attributes}
+          ? <RentBasisEdit />
+          : <RentBasisReadonly
               rentBasis={rentBasis}
             />
-          )
         }
       </PageContainer>
     );
@@ -208,11 +199,10 @@ class RentBasisPage extends Component {
 
 const mapStateToProps = (state: RootState) => {
   return {
-    attributes: getAttributes(state),
-    editedRentBasis: getRentBasisFormValues(state),
+    editedRentBasis: getFormValues(FormNames.RENT_BASIS)(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
-    isFormTouched: getRentBasisFormTouched(state),
+    isFormDirty: isDirty(FormNames.RENT_BASIS)(state),
     isFormValid: getIsFormValid(state),
     rentBasisData: getRentBasis(state),
   };

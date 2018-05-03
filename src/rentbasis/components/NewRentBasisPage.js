@@ -2,12 +2,9 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
-import {createRentBasis, fetchAttributes} from '../actions';
-import {getAttributes, getIsFormValid, getRentBasisFormTouched, getRentBasisFormValues} from '../selectors';
-import {getRouteById} from '$src/root/routes';
-import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
@@ -15,6 +12,11 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import PageContainer from '$components/content/PageContainer';
 import RentBasisForm from './forms/RentBasisForm';
+import {createRentBasis, fetchAttributes} from '$src/rentbasis/actions';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {FormNames} from '$src/rentbasis/enums';
+import {getRouteById} from '$src/root/routes';
+import {getAttributes, getIsFormValid} from '../selectors';
 
 import type {Attributes} from '../types';
 import type {RootState} from '$src/root/types';
@@ -24,7 +26,7 @@ type Props = {
   createRentBasis: Function,
   editedRentBasis: ?Object,
   fetchAttributes: Function,
-  isFormTouched: boolean,
+  isFormDirty: boolean,
   isFormValid: boolean,
   receiveTopNavigationSettings: Function,
   router: Object,
@@ -82,7 +84,7 @@ class NewRentBasisPage extends Component {
   }
 
   render() {
-    const {attributes, isFormTouched, isFormValid} = this.props;
+    const {attributes, isFormDirty, isFormValid} = this.props;
     const {isCancelModalOpen} = this.state;
 
     return (
@@ -103,7 +105,7 @@ class NewRentBasisPage extends Component {
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={!isFormValid}
-              onCancelClick={isFormTouched ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
+              onCancelClick={isFormDirty ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}
               showCopyButton={true}
@@ -129,8 +131,8 @@ class NewRentBasisPage extends Component {
 const mapStateToProps = (state: RootState) => {
   return {
     attributes: getAttributes(state),
-    editedRentBasis: getRentBasisFormValues(state),
-    isFormTouched: getRentBasisFormTouched(state),
+    editedRentBasis: getFormValues(FormNames.RENT_BASIS)(state),
+    isFormDirty: isDirty(FormNames.RENT_BASIS)(state),
     isFormValid: getIsFormValid(state),
   };
 };

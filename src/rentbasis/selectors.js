@@ -1,5 +1,4 @@
 // @flow
-import get from 'lodash/get';
 import type {Selector} from '../types';
 import type {Attributes, RentBasis, RentBasisList, RentBasisState} from './types';
 
@@ -23,9 +22,3 @@ export const getRentBasisInitialValues: Selector<RentBasis, void> = (state: Rent
 
 export const getIsFormValid: Selector<boolean, void> = (state: RentBasisState): boolean =>
   state.rentbasis.isFormValid;
-
-export const getRentBasisFormValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
-  get(state, 'form.rent-basis-form.values');
-
-export const getRentBasisFormTouched: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
-  get(state, 'form.rent-basis-form.anyTouched');
