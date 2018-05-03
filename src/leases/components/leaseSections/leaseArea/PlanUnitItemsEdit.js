@@ -28,8 +28,8 @@ type Props = {
 }
 
 const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
-  const typeOptions = getAttributeFieldOptions(attributes,
-    'lease_areas.child.children.plan_units.child.children.type');
+  // const typeOptions = getAttributeFieldOptions(attributes,
+  //   'lease_areas.child.children.plan_units.child.children.type');
   const planUnitTypeOptions = getAttributeFieldOptions(attributes,
     'lease_areas.child.children.plan_units.child.children.plan_unit_type');
   const planUnitStateOptions = getAttributeFieldOptions(attributes,
@@ -77,7 +77,7 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
                         ]}
                       />
                     </Column>
-                    <Column small={6} medium={4} large={2}>
+                    {/* <Column small={6} medium={4} large={2}>
                       <Field
                         component={FieldTypeSelect}
                         label='Käyttötarkoitus'
@@ -88,7 +88,7 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
                             get(attributes, 'lease_areas.child.children.plan_units.child.children.type')),
                         ]}
                       />
-                    </Column>
+                    </Column> */}
                     <Column small={6} medium={4} large={2}>
                       <Field
                         component={FieldTypeText}
