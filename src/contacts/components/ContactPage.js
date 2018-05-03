@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactEdit from './ContactEdit';
@@ -24,6 +25,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '../enums';
 import {getRouteById} from '$src/root/routes';
 import {
+  getAttributes,
   getCurrentContact,
   getIsContactFormValid,
   getIsEditMode,
@@ -32,9 +34,10 @@ import {
 import {getContactFullName} from '../helpers';
 
 import type {RootState} from '$src/root/types';
-import type {Contact} from '../types';
+import type {Attributes, Contact} from '../types';
 
 type Props = {
+  attributes: Attributes,
   contact: Contact,
   contactFormValues: Contact,
   editContact: Function,
@@ -70,6 +73,7 @@ class ContactPage extends Component {
 
   componentWillMount() {
     const {
+      attributes,
       fetchAttributes,
       fetchSingleContact,
       params: {contactId},
@@ -81,8 +85,12 @@ class ContactPage extends Component {
       pageTitle: 'Asiakkaat',
       showSearch: false,
     });
-    fetchAttributes();
+
     fetchSingleContact(contactId);
+
+    if(isEmpty(attributes)) {
+      fetchAttributes();
+    }
   }
 
   copyContact = () => {
@@ -189,6 +197,7 @@ class ContactPage extends Component {
 
 const mapStateToProps = (state: RootState) => {
   return {
+    attributes: getAttributes(state),
     contact: getCurrentContact(state),
     contactFormValues: getFormValues(FormNames.CONTACT)(state),
     isContactFormDirty: isDirty(FormNames.CONTACT)(state),

@@ -6,6 +6,7 @@ import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
@@ -55,7 +56,7 @@ class RentBasisListPage extends Component {
   };
 
   componentWillMount() {
-    const {fetchAttributes, fetchRentBasisList, receiveTopNavigationSettings} = this.props;
+    const {attributes, fetchAttributes, fetchRentBasisList, receiveTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
 
     receiveTopNavigationSettings({
@@ -77,7 +78,9 @@ class RentBasisListPage extends Component {
     fetchRentBasisList(getSearchQuery(query));
     delete query.limit;
 
-    fetchAttributes();
+    if(isEmpty(attributes)) {
+      fetchAttributes();
+    }
   }
 
   componentDidMount = () => {

@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import isNumber from 'lodash/isNumber';
 import {Row, Column} from 'react-foundation';
 
@@ -61,7 +62,7 @@ class ContactListPage extends Component {
   };
 
   componentWillMount() {
-    const {fetchAttributes, fetchContacts, receiveTopNavigationSettings} = this.props;
+    const {attributes, fetchAttributes, fetchContacts, receiveTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
 
     receiveTopNavigationSettings({
@@ -83,7 +84,9 @@ class ContactListPage extends Component {
     fetchContacts(getSearchQuery(query));
     delete query.limit;
 
-    fetchAttributes();
+    if(isEmpty(attributes)) {
+      fetchAttributes();
+    }
   }
 
   componentDidMount = () => {

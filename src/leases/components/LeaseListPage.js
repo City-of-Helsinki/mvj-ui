@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
@@ -81,6 +82,7 @@ class LeaseListPage extends Component {
 
   componentWillMount() {
     const {
+      attributes,
       fetchAttributes,
       fetchLeases,
       fetchLessors,
@@ -94,9 +96,6 @@ class LeaseListPage extends Component {
       showSearch: false,
     });
 
-    fetchAttributes();
-    fetchLessors();
-
     const page = Number(query.page);
 
     if(!page || !isNumber(page) || query.page <= 1) {
@@ -109,6 +108,11 @@ class LeaseListPage extends Component {
 
     fetchLeases(getSearchQuery(query));
     delete query.limit;
+
+    if(isEmpty(attributes)) {
+      fetchAttributes();
+    }
+    fetchLessors();
   }
 
   componentDidMount = () => {

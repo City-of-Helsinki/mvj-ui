@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {getFormValues, isDirty} from 'redux-form';
+import isEmpty from 'lodash/isEmpty';
 import flowRight from 'lodash/flowRight';
 
 import ConfirmationModal from '$components/modal/ConfirmationModal';
@@ -24,6 +25,7 @@ import {
 } from '$src/rentbasis/actions';
 import {FormNames} from '$src/rentbasis/enums';
 import {
+  getAttributes,
   getIsEditMode,
   getIsFetching,
   getIsFormValid,
@@ -33,10 +35,11 @@ import {getContentCopiedRentBasis, getContentRentBasis} from '$src/rentbasis/hel
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
 
-import type {RentBasis} from '../types';
+import type {Attributes, RentBasis} from '$src/rentbasis/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
+  attributes: Attributes,
   editedRentBasis: Object,
   editRentBasis: Function,
   fetchAttributes: Function,
@@ -71,6 +74,7 @@ class RentBasisPage extends Component {
 
   componentWillMount() {
     const {
+      attributes,
       fetchAttributes,
       fetchSingleRentBasis,
       hideEditMode,
@@ -87,7 +91,10 @@ class RentBasisPage extends Component {
     hideEditMode();
 
     fetchSingleRentBasis(rentBasisId);
-    fetchAttributes();
+
+    if(isEmpty(attributes)) {
+      fetchAttributes();
+    }
   }
 
   copyRentBasis = () => {
@@ -199,6 +206,7 @@ class RentBasisPage extends Component {
 
 const mapStateToProps = (state: RootState) => {
   return {
+    attributes: getAttributes(state),
     editedRentBasis: getFormValues(FormNames.RENT_BASIS)(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
