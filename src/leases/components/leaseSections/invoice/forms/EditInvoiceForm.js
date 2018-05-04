@@ -2,11 +2,10 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
-import {Field, reduxForm} from 'redux-form';
+import {reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
-import FieldTypeTextArea from '$components/form/FieldTypeTextArea';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import {FormNames} from '$src/leases/enums';
@@ -19,7 +18,6 @@ import {
   getLabelOfOption,
 } from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
@@ -184,14 +182,12 @@ const EditInvoiceForm = ({
       </Row>
       <Row>
         <Column medium={12}>
-          <Field
-            component={FieldTypeTextArea}
-            label="Tiedote"
-            name="notes"
-            rows={2}
-            validate={[
-              (value) => genericValidator(value, get(invoiceAttributes, 'notes')),
-            ]}
+          <FormField
+            fieldAttributes={get(invoiceAttributes, 'notes')}
+            name='notes'
+            overrideValues={{
+              label: 'Tiedote',
+            }}
           />
         </Column>
       </Row>

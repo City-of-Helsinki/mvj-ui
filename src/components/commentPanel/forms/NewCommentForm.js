@@ -1,15 +1,13 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
+import {formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import {Field, formValueSelector, reduxForm} from 'redux-form';
+import get from 'lodash/get';
 
 import AddButton from '$components/form/AddButton';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeTextArea from '$components/form/FieldTypeTextArea';
+import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
-import {getAttributeFieldOptions} from '$src/util/helpers';
-import {required} from '$components/form/validations';
 
 import type {RootState} from '$src/root/types';
 
@@ -30,29 +28,22 @@ const NewCommentForm = ({
   topic,
   valid,
 }: Props) => {
-  const topicOptions = getAttributeFieldOptions(attributes, 'topic');
-
   return (
     <form onSubmit={handleSubmit}>
       <FormSection>
-        <Field
-          component={FieldTypeSelect}
-          disableDirty
-          label='Aihealue'
+        <FormField
+          fieldAttributes={get(attributes, 'topic')}
           name='topic'
-          options={topicOptions}
-          validate={[
-            (value) => required(value, 'Aihealue on pakollinen'),
-          ]}
+          overrideValues={{
+            label: 'Aihealue',
+          }}
         />
-        <Field
-          component={FieldTypeTextArea}
-          disableDirty
-          label='Kommentti'
+        <FormField
+          fieldAttributes={get(attributes, 'text')}
           name='text'
-          validate={[
-            (value) => required(value, 'Kommentti on pakollinen'),
-          ]}
+          overrideValues={{
+            label: 'Kommentti',
+          }}
         />
         <AddButton
           disabled={!valid}
