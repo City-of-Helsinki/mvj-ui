@@ -381,6 +381,30 @@ export const getAttributeFieldOptions = (attributes: Object, path: string, addEm
 };
 
 /**
+ * Get options for attribute field
+ * @param attributes
+ * @param addEmpty
+ * @param showValue
+ */
+export const getFieldOptions = (fieldAttributes: Object, addEmpty: boolean = true, showValue: boolean = false) => {
+  let choices = get(fieldAttributes, `choices`);
+  if(!choices || !choices.length) {
+    return [];
+  }
+  const results = choices.map((item) => {
+    return {
+      value: item.value,
+      label: showValue ? `${item.display_name} (${item.value})`: item.display_name,
+    };
+  });
+
+  if(addEmpty) {
+    return addEmptyOption(results);
+  }
+  return results;
+};
+
+/**
  * Get options for decisions field
  * @param decisions
  */
