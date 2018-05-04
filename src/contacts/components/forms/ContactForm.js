@@ -2,23 +2,19 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Field, formValueSelector, reduxForm} from 'redux-form';
+import {formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {receiveContactFormValid} from '$src/contacts/actions';
 import {ContactType, FormNames} from '$src/contacts/enums';
-import {getAttributeFieldOptions} from '$src/util/helpers';
 import {getAttributes, getInitialContactFormValues, getIsContactFormValid} from '$src/contacts/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/contacts/types';
 import type {RootState} from '$src/root/types';
@@ -50,8 +46,6 @@ class ContactForm extends Component {
 
   render() {
     const {attributes, handleSubmit, type} = this.props;
-    const typeOptions = getAttributeFieldOptions(attributes, 'type');
-    const languageOptions = getAttributeFieldOptions(attributes, 'language');
     if (isEmpty(attributes)) {
       return null;
     }
@@ -63,116 +57,105 @@ class ContactForm extends Component {
             <FormWrapperLeft>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Asiakastyyppi'
+                  <FormField
+                    fieldAttributes={get(attributes, 'type')}
                     name='type'
-                    options={typeOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'type')),
-                    ]}
+                    overrideValues={{
+                      label: 'Asiakastyyppi',
+                    }}
                   />
                 </Column>
                 {type === ContactType.PERSON &&
                   <Column small={12} medium={6} large={4}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Sukunimi'
+                    <FormField
+                      fieldAttributes={get(attributes, 'last_name')}
                       name='last_name'
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'last_name')),
-                      ]}
+                      overrideValues={{
+                        label: 'Sukunimi',
+                      }}
                     />
                   </Column>
                 }
                 {type === ContactType.PERSON &&
                   <Column small={12} medium={6} large={4}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Etunimi'
+                    <FormField
+                      fieldAttributes={get(attributes, 'first_name')}
                       name='first_name'
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'first_name')),
-                      ]}
+                      overrideValues={{
+                        label: 'Etunimi',
+                      }}
                     />
                   </Column>
                 }
                 {type && type !== ContactType.PERSON &&
                   <Column small={12} medium={6} large={4}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Yrityksen nimi'
+                    <FormField
+                      fieldAttributes={get(attributes, 'name')}
                       name='name'
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'business_name')),
-                      ]}
+                      overrideValues={{
+                        label: 'Yrityksen nimi',
+                      }}
                     />
                   </Column>
                 }
               </Row>
               <Row>
                 <Column>
-                  <Field
-                    component={FieldTypeText}
-                    label='Katuosoite'
+                  <FormField
+                    fieldAttributes={get(attributes, 'address')}
                     name='address'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'address')),
-                    ]}
+                    overrideValues={{
+                      label: 'Katuosoite',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={4} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Postinumero'
+                  <FormField
+                    fieldAttributes={get(attributes, 'postal_code')}
                     name='postal_code'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'postal_code')),
-                    ]}
+                    overrideValues={{
+                      label: 'Postinumero',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={4} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Postitoimipaikka'
+                  <FormField
+                    fieldAttributes={get(attributes, 'city')}
                     name='city'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'city')),
-                    ]}
+                    overrideValues={{
+                      label: 'Postitoimipaikka',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={4} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Maa'
+                  <FormField
+                    fieldAttributes={get(attributes, 'country')}
                     name='country'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'country')),
-                    ]}
+                    overrideValues={{
+                      label: 'Maa',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Puhelinnumero'
+                  <FormField
+                    fieldAttributes={get(attributes, 'phone')}
                     name='phone'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'phone')),
-                    ]}
+                    overrideValues={{
+                      label: 'Puhelinnumero',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Sähköposti'
+                  <FormField
+                    fieldAttributes={get(attributes, 'email')}
                     name='email'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'email')),
-                    ]}
+                    overrideValues={{
+                      label: 'Sähköposti',
+                    }}
                   />
                 </Column>
               </Row>
@@ -181,123 +164,104 @@ class ContactForm extends Component {
               <Row>
                 {type === ContactType.PERSON &&
                   <Column small={23} medium={6} large={4}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Henkilötunnus'
+                    <FormField
+                      fieldAttributes={get(attributes, 'national_identification_number')}
                       name='national_identification_number'
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'national_identification_number')),
-                      ]}
+                      overrideValues={{
+                        label: 'Henkilötunnus',
+                      }}
                     />
                   </Column>
                 }
                 {type && type !== ContactType.PERSON &&
                   <Column small={23} medium={6} large={4}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Y-tunnus'
+                    <FormField
+                      fieldAttributes={get(attributes, 'business_id')}
                       name='business_id'
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'business_id')),
-                      ]}
+                      overrideValues={{
+                        label: 'Y-tunnus',
+                      }}
                     />
                   </Column>
                 }
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Kieli'
+                  <FormField
+                    fieldAttributes={get(attributes, 'language')}
                     name='language'
-                    options={languageOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'language')),
-                    ]}
+                    overrideValues={{
+                      label: 'Kieli',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='SAP asiakasnumero'
+                  <FormField
+                    fieldAttributes={get(attributes, 'sap_customer_number')}
                     name='sap_customer_number'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'sap_customer_number')),
-                    ]}
+                    overrideValues={{
+                      label: 'SAP asiakasnumero',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Kumppanikoodi'
+                  <FormField
+                    fieldAttributes={get(attributes, 'partner_code')}
                     name='partner_code'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'partner_code')),
-                    ]}
+                    overrideValues={{
+                      label: 'Kumppanikoodi',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Ovt tunnus'
+                  <FormField
+                    fieldAttributes={get(attributes, 'electronic_billing_address')}
                     name='electronic_billing_address'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'electronic_billing_address')),
-                    ]}
+                    overrideValues={{
+                      label: 'Ovt tunnus',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Asiakasnumero'
+                  <FormField
+                    fieldAttributes={get(attributes, 'customer_number')}
                     name='customer_number'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'customer_number')),
-                    ]}
+                    overrideValues={{
+                      label: 'Asiakasnumero',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    className='checkbox-inline'
-                    component={FieldTypeCheckbox}
-                    label='Vuokranantaja'
-                    name="is_lessor"
-                    options= {[
-                      {value: 'true', label: 'Vuokranantaja'},
-                    ]}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'is_lessor')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'is_lessor')}
+                    name='is_lessor'
+                    overrideValues={{
+                      label: 'Vuokranantaja',
+                    }}
                   />
                 </Column>
                 {type === ContactType.PERSON &&
                   <Column small={12} medium={6} large={6}>
-                    <Field
-                      className='checkbox-inline'
-                      component={FieldTypeCheckbox}
-                      label='Turvakielto'
-                      name="address_protection"
-                      options= {[
-                        {value: 'true', label: 'Turvakielto'},
-                      ]}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes, 'address_protection')),
-                      ]}
+                    <FormField
+                      fieldAttributes={get(attributes, 'address_protection')}
+                      name='address_protection'
+                      overrideValues={{
+                        label: 'Turvakielto',
+                      }}
                     />
                   </Column>
                 }
               </Row>
               <Row>
                 <Column>
-                  <Field
-                    component={FieldTypeText}
-                    label='Kommentti'
+                  <FormField
+                    fieldAttributes={get(attributes, 'note')}
                     name='note'
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'note')),
-                    ]}
+                    overrideValues={{
+                      label: 'Kommentti',
+                    }}
                   />
                 </Column>
               </Row>
