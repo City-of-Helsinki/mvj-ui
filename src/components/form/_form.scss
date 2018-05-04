@@ -460,11 +460,10 @@
   &.with-slash {
     position: relative;
 
-    .mvj-form-field-component::before {
+    .form-field__component::before {
       position: absolute;
       content: '/';
       left: rem-calc(-10px);
-      top: -3px;
     }
   }
 }

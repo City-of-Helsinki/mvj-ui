@@ -328,6 +328,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
       <Row>
         <Column small={12}>
           <FieldArray
+            attributes={attributes}
             component={renderFixedInitialYearRents}
             name="fixed_initial_year_rents"
           />
