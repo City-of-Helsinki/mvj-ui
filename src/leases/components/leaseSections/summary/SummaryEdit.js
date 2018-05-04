@@ -2,15 +2,13 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Field, reduxForm} from 'redux-form';
+import {reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
-import FieldTypeRadio from '$components/form/FieldTypeRadio';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import LeaseHistory from './LeaseHistory';
 import {fetchLessors} from '$src/contacts/actions';
 import {receiveSummaryFormValid} from '$src/leases/actions';
@@ -21,7 +19,6 @@ import {getAttributeFieldOptions, sortAlphaAsc} from '$src/util/helpers';
 import {getLessors} from '$src/contacts/selectors';
 import {getAttributes, getIsSummaryFormValid} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {NoticePeriodList} from '$src/noticePeriod/types';
 
@@ -56,14 +53,6 @@ class SummaryEdit extends Component {
   render () {
     const {attributes, handleSubmit, history, lessors, noticePeriods} = this.props;
     const preparerOptions = getAttributeFieldOptions(attributes, 'preparer').sort(sortAlphaAsc);
-    const classificationOptions = getAttributeFieldOptions(attributes, 'classification');
-    const intendedUseOptions = getAttributeFieldOptions(attributes, 'intended_use');
-    const supportiveHousingOptions = getAttributeFieldOptions(attributes, 'supportive_housing');
-    const statisticalUseOptions = getAttributeFieldOptions(attributes, 'statistical_use');
-    const financingOptions = getAttributeFieldOptions(attributes, 'financing');
-    const managementOptions = getAttributeFieldOptions(attributes, 'management');
-    const regulationOptions = getAttributeFieldOptions(attributes, 'regulation');
-    const hitasOptions = getAttributeFieldOptions(attributes, 'hitas');
     const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
     const lessorOptions = getLessorOptions(lessors);
 
@@ -81,154 +70,131 @@ class SummaryEdit extends Component {
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Vuokranantaja"
-                    name="lessor"
-                    options={lessorOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lessor')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'lessor')}
+                    name='lessor'
+                    overrideValues={{
+                      label: 'Vuokranantaja',
+                      options: lessorOptions,
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Valmistelija"
-                    name="preparer"
-                    options={preparerOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'preparer')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'preparer')}
+                    name='preparer'
+                    overrideValues={{
+                      label: 'Valmistelija',
+                      options: preparerOptions,
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Julkisuusluokka"
-                    name="classification"
-                    options={classificationOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'classification')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'classification')}
+                    name='classification'
+                    overrideValues={{
+                      label: 'Julkisuusluokka',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Vuokrauksen käyttötarkoitus"
-                    name="intended_use"
-                    options={intendedUseOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'intended_use')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'intended_use')}
+                    name='intended_use'
+                    overrideValues={{
+                      label: 'Vuokrauksen käyttötarkoitus',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <Field
-                    component={FieldTypeText}
-                    label="Vuokrauksen käyttötarkoitus selite"
-                    name="intended_use_note"
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'intended_use_note')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'intended_use_note')}
+                    name='intended_use_note'
+                    overrideValues={{
+                      label: 'Vuokrauksen käyttötarkoituksen selite',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Rahoitusmuoto"
-                    name="financing"
-                    options={financingOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'financing')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'financing')}
+                    name='financing'
+                    overrideValues={{
+                      label: 'Rahoitusmuoto',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Hallintamuoto"
-                    name="management"
-                    options={managementOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'management')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'management')}
+                    name='management'
+                    overrideValues={{
+                      label: 'Hallintamuoto',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    className='checkbox-inline'
-                    component={FieldTypeRadio}
-                    label='Siirto-oikeus'
-                    name="transferable"
-                    options= {[
-                      {value: 'false', label: 'Ei'},
-                      {value: 'true', label: 'Kyllä'},
-                    ]}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'transferable')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'transferable')}
+                    name='transferable'
+                    overrideValues={{
+                      label: 'Siirto-oikeus',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Hitas"
-                    name="hitas"
-                    options={hitasOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'hitas')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'hitas')}
+                    name='hitas'
+                    overrideValues={{
+                      label: 'hitas',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Irtisanomisaika"
-                    name="notice_period"
-                    options={noticePeriodOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'notice_period')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'notice_period')}
+                    name='notice_period'
+                    overrideValues={{
+                      label: 'Irtisanomisaika',
+                      options: noticePeriodOptions,
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <Field
-                    component={FieldTypeText}
-                    label="Irtisanomisajan selite"
-                    name="notice_note"
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'notice_note')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'notice_note')}
+                    name='notice_note'
+                    overrideValues={{
+                      label: 'Irtisanomisajan selite',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label="Diaarinumero"
-                    name="reference_number"
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'reference_number')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'reference_number')}
+                    name='reference_number'
+                    overrideValues={{
+                      label: 'Diaarinumero',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <Field
-                    component={FieldTypeText}
-                    label="Kommentti"
-                    name="note"
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'note')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'note')}
+                    name='note'
+                    overrideValues={{
+                      label: 'Kommentti',
+                    }}
                   />
                 </Column>
               </Row>
@@ -242,53 +208,41 @@ class SummaryEdit extends Component {
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Erityisasunnot"
-                    name="supportive_housing"
-                    options={supportiveHousingOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'supportive_housing')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'supportive_housing')}
+                    name='supportive_housing'
+                    overrideValues={{
+                      label: 'Erityisasunnot',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Tilastollinen pääkäyttötarkoitus"
-                    name="statistical_use"
-                    options={statisticalUseOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'statistical_use')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'statistical_use')}
+                    name='statistical_use'
+                    overrideValues={{
+                      label: 'Tilastollinen pääkäyttötarkoitus',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    className='checkbox-inline'
-                    component={FieldTypeRadio}
-                    label='Sääntely'
-                    name="regulated"
-                    options= {[
-                      {value: 'false', label: 'Ei'},
-                      {value: 'true', label: 'Kyllä'},
-                    ]}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'regulated')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'regulated')}
+                    name='regulated'
+                    overrideValues={{
+                      label: 'Sääntely',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label="Sääntelymuoto"
-                    name="regulation"
-                    options={regulationOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'regulation')),
-                    ]}
+                  <FormField
+                    fieldAttributes={get(attributes, 'regulation')}
+                    name='regulation'
+                    overrideValues={{
+                      label: 'Sääntelymuoto',
+                    }}
                   />
                 </Column>
               </Row>

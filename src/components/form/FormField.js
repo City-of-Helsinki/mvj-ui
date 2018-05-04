@@ -16,7 +16,9 @@ const FieldTypes = {
   'boolean': FieldTypeBoolean,
   'choice': FieldTypeSelect,
   'date': FieldTypeDatePicker,
+  'decimal': FieldTypeBasic,
   'field': FieldTypeSelect,
+  'integer': FieldTypeBasic,
   'string': FieldTypeBasic,
 };
 
