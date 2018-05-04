@@ -6,9 +6,9 @@ import {Field, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeText from '$components/form/FieldTypeText';
 import FieldTypeTextArea from '$components/form/FieldTypeTextArea';
+import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceSharePercentage} from '$src/invoices/helpers';
@@ -58,13 +58,12 @@ const EditInvoiceForm = ({
       </Row>
       <Row>
         <Column medium={4}>
-          <Field
-            component={FieldTypeDatePicker}
-            label="Eräpäivä"
-            name="due_date"
-            validate={[
-              (value) => genericValidator(value, get(invoiceAttributes, 'due_date')),
-            ]}
+          <FormField
+            fieldAttributes={get(invoiceAttributes, 'due_date')}
+            name='due_date'
+            overrideValues={{
+              label: 'Eräpäivä',
+            }}
           />
         </Column>
         <Column medium={4}>
@@ -83,22 +82,28 @@ const EditInvoiceForm = ({
         </Column>
         <Column medium={4}>
           <Row>
+            <Column>
+              <FormFieldLabel>Laskutuskausi</FormFieldLabel>
+            </Column>
+          </Row>
+          <Row>
             <Column medium={6}>
-              <Field
-                component={FieldTypeDatePicker}
-                name="billing_period_start_date"
-                validate={[
-                  (value) => genericValidator(value, get(invoiceAttributes, 'billing_period_start_date')),
-                ]}
+              <FormField
+                fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
+                name='billing_period_start_date'
+                overrideValues={{
+                  label: '',
+                }}
               />
             </Column>
             <Column medium={6}>
-              <Field
-                component={FieldTypeDatePicker}
-                name="billing_period_end_date"
-                validate={[
-                  (value) => genericValidator(value, get(invoiceAttributes, 'billing_period_end_date')),
-                ]}
+              <FormField
+                className='with-dash'
+                fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
+                name='billing_period_end_date'
+                overrideValues={{
+                  label: '',
+                }}
               />
             </Column>
           </Row>
@@ -110,13 +115,12 @@ const EditInvoiceForm = ({
       </Row>
       <Row>
         <Column medium={4}>
-          <Field
-            component={FieldTypeText}
-            label="Laskun pääoma"
-            name="total_amount"
-            validate={[
-              (value) => genericValidator(value, get(invoiceAttributes, 'total_amount')),
-            ]}
+          <FormField
+            fieldAttributes={get(invoiceAttributes, 'total_amount')}
+            name='total_amount'
+            overrideValues={{
+              label: 'Laskun pääoma',
+            }}
           />
         </Column>
         <Column medium={4}>

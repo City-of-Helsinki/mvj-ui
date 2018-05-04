@@ -56,7 +56,9 @@ const FormFieldInput = ({
   return (
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name}>{label}{required &&<i className='required'> *</i>}</label>}
-      {createElement(fieldComponent, {displayError, disabled, input, isDirty, placeholder, options, type})}
+      <div className='form-field__component'>
+        {createElement(fieldComponent, {displayError, disabled, input, isDirty, placeholder, options, type})}
+      </div>
       {displayError && <ErrorComponent {...meta}/>}
     </div>
   );
