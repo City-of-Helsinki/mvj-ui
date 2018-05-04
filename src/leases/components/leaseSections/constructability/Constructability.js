@@ -8,7 +8,7 @@ import ConstructabilityItem from './ConstructabilityItem';
 import Divider from '$components/content/Divider';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getContentConstructability} from '$src/leases/helpers';
-import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
+import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
 
 import type {Attributes, Lease} from '$src/leases/types';
 
@@ -50,7 +50,7 @@ const Constructability = ({attributes, currentLease}: Props) => {
               </Column>
               <Column>
                 <span className='collapse__header-subtitle'>
-                  {area.area} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location)}
+                  {formatNumber(area.area)} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location)}
                 </span>
               </Column>
             </div>

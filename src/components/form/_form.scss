@@ -630,6 +630,7 @@
 
     &:focus {
       outline: none !important;
+      border: 1px solid $focus-color !important;
       box-shadow: 0 0 0 1px $focus-color;
     }
 
@@ -639,8 +640,44 @@
     }
 
     &.has-error {
-      transition: none;
       box-shadow: 0 0 0 1px $alert-color;
+    }
+  }
+
+  &__datepicker {
+    line-height: 1;
+
+    .react-datepicker__input-container {
+      width: 100%;
+    }
+
+    input {
+      padding: 0 rem-calc(5px);
+      height: rem-calc(20px);
+      font-size: rem-calc(14px);
+      line-height: normal;
+      color: $black;
+      width: 100%;
+      margin-bottom: 0;
+
+      &:focus {
+        outline: none !important;
+        border: 1px solid $focus-color !important;
+        box-shadow: 0 0 0 1px $focus-color;
+      }
+    }
+
+    &.is-dirty {
+      input {
+        background-color: $engel-lighter;
+        box-shadow: 0 0 0 1px $engel;
+      }
+    }
+
+    &.has-error {
+      input {
+        box-shadow: 0 0 0 1px $alert-color;
+      }
     }
   }
 
@@ -742,6 +779,7 @@
     &.is-focused {
       .Select-control {
         outline: none !important;
+        border: 1px solid $focus-color !important;
         box-shadow: 0 0 0 1px $focus-color !important;
       }
     }

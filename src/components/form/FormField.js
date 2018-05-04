@@ -6,12 +6,14 @@ import get from 'lodash/get';
 
 import ErrorBlock from './ErrorBlock';
 import FieldTypeBasic from './FieldTypeBasic';
+import FieldTypeDatePicker from './FieldTypeDatePickerNew';
 import FieldTypeSelect from './FieldTypeSelectNew';
 import {getFieldOptions} from '$util/helpers';
 import {genericValidator} from '../form/validations';
 
 const FieldTypes = {
   'choice': FieldTypeSelect,
+  'date': FieldTypeDatePicker,
   'field': FieldTypeSelect,
   'string': FieldTypeBasic,
 };
@@ -48,7 +50,8 @@ const FormFieldInput = ({
   const displayError = meta.error && meta.touched;
   const isDirty = meta.dirty && !disableDirty;
   const fieldComponent = resolveFieldType(type);
-
+  console.log(input);
+  console.log(type);
   return (
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name}>{label}{required &&<i className='required'> *</i>}</label>}
