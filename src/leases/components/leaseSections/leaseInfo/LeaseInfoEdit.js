@@ -1,18 +1,16 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Field, reduxForm} from 'redux-form';
+import {reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
+import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import {receiveLeaseInfoFormValid} from '$src/leases/actions';
 import {getContentLeaseInfo} from '$src/leases/helpers';
-import {getAttributeFieldOptions} from '$src/util/helpers';
 import {getAttributes, getCurrentLease, getIsLeaseInfoFormValid} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes, Lease} from '$src/leases/types';
 
@@ -40,48 +38,42 @@ class LeaseInfoEdit extends Component {
       currentLease,
     } = this.props;
     const leaseInfo = getContentLeaseInfo(currentLease);
-    const stateOptions = getAttributeFieldOptions(attributes, 'state');
 
     return (
       <form className='lease-info-edit'>
         <Row>
           <Column>
-            <label className='mvj-form-field-label'>Vuokratunnus</label>
+            <FormFieldLabel>Vuokratunnus</FormFieldLabel>
             <h1 className='lease-info-edit__number'>{leaseInfo.identifier || '-'}</h1>
           </Column>
           <Column>
-            <label className='mvj-form-field-label'>Tyyppi</label>
-            <Field
+            <FormField
               className='no-margin'
-              component={FieldTypeSelect}
+              fieldAttributes={get(attributes, 'state')}
               name='state'
-              options={stateOptions}
-              validate={[
-                (value) => genericValidator(value, get(attributes, 'state')),
-              ]}
+              overrideValues={{
+                label: 'Tyyppi',
+              }}
             />
           </Column>
           <Column>
-            <label className='mvj-form-field-label'>Alkupäivämäärä</label>
-            <Field
-              className="no-margin"
-              component={FieldTypeDatePicker}
+            <FormField
+              className='no-margin'
+              fieldAttributes={get(attributes, 'start_date')}
               name='start_date'
-              validate={[
-                (value) => genericValidator(value, get(attributes, 'start_date')),
-              ]}
+              overrideValues={{
+                label: 'Alkupäivämäärä',
+              }}
             />
           </Column>
           <Column>
-            <label className='mvj-form-field-label'>Loppupäivämäärä</label>
-            <Field
-              className="no-margin"
-              component={FieldTypeDatePicker}
+            <FormField
+              className='no-margin'
+              fieldAttributes={get(attributes, 'end_date')}
               name='end_date'
-              disableTouched
-              validate={[
-                (value) => genericValidator(value, get(attributes, 'end_date')),
-              ]}
+              overrideValues={{
+                label: 'Loppupäivämäärä',
+              }}
             />
           </Column>
         </Row>

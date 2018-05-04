@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import {getContentLeaseInfo, getContentLeaseStatus} from '$src/leases/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -26,23 +27,23 @@ const LeaseInfo = ({attributes, currentLease}: Props) => {
     <div className='lease-info'>
       <Row>
         <Column>
-          <label className='mvj-form-field-label'>Vuokratunnus</label>
+          <FormFieldLabel>Vuokratunnus</FormFieldLabel>
           <h1 className='lease-info-edit__number'>{leaseInfo.identifier || '-'}</h1>
         </Column>
         <Column>
-          <label className='mvj-form-field-label'>Tyyppi</label>
+          <FormFieldLabel>Tyyppi</FormFieldLabel>
           <p>{getLabelOfOption(stateOptions, leaseInfo.state) || '-'}</p>
         </Column>
         <Column>
-          <label className='mvj-form-field-label'>Alkupäivämäärä</label>
+          <FormFieldLabel className='mvj-form-field-label'>Alkupäivämäärä</FormFieldLabel>
           <p>{formatDate(leaseInfo.start_date) || '-'}</p>
         </Column>
         <Column>
-          <label className='mvj-form-field-label'>Loppupäivämäärä</label>
+          <FormFieldLabel>Loppupäivämäärä</FormFieldLabel>
           <p>{formatDate(leaseInfo.end_date) || '-'}</p>
         </Column>
         <Column>
-          <label className='mvj-form-field-label'>Olotila</label>
+          <FormFieldLabel>Olotila</FormFieldLabel>
           <p>{getContentLeaseStatus(currentLease) || '-'}</p>
         </Column>
       </Row>
