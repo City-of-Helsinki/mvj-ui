@@ -51,7 +51,6 @@ class RentsEdit extends Component {
             }
           />
           <Divider />
-
           <FieldArray
             component={RentItemEdit}
             name='rents'
@@ -59,7 +58,6 @@ class RentsEdit extends Component {
 
           <h2>Vuokranperusteet</h2>
           <Divider />
-
           <GreenBoxEdit>
             <FieldArray
               component={BasisOfRentsEdit}

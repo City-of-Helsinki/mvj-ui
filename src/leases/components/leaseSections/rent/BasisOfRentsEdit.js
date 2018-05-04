@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
@@ -9,12 +8,9 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -24,9 +20,6 @@ type Props = {
 }
 
 const BasisOfRentsEdit = ({attributes, fields}: Props) => {
-  const intendedUseOptions = getAttributeFieldOptions(attributes,
-    'basis_of_rents.child.children.intended_use');
-
   return (
     <div>
       <BoxItemContainer>
@@ -43,92 +36,75 @@ const BasisOfRentsEdit = ({attributes, fields}: Props) => {
                 />
                 <Row>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Käyttötarkoitus'
+                    <FormField
+                      fieldAttributes={get(attributes, 'basis_of_rents.child.children.intended_use')}
                       name={`${item}.intended_use`}
-                      options={intendedUseOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'basis_of_rents.child.children.intended_use')),
-                      ]}
+                      overrideValues={{
+                        label: 'Käyttötarkoitus',
+                      }}
                     />
                   </Column>
                   <Column small={3} medium={2} large={1}>
-                    <Field
-                      component={FieldTypeText}
-                      label='K-m2'
+                    <FormField
+                      fieldAttributes={get(attributes, 'basis_of_rents.child.children.floor_m2')}
                       name={`${item}.floor_m2`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'basis_of_rents.child.children.floor_m2')),
-                      ]}
+                      overrideValues={{
+                        label: 'K-m2',
+                      }}
                     />
                   </Column>
                   <Column small={3} medium={2} large={1}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Indeksi'
+                    <FormField
+                      fieldAttributes={get(attributes, 'basis_of_rents.child.children.index')}
                       name={`${item}.index`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'basis_of_rents.child.children.index')),
-                      ]}
+                      overrideValues={{
+                        label: 'Indeksi',
+                      }}
                     />
                   </Column>
                   <Column small={3} medium={2} large={1}>
-                    <Field
-                      component={FieldTypeText}
-                      label='€/k-m2 (ind 100)'
+                    <FormField
+                      fieldAttributes={get(attributes, 'basis_of_rents.child.children.amount_per_floor_m2_index_100')}
                       name={`${item}.amount_per_floor_m2_index_100`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'basis_of_rents.child.children.amount_per_floor_m2_index_100')),
-                      ]}
+                      overrideValues={{
+                        label: '€/k-m2 (ind 100)',
+                      }}
                     />
                   </Column>
                   <Column small={3} medium={2} large={1}>
-                    <Field
-                      component={FieldTypeText}
-                      label='€/k-m2 (ind)'
+                    <FormField
+                      fieldAttributes={get(attributes, 'basis_of_rents.child.children.amount_per_floor_m2_index')}
                       name={`${item}.amount_per_floor_m2_index`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'basis_of_rents.child.children.amount_per_floor_m2_index')),
-                      ]}
+                      overrideValues={{
+                        label: '€/k-m2 (ind)',
+                      }}
                     />
                   </Column>
                   <Column small={3} medium={2} large={1}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Prosenttia'
+                    <FormField
+                      fieldAttributes={get(attributes, 'basis_of_rents.child.children.percent')}
                       name={`${item}.percent`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'basis_of_rents.child.children.percent')),
-                      ]}
+                      overrideValues={{
+                        label: 'Prosenttia',
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Perusvuosivuokra €/v (ind 100)'
+                    <FormField
+                      fieldAttributes={get(attributes, 'basis_of_rents.child.children.year_rent_index_100')}
                       name={`${item}.year_rent_index_100`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'basis_of_rents.child.children.year_rent_index_100')),
-                      ]}
+                      overrideValues={{
+                        label: 'Perusvuosivuokra €/v (ind 100)',
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Perusvuosivuokra €/v (ind)'
+                    <FormField
+                      fieldAttributes={get(attributes, 'basis_of_rents.child.children.year_rent_index')}
                       name={`${item}.year_rent_index`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'basis_of_rents.child.children.year_rent_index')),
-                      ]}
+                      overrideValues={{
+                        label: 'Perusvuosivuokra €/v (ind)',
+                      }}
                     />
                   </Column>
                 </Row>
