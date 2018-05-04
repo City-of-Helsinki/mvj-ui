@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
@@ -10,13 +9,9 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {getAttributeFieldOptions} from '$src/util/helpers';
 import {getAttributes} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -28,13 +23,6 @@ type Props = {
 }
 
 const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
-  // const typeOptions = getAttributeFieldOptions(attributes,
-  //   'lease_areas.child.children.plan_units.child.children.type');
-  const planUnitTypeOptions = getAttributeFieldOptions(attributes,
-    'lease_areas.child.children.plan_units.child.children.plan_unit_type');
-  const planUnitStateOptions = getAttributeFieldOptions(attributes,
-    'lease_areas.child.children.plan_units.child.children.plan_unit_state');
-
   return (
     <div>
       {(!fields || !fields.length) &&
@@ -67,14 +55,12 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
                   />
                   <Row>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Tunnus'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.identifier')}
                         name={`${planunit}.identifier`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.identifier')),
-                        ]}
+                        overrideValues={{
+                          label: 'Tunnus',
+                        }}
                       />
                     </Column>
                     {/* <Column small={6} medium={4} large={2}>
@@ -90,132 +76,108 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
                       />
                     </Column> */}
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Kokonaisala'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.area')}
                         name={`${planunit}.area`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.area')),
-                        ]}
+                        overrideValues={{
+                          label: 'Kokonaisala',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Leikkausala'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.section_area')}
                         name={`${planunit}.section_area`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.section_area')),
-                        ]}
+                        overrideValues={{
+                          label: 'Leikkausala',
+                        }}
                       />
                     </Column>
                   </Row>
                   <Row>
                     <Column small={12} medium={12} large={4}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Osoite'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.address')}
                         name={`${planunit}.address`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.address')),
-                        ]}
+                        overrideValues={{
+                          label: 'Osoite',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Postinumero'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.postal_code')}
                         name={`${planunit}.postal_code`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.postal_code')),
-                        ]}
+                        overrideValues={{
+                          label: 'Postinumero',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Kaupunki'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.city')}
                         name={`${planunit}.city`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.city')),
-                        ]}
+                        overrideValues={{
+                          label: 'Kaupunki',
+                        }}
                       />
                     </Column>
                   </Row>
                   <Row>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Tonttijaon tunnus'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_identifier')}
                         name={`${planunit}.plot_division_identifier`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_identifier')),
-                        ]}
+                        overrideValues={{
+                          label: 'Tonttijaon tunnus',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeDatePicker}
-                        label='Tonttijaon hyväksymispvm'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_date_of_approval')}
                         name={`${planunit}.plot_division_date_of_approval`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_date_of_approval')),
-                        ]}
+                        overrideValues={{
+                          label: 'Tonttijaon hyväksymispvm',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Asemakaava'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_identifier')}
                         name={`${planunit}.detailed_plan_identifier`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_identifier')),
-                        ]}
+                        overrideValues={{
+                          label: 'Asemakaava',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeDatePicker}
-                        label='Asemakaavan vahvistumispvm'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_date_of_approval')}
                         name={`${planunit}.detailed_plan_date_of_approval`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_date_of_approval')),
-                        ]}
+                        overrideValues={{
+                          label: 'Asemakaavan vahvistumispvm',
+                        }}
                       />
                     </Column>
                   </Row>
                   <Row>
                     <Column small={6} medium={6} large={4}>
-                      <Field
-                        component={FieldTypeSelect}
-                        label='Kaavayksikön laji'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_type')}
                         name={`${planunit}.plan_unit_type`}
-                        options={planUnitTypeOptions}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_type')),
-                        ]}
+                        overrideValues={{
+                          label: 'Kaavayksikön laji',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={6} large={2}>
-                      <Field
-                        component={FieldTypeSelect}
-                        label='Kaavayksikön olotila'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_state')}
                         name={`${planunit}.plan_unit_state`}
-                        options={planUnitStateOptions}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_state')),
-                        ]}
+                        overrideValues={{
+                          label: 'Kaavayksikön olotila',
+                        }}
                       />
                     </Column>
                   </Row>

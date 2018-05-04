@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
@@ -10,13 +9,9 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {getAttributeFieldOptions} from '$src/util/helpers';
 import {getAttributes} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -28,9 +23,6 @@ type Props = {
 }
 
 const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
-  const typeOptions = getAttributeFieldOptions(attributes,
-    'lease_areas.child.children.plots.child.children.type');
-
   return (
     <div>
       {(!fields || !fields.length) &&
@@ -63,94 +55,77 @@ const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
                   />
                   <Row>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Tunnus'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.identifier')}
                         name={`${plot}.identifier`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plots.child.children.identifier')),
-                        ]}
+                        overrideValues={{
+                          label: 'Tunnus',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeSelect}
-                        label='Määritelmä'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.type')}
                         name={`${plot}.type`}
-                        options={typeOptions}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plots.child.children.type')),
-                        ]}
+                        overrideValues={{
+                          label: 'Määritelmä',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Kokonaisala'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.area')}
                         name={`${plot}.area`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plots.child.children.area')),
-                        ]}
+                        overrideValues={{
+                          label: 'Kokonaisala',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Leikkausala'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.section_area')}
                         name={`${plot}.section_area`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plots.child.children.section_area')),
-                        ]}
+                        overrideValues={{
+                          label: 'Leikkausala',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeDatePicker}
-                        label='Rekisteröintipäivä'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.registration_date')}
                         name={`${plot}.registration_date`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plots.child.children.registration_date')),
-                        ]}
+                        overrideValues={{
+                          label: 'Rekisteröintipäivä',
+                        }}
                       />
                     </Column>
                   </Row>
                   <Row>
                     <Column small={12} medium={12} large={4}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Osoite'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.address')}
                         name={`${plot}.address`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plots.child.children.address')),
-                        ]}
+                        overrideValues={{
+                          label: 'Osoite',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label="Postinumero"
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.postal_code')}
                         name={`${plot}.postal_code`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plots.child.children.postal_code')),
-                        ]}
+                        overrideValues={{
+                          label: 'Postinumero',
+                        }}
                       />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeText}
-                        label='Kaupunki'
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.city')}
                         name={`${plot}.city`}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plots.child.children.city')),
-                        ]}
+                        overrideValues={{
+                          label: 'Kaupunki',
+                        }}
                       />
                     </Column>
                   </Row>
