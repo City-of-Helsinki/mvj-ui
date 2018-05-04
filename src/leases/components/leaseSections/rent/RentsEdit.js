@@ -2,12 +2,12 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
-import {reduxForm, Field, FieldArray} from 'redux-form';
+import {reduxForm, FieldArray} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import BasisOfRentsEdit from './BasisOfRentsEdit';
 import Divider from '$components/content/Divider';
-import FieldTypeSwitch from '$components/form/FieldTypeSwitch';
+import FormField from '$components/form/FormField';
 import FormSectionComponent from '$components/form/FormSection';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import RentItemEdit from './RentItemEdit';
@@ -43,10 +43,13 @@ class RentsEdit extends Component {
           <h2>Vuokra</h2>
           <RightSubtitle
             text={
-              <Field
-                component={FieldTypeSwitch}
-                name="is_rent_info_complete"
-                optionLabel="Vuokratiedot kunnossa"
+              <FormField
+                fieldAttributes={{}}
+                name='is_rent_info_complete'
+                optionLabel='Vuokratiedot kunnossa'
+                overrideValues={{
+                  type: 'switch',
+                }}
               />
             }
           />

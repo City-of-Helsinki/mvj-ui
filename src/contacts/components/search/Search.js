@@ -1,12 +1,12 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Field, formValueSelector, reduxForm} from 'redux-form';
+import {formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
 
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import {FormNames} from '$src/contacts/enums';
 
 type Props = {
@@ -35,11 +35,13 @@ class Search extends Component {
       <div className='search'>
         <Row>
           <Column large={12}>
-            <Field
-              component={FieldTypeText}
-              disableDirty
-              name="search"
+            <FormField
+              fieldAttributes={{}}
+              name='search'
               placeholder='Hae hakusanalla'
+              overrideValues={{
+                label: '',
+              }}
             />
           </Column>
         </Row>
