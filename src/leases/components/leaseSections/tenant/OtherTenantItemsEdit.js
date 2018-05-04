@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import {Field, getFormValues} from 'redux-form';
+import {getFormValues} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
@@ -11,13 +11,11 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditIcon from '$components/icons/EditIcon';
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FormField from '$components/form/FormField';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import IconButton from '$components/button/IconButton';
 import RemoveButton from '$components/form/RemoveButton';
-import {genericValidator} from '$components/form/validations';
 import {initializeContactForm} from '$src/contacts/actions';
 import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
 import {FormNames, TenantContactType} from '$src/leases/enums';
@@ -74,25 +72,23 @@ const OtherTenantItemsEdit = ({
                     </div>
                     <div className='collapse__header_field-input-wrapper'>
                       <Column>
-                        <Field
+                        <FormField
                           className='no-margin'
-                          component={FieldTypeDatePicker}
+                          fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.start_date')}
                           name={`${tenant}.start_date`}
-                          validate={[
-                            (value) => genericValidator(value, get(attributes,
-                              'tenants.child.children.tenantcontact_set.child.children.start_date')),
-                          ]}
+                          overrideValues={{
+                            label: '',
+                          }}
                         />
                       </Column>
                       <Column>
-                        <Field
+                        <FormField
                           className='with-dash no-margin'
-                          component={FieldTypeDatePicker}
+                          fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
                           name={`${tenant}.end_date`}
-                          validate={[
-                            (value) => genericValidator(value, get(attributes,
-                              'tenants.child.children.tenantcontact_set.child.children.end_date')),
-                          ]}
+                          overrideValues={{
+                            label: '',
+                          }}
                         />
                       </Column>
                     </div>
@@ -116,15 +112,13 @@ const OtherTenantItemsEdit = ({
                     <Column small={12} medium={12} large={8}>
                       <Row>
                         <Column small={9} medium={8} large={8}>
-                          <Field
+                          <FormField
+                            fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.contact')}
                             name={`${tenant}.contact`}
-                            component={FieldTypeSelect}
-                            label='Asiakas'
-                            options={contactOptions}
-                            validate={[
-                              (value) => genericValidator(value, get(attributes,
-                                'tenants.child.children.tenantcontact_set.child.children.contact')),
-                            ]}
+                            overrideValues={{
+                              label: 'Asiakas',
+                              options: contactOptions,
+                            }}
                           />
                         </Column>
                         <Column small={3} medium={4} large={4}>
@@ -143,15 +137,13 @@ const OtherTenantItemsEdit = ({
                       </Row>
                     </Column>
                     <Column small={12} medium={6} large={4}>
-                      <Field
-                        component={FieldTypeSelect}
-                        label='Rooli'
+                      <FormField
+                        fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.type')}
                         name={`${tenant}.type`}
-                        options={tenantTypeOptions}
-                        validate={[
-                          (value) => genericValidator(value, get(attributes,
-                            'tenants.child.children.tenantcontact_set.child.children.type')),
-                        ]}
+                        overrideValues={{
+                          label: 'Rooli',
+                          options: tenantTypeOptions,
+                        }}
                       />
                     </Column>
                   </Row>
