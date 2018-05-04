@@ -617,6 +617,33 @@
     margin-bottom: rem-calc(5px);
   }
 
+  &__boolean {
+    .option-label {
+      color: $black;
+      display: inline-block;
+      font-size: rem-calc(14px);
+      line-height: rem-calc(20px);
+      height: rem-calc(20px);
+      margin-right: rem-calc(10px);
+    }
+
+    .option-label:last-child {
+      margin-right: 0;
+    }
+
+    fieldset {
+      line-height: 1;
+    }
+
+    &.is-dirty {
+      .option-label {
+        span {
+          background-color: $engel;
+        }
+      }
+    }
+  }
+
   &__input {
     padding: 0 rem-calc(5px);
     height: rem-calc(20px);

@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
@@ -9,12 +8,10 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import {getAttributes} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -43,47 +40,39 @@ const InspectionItemsEdit = ({
               />
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Tarkastaja'
+                  <FormField
+                    fieldAttributes={get(attributes, 'inspections.child.children.inspector')}
                     name={`${inspection}.inspector`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'inspections.child.children.inspector')),
-                    ]}
+                    overrideValues={{
+                      label: 'Tarkastaja',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Valvonta päivämäärä'
+                  <FormField
+                    fieldAttributes={get(attributes, 'inspections.child.children.supervision_date')}
                     name={`${inspection}.supervision_date`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'inspections.child.children.supervision_date')),
-                    ]}
+                    overrideValues={{
+                      label: 'Valvonta päivämäärä',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Valvottu päivämäärä'
+                  <FormField
+                    fieldAttributes={get(attributes, 'inspections.child.children.supervised_date')}
                     name={`${inspection}.supervised_date`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'inspections.child.children.supervised_date')),
-                    ]}
+                    overrideValues={{
+                      label: 'Valvottu päivämäärä',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={12} large={6}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Selite'
+                  <FormField
+                    fieldAttributes={get(attributes, 'inspections.child.children.description')}
                     name={`${inspection}.description`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'inspections.child.children.description')),
-                    ]}
+                    overrideValues={{
+                      label: 'Selite',
+                    }}
                   />
                 </Column>
               </Row>
