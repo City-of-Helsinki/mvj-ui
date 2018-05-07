@@ -9,6 +9,7 @@ import FieldTypeBasic from './FieldTypeBasic';
 import FieldTypeBoolean from './FieldTypeBoolean';
 import FieldTypeCheckbox from './FieldTypeCheckbox';
 import FieldTypeDatePicker from './FieldTypeDatePicker';
+import FieldTypeMultiSelect from './FieldTypeMultiSelect';
 import FieldTypeSelect from './FieldTypeSelect';
 import FieldTypeSwitch from './FieldTypeSwitch';
 import FieldTypeTextArea from './FieldTypeTextArea';
@@ -23,6 +24,7 @@ const FieldTypes = {
   'decimal': FieldTypeBasic,
   'field': FieldTypeSelect,
   'integer': FieldTypeBasic,
+  'multiselect': FieldTypeMultiSelect,
   'string': FieldTypeBasic,
   'switch': FieldTypeSwitch,
   'textarea': FieldTypeTextArea,

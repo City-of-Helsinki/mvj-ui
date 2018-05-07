@@ -99,6 +99,7 @@ class Search extends Component {
       filters.district = filters.district ? Number(filters.district) : undefined;
       filters.search = undefined;
     }
+
     onSearch(filters);
   }, 300);
 
@@ -120,7 +121,7 @@ class Search extends Component {
     const districtOptions = getDistrictOptions(districts);
     const municipalityOptions = getAttributeFieldOptions(attributes, 'municipality');
     const typeOptions = getAttributeFieldOptions(attributes, 'type');
-    const stateOptions = getAttributeFieldOptions(attributes, 'state');
+    const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
 
     return (
       <div className='lease-search'>
@@ -291,7 +292,7 @@ class Search extends Component {
                       name='state'
                       overrideValues={{
                         label: '',
-                        type: 'choice',
+                        type: 'multiselect',
                         options: stateOptions,
                       }}
                     />

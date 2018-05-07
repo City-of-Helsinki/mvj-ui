@@ -1,0 +1,215 @@
+.multi-select {
+  &__none-selected {
+    color: $medium-gray;
+  }
+
+  &__panel {
+    box-sizing: border-box;
+
+    &-search {
+      display: block;
+      max-width: 100%;
+      border-radius: 0;
+      box-sizing: border-box;
+      height: rem-calc(20px);
+      line-height: rem-calc(18px);
+      border: 1px solid $medium-gray;
+      padding: rem-calc(0 5px);
+      width: 100%;
+      outline: none;
+      margin: 0;
+      font-size: rem-calc(14px);
+
+      &.is-focused {
+        border: 1px solid $focus-color;
+        box-shadow: 0 0 0 1px $focus-color;
+      }
+
+      &-container {
+        width: 100%;
+        box-sizing: border-box;
+        padding: rem-calc(5px);
+      }
+    }
+  }
+
+  &__dropdown {
+    position: relative;
+    boxSizing: border-box;
+    outline: none;
+
+    &-content {
+      border-radius: 0;
+      background-color: $white;
+      border: 1px solid $medium-gray;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
+      box-sizing: border-box;
+      margin-top: -1px;
+      max-height: 300px;
+      position: absolute;
+      top: 100%;
+      width: 100%;
+      z-index: 1;
+      overflow-y: auto;
+    }
+
+    &-heading {
+      box-sizing: border-box;
+      background-color: $white;
+      border-radius: 0;
+      border: 1px solid $medium-gray;
+      color: $black;
+      cursor: default;
+      display: table;
+      border-spacing: 0;
+      border-collapse: separate;
+      height: rem-calc(20px);
+      outline: none;
+      overflow: hidden;
+      position: relative;
+      width: 100%;
+      font-size: rem-calc(14px);
+
+      &.is-expanded {
+
+      }
+
+      &.is-focused {
+
+      }
+
+      &-value {
+        box-sizing: border-box;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        top: 0;
+        color: $black;
+        line-height: rem-calc(18px);
+        padding: rem-calc(0 20px 0 5px);
+        position: absolute;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        &.disabled {
+          opacity: 0.5;
+        }
+      }
+    }
+    &-loading {
+      &-container {
+        cursor: pointer;
+        display: table-cell;
+        width: 16px;
+      }
+
+      &-indicator {
+        width: 14px;
+        height: 14px;
+        box-sizing: border-box;
+        border-radius: 50%;
+        border: 2px solid #ccc;
+        border-right-color: #333;
+        display: inline-block;
+        position: relative;
+        vertical-align: middle;
+        animation: loaderSpinner .7s infinite linear;
+        -webkit-animation: loaderSpinner .7s infinite linear;
+      }
+    }
+
+    &-arrow {
+      box-sizing: border-box;
+      cursor: pointer;
+      display: table-cell;
+      position: relative;
+      text-align: center;
+      vertical-align: middle;
+      width: 12px;
+      padding-right: 5px;
+
+      &-down {
+        display: block;
+        background-image: url(../assets/icons/icon_arrow_down.svg);
+        height: 12px;
+        width: 12px;
+        background-size: 12px 12px;
+        background-repeat: no-repeat;
+        background-position: 50%;
+      }
+
+      &-up {
+        display: block;
+        background-image: url(../assets/icons/icon_arrow_up.svg);
+        height: 12px;
+        width: 12px;
+        background-size: 12px 12px;
+        background-repeat: no-repeat;
+        background-position: 50%;
+      }
+    }
+  }
+
+  &__select-list {
+    margin: 0;
+    padding-left: 0;
+
+    &-item {
+      list-style: none;
+    }
+  }
+
+  &__select-item {
+    box-sizing: border-box;
+    background-color: $white;
+    color: $dark-gray;
+    cursor: pointer;
+    display: block;
+    padding: rem-calc(2px 5px);
+
+    &.is-focused {
+      background-color: $engel-lighter !important;
+      outline: 0;
+    }
+
+    &-renderer {
+      display: flex !important;
+      align-items: center !important;
+
+      input {
+        margin: 0;
+      }
+
+      &-label {
+        display: inline-block;
+        vertical-align: middle;
+        cursor: pointer;
+        padding: rem-calc(0 5px);
+
+        &.disabled {
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+}
+
+@-webkit-keyframes loaderSpinner {
+  0% {
+    @include rotate(0deg);
+  }
+  100% {
+    @include rotate(360deg);
+  }
+}
+
+@keyframes loaderSpinner {
+  0% {
+    @include rotate(0deg);
+  }
+  100% {
+    @include rotate(360deg);
+  }
+}
