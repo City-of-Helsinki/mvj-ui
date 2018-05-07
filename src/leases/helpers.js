@@ -71,8 +71,8 @@ export const getContentLeases = (content: Object) => {
 export const getContentLeaseInfo = (lease: Object) => {
   return {
     identifier: getContentLeaseIdentifier(lease),
-    end_date: get(lease, 'end_date'),
-    start_date: get(lease, 'start_date'),
+    end_date: get(lease, 'end_date') ? moment(get(lease, 'end_date')) : null,
+    start_date: get(lease, 'start_date') ? moment(get(lease, 'start_date')) : null,
     state: get(lease, 'state'),
   };
 };

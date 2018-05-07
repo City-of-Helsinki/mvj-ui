@@ -22,8 +22,7 @@ const FieldTypeDatePicker = ({
 }: Props) => {
   const handleBlur = (e: any) => {
     if(e && e.target.value) {
-      const date = moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']);
-      onBlur(date.isValid() ? date.format('YYYY-MM-DD') : null);
+      onBlur(moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']));
     } else {
       onBlur(null);
     }
@@ -31,11 +30,11 @@ const FieldTypeDatePicker = ({
 
   const handleSelect = (val: any, e: any) => {
     if((e && e.target.value)) {
-      const date = moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']);
-      onChange(date.isValid() ? date.format('YYYY-MM-DD') : null);
+      console.log('tr', e.target.value);
+      onChange(moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']));
     } else if (val) {
-      const date = moment(val, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']);
-      onChange(date.isValid() ? date.format('YYYY-MM-DD') : null);
+      console.log('va', val);
+      onChange(moment(val, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']));
     } else {
       onChange(null);
     }
@@ -46,12 +45,15 @@ const FieldTypeDatePicker = ({
       <DatePicker
         {...input}
         disabled={disabled}
-        disabledKeyboardNavigation
         locale='fi'
         onBlur={handleBlur}
+        onChange={(e) => console.log(e)}
+        onKeyUp={(e) => console.log(e)}
         onSelect={handleSelect}
         placeholder={placeholder}
-        selected={value ? moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']) : null}
+        selected={value && moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']) || null}
+        dateFormat='DD.MM.YYYY'
+        disabledKeyboardNavigation
       />
     </div>
   );

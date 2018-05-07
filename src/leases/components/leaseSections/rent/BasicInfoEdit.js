@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import FormField from '$components/form/FormField';
@@ -18,7 +19,7 @@ type DueDatesProps = {
   fields: any,
 }
 
-const renderDueDates = ({attributes, fields}: DueDatesProps) => {
+const renderDueDates = ({attributes, fields}: DueDatesProps): Element<*> => {
   return (
     <div>
       <Row>
@@ -78,7 +79,7 @@ type FixedInitialYearRentsProps = {
   fields: any,
 }
 
-const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRentsProps) => {
+const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRentsProps): Element<*> => {
   return (
     <div>
       <Row>

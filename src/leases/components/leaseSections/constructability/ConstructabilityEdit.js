@@ -5,6 +5,7 @@ import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -31,7 +32,7 @@ type CommentProps = {
   fields: any,
 }
 
-const renderComments = ({attributes, fields}: CommentProps) => {
+const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
   return (
     <div>
       <BoxItemContainer>
@@ -95,7 +96,7 @@ const renderAreas = ({
   attributes,
   fields,
   users,
-}: AreaProps) => {
+}: AreaProps): Element<*> => {
   const getFullAddress = (item: Object) => {
     return `${item.address}, ${item.postal_code} ${item.city}`;
   };

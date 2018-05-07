@@ -5,6 +5,7 @@ import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import FormField from '$components/form/FormField';
@@ -24,7 +25,7 @@ type PropertyIdentifiersProps = {
   fields: any,
 }
 
-const renderPropertyIdentifiers = ({attributes, fields}: PropertyIdentifiersProps) => {
+const renderPropertyIdentifiers = ({attributes, fields}: PropertyIdentifiersProps): Element<*> => {
   return (
     <div>
       <FormFieldLabel>Kiinteisötunnukset</FormFieldLabel>
@@ -65,7 +66,7 @@ type DecisionsProps = {
   fields: any,
 }
 
-const renderDecisions = ({attributes, fields}: DecisionsProps) => {
+const renderDecisions = ({attributes, fields}: DecisionsProps): Element<*> => {
   return (
     <div>
       <FormFieldLabel>Päätökset</FormFieldLabel>
@@ -106,7 +107,7 @@ type RentRatesProps = {
   fields: any,
 }
 
-const renderRentRates = ({attributes, fields}: RentRatesProps) => {
+const renderRentRates = ({attributes, fields}: RentRatesProps): Element<*> => {
   return (
     <div>
       <p className="sub-title">Hinnat</p>
