@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 
 import {
   notFound,
@@ -38,9 +36,9 @@ function* fetchDecisionsByLeaseSaga({payload: leaseId}): Generator<any, any, any
 }
 
 export default function*(): Generator<any, any, any> {
-  yield [
+  yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/decision/FETCH_BY_LEASE', fetchDecisionsByLeaseSaga);
     }),
-  ];
+  ]);
 }

@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest, takeEvery} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest, takeEvery} from 'redux-saga/effects';
 import {SubmissionError} from 'redux-form';
 
 import {
@@ -106,12 +104,12 @@ function* editApplicationSaga({payload: application}): Generator<any, any, any> 
 }
 
 export default function*(): Generator<any, any, any> {
-  yield [
+  yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeEvery('mvj/applications/FETCH_ALL', fetchApplicationsSaga);
       yield takeEvery('mvj/applications/FETCH_SINGLE', fetchSingleApplicationSaga);
       yield takeLatest('mvj/applications/CREATE', createApplicationSaga);
       yield takeLatest('mvj/applications/EDIT', editApplicationSaga);
     }),
-  ];
+  ]);
 }

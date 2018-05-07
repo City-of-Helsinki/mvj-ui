@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {SubmissionError} from 'redux-form';
 
 import {displayUIMessage, getSearchQuery} from '$util/helpers';
@@ -116,12 +114,12 @@ function* patchInvoiceSaga({payload: invoice}): Generator<any, any, any> {
 }
 
 export default function*(): Generator<any, any, any> {
-  yield [
+  yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/invoices/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/invoices/FETCH_ALL', fetchInvoicesSaga);
       yield takeLatest('mvj/invoices/CREATE', createInvoiceSaga);
       yield takeLatest('mvj/invoices/PATCH', patchInvoiceSaga);
     }),
-  ];
+  ]);
 }

@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import get from 'lodash/get';
 
 import {
@@ -46,9 +44,9 @@ function* fetchUsersSaga({payload: search}): Generator<any, any, any> {
 }
 
 export default function*(): Generator<any, any, any> {
-  yield [
+  yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/users/FETCH_ALL', fetchUsersSaga);
     }),
-  ];
+  ]);
 }

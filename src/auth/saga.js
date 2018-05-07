@@ -1,9 +1,7 @@
 // @flow
 
 /* global OPENID_CONNECT_API_TOKEN_URL */
-
-import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 
 import {tokenNotFound, receiveApiToken} from './actions';
 import {receiveError} from '../api/actions';
@@ -52,10 +50,10 @@ function* clearApiTokenSaga(): Generator<any, any, any> {
 }
 
 export default function*(): Generator<any, any, any> {
-  yield [
+  yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/auth/FETCH_API_TOKEN', fetchApiTokenSaga);
       yield takeLatest('mvj/auth/CLEAR_API_TOKEN', clearApiTokenSaga);
     }),
-  ];
+  ]);
 }

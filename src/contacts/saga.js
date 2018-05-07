@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 import get from 'lodash/get';
@@ -199,7 +197,7 @@ function* fetchLessorsSaga(): Generator<any, any, any> {
 }
 
 export default function*(): Generator<any, any, any> {
-  yield [
+  yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/contacts/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/contacts/FETCH_ALL', fetchContactsSaga);
@@ -209,5 +207,5 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/contacts/CREATE', createContactSaga);
       yield takeLatest('mvj/contacts/EDIT', editContactSaga);
     }),
-  ];
+  ]);
 }

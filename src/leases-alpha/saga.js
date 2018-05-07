@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest, takeEvery} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest, takeEvery} from 'redux-saga/effects';
 import get from 'lodash/get';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
@@ -188,7 +186,7 @@ function* editLeaseSaga({payload: lease}): Generator<any, any, any> {
 }
 
 export default function*(): Generator<any, any, any> {
-  yield [
+  yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/leases/FETCH_AREAS', fetchAreasSaga);
@@ -198,5 +196,5 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/EDIT', editLeaseSaga);
     }),
-  ];
+  ]);
 }
