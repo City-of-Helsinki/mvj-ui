@@ -46,7 +46,7 @@ const MultiSelect = ({
 
     const selectedLabels = selectedOptions.map(s => s ? s.label : '');
 
-    return selectedLabels.join(', ');
+    return isLoading ? '' : selectedLabels.join(', ');
   };
 
   const renderHeader = () => {

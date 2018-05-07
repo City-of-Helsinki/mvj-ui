@@ -38,6 +38,7 @@ type InputProps = {
   disableDirty: boolean,
   ErrorComponent: Function | Object,
   input: Object,
+  isLoading: boolean,
   label: ?string,
   meta: Object,
   optionLabel?: string,
@@ -54,6 +55,7 @@ const FormFieldInput = ({
   disableDirty,
   ErrorComponent,
   input,
+  isLoading,
   label,
   meta,
   optionLabel,
@@ -71,7 +73,7 @@ const FormFieldInput = ({
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name}>{label}{required &&<i className='required'> *</i>}</label>}
       <div className='form-field__component'>
-        {createElement(fieldComponent, {displayError, disabled, input, isDirty, optionLabel, placeholder, options, rows, type})}
+        {createElement(fieldComponent, {displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
       </div>
       {displayError && <ErrorComponent {...meta}/>}
     </div>
@@ -84,6 +86,7 @@ type Props = {
   disableDirty?: boolean,
   ErrorComponent?: any,
   fieldAttributes: Object,
+  isLoading?: boolean,
   name: string,
   optionLabel?: string,
   placeholder?: string,
@@ -97,6 +100,7 @@ const FormField = ({
   disableDirty = false,
   ErrorComponent = ErrorBlock,
   fieldAttributes,
+  isLoading = false,
   name,
   optionLabel,
   placeholder,
@@ -114,6 +118,7 @@ const FormField = ({
       className={className}
       disabled={disabled}
       disableDirty={disableDirty}
+      isLoading={isLoading}
       label={label}
       name={name}
       options={options}

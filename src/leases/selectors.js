@@ -21,6 +21,9 @@ export const getIsEditMode: Selector<boolean, void> = (state: LeaseState): boole
 export const getIsFetching: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isFetching;
 
+export const getIsFetchingAttributes: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.lease.isFetchingAttributes;
+
 export const getIsConstructabilityFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isConstructabilityFormValid;
 

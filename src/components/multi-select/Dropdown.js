@@ -45,6 +45,9 @@ class Dropdown extends Component {
 
   handleKeyDown = (e: KeyboardEvent) => {
     switch (e.which) {
+      case 9: // Tab
+        this.toggleExpanded(false);
+        break;
       case 27: // Escape
         this.toggleExpanded(false);
         break;
@@ -57,15 +60,17 @@ class Dropdown extends Component {
       default:
         return;
     }
-
-    e.preventDefault();
+    if(e.which !== 9) {
+      e.preventDefault();
+    }
   }
 
   handleFocus = (e: {target: any}) => {
     const {hasFocus} = this.state;
-
     if (e.target === this.wrapper && !hasFocus) {
-      this.setState({hasFocus: true});
+      this.setState({
+        hasFocus: true,
+      });
     }
   }
 
@@ -73,7 +78,9 @@ class Dropdown extends Component {
     const {hasFocus} = this.state;
 
     if (hasFocus) {
-      this.setState({hasFocus: false});
+      this.setState({
+        hasFocus: false,
+      });
     }
   }
 
@@ -124,10 +131,10 @@ class Dropdown extends Component {
 
     return <div
       className="multi-select__dropdown"
-      tabIndex="0"
+      tabIndex={0}
       role="combobox"
       aria-expanded={expanded}
-      aria-readonly="true"
+      aria-readonly="false"
       aria-disabled={disabled}
       ref={ref => this.wrapper = ref}
       onKeyDown={this.handleKeyDown}

@@ -14,7 +14,7 @@ import {FormNames} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
-import {getAttributes} from '$src/leases/selectors';
+import {getAttributes, getIsFetchingAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -24,6 +24,7 @@ type Props = {
   districts: Array<Object>,
   fetchDistrictsByMunicipality: Function,
   formValues: Object,
+  isFetchingAttributes: boolean,
   municipality: string,
   onSearch: Function,
   router: Object,
@@ -112,12 +113,13 @@ class Search extends Component {
     const {
       attributes,
       districts,
+      isFetchingAttributes,
     } = this.props;
     const {
       isBasicSearch,
     } = this.state;
 
-    const tenantTypeOptions = getAttributeFieldOptions(attributes, 'tenants.child.children.tenantcontact_set.child.children.type');
+    const tenantTypeOptions = getAttributeFieldOptions(attributes, 'tenants.child.children.tenantcontact_set.child.children.type', false);
     const districtOptions = getDistrictOptions(districts);
     const municipalityOptions = getAttributeFieldOptions(attributes, 'municipality');
     const typeOptions = getAttributeFieldOptions(attributes, 'type');
@@ -181,10 +183,11 @@ class Search extends Component {
                     <FormField
                       disableDirty
                       fieldAttributes={{}}
+                      isLoading={isFetchingAttributes}
                       name='tenant_role'
                       overrideValues={{
                         label: '',
-                        type: 'choice',
+                        type: 'multiselect',
                         options: tenantTypeOptions,
                       }}
                     />
@@ -289,6 +292,7 @@ class Search extends Component {
                     <FormField
                       disableDirty
                       fieldAttributes={{}}
+                      isLoading={isFetchingAttributes}
                       name='state'
                       overrideValues={{
                         label: '',
@@ -357,6 +361,7 @@ export default flowRight(
         attributes: getAttributes(state),
         districts: getDistrictsByMunicipality(state, municipality),
         formValues: getFormValues(formName)(state),
+        isFetchingAttributes: getIsFetchingAttributes(state),
         municipality: municipality,
         search: selector(state, 'search'),
       };

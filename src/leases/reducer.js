@@ -50,6 +50,11 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/RECEIVE_SINGLE': () => false,
 }, false);
 
+const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/FETCH_ATTRIBUTES': () => true,
+  'mvj/leases/RECEIVE_ATTRIBUTES': () => false,
+}, false);
+
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/leases/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
@@ -138,6 +143,7 @@ export default combineReducers({
   isContactModalOpen: isContactModalOpenReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  isFetchingAttributes: isFetchingAttributesReducer,
   isConstructabilityFormValid: constructabilityFormValidReducer,
   isContractsFormValid: contractsFormValidReducer,
   isDecisionsFormValid: decisionsFormValidReducer,
