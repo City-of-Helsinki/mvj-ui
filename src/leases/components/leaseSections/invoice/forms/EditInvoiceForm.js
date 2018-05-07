@@ -81,7 +81,7 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <Row>
             <Column>
-              <FormFieldLabel>Laskutuskausi</FormFieldLabel>
+              <FormFieldLabel required>Laskutuskausi</FormFieldLabel>
             </Column>
           </Row>
           <Row>
