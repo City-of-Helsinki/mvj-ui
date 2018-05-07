@@ -17,9 +17,7 @@ type Props = {
   valid: boolean,
 }
 
-class InspectionsEdit extends Component {
-  props: Props
-
+class InspectionsEdit extends Component<Props> {
   componentDidUpdate() {
     const {isInspectionsFormValid, receiveInspectionsFormValid, valid} = this.props;
     if(isInspectionsFormValid !== valid) {

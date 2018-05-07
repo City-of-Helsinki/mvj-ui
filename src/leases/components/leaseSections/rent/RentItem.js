@@ -27,10 +27,7 @@ type State = {
   isActive: boolean,
 }
 
-class RentItem extends Component {
-  props: Props
-  state: State
-
+class RentItem extends Component<Props, State> {
   componentWillMount() {
     const {rent} = this.props;
     this.setState({isActive: isRentActive(rent)});

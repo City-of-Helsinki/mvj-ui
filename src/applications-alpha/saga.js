@@ -13,7 +13,7 @@ import {
 import {fetchApplications, fetchSingleApplication, createApplication, editApplication} from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchApplicationsSaga(): Generator<> {
+function* fetchApplicationsSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchApplications);
 
@@ -33,7 +33,7 @@ function* fetchApplicationsSaga(): Generator<> {
   }
 }
 
-function* fetchSingleApplicationSaga({payload: id}): Generator<> {
+function* fetchSingleApplicationSaga({payload: id}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSingleApplication, id);
 
@@ -56,7 +56,7 @@ function* fetchSingleApplicationSaga({payload: id}): Generator<> {
   }
 }
 
-function* createApplicationSaga({payload: application}): Generator<> {
+function* createApplicationSaga({payload: application}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(createApplication, application);
 
@@ -80,7 +80,7 @@ function* createApplicationSaga({payload: application}): Generator<> {
   }
 }
 
-function* editApplicationSaga({payload: application}): Generator<> {
+function* editApplicationSaga({payload: application}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(editApplication, application);
 
@@ -105,9 +105,9 @@ function* editApplicationSaga({payload: application}): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
   yield [
-    fork(function*(): Generator<> {
+    fork(function*(): Generator<any, any, any> {
       yield takeEvery('mvj/applications/FETCH_ALL', fetchApplicationsSaga);
       yield takeEvery('mvj/applications/FETCH_SINGLE', fetchSingleApplicationSaga);
       yield takeLatest('mvj/applications/CREATE', createApplicationSaga);

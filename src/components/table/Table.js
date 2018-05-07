@@ -14,9 +14,7 @@ type Props = {
   onRowClick?: Function,
 };
 
-class Table extends Component {
-  props: Props;
-
+class Table extends Component<Props> {
   static defaultProps = {
     displayHeaders: true,
   };

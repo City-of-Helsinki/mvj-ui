@@ -360,9 +360,7 @@ type Props = {
   valid: boolean,
 }
 
-class ConstructabilityEdit extends Component {
-  props: Props
-
+class ConstructabilityEdit extends Component<Props> {
   componentDidUpdate() {
     const {isConstructabilityFormValid, receiveConstructabilityFormValid, valid} = this.props;
     if(isConstructabilityFormValid !== valid) {

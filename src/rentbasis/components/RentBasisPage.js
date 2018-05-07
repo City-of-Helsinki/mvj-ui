@@ -61,10 +61,8 @@ type State = {
   isCancelModalOpen: boolean,
 }
 
-class RentBasisPage extends Component {
-  props: Props
-
-  state: State = {
+class RentBasisPage extends Component<Props, State> {
+  state = {
     isCancelModalOpen: false,
   }
 
@@ -196,8 +194,8 @@ class RentBasisPage extends Component {
         {isEditMode
           ? <RentBasisEdit />
           : <RentBasisReadonly
-              rentBasis={rentBasis}
-            />
+            rentBasis={rentBasis}
+          />
         }
       </PageContainer>
     );

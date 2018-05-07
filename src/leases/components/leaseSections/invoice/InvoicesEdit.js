@@ -46,10 +46,8 @@ type State = {
   selectedDebtToDeleteIndex: number,
 }
 
-class InvoicesEdit extends Component {
-  props: Props
-
-  state: State = {
+class InvoicesEdit extends Component<Props, State> {
+  state = {
     isStartInvoicingModalOpen: false,
     isStopInvoicingModalOpen: false,
     selectedDebtIndex: -1,

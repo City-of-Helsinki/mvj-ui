@@ -11,5 +11,6 @@ export default (component: any, props: RootProps) =>
     <AppContainer>
       {createElement(component, props)}
     </AppContainer>,
+    // $FlowFixMe
     document.getElementById('root')
   );

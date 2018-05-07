@@ -34,9 +34,7 @@ type Props = {
   valid: boolean,
 }
 
-class SummaryEdit extends Component {
-  props: Props
-
+class SummaryEdit extends Component<Props> {
   componentWillMount() {
     const {fetchLessors} = this.props;
 

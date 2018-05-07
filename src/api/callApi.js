@@ -5,7 +5,7 @@ import {receiveError} from './actions';
 
 import {getApiToken} from '../auth/selectors';
 
-function* callApi(request: Request): Generator<> {
+function* callApi(request: Request): Generator<any, any, any> {
   const apiToken = yield select(getApiToken);
   if (apiToken) {
     request.headers.set('Authorization', `Bearer ${apiToken}`);

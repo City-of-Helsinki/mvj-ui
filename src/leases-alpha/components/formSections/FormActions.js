@@ -10,9 +10,10 @@ type Props = {
   submitting: Boolean,
   pristine: Boolean,
   label: string,
+  rest?: any,
 };
 
-const FormActions = ({className, icon, invalid, submitting, pristine, label, ...rest}: Props) => {
+const FormActions = ({className, icon, invalid, submitting, pristine, label, rest}: Props) => {
   return (
     <Row className={classNames('mvj-form__actions', className)}>
       <Column medium={12}>
@@ -23,10 +24,10 @@ const FormActions = ({className, icon, invalid, submitting, pristine, label, ...
           {label} {icon && icon}
         </button>
 
-        {rest.displayCreateButton &&
-        <span className="create-new" onClick={rest.onCreateClick}>
-          {rest.createLabel}
-        </span>
+        {rest && rest.displayCreateButton &&
+          <span className="create-new" onClick={rest.onCreateClick}>
+            {rest.createLabel}
+          </span>
         }
       </Column>
     </Row>

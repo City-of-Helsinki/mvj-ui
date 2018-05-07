@@ -18,9 +18,8 @@ type State = {
   hasFocus: boolean
 };
 
-class Dropdown extends Component {
-  props: Props
-  state: State = {
+class Dropdown extends Component<Props, State> {
+  state = {
     expanded: false,
     hasFocus: false,
   }

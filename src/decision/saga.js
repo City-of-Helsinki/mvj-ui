@@ -10,7 +10,7 @@ import {
 import {fetchDecisions} from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchDecisionsByLeaseSaga({payload: leaseId}): Generator<> {
+function* fetchDecisionsByLeaseSaga({payload: leaseId}): Generator<any, any, any> {
   try {
     let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchDecisions, `?lease=${leaseId}`);
     let decisions = body.results;
@@ -37,9 +37,9 @@ function* fetchDecisionsByLeaseSaga({payload: leaseId}): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
   yield [
-    fork(function*(): Generator<> {
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/decision/FETCH_BY_LEASE', fetchDecisionsByLeaseSaga);
     }),
   ];

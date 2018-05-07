@@ -53,22 +53,15 @@ type State = {
   tenants: Array<any> | null,
 };
 
-class Billing extends Component {
-  props: Props;
-  state: State;
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      activeIndex: null,
-      activeTab: 0,
-      activeTenant: null,
-      displayInvoice: false,
-      isEditing: false,
-      tenants: null,
-    };
-  }
+class Billing extends Component<Props, State> {
+  state = {
+    activeIndex: null,
+    activeTab: 0,
+    activeTenant: null,
+    displayInvoice: false,
+    isEditing: false,
+    tenants: null,
+  };
 
   componentWillMount() {
     const {tenants, fetchInvoices, params: {leaseId}} = this.props;

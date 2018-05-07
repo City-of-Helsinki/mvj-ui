@@ -34,9 +34,7 @@ type Props = {
   createApplication: Function,
 };
 
-class CreateApplicationForm extends Component {
-  props: Props;
-
+class CreateApplicationForm extends Component<Props> {
   componentWillMount() {
     const {fetchAttributes} = this.props;
     fetchAttributes();

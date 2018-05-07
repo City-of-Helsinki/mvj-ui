@@ -21,10 +21,8 @@ type State = {
   showMore: boolean,
 }
 
-class Comment extends Component {
-  props: Props
-
-  state: State = {
+class Comment extends Component<Props, State> {
+  state = {
     editedText: '',
     isEditMode: false,
     showMore: false,

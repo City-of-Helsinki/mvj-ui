@@ -7,7 +7,7 @@ import {receiveUsers, notFound} from './actions';
 import {fetchUsers} from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchUsersSaga(): Generator<> {
+function* fetchUsersSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchUsers);
 
@@ -32,9 +32,9 @@ function* fetchUsersSaga(): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
   yield [
-    fork(function*(): Generator<> {
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/user/FETCH', fetchUsersSaga);
     }),
   ];

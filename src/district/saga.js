@@ -10,7 +10,7 @@ import {
 import {fetchDistricts} from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchDistrictsByMunicipalitySaga({payload: municipalityId}): Generator<> {
+function* fetchDistrictsByMunicipalitySaga({payload: municipalityId}): Generator<any, any, any> {
   try {
     let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchDistricts, `?municipality=${municipalityId}`);
     let districts = body.results;
@@ -37,9 +37,9 @@ function* fetchDistrictsByMunicipalitySaga({payload: municipalityId}): Generator
   }
 }
 
-export default function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
   yield [
-    fork(function*(): Generator<> {
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/district/FETCH_BY_MUNICIPALITY', fetchDistrictsByMunicipalitySaga);
     }),
   ];

@@ -10,7 +10,7 @@ import {
 import {fetchNoticePeriods} from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchNoticePeriodsSaga({payload: search}): Generator<> {
+function* fetchNoticePeriodsSaga({payload: search}): Generator<any, any, any> {
   try {
     let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchNoticePeriods, search);
     let noticePeriods = body.results;
@@ -37,9 +37,9 @@ function* fetchNoticePeriodsSaga({payload: search}): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
   yield [
-    fork(function*(): Generator<> {
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/noticePeriod/FETCH_ALL', fetchNoticePeriodsSaga);
     }),
   ];

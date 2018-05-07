@@ -20,7 +20,7 @@ import {
 } from './requests';
 import {receiveError} from '$src/api/actions';
 
-function* fetchAttributesSaga(): Generator<> {
+function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
     const attributes = bodyAsJson.fields;
@@ -39,7 +39,7 @@ function* fetchAttributesSaga(): Generator<> {
   }
 }
 
-function* fetchInvoicesSaga({payload: search}): Generator<> {
+function* fetchInvoicesSaga({payload: search}): Generator<any, any, any> {
   try {
     let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchInvoices, search);
     let invoices = body.results;
@@ -64,7 +64,7 @@ function* fetchInvoicesSaga({payload: search}): Generator<> {
   }
 }
 
-function* createInvoiceSaga({payload: invoice}): Generator<> {
+function* createInvoiceSaga({payload: invoice}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(createInvoice, invoice);
 
@@ -90,7 +90,7 @@ function* createInvoiceSaga({payload: invoice}): Generator<> {
   }
 }
 
-function* patchInvoiceSaga({payload: invoice}): Generator<> {
+function* patchInvoiceSaga({payload: invoice}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(patchInvoice, invoice);
 
@@ -115,9 +115,9 @@ function* patchInvoiceSaga({payload: invoice}): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
   yield [
-    fork(function*(): Generator<> {
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/invoices/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/invoices/FETCH_ALL', fetchInvoicesSaga);
       yield takeLatest('mvj/invoices/CREATE', createInvoiceSaga);

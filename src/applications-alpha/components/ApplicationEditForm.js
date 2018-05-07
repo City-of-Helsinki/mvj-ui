@@ -42,9 +42,7 @@ const validate = ({organization, organization_id, name, email, phone, contact_na
   }, customConditions);
 };
 
-class ApplicationEdit extends Component {
-  props: Props;
-
+class ApplicationEdit extends Component<Props> {
   componentWillMount() {
     const {application: {id}, fetchSingleApplication, applicationId} = this.props;
 

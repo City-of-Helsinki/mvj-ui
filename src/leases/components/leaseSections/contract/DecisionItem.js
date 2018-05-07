@@ -76,8 +76,8 @@ const DecisionItem = ({attributes, decision}: Props) => {
                       {condition.supervision_date
                         ? (
                           <p className={
-                              classNames({'alert': condition.supervision_date && !condition.supervised_date})
-                            }>
+                            classNames({'alert': condition.supervision_date && !condition.supervised_date})
+                          }>
                             <i/>{formatDate(condition.supervision_date)}
                           </p>
                         ) : <p>–</p>
@@ -88,8 +88,8 @@ const DecisionItem = ({attributes, decision}: Props) => {
                       {condition.supervised_date
                         ? (
                           <p className={
-                              classNames({'success': condition.supervised_date})
-                            }>
+                            classNames({'success': condition.supervised_date})
+                          }>
                             <i/>{formatDate(condition.supervised_date)}
                           </p>
                         ) : <p>–</p>

@@ -19,7 +19,7 @@ import {
 } from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchAttributesSaga(): Generator<> {
+function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
     const attributes = bodyAsJson.fields;
@@ -38,7 +38,7 @@ function* fetchAttributesSaga(): Generator<> {
   }
 }
 
-function* fetchCommentsByLeaseSaga({payload: leaseId}): Generator<> {
+function* fetchCommentsByLeaseSaga({payload: leaseId}): Generator<any, any, any> {
   try {
     let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchComments, `?lease=${leaseId}`);
     let comments = body.results;
@@ -65,7 +65,7 @@ function* fetchCommentsByLeaseSaga({payload: leaseId}): Generator<> {
   }
 }
 
-function* createCommentSaga({payload: comment}): Generator<> {
+function* createCommentSaga({payload: comment}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(createComment,  comment);
 
@@ -90,7 +90,7 @@ function* createCommentSaga({payload: comment}): Generator<> {
   }
 }
 
-function* editCommentSaga({payload: comment}): Generator<> {
+function* editCommentSaga({payload: comment}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(editComment, comment);
 
@@ -115,9 +115,9 @@ function* editCommentSaga({payload: comment}): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
   yield [
-    fork(function*(): Generator<> {
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/comments/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/comments/FETCH_BY_LEASE', fetchCommentsByLeaseSaga);
       yield takeLatest('mvj/comments/CREATE', createCommentSaga);

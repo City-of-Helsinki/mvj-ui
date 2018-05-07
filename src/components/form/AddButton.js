@@ -17,7 +17,7 @@ const AddButton = ({className, disabled = false, label, onClick, title}: Props) 
     onClick={() => onClick()}
     title={title || label}
     type='button'
-    >+&nbsp;{label}</button>;
+  >+&nbsp;{label}</button>;
 
 
 export default AddButton;

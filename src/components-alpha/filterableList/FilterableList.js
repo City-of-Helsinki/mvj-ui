@@ -42,9 +42,7 @@ type State = {
 
 type FuseType = Object;
 
-class FilterableList extends Component {
-  props: Props;
-  state: State;
+class FilterableList extends Component<Props, State> {
   fuse: FuseType;
 
   constructor(props: Object) {

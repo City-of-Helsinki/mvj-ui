@@ -10,9 +10,7 @@ type Props = {
   position: string,
 };
 
-class Sidebar extends Component {
-  props: Props;
-
+class Sidebar extends Component<Props> {
   render() {
     const {isOpen, handleClose, className, component, position, ...rest} = this.props;
 
@@ -24,7 +22,7 @@ class Sidebar extends Component {
         className,
         {'is-open': isOpen}
       )}
-           aria-hidden={!isOpen}>
+      aria-hidden={!isOpen}>
         <span className="mvj__sidebar__close" onClick={handleClose}>
           <i className="mi mi-close"/>
         </span>

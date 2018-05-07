@@ -35,10 +35,8 @@ type State = {
   isBasicSearch: boolean,
 }
 
-class Search extends Component {
-  props: Props
-
-  state: State = {
+class Search extends Component<Props, State> {
+  state = {
     isBasicSearch: true,
   }
 

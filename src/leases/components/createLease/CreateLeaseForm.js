@@ -35,9 +35,7 @@ type Props = {
   valid: boolean,
 }
 
-class CreateLeaseForm extends Component {
-  props: Props
-
+class CreateLeaseForm extends Component<Props> {
   componentWillReceiveProps(nextProps) {
     if(this.props.municipality !== nextProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;

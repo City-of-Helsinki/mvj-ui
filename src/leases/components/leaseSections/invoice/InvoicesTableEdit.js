@@ -45,21 +45,19 @@ type State = {
   tableWidth: ?number,
 }
 
-class InvoicesTableEdit extends Component {
-  props: Props
-
-  container: any
-  modal: any
-  tableElement: any
-  tableWrapper: any
-
-  state: State = {
+class InvoicesTableEdit extends Component<Props, State> {
+  state = {
     selectedInvoice: null,
     showAllColumns: true,
     showModal: false,
     tableHeight: null,
     tableWidth: null,
   }
+
+  container: any
+  modal: any
+  tableElement: any
+  tableWrapper: any
 
   componentDidMount() {
     this.calculateHeight();
@@ -74,7 +72,6 @@ class InvoicesTableEdit extends Component {
 
   shouldComponentUpdate(nextProps: Object, nextState: Object) {
     return (
-      this.state.containerWidth !== nextState.containerWidth ||
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
       this.state.selectedInvoice !== nextState.selectedInvoice ||
@@ -268,32 +265,32 @@ class InvoicesTableEdit extends Component {
                           className={classNames({'selected': invoice.id === get(selectedInvoice, 'id')})}
                           key={index}
                           onClick={() => {this.showInvoiceModal(index);}}
-                          >
-                            <td>{getContactFullName(invoice.recipient) || '-'}</td>
-                            <td>{formatDate(invoice.due_date) || '-'}</td>
-                            <td>{invoice.id || '-'}</td>
-                            <td>{getInvoiceSharePercentage(invoice) ? `${getInvoiceSharePercentage(invoice)} %` : '-'}</td>
-                            {showAllColumns &&
-                              <td>{formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}</td>
-                            }
-                            {showAllColumns &&
-                              <td>{getLabelOfOption(receivableTypeOptions, invoice.receivable_type) || '-'}</td>
-                            }
-                            {showAllColumns &&
-                              <td>{getLabelOfOption(stateOptions, invoice.state) || '-'}</td>
-                            }
-                            {showAllColumns &&
-                              <td>{formatNumber(invoice.billed_amount) || '-'}</td>
-                            }
-                            {showAllColumns &&
-                              <td>{formatNumber(invoice.outstanding_amount) || '-'}</td>
-                            }
-                            {showAllColumns &&
-                              <td>{invoice.notes ? 'Kyllä' : 'Ei'}</td>
-                            }
-                            {showAllColumns &&
-                              <td>{formatDate(invoice.sent_to_sap_at) || '-'}</td>
-                            }
+                        >
+                          <td>{getContactFullName(invoice.recipient) || '-'}</td>
+                          <td>{formatDate(invoice.due_date) || '-'}</td>
+                          <td>{invoice.id || '-'}</td>
+                          <td>{getInvoiceSharePercentage(invoice) ? `${getInvoiceSharePercentage(invoice)} %` : '-'}</td>
+                          {showAllColumns &&
+                            <td>{formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{getLabelOfOption(receivableTypeOptions, invoice.receivable_type) || '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{getLabelOfOption(stateOptions, invoice.state) || '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{formatNumber(invoice.billed_amount) || '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{formatNumber(invoice.outstanding_amount) || '-'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{invoice.notes ? 'Kyllä' : 'Ei'}</td>
+                          }
+                          {showAllColumns &&
+                            <td>{formatDate(invoice.sent_to_sap_at) || '-'}</td>
+                          }
                         </tr>
                       );
                     })}

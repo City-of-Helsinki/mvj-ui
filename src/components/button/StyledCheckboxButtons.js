@@ -8,15 +8,13 @@ type Props = {
   options: Array<Object>,
   selectAllButton?: boolean,
   selectAllButtonLabel?: string,
-  value: Array<string>,
+  value?: Array<string>,
 }
 
-class StyledCheckboxButtons extends Component {
-  props: Props
-
+class StyledCheckboxButtons extends Component<Props> {
   handleChange = (event: any) => {
     const {onChange, value} = this.props;
-    const newValue = [...value];
+    const newValue = value ? [...value] : [];
     const optionValue = event.target.value;
 
     if (event.target.checked) {
@@ -32,7 +30,7 @@ class StyledCheckboxButtons extends Component {
 
     let allSelected = true;
     forEach(options, (option) => {
-      if(value.toString().indexOf(option.value.toString()) === -1) {
+      if(value ? value.toString().indexOf(option.value.toString()) === -1 : false) {
         allSelected = false;
         return;
       }
@@ -83,7 +81,7 @@ class StyledCheckboxButtons extends Component {
             <label className='label' key={index}>
               <input
                 className='checkbox'
-                checked={value.toString().indexOf(option.value.toString()) !== -1}
+                checked={value ? value.toString().indexOf(option.value.toString()) !== -1 : false}
                 name={checkboxName}
                 onChange={this.handleChange}
                 type='checkbox'

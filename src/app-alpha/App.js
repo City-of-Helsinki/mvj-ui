@@ -38,9 +38,7 @@ type Props = {
   route: Object,
 };
 
-class App extends Component {
-  props: Props;
-
+class App extends Component<Props> {
   static contextTypes = {
     router: PropTypes.object,
   };

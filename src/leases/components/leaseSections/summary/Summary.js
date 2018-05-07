@@ -30,9 +30,7 @@ type Props = {
   summary: Object,
 }
 
-class Summary extends Component {
-  props: Props
-
+class Summary extends Component<Props> {
   componentWillMount() {
     const {fetchLessors} = this.props;
 
@@ -165,7 +163,7 @@ class Summary extends Component {
                 </Column>
               </Row>
             </Collapse>
-            </Column>
+          </Column>
           <Column medium={3}>
             <LeaseHistory
               history={history}

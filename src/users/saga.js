@@ -16,7 +16,7 @@ import {
 
 import {receiveError} from '../api/actions';
 
-function* fetchUsersSaga({payload: search}): Generator<> {
+function* fetchUsersSaga({payload: search}): Generator<any, any, any> {
   try {
     let results = [];
     let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchUsers, search);
@@ -45,9 +45,9 @@ function* fetchUsersSaga({payload: search}): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
   yield [
-    fork(function*(): Generator<> {
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/users/FETCH_ALL', fetchUsersSaga);
     }),
   ];

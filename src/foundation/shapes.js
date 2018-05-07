@@ -1,4 +1,4 @@
-import {PropTypes} from 'react';
+import PropTypes from 'prop-types';
 
 export const revealContextShape = PropTypes.shape({
   openReveal: PropTypes.func.isRequired,

@@ -38,10 +38,7 @@ type State = {
   editingComponent: Object | null,
 };
 
-class ApplicationsList extends Component {
-  props: Props;
-  state: State;
-
+class ApplicationsList extends Component<Props, State> {
   static contextTypes = {
     router: PropTypes.object,
   };
@@ -78,7 +75,7 @@ class ApplicationsList extends Component {
   handleEditSave = (values) => {
     const {editApplication} = this.props;
     editApplication(values);
-    this.handleDismissEditModal(true);
+    this.handleDismissEditModal();
   };
 
   handleDismissEditModal = () => {

@@ -15,9 +15,9 @@ const Tabs = ({active, className, tabs, onTabClick}: Props) => {
     <ul className={classNames('mvj__tabs', className)}>
       {tabs.map((tab, i) =>
         <li key={i}
-            className={classNames({'is-active': Number(active) === i})}>
+          className={classNames({'is-active': Number(active) === i})}>
           <a aria-selected={Number(active) === i}
-             onClick={() => onTabClick(i)}>
+            onClick={() => onTabClick(i)}>
             {tab}
           </a>
         </li>

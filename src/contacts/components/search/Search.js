@@ -14,9 +14,7 @@ type Props = {
   search: string,
 }
 
-class Search extends Component {
-  props: Props
-
+class Search extends Component<Props> {
   componentWillUpdate(nextProps: Object) {
     if(this.props.search !== nextProps.search) {
       this.onSearchChange();

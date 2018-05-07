@@ -66,10 +66,8 @@ type State = {
   visualizationType: string,
 }
 
-class LeaseListPage extends Component {
-  props: Props
-
-  state: State = {
+class LeaseListPage extends Component<Props, State> {
+  state = {
     activePage: 1,
     documentType: [],
     isModalOpen: false,
@@ -216,7 +214,7 @@ class LeaseListPage extends Component {
       lessors,
       isFetching,
     } = this.props;
-    const leases = getContentLeases(content, attributes);
+    const leases = getContentLeases(content);
     const count = this.getLeasesCount(content);
     const maxPage = this.getLeasesMaxPage(content);
     //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working

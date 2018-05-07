@@ -177,9 +177,7 @@ type Props = {
   receiveFormValid: Function,
   valid: boolean,
 }
-class RentBasisForm extends Component {
-  props: Props
-
+class RentBasisForm extends Component<Props> {
   componentDidUpdate() {
     const {isFormValid, receiveFormValid, valid} = this.props;
     if(isFormValid !== valid) {

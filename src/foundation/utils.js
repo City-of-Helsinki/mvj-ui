@@ -1,4 +1,4 @@
-import {PropTypes} from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {Breakpoints, FloatTypes} from './enums';
 

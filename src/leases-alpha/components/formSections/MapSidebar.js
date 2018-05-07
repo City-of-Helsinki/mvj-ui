@@ -19,9 +19,7 @@ type Props = {
   t: Function,
 };
 
-class MapSidebar extends Component {
-  props: Props;
-
+class MapSidebar extends Component<Props> {
   render() {
     const {
       availableAreas,
