@@ -2,13 +2,12 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
-import {Field, reduxForm} from 'redux-form';
+import {reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeText from '$components/form/FieldTypeText';
-import FieldTypeTextArea from '$components/form/FieldTypeTextArea';
+import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceSharePercentage} from '$src/invoices/helpers';
@@ -19,7 +18,6 @@ import {
   getLabelOfOption,
 } from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
@@ -58,13 +56,12 @@ const EditInvoiceForm = ({
       </Row>
       <Row>
         <Column medium={4}>
-          <Field
-            component={FieldTypeDatePicker}
-            label="Eräpäivä"
-            name="due_date"
-            validate={[
-              (value) => genericValidator(value, get(invoiceAttributes, 'due_date')),
-            ]}
+          <FormField
+            fieldAttributes={get(invoiceAttributes, 'due_date')}
+            name='due_date'
+            overrideValues={{
+              label: 'Eräpäivä',
+            }}
           />
         </Column>
         <Column medium={4}>
@@ -83,22 +80,28 @@ const EditInvoiceForm = ({
         </Column>
         <Column medium={4}>
           <Row>
+            <Column>
+              <FormFieldLabel required>Laskutuskausi</FormFieldLabel>
+            </Column>
+          </Row>
+          <Row>
             <Column medium={6}>
-              <Field
-                component={FieldTypeDatePicker}
-                name="billing_period_start_date"
-                validate={[
-                  (value) => genericValidator(value, get(invoiceAttributes, 'billing_period_start_date')),
-                ]}
+              <FormField
+                fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
+                name='billing_period_start_date'
+                overrideValues={{
+                  label: '',
+                }}
               />
             </Column>
             <Column medium={6}>
-              <Field
-                component={FieldTypeDatePicker}
-                name="billing_period_end_date"
-                validate={[
-                  (value) => genericValidator(value, get(invoiceAttributes, 'billing_period_end_date')),
-                ]}
+              <FormField
+                className='with-dash'
+                fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
+                name='billing_period_end_date'
+                overrideValues={{
+                  label: '',
+                }}
               />
             </Column>
           </Row>
@@ -110,13 +113,12 @@ const EditInvoiceForm = ({
       </Row>
       <Row>
         <Column medium={4}>
-          <Field
-            component={FieldTypeText}
-            label="Laskun pääoma"
-            name="total_amount"
-            validate={[
-              (value) => genericValidator(value, get(invoiceAttributes, 'total_amount')),
-            ]}
+          <FormField
+            fieldAttributes={get(invoiceAttributes, 'total_amount')}
+            name='total_amount'
+            overrideValues={{
+              label: 'Laskun pääoma',
+            }}
           />
         </Column>
         <Column medium={4}>
@@ -180,14 +182,13 @@ const EditInvoiceForm = ({
       </Row>
       <Row>
         <Column medium={12}>
-          <Field
-            component={FieldTypeTextArea}
-            label="Tiedote"
-            name="notes"
-            rows={2}
-            validate={[
-              (value) => genericValidator(value, get(invoiceAttributes, 'notes')),
-            ]}
+          <FormField
+            fieldAttributes={get(invoiceAttributes, 'notes')}
+            name='notes'
+            overrideValues={{
+              label: 'Tiedote',
+              type: 'textarea',
+            }}
           />
         </Column>
       </Row>

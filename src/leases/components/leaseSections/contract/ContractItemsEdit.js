@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {Field, FieldArray} from 'redux-form';
+import {FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
@@ -11,15 +11,12 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
-import {getAttributeFieldOptions, getDecisionsOptions} from '$util/helpers';
+import {getDecisionsOptions} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -58,84 +55,69 @@ const renderContractChanges = ({
                 />
                 <Row>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeDatePicker}
-                      label='Allekirjoituspäivä'
+                    <FormField
+                      fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.signing_date')}
                       name={`${change}.signing_date`}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'contracts.child.children.contract_changes.child.children.signing_date')),
-                      ]}
+                      overrideValues={{
+                        label: 'Allekirjoituspäivä',
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeDatePicker}
-                      label='Allekirjoitettava mennessä'
+                    <FormField
+                      fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.sign_by_date')}
                       name={`${change}.sign_by_date`}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'contracts.child.children.contract_changes.child.children.sign_by_date')),
-                      ]}
+                      overrideValues={{
+                        label: 'Allekirjoitettava mennessä',
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeDatePicker}
-                      label='1. kutsu lähetetty'
+                    <FormField
+                      fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.first_call_sent')}
                       name={`${change}.first_call_sent`}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'contracts.child.children.contract_changes.child.children.first_call_sent')),
-                      ]}
+                      overrideValues={{
+                        label: '1. kutsu lähetetty',
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeDatePicker}
-                      label='2. kutsu lähetetty'
+                    <FormField
+                      fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.second_call_sent')}
                       name={`${change}.second_call_sent`}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'contracts.child.children.contract_changes.child.children.second_call_sent')),
-                      ]}
+                      overrideValues={{
+                        label: '2. kutsu lähetetty',
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeDatePicker}
-                      label='3. kutsu lähetetty'
+                    <FormField
+                      fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.third_call_sent')}
                       name={`${change}.third_call_sent`}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'contracts.child.children.contract_changes.child.children.third_call_sent')),
-                      ]}
+                      overrideValues={{
+                        label: '3. kutsu lähetetty',
+                      }}
                     />
                   </Column>
                 </Row>
                 <Row>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      className='no-margin'
-                      component={FieldTypeSelect}
-                      label='Päätös'
+                    <FormField
+                      fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.decision')}
                       name={`${change}.decision`}
-                      options={decisionOptions}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'contracts.child.children.contract_changes.child.children.decision')),
-                      ]}
+                      overrideValues={{
+                        label: 'Päätös',
+                        options: decisionOptions,
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={8} large={10}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Selite'
+                    <FormField
+                      fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.description')}
                       name={`${change}.description`}
-                      validate={[
-                        (value) => genericValidator(value,
-                          get(attributes, 'contracts.child.children.contract_changes.child.children.description')),
-                      ]}
+                      overrideValues={{
+                        label: 'Selite',
+                      }}
                     />
                   </Column>
                 </Row>
@@ -170,48 +152,42 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps) =
         <div>
           <Row>
             <Column small={4} medium={4} large={2}>
-              <label className='mvj-form-field-label'>Panttikirjan numero</label>
+              <FormFieldLabel>Panttikirjan numero</FormFieldLabel>
             </Column>
             <Column small={4} medium={4} large={2}>
-              <label className='mvj-form-field-label'>Panttikirjan pvm</label>
+              <FormFieldLabel>Panttikirjan pvm</FormFieldLabel>
             </Column>
             <Column small={4} medium={4} large={2}>
-              <label className='mvj-form-field-label'>Panttikirjan kommentti</label>
+              <FormFieldLabel>Panttikirjan kommentti</FormFieldLabel>
             </Column>
           </Row>
           {fields.map((doc, index) =>
             <Row key={doc.id ? doc.id : `index_${index}`} className='pledge-book'>
               <Column small={4} medium={4} large={2}>
-                <Field
-                  className='list-item'
-                  component={FieldTypeText}
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.number')}
                   name={`${doc}.number`}
-                  validate={[
-                    (value) => genericValidator(value,
-                      get(attributes, 'contracts.child.children.mortgage_documents.child.children.number')),
-                  ]}
+                  overrideValues={{
+                    label: '',
+                  }}
                 />
               </Column>
               <Column small={4} medium={4} large={2}>
-                <Field
-                  className='list-item'
-                  component={FieldTypeDatePicker}
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.date')}
                   name={`${doc}.date`}
-                  validate={[
-                    (value) => genericValidator(value,
-                      get(attributes, 'contracts.child.children.mortgage_documents.child.children.date')),
-                  ]}
+                  overrideValues={{
+                    label: '',
+                  }}
                 />
               </Column>
               <Column small={3} medium={3} large={2}>
-                <Field
-                  className='list-item'
-                  component={FieldTypeText}
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.note')}
                   name={`${doc}.note`}
-                  validate={[
-                    (value) => genericValidator(value,
-                      get(attributes, 'contracts.child.children.mortgage_documents.child.children.note')),
-                  ]}
+                  overrideValues={{
+                    label: '',
+                  }}
                 />
               </Column>
               <Column>
@@ -249,7 +225,6 @@ const ContractItemsEdit = ({
   fields,
 }: Props) => {
   const decisionOptions = getDecisionsOptions(decisions);
-  const typeOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.type');
 
   return (
     <div>
@@ -270,146 +245,117 @@ const ContractItemsEdit = ({
               />
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.type')}
                     name={`${contract}.type`}
-                    label='Sopimuksen tyyppi'
-                    options={typeOptions}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.type')),
-                    ]}
+                    overrideValues={{
+                      label: 'Sopimuksen tyyppi',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Sopimusnumero'
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.contract_number')}
                     name={`${contract}.contract_number`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.contract_number')),
-                    ]}
+                    overrideValues={{
+                      label: 'Sopimusnumero',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Allekirjoituspäivämäärä'
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.signing_date')}
                     name={`${contract}.signing_date`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.signing_date')),
-                    ]}
+                    overrideValues={{
+                      label: 'Allekirjoituspäivämäärä',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={12} large={6}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Kommentti allekirjoitukselle'
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.signing_note')}
                     name={`${contract}.signing_note`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.signing_note')),
-                    ]}
+                    overrideValues={{
+                      label: 'Kommentti allekirjoitukselle',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    className='checkbox-inline'
-                    component={FieldTypeCheckbox}
-                    label='Järjestelypäätös'
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.is_readjustment_decision')}
                     name={`${contract}.is_readjustment_decision`}
-                    options={[
-                      {value: true, label: 'Järjestelypäätös'},
-                    ]}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.is_readjustment_decision')),
-                    ]}
+                    overrideValues={{
+                      label: 'Järjestelypäätös',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Laitostunnus'
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.institution_identifier')}
                     name={`${contract}.institution_identifier`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.institution_identifier')),
-                    ]}
+                    overrideValues={{
+                      label: 'Laitostunnus',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Päätös'
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.decision')}
                     name={`${contract}.decision`}
-                    options={decisionOptions}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.decision')),
-                    ]}
+                    overrideValues={{
+                      label: 'Päätös',
+                      options: decisionOptions,
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={12} large={6}>
-                  <Field
+                  <FormField
                     // add KTJ integration
-                    component={FieldTypeText}
-                    label='KTJ vuokraoikeustodistuksen linkki'
+                    fieldAttributes={get(attributes, 'contracts.child.children.ktj_link')}
                     name={`${contract}.ktj_link`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.ktj_link')),
-                    ]}
+                    overrideValues={{
+                      label: 'KTJ vuokraoikeustodistuksen linkki',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Vuokravakuusnumero'
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_number')}
                     name={`${contract}.collateral_number`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.collateral_number')),
-                    ]}
+                    overrideValues={{
+                      label: 'Vuokravakuusnumero',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Vuokravakuus alkupvm'
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_start_date')}
                     name={`${contract}.collateral_start_date`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.collateral_start_date')),
-                    ]}
+                    overrideValues={{
+                      label: 'Vuokravakuus alkupvm',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Vuokravakuus loppupvm'
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_end_date')}
                     name={`${contract}.collateral_end_date`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.collateral_end_date')),
-                    ]}
+                    overrideValues={{
+                      label: 'Vuokravakuus loppupvm',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={12} large={6}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Vuokravakuus kommentti'
+                  <FormField
+                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_note')}
                     name={`${contract}.collateral_note`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'contracts.child.children.collateral_note')),
-                    ]}
+                    overrideValues={{
+                      label: 'Vuokravakuus kommentti',
+                    }}
                   />
                 </Column>
               </Row>

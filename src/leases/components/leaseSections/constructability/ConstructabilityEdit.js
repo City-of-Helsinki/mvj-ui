@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Field, FieldArray, reduxForm} from 'redux-form';
+import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -12,19 +12,16 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeText from '$components/form/FieldTypeText';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
+import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveConstructabilityFormValid} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
 import {getUserOptions} from '$src/users/helpers';
-import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes, getCurrentLease, getIsConstructabilityFormValid} from '$src/leases/selectors';
 import {getUsers} from '$src/users/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes, Lease} from '$src/leases/types';
 import type {UserList} from '$src/users/types';
@@ -49,25 +46,21 @@ const renderComments = ({attributes, fields}: CommentProps) => {
                 />
                 <Row>
                   <Column small={6} medium={9} large={10}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Selitys'
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
                       name={`${comment}.text`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'lease_areas.child.children.constructability_descriptions.child.children.text')),
-                      ]}
+                      overrideValues={{
+                        label: 'Selitys',
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={3} large={2}>
-                    <Field
-                      component={FieldTypeText}
-                      label='AHJO diaarinumero'
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
                       name={`${comment}.ahjo_reference_number`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')),
-                      ]}
+                      overrideValues={{
+                        label: 'AHJO diaarinumero',
+                      }}
                     />
                   </Column>
                 </Row>
@@ -107,9 +100,6 @@ const renderAreas = ({
     return `${item.address}, ${item.postal_code} ${item.city}`;
   };
 
-  const stateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.preconstruction_state');
-  const pollutedLandConditionStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state');
-  const constructabilityReportStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.constructability_report_investigation_state');
   const userOptions = getUserOptions(users);
   const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
   const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
@@ -138,7 +128,7 @@ const renderAreas = ({
                 </Column>
                 <Column>
                   <span className='collapse__header-subtitle'>
-                    {areas[index].area || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areas[index].location) || '-'}
+                    {formatNumber(areas[index].area) || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areas[index].location) || '-'}
                   </span>
                 </Column>
               </div>
@@ -156,14 +146,12 @@ const renderAreas = ({
             >
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Selvitysaste'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.preconstruction_state')}
                     name={`${area}.preconstruction_state`}
-                    options={stateOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.preconstruction_state')),
-                    ]}
+                    overrideValues={{
+                      label: 'Selvitysaste',
+                    }}
                   />
                 </Column>
               </Row>
@@ -183,14 +171,12 @@ const renderAreas = ({
             >
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Selvitysaste'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.demolition_state')}
                     name={`${area}.demolition_state`}
-                    options={stateOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.demolition_state')),
-                    ]}
+                    overrideValues={{
+                      label: 'Selvitysaste',
+                    }}
                   />
                 </Column>
               </Row>
@@ -210,66 +196,58 @@ const renderAreas = ({
             >
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Selvitysaste'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_state')}
                     name={`${area}.polluted_land_state`}
-                    options={stateOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_state')),
-                    ]}
+                    overrideValues={{
+                      label: 'Selvitysaste',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Vuokraehdot'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state')}
                     name={`${area}.polluted_land_rent_condition_state`}
-                    options={pollutedLandConditionStateOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state')),
-                    ]}
+                    overrideValues={{
+                      label: 'Vuokraehdot',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Päivämäärä'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_date')}
                     name={`${area}.polluted_land_rent_condition_date`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_date')),
-                    ]}
+                    overrideValues={{
+                      label: 'Päivämäärä',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='PIMA valmistelija'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_planner')}
                     name={`${area}.polluted_land_planner`}
-                    options={userOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_plannerr')),
-                    ]}
+                    overrideValues={{
+                      label: 'PIMA valmistelija',
+                      options: userOptions,
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='ProjectWise kohdenumero'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_projectwise_number')}
                     name={`${area}.polluted_land_projectwise_number`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_projectwise_number')),
-                    ]}
+                    overrideValues={{
+                      label: 'ProjectWise kohdenumero',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Matti raportti'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_matti_report_number')}
                     name={`${area}.polluted_land_matti_report_number`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.polluted_land_matti_report_number')),
-                    ]}
+                    overrideValues={{
+                      label: 'Matti raportti',
+                    }}
                   />
                 </Column>
               </Row>
@@ -289,55 +267,48 @@ const renderAreas = ({
             >
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Selvitysaste'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_state')}
                     name={`${area}.constructability_report_state`}
-                    options={stateOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_state')),
-                    ]}
+                    overrideValues={{
+                      label: 'Selvitysaste',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Selvitys'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_investigation_state')}
                     name={`${area}.constructability_report_investigation_state`}
-                    options={constructabilityReportStateOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_investigation_state')),
-                    ]}
+                    overrideValues={{
+                      label: 'Selvitys',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Allekirjoituspäivämäärä'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_signing_date')}
                     name={`${area}.constructability_report_signing_date`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_signing_date')),
-                    ]}
+                    overrideValues={{
+                      label: 'Allekirjoituspäivämäärä',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Allekirjoittaja'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_signer')}
                     name={`${area}.constructability_report_signer`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_signer')),
-                    ]}
+                    overrideValues={{
+                      label: 'Allekirjoittaja',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Geotekninen palvelun tiedosto'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_geotechnical_number')}
                     name={`${area}.constructability_report_geotechnical_number`}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.constructability_report_geotechnical_number')),
-                    ]}
+                    overrideValues={{
+                      label: 'Geotekninen palvelun tiedosto',
+                    }}
                   />
                 </Column>
               </Row>
@@ -357,14 +328,12 @@ const renderAreas = ({
             >
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Selvitysaste'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.other_state')}
                     name={`${area}.other_state`}
-                    options={stateOptions}
-                    validate={[
-                      (value) => genericValidator(value, get(attributes, 'lease_areas.child.children.other_state')),
-                    ]}
+                    overrideValues={{
+                      label: 'Selvitysaste',
+                    }}
                   />
                 </Column>
               </Row>

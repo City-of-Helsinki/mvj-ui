@@ -5,14 +5,11 @@ import moment from 'moment';
 import classNames from 'classnames';
 
 type Props = {
-  className?: string,
-  disableDirty: boolean,
-  disableTouched: boolean,
+  disabled: Boolean,
+  displayError: boolean,
   input: Object,
-  label: string,
-  labelClassName?: string,
-  meta: Object,
-  placeholder: string,
+  isDirty: boolean,
+  placeholder: String,
 }
 
 class FieldTypeDatePicker extends Component {
@@ -45,37 +42,26 @@ class FieldTypeDatePicker extends Component {
 
   render(){
     const {
-      className,
-      disableDirty = false,
-      disableTouched = false,
+      disabled = false,
+      displayError = false,
       input,
       input: {value},
-      label,
-      labelClassName,
-      meta: {dirty, error, touched},
+      isDirty = false,
       placeholder,
     } = this.props;
 
     return (
-      <div className={classNames('mvj-form-field', className)}>
-        {label &&
-          <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>
-        }
-        <div className={classNames(
-          'mvj-form-field-component',
-          'mvj-form-field__datepicker',
-          {'is-dirty': (!disableDirty && dirty)})}>
-          <DatePicker
-            {...input}
-            disabledKeyboardNavigation
-            locale='fi'
-            onBlur={this.handleBlur}
-            onSelect={this.handleSelect}
-            placeholder={placeholder}
-            selected={value ? moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']) : null}
-          />
-          {(touched || disableTouched) && error && <span className={'error'}>{error}</span>}
-        </div>
+      <div className={classNames('form-field__datepicker', {'has-error': displayError}, {'is-dirty': isDirty})}>
+        <DatePicker
+          {...input}
+          disabled={disabled}
+          disabledKeyboardNavigation
+          locale='fi'
+          onBlur={this.handleBlur}
+          onSelect={this.handleSelect}
+          placeholder={placeholder}
+          selected={value ? moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']) : null}
+        />
       </div>
     );
   }

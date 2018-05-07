@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
@@ -9,14 +8,12 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
-import {getAttributeFieldOptions, getDecisionsOptions} from '$util/helpers';
+import {getDecisionsOptions} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -28,12 +25,6 @@ type Props = {
 
 const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
   const decisionOptions = getDecisionsOptions(decisions);
-  const typeOptions = getAttributeFieldOptions(attributes,
-    'rents.child.children.rent_adjustments.child.children.type');
-  const intendedUseOptions = getAttributeFieldOptions(attributes,
-    'basis_of_rents.child.children.intended_use');
-  const amountTypeOptions = getAttributeFieldOptions(attributes,
-    'rents.child.children.rent_adjustments.child.children.amount_type');
 
   return (
     <div>
@@ -49,117 +40,97 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                 />
                 <Row>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Tyyppi'
+                    <FormField
+                      fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.type')}
                       name={`${discount}.type`}
-                      options={typeOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'rents.child.children.rent_adjustments.child.children.type')),
-                      ]}
+                      overrideValues={{
+                        label: 'Tyyppi',
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeSelect}
-                      label='Käyttötarkoitus'
+                    <FormField
+                      fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.intended_use')}
                       name={`${discount}.intended_use`}
-                      options={intendedUseOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'rents.child.children.rent_adjustments.child.children.intended_use')),
-                      ]}
+                      overrideValues={{
+                        label: 'Käyttötarkoitus',
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
                     <Row>
                       <Column small={6}>
-                        <Field
-                          component={FieldTypeDatePicker}
-                          label='Alkupvm'
+                        <FormField
+                          fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.start_date')}
                           name={`${discount}.start_date`}
-                          validate={[
-                            (value) => genericValidator(value, get(attributes,
-                              'rents.child.children.rent_adjustments.child.children.start_date')),
-                          ]}
+                          overrideValues={{
+                            label: 'Alkupvm',
+                          }}
                         />
                       </Column>
                       <Column small={6}>
-                        <Field
-                          component={FieldTypeDatePicker}
-                          label='Loppupvm'
+                        <FormField
+                          className='with-dash'
+                          fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.end_date')}
                           name={`${discount}.end_date`}
-                          validate={[
-                            (value) => genericValidator(value, get(attributes,
-                              'rents.child.children.rent_adjustments.child.children.end_date')),
-                          ]}
+                          overrideValues={{
+                            label: 'Loppupvm',
+                          }}
                         />
                       </Column>
                     </Row>
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <label className="mvj-form-field-label">Määrä</label>
+                    <FormFieldLabel>Määrä</FormFieldLabel>
                     <Row>
                       <Column small={6}>
-                        <Field
-                          component={FieldTypeText}
+                        <FormField
+                          fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.full_amount')}
                           name={`${discount}.full_amount`}
-                          validate={[
-                            (value) => genericValidator(value, get(attributes,
-                              'rents.child.children.rent_adjustments.child.children.full_amount')),
-                          ]}
+                          overrideValues={{
+                            label: '',
+                          }}
                         />
                       </Column>
                       <Column small={6}>
-                        <Field
-                          component={FieldTypeSelect}
+                        <FormField
+                          fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.amount_type')}
                           name={`${discount}.amount_type`}
-                          options={amountTypeOptions}
-                          validate={[
-                            (value) => genericValidator(value, get(attributes,
-                              'rents.child.children.rent_adjustments.child.children.amount_type')),
-                          ]}
+                          overrideValues={{
+                            label: '',
+                          }}
                         />
                       </Column>
                     </Row>
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      component={FieldTypeText}
-                      disabled={true}
-                      label="Jäljellä (€)"
+                    <FormField
+                      fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.amount_left')}
                       name={`${discount}.amount_left`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'rents.child.children.rent_adjustments.child.children.amount_left')),
-                      ]}
+                      overrideValues={{
+                        label: 'Jäljellä (€)',
+                      }}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <Field
-                      clearable={true}
-                      component={FieldTypeSelect}
-                      label="Päätös"
+                    <FormField
+                      fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.decision')}
                       name={`${discount}.decision`}
-                      options={decisionOptions}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'rents.child.children.rent_adjustments.child.children.decision')),
-                      ]}
+                      overrideValues={{
+                        label: 'Päätös',
+                        options: decisionOptions,
+                      }}
                     />
                   </Column>
                 </Row>
                 <Row>
                   <Column medium={12}>
-                    <Field
-                      component={FieldTypeText}
-                      label='Kommentti'
+                    <FormField
+                      fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.note')}
                       name={`${discount}.note`}
-                      validate={[
-                        (value) => genericValidator(value, get(attributes,
-                          'rents.child.children.rent_adjustments.child.children.note')),
-                      ]}
+                      overrideValues={{
+                        label: 'Kommentti',
+                      }}
                     />
                   </Column>
                 </Row>

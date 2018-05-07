@@ -1,21 +1,18 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {change, Field, formValueSelector, reduxForm} from 'redux-form';
+import {change, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import Button from '$components/button/Button';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {Classification, FormNames} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/leases/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {DistrictList} from '$src/district/types';
 
@@ -85,80 +82,68 @@ class CreateLeaseForm extends Component {
       valid,
     } = this.props;
 
-    const stateOptions = getAttributeFieldOptions(attributes, 'state');
     const districtOptions = getDistrictOptions(districts);
-    const municipalityOptions = getAttributeFieldOptions(attributes, 'municipality', true, true);
-    const typeOptions = getAttributeFieldOptions(attributes, 'type');
 
     return (
       <form onSubmit={handleSubmit}>
         <Row>
           <Column small={4} medium={3}>
-            <Field
-              component={FieldTypeSelect}
-              label='Tyyppi'
-              name={'state'}
-              options={stateOptions}
-              validate={[
-                (value) => genericValidator(value, get(attributes, 'state')),
-              ]}
+            <FormField
+              fieldAttributes={get(attributes, 'state')}
+              name='state'
+              overrideValues={{
+                label: 'Tyyppi',
+              }}
             />
           </Column>
         </Row>
         <Row>
           <Column small={4} medium={3}>
-            <Field
-              component={FieldTypeSelect}
-              label='Vuokrauksen laji'
+            <FormField
+              fieldAttributes={get(attributes, 'type')}
               name={'type'}
-              options={typeOptions}
-              validate={[
-                (value) => genericValidator(value, get(attributes, 'type')),
-              ]}
+              overrideValues={{
+                label: 'Vuokrauksen laji',
+              }}
             />
           </Column>
           <Column small={4} medium={3}>
-            <Field
-              component={FieldTypeSelect}
-              label='Kunta'
+            <FormField
+              fieldAttributes={get(attributes, 'municipality')}
               name='municipality'
-              options={municipalityOptions}
-              validate={[
-                (value) => genericValidator(value, get(attributes, 'municipality')),
-              ]}
+              overrideValues={{
+                label: 'Kunta',
+              }}
             />
           </Column>
           <Column small={4} medium={3}>
-            <Field
-              component={FieldTypeSelect}
-              label='Kaupunginosa'
+            <FormField
+              fieldAttributes={get(attributes, 'district')}
               name='district'
-              options={districtOptions}
-              validate={[
-                (value) => genericValidator(value, get(attributes, 'district')),
-              ]}
+              overrideValues={{
+                label: 'Kaupunginosa',
+                options: districtOptions,
+              }}
             />
           </Column>
         </Row>
         <Row>
           <Column small={4} medium={3}>
-            <Field
-              component={FieldTypeText}
-              label='Diaarinumero'
+            <FormField
+              fieldAttributes={get(attributes, 'reference_number')}
               name='reference_number'
-              validate={[
-                (value) => genericValidator(value, get(attributes, 'reference_number')),
-              ]}
+              overrideValues={{
+                label: 'Diaarinumero',
+              }}
             />
           </Column>
           <Column small={8} medium={6}>
-            <Field
-              component={FieldTypeText}
-              label='Kommentti'
+            <FormField
+              fieldAttributes={get(attributes, 'note')}
               name='note'
-              validate={[
-                (value) => genericValidator(value, get(attributes, 'note')),
-              ]}
+              overrideValues={{
+                label: 'Kommentti',
+              }}
             />
           </Column>
         </Row>

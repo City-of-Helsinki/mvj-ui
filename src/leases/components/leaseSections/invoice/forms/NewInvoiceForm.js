@@ -2,25 +2,22 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {Field, getFormValues, isValid, reduxForm} from 'redux-form';
+import {getFormValues, isValid, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import FormSection from '$components/form/FormSection';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {FormNames} from '$src/leases/enums';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
 import {getCompleteContactList} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Contact} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
@@ -47,10 +44,8 @@ const NewInvoiceForm = ({
   onClose,
   onSave,
 }: Props) => {
-  const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
-  const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'receivable_type');
-  const recipientOptions = getInvoiceRecipientOptions(lease, contacts);
 
+  const recipientOptions = getInvoiceRecipientOptions(lease, contacts);
   return (
     <form onSubmit={handleSubmit} className='invoice__add-bill'>
       <FormSection>
@@ -64,77 +59,71 @@ const NewInvoiceForm = ({
             />
             <Row>
               <Column small={6} medium={4} large={2}>
-                <Field
-                  component={FieldTypeSelect}
-                  label='Vuokralainen'
+                <FormField
+                  fieldAttributes={get(invoiceAttributes, 'recipient')}
                   name='recipient'
-                  options={recipientOptions}
-                  validate={[
-                    (value) => genericValidator(value, get(invoiceAttributes, 'recipient')),
-                  ]}
+                  overrideValues={{
+                    label: 'Vuokralainen',
+                    options: recipientOptions,
+                  }}
                 />
               </Column>
               <Column small={6} medium={4} large={2}>
-                <Field
-                  component={FieldTypeSelect}
-                  label='Tyyppi'
+                <FormField
+                  fieldAttributes={get(invoiceAttributes, 'type')}
                   name='type'
-                  options={typeOptions}
-                  validate={[
-                    (value) => genericValidator(value, get(invoiceAttributes, 'type')),
-                  ]}
+                  overrideValues={{
+                    label: 'Tyyppi',
+                  }}
                 />
               </Column>
               <Column small={6} medium={4} large={2}>
-                <Field
-                  component={FieldTypeSelect}
-                  label='Saamislaji'
+                <FormField
+                  fieldAttributes={get(invoiceAttributes, 'receivable_type')}
                   name='receivable_type'
-                  options={receivableTypeOptions}
-                  validate={[
-                    (value) => genericValidator(value, get(invoiceAttributes, 'receivable_type')),
-                  ]}
+                  overrideValues={{
+                    label: 'Saamislaji',
+                  }}
                 />
               </Column>
               <Column small={6} medium={4} large={2}>
-                <Field
-                  component={FieldTypeText}
-                  label='Laskun pääoma'
+                <FormField
+                  fieldAttributes={get(invoiceAttributes, 'total_amount')}
                   name='total_amount'
-                  validate={[
-                    (value) => genericValidator(value, get(invoiceAttributes, 'total_amount')),
-                  ]}
+                  overrideValues={{
+                    label: 'Laskun pääoma',
+                  }}
                 />
               </Column>
               <Column small={6} medium={4} large={2}>
-                <Field
-                  component={FieldTypeDatePicker}
-                  label='Eräpäivä'
+                <FormField
+                  fieldAttributes={get(invoiceAttributes, 'due_date')}
                   name='due_date'
-                  validate={[
-                    (value) => genericValidator(value, get(invoiceAttributes, 'due_date')),
-                  ]}
+                  overrideValues={{
+                    label: 'Eräpäivä',
+                  }}
                 />
               </Column>
               <Column small={6} medium={4} large={2}>
-                <label className='mvj-form-field-label'>Laskutuskausi</label>
+                <FormFieldLabel>Laskutuskausi</FormFieldLabel>
                 <Row>
                   <Column small={6}>
-                    <Field
-                      component={FieldTypeDatePicker}
+                    <FormField
+                      fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
                       name='billing_period_start_date'
-                      validate={[
-                        (value) => genericValidator(value, get(invoiceAttributes, 'billing_period_start_date')),
-                      ]}
+                      overrideValues={{
+                        label: '',
+                      }}
                     />
                   </Column>
                   <Column small={6}>
-                    <Field
-                      component={FieldTypeDatePicker}
+                    <FormField
+                      className='with-dash'
+                      fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
                       name='billing_period_end_date'
-                      validate={[
-                        (value) => genericValidator(value, get(invoiceAttributes, 'billing_period_end_date')),
-                      ]}
+                      overrideValues={{
+                        label: '',
+                      }}
                     />
                   </Column>
                 </Row>
@@ -142,13 +131,12 @@ const NewInvoiceForm = ({
             </Row>
             <Row>
               <Column>
-                <Field
-                  component={FieldTypeText}
-                  label='Tiedote'
+                <FormField
+                  fieldAttributes={get(invoiceAttributes, 'notes')}
                   name='notes'
-                  validate={[
-                    (value) => genericValidator(value, get(invoiceAttributes, 'notes')),
-                  ]}
+                  overrideValues={{
+                    label: 'Tiedote',
+                  }}
                 />
               </Column>
             </Row>

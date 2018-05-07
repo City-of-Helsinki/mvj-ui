@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {Field} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
@@ -10,13 +9,9 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import FieldTypeDatePicker from '$components/form/FieldTypeDatePicker';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {getAttributeFieldOptions} from '$src/util/helpers';
 import {getAttributes} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -29,8 +24,6 @@ const DecisionConditionsEdit = ({
   attributes,
   fields,
 }: Props) => {
-  const typeOptions = getAttributeFieldOptions(attributes,
-    'decisions.child.children.conditions.child.children.type');
   return(
     <Collapse
       className='collapse__secondary'
@@ -53,48 +46,39 @@ const DecisionConditionsEdit = ({
               />
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Käyttötarkoitusehto'
+                  <FormField
+                    fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.type')}
                     name={`${condition}.type`}
-                    options={typeOptions}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'decisions.child.children.conditions.child.children.type')),
-                    ]}
+                    overrideValues={{
+                      label: 'Käyttötarkoitusehto',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Valvonta päivämäärä'
+                  <FormField
+                    fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
                     name={`${condition}.supervision_date`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')),
-                    ]}
+                    overrideValues={{
+                      label: 'Valvonta päivämäärä',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeDatePicker}
-                    label='Valvottu päivämäärä'
+                  <FormField
+                    fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
                     name={`${condition}.supervised_date`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')),
-                    ]}
+                    overrideValues={{
+                      label: 'Valvottu päivämäärä',
+                    }}
                   />
                 </Column>
                 <Column small={12} medium={12} large={6}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Selite'
+                  <FormField
+                    fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.description')}
                     name={`${condition}.description`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'decisions.child.children.conditions.child.children.description')),
-                    ]}
+                    overrideValues={{
+                      label: 'Selite',
+                    }}
                   />
                 </Column>
               </Row>

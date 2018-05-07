@@ -2,15 +2,13 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
-import {change, Field, formValueSelector, getFormValues, reduxForm} from 'redux-form';
+import {change, formValueSelector, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
 import toArray from 'lodash/toArray';
 
-import FieldTypeCheckbox from '$components/form/FieldTypeCheckbox';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {FormNames} from '$src/leases/enums';
 import {getDistrictOptions} from '$src/leases/helpers';
@@ -124,18 +122,20 @@ class Search extends Component {
     const typeOptions = getAttributeFieldOptions(attributes, 'type');
     const stateOptions = getAttributeFieldOptions(attributes, 'state');
 
-
     return (
       <div className='lease-search'>
         {isBasicSearch && (
           <div>
             <Row>
               <Column large={12}>
-                <Field
-                  component={FieldTypeText}
+                <FormField
                   disableDirty
-                  name="search"
+                  fieldAttributes={{}}
+                  name='search'
                   placeholder='Hae hakusanalla'
+                  overrideValues={{
+                    label: '',
+                  }}
                 />
               </Column>
             </Row>
@@ -148,34 +148,44 @@ class Search extends Component {
                 <div className='lease-search__row-wrapper'>
                   <label className='lease-search__label'>Vuokralainen</label>
                   <div className='lease-search__input-wrapper'>
-                    <Field
-                      component={FieldTypeText}
+                    <FormField
                       disableDirty
-                      name="tenant"
+                      fieldAttributes={{}}
+                      name='tenant'
+                      overrideValues={{
+                        label: '',
+                      }}
                     />
                   </div>
                 </div>
               </Column>
               <Column small={12} medium={3}>
-                <Field
-                  className='checkbox-inline'
-                  component={FieldTypeCheckbox}
+                <FormField
                   disableDirty
-                  name="only_past_tentants"
-                  options= {[
-                    {value: true, label: 'Vain entiset asiakkaat'},
-                  ]}
+                  fieldAttributes={{}}
+                  name='only_past_tentants'
+                  overrideValues={{
+                    label: '',
+                    type: 'checkbox',
+                    options: [
+                      {value: true, label: 'Vain entiset asiakkaat'},
+                    ],
+                  }}
                 />
               </Column>
               <Column small={12} medium={3}>
                 <div className='lease-search__row-wrapper'>
                   <label className='lease-search__label'>Rooli</label>
                   <div className='lease-search__input-wrapper'>
-                    <Field
-                      component={FieldTypeSelect}
+                    <FormField
                       disableDirty
+                      fieldAttributes={{}}
                       name='tenant_role'
-                      options={tenantTypeOptions}
+                      overrideValues={{
+                        label: '',
+                        type: 'choice',
+                        options: tenantTypeOptions,
+                      }}
                     />
                   </div>
                 </div>
@@ -188,34 +198,50 @@ class Search extends Component {
                   <div className='lease-search__input-wrapper'>
                     <Row>
                       <Column>
-                        <Field
-                          component={FieldTypeSelect}
+                        <FormField
                           disableDirty
+                          fieldAttributes={{}}
                           name='type'
-                          options={typeOptions}
+                          overrideValues={{
+                            label: '',
+                            type: 'choice',
+                            options: typeOptions,
+                          }}
                         />
                       </Column>
                       <Column>
-                        <Field
-                          component={FieldTypeSelect}
+                        <FormField
                           disableDirty
+                          fieldAttributes={{}}
                           name='municipality'
-                          options={municipalityOptions}
+                          overrideValues={{
+                            label: '',
+                            type: 'choice',
+                            options: municipalityOptions,
+                          }}
                         />
                       </Column>
                       <Column>
-                        <Field
-                          component={FieldTypeSelect}
+                        <FormField
                           disableDirty
+                          disableRequired
+                          fieldAttributes={{}}
                           name='district'
-                          options={districtOptions}
+                          overrideValues={{
+                            label: '',
+                            type: 'choice',
+                            options: districtOptions,
+                          }}
                         />
                       </Column>
                       <Column>
-                        <Field
-                          component={FieldTypeText}
+                        <FormField
                           disableDirty
-                          name="sequence"
+                          fieldAttributes={{}}
+                          name='sequence'
+                          overrideValues={{
+                            label: '',
+                          }}
                         />
                       </Column>
                     </Row>
@@ -225,25 +251,31 @@ class Search extends Component {
               <Column small={12} medium={3}>
                 <Row>
                   <Column>
-                    <Field
-                      className='checkbox-inline'
-                      component={FieldTypeCheckbox}
+                    <FormField
                       disableDirty
-                      name="on_going"
-                      options= {[
-                        {value: true, label: 'Voimassa'},
-                      ]}
+                      fieldAttributes={{}}
+                      name='on_going'
+                      overrideValues={{
+                        label: '',
+                        type: 'checkbox',
+                        options: [
+                          {value: true, label: 'Voimassa'},
+                        ],
+                      }}
                     />
                   </Column>
                   <Column>
-                    <Field
-                      className='checkbox-inline'
-                      component={FieldTypeCheckbox}
+                    <FormField
                       disableDirty
-                      name="expired"
-                      options= {[
-                        {value: true, label: 'Päättyneet'},
-                      ]}
+                      fieldAttributes={{}}
+                      name='expired'
+                      overrideValues={{
+                        label: '',
+                        type: 'checkbox',
+                        options: [
+                          {value: true, label: 'Päättyneet'},
+                        ],
+                      }}
                     />
                   </Column>
                 </Row>
@@ -253,11 +285,15 @@ class Search extends Component {
                 <div className='lease-search__row-wrapper'>
                   <label className='lease-search__label'>Tyyppi</label>
                   <div className='lease-search__input-wrapper'>
-                    <Field
-                      component={FieldTypeSelect}
+                    <FormField
                       disableDirty
+                      fieldAttributes={{}}
                       name='state'
-                      options={stateOptions}
+                      overrideValues={{
+                        label: '',
+                        type: 'choice',
+                        options: stateOptions,
+                      }}
                     />
                   </div>
                 </div>
@@ -269,10 +305,13 @@ class Search extends Component {
                 <div className='lease-search__row-wrapper'>
                   <label className='lease-search__label'>Kiinteistö</label>
                   <div className='lease-search__input-wrapper'>
-                    <Field
-                      component={FieldTypeText}
+                    <FormField
                       disableDirty
-                      name="identifier"
+                      fieldAttributes={{}}
+                      name='identifier'
+                      overrideValues={{
+                        label: '',
+                      }}
                     />
                   </div>
                 </div>
@@ -281,10 +320,13 @@ class Search extends Component {
                 <div className='lease-search__row-wrapper'>
                   <label className='lease-search__label'>Osoite</label>
                   <div className='lease-search__input-wrapper'>
-                    <Field
-                      component={FieldTypeText}
+                    <FormField
                       disableDirty
-                      name="address"
+                      fieldAttributes={{}}
+                      name='address'
+                      overrideValues={{
+                        label: '',
+                      }}
                     />
                   </div>
                 </div>

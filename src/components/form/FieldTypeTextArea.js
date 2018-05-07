@@ -3,40 +3,33 @@ import React from 'react';
 import classNames from 'classnames';
 
 type Props = {
-  className?: string,
+  className: string,
   disabled: boolean,
-  disableDirty: boolean,
-  disableTouched: boolean,
+  displayError: boolean,
   input: Object,
-  label: string,
-  labelClassName?: string,
-  meta: Object,
+  isDirty: boolean,
   placeholder: string,
-  rows: number,
+  rows?: number,
 }
 
 const FieldTypeTextArea = ({
-  className,
-  disabled = false,
-  disableDirty = false,
-  disableTouched = false,
+  displayError,
+  disabled,
   input,
-  label,
-  labelClassName,
-  meta: {dirty, error, touched},
+  isDirty,
   placeholder,
-  rows = 5,
-}: Props) => (
-  <div className={classNames('mvj-form-field', className)}>
-    {label && <label className={classNames('mvj-form-field-label', labelClassName)}>{label}</label>}
-    <div className={classNames(
-      'mvj-form-field-component',
-      'mvj-form-field__textarea',
-      {'is-dirty': (!disableDirty && dirty)})}>
-      <textarea {...input} disabled={disabled} placeholder={placeholder} rows={rows}/>
-      {(touched || disableTouched) && error && <span className='error'>{error}</span>}
-    </div>
-  </div>
-);
+  rows = 3,
+}: Props) => {
+  return (
+    <textarea
+       className={classNames('form-field__input', {'has-error': displayError}, {'is-dirty': isDirty})}
+       disabled={disabled}
+       id={input.name}
+       placeholder={placeholder}
+       rows={rows}
+       {...input}
+     />
+  );
+};
 
 export default FieldTypeTextArea;

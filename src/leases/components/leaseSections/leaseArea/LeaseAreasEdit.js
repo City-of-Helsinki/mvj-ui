@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Field, FieldArray, reduxForm} from 'redux-form';
+import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -10,8 +10,7 @@ import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
-import FieldTypeSelect from '$components/form/FieldTypeSelect';
-import FieldTypeText from '$components/form/FieldTypeText';
+import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
 import PlotItemsEdit from './PlotItemsEdit';
 import PlanUnitItemsEdit from './PlanUnitItemsEdit';
@@ -20,9 +19,8 @@ import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveLeaseAreasFormValid} from '$src/leases/actions';
 import {AreaLocation, FormNames} from '$src/leases/enums';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
-import {formatNumber, getAttributeFieldOptions} from '$util/helpers';
+import {formatNumber} from '$util/helpers';
 import {getAttributes, getCurrentLease, getIsLeaseAreasFormValid} from '$src/leases/selectors';
-import {genericValidator} from '$components/form/validations';
 
 import type {Attributes, Lease} from '$src/leases/types';
 
@@ -35,9 +33,6 @@ const LeaseAreaItems = ({
   attributes,
   fields,
 }: AreaItemProps) => {
-  const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
-  const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
-
   return (
     <div>
       {fields && !!fields.length && fields.map((area, index) => {
@@ -57,85 +52,68 @@ const LeaseAreaItems = ({
               />
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label='Kohteen tunnus'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.identifier')}
                     name={`${area}.identifier`}
-                    type="text"
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'lease_areas.child.children.identifier')),
-                    ]}
+                    overrideValues={{
+                      label: 'Kohteen tunnus',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Määritelmä'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.type')}
                     name={`${area}.type`}
-                    options={typeOptions}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'lease_areas.child.children.type')),
-                    ]}
+                    overrideValues={{
+                      label: 'Määritelmä',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label="Pinta-ala"
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.area')}
                     name={`${area}.area`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'lease_areas.child.children.area')),
-                    ]}
+                    overrideValues={{
+                      label: 'Pinta-ala',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeSelect}
-                    label='Sijainti'
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.location')}
                     name={`${area}.location`}
-                    options={locationOptions}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'lease_areas.child.children.location')),
-                    ]}
+                    overrideValues={{
+                      label: 'Sijainti',
+                    }}
                   />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={12} large={4}>
-                  <Field
-                    component={FieldTypeText}
-                    label="Osoite"
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.address')}
                     name={`${area}.address`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'lease_areas.child.children.address')),
-                    ]}
+                    overrideValues={{
+                      label: 'Osoite',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label="Postinumero"
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.postal_code')}
                     name={`${area}.postal_code`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'lease_areas.child.children.postal_code')),
-                    ]}
+                    overrideValues={{
+                      label: 'Postinumero',
+                    }}
                   />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <Field
-                    component={FieldTypeText}
-                    label="Kaupunki"
+                  <FormField
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.city')}
                     name={`${area}.city`}
-                    validate={[
-                      (value) => genericValidator(value,
-                        get(attributes, 'lease_areas.child.children.city')),
-                    ]}
+                    overrideValues={{
+                      label: 'Kaupunki',
+                    }}
                   />
                 </Column>
               </Row>

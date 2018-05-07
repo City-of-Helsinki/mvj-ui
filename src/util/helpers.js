@@ -207,20 +207,6 @@ export const fixedLengthNumber = (value: ?number, length: number = 2) => {
   return  value.toString();
 };
 
-export const formatBooleanToString = (value: ?boolean) => {
-  if (value === null) {
-    return value;
-  }
-  return value.toString();
-};
-
-export const formatStringToBoolean = (value: ?string) => {
-  if (value === null) {
-    return value;
-  }
-  return value === 'true' ? true : false;
-};
-
 export const getEpochTime = () =>
   Math.round(new Date().getTime()/1000.0);
 
@@ -364,6 +350,30 @@ export const addEmptyOption = (options: Array<Object>) =>
  */
 export const getAttributeFieldOptions = (attributes: Object, path: string, addEmpty: boolean = true, showValue: boolean = false) => {
   let choices = get(attributes, `${path}.choices`);
+  if(!choices || !choices.length) {
+    return [];
+  }
+  const results = choices.map((item) => {
+    return {
+      value: item.value,
+      label: showValue ? `${item.display_name} (${item.value})`: item.display_name,
+    };
+  });
+
+  if(addEmpty) {
+    return addEmptyOption(results);
+  }
+  return results;
+};
+
+/**
+ * Get options for attribute field
+ * @param attributes
+ * @param addEmpty
+ * @param showValue
+ */
+export const getFieldOptions = (fieldAttributes: Object, addEmpty: boolean = true, showValue: boolean = false) => {
+  let choices = get(fieldAttributes, `choices`);
   if(!choices || !choices.length) {
     return [];
   }
