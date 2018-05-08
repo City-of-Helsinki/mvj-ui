@@ -9,9 +9,6 @@ describe('Applications', () => {
       it('Should be dummy...', () => {
         expect(!!1).to.be.true;
       });
-
     });
-
   });
-
 });

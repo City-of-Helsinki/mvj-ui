@@ -94,7 +94,7 @@ const isContactFormValidReducer: Reducer<boolean> = handleActions({
 export default combineReducers({
   allContacts: completeContactListReducer,
   attributes: attributesReducer,
-  current: contactReducer,
+  currentContact: contactReducer,
   initialContactFormValues: initialValuesReducer,
   isContactFormValid: isContactFormValidReducer,
   isEditMode: isEditModeReducer,

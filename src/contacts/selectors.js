@@ -29,4 +29,4 @@ export const getCompleteContactList: Selector<Array<Contact>, void> = (state: Co
   state.contacts.allContacts;
 
 export const getCurrentContact: Selector<Contact, void> = (state: ContactState): Contact =>
-  state.contacts.current;
+  state.contacts.currentContact;
