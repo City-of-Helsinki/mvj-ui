@@ -15,43 +15,43 @@ type Props = {
 const FieldTypeDatePicker = ({
   disabled = false,
   displayError = false,
-  input,
   input: {onBlur, onChange, value},
   isDirty = false,
   placeholder,
 }: Props) => {
+
   const handleBlur = (e: any) => {
     if(e && e.target.value) {
-      onBlur(moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']));
+      const date = moment(e.target.value, ['DDMMYYYY', 'DD.MM.YYYY']);
+      if(date.isValid()) {
+        return onBlur(date.toISOString());
+      }
+      return onBlur(null);
     } else {
       onBlur(null);
     }
   };
 
   const handleSelect = (val: any, e: any) => {
-    if((e && e.target.value)) {
-      console.log('tr', e.target.value);
-      onChange(moment(e.target.value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']));
-    } else if (val) {
-      console.log('va', val);
-      onChange(moment(val, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']));
-    } else {
-      onChange(null);
+    if(e && e.target.value) {
+      onChange(moment(e.target.value, ['DDMMYYYY', 'DD.MM.YYYY']).toISOString());
     }
+  };
+
+  const handleChange = (e: any) => {
+    onChange(e);
   };
 
   return (
     <div className={classNames('form-field__datepicker', {'has-error': displayError}, {'is-dirty': isDirty})}>
       <DatePicker
-        {...input}
         disabled={disabled}
         locale='fi'
-        onBlur={handleBlur}
-        onChange={(e) => console.log(e)}
-        onKeyUp={(e) => console.log(e)}
-        onSelect={handleSelect}
         placeholder={placeholder}
-        selected={value && moment(value, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']) || null}
+        onBlur={handleBlur}
+        onChange={handleChange}
+        onSelect={handleSelect}
+        selected={value ? moment(value) : null}
         dateFormat='DD.MM.YYYY'
         disabledKeyboardNavigation
       />
