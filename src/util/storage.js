@@ -1,3 +1,4 @@
+// @flow
 import get from 'lodash/get';
 import isString from 'lodash/isString';
 
@@ -7,12 +8,12 @@ import isString from 'lodash/isString';
  *
  * @param {string} key
  */
-export function getStorageItem(key) {
+export const getStorageItem = (key: string) => {
   const [root, ...rest] = key.split('.');
-  const item = localStorage.getItem(buildStorageKey(root));
+  const item = localStorage.getItem(buildStorageKey(root)) || '';
   const value = isJson(item) ? JSON.parse(item) : item;
   return rest.length ? get(value, rest.join('.')) : value;
-}
+};
 
 /**
  *
@@ -20,7 +21,7 @@ export function getStorageItem(key) {
  * @param {*} value
  * @param callback
  */
-export function setStorageItem(key, value, callback = null) {
+export const setStorageItem = (key: string, value: any, callback: ?Function = null) => {
   if (!isString(value)) {
     value = JSON.stringify(value);
   }
@@ -32,39 +33,40 @@ export function setStorageItem(key, value, callback = null) {
   } catch (e) {
     // fall silently
   }
-}
+};
 
 /**
  *
  * @param {string} key
  * @param callback
  */
-export function removeStorageItem(key, callback = null) {
+export const removeStorageItem = (key: string, callback: ?Function = null) => {
   localStorage.removeItem(buildStorageKey(key));
   if (callback && typeof callback === 'function') {
     callback();
   }
-}
+};
 
 /**
  *
  * @param {string} key
  * @returns {string}
  */
-function buildStorageKey(key) {
+const buildStorageKey = (key: string) => {
+  // $FlowFixMe
   return [STORAGE_PREFIX, key].join('.');
-}
+};
 
 /**
  *
  * @param {*} value
  * @returns {boolean}
  */
-function isJson(value) {
+const isJson = (value: any) => {
   try {
     JSON.parse(value);
   } catch (e) {
     return false;
   }
   return true;
-}
+};

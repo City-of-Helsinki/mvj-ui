@@ -11,6 +11,7 @@ import {
   hideEditMode,
   receiveLessors,
   receiveContacts,
+  notFound,
 } from './actions';
 import contactReducer from './reducer';
 
@@ -339,6 +340,27 @@ describe('Contacts', () => {
         };
 
         const state = contactReducer({}, receiveContacts({results: dummyContactsList}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to false by notFound', () => {
+        const newState = {
+          allContacts: [],
+          attributes: {},
+          currentContact: {},
+          initialContactFormValues: {
+            decisions: [''],
+            prices: [{}],
+            real_estate_ids: [''],
+          },
+          isContactFormValid: false,
+          isEditMode: false,
+          isFetching: false,
+          lessors: [],
+          list: {},
+        };
+
+        const state = contactReducer({}, notFound());
         expect(state).to.deep.equal(newState);
       });
     });
