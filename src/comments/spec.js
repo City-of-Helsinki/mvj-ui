@@ -44,17 +44,17 @@ describe('Comments', () => {
         const state = commentReducer({}, receiveCommentsByLease({leaseId: dummyLease, comments: dummyComments}));
         expect(state).to.deep.equal(newState);
       });
-    });
 
-    it('should update isFetching flag to false by notFound', () => {
-      const newState = {
-        attributes: {},
-        byLease: {},
-        isFetching: false,
-      };
+      it('should update isFetching flag to false by notFound', () => {
+        const newState = {
+          attributes: {},
+          byLease: {},
+          isFetching: false,
+        };
 
-      const state = commentReducer({}, notFound());
-      expect(state).to.deep.equal(newState);
+        const state = commentReducer({}, notFound());
+        expect(state).to.deep.equal(newState);
+      });
     });
   });
 });
