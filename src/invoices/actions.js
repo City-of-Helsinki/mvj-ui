@@ -28,11 +28,11 @@ export const fetchInvoices = (search: string): FetchInvoicesAction =>
 export const receiveInvoices = (invoices: InvoiceList): ReceiveInvoicesAction =>
   createAction('mvj/invoices/RECEIVE_ALL')(invoices);
 
-export const createInvoice = (lease: Invoice): CreateInvoiceAction =>
-  createAction('mvj/invoices/CREATE')(lease);
+export const createInvoice = (invoice: Invoice): CreateInvoiceAction =>
+  createAction('mvj/invoices/CREATE')(invoice);
 
-export const patchInvoice = (lease: Invoice): PatchInvoiceAction =>
-  createAction('mvj/invoices/PATCH')(lease);
+export const patchInvoice = (invoice: Invoice): PatchInvoiceAction =>
+  createAction('mvj/invoices/PATCH')(invoice);
 
 export const receiveIsCreateOpen = (isOpen: boolean): ReceiveIsCreateOpenAction =>
   createAction('mvj/invoices/RECEIVE_IS_CREATE_OPEN')(isOpen);
