@@ -19,10 +19,8 @@ type State = {
   search: string,
 }
 
-class TopNavigation extends Component {
-  props: Props
-
-  state: State = {
+class TopNavigation extends Component<Props, State> {
+  state = {
     search: '',
   }
 

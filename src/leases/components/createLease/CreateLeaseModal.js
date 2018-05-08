@@ -11,9 +11,7 @@ type Props = {
   onSubmit: Function,
 }
 
-class CreateLease extends Component {
-  props: Props
-
+class CreateLease extends Component<Props> {
   render () {
     const {
       isOpen,

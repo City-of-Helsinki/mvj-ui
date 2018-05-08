@@ -14,6 +14,7 @@ import FieldTypeSelect from './FieldTypeSelect';
 import FieldTypeSwitch from './FieldTypeSwitch';
 import FieldTypeTextArea from './FieldTypeTextArea';
 import {getFieldOptions} from '$util/helpers';
+import {genericNormalizer} from './normalizers';
 import {genericValidator} from '../form/validations';
 
 const FieldTypes = {
@@ -89,8 +90,8 @@ type Props = {
   isLoading?: boolean,
   name: string,
   optionLabel?: string,
-  placeholder?: string,
   overrideValues?: Object,
+  placeholder?: string,
   rows?: number,
 }
 
@@ -103,8 +104,8 @@ const FormField = ({
   isLoading = false,
   name,
   optionLabel,
-  placeholder,
   overrideValues,
+  placeholder,
   rows,
 }: Props) => {
   const label = get(fieldAttributes, 'label');
@@ -114,20 +115,21 @@ const FormField = ({
 
   return (
     <Field
-      component={FormFieldInput}
       className={className}
+      component={FormFieldInput}
       disabled={disabled}
       disableDirty={disableDirty}
+      ErrorComponent={ErrorComponent}
       isLoading={isLoading}
       label={label}
       name={name}
+      normalize={(value) => genericNormalizer(value, fieldAttributes)}
+      optionLabel={optionLabel}
       options={options}
       placeholder={placeholder}
       required={required}
-      type={type}
-      ErrorComponent={ErrorComponent}
-      optionLabel={optionLabel}
       rows={rows}
+      type={type}
       validate={[
         (value) => genericValidator(value, fieldAttributes),
       ]}

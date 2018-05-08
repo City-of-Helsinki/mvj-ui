@@ -23,20 +23,13 @@ type State = {
   rents: Object | null,
 }
 
-class Leases extends Component {
-
-  props: Props;
-  state: State;
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEditing: false,
-      activeRent: null,
-      activeIndex: null,
-      rents: null,
-    };
-  }
+class Leases extends Component<Props, State> {
+  state = {
+    isEditing: false,
+    activeRent: null,
+    activeIndex: null,
+    rents: null,
+  };
 
   componentWillMount() {
     const {rents} = this.props;

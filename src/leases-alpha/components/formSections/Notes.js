@@ -11,9 +11,7 @@ import NotesForm from './NotesForm';
 
 type Props = Object;
 
-class Notes extends Component {
-  props: Props;
-
+class Notes extends Component<Props> {
   createNote = (note) => {
     const {array, currentUser} = this.props;
     return array.push('notes', {...note, author: currentUser});
@@ -30,7 +28,7 @@ class Notes extends Component {
           onSubmit={this.createNote}
         />
 
-        {notes && notes.map(({title, text, author, modified_at}, i) =>
+        {notes && notes.map(({text, author, modified_at}, i) =>
           <section key={i} className="note">
             <div className="note__header">
               {/*<h3>{title}</h3>*/}

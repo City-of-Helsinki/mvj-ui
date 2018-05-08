@@ -49,9 +49,8 @@ type State = {
   activePage: number,
 }
 
-class ContactListPage extends Component {
-  props: Props
-  state: State = {
+class ContactListPage extends Component<Props, State> {
+  state = {
     activePage: 1,
   }
 

@@ -24,9 +24,7 @@ type Props = {
   valid: boolean,
 }
 
-class RentsEdit extends Component {
-  props: Props
-
+class RentsEdit extends Component<Props> {
   componentDidUpdate() {
     const {isRentsFormValid, receiveRentsFormValid, valid} = this.props;
     if(isRentsFormValid !== valid) {

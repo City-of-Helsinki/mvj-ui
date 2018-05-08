@@ -5,6 +5,7 @@ import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -32,7 +33,7 @@ type AreaItemProps = {
 const LeaseAreaItems = ({
   attributes,
   fields,
-}: AreaItemProps) => {
+}: AreaItemProps): Element<*> => {
   return (
     <div>
       {fields && !!fields.length && fields.map((area, index) => {
@@ -169,9 +170,7 @@ type Props = {
   valid: boolean,
 }
 
-class LeaseAreasEdit extends Component {
-  props: Props
-
+class LeaseAreasEdit extends Component<Props> {
   componentDidUpdate() {
     const {isLeaseAreasFormValid, receiveLeaseAreasFormValid, valid} = this.props;
     if(isLeaseAreasFormValid !== valid) {

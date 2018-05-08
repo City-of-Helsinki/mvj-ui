@@ -17,9 +17,7 @@ type Props = {
   show: boolean,
 }
 
-class InvoiceModal extends Component {
-  props: Props
-
+class InvoiceModal extends Component<Props> {
   componentWillMount(){
     document.addEventListener('keydown', this.handleKeyDown);
   }

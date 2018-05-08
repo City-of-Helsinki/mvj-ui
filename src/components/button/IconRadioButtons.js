@@ -2,15 +2,13 @@
 import React, {Component} from 'react';
 
 type Props = {
-  value: string,
+  value?: string,
   radioName: string,
   options: Array<Object>,
   onChange: Function,
 }
 
-class StyledRadioButtons extends Component {
-  props: Props
-
+class StyledRadioButtons extends Component<Props> {
   handleChange = (event: any) => {
     const {onChange} = this.props;
     onChange(event.target.value);

@@ -30,9 +30,7 @@ type Props = {
   valid: boolean,
 }
 
-class TenantsEdit extends Component {
-  props: Props
-
+class TenantsEdit extends Component<Props> {
   componentWillMount() {
     const {hideContactModal} = this.props;
     hideContactModal();

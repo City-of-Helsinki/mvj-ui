@@ -14,10 +14,8 @@ type State = {
   isMounted: boolean,
 }
 
-class ActionDropdown extends Component {
-  props: Props
-
-  state: State = {
+class ActionDropdown extends Component<Props, State> {
+  state = {
     isOpen: false,
     isMounted: true,
   }

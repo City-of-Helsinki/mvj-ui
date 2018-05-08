@@ -47,9 +47,8 @@ type SelectItemState = {
   hovered: boolean
 };
 
-class SelectItem extends Component {
-  props: SelectItemProps
-  state: SelectItemState = {
+class SelectItem extends Component<SelectItemProps, SelectItemState> {
+  state = {
     hovered: false,
   }
 

@@ -146,10 +146,8 @@ type State = {
   isSaveLeaseModalOpen: boolean,
 };
 
-class LeasePage extends Component {
-  props: Props
-
-  state: State = {
+class LeasePage extends Component<Props, State> {
+  state = {
     activeTab: 0,
     history: [],
     isCancelLeaseModalOpen: false,

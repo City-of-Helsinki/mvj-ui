@@ -122,7 +122,7 @@ class EditableMap extends Component {
           center={defaultCoordinates}
           rememberableTerms={rememberableTerms}
           zoom={defaultZoom}
-          >
+        >
           <FeatureGroup
             ref={(input) => {this.featureGroup = input;}}
           >

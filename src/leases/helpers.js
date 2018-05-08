@@ -130,7 +130,7 @@ export const getContentSummary = (lease: Object) => {
   };
 };
 
-export const getContentPlots = (plots: Array<Object>, inContract: boolean) => {
+export const getContentPlots = (plots: Array<Object>, inContract: boolean): Array<Object> => {
   if(!plots || !plots.length) {
     return [];
   }
@@ -151,7 +151,7 @@ export const getContentPlots = (plots: Array<Object>, inContract: boolean) => {
   });
 };
 
-export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolean) => {
+export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolean): Array<Object> => {
   if(!planunits || !planunits.length) {
     return [];
   }
@@ -214,7 +214,7 @@ export const getContentUser = (userData: Object) => {
   };
 };
 
-export const getContentComments = (content: Array<Object>) => {
+export const getContentComments = (content: Array<Object>): Array<Object> => {
   if(!content || !content.length) {
     return [];
   }
@@ -618,7 +618,7 @@ export const getFullAddress = (item: Object) => {
   return `${get(item, 'address')}, ${get(item, 'zip_code')} ${get(item, 'town')}`;
 };
 
-export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>) => {
+export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>): Array<Object> => {
   if(!documentTypes || !documentTypes.length) {
     return items;
   }

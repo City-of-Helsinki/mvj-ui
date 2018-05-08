@@ -17,9 +17,7 @@ type Props = {
   showStartInvoicingButton: boolean,
 }
 
-class AddInvoiceComponent extends Component {
-  props: Props
-
+class AddInvoiceComponent extends Component <Props> {
   panel: any
 
   handleOnAdd = () => {

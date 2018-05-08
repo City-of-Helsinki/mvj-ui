@@ -9,11 +9,11 @@ export const fetchAttributes = () => {
   return callApi(new Request(createUrl('invoice/'), {method: 'OPTIONS'}));
 };
 
-export const fetchInvoices = (search: string): Generator<> => {
+export const fetchInvoices = (search: string): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`invoice/${search || ''}`)));
 };
 
-export const createInvoice = (invoice: Invoice): Generator<> => {
+export const createInvoice = (invoice: Invoice): Generator<any, any, any> => {
   const body = JSON.stringify(invoice);
 
   return callApi(new Request(createUrl(`invoice/`), {
@@ -22,7 +22,7 @@ export const createInvoice = (invoice: Invoice): Generator<> => {
   }));
 };
 
-export const patchInvoice = (invoice: Invoice): Generator<> => {
+export const patchInvoice = (invoice: Invoice): Generator<any, any, any> => {
   const {id} = invoice;
   const body = JSON.stringify(invoice);
 

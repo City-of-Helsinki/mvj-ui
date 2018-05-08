@@ -15,10 +15,8 @@ type State = {
   comment: string,
 }
 
-class SaveConditionPanel extends Component {
-  props: Props
-
-  state: State = {
+class SaveConditionPanel extends Component<Props, State> {
+  state = {
     comment: '',
   }
 

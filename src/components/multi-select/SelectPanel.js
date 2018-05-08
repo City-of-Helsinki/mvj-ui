@@ -26,9 +26,8 @@ type State = {
     focusIndex: number
 };
 
-class SelectPanel extends Component {
-  props: Props;
-  state: State = {
+class SelectPanel extends Component<Props, State> {
+  state = {
     searchHasFocus: false,
     searchText: '',
     focusIndex: 0,

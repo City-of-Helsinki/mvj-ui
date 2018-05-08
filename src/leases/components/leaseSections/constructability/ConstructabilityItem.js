@@ -93,11 +93,11 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         header={
           <div>
             <Column>
-                <StatusIndicator
-                  researchState={area.preconstruction_state}
-                  stateOptions={stateOptions}
-                />
-              </Column>
+              <StatusIndicator
+                researchState={area.preconstruction_state}
+                stateOptions={stateOptions}
+              />
+            </Column>
           </div>
         }
         headerTitle={
@@ -126,7 +126,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         headerTitle={
           <h4 className='collapse__header-title'>Purku</h4>
         }
-        >
+      >
         <Comments
           comments={area.descriptionsDemolition}
           userOptions={userOptions}
@@ -149,7 +149,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         headerTitle={
           <h4 className='collapse__header-title'>Pima</h4>
         }
-        >
+      >
         <div>
           <Row>
             <Column small={6} medium={3} large={2}>

@@ -50,10 +50,8 @@ type State = {
   displaySideMenu: boolean,
 };
 
-class App extends Component {
-  props: Props
-
-  state: State = {
+class App extends Component<Props, State> {
+  state = {
     displaySideMenu: false,
   }
 

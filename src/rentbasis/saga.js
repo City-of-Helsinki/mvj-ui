@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
@@ -24,7 +22,7 @@ import {
 } from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchAttributesSaga(): Generator<> {
+function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
     const attributes = bodyAsJson.fields;
@@ -43,7 +41,7 @@ function* fetchAttributesSaga(): Generator<> {
   }
 }
 
-function* fetchRentBasisListSaga({payload: search}): Generator<> {
+function* fetchRentBasisListSaga({payload: search}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchRentBasisList, search);
     switch (statusCode) {
@@ -62,7 +60,7 @@ function* fetchRentBasisListSaga({payload: search}): Generator<> {
   }
 }
 
-function* fetchSingleRentBasisSaga({payload: id}): Generator<> {
+function* fetchSingleRentBasisSaga({payload: id}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSingleRentBasis, id);
     switch (statusCode) {
@@ -84,7 +82,7 @@ function* fetchSingleRentBasisSaga({payload: id}): Generator<> {
   }
 }
 
-function* createRentBasisSaga({payload: rentBasis}): Generator<> {
+function* createRentBasisSaga({payload: rentBasis}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(createRentBasis, rentBasis);
 
@@ -109,7 +107,7 @@ function* createRentBasisSaga({payload: rentBasis}): Generator<> {
   }
 }
 
-function* editRentBasisSaga({payload: rentBasis}): Generator<> {
+function* editRentBasisSaga({payload: rentBasis}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(editRentBasis, rentBasis);
 
@@ -135,9 +133,9 @@ function* editRentBasisSaga({payload: rentBasis}): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
-  yield [
-    fork(function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
+  yield all([
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/rentbasis/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/rentbasis/FETCH_ALL', fetchRentBasisListSaga);
       yield takeLatest('mvj/rentbasis/CREATE', createRentBasisSaga);
@@ -145,5 +143,5 @@ export default function*(): Generator<> {
 
       yield takeLatest('mvj/rentbasis/FETCH_SINGLE', fetchSingleRentBasisSaga);
     }),
-  ];
+  ]);
 }

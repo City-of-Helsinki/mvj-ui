@@ -20,11 +20,7 @@ type State = {
   isVisible: boolean,
 }
 
-class Collapse extends Component {
-  props: Props;
-
-  state: State;
-
+class Collapse extends Component<Props, State> {
   component: any
   content: any
 

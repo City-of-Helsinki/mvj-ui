@@ -29,9 +29,7 @@ type Props = {
   valid: boolean,
 }
 
-class ContactForm extends Component {
-  props: Props
-
+class ContactForm extends Component<Props> {
   componentDidMount() {
     const {receiveContactFormValid, valid} = this.props;
     receiveContactFormValid(valid);

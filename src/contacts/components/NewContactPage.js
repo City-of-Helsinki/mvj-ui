@@ -39,10 +39,8 @@ type State = {
   isCancelModalOpen: boolean,
 }
 
-class NewContactPage extends Component {
-  props: Props
-
-  state: State = {
+class NewContactPage extends Component<Props, State> {
+  state = {
     isCancelModalOpen: false,
   }
 

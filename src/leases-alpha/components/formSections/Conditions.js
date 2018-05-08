@@ -22,18 +22,12 @@ type State = {
   conditions: Object | null,
 }
 
-class Conditions extends Component {
-  props: Props;
-  state: State;
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEditing: false,
-      activeCondition: null,
-      activeIndex: null,
-      conditions: null,
-    };
+class Conditions extends Component<Props, State> {
+  state = {
+    isEditing: false,
+    activeCondition: null,
+    activeIndex: null,
+    conditions: null,
   }
 
   componentWillMount() {

@@ -17,7 +17,7 @@ const DeleteButton = ({className, onClick, title, type = 'button'}: Props) =>
     onClick={() => onClick()}
     title={title}
     type={type}
-    >
+  >
     <img src={trashIcon} alt='Muokkaa' />
   </button>;
 

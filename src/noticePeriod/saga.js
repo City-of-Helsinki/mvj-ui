@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 
 import {
   notFound,
@@ -10,7 +8,7 @@ import {
 import {fetchNoticePeriods} from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchNoticePeriodsSaga({payload: search}): Generator<> {
+function* fetchNoticePeriodsSaga({payload: search}): Generator<any, any, any> {
   try {
     let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchNoticePeriods, search);
     let noticePeriods = body.results;
@@ -37,10 +35,10 @@ function* fetchNoticePeriodsSaga({payload: search}): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
-  yield [
-    fork(function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
+  yield all([
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/noticePeriod/FETCH_ALL', fetchNoticePeriodsSaga);
     }),
-  ];
+  ]);
 }

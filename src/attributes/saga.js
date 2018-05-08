@@ -1,13 +1,11 @@
 // @flow
-
-import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 
 import {receiveAttributes, notFound} from './actions';
 import {fetchAttributes} from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchAttributesSaga(): Generator<> {
+function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
     const types = bodyAsJson.fields;
@@ -28,10 +26,10 @@ function* fetchAttributesSaga(): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
-  yield [
-    fork(function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
+  yield all([
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/attribute/FETCH', fetchAttributesSaga);
     }),
-  ];
+  ]);
 }

@@ -23,9 +23,7 @@ type Props = {
   userList: Array<any>,
 }
 
-class TopNavigation extends Component {
-  props: Props;
-
+class TopNavigation extends Component<Props> {
   getLocationForNewLanguage = (prevPath, langKey) => {
     const {pathname, search, hash} = prevPath;
     const pathArr = pathname.split('/');

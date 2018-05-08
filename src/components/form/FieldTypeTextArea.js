@@ -19,17 +19,14 @@ const FieldTypeTextArea = ({
   isDirty,
   placeholder,
   rows = 3,
-}: Props) => {
-  return (
-    <textarea
-       className={classNames('form-field__input', {'has-error': displayError}, {'is-dirty': isDirty})}
-       disabled={disabled}
-       id={input.name}
-       placeholder={placeholder}
-       rows={rows}
-       {...input}
-     />
-  );
-};
+}: Props) =>
+  <textarea
+    className={classNames('form-field__input', {'has-error': displayError}, {'is-dirty': isDirty})}
+    disabled={disabled}
+    id={input.name}
+    placeholder={placeholder}
+    rows={rows}
+    {...input}
+  />;
 
 export default FieldTypeTextArea;

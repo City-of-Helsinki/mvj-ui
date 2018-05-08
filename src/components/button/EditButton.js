@@ -17,7 +17,7 @@ const EditButton = ({className, onClick, title, type = 'button'}: Props) =>
     onClick={() => onClick()}
     title={title}
     type={type}
-    >
+  >
     <img src={editIcon} alt='Muokkaa' />
   </button>;
 

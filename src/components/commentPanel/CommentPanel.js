@@ -41,10 +41,8 @@ const getCommentsByTopic = (comments: Array<Object>, topic: Object) => {
   });
 };
 
-class CommentPanel extends Component {
-  props: Props
-
-  state: State = {
+class CommentPanel extends Component<Props, State> {
+  state = {
     selectedTopics: [],
   }
 

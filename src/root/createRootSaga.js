@@ -1,6 +1,6 @@
 // @flow
 
-import {fork} from 'redux-saga/effects';
+import {all, fork} from 'redux-saga/effects';
 import authSaga from '../auth/saga';
 import commentSaga from '../comments/saga';
 import contactSaga from '../contacts/saga';
@@ -15,7 +15,7 @@ import userSaga from '../users/saga';
 export default () =>
   // $FlowFixMe
   function* rootSaga() {
-    yield [
+    yield all([
       fork(authSaga),
       fork(commentSaga),
       fork(contactSaga),
@@ -26,5 +26,5 @@ export default () =>
       fork(noticePeriodSaga),
       fork(rentBasisSaga),
       fork(userSaga),
-    ];
+    ]);
   };

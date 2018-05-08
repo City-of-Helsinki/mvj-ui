@@ -37,15 +37,8 @@ type State = {
   tableWidth: ?number,
 }
 
-class InvoicesTable extends Component {
-  props: Props
-
-  container: any
-  modal: any
-  tableElement: any
-  tableWrapper : any
-
-  state: State = {
+class InvoicesTable extends Component<Props, State> {
+  state = {
     selectedInvoice: {},
     selectedInvoiceIndex: -1,
     showAllColumns: true,
@@ -53,6 +46,11 @@ class InvoicesTable extends Component {
     tableHeight: null,
     tableWidth: null,
   }
+
+  container: any
+  modal: any
+  tableElement: any
+  tableWrapper : any
 
   calculateHeight = () => {
     let {clientHeight} = this.tableElement;
@@ -100,7 +98,6 @@ class InvoicesTable extends Component {
   shouldComponentUpdate(nextProps: Object, nextState: Object) {
     return (
       this.props.invoices !== nextProps.invoices ||
-      this.state.containerWidth !== nextState.containerWidth ||
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
       this.state.selectedInvoice !== nextState.selectedInvoice ||
@@ -228,7 +225,7 @@ class InvoicesTable extends Component {
                               showModal: true});
                             this.scrolToModal();
                           }}
-                          >
+                        >
                           <td>{getContactFullName(invoice.recipient) || '-'}</td>
                           <td>{formatDate(invoice.due_date) || '-'}</td>
                           <td>{invoice.id || '-'}</td>

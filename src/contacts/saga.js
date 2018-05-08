@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 import get from 'lodash/get';
@@ -29,7 +27,7 @@ import {
   fetchSingleContact,
 } from './requests';
 
-function* fetchAttributesSaga(): Generator<> {
+function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
     const attributes = bodyAsJson.fields;
@@ -50,7 +48,7 @@ function* fetchAttributesSaga(): Generator<> {
   }
 }
 
-function* fetchContactsSaga({payload: search}): Generator<> {
+function* fetchContactsSaga({payload: search}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchContacts, search);
     switch (statusCode) {
@@ -70,7 +68,7 @@ function* fetchContactsSaga({payload: search}): Generator<> {
   }
 }
 
-function* fetchCompleteContactListSaga({payload: search}): Generator<> {
+function* fetchCompleteContactListSaga({payload: search}): Generator<any, any, any> {
   try {
     let results = [];
     let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchContacts, search);
@@ -99,7 +97,7 @@ function* fetchCompleteContactListSaga({payload: search}): Generator<> {
   }
 }
 
-function* fetchSingleContactSaga({payload: id}): Generator<> {
+function* fetchSingleContactSaga({payload: id}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSingleContact, id);
 
@@ -122,7 +120,7 @@ function* fetchSingleContactSaga({payload: id}): Generator<> {
   }
 }
 
-function* createContactSaga({payload: contact}): Generator<> {
+function* createContactSaga({payload: contact}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(createContact, contact);
 
@@ -147,7 +145,7 @@ function* createContactSaga({payload: contact}): Generator<> {
   }
 }
 
-function* editContactSaga({payload: contact}): Generator<> {
+function* editContactSaga({payload: contact}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(editContact, contact);
 
@@ -173,7 +171,7 @@ function* editContactSaga({payload: contact}): Generator<> {
   }
 }
 
-function* fetchLessorsSaga(): Generator<> {
+function* fetchLessorsSaga(): Generator<any, any, any> {
   try {
     let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchContacts, '?is_lessor=true&limit=500');
     let lessors = body.results;
@@ -198,9 +196,9 @@ function* fetchLessorsSaga(): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
-  yield [
-    fork(function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
+  yield all([
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/contacts/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/contacts/FETCH_ALL', fetchContactsSaga);
       yield takeLatest('mvj/contacts/FETCH_COMPLETE', fetchCompleteContactListSaga);
@@ -209,5 +207,5 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/contacts/CREATE', createContactSaga);
       yield takeLatest('mvj/contacts/EDIT', editContactSaga);
     }),
-  ];
+  ]);
 }

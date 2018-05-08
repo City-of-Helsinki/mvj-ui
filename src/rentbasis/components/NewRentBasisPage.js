@@ -37,10 +37,8 @@ type State = {
   isCancelModalOpen: boolean,
 }
 
-class NewRentBasisPage extends Component {
-  props: Props
-
-  state: State = {
+class NewRentBasisPage extends Component<Props, State> {
+  state = {
     isCancelModalOpen: false,
   }
 

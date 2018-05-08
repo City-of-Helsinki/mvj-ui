@@ -13,10 +13,7 @@ type State = {
   isOpen: boolean,
 }
 
-class Collapse extends Component {
-  props: Props;
-  state: State;
-
+class Collapse extends Component<Props, State> {
   static defaultProps = {
     defaulOpen: false,
   };

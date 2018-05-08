@@ -14,12 +14,10 @@ type Props = {
   title: string,
 }
 
-class TableControllers extends Component {
-  props: Props
-
+class TableControllers extends Component<Props> {
   static defaultProps = {
-    onButtonSelectorChange: (value) => console.log(value),
-    onIconSelectorChange: (value) => console.log(value),
+    onButtonSelectorChange: (value: any) => console.log(value),
+    onIconSelectorChange: (value: any) => console.log(value),
   };
 
   render () {

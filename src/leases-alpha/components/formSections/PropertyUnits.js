@@ -29,19 +29,13 @@ type State = {
   real_property_units: Array<any> | null,
 }
 
-class RealProperyUnits extends Component {
-  props: Props;
-  state: State;
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      isEditing: false,
-      activePropertyUnit: null,
-      activeIndex: null,
-      real_property_units: null,
-    };
-  }
+class RealProperyUnits extends Component<Props, State> {
+  state = {
+    isEditing: false,
+    activePropertyUnit: null,
+    activeIndex: null,
+    real_property_units: null,
+  };
 
   componentWillMount() {
     const {real_property_units} = this.props;

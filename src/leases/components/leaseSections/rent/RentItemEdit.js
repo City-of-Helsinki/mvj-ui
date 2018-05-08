@@ -24,9 +24,7 @@ type Props = {
   formValues: Array<Object>,
 }
 
-class RentItemEdit extends Component {
-  props: Props
-
+class RentItemEdit extends Component<Props> {
   render() {
     const {fields, formValues} = this.props;
 

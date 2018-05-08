@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 
 import {
   notFound,
@@ -10,7 +8,7 @@ import {
 import {fetchDistricts} from './requests';
 import {receiveError} from '../api/actions';
 
-function* fetchDistrictsByMunicipalitySaga({payload: municipalityId}): Generator<> {
+function* fetchDistrictsByMunicipalitySaga({payload: municipalityId}): Generator<any, any, any> {
   try {
     let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchDistricts, `?municipality=${municipalityId}`);
     let districts = body.results;
@@ -37,10 +35,10 @@ function* fetchDistrictsByMunicipalitySaga({payload: municipalityId}): Generator
   }
 }
 
-export default function*(): Generator<> {
-  yield [
-    fork(function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
+  yield all([
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/district/FETCH_BY_MUNICIPALITY', fetchDistrictsByMunicipalitySaga);
     }),
-  ];
+  ]);
 }

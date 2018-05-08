@@ -1,7 +1,5 @@
 // @flow
-
-import {takeLatest, takeEvery} from 'redux-saga';
-import {call, fork, put} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest, takeEvery} from 'redux-saga/effects';
 import get from 'lodash/get';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
@@ -29,7 +27,7 @@ import {
 import {receiveError} from '../api/actions';
 import {getActiveLanguage} from '$util/helpers';
 
-function* fetchAttributesSaga(): Generator<> {
+function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
     const attributes = bodyAsJson.fields && {
@@ -55,7 +53,7 @@ function* fetchAttributesSaga(): Generator<> {
   }
 }
 
-function* fetchAreasSaga(): Generator<> {
+function* fetchAreasSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAreas);
 
@@ -73,7 +71,7 @@ function* fetchAreasSaga(): Generator<> {
   }
 }
 
-function* fetchInvoicesSaga({payload: lease}): Generator<> {
+function* fetchInvoicesSaga({payload: lease}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchInvoices, lease);
 
@@ -91,7 +89,7 @@ function* fetchInvoicesSaga({payload: lease}): Generator<> {
   }
 }
 
-function* fetchLeasesSaga(): Generator<> {
+function* fetchLeasesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchLeases);
 
@@ -111,7 +109,7 @@ function* fetchLeasesSaga(): Generator<> {
   }
 }
 
-function* fetchSingleLeaseSaga({payload: id}): Generator<> {
+function* fetchSingleLeaseSaga({payload: id}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSingleLease, id);
 
@@ -134,7 +132,7 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<> {
   }
 }
 
-function* createLeaseSaga({payload: lease}): Generator<> {
+function* createLeaseSaga({payload: lease}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(createLease, lease);
 
@@ -162,7 +160,7 @@ function* createLeaseSaga({payload: lease}): Generator<> {
   }
 }
 
-function* editLeaseSaga({payload: lease}): Generator<> {
+function* editLeaseSaga({payload: lease}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(editLease, lease);
 
@@ -187,9 +185,9 @@ function* editLeaseSaga({payload: lease}): Generator<> {
   }
 }
 
-export default function*(): Generator<> {
-  yield [
-    fork(function*(): Generator<> {
+export default function*(): Generator<any, any, any> {
+  yield all([
+    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/leases/FETCH_AREAS', fetchAreasSaga);
       yield takeLatest('mvj/leases/FETCH_INVOICES', fetchInvoicesSaga);
@@ -198,5 +196,5 @@ export default function*(): Generator<> {
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/EDIT', editLeaseSaga);
     }),
-  ];
+  ]);
 }

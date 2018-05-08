@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -32,7 +33,7 @@ const renderContractChanges = ({
   decisionOptions,
   fields,
   title,
-}: ContractChangesProps) => {
+}: ContractChangesProps): Element<*> => {
   return(
     <Collapse
       className='collapse__secondary'
@@ -144,7 +145,7 @@ type MortgageDocumentsProps = {
   fields: any,
 }
 
-const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps) => {
+const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps): Element<*> => {
   return(
     <div>
       <p className='sub-title'>Panttikirjat</p>

@@ -24,7 +24,7 @@ export default () => {
   loadUser(store, userManager);
 
   sagaMiddleware.run(rootSaga);
-
+  // $FlowFixMe
   if (module.hot) {
     // $FlowFixMe
     module.hot.accept('./createRootReducer', () => {

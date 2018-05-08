@@ -30,9 +30,7 @@ type Props = {
   user: Object,
 };
 
-class LeaseList extends Component {
-  props: Props;
-
+class LeaseList extends Component<Props> {
   static contextTypes = {
     router: PropTypes.object,
   };

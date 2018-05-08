@@ -5,19 +5,19 @@ import createUrl from '../api/createUrl';
 
 import type {LeaseId, Lease} from './types';
 
-export const fetchAttributes = () => {
+export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('lease/'), {method: 'OPTIONS'}));
 };
 
-export const fetchLeases = (search: string): Generator<> => {
+export const fetchLeases = (search: string): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`lease/${search || ''}`)));
 };
 
-export const fetchSingleLease = (id: LeaseId): Generator<> => {
+export const fetchSingleLease = (id: LeaseId): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`lease/${id}/`)));
 };
 
-export const createLease = (lease: Lease): Generator<> => {
+export const createLease = (lease: Lease): Generator<any, any, any> => {
   const body = JSON.stringify(lease);
 
   return callApi(new Request(createUrl(`lease/`), {
@@ -26,7 +26,7 @@ export const createLease = (lease: Lease): Generator<> => {
   }));
 };
 
-export const patchLease = (lease: Lease): Generator<> => {
+export const patchLease = (lease: Lease): Generator<any, any, any> => {
   const {id} = lease;
   const body = JSON.stringify(lease);
 

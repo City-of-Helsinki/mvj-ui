@@ -82,9 +82,7 @@ type State = {
 
 type TabsType = Array<any>;
 
-class PreparerForm extends Component {
-  props: Props;
-  state: State;
+class PreparerForm extends Component<Props, State> {
   tabs: TabsType;
 
   static contextTypes = {
@@ -203,36 +201,37 @@ class PreparerForm extends Component {
     return (
       <div className="full__width flex tabs preparer-form">
         <Hero className="preparer-form__hero">
+          <div>
+            <div className="controls">
+              <h2>
+                <span onClick={this.goBack} style={{cursor: 'pointer'}}>
+                  <i className="mi mi-keyboard-backspace"/>
+                </span> {identifier ? identifier : `${t('leases:single')} ${leaseId}`}
+              </h2>
 
-          <div className="controls">
-            <h2>
-              <span onClick={this.goBack} style={{cursor: 'pointer'}}>
-                <i className="mi mi-keyboard-backspace"/>
-              </span> {identifier ? identifier : `${t('leases:single')} ${leaseId}`}
-            </h2>
+              {application &&
+              <button className="display-application" onClick={this.handleDisplayApplication}>
+                Alkuperäinen hakemus
+              </button>
+              }
+              <button className="display-notes" onClick={this.toggleSidebar}/>
+            </div>
 
-            {application &&
-            <button className="display-application" onClick={this.handleDisplayApplication}>
-              Alkuperäinen hakemus
-            </button>
-            }
-            <button className="display-notes" onClick={this.toggleSidebar}/>
+            <Tabs
+              active={activeTab}
+              className="hero__navigation"
+              tabs={[
+                'Yhteenveto',
+                'Vuokralaiset',
+                'Kohde',
+                'Vuokra',
+                'Laskutus',
+                'Ehdot',
+                'Kartta',
+              ]}
+              onTabClick={(id) => this.handleTabClick(id)}
+            />
           </div>
-
-          <Tabs
-            active={activeTab}
-            className="hero__navigation"
-            tabs={[
-              'Yhteenveto',
-              'Vuokralaiset',
-              'Kohde',
-              'Vuokra',
-              'Laskutus',
-              'Ehdot',
-              'Kartta',
-            ]}
-            onTabClick={(id) => this.handleTabClick(id)}
-          />
         </Hero>
 
         <TabContent active={activeTab}>
