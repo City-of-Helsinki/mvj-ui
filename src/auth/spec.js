@@ -10,7 +10,7 @@ describe('Auth', () => {
 
   describe('Reducer', () => {
 
-    describe('invoiceReducer', () => {
+    describe('authReducer', () => {
       it('should update isFetching flag to true when fetching api token', () => {
         const newState = {
           apiToken: {},
@@ -27,7 +27,8 @@ describe('Auth', () => {
           isFetching: false,
         };
 
-        const state = authReducer({}, tokenNotFound());
+        let state = authReducer({}, fetchApiToken());
+        state = authReducer(state, tokenNotFound());
         expect(state).to.deep.equal(newState);
       });
 
@@ -38,7 +39,8 @@ describe('Auth', () => {
           isFetching: false,
         };
 
-        const state = authReducer({}, receiveApiToken(dummyApiToken));
+        let state = authReducer({}, fetchApiToken());
+        state = authReducer(state, receiveApiToken(dummyApiToken));
         expect(state).to.deep.equal(newState);
       });
     });

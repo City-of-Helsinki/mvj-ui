@@ -48,7 +48,7 @@ describe('Comments', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag fetching comments', () => {
+      it('should update isFetching flag when fetching comments', () => {
         const newState = {
           attributes: {},
           byLease: {},

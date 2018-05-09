@@ -52,7 +52,7 @@ describe('Invoices', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isCreateOpen flag to false by notFound', () => {
+      it('should update isCreateOpen flag to false', () => {
         const isCreateOpen = true;
         const newState = {
           attributes: {},
@@ -109,7 +109,8 @@ describe('Invoices', () => {
           isFetching: false,
         };
 
-        const state = invoiceReducer({}, notFound());
+        let state = invoiceReducer({}, fetchInvoices());
+        state = invoiceReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });
     });

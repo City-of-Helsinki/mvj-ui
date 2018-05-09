@@ -35,7 +35,8 @@ describe('Decisions', () => {
           isFetching: true,
         };
 
-        const state = decisionReducer({}, fetchDecisionsByLease(1));
+        let state = decisionReducer({}, fetchDecisionsByLease(1));
+        state = decisionReducer(state, fetchDecisionsByLease(1));
         expect(state).to.deep.equal(newState);
       });
 
@@ -45,7 +46,8 @@ describe('Decisions', () => {
           isFetching: false,
         };
 
-        const state = decisionReducer({}, notFound());
+        let state = decisionReducer({}, fetchDecisionsByLease(1));
+        state = decisionReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });
     });

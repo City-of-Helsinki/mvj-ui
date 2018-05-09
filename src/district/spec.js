@@ -46,7 +46,8 @@ describe('Districts', () => {
           isFetching: false,
         };
 
-        const state = districtReducer({}, notFound());
+        let state = districtReducer({}, fetchDistrictsByMunicipality(1));
+        state = districtReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });
     });
