@@ -10,6 +10,7 @@ import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
 import TenantItemsEdit from './TenantItemsEdit';
 import {createContact, editContact, hideContactModal, receiveContactModalSettings, receiveTenantsFormValid} from '$src/leases/actions';
+import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContactModalSettings, getIsContactModalOpen, getIsTenantsFormValid} from '$src/leases/selectors';
 
@@ -117,7 +118,7 @@ export default flowRight(
     (state) => {
       return {
         contactModalSettings: getContactModalSettings(state),
-        contactFormValues: getFormValues(formName)(state),
+        contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
         isContactModalOpen: getIsContactModalOpen(state),
         isTenantsFormValid: getIsTenantsFormValid(state),
       };

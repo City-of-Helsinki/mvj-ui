@@ -14,8 +14,8 @@ type Props = {
 }
 
 const PlanUnitItem = ({attributes, planUnit}: Props) => {
-  // const typeOptions = getAttributeFieldOptions(attributes,
-  //   'lease_areas.child.children.plan_units.child.children.type');
+  const typeOptions = getAttributeFieldOptions(attributes,
+    'lease_areas.child.children.plan_units.child.children.type');
   const planUnitTypeOptions = getAttributeFieldOptions(attributes,
     'lease_areas.child.children.plan_units.child.children.plan_unit_type');
   const planUnitStateOptions = getAttributeFieldOptions(attributes,
@@ -28,10 +28,10 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
           <label>Tunnus</label>
           <p><strong>{planUnit.identifier || '-'}</strong></p>
         </Column>
-        {/* <Column small={6} medium={4} large={2}>
-          <label>Käyttötarkoitus</label>
+        <Column small={6} medium={4} large={2}>
+          <label>Määritelmä</label>
           <p>{getLabelOfOption(typeOptions, planUnit.type) || '-'}</p>
-        </Column> */}
+        </Column>
         <Column small={6} medium={4} large={2}>
           <label>Kokonaisala</label>
           <p>{formatNumber(planUnit.area) || '-'}</p>
