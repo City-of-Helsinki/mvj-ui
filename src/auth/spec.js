@@ -11,7 +11,7 @@ describe('Auth', () => {
   describe('Reducer', () => {
 
     describe('invoiceReducer', () => {
-      it('should update isFetching flag to false by fetcing', () => {
+      it('should update isFetching flag to true when fetching api token', () => {
         const newState = {
           apiToken: {},
           isFetching: true,

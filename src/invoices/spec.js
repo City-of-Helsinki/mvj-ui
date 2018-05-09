@@ -3,6 +3,9 @@ import {
   receiveAttributes,
   receiveInvoices,
   receiveIsCreateOpen,
+  fetchInvoices,
+  createInvoice,
+  patchInvoice,
   notFound,
 } from './actions';
 import invoiceReducer from './reducer';
@@ -59,6 +62,42 @@ describe('Invoices', () => {
         };
 
         const state = invoiceReducer({}, receiveIsCreateOpen(isCreateOpen));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when fetching invoices', () => {
+        const newState = {
+          attributes: {},
+          invoices: [],
+          isCreateOpen: false,
+          isFetching: true,
+        };
+
+        const state = invoiceReducer({}, fetchInvoices());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when creating invoice', () => {
+        const newState = {
+          attributes: {},
+          invoices: [],
+          isCreateOpen: false,
+          isFetching: true,
+        };
+
+        const state = invoiceReducer({}, createInvoice({}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when patching invoice', () => {
+        const newState = {
+          attributes: {},
+          invoices: [],
+          isCreateOpen: false,
+          isFetching: true,
+        };
+
+        const state = invoiceReducer({}, patchInvoice({}));
         expect(state).to.deep.equal(newState);
       });
 
