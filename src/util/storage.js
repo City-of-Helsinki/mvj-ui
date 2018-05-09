@@ -50,6 +50,48 @@ export const removeStorageItem = (key: string, callback: ?Function = null) => {
 /**
  *
  * @param {string} key
+ */
+export const getSessionStorageItem = (key: string) => {
+  const item = sessionStorage.getItem(key) || '';
+  const value = isJson(item) ? JSON.parse(item) : item;
+  return value;
+};
+
+/**
+ *
+ * @param {string} key
+ * @param {*} value
+ * @param callback
+ */
+export const setSessionStorageItem = (key: string, value: any, callback: ?Function = null) => {
+  if (!isString(value)) {
+    value = JSON.stringify(value);
+  }
+  try {
+    sessionStorage.setItem(key, value);
+    if (callback && typeof callback === 'function') {
+      callback();
+    }
+  } catch (e) {
+    // fall silently
+  }
+};
+
+/**
+ *
+ * @param {string} key
+ * @param callback
+ */
+export const removeSessionStorageItem = (key: string, callback: ?Function = null) => {
+  sessionStorage.removeItem(key);
+  if (callback && typeof callback === 'function') {
+    callback();
+  }
+};
+
+/**
+ *
+ * @param {string} key
  * @returns {string}
  */
 const buildStorageKey = (key: string) => {

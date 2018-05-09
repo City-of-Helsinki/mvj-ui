@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import {
   ConstructabilityType,
+  FormNames,
   LeaseStatus,
   TenantContactType,
 } from './enums';
@@ -14,6 +15,7 @@ import {
   fixedLengthNumber,
   formatDecimalNumberForDb,
 } from '$util/helpers';
+import {removeSessionStorageItem} from '$util/storage';
 
 import type {Contact} from '$src/contacts/types';
 
@@ -1184,4 +1186,16 @@ export const isTenantActive = (tenant: Object) => {
   }
 
   return true;
+};
+
+export const clearUnsavedChanges = () => {
+  removeSessionStorageItem(FormNames.CONSTRUCTABILITY);
+  removeSessionStorageItem(FormNames.CONTRACTS);
+  removeSessionStorageItem(FormNames.DECISIONS);
+  removeSessionStorageItem(FormNames.INSPECTIONS);
+  removeSessionStorageItem(FormNames.LEASE_AREAS);
+  removeSessionStorageItem(FormNames.LEASE_INFO);
+  removeSessionStorageItem(FormNames.RENTS);
+  removeSessionStorageItem(FormNames.SUMMARY);
+  removeSessionStorageItem(FormNames.TENANTS);
 };

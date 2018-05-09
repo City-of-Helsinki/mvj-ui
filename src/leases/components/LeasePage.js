@@ -23,8 +23,10 @@ import {fetchNoticePeriods} from '$src/noticePeriod/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchUsers} from '$src/users/actions';
 import {FormNames} from '$src/leases/enums';
+import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
 import {getSearchQuery} from '$util/helpers';
+import {removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
@@ -155,6 +157,8 @@ class LeasePage extends Component<Props, State> {
     isSaveLeaseModalOpen: false,
   }
 
+  timerAutoSave: any
+
   static contextTypes = {
     router: PropTypes.object,
   };
@@ -175,7 +179,6 @@ class LeasePage extends Component<Props, State> {
       fetchNoticePeriods,
       fetchSingleLease,
       fetchUsers,
-      hideEditMode,
       invoiceAttributes,
       location,
       params: {leaseId},
@@ -187,7 +190,6 @@ class LeasePage extends Component<Props, State> {
       history: contentHelpers.getContentHistory(lease),
     });
 
-    hideEditMode();
     receiveTopNavigationSettings({
       linkUrl: getRouteById('leases'),
       pageTitle: 'Vuokraukset',
@@ -227,6 +229,14 @@ class LeasePage extends Component<Props, State> {
     }
   }
 
+  componentWillUnmount() {
+    const {hideEditMode} = this.props;
+
+    hideEditMode();
+    this.stopAutoSaveTimer();
+    clearUnsavedChanges();
+  }
+
   showModal = (modalName: string) => {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
     this.setState({
@@ -248,6 +258,13 @@ class LeasePage extends Component<Props, State> {
     this.initializeForms(currentLease);
     clearFormValidFlags();
     showEditMode();
+    this.startAutoSaveTimer();
+  }
+
+  hideEditMode = () => {
+    const {hideEditMode} = this.props;
+    hideEditMode();
+    this.stopAutoSaveTimer();
   }
 
   destroyAllForms = () => {
@@ -287,7 +304,89 @@ class LeasePage extends Component<Props, State> {
 
     this.hideModal('CancelLease');
     hideEditMode();
+    this.stopAutoSaveTimer();
+    clearUnsavedChanges();
   }
+
+  startAutoSaveTimer = () => {
+    this.timerAutoSave = setInterval(
+      () => this.saveUnsavedChanges(),
+      5000
+    );
+  }
+
+  stopAutoSaveTimer = () => {
+    clearInterval(this.timerAutoSave);
+  }
+
+  saveUnsavedChanges = () => {
+    const {
+      isAreasFormDirty,
+      areasFormValues,
+      isConstructabilityFormDirty,
+      constructabilityFormValues,
+      isContractsFormDirty,
+      contractsFormValues,
+      isDecisionsFormDirty,
+      decisionsFormValues,
+      isInspectionsFormDirty,
+      inspectionsFormValues,
+      isLeaseInfoFormDirty,
+      leaseInfoFormValues,
+      isRentsFormDirty,
+      rentsFormValues,
+      isSummaryFormDirty,
+      summaryFormValues,
+      isTenantsFormDirty,
+      tenantsFormValues,
+    } = this.props;
+    if(isAreasFormDirty) {
+      setSessionStorageItem(FormNames.LEASE_AREAS, areasFormValues);
+    } else {
+      removeSessionStorageItem(FormNames.LEASE_AREAS);
+    }
+    if(isConstructabilityFormDirty) {
+      setSessionStorageItem(FormNames.CONSTRUCTABILITY, constructabilityFormValues);
+    } else {
+      removeSessionStorageItem(FormNames.CONSTRUCTABILITY);
+    }
+    if(isContractsFormDirty) {
+      setSessionStorageItem(FormNames.CONTRACTS, contractsFormValues);
+    } else {
+      removeSessionStorageItem(FormNames.CONTRACTS);
+    }
+    if(isDecisionsFormDirty) {
+      setSessionStorageItem(FormNames.DECISIONS, decisionsFormValues);
+    } else {
+      removeSessionStorageItem(FormNames.DECISIONS);
+    }
+    if(isInspectionsFormDirty) {
+      setSessionStorageItem(FormNames.INSPECTIONS, inspectionsFormValues);
+    } else {
+      removeSessionStorageItem(FormNames.INSPECTIONS);
+    }
+    if(isLeaseInfoFormDirty) {
+      setSessionStorageItem(FormNames.LEASE_INFO, leaseInfoFormValues);
+    } else {
+      removeSessionStorageItem(FormNames.LEASE_INFO);
+    }
+    if(isRentsFormDirty) {
+      setSessionStorageItem(FormNames.RENTS, rentsFormValues);
+    } else {
+      removeSessionStorageItem(FormNames.RENTS);
+    }
+    if(isSummaryFormDirty) {
+      setSessionStorageItem(FormNames.SUMMARY, summaryFormValues);
+    } else {
+      removeSessionStorageItem(FormNames.SUMMARY);
+    }
+    if(isTenantsFormDirty) {
+      setSessionStorageItem(FormNames.TENANTS, tenantsFormValues);
+    } else {
+      removeSessionStorageItem(FormNames.TENANTS);
+    }
+
+  };
 
   save = () => {
     const {
