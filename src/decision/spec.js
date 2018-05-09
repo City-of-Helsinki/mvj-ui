@@ -4,7 +4,7 @@ import {
   fetchDecisionsByLease,
   notFound,
 } from './actions';
-import commentReducer from './reducer';
+import decisionReducer from './reducer';
 
 describe('Decisions', () => {
 
@@ -25,7 +25,7 @@ describe('Decisions', () => {
           isFetching: false,
         };
 
-        const state = commentReducer({}, receiveDecisionsByLease({leaseId: dummyLease, decisions: dummyDecisions}));
+        const state = decisionReducer({}, receiveDecisionsByLease({leaseId: dummyLease, decisions: dummyDecisions}));
         expect(state).to.deep.equal(newState);
       });
 
@@ -35,7 +35,7 @@ describe('Decisions', () => {
           isFetching: true,
         };
 
-        const state = commentReducer({}, fetchDecisionsByLease(1));
+        const state = decisionReducer({}, fetchDecisionsByLease(1));
         expect(state).to.deep.equal(newState);
       });
 
@@ -45,7 +45,7 @@ describe('Decisions', () => {
           isFetching: false,
         };
 
-        const state = commentReducer({}, notFound());
+        const state = decisionReducer({}, notFound());
         expect(state).to.deep.equal(newState);
       });
     });

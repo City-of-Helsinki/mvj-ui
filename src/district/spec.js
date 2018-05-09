@@ -1,5 +1,6 @@
 import {expect} from 'chai';
 import {
+  fetchDistrictsByMunicipality,
   receiveDistrictsByMunicipality,
   notFound,
 } from './actions';
@@ -26,6 +27,16 @@ describe('Districts', () => {
         };
 
         const state = districtReducer({}, receiveDistrictsByMunicipality({municipality: dummyMunicipality, districts: dummyDistricts}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when fetching districts', () => {
+        const newState = {
+          byMunicipality: {},
+          isFetching: true,
+        };
+
+        const state = districtReducer({}, fetchDistrictsByMunicipality(1));
         expect(state).to.deep.equal(newState);
       });
 
