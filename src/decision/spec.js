@@ -1,6 +1,7 @@
 import {expect} from 'chai';
 import {
   receiveDecisionsByLease,
+  fetchDecisionsByLease,
   notFound,
 } from './actions';
 import commentReducer from './reducer';
@@ -25,6 +26,16 @@ describe('Decisions', () => {
         };
 
         const state = commentReducer({}, receiveDecisionsByLease({leaseId: dummyLease, decisions: dummyDecisions}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when fetching', () => {
+        const newState = {
+          byLease: {},
+          isFetching: true,
+        };
+
+        const state = commentReducer({}, fetchDecisionsByLease(1));
         expect(state).to.deep.equal(newState);
       });
 
