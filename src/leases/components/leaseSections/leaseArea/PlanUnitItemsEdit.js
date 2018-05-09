@@ -63,18 +63,15 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
                         }}
                       />
                     </Column>
-                    {/* <Column small={6} medium={4} large={2}>
-                      <Field
-                        component={FieldTypeSelect}
-                        label='Käyttötarkoitus'
+                    <Column small={6} medium={4} large={2}>
+                      <FormField
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.type')}
                         name={`${planunit}.type`}
-                        options={typeOptions}
-                        validate={[
-                          (value) => genericValidator(value,
-                            get(attributes, 'lease_areas.child.children.plan_units.child.children.type')),
-                        ]}
+                        overrideValues={{
+                          label: 'Määritelmä',
+                        }}
                       />
-                    </Column> */}
+                    </Column>
                     <Column small={6} medium={4} large={2}>
                       <FormField
                         fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.area')}
