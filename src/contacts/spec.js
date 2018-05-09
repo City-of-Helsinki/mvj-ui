@@ -11,6 +11,9 @@ import {
   hideEditMode,
   receiveLessors,
   receiveContacts,
+  fetchContacts,
+  fetchCompleteContactList,
+  fetchSingleContact,
   notFound,
 } from './actions';
 import contactReducer from './reducer';
@@ -340,6 +343,69 @@ describe('Contacts', () => {
         };
 
         const state = contactReducer({}, receiveContacts({results: dummyContactsList}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when fetching contacts', () => {
+        const newState = {
+          allContacts: [],
+          attributes: {},
+          currentContact: {},
+          initialContactFormValues: {
+            decisions: [''],
+            prices: [{}],
+            real_estate_ids: [''],
+          },
+          isContactFormValid: false,
+          isEditMode: false,
+          isFetching: true,
+          lessors: [],
+          list: {},
+        };
+
+        const state = contactReducer({}, fetchContacts(''));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when fetching complete contacts', () => {
+        const newState = {
+          allContacts: [],
+          attributes: {},
+          currentContact: {},
+          initialContactFormValues: {
+            decisions: [''],
+            prices: [{}],
+            real_estate_ids: [''],
+          },
+          isContactFormValid: false,
+          isEditMode: false,
+          isFetching: true,
+          lessors: [],
+          list: {},
+        };
+
+        const state = contactReducer({}, fetchCompleteContactList(''));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true when fetching single contact', () => {
+        const newState = {
+          allContacts: [],
+          attributes: {},
+          currentContact: {},
+          initialContactFormValues: {
+            decisions: [''],
+            prices: [{}],
+            real_estate_ids: [''],
+          },
+          isContactFormValid: false,
+          isEditMode: false,
+          isFetching: true,
+          lessors: [],
+          list: {},
+        };
+
+        const state = contactReducer({}, fetchSingleContact(1));
         expect(state).to.deep.equal(newState);
       });
 

@@ -12,11 +12,11 @@ import type {
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
-  'mvj/leases/CREATE': () => true,
-  'mvj/leases/PATCH': () => true,
-  'mvj/leases/FETCH_ALL': () => true,
-  'mvj/leases/NOT_FOUND': () => false,
-  'mvj/leases/RECEIVE_ALL': () => false,
+  'mvj/invoices/CREATE': () => true,
+  'mvj/invoices/PATCH': () => true,
+  'mvj/invoices/FETCH_ALL': () => true,
+  'mvj/invoices/NOT_FOUND': () => false,
+  'mvj/invoices/RECEIVE_ALL': () => false,
 }, false);
 
 const isCreateOpenReducer: Reducer<boolean> = handleActions({

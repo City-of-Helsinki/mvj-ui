@@ -41,7 +41,6 @@ const contactModalSettingsReducer: Reducer<ContactModalSettings> = handleActions
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/CREATE': () => true,
-  'mvj/leases/EDIT': () => true,
   'mvj/leases/PATCH': () => true,
   'mvj/leases/FETCH_ALL': () => true,
   'mvj/leases/FETCH_SINGLE': () => true,

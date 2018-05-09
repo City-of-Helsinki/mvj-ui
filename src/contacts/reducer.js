@@ -27,9 +27,13 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/contacts/FETCH_ALL': () => true,
   'mvj/contacts/FETCH_SINGLE': () => true,
+  'mvj/contacts/FETCH_COMPLETE': () => true,
   'mvj/contacts/NOT_FOUND': () => false,
   'mvj/contacts/RECEIVE_ALL': () => false,
   'mvj/contacts/RECEIVE_SINGLE': () => false,
+  'mvj/contacts/RECEIVE_COMPLETE': () => false,
+  'mvj/contacts/RECEIVE_NEW_TO_COMPLETE': () => false,
+  'mvj/contacts/RECEIVE_EDITED_TO_COMPLETE': () => false,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({

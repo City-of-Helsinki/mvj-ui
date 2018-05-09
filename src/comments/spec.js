@@ -1,7 +1,10 @@
 import {expect} from 'chai';
 import {
   receiveAttributes,
+  fetchCommentsByLease,
   receiveCommentsByLease,
+  createComment,
+  editComment,
   notFound,
 } from './actions';
 import commentReducer from './reducer';
@@ -42,6 +45,39 @@ describe('Comments', () => {
         };
 
         const state = commentReducer({}, receiveCommentsByLease({leaseId: dummyLease, comments: dummyComments}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag when fetching comments', () => {
+        const newState = {
+          attributes: {},
+          byLease: {},
+          isFetching: true,
+        };
+
+        const state = commentReducer({}, fetchCommentsByLease(1));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to when creating new comment', () => {
+        const newState = {
+          attributes: {},
+          byLease: {},
+          isFetching: true,
+        };
+
+        const state = commentReducer({}, createComment({}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to when editing existing comment', () => {
+        const newState = {
+          attributes: {},
+          byLease: {},
+          isFetching: true,
+        };
+
+        const state = commentReducer({}, editComment({}));
         expect(state).to.deep.equal(newState);
       });
 

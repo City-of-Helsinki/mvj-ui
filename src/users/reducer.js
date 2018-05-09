@@ -9,9 +9,9 @@ import type {
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
-  'mvj/leases/FETCH_ALL': () => true,
-  'mvj/leases/NOT_FOUND': () => false,
-  'mvj/leases/RECEIVE_ALL': () => false,
+  'mvj/users/FETCH_ALL': () => true,
+  'mvj/users/NOT_FOUND': () => false,
+  'mvj/users/RECEIVE_ALL': () => false,
 }, false);
 
 const usersListReducer: Reducer<UserList> = handleActions({
