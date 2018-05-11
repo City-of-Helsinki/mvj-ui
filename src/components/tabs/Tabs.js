@@ -11,7 +11,7 @@ type Props = {
 
 const Tabs = ({active, className, tabs, onTabClick}: Props) => {
   return (
-    <ul className={classNames('mvj__tabs', className)}>
+    <ul className={classNames('tabs', className)}>
       {tabs.map((tab, i) =>
         <li key={i}
           className={classNames({'is-active': Number(active) === i})}>

@@ -1,6 +1,21 @@
 // @flow
+import React from 'react';
+import classNames from 'classnames';
+
 type Props = Object;
 
-const TabContent = (props: Props) => props.children.length ? props.children[props.active] || null : props.children || null;
+const TabContent = (props: Props) => {
+  if(!props.children.length) {
+    return null;
+  }
+
+  return (
+    <div className='tabs__content'>
+      {props.children.map((item, index) =>
+        <div key={index} className={classNames('tabs__content_pane-container', {'active': Number(index) === Number(props.active)})}>{item}</div>
+      )}
+    </div>
+  );
+};
 
 export default TabContent;

@@ -313,9 +313,10 @@ class LeasePage extends Component<Props, State> {
 
   restoreUnsavedChanges = () => {
     const {clearFormValidFlags, currentLease, showEditMode} = this.props;
+    this.destroyAllForms();
+    clearFormValidFlags();
     showEditMode();
     this.initializeForms(currentLease);
-    clearFormValidFlags();
 
     const storedAreasFormValues = getSessionStorageItem(FormNames.LEASE_AREAS);
     if(storedAreasFormValues) {
@@ -363,6 +364,7 @@ class LeasePage extends Component<Props, State> {
     }
 
     this.startAutoSaveTimer();
+
   }
 
   bulkChange = (formName: string, obj: Object) => {
