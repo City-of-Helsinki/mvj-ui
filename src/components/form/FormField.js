@@ -66,7 +66,7 @@ const FormFieldInput = ({
   rows,
   type,
 }: InputProps) => {
-  const displayError = meta.error && meta.touched;
+  const displayError = meta.error;
   const isDirty = meta.dirty && !disableDirty;
   const fieldComponent = resolveFieldType(type);
 

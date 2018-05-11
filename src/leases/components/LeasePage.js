@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {destroy, getFormValues, initialize, isDirty} from 'redux-form';
+import {change, destroy, getFormValues, initialize, isDirty} from 'redux-form';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
@@ -23,8 +23,10 @@ import {fetchNoticePeriods} from '$src/noticePeriod/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchUsers} from '$src/users/actions';
 import {FormNames} from '$src/leases/enums';
+import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
 import {getSearchQuery} from '$util/helpers';
+import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
@@ -82,6 +84,7 @@ import mockData from '../mock-data.json';
 type Props = {
   areasFormValues: Object,
   attributes: Attributes,
+  change: Function,
   clearFormValidFlags: Function,
   commentAttributes: CommentAttributes,
   comments: CommentList,
@@ -143,6 +146,7 @@ type State = {
   history: Array<Object>,
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
+  isRestoreModalOpen: boolean,
   isSaveLeaseModalOpen: boolean,
 };
 
@@ -152,8 +156,11 @@ class LeasePage extends Component<Props, State> {
     history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
+    isRestoreModalOpen: false,
     isSaveLeaseModalOpen: false,
   }
+
+  timerAutoSave: any
 
   static contextTypes = {
     router: PropTypes.object,
@@ -175,7 +182,6 @@ class LeasePage extends Component<Props, State> {
       fetchNoticePeriods,
       fetchSingleLease,
       fetchUsers,
-      hideEditMode,
       invoiceAttributes,
       location,
       params: {leaseId},
@@ -187,7 +193,6 @@ class LeasePage extends Component<Props, State> {
       history: contentHelpers.getContentHistory(lease),
     });
 
-    hideEditMode();
     receiveTopNavigationSettings({
       linkUrl: getRouteById('leases'),
       pageTitle: 'Vuokraukset',
@@ -221,10 +226,29 @@ class LeasePage extends Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Object) {
+    const {fetchDecisionsByLease, params: {leaseId}} = this.props;
+
     if(this.props.currentLease !== nextProps.currentLease) {
-      const {fetchDecisionsByLease, params: {leaseId}} = this.props;
       fetchDecisionsByLease(leaseId);
     }
+  }
+
+  componentDidUpdate(prevProps) {
+    const {params: {leaseId}} = this.props;
+    if(isEmpty(prevProps.currentLease) && !isEmpty(this.props.currentLease)) {
+      const storedLeaseId = getSessionStorageItem('leaseId');
+      if(Number(leaseId) === Number(storedLeaseId)) {
+        this.setState({isRestoreModalOpen: true});
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    const {hideEditMode} = this.props;
+
+    hideEditMode();
+    this.stopAutoSaveTimer();
+    clearUnsavedChanges();
   }
 
   showModal = (modalName: string) => {
@@ -248,6 +272,13 @@ class LeasePage extends Component<Props, State> {
     this.initializeForms(currentLease);
     clearFormValidFlags();
     showEditMode();
+    this.startAutoSaveTimer();
+  }
+
+  hideEditMode = () => {
+    const {hideEditMode} = this.props;
+    hideEditMode();
+    this.stopAutoSaveTimer();
   }
 
   destroyAllForms = () => {
@@ -282,12 +313,188 @@ class LeasePage extends Component<Props, State> {
     initialize(FormNames.TENANTS, {tenants: contentHelpers.getContentTenants(lease)});
   }
 
+  cancelRestoreUnsavedChanges = () => {
+    clearUnsavedChanges();
+    this.hideModal('Restore');
+  }
+
+  restoreUnsavedChanges = () => {
+    const {clearFormValidFlags, currentLease, showEditMode} = this.props;
+    this.destroyAllForms();
+    clearFormValidFlags();
+    showEditMode();
+    this.initializeForms(currentLease);
+
+    const storedAreasFormValues = getSessionStorageItem(FormNames.LEASE_AREAS);
+    if(storedAreasFormValues) {
+      this.bulkChange(FormNames.LEASE_AREAS, storedAreasFormValues);
+    }
+
+    const storedConstructabilityFormValues = getSessionStorageItem(FormNames.CONSTRUCTABILITY);
+    if(storedConstructabilityFormValues) {
+      this.bulkChange(FormNames.CONSTRUCTABILITY, storedConstructabilityFormValues);
+    }
+
+    const storedContractsFormValues = getSessionStorageItem(FormNames.CONTRACTS);
+    if(storedContractsFormValues) {
+      this.bulkChange(FormNames.CONTRACTS, storedContractsFormValues);
+    }
+
+    const storedDecisionsFormValues = getSessionStorageItem(FormNames.DECISIONS);
+    if(storedDecisionsFormValues) {
+      this.bulkChange(FormNames.DECISIONS, storedDecisionsFormValues);
+    }
+
+    const storedInspectionsFormValues = getSessionStorageItem(FormNames.INSPECTIONS);
+    if(storedInspectionsFormValues) {
+      this.bulkChange(FormNames.INSPECTIONS, storedInspectionsFormValues);
+    }
+
+    const storedLeaseInfoFormValues = getSessionStorageItem(FormNames.LEASE_INFO);
+    if(storedLeaseInfoFormValues) {
+      this.bulkChange(FormNames.LEASE_INFO, storedLeaseInfoFormValues);
+    }
+
+    const storedRentsFormValues = getSessionStorageItem(FormNames.RENTS);
+    if(storedRentsFormValues) {
+      this.bulkChange(FormNames.RENTS, storedRentsFormValues);
+    }
+
+    const storedSummaryFormValues = getSessionStorageItem(FormNames.SUMMARY);
+    if(storedSummaryFormValues) {
+      this.bulkChange(FormNames.SUMMARY, storedSummaryFormValues);
+    }
+
+    const storedTenantsFormValues = getSessionStorageItem(FormNames.TENANTS);
+    if(storedTenantsFormValues) {
+      this.bulkChange(FormNames.TENANTS, storedTenantsFormValues);
+    }
+
+    this.startAutoSaveTimer();
+    this.hideModal('Restore');
+  }
+
+  bulkChange = (formName: string, obj: Object) => {
+    const {change} = this.props;
+    const fields = Object.keys(obj);
+    fields.forEach(field => {
+      change(formName, field, obj[field]);
+    });
+  }
+
   cancel = () => {
     const {hideEditMode} = this.props;
 
     this.hideModal('CancelLease');
     hideEditMode();
+    this.stopAutoSaveTimer();
+    clearUnsavedChanges();
   }
+
+  startAutoSaveTimer = () => {
+    this.timerAutoSave = setInterval(
+      () => this.saveUnsavedChanges(),
+      5000
+    );
+  }
+
+  stopAutoSaveTimer = () => {
+    clearInterval(this.timerAutoSave);
+  }
+
+  saveUnsavedChanges = () => {
+    const {
+      isAreasFormDirty,
+      areasFormValues,
+      isConstructabilityFormDirty,
+      constructabilityFormValues,
+      isContractsFormDirty,
+      contractsFormValues,
+      isDecisionsFormDirty,
+      decisionsFormValues,
+      isInspectionsFormDirty,
+      inspectionsFormValues,
+      isLeaseInfoFormDirty,
+      leaseInfoFormValues,
+      isRentsFormDirty,
+      rentsFormValues,
+      isSummaryFormDirty,
+      summaryFormValues,
+      isTenantsFormDirty,
+      tenantsFormValues,
+      params: {leaseId},
+    } = this.props;
+    let isDirty = false;
+
+    if(isAreasFormDirty) {
+      setSessionStorageItem(FormNames.LEASE_AREAS, areasFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.LEASE_AREAS);
+    }
+
+    if(isConstructabilityFormDirty) {
+      setSessionStorageItem(FormNames.CONSTRUCTABILITY, constructabilityFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.CONSTRUCTABILITY);
+    }
+
+    if(isContractsFormDirty) {
+      setSessionStorageItem(FormNames.CONTRACTS, contractsFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.CONTRACTS);
+    }
+
+    if(isDecisionsFormDirty) {
+      setSessionStorageItem(FormNames.DECISIONS, decisionsFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.DECISIONS);
+    }
+
+    if(isInspectionsFormDirty) {
+      setSessionStorageItem(FormNames.INSPECTIONS, inspectionsFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.INSPECTIONS);
+    }
+
+    if(isLeaseInfoFormDirty) {
+      setSessionStorageItem(FormNames.LEASE_INFO, leaseInfoFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.LEASE_INFO);
+    }
+
+    if(isRentsFormDirty) {
+      setSessionStorageItem(FormNames.RENTS, rentsFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.RENTS);
+    }
+
+    if(isSummaryFormDirty) {
+      setSessionStorageItem(FormNames.SUMMARY, summaryFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.SUMMARY);
+    }
+
+    if(isTenantsFormDirty) {
+      setSessionStorageItem(FormNames.TENANTS, tenantsFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.TENANTS);
+    }
+
+    if(isDirty) {
+      setSessionStorageItem('leaseId', leaseId);
+    } else {
+      removeSessionStorageItem('leaseId');
+    }
+  };
 
   save = () => {
     const {
@@ -437,6 +644,7 @@ class LeasePage extends Component<Props, State> {
       history,
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
+      isRestoreModalOpen,
       isSaveLeaseModalOpen,
     } = this.state;
 
@@ -445,6 +653,22 @@ class LeasePage extends Component<Props, State> {
       currentLease,
       isEditMode,
       isFetching,
+      isAreasFormDirty,
+      isConstructabilityFormDirty,
+      isContractsFormDirty,
+      isDecisionsFormDirty,
+      isInspectionsFormDirty,
+      isRentsFormDirty,
+      isSummaryFormDirty,
+      isTenantsFormDirty,
+      isConstructabilityFormValid,
+      isContractsFormValid,
+      isDecisionsFormValid,
+      isInspectionsFormValid,
+      isLeaseAreasFormValid,
+      isRentsFormValid,
+      isSummaryFormValid,
+      isTenantsFormValid,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -479,6 +703,16 @@ class LeasePage extends Component<Props, State> {
           onSave={this.cancel}
           title='Hylkää muutokset'
         />
+
+        <ConfirmationModal
+          confirmButtonLabel='Palauta muutokset'
+          isOpen={isRestoreModalOpen}
+          label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+          onCancel={this.cancelRestoreUnsavedChanges}
+          onClose={this.restoreUnsavedChanges}
+          onSave={this.restoreUnsavedChanges}
+          title='Palauta tallentamattomat muutokset'
+        />
         <CommentPanel
           isOpen={isCommentPanelOpen}
           onClose={this.toggleCommentPanel}
@@ -507,15 +741,16 @@ class LeasePage extends Component<Props, State> {
         <Tabs
           active={activeTab}
           className="hero__navigation"
+          isEditMode={isEditMode}
           tabs={[
-            'Yhteenveto',
-            'Vuokra-alue',
-            'Vuokralaiset',
-            'Vuokrat',
-            'Päätökset ja sopimukset',
-            'Rakentamiskelpoisuus',
-            'Laskutus',
-            'Kartta',
+            {label: 'Yhteenveto', isDirty: isSummaryFormDirty, hasError: !isSummaryFormValid},
+            {label: 'Vuokra-alue', isDirty: isAreasFormDirty, hasError: !isLeaseAreasFormValid},
+            {label: 'Vuokralaiset', isDirty: isTenantsFormDirty, hasError: !isTenantsFormValid},
+            {label: 'Vuokrat', isDirty: isRentsFormDirty, hasError: !isRentsFormValid},
+            {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty || isInspectionsFormDirty), hasError: (!isContractsFormValid || !isDecisionsFormValid || !isInspectionsFormValid)},
+            {label: 'Rakentamiskelpoisuus', isDirty: isConstructabilityFormDirty, hasError: !isConstructabilityFormValid},
+            {label: 'Laskutus'},
+            {label: 'Kartta'},
           ]}
           onTabClick={(id) => this.handleTabClick(id)}
         />
@@ -639,6 +874,7 @@ export default flowRight(
       };
     },
     {
+      change,
       clearFormValidFlags,
       destroy,
       fetchAttributes,
