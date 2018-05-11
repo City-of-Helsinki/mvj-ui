@@ -241,7 +241,13 @@ class LeasePage extends Component<Props, State> {
         this.setState({isRestoreModalOpen: true});
       }
     }
+    // Stop autosave timer and clear form data from session storage after saving/cancelling changes
+    if(prevProps.isEditMode && !this.props.isEditMode) {
+      this.stopAutoSaveTimer();
+      clearUnsavedChanges();
+    }
   }
+
   componentDidMount() {
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
@@ -397,11 +403,8 @@ class LeasePage extends Component<Props, State> {
 
   cancel = () => {
     const {hideEditMode} = this.props;
-
     this.hideModal('CancelLease');
     hideEditMode();
-    this.stopAutoSaveTimer();
-    clearUnsavedChanges();
   }
 
   startAutoSaveTimer = () => {
