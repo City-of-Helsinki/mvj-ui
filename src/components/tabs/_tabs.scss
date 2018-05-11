@@ -43,6 +43,24 @@
     }
   }
 
+  &__error-badge {
+    height: 8px;
+    width: 8px;
+    background-color: $brick;
+    display: inline-block;
+    border-radius: 50%;
+    margin-left: 5px;
+  }
+
+  &__dirty-badge {
+    height: 8px;
+    width: 8px;
+    background-color: $summer;
+    display: inline-block;
+    border-radius: 50%;
+    margin-left: 5px;
+  }
+
   &__content {
     &_pane-container {
       visibility: hidden;

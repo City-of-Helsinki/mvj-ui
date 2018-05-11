@@ -645,6 +645,22 @@ class LeasePage extends Component<Props, State> {
       currentLease,
       isEditMode,
       isFetching,
+      isAreasFormDirty,
+      isConstructabilityFormDirty,
+      isContractsFormDirty,
+      isDecisionsFormDirty,
+      isInspectionsFormDirty,
+      isRentsFormDirty,
+      isSummaryFormDirty,
+      isTenantsFormDirty,
+      isConstructabilityFormValid,
+      isContractsFormValid,
+      isDecisionsFormValid,
+      isInspectionsFormValid,
+      isLeaseAreasFormValid,
+      isRentsFormValid,
+      isSummaryFormValid,
+      isTenantsFormValid,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -708,14 +724,14 @@ class LeasePage extends Component<Props, State> {
           active={activeTab}
           className="hero__navigation"
           tabs={[
-            'Yhteenveto',
-            'Vuokra-alue',
-            'Vuokralaiset',
-            'Vuokrat',
-            'Päätökset ja sopimukset',
-            'Rakentamiskelpoisuus',
-            'Laskutus',
-            'Kartta',
+            {label: 'Yhteenveto', isDirty: isSummaryFormDirty, hasError: !isSummaryFormValid},
+            {label: 'Vuokra-alue', isDirty: isAreasFormDirty, hasError: !isLeaseAreasFormValid},
+            {label: 'Vuokralaiset', isDirty: isTenantsFormDirty, hasError: !isTenantsFormValid},
+            {label: 'Vuokrat', isDirty: isRentsFormDirty, hasError: !isRentsFormValid},
+            {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty || isInspectionsFormDirty), hasError: (!isContractsFormValid || !isDecisionsFormValid || !isInspectionsFormValid)},
+            {label: 'Rakentamiskelpoisuus', isDirty: isConstructabilityFormDirty, hasError: !isConstructabilityFormValid},
+            {label: 'Laskutus'},
+            {label: 'Kartta'},
           ]}
           onTabClick={(id) => this.handleTabClick(id)}
         />

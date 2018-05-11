@@ -17,7 +17,9 @@ const Tabs = ({active, className, tabs, onTabClick}: Props) => {
           className={classNames({'is-active': Number(active) === i})}>
           <a aria-selected={Number(active) === i}
             onClick={() => onTabClick(i)}>
-            {tab}
+            {tab.label}
+            {tab.hasError && <span className='tabs__error-badge' />}
+            {tab.isDirty && <span className='tabs__dirty-badge' />}
           </a>
         </li>
       )}
