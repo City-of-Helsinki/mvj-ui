@@ -206,12 +206,15 @@ class LeasePage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
+
     if(isEmpty(commentAttributes)) {
       fetchCommentAttributes();
     }
+
     if(isEmpty(contactAttributes)) {
       fetchContactAttributes();
     }
+
     if(isEmpty(invoiceAttributes)) {
       fetchInvoiceAttributes();
     }
@@ -237,7 +240,7 @@ class LeasePage extends Component<Props, State> {
     const {params: {leaseId}} = this.props;
     if(isEmpty(prevProps.currentLease) && !isEmpty(this.props.currentLease)) {
       const storedLeaseId = getSessionStorageItem('leaseId');
-      if(Number(leaseId) === Number(storedLeaseId)) {
+      if(Number(leaseId) === storedLeaseId) {
         this.setState({isRestoreModalOpen: true});
       }
     }

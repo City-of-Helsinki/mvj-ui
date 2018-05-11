@@ -110,7 +110,7 @@ class RentBasisPage extends Component<Props, State> {
 
     if(isEmpty(prevProps.rentBasisData) && !isEmpty(this.props.rentBasisData)) {
       const storedContactId = getSessionStorageItem('rentBasisId');
-      if(Number(rentBasisId) === Number(storedContactId)) {
+      if(Number(rentBasisId) === storedContactId) {
         this.setState({isRestoreModalOpen: true});
       }
     }

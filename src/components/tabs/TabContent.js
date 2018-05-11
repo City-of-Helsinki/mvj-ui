@@ -12,7 +12,7 @@ const TabContent = (props: Props) => {
   return (
     <div className='tabs__content'>
       {props.children.map((item, index) =>
-        <div key={index} className={classNames('tabs__content_pane-container', {'active': Number(index) === Number(props.active)})}>{item}</div>
+        <div key={index} className={classNames('tabs__content_pane-container', {'active': index === Number(props.active)})}>{item}</div>
       )}
     </div>
   );

@@ -106,7 +106,7 @@ class ContactPage extends Component<Props, State> {
     const {params: {contactId}} = this.props;
     if(isEmpty(prevProps.contact) && !isEmpty(this.props.contact)) {
       const storedContactId = getSessionStorageItem('contactId');
-      if(Number(contactId) === Number(storedContactId)) {
+      if(Number(contactId) === storedContactId) {
         this.setState({isRestoreModalOpen: true});
       }
     }
