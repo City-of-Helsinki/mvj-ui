@@ -119,6 +119,7 @@ class ContactPage extends Component<Props, State> {
 
   componentWillUnmount() {
     const {hideEditMode} = this.props;
+
     window.removeEventListener('beforeunload', this.handleLeavePage);
     this.stopAutoSaveTimer();
     clearUnsavedChanges();
