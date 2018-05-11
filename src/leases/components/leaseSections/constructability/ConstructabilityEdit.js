@@ -372,7 +372,6 @@ class ConstructabilityEdit extends Component<Props> {
   render () {
     const {attributes, currentLease, handleSubmit, users} = this.props;
     const areas = getContentConstructability(currentLease);
-    console.log('render');
 
     return (
       <form onSubmit={handleSubmit}>

@@ -5,11 +5,12 @@ import classNames from 'classnames';
 type Props = {
   active: ?number,
   className: ?string,
+  isEditMode: boolean,
   tabs: Array<any>,
   onTabClick: Function
 };
 
-const Tabs = ({active, className, tabs, onTabClick}: Props) => {
+const Tabs = ({active, className, isEditMode, tabs, onTabClick}: Props) => {
   return (
     <ul className={classNames('tabs', className)}>
       {tabs.map((tab, i) =>
@@ -18,8 +19,8 @@ const Tabs = ({active, className, tabs, onTabClick}: Props) => {
           <a aria-selected={Number(active) === i}
             onClick={() => onTabClick(i)}>
             {tab.label}
-            {tab.hasError && <span className='tabs__error-badge' />}
-            {tab.isDirty && <span className='tabs__dirty-badge' />}
+            {isEditMode && tab.hasError && <span className='tabs__error-badge' />}
+            {isEditMode && tab.isDirty && <span className='tabs__dirty-badge' />}
           </a>
         </li>
       )}

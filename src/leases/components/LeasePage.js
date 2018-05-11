@@ -146,6 +146,7 @@ type State = {
   history: Array<Object>,
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
+  isRestoreModalOpen: boolean,
   isSaveLeaseModalOpen: boolean,
 };
 
@@ -155,6 +156,7 @@ class LeasePage extends Component<Props, State> {
     history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
+    isRestoreModalOpen: false,
     isSaveLeaseModalOpen: false,
   }
 
@@ -236,7 +238,7 @@ class LeasePage extends Component<Props, State> {
     if(isEmpty(prevProps.currentLease) && !isEmpty(this.props.currentLease)) {
       const storedLeaseId = getSessionStorageItem('leaseId');
       if(Number(leaseId) === Number(storedLeaseId)) {
-        this.restoreUnsavedChanges();
+        this.setState({isRestoreModalOpen: true});
       }
     }
   }
@@ -311,6 +313,11 @@ class LeasePage extends Component<Props, State> {
     initialize(FormNames.TENANTS, {tenants: contentHelpers.getContentTenants(lease)});
   }
 
+  cancelRestoreUnsavedChanges = () => {
+    clearUnsavedChanges();
+    this.hideModal('Restore');
+  }
+
   restoreUnsavedChanges = () => {
     const {clearFormValidFlags, currentLease, showEditMode} = this.props;
     this.destroyAllForms();
@@ -364,7 +371,7 @@ class LeasePage extends Component<Props, State> {
     }
 
     this.startAutoSaveTimer();
-
+    this.hideModal('Restore');
   }
 
   bulkChange = (formName: string, obj: Object) => {
@@ -637,6 +644,7 @@ class LeasePage extends Component<Props, State> {
       history,
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
+      isRestoreModalOpen,
       isSaveLeaseModalOpen,
     } = this.state;
 
@@ -695,6 +703,16 @@ class LeasePage extends Component<Props, State> {
           onSave={this.cancel}
           title='Hylkää muutokset'
         />
+
+        <ConfirmationModal
+          confirmButtonLabel='Palauta muutokset'
+          isOpen={isRestoreModalOpen}
+          label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+          onCancel={this.cancelRestoreUnsavedChanges}
+          onClose={this.restoreUnsavedChanges}
+          onSave={this.restoreUnsavedChanges}
+          title='Palauta tallentamattomat muutokset'
+        />
         <CommentPanel
           isOpen={isCommentPanelOpen}
           onClose={this.toggleCommentPanel}
@@ -723,6 +741,7 @@ class LeasePage extends Component<Props, State> {
         <Tabs
           active={activeTab}
           className="hero__navigation"
+          isEditMode={isEditMode}
           tabs={[
             {label: 'Yhteenveto', isDirty: isSummaryFormDirty, hasError: !isSummaryFormValid},
             {label: 'Vuokra-alue', isDirty: isAreasFormDirty, hasError: !isLeaseAreasFormValid},
