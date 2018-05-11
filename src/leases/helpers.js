@@ -1198,4 +1198,5 @@ export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.RENTS);
   removeSessionStorageItem(FormNames.SUMMARY);
   removeSessionStorageItem(FormNames.TENANTS);
+  removeSessionStorageItem('leaseId');
 };

@@ -51,7 +51,7 @@ export const removeStorageItem = (key: string, callback: ?Function = null) => {
  *
  * @param {string} key
  */
-export const getSessionStorageItem = (key: string) => {
+export const getSessionStorageItem = (key: string): any => {
   const item = sessionStorage.getItem(key) || '';
   const value = isJson(item) ? JSON.parse(item) : item;
   return value;

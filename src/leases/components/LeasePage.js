@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {destroy, getFormValues, initialize, isDirty} from 'redux-form';
+import {change, destroy, getFormValues, initialize, isDirty} from 'redux-form';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
@@ -26,7 +26,7 @@ import {FormNames} from '$src/leases/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
 import {getSearchQuery} from '$util/helpers';
-import {removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
+import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
@@ -84,6 +84,7 @@ import mockData from '../mock-data.json';
 type Props = {
   areasFormValues: Object,
   attributes: Attributes,
+  change: Function,
   clearFormValidFlags: Function,
   commentAttributes: CommentAttributes,
   comments: CommentList,
@@ -223,9 +224,20 @@ class LeasePage extends Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Object) {
+    const {fetchDecisionsByLease, params: {leaseId}} = this.props;
+
     if(this.props.currentLease !== nextProps.currentLease) {
-      const {fetchDecisionsByLease, params: {leaseId}} = this.props;
       fetchDecisionsByLease(leaseId);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const {params: {leaseId}} = this.props;
+    if(isEmpty(prevProps.currentLease) && !isEmpty(this.props.currentLease)) {
+      const storedLeaseId = getSessionStorageItem('leaseId');
+      if(Number(leaseId) === Number(storedLeaseId)) {
+        this.restoreUnsavedChanges();
+      }
     }
   }
 
@@ -299,6 +311,68 @@ class LeasePage extends Component<Props, State> {
     initialize(FormNames.TENANTS, {tenants: contentHelpers.getContentTenants(lease)});
   }
 
+  restoreUnsavedChanges = () => {
+    const {clearFormValidFlags, currentLease, showEditMode} = this.props;
+    showEditMode();
+    this.initializeForms(currentLease);
+    clearFormValidFlags();
+
+    const storedAreasFormValues = getSessionStorageItem(FormNames.LEASE_AREAS);
+    if(storedAreasFormValues) {
+      this.bulkChange(FormNames.LEASE_AREAS, storedAreasFormValues);
+    }
+
+    const storedConstructabilityFormValues = getSessionStorageItem(FormNames.CONSTRUCTABILITY);
+    if(storedConstructabilityFormValues) {
+      this.bulkChange(FormNames.CONSTRUCTABILITY, storedConstructabilityFormValues);
+    }
+
+    const storedContractsFormValues = getSessionStorageItem(FormNames.CONTRACTS);
+    if(storedContractsFormValues) {
+      this.bulkChange(FormNames.CONTRACTS, storedContractsFormValues);
+    }
+
+    const storedDecisionsFormValues = getSessionStorageItem(FormNames.DECISIONS);
+    if(storedDecisionsFormValues) {
+      this.bulkChange(FormNames.DECISIONS, storedDecisionsFormValues);
+    }
+
+    const storedInspectionsFormValues = getSessionStorageItem(FormNames.INSPECTIONS);
+    if(storedInspectionsFormValues) {
+      this.bulkChange(FormNames.INSPECTIONS, storedInspectionsFormValues);
+    }
+
+    const storedLeaseInfoFormValues = getSessionStorageItem(FormNames.LEASE_INFO);
+    if(storedLeaseInfoFormValues) {
+      this.bulkChange(FormNames.LEASE_INFO, storedLeaseInfoFormValues);
+    }
+
+    const storedRentsFormValues = getSessionStorageItem(FormNames.RENTS);
+    if(storedRentsFormValues) {
+      this.bulkChange(FormNames.RENTS, storedRentsFormValues);
+    }
+
+    const storedSummaryFormValues = getSessionStorageItem(FormNames.SUMMARY);
+    if(storedSummaryFormValues) {
+      this.bulkChange(FormNames.SUMMARY, storedSummaryFormValues);
+    }
+
+    const storedTenantsFormValues = getSessionStorageItem(FormNames.TENANTS);
+    if(storedTenantsFormValues) {
+      this.bulkChange(FormNames.TENANTS, storedTenantsFormValues);
+    }
+
+    this.startAutoSaveTimer();
+  }
+
+  bulkChange = (formName: string, obj: Object) => {
+    const {change} = this.props;
+    const fields = Object.keys(obj);
+    fields.forEach(field => {
+      change(formName, field, obj[field]);
+    });
+  }
+
   cancel = () => {
     const {hideEditMode} = this.props;
 
@@ -339,53 +413,78 @@ class LeasePage extends Component<Props, State> {
       summaryFormValues,
       isTenantsFormDirty,
       tenantsFormValues,
+      params: {leaseId},
     } = this.props;
+    let isDirty = false;
+
     if(isAreasFormDirty) {
       setSessionStorageItem(FormNames.LEASE_AREAS, areasFormValues);
+      isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.LEASE_AREAS);
     }
+
     if(isConstructabilityFormDirty) {
       setSessionStorageItem(FormNames.CONSTRUCTABILITY, constructabilityFormValues);
+      isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.CONSTRUCTABILITY);
     }
+
     if(isContractsFormDirty) {
       setSessionStorageItem(FormNames.CONTRACTS, contractsFormValues);
+      isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.CONTRACTS);
     }
+
     if(isDecisionsFormDirty) {
       setSessionStorageItem(FormNames.DECISIONS, decisionsFormValues);
+      isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.DECISIONS);
     }
+
     if(isInspectionsFormDirty) {
       setSessionStorageItem(FormNames.INSPECTIONS, inspectionsFormValues);
+      isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.INSPECTIONS);
     }
+
     if(isLeaseInfoFormDirty) {
       setSessionStorageItem(FormNames.LEASE_INFO, leaseInfoFormValues);
+      isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.LEASE_INFO);
     }
+
     if(isRentsFormDirty) {
       setSessionStorageItem(FormNames.RENTS, rentsFormValues);
+      isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.RENTS);
     }
+
     if(isSummaryFormDirty) {
       setSessionStorageItem(FormNames.SUMMARY, summaryFormValues);
+      isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.SUMMARY);
     }
+
     if(isTenantsFormDirty) {
       setSessionStorageItem(FormNames.TENANTS, tenantsFormValues);
+      isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.TENANTS);
     }
 
+    if(isDirty) {
+      setSessionStorageItem('leaseId', leaseId);
+    } else {
+      removeSessionStorageItem('leaseId');
+    }
   };
 
   save = () => {
@@ -738,6 +837,7 @@ export default flowRight(
       };
     },
     {
+      change,
       clearFormValidFlags,
       destroy,
       fetchAttributes,
