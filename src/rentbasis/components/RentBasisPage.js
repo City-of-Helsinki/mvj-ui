@@ -95,6 +95,23 @@ class RentBasisPage extends Component<Props, State> {
     }
   }
 
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  handleLeavePage = (e) => {
+    const {isEditMode, isFormDirty} = this.props;
+    if(isFormDirty && isEditMode) {
+      const confirmationMessage = '';
+      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+      return confirmationMessage;              // Gecko, WebKit, Chrome <34
+    }
+  }
+
   copyRentBasis = () => {
     const {initializeRentBasis, rentBasisData, router} = this.props;
     const rentBasis = getContentCopiedRentBasis(rentBasisData);

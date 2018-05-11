@@ -242,6 +242,9 @@ class LeasePage extends Component<Props, State> {
       }
     }
   }
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.handleLeavePage);
+  }
 
   componentWillUnmount() {
     const {hideEditMode} = this.props;
@@ -249,6 +252,16 @@ class LeasePage extends Component<Props, State> {
     hideEditMode();
     this.stopAutoSaveTimer();
     clearUnsavedChanges();
+    window.removeEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  handleLeavePage = (e) => {
+    const {isEditMode} = this.props;
+    if(this.isAnyFormDirty() && isEditMode) {
+      const confirmationMessage = '';
+      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+      return confirmationMessage;              // Gecko, WebKit, Chrome <34
+    }
   }
 
   showModal = (modalName: string) => {
