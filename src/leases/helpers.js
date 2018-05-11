@@ -439,9 +439,7 @@ export const getContentTenantItem = (tenant: Object) => {
 
 export const getContentTenantContactSet = (tenant: Object) => {
   const contacts = get(tenant, 'tenantcontact_set', []).filter((x) => x.type !== TenantContactType.TENANT);
-  if(!contacts.length) {
-    return {};
-  }
+
   return contacts.map((contact) => {
     return {
       id: get(contact, 'id'),

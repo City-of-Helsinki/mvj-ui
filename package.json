@@ -1,6 +1,6 @@
 {
   "name": "mvj-ui",
-  "version": "1.2.1",
+  "version": "1.0.0",
   "description": "City of Helsinki ground rent system UI",
   "main": "src/index.js",
   "author": "Ville Ristimäki <ville.ristimaki@nordsoftware.com>",
