@@ -6,6 +6,7 @@ import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import Button from '$components/button/Button';
+import EditableMap from '$components/map/EditableMap';
 import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
@@ -19,7 +20,15 @@ type Props = {
   router: Object,
 }
 
-class RememberableTermsList extends Component<Props> {
+type State = {
+  showEditTools: boolean,
+}
+
+class RememberableTermsList extends Component<Props, State> {
+  state = {
+    showEditTools: false,
+  }
+
   static contextTypes = {
     router: PropTypes.object,
   };
@@ -40,7 +49,7 @@ class RememberableTermsList extends Component<Props> {
   }
 
   handleCreateButtonClick = () => {
-    console.log('Create new rememberable term');
+    this.setState({showEditTools: true});
   }
 
   handleSearchChange = (query) => {
@@ -52,13 +61,20 @@ class RememberableTermsList extends Component<Props> {
     });
   }
 
+  handleHideEdit = () => {
+    this.setState({showEditTools: false});
+  }
+
   render() {
+    const {showEditTools} = this.state;
+
     return (
       <PageContainer>
         <SearchWrapper
           buttonComponent={
             <Button
               className='no-margin'
+              disabled={showEditTools}
               label='Luo muistettava ehto'
               onClick={this.handleCreateButtonClick}
               title='Luo muistettava ehto'
@@ -69,6 +85,11 @@ class RememberableTermsList extends Component<Props> {
               onSearch={(query) => this.handleSearchChange(query)}
             />
           }
+        />
+
+        <EditableMap
+          onHideEdit={this.handleHideEdit}
+          showEditTools={showEditTools}
         />
 
       </PageContainer>

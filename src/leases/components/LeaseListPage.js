@@ -286,7 +286,9 @@ class LeaseListPage extends Component<Props, State> {
               </div>
             )}
             {visualizationType === 'map' && (
-              <EditableMap />
+              <EditableMap
+                showEditTools={false}
+              />
             )}
           </div>
         }

@@ -131,6 +131,10 @@
 .leaflet-control {
   float: left;
   clear: both;
+
+  a {
+    color: $black;
+  }
 }
 .leaflet-right .leaflet-control {
   float: right;

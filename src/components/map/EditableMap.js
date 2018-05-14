@@ -1,4 +1,4 @@
-// @ flow
+// @flow
 import React, {Component} from 'react';
 import {FeatureGroup} from 'react-leaflet';
 import {EditControl} from 'react-leaflet-draw';
@@ -15,19 +15,30 @@ import mockData from '$components/map/mock-data-map.json';
 
 localizeMap();
 
+type Props = {
+  defaultShowEdit?: boolean,
+  onHideEdit?: Function,
+  showEditTools: boolean,
+}
+
 type State = {
   rememberableTerms: Array<Object>,
   shapes: Array<Object>,
 }
 
-class EditableMap extends Component {
-  state: State = {
+class EditableMap extends Component<Props, State> {
+  state = {
     rememberableTerms: [],
     shapes: [],
   }
 
+  saveConditionPanel: any
+  featureGroup: any
+
   componentWillMount() {
-    this.setState({rememberableTerms: mockData});
+    this.setState({
+      rememberableTerms: mockData,
+    });
   }
 
   handleCreated = (e: Object) => {
@@ -97,6 +108,7 @@ class EditableMap extends Component {
   };
 
   createRememberableTerm = (comment: string) => {
+    const {onHideEdit} = this.props;
     const {rememberableTerms, shapes} = this.state;
 
     shapes.forEach((shape) => {
@@ -108,12 +120,41 @@ class EditableMap extends Component {
       // TODO: Find better place for this when saving using API is ready
       this.featureGroup.leafletElement.removeLayer(shape.id);
     });
-    this.setState({rememberableTerms: rememberableTerms, shapes: []});
+
+    this.setState({
+      rememberableTerms: rememberableTerms,
+      shapes: [],
+    });
+
     this.saveConditionPanel.clearCommentField();
     displayUIMessage({title: 'Muistettava ehto tallennettu', body: 'Muistettava ehto on tallennettu onnistuneesti'});
+
+    if(onHideEdit) {
+      onHideEdit();
+    }
+  }
+
+  handleCancel = () => {
+    const {onHideEdit} = this.props;
+    const {shapes} = this.state;
+
+    shapes.forEach((shape) => {
+      this.featureGroup.leafletElement.removeLayer(shape.id);
+    });
+
+    this.setState({
+      shapes: [],
+    });
+
+    this.saveConditionPanel.clearCommentField();
+
+    if(onHideEdit) {
+      onHideEdit();
+    }
   }
 
   render() {
+    const {showEditTools} = this.props;
     const {rememberableTerms, shapes} = this.state;
 
     return (
@@ -126,35 +167,42 @@ class EditableMap extends Component {
           <FeatureGroup
             ref={(input) => {this.featureGroup = input;}}
           >
-            <EditControl
-              position='topright'
-              onCreated={this.handleCreated}
-              onDeleted={this.handleDeleted}
-              onEdited={this.handleEdited}
-              draw={{
-                circlemarker: false,
-                marker: false,
-                polyline: {
-                  allowIntersection: false,
-                  drawError: {
-                    color: '#b00b00',
-                    timeout: 1000,
+            {showEditTools &&
+              <EditControl
+                position='topright'
+                onCreated={this.handleCreated}
+                onDeleted={this.handleDeleted}
+                onEdited={this.handleEdited}
+                draw={{
+                  circlemarker: false,
+                  marker: false,
+                  polyline: {
+                    allowIntersection: false,
+                    drawError: {
+                      color: '#b00b00',
+                      timeout: 1000,
+                    },
                   },
-                },
-                polygon: {
-                  allowIntersection: false,
-                  showArea: true,
-                  drawError: {
-                    color: '#b00b00',
-                    timeout: 1000,
+                  polygon: {
+                    allowIntersection: false,
+                    showArea: true,
+                    drawError: {
+                      color: '#b00b00',
+                      timeout: 1000,
+                    },
                   },
-                },
-              }}
-            />
+                }}
+              />
+            }
+
           </FeatureGroup>
           <SaveConditionPanel
             ref={(input) => {this.saveConditionPanel = input;}}
-            createCondition={(comment) => this.createRememberableTerm(comment)} show={shapes && !!shapes.length} />
+            createCondition={(comment) => this.createRememberableTerm(comment)}
+            disableSave={!shapes || !shapes.length}
+            onCancel={this.handleCancel}
+            show={showEditTools}
+          />
         </MapContainer>
       </div>
     );
