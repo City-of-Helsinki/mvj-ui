@@ -16,7 +16,6 @@ import mockData from '$components/map/mock-data-map.json';
 localizeMap();
 
 type Props = {
-  defaultShowEdit?: boolean,
   onHideEdit?: Function,
   showEditTools: boolean,
 }
