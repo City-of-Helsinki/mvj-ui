@@ -65,7 +65,7 @@
     "react-dom": "^16.3.2",
     "react-element-to-jsx-string": "^13.2.0",
     "react-foundation": "^0.9.5",
-    "react-hot-loader": "^4.1.2",
+    "react-hot-loader": "^3.1.3",
     "react-i18next": "^2.2.0",
     "react-json-pretty": "^1.3.1",
     "react-leaflet": "^1.7.8",
