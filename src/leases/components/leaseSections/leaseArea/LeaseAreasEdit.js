@@ -119,30 +119,42 @@ const LeaseAreaItems = ({
                 </Column>
               </Row>
             </BoxContentWrapper>
-            <FieldArray
-              buttonTitle='Lisää kiinteistö/määräala sopimushetkellä'
-              component={PlotItemsEdit}
-              name={`${area}.plots_contract`}
-              title='Kiinteistöt / määräalat sopimushetkellä'
-            />
-            <FieldArray
-              buttonTitle='Lisää kiinteistö/määräala nykyhetkellä'
-              component={PlotItemsEdit}
-              name={`${area}.plots_current`}
-              title='Kiinteistöt / määräalat nykyhetkellä'
-            />
-            <FieldArray
-              buttonTitle='Lisää kaavayksiköt sopimushetkellä'
-              component={PlanUnitItemsEdit}
-              name={`${area}.plan_units_contract`}
-              title='Kaavayksiköt sopimushetkellä'
-            />
-            <FieldArray
-              buttonTitle='Lisää kaavayksiköt nykyhetkellä'
-              component={PlanUnitItemsEdit}
-              name={`${area}.plan_units_current`}
-              title='Kaavayksiköt nykyhetkellä'
-            />
+            <Row>
+              <Column small={12} medium={6}>
+                <FieldArray
+                  buttonTitle='Lisää kiinteistö/määräala'
+                  component={PlotItemsEdit}
+                  name={`${area}.plots_contract`}
+                  title='Kiinteistöt / määräalat sopimuksessa'
+                />
+              </Column>
+              <Column small={12} medium={6}>
+                <FieldArray
+                  buttonTitle='Lisää kiinteistö/määräala'
+                  component={PlotItemsEdit}
+                  name={`${area}.plots_current`}
+                  title='Kiinteistöt / määräalat nykyhetkellä'
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column small={12} medium={6}>
+                <FieldArray
+                  buttonTitle='Lisää kaavayksikkö'
+                  component={PlanUnitItemsEdit}
+                  name={`${area}.plan_units_contract`}
+                  title='Kaavayksiköt sopimuksessa'
+                />
+              </Column>
+              <Column small={12} medium={6}>
+                <FieldArray
+                  buttonTitle='Lisää kaavayksikkö'
+                  component={PlanUnitItemsEdit}
+                  name={`${area}.plan_units_current`}
+                  title='Kaavayksiköt nykyhetkellä'
+                />
+              </Column>
+            </Row>
           </Collapse>
         );
       })}
