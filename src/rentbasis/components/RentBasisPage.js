@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
-import {getFormValues, isDirty} from 'redux-form';
+import {change, getFormValues, isDirty} from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 import flowRight from 'lodash/flowRight';
 
@@ -31,15 +31,17 @@ import {
   getIsFormValid,
   getRentBasis,
 } from '$src/rentbasis/selectors';
-import {getContentCopiedRentBasis, getContentRentBasis} from '$src/rentbasis/helpers';
+import {clearUnsavedChanges, getContentCopiedRentBasis, getContentRentBasis} from '$src/rentbasis/helpers';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getRouteById} from '$src/root/routes';
+import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
 import type {Attributes, RentBasis} from '$src/rentbasis/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
   attributes: Attributes,
+  change: Function,
   editedRentBasis: Object,
   editRentBasis: Function,
   fetchAttributes: Function,
@@ -59,16 +61,20 @@ type Props = {
 
 type State = {
   isCancelModalOpen: boolean,
+  isRestoreModalOpen: boolean,
 }
 
 class RentBasisPage extends Component<Props, State> {
   state = {
     isCancelModalOpen: false,
+    isRestoreModalOpen: false,
   }
 
   static contextTypes = {
     router: PropTypes.object,
   };
+
+  timerAutoSave: any
 
   componentWillMount() {
     const {
@@ -93,6 +99,102 @@ class RentBasisPage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
+  }
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  componentDidUpdate(prevProps) {
+    const {params: {rentBasisId}} = this.props;
+
+    if(isEmpty(prevProps.rentBasisData) && !isEmpty(this.props.rentBasisData)) {
+      const storedContactId = getSessionStorageItem('rentBasisId');
+      if(Number(rentBasisId) === storedContactId) {
+        this.setState({isRestoreModalOpen: true});
+      }
+    }
+    // Stop autosave timer and clear form data from session storage after saving/cancelling changes
+    if(prevProps.isEditMode && !this.props.isEditMode) {
+      this.stopAutoSaveTimer();
+      clearUnsavedChanges();
+    }
+  }
+
+  componentWillUnmount() {
+    const {hideEditMode} = this.props;
+
+    window.removeEventListener('beforeunload', this.handleLeavePage);
+    this.stopAutoSaveTimer();
+    clearUnsavedChanges();
+    hideEditMode();
+  }
+
+  handleLeavePage = (e) => {
+    const {isEditMode, isFormDirty} = this.props;
+    if(isFormDirty && isEditMode) {
+      const confirmationMessage = '';
+      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+      return confirmationMessage;              // Gecko, WebKit, Chrome <34
+    }
+  }
+
+  startAutoSaveTimer = () => {
+    this.timerAutoSave = setInterval(
+      () => this.saveUnsavedChanges(),
+      5000
+    );
+  }
+
+  stopAutoSaveTimer = () => {
+    clearInterval(this.timerAutoSave);
+  }
+
+  saveUnsavedChanges = () => {
+    const {
+      editedRentBasis,
+      isFormDirty,
+      params: {rentBasisId},
+    } = this.props;
+
+    if(isFormDirty) {
+      setSessionStorageItem(FormNames.RENT_BASIS, editedRentBasis);
+      setSessionStorageItem('rentBasisId', rentBasisId);
+    } else {
+      removeSessionStorageItem(FormNames.RENT_BASIS);
+      removeSessionStorageItem('rentBasisId');
+    }
+  };
+
+  cancelRestoreUnsavedChanges = () => {
+    clearUnsavedChanges();
+    this.setState({isRestoreModalOpen: false});
+  }
+
+  restoreUnsavedChanges = () => {
+    const {initializeRentBasis, rentBasisData, showEditMode} = this.props;
+
+    showEditMode();
+    initializeRentBasis(rentBasisData);
+
+    setTimeout(() => {
+      const storedFormValues = getSessionStorageItem(FormNames.RENT_BASIS);
+      if(storedFormValues) {
+        this.bulkChange(FormNames.RENT_BASIS, storedFormValues);
+      }
+
+      this.startAutoSaveTimer();
+    }, 20);
+
+    this.setState({isRestoreModalOpen: false});
+  }
+
+  bulkChange = (formName: string, obj: Object) => {
+    const {change} = this.props;
+    const fields = Object.keys(obj);
+    fields.forEach(field => {
+      change(formName, field, obj[field]);
+    });
   }
 
   copyRentBasis = () => {
@@ -135,6 +237,7 @@ class RentBasisPage extends Component<Props, State> {
 
     initializeRentBasis(rentBasis);
     showEditMode();
+    this.startAutoSaveTimer();
   }
 
   render() {
@@ -147,7 +250,7 @@ class RentBasisPage extends Component<Props, State> {
       rentBasisData,
     } = this.props;
 
-    const {isCancelModalOpen} = this.state;
+    const {isCancelModalOpen, isRestoreModalOpen} = this.state;
 
     const rentBasis = getContentRentBasis(rentBasisData);
 
@@ -170,6 +273,17 @@ class RentBasisPage extends Component<Props, State> {
           onSave={this.handleCancel}
           title='Hylkää muutokset'
         />
+
+        <ConfirmationModal
+          confirmButtonLabel='Palauta muutokset'
+          isOpen={isRestoreModalOpen}
+          label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+          onCancel={this.cancelRestoreUnsavedChanges}
+          onClose={this.restoreUnsavedChanges}
+          onSave={this.restoreUnsavedChanges}
+          title='Palauta tallentamattomat muutokset'
+        />
+
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -219,6 +333,7 @@ export default flowRight(
   connect(
     mapStateToProps,
     {
+      change,
       editRentBasis,
       fetchAttributes,
       fetchSingleRentBasis,

@@ -1,7 +1,9 @@
 // @flow
-import type {Contact} from './types';
+import {ContactType, FormNames} from './enums';
 import {addEmptyOption} from '$util/helpers';
-import {ContactType} from './enums';
+import {removeSessionStorageItem} from '$util/storage';
+
+import type {Contact} from './types';
 
 export const getContactFullName = (contact: ?Object) => {
   if(!contact || !contact.type) {
@@ -56,4 +58,9 @@ export const getLessorOptions = (lessors: Array<Object>) => {
       label: getContactFullName(item),
     };
   }));
+};
+
+export const clearUnsavedChanges = () => {
+  removeSessionStorageItem(FormNames.CONTACT);
+  removeSessionStorageItem('contactId');
 };

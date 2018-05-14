@@ -333,6 +333,8 @@ export default flowRight(
     }
   ),
   reduxForm({
+    destroyOnUnmount: false,
     form: formName,
+    enableReinitialize: true,
   }),
 )(RentBasisForm);

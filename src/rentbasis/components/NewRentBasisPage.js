@@ -59,6 +59,23 @@ class NewRentBasisPage extends Component<Props, State> {
     }
   }
 
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  handleLeavePage = (e) => {
+    const {isFormDirty} = this.props;
+    if(isFormDirty) {
+      const confirmationMessage = '';
+      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+      return confirmationMessage;              // Gecko, WebKit, Chrome <34
+    }
+  }
+
   handleBack = () => {
     const {router} = this.context;
     const {router: {location: {query}}} = this.props;

@@ -206,12 +206,15 @@ class LeasePage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
+
     if(isEmpty(commentAttributes)) {
       fetchCommentAttributes();
     }
+
     if(isEmpty(contactAttributes)) {
       fetchContactAttributes();
     }
+
     if(isEmpty(invoiceAttributes)) {
       fetchInvoiceAttributes();
     }
@@ -237,10 +240,19 @@ class LeasePage extends Component<Props, State> {
     const {params: {leaseId}} = this.props;
     if(isEmpty(prevProps.currentLease) && !isEmpty(this.props.currentLease)) {
       const storedLeaseId = getSessionStorageItem('leaseId');
-      if(Number(leaseId) === Number(storedLeaseId)) {
+      if(Number(leaseId) === storedLeaseId) {
         this.setState({isRestoreModalOpen: true});
       }
     }
+    // Stop autosave timer and clear form data from session storage after saving/cancelling changes
+    if(prevProps.isEditMode && !this.props.isEditMode) {
+      this.stopAutoSaveTimer();
+      clearUnsavedChanges();
+    }
+  }
+
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
   componentWillUnmount() {
@@ -249,6 +261,16 @@ class LeasePage extends Component<Props, State> {
     hideEditMode();
     this.stopAutoSaveTimer();
     clearUnsavedChanges();
+    window.removeEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  handleLeavePage = (e) => {
+    const {isEditMode} = this.props;
+    if(this.isAnyFormDirty() && isEditMode) {
+      const confirmationMessage = '';
+      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+      return confirmationMessage;              // Gecko, WebKit, Chrome <34
+    }
   }
 
   showModal = (modalName: string) => {
@@ -384,11 +406,8 @@ class LeasePage extends Component<Props, State> {
 
   cancel = () => {
     const {hideEditMode} = this.props;
-
     this.hideModal('CancelLease');
     hideEditMode();
-    this.stopAutoSaveTimer();
-    clearUnsavedChanges();
   }
 
   startAutoSaveTimer = () => {

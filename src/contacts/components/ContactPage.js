@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {getFormValues, isDirty} from 'redux-form';
+import {change, getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
@@ -20,9 +20,10 @@ import {
   hideEditMode,
   initializeContactForm,
   showEditMode,
-} from '../actions';
+} from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {FormNames} from '../enums';
+import {FormNames} from '$src/contacts/enums';
+import {clearUnsavedChanges, getContactFullName} from '$src/contacts/helpers';
 import {getRouteById} from '$src/root/routes';
 import {
   getAttributes,
@@ -30,14 +31,16 @@ import {
   getIsContactFormValid,
   getIsEditMode,
   getIsFetching,
-} from '../selectors';
-import {getContactFullName} from '../helpers';
+} from '$src/contacts/selectors';
+import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
+
 
 import type {RootState} from '$src/root/types';
 import type {Attributes, Contact} from '../types';
 
 type Props = {
   attributes: Attributes,
+  change: Function,
   contact: Contact,
   contactFormValues: Contact,
   editContact: Function,
@@ -58,16 +61,20 @@ type Props = {
 
 type State = {
   isCancelModalOpen: boolean,
+  isRestoreModalOpen: boolean,
 }
 
 class ContactPage extends Component<Props, State> {
   state = {
     isCancelModalOpen: false,
+    isRestoreModalOpen: false,
   }
 
   static contextTypes = {
     router: PropTypes.object,
   };
+
+  timerAutoSave: any
 
   componentWillMount() {
     const {
@@ -91,12 +98,109 @@ class ContactPage extends Component<Props, State> {
     }
   }
 
+  componentDidMount() {
+    window.addEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  componentDidUpdate(prevProps) {
+    const {params: {contactId}} = this.props;
+    if(isEmpty(prevProps.contact) && !isEmpty(this.props.contact)) {
+      const storedContactId = getSessionStorageItem('contactId');
+      if(Number(contactId) === storedContactId) {
+        this.setState({isRestoreModalOpen: true});
+      }
+    }
+    // Stop autosave timer and clear form data from session storage after saving/cancelling changes
+    if(prevProps.isEditMode && !this.props.isEditMode) {
+      this.stopAutoSaveTimer();
+      clearUnsavedChanges();
+    }
+  }
+
+  componentWillUnmount() {
+    const {hideEditMode} = this.props;
+
+    window.removeEventListener('beforeunload', this.handleLeavePage);
+    this.stopAutoSaveTimer();
+    clearUnsavedChanges();
+    hideEditMode();
+  }
+
+  handleLeavePage = (e) => {
+    const {isEditMode, isContactFormDirty} = this.props;
+    if(isContactFormDirty && isEditMode) {
+      const confirmationMessage = '';
+      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+      return confirmationMessage;              // Gecko, WebKit, Chrome <34
+    }
+  }
+
+  startAutoSaveTimer = () => {
+    this.timerAutoSave = setInterval(
+      () => this.saveUnsavedChanges(),
+      5000
+    );
+  }
+
+  stopAutoSaveTimer = () => {
+    clearInterval(this.timerAutoSave);
+  }
+
+  saveUnsavedChanges = () => {
+    const {
+      contactFormValues,
+      isContactFormDirty,
+      params: {contactId},
+    } = this.props;
+
+    if(isContactFormDirty) {
+      setSessionStorageItem(FormNames.CONTACT, contactFormValues);
+      setSessionStorageItem('contactId', contactId);
+    } else {
+      removeSessionStorageItem(FormNames.CONTACT);
+      removeSessionStorageItem('contactId');
+    }
+  };
+
+  cancelRestoreUnsavedChanges = () => {
+    clearUnsavedChanges();
+    this.setState({isRestoreModalOpen: false});
+  }
+
+  restoreUnsavedChanges = () => {
+    const {contact, initializeContactForm, showEditMode} = this.props;
+
+    showEditMode();
+    initializeContactForm(contact);
+
+    setTimeout(() => {
+      const storedContactFormValues = getSessionStorageItem(FormNames.CONTACT);
+      if(storedContactFormValues) {
+        this.bulkChange(FormNames.CONTACT, storedContactFormValues);
+      }
+
+      this.startAutoSaveTimer();
+    }, 20);
+
+    this.setState({isRestoreModalOpen: false});
+  }
+
+  bulkChange = (formName: string, obj: Object) => {
+    const {change} = this.props;
+    const fields = Object.keys(obj);
+    fields.forEach(field => {
+      change(formName, field, obj[field]);
+    });
+  }
+
   copyContact = () => {
     const {contact, hideEditMode, initializeContactForm, router} = this.props;
     const {router: {location: {query}}} = this.props;
+
     contact.id = undefined;
     initializeContactForm(contact);
     hideEditMode();
+    clearUnsavedChanges();
 
     return router.push({
       pathname: getRouteById('newcontact'),
@@ -139,11 +243,12 @@ class ContactPage extends Component<Props, State> {
     } = this.props;
     initializeContactForm(contact);
     showEditMode();
+    this.startAutoSaveTimer();
   }
 
   render() {
     const {contact, isContactFormDirty, isContactFormValid, isEditMode, isFetching} = this.props;
-    const {isCancelModalOpen} = this.state;
+    const {isCancelModalOpen, isRestoreModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
 
@@ -165,6 +270,16 @@ class ContactPage extends Component<Props, State> {
           onClose={() => this.setState({isCancelModalOpen: false})}
           onSave={this.handleCancel}
           title='Hylkää muutokset'
+        />
+
+        <ConfirmationModal
+          confirmButtonLabel='Palauta muutokset'
+          isOpen={isRestoreModalOpen}
+          label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+          onCancel={this.cancelRestoreUnsavedChanges}
+          onClose={this.restoreUnsavedChanges}
+          onSave={this.restoreUnsavedChanges}
+          title='Palauta tallentamattomat muutokset'
         />
 
         <ControlButtonBar
@@ -209,6 +324,7 @@ export default flowRight(
   connect(
     mapStateToProps,
     {
+      change,
       editContact,
       fetchAttributes,
       fetchSingleContact,

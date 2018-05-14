@@ -4,7 +4,6 @@ import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
 import {displayUIMessage} from '$util/helpers';
-import {clearUnsavedChanges} from './helpers';
 import {getRouteById} from '../root/routes';
 import {
   hideContactModal,
@@ -129,7 +128,6 @@ function* patchLeaseSaga({payload: lease}): Generator<any, any, any> {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
         yield put(hideEditMode());
-        clearUnsavedChanges();
         displayUIMessage({title: 'Vuokraus tallennettu', body: 'Vuokraus on tallennettu onnistuneesti'});
         break;
       case 400:

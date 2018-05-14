@@ -1,6 +1,9 @@
 // @flow
 import get from 'lodash/get';
 
+import {FormNames} from './enums';
+import {removeSessionStorageItem} from '$util/storage';
+
 const getContentRentRates = (rentBasis: Object) => {
   const items = get(rentBasis, 'rent_rates', []);
 
@@ -101,4 +104,9 @@ export const getContentCopiedRentBasis = (content: Object) => {
     property_identifiers: getContentCopiedPropertyIdentifiers(content),
     decisions: getContentCopiedDecisions(content),
   };
+};
+
+export const clearUnsavedChanges = () => {
+  removeSessionStorageItem(FormNames.RENT_BASIS);
+  removeSessionStorageItem('rentBasisId');
 };

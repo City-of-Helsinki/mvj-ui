@@ -34,6 +34,7 @@ const FieldTypes = {
 const resolveFieldType = (type: string): Object => FieldTypes.hasOwnProperty(type) ? FieldTypes[type] : FieldTypeBasic;
 
 type InputProps = {
+  autoComplete?: string,
   className?: string,
   disabled: boolean,
   disableDirty: boolean,
@@ -51,6 +52,7 @@ type InputProps = {
 }
 
 const FormFieldInput = ({
+  autoComplete,
   className,
   disabled,
   disableDirty,
@@ -74,7 +76,7 @@ const FormFieldInput = ({
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name}>{label}{required &&<i className='required'> *</i>}</label>}
       <div className='form-field__component'>
-        {createElement(fieldComponent, {displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
+        {createElement(fieldComponent, {autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows})}
       </div>
       {displayError && <ErrorComponent {...meta}/>}
     </div>
@@ -82,6 +84,7 @@ const FormFieldInput = ({
 };
 
 type Props = {
+  autoComplete?: string,
   className?: string,
   disabled?: boolean,
   disableDirty?: boolean,
@@ -96,6 +99,7 @@ type Props = {
 }
 
 const FormField = ({
+  autoComplete,
   className,
   disabled = false,
   disableDirty = false,
@@ -115,6 +119,7 @@ const FormField = ({
 
   return (
     <Field
+      autoComplete={autoComplete}
       className={className}
       component={FormFieldInput}
       disabled={disabled}
