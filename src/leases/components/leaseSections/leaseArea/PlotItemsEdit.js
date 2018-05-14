@@ -25,7 +25,106 @@ type Props = {
 const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
   return (
     <div>
-      {(!fields || !fields.length) &&
+      <Collapse
+        className='collapse__secondary'
+        defaultOpen={true}
+        headerTitle={
+          <h4 className='collapse__header-title'>{title}</h4>
+        }
+      >
+        <BoxItemContainer>
+          {fields.map((plot, index) =>
+            <BoxItem className='no-border-on-first-child'  key={plot.id ? plot.id : `index_${index}`}>
+              <BoxContentWrapper>
+                <RemoveButton
+                  className='position-topright'
+                  onClick={() => fields.remove(index)}
+                  title="Poista kiinteistö / määräala"
+                />
+                <Row>
+                  <Column small={12} medium={6} large={6}>
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.identifier')}
+                      name={`${plot}.identifier`}
+                      overrideValues={{
+                        label: 'Tunnus',
+                      }}
+                    />
+                  </Column>
+                  <Column small={12} medium={6} large={3}>
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.type')}
+                      name={`${plot}.type`}
+                      overrideValues={{
+                        label: 'Määritelmä',
+                      }}
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={12} medium={12} large={6}>
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.address')}
+                      name={`${plot}.address`}
+                      overrideValues={{
+                        label: 'Osoite',
+                      }}
+                    />
+                  </Column>
+                  <Column small={12} medium={6} large={3}>
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.postal_code')}
+                      name={`${plot}.postal_code`}
+                      overrideValues={{
+                        label: 'Postinumero',
+                      }}
+                    />
+                  </Column>
+                  <Column small={12} medium={6} large={3}>
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.city')}
+                      name={`${plot}.city`}
+                      overrideValues={{
+                        label: 'Kaupunki',
+                      }}
+                    />
+                  </Column>
+                </Row>
+                <Row>
+                  <Column small={12} medium={6} large={3}>
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.area')}
+                      name={`${plot}.area`}
+                      overrideValues={{
+                        label: 'Kokonaisala',
+                      }}
+                    />
+                  </Column>
+                  <Column small={12} medium={6} large={3}>
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.section_area')}
+                      name={`${plot}.section_area`}
+                      overrideValues={{
+                        label: 'Leikkausala',
+                      }}
+                    />
+                  </Column>
+                  <Column small={12} medium={6} large={3}>
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.registration_date')}
+                      name={`${plot}.registration_date`}
+                      overrideValues={{
+                        label: 'Rekisteröintipäivä',
+                      }}
+                    />
+                  </Column>
+                  <Column small={12} medium={6} large={3}>
+                  </Column>
+                </Row>
+              </BoxContentWrapper>
+            </BoxItem>
+          )}
+        </BoxItemContainer>
         <Row>
           <Column>
             <AddButtonSecondary
@@ -35,115 +134,7 @@ const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
             />
           </Column>
         </Row>
-      }
-      {(fields && !!fields.length) &&
-        <Collapse
-          className='collapse__secondary'
-          defaultOpen={true}
-          headerTitle={
-            <h4 className='collapse__header-title'>{title}</h4>
-          }
-        >
-          <BoxItemContainer>
-            {fields.map((plot, index) =>
-              <BoxItem className='no-border-on-first-child'  key={plot.id ? plot.id : `index_${index}`}>
-                <BoxContentWrapper>
-                  <RemoveButton
-                    className='position-topright'
-                    onClick={() => fields.remove(index)}
-                    title="Poista kiinteistö / määräala"
-                  />
-                  <Row>
-                    <Column small={6} medium={4} large={2}>
-                      <FormField
-                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.identifier')}
-                        name={`${plot}.identifier`}
-                        overrideValues={{
-                          label: 'Tunnus',
-                        }}
-                      />
-                    </Column>
-                    <Column small={6} medium={4} large={2}>
-                      <FormField
-                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.type')}
-                        name={`${plot}.type`}
-                        overrideValues={{
-                          label: 'Määritelmä',
-                        }}
-                      />
-                    </Column>
-                    <Column small={6} medium={4} large={2}>
-                      <FormField
-                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.area')}
-                        name={`${plot}.area`}
-                        overrideValues={{
-                          label: 'Kokonaisala',
-                        }}
-                      />
-                    </Column>
-                    <Column small={6} medium={4} large={2}>
-                      <FormField
-                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.section_area')}
-                        name={`${plot}.section_area`}
-                        overrideValues={{
-                          label: 'Leikkausala',
-                        }}
-                      />
-                    </Column>
-                    <Column small={6} medium={4} large={2}>
-                      <FormField
-                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.registration_date')}
-                        name={`${plot}.registration_date`}
-                        overrideValues={{
-                          label: 'Rekisteröintipäivä',
-                        }}
-                      />
-                    </Column>
-                  </Row>
-                  <Row>
-                    <Column small={12} medium={12} large={4}>
-                      <FormField
-                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.address')}
-                        name={`${plot}.address`}
-                        overrideValues={{
-                          label: 'Osoite',
-                        }}
-                      />
-                    </Column>
-                    <Column small={6} medium={4} large={2}>
-                      <FormField
-                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.postal_code')}
-                        name={`${plot}.postal_code`}
-                        overrideValues={{
-                          label: 'Postinumero',
-                        }}
-                      />
-                    </Column>
-                    <Column small={6} medium={4} large={2}>
-                      <FormField
-                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.city')}
-                        name={`${plot}.city`}
-                        overrideValues={{
-                          label: 'Kaupunki',
-                        }}
-                      />
-                    </Column>
-                  </Row>
-                </BoxContentWrapper>
-              </BoxItem>
-            )}
-          </BoxItemContainer>
-          <Row>
-            <Column>
-              <AddButtonSecondary
-                label='Lisää kiinteistö /määräala'
-                onClick={() => fields.push({})}
-                title='Lisää kiinteistö /määräala'
-              />
-            </Column>
-          </Row>
-        </Collapse>
-      }
+      </Collapse>
     </div>
   );
 };

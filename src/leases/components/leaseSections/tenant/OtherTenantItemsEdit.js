@@ -14,6 +14,7 @@ import EditIcon from '$components/icons/EditIcon';
 import FormField from '$components/form/FormField';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
+import FormWrapperRight from '$components/form/FormWrapperRight';
 import IconButton from '$components/button/IconButton';
 import RemoveButton from '$components/form/RemoveButton';
 import {initializeContactForm} from '$src/contacts/actions';
@@ -62,40 +63,6 @@ const OtherTenantItemsEdit = ({
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames('collapse__secondary', {'not-active': !isActive})}
             defaultOpen={isActive}
-            header={
-              <div>
-                <Column></Column>
-                <Column>
-                  <div className='collapse__header_field-wrapper'>
-                    <div className='collapse__header_field-label-wrapper'>
-                      <label>Välillä</label>
-                    </div>
-                    <div className='collapse__header_field-input-wrapper'>
-                      <Column>
-                        <FormField
-                          className='no-margin'
-                          fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.start_date')}
-                          name={`${tenant}.start_date`}
-                          overrideValues={{
-                            label: '',
-                          }}
-                        />
-                      </Column>
-                      <Column>
-                        <FormField
-                          className='with-dash no-margin'
-                          fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
-                          name={`${tenant}.end_date`}
-                          overrideValues={{
-                            label: '',
-                          }}
-                        />
-                      </Column>
-                    </div>
-                  </div>
-                </Column>
-              </div>
-            }
             headerTitle={
               <h4 className='collapse__header-title edit-row'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
             }>
@@ -136,6 +103,10 @@ const OtherTenantItemsEdit = ({
                         </Column>
                       </Row>
                     </Column>
+                  </Row>
+                </FormWrapperLeft>
+                <FormWrapperRight>
+                  <Row>
                     <Column small={12} medium={6} large={4}>
                       <FormField
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.type')}
@@ -146,8 +117,28 @@ const OtherTenantItemsEdit = ({
                         }}
                       />
                     </Column>
+                    <Column small={6} medium={3} large={2}>
+                      <FormField
+                        className='no-margin'
+                        fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.start_date')}
+                        name={`${tenant}.start_date`}
+                        overrideValues={{
+                          label: 'Alkupvm',
+                        }}
+                      />
+                    </Column>
+                    <Column small={6} medium={3} large={2}>
+                      <FormField
+                        className='with-dash no-margin'
+                        fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
+                        name={`${tenant}.end_date`}
+                        overrideValues={{
+                          label: 'Loppupvm',
+                        }}
+                      />
+                    </Column>
                   </Row>
-                </FormWrapperLeft>
+                </FormWrapperRight>
               </FormWrapper>
 
               <BoxContentWrapper>

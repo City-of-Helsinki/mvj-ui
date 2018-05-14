@@ -11,6 +11,7 @@ type Props = {
   defaultOpen: boolean,
   header?: any,
   headerTitle: any,
+  showTitleOnOpen?: boolean,
 }
 
 type State = {
@@ -26,6 +27,7 @@ class Collapse extends Component<Props, State> {
 
   static defaultProps = {
     defaultOpen: false,
+    showTitleOnOpen: false,
   };
 
   componentWillMount() {
@@ -89,7 +91,7 @@ class Collapse extends Component<Props, State> {
 
   render() {
     const {contentHeight, isOpen, isResizing, isVisible} = this.state;
-    const {children, className, header, headerTitle} = this.props;
+    const {children, className, header, headerTitle, showTitleOnOpen} = this.props;
 
     return (
       <div
@@ -111,7 +113,7 @@ class Collapse extends Component<Props, State> {
                   </a>
                 </Column>
               }
-              {this.getChildrenOfHeader(header)}
+              {(showTitleOnOpen || !isOpen) && this.getChildrenOfHeader(header)}
             </Row>
           </div>
         </div>

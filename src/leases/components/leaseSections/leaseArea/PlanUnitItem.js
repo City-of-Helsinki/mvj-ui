@@ -24,63 +24,85 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
   return (
     <BoxItem className='no-border-on-first-child'>
       <Row>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={6} large={6}>
           <label>Tunnus</label>
           <p><strong>{planUnit.identifier || '-'}</strong></p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={6} large={3}>
           <label>Määritelmä</label>
           <p>{getLabelOfOption(typeOptions, planUnit.type) || '-'}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <label>Kokonaisala</label>
-          <p>{formatNumber(planUnit.area) || '-'}</p>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <label>Leikkausala</label>
-          <p>{formatNumber(planUnit.section_area) || '-'}</p>
-        </Column>
       </Row>
       <Row>
-        <Column small={12} medium={12} large={4}>
+        <Column small={12} medium={12} large={6}>
           <label>Osoite</label>
           <p>{planUnit.address || '-'}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={6} large={3}>
           <label>Postinumero</label>
           <p>{planUnit.postal_code || '-'}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={6} large={3}>
           <label>Kaupunki</label>
           <p>{planUnit.city || '-'}</p>
         </Column>
       </Row>
       <Row>
-        <Column small={6} medium={4} large={2}>
-          <label>Tonttijaon tunnus</label>
-          <p>{planUnit.plot_division_identifier || '-'}</p>
+        <Column small={12} medium={6} large={3}>
+          <label>Kokonaisala</label>
+          <p>{formatNumber(planUnit.area) || '-'}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <label>Tonttijaon hyväksymispvm</label>
-          <p>{formatDate(planUnit.plot_division_date_of_approval) || '-'}</p>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <label>Asemakaava</label>
-          <p>{planUnit.detailed_plan_identifier}</p>
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <label>Asemakaavan vahvistumispvm</label>
-          <p>{formatDate(planUnit.detailed_plan_date_of_approval) || '-'}</p>
+        <Column small={12} medium={6} large={3}>
+          <label>Leikkausala</label>
+          <p>{formatNumber(planUnit.section_area) || '-'}</p>
         </Column>
       </Row>
       <Row>
-        <Column small={6} medium={6} large={4}>
+        <Column small={12} medium={6} large={3}>
+          <label>Asemakaava</label>
+          <p>{planUnit.detailed_plan_identifier}</p>
+        </Column>
+        <Column small={12} medium={6} large={3}>
+          <label>Asemakaavan vahvistumispvm</label>
+          <p>{formatDate(planUnit.detailed_plan_date_of_approval) || '-'}</p>
+        </Column>
+        <Column small={12} medium={6} large={3}>
+
+        </Column>
+        <Column small={12} medium={6} large={3}>
+
+        </Column>
+      </Row>
+      <Row>
+        <Column small={12} medium={6} large={3}>
+          <label>Tonttijaon tunnus</label>
+          <p>{planUnit.plot_division_identifier || '-'}</p>
+        </Column>
+        <Column small={12} medium={6} large={3}>
+          <label>Tonttijaon hyväksymispvm</label>
+          <p>{formatDate(planUnit.plot_division_date_of_approval) || '-'}</p>
+        </Column>
+        <Column small={12} medium={6} large={3}>
+
+        </Column>
+        <Column small={12} medium={6} large={3}>
+
+        </Column>
+      </Row>
+      <Row>
+        <Column small={12} medium={6} large={3}>
           <label>Kaavayksikön laji</label>
           <p>{getLabelOfOption(planUnitTypeOptions, planUnit.plan_unit_type) || '-'}</p>
         </Column>
-        <Column small={6} medium={6} large={2}>
+        <Column small={12} medium={6} large={3}>
           <label>Kaavayksikön olotila</label>
           <p>{getLabelOfOption(planUnitStateOptions, planUnit.plan_unit_state) || '-'}</p>
+        </Column>
+        <Column small={12} medium={6} large={3}>
+
+        </Column>
+        <Column small={12} medium={6} large={3}>
+
         </Column>
       </Row>
     </BoxItem>

@@ -9,9 +9,10 @@ import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
+import FormWrapperRight from '$components/form/FormWrapperRight';
 import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
-import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCompleteContactList} from '$src/contacts/selectors';
 import {getAttributes} from '$src/leases/selectors';
 
@@ -48,6 +49,7 @@ const OtherTenantItem = ({
           </Column>
         </div>
       }
+
       headerTitle={
         <h4 className='collapse__header-title'>{getLabelOfOption(tenantTypeOptions, tenant.type)}</h4>
       }>
@@ -58,12 +60,29 @@ const OtherTenantItem = ({
               <label>Asiakas</label>
               <p>{getContactFullName(contact)}</p>
             </Column>
-            <Column small={12} medium={6} large={4}>
-              <label>Rooli</label>
-              <p>{getLabelOfOption(tenantTypeOptions, tenant.type)}</p>
-            </Column>
           </Row>
         </FormWrapperLeft>
+        <FormWrapperRight>
+          <Row>
+            <Column small={12} medium={6} large={4}>
+              <label>Rooli</label>
+              <p>{getLabelOfOption(tenantTypeOptions, tenant.type) || '-'}</p>
+            </Column>
+
+            <Column small={12} medium={6} large={4}>
+              <Row>
+                <Column>
+                  <label>Alkupvm</label>
+                  <p>{formatDate(get(tenant, 'start_date')) || '-'}</p>
+                </Column>
+                <Column>
+                  <label>Loppupvm</label>
+                  <p>{formatDate(get(tenant, 'end_date')) || '-'}</p>
+                </Column>
+              </Row>
+            </Column>
+          </Row>
+        </FormWrapperRight>
       </FormWrapper>
       <ContactTemplate
         contact={contact}

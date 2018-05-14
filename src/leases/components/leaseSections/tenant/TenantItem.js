@@ -1,12 +1,15 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
+import FormWrapperRight from '$components/form/FormWrapperRight';
 import {getContactFullName} from '$src/contacts/helpers';
+import {formatDate} from '$util/helpers';
 
 type Props = {
   contact: ?Object,
@@ -41,12 +44,32 @@ const TenantItem = ({
               <label>Asiakas</label>
               <p>{getContactFullName(contact)}</p>
             </Column>
+          </Row>
+        </FormWrapperLeft>
+        <FormWrapperRight>
+          <Row>
+            <Column small={12} medium={6} large={4}>
+              <label>Osuus murtolukuna:</label>
+              <p>{get(tenant, 'share_numerator', '')} / {get(tenant, 'share_denominator', '')}</p>
+            </Column>
             <Column small={12} medium={6} large={4}>
               <label>Laskun hallintaosuus</label>
               <p>{getInvoiceManagementShare()}</p>
             </Column>
+            <Column small={12} medium={6} large={4}>
+              <Row>
+                <Column>
+                  <label>Alkupvm</label>
+                  <p>{formatDate(get(tenant, 'tenant.start_date'))}</p>
+                </Column>
+                <Column>
+                  <label>Loppupvm</label>
+                  <p>{formatDate(get(tenant, 'tenant.start_date'))}</p>
+                </Column>
+              </Row>
+            </Column>
           </Row>
-        </FormWrapperLeft>
+        </FormWrapperRight>
       </FormWrapper>
       <ContactTemplate
         contact={contact}
