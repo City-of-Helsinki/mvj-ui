@@ -125,7 +125,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
       }
       <Row>
         <Column>
-          <label>Kommentti</label>
+          <label>Huomautus</label>
           <p>{rent.note || '-'}</p>
         </Column>
       </Row>
@@ -158,7 +158,7 @@ const BasicInfoOneTime = ({attributes, rent}: Props) => {
       </Row>
       <Row>
         <Column>
-          <label>Kommentti</label>
+          <label>Huomautus</label>
           <p>{rent.note || '-'}</p>
         </Column>
       </Row>
@@ -206,7 +206,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
       </Row>
       <Row>
         <Column>
-          <label>Kommentti</label>
+          <label>Huomautus</label>
           <p>{rent.note || '-'}</p>
         </Column>
       </Row>
@@ -235,7 +235,7 @@ const BasicInfoFree = ({attributes, rent}: Props) => {
       </Column>
       <Row>
         <Column>
-          <label>Kommentti</label>
+          <label>Huomautus</label>
           <p>{rent.note || '-'}</p>
         </Column>
       </Row>

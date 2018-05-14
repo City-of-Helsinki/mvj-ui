@@ -112,7 +112,7 @@ class SummaryEdit extends Component<Props> {
                     fieldAttributes={get(attributes, 'intended_use_note')}
                     name='intended_use_note'
                     overrideValues={{
-                      label: 'Vuokrauksen käyttötarkoituksen selite',
+                      label: 'Käyttötarkoituksen huomautus',
                     }}
                   />
                 </Column>
@@ -150,7 +150,7 @@ class SummaryEdit extends Component<Props> {
                     fieldAttributes={get(attributes, 'hitas')}
                     name='hitas'
                     overrideValues={{
-                      label: 'hitas',
+                      label: 'Hitas',
                     }}
                   />
                 </Column>
@@ -171,7 +171,7 @@ class SummaryEdit extends Component<Props> {
                     fieldAttributes={get(attributes, 'notice_note')}
                     name='notice_note'
                     overrideValues={{
-                      label: 'Irtisanomisajan selite',
+                      label: 'Irtisanomisajan huomautus',
                     }}
                   />
                 </Column>
@@ -191,7 +191,7 @@ class SummaryEdit extends Component<Props> {
                     fieldAttributes={get(attributes, 'note')}
                     name='note'
                     overrideValues={{
-                      label: 'Kommentti',
+                      label: 'Huomautus',
                     }}
                   />
                 </Column>

@@ -92,7 +92,7 @@ class Summary extends Component<Props> {
                   <p>{getLabelOfOption(intendedUseOptions, summary.intended_use) || '-'}</p>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <label>Vuokrauksen käyttötarkoitus selite</label>
+                  <label>Käyttötarkoituksen huomautus</label>
                   <ShowMore text={summary.intended_use_note || '-'} />
                 </Column>
               </Row>
@@ -120,7 +120,7 @@ class Summary extends Component<Props> {
                   <p>{getLabelOfOption(noticePeriodOptions, summary.notice_period) || '-'}</p>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <label>Irtisanomisajan selite</label>
+                  <label>Irtisanomisajan huomautus</label>
                   <ShowMore text={summary.notice_note || '-'} />
                 </Column>
               </Row>
@@ -130,7 +130,7 @@ class Summary extends Component<Props> {
                   <p>{summary.reference_number || '-'}</p>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <label>Kommentti</label>
+                  <label>Huomautus</label>
                   <ShowMore text={summary.note || '-'} />
                 </Column>
               </Row>

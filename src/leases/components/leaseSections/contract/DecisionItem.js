@@ -49,7 +49,7 @@ const DecisionItem = ({attributes, decision}: Props) => {
       </Row>
       <Row>
         <Column small={12}>
-          <label>Selite</label>
+          <label>Huomautus</label>
           <p>{decision.description || '–'}</p>
         </Column>
       </Row>
@@ -96,7 +96,7 @@ const DecisionItem = ({attributes, decision}: Props) => {
                       }
                     </Column>
                     <Column small={12} medium={12} large={6}>
-                      <label>Selite</label>
+                      <label>Huomautus</label>
                       <p>{condition.description || '–'}</p>
                     </Column>
                   </Row>

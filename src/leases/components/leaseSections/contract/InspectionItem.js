@@ -40,7 +40,7 @@ const InspectionItem = ({inspection}: Props) => {
           }
         </Column>
         <Column small={6} medium={12} large={6}>
-          <label>Selite</label>
+          <label>Huomautus</label>
           <p>{inspection.description || '–'}</p>
         </Column>
       </Row>

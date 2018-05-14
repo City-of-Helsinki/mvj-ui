@@ -69,7 +69,7 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
               </Row>
               <Row>
                 <Column>
-                  <label>Kommentti</label>
+                  <label>Huomautus</label>
                   <p>{adjustment.note || '-'}</p>
                 </Column>
               </Row>

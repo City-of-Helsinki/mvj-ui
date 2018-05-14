@@ -44,7 +44,7 @@ const Comments = ({comments, userOptions}: CommentsProps) => {
             )}
           </BoxItemContainer>
         ) : (
-          <p><em>Ei selityksiä.</em></p>
+          <p><em>Ei huomautuksia.</em></p>
         )
       }
     </div>

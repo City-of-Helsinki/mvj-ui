@@ -43,7 +43,7 @@ const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
                 <RemoveButton
                   className='position-topright-no-padding'
                   onClick={() => fields.remove(index)}
-                  title="Poista kommentti"
+                  title="Poista huomautus"
                 />
                 <Row>
                   <Column small={6} medium={9} large={10}>
@@ -51,7 +51,7 @@ const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
                       fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
                       name={`${comment}.text`}
                       overrideValues={{
-                        label: 'Selitys',
+                        label: 'Huomautus',
                       }}
                     />
                   </Column>
@@ -73,9 +73,9 @@ const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
       <Row>
         <Column>
           <AddButtonSecondary
-            label='Lisää selitys'
+            label='Lisää huomautus'
             onClick={() => fields.push({})}
-            title='Lisää selitys'
+            title='Lisää huomautus'
           />
         </Column>
       </Row>

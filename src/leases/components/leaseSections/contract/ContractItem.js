@@ -38,7 +38,7 @@ const ContractItem = ({attributes, contract, decisions}: Props) => {
           <p>{formatDate(contract.signing_date) || '–'}</p>
         </Column>
         <Column small={6} medium={12} large={6}>
-          <label>Kommentti allekirjoitukselle</label>
+          <label>Allekirjoituksen huomautus</label>
           <p>{contract.signing_note || '–'}</p>
         </Column>
       </Row>
@@ -74,7 +74,7 @@ const ContractItem = ({attributes, contract, decisions}: Props) => {
           <p>{formatDate(contract.collateral_end_date) || '-'}</p>
         </Column>
         <Column small={6} medium={12} large={6}>
-          <label>Vuokravakuus kommentti</label>
+          <label>Vuokravakuuden huomautus</label>
           <p>{contract.collateral_note  || '–'}</p>
         </Column>
       </Row>
@@ -96,7 +96,7 @@ const ContractItem = ({attributes, contract, decisions}: Props) => {
               <label>Panttikirjan pvm</label>
             </Column>
             <Column small={4} medium={4} large={2}>
-              <label>Panttikirjan kommentti</label>
+              <label>Huomautus</label>
             </Column>
           </Row>
           {contract.mortgage_documents.map((doc) =>
@@ -159,7 +159,7 @@ const ContractItem = ({attributes, contract, decisions}: Props) => {
                     <p>{getLabelOfOption(decisionOptions, change.decision) || '-'}</p>
                   </Column>
                   <Column small={6} medium={8} large={10}>
-                    <label>Selite</label>
+                    <label>Huomautus</label>
                     <p>{change.description  || '–'}</p>
                   </Column>
                 </Row>

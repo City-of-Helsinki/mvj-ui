@@ -71,7 +71,7 @@ const InspectionItemsEdit = ({
                     fieldAttributes={get(attributes, 'inspections.child.children.description')}
                     name={`${inspection}.description`}
                     overrideValues={{
-                      label: 'Selite',
+                      label: 'Huomautus',
                     }}
                   />
                 </Column>

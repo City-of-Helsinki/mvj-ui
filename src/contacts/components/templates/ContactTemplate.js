@@ -135,7 +135,7 @@ const ContactTemplate = ({contact, attributes}: Props) => {
         </Row>
         <Row>
           <Column>
-            <label>Kommentti</label>
+            <label>Huomautus</label>
             <p>{contact.note || '-'}</p>
           </Column>
         </Row>

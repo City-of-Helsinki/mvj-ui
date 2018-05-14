@@ -140,7 +140,7 @@ class CreateLeaseForm extends Component<Props> {
               fieldAttributes={get(attributes, 'note')}
               name='note'
               overrideValues={{
-                label: 'Kommentti',
+                label: 'Huomautus',
               }}
             />
           </Column>

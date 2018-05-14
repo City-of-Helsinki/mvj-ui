@@ -129,7 +129,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                       fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.note')}
                       name={`${discount}.note`}
                       overrideValues={{
-                        label: 'Kommentti',
+                        label: 'Huomautus',
                       }}
                     />
                   </Column>

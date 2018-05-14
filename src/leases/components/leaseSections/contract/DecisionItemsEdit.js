@@ -91,7 +91,7 @@ const RuleItemsEdit = ({attributes, fields}: Props) => {
                   fieldAttributes={get(attributes, 'decisions.child.children.description')}
                   name={`${decision}.description`}
                   overrideValues={{
-                    label: 'Selite',
+                    label: 'Huomautus',
                   }}
                 />
               </Column>

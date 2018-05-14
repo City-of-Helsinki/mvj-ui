@@ -126,7 +126,7 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
         </Row>
         <Row>
           <Column>
-            <label>Kommentti</label>
+            <label>Huomautus</label>
             <p>{rentBasis.note || '-'}</p>
           </Column>
         </Row>

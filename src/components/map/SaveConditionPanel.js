@@ -36,7 +36,7 @@ class SaveConditionPanel extends Component<Props, State> {
               <TextAreaInput
                 className="no-margin"
                 onChange={(e) => this.setState({comment: e.target.value})}
-                placeholder='Kirjoita kommentti'
+                placeholder='Kirjoita huomautus'
                 rows={1}
                 value={comment} />
             </Column>

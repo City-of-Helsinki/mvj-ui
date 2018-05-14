@@ -341,7 +341,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
             fieldAttributes={get(attributes, 'rents.child.children.note')}
             name='note'
             overrideValues={{
-              label: 'Kommentti',
+              label: 'Huomautus',
             }}
           />
         </Column>
@@ -398,7 +398,7 @@ const BasicInfoOneTime = ({attributes}: Props) => {
             fieldAttributes={get(attributes, 'rents.child.children.note')}
             name='note'
             overrideValues={{
-              label: 'Kommentti',
+              label: 'Huomautus',
             }}
           />
         </Column>
@@ -475,7 +475,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
             fieldAttributes={get(attributes, 'rents.child.children.note')}
             name='note'
             overrideValues={{
-              label: 'Kommentti',
+              label: 'Huomautus',
             }}
           />
         </Column>
@@ -523,7 +523,7 @@ const BasicInfoFree = ({attributes}: Props) => {
             fieldAttributes={get(attributes, 'rents.child.children.note')}
             name='note'
             overrideValues={{
-              label: 'Kommentti',
+              label: 'Huomautus',
             }}
           />
         </Column>

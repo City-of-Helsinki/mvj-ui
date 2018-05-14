@@ -117,7 +117,7 @@ const renderContractChanges = ({
                       fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.description')}
                       name={`${change}.description`}
                       overrideValues={{
-                        label: 'Selite',
+                        label: 'Huomautus',
                       }}
                     />
                   </Column>
@@ -159,7 +159,7 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps): 
               <FormFieldLabel>Panttikirjan pvm</FormFieldLabel>
             </Column>
             <Column small={4} medium={4} large={2}>
-              <FormFieldLabel>Panttikirjan kommentti</FormFieldLabel>
+              <FormFieldLabel>Huomautus</FormFieldLabel>
             </Column>
           </Row>
           {fields.map((doc, index) =>
@@ -277,7 +277,7 @@ const ContractItemsEdit = ({
                     fieldAttributes={get(attributes, 'contracts.child.children.signing_note')}
                     name={`${contract}.signing_note`}
                     overrideValues={{
-                      label: 'Kommentti allekirjoitukselle',
+                      label: 'Allekirjoituksen huomautus',
                     }}
                   />
                 </Column>
@@ -355,7 +355,7 @@ const ContractItemsEdit = ({
                     fieldAttributes={get(attributes, 'contracts.child.children.collateral_note')}
                     name={`${contract}.collateral_note`}
                     overrideValues={{
-                      label: 'Vuokravakuus kommentti',
+                      label: 'Vuokravakuuden huomautus',
                     }}
                   />
                 </Column>

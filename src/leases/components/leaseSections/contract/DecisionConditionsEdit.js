@@ -77,7 +77,7 @@ const DecisionConditionsEdit = ({
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.description')}
                     name={`${condition}.description`}
                     overrideValues={{
-                      label: 'Selite',
+                      label: 'Huomautus',
                     }}
                   />
                 </Column>
