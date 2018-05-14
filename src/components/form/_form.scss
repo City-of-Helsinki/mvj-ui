@@ -181,18 +181,29 @@
     box-shadow: none;
 
     &:focus {
+      transition: none !important;
       outline: none !important;
       border: 1px solid $focus-color !important;
-      box-shadow: 0 0 0 1px $focus-color;
+      box-shadow: 0 0 0 2px $focus-color;
     }
 
     &.is-dirty {
       background-color: $engel-lighter;
-      box-shadow: 0 0 0 1px $engel;
+      border: 1px solid $engel !important;
+
+      &:focus {
+        border: 1px solid $engel !important;
+        box-shadow: 0 0 0 2px $engel;
+      }
     }
 
     &.has-error {
-      box-shadow: 0 0 0 1px $alert-color;
+      border: 1px solid $alert-color !important;
+
+      &:focus {
+        border: 1px solid $alert-color !important;
+        box-shadow: 0 0 0 2px $alert-color;
+      }
     }
   }
 
@@ -206,23 +217,39 @@
     margin-bottom: 0;
 
     &:focus {
+      transition: none !important;
       outline: none !important;
       border: 1px solid $focus-color !important;
-      box-shadow: 0 0 0 1px $focus-color;
+      box-shadow: 0 0 0 2px $focus-color;
     }
 
     &.is-dirty {
       background-color: $engel-lighter;
-      box-shadow: 0 0 0 1px $engel;
+      border: 1px solid $engel !important;
+
+      &:focus {
+        border: 1px solid $engel !important;
+        box-shadow: 0 0 0 2px $engel;
+      }
     }
 
     &.has-error {
-      box-shadow: 0 0 0 1px $alert-color;
+      border: 1px solid $alert-color !important;
+
+      &:focus {
+        border: 1px solid $alert-color !important;
+        box-shadow: 0 0 0 2px $alert-color;
+      }
     }
   }
 
   &__datepicker {
     line-height: 1;
+
+
+    .react-datepicker-wrapper {
+      width: 100%;
+    }
 
     .react-datepicker__input-container {
       width: 100%;
@@ -238,22 +265,33 @@
       margin-bottom: 0;
 
       &:focus {
+        transition: none !important;
         outline: none !important;
         border: 1px solid $focus-color !important;
-        box-shadow: 0 0 0 1px $focus-color;
+        box-shadow: 0 0 0 2px $focus-color;
       }
     }
 
     &.is-dirty {
       input {
         background-color: $engel-lighter;
-        box-shadow: 0 0 0 1px $engel;
+        border: 1px solid $engel;
+
+        &:focus {
+          border: 1px solid $engel !important;
+          box-shadow: 0 0 0 2px $engel;
+        }
       }
     }
 
     &.has-error {
       input {
-        box-shadow: 0 0 0 1px $alert-color;
+        border: 1px solid $alert-color;
+
+        &:focus {
+          border: 1px solid $alert-color !important;
+          box-shadow: 0 0 0 2px $alert-color;
+        }
       }
     }
   }
@@ -334,15 +372,22 @@
       }
     }
 
+    .Select-menu-outer {
+      width: auto;
+      min-width: 100%;
+    }
+
     .Select-menu {
       height: auto;
     }
 
     .Select-option {
-      padding-top: rem-calc(2px);
-      padding-bottom: rem-calc(2px);
+      color: $black;
+      padding-top: rem-calc(4px);
+      padding-bottom: rem-calc(4px);
       min-height: 20px;
       font-size: rem-calc(14px) !important;
+      white-space: nowrap;
 
       &.is-focused, &.Select-option.is-selected {
         background-color: $engel-lighter !important;
@@ -357,21 +402,33 @@
       .Select-control {
         outline: none !important;
         border: 1px solid $focus-color !important;
-        box-shadow: 0 0 0 1px $focus-color !important;
+        box-shadow: 0 0 0 2px $focus-color !important;
       }
     }
 
     &.is-dirty {
       .Select-control {
         background-color: $engel-lighter !important;
-        box-shadow: 0 0 0 1px $engel !important;
+        border: 1px solid $engel !important;
+      }
+
+      &.is-focused {
+        .Select-control {
+          box-shadow: 0 0 0 2px $engel !important;
+        }
       }
     }
 
     &.has-error {
       .Select-control {
         transition: none !important;
-        box-shadow: 0 0 0 1px $alert-color !important;
+        border: 1px solid $alert-color !important;
+      }
+
+      &.is-focused {
+        .Select-control {
+          box-shadow: 0 0 0 2px $alert-color !important;
+        }
       }
     }
   }
