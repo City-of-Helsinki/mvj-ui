@@ -103,6 +103,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         headerTitle={
           <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
         }
+        showTitleOnOpen={true}
       >
         <Comments
           comments={area.descriptionsPreconstruction}
@@ -126,6 +127,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         headerTitle={
           <h4 className='collapse__header-title'>Purku</h4>
         }
+        showTitleOnOpen={true}
       >
         <Comments
           comments={area.descriptionsDemolition}
@@ -149,6 +151,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         headerTitle={
           <h4 className='collapse__header-title'>Pima</h4>
         }
+        showTitleOnOpen={true}
       >
         <div>
           <Row>
@@ -195,7 +198,9 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         }
         headerTitle={
           <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
-        }>
+        }
+        showTitleOnOpen={true}
+      >
         <div>
           <Row>
             <Column small={6} medium={3} large={2}>
@@ -237,7 +242,9 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         }
         headerTitle={
           <h4 className='collapse__header-title'>Muut</h4>
-        }>
+        }
+        showTitleOnOpen={true}
+      >
         <Comments
           comments={area.descriptionsOther}
           userOptions={userOptions}

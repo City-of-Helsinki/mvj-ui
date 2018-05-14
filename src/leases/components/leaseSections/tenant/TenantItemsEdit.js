@@ -14,8 +14,10 @@ import EditIcon from '$components/icons/EditIcon';
 import IconButton from '$components/button/IconButton';
 import OtherTenantItemsEdit from './OtherTenantItemsEdit';
 import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
+import FormWrapperRight from '$components/form/FormWrapperRight';
 import RemoveButton from '$components/form/RemoveButton';
 import {initializeContactForm} from '$src/contacts/actions';
 import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
@@ -60,68 +62,6 @@ const TenantItemsEdit = ({
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames({'not-active': !isActive})}
             defaultOpen={isActive}
-            header={
-              <div>
-                <Column>
-                  <div className='collapse__header_field-wrapper'>
-                    <div className='collapse__header_field-label-wrapper'>
-                      <label>Osuus murtolukuna</label>
-                    </div>
-                    <div className='collapse__header_field-input-wrapper'>
-                      <Column>
-                        <FormField
-                          className='no-margin'
-                          fieldAttributes={get(attributes, 'tenants.child.children.share_numerator')}
-                          name={`${tenant}.share_numerator`}
-                          overrideValues={{
-                            label: '',
-                          }}
-                        />
-                      </Column>
-                      <Column>
-                        <FormField
-                          className='with-slash no-margin'
-                          fieldAttributes={get(attributes, 'tenants.child.children.share_denominator')}
-                          name={`${tenant}.share_denominator`}
-                          overrideValues={{
-                            label: '',
-                          }}
-                        />
-                      </Column>
-                    </div>
-                  </div>
-                </Column>
-                <Column>
-                  <div className='collapse__header_field-wrapper'>
-                    <div className='collapse__header_field-label-wrapper'>
-                      <label>Välillä</label>
-                    </div>
-                    <div className='collapse__header_field-input-wrapper'>
-                      <Column>
-                        <FormField
-                          className='no-margin'
-                          fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.start_date')}
-                          name={`${tenant}.tenant.start_date`}
-                          overrideValues={{
-                            label: '',
-                          }}
-                        />
-                      </Column>
-                      <Column>
-                        <FormField
-                          className='with-dash no-margin'
-                          fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
-                          name={`${tenant}.tenant.end_date`}
-                          overrideValues={{
-                            label: '',
-                          }}
-                        />
-                      </Column>
-                    </div>
-                  </div>
-                </Column>
-              </div>
-            }
             headerTitle={
               <h3 className='collapse__header-title'>Vuokralainen {index + 1}</h3>
             }
@@ -165,6 +105,53 @@ const TenantItemsEdit = ({
                     </Column>
                   </Row>
                 </FormWrapperLeft>
+                <FormWrapperRight>
+                  <Row>
+                    <Column small={12} medium={6} large={4}>
+                      <FormFieldLabel required>Osuus murtolukuna</FormFieldLabel>
+                      <Row>
+                        <Column>
+                          <FormField
+                            fieldAttributes={get(attributes, 'tenants.child.children.share_numerator')}
+                            name={`${tenant}.share_numerator`}
+                            overrideValues={{
+                              label: '',
+                            }}
+                          />
+                        </Column>
+                        <Column>
+                          <FormField
+                            className='with-slash'
+                            fieldAttributes={get(attributes, 'tenants.child.children.share_denominator')}
+                            name={`${tenant}.share_denominator`}
+                            overrideValues={{
+                              label: '',
+                            }}
+                          />
+                        </Column>
+                      </Row>
+                    </Column>
+                    <Column small={6} medium={3} large={2}>
+                      <FormField
+                        fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.start_date')}
+                        name={`${tenant}.tenant.start_date`}
+                        overrideValues={{
+                          label: 'Alkupvm',
+                        }}
+                      />
+                    </Column>
+                    <Column small={6} medium={3} large={2}>
+                      <FormField
+                        className='with-dash'
+                        fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
+                        name={`${tenant}.tenant.end_date`}
+                        overrideValues={{
+                          label: 'Loppupvm',
+                        }}
+                      />
+                    </Column>
+                  </Row>
+                </FormWrapperRight>
               </FormWrapper>
 
               <BoxContentWrapper>
