@@ -22,7 +22,7 @@
 
       &.is-focused {
         border: 1px solid $focus-color;
-        box-shadow: 0 0 0 1px $focus-color;
+        box-shadow: 0 0 0 2px $focus-color;
       }
 
       &-container {
@@ -76,7 +76,7 @@
 
       &.is-focused {
         border: 1px solid $focus-color !important;
-        box-shadow: 0 0 0 1px $focus-color;
+        box-shadow: 0 0 0 2px $focus-color;
       }
 
       &-value {
@@ -165,10 +165,10 @@
   &__select-item {
     box-sizing: border-box;
     background-color: $white;
-    color: $dark-gray;
+    color: $black;
     cursor: pointer;
     display: block;
-    padding: rem-calc(2px 5px);
+    padding: rem-calc(3px 5px);
 
     &.is-focused {
       background-color: $engel-lighter;
