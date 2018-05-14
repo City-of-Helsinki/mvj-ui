@@ -42,7 +42,7 @@ const LeaseAreaItems = ({
             key={index}
             defaultOpen={true}
             headerTitle={
-              <h3 className='collapse__header-title'>Vuokra-alue {index + 1}</h3>
+              <h3 className='collapse__header-title'>Kohde {index + 1}</h3>
             }
           >
             <BoxContentWrapper>

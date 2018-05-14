@@ -24,12 +24,6 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
     return `${capitalize(area.address)}, ${area.postal_code} ${capitalize(area.city)}`;
   };
 
-  const getAreaLabel = (area: Object) => {
-    return (
-      <span>{formatNumber(area.area)} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location) || '-'}</span>
-    );
-  };
-
   const areas = getContentLeaseAreas(currentLease);
   const areasSum = getAreasSum(areas);
   const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
@@ -58,17 +52,27 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
                 </Column>
                 <Column>
                   <span className='collapse__header-subtitle'>
+                    {area.identifier || '-'}
+                  </span>
+                </Column>
+                <Column>
+                  <span className='collapse__header-subtitle'>
                     {getFullAddress(area)}
                   </span>
                 </Column>
                 <Column>
                   <span className='collapse__header-subtitle'>
-                    {getAreaLabel(area)}
+                    {formatNumber(areasSum) || '-'} m<sup>2</sup>
+                  </span>
+                </Column>
+                <Column>
+                  <span className='collapse__header-subtitle'>
+                    {getLabelOfOption(locationOptions, area.location) || '-'}
                   </span>
                 </Column>
               </div>
             }
-            headerTitle={<h3 className='collapse__header-title'>{area.identifier || '-'}</h3>}
+            headerTitle={<h3 className='collapse__header-title'>Kohde {index + 1}</h3>}
           >
             <LeaseArea area={area} />
           </Collapse>
