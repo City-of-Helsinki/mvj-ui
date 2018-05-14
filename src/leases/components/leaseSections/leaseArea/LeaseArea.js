@@ -100,42 +100,50 @@ const LeaseArea = ({area, attributes}: Props) => {
         </Column>
       </Row>
 
-      {area.plan_units_contract && !!area.plan_units_contract.length &&
-        <Collapse
-          className='collapse__secondary'
-          defaultOpen={true}
-          headerTitle={
-            <h4 className='collapse__header-title'>Kaavayksiköt sopimushetkellä</h4>
-          }
-        >
-          <BoxItemContainer>
-            {area.plan_units_contract.map((item, index) =>
-              <PlanUnitItem
-                key={index}
-                planUnit={item}
-              />
-            )}
-          </BoxItemContainer>
-        </Collapse>
-      }
-      {area.plan_units_current && !!area.plan_units_current.length &&
-        <Collapse
-          className='collapse__secondary'
-          defaultOpen={true}
-          headerTitle={
-            <h4 className='collapse__header-title'>Kaavayksiköt nykyhetkellä</h4>
-          }
-        >
-          <BoxItemContainer>
-            {area.plan_units_current.map((item, index) =>
-              <PlanUnitItem
-                key={index}
-                planUnit={item}
-              />
-            )}
-          </BoxItemContainer>
-        </Collapse>
-      }
+      <Row>
+        <Column small={12} medium={6}>
+          <Collapse
+            className='collapse__secondary'
+            defaultOpen={true}
+            headerTitle={
+              <h4 className='collapse__header-title'>Kaavayksiköt sopimuksessa</h4>
+            }
+          >
+            <BoxItemContainer>
+              {!area.plan_units_contract || !area.plan_units_contract.length &&
+                <p>Ei kaavayksiköitä sopimuksessa</p>
+              }
+              {area.plan_units_contract.map((item, index) =>
+                <PlanUnitItem
+                  key={index}
+                  planUnit={item}
+                />
+              )}
+            </BoxItemContainer>
+          </Collapse>
+        </Column>
+        <Column small={12} medium={6}>
+          <Collapse
+            className='collapse__secondary'
+            defaultOpen={true}
+            headerTitle={
+              <h4 className='collapse__header-title'>Kaavayksiköt nykyhetkellä</h4>
+            }
+          >
+            <BoxItemContainer>
+              {!area.plan_units_current || !area.plan_units_current.length &&
+                <p>Ei kaavayksiköitä nykyhetkellä</p>
+              }
+              {area.plan_units_current.map((item, index) =>
+                <PlanUnitItem
+                  key={index}
+                  planUnit={item}
+                />
+              )}
+            </BoxItemContainer>
+          </Collapse>
+        </Column>
+      </Row>
     </div>
   );
 };

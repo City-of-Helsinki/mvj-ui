@@ -63,19 +63,19 @@ const PlotItem = ({attributes, plot}: Props) => {
       <p className='sub-title'>Ktj-dokumentit</p>
       <Row>
         <Column small={12} medium={6}>
-          <a>Lainhuutotodistus</a>
+          <a onClick={() => alert('TODO')}>Lainhuutotodistus</a>
         </Column>
         <Column small={12} medium={6}>
-          <a>Lainhuutotodistus</a>
+          <a onClick={() => alert('TODO')}>Lainhuutotodistus</a>
         </Column>
         <Column small={12} medium={6}>
-          <a>Kiinteistörekisteriote</a>
+          <a onClick={() => alert('TODO')}>Kiinteistörekisteriote</a>
         </Column>
         <Column small={12} medium={6}>
-          <a>Kiinteistörekisteriote</a>
+          <a onClick={() => alert('TODO')}>Kiinteistörekisteriote</a>
         </Column>
         <Column small={12} medium={6}>
-          <a>Rasitustodistus</a>
+          <a onClick={() => alert('TODO')}>Rasitustodistus</a>
         </Column>
       </Row>
     </BoxItem>
