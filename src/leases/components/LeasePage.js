@@ -840,7 +840,9 @@ class LeasePage extends Component<Props, State> {
 
           <TabPane>
             <ContentContainer>
-              <EditableMap/>
+              <EditableMap
+                showEditTools={false}
+              />
             </ContentContainer>
           </TabPane>
         </TabContent>

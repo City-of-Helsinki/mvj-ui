@@ -14,10 +14,9 @@ const SideMenu = ({isOpen, onLinkClick}: Props) =>
   <div className={classnames('side-menu', {'is-menu-open': isOpen})}>
     <ul>
       <li onClick={onLinkClick}><Link to={getRouteById('leases')}>Vuokraukset</Link></li>
+      <li onClick={onLinkClick}><Link to={getRouteById('rememberableTerms')}>Muistettavat ehdot</Link></li>
       <li onClick={onLinkClick}><Link to={getRouteById('rentbasis')}>Vuokrausperusteet</Link></li>
       <li onClick={onLinkClick}><Link to={getRouteById('contacts')}>Asiakkaat</Link></li>
-      {/* <li>Raportointi</li>
-      <li>Tietoa palvelusta</li> */}
     </ul>
   </div>;
 

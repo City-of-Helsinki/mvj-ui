@@ -12,6 +12,7 @@ import LeasePage from '../leases/components/LeasePage';
 import LoginPage from '../auth/components/LoginPage';
 import NewContactPage from '../contacts/components/NewContactPage';
 import NewRentBasisPage from '../rentbasis/components/NewRentBasisPage';
+import RememberableTermsList from '../rememberableTerms/components/RememberableTermsList';
 import RentBasisListPage from '../rentbasis/components/RentBasisListPage';
 import RentBasisPage from '../rentbasis/components/RentBasisPage';
 
@@ -24,7 +25,9 @@ export const getRouteById = (id: string): string => {
     logout: '/logout',
     newrentbasis: '/uusivuokrausperuste',
     rentbasis: '/vuokrausperusteet',
+    rememberableTerms: '/muistettavatehdot',
   };
+
   return routes[id] ? routes[id] : '';
 };
 
@@ -36,6 +39,7 @@ export default
   <Route path={getRouteById('newcontact')} components={NewContactPage} />
   <Route path={getRouteById('leases')} components={LeaseListPage} />
   <Route path={`${getRouteById('leases')}/:leaseId`} component={LeasePage}/>
+  <Route path={getRouteById('rememberableTerms')} components={RememberableTermsList} />
   <Route path={getRouteById('newrentbasis')} components={NewRentBasisPage} />
   <Route path={getRouteById('rentbasis')} components={RentBasisListPage} />
   <Route path={`${getRouteById('rentbasis')}/:rentBasisId`} components={RentBasisPage} />
