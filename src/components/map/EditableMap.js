@@ -11,12 +11,13 @@ import {defaultCoordinates, defaultZoom} from '$src/constants';
 import MapContainer from '$components/map/MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
 
-import mockData from '$components/map/mock-data-map.json';
+import type {RememberableTermList} from '$src/rememberableTerms/types';
 
 localizeMap();
 
 type Props = {
   onHideEdit?: Function,
+  rememberableTerms?: RememberableTermList,
   showEditTools: boolean,
 }
 
@@ -26,19 +27,16 @@ type State = {
 }
 
 class EditableMap extends Component<Props, State> {
-  state = {
+  static defaultProps = {
     rememberableTerms: [],
+  };
+
+  state = {
     shapes: [],
   }
 
   saveConditionPanel: any
   featureGroup: any
-
-  componentWillMount() {
-    this.setState({
-      rememberableTerms: mockData,
-    });
-  }
 
   handleCreated = (e: Object) => {
     const {shapes} = this.state;
@@ -108,20 +106,23 @@ class EditableMap extends Component<Props, State> {
 
   createRememberableTerm = (comment: string) => {
     const {onHideEdit} = this.props;
-    const {rememberableTerms, shapes} = this.state;
+    const {
+      // rememberableTerms,
+      shapes,
+    } = this.state;
 
     shapes.forEach((shape) => {
       if(comment) {
         shape.data.properties.comment = comment;
       }
-      rememberableTerms.push(shape.data);
+      // rememberableTerms.push(shape.data);
       // Delete layers after pushing them to array.
       // TODO: Find better place for this when saving using API is ready
       this.featureGroup.leafletElement.removeLayer(shape.id);
     });
 
     this.setState({
-      rememberableTerms: rememberableTerms,
+      // rememberableTerms: rememberableTerms,
       shapes: [],
     });
 
@@ -153,8 +154,8 @@ class EditableMap extends Component<Props, State> {
   }
 
   render() {
-    const {showEditTools} = this.props;
-    const {rememberableTerms, shapes} = this.state;
+    const {rememberableTerms, showEditTools} = this.props;
+    const {shapes} = this.state;
 
     return (
       <div className='map'>

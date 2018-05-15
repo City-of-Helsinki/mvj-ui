@@ -30,6 +30,7 @@ import {
   fetchAttributes,
   fetchLeases,
 } from '$src/leases/actions';
+import {fetchRememberableTermList} from '$src/rememberableTerms/actions';
 import {FormNames} from '$src/leases/enums';
 import {getLessorOptions} from '$src/contacts/helpers';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '$src/leases/helpers';
@@ -40,8 +41,10 @@ import {
   getIsFetching,
   getLeasesList,
 } from '$src/leases/selectors';
+import {getRememberableTermList} from '$src/rememberableTerms/selectors';
 
 import type {LeaseList} from '../types';
+import type {RememberableTermList} from '$src/rememberableTerms/types';
 
 const PAGE_SIZE = 25;
 
@@ -51,12 +54,14 @@ type Props = {
   fetchAttributes: Function,
   fetchLeases: Function,
   fetchLessors: Function,
+  fetchRememberableTermList: Function,
   initialize: Function,
   isFetching: boolean,
   leases: LeaseList,
   lessors: Array<Object>,
   router: Object,
   receiveTopNavigationSettings: Function,
+  rememberableTerms: RememberableTermList,
 }
 
 type State = {
@@ -84,6 +89,7 @@ class LeaseListPage extends Component<Props, State> {
       fetchAttributes,
       fetchLeases,
       fetchLessors,
+      fetchRememberableTermList,
       receiveTopNavigationSettings,
     } = this.props;
     const {router: {location: {query}}} = this.props;
@@ -111,6 +117,7 @@ class LeaseListPage extends Component<Props, State> {
       fetchAttributes();
     }
     fetchLessors();
+    fetchRememberableTermList();
   }
 
   componentDidMount = () => {
@@ -213,6 +220,7 @@ class LeaseListPage extends Component<Props, State> {
       leases: content,
       lessors,
       isFetching,
+      rememberableTerms,
     } = this.props;
     const leases = getContentLeases(content);
     const count = this.getLeasesCount(content);
@@ -287,6 +295,7 @@ class LeaseListPage extends Component<Props, State> {
             )}
             {visualizationType === 'map' && (
               <EditableMap
+                rememberableTerms={rememberableTerms}
                 showEditTools={false}
               />
             )}
@@ -305,6 +314,7 @@ export default flowRight(
         isFetching: getIsFetching(state),
         leases: getLeasesList(state),
         lessors: getLessors(state),
+        rememberableTerms: getRememberableTermList(state),
       };
     },
     {
@@ -312,6 +322,7 @@ export default flowRight(
       fetchAttributes,
       fetchLeases,
       fetchLessors,
+      fetchRememberableTermList,
       initialize,
       receiveTopNavigationSettings,
     },

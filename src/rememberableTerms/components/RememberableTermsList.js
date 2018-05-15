@@ -10,13 +10,20 @@ import EditableMap from '$components/map/EditableMap';
 import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
+import {fetchRememberableTermList} from '$src/rememberableTerms/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {FormNames} from '../enums';
+import {FormNames} from '$src/rememberableTerms/enums';
+import {getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
+import {getRememberableTermList} from '$src/rememberableTerms/selectors';
+
+import type {RememberableTermList} from '$src/rememberableTerms/types';
 
 type Props = {
   initialize: Function,
+  fetchRememberableTermList: Function,
   receiveTopNavigationSettings: Function,
+  rememberableTerms: RememberableTermList,
   router: Object,
 }
 
@@ -34,13 +41,19 @@ class RememberableTermsList extends Component<Props, State> {
   };
 
   componentWillMount() {
-    const {receiveTopNavigationSettings} = this.props;
+    const {
+      fetchRememberableTermList,
+      receiveTopNavigationSettings,
+      router: {location: {query}},
+    } = this.props;
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById('rememberableTerms'),
       pageTitle: 'Muistettavat ehdot',
       showSearch: false,
     });
+
+    fetchRememberableTermList(getSearchQuery(query));
   }
 
   componentDidMount = () => {
@@ -54,6 +67,9 @@ class RememberableTermsList extends Component<Props, State> {
 
   handleSearchChange = (query) => {
     const {router} = this.context;
+    const {fetchRememberableTermList} = this.props;
+
+    fetchRememberableTermList(getSearchQuery(query));
 
     return router.push({
       pathname: getRouteById('rememberableTerms'),
@@ -66,6 +82,7 @@ class RememberableTermsList extends Component<Props, State> {
   }
 
   render() {
+    const {rememberableTerms} = this.props;
     const {showEditTools} = this.state;
 
     return (
@@ -89,6 +106,7 @@ class RememberableTermsList extends Component<Props, State> {
 
         <EditableMap
           onHideEdit={this.handleHideEdit}
+          rememberableTerms={rememberableTerms}
           showEditTools={showEditTools}
         />
 
@@ -99,9 +117,14 @@ class RememberableTermsList extends Component<Props, State> {
 
 export default flowRight(
   connect(
-    null,
+    (state) => {
+      return {
+        rememberableTerms: getRememberableTermList(state),
+      };
+    },
     {
       initialize,
+      fetchRememberableTermList,
       receiveTopNavigationSettings,
     },
   ),
