@@ -11,13 +11,10 @@ import {defaultCoordinates, defaultZoom} from '$src/constants';
 import MapContainer from '$components/map/MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
 
-import type {RememberableTermList} from '$src/rememberableTerms/types';
-
 localizeMap();
 
 type Props = {
   onHideEdit?: Function,
-  rememberableTerms?: RememberableTermList,
   showEditTools: boolean,
 }
 
@@ -154,14 +151,13 @@ class EditableMap extends Component<Props, State> {
   }
 
   render() {
-    const {rememberableTerms, showEditTools} = this.props;
+    const {showEditTools} = this.props;
     const {shapes} = this.state;
 
     return (
       <div className='map'>
         <MapContainer
           center={defaultCoordinates}
-          rememberableTerms={rememberableTerms}
           zoom={defaultZoom}
         >
           <FeatureGroup

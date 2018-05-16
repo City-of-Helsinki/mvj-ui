@@ -13,6 +13,7 @@ import decisionsReducer from '../decision/reducer';
 import districtsReducer from '../district/reducer';
 import invoiceReducer from '$src/invoices/reducer';
 import leaseReducer from '../leases/reducer';
+import mapDataReducer from '../mapData/reducer';
 import noticePeriodReducer from '../noticePeriod/reducer';
 import rememberableTermReducer from '../rememberableTerms/reducer';
 import rentBasisReducer from '../rentbasis/reducer';
@@ -33,6 +34,7 @@ export default (): Reducer<RootState> =>
     form: formReducer,
     invoice: invoiceReducer,
     lease: leaseReducer,
+    mapData: mapDataReducer,
     noticePeriod: noticePeriodReducer,
     oidc,
     rememberableterm: rememberableTermReducer,

@@ -22,6 +22,7 @@ import type {RememberableTermList} from '$src/rememberableTerms/types';
 type Props = {
   initialize: Function,
   fetchRememberableTermList: Function,
+  plansUnderground: ?Array<Object>,
   receiveTopNavigationSettings: Function,
   rememberableTerms: RememberableTermList,
   router: Object,
@@ -82,7 +83,6 @@ class RememberableTermsList extends Component<Props, State> {
   }
 
   render() {
-    const {rememberableTerms} = this.props;
     const {showEditTools} = this.state;
 
     return (
@@ -106,7 +106,6 @@ class RememberableTermsList extends Component<Props, State> {
 
         <EditableMap
           onHideEdit={this.handleHideEdit}
-          rememberableTerms={rememberableTerms}
           showEditTools={showEditTools}
         />
 

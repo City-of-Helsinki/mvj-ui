@@ -1,72 +1,32 @@
-[
-  {
-    "type":"Feature",
-    "properties":{
-      "comment": "Muistettavan ehto: monikulmio"
-    },
-    "geometry":{
-      "type":"Polygon",
-      "coordinates":[
-        [
-          [24.928684, 60.172553],
-          [24.928959, 60.172429],
-          [24.929121, 60.17252],
-          [24.928999, 60.172575],
-          [24.929017, 60.17259],
-          [24.928889, 60.172649],
-          [24.928862, 60.172649],
-          [24.928684, 60.172553]
-        ]
-      ]
-    }
-  },
-  {
-    "type":"Feature",
-    "properties":{
-      "comment": "Muistettavan ehto: monikulmio"
-    },
-    "geometry":{
-      "type":"Polygon",
-      "coordinates":[
-        [
-          [24.929516, 60.17226],
-          [24.929602, 60.172183],
-          [24.92945, 60.172139],
-          [24.929479, 60.172106],
-          [24.929234, 60.172024],
-          [24.929248, 60.172008],
-          [24.929155, 60.171977],
-          [24.929138, 60.172013],
-          [24.929044, 60.172079],
-          [24.929516, 60.17226]
-        ]
-      ]
-    }
-  },
-  {
-    "type": "Feature",
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
     "properties": {
-      "comment": "Muistettavan ehdo: ympyrä",
-      "radius": 20
-    },
-    "geometry": {
-      "type":"Point",
-      "coordinates":[24.93219, 60.172456]
+      "name": "urn:ogc:def:crs:EPSG::3879"
     }
   },
-  {
-    "type":"Feature",
-    "properties":{
-      "comment": "Muistettava ehto: viiva"
-    },
-    "geometry": {
-      "type":"LineString",
-      "coordinates": [
-        [24.932008, 60.171991],
-        [24.931278, 60.171835],
-        [24.93068, 60.172254],
-        [24.931208, 60.172415]
-      ]
+  "features": [
+    {
+      "type":"Feature",
+      "properties":{
+        "comment": "Muistettavan ehto: monikulmio"
+      },
+      "geometry":{
+        "type":"Polygon",
+        "coordinates":[
+          [
+            [25496041.30, 6673299.74],
+            [25496056.56, 6673285.89],
+            [25496065.56, 6673296.03],
+            [25496058.80, 6673302.17],
+            [25496059.80, 6673303.84],
+            [25496052.70, 6673310.42],
+            [25496051.20, 6673310.42],
+            [25496041.31, 6673299.73]
+          ]
+        ]
+      }
     }
-  }
-]
+  ]
+}
