@@ -1,158 +1,136 @@
 // @ flow
 import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import L from 'leaflet';
 import {FeatureGroup} from 'react-leaflet';
 import {EditControl} from 'react-leaflet-draw';
-import forEach from 'lodash/forEach';
-import isEmpty from 'lodash/isEmpty';
 import 'leaflet-measure-path';
+import isEmpty from 'lodash/isEmpty';
 
-import {displayUIMessage, localizeMap} from '$util/helpers';
-import {defaultCoordinates, defaultZoom} from '$src/constants';
 import MapContainer from '$components/map/MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
+import {createRememberableTerm, deleteRememberableTerm, editRememberableTerm} from '$src/rememberableTerms/actions';
+import {defaultCoordinates, defaultZoom} from '$src/constants';
+import {convertFeaturesToRememberableTermList, convertRememberableTermListToFeatures} from '$src/rememberableTerms/helpers';
+import {localizeMap} from '$util/helpers';
+import {hideEditMode} from '$src/rememberableTerms/actions';
+import {getInitialRememberableTerm, getIsEditMode} from '$src/rememberableTerms/selectors';
 
 localizeMap();
 
 type Props = {
+  createRememberableTerm: Function,
+  deleteRememberableTerm: Function,
+  editRememberableTerm: Function,
+  hideEditMode: Function,
+  initialValues: Object,
+  isEditMode: boolean;
   onHideEdit?: Function,
   showEditTools: boolean,
 }
 
 type State = {
-  rememberableTerms: Array<Object>,
-  shapes: Array<Object>,
+  id: number,
+  isNew: boolean,
+  isValid: boolean,
 }
 
 class EditableMap extends Component<Props, State> {
-  static defaultProps = {
-    rememberableTerms: [],
-  };
-
   state = {
-    shapes: [],
+    id: -1,
+    isNew: true,
+    isValid: false,
   }
 
   saveConditionPanel: any
   featureGroup: any
 
-  handleCreated = (e: Object) => {
-    const {shapes} = this.state;
-    const {layer, layer: {_leaflet_id}, layerType} = e;
+  componentDidUpdate(prevProps) {
+    if(this.props.isEditMode && !prevProps.isEditMode) {
+      const {initialValues} = this.props;
 
-    let geoJSON = layer.toGeoJSON();
-    if(layerType === 'circle') {
-      const radius = layer.getRadius();
-      geoJSON.properties.radius = radius;
+      // Initialize select features for editing
+      const geoJSON = {...initialValues.geoJSON};
+      if(!isEmpty(geoJSON)) {
+        geoJSON.features = convertFeaturesToRememberableTermList(geoJSON.features);
+        const featuresGeoJSON = new L.GeoJSON(geoJSON);
+        featuresGeoJSON.eachLayer( (layer) => {
+          this.featureGroup.leafletElement.addLayer(layer);
+        });
+        this.setState({isValid: true});
+      } else {
+        this.setState({isValid: false});
+      }
+
+      // Initialize comment field value when opening edit isEditMode
+      console.log(initialValues.comment);
+      this.saveConditionPanel.setCommentField(initialValues.comment);
+
+      this.setState({id: initialValues.id});
+      this.setState({isNew: initialValues.isNew});
     }
-    shapes.push({
-      id: _leaflet_id,
-      data: geoJSON,
-    });
 
-    layer.showMeasurements();
-    this.setState({shapes: shapes});
+    if(!this.props.isEditMode && prevProps.isEditMode) {
+      this.featureGroup.leafletElement.eachLayer((layer) => {
+        this.featureGroup.leafletElement.removeLayer(layer);
+      });
+    }
   }
 
-  handleDeleted = (e: Object) => {
-    const {shapes} = this.state;
-
-    const deletedShapes = [];
-    e.layers.eachLayer(layer => {
-      deletedShapes.push(layer._leaflet_id);
-    });
-
-    const newShapes = shapes.filter((shape) => {
-      let d = false;
-      forEach(deletedShapes, (s) => {
-        if(s === shape.id) {
-          d = true;
-          return false;
-        }
-      });
-      return !d;
-    });
-    this.setState({shapes: newShapes});
-  }
-
-  handleEdited = (e: Object) => {
-    const {shapes} = this.state;
-
-    const editedShapes = [];
-    e.layers.eachLayer(layer => {
-      editedShapes.push({
-        id: layer._leaflet_id,
-        data: layer.toGeoJSON(),
-      });
-    });
-
-    const newShapes = shapes.map((shape) => {
-      let newShape = {};
-      forEach(editedShapes, (s) => {
-        if(shape.id === s.id) {
-          newShape = s;
-          return false;
-        }
-      });
-      if(!isEmpty(newShape)) {
-        return newShape;
-      }
-      return shape;
-    });
-    this.setState({shapes: newShapes});
-  };
-
-  createRememberableTerm = (comment: string) => {
-    const {onHideEdit} = this.props;
-    const {
-      // rememberableTerms,
-      shapes,
-    } = this.state;
-
-    shapes.forEach((shape) => {
-      if(comment) {
-        shape.data.properties.comment = comment;
-      }
-      // rememberableTerms.push(shape.data);
-      // Delete layers after pushing them to array.
-      // TODO: Find better place for this when saving using API is ready
-      this.featureGroup.leafletElement.removeLayer(shape.id);
-    });
-
-    this.setState({
-      // rememberableTerms: rememberableTerms,
-      shapes: [],
-    });
-
-    this.saveConditionPanel.clearCommentField();
-    displayUIMessage({title: 'Muistettava ehto tallennettu', body: 'Muistettava ehto on tallennettu onnistuneesti'});
-
-    if(onHideEdit) {
-      onHideEdit();
-    }
+  handleAction = () => {
+    let amount = 0;
+    this.featureGroup.leafletElement.eachLayer(() => amount++);
+    this.setState({isValid: !!amount});
   }
 
   handleCancel = () => {
-    const {onHideEdit} = this.props;
-    const {shapes} = this.state;
+    const {hideEditMode} = this.props;
+    hideEditMode();
+  }
 
-    shapes.forEach((shape) => {
-      this.featureGroup.leafletElement.removeLayer(shape.id);
-    });
+  handleSave = (comment: string) => {
+    const {isNew} = this.state;
 
-    this.setState({
-      shapes: [],
-    });
-
-    this.saveConditionPanel.clearCommentField();
-
-    if(onHideEdit) {
-      onHideEdit();
+    if(isNew) {
+      this.handleCreate(comment);
+    } else {
+      this.handleEdit(comment);
     }
   }
 
+  handleCreate = (comment: string) => {
+    const {createRememberableTerm} = this.props;
+
+    const features = [];
+    this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
+    // Inject comment to the Feature properties if comment exists
+    if(comment) {
+      features.forEach((feature) => feature.properties.comment = comment);
+    }
+
+    createRememberableTerm(convertRememberableTermListToFeatures(features));
+  }
+
+  handleEdit = (comment: string) => {
+    const {editRememberableTerm} = this.props;
+
+    const features = [];
+    this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
+    // Inject comment to the Feature properties if comment exists
+    if(comment) {
+      features.forEach((feature) => feature.properties.comment = comment);
+    }
+
+    editRememberableTerm(convertRememberableTermListToFeatures(features));
+  }
+
+  handleDelete = () => {
+    this.props.deleteRememberableTerm(this.state.id);
+  }
+
   render() {
-    const {showEditTools} = this.props;
-    const {shapes} = this.state;
+    const {isEditMode} = this.props;
+    const {isNew, isValid} = this.state;
 
     return (
       <div className='map'>
@@ -163,14 +141,15 @@ class EditableMap extends Component<Props, State> {
           <FeatureGroup
             ref={(input) => {this.featureGroup = input;}}
           >
-            {showEditTools &&
+            {isEditMode &&
               <EditControl
                 position='topright'
-                onCreated={this.handleCreated}
-                onDeleted={this.handleDeleted}
-                onEdited={this.handleEdited}
+                onCreated={this.handleAction}
+                onDeleted={this.handleAction}
+                onEdited={this.handleAction}
                 draw={{
                   circlemarker: false,
+                  circle: false,
                   marker: false,
                   polyline: {
                     allowIntersection: false,
@@ -190,14 +169,15 @@ class EditableMap extends Component<Props, State> {
                 }}
               />
             }
-
           </FeatureGroup>
           <SaveConditionPanel
             ref={(input) => {this.saveConditionPanel = input;}}
-            createCondition={(comment) => this.createRememberableTerm(comment)}
-            disableSave={!shapes || !shapes.length}
+            disableDelete={isNew}
+            disableSave={!isValid}
             onCancel={this.handleCancel}
-            show={showEditTools}
+            onDelete={this.handleDelete}
+            onSave={(comment) => this.handleSave(comment)}
+            show={isEditMode}
           />
         </MapContainer>
       </div>
@@ -205,4 +185,17 @@ class EditableMap extends Component<Props, State> {
   }
 }
 
-export default EditableMap;
+export default connect(
+  (state) => {
+    return {
+      initialValues: getInitialRememberableTerm(state),
+      isEditMode: getIsEditMode(state),
+    };
+  },
+  {
+    createRememberableTerm,
+    deleteRememberableTerm,
+    editRememberableTerm,
+    hideEditMode,
+  }
+)(EditableMap);

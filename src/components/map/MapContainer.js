@@ -18,10 +18,13 @@ import 'proj4leaflet';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import RememberableTermsLayer from '$src/rememberableTerms/components/RememberableTermsLayer';
 import {fetchMapDataByType} from '$src/mapData/actions';
+import {initializeRememberableTerm, showEditMode} from '$src/rememberableTerms/actions';
 import {minZoom, maxZoom} from '$src/constants';
 import {getMapDataByType} from '$src/mapData/selectors';
-import {getRememberableTermList} from '$src/rememberableTerms/selectors';
+import {getIsEditMode, getRememberableTermList} from '$src/rememberableTerms/selectors';
+import {getCoordsToLatLng} from '$util/helpers';
 
 import 'react-leaflet-fullscreen/dist/styles.css';
 
@@ -33,31 +36,15 @@ const CRS = new L.Proj.CRS(
     bounds,
   });
 
-const getCoordsToLatLng = (geojson) => {
-  let crs;
-
-  if (geojson) {
-    if (geojson.crs && geojson.crs.type === 'name') {
-      crs = new L.Proj.CRS(geojson.crs.properties.name);
-    } else if (geojson.crs && geojson.crs.type) {
-      crs = new L.Proj.CRS(geojson.crs.type + ':' + geojson.crs.properties.code);
-    }
-
-    if (crs !== undefined) {
-      return function(coords) {
-        var point = L.point(coords[0], coords[1]);
-        return crs.projection.unproject(point);
-      };
-    }
-  }
-};
-
 type Props = {
   center: Object,
   children: Object,
   fetchMapDataByType: Function,
+  initializeRememberableTerm: Function,
+  isEditMode: boolean,
   plansUnderground: ?Array<Object>,
   rememberableTerms?: Array<Object>,
+  showEditMode: Function,
   zoom: Number,
   areas: Array<any>,
 };
@@ -74,24 +61,31 @@ class MapContainer extends Component<Props> {
   }
 
   onMouseOver = (e) => {
-    const layer = e.target;
-    layer.setStyle({
-      fillOpacity: 0.7,
-    });
-    layer.openPopup();
+    const {isEditMode} = this.props;
+
+    if(!isEditMode) {
+      const layer = e.target;
+      layer.setStyle({
+        fillOpacity: 0.7,
+      });
+      layer.openPopup();
+    }
   }
 
   onMouseOut = (e) => {
-    const layer = e.target;
-    layer.setStyle({
-      fillOpacity: 0.2,
-    });
-    layer.closePopup();
+    const {isEditMode} = this.props;
+
+    if(!isEditMode) {
+      const layer = e.target;
+      layer.setStyle({
+        fillOpacity: 0.2,
+      });
+      // layer.closePopup();
+    }
   }
 
   render() {
     const {center, children, plansUnderground, rememberableTerms, zoom} = this.props;
-
     return (
       <Map
         center={center}
@@ -160,29 +154,7 @@ class MapContainer extends Component<Props> {
 
           <Overlay checked name="Muistettavat ehdot">
             <LayerGroup>
-              {!isEmpty(rememberableTerms) &&
-                <GeoJSON
-                  data={rememberableTerms}
-                  coordsToLatLng={getCoordsToLatLng(rememberableTerms)}
-                  onEachFeature={(feature, layer) => {
-                    if (feature.properties && feature.properties.comment) {
-                      const popupContent = `<p>
-                        <strong>Kommentti</strong><br/>
-                        ${feature.properties.comment}
-                      </p>`;
-                      layer.bindPopup(popupContent);
-                    }
-
-                    layer.on({
-                      mouseover: this.onMouseOver,
-                      mouseout: this.onMouseOut,
-                    });
-                  }}
-                  style={{
-                    color: '#C95678',
-                  }}
-                />
-              }
+              {!isEmpty(rememberableTerms) && <RememberableTermsLayer/>}
             </LayerGroup>
           </Overlay>
         </LayersControl>
@@ -199,12 +171,15 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        isEditMode: getIsEditMode(state),
         plansUnderground: getMapDataByType(state, 'avoindata:Kaavahakemisto_alue_maanalainenkaava_voimassa'),
         rememberableTerms: getRememberableTermList(state),
       };
     },
     {
       fetchMapDataByType,
+      initializeRememberableTerm,
+      showEditMode,
     },
   ),
 )(MapContainer);

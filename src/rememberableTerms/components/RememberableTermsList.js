@@ -10,33 +10,29 @@ import EditableMap from '$components/map/EditableMap';
 import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
-import {fetchRememberableTermList} from '$src/rememberableTerms/actions';
+import {fetchRememberableTermList, hideEditMode, initializeRememberableTerm, showEditMode} from '$src/rememberableTerms/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/rememberableTerms/enums';
 import {getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getRememberableTermList} from '$src/rememberableTerms/selectors';
+import {getIsEditMode, getRememberableTermList} from '$src/rememberableTerms/selectors';
 
 import type {RememberableTermList} from '$src/rememberableTerms/types';
 
 type Props = {
   initialize: Function,
   fetchRememberableTermList: Function,
+  hideEditMode: Function,
+  initializeRememberableTerm: Function,
+  isEditMode: boolean,
   plansUnderground: ?Array<Object>,
   receiveTopNavigationSettings: Function,
   rememberableTerms: RememberableTermList,
   router: Object,
+  showEditMode: Function,
 }
 
-type State = {
-  showEditTools: boolean,
-}
-
-class RememberableTermsList extends Component<Props, State> {
-  state = {
-    showEditTools: false,
-  }
-
+class RememberableTermsList extends Component<Props> {
   static contextTypes = {
     router: PropTypes.object,
   };
@@ -63,7 +59,14 @@ class RememberableTermsList extends Component<Props, State> {
   }
 
   handleCreateButtonClick = () => {
-    this.setState({showEditTools: true});
+    this.props.initializeRememberableTerm({
+      comment: '',
+      geoJSON: {},
+      id: -1,
+      isNew: true,
+    });
+
+    this.props.showEditMode();
   }
 
   handleSearchChange = (query) => {
@@ -79,11 +82,11 @@ class RememberableTermsList extends Component<Props, State> {
   }
 
   handleHideEdit = () => {
-    this.setState({showEditTools: false});
+    this.props.hideEditMode();
   }
 
   render() {
-    const {showEditTools} = this.state;
+    const {isEditMode} = this.props;
 
     return (
       <PageContainer>
@@ -91,7 +94,7 @@ class RememberableTermsList extends Component<Props, State> {
           buttonComponent={
             <Button
               className='no-margin'
-              disabled={showEditTools}
+              disabled={isEditMode}
               label='Luo muistettava ehto'
               onClick={this.handleCreateButtonClick}
               title='Luo muistettava ehto'
@@ -103,12 +106,7 @@ class RememberableTermsList extends Component<Props, State> {
             />
           }
         />
-
-        <EditableMap
-          onHideEdit={this.handleHideEdit}
-          showEditTools={showEditTools}
-        />
-
+        <EditableMap />
       </PageContainer>
     );
   }
@@ -118,13 +116,17 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        isEditMode: getIsEditMode(state),
         rememberableTerms: getRememberableTermList(state),
       };
     },
     {
-      initialize,
       fetchRememberableTermList,
+      hideEditMode,
+      initialize,
+      initializeRememberableTerm,
       receiveTopNavigationSettings,
+      showEditMode,
     },
   ),
 )(RememberableTermsList);

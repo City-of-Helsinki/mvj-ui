@@ -1,14 +1,17 @@
 // @flow
 import React, {Component} from 'react';
 import classNames from 'classnames';
+import {Row, Column} from 'react-foundation';
 
 import Button from '$components/button/Button';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 
 type Props = {
-  createCondition: Function,
+  disableDelete: boolean,
   disableSave: boolean,
   onCancel: Function,
+  onDelete: Function,
+  onSave: Function,
   show: boolean,
 }
 
@@ -21,40 +24,54 @@ class SaveConditionPanel extends Component<Props, State> {
     comment: '',
   }
 
-  clearCommentField = () => {
-    this.setState({comment: ''});
+  setCommentField = (comment: string) => {
+    this.setState({comment: comment});
   }
 
   render() {
-    const {createCondition, disableSave, onCancel, show} = this.props;
+    const {disableDelete, disableSave, onCancel, onDelete, onSave, show} = this.props;
     const {comment} = this.state;
 
     return (
       <div className={classNames('save-condition-panel', {'is-panel-open': show})}>
         <div className='save-condition-panel__container'>
-          <div className='save-condition-panel__comment-wrapper'>
-            <TextAreaInput
-              className="no-margin"
-              onChange={(e) => this.setState({comment: e.target.value})}
-              placeholder='Kirjoita huomautus'
-              rows={1}
-              value={comment}
-            />
-          </div>
+          <h2>Luo muistettava ehto</h2>
+          <Row>
+            <Column>
+              <TextAreaInput
+                className="no-margin"
+                onChange={(e) => this.setState({comment: e.target.value})}
+                placeholder='Kirjoita huomautus'
+                rows={4}
+                value={comment}
+              />
+            </Column>
+          </Row>
           <div className='save-condition-panel__buttons-wrapper'>
-            <Button
-              className='button-red'
-              label='Peruuta'
-              onClick={onCancel}
-              title='Peruuta'
-            />
-            <Button
-              className='button-green no-margin'
-              disabled={disableSave}
-              label='Tallenna'
-              onClick={() => createCondition(this.state.comment)}
-              title='Tallenna muistettava ehto'
-            />
+            <Row>
+              <Column>
+                <Button
+                  className='button-red'
+                  disabled={disableDelete}
+                  label='Poista'
+                  onClick={onDelete}
+                  title='Poista'
+                />
+                <Button
+                  className='button-red'
+                  label='Peruuta'
+                  onClick={onCancel}
+                  title='Peruuta'
+                />
+                <Button
+                  className='button-green'
+                  disabled={disableSave}
+                  label='Tallenna'
+                  onClick={() => onSave(this.state.comment)}
+                  title='Tallenna muistettava ehto'
+                />
+              </Column>
+            </Row>
           </div>
         </div>
       </div>

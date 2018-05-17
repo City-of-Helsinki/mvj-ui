@@ -1,20 +1,24 @@
 .save-condition-panel {
   position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: auto;
-  max-height: 0;
+  left: -350px;
+  bottom: top;
+  width: 350px;
+  height: 100%;
   z-index: 1001;
   background-color: rgba(0,0,0,0.35);
   box-shadow: -2px 0 5px 0 rgba(0, 0, 0, 0.07);
+  padding: rem-calc(15px);
 
   @include transition(0.3s, all, ease-in-out);
 
+  h2 {
+    color: $white;
+    margin-bottom: rem-calc(15px);
+  }
+
   &__container {
-    padding: rem-calc(15px);
-    text-align: right;
-    display: flex;
+    position: relative;
+    height: 100%;
   }
 
   &__comment-wrapper {
@@ -23,10 +27,17 @@
   }
 
   &__buttons-wrapper {
-    align-self: flex-end;
+    position: absolute;
+    bottom: 0;
+    text-align: right;
+    width: 100%;
+
+    mvj-button:last-child {
+      margin-right: 0;
+    }
   }
 
   &.is-panel-open {
-    max-height: 100px;
+    left: 0;
   }
 }
