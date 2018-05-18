@@ -11,7 +11,6 @@ import {
   WMSTileLayer,
   ZoomControl,
 } from 'react-leaflet';
-import ZoomBox from '$components/map/ZoomBox';
 const {BaseLayer, Overlay} = LayersControl;
 import FullscreenControl from 'react-leaflet-fullscreen';
 import 'proj4';
@@ -19,7 +18,9 @@ import 'proj4leaflet';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import GeoSearch from '$components/map/GeoSearch';
 import RememberableTermsLayer from '$src/rememberableTerms/components/RememberableTermsLayer';
+import ZoomBox from '$components/map/ZoomBox';
 import {fetchMapDataByType} from '$src/mapData/actions';
 import {initializeRememberableTerm, showEditMode} from '$src/rememberableTerms/actions';
 import {minZoom, maxZoom} from '$src/constants';
@@ -162,6 +163,7 @@ class MapContainer extends Component<Props> {
           </Overlay>
         </LayersControl>
 
+        <GeoSearch />
         <FullscreenControl
           position="topright"
           title='Koko näytön tila'
