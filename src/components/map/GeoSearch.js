@@ -17,6 +17,7 @@ class GeoSearch extends MapControl {
       animateZoom: true,
       keepResult: false,
       searchLabel: 'Hae osoitteella',
+      zoomLevel: 9,
     });
   }
 }
