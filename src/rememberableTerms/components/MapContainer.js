@@ -11,6 +11,7 @@ import {
   WMSTileLayer,
   ZoomControl,
 } from 'react-leaflet';
+import ZoomBox from '$components/map/ZoomBox';
 const {BaseLayer, Overlay} = LayersControl;
 import FullscreenControl from 'react-leaflet-fullscreen';
 import 'proj4';
@@ -161,8 +162,20 @@ class MapContainer extends Component<Props> {
           </Overlay>
         </LayersControl>
 
-        <FullscreenControl position="topright" />
-        <ZoomControl position='topright' />
+        <FullscreenControl
+          position="topright"
+          title='Koko näytön tila'
+        />
+        <ZoomControl
+          position='topright'
+          zoomInTitle='Lähennä'
+          zoomOutTitle='Loitonna'
+        />
+        <ZoomBox
+          position='topright'
+          modal={true}
+          title='Tarkenna valittuun alueeseen'
+        />
         {children}
       </Map>
     );

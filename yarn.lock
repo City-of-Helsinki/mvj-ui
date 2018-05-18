@@ -5829,6 +5829,10 @@ leaflet-measure-path@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/leaflet-measure-path/-/leaflet-measure-path-1.3.1.tgz#bd1263724dfcf8a5303afa25a5266343e73ee77e"
 
+leaflet-zoombox@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/leaflet-zoombox/-/leaflet-zoombox-0.5.1.tgz#84a50abf10a354aed5e0661eadbdda8927f1512f"
+
 leaflet.fullscreen@^1.4.x:
   version "1.4.4"
   resolved "https://registry.yarnpkg.com/leaflet.fullscreen/-/leaflet.fullscreen-1.4.4.tgz#23b76ddcd32aa14a5b98335b9e7c13f03a22d619"
