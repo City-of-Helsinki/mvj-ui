@@ -11,7 +11,6 @@ import {receiveError} from '../api/actions';
 
 function* fetchMapdataByTypeSaga({payload: type}): Generator<any, any, any> {
   try {
-
     const query = {
       version: '1.1.0',
       request: 'GetFeature',
