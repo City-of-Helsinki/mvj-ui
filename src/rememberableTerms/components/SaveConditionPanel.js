@@ -56,7 +56,7 @@ class SaveConditionPanel extends Component<Props, State> {
                   disabled={disableDelete}
                   label='Poista'
                   onClick={onDelete}
-                  title='Poista'
+                  title='Poista muistettava ehto'
                 />
                 <Button
                   className='button-red'

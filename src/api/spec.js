@@ -5,11 +5,11 @@ import {
 } from './actions';
 import apiReducer from './reducer';
 
-describe('Decisions', () => {
+describe('API', () => {
 
   describe('Reducer', () => {
 
-    describe('decisionReducer', () => {
+    describe('apiReducer', () => {
       it('should update error', () => {
         const dummyError = {'error': 'test'};
         const newState = {
