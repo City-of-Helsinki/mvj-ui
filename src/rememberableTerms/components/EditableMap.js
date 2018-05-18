@@ -7,6 +7,7 @@ import {EditControl} from 'react-leaflet-draw';
 import 'leaflet-measure-path';
 import isEmpty from 'lodash/isEmpty';
 
+import ConfirmationModal from '$components/modal/ConfirmationModal';
 import MapContainer from './MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
 import {createRememberableTerm, deleteRememberableTerm, editRememberableTerm} from '$src/rememberableTerms/actions';
@@ -23,6 +24,7 @@ const SHAPE_FILL_OPACITY = 0.5;
 const SHAPE_ERROR_COLOR = '#bd2719';
 
 type Props = {
+  allowEditing?: boolean,
   createRememberableTerm: Function,
   deleteRememberableTerm: Function,
   editRememberableTerm: Function,
@@ -35,6 +37,7 @@ type Props = {
 
 type State = {
   id: number,
+  isDeleteModalOpen: boolean,
   isNew: boolean,
   isValid: boolean,
 }
@@ -42,6 +45,7 @@ type State = {
 class EditableMap extends Component<Props, State> {
   state = {
     id: -1,
+    isDeleteModalOpen: false,
     isNew: true,
     isValid: false,
   }
@@ -146,15 +150,27 @@ class EditableMap extends Component<Props, State> {
 
   handleDelete = () => {
     this.props.deleteRememberableTerm(this.state.id);
+    this.setState({isDeleteModalOpen: false});
   }
 
   render() {
-    const {isEditMode} = this.props;
-    const {isNew, isValid} = this.state;
+    const {allowEditing, isEditMode} = this.props;
+    const {isDeleteModalOpen, isNew, isValid} = this.state;
 
     return (
       <div className='map'>
+        <ConfirmationModal
+          confirmButtonLabel='Poista'
+          isOpen={isDeleteModalOpen}
+          label='Haluatko varmasti poistaa muistettavan ehdon?'
+          onCancel={() => this.setState({isDeleteModalOpen: false})}
+          onClose={() => this.setState({isDeleteModalOpen: false})}
+          onSave={this.handleDelete}
+          title='Poista muistettava ehto'
+        />
+
         <MapContainer
+          allowEditing={allowEditing}
           center={defaultCoordinates}
           zoom={defaultZoom}
         >
@@ -209,7 +225,7 @@ class EditableMap extends Component<Props, State> {
             disableDelete={isNew}
             disableSave={!isValid}
             onCancel={this.handleCancel}
-            onDelete={this.handleDelete}
+            onDelete={() => this.setState({isDeleteModalOpen: true})}
             onSave={(comment) => this.handleSave(comment)}
             show={isEditMode}
             title={isEditMode ? 'Muokkaa muistettavaa ehtoa' : 'Luo muistettava ehto'}

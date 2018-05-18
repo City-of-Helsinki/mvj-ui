@@ -53,9 +53,14 @@ class RememberableTermsList extends Component<Props> {
     fetchRememberableTermList(getSearchQuery(query));
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     const {initialize, router: {location: {query}}} = this.props;
     initialize(FormNames.SEARCH, query);
+  }
+
+  componentWillUnmount() {
+    const {hideEditMode} = this.props;
+    hideEditMode();
   }
 
   handleCreateButtonClick = () => {
@@ -106,7 +111,7 @@ class RememberableTermsList extends Component<Props> {
             />
           }
         />
-        <EditableMap />
+        <EditableMap allowEditing/>
       </PageContainer>
     );
   }

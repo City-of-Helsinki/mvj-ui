@@ -37,6 +37,7 @@ const CRS = new L.Proj.CRS(
   });
 
 type Props = {
+  allowEditing?: boolean,
   center: Object,
   children: Object,
   fetchMapDataByType: Function,
@@ -85,7 +86,8 @@ class MapContainer extends Component<Props> {
   }
 
   render() {
-    const {center, children, plansUnderground, rememberableTerms, zoom} = this.props;
+    const {allowEditing, center, children, plansUnderground, rememberableTerms, zoom} = this.props;
+    console.log(allowEditing);
     return (
       <Map
         center={center}
@@ -154,7 +156,7 @@ class MapContainer extends Component<Props> {
 
           <Overlay checked name="Muistettavat ehdot">
             <LayerGroup>
-              {!isEmpty(rememberableTerms) && <RememberableTermsLayer/>}
+              {!isEmpty(rememberableTerms) && <RememberableTermsLayer allowEditing={allowEditing}/>}
             </LayerGroup>
           </Overlay>
         </LayersControl>

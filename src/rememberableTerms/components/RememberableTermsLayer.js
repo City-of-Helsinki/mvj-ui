@@ -10,6 +10,7 @@ import {getCoordsToLatLng} from '$util/helpers';
 
 
 type Props = {
+  allowEditing?: boolean,
   initializeRememberableTerm: Function,
   isEditMode: boolean,
   rememberableTerms: Object,
@@ -17,6 +18,9 @@ type Props = {
 }
 
 class RememberableTermsLayer extends Component<Props> {
+  static defaultProps = {
+    allowEditing: false,
+  }
   onMouseOver = (e) => {
     const {isEditMode} = this.props;
 
@@ -58,7 +62,12 @@ class RememberableTermsLayer extends Component<Props> {
           }
 
           layer.on({
-            click: () => {
+            click: (e) => {
+              const {allowEditing} = this.props;
+              if(!allowEditing) {
+                return;
+              }
+
               const {initializeRememberableTerm, rememberableTerms, showEditMode} = this.props;
               initializeRememberableTerm({
                 comment: feature.properties.comment,
@@ -67,6 +76,9 @@ class RememberableTermsLayer extends Component<Props> {
                 isNew: false,
               });
               showEditMode();
+              e.target.setStyle({
+                fillOpacity: 0.2,
+              });
             },
             mouseover: this.onMouseOver,
             mouseout: this.onMouseOut,
