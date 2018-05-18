@@ -1,6 +1,4 @@
 // @flow
-import {BaseProvider} from 'leaflet-geosearch';
-console.log(BaseProvider);
 
 export default class Provider {
   options: Object
