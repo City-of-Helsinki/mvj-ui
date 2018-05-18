@@ -1,4 +1,4 @@
-// @flow
+// @ flow
 import {Control} from 'leaflet';
 import 'leaflet-zoombox';
 import {MapControl} from 'react-leaflet';
