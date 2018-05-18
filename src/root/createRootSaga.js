@@ -8,7 +8,9 @@ import decisionSaga from '../decision/saga';
 import districtSaga from '../district/saga';
 import invoiceSaga from '../invoices/saga';
 import leaseSaga from '../leases/saga';
+import mapDataSaga from '../mapData/saga';
 import noticePeriodSaga from '../noticePeriod/saga';
+import rememberableTermSaga from '../rememberableTerms/saga';
 import rentBasisSaga from '../rentbasis/saga';
 import userSaga from '../users/saga';
 
@@ -23,7 +25,9 @@ export default () =>
       fork(districtSaga),
       fork(invoiceSaga),
       fork(leaseSaga),
+      fork(mapDataSaga),
       fork(noticePeriodSaga),
+      fork(rememberableTermSaga),
       fork(rentBasisSaga),
       fork(userSaga),
     ]);

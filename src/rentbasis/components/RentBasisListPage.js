@@ -54,8 +54,13 @@ class RentBasisListPage extends Component<Props, State> {
   };
 
   componentWillMount() {
-    const {attributes, fetchAttributes, fetchRentBasisList, receiveTopNavigationSettings} = this.props;
-    const {router: {location: {query}}} = this.props;
+    const {
+      attributes,
+      fetchAttributes,
+      fetchRentBasisList,
+      receiveTopNavigationSettings,
+      router: {location: {query}},
+    } = this.props;
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById('rentbasis'),

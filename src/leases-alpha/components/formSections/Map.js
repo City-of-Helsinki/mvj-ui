@@ -56,9 +56,7 @@ class Map extends Component {
     });
   };
 
-  handleAreaClick = (area) => {
-    console.log(area);
-  };
+  handleAreaClick = () => {};
 
   render() {
     const {

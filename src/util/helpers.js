@@ -139,6 +139,25 @@ export const localizeMap = () => {
   L.drawLocal.edit.toolbar.buttons.removeDisabled = 'Ei poistettavia alueita';
 };
 
+export const getCoordsToLatLng = (geojson) => {
+  let crs;
+
+  if (geojson) {
+    if (geojson.crs && geojson.crs.type === 'name') {
+      crs = new L.Proj.CRS(geojson.crs.properties.name);
+    } else if (geojson.crs && geojson.crs.type) {
+      crs = new L.Proj.CRS(geojson.crs.type + ':' + geojson.crs.properties.code);
+    }
+
+    if (crs !== undefined) {
+      return function(coords) {
+        var point = L.point(coords[0], coords[1]);
+        return crs.projection.unproject(point);
+      };
+    }
+  }
+};
+
 /**
  *
  * @param title

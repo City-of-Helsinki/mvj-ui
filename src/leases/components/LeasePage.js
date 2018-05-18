@@ -7,6 +7,33 @@ import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import CommentPanel from '$components/commentPanel/CommentPanel';
+import ConfirmationModal from '$components/modal/ConfirmationModal';
+import Constructability from './leaseSections/constructability/Constructability';
+import ConstructabilityEdit from './leaseSections/constructability/ConstructabilityEdit';
+import ContentContainer from '$components/content/ContentContainer';
+import ControlButtons from '$components/controlButtons/ControlButtons';
+import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
+import DecisionsMain from './leaseSections/contract/DecisionsMain';
+import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
+import EditableMap from '$src/rememberableTerms/components/EditableMap';
+import Invoices from './leaseSections/invoice/Invoices';
+import InvoicesEdit from './leaseSections/invoice/InvoicesEdit';
+import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
+import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
+import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
+import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
+import Loader from '$components/loader/Loader';
+import PageContainer from '$components/content/PageContainer';
+import Rents from './leaseSections/rent/Rents';
+import RentsEdit from './leaseSections/rent/RentsEdit';
+import Summary from './leaseSections/summary/Summary';
+import SummaryEdit from './leaseSections/summary/SummaryEdit';
+import Tabs from '$components/tabs/Tabs';
+import TabPane from '$components/tabs/TabPane';
+import TabContent from '$components/tabs/TabContent';
+import TenantsEdit from './leaseSections/tenant/TenantsEdit';
+import Tenants from './leaseSections/tenant/Tenants';
 import {fetchAttributes as fetchCommentAttributes, fetchCommentsByLease} from '$src/comments/actions';
 import {fetchAttributes as fetchContactAttributes, fetchCompleteContactList} from '$src/contacts/actions';
 import {fetchDecisionsByLease} from '$src/decision/actions';
@@ -20,12 +47,14 @@ import {
   showEditMode,
 } from '$src/leases/actions';
 import {fetchNoticePeriods} from '$src/noticePeriod/actions';
+import {fetchRememberableTermList} from '$src/rememberableTerms/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchUsers} from '$src/users/actions';
 import {FormNames} from '$src/leases/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
 import {getSearchQuery} from '$util/helpers';
+import {getRouteById} from '$src/root/routes';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
@@ -45,39 +74,14 @@ import {
   getIsSummaryFormValid,
   getIsTenantsFormValid,
 } from '$src/leases/selectors';
-import {getRouteById} from '$src/root/routes';
-import CommentPanel from '$components/commentPanel/CommentPanel';
-import ConfirmationModal from '$components/modal/ConfirmationModal';
-import Constructability from './leaseSections/constructability/Constructability';
-import ConstructabilityEdit from './leaseSections/constructability/ConstructabilityEdit';
-import ContentContainer from '$components/content/ContentContainer';
-import ControlButtons from '$components/controlButtons/ControlButtons';
-import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
-import DecisionsMain from './leaseSections/contract/DecisionsMain';
-import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
-import EditableMap from '$components/map/EditableMap';
-import Invoices from './leaseSections/invoice/Invoices';
-import InvoicesEdit from './leaseSections/invoice/InvoicesEdit';
-import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
-import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
-import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
-import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
-import Loader from '$components/loader/Loader';
-import PageContainer from '$components/content/PageContainer';
-import Rents from './leaseSections/rent/Rents';
-import RentsEdit from './leaseSections/rent/RentsEdit';
-import Summary from './leaseSections/summary/Summary';
-import SummaryEdit from './leaseSections/summary/SummaryEdit';
-import Tabs from '$components/tabs/Tabs';
-import TabPane from '$components/tabs/TabPane';
-import TabContent from '$components/tabs/TabContent';
-import TenantsEdit from './leaseSections/tenant/TenantsEdit';
-import Tenants from './leaseSections/tenant/Tenants';
+import {getRememberableTermList} from '$src/rememberableTerms/selectors';
+
 
 import type {Attributes as CommentAttributes, CommentList} from '$src/comments/types';
 import type {Attributes as ContactAttributes} from '$src/contacts/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 import type {Attributes, Lease} from '$src/leases/types';
+import type {RememberableTermList} from '$src/rememberableTerms/types';
 
 import mockData from '../mock-data.json';
 
@@ -103,6 +107,7 @@ type Props = {
   fetchInvoiceAttributes: Function,
   fetchInvoices: Function,
   fetchNoticePeriods: Function,
+  fetchRememberableTermList: Function,
   fetchSingleLease: Function,
   fetchUsers: Function,
   hideEditMode: Function,
@@ -134,6 +139,7 @@ type Props = {
   params: Object,
   patchLease: Function,
   receiveTopNavigationSettings: Function,
+  rememberableTerms: RememberableTermList,
   rentsFormValues: Object,
   router: Object,
   showEditMode: Function,
@@ -180,6 +186,7 @@ class LeasePage extends Component<Props, State> {
       fetchInvoiceAttributes,
       fetchInvoices,
       fetchNoticePeriods,
+      fetchRememberableTermList,
       fetchSingleLease,
       fetchUsers,
       invoiceAttributes,
@@ -225,6 +232,7 @@ class LeasePage extends Component<Props, State> {
     fetchDecisionsByLease(leaseId);
     fetchInvoices(getSearchQuery({lease: leaseId}));
     fetchNoticePeriods();
+    fetchRememberableTermList();
     fetchUsers();
   }
 
@@ -256,11 +264,18 @@ class LeasePage extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    const {hideEditMode} = this.props;
+    const {
+      hideEditMode,
+      params: {leaseId},
+      router: {location: {pathname}},
+    } = this.props;
 
     hideEditMode();
+    if(pathname !== `${getRouteById('leases')}/${leaseId}`) {
+      clearUnsavedChanges();
+    }
     this.stopAutoSaveTimer();
-    clearUnsavedChanges();
+
     window.removeEventListener('beforeunload', this.handleLeavePage);
   }
 
@@ -688,6 +703,7 @@ class LeasePage extends Component<Props, State> {
       isRentsFormValid,
       isSummaryFormValid,
       isTenantsFormValid,
+      rememberableTerms,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -841,6 +857,7 @@ class LeasePage extends Component<Props, State> {
           <TabPane>
             <ContentContainer>
               <EditableMap
+                rememberableTerms={rememberableTerms}
                 showEditTools={false}
               />
             </ContentContainer>
@@ -889,6 +906,7 @@ export default flowRight(
         isTenantsFormValid: getIsTenantsFormValid(state),
         isFetching: getIsFetching(state),
         leaseInfoFormValues: getFormValues(FormNames.LEASE_INFO)(state),
+        rememberableTerms: getRememberableTermList(state),
         rentsFormValues: getFormValues(FormNames.RENTS)(state),
         summaryFormValues: getFormValues(FormNames.SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.TENANTS)(state),
@@ -907,6 +925,7 @@ export default flowRight(
       fetchInvoiceAttributes,
       fetchInvoices,
       fetchNoticePeriods,
+      fetchRememberableTermList,
       fetchSingleLease,
       fetchUsers,
       hideEditMode,
