@@ -31,18 +31,14 @@ function* fetchApiTokenSaga({payload: token}): Generator<any, any, any> {
       }
     }
   } catch (error) {
-    console.log(`Failed to fetch API token with error: ${error}`);
+    console.error(`Failed to fetch API token with error: ${error}`);
     yield put(tokenNotFound());
     userManager.removeUser();
   }
 }
 
 function* clearApiTokenSaga(): Generator<any, any, any> {
-  try {
-    yield put(receiveApiToken({}));
-  } catch (error) {
-    console.log('Clearing API token failed');
-  }
+  yield put(receiveApiToken({}));
 }
 
 export default function*(): Generator<any, any, any> {

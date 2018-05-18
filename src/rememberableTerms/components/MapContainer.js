@@ -87,7 +87,7 @@ class MapContainer extends Component<Props> {
 
   render() {
     const {allowEditing, center, children, plansUnderground, rememberableTerms, zoom} = this.props;
-    console.log(allowEditing);
+
     return (
       <Map
         center={center}
