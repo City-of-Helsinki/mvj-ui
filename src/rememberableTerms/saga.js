@@ -16,7 +16,11 @@ function* fetchRememberableTermListSaga({payload: search}): Generator<any, any, 
 
 function* createRememberableTermSaga({payload: terms}): Generator<any, any, any> {
   const rememberableTerms = yield select(getRememberableTermList);
-  terms.properties.id = tempId ++;
+  terms.forEach((feature) => {
+    feature.properties.id = tempId;
+  });
+  tempId++;
+
   const features = [...rememberableTerms.features, ...terms];
   rememberableTerms.features = features;
 
