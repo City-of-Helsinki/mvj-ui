@@ -6,7 +6,7 @@ import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import Button from '$components/button/Button';
-import EditableMap from '$components/map/EditableMap';
+import EditableMap from '$src/rememberableTerms/components/EditableMap';
 import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';

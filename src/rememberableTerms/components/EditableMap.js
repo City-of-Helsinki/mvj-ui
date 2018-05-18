@@ -7,7 +7,7 @@ import {EditControl} from 'react-leaflet-draw';
 import 'leaflet-measure-path';
 import isEmpty from 'lodash/isEmpty';
 
-import MapContainer from '$components/map/MapContainer';
+import MapContainer from './MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
 import {createRememberableTerm, deleteRememberableTerm, editRememberableTerm} from '$src/rememberableTerms/actions';
 import {defaultCoordinates, defaultZoom} from '$src/constants';
@@ -17,6 +17,10 @@ import {hideEditMode} from '$src/rememberableTerms/actions';
 import {getInitialRememberableTerm, getIsEditMode} from '$src/rememberableTerms/selectors';
 
 localizeMap();
+
+const SHAPE_COLOR = '#9c27b0';
+const SHAPE_FILL_OPACITY = 0.5;
+const SHAPE_ERROR_COLOR = '#bd2719';
 
 type Props = {
   createRememberableTerm: Function,
@@ -55,7 +59,10 @@ class EditableMap extends Component<Props, State> {
         geoJSON.features = convertFeaturesToRememberableTermList(geoJSON.features);
         const featuresGeoJSON = new L.GeoJSON(geoJSON);
         featuresGeoJSON.eachLayer( (layer) => {
+          layer.options.color = SHAPE_COLOR;
+          layer.options.fillOpacity = SHAPE_FILL_OPACITY;
           this.featureGroup.leafletElement.addLayer(layer);
+          layer.showMeasurements();
         });
         this.setState({isValid: true});
       } else {
@@ -63,7 +70,6 @@ class EditableMap extends Component<Props, State> {
       }
 
       // Initialize comment field value when opening edit isEditMode
-      console.log(initialValues.comment);
       this.saveConditionPanel.setCommentField(initialValues.comment);
 
       this.setState({id: initialValues.id});
@@ -81,6 +87,16 @@ class EditableMap extends Component<Props, State> {
     let amount = 0;
     this.featureGroup.leafletElement.eachLayer(() => amount++);
     this.setState({isValid: !!amount});
+  }
+
+  handleCreated = (e: Object) => {
+    const {layer} = e;
+    layer.showMeasurements();
+
+    let amount = 0;
+    this.featureGroup.leafletElement.eachLayer(() => amount++);
+    this.setState({isValid: !!amount});
+
   }
 
   handleCancel = () => {
@@ -113,12 +129,16 @@ class EditableMap extends Component<Props, State> {
 
   handleEdit = (comment: string) => {
     const {editRememberableTerm} = this.props;
+    const {id} = this.state;
 
     const features = [];
     this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
     // Inject comment to the Feature properties if comment exists
     if(comment) {
-      features.forEach((feature) => feature.properties.comment = comment);
+      features.forEach((feature) => {
+        feature.properties.comment = comment;
+        feature.properties.id = id;
+      });
     }
 
     editRememberableTerm(convertRememberableTermListToFeatures(features));
@@ -144,7 +164,7 @@ class EditableMap extends Component<Props, State> {
             {isEditMode &&
               <EditControl
                 position='topright'
-                onCreated={this.handleAction}
+                onCreated={this.handleCreated}
                 onDeleted={this.handleAction}
                 onEdited={this.handleAction}
                 draw={{
@@ -154,16 +174,30 @@ class EditableMap extends Component<Props, State> {
                   polyline: {
                     allowIntersection: false,
                     drawError: {
-                      color: '#b00b00',
+                      color: SHAPE_ERROR_COLOR,
                       timeout: 1000,
+                    },
+                    shapeOptions: {
+                      color: SHAPE_COLOR,
+                      fillOpacity: SHAPE_FILL_OPACITY,
                     },
                   },
                   polygon: {
                     allowIntersection: false,
                     showArea: true,
                     drawError: {
-                      color: '#b00b00',
+                      color: SHAPE_ERROR_COLOR,
                       timeout: 1000,
+                    },
+                    shapeOptions: {
+                      color: SHAPE_COLOR,
+                      fillOpacity: SHAPE_FILL_OPACITY,
+                    },
+                  },
+                  rectangle: {
+                    shapeOptions: {
+                      color: SHAPE_COLOR,
+                      fillOpacity: SHAPE_FILL_OPACITY,
                     },
                   },
                 }}

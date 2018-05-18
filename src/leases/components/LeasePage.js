@@ -16,7 +16,7 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
-import EditableMap from '$components/map/EditableMap';
+import EditableMap from '$src/rememberableTerms/components/EditableMap';
 import Invoices from './leaseSections/invoice/Invoices';
 import InvoicesEdit from './leaseSections/invoice/InvoicesEdit';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';

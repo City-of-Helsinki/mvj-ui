@@ -73,7 +73,7 @@ class RememberableTermsLayer extends Component<Props> {
           });
         }}
         style={{
-          color: '#C95678',
+          color: '#2196f3',
         }}
       />
     );

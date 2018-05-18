@@ -11,7 +11,7 @@ import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
-import EditableMap from '$components/map/EditableMap';
+import EditableMap from '$src/rememberableTerms/components/EditableMap';
 import Loader from '$components/loader/Loader';
 import MapIcon from '$components/icons/MapIcon';
 import PageContainer from '$components/content/PageContainer';

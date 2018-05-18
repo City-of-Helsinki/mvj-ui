@@ -145,7 +145,7 @@ class MapContainer extends Component<Props> {
                     });
                   }}
                   style={{
-                    color: '#3A01DF',
+                    color: '#008b02',
                   }}
                 />
               }
