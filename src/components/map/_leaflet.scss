@@ -852,6 +852,8 @@
 .leaflet-control-geosearch.bar form input {
   min-width: 100%;
   width: 100%;
+  border: none;
+  box-shadow: none;
 }
 
 .leaflet-control-geosearch.bar .results.active:after {
