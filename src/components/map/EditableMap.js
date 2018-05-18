@@ -178,6 +178,7 @@ class EditableMap extends Component<Props, State> {
             onDelete={this.handleDelete}
             onSave={(comment) => this.handleSave(comment)}
             show={isEditMode}
+            title={isEditMode ? 'Muokkaa muistettavaa ehtoa' : 'Luo muistettava ehto'}
           />
         </MapContainer>
       </div>

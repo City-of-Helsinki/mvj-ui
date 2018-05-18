@@ -13,6 +13,7 @@ type Props = {
   onDelete: Function,
   onSave: Function,
   show: boolean,
+  title?: string,
 }
 
 type State = {
@@ -29,13 +30,13 @@ class SaveConditionPanel extends Component<Props, State> {
   }
 
   render() {
-    const {disableDelete, disableSave, onCancel, onDelete, onSave, show} = this.props;
+    const {disableDelete, disableSave, onCancel, onDelete, onSave, show, title = 'Luo muistettava ehto'} = this.props;
     const {comment} = this.state;
 
     return (
       <div className={classNames('save-condition-panel', {'is-panel-open': show})}>
         <div className='save-condition-panel__container'>
-          <h2>Luo muistettava ehto</h2>
+          <h2>{title}</h2>
           <Row>
             <Column>
               <TextAreaInput
