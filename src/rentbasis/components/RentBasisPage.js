@@ -122,12 +122,19 @@ class RentBasisPage extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    const {hideEditMode} = this.props;
+    const {
+      hideEditMode,
+      params: {rentBasisId},
+      router: {location: {pathname}},
+    } = this.props;
+
+    hideEditMode();
+    if(pathname !== `${getRouteById('rentbasis')}/${rentBasisId}`) {
+      clearUnsavedChanges();
+    }
+    this.stopAutoSaveTimer();
 
     window.removeEventListener('beforeunload', this.handleLeavePage);
-    this.stopAutoSaveTimer();
-    clearUnsavedChanges();
-    hideEditMode();
   }
 
   handleLeavePage = (e) => {

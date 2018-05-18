@@ -264,11 +264,18 @@ class LeasePage extends Component<Props, State> {
   }
 
   componentWillUnmount() {
-    const {hideEditMode} = this.props;
+    const {
+      hideEditMode,
+      params: {leaseId},
+      router: {location: {pathname}},
+    } = this.props;
 
     hideEditMode();
+    if(pathname !== `${getRouteById('leases')}/${leaseId}`) {
+      clearUnsavedChanges();
+    }
     this.stopAutoSaveTimer();
-    clearUnsavedChanges();
+
     window.removeEventListener('beforeunload', this.handleLeavePage);
   }
 

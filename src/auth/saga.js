@@ -4,8 +4,8 @@
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 
 import {tokenNotFound, receiveApiToken} from './actions';
-import {receiveError} from '../api/actions';
 import {getEpochTime} from '$util/helpers';
+import userManager from '../auth/util/user-manager';
 
 function* fetchApiTokenSaga({payload: token}): Generator<any, any, any> {
   try {
@@ -14,7 +14,7 @@ function* fetchApiTokenSaga({payload: token}): Generator<any, any, any> {
       headers: {'Authorization': `Bearer ${token}`},
     });
     const response = yield call(fetch, request);
-    const {status: statusCode, statusText} = response;
+    const {status: statusCode} = response;
 
     switch (statusCode) {
       case 200: {
@@ -24,20 +24,16 @@ function* fetchApiTokenSaga({payload: token}): Generator<any, any, any> {
         yield put(receiveApiToken(bodyAsJson));
         break;
       }
-      case 401: {
-        yield put(tokenNotFound());
-        yield put(receiveError({errors: {error: '401: Luvaton käyttö'}}));
-        break;
-      }
       default: {
         yield put(tokenNotFound());
-        yield put(receiveError({errors: {error: `${statusCode}: ${statusText}`}}));
+        userManager.removeUser();
         break;
       }
     }
   } catch (error) {
+    console.log(`Failed to fetch API token with error: ${error}`);
     yield put(tokenNotFound());
-    yield put(receiveError(error));
+    userManager.removeUser();
   }
 }
 
