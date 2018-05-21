@@ -14,6 +14,7 @@ import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
+import SendEmail from './SendEmail';
 import {receiveConstructabilityFormValid} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
@@ -374,6 +375,7 @@ class ConstructabilityEdit extends Component<Props> {
         <FormSection>
           <h2>Rakentamiskelpoisuus</h2>
           <Divider />
+          <SendEmail onSend={() => console.log('TODO')} />
 
           <FieldArray
             areas={areas}

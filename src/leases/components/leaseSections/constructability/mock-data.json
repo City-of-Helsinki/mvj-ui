@@ -1,0 +1,26 @@
+{
+  "emails": [
+    {
+      "time": "2018-05-09T12:00:17+02:00",
+      "recipients": [
+        {
+          "first_name": "Erkki",
+          "last_name": "Esimerkki"
+        },
+        {
+          "first_name": "Katja",
+          "last_name": "Käyttäjä"
+        }
+      ]
+    },
+    {
+      "time": "2018-05-08T15:35:17+02:00",
+      "recipients": [
+        {
+          "first_name": "Katja",
+          "last_name": "Käyttäjä"
+        }
+      ]
+    }
+  ]
+}

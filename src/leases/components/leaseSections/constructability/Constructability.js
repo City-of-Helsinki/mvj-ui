@@ -6,6 +6,7 @@ import {Column} from 'react-foundation';
 import Collapse from '$components/collapse/Collapse';
 import ConstructabilityItem from './ConstructabilityItem';
 import Divider from '$components/content/Divider';
+import SendEmail from './SendEmail';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getContentConstructability} from '$src/leases/helpers';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
@@ -29,6 +30,7 @@ const Constructability = ({attributes, currentLease}: Props) => {
     <div>
       <h2>Rakentamiskelpoisuus</h2>
       <Divider />
+      <SendEmail onSend={() => console.log('TODO')} />
 
       {!areas || !areas.length &&
         <p className='no-margin'>Ei vuokra-alueita</p>
