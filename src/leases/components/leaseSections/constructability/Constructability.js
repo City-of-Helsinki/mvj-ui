@@ -30,7 +30,7 @@ const Constructability = ({attributes, currentLease}: Props) => {
     <div>
       <h2>Rakentamiskelpoisuus</h2>
       <Divider />
-      <SendEmail onSend={() => console.log('TODO')} />
+      <SendEmail />
 
       {!areas || !areas.length &&
         <p className='no-margin'>Ei vuokra-alueita</p>

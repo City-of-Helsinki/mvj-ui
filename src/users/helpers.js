@@ -5,9 +5,10 @@ export const getUserOptions = (users: UserList) => {
   if(!users || !users.length) {
     return [];
   }
+
   return users.map((user) => {
     return {
-      value: user.id,
+      value: user.id.toString(),
       label: `${user.last_name} ${user.first_name}`,
     };
   }).sort((a, b) => {

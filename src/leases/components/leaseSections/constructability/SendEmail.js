@@ -1,16 +1,13 @@
 // @flow
-import React from 'react';
+import React, {Component} from 'react';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import Button from '$components/button/Button';
 import FormFieldLabel from '$components/form/FormFieldLabel';
-import {formatDateObj} from '$util/helpers';
+import SendEmailModal from './SendEmailModal';
+import {displayUIMessage, formatDateObj} from '$util/helpers';
 import mockData from './mock-data.json';
-
-type Props = {
-  onSend: Function,
-}
 
 const getContentCostructabilityEmails = (content: Object) => {
   const emails = get(content, 'emails', []);
@@ -40,47 +37,75 @@ const getRecipientsString = (recipients: Array<Object>) => {
   return text;
 };
 
-const SendEmail = ({onSend}: Props) => {
-  const emails = getContentCostructabilityEmails(mockData);
-  return (
-    <Row>
-      <Column small={12} medium={4} large={3}>
-        <Button
-          className='button-green no-margin'
-          label='Lähetä sähköpostitiedote'
-          onClick={onSend}
-          style={{marginBottom: 15}}
-          title='Lähetä sähköpostitiedote'
+type State = {
+  isOpen: boolean,
+}
+
+class SendEmail extends Component<{}, State> {
+  state = {
+    isOpen: false,
+  }
+
+  handleOnSend = (recipients: Array<string>) => {
+    console.log(recipients);
+    this.setState({isOpen: false});
+    displayUIMessage({title: 'Sähköpostitiedote lähetetty', body: 'Sähköpostitiedote on lähetetty onnistuneesti'});
+  }
+
+  render() {
+    const {isOpen} = this.state;
+    const emails = getContentCostructabilityEmails(mockData);
+
+    return (
+      <div>
+        <SendEmailModal
+          isOpen={isOpen}
+          onCancel={() => this.setState({isOpen: false})}
+          onClose={() => this.setState({isOpen: false})}
+          onSend={(recipients) => this.handleOnSend(recipients)}
         />
-      </Column>
-      <Column small={12} medium={8} large={9}>
-        {emails && !!emails.length &&
-          <div className='constructability__sent-emails'>
-            <Row>
-              <Column small={4} medium={3} large={2}>
-                <FormFieldLabel>Lähetetty</FormFieldLabel>
-              </Column>
-              <Column small={8} medium={9} large={10}>
-                <FormFieldLabel>Vastaanottajat</FormFieldLabel>
-              </Column>
-            </Row>
-            {emails.map((email, index) => {
-              return (
-                <Row key={index}>
+
+        <Row>
+          <Column small={12} medium={4} large={3}>
+            <Button
+              className='button-green no-margin'
+              label='Lähetä sähköpostitiedote'
+              onClick={() => this.setState({isOpen: true})}
+              style={{marginBottom: 15}}
+              title='Lähetä sähköpostitiedote'
+            />
+          </Column>
+          <Column small={12} medium={8} large={9}>
+            {!emails || !emails.length && <p>Ei lähetettyjä sähköpostitiedotteita</p>}
+            {emails && !!emails.length &&
+              <div className='constructability__send-email_sent-emails'>
+                <Row>
                   <Column small={4} medium={3} large={2}>
-                    <p className='no-margin'>{formatDateObj(email.time) || '-'}</p>
+                    <FormFieldLabel>Lähetetty</FormFieldLabel>
                   </Column>
                   <Column small={8} medium={9} large={10}>
-                    <p className='no-margin'>{getRecipientsString(email.recipients) || '-'}</p>
+                    <FormFieldLabel>Vastaanottajat</FormFieldLabel>
                   </Column>
                 </Row>
-              );
-            })}
-          </div>
-        }
-      </Column>
-    </Row>
-  );
-};
+                {emails.map((email, index) => {
+                  return (
+                    <Row key={index}>
+                      <Column small={4} medium={3} large={2}>
+                        <p className='no-margin'>{formatDateObj(email.time) || '-'}</p>
+                      </Column>
+                      <Column small={8} medium={9} large={10}>
+                        <p className='no-margin'>{getRecipientsString(email.recipients) || '-'}</p>
+                      </Column>
+                    </Row>
+                  );
+                })}
+              </div>
+            }
+          </Column>
+        </Row>
+      </div>
+    );
+  }
+}
 
 export default SendEmail;

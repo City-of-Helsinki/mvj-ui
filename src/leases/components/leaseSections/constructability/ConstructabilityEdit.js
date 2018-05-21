@@ -375,7 +375,7 @@ class ConstructabilityEdit extends Component<Props> {
         <FormSection>
           <h2>Rakentamiskelpoisuus</h2>
           <Divider />
-          <SendEmail onSend={() => console.log('TODO')} />
+          <SendEmail />
 
           <FieldArray
             areas={areas}
