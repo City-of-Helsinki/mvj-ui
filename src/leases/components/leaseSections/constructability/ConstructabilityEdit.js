@@ -8,8 +8,6 @@ import get from 'lodash/get';
 import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
-import BoxContentWrapper from '$components/content/BoxContentWrapper';
-import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
@@ -38,35 +36,33 @@ const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
       <BoxItemContainer>
         {fields && !!fields.length && fields.map((comment, index) => {
           return (
-            <BoxItem key={index}>
-              <BoxContentWrapper>
+            <Row key={index}>
+              <Column small={6} medium={6} large={8}>
+                <FormField
+                  fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
+                  name={`${comment}.text`}
+                  overrideValues={{
+                    label: 'Huomautus',
+                  }}
+                />
+              </Column>
+              <Column small={4} medium={3} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
+                  name={`${comment}.ahjo_reference_number`}
+                  overrideValues={{
+                    label: 'AHJO diaarinumero',
+                  }}
+                />
+              </Column>
+              <Column small={2} medium={3} large={2}>
                 <RemoveButton
-                  className='position-topright-no-padding'
+                  className='no-label'
                   onClick={() => fields.remove(index)}
                   title="Poista huomautus"
                 />
-                <Row>
-                  <Column small={6} medium={9} large={10}>
-                    <FormField
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
-                      name={`${comment}.text`}
-                      overrideValues={{
-                        label: 'Huomautus',
-                      }}
-                    />
-                  </Column>
-                  <Column small={6} medium={3} large={2}>
-                    <FormField
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
-                      name={`${comment}.ahjo_reference_number`}
-                      overrideValues={{
-                        label: 'AHJO diaarinumero',
-                      }}
-                    />
-                  </Column>
-                </Row>
-              </BoxContentWrapper>
-            </BoxItem>
+              </Column>
+            </Row>
           );
         })}
       </BoxItemContainer>
