@@ -20,8 +20,10 @@
       color: $black;
       font-size: rem-calc(14px);
 	    font-weight: 600;
-      padding: 0.3rem 1rem;
-      display: block;
+      padding: rem-calc(0 10px);
+      display: flex;
+      height: 32px;
+      align-items: center;
       position: relative;
     }
     > a::after {
@@ -44,20 +46,24 @@
   }
 
   &__error-badge {
-    height: 8px;
-    width: 8px;
-    background-color: $brick;
+    background-image: url(../assets/icons/icon_error.svg);
+    height: 15px;
+    width: 15px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50%;
     display: inline-block;
-    border-radius: 50%;
     margin-left: 5px;
   }
 
   &__dirty-badge {
-    height: 8px;
-    width: 8px;
-    background-color: $summer;
+    background-image: url(../assets/icons/icon_unsaved.svg);
+    height: 15px;
+    width: 15px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: 50%;
     display: inline-block;
-    border-radius: 50%;
     margin-left: 5px;
   }
 
