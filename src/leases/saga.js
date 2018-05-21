@@ -157,7 +157,7 @@ function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
-        displayUIMessage({title: 'Laskutus', body: 'laskutus on käynnistetty onnistuneesti'});
+        displayUIMessage({title: 'Laskutus käynnistetty', body: 'Laskutus on käynnistetty onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -186,7 +186,7 @@ function* stopInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
-        displayUIMessage({title: 'Laskutus', body: 'laskutus on käynnistetty onnistuneesti'});
+        displayUIMessage({title: 'Laskutus keskeytetty', body: 'Laskutus on käynnistetty onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -198,7 +198,7 @@ function* stopInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to start invoicing with error "%s"', error);
+    console.error('Failed to stop invoicing with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }

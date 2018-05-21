@@ -71,6 +71,10 @@
       opacity: 0.85;
     }
 
+    &.no-label {
+      margin-top: rem-calc(19px);
+    }
+
     &.position-topright {
       position: absolute;
       top: 0;

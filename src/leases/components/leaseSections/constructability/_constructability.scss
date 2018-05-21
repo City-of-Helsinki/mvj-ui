@@ -1,0 +1,14 @@
+.constructability {
+  &__send-email {
+    &_sent-emails {
+      margin-bottom: rem-calc(15px);
+    }
+  }
+
+  &__send-email-modal {
+    &_footer {
+      margin-top: rem-calc(15px);
+      text-align: center;
+    }
+  }
+}
