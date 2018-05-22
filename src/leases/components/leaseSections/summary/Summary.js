@@ -107,7 +107,7 @@ class Summary extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <label>Siirto-oikeus</label>
-                  <p>{summary.transferable === 'true' ? 'Kyllä' : 'Ei'}</p>
+                  <p>{summary.transferable ? 'Kyllä' : 'Ei'}</p>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <label>Hitas</label>
@@ -155,7 +155,7 @@ class Summary extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <label>Sääntely</label>
-                  <p>{summary.regulated === 'true' ? 'Kyllä' : 'Ei'}</p>
+                  <p>{summary.regulated ? 'Kyllä' : 'Ei'}</p>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <label>Sääntelymuoto</label>
