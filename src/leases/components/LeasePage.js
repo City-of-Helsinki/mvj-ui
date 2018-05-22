@@ -153,7 +153,6 @@ type State = {
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
   isRestoreModalOpen: boolean,
-  isSaveLeaseModalOpen: boolean,
 };
 
 class LeasePage extends Component<Props, State> {
@@ -163,7 +162,6 @@ class LeasePage extends Component<Props, State> {
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
     isRestoreModalOpen: false,
-    isSaveLeaseModalOpen: false,
   }
 
   timerAutoSave: any
@@ -585,7 +583,6 @@ class LeasePage extends Component<Props, State> {
     }
 
     patchLease(payload);
-    this.hideModal('SaveLease');
   }
 
   validateForms = () => {
@@ -679,7 +676,6 @@ class LeasePage extends Component<Props, State> {
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
       isRestoreModalOpen,
-      isSaveLeaseModalOpen,
     } = this.state;
 
     const {
@@ -722,14 +718,6 @@ class LeasePage extends Component<Props, State> {
     return (
       <PageContainer className='lease-page'>
         <ConfirmationModal
-          isOpen={isSaveLeaseModalOpen}
-          label='Haluatko varmasti tallentaa muutokset?'
-          onCancel={() => this.hideModal('SaveLease')}
-          onClose={() => this.hideModal('SaveLease')}
-          onSave={this.save}
-          title='Tallenna'
-        />
-        <ConfirmationModal
           confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelLeaseModalOpen}
           label='Haluatko varmasti hylätä muutokset?'
@@ -763,7 +751,7 @@ class LeasePage extends Component<Props, State> {
               onCancelClick={isDirty ? () => this.showModal('CancelLease') : this.cancel}
               onCommentClick={this.toggleCommentPanel}
               onEditClick={this.openEditMode}
-              onSaveClick={() => this.showModal('SaveLease')}
+              onSaveClick={() => this.save()}
             />
           }
           infoComponent={isEditMode
