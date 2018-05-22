@@ -259,6 +259,10 @@
       width: 100%;
     }
 
+    .react-datepicker-popper {
+      z-index: 3;
+    }
+
     input {
       padding: 0 rem-calc(5px);
       height: rem-calc(20px);
