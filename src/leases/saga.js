@@ -3,7 +3,6 @@ import {all, call, fork, put, select, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
-import {displayUIMessage} from '$util/helpers';
 import {getRouteById} from '../root/routes';
 import {
   hideContactModal,
@@ -82,7 +81,6 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<any, any, any> {
       case 404:
         yield put(notFound());
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        // yield put(receiveError(new Error(`404: ${bodyAsJson.detail}`)));
         break;
       case 500:
         yield put(notFound());
@@ -102,7 +100,6 @@ function* createLeaseSaga({payload: lease}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(push(`${getRouteById('leases')}/${bodyAsJson.id}`));
-        displayUIMessage({title: 'Vuorkatunnus luotu', body: 'Vuokrautunnus on tallennettu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -128,7 +125,6 @@ function* patchLeaseSaga({payload: lease}): Generator<any, any, any> {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
         yield put(hideEditMode());
-        displayUIMessage({title: 'Vuokraus tallennettu', body: 'Vuokraus on tallennettu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -157,7 +153,6 @@ function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
-        displayUIMessage({title: 'Laskutus käynnistetty', body: 'Laskutus on käynnistetty onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -186,7 +181,6 @@ function* stopInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
-        displayUIMessage({title: 'Laskutus keskeytetty', body: 'Laskutus on käynnistetty onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -220,7 +214,6 @@ function* createContactSaga({payload: contact}): Generator<any, any, any> {
           yield put(receiveContactModalSettings(contactModalSettings));
         }
         yield put(hideContactModal());
-        displayUIMessage({title: 'Asiakas tallennettu', body: 'Asiakas on tallennettu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -246,7 +239,6 @@ function* editContactSaga({payload: contact}): Generator<any, any, any> {
       case 200:
         yield put(receiveEditedContactToCompleteList(bodyAsJson));
         yield put(hideContactModal());
-        displayUIMessage({title: 'Asiakas tallennettu', body: 'Asiakas on tallennettu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());

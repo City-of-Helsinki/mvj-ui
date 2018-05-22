@@ -6,7 +6,7 @@ import get from 'lodash/get';
 import Button from '$components/button/Button';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import SendEmailModal from './SendEmailModal';
-import {displayUIMessage, formatDateObj} from '$util/helpers';
+import {formatDateObj} from '$util/helpers';
 import mockData from './mock-data.json';
 
 const getContentCostructabilityEmails = (content: Object) => {
@@ -49,7 +49,6 @@ class SendEmail extends Component<{}, State> {
   handleOnSend = (recipients: Array<string>) => {
     console.log(recipients);
     this.setState({isOpen: false});
-    displayUIMessage({title: 'Sähköpostitiedote lähetetty', body: 'Sähköpostitiedote on lähetetty onnistuneesti'});
   }
 
   render() {

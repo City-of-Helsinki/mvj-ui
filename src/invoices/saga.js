@@ -2,7 +2,7 @@
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {SubmissionError} from 'redux-form';
 
-import {displayUIMessage, getSearchQuery} from '$util/helpers';
+import {getSearchQuery} from '$util/helpers';
 import {
   fetchInvoices as fetchInvoicesAction,
   receiveAttributes,
@@ -70,7 +70,6 @@ function* createInvoiceSaga({payload: invoice}): Generator<any, any, any> {
       case 201:
         yield put(fetchInvoicesAction(getSearchQuery({lease: invoice.lease})));
         yield put(receiveIsCreateOpen(false));
-        displayUIMessage({title: 'Lasku luotu', body: 'Lasku on luotu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -95,7 +94,6 @@ function* patchInvoiceSaga({payload: invoice}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(fetchInvoicesAction(getSearchQuery({lease: invoice.lease})));
-        displayUIMessage({title: 'Lasku tallennettu', body: 'Lasku on tallennettu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());

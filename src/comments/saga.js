@@ -2,7 +2,6 @@
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {SubmissionError} from 'redux-form';
 
-import {displayUIMessage} from '$util/helpers';
 import {
   notFound,
   fetchCommentsByLease,
@@ -70,7 +69,6 @@ function* createCommentSaga({payload: comment}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(fetchCommentsByLease(bodyAsJson.lease));
-        displayUIMessage({title: 'Kommentti luotu', body: 'Kommentti on luotu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -95,7 +93,6 @@ function* editCommentSaga({payload: comment}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(fetchCommentsByLease(bodyAsJson.lease));
-        displayUIMessage({title: 'Kommentti tallennettu', body: 'Kommentti on tallennettu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());

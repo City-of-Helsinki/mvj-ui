@@ -5,7 +5,6 @@ import get from 'lodash/get';
 import mockData from './mock-data.json';
 import {hideEditMode, receiveRememberableTermList} from './actions';
 import {getRememberableTermList} from './selectors';
-import {displayUIMessage} from '$util/helpers';
 
 let tempId = 100;
 
@@ -26,7 +25,6 @@ function* createRememberableTermSaga({payload: terms}): Generator<any, any, any>
 
   yield put(receiveRememberableTermList(rememberableTerms));
   yield put(hideEditMode());
-  displayUIMessage({title: 'Muistettava ehto tallennettu', body: 'Muistettava ehto on tallennettu onnistuneesti'});
 }
 
 function* deleteRememberableTermSaga({payload: id}): Generator<any, any, any> {
@@ -36,7 +34,6 @@ function* deleteRememberableTermSaga({payload: id}): Generator<any, any, any> {
 
   yield put(receiveRememberableTermList(rememberableTerms));
   yield put(hideEditMode());
-  displayUIMessage({title: 'Muistettava ehto poistettu', body: 'Muistettava ehto on poistettu onnistuneesti'});
 }
 
 function* editRememberableTermSaga({payload: terms}): Generator<any, any, any> {
@@ -48,7 +45,6 @@ function* editRememberableTermSaga({payload: terms}): Generator<any, any, any> {
 
   yield put(receiveRememberableTermList(rememberableTerms));
   yield put(hideEditMode());
-  displayUIMessage({title: 'Muistettava ehto tallennettu', body: 'Muistettava ehto on tallennettu onnistuneesti'});
 }
 
 export default function*(): Generator<any, any, any> {

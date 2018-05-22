@@ -3,7 +3,6 @@ import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
-import {displayUIMessage} from '$util/helpers';
 import {getRouteById} from '../root/routes';
 
 import {
@@ -89,7 +88,6 @@ function* createRentBasisSaga({payload: rentBasis}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(push(`${getRouteById('rentbasis')}/${bodyAsJson.id}`));
-        displayUIMessage({title: 'Vuokrausperuste luotu', body: 'Vuokrausperuste on luotu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -115,7 +113,6 @@ function* editRentBasisSaga({payload: rentBasis}): Generator<any, any, any> {
       case 200:
         yield put(receiveSingleRentBasis(bodyAsJson));
         yield put(hideEditMode());
-        displayUIMessage({title: 'Vuokrausperuste tallennettu', body: 'Vuokrausperuste on tallennettu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());

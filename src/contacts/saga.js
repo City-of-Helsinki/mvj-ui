@@ -4,7 +4,6 @@ import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 import get from 'lodash/get';
 
-import {displayUIMessage} from '$util/helpers';
 import {getRouteById} from '../root/routes';
 
 import {
@@ -127,7 +126,6 @@ function* createContactSaga({payload: contact}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(push(`${getRouteById('contacts')}/${bodyAsJson.id}`));
-        displayUIMessage({title: 'Asiakas tallennettu', body: 'Asiakas on tallennettu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
@@ -153,7 +151,6 @@ function* editContactSaga({payload: contact}): Generator<any, any, any> {
       case 200:
         yield put(receiveSingleContact(bodyAsJson));
         yield put(hideEditMode());
-        displayUIMessage({title: 'Asiakas tallennettu', body: 'Asiakas on tallennettu onnistuneesti'});
         break;
       case 400:
         yield put(notFound());
