@@ -184,7 +184,7 @@ const TenantItemsEdit = ({
                     <Column>
                       <FormField
                         fieldAttributes={get(attributes, 'tenants.child.children.reference')}
-                        name={`${tenant}.tenant.reference`}
+                        name={`${tenant}.reference`}
                         overrideValues={{
                           label: 'Viite',
                         }}
