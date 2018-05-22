@@ -22,7 +22,7 @@ import {fetchAttributes, fetchRentBasisList, initializeRentBasis} from '$src/ren
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {TABLE_PAGE_SIZE} from '$src/rentbasis/constants';
 import {FormNames} from '$src/rentbasis/enums';
-import {formatDateObj, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFetching, getRentBasisList} from '$src/rentbasis/selectors';
 
@@ -226,8 +226,8 @@ class RentBasisListPage extends Component<Props, State> {
               dataKeys={[
                 {key: 'property_identifier', label: 'Kiinteistötunnus'},
                 {key: 'intended_use', label: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(intendedUseOptions, val) : '-'},
-                {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
-                {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDateObj(val, 'DD.MM.YYYY')},
+                {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val) || '-'},
+                {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val) || '-'},
               ]}
               onRowClick={this.handleRowClick}
             />

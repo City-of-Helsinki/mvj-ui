@@ -71,26 +71,36 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
         }
       </Row>
       <Row>
-        <Column small={12} medium={4} large={2}>
-          <label>Perusindeksi/pyöristys</label>
-          <p>{rent.elementary_index || '-'} / {rent.index_rounding || '-'}</p>
-        </Column>
-        <Column small={4} medium={2} large={1}>
-          <label>X-luku</label>
-          <p>{rent.x_value || '-'}</p>
-        </Column>
-        <Column small={4} medium={2} large={1}>
-          <label>Y-luku</label>
-          <p>{rent.y_value || '-'}</p>
-        </Column>
-        <Column small={4} medium={2} large={1}>
-          <label>Y-alkaen</label>
-          <p>{rent.y_value_start || '-'}</p>
-        </Column>
-        <Column small={12} medium={4} large={2}>
-          <label>Tasaus pvm</label>
-          <p>{formatDateRange(rent.equalization_start_date, rent.equalization_end_date) || '-'}</p>
-        </Column>
+        {(rent.elementary_index || rent.index_rounding) &&
+          <Column small={12} medium={4} large={2}>
+            <label>Perusindeksi/pyöristys</label>
+            <p>{rent.elementary_index || '-'} / {rent.index_rounding || '-'}</p>
+          </Column>
+        }
+        {rent.x_value &&
+          <Column small={4} medium={2} large={1}>
+            <label>X-luku</label>
+            <p>{rent.x_value || '-'}</p>
+          </Column>
+        }
+        {rent.y_value &&
+          <Column small={4} medium={2} large={1}>
+            <label>Y-luku</label>
+            <p>{rent.y_value || '-'}</p>
+          </Column>
+        }
+        {rent.y_value_start &&
+          <Column small={4} medium={2} large={1}>
+            <label>Y-alkaen</label>
+            <p>{rent.y_value_start || '-'}</p>
+          </Column>
+        }
+        {(rent.equalization_start_date || rent.equalization_end_date) &&
+          <Column small={12} medium={4} large={2}>
+            <label>Tasaus pvm</label>
+            <p>{formatDateRange(rent.equalization_start_date, rent.equalization_end_date) || '-'}</p>
+          </Column>
+        }
       </Row>
       {rent.fixed_initial_year_rents && !!rent.fixed_initial_year_rents.length &&
         <ListItems>
@@ -110,7 +120,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
             return (
               <Row key={index}>
                 <Column small={4} medium={4} large={2}>
-                  <p className='no-margin'>{formatNumber(item.amount) || '-'}</p>
+                  <p className='no-margin'>{item.amount ? `${formatNumber(item.amount)} €` : '-'}</p>
                 </Column>
                 <Column small={4} medium={2} large={2}>
                   <p className='no-margin'>{formatDate(item.start_date) || '-'}</p>

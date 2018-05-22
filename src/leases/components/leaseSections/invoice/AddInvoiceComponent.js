@@ -45,7 +45,7 @@ class AddInvoiceComponent extends Component <Props> {
     return (
       <div className='invoice__add-invoice'>
         <FormSection>
-          <div style={{marginBottom: 15}}>
+          <div>
             <Button
               className='button-green no-margin'
               disabled={editMode}

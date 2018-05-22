@@ -171,7 +171,13 @@ const BasicInfoEmpty = ({attributes}: Props) => {
   );
 };
 
-const BasicInfoIndex = ({attributes, rent}: Props) => {
+type BasicInfoIndexProps = {
+  attributes: Attributes,
+  isIndex: boolean,
+  rent: Object,
+}
+
+const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
   return (
     <div>
       <Row>
@@ -251,81 +257,85 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
           </Column>
         }
       </Row>
-      <Row>
-        <Column small={12} medium={4} large={2}>
-          <Row>
-            <Column small={6}>
-              <FormField
-                fieldAttributes={get(attributes, 'rents.child.children.elementary_index')}
-                name='elementary_index'
-                overrideValues={{
-                  label: 'Perusindeksi',
-                }}
-              />
-            </Column>
-            <Column small={6}>
-              <FormField
-                fieldAttributes={get(attributes, 'rents.child.children.index_rounding')}
-                name='index_rounding'
-                overrideValues={{
-                  label: 'Pyöristys',
-                }}
-              />
-            </Column>
-          </Row>
-        </Column>
-        <Column small={4} medium={2} large={1}>
-          <FormField
-            fieldAttributes={get(attributes, 'rents.child.children.x_value')}
-            name='x_value'
-            overrideValues={{
-              label: 'X-luku',
-            }}
-          />
-        </Column>
-        <Column small={4} medium={2} large={1}>
-          <FormField
-            fieldAttributes={get(attributes, 'rents.child.children.y_value')}
-            name='y_value'
-            overrideValues={{
-              label: 'Y-luku',
-            }}
-          />
-        </Column>
-        <Column small={4} medium={2} large={1}>
-          <FormField
-            fieldAttributes={get(attributes, 'rents.child.children.y_value_start')}
-            name='y_value_start'
-            overrideValues={{
-              label: 'Y-alkaen',
-            }}
-          />
-        </Column>
-        <Column small={12} medium={4} large={2}>
-          <label>Tasaus pvm</label>
-          <Row>
-            <Column small={6}>
-              <FormField
-                fieldAttributes={get(attributes, 'rents.child.children.equalization_start_date')}
-                name='equalization_start_date'
-                overrideValues={{
-                  label: '',
-                }}
-              />
-            </Column>
-            <Column small={6}>
-              <FormField
-                className='with-dash'
-                fieldAttributes={get(attributes, 'rents.child.children.equalization_end_date')}
-                name='equalization_end_date'
-                overrideValues={{
-                  label: '',
-                }}
-              />
-            </Column>
-          </Row>
-        </Column>
-      </Row>
+
+      {!isIndex &&
+        <Row>
+          <Column small={12} medium={4} large={2}>
+            <Row>
+              <Column small={6}>
+                <FormField
+                  fieldAttributes={get(attributes, 'rents.child.children.elementary_index')}
+                  name='elementary_index'
+                  overrideValues={{
+                    label: 'Perusindeksi',
+                  }}
+                />
+              </Column>
+              <Column small={6}>
+                <FormField
+                  fieldAttributes={get(attributes, 'rents.child.children.index_rounding')}
+                  name='index_rounding'
+                  overrideValues={{
+                    label: 'Pyöristys',
+                  }}
+                />
+              </Column>
+            </Row>
+          </Column>
+          <Column small={4} medium={2} large={1}>
+            <FormField
+              fieldAttributes={get(attributes, 'rents.child.children.x_value')}
+              name='x_value'
+              overrideValues={{
+                label: 'X-luku',
+              }}
+            />
+          </Column>
+          <Column small={4} medium={2} large={1}>
+            <FormField
+              fieldAttributes={get(attributes, 'rents.child.children.y_value')}
+              name='y_value'
+              overrideValues={{
+                label: 'Y-luku',
+              }}
+            />
+          </Column>
+          <Column small={4} medium={2} large={1}>
+            <FormField
+              fieldAttributes={get(attributes, 'rents.child.children.y_value_start')}
+              name='y_value_start'
+              overrideValues={{
+                label: 'Y-alkaen',
+              }}
+            />
+          </Column>
+          <Column small={12} medium={4} large={2}>
+            <label>Tasaus pvm</label>
+            <Row>
+              <Column small={6}>
+                <FormField
+                  fieldAttributes={get(attributes, 'rents.child.children.equalization_start_date')}
+                  name='equalization_start_date'
+                  overrideValues={{
+                    label: '',
+                  }}
+                />
+              </Column>
+              <Column small={6}>
+                <FormField
+                  className='with-dash'
+                  fieldAttributes={get(attributes, 'rents.child.children.equalization_end_date')}
+                  name='equalization_end_date'
+                  overrideValues={{
+                    label: '',
+                  }}
+                />
+              </Column>
+            </Row>
+          </Column>
+        </Row>
+      }
+
       <Row>
         <Column small={12}>
           <FieldArray
@@ -545,6 +555,7 @@ const BasicInfoEdit = ({attributes, rent, rentType}: Props) => {
       {rentType === RentTypes.INDEX &&
         <BasicInfoIndex
           attributes={attributes}
+          isIndex={true}
           rent={rent}
           rentType={rentType}
         />
@@ -573,6 +584,7 @@ const BasicInfoEdit = ({attributes, rent, rentType}: Props) => {
       {rentType === RentTypes.MANUAL &&
         <BasicInfoIndex
           attributes={attributes}
+          isIndex={false}
           rent={rent}
           rentType={rentType}
         />

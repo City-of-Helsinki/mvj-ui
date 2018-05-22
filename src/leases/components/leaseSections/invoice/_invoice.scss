@@ -2,6 +2,10 @@
   &__add-invoice {
     margin-top: rem-calc(5px);
     margin-bottom: rem-calc(10px);
+
+    &_form {
+      margin-top: rem-calc(15px);
+    }
   }
 
   &__invoice-table {

@@ -8,6 +8,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import {formatDate, getAttributeFieldOptions, getDecisionsOptions, getLabelOfOption} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {formatNumber} from '$util/helpers';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -25,6 +26,14 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
     'rents.child.children.rent_adjustments.child.children.intended_use');
   const amountTypeOptions = getAttributeFieldOptions(attributes,
     'rents.child.children.rent_adjustments.child.children.amount_type');
+
+  const getFullAmount = (adjustment: Object) => {
+    if(!adjustment.full_amount) {
+      return null;
+    }
+
+    return `${formatNumber(adjustment.full_amount)} € ${getLabelOfOption(amountTypeOptions, adjustment.amount_type)}`;
+  };
 
   return (
     <BoxItemContainer>
@@ -56,11 +65,11 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <label>Kokonaismäärä</label>
-                  <p>{adjustment.full_amount} {getLabelOfOption(amountTypeOptions, adjustment.amount_type)}</p>
+                  <p>{getFullAmount(adjustment) || '-'}</p>
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <label>Jäljellä (€)</label>
-                  <p>{adjustment.amount_left || '-'}</p>
+                  <p>{adjustment.amount_left ? `${formatNumber(adjustment.amount_left)} €` : '-'}</p>
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <label>Päätös</label>

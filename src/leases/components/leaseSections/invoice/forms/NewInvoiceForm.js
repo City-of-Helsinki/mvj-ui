@@ -47,7 +47,7 @@ const NewInvoiceForm = ({
 
   const recipientOptions = getInvoiceRecipientOptions(lease, contacts);
   return (
-    <form onSubmit={handleSubmit} className='invoice__add-bill'>
+    <form onSubmit={handleSubmit} className='invoice__add-invoice_form'>
       <FormSection>
         <WhiteBoxEdit>
           <BoxContentWrapper>
@@ -105,7 +105,7 @@ const NewInvoiceForm = ({
                 />
               </Column>
               <Column small={6} medium={4} large={2}>
-                <FormFieldLabel>Laskutuskausi</FormFieldLabel>
+                <FormFieldLabel required>Laskutuskausi</FormFieldLabel>
                 <Row>
                   <Column small={6}>
                     <FormField

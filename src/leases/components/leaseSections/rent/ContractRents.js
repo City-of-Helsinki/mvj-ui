@@ -32,7 +32,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
       return null;
     }
 
-    return `${formatNumber(rent.amount)} ${getLabelOfOption(amountPeriodOptions, rent.amount_period)}`;
+    return `${formatNumber(rent.amount)} € ${getLabelOfOption(amountPeriodOptions, rent.period)}`;
   };
 
   const getBaseAmount = (rent: Object) => {
@@ -40,7 +40,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
       return null;
     }
 
-    return `${formatNumber(rent.base_amount)} ${getLabelOfOption(baseAmountPeriodOptions, rent.base_amount_period)}`;
+    return `${formatNumber(rent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, rent.base_amount_period)}`;
   };
 
   return (
@@ -71,7 +71,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
                 <td>{getBaseAmount(rent) || '-'}</td>
               }
               {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
-                <td>{formatNumber(rent.base_year_rent) || '-'}</td>
+                <td>{rent.base_year_rent ? `${formatNumber(rent.base_year_rent)} €` : '-'}</td>
               }
               <td>{formatDateRange(rent.start_date, rent.end_date) || '-'}</td>
             </tr>

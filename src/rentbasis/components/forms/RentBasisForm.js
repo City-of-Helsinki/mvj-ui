@@ -28,7 +28,7 @@ type PropertyIdentifiersProps = {
 const renderPropertyIdentifiers = ({attributes, fields}: PropertyIdentifiersProps): Element<*> => {
   return (
     <div>
-      <FormFieldLabel>Kiinteisötunnukset</FormFieldLabel>
+      <FormFieldLabel>Kiinteistötunnukset</FormFieldLabel>
       {fields && !!fields.length && fields.map((field, index) =>
         <Row key={index}>
           <Column small={8}>
