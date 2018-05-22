@@ -293,7 +293,7 @@ export const formatDateRange = (startDate: any, endDate: any) => {
  * @returns {string}
  */
 export const formatDateObj = (unix, format = 'DD.MM.YYYY HH:mm') => {
-  return moment(unix).format(format);
+  return unix ? moment(unix).format(format) : null;
 };
 
 /**
