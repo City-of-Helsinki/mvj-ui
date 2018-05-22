@@ -64,7 +64,7 @@ const TenantItem = ({
                 </Column>
                 <Column>
                   <label>Loppupvm</label>
-                  <p>{formatDate(get(tenant, 'tenant.start_date'))}</p>
+                  <p>{formatDate(get(tenant, 'tenant.end_date'))}</p>
                 </Column>
               </Row>
             </Column>
