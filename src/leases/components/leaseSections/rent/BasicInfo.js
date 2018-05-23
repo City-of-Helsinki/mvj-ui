@@ -113,10 +113,10 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
             <Column small={3} medium={3} large={2}>
               <label>Kiinteä alkuvuosivuokra</label>
             </Column>
-            <Column small={3} medium={3} large={2}>
+            <Column small={3} medium={3} large={1}>
               <label>Alkupvm</label>
             </Column>
-            <Column small={3} medium={3} large={2}>
+            <Column small={3} medium={3} large={1}>
               <label>Loppupvm</label>
             </Column>
           </Row>
@@ -129,10 +129,10 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
                 <Column small={3} medium={3} large={2}>
                   <p className='no-margin'>{item.amount ? `${formatNumber(item.amount)} €` : '-'}</p>
                 </Column>
-                <Column small={3} medium={3} large={2}>
+                <Column small={3} medium={3} large={1}>
                   <p className='no-margin'>{formatDate(item.start_date) || '-'}</p>
                 </Column>
-                <Column small={3} medium={3} large={2}>
+                <Column small={3} medium={3} large={1}>
                   <p className='no-margin'>{formatDate(item.end_date) || '-'}</p>
                 </Column>
               </Row>
