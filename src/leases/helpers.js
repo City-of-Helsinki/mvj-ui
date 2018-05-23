@@ -539,6 +539,7 @@ export const getContentFixedInitialYearRents = (rent: Object) => {
   return items.map((item) => {
     return {
       id: item.id || undefined,
+      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
       amount: get(item, 'amount'),
       start_date: get(item, 'start_date'),
       end_date: get(item, 'end_date'),
@@ -1066,6 +1067,7 @@ export const getContentFixedInitialYearRentsForDb = (rent: Object) => {
   return items.map((item) => {
     return {
       id: item.id || undefined,
+      intended_use: get(item, 'intended_use'),
       amount: formatDecimalNumberForDb(get(item, 'amount')),
       start_date: get(item, 'start_date'),
       end_date: get(item, 'end_date'),
