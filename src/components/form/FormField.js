@@ -31,7 +31,22 @@ const FieldTypes = {
   'textarea': FieldTypeTextArea,
 };
 
+const Types = {
+  'boolean': null,
+  'choice': null,
+  'checkbox': null,
+  'date': null,
+  'decimal': 'text',
+  'field': null,
+  'integer': 'number',
+  'multiselect': null,
+  'string': 'text',
+  'switch': null,
+  'textarea': 'text',
+};
+
 const resolveFieldType = (type: string): Object => FieldTypes.hasOwnProperty(type) ? FieldTypes[type] : FieldTypeBasic;
+const resolveType = (type: string): ?string => Types.hasOwnProperty(type) ? Types[type] : null;
 
 type InputProps = {
   autoComplete?: string,
@@ -39,6 +54,7 @@ type InputProps = {
   disabled: boolean,
   disableDirty: boolean,
   ErrorComponent: Function | Object,
+  fieldType: string,
   input: Object,
   isLoading: boolean,
   label: ?string,
@@ -48,7 +64,6 @@ type InputProps = {
   placeholder?: string,
   required: boolean,
   rows?: number,
-  type: string,
 }
 
 const FormFieldInput = ({
@@ -57,6 +72,7 @@ const FormFieldInput = ({
   disabled,
   disableDirty,
   ErrorComponent,
+  fieldType,
   input,
   isLoading,
   label,
@@ -66,17 +82,17 @@ const FormFieldInput = ({
   placeholder,
   required,
   rows,
-  type,
 }: InputProps) => {
   const displayError = meta.error;
   const isDirty = meta.dirty && !disableDirty;
-  const fieldComponent = resolveFieldType(type);
+  const fieldComponent = resolveFieldType(fieldType);
+  const type = resolveType(fieldType);
 
   return (
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name} title={label}>{label}{required &&<i className='required'> *</i>}</label>}
       <div className='form-field__component'>
-        {createElement(fieldComponent, {autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows})}
+        {createElement(fieldComponent, {autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
       </div>
       {displayError && <ErrorComponent {...meta}/>}
     </div>
@@ -115,7 +131,7 @@ const FormField = ({
   validate,
 }: Props) => {
   const label = get(fieldAttributes, 'label');
-  const type = get(fieldAttributes, 'type');
+  const fieldType = get(fieldAttributes, 'type');
   const required = !!get(fieldAttributes, 'required');
   const options = getFieldOptions(fieldAttributes);
 
@@ -127,6 +143,7 @@ const FormField = ({
       disabled={disabled}
       disableDirty={disableDirty}
       ErrorComponent={ErrorComponent}
+      fieldType={fieldType}
       isLoading={isLoading}
       label={label}
       name={name}
@@ -136,7 +153,6 @@ const FormField = ({
       placeholder={placeholder}
       required={required}
       rows={rows}
-      type={type}
       validate={[
         (value) => genericValidator(value, fieldAttributes),
         (value) => validate ? validate(value) : undefined,

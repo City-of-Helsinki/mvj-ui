@@ -10,16 +10,17 @@ type Props = {
   input: Object,
   isDirty: boolean,
   placeholder: string,
+  type?: string,
 }
 
-const FieldTypeBasic = ({autoComplete, displayError, disabled, input, isDirty, placeholder}: Props) => {
+const FieldTypeBasic = ({autoComplete, displayError, disabled, input, isDirty, placeholder, type = 'text'}: Props) => {
   return (
     <input className={classNames('form-field__input', {'has-error': displayError}, {'is-dirty': isDirty})}
       id={input.name}
       autoComplete={autoComplete}
       disabled={disabled}
       placeholder={placeholder}
-      type='text'
+      type={type}
       {...input}
     />
   );

@@ -167,7 +167,7 @@ class Search extends Component<Props, State> {
                   name='only_past_tentants'
                   overrideValues={{
                     label: '',
-                    type: 'checkbox',
+                    fieldType: 'checkbox',
                     options: [
                       {value: true, label: 'Vain entiset asiakkaat'},
                     ],
@@ -185,7 +185,7 @@ class Search extends Component<Props, State> {
                       name='tenant_role'
                       overrideValues={{
                         label: '',
-                        type: 'multiselect',
+                        fieldType: 'multiselect',
                         options: tenantTypeOptions,
                       }}
                     />
@@ -206,7 +206,7 @@ class Search extends Component<Props, State> {
                           name='type'
                           overrideValues={{
                             label: '',
-                            type: 'choice',
+                            fieldType: 'choice',
                             options: typeOptions,
                           }}
                         />
@@ -218,7 +218,7 @@ class Search extends Component<Props, State> {
                           name='municipality'
                           overrideValues={{
                             label: '',
-                            type: 'choice',
+                            fieldType: 'choice',
                             options: municipalityOptions,
                           }}
                         />
@@ -231,7 +231,7 @@ class Search extends Component<Props, State> {
                           name='district'
                           overrideValues={{
                             label: '',
-                            type: 'choice',
+                            fieldType: 'choice',
                             options: districtOptions,
                           }}
                         />
@@ -259,7 +259,7 @@ class Search extends Component<Props, State> {
                       name='on_going'
                       overrideValues={{
                         label: '',
-                        type: 'checkbox',
+                        fieldType: 'checkbox',
                         options: [
                           {value: true, label: 'Voimassa'},
                         ],
@@ -273,7 +273,7 @@ class Search extends Component<Props, State> {
                       name='expired'
                       overrideValues={{
                         label: '',
-                        type: 'checkbox',
+                        fieldType: 'checkbox',
                         options: [
                           {value: true, label: 'Päättyneet'},
                         ],
@@ -294,7 +294,7 @@ class Search extends Component<Props, State> {
                       name='state'
                       overrideValues={{
                         label: '',
-                        type: 'multiselect',
+                        fieldType: 'multiselect',
                         options: stateOptions,
                       }}
                     />

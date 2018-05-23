@@ -43,7 +43,7 @@ const NewCommentForm = ({
           name='text'
           overrideValues={{
             label: 'Kommentti',
-            type: 'textarea',
+            fieldType: 'textarea',
           }}
         />
         <AddButton

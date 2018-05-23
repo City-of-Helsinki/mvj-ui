@@ -46,7 +46,7 @@ class RentsEdit extends Component<Props> {
                 name='is_rent_info_complete'
                 optionLabel='Vuokratiedot kunnossa'
                 overrideValues={{
-                  type: 'switch',
+                  fieldType: 'switch',
                 }}
               />
             }

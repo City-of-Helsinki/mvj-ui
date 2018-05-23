@@ -187,7 +187,7 @@ const EditInvoiceForm = ({
             name='notes'
             overrideValues={{
               label: 'Tiedote',
-              type: 'textarea',
+              fieldType: 'textarea',
             }}
           />
         </Column>
