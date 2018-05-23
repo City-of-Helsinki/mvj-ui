@@ -87,16 +87,26 @@ const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRents
       </Row>
       {fields && !!fields.length &&
         <Row>
-          <Column small={3} medium={2}><label className="mvj-form-field-label">Vuokra</label></Column>
-          <Column small={3} medium={2}><label className="mvj-form-field-label">Alkupvm</label></Column>
-          <Column small={3} medium={2}><label className="mvj-form-field-label">Loppupvm</label></Column>
+          <Column small={3} medium={3} large={2}><label className="mvj-form-field-label">Käyttötarkoitus</label></Column>
+          <Column small={3} medium={3} large={2}><label className="mvj-form-field-label">Vuokra</label></Column>
+          <Column small={2} medium={2} large={1}><label className="mvj-form-field-label">Alkupvm</label></Column>
+          <Column small={2} medium={2} large={1}><label className="mvj-form-field-label">Loppupvm</label></Column>
         </Row>
       }
       {fields && !!fields.length && fields.map((rent, index) => {
         return (
           <div key={index}>
             <Row>
-              <Column small={3} medium={2}>
+              <Column small={3} medium={3} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use')}
+                  name={`${rent}.intended_use`}
+                  overrideValues={{
+                    label: '',
+                  }}
+                />
+              </Column>
+              <Column small={3} medium={3} large={2}>
                 <FormField
                   fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
                   name={`${rent}.amount`}
@@ -105,7 +115,7 @@ const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRents
                   }}
                 />
               </Column>
-              <Column small={3} medium={2}>
+              <Column small={2} medium={2} large={1}>
                 <FormField
                   fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.start_date')}
                   name={`${rent}.start_date`}
@@ -114,7 +124,7 @@ const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRents
                   }}
                 />
               </Column>
-              <Column small={3} medium={2}>
+              <Column small={2} medium={2} large={1}>
                 <FormField
                   className='with-dash'
                   fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}

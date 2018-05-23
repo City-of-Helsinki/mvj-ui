@@ -26,6 +26,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
   const cycleOptions = getAttributeFieldOptions(attributes, 'rents.child.children.cycle');
   const indexTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.index_type');
+  const intendedUseOptions = getAttributeFieldOptions(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use');
 
   return (
     <div>
@@ -106,26 +107,32 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
         <ListItems>
           <p className='sub-title'>Kiinteät alkuvuosivuokrat</p>
           <Row>
-            <Column small={4} medium={4} large={2}>
+            <Column small={3} medium={3} large={2}>
+              <label>Käyttötarkoitus</label>
+            </Column>
+            <Column small={3} medium={3} large={2}>
               <label>Kiinteä alkuvuosivuokra</label>
             </Column>
-            <Column small={4} medium={2} large={2}>
+            <Column small={3} medium={3} large={1}>
               <label>Alkupvm</label>
             </Column>
-            <Column small={4} medium={2} large={2}>
+            <Column small={3} medium={3} large={1}>
               <label>Loppupvm</label>
             </Column>
           </Row>
           {rent.fixed_initial_year_rents.map((item, index) => {
             return (
               <Row key={index}>
-                <Column small={4} medium={4} large={2}>
+                <Column small={3} medium={3} large={2}>
+                  <p className='no-margin'>{getLabelOfOption(intendedUseOptions, item.intended_use) || '-'}</p>
+                </Column>
+                <Column small={3} medium={3} large={2}>
                   <p className='no-margin'>{item.amount ? `${formatNumber(item.amount)} €` : '-'}</p>
                 </Column>
-                <Column small={4} medium={2} large={2}>
+                <Column small={3} medium={3} large={1}>
                   <p className='no-margin'>{formatDate(item.start_date) || '-'}</p>
                 </Column>
-                <Column small={4} medium={2} large={2}>
+                <Column small={3} medium={3} large={1}>
                   <p className='no-margin'>{formatDate(item.end_date) || '-'}</p>
                 </Column>
               </Row>
