@@ -15,6 +15,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import {receiveFormValid} from '$src/rentbasis/actions';
 import {FormNames} from '$src/rentbasis/enums';
 import {getAttributes, getIsFormValid, getRentBasisInitialValues} from '$src/rentbasis/selectors';
+import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/rentbasis/types';
 import type {RootState} from '$src/root/types';
@@ -43,7 +44,7 @@ const renderPropertyIdentifiers = ({attributes, fields}: PropertyIdentifiersProp
           <Column small={4}>
             <RemoveButton
               onClick={() => fields.remove(index)}
-              title="Poista hinta"
+              title="Poista kiinteistötunnus"
             />
           </Column>
         </Row>
@@ -76,6 +77,7 @@ const renderDecisions = ({attributes, fields}: DecisionsProps): Element<*> => {
             <FormField
               fieldAttributes={get(attributes, 'decisions.child.children.identifier')}
               name={`${field}.identifier`}
+              validate={referenceNumber}
               overrideValues={{
                 label: '',
               }}
@@ -84,7 +86,7 @@ const renderDecisions = ({attributes, fields}: DecisionsProps): Element<*> => {
           <Column small={4}>
             <RemoveButton
               onClick={() => fields.remove(index)}
-              title="Poista hinta"
+              title="Poista päätös"
             />
           </Column>
         </Row>

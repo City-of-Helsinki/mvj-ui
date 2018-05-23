@@ -12,7 +12,7 @@ import {fetchLessors} from '$src/contacts/actions';
 import {getLessorOptions} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
-import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getLessors} from '$src/contacts/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
@@ -127,7 +127,10 @@ class Summary extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <label>Diaarinumero</label>
-                  <p>{summary.reference_number || '-'}</p>
+                  {summary.reference_number
+                    ? <a target='_blank' href={getReferenceNumberLink(summary.reference_number)}>{summary.reference_number}</a>
+                    : <p>-</p>
+                  }
                 </Column>
                 <Column small={12} medium={6} large={8}>
                   <label>Huomautus</label>

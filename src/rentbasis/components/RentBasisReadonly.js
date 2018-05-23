@@ -6,7 +6,7 @@ import {Row, Column} from 'react-foundation';
 import ContentContainer from '$components/content/ContentContainer';
 import GreenBox from '$components/content/GreenBox';
 import ListItems from '$components/content/ListItems';
-import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getAttributes} from '$src/rentbasis/selectors';
 
 import type {Attributes, RentBasis} from '../types';
@@ -78,7 +78,11 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
               ? (
                 <ListItems>
                   {rentBasis.decisions.map((decision, index) => {
-                    return(<p className='no-margin' key={index}>{decision.identifier}</p>);
+                    if(decision) {
+                      return <p className='no-margin'><a className='no-margin' key={index} href={getReferenceNumberLink(decision.identifier)} target='_blank'>{decision.identifier}</a></p>;
+                    } else {
+                      return <p className='no-margin' key={index}>-</p>;
+                    }
                   })}
                 </ListItems>
               ) : <p>-</p>

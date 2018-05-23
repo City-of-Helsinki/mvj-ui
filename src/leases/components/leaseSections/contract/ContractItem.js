@@ -7,7 +7,7 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import ListItems from '$components/content/ListItems';
-import {formatDate, getAttributeFieldOptions, getDecisionsOptions, getLabelOfOption} from '$src/util/helpers';
+import {formatDate, getAttributeFieldOptions, getDecisionById, getDecisionsOptions, getLabelOfOption, getReferenceNumberLink} from '$src/util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -21,6 +21,7 @@ type Props = {
 
 const ContractItem = ({attributes, contract, decisions}: Props) => {
   const decisionOptions = getDecisionsOptions(decisions);
+  const decision = getDecisionById(decisions, contract.decision);
   const typeOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.type');
   return (
     <div>
@@ -53,7 +54,13 @@ const ContractItem = ({attributes, contract, decisions}: Props) => {
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Päätös</label>
-          <p>{getLabelOfOption(decisionOptions, contract.decision) || '-'}</p>
+          {decision
+            ? <div>{decision.reference_number
+              ? <a href={getReferenceNumberLink(decision.reference_number)} target='_blank'>{getLabelOfOption(decisionOptions, contract.decision)}</a>
+              : <p>{getLabelOfOption(decisionOptions, contract.decision)}</p>
+            }</div>
+            : <p>-</p>
+          }
         </Column>
         <Column small={6} medium={12} large={6}>
           <label>KTJ dokumentti</label>
@@ -127,44 +134,53 @@ const ContractItem = ({attributes, contract, decisions}: Props) => {
         }
         {contract.contract_changes && !!contract.contract_changes.length &&
           <BoxItemContainer>
-            {contract.contract_changes.map((change) =>
-              <BoxItem
-                key={change.id}
-                className='no-border-on-first-child'>
-                <Row>
-                  <Column small={6} medium={4} large={2}>
-                    <label>Allekirjoituspäivämäärä</label>
-                    <p>{formatDate(change.signing_date) || '–'}</p>
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <label>Allekirjoitettava mennessä</label>
-                    <p>{formatDate(change.sign_by_date) || '–'}</p>
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <label>1. kutsu lähetetty</label>
-                    <p>{formatDate(change.first_call_sent) || '–'}</p>
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <label>2. kutsu lähetetty</label>
-                    <p>{formatDate(change.second_call_sent) || '–'}</p>
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <label>3. kutsu lähetetty</label>
-                    <p>{formatDate(change.third_call_sent) || '–'}</p>
-                  </Column>
-                </Row>
-                <Row>
-                  <Column small={6} medium={4} large={2}>
-                    <label>Päätös</label>
-                    <p>{getLabelOfOption(decisionOptions, change.decision) || '-'}</p>
-                  </Column>
-                  <Column small={6} medium={8} large={10}>
-                    <label>Huomautus</label>
-                    <p>{change.description  || '–'}</p>
-                  </Column>
-                </Row>
-              </BoxItem>
-            )}
+            {contract.contract_changes.map((change) => {
+              const decision = getDecisionById(decisions, change.decision);
+              return (
+                <BoxItem
+                  key={change.id}
+                  className='no-border-on-first-child'>
+                  <Row>
+                    <Column small={6} medium={4} large={2}>
+                      <label>Allekirjoituspäivämäärä</label>
+                      <p>{formatDate(change.signing_date) || '–'}</p>
+                    </Column>
+                    <Column small={6} medium={4} large={2}>
+                      <label>Allekirjoitettava mennessä</label>
+                      <p>{formatDate(change.sign_by_date) || '–'}</p>
+                    </Column>
+                    <Column small={6} medium={4} large={2}>
+                      <label>1. kutsu lähetetty</label>
+                      <p>{formatDate(change.first_call_sent) || '–'}</p>
+                    </Column>
+                    <Column small={6} medium={4} large={2}>
+                      <label>2. kutsu lähetetty</label>
+                      <p>{formatDate(change.second_call_sent) || '–'}</p>
+                    </Column>
+                    <Column small={6} medium={4} large={2}>
+                      <label>3. kutsu lähetetty</label>
+                      <p>{formatDate(change.third_call_sent) || '–'}</p>
+                    </Column>
+                  </Row>
+                  <Row>
+                    <Column small={6} medium={4} large={2}>
+                      <label>Päätös</label>
+                      {decision
+                        ? <div>{decision.reference_number
+                          ? <a href={getReferenceNumberLink(decision.reference_number)} target='_blank'>{getLabelOfOption(decisionOptions, change.decision)}</a>
+                          : <p>{getLabelOfOption(decisionOptions, change.decision)}</p>
+                        }</div>
+                        : <p>-</p>
+                      }
+                    </Column>
+                    <Column small={6} medium={8} large={10}>
+                      <label>Huomautus</label>
+                      <p>{change.description  || '–'}</p>
+                    </Column>
+                  </Row>
+                </BoxItem>
+              );
+            })}
           </BoxItemContainer>
         }
       </Collapse>

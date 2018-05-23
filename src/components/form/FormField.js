@@ -96,6 +96,7 @@ type Props = {
   overrideValues?: Object,
   placeholder?: string,
   rows?: number,
+  validate?: Function,
 }
 
 const FormField = ({
@@ -111,6 +112,7 @@ const FormField = ({
   overrideValues,
   placeholder,
   rows,
+  validate,
 }: Props) => {
   const label = get(fieldAttributes, 'label');
   const type = get(fieldAttributes, 'type');
@@ -137,6 +139,7 @@ const FormField = ({
       type={type}
       validate={[
         (value) => genericValidator(value, fieldAttributes),
+        (value) => validate ? validate(value) : undefined,
       ]}
       {...overrideValues}
     />

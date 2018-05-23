@@ -19,6 +19,7 @@ import {getAttributeFieldOptions, sortAlphaAsc} from '$src/util/helpers';
 import {getLessors} from '$src/contacts/selectors';
 import {getAttributes, getIsSummaryFormValid} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
+import {referenceNumber} from '$components/form/validations';
 
 import type {NoticePeriodList} from '$src/noticePeriod/types';
 
@@ -181,6 +182,7 @@ class SummaryEdit extends Component<Props> {
                   <FormField
                     fieldAttributes={get(attributes, 'reference_number')}
                     name='reference_number'
+                    validate={referenceNumber}
                     overrideValues={{
                       label: 'Diaarinumero',
                     }}

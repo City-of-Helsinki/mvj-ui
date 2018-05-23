@@ -5,10 +5,10 @@ import {Row, Column} from 'react-foundation';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
-import {formatDate, getAttributeFieldOptions, getDecisionsOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getDecisionById, getDecisionsOptions, getLabelOfOption} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
-import {formatNumber} from '$util/helpers';
+import {formatNumber, getReferenceNumberLink} from '$util/helpers';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -32,7 +32,7 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
       return null;
     }
 
-    return `${formatNumber(adjustment.full_amount)} € ${getLabelOfOption(amountTypeOptions, adjustment.amount_type)}`;
+    return `${formatNumber(adjustment.full_amount)} ${getLabelOfOption(amountTypeOptions, adjustment.amount_type)}`;
   };
 
   return (
@@ -40,6 +40,8 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
       {(!rentAdjustments || !rentAdjustments.length) && <p>Ei alennuksia tai korotuksia</p>}
       {rentAdjustments && !!rentAdjustments.length &&
         rentAdjustments.map((adjustment, index) => {
+          const decision = getDecisionById(decisions, adjustment.decision);
+
           return (
             <BoxItem  className='no-border-on-first-child' key={index}>
               <Row>
@@ -73,7 +75,13 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <label>Päätös</label>
-                  <p>{getLabelOfOption(decisionOptions, adjustment.decision) || '-'}</p>
+                  {decision
+                    ? <div>{decision.reference_number
+                      ? <a href={getReferenceNumberLink(decision.reference_number)} target='_blank'>{getLabelOfOption(decisionOptions, adjustment.decision)}</a>
+                      : <p>{getLabelOfOption(decisionOptions, adjustment.decision)}</p>
+                    }</div>
+                    : <p>-</p>
+                  }
                 </Column>
               </Row>
               <Row>

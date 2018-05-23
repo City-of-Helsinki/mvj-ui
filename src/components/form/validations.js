@@ -32,6 +32,14 @@ export const dateGreaterOrEqual = (date: ?Moment, otherDate: ?Moment, error?: st
   return !moment(otherDate, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).isAfter(moment(date, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY'])) ? undefined : (error ? error : 'Loppupäivämäärä on aikaisempi kuin alkupäivämäärää');
 };
 
+export const referenceNumber = (value: any, error?: string) => {
+  if(!value) {
+    return undefined;
+  }
+  const regex = RegExp('^[Hh][Ee][Ll] [0-9]{4}-[0-9]{6}$');
+  return regex.test(value) ? undefined : (error ? error : 'Arvon tulee olla muotoa HEL 0000-000000');
+};
+
 export const genericValidator = (value: any, options: Object) => {
   if(!options) {
     return undefined;

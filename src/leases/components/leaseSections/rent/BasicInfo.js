@@ -71,25 +71,25 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
         }
       </Row>
       <Row>
-        {(rent.elementary_index || rent.index_rounding) &&
+        {(!!rent.elementary_index || !!rent.index_rounding) &&
           <Column small={12} medium={4} large={2}>
             <label>Perusindeksi/pyöristys</label>
             <p>{rent.elementary_index || '-'} / {rent.index_rounding || '-'}</p>
           </Column>
         }
-        {rent.x_value &&
+        {!!rent.x_value &&
           <Column small={4} medium={2} large={1}>
             <label>X-luku</label>
             <p>{rent.x_value || '-'}</p>
           </Column>
         }
-        {rent.y_value &&
+        {!!rent.y_value &&
           <Column small={4} medium={2} large={1}>
             <label>Y-luku</label>
             <p>{rent.y_value || '-'}</p>
           </Column>
         }
-        {rent.y_value_start &&
+        {!!rent.y_value_start &&
           <Column small={4} medium={2} large={1}>
             <label>Y-alkaen</label>
             <p>{rent.y_value_start || '-'}</p>
@@ -102,7 +102,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
           </Column>
         }
       </Row>
-      {rent.fixed_initial_year_rents && !!rent.fixed_initial_year_rents.length &&
+      {!!rent.fixed_initial_year_rents && !!rent.fixed_initial_year_rents.length &&
         <ListItems>
           <p className='sub-title'>Kiinteät alkuvuosivuokrat</p>
           <Row>

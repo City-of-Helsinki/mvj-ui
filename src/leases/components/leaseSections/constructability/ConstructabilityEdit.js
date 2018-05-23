@@ -22,6 +22,7 @@ import {getUserOptions} from '$src/users/helpers';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes, getCurrentLease, getIsConstructabilityFormValid} from '$src/leases/selectors';
 import {getUsers} from '$src/users/selectors';
+import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes, Lease} from '$src/leases/types';
 import type {UserList} from '$src/users/types';
@@ -51,6 +52,7 @@ const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
                 <FormField
                   fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
                   name={`${comment}.ahjo_reference_number`}
+                  validate={referenceNumber}
                   overrideValues={{
                     label: 'AHJO diaarinumero',
                   }}

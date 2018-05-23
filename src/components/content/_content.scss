@@ -69,7 +69,17 @@
   }
 
   a {
+    display: inline-block;
+    font-size: rem-calc(14px);
+    line-height: rem-calc(16px);
+    font-weight: normal;
     color: $tram;
+    margin-bottom: rem-calc(10px);
+    vertical-align: top;
+
+    &.no-margin {
+      margin: 0;
+    }
   }
 }
 

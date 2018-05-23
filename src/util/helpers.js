@@ -310,6 +310,17 @@ export const getKtjLink = (id, key, lang = 'fi') => {
 };
 
 /**
+ * Get reference number link from Päätökset
+ * @param referenceNumber
+ * @returns {string}
+ */
+export const getReferenceNumberLink = (referenceNumber: ?string) => {
+  const apiUrl = 'https://dev.hel.fi/paatokset/asia';
+  return referenceNumber ? `${apiUrl}/${referenceNumber.replace(' ', '-').toLowerCase()}` : null;
+};
+
+
+/**
  * Find from collection with ID
  * @param collection
  * @param id
@@ -320,10 +331,10 @@ export const findIndexOfArrayfield = (collection, id) => {
 };
 
 export const getLabelOfOption = (options: Array<Object>, value: string) => {
-  if(!options || !options.length) {
+  if(!options || !options.length || value === undefined || value === null) {
     return null;
   }
-  const option = options.find(x => x.value=== value);
+  const option = options.find(x => x.value.toString() === value.toString());
   return get(option, 'label', '');
 };
 
@@ -430,6 +441,19 @@ export const getDecisionsOptions = (decisions: Array<Object>) => {
       label: `${item.reference_number ? item.reference_number + ', ' : ''}${item.section ? item.section + ' §, ' : ''}${formatDate(item.decision_date)}`,
     };
   }));
+};
+
+/**
+ * Get decision by id
+ * @param decisions
+ * @param decisionId
+ */
+export const getDecisionById = (decisions: Array<Object>, decisionId: number) => {
+  if(!decisions || !decisions.length) {
+    return [];
+  }
+
+  return decisions.find((decision) => decision.id === decisionId);
 };
 
 export const sortAlphaAsc = (a, b) => {

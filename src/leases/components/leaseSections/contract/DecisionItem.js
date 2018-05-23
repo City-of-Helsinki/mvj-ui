@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -44,7 +44,10 @@ const DecisionItem = ({attributes, decision}: Props) => {
         </Column>
         <Column small={6} medium={4} large={2}>
           <label>Diaarinumero</label>
-          <p>{decision.reference_number || '–'}</p>
+          {decision.reference_number
+            ? <a target='_blank' href={getReferenceNumberLink(decision.reference_number)}>{decision.reference_number}</a>
+            : <p>-</p>
+          }
         </Column>
       </Row>
       <Row>

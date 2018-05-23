@@ -8,7 +8,7 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import {getUserOptions} from '$src/users/helpers';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {ConstructabilityStatus} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 import {getUsers} from '$src/users/selectors';
@@ -36,7 +36,9 @@ const Comments = ({comments, userOptions}: CommentsProps) => {
                     <p>
                       <strong>{getLabelOfOption(userOptions, comment.user)}</strong>
                       {comment.modified_at && `, ${formatDate(comment.modified_at)}`}
-                      {comment.AHJO_number && `, diaarinumero ${comment.AHJO_number}`}
+                      {comment.ahjo_reference_number &&
+                        <span>, <a className='no-margin' target='_blank' href={getReferenceNumberLink(comment.ahjo_reference_number)}>{comment.ahjo_reference_number}</a></span>
+                      }
                     </p>
                   </Column>
                 </Row>
