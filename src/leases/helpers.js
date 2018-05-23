@@ -1099,10 +1099,10 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
         floor_m2: formatDecimalNumberForDb(get(item, 'floor_m2')),
         index: get(item, 'index'),
         amount_per_floor_m2_index_100: formatDecimalNumberForDb(get(item, 'amount_per_floor_m2_index_100')),
-        amount_per_floor_m2_index: formatDecimalNumberForDb(get(item, 'amount_per_floor_m2_index')),
+        amount_per_floor_m2_index: get(item, 'amount_per_floor_m2_index'),
         percent: formatDecimalNumberForDb(get(item, 'percent')),
-        year_rent_index_100: formatDecimalNumberForDb(get(item, 'year_rent_index_100')),
-        year_rent_index: formatDecimalNumberForDb(get(item, 'year_rent_index')),
+        year_rent_index_100: get(item, 'year_rent_index_100'),
+        year_rent_index: get(item, 'year_rent_index'),
       };
     });
   }
