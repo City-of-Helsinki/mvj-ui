@@ -10,6 +10,10 @@ import type {
   ReceiveAttributesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
+  BillingPeriodList,
+  ReceiveBillingPeriodsAction,
+  RentForPeriod,
+  ReceiveRentForPeriodAction,
   ContactModalSettings,
   ReceiveContactModalSettingsAction,
   ReceiveConstructabilityFormValidAction,
@@ -69,6 +73,21 @@ const leasesListReducer: Reducer<LeaseList> = handleActions({
 const currentLeaseReducer: Reducer<Lease> = handleActions({
   ['mvj/leases/RECEIVE_SINGLE']: (state: Lease, {payload: lease}: ReceiveSingleLeaseAction) => {
     return lease;
+  },
+}, {});
+
+const billingPeriodsReducer: Reducer<BillingPeriodList> = handleActions({
+  ['mvj/leases/RECEIVE_BILLING_PERIODS']: (state: BillingPeriodList, {payload: billingPeriods}: ReceiveBillingPeriodsAction) => {
+    return billingPeriods;
+  },
+}, []);
+
+const rentForPeriodByLeaseReducer: Reducer<RentForPeriod> = handleActions({
+  ['mvj/leases/RECEIVE_RENT_FOR_PERIOD']: (state: RentForPeriod, {payload: rent}: ReceiveRentForPeriodAction) => {
+    return {
+      ...state,
+      [rent.leaseId]: rent.rent,
+    };
   },
 }, {});
 
@@ -137,6 +156,7 @@ const tenantsFormValidReducer: Reducer<boolean> = handleActions({
 
 export default combineReducers({
   attributes: attributesReducer,
+  billingPeriods: billingPeriodsReducer,
   contactModalSettings: contactModalSettingsReducer,
   current: currentLeaseReducer,
   isContactModalOpen: isContactModalOpenReducer,
@@ -153,4 +173,5 @@ export default combineReducers({
   isSummaryFormValid: summaryFormValidReducer,
   isTenantsFormValid: tenantsFormValidReducer,
   list: leasesListReducer,
+  rentForPeriodbyLease: rentForPeriodByLeaseReducer,
 });

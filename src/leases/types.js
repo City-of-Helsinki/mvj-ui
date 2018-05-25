@@ -12,6 +12,17 @@ export type Lease = Object;
 export type LeaseList = Object;
 export type LeaseId = number;
 export type LessorList = Array<Object>;
+export type BillingPeriodsOptions = {
+  leaseId: LeaseId,
+  year: number,
+}
+export type BillingPeriodList = Array<Object>;
+export type RentForPeriodOptions = {
+  leaseId: LeaseId,
+  startDate: string,
+  endDate: string,
+}
+export type RentForPeriod = Object;
 
 export type FetchAttributesAction = Action<'mvj/leases/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/leases/RECEIVE_ATTRIBUTES', Attributes>;
@@ -19,6 +30,10 @@ export type FetchLeasesAction = Action<'mvj/leases/FETCH_ALL', string>;
 export type ReceiveLeasesAction = Action<'mvj/leases/RECEIVE_ALL', LeaseList>;
 export type FetchSingleLeaseAction = Action<'mvj/leases/FETCH_SINGLE', LeaseId>;
 export type ReceiveSingleLeaseAction = Action<'mvj/leases/RECEIVE_SINGLE', Lease>;
+export type FetchBillingPeriodsAction = Action<'mvj/leases/FETCH_BILLING_PERIODS', BillingPeriodsOptions>;
+export type ReceiveBillingPeriodsAction = Action<'mvj/leases/RECEIVE_BILLING_PERIODS', BillingPeriodList>;
+export type FetchRentForPeriodAction = Action<'mvj/leases/FETCH_RENT_FOR_PERIOD', RentForPeriodOptions>;
+export type ReceiveRentForPeriodAction = Action<'mvj/leases/RECEIVE_RENT_FOR_PERIOD', RentForPeriod>;
 export type CreateLeaseAction = Action<'mvj/leases/CREATE', Lease>;
 export type PatchLeaseAction = Action<'mvj/leases/PATCH', Lease>;
 export type StartInvoicingAction = Action<'mvj/leases/START_INVOICING', LeaseId>;

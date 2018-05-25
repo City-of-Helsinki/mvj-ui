@@ -10,6 +10,7 @@ import Collapse from '$components/collapse/Collapse';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Divider from '$components/content/Divider';
 import InvoicesTableEdit from './InvoicesTableEdit';
+import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {
   startInvoicing,
@@ -177,6 +178,13 @@ class InvoicesEdit extends Component<Props, State> {
             onStopInvoicing={() => this.showModal('StopInvoicing')}
             showStartInvoicingButton={!currentLease.is_invoicing_enabled}
           />
+        </Collapse>
+        <Collapse
+          defaultOpen={true}
+          headerTitle={
+            <h3 className='collapse__header-title'>Vuokralaskuri</h3>
+          }>
+          <RentCalculator />
         </Collapse>
       </div>
     );

@@ -9,7 +9,7 @@ type Props = {
   displayError: boolean,
   input: Object,
   isDirty: boolean,
-  placeholder: String,
+  placeholder?: string,
 }
 
 const FieldTypeDatePicker = ({

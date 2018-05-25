@@ -3,14 +3,20 @@
 import type {Selector} from '../types';
 import type {
   Attributes,
+  BillingPeriodList,
   ContactModalSettings,
   Lease,
+  LeaseId,
   LeaseList,
   LeaseState,
+  RentForPeriod,
 } from './types';
 
 export const getIsContactModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isContactModalOpen;
+
+export const getBillingPeriods: Selector<BillingPeriodList, void> = (state: LeaseState): BillingPeriodList =>
+  state.lease.billingPeriods;
 
 export const getContactModalSettings: Selector<ContactModalSettings, void> = (state: LeaseState): ContactModalSettings =>
   state.lease.contactModalSettings;
@@ -59,3 +65,7 @@ export const getLeasesList: Selector<LeaseList, void> = (state: LeaseState): Lea
 
 export const getCurrentLease: Selector<Lease, void> = (state: LeaseState): Lease =>
   state.lease.current;
+
+export const getRentForPeriodByLease: Selector<RentForPeriod, LeaseId> = (state: RentForPeriod, leaseId: LeaseId): RentForPeriod => {
+  return state.lease.rentForPeriodbyLease[leaseId];
+};
