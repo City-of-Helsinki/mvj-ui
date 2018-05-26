@@ -10,7 +10,7 @@ export const getContactFullName = (contact: ?Object) => {
     return '';
   }
   return contact.type === ContactType.PERSON
-    ? `${contact.last_name} ${contact.first_name}`
+    ? `${contact.last_name ? `${contact.last_name} ` : ''} ${contact.first_name || ''}`
     : contact.name;
 };
 

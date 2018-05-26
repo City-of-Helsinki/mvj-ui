@@ -9,16 +9,20 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import Button from '$components/button/Button';
+import Loader from '../loader/Loader';
 import Rent from './Rent';
 import RentCalculatorForm from './RentCalculatorForm';
-import {fetchBillingPeriods, fetchRentForPeriodByLease} from '$src/leases/actions';
+import {fetchBillingPeriodsByLease} from '$src/billingPeriods/actions';
+import {fetchRentForPeriodByLease} from '$src/rentForPeriod/actions';
 import {FormNames} from '$components/enums';
-import {getCurrentLease, getRentForPeriodByLease} from '$src/leases/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
+import {getIsFetching, getRentForPeriodByLease} from '$src/rentForPeriod/selectors';
 
 type Props = {
   endDate: string,
-  fetchBillingPeriods: Function,
+  fetchBillingPeriodsByLease: Function,
   fetchRentForPeriodByLease: Function,
+  isFetching: boolean,
   isValid: boolean,
   params: Object,
   rentForPeriod: Object,
@@ -28,12 +32,12 @@ type Props = {
 class RentCalculator extends Component<Props> {
   componentWillMount() {
     const {
-      fetchBillingPeriods,
+      fetchBillingPeriodsByLease,
       params: {leaseId},
     } = this.props;
     const currentDate = new Date();
 
-    fetchBillingPeriods({
+    fetchBillingPeriodsByLease({
       leaseId: leaseId,
       year: currentDate.getFullYear(),
     });
@@ -60,9 +64,8 @@ class RentCalculator extends Component<Props> {
   }
 
   render() {
-    const {isValid, rentForPeriod} = this.props;
+    const {isFetching, isValid, rentForPeriod} = this.props;
     const rents = this.getRentsForPeriod();
-
 
     return (
       <div className='rent-calculator'>
@@ -82,23 +85,29 @@ class RentCalculator extends Component<Props> {
             </div>
           </Column>
         </Row>
-        {!isEmpty(rentForPeriod) &&
+        {(!isEmpty(rentForPeriod) || isFetching) &&
           <Row>
             <Column small={12} medium={6}>
               <div className='rent-calculator__rents-container'>
-                {!rents || !rents.length && <p>Ei vuokria</p>}
-                {!!rents && !!rents.length &&
-                  rents.map((rent, index) => {
-                    return (
-                      <Rent key={index} rent={rent} />
-                    );
-                  })
+                {isFetching
+                  ? <Loader isLoading={isFetching} />
+                  : (
+                    <div>
+                      {!rents || !rents.length && <p className='no-margin'>Ei vuokria</p>}
+                      {!!rents && !!rents.length &&
+                        rents.map((rent, index) => {
+                          return (
+                            <Rent key={index} rent={rent} />
+                          );
+                        })
+                      }
+                    </div>
+                  )
                 }
               </div>
             </Column>
           </Row>
         }
-
       </div>
     );
   }
@@ -114,13 +123,14 @@ export default flowRight(
       const currentLease = getCurrentLease(state);
       return {
         endDate: selector(state, 'end_date'),
+        isFetching: getIsFetching(state),
         isValid: isValid(formName)(state),
         rentForPeriod: getRentForPeriodByLease(state, currentLease.id),
         startDate: selector(state, 'start_date'),
       };
     },
     {
-      fetchBillingPeriods,
+      fetchBillingPeriodsByLease,
       fetchRentForPeriodByLease,
     }
   )

@@ -51,6 +51,7 @@ import {fetchRememberableTermList} from '$src/rememberableTerms/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchUsers} from '$src/users/actions';
 import {FormNames} from '$src/leases/enums';
+import {FormNames as ComponentFormNames} from '$components/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
 import {getSearchQuery} from '$util/helpers';
@@ -263,6 +264,7 @@ class LeasePage extends Component<Props, State> {
 
   componentWillUnmount() {
     const {
+      destroy,
       hideEditMode,
       params: {leaseId},
       router: {location: {pathname}},
@@ -275,6 +277,7 @@ class LeasePage extends Component<Props, State> {
     this.stopAutoSaveTimer();
 
     window.removeEventListener('beforeunload', this.handleLeavePage);
+    destroy(ComponentFormNames.RENT_CALCULATOR);
   }
 
   handleLeavePage = (e) => {

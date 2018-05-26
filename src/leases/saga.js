@@ -9,18 +9,14 @@ import {
   hideEditMode,
   notFound,
   receiveAttributes,
-  receiveBillingPeriods,
   receiveContactModalSettings,
   receiveLeases,
-  receiveRentForPeriodByLease,
   receiveSingleLease,
 } from './actions';
 import {
   createLease,
   fetchAttributes,
-  fetchBillingPeriods,
   fetchLeases,
-  fetchRentForPeriod,
   fetchSingleLease,
   patchLease,
 } from './requests';
@@ -92,50 +88,6 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<any, any, any> {
     }
   } catch (error) {
     console.error('Failed to fetch leases with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
-function* fetchBillingPeriodsSaga({payload}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchBillingPeriods, payload);
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveBillingPeriods(bodyAsJson.billing_periods));
-        break;
-      case 404:
-        yield put(notFound());
-        break;
-      case 500:
-        yield put(notFound());
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch billing periods with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
-function* fetchRentForPeriodSaga({payload}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchRentForPeriod, payload);
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveRentForPeriodByLease({leaseId: payload.leaseId, rent: bodyAsJson}));
-        break;
-      case 404:
-        yield put(notFound());
-        break;
-      case 500:
-        yield put(notFound());
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch rent for period with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -308,12 +260,8 @@ export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    }),
-    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_ALL', fetchLeasesSaga);
       yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
-      yield takeLatest('mvj/leases/FETCH_BILLING_PERIODS', fetchBillingPeriodsSaga);
-      yield takeLatest('mvj/leases/FETCH_RENT_FOR_PERIOD', fetchRentForPeriodSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
       yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);

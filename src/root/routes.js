@@ -2,19 +2,19 @@
 import React from 'react';
 import {Route, IndexRedirect} from 'react-router';
 
-import ErrorPage from '../errorPage/ErrorPage';
-import App from '../app/App';
-import CallbackPage from '../auth/components/CallbackPage';
-import ContactListPage from '../contacts/components/ContactsListPage';
-import ContactPage from '../contacts/components/ContactPage';
-import LeaseListPage from '../leases/components/LeaseListPage';
-import LeasePage from '../leases/components/LeasePage';
-import LoginPage from '../auth/components/LoginPage';
-import NewContactPage from '../contacts/components/NewContactPage';
-import NewRentBasisPage from '../rentbasis/components/NewRentBasisPage';
-import RememberableTermsList from '../rememberableTerms/components/RememberableTermsList';
-import RentBasisListPage from '../rentbasis/components/RentBasisListPage';
-import RentBasisPage from '../rentbasis/components/RentBasisPage';
+import ErrorPage from '$src/errorPage/ErrorPage';
+import App from '$src/app/App';
+import CallbackPage from '$src/auth/components/CallbackPage';
+import ContactListPage from '$src/contacts/components/ContactsListPage';
+import ContactPage from '$src/contacts/components/ContactPage';
+import LeaseListPage from '$src/leases/components/LeaseListPage';
+import LeasePage from '$src/leases/components/LeasePage';
+import LoginPage from '$src/auth/components/LoginPage';
+import NewContactPage from '$src/contacts/components/NewContactPage';
+import NewRentBasisPage from '$src/rentbasis/components/NewRentBasisPage';
+import RememberableTermsList from '$src/rememberableTerms/components/RememberableTermsList';
+import RentBasisListPage from '$src/rentbasis/components/RentBasisListPage';
+import RentBasisPage from '$src/rentbasis/components/RentBasisPage';
 
 export const getRouteById = (id: string): string => {
   const routes = {

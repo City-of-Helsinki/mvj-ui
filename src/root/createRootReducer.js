@@ -7,6 +7,7 @@ import {reducer as toastrReducer} from 'react-redux-toastr';
 import {routerReducer} from 'react-router-redux';
 import apiReducer from '../api/reducer';
 import authReducer from '../auth/reducer';
+import billingPeriodsReducer from '../billingPeriods/reducer';
 import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
 import decisionsReducer from '../decision/reducer';
@@ -17,6 +18,7 @@ import mapDataReducer from '../mapData/reducer';
 import noticePeriodReducer from '../noticePeriod/reducer';
 import rememberableTermReducer from '../rememberableTerms/reducer';
 import rentBasisReducer from '../rentbasis/reducer';
+import rentForPeriodReducer from '../rentForPeriod/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
 import usersReducer from '../users/reducer';
 
@@ -27,6 +29,7 @@ export default (): Reducer<RootState> =>
   combineReducers({
     api: apiReducer,
     auth: authReducer,
+    billingPeriods: billingPeriodsReducer,
     comment: commentsReducer,
     contacts: contactsReducer,
     decision: decisionsReducer,
@@ -37,10 +40,11 @@ export default (): Reducer<RootState> =>
     mapData: mapDataReducer,
     noticePeriod: noticePeriodReducer,
     oidc,
-    rememberableterm: rememberableTermReducer,
-    rentbasis: rentBasisReducer,
+    rememberableTerm: rememberableTermReducer,
+    rentBasis: rentBasisReducer,
+    rentForPeriod: rentForPeriodReducer,
     routing: routerReducer,
     toastr: toastrReducer,
-    topnavigation: topNavigationReducer,
+    topNavigation: topNavigationReducer,
     users: usersReducer,
   });

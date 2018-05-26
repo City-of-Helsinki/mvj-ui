@@ -3,27 +3,43 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {change, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import moment from 'moment';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import FormField from '$components/form/FormField';
 import {FormNames} from '$components/enums';
 import {formatDateRange} from '../../util/helpers';
-import {getBillingPeriods} from '$src/leases/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
+import {getBillingPeriodsByLease} from '$src/billingPeriods/selectors';
 
-import type {BillingPeriodList} from '$src/leases/types';
+import type {BillingPeriodList} from '$src/billingPeriods/types';
 
 type Props = {
   billingPeriods: BillingPeriodList,
   billingPeriod: ?number,
   change: Function,
-  startDate: string,
   valid: boolean,
 }
 
 type State = {
   billingPeriodOptions: Array<Object>,
 }
+
+const validate = values => {
+  const errors = {};
+  if (!values.start_date) {
+    errors.start_date = 'Alkupäivämäärä on pakollinen';
+  }
+  if (!values.end_date) {
+    errors.end_date = 'Loppupäivämäärä on pakollinen';
+  } else if(new Date(values.start_date).getFullYear() !== new Date(values.end_date).getFullYear()) {
+    errors.end_date = 'Alku- ja loppupäivät tulee olla samana vuonna';
+  } else if(!moment(values.end_date).isAfter(moment(values.start_date))) {
+    errors.end_date = 'Loppupäivämäärän tulee olla alkupäivämäärän jälkeen';
+  }
+  return errors;
+};
 
 class RentCalculatorForm extends Component<Props, State> {
   state = {
@@ -83,7 +99,6 @@ class RentCalculatorForm extends Component<Props, State> {
 
   render() {
     const {billingPeriodOptions} = this.state;
-    const {startDate} = this.props;
 
     return (
       <form>
@@ -106,7 +121,6 @@ class RentCalculatorForm extends Component<Props, State> {
             <FormField
               fieldAttributes={{
                 type: 'date',
-                required: true,
               }}
               name='start_date'
               disableDirty
@@ -119,21 +133,9 @@ class RentCalculatorForm extends Component<Props, State> {
             <FormField
               fieldAttributes={{
                 type: 'date',
-                required: true,
               }}
               name='end_date'
               disableDirty
-              validate={(value) => {
-                if(!startDate) {
-                  return undefined;
-                } else {
-                  if(new Date(value).getFullYear() !== new Date(startDate).getFullYear()) {
-                    return 'Alku- ja loppupäivät tulee olla samana vuonna';
-                  }else if(new Date(value) < new Date(startDate)) {
-                    return 'Loppupäivä ei voi olla ennen alkupäivää';
-                  }
-                }
-              }}
               overrideValues={{
                 label: 'Loppupvm',
               }}
@@ -151,10 +153,10 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     (state) => {
+      const currentLease = getCurrentLease(state);
       return {
-        billingPeriods: getBillingPeriods(state),
+        billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
         billingPeriod: selector(state, 'billing_period'),
-        startDate: selector(state, 'start_date'),
       };
     },
     {
@@ -164,5 +166,6 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
+    validate,
   }),
 )(RentCalculatorForm);

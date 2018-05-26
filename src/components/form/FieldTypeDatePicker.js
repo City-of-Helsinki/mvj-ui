@@ -19,14 +19,18 @@ const FieldTypeDatePicker = ({
   isDirty = false,
   placeholder,
 }: Props) => {
+  let datePicker;
 
   const handleBlur = (e: any) => {
     if(e && e.target.value) {
       const date = moment(e.target.value, ['DDMMYYYY', 'DD.MM.YYYY']);
-      if(date.isValid()) {
+      if(date.toISOString()) {
         return onBlur(date.toISOString());
       }
-      return onBlur(null);
+      if(datePicker) {
+        datePicker.setSelected(value);
+      }
+      return onChange(value && moment(value).toISOString() || null);
     } else {
       onBlur(null);
     }
@@ -34,7 +38,11 @@ const FieldTypeDatePicker = ({
 
   const handleSelect = (val: any, e: any) => {
     if(e && e.target.value) {
-      onChange(moment(e.target.value, ['DDMMYYYY', 'DD.MM.YYYY']).toISOString());
+      const date = moment(e.target.value, ['DDMMYYYY', 'DD.MM.YYYY']);
+      if(date.toISOString()) {
+        return onChange(date.toISOString());
+      }
+      return onChange(value && moment(value).toISOString() || null);
     }
   };
 
@@ -53,7 +61,9 @@ const FieldTypeDatePicker = ({
         onSelect={handleSelect}
         selected={value ? moment(value) : null}
         dateFormat='DD.MM.YYYY'
+        allowSameDay={false}
         disabledKeyboardNavigation
+        ref={(ref) => datePicker = ref}
       />
     </div>
   );

@@ -2,6 +2,7 @@
 
 import {all, fork} from 'redux-saga/effects';
 import authSaga from '../auth/saga';
+import billingPeriodsSaga from '../billingPeriods/saga';
 import commentSaga from '../comments/saga';
 import contactSaga from '../contacts/saga';
 import decisionSaga from '../decision/saga';
@@ -12,6 +13,7 @@ import mapDataSaga from '../mapData/saga';
 import noticePeriodSaga from '../noticePeriod/saga';
 import rememberableTermSaga from '../rememberableTerms/saga';
 import rentBasisSaga from '../rentbasis/saga';
+import rentForPeriodSaga from '../rentForPeriod/saga';
 import userSaga from '../users/saga';
 
 export default () =>
@@ -19,6 +21,7 @@ export default () =>
   function* rootSaga() {
     yield all([
       fork(authSaga),
+      fork(billingPeriodsSaga),
       fork(commentSaga),
       fork(contactSaga),
       fork(decisionSaga),
@@ -29,6 +32,7 @@ export default () =>
       fork(noticePeriodSaga),
       fork(rememberableTermSaga),
       fork(rentBasisSaga),
+      fork(rentForPeriodSaga),
       fork(userSaga),
     ]);
   };

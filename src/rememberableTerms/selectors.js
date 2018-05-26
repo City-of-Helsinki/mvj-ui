@@ -3,13 +3,13 @@ import type {Selector} from '../types';
 import type {RememberableTermList, RememberableTermState} from './types';
 
 export const getIsFetching: Selector<boolean, void> = (state: RememberableTermState): boolean =>
-  state.rememberableterm.isFetching;
+  state.rememberableTerm.isFetching;
 
 export const getIsEditMode: Selector<boolean, void> = (state: RememberableTermState): boolean =>
-  state.rememberableterm.isEditMode;
+  state.rememberableTerm.isEditMode;
 
 export const getInitialRememberableTerm: Selector<Object, void> = (state: RememberableTermState): Object =>
-  state.rememberableterm.initialValues;
+  state.rememberableTerm.initialValues;
 
 export const getRememberableTermList: Selector<RememberableTermList, void> = (state: RememberableTermState): RememberableTermList =>
-  state.rememberableterm.list;
+  state.rememberableTerm.list;

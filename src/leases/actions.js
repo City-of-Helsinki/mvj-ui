@@ -19,14 +19,6 @@ import type {
   ReceiveSingleLeaseAction,
   StartInvoicingAction,
   StopInvoicingAction,
-  BillingPeriodsOptions,
-  BillingPeriodList,
-  FetchBillingPeriodsAction,
-  ReceiveBillingPeriodsAction,
-  RentForPeriodOptions,
-  RentForPeriod,
-  FetchRentForPeriodAction,
-  ReceiveRentForPeriodAction,
   HideContactModalAction,
   ShowContactModalAction,
   ContactModalSettings,
@@ -64,18 +56,6 @@ export const fetchSingleLease = (id: LeaseId): FetchSingleLeaseAction =>
 
 export const receiveSingleLease = (lease: Lease): ReceiveSingleLeaseAction =>
   createAction('mvj/leases/RECEIVE_SINGLE')(lease);
-
-export const fetchBillingPeriods = (payload: BillingPeriodsOptions): FetchBillingPeriodsAction =>
-  createAction('mvj/leases/FETCH_BILLING_PERIODS')(payload);
-
-export const receiveBillingPeriods = (billingPeriods: BillingPeriodList): ReceiveBillingPeriodsAction =>
-  createAction('mvj/leases/RECEIVE_BILLING_PERIODS')(billingPeriods);
-
-export const fetchRentForPeriodByLease = (payload: RentForPeriodOptions): FetchRentForPeriodAction =>
-  createAction('mvj/leases/FETCH_RENT_FOR_PERIOD')(payload);
-
-export const receiveRentForPeriodByLease = (rent: RentForPeriod): ReceiveRentForPeriodAction =>
-  createAction('mvj/leases/RECEIVE_RENT_FOR_PERIOD')(rent);
 
 export const createLease = (lease: Lease): CreateLeaseAction =>
   createAction('mvj/leases/CREATE')(lease);

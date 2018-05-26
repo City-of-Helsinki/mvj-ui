@@ -34,7 +34,6 @@ const Explanation = ({attributes, subItem}: Props) => {
               })
             }
           </div>
-
         </Column>
         <Column small={2}>
           <p className='rent-calculator__sub-item_amount'>{`${formatNumber(amount)} €`}</p>
