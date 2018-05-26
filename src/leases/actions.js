@@ -19,17 +19,12 @@ import type {
   ReceiveSingleLeaseAction,
   StartInvoicingAction,
   StopInvoicingAction,
-} from './types';
-import type {
   HideContactModalAction,
   ShowContactModalAction,
   ContactModalSettings,
   ReceiveContactModalSettingsAction,
   CreateContactAction,
   EditContactAction,
-} from './types';
-
-import type {
   HideEditModeAction,
   ShowEditModeAction,
   ClearFormValidityFlagsAction,

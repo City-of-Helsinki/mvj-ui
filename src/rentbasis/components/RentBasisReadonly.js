@@ -79,7 +79,7 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
                 <ListItems>
                   {rentBasis.decisions.map((decision, index) => {
                     if(decision) {
-                      return <p className='no-margin'><a className='no-margin' key={index} href={getReferenceNumberLink(decision.identifier)} target='_blank'>{decision.identifier}</a></p>;
+                      return <p className='no-margin' key={index}><a className='no-margin' href={getReferenceNumberLink(decision.identifier)} target='_blank'>{decision.identifier}</a></p>;
                     } else {
                       return <p className='no-margin' key={index}>-</p>;
                     }

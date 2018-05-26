@@ -260,8 +260,6 @@ export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
-    }),
-    fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_ALL', fetchLeasesSaga);
       yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);

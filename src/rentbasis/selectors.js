@@ -3,22 +3,22 @@ import type {Selector} from '../types';
 import type {Attributes, RentBasis, RentBasisList, RentBasisState} from './types';
 
 export const getIsEditMode: Selector<boolean, void> = (state: RentBasisState): boolean =>
-  state.rentbasis.isEditMode;
+  state.rentBasis.isEditMode;
 
 export const getIsFetching: Selector<boolean, void> = (state: RentBasisState): boolean =>
-  state.rentbasis.isFetching;
+  state.rentBasis.isFetching;
 
 export const getAttributes: Selector<Attributes, void> = (state: RentBasisState): Attributes =>
-  state.rentbasis.attributes;
+  state.rentBasis.attributes;
 
 export const getRentBasisList: Selector<RentBasisList, void> = (state: RentBasisState): RentBasisList =>
-  state.rentbasis.list;
+  state.rentBasis.list;
 
 export const getRentBasis: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
-  state.rentbasis.rentbasis;
+  state.rentBasis.rentbasis;
 
 export const getRentBasisInitialValues: Selector<RentBasis, void> = (state: RentBasisState): RentBasis =>
-  state.rentbasis.initialValues;
+  state.rentBasis.initialValues;
 
 export const getIsFormValid: Selector<boolean, void> = (state: RentBasisState): boolean =>
-  state.rentbasis.isFormValid;
+  state.rentBasis.isFormValid;

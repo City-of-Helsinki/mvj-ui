@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import InvoicesTable from './InvoicesTable';
+import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {getCurrentLease} from '$src/leases/selectors';
 
@@ -31,8 +32,14 @@ const Invoices = ({currentLease}: Props) => {
         headerTitle={
           <h3 className='collapse__header-title'>Laskut</h3>
         }>
-
         <InvoicesTable/>
+      </Collapse>
+      <Collapse
+        defaultOpen={true}
+        headerTitle={
+          <h3 className='collapse__header-title'>Vuokralaskuri</h3>
+        }>
+        <RentCalculator />
       </Collapse>
     </div>
   );

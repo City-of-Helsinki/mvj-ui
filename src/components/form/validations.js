@@ -45,7 +45,6 @@ export const genericValidator = (value: any, options: Object) => {
     return undefined;
   }
   let error = '';
-
   if(options.required) {
     error = required(value);
     if(error) {return error;}

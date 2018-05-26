@@ -241,15 +241,15 @@ const BasicInfoFree = ({attributes, rent}: Props) => {
           <label>Vuokralaji</label>
           <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
+        <Column small={3} medium={2} large={1}>
+          <label>Alkupvm</label>
+          <p>{formatDate(rent.start_date) || '-'}</p>
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <label>Loppupvm</label>
+          <p>{formatDate(rent.end_date) || '-'}</p>
+        </Column>
       </Row>
-      <Column small={3} medium={2} large={1}>
-        <label>Alkupvm</label>
-        <p>{formatDate(rent.start_date) || '-'}</p>
-      </Column>
-      <Column small={3} medium={2} large={1}>
-        <label>Loppupvm</label>
-        <p>{formatDate(rent.end_date) || '-'}</p>
-      </Column>
       <Row>
         <Column>
           <label>Huomautus</label>

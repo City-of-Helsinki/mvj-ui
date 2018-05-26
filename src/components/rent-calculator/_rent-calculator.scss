@@ -1,0 +1,67 @@
+.rent-calculator {
+  &__button-wrapper {
+    padding-top: rem-calc(5px);
+    padding-bottom: rem-calc(10px)
+  }
+
+  &__rents-container {
+    position: relative;
+    min-height: 45px;
+    padding: rem-calc(15px);
+    background-color: #f9fcfb;
+    margin-top: rem-calc(5px);
+    margin-bottom: rem-calc(10px);
+  }
+
+  &__rent {
+    margin-bottom: rem-calc(20px);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &_amount {
+      text-align: right;
+    }
+  }
+
+  &__explanation{
+    &_amount {
+      text-align: right;
+    }
+
+    &_dates {
+      p {
+        margin-bottom: 0;
+      }
+
+      p:last-child {
+        margin-bottom: rem-calc(10px);
+      }
+    }
+  }
+
+  &__sub-item{
+    &_amount {
+      text-align: right;
+    }
+    &_description {
+      padding-left: rem-calc(15px);
+    }
+
+    &_dates {
+      p {
+        margin-bottom: 0;
+      }
+
+      p:last-child {
+        margin-bottom: rem-calc(10px);
+      }
+    }
+  }
+
+  &__divider {
+    border-top: 1px dashed $tram;
+    margin-bottom: rem-calc(10px);
+  }
+}
