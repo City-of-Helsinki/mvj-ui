@@ -22,12 +22,16 @@
 
     &_amount {
       text-align: right;
+      white-space: nowrap;
+      overflow: visible !important;
     }
   }
 
   &__explanation{
     &_amount {
       text-align: right;
+      white-space: nowrap;
+      overflow: visible !important;
     }
 
     &_dates {
@@ -44,7 +48,10 @@
   &__sub-item{
     &_amount {
       text-align: right;
+      white-space: nowrap;
+      overflow: visible !important;
     }
+
     &_description {
       padding-left: rem-calc(15px);
     }

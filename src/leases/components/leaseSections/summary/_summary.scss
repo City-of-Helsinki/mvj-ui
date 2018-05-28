@@ -1,0 +1,15 @@
+.summary {
+  &__status-indicator {
+    &_neutral {
+      color: $neutral-color !important;
+    }
+
+    &_alert {
+      color: $brick !important;
+    }
+
+    &_success {
+      color: $tram !important;
+    }
+  }
+}

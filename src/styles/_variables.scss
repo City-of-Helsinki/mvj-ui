@@ -25,6 +25,7 @@ $foundation-palette: (
 
 /// @type Color
 $alert-color: #bd2719 !default;
+$neutral-color: #666666 !default;
 $focus-color: #d5d5d5 !default;
 $summer: #ffc61e !default;
 $engel: #ffe977 !default;
@@ -46,7 +47,6 @@ $engel-lighter-opaque: #FFF6C9;
 $tram-lighter: rgba(0,146,70, 0.8);
 $brick-lighter: rgba(189,39,25, 0.8);
 $tram-lightest: rgba(0,146,70, 0.2);
-
 
 $mvj-text-color: $black;
 $mvj-focus-color: #9BDCFB;

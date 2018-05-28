@@ -24,7 +24,7 @@ const Tenant = ({
   allContacts,
   tenant,
 }: Props) => {
-  const contact = getContactById(allContacts, get(tenant, 'tenant.contact'));
+  const contact = getContactById(allContacts, get(tenant, 'tenant.contact.id'));
   const isActive = isTenantActive(get(tenant, 'tenant'));
 
   return (
