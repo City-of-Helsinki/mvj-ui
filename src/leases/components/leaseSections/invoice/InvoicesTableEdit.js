@@ -74,6 +74,7 @@ class InvoicesTableEdit extends Component<Props, State> {
     return (
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
+      this.state.tableWidth !== nextState.tableWidth ||
       this.state.selectedInvoice !== nextState.selectedInvoice ||
       this.state.showModal !== nextState.showModal ||
       this.props !== nextProps
