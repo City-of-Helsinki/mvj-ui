@@ -25,7 +25,7 @@ import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/
 
 import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
-const MODAL_HEIGHT = 480;
+const MODAL_HEIGHT = 580;
 const MODAL_WIDTH = 700;
 
 type Props = {
@@ -74,6 +74,7 @@ class InvoicesTableEdit extends Component<Props, State> {
     return (
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
+      this.state.tableWidth !== nextState.tableWidth ||
       this.state.selectedInvoice !== nextState.selectedInvoice ||
       this.state.showModal !== nextState.showModal ||
       this.props !== nextProps

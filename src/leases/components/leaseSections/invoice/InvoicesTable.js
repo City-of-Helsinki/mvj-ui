@@ -20,7 +20,7 @@ import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/
 
 import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
-const MODAL_HEIGHT = 480;
+const MODAL_HEIGHT = 550;
 const MODAL_WIDTH = 700;
 
 type Props = {
@@ -52,38 +52,6 @@ class InvoicesTable extends Component<Props, State> {
   tableElement: any
   tableWrapper : any
 
-  calculateHeight = () => {
-    let {clientHeight} = this.tableElement;
-    const {showModal} = this.state;
-
-    if(showModal) {clientHeight = MODAL_HEIGHT;}
-    if(clientHeight > MODAL_HEIGHT) {clientHeight = MODAL_HEIGHT;}
-
-    this.setState({tableHeight: clientHeight});
-  }
-
-  calculateTableWidth = () => {
-    let {clientWidth} = this.container;
-    const {showModal} = this.state;
-
-    if(showModal) {
-      if(clientWidth - MODAL_WIDTH <= 0) {
-        clientWidth = 0;
-      } else {
-        clientWidth = clientWidth - MODAL_WIDTH;
-      }
-    }
-    this.setState({tableWidth: clientWidth});
-  }
-
-  transitionEnds = () => {
-    const {clientWidth} = this.container;
-    const {clientWidth: tableWidth} = this.tableWrapper;
-    if(clientWidth === tableWidth) {
-      this.setState({showAllColumns: true});
-    }
-  }
-
   componentDidMount() {
     this.calculateHeight();
     this.calculateTableWidth();
@@ -97,11 +65,12 @@ class InvoicesTable extends Component<Props, State> {
 
   shouldComponentUpdate(nextProps: Object, nextState: Object) {
     return (
-      this.props.invoices !== nextProps.invoices ||
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
+      this.state.tableWidth !== nextState.tableWidth ||
       this.state.selectedInvoice !== nextState.selectedInvoice ||
-      this.state.showModal !== nextState.showModal
+      this.state.showModal !== nextState.showModal ||
+      this.props !== nextProps
     );
   }
 
@@ -117,6 +86,35 @@ class InvoicesTable extends Component<Props, State> {
         duration: 450,
       });
     }, 50);
+  }
+
+  calculateHeight = () => {
+    let {clientHeight} = this.tableElement;
+    const {showModal} = this.state;
+
+    if(showModal) {clientHeight = MODAL_HEIGHT;}
+    if(clientHeight > MODAL_HEIGHT) {clientHeight = MODAL_HEIGHT;}
+
+    this.setState({tableHeight: clientHeight});
+  }
+
+  calculateTableWidth = () => {
+    let {clientWidth} = this.container;
+    const {showModal} = this.state;
+
+    if(showModal) {
+      if(clientWidth - MODAL_WIDTH <= 0) {clientWidth = 0;}
+      else {clientWidth = clientWidth - MODAL_WIDTH;}
+    }
+    this.setState({tableWidth: clientWidth});
+  }
+
+  transitionEnds = () => {
+    const {clientWidth} = this.container;
+    const {clientWidth: tableWidth} = this.tableWrapper;
+    if(clientWidth === tableWidth) {
+      this.setState({showAllColumns: true});
+    }
   }
 
   handleKeyCodeDown = () => {
@@ -188,7 +186,6 @@ class InvoicesTable extends Component<Props, State> {
     const headers = this.getTableHeaders();
     const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'receivable_type');
     const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
-
 
     return (
       <div

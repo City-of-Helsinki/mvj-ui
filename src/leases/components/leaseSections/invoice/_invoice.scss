@@ -72,4 +72,12 @@
       }
     }
   }
+
+  &__rows {
+    &_amount {
+      text-align: right;
+      white-space: nowrap;
+      overflow: visible;
+    }
+  }
 }
