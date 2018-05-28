@@ -122,15 +122,21 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_date_of_approval')}
-                      name={`${planunit}.detailed_plan_date_of_approval`}
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date')}
+                      name={`${planunit}.detailed_plan_latest_processing_date`}
                       overrideValues={{
-                        label: 'Asemakaavan vahvistumispvm',
+                        label: 'Asemakaavan viimeisin käsittelypvm',
                       }}
                     />
                   </Column>
                   <Column small={12} medium={6} large={3}>
-
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date_note')}
+                      name={`${planunit}.detailed_plan_latest_processing_date_note`}
+                      overrideValues={{
+                        label: 'Asemakaavan viimeisin käsittelypvm selite',
+                      }}
+                    />
                   </Column>
                   <Column small={12} medium={6} large={3}>
 
@@ -156,7 +162,13 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
                     />
                   </Column>
                   <Column small={12} medium={6} large={3}>
-
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_state')}
+                      name={`${planunit}.plot_division_state`}
+                      overrideValues={{
+                        label: 'Tonttijaon olotila',
+                      }}
+                    />
                   </Column>
                   <Column small={12} medium={6} large={3}>
 
@@ -182,11 +194,15 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
                     />
                   </Column>
                   <Column small={12} medium={6} large={3}>
-
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use')}
+                      name={`${planunit}.plan_unit_intended_use`}
+                      overrideValues={{
+                        label: 'Kaavayksikön käyttötarkoitus',
+                      }}
+                    />
                   </Column>
-                  <Column small={12} medium={6} large={3}>
-
-                  </Column>
+                  <Column small={12} medium={6} large={3}></Column>
                 </Row>
               </BoxContentWrapper>
             </BoxItem>

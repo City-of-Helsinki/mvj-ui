@@ -119,6 +119,13 @@ const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
                     />
                   </Column>
                   <Column small={12} medium={6} large={3}>
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.repeal_date')}
+                      name={`${plot}.repeal_date`}
+                      overrideValues={{
+                        label: 'Kumoamispvm',
+                      }}
+                    />
                   </Column>
                 </Row>
               </BoxContentWrapper>
