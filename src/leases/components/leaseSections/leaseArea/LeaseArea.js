@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import PlanUnitItem from './PlanUnitItem';
 import PlotItem from './PlotItem';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
@@ -25,33 +26,33 @@ const LeaseArea = ({area, attributes}: Props) => {
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <label>Tunnus</label>
+          <FormFieldLabel>Tunnus</FormFieldLabel>
           <p>{area.identifier || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Määritelmä</label>
+          <FormFieldLabel>Määritelmä</FormFieldLabel>
           <p>{getLabelOfOption(typeOptions, area.type) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Pinta-ala</label>
+          <FormFieldLabel>Pinta-ala</FormFieldLabel>
           <p>{formatNumber(area.area) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Sijainti</label>
+          <FormFieldLabel>Sijainti</FormFieldLabel>
           <p>{getLabelOfOption(locationOptions, area.location) || '-'}</p>
         </Column>
       </Row>
       <Row>
         <Column small={12} medium={12} large={4}>
-          <label>Osoite</label>
+          <FormFieldLabel>Osoite</FormFieldLabel>
           <p>{area.address || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Postinumero</label>
+          <FormFieldLabel>Postinumero</FormFieldLabel>
           <p>{area.postal_code || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Kaupunki</label>
+          <FormFieldLabel>Kaupunki</FormFieldLabel>
           <p>{area.city || '-'}</p>
         </Column>
       </Row>

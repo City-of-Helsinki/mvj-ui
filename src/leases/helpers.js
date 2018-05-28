@@ -148,6 +148,7 @@ export const getContentPlots = (plots: Array<Object>, inContract: boolean): Arra
       city: get(plot, 'city'),
       type: get(plot, 'type'),
       registration_date: get(plot, 'registration_date'),
+      repeal_date: get(plot, 'repeal_date'),
       in_contract: get(plot, 'in_contract'),
     };
   });
@@ -171,10 +172,13 @@ export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolea
       in_contract: get(planunit, 'in_contract'),
       plot_division_identifier: get(planunit, 'plot_division_identifier'),
       plot_division_date_of_approval: get(planunit, 'plot_division_date_of_approval'),
+      plot_division_state: get(planunit, 'plot_division_state.id') || get(planunit, 'plot_division_state'),
       detailed_plan_identifier: get(planunit, 'detailed_plan_identifier'),
-      detailed_plan_date_of_approval: get(planunit, 'detailed_plan_date_of_approval'),
+      detailed_plan_latest_processing_date: get(planunit, 'detailed_plan_latest_processing_date'),
+      detailed_plan_latest_processing_date_note: get(planunit, 'detailed_plan_latest_processing_date_note'),
       plan_unit_type: get(planunit, 'plan_unit_type.id') || get(planunit, 'plan_unit_type'),
       plan_unit_state: get(planunit, 'plan_unit_state.id') || get(planunit, 'plan_unit_state'),
+      plan_unit_intended_use: get(planunit, 'plan_unit_intended_use.id') || get(planunit, 'plan_unit_intended_use'),
     };
   });
 };
@@ -706,6 +710,7 @@ const getPlotsForDb = (area: Object) => {
       type: get(plot, 'type'),
       location: get(plot, 'location'),
       registration_date: get(plot, 'registration_date'),
+      repeal_date: get(plot, 'repeal_date'),
       in_contract: get(plot, 'in_contract'),
     };
   });
@@ -737,10 +742,13 @@ const getPlanUnitsForDb = (area: Object) => {
       in_contract: get(planunit, 'in_contract'),
       plot_division_identifier: get(planunit, 'plot_division_identifier'),
       plot_division_date_of_approval: get(planunit, 'plot_division_date_of_approval'),
+      plot_division_state: get(planunit, 'plot_division_state'),
       detailed_plan_identifier: get(planunit, 'detailed_plan_identifier'),
-      detailed_plan_date_of_approval: get(planunit, 'detailed_plan_date_of_approval'),
+      detailed_plan_latest_processing_date: get(planunit, 'detailed_plan_latest_processing_date'),
+      detailed_plan_latest_processing_date_note: get(planunit, 'detailed_plan_latest_processing_date_note'),
       plan_unit_type: get(planunit, 'plan_unit_type'),
       plan_unit_state: get(planunit, 'plan_unit_state'),
+      plan_unit_intended_use: get(planunit, 'plan_unit_intended_use'),
     };
   });
 };
