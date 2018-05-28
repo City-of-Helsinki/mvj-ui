@@ -129,6 +129,9 @@ export const getContentSummary = (lease: Object) => {
     notice_note: get(lease, 'notice_note'),
     reference_number: get(lease, 'reference_number'),
     note: get(lease, 'note'),
+    tenants: getContentTenants(lease),
+    lease_areas: getContentLeaseAreas(lease),
+    constructability_areas: getContentConstructability(lease),
   };
 };
 
@@ -435,7 +438,13 @@ export const getContentTenantItem = (tenant: Object) => {
   return {
     id: get(contact, 'id'),
     type: get(contact, 'type'),
-    contact: get(contact, 'contact.id'),
+    contact: {
+      id: get(contact, 'contact.id'),
+      type: get(contact, 'contact.type'),
+      first_name: get(contact, 'contact.first_name'),
+      last_name: get(contact, 'contact.last_name'),
+      name: get(contact, 'contact.name'),
+    },
     start_date: get(contact, 'start_date'),
     end_date: get(contact, 'end_date'),
   };
@@ -617,10 +626,7 @@ export const getContentBasisOfRents = (lease: Object) => {
 // OLD HELPER FUNCTIONS
 //TODO: Remove mock data helper function when contruction eligibility tab is added to API
 export const getFullAddress = (item: Object) => {
-  if(!get(item, 'zip_code') && !get(item, 'town')) {
-    return get(item, 'address');
-  }
-  return `${get(item, 'address')}, ${get(item, 'zip_code')} ${get(item, 'town')}`;
+  return `${item.address}, ${item.postal_code} ${item.city}`;
 };
 
 export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>): Array<Object> => {
