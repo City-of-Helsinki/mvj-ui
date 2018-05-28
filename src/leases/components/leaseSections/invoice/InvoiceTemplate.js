@@ -3,7 +3,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
+import Divider from '$components/content/Divider';
 import {
   formatDate,
   formatDateRange,
@@ -11,21 +13,36 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {getContactFullName} from '$src/contacts/helpers';
+import {getContactById, getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceSharePercentage} from '$src/invoices/helpers';
+import {getCompleteContactList} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
+import type {Contact} from '$src/contacts/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
+const getRowsSum = (rows: Array<Object>) => {
+  let sum = 0;
+  rows.forEach((row) => {
+    sum += Number(row.amount);
+  });
+  return sum;
+};
+
 type Props = {
+  allContacts: Array<Contact>,
   invoice: Object,
   invoiceAttributes: InvoiceAttributes,
 }
-const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
+
+const InvoiceTemplate = ({allContacts, invoice, invoiceAttributes}: Props) => {
   const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'receivable_type');
   const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
   const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
   const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
+  const rows = get(invoice, 'rows', []);
+  const sum = getRowsSum(rows);
+
   return (
     <div>
       <Row>
@@ -145,6 +162,33 @@ const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
           <p>{invoice.notes || '-'}</p>
         </Column>
       </Row>
+      <Row>
+        <Column medium={12}>
+          <label>Erittely</label>
+          {!rows.length && <p>-</p>}
+          {!!rows.length &&
+            <div>
+              {rows.map((row) => {
+                const contact = getContactById(allContacts, row.tenant);
+                return (
+                  <Row key={row.id}>
+                    <Column small={4} medium={5}><p>{getContactFullName(contact) || '-'}</p></Column>
+                    <Column small={4} medium={5}><p>{row.description || '-'}</p></Column>
+                    <Column small={4} medium={2}><p className='invoice__rows_amount'>{row.amount ? `${formatNumber(row.amount)} €` : '-'}</p></Column>
+                  </Row>
+                );
+              })}
+              <Divider
+                className='invoice-divider'
+              />
+              <Row>
+                <Column small={8} medium={10}><p><strong>Yhteensä</strong></p></Column>
+                <Column small={4} medium={2}><p className='invoice__rows_amount'><strong>{`${formatNumber(sum)} €`}</strong></p></Column>
+              </Row>
+            </div>
+          }
+        </Column>
+      </Row>
     </div>
   );
 };
@@ -153,6 +197,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        allContacts: getCompleteContactList(state),
         invoiceAttributes: getInvoiceAttributes(state),
       };
     },

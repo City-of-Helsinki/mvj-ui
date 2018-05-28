@@ -97,6 +97,11 @@
     margin: rem-calc(15px) 0;
     height: 1px;
     width: 100%;
+
+    &.invoice-divider {
+      margin-top: 0;
+      margin-bottom: rem-calc(10px);
+    }
   }
 
   label {

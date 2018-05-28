@@ -327,7 +327,6 @@ class Summary extends Component<Props, State> {
               {!constructabilityAreas.length && <p>Ei vuokrakohteita</p>}
               {!!constructabilityAreas.length &&
                 constructabilityAreas.map((area, index) => {
-                  console.log(area);
                   return (
                     <ListItems key={index}>
                       <Row>

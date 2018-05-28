@@ -25,7 +25,7 @@ import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/
 
 import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
-const MODAL_HEIGHT = 480;
+const MODAL_HEIGHT = 580;
 const MODAL_WIDTH = 700;
 
 type Props = {
