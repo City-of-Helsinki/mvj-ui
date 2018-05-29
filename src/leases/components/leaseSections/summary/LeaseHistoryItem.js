@@ -19,12 +19,22 @@ const LeaseHistoryItem = ({
   type,
 }: Props) => {
   return (
-    <div className="lease-history__item">
-      <div className={classNames('lease-history__item-badge', {'active': active})}></div>
-      <div className={classNames('lease-history__item-info', {'active': active})}>
-        <p className="identifier">{identifier}</p>
-        <p>{formatDate(start_date)} - {formatDate(end_date)}</p>
-        <p className="type">{type}</p>
+    <div className={classNames('lease-history__item', {'active': active})}>
+      <div className="lease-history__item-wrapper">
+        <div className="lease-history__item-left-border" />
+        <div className={classNames('lease-history__item-badge')}></div>
+        {!!active &&
+          <div className={classNames('lease-history__item-info')}>
+            <p className="identifier">{identifier}</p>
+          </div>
+        }
+        {!active &&
+          <div className={classNames('lease-history__item-info')}>
+            <p className="identifier"><a>{identifier}</a></p>
+            <p>{formatDate(start_date)} - {formatDate(end_date)}</p>
+            <p className="type">{type}</p>
+          </div>
+        }
       </div>
     </div>
   );
