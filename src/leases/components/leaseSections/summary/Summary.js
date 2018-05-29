@@ -315,7 +315,13 @@ class Summary extends Component<Props, State> {
                             <p className='no-margin'>{area.identifier || '-'}</p>
                           </Column>
                           <Column small={6} large={4}>
-                            <p className='no-margin'>{getFullAddress(area)}</p>
+                            {!area.addresses || !area.addresses.length && <p className='no-margin'>-</p>}
+
+                            {!!area.addresses && !!area.addresses.length &&
+                              area.addresses.map((address, index) => {
+                                return <p key={index} className='no-margin'>{getFullAddress(address)}</p>;
+                              })
+                            }
                           </Column>
                         </Row>
                       );

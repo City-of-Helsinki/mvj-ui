@@ -41,11 +41,11 @@ export const getContentLeaseTenant = (lease: Object) => {
 };
 
 export const getContentLeaseAddress = (lease: Object) => {
-  const areas = get(lease, 'lease_areas', []);
-  if(!areas.length) {
+  const address = get(lease, 'lease_areas[0].addresses[0]');
+  if(!address) {
     return null;
   }
-  return `${areas[0].address ? areas[0].address + ', ' : ''}${get(areas[0], 'postal_code', '')} ${get(areas[0], 'city', '')}`;
+  return `${address.address ? `${address.address}, ` : ''}${address.postal_code || ''} ${address.city || ''}`;
 };
 
 export const getContentLeaseItem = (lease: Object) => {
@@ -135,6 +135,20 @@ export const getContentSummary = (lease: Object) => {
   };
 };
 
+export const getContentAddresses = (addresses: Array<Object>) => {
+  if(isEmpty(addresses)) {
+    return [];
+  }
+  return addresses.map((address) => {
+    return {
+      id: get(address, 'id'),
+      address: get(address, 'address'),
+      postal_code: get(address, 'postal_code'),
+      city: get(address, 'city'),
+    };
+  });
+};
+
 export const getContentPlots = (plots: Array<Object>, inContract: boolean): Array<Object> => {
   if(!plots || !plots.length) {
     return [];
@@ -146,7 +160,7 @@ export const getContentPlots = (plots: Array<Object>, inContract: boolean): Arra
       identifier: get(plot, 'identifier'),
       area: get(plot, 'area'),
       section_area: get(plot, 'section_area'),
-      address: get(plot, 'address'),
+      addresses: getContentAddresses(get(plot, 'addresses')),
       postal_code: get(plot, 'postal_code'),
       city: get(plot, 'city'),
       type: get(plot, 'type'),
@@ -168,7 +182,7 @@ export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolea
       identifier: get(planunit, 'identifier'),
       area: get(planunit, 'area'),
       section_area: get(planunit, 'section_area'),
-      address: get(planunit, 'address'),
+      addresses: getContentAddresses(get(planunit, 'addresses')),
       postal_code: get(planunit, 'postal_code'),
       city: get(planunit, 'city'),
       type: get(planunit, 'type'),
@@ -192,7 +206,7 @@ export const getContentLeaseAreaItem = (area: Object) => {
     identifier: get(area, 'identifier'),
     area: get(area, 'area'),
     section_area: get(area, 'section_area'),
-    address: get(area, 'address'),
+    addresses: getContentAddresses(get(area, 'addresses')),
     postal_code: get(area, 'postal_code'),
     city: get(area, 'city'),
     type: get(area, 'type'),
@@ -626,7 +640,11 @@ export const getContentBasisOfRents = (lease: Object) => {
 // OLD HELPER FUNCTIONS
 //TODO: Remove mock data helper function when contruction eligibility tab is added to API
 export const getFullAddress = (item: Object) => {
-  return `${item.address}, ${item.postal_code} ${item.city}`;
+  if(isEmpty(item)) {
+    return null;
+  }
+
+  return `${item.address ? `${item.address}, ` : ''}${item.postal_code || ''} ${item.city || ''}`;
 };
 
 export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>): Array<Object> => {
@@ -691,6 +709,17 @@ export const addSummaryFormValues = (payload: Object, summary: Object) => {
   return payload;
 };
 
+const getAddressesForDb = (addresses: Array<Object>) => {
+  return addresses.map((address) => {
+    return {
+      id: address.id || undefined,
+      address: get(address, 'address'),
+      postal_code: get(address, 'postal_code'),
+      city: get(address, 'city'),
+    };
+  });
+};
+
 const getPlotsForDb = (area: Object) => {
   const currentPlots = get(area, 'plots_current', []).map((plot) => {
     plot.in_contract = false;
@@ -710,7 +739,7 @@ const getPlotsForDb = (area: Object) => {
       identifier: get(plot, 'identifier'),
       area: formatDecimalNumberForDb(get(plot, 'area')),
       section_area: formatDecimalNumberForDb(get(plot, 'section_area')),
-      address: get(plot, 'address'),
+      addresses: getAddressesForDb(get(plot, 'addresses')),
       postal_code: get(plot, 'postal_code'),
       city: get(plot, 'city'),
       type: get(plot, 'type'),
@@ -741,7 +770,7 @@ const getPlanUnitsForDb = (area: Object) => {
       identifier: get(planunit, 'identifier'),
       area: formatDecimalNumberForDb(get(planunit, 'area')),
       section_area: formatDecimalNumberForDb(get(planunit, 'section_area')),
-      address: get(planunit, 'address'),
+      addresses: getAddressesForDb(get(planunit, 'addresses')),
       postal_code: get(planunit, 'postal_code'),
       city: get(planunit, 'city'),
       type: get(planunit, 'type'),
@@ -770,7 +799,7 @@ export const addAreasFormValues = (payload: Object, values: Object) => {
         identifier: get(area, 'identifier'),
         area: formatDecimalNumberForDb(get(area, 'area')),
         section_area: formatDecimalNumberForDb(get(area, 'area')),
-        address: get(area, 'address'),
+        addresses: getAddressesForDb(get(area, 'addresses')),
         postal_code: get(area, 'postal_code'),
         city: get(area, 'city'),
         type: get(area, 'type'),

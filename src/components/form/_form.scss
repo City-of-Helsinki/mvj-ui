@@ -59,6 +59,7 @@
   }
 
   .remove-button {
+    z-index: 1;
     cursor: pointer;
     position: relative;
     top: rem-calc(-4px);

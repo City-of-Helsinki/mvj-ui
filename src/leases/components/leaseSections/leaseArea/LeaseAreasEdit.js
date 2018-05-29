@@ -8,10 +8,12 @@ import get from 'lodash/get';
 import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import FormSection from '$components/form/FormSection';
 import PlotItemsEdit from './PlotItemsEdit';
 import PlanUnitItemsEdit from './PlanUnitItemsEdit';
@@ -24,6 +26,75 @@ import {formatNumber} from '$util/helpers';
 import {getAttributes, getCurrentLease, getIsLeaseAreasFormValid} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
+
+type AddressesProps = {
+  attributes: Attributes,
+  fields: any,
+}
+
+const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
+  return (
+    <div>
+      <Row>
+        <Column small={6} large={4}>
+          <FormFieldLabel required>Osoite</FormFieldLabel>
+        </Column>
+        <Column small={3} large={2}>
+          <FormFieldLabel>Postinumero</FormFieldLabel>
+        </Column>
+        <Column small={3} large={2}>
+          <FormFieldLabel>Kaupunki</FormFieldLabel>
+        </Column>
+      </Row>
+      {fields && !!fields.length && fields.map((field, index) =>
+        <Row key={index}>
+          <Column small={6} large={4}>
+            <FormField
+              fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.address')}
+              name={`${field}.address`}
+              overrideValues={{
+                label: '',
+              }}
+            />
+          </Column>
+          <Column small={3} large={2}>
+            <FormField
+              fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.postal_code')}
+              name={`${field}.postal_code`}
+              overrideValues={{
+                label: '',
+              }}
+            />
+          </Column>
+          <Column small={2} large={2}>
+            <FormField
+              fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.city')}
+              name={`${field}.city`}
+              overrideValues={{
+                label: '',
+              }}
+            />
+          </Column>
+          <Column small={1}>
+            <RemoveButton
+              onClick={() => fields.remove(index)}
+              title="Poista osoite"
+            />
+          </Column>
+        </Row>
+      )}
+      <Row>
+        <Column>
+          <AddButtonSecondary
+            label='Lisää osoite'
+            onClick={() => fields.push({})}
+            title='Lisää osoite'
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
 
 type AreaItemProps = {
   attributes: Attributes,
@@ -89,38 +160,16 @@ const LeaseAreaItems = ({
                   />
                 </Column>
               </Row>
-              <Row>
-                <Column small={12} medium={12} large={4}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'lease_areas.child.children.address')}
-                    name={`${area}.address`}
-                    overrideValues={{
-                      label: 'Osoite',
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'lease_areas.child.children.postal_code')}
-                    name={`${area}.postal_code`}
-                    overrideValues={{
-                      label: 'Postinumero',
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'lease_areas.child.children.city')}
-                    name={`${area}.city`}
-                    overrideValues={{
-                      label: 'Kaupunki',
-                    }}
-                  />
-                </Column>
-              </Row>
+
+              <FieldArray
+                attributes={attributes}
+                component={AddressItems}
+                name={`${area}.addresses`}
+              />
+
             </BoxContentWrapper>
             <Row>
-              <Column small={12} medium={6}>
+              <Column small={12} large={6}>
                 <FieldArray
                   buttonTitle='Lisää kiinteistö/määräala'
                   component={PlotItemsEdit}
@@ -128,7 +177,7 @@ const LeaseAreaItems = ({
                   title='Kiinteistöt / määräalat sopimuksessa'
                 />
               </Column>
-              <Column small={12} medium={6}>
+              <Column small={12} large={6}>
                 <FieldArray
                   buttonTitle='Lisää kiinteistö/määräala'
                   component={PlotItemsEdit}
@@ -138,7 +187,7 @@ const LeaseAreaItems = ({
               </Column>
             </Row>
             <Row>
-              <Column small={12} medium={6}>
+              <Column small={12} large={6}>
                 <FieldArray
                   buttonTitle='Lisää kaavayksikkö'
                   component={PlanUnitItemsEdit}
@@ -146,7 +195,7 @@ const LeaseAreaItems = ({
                   title='Kaavayksiköt sopimuksessa'
                 />
               </Column>
-              <Column small={12} medium={6}>
+              <Column small={12} large={6}>
                 <FieldArray
                   buttonTitle='Lisää kaavayksikkö'
                   component={PlanUnitItemsEdit}
@@ -163,7 +212,9 @@ const LeaseAreaItems = ({
           <AddButton
             label='Lisää uusi kohde'
             onClick={() => fields.push({
+              addresses: [{}],
               location: AreaLocation.SURFACE,
+
             })}
             title='Lisää uusi kohde'
           />
