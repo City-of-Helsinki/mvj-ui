@@ -1,45 +1,103 @@
 .lease-history {
   &__component {
-    border-left: rem-calc(2px) solid #9b9b9b;
+    background-color: $tram-lighter-solid;
     height: 100%;
+    padding: rem-calc(15px);
   }
+
   &__item {
-    position: relative;
+    padding-left: 17.5px;
+    padding-right: 7.5px;
+    margin-left: -7.5px;
+    margin-right: -7.5px;
+
+    &-wrapper {
+      position: relative;
+      padding: rem-calc(7.5px 0);
+    }
+
+    &-left-border {
+      border-left: 1px solid $tram-lighter-solid;
+      position: absolute;
+      left: -1px;
+    }
 
     &-badge {
-      background-color: #9b9b9b;
+      background-color: $tram;
       height: rem-calc(20px);
       width: rem-calc(20px);
       position: absolute;
       left: rem-calc(-11px);;
       border-radius: 50%;
-
-      &.active {
-        background-color: $tram;
-        height: rem-calc(25px);
-        width: rem-calc(25px);
-        left: rem-calc(-13.5px);;
-      }
     }
 
     &-info {
-      padding: 0 0 0 rem-calc(20px);
-      margin-bottom: rem-calc(20px);
+      padding-left: rem-calc(20px);
 
-      &.active {
-        padding-top: rem-calc(2.5px);
-      }
       p {
         line-height: rem-calc(20px);
         margin-bottom: 0;
       }
 
       .identifier {
-        font-size: 1.125rem;
+        font-size: rem-calc(18px);
         font-weight: $semibold;
+
+        a {
+          font-size: rem-calc(18px);
+          line-height: rem-calc(20px);
+          margin-bottom: 0;
+          font-weight: $semibold;
+        }
       }
+
       .type {
         font-weight: $semibold;
+      }
+    }
+
+    &.active {
+      background-color: $white;
+
+      .lease-history__item {
+        &-badge {
+          background-color: $black;
+        }
+        &-left-border {
+          border-color: $white !important;
+        }
+      }
+    }
+  }
+
+  &__items {
+    position: relative;
+    margin-top: rem-calc(15px);
+
+    &-border-left {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 9px;
+      border-left: 1px dashed $tram;
+    }
+
+    .lease-history__item:nth-of-type(2) {
+      .lease-history__item {
+        &-left-border {
+          top: 0;
+          bottom: unset;
+          height: 7.5px;
+        }
+      }
+    }
+
+    .lease-history__item:last-of-type {
+      .lease-history__item {
+        &-left-border {
+          bottom: 0;
+          top: 7.5px;
+        }
       }
     }
   }
