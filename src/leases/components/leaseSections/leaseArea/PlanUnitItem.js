@@ -2,9 +2,11 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import BoxItem from '$components/content/BoxItem';
 import FormFieldLabel from '$components/form/FormFieldLabel';
+import ListItems from '$components/content/ListItems';
 import {getAttributes} from '$src/leases/selectors';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import type {Attributes} from '$src/leases/types';
@@ -25,6 +27,7 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
     'lease_areas.child.children.plan_units.child.children.plan_unit_state');
   const planUnitIntendedUseOptions = getAttributeFieldOptions(attributes,
     'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use');
+  const addresses = get(planUnit, 'addresses', []);
 
   return (
     <BoxItem className='no-border-on-first-child'>
@@ -39,19 +42,50 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
         </Column>
       </Row>
       <Row>
-        <Column small={12} medium={12} large={6}>
+        <Column small={6} large={6}>
           <FormFieldLabel>Osoite</FormFieldLabel>
-          <p>{planUnit.address || '-'}</p>
         </Column>
-        <Column small={12} medium={6} large={3}>
+        <Column small={3} large={3}>
           <FormFieldLabel>Postinumero</FormFieldLabel>
-          <p>{planUnit.postal_code || '-'}</p>
         </Column>
-        <Column small={12} medium={6} large={3}>
+        <Column small={3} large={3}>
           <FormFieldLabel>Kaupunki</FormFieldLabel>
-          <p>{planUnit.city || '-'}</p>
         </Column>
       </Row>
+      {!addresses.length &&
+        <Row>
+          <Column small={6} large={6}>
+            <p>-</p>
+          </Column>
+          <Column small={3} large={3}>
+            <p>-</p>
+          </Column>
+          <Column small={3} large={3}>
+            <p>-</p>
+          </Column>
+        </Row>
+      }
+      {!!addresses.length &&
+        <div>
+          <ListItems>
+            {addresses.map((address) => {
+              return (
+                <Row key={address.id}>
+                  <Column small={6} large={6}>
+                    <p className='no-margin'>{address.address || '-'}</p>
+                  </Column>
+                  <Column small={3} large={3}>
+                    <p className='no-margin'>{address.postal_code || '-'}</p>
+                  </Column>
+                  <Column small={3} large={3}>
+                    <p className='no-margin'>{address.city || '-'}</p>
+                  </Column>
+                </Row>
+              );
+            })}
+          </ListItems>
+        </div>
+      }
       <Row>
         <Column small={12} medium={6} large={3}>
           <FormFieldLabel>Kokonaisala</FormFieldLabel>

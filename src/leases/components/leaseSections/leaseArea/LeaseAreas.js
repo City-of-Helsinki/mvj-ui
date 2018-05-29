@@ -2,13 +2,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Column} from 'react-foundation';
-import {capitalize} from 'lodash';
+import get from 'lodash/get';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import LeaseArea from './LeaseArea';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
+import {getAreasSum, getContentLeaseAreas, getFullAddress} from '$src/leases/helpers';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption}  from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -20,10 +20,6 @@ type Props = {
 }
 
 const LeaseAreas = ({attributes, currentLease}: Props) => {
-  const getFullAddress = (area: Object) => {
-    return `${capitalize(area.address)}, ${area.postal_code} ${capitalize(area.city)}`;
-  };
-
   const areas = getContentLeaseAreas(currentLease);
   const areasSum = getAreasSum(areas);
   const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
@@ -57,7 +53,7 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
                 </Column>
                 <Column>
                   <span className='collapse__header-subtitle'>
-                    {getFullAddress(area)}
+                    {getFullAddress(get(area, 'addresses[0]')) || '-'}
                   </span>
                 </Column>
                 <Column>

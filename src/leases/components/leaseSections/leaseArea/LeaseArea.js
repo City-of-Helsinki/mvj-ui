@@ -2,10 +2,12 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormFieldLabel from '$components/form/FormFieldLabel';
+import ListItems from '$components/content/ListItems';
 import PlanUnitItem from './PlanUnitItem';
 import PlotItem from './PlotItem';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
@@ -21,6 +23,7 @@ type Props = {
 const LeaseArea = ({area, attributes}: Props) => {
   const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
   const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
+  const addresses = get(area, 'addresses', []);
 
   return (
     <div>
@@ -42,22 +45,55 @@ const LeaseArea = ({area, attributes}: Props) => {
           <p>{getLabelOfOption(locationOptions, area.location) || '-'}</p>
         </Column>
       </Row>
+
       <Row>
-        <Column small={12} medium={12} large={4}>
+        <Column small={6} large={4}>
           <FormFieldLabel>Osoite</FormFieldLabel>
-          <p>{area.address || '-'}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={3} large={2}>
           <FormFieldLabel>Postinumero</FormFieldLabel>
-          <p>{area.postal_code || '-'}</p>
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={3} large={2}>
           <FormFieldLabel>Kaupunki</FormFieldLabel>
-          <p>{area.city || '-'}</p>
         </Column>
       </Row>
+      {!addresses.length &&
+        <Row>
+          <Column small={6} large={4}>
+            <p>-</p>
+          </Column>
+          <Column small={3} large={2}>
+            <p>-</p>
+          </Column>
+          <Column small={3} large={2}>
+            <p>-</p>
+          </Column>
+        </Row>
+      }
+      {!!addresses.length &&
+        <div>
+          <ListItems>
+            {addresses.map((address) => {
+              return (
+                <Row key={address.id}>
+                  <Column small={6} large={4}>
+                    <p className='no-margin'>{address.address || '-'}</p>
+                  </Column>
+                  <Column small={3} large={2}>
+                    <p className='no-margin'>{address.postal_code || '-'}</p>
+                  </Column>
+                  <Column small={3} large={2}>
+                    <p className='no-margin'>{address.city || '-'}</p>
+                  </Column>
+                </Row>
+              );
+            })}
+          </ListItems>
+        </div>
+      }
+
       <Row>
-        <Column small={12} medium={6}>
+        <Column small={12} large={6}>
           <Collapse
             className='collapse__secondary'
             defaultOpen={true}
@@ -78,7 +114,7 @@ const LeaseArea = ({area, attributes}: Props) => {
             </BoxItemContainer>
           </Collapse>
         </Column>
-        <Column small={12} medium={6}>
+        <Column small={12} large={6}>
           <Collapse
             className='collapse__secondary'
             defaultOpen={true}
@@ -102,7 +138,7 @@ const LeaseArea = ({area, attributes}: Props) => {
       </Row>
 
       <Row>
-        <Column small={12} medium={6}>
+        <Column small={12} large={6}>
           <Collapse
             className='collapse__secondary'
             defaultOpen={true}
@@ -123,7 +159,7 @@ const LeaseArea = ({area, attributes}: Props) => {
             </BoxItemContainer>
           </Collapse>
         </Column>
-        <Column small={12} medium={6}>
+        <Column small={12} large={6}>
           <Collapse
             className='collapse__secondary'
             defaultOpen={true}
