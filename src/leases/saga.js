@@ -1,5 +1,5 @@
 // @flow
-import {all, call, fork, put, select, takeLatest} from 'redux-saga/effects';
+import {all, call, fork, put, select, takeEvery, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
@@ -8,10 +8,12 @@ import {
   hideContactModal,
   hideEditMode,
   notFound,
+  notFoundById,
   receiveAttributes,
   receiveContactModalSettings,
   receiveLeases,
   receiveSingleLease,
+  receiveLeaseById,
 } from './actions';
 import {
   createLease,
@@ -90,6 +92,24 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<any, any, any> {
     console.error('Failed to fetch leases with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
+  }
+}
+
+function* fetchLeaseByIdSaga({payload: id}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSingleLease, id);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveLeaseById({leaseId: id, lease: bodyAsJson}));
+        break;
+      default:
+        yield put(notFoundById(id));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch lease by id with error "%s"', error);
+    yield put(notFoundById(id));
   }
 }
 
@@ -262,6 +282,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/leases/FETCH_ALL', fetchLeasesSaga);
       yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
+      yield takeEvery('mvj/leases/FETCH_BY_ID', fetchLeaseByIdSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
       yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);

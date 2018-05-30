@@ -87,7 +87,7 @@ class RentBasisPage extends Component<Props, State> {
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('rentbasis'),
+      linkUrl: getRouteById('rentBasis'),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
@@ -129,7 +129,7 @@ class RentBasisPage extends Component<Props, State> {
     } = this.props;
 
     hideEditMode();
-    if(pathname !== `${getRouteById('rentbasis')}/${rentBasisId}`) {
+    if(pathname !== `${getRouteById('rentBasis')}/${rentBasisId}`) {
       clearUnsavedChanges();
     }
     this.stopAutoSaveTimer();
@@ -212,7 +212,7 @@ class RentBasisPage extends Component<Props, State> {
     initializeRentBasis(rentBasis);
 
     return router.push({
-      pathname: getRouteById('newrentbasis'),
+      pathname: getRouteById('newRentBasis'),
       query,
     });
   }
@@ -227,7 +227,7 @@ class RentBasisPage extends Component<Props, State> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('rentbasis')}`,
+      pathname: `${getRouteById('rentBasis')}`,
       query,
     });
   }

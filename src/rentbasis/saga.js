@@ -87,7 +87,7 @@ function* createRentBasisSaga({payload: rentBasis}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
-        yield put(push(`${getRouteById('rentbasis')}/${bodyAsJson.id}`));
+        yield put(push(`${getRouteById('rentBasis')}/${bodyAsJson.id}`));
         break;
       case 400:
         yield put(notFound());

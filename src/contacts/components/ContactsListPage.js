@@ -11,6 +11,7 @@ import {Row, Column} from 'react-foundation';
 
 import Button from '$components/button/Button';
 import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
@@ -101,7 +102,7 @@ class ContactListPage extends Component<Props, State> {
     initializeContactForm({});
 
     return router.push({
-      pathname: getRouteById('newcontact'),
+      pathname: getRouteById('newContact'),
       query,
     });
   }
@@ -172,9 +173,7 @@ class ContactListPage extends Component<Props, State> {
     if(!count) {
       return 0;
     }
-    else {
-      return Math.ceil(count/PAGE_SIZE);
-    }
+    return Math.ceil(count/PAGE_SIZE);
   }
 
   render() {
@@ -204,11 +203,10 @@ class ContactListPage extends Component<Props, State> {
           }
         />
 
-
         {isFetching &&
           <Row>
             <Column>
-              <div className='loader__wrapper'><Loader isLoading={!!isFetching} /></div>
+              <LoaderWrapper><Loader isLoading={!!isFetching} /></LoaderWrapper>
             </Column>
           </Row>
         }
