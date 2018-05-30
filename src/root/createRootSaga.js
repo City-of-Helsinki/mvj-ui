@@ -7,6 +7,7 @@ import commentSaga from '../comments/saga';
 import contactSaga from '../contacts/saga';
 import decisionSaga from '../decision/saga';
 import districtSaga from '../district/saga';
+import infillDevelopmentSaga from '../infillDevelopment/saga';
 import invoiceSaga from '../invoices/saga';
 import leaseSaga from '../leases/saga';
 import mapDataSaga from '../mapData/saga';
@@ -26,6 +27,7 @@ export default () =>
       fork(contactSaga),
       fork(decisionSaga),
       fork(districtSaga),
+      fork(infillDevelopmentSaga),
       fork(invoiceSaga),
       fork(leaseSaga),
       fork(mapDataSaga),

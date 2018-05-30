@@ -10,6 +10,9 @@ import type {
   ReceiveAttributesAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
+  FetchLeaseByIdAction,
+  ReceiveLeaseByIdAction,
+  LeaseNotFoundByIdAction,
   ContactModalSettings,
   ReceiveContactModalSettingsAction,
   ReceiveConstructabilityFormValidAction,
@@ -49,6 +52,27 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/RECEIVE_SINGLE': () => false,
 }, false);
 
+const isFetchingByIdReducer: Reducer<Object> = handleActions({
+  ['mvj/leases/FETCH_BY_ID']: (state: Object, {payload: id}: FetchLeaseByIdAction) => {
+    return {
+      ...state,
+      [id]: true,
+    };
+  },
+  ['mvj/leases/RECEIVE_BY_ID']: (state: Object, {payload}: ReceiveLeaseByIdAction) => {
+    return {
+      ...state,
+      [payload.leaseId]: false,
+    };
+  },
+  ['mvj/leases/NOT_FOUND_BY_ID']: (state: Object, {payload: id}: LeaseNotFoundByIdAction) => {
+    return {
+      ...state,
+      [id]: false,
+    };
+  },
+}, {});
+
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/leases/FETCH_ATTRIBUTES': () => true,
   'mvj/leases/RECEIVE_ATTRIBUTES': () => false,
@@ -69,6 +93,15 @@ const leasesListReducer: Reducer<LeaseList> = handleActions({
 const currentLeaseReducer: Reducer<Lease> = handleActions({
   ['mvj/leases/RECEIVE_SINGLE']: (state: Lease, {payload: lease}: ReceiveSingleLeaseAction) => {
     return lease;
+  },
+}, {});
+
+const byIdReducer: Reducer<Lease> = handleActions({
+  ['mvj/leases/RECEIVE_BY_ID']: (state: Lease, {payload}: ReceiveLeaseByIdAction) => {
+    return {
+      ...state,
+      [payload.leaseId]: payload.lease,
+    };
   },
 }, {});
 
@@ -137,11 +170,13 @@ const tenantsFormValidReducer: Reducer<boolean> = handleActions({
 
 export default combineReducers({
   attributes: attributesReducer,
+  byId: byIdReducer,
   contactModalSettings: contactModalSettingsReducer,
   current: currentLeaseReducer,
   isContactModalOpen: isContactModalOpenReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  isFetchingById: isFetchingByIdReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   isConstructabilityFormValid: constructabilityFormValidReducer,
   isContractsFormValid: contractsFormValidReducer,

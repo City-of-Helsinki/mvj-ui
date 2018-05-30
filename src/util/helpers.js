@@ -69,6 +69,18 @@ export const getActiveLanguage = () => {
   // return active;
 };
 
+export const cloneObject = (obj: Object) => {
+  var clone = {};
+  for(const i in obj) {
+    if(obj[i] != null &&  typeof(obj[i]) === 'object') {
+      clone[i] = cloneObject(obj[i]);
+    } else {
+      clone[i] = obj[i];
+    }
+  }
+  return clone;
+};
+
 export const getSearchQuery = (filters) => {
   let query = [];
 
@@ -318,7 +330,6 @@ export const getReferenceNumberLink = (referenceNumber: ?string) => {
   const apiUrl = 'https://dev.hel.fi/paatokset/asia';
   return referenceNumber ? `${apiUrl}/${referenceNumber.replace(' ', '-').toLowerCase()}` : null;
 };
-
 
 /**
  * Find from collection with ID

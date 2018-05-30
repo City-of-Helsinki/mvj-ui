@@ -11,6 +11,7 @@ import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
 import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
@@ -63,7 +64,7 @@ class RentBasisListPage extends Component<Props, State> {
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('rentbasis'),
+      linkUrl: getRouteById('rentBasis'),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
@@ -104,7 +105,7 @@ class RentBasisListPage extends Component<Props, State> {
     delete query.page;
 
     return router.push({
-      pathname: getRouteById('rentbasis'),
+      pathname: getRouteById('rentBasis'),
       query,
     });
   }
@@ -121,7 +122,7 @@ class RentBasisListPage extends Component<Props, State> {
     });
 
     return router.push({
-      pathname: getRouteById('newrentbasis'),
+      pathname: getRouteById('newRentBasis'),
       query,
     });
   }
@@ -131,7 +132,7 @@ class RentBasisListPage extends Component<Props, State> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('rentbasis')}/${id}`,
+      pathname: `${getRouteById('rentBasis')}/${id}`,
       query,
     });
   };
@@ -156,7 +157,7 @@ class RentBasisListPage extends Component<Props, State> {
     delete query.offset;
 
     return router.push({
-      pathname: getRouteById('rentbasis'),
+      pathname: getRouteById('rentBasis'),
       query,
     });
   }
@@ -215,7 +216,7 @@ class RentBasisListPage extends Component<Props, State> {
           }
         />
 
-        {isFetching && <Row><Column><div className='loader__wrapper'><Loader isLoading={isFetching} /></div></Column></Row>}
+        {isFetching && <Row><Column><LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper></Column></Row>}
         {!isFetching &&
           <div>
             <TableControllers

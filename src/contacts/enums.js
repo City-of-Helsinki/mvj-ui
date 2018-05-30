@@ -14,7 +14,7 @@ export const ContactType = {
 /**
  * Contact form names enumerable.
  *
- * @type {{CONSTRUCTABILITY: string, SEARCH: string,}}
+ * @type {{CONTACT: string, SEARCH: string,}}
  */
 export const FormNames = {
   CONTACT: 'contact-form',
