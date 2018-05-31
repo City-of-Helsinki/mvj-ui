@@ -10,6 +10,7 @@ import type {
   Lease,
   LeaseId,
   LeaseNotFoundAction,
+  LeaseNotFoundByIdAction,
   LeaseList,
   CreateLeaseAction,
   PatchLeaseAction,
@@ -17,6 +18,8 @@ import type {
   FetchSingleLeaseAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
+  FetchLeaseByIdAction,
+  ReceiveLeaseByIdAction,
   StartInvoicingAction,
   StopInvoicingAction,
   HideContactModalAction,
@@ -57,6 +60,12 @@ export const fetchSingleLease = (id: LeaseId): FetchSingleLeaseAction =>
 export const receiveSingleLease = (lease: Lease): ReceiveSingleLeaseAction =>
   createAction('mvj/leases/RECEIVE_SINGLE')(lease);
 
+export const fetchLeaseById = (id: LeaseId): FetchLeaseByIdAction =>
+  createAction('mvj/leases/FETCH_BY_ID')(id);
+
+export const receiveLeaseById = (lease: Lease): ReceiveLeaseByIdAction =>
+  createAction('mvj/leases/RECEIVE_BY_ID')(lease);
+
 export const createLease = (lease: Lease): CreateLeaseAction =>
   createAction('mvj/leases/CREATE')(lease);
 
@@ -71,6 +80,9 @@ export const stopInvoicing = (id: LeaseId): StopInvoicingAction =>
 
 export const notFound = (): LeaseNotFoundAction =>
   createAction('mvj/leases/NOT_FOUND')();
+
+export const notFoundById = (id: LeaseId): LeaseNotFoundByIdAction =>
+  createAction('mvj/leases/NOT_FOUND_BY_ID')(id);
 
 export const hideContactModal = (): HideContactModalAction =>
   createAction('mvj/leases/HIDE_CONTACT_MODAL')();

@@ -14,6 +14,7 @@ import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import {createContact, fetchAttributes} from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
@@ -135,7 +136,7 @@ class NewContactPage extends Component<Props, State> {
           {isEmpty(attributes) &&
             <Row>
               <Column>
-                <div className='loader__wrapper'><Loader isLoading={true} /></div>
+                <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>
               </Column>
             </Row>
           }

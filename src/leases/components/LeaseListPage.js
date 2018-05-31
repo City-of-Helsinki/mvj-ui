@@ -13,6 +13,7 @@ import Button from '$components/button/Button';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
 import EditableMap from '$src/rememberableTerms/components/EditableMap';
 import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import MapIcon from '$components/icons/MapIcon';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
@@ -267,7 +268,7 @@ class LeaseListPage extends Component<Props, State> {
           }
           title={`Löytyi ${count} kpl`}
         />
-        {isFetching && <Row><Column><div className='loader__wrapper'><Loader isLoading={isFetching} /></div></Column></Row>}
+        {isFetching && <Row><Column><LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper></Column></Row>}
         {!isFetching &&
           <div>
             {visualizationType === 'table' && (

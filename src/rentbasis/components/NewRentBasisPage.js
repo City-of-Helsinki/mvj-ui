@@ -50,7 +50,7 @@ class NewRentBasisPage extends Component<Props, State> {
     const {attributes, fetchAttributes, receiveTopNavigationSettings} = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('rentbasis'),
+      linkUrl: getRouteById('rentBasis'),
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
@@ -81,7 +81,7 @@ class NewRentBasisPage extends Component<Props, State> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('rentbasis')}`,
+      pathname: `${getRouteById('rentBasis')}`,
       query,
     });
   }
@@ -90,7 +90,7 @@ class NewRentBasisPage extends Component<Props, State> {
     const {router} = this.context;
 
     return router.push({
-      pathname: getRouteById('rentbasis'),
+      pathname: getRouteById('rentBasis'),
     });
   }
 

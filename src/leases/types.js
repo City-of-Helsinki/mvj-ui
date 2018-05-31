@@ -19,11 +19,14 @@ export type FetchLeasesAction = Action<'mvj/leases/FETCH_ALL', string>;
 export type ReceiveLeasesAction = Action<'mvj/leases/RECEIVE_ALL', LeaseList>;
 export type FetchSingleLeaseAction = Action<'mvj/leases/FETCH_SINGLE', LeaseId>;
 export type ReceiveSingleLeaseAction = Action<'mvj/leases/RECEIVE_SINGLE', Lease>;
+export type FetchLeaseByIdAction = Action<'mvj/leases/FETCH_BY_ID', LeaseId>;
+export type ReceiveLeaseByIdAction = Action<'mvj/leases/RECEIVE_BY_ID', Lease>;
 export type CreateLeaseAction = Action<'mvj/leases/CREATE', Lease>;
 export type PatchLeaseAction = Action<'mvj/leases/PATCH', Lease>;
 export type StartInvoicingAction = Action<'mvj/leases/START_INVOICING', LeaseId>;
 export type StopInvoicingAction = Action<'mvj/leases/STOP_INVOICING', LeaseId>;
 export type LeaseNotFoundAction = Action<'mvj/leases/NOT_FOUND', void>;
+export type LeaseNotFoundByIdAction = Action<'mvj/leases/NOT_FOUND_BY_ID', LeaseId>;
 
 export type HideContactModalAction = Action<'mvj/leases/HIDE_CONTACT_MODAL', void>;
 export type ShowContactModalAction = Action<'mvj/leases/SHOW_CONTACT_MODAL', void>;

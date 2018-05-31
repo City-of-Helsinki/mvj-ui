@@ -210,7 +210,7 @@ class ContactPage extends Component<Props, State> {
     clearUnsavedChanges();
 
     return router.push({
-      pathname: getRouteById('newcontact'),
+      pathname: getRouteById('newContact'),
       query,
     });
   }

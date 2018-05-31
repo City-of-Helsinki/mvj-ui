@@ -1,0 +1,44 @@
+[
+  {
+    "id": 0,
+    "station_code_number": "12345",
+    "state": "Kaavaluonnos",
+    "decision_type": "Lorem ipsum",
+    "state_date": "2018-01-01",
+    "responsible_person": "Käsittelijän nimi",
+    "nagotiation_state": "Päätös",
+    "change_of_lease_date": "2018-01-01",
+
+    "leases": [
+      {
+        "id": 6,
+        "intended_uses": [
+          {
+            "type": "Asunto",
+            "km2": 1200,
+            "ekm2": 1200
+          },
+          {
+            "type": "Asunto",
+            "km2": 1200,
+            "ekm2": 1200
+          }
+        ],
+        "cash_compensation": 12000,
+        "replacement_investments": 30000,
+        "total": 42000,
+        "increase_in_value": "???",
+        "share_in_increase_in_value": "???",
+        "rent_reduction": 5000,
+        "estimated_payment_year": "2019",
+        "sent_to_sap_date": "2018-01-01",
+        "payment_date": "2018-01-01",
+        "note": "Lorem ipsum"
+      },
+      {
+        "id": 1,
+        "note": "Lorem ipsum"
+      }
+    ]
+  }
+]

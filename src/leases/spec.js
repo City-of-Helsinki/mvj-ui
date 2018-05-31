@@ -6,6 +6,9 @@ import {
   receiveLeases,
   fetchSingleLease,
   receiveSingleLease,
+  fetchLeaseById,
+  receiveLeaseById,
+  notFoundById,
   createLease,
   patchLease,
   notFound,
@@ -40,6 +43,7 @@ describe('Leases', () => {
 
         const newState = {
           attributes: dummyAttributes,
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -49,6 +53,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -65,6 +70,7 @@ describe('Leases', () => {
       it('should update isFetchingAttributes flag to true when fetching attributes', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -74,6 +80,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: true,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -94,6 +101,7 @@ describe('Leases', () => {
 
         const newState = {
           attributes: dummyAttributes,
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -103,6 +111,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -124,6 +133,7 @@ describe('Leases', () => {
 
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -132,6 +142,7 @@ describe('Leases', () => {
           isDecisionsFormValid: true,
           isEditMode: false,
           isFetching: false,
+          isFetchingById: {},
           isFetchingAttributes: false,
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
@@ -149,6 +160,7 @@ describe('Leases', () => {
       it('should update isFetching flag to true when fetching leases', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -157,6 +169,7 @@ describe('Leases', () => {
           isDecisionsFormValid: true,
           isEditMode: false,
           isFetching: true,
+          isFetchingById: {},
           isFetchingAttributes: false,
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
@@ -178,6 +191,7 @@ describe('Leases', () => {
 
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -187,6 +201,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -208,6 +223,7 @@ describe('Leases', () => {
 
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: dummyLease,
           isConstructabilityFormValid: true,
@@ -217,6 +233,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -233,6 +250,7 @@ describe('Leases', () => {
       it('should update isFetching flag to true when fetching single lease', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -242,6 +260,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: true,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -262,6 +281,7 @@ describe('Leases', () => {
 
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: dummyLease,
           isConstructabilityFormValid: true,
@@ -271,6 +291,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -292,6 +313,7 @@ describe('Leases', () => {
 
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -301,6 +323,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: true,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -321,6 +344,7 @@ describe('Leases', () => {
 
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -330,6 +354,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: true,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -350,6 +375,7 @@ describe('Leases', () => {
 
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -359,6 +385,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -376,6 +403,7 @@ describe('Leases', () => {
       it('should update isContactModalOpen flag to true', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -385,6 +413,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -402,6 +431,7 @@ describe('Leases', () => {
       it('should update isContactModalOpen flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -411,6 +441,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -433,6 +464,7 @@ describe('Leases', () => {
 
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: dummySettings,
           current: {},
           isConstructabilityFormValid: true,
@@ -442,6 +474,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -458,6 +491,7 @@ describe('Leases', () => {
       it('should update isEditMode flag to true', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -467,6 +501,7 @@ describe('Leases', () => {
           isEditMode: true,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -484,6 +519,7 @@ describe('Leases', () => {
       it('should update isEditMode flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -493,6 +529,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -511,6 +548,7 @@ describe('Leases', () => {
       it('should update isConstructabilityFormValid flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: false,
@@ -520,6 +558,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -537,6 +576,7 @@ describe('Leases', () => {
       it('should update isContractsFormValid flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -546,6 +586,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -562,6 +603,7 @@ describe('Leases', () => {
       it('should update isDecisionsFormValid flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -571,6 +613,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -587,6 +630,7 @@ describe('Leases', () => {
       it('should update isInspectionsFormValid flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -596,6 +640,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: false,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -612,6 +657,7 @@ describe('Leases', () => {
       it('should update isLeaseAreasFormValid flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -621,6 +667,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: false,
           isLeaseInfoFormValid: true,
@@ -637,6 +684,7 @@ describe('Leases', () => {
       it('should update isLeaseInfoFormValid flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -646,6 +694,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: false,
@@ -662,6 +711,7 @@ describe('Leases', () => {
       it('should update isRentsFormValid flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -671,6 +721,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -687,6 +738,7 @@ describe('Leases', () => {
       it('should update isSummaryFormValid flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -696,6 +748,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -712,6 +765,7 @@ describe('Leases', () => {
       it('should update isTenantsFormValid flag to false', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -721,6 +775,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -737,6 +792,7 @@ describe('Leases', () => {
       it('should update all form valid flags to true', () => {
         const newState = {
           attributes: {},
+          byId: {},
           contactModalSettings: null,
           current: {},
           isConstructabilityFormValid: true,
@@ -746,6 +802,7 @@ describe('Leases', () => {
           isEditMode: false,
           isFetching: false,
           isFetchingAttributes: false,
+          isFetchingById: {},
           isInspectionsFormValid: true,
           isLeaseAreasFormValid: true,
           isLeaseInfoFormValid: true,
@@ -768,6 +825,92 @@ describe('Leases', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update isFetchingById flag to true when fetching lease by id', () => {
+        const leaseId = 1;
+        const newState = {
+          attributes: {},
+          byId: {},
+          contactModalSettings: null,
+          current: {},
+          isConstructabilityFormValid: true,
+          isContactModalOpen: false,
+          isContractsFormValid: true,
+          isDecisionsFormValid: true,
+          isEditMode: false,
+          isFetching: false,
+          isFetchingById: {[leaseId]: true},
+          isFetchingAttributes: false,
+          isInspectionsFormValid: true,
+          isLeaseAreasFormValid: true,
+          isLeaseInfoFormValid: true,
+          isRentsFormValid: true,
+          isSummaryFormValid: true,
+          isTenantsFormValid: true,
+          list: {},
+        };
+
+        const state = leasesReducer({}, fetchLeaseById(leaseId));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingById flag to false by notFoundByLease', () => {
+        const leaseId = 1;
+        const newState = {
+          attributes: {},
+          byId: {},
+          contactModalSettings: null,
+          current: {},
+          isConstructabilityFormValid: true,
+          isContactModalOpen: false,
+          isContractsFormValid: true,
+          isDecisionsFormValid: true,
+          isEditMode: false,
+          isFetching: false,
+          isFetchingById: {[leaseId]: false},
+          isFetchingAttributes: false,
+          isInspectionsFormValid: true,
+          isLeaseAreasFormValid: true,
+          isLeaseInfoFormValid: true,
+          isRentsFormValid: true,
+          isSummaryFormValid: true,
+          isTenantsFormValid: true,
+          list: {},
+        };
+
+        const state = leasesReducer({}, notFoundById(leaseId));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update leaseById when receiving lease by id', () => {
+        const leaseId = 1;
+        const dummyLease = {
+          foo: 'bar',
+        };
+        const newState = {
+          attributes: {},
+          byId: {[leaseId]: dummyLease},
+          contactModalSettings: null,
+          current: {},
+          isConstructabilityFormValid: true,
+          isContactModalOpen: false,
+          isContractsFormValid: true,
+          isDecisionsFormValid: true,
+          isEditMode: false,
+          isFetching: false,
+          isFetchingById: {[leaseId]: false},
+          isFetchingAttributes: false,
+          isInspectionsFormValid: true,
+          isLeaseAreasFormValid: true,
+          isLeaseInfoFormValid: true,
+          isRentsFormValid: true,
+          isSummaryFormValid: true,
+          isTenantsFormValid: true,
+          list: {},
+        };
+
+        const state = leasesReducer({}, receiveLeaseById({leaseId: leaseId, lease: dummyLease}));
+        expect(state).to.deep.equal(newState);
+      });
     });
   });
 });

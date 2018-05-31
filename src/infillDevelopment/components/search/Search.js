@@ -7,7 +7,7 @@ import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
 
 import FormField from '$components/form/FormField';
-import {FormNames} from '$src/rentbasis/enums';
+import {FormNames} from '$src/infillDevelopment/enums';
 
 type Props = {
   onSearch: Function,
@@ -35,6 +35,7 @@ class Search extends Component<Props> {
     if(!this._isMounted) {
       return;
     }
+
     const {onSearch, search} = this.props;
     const filters = {};
     filters.search = search || undefined;
@@ -68,7 +69,6 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     state => {
-
       return {
         search: selector(state, 'search'),
       };

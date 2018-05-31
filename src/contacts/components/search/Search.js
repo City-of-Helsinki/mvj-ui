@@ -15,6 +15,16 @@ type Props = {
 }
 
 class Search extends Component<Props> {
+  _isMounted: boolean;
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = true;
+  }
+
   componentWillUpdate(nextProps: Object) {
     if(this.props.search !== nextProps.search) {
       this.onSearchChange();
@@ -22,6 +32,9 @@ class Search extends Component<Props> {
   }
 
   onSearchChange = debounce(() => {
+    if(!this._isMounted) {
+      return;
+    }
     const {onSearch, search} = this.props;
     const filters = {};
     filters.search = search || undefined;
@@ -37,6 +50,7 @@ class Search extends Component<Props> {
               fieldAttributes={{}}
               name='search'
               placeholder='Hae hakusanalla'
+              disableDirty
               overrideValues={{
                 label: '',
               }}
