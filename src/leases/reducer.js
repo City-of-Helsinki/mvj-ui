@@ -36,6 +36,11 @@ const isContactModalOpenReducer: Reducer<boolean> = handleActions({
   'mvj/leases/SHOW_CONTACT_MODAL': () => true,
 }, false);
 
+const isDeleteRelatedLeaseModalOpenReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/HIDE_RELATED_LEASE_MODAL': () => false,
+  'mvj/leases/SHOW_RELATED_LEASE_MODAL': () => true,
+}, false);
+
 const contactModalSettingsReducer: Reducer<ContactModalSettings> = handleActions({
   ['mvj/leases/RECEIVE_CONTACT_SETTINGS']: (state: ContactModalSettings, {payload: settings}: ReceiveContactModalSettingsAction) => {
     return settings;
@@ -174,6 +179,7 @@ export default combineReducers({
   contactModalSettings: contactModalSettingsReducer,
   current: currentLeaseReducer,
   isContactModalOpen: isContactModalOpenReducer,
+  isDeleteRelatedLeaseModalOpen: isDeleteRelatedLeaseModalOpenReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
   isFetchingById: isFetchingByIdReducer,

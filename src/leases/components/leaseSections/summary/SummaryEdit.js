@@ -9,7 +9,7 @@ import get from 'lodash/get';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
-import LeaseHistory from './LeaseHistory';
+import RelatedLeasesEdit from './RelatedLeasesEdit';
 import {fetchLessors} from '$src/contacts/actions';
 import {receiveSummaryFormValid} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
@@ -27,7 +27,6 @@ type Props = {
   attributes: Object,
   fetchLessors: Function,
   handleSubmit: Function,
-  history: Array<Object>,
   isSummaryFormValid: boolean,
   lessors: Array<Object>,
   noticePeriods: NoticePeriodList,
@@ -50,7 +49,7 @@ class SummaryEdit extends Component<Props> {
   }
 
   render () {
-    const {attributes, handleSubmit, history, lessors, noticePeriods} = this.props;
+    const {attributes, handleSubmit, lessors, noticePeriods} = this.props;
     const preparerOptions = getAttributeFieldOptions(attributes, 'preparer').sort(sortAlphaAsc);
     const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
     const lessorOptions = getLessorOptions(lessors);
@@ -249,9 +248,7 @@ class SummaryEdit extends Component<Props> {
             </Collapse>
           </Column>
           <Column medium={3}>
-            <LeaseHistory
-              history={history}
-            />
+            <RelatedLeasesEdit />
           </Column>
         </Row>
       </form>

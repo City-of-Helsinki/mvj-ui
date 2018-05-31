@@ -3,7 +3,7 @@
 import callApi from '../api/callApi';
 import createUrl from '../api/createUrl';
 
-import type {LeaseId, Lease} from './types';
+import type {CreateRelatedLeasePayload, LeaseId, Lease} from './types';
 
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl('lease/'), {method: 'OPTIONS'}));
@@ -33,5 +33,20 @@ export const patchLease = (lease: Lease): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`lease/${id}/`), {
     method: 'PATCH',
     body,
+  }));
+};
+
+export const createRelatedLease = (payload: CreateRelatedLeasePayload): Generator<any, any, any> => {
+  const body = JSON.stringify(payload);
+
+  return callApi(new Request(createUrl(`related_lease/`), {
+    method: 'POST',
+    body,
+  }));
+};
+
+export const deleteReleatedLease = (id: number): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`related_lease/${id}/`), {
+    method: 'DELETE',
   }));
 };

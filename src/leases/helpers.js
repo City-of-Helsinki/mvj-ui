@@ -135,6 +135,67 @@ export const getContentSummary = (lease: Object) => {
   };
 };
 
+export const getContentRelatedLease = (content: Object, path: string = 'from_lease') => {
+  return get(content, path, {});
+};
+
+const compareRelatedLeases = (a, b) => {
+  const endDateA = get(a, 'lease.end_date');
+  const endDateB = get(b, 'lease.end_date');
+  const startDateA = get(a, 'lease.start_date');
+  const startDateB = get(b, 'lease.start_date');
+
+  if(endDateA !== endDateB) {
+    if(!endDateA) {
+      return -1;
+    }
+    if(!endDateB) {
+      return 1;
+    }
+    if(endDateA > endDateB) {
+      return -1;
+    }
+    if(endDateA < endDateB) {
+      return 1;
+    }
+  }
+  if(startDateA !== startDateB) {
+    if(!startDateA) {
+      return -1;
+    }
+    if(!startDateB) {
+      return 1;
+    }
+    if(startDateA > startDateB) {
+      return -1;
+    }
+    if(startDateA < startDateB) {
+      return 1;
+    }
+  }
+  return 0;
+};
+
+export const getContentRelatedLeasesFrom = (lease: Object) => {
+  const relatedLeases = get(lease, 'related_leases.related_from', []);
+  return relatedLeases.map((relatedLease) => {
+    return {
+      id: relatedLease.id,
+      lease: getContentRelatedLease(relatedLease, 'from_lease'),
+    };
+  }).sort(compareRelatedLeases);
+};
+
+export const getContentRelatedLeasesTo = (lease: Object) => {
+  const relatedLeases = get(lease, 'related_leases.related_to', []);
+  return relatedLeases.map((relatedLease) => {
+    return {
+      id: relatedLease.id,
+      lease: getContentRelatedLease(relatedLease, 'to_lease'),
+    };
+  }).sort(compareRelatedLeases);
+};
+
 export const getContentAddresses = (addresses: Array<Object>) => {
   if(isEmpty(addresses)) {
     return [];

@@ -16,7 +16,7 @@ const RemoveButton = ({className, onClick, title, type = 'button'}: Props) =>
     className={classNames('remove-button', className)}
     type={type}
     title={title}
-    onClick={() => onClick()}>
+    onClick={onClick}>
     <img src={trashIcon} alt='Poista' />
   </button>;
 

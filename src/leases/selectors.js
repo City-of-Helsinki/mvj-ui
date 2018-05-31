@@ -28,6 +28,9 @@ export const getIsFetchingById: Selector<boolean, LeaseId> = (state: LeaseState,
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isFetchingAttributes;
 
+export const getIsDeleteRelatedLeaseModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.lease.isDeleteRelatedLeaseModalOpen;
+
 export const getIsConstructabilityFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isConstructabilityFormValid;
 

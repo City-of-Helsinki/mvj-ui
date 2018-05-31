@@ -16,6 +16,12 @@ function* callApi(request: Request): Generator<any, any, any> {
   }
 
   const response = yield call(fetch, request);
+  const status = response.status;
+
+  if (status === 204) {
+    return {response};
+  }
+
   const bodyAsJson = yield call([response, response.json]);
   if (status === 500) {
     yield put(receiveError(bodyAsJson));

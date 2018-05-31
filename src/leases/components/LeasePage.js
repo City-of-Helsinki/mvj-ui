@@ -84,8 +84,6 @@ import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 import type {Attributes, Lease} from '$src/leases/types';
 import type {RememberableTermList} from '$src/rememberableTerms/types';
 
-import mockData from '../mock-data.json';
-
 type Props = {
   areasFormValues: Object,
   attributes: Attributes,
@@ -150,7 +148,6 @@ type Props = {
 
 type State = {
   activeTab: number,
-  history: Array<Object>,
   isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
   isRestoreModalOpen: boolean,
@@ -159,7 +156,6 @@ type State = {
 class LeasePage extends Component<Props, State> {
   state = {
     activeTab: 0,
-    history: [],
     isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
     isRestoreModalOpen: false,
@@ -193,11 +189,6 @@ class LeasePage extends Component<Props, State> {
       params: {leaseId},
       receiveTopNavigationSettings,
     } = this.props;
-
-    const lease = mockData.leases[0];
-    this.setState({
-      history: contentHelpers.getContentHistory(lease),
-    });
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById('leases'),
@@ -675,7 +666,6 @@ class LeasePage extends Component<Props, State> {
   render() {
     const {
       activeTab,
-      history,
       isCancelLeaseModalOpen,
       isCommentPanelOpen,
       isRestoreModalOpen,
@@ -710,7 +700,9 @@ class LeasePage extends Component<Props, State> {
 
     if(isFetching) {
       return (
-        <div className='lease-page'><Loader isLoading={true} /></div>
+        <PageContainer>
+          <Loader isLoading={true} />
+        </PageContainer>
       );
     }
 
@@ -719,7 +711,7 @@ class LeasePage extends Component<Props, State> {
     }
 
     return (
-      <PageContainer className='lease-page'>
+      <PageContainer>
         <ConfirmationModal
           confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelLeaseModalOpen}
@@ -785,8 +777,8 @@ class LeasePage extends Component<Props, State> {
           <TabPane>
             <ContentContainer>
               {isEditMode
-                ? <SummaryEdit history={history} />
-                : <Summary history={history} />
+                ? <SummaryEdit />
+                : <Summary />
               }
             </ContentContainer>
           </TabPane>
