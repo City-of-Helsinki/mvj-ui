@@ -1,5 +1,7 @@
 .page-container {
   font-family: $font-family-source;
+  min-height: calc(100vh - 60px);
+  display: block;
   width: 100%;
   padding: rem-calc(20px);
 

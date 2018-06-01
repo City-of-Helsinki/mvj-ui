@@ -10,6 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import Button from '$components/button/Button';
 import Loader from '../loader/Loader';
+import LoaderWrapper from '../loader/LoaderWrapper';
 import Rent from './Rent';
 import RentCalculatorForm from './RentCalculatorForm';
 import {fetchBillingPeriodsByLease} from '$src/billingPeriods/actions';
@@ -18,7 +19,10 @@ import {FormNames} from '$components/enums';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getIsFetching, getRentForPeriodByLease} from '$src/rentForPeriod/selectors';
 
+import type {Lease} from '$src/leases/types';
+
 type Props = {
+  currentLease: Lease,
   endDate: string,
   fetchBillingPeriodsByLease: Function,
   fetchRentForPeriodByLease: Function,
@@ -31,6 +35,16 @@ type Props = {
 
 class RentCalculator extends Component<Props> {
   componentWillMount() {
+    this.updateBillingPeriods();
+  }
+
+  componentDidUpdate(prevProps) {
+    if(prevProps.currentLease !== this.props.currentLease) {
+      this.updateBillingPeriods();
+    }
+  }
+
+  updateBillingPeriods = () => {
     const {
       fetchBillingPeriodsByLease,
       params: {leaseId},
@@ -90,7 +104,7 @@ class RentCalculator extends Component<Props> {
             <Column small={12} medium={6}>
               <div className='rent-calculator__rents-container'>
                 {isFetching
-                  ? <Loader isLoading={isFetching} />
+                  ? <LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper>
                   : (
                     <div>
                       {!rents || !rents.length && <p className='no-margin'>Ei vuokria</p>}
@@ -119,13 +133,15 @@ const selector = formValueSelector(formName);
 export default flowRight(
   withRouter,
   connect(
-    (state) => {
-      const currentLease = getCurrentLease(state);
+    (state, props) => {
+      const {params: {leaseId}} = props;
+
       return {
+        currentLease: getCurrentLease(state),
         endDate: selector(state, 'end_date'),
         isFetching: getIsFetching(state),
         isValid: isValid(formName)(state),
-        rentForPeriod: getRentForPeriodByLease(state, currentLease.id),
+        rentForPeriod: getRentForPeriodByLease(state, leaseId),
         startDate: selector(state, 'start_date'),
       };
     },

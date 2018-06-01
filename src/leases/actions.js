@@ -30,6 +30,12 @@ import type {
   EditContactAction,
   HideEditModeAction,
   ShowEditModeAction,
+  CreateRelatedLeasePayload,
+  CreateRelatedLeaseAction,
+  DeleteRelatedLeasePayload,
+  DeleteRelatedLeaseAction,
+  HideDeleteRelatedLeaseModalAction,
+  ShowDeleteRelatedLeaseModalAction,
   ClearFormValidityFlagsAction,
   ReceiveConstructabilityFormValidAction,
   ReceiveContractsFormValidAction,
@@ -104,6 +110,18 @@ export const hideEditMode = (): HideEditModeAction =>
 
 export const showEditMode = (): ShowEditModeAction =>
   createAction('mvj/leases/SHOW_EDIT')();
+
+export const createReleatedLease = (payload: CreateRelatedLeasePayload): CreateRelatedLeaseAction =>
+  createAction('mvj/leases/CREATE_RELATED_LEASE')(payload);
+
+export const deleteReleatedLease = (payload: DeleteRelatedLeasePayload): DeleteRelatedLeaseAction =>
+  createAction('mvj/leases/DELETE_RELATED_LEASE')(payload);
+
+export const hideDeleteRelatedLeaseModal = (): HideDeleteRelatedLeaseModalAction =>
+  createAction('mvj/leases/HIDE_RELATED_LEASE_MODAL')();
+
+export const showDeleteRelatedLeaseModal = (): ShowDeleteRelatedLeaseModalAction =>
+  createAction('mvj/leases/SHOW_RELATED_LEASE_MODAL')();
 
 // Actions to manage form validity statuses
 export const clearFormValidFlags = (): ClearFormValidityFlagsAction =>

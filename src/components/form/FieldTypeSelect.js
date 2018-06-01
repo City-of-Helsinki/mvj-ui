@@ -42,7 +42,7 @@ const FieldTypeSelect = ({
       id={name}
       noResultsText={'Ei tuloksia'}
       options={options}
-      placeholder={placeholder || 'Valitse'}
+      placeholder={placeholder || 'Valitse...'}
       onBlur={() => handleBlur(value)}
       onChange={({value}) => onChange(value)}
     />

@@ -9,8 +9,8 @@ import isEmpty from 'lodash/isEmpty';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import FormFieldLabel from '$components/form/FormFieldLabel';
-import LeaseHistory from './LeaseHistory';
 import ListItems from '$components/content/ListItems';
+import RelatedLeases from './RelatedLeases';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
 import {fetchLessors} from '$src/contacts/actions';
@@ -48,7 +48,6 @@ type Props = {
   attributes: Attributes,
   currentLease: Lease,
   fetchLessors: Function,
-  history: Array<Object>,
   lessors: Array<Object>,
   noticePeriods: NoticePeriodList,
   summary: Object,
@@ -153,7 +152,6 @@ class Summary extends Component<Props, State> {
   }
 
   render() {
-    const {history} = this.props;
     const {
       classificationOptions,
       constructabilityStateOptions,
@@ -307,10 +305,10 @@ class Summary extends Component<Props, State> {
                       <FormFieldLabel>Kohteen osoite</FormFieldLabel>
                     </Column>
                   </Row>
-                  <ListItems>
-                    {leaseAreas.map((area, index) => {
-                      return (
-                        <Row key={index}>
+                  {leaseAreas.map((area, index) => {
+                    return (
+                      <ListItems key={index}>
+                        <Row>
                           <Column small={6} large={4}>
                             <p className='no-margin'>{area.identifier || '-'}</p>
                           </Column>
@@ -324,9 +322,9 @@ class Summary extends Component<Props, State> {
                             }
                           </Column>
                         </Row>
-                      );
-                    })}
-                  </ListItems>
+                      </ListItems>
+                    );
+                  })}
                 </div>
               }
               <p className='sub-title'>Rakentamiskelpoisuus</p>
@@ -428,9 +426,7 @@ class Summary extends Component<Props, State> {
             </Collapse>
           </Column>
           <Column medium={3}>
-            <LeaseHistory
-              history={history}
-            />
+            <RelatedLeases />
           </Column>
         </Row>
       </div>

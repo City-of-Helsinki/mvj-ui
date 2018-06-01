@@ -7,6 +7,7 @@ import {getRouteById} from '../root/routes';
 import {
   hideContactModal,
   hideEditMode,
+  hideDeleteRelatedLeaseModal,
   notFound,
   notFoundById,
   receiveAttributes,
@@ -21,6 +22,8 @@ import {
   fetchLeases,
   fetchSingleLease,
   patchLease,
+  createRelatedLease,
+  deleteReleatedLease,
 } from './requests';
 import {getContactModalSettings} from './selectors';
 import {
@@ -175,17 +178,14 @@ function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
         yield put(receiveSingleLease(bodyAsJson));
         break;
       case 400:
-        yield put(notFound());
         yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
         break;
       case 500:
-        yield put(notFound());
         yield put(receiveError(new Error(bodyAsJson)));
         break;
     }
   } catch (error) {
     console.error('Failed to start invoicing with error "%s"', error);
-    yield put(notFound());
     yield put(receiveError(error));
   }
 }
@@ -236,17 +236,14 @@ function* createContactSaga({payload: contact}): Generator<any, any, any> {
         yield put(hideContactModal());
         break;
       case 400:
-        yield put(notFound());
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
       case 500:
-        yield put(notFound());
         yield put(receiveError(new Error(bodyAsJson)));
         break;
     }
   } catch (error) {
     console.error('Failed to create contact with error "%s"', error);
-    yield put(notFound());
     yield put(receiveError(error));
   }
 }
@@ -261,17 +258,70 @@ function* editContactSaga({payload: contact}): Generator<any, any, any> {
         yield put(hideContactModal());
         break;
       case 400:
-        yield put(notFound());
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
       case 500:
-        yield put(notFound());
         yield put(receiveError(new Error(bodyAsJson)));
         break;
     }
   } catch (error) {
     console.error('Failed to edit contact with error "%s"', error);
-    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* createReleatedLeaseSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(createRelatedLease, payload);
+
+    switch (statusCode) {
+      case 201:
+        const {response: {status}, bodyAsJson} = yield call(fetchSingleLease, payload.from_lease);
+
+        switch (status) {
+          case 200:
+            yield put(receiveSingleLease(bodyAsJson));
+            break;
+          default:
+            yield put(receiveError(new SubmissionError({...bodyAsJson})));
+            break;
+        }
+        break;
+      default:
+        yield put(receiveError(new SubmissionError({...bodyDelete})));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create related lease with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
+function* deleteReleatedLeaseSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(deleteReleatedLease, payload.id);
+
+    switch (statusCode) {
+      case 204:
+        yield put(hideDeleteRelatedLeaseModal());
+
+        const {response: {status}, bodyAsJson} = yield call(fetchSingleLease, payload.leaseId);
+
+        switch (status) {
+          case 200:
+            yield put(receiveSingleLease(bodyAsJson));
+            break;
+          default:
+            yield put(receiveError(new SubmissionError({...bodyAsJson})));
+            break;
+        }
+        break;
+      default:
+        yield put(receiveError(new SubmissionError({...bodyDelete})));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to delete related lease with error "%s"', error);
     yield put(receiveError(error));
   }
 }
@@ -289,6 +339,8 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/leases/CREATE_CONTACT', createContactSaga);
       yield takeLatest('mvj/leases/EDIT_CONTACT', editContactSaga);
+      yield takeLatest('mvj/leases/CREATE_RELATED_LEASE', createReleatedLeaseSaga);
+      yield takeLatest('mvj/leases/DELETE_RELATED_LEASE', deleteReleatedLeaseSaga);
     }),
   ]);
 }

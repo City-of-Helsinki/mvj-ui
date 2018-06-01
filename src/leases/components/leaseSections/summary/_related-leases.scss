@@ -1,8 +1,12 @@
-.lease-history {
+.related-leases {
   &__component {
     background-color: $tram-lighter-solid;
     height: 100%;
     padding: rem-calc(15px);
+  }
+
+  &__input-wrapper {
+    margin-top: rem-calc(15px);
   }
 
   &__item {
@@ -11,18 +15,18 @@
     margin-left: -7.5px;
     margin-right: -7.5px;
 
-    &-wrapper {
+    &_wrapper {
       position: relative;
       padding: rem-calc(7.5px 0);
     }
 
-    &-left-border {
+    &_left-border {
       border-left: 1px solid $tram-lighter-solid;
       position: absolute;
       left: -1px;
     }
 
-    &-badge {
+    &_badge {
       background-color: $tram;
       height: rem-calc(20px);
       width: rem-calc(20px);
@@ -31,7 +35,7 @@
       border-radius: 50%;
     }
 
-    &-info {
+    &_info {
       padding-left: rem-calc(20px);
 
       p {
@@ -56,14 +60,20 @@
       }
     }
 
+    &_remove-button {
+      position: absolute;
+      right: 0;
+      top: rem-calc(10px);
+    }
+
     &.active {
       background-color: $white;
 
-      .lease-history__item {
-        &-badge {
+      .related-leases__item {
+        &_badge {
           background-color: $black;
         }
-        &-left-border {
+        &_left-border {
           border-color: $white !important;
         }
       }
@@ -74,7 +84,7 @@
     position: relative;
     margin-top: rem-calc(15px);
 
-    &-border-left {
+    &_border-left {
       position: absolute;
       top: 0;
       bottom: 0;
@@ -82,9 +92,9 @@
       border-left: 1px dashed $tram;
     }
 
-    .lease-history__item:nth-of-type(2) {
-      .lease-history__item {
-        &-left-border {
+    .related-leases__item:nth-of-type(2) {
+      .related-leases__item {
+        &_left-border {
           top: 0;
           bottom: unset;
           height: 7.5px;
@@ -92,11 +102,20 @@
       }
     }
 
-    .lease-history__item:last-of-type {
-      .lease-history__item {
-        &-left-border {
+    .related-leases__item:last-of-type {
+      .related-leases__item {
+        &_left-border {
           bottom: 0;
           top: 7.5px;
+        }
+      }
+    }
+    .related-leases__item:nth-of-type(2):last-of-type {
+      .related-leases__item {
+        &_left-border {
+          bottom: 0;
+          top: 0;
+          height: 100%;
         }
       }
     }

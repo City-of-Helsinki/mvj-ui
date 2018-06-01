@@ -11,7 +11,14 @@ export type Attributes = Object;
 export type Lease = Object;
 export type LeaseList = Object;
 export type LeaseId = number;
-export type LessorList = Array<Object>;
+export type CreateRelatedLeasePayload = {
+  from_lease: LeaseId,
+  to_lease: LeaseId,
+}
+export type DeleteRelatedLeasePayload = {
+  id: number,
+  leaseId: number,
+}
 
 export type FetchAttributesAction = Action<'mvj/leases/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/leases/RECEIVE_ATTRIBUTES', Attributes>;
@@ -36,6 +43,11 @@ export type EditContactAction = Action<'mvj/leases/EDIT_CONTACT', Contact>;
 
 export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;
+
+export type CreateRelatedLeaseAction = Action<'mvj/leases/CREATE_RELATED_LEASE', CreateRelatedLeasePayload>;
+export type DeleteRelatedLeaseAction = Action<'mvj/leases/DELETE_RELATED_LEASE', DeleteRelatedLeasePayload>;
+export type HideDeleteRelatedLeaseModalAction = Action<'mvj/leases/HIDE_RELATED_LEASE_MODAL', void>;
+export type ShowDeleteRelatedLeaseModalAction = Action<'mvj/leases/SHOW_RELATED_LEASE_MODAL', void>;
 
 export type ClearFormValidityFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS', void>
 export type ReceiveConstructabilityFormValidAction = Action<'mvj/leases/RECEIVE_CONSTRUCTABILITY_FORM_VALID', boolean>;

@@ -48,38 +48,28 @@ class RentCalculatorForm extends Component<Props, State> {
 
   componentWillMount() {
     if(!isEmpty(this.props.billingPeriods)) {
-      this.setState({
-        billingPeriodOptions: this.getBillingPeriodsOptions(this.props.billingPeriods),
-      });
+      this.updateBillingPeriodOptions();
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if(prevProps.billingPeriods !== this.props.billingPeriods) {
-      this.setState({
-        billingPeriodOptions: this.getBillingPeriodsOptions(this.props.billingPeriods),
-      });
-    }
-
-    if(prevState.billingPeriodOptions !== this.state.billingPeriodOptions) {
-      const {billingPeriodOptions} = this.state;
-      const {change} = this.props;
-      const now = new Date();
-      const selected =  billingPeriodOptions.find((item) => new Date(item.startDate) <= now && new Date(item.endDate) >= now);
-      if(selected) {
-        change('billing_period', selected.value);
-      }
+      this.updateBillingPeriodOptions();
     }
 
     if(prevProps.billingPeriod !== this.props.billingPeriod) {
-      const {billingPeriodOptions} = this.state;
-      const {billingPeriod, change} = this.props;
-      const selected =  billingPeriodOptions.find((item) => item.value === billingPeriod);
-      if(selected) {
-        change('start_date', selected.startDate);
-        change('end_date', selected.endDate);
-      }
+      this.updateDates();
     }
+  }
+
+  updateBillingPeriodOptions = () => {
+    const {billingPeriods} = this.props;
+    const billingPeriodOptions = this.getBillingPeriodsOptions(billingPeriods);
+    this.setState({
+      billingPeriodOptions: billingPeriodOptions,
+    });
+
+    this.autoselectBillingPeriods(billingPeriodOptions);
   }
 
   getBillingPeriodsOptions = (billingPeriods: BillingPeriodList) => {
@@ -96,6 +86,29 @@ class RentCalculatorForm extends Component<Props, State> {
       };
     });
   };
+
+  autoselectBillingPeriods = (billingPeriodOptions: Array<Object>) => {
+    const {change} = this.props;
+    const now = new Date();
+    const selected =  billingPeriodOptions.find((item) => {
+      return new Date(item.startDate) <= now && new Date(item.endDate) >= now;
+    });
+    if(selected) {
+      change('billing_period', selected.value);
+      change('start_date', selected.startDate);
+      change('end_date', selected.endDate);
+    }
+  }
+
+  updateDates = () => {
+    const {billingPeriodOptions} = this.state;
+    const {billingPeriod, change} = this.props;
+    const selected = billingPeriodOptions.find((item) => item.value === billingPeriod);
+    if(selected) {
+      change('start_date', selected.startDate);
+      change('end_date', selected.endDate);
+    }
+  }
 
   render() {
     const {billingPeriodOptions} = this.state;

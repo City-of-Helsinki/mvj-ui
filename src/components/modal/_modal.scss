@@ -1,5 +1,5 @@
 .modal {
-  .modal__wrapper {
+  &__wrapper {
     z-index: 1002;
     background-color: $white;
     width: rem-calc(800px);
@@ -40,13 +40,13 @@
     fill: $black;
   }
 
-  .modal__overlay {
+  &__overlay {
     position: fixed;
     width: 100%;
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 1001;
+    z-index: 1002;
     background-color: rgba(0, 0, 0, 0.65);
     opacity: 0;
     visibility: hidden;
