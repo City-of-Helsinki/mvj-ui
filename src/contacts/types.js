@@ -23,14 +23,6 @@ export type EditContactAction = Action<'mvj/contacts/EDIT', Contact>;
 export type FetchContactsAction = Action<'mvj/contacts/FETCH_ALL', string>;
 export type ReceiveContactsAction = Action<'mvj/contacts/RECEIVE_ALL', ContactList>;
 
-export type FetchLessorsAction = Action<'mvj/contacts/FETCH_LESSORS', void>;
-export type ReceiveLessorsAction = Action<'mvj/contacts/RECEIVE_LESSORS', Array<Contact>>;
-
-export type FetchCompleteContactListAction = Action<'mvj/contacts/FETCH_COMPLETE', string>;
-export type ReceiveCompleteContactListAction = Action<'mvj/contacts/RECEIVE_COMPLETE', Array<Contact>>;
-export type ReceiveNewContactToCompleteListAction = Action<'mvj/contacts/RECEIVE_NEW_TO_COMPLETE', Contact>;
-export type ReceiveEditedContactToCompleteListAction = Action<'mvj/contacts/RECEIVE_EDITED_TO_COMPLETE', Contact>;
-
 export type FetchSingleContactAction = Action<'mvj/contacts/FETCH_SINGLE', ContactId>;
 export type ReceiveSingleContactAction = Action<'mvj/contacts/RECEIVE_SINGLE', Contact>;
 

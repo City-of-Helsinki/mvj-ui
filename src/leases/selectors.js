@@ -16,6 +16,9 @@ export const getIsContactModalOpen: Selector<boolean, void> = (state: LeaseState
 export const getContactModalSettings: Selector<ContactModalSettings, void> = (state: LeaseState): ContactModalSettings =>
   state.lease.contactModalSettings;
 
+export const getIsDeleteRelatedLeaseModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.lease.isDeleteRelatedLeaseModalOpen;
+
 export const getIsEditMode: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isEditMode;
 
@@ -28,35 +31,11 @@ export const getIsFetchingById: Selector<boolean, LeaseId> = (state: LeaseState,
 export const getIsFetchingAttributes: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isFetchingAttributes;
 
-export const getIsDeleteRelatedLeaseModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isDeleteRelatedLeaseModalOpen;
+export const getIsFormValidById: Selector<boolean, string> = (state: LeaseState, id: string): boolean =>
+  state.lease.isFormValidById[id];
 
-export const getIsConstructabilityFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isConstructabilityFormValid;
-
-export const getIsContractsFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isContractsFormValid;
-
-export const getIsDecisionsFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isDecisionsFormValid;
-
-export const getIsInspectionsFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isInspectionsFormValid;
-
-export const getIsLeaseAreasFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isLeaseAreasFormValid;
-
-export const getIsLeaseInfoFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isLeaseInfoFormValid;
-
-export const getIsRentsFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isRentsFormValid;
-
-export const getIsSummaryFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isSummaryFormValid;
-
-export const getIsTenantsFormValid: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isTenantsFormValid;
+export const getIsFormValidFlags: Selector<Object, void> = (state: LeaseState): Object =>
+  state.lease.isFormValidById;
 
 export const getAttributes: Selector<Attributes, void> = (state: LeaseState): LeaseState =>
   state.lease.attributes;

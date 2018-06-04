@@ -22,16 +22,12 @@ import RemoveButton from '$components/form/RemoveButton';
 import {initializeContactForm} from '$src/contacts/actions';
 import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getContactById, getContactOptions} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
-import {getCompleteContactList} from '$src/contacts/selectors';
 import {getAttributes} from '$src/leases/selectors';
 
-import type {Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  allContacts: Array<Contact>,
   attributes: Attributes,
   fields: any,
   formValues: Object,
@@ -41,7 +37,6 @@ type Props = {
 }
 
 const TenantItemsEdit = ({
-  allContacts,
   attributes,
   fields,
   formValues,
@@ -49,12 +44,10 @@ const TenantItemsEdit = ({
   receiveContactModalSettings,
   showContactModal,
 }: Props) => {
-  const contactOptions = getContactOptions(allContacts);
-
   return (
     <div>
       {fields && !!fields.length && fields.map((tenant, index) => {
-        const contact = getContactById(allContacts, get(formValues, `${tenant}.tenant.contact`));
+        const contact = get(formValues, `${tenant}.tenant.contact`);
         const isActive = isTenantActive(get(formValues, `${tenant}.tenant`));
 
         return (
@@ -83,8 +76,8 @@ const TenantItemsEdit = ({
                             fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.contact')}
                             name={`${tenant}.tenant.contact`}
                             overrideValues={{
+                              fieldType: 'contact',
                               label: 'Asiakas',
-                              options: contactOptions,
                             }}
                           />
                         </Column>
@@ -220,7 +213,6 @@ const TenantItemsEdit = ({
 export default connect(
   (state) => {
     return {
-      allContacts: getCompleteContactList(state),
       attributes: getAttributes(state),
       formValues: getFormValues(FormNames.TENANTS)(state),
     };

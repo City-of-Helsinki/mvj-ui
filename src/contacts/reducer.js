@@ -1,7 +1,6 @@
 // @flow
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
-import findIndex from 'lodash/findIndex';
 
 import type {Reducer} from '../types';
 import type {
@@ -11,10 +10,6 @@ import type {
   InitializeContactFormValuesAction,
   ReceiveAttributesAction,
   ReceiveContactsAction,
-  ReceiveCompleteContactListAction,
-  ReceiveLessorsAction,
-  ReceiveNewContactToCompleteListAction,
-  ReceiveEditedContactToCompleteListAction,
   ReceiveSingleContactAction,
   ReceiveContactFormValidAction,
 } from './types';
@@ -27,13 +22,9 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/contacts/FETCH_ALL': () => true,
   'mvj/contacts/FETCH_SINGLE': () => true,
-  'mvj/contacts/FETCH_COMPLETE': () => true,
   'mvj/contacts/NOT_FOUND': () => false,
   'mvj/contacts/RECEIVE_ALL': () => false,
   'mvj/contacts/RECEIVE_SINGLE': () => false,
-  'mvj/contacts/RECEIVE_COMPLETE': () => false,
-  'mvj/contacts/RECEIVE_NEW_TO_COMPLETE': () => false,
-  'mvj/contacts/RECEIVE_EDITED_TO_COMPLETE': () => false,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -48,36 +39,11 @@ const contactsListReducer: Reducer<ContactList> = handleActions({
   },
 }, {});
 
-const completeContactListReducer: Reducer<Array<Contact>> = handleActions({
-  ['mvj/contacts/RECEIVE_COMPLETE']: (state: Array<Contact>, {payload: contacts}: ReceiveCompleteContactListAction) => {
-    return contacts;
-  },
-  ['mvj/contacts/RECEIVE_NEW_TO_COMPLETE']: (state: Array<Contact>, {payload: contact}: ReceiveNewContactToCompleteListAction) => {
-    const contacts = [...state];
-    contacts.push(contact);
-    return contacts;
-  },
-  ['mvj/contacts/RECEIVE_EDITED_TO_COMPLETE']: (state: Array<Contact>, {payload: contact}: ReceiveEditedContactToCompleteListAction) => {
-    const contacts = [...state];
-    const index = findIndex(contacts, (x) => x.id === contact.id);
-    if(index !== -1) {
-      contacts[index] = contact;
-    }
-    return contacts;
-  },
-}, []);
-
 const contactReducer: Reducer<Contact> = handleActions({
   ['mvj/contacts/RECEIVE_SINGLE']: (state: Contact, {payload: contact}: ReceiveSingleContactAction) => {
     return contact;
   },
 }, {});
-
-const lessorsReducer: Reducer<Array<Contact>> = handleActions({
-  ['mvj/contacts/RECEIVE_LESSORS']: (state: Array<Contact>, {payload: lessors}: ReceiveLessorsAction) => {
-    return lessors;
-  },
-}, []);
 
 const initialValuesReducer: Reducer<Contact> = handleActions({
   ['mvj/contacts/INITIALIZE_FORM']: (state: Contact, {payload: contact}: InitializeContactFormValuesAction) => {
@@ -96,13 +62,11 @@ const isContactFormValidReducer: Reducer<boolean> = handleActions({
 }, false);
 
 export default combineReducers({
-  allContacts: completeContactListReducer,
   attributes: attributesReducer,
   currentContact: contactReducer,
   initialContactFormValues: initialValuesReducer,
   isContactFormValid: isContactFormValidReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
-  lessors: lessorsReducer,
   list: contactsListReducer,
 });

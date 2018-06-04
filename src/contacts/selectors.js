@@ -25,8 +25,5 @@ export const getContactList: Selector<ContactList, void> = (state: ContactState)
 export const getLessors: Selector<ContactList, void> = (state: ContactState): ContactList =>
   state.contacts.lessors;
 
-export const getCompleteContactList: Selector<Array<Contact>, void> = (state: ContactState): Array<Contact> =>
-  state.contacts.allContacts;
-
 export const getCurrentContact: Selector<Contact, void> = (state: ContactState): Contact =>
   state.contacts.currentContact;

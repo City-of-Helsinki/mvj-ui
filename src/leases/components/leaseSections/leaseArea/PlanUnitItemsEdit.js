@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import {connect} from 'react-redux';
 import {FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -14,7 +13,6 @@ import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
-import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -98,7 +96,9 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
   );
 };
 
-const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
+const PlanUnitItemsEdit = (props: Props) => {
+  const {attributes, buttonTitle, title, fields} = props;
+
   return (
     <div>
       <Collapse
@@ -278,10 +278,4 @@ const PlanUnitItemsEdit = ({attributes, buttonTitle, title, fields}: Props) => {
   );
 };
 
-export default connect(
-  (state) => {
-    return {
-      attributes: getAttributes(state),
-    };
-  }
-)(PlanUnitItemsEdit);
+export default PlanUnitItemsEdit;

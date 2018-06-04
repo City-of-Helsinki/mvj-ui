@@ -13,6 +13,7 @@ import Loader from '../loader/Loader';
 import LoaderWrapper from '../loader/LoaderWrapper';
 import Rent from './Rent';
 import RentCalculatorForm from './RentCalculatorForm';
+import TotalRow from './TotalRow';
 import {fetchBillingPeriodsByLease} from '$src/billingPeriods/actions';
 import {fetchRentForPeriodByLease} from '$src/rentForPeriod/actions';
 import {FormNames} from '$components/enums';
@@ -109,11 +110,17 @@ class RentCalculator extends Component<Props> {
                     <div>
                       {!rents || !rents.length && <p className='no-margin'>Ei vuokria</p>}
                       {!!rents && !!rents.length &&
-                        rents.map((rent, index) => {
-                          return (
-                            <Rent key={index} rent={rent} />
-                          );
-                        })
+                        <div>
+                          {rents.map((rent, index) => {
+                            return (
+                              <Rent
+                                key={index}
+                                rent={rent}
+                              />
+                            );
+                          })}
+                          <TotalRow rents={rents} />
+                        </div>
                       }
                     </div>
                   )

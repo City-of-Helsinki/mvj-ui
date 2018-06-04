@@ -10,28 +10,24 @@ import ContactTemplate from '$src/contacts/components/templates/ContactTemplate'
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
-import {getContactById, getContactFullName} from '$src/contacts/helpers';
+import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {formatDate, formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
-import {getCompleteContactList} from '$src/contacts/selectors';
 import {getAttributes} from '$src/leases/selectors';
 
-import type {Contact} from '$src/contacts/types';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  allContacts: Array<Contact>,
   attributes: Attributes,
   tenant: Object,
 };
 
 const OtherTenantItem = ({
-  allContacts,
   attributes,
   tenant,
 }: Props) => {
   const tenantTypeOptions = getAttributeFieldOptions(attributes, 'tenants.child.children.tenantcontact_set.child.children.type');
-  const contact = getContactById(allContacts, get(tenant, 'contact'));
+  const contact = get(tenant, 'contact');
   const isActive = isTenantActive(tenant);
 
   return (
@@ -94,7 +90,6 @@ const OtherTenantItem = ({
 export default connect(
   (state) => {
     return {
-      allContacts: getCompleteContactList(state),
       attributes: getAttributes(state),
     };
   }

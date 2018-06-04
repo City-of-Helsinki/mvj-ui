@@ -467,9 +467,9 @@ export const getDecisionById = (decisions: Array<Object>, decisionId: number) =>
   return decisions.find((decision) => decision.id === decisionId);
 };
 
-export const sortAlphaAsc = (a, b) => {
-  const keyA = a.label.toLowerCase(),
-    keyB = b.label.toLowerCase();
+export const sortByLabelAsc = (a, b) => {
+  const keyA = a.label ? a.label.toLowerCase() : '',
+    keyB = b.label ? b.label.toLowerCase() : '';
   if(keyA < keyB) return -1;
   if(keyA > keyB) return 1;
   return 0;

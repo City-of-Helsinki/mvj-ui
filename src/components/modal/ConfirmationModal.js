@@ -22,7 +22,7 @@ const ConfirmationModal = ({
   onClose,
   onSave,
   title,
-}: Props) => (
+}: Props) =>
   <div className='confirmation-modal'>
     <Modal
       className='modal-small modal-autoheight modal-center'
@@ -46,7 +46,6 @@ const ConfirmationModal = ({
         />
       </div>
     </Modal>
-  </div>
-);
+  </div>;
 
 export default ConfirmationModal;

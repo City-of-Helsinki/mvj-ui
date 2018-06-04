@@ -10,14 +10,10 @@ import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import RelatedLeasesEdit from './RelatedLeasesEdit';
-import {fetchLessors} from '$src/contacts/actions';
-import {receiveSummaryFormValid} from '$src/leases/actions';
+import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getLessorOptions} from '$src/contacts/helpers';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
-import {getAttributeFieldOptions, sortAlphaAsc} from '$src/util/helpers';
-import {getLessors} from '$src/contacts/selectors';
-import {getAttributes, getIsSummaryFormValid} from '$src/leases/selectors';
+import {getAttributes} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -25,34 +21,26 @@ import type {NoticePeriodList} from '$src/noticePeriod/types';
 
 type Props = {
   attributes: Object,
-  fetchLessors: Function,
   handleSubmit: Function,
-  isSummaryFormValid: boolean,
-  lessors: Array<Object>,
   noticePeriods: NoticePeriodList,
-  receiveSummaryFormValid: Function,
+  receiveFormValidFlags: Function,
   valid: boolean,
 }
 
 class SummaryEdit extends Component<Props> {
-  componentWillMount() {
-    const {fetchLessors} = this.props;
+  componentDidUpdate(prevProps) {
+    const {receiveFormValidFlags} = this.props;
 
-    fetchLessors();
-  }
-
-  componentDidUpdate() {
-    const {isSummaryFormValid, receiveSummaryFormValid, valid} = this.props;
-    if(isSummaryFormValid !== valid) {
-      receiveSummaryFormValid(valid);
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [FormNames.SUMMARY]: this.props.valid,
+      });
     }
   }
 
   render () {
-    const {attributes, handleSubmit, lessors, noticePeriods} = this.props;
-    const preparerOptions = getAttributeFieldOptions(attributes, 'preparer').sort(sortAlphaAsc);
+    const {attributes, handleSubmit, noticePeriods} = this.props;
     const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
-    const lessorOptions = getLessorOptions(lessors);
 
     return (
       <form onSubmit={handleSubmit}>
@@ -72,8 +60,8 @@ class SummaryEdit extends Component<Props> {
                     fieldAttributes={get(attributes, 'lessor')}
                     name='lessor'
                     overrideValues={{
+                      fieldType: 'lessor',
                       label: 'Vuokranantaja',
-                      options: lessorOptions,
                     }}
                   />
                 </Column>
@@ -82,8 +70,8 @@ class SummaryEdit extends Component<Props> {
                     fieldAttributes={get(attributes, 'preparer')}
                     name='preparer'
                     overrideValues={{
+                      fieldType: 'user',
                       label: 'Valmistelija',
-                      options: preparerOptions,
                     }}
                   />
                 </Column>
@@ -263,14 +251,11 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
-        isSummaryFormValid: getIsSummaryFormValid(state),
-        lessors: getLessors(state),
         noticePeriods: getNoticePeriods(state),
       };
     },
     {
-      fetchLessors,
-      receiveSummaryFormValid,
+      receiveFormValidFlags,
     }
   ),
   reduxForm({

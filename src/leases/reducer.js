@@ -2,7 +2,8 @@
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 
-import type {Reducer} from '../types';
+import type {Reducer} from '$src/types';
+import {FormNames} from '$src/leases/enums';
 import type {
   Attributes,
   Lease,
@@ -15,16 +16,9 @@ import type {
   LeaseNotFoundByIdAction,
   ContactModalSettings,
   ReceiveContactModalSettingsAction,
-  ReceiveConstructabilityFormValidAction,
-  ReceiveContractsFormValidAction,
-  ReceiveDecisionsFormValidAction,
-  ReceiveInspectionsFormValidAction,
-  ReceiveLeaseAreasFormValidAction,
-  ReceiveLeaseInfoFormValidAction,
-  ReceiveRentsFormValidAction,
-  ReceiveSummaryFormValidAction,
-  ReceiveTenantsFormValidAction,
-} from './types';
+  ReceiveFormValidFlagsAction,
+} from '$src/leases/types';
+
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/leases/HIDE_EDIT': () => false,
@@ -110,88 +104,49 @@ const byIdReducer: Reducer<Lease> = handleActions({
   },
 }, {});
 
-const constructabilityFormValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_CONSTRUCTABILITY_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveConstructabilityFormValidAction) => {
-    return valid;
+const isFormValidByIdReducer: Reducer<Object> = handleActions({
+  ['mvj/leases/RECEIVE_FORM_VALID_FLAGS']: (state: Object, {payload: valid}: ReceiveFormValidFlagsAction) => {
+    return {
+      ...state,
+      ...valid,
+    };
   },
-  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
-}, true);
-
-const contractsFormValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_CONTRACTS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveContractsFormValidAction) => {
-    return valid;
+  ['mvj/leases/CLEAR_FORM_VALID_FLAGS']: () => {
+    return {
+      [FormNames.CONSTRUCTABILITY]: true,
+      [FormNames.CONTRACTS]: true,
+      [FormNames.DECISIONS]: true,
+      [FormNames.INSPECTIONS]: true,
+      [FormNames.LEASE_AREAS]: true,
+      [FormNames.LEASE_INFO]: true,
+      [FormNames.RENTS]: true,
+      [FormNames.SUMMARY]: true,
+      [FormNames.TENANTS]: true,
+    };
   },
-  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
-}, true);
-
-const decisionsFormValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_DECISIONS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveDecisionsFormValidAction) => {
-    return valid;
-  },
-  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
-}, true);
-
-const inspectionsFormValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_INSPECTIONS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveInspectionsFormValidAction) => {
-    return valid;
-  },
-  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
-}, true);
-
-const leaseAreasFormValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_LEASE_AREAS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveLeaseAreasFormValidAction) => {
-    return valid;
-  },
-  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
-}, true);
-
-const leaseInfoFormValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_LEASE_INFO_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveLeaseInfoFormValidAction) => {
-    return valid;
-  },
-  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
-}, true);
-
-const rentsFormValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_RENTS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveRentsFormValidAction) => {
-    return valid;
-  },
-  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
-}, true);
-
-const summaryFormValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_SUMMARY_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveSummaryFormValidAction) => {
-    return valid;
-  },
-  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
-}, true);
-
-const tenantsFormValidReducer: Reducer<boolean> = handleActions({
-  ['mvj/leases/RECEIVE_TENANTS_FORM_VALID']: (state: boolean, {payload: valid}: ReceiveTenantsFormValidAction) => {
-    return valid;
-  },
-  'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS': () => true,
-}, true);
+}, {
+  [FormNames.CONSTRUCTABILITY]: true,
+  [FormNames.CONTRACTS]: true,
+  [FormNames.DECISIONS]: true,
+  [FormNames.INSPECTIONS]: true,
+  [FormNames.LEASE_AREAS]: true,
+  [FormNames.LEASE_INFO]: true,
+  [FormNames.RENTS]: true,
+  [FormNames.SUMMARY]: true,
+  [FormNames.TENANTS]: true,
+});
 
 export default combineReducers({
   attributes: attributesReducer,
   byId: byIdReducer,
   contactModalSettings: contactModalSettingsReducer,
   current: currentLeaseReducer,
+  isFormValidById: isFormValidByIdReducer,
   isContactModalOpen: isContactModalOpenReducer,
   isDeleteRelatedLeaseModalOpen: isDeleteRelatedLeaseModalOpenReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
   isFetchingById: isFetchingByIdReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
-  isConstructabilityFormValid: constructabilityFormValidReducer,
-  isContractsFormValid: contractsFormValidReducer,
-  isDecisionsFormValid: decisionsFormValidReducer,
-  isInspectionsFormValid: inspectionsFormValidReducer,
-  isLeaseAreasFormValid: leaseAreasFormValidReducer,
-  isLeaseInfoFormValid: leaseInfoFormValidReducer,
-  isRentsFormValid: rentsFormValidReducer,
-  isSummaryFormValid: summaryFormValidReducer,
-  isTenantsFormValid: tenantsFormValidReducer,
   list: leasesListReducer,
 });

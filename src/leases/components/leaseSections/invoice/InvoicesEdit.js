@@ -17,19 +17,15 @@ import {
   stopInvoicing,
 } from '$src/leases/actions';
 import {getIsCreateOpen} from '$src/invoices/selectors';
-import {getCompleteContactList} from '$src/contacts/selectors';
 import {createInvoice, receiveIsCreateOpen} from '$src/invoices/actions';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getContentTenants} from '$src/leases/helpers';
 import {getNewInvoiceForDb} from '$src/invoices/helpers';
-import {getContactById} from '$src/contacts/helpers';
 import {InvoiceState} from '$src/invoices/enums';
 
-import type {Contact} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
-  contacts: Array<Contact>,
   createInvoice: Function,
   currentLease: Lease,
   isCreateOpen: boolean,
@@ -79,7 +75,6 @@ class InvoicesEdit extends Component<Props, State> {
 
   createInvoice = (invoice: Object) => {
     const {
-      contacts,
       createInvoice,
       currentLease,
       params: {leaseId},
@@ -87,7 +82,7 @@ class InvoicesEdit extends Component<Props, State> {
 
     const recipients = getContentTenants(currentLease);
     const recipient = recipients.find(x => x.id === invoice.recipient);
-    const contact = getContactById(contacts, get(recipient, 'tenant.contact'));
+    const contact = get(recipient, 'tenant.contact');
     const recObj = {id: get(contact, 'id'), type: get(contact, 'type')};
 
     invoice.recipient = recObj;
@@ -196,7 +191,6 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        contacts: getCompleteContactList(state),
         currentLease: getCurrentLease(state),
         isCreateOpen: getIsCreateOpen(state),
       };

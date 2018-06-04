@@ -9,6 +9,8 @@ import type {
   CommentListMap,
   ReceiveAttributesAction,
   ReceiveCommentsByLeaseAction,
+  HideEditModeByIdAction,
+  ShowEditModeByIdAction,
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -18,6 +20,21 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/comments/NOT_FOUND': () => false,
   'mvj/comments/RECEIVE_BY_LEASE': () => false,
 }, false);
+
+const isEditModeByIdReducer: Reducer<CommentListMap> = handleActions({
+  ['mvj/comments/HIDE_BY_ID']: (state: CommentState, {payload: id}: HideEditModeByIdAction) => {
+    return {
+      ...state,
+      [id]: false,
+    };
+  },
+  ['mvj/comments/SHOW_BY_ID']: (state: CommentState, {payload: id}: ShowEditModeByIdAction) => {
+    return {
+      ...state,
+      [id]: true,
+    };
+  },
+}, {});
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/comments/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
@@ -37,5 +54,6 @@ const byLeaseReducer: Reducer<CommentListMap> = handleActions({
 export default combineReducers({
   attributes: attributesReducer,
   byLease: byLeaseReducer,
+  isEditModeById: isEditModeByIdReducer,
   isFetching: isFetchingReducer,
 });

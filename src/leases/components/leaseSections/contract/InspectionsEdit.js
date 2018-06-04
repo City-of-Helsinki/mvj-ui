@@ -6,32 +6,37 @@ import {FieldArray, reduxForm} from 'redux-form';
 
 import FormSection from '$components/form/FormSection';
 import InspectionItemsEdit from './InspectionItemsEdit';
-import {receiveInspectionsFormValid} from '$src/leases/actions';
+import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getIsInspectionsFormValid} from '$src/leases/selectors';
+import {getAttributes} from '$src/leases/selectors';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
   handleSubmit: Function,
-  isInspectionsFormValid: boolean,
-  receiveInspectionsFormValid: Function,
+  receiveFormValidFlags: Function,
   valid: boolean,
 }
 
 class InspectionsEdit extends Component<Props> {
-  componentDidUpdate() {
-    const {isInspectionsFormValid, receiveInspectionsFormValid, valid} = this.props;
-    if(isInspectionsFormValid !== valid) {
-      receiveInspectionsFormValid(valid);
+  componentDidUpdate(prevProps) {
+    const {receiveFormValidFlags} = this.props;
+
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [FormNames.INSPECTIONS]: this.props.valid,
+      });
     }
   }
 
   render() {
-    const {handleSubmit} = this.props;
-
+    const {attributes, handleSubmit} = this.props;
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <FieldArray
+            attributes={attributes}
             component={InspectionItemsEdit}
             name="inspections"
           />
@@ -47,11 +52,11 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        isInspectionsFormValid: getIsInspectionsFormValid(state),
+        attributes: getAttributes(state),
       };
     },
     {
-      receiveInspectionsFormValid,
+      receiveFormValidFlags,
     }
   ),
   reduxForm({

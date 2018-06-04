@@ -5,6 +5,7 @@ import {SubmissionError} from 'redux-form';
 import {
   notFound,
   fetchCommentsByLease,
+  hideEditModeById,
   receiveAttributes,
   receiveCommentsByLease,
 } from './actions';
@@ -93,6 +94,7 @@ function* editCommentSaga({payload: comment}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(fetchCommentsByLease(bodyAsJson.lease));
+        yield put(hideEditModeById(comment.id));
         break;
       case 400:
         yield put(notFound());

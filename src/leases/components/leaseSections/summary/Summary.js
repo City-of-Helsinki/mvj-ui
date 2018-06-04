@@ -13,14 +13,13 @@ import ListItems from '$components/content/ListItems';
 import RelatedLeases from './RelatedLeases';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
-import {fetchLessors} from '$src/contacts/actions';
 import {ConstructabilityStatus} from '$src/leases/enums';
-import {getContactFullName, getLessorOptions} from '$src/contacts/helpers';
+import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary, getFullAddress} from '$src/leases/helpers';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
 import {getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {getUserFullName} from '$src/users/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getLessors} from '$src/contacts/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 
@@ -47,8 +46,6 @@ const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
-  fetchLessors: Function,
-  lessors: Array<Object>,
   noticePeriods: NoticePeriodList,
   summary: Object,
 }
@@ -59,10 +56,8 @@ type State = {
   financingOptions: Array<Object>,
   hitasOptions: Array<Object>,
   intendedUseOptions: Array<Object>,
-  lessorOptions: Array<Object>,
   managementOptions: Array<Object>,
   noticePeriodOptions: Array<Object>,
-  preparerOptions: Array<Object>,
   regulationOptions: Array<Object>,
   statisticalUseOptions: Array<Object>,
   summary: Object,
@@ -79,25 +74,22 @@ class Summary extends Component<Props, State> {
     lessorOptions: [],
     managementOptions: [],
     noticePeriodOptions: [],
-    preparerOptions: [],
     regulationOptions: [],
     statisticalUseOptions: [],
     summary: {},
     supportiveHousingOptions: [],
   }
   componentWillMount() {
-    const {attributes, currentLease, fetchLessors, lessors, noticePeriods} = this.props;
+    const {attributes, currentLease, noticePeriods} = this.props;
 
-    fetchLessors();
     if(!isEmpty(attributes)) {
       this.updateOptions(attributes);
     }
+
     if(!isEmpty(currentLease)) {
       this.updateSummary(currentLease);
     }
-    if(!isEmpty(lessors)) {
-      this.updateLessorOptions(lessors);
-    }
+
     if(!isEmpty(noticePeriods)) {
       this.updateNoticePeriodOptions(noticePeriods);
     }
@@ -107,12 +99,11 @@ class Summary extends Component<Props, State> {
     if(prevProps.attributes !== this.props.attributes) {
       this.updateOptions(this.props.attributes);
     }
+
     if(prevProps.currentLease !== this.props.currentLease) {
       this.updateSummary(this.props.currentLease);
     }
-    if(prevProps.lessors !== this.props.lessors) {
-      this.updateLessorOptions(this.props.lessors);
-    }
+
     if(prevProps.noticePeriods !== this.props.noticePeriods) {
       this.updateNoticePeriodOptions(this.props.noticePeriods);
     }
@@ -126,16 +117,9 @@ class Summary extends Component<Props, State> {
       hitasOptions: getAttributeFieldOptions(attributes, 'hitas'),
       intendedUseOptions: getAttributeFieldOptions(attributes, 'intended_use'),
       managementOptions: getAttributeFieldOptions(attributes, 'management'),
-      preparerOptions: getAttributeFieldOptions(attributes, 'preparer'),
       regulationOptions: getAttributeFieldOptions(attributes, 'regulation'),
       statisticalUseOptions: getAttributeFieldOptions(attributes, 'statistical_use'),
       supportiveHousingOptions: getAttributeFieldOptions(attributes, 'supportive_housing'),
-    });
-  }
-
-  updateLessorOptions = (lessors: Array<Object>) => {
-    this.setState({
-      lessorOptions: getLessorOptions(lessors),
     });
   }
 
@@ -158,10 +142,8 @@ class Summary extends Component<Props, State> {
       financingOptions,
       hitasOptions,
       intendedUseOptions,
-      lessorOptions,
       managementOptions,
       noticePeriodOptions,
-      preparerOptions,
       regulationOptions,
       statisticalUseOptions,
       summary,
@@ -193,11 +175,11 @@ class Summary extends Component<Props, State> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormFieldLabel>Vuokranantaja</FormFieldLabel>
-                  <p>{getLabelOfOption(lessorOptions, summary.lessor) || '-'}</p>
+                  <p>{getContactFullName(summary.lessor) || '-'}</p>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormFieldLabel>Valmistelija</FormFieldLabel>
-                  <p>{getLabelOfOption(preparerOptions, summary.preparer) || '-'}</p>
+                  <p>{getUserFullName(summary.preparer) || '-'}</p>
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormFieldLabel>Julkisuusluokka</FormFieldLabel>
@@ -439,11 +421,7 @@ export default connect(
     return {
       attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
-      lessors: getLessors(state),
       noticePeriods: getNoticePeriods(state),
     };
   },
-  {
-    fetchLessors,
-  }
 )(Summary);

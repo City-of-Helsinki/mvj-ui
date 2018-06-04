@@ -25,6 +25,24 @@ type Props = {
 }
 
 class BasisOfRentsEdit extends Component<Props> {
+  componentDidUpdate(prevProps) {
+    if(prevProps.basisOfRents !== this.props.basisOfRents) {
+      const calculateRentBasisValues = this.calculateRentBasisValues;
+
+      this.props.basisOfRents.forEach((basis, index) => {
+        const prevBasis = get(prevProps, `basisOfRents[${index}]`);
+        if(prevBasis && (
+          prevBasis.amount_per_floor_m2_index_100 !== basis.amount_per_floor_m2_index_100 ||
+          prevBasis.floor_m2 !== basis.floor_m2 ||
+          prevBasis.index !== basis.index ||
+          prevBasis.percent !== basis.percent)
+        ) {
+          calculateRentBasisValues(basis, index);
+        }
+      });
+    }
+  }
+
   calculateRentBasisValues = (basis, i) => {
     const {amount_per_floor_m2_index_100, floor_m2, index, percent} = basis;
     const {change} = this.props;
@@ -59,24 +77,6 @@ class BasisOfRentsEdit extends Component<Props> {
       change(FormNames.RENTS, `basis_of_rents[${i}].year_rent_index`, '');
     }
   }
-
-  componentDidUpdate(prevProps) {
-    if(prevProps.basisOfRents !== this.props.basisOfRents) {
-      const calculateRentBasisValues = this.calculateRentBasisValues;
-      this.props.basisOfRents.forEach((basis, index) => {
-        const prevBasis = get(prevProps, `basisOfRents[${index}]`);
-        if(prevBasis && (
-          prevBasis.amount_per_floor_m2_index_100 !== basis.amount_per_floor_m2_index_100 ||
-          prevBasis.floor_m2 !== basis.floor_m2 ||
-          prevBasis.index !== basis.index ||
-          prevBasis.percent !== basis.percent)
-        ) {
-          calculateRentBasisValues(basis, index);
-        }
-      });
-    }
-  }
-
 
   render() {
     const {attributes, fields} = this.props;

@@ -10,14 +10,10 @@ import {
   LeaseStatus,
   TenantContactType,
 } from './enums';
-import {getContactById, getContactFullName} from '$src/contacts/helpers';
-import {
-  fixedLengthNumber,
-  formatDecimalNumberForDb,
-} from '$util/helpers';
+import {getContactFullName} from '$src/contacts/helpers';
+import {getUserFullName} from '$src/users/helpers';
+import {fixedLengthNumber, formatDecimalNumberForDb} from '$util/helpers';
 import {removeSessionStorageItem} from '$util/storage';
-
-import type {Contact} from '$src/contacts/types';
 
 export const getContentLeaseIdentifier = (item:Object) => {
   if(isEmpty(item)) {
@@ -54,7 +50,7 @@ export const getContentLeaseItem = (lease: Object) => {
     identifier: getContentLeaseIdentifier(lease),
     real_property_unit: get(lease, 'lease_areas[0].identifier'),
     tenant: getContentLeaseTenant(lease),
-    lessor: get(lease, 'lessor.id'),
+    lessor: getContactFullName(lease.lessor),
     address: getContentLeaseAddress(lease),
     state: get(lease, 'state'),
     start_date: get(lease, 'start_date'),
@@ -110,10 +106,58 @@ export const getContentHistory = (lease: Object) => {
   });
 };
 
+export const getContentContact = (contact: Object) => {
+  return {
+    id: get(contact, 'id'),
+    value: get(contact, 'id'),
+    label: getContactFullName(contact),
+    type: get(contact, 'type'),
+    first_name: get(contact, 'first_name'),
+    last_name: get(contact, 'last_name'),
+    name: get(contact, 'name'),
+    business_id: get(contact, 'business_id'),
+    address: get(contact, 'address'),
+    postal_code: get(contact, 'postal_code'),
+    city: get(contact, 'city'),
+    email: get(contact, 'email'),
+    phone: get(contact, 'phone'),
+    language: get(contact, 'language'),
+    national_identification_number: get(contact, 'national_identification_number'),
+    address_protection: get(contact, 'address_protection'),
+    customer_number: get(contact, 'customer_number'),
+    sap_customer_number: get(contact, 'sap_customer_number'),
+    electronic_billing_address: get(contact, 'electronic_billing_address'),
+    partner_code: get(contact, 'partner_code'),
+    is_lessor: get(contact, 'is_lessor'),
+  };
+};
+
+export const getContentLessor = (lessor: Object) => {
+  return {
+    id: get(lessor, 'id'),
+    value: get(lessor, 'id'),
+    label: getContactFullName(lessor),
+    type: get(lessor, 'type'),
+    first_name: get(lessor, 'first_name'),
+    last_name: get(lessor, 'last_name'),
+    name: get(lessor, 'name'),
+  };
+};
+
+export const getContentUser = (user: Object) => {
+  return {
+    id: get(user, 'id'),
+    value: get(user, 'id'),
+    label: getUserFullName(user),
+    first_name: get(user, 'first_name'),
+    last_name: get(user, 'last_name'),
+  };
+};
+
 export const getContentSummary = (lease: Object) => {
   return {
-    lessor: get(lease, 'lessor.id'),
-    preparer: get(lease, 'preparer.id') || get(lease, 'preparer'),
+    lessor: getContentLessor(get(lease, 'lessor')),
+    preparer: getContentUser(get(lease, 'preparer')),
     classification: get(lease, 'classification'),
     intended_use: get(lease, 'intended_use'),
     supportive_housing: get(lease, 'supportive_housing'),
@@ -290,14 +334,6 @@ export const getContentLeaseAreas = (lease: Object) => {
   });
 };
 
-export const getContentUser = (userData: Object) => {
-  return {
-    id: get(userData, 'id'),
-    first_name: get(userData, 'first_name'),
-    last_name: get(userData, 'last_name'),
-  };
-};
-
 export const getContentComments = (content: Array<Object>): Array<Object> => {
   if(!content || !content.length) {
     return [];
@@ -456,7 +492,7 @@ export const getContentConstructabilityDescriptions = (area: Object, type: strin
     return {
       id: get(description, 'id'),
       type: get(description, 'type'),
-      user: get(description, 'user.id'),
+      user: getContentUser(get(description, 'user')),
       text: get(description, 'text'),
       ahjo_reference_number: get(description, 'ahjo_reference_number'),
       modified_at: get(description, 'modified_at'),
@@ -486,7 +522,7 @@ export const getContentConstructability = (lease: Object) => {
       polluted_land_state: get(area, 'polluted_land_state'),
       polluted_land_rent_condition_state: get(area, 'polluted_land_rent_condition_state'),
       polluted_land_rent_condition_date: get(area, 'polluted_land_rent_condition_date'),
-      polluted_land_planner: get(area, 'polluted_land_planner.id'),
+      polluted_land_planner: getContentUser(get(area, 'polluted_land_planner')),
       polluted_land_projectwise_number: get(area, 'polluted_land_projectwise_number'),
       polluted_land_matti_report_number: get(area, 'polluted_land_matti_report_number'),
       constructability_report_state: get(area, 'constructability_report_state'),
@@ -513,13 +549,7 @@ export const getContentTenantItem = (tenant: Object) => {
   return {
     id: get(contact, 'id'),
     type: get(contact, 'type'),
-    contact: {
-      id: get(contact, 'contact.id'),
-      type: get(contact, 'contact.type'),
-      first_name: get(contact, 'contact.first_name'),
-      last_name: get(contact, 'contact.last_name'),
-      name: get(contact, 'contact.name'),
-    },
+    contact: getContentContact(get(contact, 'contact')),
     start_date: get(contact, 'start_date'),
     end_date: get(contact, 'end_date'),
   };
@@ -532,7 +562,7 @@ export const getContentTenantContactSet = (tenant: Object) => {
     return {
       id: get(contact, 'id'),
       type: get(contact, 'type'),
-      contact: get(contact, 'contact.id'),
+      contact: getContentContact(get(contact, 'contact')),
       start_date: get(contact, 'start_date'),
       end_date: get(contact, 'end_date'),
     };
@@ -732,12 +762,12 @@ export const getDistrictOptions = (districts: Array<Object>) => {
 };
 
 
-export const getInvoiceRecipientOptions = (lease: Object, contacts: Array<Contact>) =>{
+export const getInvoiceRecipientOptions = (lease: Object) =>{
   const items = getContentTenants(lease);
   return items.map((item) => {
     return {
       value: item.id,
-      label: getContactFullName(getContactById(contacts, get(item, 'tenant.contact'))),
+      label: get(item, 'tenant.contact'),
     };
   });
 };
@@ -750,7 +780,7 @@ export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {
 };
 
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
-  payload.lessor = get(summary, 'lessor');
+  payload.lessor = get(summary, 'lessor.value');
   payload.preparer = get(summary, 'preparer');
   payload.classification = get(summary, 'classification');
   payload.intended_use = get(summary, 'intended_use');
@@ -1096,6 +1126,7 @@ export const getTenantContactSetForDb = (tenant: Object) => {
     start_date: get(tenantData, 'start_date'),
     end_date: get(tenantData, 'end_date'),
   });
+
   const otherPersons = get(tenant, 'tenantcontact_set', []);
   forEach(otherPersons, (person) => {
     contacts.push({

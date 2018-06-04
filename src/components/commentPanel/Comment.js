@@ -1,73 +1,81 @@
 // @flow
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import Button from '$components/button/Button';
 import EditButton from '$components/button/EditButton';
 import ShowMore from '../showMore/ShowMore';
 import TextAreaInput from '$components/inputs/TextAreaInput';
-import {formatDate} from '../../util/helpers';
+import {editComment, hideEditModeById, showEditModeById} from '$src/comments/actions';
+import {formatDate} from '$util/helpers';
+import {getIsEditModeById} from '$src/comments/selectors';
 
 type Props = {
-  date: string,
-  onEdit: Function,
-  text: string,
+  comment: Object,
+  editComment: Function,
+  hideEditModeById: Function,
+  isEditMode: boolean,
+  showEditModeById: Function,
   user: Object,
 }
 
 type State = {
   editedText: string,
-  isEditMode: boolean,
-  showMore: boolean,
 }
 
-class Comment extends Component<Props, State> {
+class Comment extends PureComponent<Props, State> {
   state = {
     editedText: '',
-    isEditMode: false,
-    showMore: false,
   }
 
   handleTextFieldChange = (e: Object) => {
     this.setState({editedText: e.target.value});
   }
 
-  openEditMode = () => {
-    const {text} = this.props;
+  handleCancelButtonClick = () => {
+    const {comment: {id}, hideEditModeById} = this.props;
+
+    hideEditModeById(id);
+  }
+
+  handleEditButtonClick = () => {
+    const {comment: {id, text}, showEditModeById} = this.props;
+
+    showEditModeById(id);
     this.setState({
       editedText: text,
-      isEditMode: true,
     });
   }
 
+  handleSaveButtonClick = () => {
+    const {comment, editComment} = this.props;
+    const {editedText} = this.state;
+
+    comment.text = editedText;
+    editComment(comment);
+  }
+
   render() {
-    const {
-      editedText,
-      isEditMode,
-    } = this.state;
-    const {
-      date,
-      onEdit,
-      text,
-      user,
-    } = this.props;
+    const {editedText} = this.state;
+    const {comment, isEditMode, user} = this.props;
     return (
       <div className='comment'>
         {!isEditMode &&
           <div>
             <EditButton
               className='position-topright'
-              onClick={this.openEditMode}
+              onClick={this.handleEditButtonClick}
               title='Muokkaa'
             />
             <div className='content-wrapper'>
               <p className='comment-info'>
-                <span className='date'>{formatDate(date)}</span>
+                <span className='date'>{formatDate(comment.date)}</span>
                 &nbsp;
                 <span>{user.last_name} {user.first_name}</span>
               </p>
               <div className='comment-text'>
-                <ShowMore text={text} />
+                <ShowMore text={comment.text} />
               </div>
             </div>
           </div>
@@ -91,16 +99,13 @@ class Comment extends Component<Props, State> {
                     className='button-green pull-right no-margin-right'
                     disabled={!editedText}
                     label='Tallenna'
-                    onClick={() => {
-                      onEdit(editedText);
-                      this.setState({isEditMode: false});
-                    }}
+                    onClick={this.handleSaveButtonClick}
                     title='Tallenna'
                   />
                   <Button
                     className='button-red pull-right'
                     label='Kumoa'
-                    onClick={() => this.setState({isEditMode: false})}
+                    onClick={this.handleCancelButtonClick}
                     title='Kumoa'
                   />
                 </Column>
@@ -113,4 +118,15 @@ class Comment extends Component<Props, State> {
   }
 }
 
-export default Comment;
+export default connect(
+  (state, props) => {
+    return {
+      isEditMode: getIsEditModeById(state, props.comment.id),
+    };
+  },
+  {
+    editComment,
+    hideEditModeById,
+    showEditModeById,
+  }
+)(Comment);

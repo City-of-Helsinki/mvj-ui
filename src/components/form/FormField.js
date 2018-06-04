@@ -1,18 +1,22 @@
 // @flow
-import React, {createElement} from 'react';
+import React, {createElement, PureComponent} from 'react';
 import {Field} from 'redux-form';
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import ErrorBlock from './ErrorBlock';
 import FieldTypeBasic from './FieldTypeBasic';
 import FieldTypeBoolean from './FieldTypeBoolean';
 import FieldTypeCheckbox from './FieldTypeCheckbox';
+import FieldTypeContactSelect from './FieldTypeContactSelect';
 import FieldTypeDatePicker from './FieldTypeDatePicker';
+import FieldTypeLessorSelect from './FieldTypeLessorSelect';
 import FieldTypeMultiSelect from './FieldTypeMultiSelect';
 import FieldTypeSelect from './FieldTypeSelect';
 import FieldTypeSwitch from './FieldTypeSwitch';
 import FieldTypeTextArea from './FieldTypeTextArea';
+import FieldTypeUserSelect from './FieldTypeUserSelect';
 import {getFieldOptions} from '$util/helpers';
 import {genericNormalizer} from './normalizers';
 import {genericValidator} from '../form/validations';
@@ -21,14 +25,17 @@ const FieldTypes = {
   'boolean': FieldTypeBoolean,
   'choice': FieldTypeSelect,
   'checkbox': FieldTypeCheckbox,
+  'contact': FieldTypeContactSelect,
   'date': FieldTypeDatePicker,
   'decimal': FieldTypeBasic,
   'field': FieldTypeSelect,
   'integer': FieldTypeBasic,
+  'lessor': FieldTypeLessorSelect,
   'multiselect': FieldTypeMultiSelect,
   'string': FieldTypeBasic,
   'switch': FieldTypeSwitch,
   'textarea': FieldTypeTextArea,
+  'user': FieldTypeUserSelect,
 };
 
 const Types = {
@@ -39,10 +46,12 @@ const Types = {
   'decimal': 'text',
   'field': null,
   'integer': 'number',
+  'lessor': null,
   'multiselect': null,
   'string': 'text',
   'switch': null,
   'textarea': 'text',
+  'user': null,
 };
 
 const resolveFieldType = (type: string): Object => FieldTypes.hasOwnProperty(type) ? FieldTypes[type] : FieldTypeBasic;
@@ -115,51 +124,114 @@ type Props = {
   validate?: Function,
 }
 
-const FormField = ({
-  autoComplete,
-  className,
-  disabled = false,
-  disableDirty = false,
-  ErrorComponent = ErrorBlock,
-  fieldAttributes,
-  isLoading = false,
-  name,
-  optionLabel,
-  overrideValues,
-  placeholder,
-  rows,
-  validate,
-}: Props) => {
-  const label = get(fieldAttributes, 'label');
-  const fieldType = get(fieldAttributes, 'type');
-  const required = !!get(fieldAttributes, 'required');
-  const options = getFieldOptions(fieldAttributes);
+type State = {
+  fieldType: ?string,
+  label: ?string,
+  options: Array<Object>,
+  required: boolean,
+}
 
-  return (
-    <Field
-      autoComplete={autoComplete}
-      className={className}
-      component={FormFieldInput}
-      disabled={disabled}
-      disableDirty={disableDirty}
-      ErrorComponent={ErrorComponent}
-      fieldType={fieldType}
-      isLoading={isLoading}
-      label={label}
-      name={name}
-      normalize={(value) => genericNormalizer(value, fieldAttributes)}
-      optionLabel={optionLabel}
-      options={options}
-      placeholder={placeholder}
-      required={required}
-      rows={rows}
-      validate={[
-        (value) => genericValidator(value, fieldAttributes),
-        (value) => validate ? validate(value) : undefined,
-      ]}
-      {...overrideValues}
-    />
-  );
-};
+class FormField extends PureComponent<Props, State> {
+  state = {
+    fieldType: null,
+    label: null,
+    options: [],
+    required: false,
+  }
+  static defualtProps = {
+    disabled: false,
+    disableDirty: false,
+    isLoading: false,
+  };
+
+  componentDidMount() {
+    const {fieldAttributes} = this.props;
+    if(!isEmpty(fieldAttributes)) {
+      this.updateSettings();
+    }
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if(JSON.stringify(prevProps.fieldAttributes) !== JSON.stringify(this.props.fieldAttributes)) {
+      this.updateSettings();
+    }
+  }
+
+  updateSettings = () => {
+    const {fieldAttributes} = this.props;
+    this.setState({
+      label: get(fieldAttributes, 'label'),
+      fieldType: get(fieldAttributes, 'type'),
+      required: !!get(fieldAttributes, 'required'),
+      options: getFieldOptions(fieldAttributes),
+    });
+  }
+
+  handleGenericNormalize = (value: any) => {
+    const {fieldAttributes} = this.props;
+    return genericNormalizer(value, fieldAttributes);
+  }
+
+  handleGenericValidate = (value: any) => {
+    const {fieldAttributes} = this.props;
+    return genericValidator(value, fieldAttributes);
+  }
+
+  handleValidate = (value: any) => {
+    const {validate} = this.props;
+    if(!validate) {
+      return undefined;
+    }
+    return validate(value);
+  }
+
+  render() {
+    const {
+      autoComplete,
+      className,
+      disabled,
+      disableDirty,
+      ErrorComponent = ErrorBlock,
+      isLoading,
+      name,
+      optionLabel,
+      overrideValues,
+      placeholder,
+      rows,
+    } = this.props;
+    const {
+      fieldType,
+      label,
+      options,
+      required,
+    } = this.state;
+
+    return(
+      <Field
+        autoComplete={autoComplete}
+        className={className}
+        component={FormFieldInput}
+        disabled={disabled}
+        disableDirty={disableDirty}
+        ErrorComponent={ErrorComponent}
+        fieldType={fieldType}
+        isLoading={isLoading}
+        label={label}
+        name={name}
+        normalize={this.handleGenericNormalize}
+        optionLabel={optionLabel}
+        options={options}
+        placeholder={placeholder}
+        required={required}
+        rows={rows}
+        validate={[
+          this.handleGenericValidate,
+          this.handleValidate,
+        ]}
+        {...overrideValues}
+      />
+    );
+  }
+}
 
 export default FormField;

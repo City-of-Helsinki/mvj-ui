@@ -2,7 +2,6 @@
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
-import get from 'lodash/get';
 
 import {getRouteById} from '../root/routes';
 
@@ -10,8 +9,6 @@ import {
   hideEditMode,
   receiveAttributes,
   receiveContacts,
-  receiveCompleteContactList,
-  receiveLessors,
   receiveSingleContact,
   notFound,
 } from './actions';
@@ -62,35 +59,6 @@ function* fetchContactsSaga({payload: search}): Generator<any, any, any> {
     }
   } catch (error) {
     console.error('Failed to fetch contacts with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
-function* fetchCompleteContactListSaga({payload: search}): Generator<any, any, any> {
-  try {
-    let results = [];
-    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchContacts, search);
-    results = get(body, 'results', []);
-    while(statusCode === 200 && get(body, 'next')) {
-      const next = get(body, 'next');
-      const {response: {status}, bodyAsJson} = yield call(fetchContacts, `?${next.split('?').pop()}`);
-      statusCode = status;
-      body = bodyAsJson;
-      results = [...results, ...get(body, 'results', [])];
-    }
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveCompleteContactList(results));
-        break;
-      case 404:
-      case 500:
-        yield put(notFound());
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch leases with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -168,39 +136,12 @@ function* editContactSaga({payload: contact}): Generator<any, any, any> {
   }
 }
 
-function* fetchLessorsSaga(): Generator<any, any, any> {
-  try {
-    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchContacts, '?is_lessor=true&limit=500');
-    let lessors = body.results;
-    while(statusCode === 200 && body.next) {
-      const {response: {status}, bodyAsJson} = yield call(fetchContacts, `?${body.next.split('?').pop()}`);
-      statusCode = status;
-      body = bodyAsJson;
-      lessors = [...lessors, ...body.results];
-    }
-
-    switch (statusCode) {
-      case 200:
-        yield put(receiveLessors(lessors));
-        break;
-      case 404:
-      case 500:
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to fetch lessors with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/contacts/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/contacts/FETCH_ALL', fetchContactsSaga);
-      yield takeLatest('mvj/contacts/FETCH_COMPLETE', fetchCompleteContactListSaga);
       yield takeLatest('mvj/contacts/FETCH_SINGLE', fetchSingleContactSaga);
-      yield takeLatest('mvj/contacts/FETCH_LESSORS', fetchLessorsSaga);
       yield takeLatest('mvj/contacts/CREATE', createContactSaga);
       yield takeLatest('mvj/contacts/EDIT', editContactSaga);
     }),

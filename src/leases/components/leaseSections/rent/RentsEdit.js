@@ -12,23 +12,24 @@ import FormSectionComponent from '$components/form/FormSection';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {receiveRentsFormValid} from '$src/leases/actions';
+import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getIsRentsFormValid} from '$src/leases/selectors';
 
 type Props = {
   handleSubmit: Function,
-  isRentsFormValid: boolean,
   params: Object,
-  receiveRentsFormValid: Function,
+  receiveFormValidFlags: Function,
   valid: boolean,
 }
 
 class RentsEdit extends Component<Props> {
-  componentDidUpdate() {
-    const {isRentsFormValid, receiveRentsFormValid, valid} = this.props;
-    if(isRentsFormValid !== valid) {
-      receiveRentsFormValid(valid);
+  componentDidUpdate(prevProps) {
+    const {receiveFormValidFlags} = this.props;
+
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [FormNames.RENTS]: this.props.valid,
+      });
     }
   }
 
@@ -76,13 +77,9 @@ const formName = FormNames.RENTS;
 
 export default flowRight(
   connect(
-    (state) => {
-      return {
-        isRentsFormValid: getIsRentsFormValid(state),
-      };
-    },
+    null,
     {
-      receiveRentsFormValid,
+      receiveFormValidFlags,
     }
   ),
   reduxForm({

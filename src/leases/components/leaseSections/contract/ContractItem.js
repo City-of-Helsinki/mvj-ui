@@ -7,22 +7,19 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import ListItems from '$components/content/ListItems';
-import {formatDate, getAttributeFieldOptions, getDecisionById, getDecisionsOptions, getLabelOfOption, getReferenceNumberLink} from '$src/util/helpers';
+import {formatDate, getDecisionById, getLabelOfOption, getReferenceNumberLink} from '$src/util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
-
-import type {Attributes} from '$src/leases/types';
+import {getCurrentLease} from '$src/leases/selectors';
 
 type Props = {
-  attributes: Attributes,
   contract: Object,
+  decisionOptions: Array<Object>,
   decisions: Array<Object>,
+  typeOptions: Array<Object>,
 }
 
-const ContractItem = ({attributes, contract, decisions}: Props) => {
-  const decisionOptions = getDecisionsOptions(decisions);
+const ContractItem = ({contract, decisionOptions, decisions, typeOptions}: Props) => {
   const decision = getDecisionById(decisions, contract.decision);
-  const typeOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.type');
   return (
     <div>
       <Row>
@@ -193,7 +190,6 @@ export default connect(
     const currentLease = getCurrentLease(state);
 
     return {
-      attributes: getAttributes(state),
       decisions: getDecisionsByLease(state, currentLease.id),
     };
   }
