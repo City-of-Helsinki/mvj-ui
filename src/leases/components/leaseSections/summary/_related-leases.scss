@@ -20,7 +20,7 @@
 
       .related-leases__item {
         &_left-border-overlay {
-          left: -26.5px;
+          left: -27.5px;
         }
         &_connection-line {
           position: absolute;
@@ -38,7 +38,7 @@
     }
 
     &_left-border-overlay {
-      border-left: 1px solid $tram-lighter-solid;
+      border-left: 3px solid $tram-lighter-solid;
       position: absolute;
       left: -1px;
     }
