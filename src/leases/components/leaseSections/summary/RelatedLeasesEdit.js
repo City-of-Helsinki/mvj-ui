@@ -168,6 +168,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
                 active={false}
                 allowDelete
                 id={lease.id}
+                indented
                 onDelete={this.handleRelatedLeaseItemDelete}
                 lease={lease.lease}
                 stateOptions={stateOptions}

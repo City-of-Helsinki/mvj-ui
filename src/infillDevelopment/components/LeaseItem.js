@@ -9,6 +9,7 @@ import get from 'lodash/get';
 import Collapse from '$src/components/collapse/Collapse';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import LeaseInfo from './LeaseInfo';
+import ListItems from '$components/content/ListItems';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SubTitle from '$components/content/SubTitle';
@@ -153,7 +154,7 @@ class LeaseItem extends Component<Props, State> {
         <SubTitle>Käyttötarkoitus</SubTitle>
         {!intendedUses.length && <p>Ei käyttötarkoituksia</p>}
         {!!intendedUses.length &&
-          <div>
+          <ListItems>
             <Row>
               <Column small={3} large={2}><FormFieldLabel>Käyttötarkoitus</FormFieldLabel></Column>
               <Column small={3} large={2}><FormFieldLabel>k-m2</FormFieldLabel></Column>
@@ -162,17 +163,17 @@ class LeaseItem extends Component<Props, State> {
             {intendedUses.map((intendedUse, index) =>
               <Row key={index}>
                 <Column small={3} large={2}>
-                  <p>{intendedUse.type || '-'}</p>
+                  <p className='no-margin'>{intendedUse.type || '-'}</p>
                 </Column>
                 <Column small={3} large={2}>
-                  <p>{intendedUse.km2 ? `${formatNumber(intendedUse. km2)} €` : '-'}</p>
+                  <p className='no-margin'>{intendedUse.km2 ? `${formatNumber(intendedUse. km2)} €` : '-'}</p>
                 </Column>
                 <Column small={3} large={2}>
-                  <p>{intendedUse.ekm2 ? `${formatNumber(intendedUse.ekm2)} €` : '-'}</p>
+                  <p className='no-margin'>{intendedUse.ekm2 ? `${formatNumber(intendedUse.ekm2)} €` : '-'}</p>
                 </Column>
               </Row>
             )}
-          </div>
+          </ListItems>
         }
 
         <Row>

@@ -79,6 +79,7 @@ class RelatedLeases extends Component<Props, State> {
                 key={index}
                 active={false}
                 id={lease.id}
+                indented
                 lease={lease.lease}
                 stateOptions={stateOptions}
               />

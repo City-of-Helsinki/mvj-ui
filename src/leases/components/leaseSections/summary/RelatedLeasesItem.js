@@ -13,6 +13,7 @@ type Props = {
   active?: boolean,
   allowDelete?: boolean,
   id?: number,
+  indented?: boolean,
   lease: Lease,
   onDelete?: Function,
   stateOptions: Array<Object>,
@@ -22,6 +23,7 @@ const LeaseHistoryItem = ({
   active = false,
   allowDelete = false,
   id,
+  indented = false,
   lease,
   onDelete = () => console.error('Delete related lease function missing'),
   stateOptions,
@@ -33,9 +35,10 @@ const LeaseHistoryItem = ({
   };
 
   return (
-    <div className={classNames('related-leases__item', {'active': active})}>
+    <div className={classNames('related-leases__item', {'active': active}, {'indented': indented})}>
       <div className="related-leases__item_wrapper">
-        <div className="related-leases__item_left-border" />
+        <div className="related-leases__item_left-border-overlay" />
+        <div className="related-leases__item_connection-line" />
         <div className={classNames('related-leases__item_badge')}></div>
         {!!active &&
           <div className={classNames('related-leases__item_info')}>

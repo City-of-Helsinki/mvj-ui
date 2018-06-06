@@ -9,19 +9,17 @@ import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {getCurrentLease} from '$src/leases/selectors';
 
-import type {Lease} from '$src/leases/types';
-
 type Props = {
-  currentLease: Lease,
+  isInvoicingEnabled: boolean,
 }
 
-const Invoices = ({currentLease}: Props) => {
+const Invoices = ({isInvoicingEnabled}: Props) => {
   return (
     <div>
       <h2>Laskutus</h2>
       <RightSubtitle
         className='invoicing-status'
-        text={currentLease.is_invoicing_enabled
+        text={isInvoicingEnabled
           ? <p className="success">Laskutus käynnissä<i /></p>
           : <p className="alert">Laskutus ei käynnissä<i /></p>
         }
@@ -47,8 +45,9 @@ const Invoices = ({currentLease}: Props) => {
 
 export default connect(
   (state) => {
+    const currentLease = getCurrentLease(state);
     return {
-      currentLease: getCurrentLease(state),
+      isInvoicingEnabled: currentLease ? currentLease.is_invoicing_enabled : null,
     };
   },
 )(Invoices);

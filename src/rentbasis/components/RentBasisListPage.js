@@ -192,7 +192,7 @@ class RentBasisListPage extends Component<Props, State> {
   render() {
     const {attributes, isFetching, rentBasisListData} = this.props;
     const {activePage} = this.state;
-
+    const count = this.getRentBasisCount(rentBasisListData);
     const rentBasisList = this.getRentBasisList(rentBasisListData);
     const maxPage = this.getRentBasisMaxPage(rentBasisListData);
 
@@ -215,13 +215,13 @@ class RentBasisListPage extends Component<Props, State> {
             />
           }
         />
+        <TableControllers
+          title={`Löytyi ${count} kpl`}
+        />
 
         {isFetching && <Row><Column><LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper></Column></Row>}
         {!isFetching &&
           <div>
-            <TableControllers
-              title={`Viimeksi muokattuja`}
-            />
             <Table
               data={rentBasisList}
               dataKeys={[

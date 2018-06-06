@@ -15,12 +15,29 @@
     margin-left: -7.5px;
     margin-right: -7.5px;
 
+    &.indented {
+      padding-left: 42.5px;
+
+      .related-leases__item {
+        &_left-border-overlay {
+          left: -26.5px;
+        }
+        &_connection-line {
+          position: absolute;
+          border-top: 1px dashed $tram;
+          width: 20px;
+          top: 17.5px;
+          left: -26px;
+        }
+      }
+    }
+
     &_wrapper {
       position: relative;
       padding: rem-calc(7.5px 0);
     }
 
-    &_left-border {
+    &_left-border-overlay {
       border-left: 1px solid $tram-lighter-solid;
       position: absolute;
       left: -1px;
@@ -73,7 +90,7 @@
         &_badge {
           background-color: $black;
         }
-        &_left-border {
+        &_left-border-overlay {
           border-color: $white !important;
         }
       }
@@ -94,25 +111,25 @@
 
     .related-leases__item:nth-of-type(2) {
       .related-leases__item {
-        &_left-border {
+        &_left-border-overlay {
           top: 0;
           bottom: unset;
-          height: 7.5px;
+          height: 17.5px;
         }
       }
     }
 
     .related-leases__item:last-of-type {
       .related-leases__item {
-        &_left-border {
+        &_left-border-overlay {
           bottom: 0;
-          top: 7.5px;
+          top: 17.5px;
         }
       }
     }
     .related-leases__item:nth-of-type(2):last-of-type {
       .related-leases__item {
-        &_left-border {
+        &_left-border-overlay {
           bottom: 0;
           top: 0;
           height: 100%;

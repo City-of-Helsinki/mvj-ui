@@ -81,7 +81,7 @@ const LeaseInfo = ({
     <SubTitle>Korvauksen päätös</SubTitle>
     {!decisions.length && <p>Ei päätöksiä</p>}
     {!!decisions.length &&
-      <div>
+      <ListItems>
         <Row>
           <Column small={3} large={2}><FormFieldLabel>Päättäjä</FormFieldLabel></Column>
           <Column small={3} large={2}><FormFieldLabel>Pvm</FormFieldLabel></Column>
@@ -91,16 +91,16 @@ const LeaseInfo = ({
         {decisions.map((decision) =>
           <Row key={decision.id}>
             <Column small={3} large={2}>
-              <p>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</p>
+              <p className='no-margin'>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</p>
             </Column>
             <Column small={3} large={2}>
-              <p>{formatDate(decision.decision_date) || '-'}</p>
+              <p className='no-margin'>{formatDate(decision.decision_date) || '-'}</p>
             </Column>
             <Column small={3} large={2}>
-              <p>{decision.section ? `${decision.section} §` : '-'}</p>
+              <p className='no-margin'>{decision.section ? `${decision.section} §` : '-'}</p>
             </Column>
             <Column small={3} large={2}>
-              <p>
+              <p className='no-margin'>
                 <a
                   className='no-margin'
                   target='_blank'
@@ -111,7 +111,7 @@ const LeaseInfo = ({
             </Column>
           </Row>
         )}
-      </div>
+      </ListItems>
     }
   </div>;
 

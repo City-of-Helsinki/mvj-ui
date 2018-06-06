@@ -202,20 +202,15 @@ class ContactListPage extends Component<Props, State> {
             />
           }
         />
+        <TableControllers
+          title={`Löytyi ${count} kpl`}
+        />
 
         {isFetching &&
-          <Row>
-            <Column>
-              <LoaderWrapper><Loader isLoading={!!isFetching} /></LoaderWrapper>
-            </Column>
-          </Row>
+          <Row><Column><LoaderWrapper><Loader isLoading={!!isFetching} /></LoaderWrapper></Column></Row>
         }
-
         {!isFetching &&
           <div>
-            <TableControllers
-              title={`Löytyi ${count} kpl`}
-            />
             <Table
               data={contacts}
               dataKeys={[

@@ -24,11 +24,11 @@ type Props = {
   districts: Array<Object>,
   fetchDistrictsByMunicipality: Function,
   formValues: Object,
+  identifier: string,
   isFetchingAttributes: boolean,
   municipality: string,
   onSearch: Function,
   router: Object,
-  search: string,
 }
 
 type State = {
@@ -45,8 +45,8 @@ class Search extends Component<Props, State> {
   componentDidMount() {
     const {router: {location: {query}}} = this.props;
     this._isMounted = true;
-
-    if(!!toArray(query).length && !query.search) {
+    // TODO: This is only temporarily solution to filter using search parameter and should be fixed when search parameter exists on API
+    if(!!toArray(query).length && !query.identifier) {
       this.setState({
         isBasicSearch: false,
       });
@@ -81,26 +81,28 @@ class Search extends Component<Props, State> {
     }
     const {
       formValues,
+      identifier,
       onSearch,
-      search,
     } = this.props;
     const {isBasicSearch} = this.state;
 
     let filters = {};
     if(isBasicSearch) {
-      if(search) {
-        filters.search = search || undefined;
+      if(identifier) {
+        // TODO: This is only temporarily solution to filter using search parameter and should be fixed when search parameter exists on API
+        filters.identifier = identifier || undefined;
       }
     } else {
       filters = formValues || {};
       filters.type = filters.type ? Number(filters.type) : undefined;
       filters.municipality = filters.municipality ? Number(filters.municipality) : undefined;
       filters.district = filters.district ? Number(filters.district) : undefined;
-      filters.search = undefined;
+      // TODO: This is only temporarily solution to filter using search parameter and should be fixed when search parameter exists on API
+      filters.identifier = undefined;
     }
 
     onSearch(filters);
-  }, 300);
+  }, 500);
 
   toggleSearchType = () => {
     this.onSearchChange();
@@ -132,7 +134,7 @@ class Search extends Component<Props, State> {
                 <FormField
                   disableDirty
                   fieldAttributes={{}}
-                  name='search'
+                  name='identifier'
                   placeholder='Hae hakusanalla'
                   overrideValues={{
                     label: '',
@@ -311,7 +313,7 @@ class Search extends Component<Props, State> {
                     <FormField
                       disableDirty
                       fieldAttributes={{}}
-                      name='identifier'
+                      name='property_identifier'
                       overrideValues={{
                         label: '',
                       }}
@@ -359,9 +361,9 @@ export default flowRight(
         attributes: getAttributes(state),
         districts: getDistrictsByMunicipality(state, municipality),
         formValues: getFormValues(formName)(state),
+        identifier: selector(state, 'identifier'),
         isFetchingAttributes: getIsFetchingAttributes(state),
         municipality: municipality,
-        search: selector(state, 'search'),
       };
     },
     {
