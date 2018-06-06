@@ -10,7 +10,7 @@ import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import {FormNames} from '$src/leases/enums';
-import {getContactById, getContactFullName} from '$src/contacts/helpers';
+import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceSharePercentage} from '$src/invoices/helpers';
 import {
   formatDate,
@@ -18,10 +18,8 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {getCompleteContactList} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
-import type {Contact} from '$src/contacts/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 const getRowsSum = (rows: Array<Object>) => {
@@ -33,7 +31,6 @@ const getRowsSum = (rows: Array<Object>) => {
 };
 
 type Props = {
-  allContacts: Array<Contact>,
   handleSubmit: Function,
   invoice: Object,
   invoiceAttributes: InvoiceAttributes,
@@ -41,7 +38,6 @@ type Props = {
 }
 
 const EditInvoiceForm = ({
-  allContacts,
   handleSubmit,
   invoice,
   invoiceAttributes,
@@ -214,7 +210,7 @@ const EditInvoiceForm = ({
           {!!rows.length &&
             <div>
               {rows.map((row) => {
-                const contact = getContactById(allContacts, row.tenant);
+                const contact = row.tenant;
                 return (
                   <Row key={row.id}>
                     <Column small={4} medium={5}><p>{getContactFullName(contact) || '-'}</p></Column>
@@ -244,7 +240,6 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        allContacts: getCompleteContactList(state),
         invoiceAttributes: getInvoiceAttributes(state),
       };
     },

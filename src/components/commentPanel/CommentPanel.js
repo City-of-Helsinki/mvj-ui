@@ -1,29 +1,29 @@
 //@flow
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {withRouter} from 'react-router';
 import {initialize} from 'redux-form';
 import classNames from 'classnames';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
 import NewCommentForm from './forms/NewCommentForm';
 import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
-import {createComment, editComment} from '$src/comments/actions';
+import {createComment} from '$src/comments/actions';
 import {getAttributeFieldOptions} from '$src/util/helpers';
 import {getContentComments} from '$src/leases/helpers';
 import {getAttributes, getCommentsByLease} from '$src/comments/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
 import type {CommentList} from '$src/comments/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Object,
   commentList: CommentList,
   createComment: Function,
-  editComment: Function,
+  currentLease: Lease,
   initialize: Function,
   isOpen: boolean,
   onClose: Function,
@@ -31,7 +31,10 @@ type Props = {
 }
 
 type State = {
+  comments: ?Array<Object>,
   selectedTopics: Array<string>,
+  topicOptions: Array<Object>,
+  topicFilterOptions: Array<Object>,
 }
 
 const getCommentsByTopic = (comments: Array<Object>, topic: Object) => {
@@ -41,12 +44,15 @@ const getCommentsByTopic = (comments: Array<Object>, topic: Object) => {
   });
 };
 
-class CommentPanel extends Component<Props, State> {
+class CommentPanel extends PureComponent<Props, State> {
   state = {
+    comments: null,
     selectedTopics: [],
+    topicOptions: [],
+    topicFilterOptions: [],
   }
 
-  getFilteredComments = (comments: Array<Object>) => {
+  getFilteredComments = (comments: ?Array<Object>) => {
     const {selectedTopics} = this.state;
     if(!comments || !comments.length) {return [];}
     if(!selectedTopics.length) {return comments;}
@@ -56,29 +62,55 @@ class CommentPanel extends Component<Props, State> {
     );
   }
 
+  componentWillMount() {
+    const {attributes, commentList} = this.props;
+
+    if(!isEmpty(attributes)) {
+      this.updateOptions();
+    }
+
+    if(!isEmpty(commentList)) {
+      this.updateContent();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if(prevProps.attributes !== this.props.attributes) {
+      this.updateOptions();
+    }
+    if(prevProps.commentList !== this.props.commentList) {
+      this.updateContent();
+    }
+  }
+
+  updateContent = () => {
+    const {commentList} = this.props;
+    this.setState({
+      comments: getContentComments(commentList),
+    });
+  }
+
+  updateOptions = () => {
+    const {attributes} = this.props;
+    this.setState({
+      topicOptions: getAttributeFieldOptions(attributes, 'topic'),
+      topicFilterOptions: getAttributeFieldOptions(attributes, 'topic', false),
+    });
+  }
+
   createComment = (text: string, topic: number) => {
     const {
       createComment,
-      params: {leaseId},
+      currentLease,
     } = this.props;
 
     createComment({
-      lease: leaseId,
+      lease: currentLease.id,
       text: text,
       topic: topic,
     });
 
     this.resetNewCommentField();
-  }
-
-  editComment = (comment: Object, text: string) => {
-    const {editComment} = this.props;
-    editComment({
-      id: get(comment, 'id'),
-      lease: get(comment, 'lease'),
-      text: text,
-      topic: get(comment, 'topic'),
-    });
   }
 
   resetNewCommentField = () => {
@@ -93,15 +125,20 @@ class CommentPanel extends Component<Props, State> {
   render () {
     const {
       attributes,
-      commentList,
       isOpen,
       onClose,
     } = this.props;
-    const {selectedTopics} = this.state;
+    const {
+      comments,
+      selectedTopics,
+      topicOptions,
+      topicFilterOptions,
+    } = this.state;
 
-    const comments = getContentComments(commentList);
-    const topicOptions = getAttributeFieldOptions(attributes, 'topic');
-    const topicFilterOptions = getAttributeFieldOptions(attributes, 'topic', false);
+    if(!comments) {
+      return null;
+    }
+
     const filteredComments = this.getFilteredComments(comments);
 
     return (
@@ -119,7 +156,7 @@ class CommentPanel extends Component<Props, State> {
         <div className='comment-panel__content-wrapper'>
           <NewCommentForm
             attributes={attributes}
-            onAddComment={(text, type) => this.createComment(text, type)}
+            onAddComment={this.createComment}
           />
 
           <h2>Ajankohtaiset</h2>
@@ -156,9 +193,7 @@ class CommentPanel extends Component<Props, State> {
                         return (
                           <Comment
                             key={comment.id}
-                            date={comment.modified_at}
-                            onEdit={(newText) => this.editComment(comment, newText)}
-                            text={comment.text}
+                            comment={comment}
                             user={comment.user}
                           />
                         );
@@ -176,18 +211,17 @@ class CommentPanel extends Component<Props, State> {
 }
 
 export default flowRight(
-  withRouter,
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
       return {
         attributes: getAttributes(state),
         commentList: getCommentsByLease(state, currentLease.id),
+        currentLease: currentLease,
       };
     },
     {
       createComment,
-      editComment,
       initialize,
     },
   ),

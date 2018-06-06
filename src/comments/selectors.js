@@ -4,10 +4,14 @@ import type {Selector} from '../types';
 
 import type {
   Attributes,
+  CommentId,
   CommentList,
   CommentState,
 } from './types';
 import type {LeaseId} from '$src/leases/types';
+
+export const getIsEditModeById: Selector<boolean, CommentId> = (state: CommentState, commentId: CommentId): boolean =>
+  state.comment.isEditModeById[commentId];
 
 export const getIsFetching: Selector<boolean, void> = (state: CommentState): boolean =>
   state.comment.isFetching;

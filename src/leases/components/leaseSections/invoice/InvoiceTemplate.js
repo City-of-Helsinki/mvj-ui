@@ -13,12 +13,11 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {getContactById, getContactFullName} from '$src/contacts/helpers';
+import {getContactFullName} from '$src/contacts/helpers';
+import {getContentTenantItem} from '$src/leases/helpers';
 import {getInvoiceSharePercentage} from '$src/invoices/helpers';
-import {getCompleteContactList} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
-import type {Contact} from '$src/contacts/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 const getRowsSum = (rows: Array<Object>) => {
@@ -30,12 +29,11 @@ const getRowsSum = (rows: Array<Object>) => {
 };
 
 type Props = {
-  allContacts: Array<Contact>,
   invoice: Object,
   invoiceAttributes: InvoiceAttributes,
 }
 
-const InvoiceTemplate = ({allContacts, invoice, invoiceAttributes}: Props) => {
+const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
   const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'receivable_type');
   const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
   const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
@@ -169,7 +167,7 @@ const InvoiceTemplate = ({allContacts, invoice, invoiceAttributes}: Props) => {
           {!!rows.length &&
             <div>
               {rows.map((row) => {
-                const contact = getContactById(allContacts, row.tenant);
+                const contact = get(getContentTenantItem(row.tenant), 'contact');
                 return (
                   <Row key={row.id}>
                     <Column small={4} medium={5}><p>{getContactFullName(contact) || '-'}</p></Column>
@@ -197,7 +195,6 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        allContacts: getCompleteContactList(state),
         invoiceAttributes: getInvoiceAttributes(state),
       };
     },

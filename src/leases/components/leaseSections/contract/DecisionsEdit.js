@@ -4,24 +4,25 @@ import {connect} from 'react-redux';
 import {FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
-import {receiveDecisionsFormValid} from '$src/leases/actions';
+import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getIsDecisionsFormValid} from '$src/leases/selectors';
 import FormSection from '$components/form/FormSection';
 import DecisionItemsEdit from './DecisionItemsEdit';
 
 type Props = {
   handleSubmit: Function,
-  isDecisionsFormValid: boolean,
-  receiveDecisionsFormValid: Function,
+  receiveFormValidFlags: Function,
   valid: boolean,
 }
 
 class DecisionsEdit extends Component<Props> {
-  componentDidUpdate() {
-    const {isDecisionsFormValid, receiveDecisionsFormValid, valid} = this.props;
-    if(isDecisionsFormValid !== valid) {
-      receiveDecisionsFormValid(valid);
+  componentDidUpdate(prevProps) {
+    const {receiveFormValidFlags} = this.props;
+
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [FormNames.DECISIONS]: this.props.valid,
+      });
     }
   }
 
@@ -45,13 +46,9 @@ const formName = FormNames.DECISIONS;
 
 export default flowRight(
   connect(
-    (state) => {
-      return {
-        isDecisionsFormValid: getIsDecisionsFormValid(state),
-      };
-    },
+    null,
     {
-      receiveDecisionsFormValid,
+      receiveFormValidFlags,
     },
   ),
   reduxForm({

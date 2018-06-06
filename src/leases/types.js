@@ -49,13 +49,5 @@ export type DeleteRelatedLeaseAction = Action<'mvj/leases/DELETE_RELATED_LEASE',
 export type HideDeleteRelatedLeaseModalAction = Action<'mvj/leases/HIDE_RELATED_LEASE_MODAL', void>;
 export type ShowDeleteRelatedLeaseModalAction = Action<'mvj/leases/SHOW_RELATED_LEASE_MODAL', void>;
 
-export type ClearFormValidityFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALIDITY_FLAGS', void>
-export type ReceiveConstructabilityFormValidAction = Action<'mvj/leases/RECEIVE_CONSTRUCTABILITY_FORM_VALID', boolean>;
-export type ReceiveContractsFormValidAction = Action<'mvj/leases/RECEIVE_CONTRACTS_FORM_VALID', boolean>;
-export type ReceiveDecisionsFormValidAction = Action<'mvj/leases/RECEIVE_DECISIONS_FORM_VALID', boolean>;
-export type ReceiveInspectionsFormValidAction = Action<'mvj/leases/RECEIVE_INSPECTIONS_FORM_VALID', boolean>;
-export type ReceiveLeaseAreasFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_AREAS_FORM_VALID', boolean>;
-export type ReceiveLeaseInfoFormValidAction = Action<'mvj/leases/RECEIVE_LEASE_INFO_FORM_VALID', boolean>;
-export type ReceiveRentsFormValidAction = Action<'mvj/leases/RECEIVE_RENTS_FORM_VALID', boolean>;
-export type ReceiveSummaryFormValidAction = Action<'mvj/leases/RECEIVE_SUMMARY_FORM_VALID', boolean>;
-export type ReceiveTenantsFormValidAction = Action<'mvj/leases/RECEIVE_TENANTS_FORM_VALID', boolean>;
+export type ReceiveFormValidFlagsAction = Action<'mvj/leases/RECEIVE_FORM_VALID_FLAGS', Object>;
+export type ClearFormValidFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALID_FLAGS', void>;

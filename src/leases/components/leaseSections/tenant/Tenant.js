@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import {connect} from 'react-redux';
 import get from 'lodash/get';
 import {Column} from 'react-foundation';
 import classNames from 'classnames';
@@ -8,23 +7,18 @@ import classNames from 'classnames';
 import Collapse from '$components/collapse/Collapse';
 import OtherTenantItem from './OtherTenantItem';
 import TenantItem from './TenantItem';
-import {getContactById, getContactFullName} from '$src/contacts/helpers';
+import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {formatDateRange} from '$util/helpers';
-import {getCompleteContactList} from '$src/contacts/selectors';
-
-import type {Contact} from '$src/contacts/types';
 
 type Props = {
-  allContacts: Array<Contact>,
   tenant: Object,
 }
 
 const Tenant = ({
-  allContacts,
   tenant,
 }: Props) => {
-  const contact = getContactById(allContacts, get(tenant, 'tenant.contact.id'));
+  const contact = get(tenant, 'tenant.contact');
   const isActive = isTenantActive(get(tenant, 'tenant'));
 
   return (
@@ -71,10 +65,4 @@ const Tenant = ({
   );
 };
 
-export default connect(
-  (state) => {
-    return {
-      allContacts: getCompleteContactList(state),
-    };
-  },
-)(Tenant);
+export default Tenant;

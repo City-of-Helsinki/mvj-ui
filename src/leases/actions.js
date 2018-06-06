@@ -36,16 +36,8 @@ import type {
   DeleteRelatedLeaseAction,
   HideDeleteRelatedLeaseModalAction,
   ShowDeleteRelatedLeaseModalAction,
-  ClearFormValidityFlagsAction,
-  ReceiveConstructabilityFormValidAction,
-  ReceiveContractsFormValidAction,
-  ReceiveDecisionsFormValidAction,
-  ReceiveInspectionsFormValidAction,
-  ReceiveLeaseAreasFormValidAction,
-  ReceiveLeaseInfoFormValidAction,
-  ReceiveRentsFormValidAction,
-  ReceiveSummaryFormValidAction,
-  ReceiveTenantsFormValidAction,
+  ReceiveFormValidFlagsAction,
+  ClearFormValidFlagsAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -124,32 +116,8 @@ export const showDeleteRelatedLeaseModal = (): ShowDeleteRelatedLeaseModalAction
   createAction('mvj/leases/SHOW_RELATED_LEASE_MODAL')();
 
 // Actions to manage form validity statuses
-export const clearFormValidFlags = (): ClearFormValidityFlagsAction =>
-  createAction('mvj/leases/CLEAR_FORM_VALIDITY_FLAGS')();
+export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsAction =>
+  createAction('mvj/leases/RECEIVE_FORM_VALID_FLAGS')(valid);
 
-export const receiveConstructabilityFormValid = (valid: boolean): ReceiveConstructabilityFormValidAction =>
-  createAction('mvj/leases/RECEIVE_CONSTRUCTABILITY_FORM_VALID')(valid);
-
-export const receiveContractsFormValid = (valid: boolean): ReceiveContractsFormValidAction =>
-  createAction('mvj/leases/RECEIVE_CONTRACTS_FORM_VALID')(valid);
-
-export const receiveDecisionsFormValid = (valid: boolean): ReceiveDecisionsFormValidAction =>
-  createAction('mvj/leases/RECEIVE_DECISIONS_FORM_VALID')(valid);
-
-export const receiveInspectionsFormValid = (valid: boolean): ReceiveInspectionsFormValidAction =>
-  createAction('mvj/leases/RECEIVE_INSPECTIONS_FORM_VALID')(valid);
-
-export const receiveLeaseAreasFormValid = (valid: boolean): ReceiveLeaseAreasFormValidAction =>
-  createAction('mvj/leases/RECEIVE_LEASE_AREAS_FORM_VALID')(valid);
-
-export const receiveLeaseInfoFormValid = (valid: boolean): ReceiveLeaseInfoFormValidAction =>
-  createAction('mvj/leases/RECEIVE_LEASE_INFO_FORM_VALID')(valid);
-
-export const receiveRentsFormValid = (valid: boolean): ReceiveRentsFormValidAction =>
-  createAction('mvj/leases/RECEIVE_RENTS_FORM_VALID')(valid);
-
-export const receiveSummaryFormValid = (valid: boolean): ReceiveSummaryFormValidAction =>
-  createAction('mvj/leases/RECEIVE_SUMMARY_FORM_VALID')(valid);
-
-export const receiveTenantsFormValid = (valid: boolean): ReceiveTenantsFormValidAction =>
-  createAction('mvj/leases/RECEIVE_TENANTS_FORM_VALID')(valid);
+export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
+  createAction('mvj/leases/CLEAR_FORM_VALID_FLAGS')();

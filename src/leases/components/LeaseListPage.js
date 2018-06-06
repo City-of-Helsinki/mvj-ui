@@ -25,7 +25,6 @@ import TableIcon from '$components/icons/TableIcon';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {fetchLessors} from '$src/contacts/actions';
 import {
   createLease,
   fetchAttributes,
@@ -33,10 +32,8 @@ import {
 } from '$src/leases/actions';
 import {fetchRememberableTermList} from '$src/rememberableTerms/actions';
 import {FormNames} from '$src/leases/enums';
-import {getLessorOptions} from '$src/contacts/helpers';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '$src/leases/helpers';
 import {formatDate, getSearchQuery} from '$util/helpers';
-import {getLessors} from '$src/contacts/selectors';
 import {
   getAttributes,
   getIsFetching,
@@ -54,7 +51,6 @@ type Props = {
   createLease: Function,
   fetchAttributes: Function,
   fetchLeases: Function,
-  fetchLessors: Function,
   fetchRememberableTermList: Function,
   initialize: Function,
   isFetching: boolean,
@@ -89,7 +85,6 @@ class LeaseListPage extends Component<Props, State> {
       attributes,
       fetchAttributes,
       fetchLeases,
-      fetchLessors,
       fetchRememberableTermList,
       receiveTopNavigationSettings,
     } = this.props;
@@ -117,7 +112,6 @@ class LeaseListPage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
-    fetchLessors();
     fetchRememberableTermList();
   }
 
@@ -219,7 +213,6 @@ class LeaseListPage extends Component<Props, State> {
       attributes,
       createLease,
       leases: content,
-      lessors,
       isFetching,
       rememberableTerms,
     } = this.props;
@@ -228,7 +221,6 @@ class LeaseListPage extends Component<Props, State> {
     const maxPage = this.getLeasesMaxPage(content);
     //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
     const filteredLeases = getLeasesFilteredByDocumentType(leases, documentType);
-    const lessorOptions = getLessorOptions(lessors);
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
 
     return (
@@ -236,7 +228,7 @@ class LeaseListPage extends Component<Props, State> {
         <CreateLeaseModal
           isOpen={isModalOpen}
           onClose={this.hideCreateLeaseModal}
-          onSubmit={(lease) => createLease(lease)}
+          onSubmit={createLease}
         />
         <SearchWrapper
           buttonComponent={
@@ -250,7 +242,7 @@ class LeaseListPage extends Component<Props, State> {
           searchComponent={
             <Search
               attributes={attributes}
-              onSearch={(query) => this.handleSearchChange(query)}
+              onSearch={this.handleSearchChange}
             />
           }
         />
@@ -280,7 +272,7 @@ class LeaseListPage extends Component<Props, State> {
                     {key: 'real_property_unit', label: 'Vuokrakohde'},
                     {key: 'address', label: 'Osoite'},
                     {key: 'tenant', label: 'Vuokralainen'},
-                    {key: 'lessor', label: 'Vuokranantaja', renderer: (val) => getLabelOfOption(lessorOptions, val)},
+                    {key: 'lessor', label: 'Vuokranantaja'},
                     {key: 'state', label: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
                     {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val)},
                     {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
@@ -314,7 +306,6 @@ export default flowRight(
         attributes: getAttributes(state),
         isFetching: getIsFetching(state),
         leases: getLeasesList(state),
-        lessors: getLessors(state),
         rememberableTerms: getRememberableTermList(state),
       };
     },
@@ -322,7 +313,6 @@ export default flowRight(
       createLease,
       fetchAttributes,
       fetchLeases,
-      fetchLessors,
       fetchRememberableTermList,
       initialize,
       receiveTopNavigationSettings,

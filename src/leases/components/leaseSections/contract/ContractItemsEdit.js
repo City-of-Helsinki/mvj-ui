@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import {connect} from 'react-redux';
 import {FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -15,9 +14,6 @@ import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
-import {getDecisionsOptions} from '$util/helpers';
-import {getDecisionsByLease} from '$src/decision/selectors';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -216,191 +212,177 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps): 
 
 type Props = {
   attributes: Attributes,
-  decisions: Array<Object>,
+  decisionOptions: Array<Object>,
   fields: any,
 }
 
 const ContractItemsEdit = ({
   attributes,
-  decisions,
+  decisionOptions,
   fields,
-}: Props) => {
-  const decisionOptions = getDecisionsOptions(decisions);
-
-  return (
-    <div>
-      {fields && !!fields.length && fields.map((contract, index) => {
-        return(
-          <Collapse
-            key={contract.id ? contract.id : `index_${index}`}
-            defaultOpen={true}
-            headerTitle={
-              <h3 className='collapse__header-title'>Sopimus {index + 1}</h3>
-            }
-          >
-            <BoxContentWrapper>
-              <RemoveButton
-                className='position-topright-no-padding'
-                onClick={() => fields.remove(index)}
-                title="Poista sopimus"
-              />
-              <Row>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.type')}
-                    name={`${contract}.type`}
-                    overrideValues={{
-                      label: 'Sopimuksen tyyppi',
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.contract_number')}
-                    name={`${contract}.contract_number`}
-                    overrideValues={{
-                      label: 'Sopimusnumero',
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.signing_date')}
-                    name={`${contract}.signing_date`}
-                    overrideValues={{
-                      label: 'Allekirjoituspäivämäärä',
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={12} large={6}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.signing_note')}
-                    name={`${contract}.signing_note`}
-                    overrideValues={{
-                      label: 'Allekirjoituksen huomautus',
-                    }}
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.is_readjustment_decision')}
-                    name={`${contract}.is_readjustment_decision`}
-                    overrideValues={{
-                      label: 'Järjestelypäätös',
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.institution_identifier')}
-                    name={`${contract}.institution_identifier`}
-                    overrideValues={{
-                      label: 'Laitostunnus',
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.decision')}
-                    name={`${contract}.decision`}
-                    overrideValues={{
-                      label: 'Päätös',
-                      options: decisionOptions,
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={12} large={6}>
-                  <FormField
-                    // add KTJ integration
-                    fieldAttributes={get(attributes, 'contracts.child.children.ktj_link')}
-                    name={`${contract}.ktj_link`}
-                    overrideValues={{
-                      label: 'KTJ vuokraoikeustodistuksen linkki',
-                    }}
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_number')}
-                    name={`${contract}.collateral_number`}
-                    overrideValues={{
-                      label: 'Vuokravakuusnumero',
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_start_date')}
-                    name={`${contract}.collateral_start_date`}
-                    overrideValues={{
-                      label: 'Vuokravakuus alkupvm',
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_end_date')}
-                    name={`${contract}.collateral_end_date`}
-                    overrideValues={{
-                      label: 'Vuokravakuus loppupvm',
-                    }}
-                  />
-                </Column>
-                <Column small={6} medium={12} large={6}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_note')}
-                    name={`${contract}.collateral_note`}
-                    overrideValues={{
-                      label: 'Vuokravakuuden huomautus',
-                    }}
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column small={12}>
-                  <FieldArray
-                    attributes={attributes}
-                    component={renderMortgageDocuments}
-                    name={`${contract}.mortgage_documents`}
-                  />
-                </Column>
-
-              </Row>
-            </BoxContentWrapper>
-            <FieldArray
-              attributes={attributes}
-              component={renderContractChanges}
-              decisionOptions={decisionOptions}
-              name={`${contract}.contract_changes`}
-              title='Sopimuksen muutokset'
+}: Props) =>
+  <div>
+    {fields && !!fields.length && fields.map((contract, index) => {
+      return(
+        <Collapse
+          key={contract.id ? contract.id : `index_${index}`}
+          defaultOpen={true}
+          headerTitle={
+            <h3 className='collapse__header-title'>Sopimus {index + 1}</h3>
+          }
+        >
+          <BoxContentWrapper>
+            <RemoveButton
+              className='position-topright-no-padding'
+              onClick={() => fields.remove(index)}
+              title="Poista sopimus"
             />
-          </Collapse>
-        );
-      })}
-      <Row>
-        <Column>
-          <AddButton
-            label='Lisää uusi sopimus'
-            onClick={() => fields.push({})}
-            title='Lisää uusi sopimus'
+            <Row>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.type')}
+                  name={`${contract}.type`}
+                  overrideValues={{
+                    label: 'Sopimuksen tyyppi',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.contract_number')}
+                  name={`${contract}.contract_number`}
+                  overrideValues={{
+                    label: 'Sopimusnumero',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.signing_date')}
+                  name={`${contract}.signing_date`}
+                  overrideValues={{
+                    label: 'Allekirjoituspäivämäärä',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={12} large={6}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.signing_note')}
+                  name={`${contract}.signing_note`}
+                  overrideValues={{
+                    label: 'Allekirjoituksen huomautus',
+                  }}
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.is_readjustment_decision')}
+                  name={`${contract}.is_readjustment_decision`}
+                  overrideValues={{
+                    label: 'Järjestelypäätös',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.institution_identifier')}
+                  name={`${contract}.institution_identifier`}
+                  overrideValues={{
+                    label: 'Laitostunnus',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.decision')}
+                  name={`${contract}.decision`}
+                  overrideValues={{
+                    label: 'Päätös',
+                    options: decisionOptions,
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={12} large={6}>
+                <FormField
+                  // add KTJ integration
+                  fieldAttributes={get(attributes, 'contracts.child.children.ktj_link')}
+                  name={`${contract}.ktj_link`}
+                  overrideValues={{
+                    label: 'KTJ vuokraoikeustodistuksen linkki',
+                  }}
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.collateral_number')}
+                  name={`${contract}.collateral_number`}
+                  overrideValues={{
+                    label: 'Vuokravakuusnumero',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.collateral_start_date')}
+                  name={`${contract}.collateral_start_date`}
+                  overrideValues={{
+                    label: 'Vuokravakuus alkupvm',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.collateral_end_date')}
+                  name={`${contract}.collateral_end_date`}
+                  overrideValues={{
+                    label: 'Vuokravakuus loppupvm',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={12} large={6}>
+                <FormField
+                  fieldAttributes={get(attributes, 'contracts.child.children.collateral_note')}
+                  name={`${contract}.collateral_note`}
+                  overrideValues={{
+                    label: 'Vuokravakuuden huomautus',
+                  }}
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column small={12}>
+                <FieldArray
+                  attributes={attributes}
+                  component={renderMortgageDocuments}
+                  name={`${contract}.mortgage_documents`}
+                />
+              </Column>
+
+            </Row>
+          </BoxContentWrapper>
+          <FieldArray
+            attributes={attributes}
+            component={renderContractChanges}
+            decisionOptions={decisionOptions}
+            name={`${contract}.contract_changes`}
+            title='Sopimuksen muutokset'
           />
-        </Column>
-      </Row>
-    </div>
-  );
-};
+        </Collapse>
+      );
+    })}
+    <Row>
+      <Column>
+        <AddButton
+          label='Lisää uusi sopimus'
+          onClick={() => fields.push({})}
+          title='Lisää uusi sopimus'
+        />
+      </Column>
+    </Row>
+  </div>;
 
-export default connect(
-  (state) => {
-    const currentLease = getCurrentLease(state);
-
-    return {
-      attributes: getAttributes(state),
-      decisions: getDecisionsByLease(state, currentLease.id),
-    };
-  },
-)(ContractItemsEdit);
+export default ContractItemsEdit;

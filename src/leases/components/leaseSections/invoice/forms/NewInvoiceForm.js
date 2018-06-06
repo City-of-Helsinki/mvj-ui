@@ -15,16 +15,13 @@ import FormSection from '$components/form/FormSection';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {FormNames} from '$src/leases/enums';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
-import {getCompleteContactList} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
-import type {Contact} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 type Props = {
-  contacts: Array<Contact>,
   formValues: Object,
   handleSubmit: Function,
   invoiceAttributes: InvoiceAttributes,
@@ -35,7 +32,6 @@ type Props = {
 }
 
 const NewInvoiceForm = ({
-  contacts,
   formValues,
   handleSubmit,
   invoiceAttributes,
@@ -45,7 +41,8 @@ const NewInvoiceForm = ({
   onSave,
 }: Props) => {
 
-  const recipientOptions = getInvoiceRecipientOptions(lease, contacts);
+  const recipientOptions = getInvoiceRecipientOptions(lease);
+
   return (
     <form onSubmit={handleSubmit} className='invoice__add-invoice_form'>
       <FormSection>
@@ -170,7 +167,6 @@ export default flowRight(
   connect(
     (state) => {
       return {
-        contacts: getCompleteContactList(state),
         formValues: getFormValues(formName)(state),
         invoiceAttributes: getInvoiceAttributes(state),
         isValid: isValid(formName)(state),

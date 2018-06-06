@@ -13,8 +13,6 @@
   }
 
   &__rent {
-    margin-bottom: rem-calc(20px);
-
     &:last-child {
       margin-bottom: 0;
     }
@@ -41,6 +39,10 @@
       p:last-child {
         margin-bottom: rem-calc(10px);
       }
+    }
+
+    &_type-rent {
+      font-weight: $semibold !important;
     }
   }
 

@@ -1,38 +1,72 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import flowRight from 'lodash/flowRight';
 import {FieldArray, reduxForm} from 'redux-form';
+import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import ContractItemsEdit from './ContractItemsEdit';
 import FormSection from '$components/form/FormSection';
-import {receiveContractsFormValid} from '$src/leases/actions';
+import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getIsContractsFormValid} from '$src/leases/selectors';
+import {getDecisionsOptions} from '$util/helpers';
+import {getDecisionsByLease} from '$src/decision/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+
+import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
+  decisions: Array<Object>,
   handleSubmit: Function,
-  isContractsFormValid: boolean,
-  receiveContractsFormValid: Function,
+  receiveFormValidFlags: Function,
   valid: boolean,
 }
 
-class ContractsEdit extends Component<Props> {
-  componentDidUpdate() {
-    const {isContractsFormValid, receiveContractsFormValid, valid} = this.props;
-    if(isContractsFormValid !== valid) {
-      receiveContractsFormValid(valid);
+type State = {
+  decisionOptions: Array<Object>,
+}
+
+class ContractsEdit extends Component<Props, State> {
+  state = {
+    decisionOptions: [],
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const retObj = {};
+
+    if(props.decisions !== state.decisions) {
+      retObj.decisionOptions = getDecisionsOptions(props.decisions);
+      retObj.decisions = props.decisions;
+    }
+
+    if(!isEmpty(retObj)) {
+      return retObj;
+    }
+    return null;
+  }
+
+  componentDidUpdate(prevProps) {
+    const {receiveFormValidFlags} = this.props;
+
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [FormNames.CONTRACTS]: this.props.valid,
+      });
     }
   }
 
   render() {
-    const {handleSubmit} = this.props;
+    const {attributes, handleSubmit} = this.props;
+    const {decisionOptions} = this.state;
 
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <FieldArray
+            attributes={attributes}
             component={ContractItemsEdit}
+            decisionOptions={decisionOptions}
             name="contracts"
           />
         </FormSection>
@@ -46,12 +80,14 @@ const formName = FormNames.CONTRACTS;
 export default flowRight(
   connect(
     (state) => {
+      const currentLease = getCurrentLease(state);
       return {
-        isContractsFormValid: getIsContractsFormValid(state),
+        attributes: getAttributes(state),
+        decisions: getDecisionsByLease(state, currentLease.id),
       };
     },
     {
-      receiveContractsFormValid,
+      receiveFormValidFlags,
     },
   ),
   reduxForm({

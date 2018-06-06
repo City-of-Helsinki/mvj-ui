@@ -17,15 +17,7 @@ import {
   receiveContactModalSettings,
   showEditMode,
   hideEditMode,
-  receiveConstructabilityFormValid,
-  receiveContractsFormValid,
-  receiveDecisionsFormValid,
-  receiveInspectionsFormValid,
-  receiveLeaseAreasFormValid,
-  receiveLeaseInfoFormValid,
-  receiveRentsFormValid,
-  receiveSummaryFormValid,
-  receiveTenantsFormValid,
+  receiveFormValidFlags,
   clearFormValidFlags,
   showDeleteRelatedLeaseModal,
   hideDeleteRelatedLeaseModal,
@@ -37,21 +29,23 @@ const stateTemplate = {
   byId: {},
   contactModalSettings: null,
   current: {},
-  isConstructabilityFormValid: true,
   isContactModalOpen: false,
-  isContractsFormValid: true,
-  isDecisionsFormValid: true,
   isDeleteRelatedLeaseModalOpen: false,
   isEditMode: false,
   isFetching: false,
   isFetchingAttributes: false,
   isFetchingById: {},
-  isInspectionsFormValid: true,
-  isLeaseAreasFormValid: true,
-  isLeaseInfoFormValid: true,
-  isRentsFormValid: true,
-  isSummaryFormValid: true,
-  isTenantsFormValid: true,
+  isFormValidById: {
+    'constructability-form': true,
+    'contracts-form': true,
+    'decisions-form': true,
+    'inspections-form': true,
+    'lease-areas-form': true,
+    'lease-info-form': true,
+    'rents-form': true,
+    'summary-form': true,
+    'tenants-form': true,
+  },
   list: {},
 };
 
@@ -149,6 +143,44 @@ describe('Leases', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update isFormValidById value', () => {
+        const dummyFlags = {
+          'constructability-form': true,
+          'contracts-form': true,
+          'decisions-form': true,
+          'inspections-form': false,
+          'lease-areas-form': true,
+          'lease-info-form': false,
+          'rents-form': true,
+          'summary-form': true,
+          'tenants-form': true,
+        };
+        const newState = {...stateTemplate};
+        newState.isFormValidById = dummyFlags;
+
+        const state = leasesReducer({}, receiveFormValidFlags(dummyFlags));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should clear isFormValidById value', () => {
+        const dummyFlags = {
+          'constructability-form': true,
+          'contracts-form': true,
+          'decisions-form': true,
+          'inspections-form': false,
+          'lease-areas-form': true,
+          'lease-info-form': false,
+          'rents-form': true,
+          'summary-form': true,
+          'tenants-form': true,
+        };
+        const newState = {...stateTemplate};
+
+        let state = leasesReducer({}, receiveFormValidFlags(dummyFlags));
+        state = leasesReducer(state, clearFormValidFlags());
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isContactModalOpen flag to true', () => {
         const newState = {...stateTemplate};
         newState.isContactModalOpen = true;
@@ -191,103 +223,6 @@ describe('Leases', () => {
 
         let state = leasesReducer({}, showEditMode());
         state = leasesReducer({}, hideEditMode());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isConstructabilityFormValid flag to false', () => {
-        const newState = {...stateTemplate};
-        newState.isConstructabilityFormValid = false;
-
-        const state = leasesReducer({}, receiveConstructabilityFormValid(false));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isContractsFormValid flag to false', () => {
-        const newState = {...stateTemplate};
-        newState.isContractsFormValid = false;
-
-        const state = leasesReducer({}, receiveContractsFormValid(false));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isDecisionsFormValid flag to false', () => {
-        const newState = {...stateTemplate};
-        newState.isDecisionsFormValid = false;
-
-        const state = leasesReducer({}, receiveDecisionsFormValid(false));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isInspectionsFormValid flag to false', () => {
-        const newState = {...stateTemplate};
-        newState.isInspectionsFormValid = false;
-
-        const state = leasesReducer({}, receiveInspectionsFormValid(false));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isLeaseAreasFormValid flag to false', () => {
-        const newState = {...stateTemplate};
-        newState.isLeaseAreasFormValid = false;
-
-        const state = leasesReducer({}, receiveLeaseAreasFormValid(false));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isLeaseInfoFormValid flag to false', () => {
-        const newState = {...stateTemplate};
-        newState.isLeaseInfoFormValid = false;
-
-        const state = leasesReducer({}, receiveLeaseInfoFormValid(false));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isRentsFormValid flag to false', () => {
-        const newState = {...stateTemplate};
-        newState.isRentsFormValid = false;
-
-        const state = leasesReducer({}, receiveRentsFormValid(false));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isSummaryFormValid flag to false', () => {
-        const newState = {...stateTemplate};
-        newState.isSummaryFormValid = false;
-
-        const state = leasesReducer({}, receiveSummaryFormValid(false));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isTenantsFormValid flag to false', () => {
-        const newState = {...stateTemplate};
-        newState.isTenantsFormValid = false;
-
-        const state = leasesReducer({}, receiveTenantsFormValid(false));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update all form valid flags to true', () => {
-        const newState = {...stateTemplate};
-        newState.isConstructabilityFormValid = true;
-        newState.isContractsFormValid = true;
-        newState.isDecisionsFormValid = true;
-        newState.isInspectionsFormValid = true;
-        newState.isLeaseAreasFormValid = true;
-        newState.isLeaseInfoFormValid = true;
-        newState.isRentsFormValid = true;
-        newState.isSummaryFormValid = true;
-        newState.isTenantsFormValid = true;
-
-        let state = leasesReducer({}, receiveConstructabilityFormValid(false));
-        state = leasesReducer(state, receiveContractsFormValid(false));
-        state = leasesReducer(state, receiveDecisionsFormValid(false));
-        state = leasesReducer(state, receiveInspectionsFormValid(false));
-        state = leasesReducer(state, receiveLeaseAreasFormValid(false));
-        state = leasesReducer(state, receiveLeaseInfoFormValid(false));
-        state = leasesReducer(state, receiveRentsFormValid(false));
-        state = leasesReducer(state, receiveSummaryFormValid(false));
-        state = leasesReducer(state, receiveTenantsFormValid(false));
-        state = leasesReducer(state, clearFormValidFlags());
         expect(state).to.deep.equal(newState);
       });
 

@@ -9,10 +9,11 @@ import ContactModal from './ContactModal';
 import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
 import TenantItemsEdit from './TenantItemsEdit';
-import {createContact, editContact, hideContactModal, receiveContactModalSettings, receiveTenantsFormValid} from '$src/leases/actions';
+import {createContact, editContact, hideContactModal, receiveContactModalSettings, receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {FormNames} from '$src/leases/enums';
-import {getContactModalSettings, getIsContactModalOpen, getIsTenantsFormValid} from '$src/leases/selectors';
+import {getContentContact} from '$src/leases/helpers';
+import {getContactModalSettings, getIsContactModalOpen} from '$src/leases/selectors';
 
 import type {ContactModalSettings} from '$src/leases/types';
 
@@ -25,9 +26,8 @@ type Props = {
   handleSubmit: Function,
   hideContactModal: Function,
   isContactModalOpen: boolean,
-  isTenantsFormValid: boolean,
   receiveContactModalSettings: Function,
-  receiveTenantsFormValid: Function,
+  receiveFormValidFlags: Function,
   valid: boolean,
 }
 
@@ -37,19 +37,20 @@ class TenantsEdit extends Component<Props> {
     hideContactModal();
   }
 
-  componentDidUpdate() {
-    const {isTenantsFormValid, receiveTenantsFormValid, valid} = this.props;
-    if(isTenantsFormValid !== valid) {
-      receiveTenantsFormValid(valid);
+  componentDidUpdate(prevProps) {
+    const {change, contactModalSettings, receiveFormValidFlags} = this.props;
+
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [FormNames.TENANTS]: this.props.valid,
+      });
     }
-  }
 
-  componentWillReceiveProps(nextProps) {
-    const {contactModalSettings} = nextProps;
-    const {change, receiveContactModalSettings} = this.props;
-
-    if(contactModalSettings && contactModalSettings.contactId) {
-      change(contactModalSettings.field, contactModalSettings.contactId);
+    if(contactModalSettings && contactModalSettings.contact) {
+      change(
+        contactModalSettings.field,
+        getContentContact(contactModalSettings.contact)
+      );
       receiveContactModalSettings(null);
     }
   }
@@ -120,7 +121,6 @@ export default flowRight(
         contactModalSettings: getContactModalSettings(state),
         contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
         isContactModalOpen: getIsContactModalOpen(state),
-        isTenantsFormValid: getIsTenantsFormValid(state),
       };
     },
     {
@@ -129,7 +129,7 @@ export default flowRight(
       editContact,
       hideContactModal,
       receiveContactModalSettings,
-      receiveTenantsFormValid,
+      receiveFormValidFlags,
     }
   ),
   reduxForm({

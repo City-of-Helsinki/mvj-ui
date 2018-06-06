@@ -6,12 +6,14 @@ import isEmpty from 'lodash/isEmpty';
 import Button from '$components/button/Button';
 import DualListBoxInput from '$components/inputs/DualListBoxInput';
 import Modal from '$components/modal/Modal';
+import {fetchUsers} from '$src/users/actions';
 import {getUserOptions} from '$src/users/helpers';
 import {getUsers} from '$src/users/selectors';
 
 import type {UserList} from '$src/users/types';
 
 type Props = {
+  fetchUsers: Function,
   isOpen: boolean,
   onCancel: Function,
   onClose: Function,
@@ -22,20 +24,34 @@ type Props = {
 type State = {
   selected: Array<string>,
   userOptions: Array<Object>,
+  users: UserList,
 }
 
 class SendEmailModal extends Component<Props, State> {
   state = {
     selected: [],
     userOptions: [],
+    users: [],
   };
 
-  componentWillMount() {
-    if(!isEmpty(this.props.users)) {
-      this.setState({
-        userOptions: getUserOptions(this.props.users),
-      });
+  static getDerivedStateFromProps(props, state) {
+    const retObj = {};
+
+    if(props.users !== state.users) {
+      retObj.userOptions = getUserOptions(props.users);
+      retObj.users = props.users;
     }
+
+    if(!isEmpty(retObj)) {
+      return retObj;
+    }
+
+    return null;
+  }
+
+  componentDidMount() {
+    const {fetchUsers} = this.props;
+    fetchUsers();
   }
 
   componentDidUpdate(prevProps) {
@@ -43,13 +59,8 @@ class SendEmailModal extends Component<Props, State> {
     if(!prevProps.isOpen && this.props.isOpen) {
       this.setState({selected: []});
     }
-
-    if(prevProps.users !== this.props.users) {
-      this.setState({
-        userOptions: getUserOptions(this.props.users),
-      });
-    }
   }
+
   onChange = (selected: Array<string>) => {
     this.setState({selected: selected});
   }
@@ -99,4 +110,7 @@ export default connect(
       users: getUsers(state),
     };
   },
+  {
+    fetchUsers,
+  }
 )(SendEmailModal);

@@ -8,34 +8,52 @@ import get from 'lodash/get';
 
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
-import {receiveLeaseInfoFormValid} from '$src/leases/actions';
+import {receiveFormValidFlags} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
 import {getContentLeaseInfo} from '$src/leases/helpers';
-import {getAttributes, getCurrentLease, getIsLeaseInfoFormValid} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
-  isLeaseInfoFormValid: boolean,
-  receiveLeaseInfoFormValid: Function,
+  receiveFormValidFlags: Function,
   valid: boolean,
 }
 
-class LeaseInfoEdit extends Component<Props> {
-  componentDidUpdate() {
-    const {isLeaseInfoFormValid, receiveLeaseInfoFormValid, valid} = this.props;
-    if(isLeaseInfoFormValid !== valid) {
-      receiveLeaseInfoFormValid(valid);
+type State = {
+  leaseInfo: Object,
+}
+
+class LeaseInfoEdit extends Component<Props, State> {
+  state = {
+    leaseInfo: {},
+  }
+
+  componentDidUpdate(prevProps) {
+    const {receiveFormValidFlags} = this.props;
+
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [FormNames.LEASE_INFO]: this.props.valid,
+      });
     }
   }
 
+  static getDerivedStateFromProps(props, state) {
+    if(props.currentLease !== state.currentLease) {
+      return {
+        leaseInfo: getContentLeaseInfo(props.currentLease),
+        currentLease: props.currentLease,
+      };
+    }
+    return null;
+  }
+
   render () {
-    const {
-      attributes,
-      currentLease,
-    } = this.props;
-    const leaseInfo = getContentLeaseInfo(currentLease);
+    const {attributes} = this.props;
+    const {leaseInfo} = this.state;
 
     return (
       <form className='lease-info-edit'>
@@ -80,7 +98,7 @@ class LeaseInfoEdit extends Component<Props> {
   }
 }
 
-const formName = 'lease-info-form';
+const formName = FormNames.LEASE_INFO;
 
 export default flowRight(
   connect(
@@ -88,11 +106,10 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
-        isLeaseInfoFormValid: getIsLeaseInfoFormValid(state),
       };
     },
     {
-      receiveLeaseInfoFormValid,
+      receiveFormValidFlags,
     }
   ),
   reduxForm({

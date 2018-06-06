@@ -35,7 +35,7 @@ import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 import {fetchAttributes as fetchCommentAttributes, fetchCommentsByLease} from '$src/comments/actions';
-import {fetchAttributes as fetchContactAttributes, fetchCompleteContactList} from '$src/contacts/actions';
+import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {fetchDecisionsByLease} from '$src/decision/actions';
 import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
 import {
@@ -44,12 +44,12 @@ import {
   fetchSingleLease,
   hideEditMode,
   patchLease,
+  receiveFormValidFlags,
   showEditMode,
 } from '$src/leases/actions';
 import {fetchNoticePeriods} from '$src/noticePeriod/actions';
 import {fetchRememberableTermList} from '$src/rememberableTerms/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {fetchUsers} from '$src/users/actions';
 import {FormNames} from '$src/leases/enums';
 import {FormNames as ComponentFormNames} from '$components/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
@@ -65,15 +65,8 @@ import {
   getCurrentLease,
   getIsEditMode,
   getIsFetching,
-  getIsConstructabilityFormValid,
-  getIsContractsFormValid,
-  getIsDecisionsFormValid,
-  getIsInspectionsFormValid,
-  getIsLeaseAreasFormValid,
-  getIsLeaseInfoFormValid,
-  getIsRentsFormValid,
-  getIsSummaryFormValid,
-  getIsTenantsFormValid,
+  getIsFormValidById,
+  getIsFormValidFlags,
 } from '$src/leases/selectors';
 import {getRememberableTermList} from '$src/rememberableTerms/selectors';
 
@@ -100,7 +93,6 @@ type Props = {
   fetchAttributes: Function,
   fetchCommentAttributes: Function,
   fetchCommentsByLease: Function,
-  fetchCompleteContactList: Function,
   fetchContactAttributes: Function,
   fetchDecisionsByLease: Function,
   fetchInvoiceAttributes: Function,
@@ -108,35 +100,36 @@ type Props = {
   fetchNoticePeriods: Function,
   fetchRememberableTermList: Function,
   fetchSingleLease: Function,
-  fetchUsers: Function,
   hideEditMode: Function,
   initialize: Function,
   inspectionsFormValues: Object,
   invoiceAttributes: InvoiceAttributes,
   isEditMode: boolean,
   isFetching: boolean,
-  isAreasFormDirty: boolean,
+  isFormValidFlags: Object,
   isConstructabilityFormDirty: boolean,
-  isContractsFormDirty: boolean,
-  isDecisionsFormDirty: boolean,
-  isInspectionsFormDirty: boolean,
-  isLeaseInfoFormDirty: boolean,
-  isRentsFormDirty: boolean,
-  isSummaryFormDirty: boolean,
-  isTenantsFormDirty: boolean,
   isConstructabilityFormValid: boolean,
+  isContractsFormDirty: boolean,
   isContractsFormValid: boolean,
+  isDecisionsFormDirty: boolean,
   isDecisionsFormValid: boolean,
+  isInspectionsFormDirty: boolean,
   isInspectionsFormValid: boolean,
+  isLeaseAreasFormDirty: boolean,
   isLeaseAreasFormValid: boolean,
+  isLeaseInfoFormDirty: boolean,
   isLeaseInfoFormValid: boolean,
+  isRentsFormDirty: boolean,
   isRentsFormValid: boolean,
+  isSummaryFormDirty: boolean,
   isSummaryFormValid: boolean,
+  isTenantsFormDirty: boolean,
   isTenantsFormValid: boolean,
   leaseInfoFormValues: Object,
   location: Object,
   params: Object,
   patchLease: Function,
+  receiveFormValidFlags: Function,
   receiveTopNavigationSettings: Function,
   rememberableTerms: RememberableTermList,
   rentsFormValues: Object,
@@ -175,7 +168,6 @@ class LeasePage extends Component<Props, State> {
       fetchAttributes,
       fetchCommentAttributes,
       fetchCommentsByLease,
-      fetchCompleteContactList,
       fetchContactAttributes,
       fetchDecisionsByLease,
       fetchInvoiceAttributes,
@@ -183,7 +175,6 @@ class LeasePage extends Component<Props, State> {
       fetchNoticePeriods,
       fetchRememberableTermList,
       fetchSingleLease,
-      fetchUsers,
       invoiceAttributes,
       location,
       params: {leaseId},
@@ -218,24 +209,20 @@ class LeasePage extends Component<Props, State> {
 
     fetchSingleLease(leaseId);
     fetchCommentsByLease(leaseId);
-    fetchCompleteContactList();
     fetchDecisionsByLease(leaseId);
     fetchInvoices(getSearchQuery({lease: leaseId}));
     fetchNoticePeriods();
     fetchRememberableTermList();
-    fetchUsers();
-  }
-
-  componentWillReceiveProps(nextProps: Object) {
-    const {fetchDecisionsByLease, params: {leaseId}} = this.props;
-
-    if(this.props.currentLease !== nextProps.currentLease) {
-      fetchDecisionsByLease(leaseId);
-    }
   }
 
   componentDidUpdate(prevProps) {
     const {params: {leaseId}} = this.props;
+
+    if(!isEmpty(prevProps.currentLease) && (prevProps.currentLease !== this.props.currentLease)) {
+      const {fetchDecisionsByLease} = this.props;
+      fetchDecisionsByLease(leaseId);
+    }
+
     if(isEmpty(prevProps.currentLease) && !isEmpty(this.props.currentLease)) {
       const storedLeaseId = getSessionStorageItem('leaseId');
       if(Number(leaseId) === storedLeaseId) {
@@ -394,10 +381,12 @@ class LeasePage extends Component<Props, State> {
       this.bulkChange(FormNames.SUMMARY, storedSummaryFormValues);
     }
 
-    const storedTenantsFormValues = getSessionStorageItem(FormNames.TENANTS);
-    if(storedTenantsFormValues) {
-      this.bulkChange(FormNames.TENANTS, storedTenantsFormValues);
+    const storedFormValidity = getSessionStorageItem('leaseValidity');
+    if(storedFormValidity) {
+      const {receiveFormValidFlags} = this.props;
+      receiveFormValidFlags(storedFormValidity);
     }
+
 
     this.startAutoSaveTimer();
     this.hideModal('Restore');
@@ -430,34 +419,29 @@ class LeasePage extends Component<Props, State> {
 
   saveUnsavedChanges = () => {
     const {
-      isAreasFormDirty,
       areasFormValues,
-      isConstructabilityFormDirty,
       constructabilityFormValues,
-      isContractsFormDirty,
       contractsFormValues,
-      isDecisionsFormDirty,
       decisionsFormValues,
-      isInspectionsFormDirty,
       inspectionsFormValues,
+      isConstructabilityFormDirty,
+      isContractsFormDirty,
+      isDecisionsFormDirty,
+      isInspectionsFormDirty,
+      isLeaseAreasFormDirty,
       isLeaseInfoFormDirty,
-      leaseInfoFormValues,
       isRentsFormDirty,
-      rentsFormValues,
       isSummaryFormDirty,
-      summaryFormValues,
       isTenantsFormDirty,
-      tenantsFormValues,
+      isFormValidFlags,
+      leaseInfoFormValues,
       params: {leaseId},
+      rentsFormValues,
+      summaryFormValues,
+      tenantsFormValues,
+
     } = this.props;
     let isDirty = false;
-
-    if(isAreasFormDirty) {
-      setSessionStorageItem(FormNames.LEASE_AREAS, areasFormValues);
-      isDirty = true;
-    } else {
-      removeSessionStorageItem(FormNames.LEASE_AREAS);
-    }
 
     if(isConstructabilityFormDirty) {
       setSessionStorageItem(FormNames.CONSTRUCTABILITY, constructabilityFormValues);
@@ -485,6 +469,13 @@ class LeasePage extends Component<Props, State> {
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.INSPECTIONS);
+    }
+
+    if(isLeaseAreasFormDirty) {
+      setSessionStorageItem(FormNames.LEASE_AREAS, areasFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.LEASE_AREAS);
     }
 
     if(isLeaseInfoFormDirty) {
@@ -517,8 +508,10 @@ class LeasePage extends Component<Props, State> {
 
     if(isDirty) {
       setSessionStorageItem('leaseId', leaseId);
+      setSessionStorageItem('leaseValidity', isFormValidFlags);
     } else {
       removeSessionStorageItem('leaseId');
+      removeSessionStorageItem('leaseValidity');
     }
   };
 
@@ -535,11 +528,11 @@ class LeasePage extends Component<Props, State> {
       rentsFormValues,
       summaryFormValues,
       tenantsFormValues,
-      isAreasFormDirty,
       isConstructabilityFormDirty,
       isContractsFormDirty,
       isDecisionsFormDirty,
       isInspectionsFormDirty,
+      isLeaseAreasFormDirty,
       isLeaseInfoFormDirty,
       isRentsFormDirty,
       isSummaryFormDirty,
@@ -548,9 +541,6 @@ class LeasePage extends Component<Props, State> {
 
     let payload: Object = {id: currentLease.id};
 
-    if(isAreasFormDirty) {
-      payload = contentHelpers.addAreasFormValues(payload, areasFormValues);
-    }
     if(isConstructabilityFormDirty) {
       payload = contentHelpers.addConstructabilityFormValues(payload, constructabilityFormValues);
     }
@@ -562,6 +552,9 @@ class LeasePage extends Component<Props, State> {
     }
     if(isInspectionsFormDirty) {
       payload = contentHelpers.addInspectionsFormValues(payload, inspectionsFormValues);
+    }
+    if(isLeaseAreasFormDirty) {
+      payload = contentHelpers.addAreasFormValues(payload, areasFormValues);
     }
     if(isLeaseInfoFormDirty) {
       payload = contentHelpers.addLeaseInfoFormValues(payload, leaseInfoFormValues);
@@ -631,6 +624,19 @@ class LeasePage extends Component<Props, State> {
     });
   };
 
+  handleCancel = () => {
+    const isDirty = this.isAnyFormDirty();
+    if(isDirty) {
+      this.showModal('CancelLease');
+    } else {
+      this.cancel();
+    }
+  }
+
+  handleHideCancelConfirmation = () => {
+    this.hideModal('CancelLease');
+  }
+
   toggleCommentPanel = () => {
     const {isCommentPanelOpen} = this.state;
     this.setState({isCommentPanelOpen: !isCommentPanelOpen});
@@ -638,11 +644,11 @@ class LeasePage extends Component<Props, State> {
 
   isAnyFormDirty = () => {
     const {
-      isAreasFormDirty,
       isConstructabilityFormDirty,
       isContractsFormDirty,
       isDecisionsFormDirty,
       isInspectionsFormDirty,
+      isLeaseAreasFormDirty,
       isLeaseInfoFormDirty,
       isRentsFormDirty,
       isSummaryFormDirty,
@@ -650,11 +656,11 @@ class LeasePage extends Component<Props, State> {
     } = this.props;
 
     return (
-      isAreasFormDirty ||
       isConstructabilityFormDirty ||
       isContractsFormDirty ||
       isDecisionsFormDirty ||
       isInspectionsFormDirty ||
+      isLeaseAreasFormDirty ||
       isLeaseInfoFormDirty ||
       isRentsFormDirty ||
       isSummaryFormDirty ||
@@ -676,27 +682,27 @@ class LeasePage extends Component<Props, State> {
       currentLease,
       isEditMode,
       isFetching,
-      isAreasFormDirty,
       isConstructabilityFormDirty,
-      isContractsFormDirty,
-      isDecisionsFormDirty,
-      isInspectionsFormDirty,
-      isRentsFormDirty,
-      isSummaryFormDirty,
-      isTenantsFormDirty,
       isConstructabilityFormValid,
+      isContractsFormDirty,
       isContractsFormValid,
+      isDecisionsFormDirty,
       isDecisionsFormValid,
+      isInspectionsFormDirty,
       isInspectionsFormValid,
+      isLeaseAreasFormDirty,
       isLeaseAreasFormValid,
+      isRentsFormDirty,
       isRentsFormValid,
+      isSummaryFormDirty,
       isSummaryFormValid,
+      isTenantsFormDirty,
       isTenantsFormValid,
       rememberableTerms,
     } = this.props;
 
     const areFormsValid = this.validateForms();
-    const isDirty = this.isAnyFormDirty();
+
 
     if(isFetching) {
       return (
@@ -716,8 +722,8 @@ class LeasePage extends Component<Props, State> {
           confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelLeaseModalOpen}
           label='Haluatko varmasti hylätä muutokset?'
-          onCancel={() => this.hideModal('CancelLease')}
-          onClose={() => this.hideModal('CancelLease')}
+          onCancel={this.handleHideCancelConfirmation}
+          onClose={this.handleHideCancelConfirmation}
           onSave={this.cancel}
           title='Hylkää muutokset'
         />
@@ -731,10 +737,12 @@ class LeasePage extends Component<Props, State> {
           onSave={this.restoreUnsavedChanges}
           title='Palauta tallentamattomat muutokset'
         />
+
         <CommentPanel
           isOpen={isCommentPanelOpen}
           onClose={this.toggleCommentPanel}
         />
+
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -742,11 +750,11 @@ class LeasePage extends Component<Props, State> {
               isCancelDisabled={false}
               isEditDisabled={false}
               isEditMode={isEditMode}
-              isSaveDisabled={!areFormsValid || activeTab.toString() === '6'}
-              onCancelClick={isDirty ? () => this.showModal('CancelLease') : this.cancel}
+              isSaveDisabled={!areFormsValid || activeTab === 6}
+              onCancelClick={this.handleCancel}
               onCommentClick={this.toggleCommentPanel}
               onEditClick={this.openEditMode}
-              onSaveClick={() => this.save()}
+              onSaveClick={this.save}
             />
           }
           infoComponent={isEditMode
@@ -762,7 +770,7 @@ class LeasePage extends Component<Props, State> {
           isEditMode={isEditMode}
           tabs={[
             {label: 'Yhteenveto', isDirty: isSummaryFormDirty, hasError: !isSummaryFormValid},
-            {label: 'Vuokra-alue', isDirty: isAreasFormDirty, hasError: !isLeaseAreasFormValid},
+            {label: 'Vuokra-alue', isDirty: isLeaseAreasFormDirty, hasError: !isLeaseAreasFormValid},
             {label: 'Vuokralaiset', isDirty: isTenantsFormDirty, hasError: !isTenantsFormValid},
             {label: 'Vuokrat', isDirty: isRentsFormDirty, hasError: !isRentsFormValid},
             {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty || isInspectionsFormDirty), hasError: (!isContractsFormValid || !isDecisionsFormValid || !isInspectionsFormValid)},
@@ -869,24 +877,25 @@ export default flowRight(
         inspectionsFormValues: getFormValues(FormNames.INSPECTIONS)(state),
         invoiceAttributes: getInvoiceAttributes(state),
         isEditMode: getIsEditMode(state),
-        isAreasFormDirty: isDirty(FormNames.LEASE_AREAS)(state),
+        isFormValidFlags: getIsFormValidFlags(state),
         isConstructabilityFormDirty: isDirty(FormNames.CONSTRUCTABILITY)(state),
+        isConstructabilityFormValid: getIsFormValidById(state, FormNames.CONSTRUCTABILITY),
         isContractsFormDirty: isDirty(FormNames.CONTRACTS)(state),
+        isContractsFormValid: getIsFormValidById(state, FormNames.CONTRACTS),
         isDecisionsFormDirty: isDirty(FormNames.DECISIONS)(state),
+        isDecisionsFormValid: getIsFormValidById(state, FormNames.DECISIONS),
         isInspectionsFormDirty: isDirty(FormNames.INSPECTIONS)(state),
+        isInspectionsFormValid: getIsFormValidById(state, FormNames.INSPECTIONS),
+        isLeaseAreasFormDirty: isDirty(FormNames.LEASE_AREAS)(state),
+        isLeaseAreasFormValid: getIsFormValidById(state, FormNames.LEASE_AREAS),
         isLeaseInfoFormDirty: isDirty(FormNames.LEASE_INFO)(state),
+        isLeaseInfoFormValid: getIsFormValidById(state, FormNames.LEASE_INFO),
         isRentsFormDirty: isDirty(FormNames.RENTS)(state),
+        isRentsFormValid: getIsFormValidById(state, FormNames.RENTS),
         isSummaryFormDirty: isDirty(FormNames.SUMMARY)(state),
+        isSummaryFormValid: getIsFormValidById(state, FormNames.SUMMARY),
         isTenantsFormDirty: isDirty(FormNames.TENANTS)(state),
-        isConstructabilityFormValid: getIsConstructabilityFormValid(state),
-        isContractsFormValid: getIsContractsFormValid(state),
-        isDecisionsFormValid: getIsDecisionsFormValid(state),
-        isInspectionsFormValid: getIsInspectionsFormValid(state),
-        isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
-        isLeaseInfoFormValid: getIsLeaseInfoFormValid(state),
-        isRentsFormValid: getIsRentsFormValid(state),
-        isSummaryFormValid: getIsSummaryFormValid(state),
-        isTenantsFormValid: getIsTenantsFormValid(state),
+        isTenantsFormValid: getIsFormValidById(state, FormNames.TENANTS),
         isFetching: getIsFetching(state),
         leaseInfoFormValues: getFormValues(FormNames.LEASE_INFO)(state),
         rememberableTerms: getRememberableTermList(state),
@@ -902,7 +911,6 @@ export default flowRight(
       fetchAttributes,
       fetchCommentAttributes,
       fetchCommentsByLease,
-      fetchCompleteContactList,
       fetchContactAttributes,
       fetchDecisionsByLease,
       fetchInvoiceAttributes,
@@ -910,10 +918,10 @@ export default flowRight(
       fetchNoticePeriods,
       fetchRememberableTermList,
       fetchSingleLease,
-      fetchUsers,
       hideEditMode,
       initialize,
       patchLease,
+      receiveFormValidFlags,
       receiveTopNavigationSettings,
       showEditMode,
     }

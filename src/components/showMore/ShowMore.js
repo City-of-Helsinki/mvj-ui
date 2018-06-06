@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import classNames from 'classnames';
 
 const MAX_CHARS = 130;
@@ -15,7 +15,7 @@ type State = {
   overflows: boolean,
 }
 
-class ShowMore extends Component {
+class ShowMore extends PureComponent {
   props: Props;
 
   state: State = {
@@ -27,8 +27,8 @@ class ShowMore extends Component {
     this.checkOverflow();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.checkOverflow(nextProps.text);
+  componentDidUpdate() {
+    this.checkOverflow();
   }
 
   checkOverflow = (textOverFlow) => {

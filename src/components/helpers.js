@@ -2,7 +2,6 @@
 import get from 'lodash/get';
 import {
   RentExplanationSubjectType,
-  RentExplanationType,
   RentSubItemSubjectType,
   RentSubItemType,
 } from './enums';
@@ -10,68 +9,30 @@ import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
 import type {Attributes} from '$src/leases/types';
 
-export const getRentAmount = (rent: Object) => {
-  const explanations = get(rent, 'explanation.items');
+export const getRentsTotalAmount = (rents: Array<Object>) => {
   let amount = 0;
-  explanations.forEach((explanation) => {
-    amount += getRentExplanationAmount(explanation);
+  rents.forEach((rent) => {
+    amount += getRentAmount(rent);
   });
   return amount;
 };
 
-export const getRentExplanationAmount = (explanation: Object) => {
-  const subjectType = get(explanation, 'subject.subject_type');
-  const type = get(explanation, 'subject.type');
+const getRentAmount = (rent: Object) => {
+  return Number(get(rent, 'amount', 0));
+};
 
-  switch(subjectType) {
-    case RentExplanationSubjectType.CONTRACT_RENT:
-      return Number(get(explanation, 'amount'));
-    case RentExplanationSubjectType.FIXED_INITIAL_YEAR_RENT:
-      return Number(get(explanation, 'amount'));
-    case RentExplanationSubjectType.RENT:
-      switch (type) {
-        case RentExplanationType.FIXED:
-          return Number(get(explanation, 'amount'));
-        case RentExplanationType.FREE:
-          return Number(get(explanation, 'amount'));
-        case RentExplanationType.INDEX:
-          return Number(get(explanation, 'amount'));
-        case RentExplanationType.ONE_TIME:
-          return Number(get(explanation, 'subject.amount'));
-        default:
-          return 0;
-      }
-    default:
-      return 0;
-  }
+export const getRentExplanationAmount = (explanation: Object) => {
+  return Number(get(explanation, 'amount', 0));
 };
 
 export const getRentSubItemAmount = (subItem: Object) => {
-  const subjectType = get(subItem, 'subject.subject_type');
-  const type = get(subItem, 'subject.type');
-
-  switch(subjectType) {
-    case RentSubItemSubjectType.INDEX:
-      return Number(get(subItem, 'amount'));
-    case RentSubItemSubjectType.RENT_ADJUSTMENT:
-      switch (type) {
-        case RentSubItemType.DISCOUNT:
-          return Number(get(subItem, 'amount'));
-        case RentSubItemType.INCREASE:
-          return Number(get(subItem, 'amount'));
-        default:
-          return 0;
-      }
-    default:
-      return 0;
-  }
+  return Number(get(subItem, 'amount', 0));
 };
 
 export const getRentExplanationDescription = (explanation: Object, attributes: Attributes) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
   const baseAmountPeriodOptions = getAttributeFieldOptions(attributes,
     'rents.child.children.contract_rents.child.children.base_amount_period');
-  const indexTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.index_type');
   const subjectType = get(explanation, 'subject.subject_type');
   const type = get(explanation, 'subject.type');
 
@@ -81,18 +42,7 @@ export const getRentExplanationDescription = (explanation: Object, attributes: A
     case RentExplanationSubjectType.FIXED_INITIAL_YEAR_RENT:
       return 'Kiinteä alkuvuosivuokra';
     case RentExplanationSubjectType.RENT:
-      switch (type) {
-        case RentExplanationType.FIXED:
-          return `${getLabelOfOption(typeOptions, type)}`;
-        case RentExplanationType.FREE:
-          return `${getLabelOfOption(typeOptions, type)}`;
-        case RentExplanationType.INDEX:
-          return `${getLabelOfOption(typeOptions, type)} - ${getLabelOfOption(indexTypeOptions, get(explanation, 'subject.index_type'))}`;
-        case RentExplanationType.ONE_TIME:
-          return `${getLabelOfOption(typeOptions, type)}`;
-        default:
-          return null;
-      }
+      return `${getLabelOfOption(typeOptions, type)}`;
     default:
       return null;
   }
@@ -108,7 +58,7 @@ export const getRentSubItemDescription = (subItem: Object, attributes: Attribute
 
   switch(subjectType) {
     case RentSubItemSubjectType.INDEX:
-      return `Indeksitarkistus (vertailuluku ${get(subItem, 'subject.year')})`;
+      return `Indeksitarkistus (vertailuluku ${get(subItem, 'subject.number')})`;
     case RentSubItemSubjectType.RENT_ADJUSTMENT:
       switch (type) {
         case RentSubItemType.DISCOUNT:

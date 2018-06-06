@@ -27,10 +27,6 @@ import {
 } from './requests';
 import {getContactModalSettings} from './selectors';
 import {
-  receiveEditedContactToCompleteList,
-  receiveNewContactToCompleteList,
-} from '../contacts/actions';
-import {
   createContact,
   editContact,
 } from '../contacts/requests';
@@ -228,9 +224,8 @@ function* createContactSaga({payload: contact}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
-        yield put(receiveNewContactToCompleteList(bodyAsJson));
         if (isSelected) {
-          contactModalSettings.contactId = bodyAsJson.id;
+          contactModalSettings.contact = bodyAsJson;
           yield put(receiveContactModalSettings(contactModalSettings));
         }
         yield put(hideContactModal());
@@ -254,7 +249,6 @@ function* editContactSaga({payload: contact}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        yield put(receiveEditedContactToCompleteList(bodyAsJson));
         yield put(hideContactModal());
         break;
       case 400:

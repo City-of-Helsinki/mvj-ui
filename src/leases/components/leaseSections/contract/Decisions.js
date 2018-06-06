@@ -1,7 +1,8 @@
 // @flow
-import React from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Column} from 'react-foundation';
+import isEmpty from 'lodash/isEmpty';
 
 import Collapse from '$components/collapse/Collapse';
 import DecisionItem from './DecisionItem';
@@ -16,51 +17,110 @@ type Props = {
   currentLease: Lease,
 }
 
-const Decisions = ({attributes, currentLease}: Props) => {
-  const decisions = getContentDecisions(currentLease);
-  const decisionMakerOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker');
-  const typeOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.type');
+type State = {
+  conditionTypeOptions: Array<Object>,
+  decisionMakerOptions: Array<Object>,
+  decisions: Array<Object>,
+  typeOptions: Array<Object>,
+}
 
-  return (
-    <div>
-      {!decisions || !decisions.length && <p className='no-margin'>Ei päätöksiä</p>}
-      {decisions && !!decisions.length && decisions.map((decision) =>
-        <Collapse
-          key={decision.id}
-          defaultOpen={false}
-          header={
-            <div>
-              <Column>
-                <span className='collapse__header-subtitle'>
-                  {formatDate(decision.decision_date) || '-'}
-                </span>
-              </Column>
-              <Column>
-                <span className='collapse__header-subtitle'>
-                  {decision.section ? `${decision.section} §` : '-'}
-                </span>
-              </Column>
-              <Column>
-                <span className='collapse__header-subtitle'>
-                  {getLabelOfOption(typeOptions, decision.type) || '-'}
-                </span>
-              </Column>
-            </div>
-          }
-          headerTitle={
-            <h3 className='collapse__header-title'>
-              {getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}
-            </h3>
-          }
-        >
-          <DecisionItem
-            decision={decision}
-          />
-        </Collapse>
-      )}
-    </div>
-  );
-};
+class Decisions extends PureComponent<Props, State> {
+  state = {
+    conditionTypeOptions: [],
+    decisionMakerOptions: [],
+    decisions: [],
+    typeOptions: [],
+  }
+
+  componentDidMount() {
+    const {attributes, currentLease} = this.props;
+    if(!isEmpty(attributes)) {
+      this.updateOptions();
+    }
+
+    if(!isEmpty(currentLease)) {
+      this.updateContent();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if(prevProps.attributes !== this.props.attributes) {
+      this.updateOptions();
+    }
+
+    if(prevProps.currentLease !== this.props.currentLease) {
+      this.updateContent();
+    }
+  }
+
+  updateContent = () => {
+    const {currentLease} = this.props;
+    this.setState({
+      decisions: getContentDecisions(currentLease),
+    });
+  }
+
+  updateOptions = () => {
+    const {attributes} = this.props;
+    this.setState({
+      conditionTypeOptions: getAttributeFieldOptions(attributes, 'decisions.child.children.conditions.child.children.type'),
+      decisionMakerOptions: getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker'),
+      typeOptions: getAttributeFieldOptions(attributes, 'decisions.child.children.type'),
+    });
+  }
+
+  render() {
+    const {
+      conditionTypeOptions,
+      decisionMakerOptions,
+      decisions,
+      typeOptions,
+    } = this.state;
+
+    return (
+      <div>
+        {!decisions || !decisions.length && <p className='no-margin'>Ei päätöksiä</p>}
+        {decisions && !!decisions.length && decisions.map((decision) =>
+          <Collapse
+            key={decision.id}
+            defaultOpen={false}
+            header={
+              <div>
+                <Column>
+                  <span className='collapse__header-subtitle'>
+                    {formatDate(decision.decision_date) || '-'}
+                  </span>
+                </Column>
+                <Column>
+                  <span className='collapse__header-subtitle'>
+                    {decision.section ? `${decision.section} §` : '-'}
+                  </span>
+                </Column>
+                <Column>
+                  <span className='collapse__header-subtitle'>
+                    {getLabelOfOption(typeOptions, decision.type) || '-'}
+                  </span>
+                </Column>
+              </div>
+            }
+            headerTitle={
+              <h3 className='collapse__header-title'>
+                {getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}
+              </h3>
+            }
+          >
+            <DecisionItem
+              conditionTypeOptions={conditionTypeOptions}
+              decisionMakerOptions={decisionMakerOptions}
+              decision={decision}
+              typeOptions={typeOptions}
+            />
+          </Collapse>
+        )}
+      </div>
+    );
+  }
+}
 
 export default connect(
   (state) => {

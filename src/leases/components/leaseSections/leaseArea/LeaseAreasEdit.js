@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -19,11 +19,11 @@ import PlotItemsEdit from './PlotItemsEdit';
 import PlanUnitItemsEdit from './PlanUnitItemsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {receiveLeaseAreasFormValid} from '$src/leases/actions';
+import {receiveFormValidFlags} from '$src/leases/actions';
 import {AreaLocation, FormNames} from '$src/leases/enums';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
 import {formatNumber} from '$util/helpers';
-import {getAttributes, getCurrentLease, getIsLeaseAreasFormValid} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
 
@@ -189,6 +189,7 @@ const LeaseAreaItems = ({
             <Row>
               <Column small={12} large={6}>
                 <FieldArray
+                  attributes={attributes}
                   buttonTitle='Lisää kaavayksikkö'
                   component={PlanUnitItemsEdit}
                   name={`${area}.plan_units_contract`}
@@ -197,6 +198,7 @@ const LeaseAreaItems = ({
               </Column>
               <Column small={12} large={6}>
                 <FieldArray
+                  attributes={attributes}
                   buttonTitle='Lisää kaavayksikkö'
                   component={PlanUnitItemsEdit}
                   name={`${area}.plan_units_current`}
@@ -228,23 +230,46 @@ type Props = {
   attributes: Attributes,
   currentLease: Lease,
   handleSubmit: Function,
-  isLeaseAreasFormValid: boolean,
-  receiveLeaseAreasFormValid: Function,
+  receiveFormValidFlags: Function,
   valid: boolean,
 }
 
-class LeaseAreasEdit extends Component<Props> {
-  componentDidUpdate() {
-    const {isLeaseAreasFormValid, receiveLeaseAreasFormValid, valid} = this.props;
-    if(isLeaseAreasFormValid !== valid) {
-      receiveLeaseAreasFormValid(valid);
+type State = {
+  areasSum: ?number,
+  currentLease: ?Lease,
+}
+
+class LeaseAreasEdit extends PureComponent<Props, State> {
+  state = {
+    areasSum: null,
+    currentLease: null,
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if(props.currentLease !== state.currentLease) {
+      const areas = getContentLeaseAreas(props.currentLease);
+      return {
+        areasSum: getAreasSum(areas),
+        currentLease: props.currentLease,
+      };
+    }
+    return null;
+  }
+
+
+  componentDidUpdate(prevProps) {
+    const {receiveFormValidFlags} = this.props;
+
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [FormNames.LEASE_AREAS]: this.props.valid,
+      });
     }
   }
 
   render () {
-    const {attributes, currentLease, handleSubmit} = this.props;
-    const areas = getContentLeaseAreas(currentLease);
-    const areasSum = getAreasSum(areas);
+    const {attributes, handleSubmit} = this.props;
+    const {areasSum} = this.state;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -274,11 +299,10 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
-        isLeaseAreasFormValid: getIsLeaseAreasFormValid(state),
       };
     },
     {
-      receiveLeaseAreasFormValid,
+      receiveFormValidFlags,
     }
   ),
   reduxForm({

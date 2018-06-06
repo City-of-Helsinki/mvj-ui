@@ -1,27 +1,22 @@
 // @flow
 import React from 'react';
-import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import {getUserOptions} from '$src/users/helpers';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {formatDate, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {getUserFullName} from '$src/users/helpers';
 import {ConstructabilityStatus} from '$src/leases/enums';
-import {getAttributes} from '$src/leases/selectors';
-import {getUsers} from '$src/users/selectors';
-
-import type {Attributes} from '$src/leases/types';
-import type {UserList} from '$src/users/types';
 
 type CommentsProps = {
   comments: ?Array<Object>,
-  userOptions: Array<Object>,
 }
 
-const Comments = ({comments, userOptions}: CommentsProps) => {
+const Comments = ({
+  comments,
+}: CommentsProps) => {
   return (
     <div>
       {comments && !!comments.length
@@ -34,7 +29,7 @@ const Comments = ({comments, userOptions}: CommentsProps) => {
                   <Column small={12}>
                     <p className='no-margin'>{comment.text || ''}</p>
                     <p>
-                      <strong>{getLabelOfOption(userOptions, comment.user)}</strong>
+                      <strong>{getUserFullName(comment.user)}</strong>
                       {comment.modified_at && `, ${formatDate(comment.modified_at)}`}
                       {comment.ahjo_reference_number &&
                         <span>, <a className='no-margin' target='_blank' href={getReferenceNumberLink(comment.ahjo_reference_number)}>{comment.ahjo_reference_number}</a></span>
@@ -55,7 +50,7 @@ const Comments = ({comments, userOptions}: CommentsProps) => {
 
 type StatusIndicatorProps = {
   researchState: string,
-  stateOptions: string,
+  stateOptions: Array<Object>,
 }
 
 const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
@@ -77,16 +72,17 @@ const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
 
 type Props = {
   area: Object,
-  attributes: Attributes,
-  users: UserList,
+  constructabilityReportStateOptions: Array<Object>,
+  pollutedLandConditionStateOptions: Array<Object>,
+  stateOptions: Array<Object>,
 }
 
-const ConstructabilityItem = ({area, attributes, users}: Props) => {
-  const stateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.preconstruction_state');
-  const pollutedLandConditionStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state');
-  const constructabilityReportStateOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.constructability_report_investigation_state');
-  const userOptions = getUserOptions(users);
-
+const ConstructabilityItem = ({
+  area,
+  constructabilityReportStateOptions,
+  pollutedLandConditionStateOptions,
+  stateOptions,
+}: Props) => {
   return (
     <div>
       <Collapse
@@ -109,7 +105,6 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       >
         <Comments
           comments={area.descriptionsPreconstruction}
-          userOptions={userOptions}
         />
       </Collapse>
 
@@ -133,7 +128,6 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       >
         <Comments
           comments={area.descriptionsDemolition}
-          userOptions={userOptions}
         />
       </Collapse>
 
@@ -167,7 +161,7 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
             </Column>
             <Column small={6} medium={3} large={2}>
               <label>PIMA valmistelija</label>
-              <p>{getLabelOfOption(userOptions, area.polluted_land_planner) || '–'}</p>
+              <p>{getUserFullName(area.polluted_land_planner) || '–'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
               <label>ProjectWise numero</label>
@@ -181,7 +175,6 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         </div>
         <Comments
           comments={area.descriptionsPollutedLand}
-          userOptions={userOptions}
         />
       </Collapse>
 
@@ -225,7 +218,6 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
         </div>
         <Comments
           comments={area.descriptionsReport}
-          userOptions={userOptions}
         />
       </Collapse>
 
@@ -249,18 +241,10 @@ const ConstructabilityItem = ({area, attributes, users}: Props) => {
       >
         <Comments
           comments={area.descriptionsOther}
-          userOptions={userOptions}
         />
       </Collapse>
     </div>
   );
 };
 
-export default connect(
-  (state) => {
-    return {
-      attributes: getAttributes(state),
-      users: getUsers(state),
-    };
-  },
-)(ConstructabilityItem);
+export default ConstructabilityItem;

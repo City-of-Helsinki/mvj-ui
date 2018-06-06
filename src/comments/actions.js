@@ -7,6 +7,7 @@ import type {LeaseId} from '$src/leases/types';
 import type {
   Attributes,
   Comment,
+  CommentId,
   FetchAttributesAction,
   ReceiveAttributesAction,
   FetchCommentsByLeaseAction,
@@ -14,6 +15,8 @@ import type {
   EditCommentAction,
   ReceiveCommentsByLeaseAction,
   CommentNotFoundAction,
+  HideEditModeByIdAction,
+  ShowEditModeByIdAction,
 } from './types';
 
 export const notFound = (): CommentNotFoundAction =>
@@ -36,3 +39,9 @@ export const createComment = (comment: Comment): CreateCommentAction =>
 
 export const editComment = (comment: Comment): EditCommentAction =>
   createAction('mvj/comments/EDIT')(comment);
+
+export const hideEditModeById = (id: CommentId): HideEditModeByIdAction =>
+  createAction('mvj/comments/HIDE_BY_ID')(id);
+
+export const showEditModeById = (id: CommentId): ShowEditModeByIdAction =>
+  createAction('mvj/comments/SHOW_BY_ID')(id);

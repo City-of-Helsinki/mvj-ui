@@ -5,6 +5,7 @@ import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -15,17 +16,15 @@ import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
 import SendEmail from './SendEmail';
-import {receiveConstructabilityFormValid} from '$src/leases/actions';
+import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getContentConstructability} from '$src/leases/helpers';
+import {getFullAddress, getContentConstructability} from '$src/leases/helpers';
 import {getUserOptions} from '$src/users/helpers';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
-import {getAttributes, getCurrentLease, getIsConstructabilityFormValid} from '$src/leases/selectors';
-import {getUsers} from '$src/users/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes, Lease} from '$src/leases/types';
-import type {UserList} from '$src/users/types';
 
 type CommentProps = {
   attributes: Attributes,
@@ -87,23 +86,17 @@ type AreaProps = {
   areas: Array<Object>,
   attributes: Attributes,
   fields: any,
-  users: UserList,
+  locationOptions: Array<Object>,
+  typeOptions: Array<Object>,
 }
 
 const renderAreas = ({
   areas,
   attributes,
   fields,
-  users,
+  locationOptions,
+  typeOptions,
 }: AreaProps): Element<*> => {
-  const getFullAddress = (item: Object) => {
-    return `${item.address}, ${item.postal_code} ${item.city}`;
-  };
-
-  const userOptions = getUserOptions(users);
-  const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
-  const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
-
   return (
     <div>
       {!fields || !fields.length &&
@@ -227,8 +220,8 @@ const renderAreas = ({
                     fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_planner')}
                     name={`${area}.polluted_land_planner`}
                     overrideValues={{
+                      fieldType: 'user',
                       label: 'PIMA valmistelija',
-                      options: userOptions,
                     }}
                   />
                 </Column>
@@ -354,23 +347,66 @@ type Props = {
   attributes: Attributes,
   currentLease: Lease,
   handleSubmit: Function,
-  isConstructabilityFormValid: boolean,
-  receiveConstructabilityFormValid: Function,
-  users: UserList,
+  receiveFormValidFlags: Function,
   valid: boolean,
 }
 
-class ConstructabilityEdit extends Component<Props> {
-  componentDidUpdate() {
-    const {isConstructabilityFormValid, receiveConstructabilityFormValid, valid} = this.props;
-    if(isConstructabilityFormValid !== valid) {
-      receiveConstructabilityFormValid(valid);
+type State = {
+  areas: Array<Object>,
+  locationOptions: Array<Object>,
+  typeOptions: Array<Object>,
+}
+
+class ConstructabilityEdit extends Component<Props, State> {
+  state = {
+    areas: [],
+    locationOptions: [],
+    typeOptions: [],
+  }
+
+  componentDidUpdate(prevProps) {
+    const {receiveFormValidFlags} = this.props;
+
+    if(prevProps.valid !== this.props.valid) {
+      receiveFormValidFlags({
+        [FormNames.CONSTRUCTABILITY]: this.props.valid,
+      });
     }
   }
 
+  static getDerivedStateFromProps(props, state) {
+    const retObj = {};
+
+    if(props.attributes !== state.attributes) {
+      retObj.locationOptions = getAttributeFieldOptions(props.attributes, 'lease_areas.child.children.location');
+      retObj.typeOptions = getAttributeFieldOptions(props.attributes, 'lease_areas.child.children.type');
+      retObj.attributes = props.attributes;
+    }
+    if(props.currentLease !== state.currentLease) {
+      retObj.areas = getContentConstructability(props.currentLease);
+      retObj.currentLease = props.currentLease;
+    }
+    if(props.users !== state.users) {
+      retObj.userOptions = getUserOptions(props.users);
+      retObj.users = props.users;
+    }
+
+    if(!isEmpty(retObj)) {
+      return retObj;
+    }
+    return null;
+  }
+
   render () {
-    const {attributes, currentLease, handleSubmit, users} = this.props;
-    const areas = getContentConstructability(currentLease);
+    const {
+      attributes,
+      handleSubmit,
+    } = this.props;
+    const {
+      areas,
+      locationOptions,
+      typeOptions,
+    } = this.state;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -383,8 +419,9 @@ class ConstructabilityEdit extends Component<Props> {
             areas={areas}
             attributes={attributes}
             component={renderAreas}
+            locationOptions={locationOptions}
             name="lease_areas"
-            users={users}
+            typeOptions={typeOptions}
           />
         </FormSection>
       </form>
@@ -400,12 +437,10 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
-        isConstructabilityFormValid: getIsConstructabilityFormValid(state),
-        users: getUsers(state),
       };
     },
     {
-      receiveConstructabilityFormValid,
+      receiveFormValidFlags,
     }
   ),
   reduxForm({
