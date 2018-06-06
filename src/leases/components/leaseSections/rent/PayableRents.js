@@ -2,45 +2,28 @@
 import React from 'react';
 
 import {
-  formatDateRange,
+  formatDate,
   formatNumber,
 } from '$util/helpers';
-import TableFixedHeader from '$components/table/TableFixedHeader';
+import Table from '$components/table/Table';
 
 type Props = {
   payableRents: Array<Object>,
 }
 
-const getTableBody = (rents: Array<Object>) => {
-  if(rents && !!rents.length) {
-    return (
-      <tbody>
-        {rents.map((rent, index) => (
-          <tr key={index}>
-            <td>{formatNumber(rent.amount) || '-'}</td>
-            <td>{formatDateRange(rent.start_date, rent.end_date)}</td>
-            <td>{formatNumber(rent.difference_percent) || '-'}</td>
-            <td>{formatNumber(rent.calendar_year_rent) || '-'}</td>
-          </tr>
-        ))}
-      </tbody>
-    );
-  }
-  else {
-    return <tbody><tr className='no-data'><td colSpan={4}>Ei perittäviä vuokria</td></tr></tbody>;
-  }
-};
-
 const PayableRents = ({payableRents}: Props) => {
   return (
-    <TableFixedHeader
-      headers={[
-        'Perittävä vuokra (€)',
-        'Voimassaoloaika',
-        'Nousu %',
-        'Kalenterivuosivuokra',
+    <Table
+      data={payableRents}
+      dataKeys={[
+        {key: 'amount', label: 'Indeksitarkastettu vuokra (€)', renderer: (val) => formatNumber(val)},
+        {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val)},
+        {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
+        {key: 'difference_percent', label: 'Nousu %', renderer: (val) => formatNumber(val)},
+        {key: 'calendar_year_rent', label: 'Kalenterivuosivuokra', renderer: (val) => formatNumber(val)},
       ]}
-      body={getTableBody(payableRents)}
+      fixedHeader
+      tableFixedLayout
     />
   );
 };

@@ -246,9 +246,9 @@ class InvoicesTableEdit extends Component<Props, State> {
           className='table-wrapper'
           ref={(ref) => this.tableWrapper = ref}
           style={{maxWidth: tableWidth}}>
-          <div className={classNames('table-fixed-header', 'invoice-fixed-table', {'is-open': showModal})}>
-            <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
-              <div className="table-fixed-header__header-border" />
+          <div className={classNames('table__fixed-header', 'invoice-fixed-table', {'is-open': showModal})}>
+            <div className="table__fixed-header_wrapper" style={{maxHeight: tableHeight}}>
+              <div className="table__fixed-header_header-border" />
               <table
                 ref={(ref) => this.tableElement = ref}>
                 <thead>

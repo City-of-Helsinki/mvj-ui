@@ -474,3 +474,19 @@ export const sortByLabelAsc = (a, b) => {
   if(keyA > keyB) return 1;
   return 0;
 };
+
+export const sortByStartDateDesc = (a, b) => {
+  const keyA = a.start_date ? a.start_date : '',
+    keyB = b.start_date ? b.start_date : '';
+  if(keyA < keyB) return 1;
+  if(keyA > keyB) return -1;
+  return 0;
+};
+
+export const sortByDueDateDesc = (a, b) => {
+  const keyA = a.due_date ? a.due_date : '',
+    keyB = b.due_date ? b.due_date : '';
+  if(keyA < keyB) return 1;
+  if(keyA > keyB) return -1;
+  return 0;
+};

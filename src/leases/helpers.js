@@ -12,7 +12,7 @@ import {
 } from './enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {fixedLengthNumber, formatDecimalNumberForDb} from '$util/helpers';
+import {fixedLengthNumber, formatDecimalNumberForDb, sortByStartDateDesc} from '$util/helpers';
 import {removeSessionStorageItem} from '$util/storage';
 
 export const getContentLeaseIdentifier = (item:Object) => {
@@ -701,10 +701,10 @@ export const getContentRents = (lease: Object) => {
       is_active: get(rent, 'is_active'),
       due_dates: getContentRentDueDate(rent),
       fixed_initial_year_rents: getContentFixedInitialYearRents(rent),
-      contract_rents: getContentContractRents(rent),
-      index_adjusted_rents: getContentIndexAdjustedRents(rent),
+      contract_rents: getContentContractRents(rent).sort(sortByStartDateDesc),
+      index_adjusted_rents: getContentIndexAdjustedRents(rent).sort(sortByStartDateDesc),
       rent_adjustments: getContentRentAdjustments(rent),
-      payable_rents: getContentPayableRents(rent),
+      payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
     };
   });
 };

@@ -2,9 +2,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import TableFixedHeader from '$components/table/TableFixedHeader';
+import Table from '$components/table/Table';
 import {
-  formatDateRange,
+  formatDate,
   formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
@@ -18,41 +18,22 @@ type Props = {
   indexAdjustedRents: Array<Object>,
 }
 
-const getTableBody = (indexAdjustedRents: Array<Object>, intendedUseOptions: Array<Object>) => {
-  if(indexAdjustedRents && !!indexAdjustedRents.length) {
-    return (
-      <tbody>
-        {indexAdjustedRents.map((rent, index) => (
-          <tr key={index}>
-            <td>{formatNumber(rent.amount) || '-'}</td>
-            <td>{getLabelOfOption(intendedUseOptions, rent.intended_use) || '-'}</td>
-            <td>{formatDateRange(rent.start_date, rent.end_date)}</td>
-            <td>{formatNumber(rent.factor) || '-'}</td>
-          </tr>
-        ))}
-      </tbody>
-    );
-  }
-  else {
-    return (
-      <tbody><tr className='no-data'><td colSpan={4}>Ei Indeksitarkistettuja vuokria</td></tr></tbody>
-    );
-  }
-};
-
 const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
   const intendedUseOptions = getAttributeFieldOptions(attributes,
     'rents.child.children.index_adjusted_rents.child.children.intended_use');
 
   return (
-    <TableFixedHeader
-      headers={[
-        'Indeksitarkastettu vuokra (€)',
-        'Käyttötarkoitus',
-        'Voimassaoloaika',
-        'Laskentakerroin',
+    <Table
+      data={indexAdjustedRents}
+      dataKeys={[
+        {key: 'amount', label: 'Indeksitarkastettu vuokra (€)', renderer: (val) => formatNumber(val)},
+        {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val)},
+        {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val)},
+        {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
+        {key: 'factor', label: 'Laskentakerroin'},
       ]}
-      body={getTableBody(indexAdjustedRents, intendedUseOptions)}
+      fixedHeader
+      tableFixedLayout
     />
   );
 };

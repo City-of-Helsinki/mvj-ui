@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
+import isEmpty from 'lodash/isEmpty';
 import scrollToComponent from 'react-scroll-to-component';
 
 import InvoiceModal from './InvoiceModal';
@@ -15,6 +16,7 @@ import {
   formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
+  sortByDueDateDesc,
 } from '$util/helpers';
 import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/selectors';
 
@@ -29,20 +31,31 @@ type Props = {
 }
 
 type State = {
+  invoices: Array<Object>,
   selectedInvoice: Object,
   selectedInvoiceIndex: number,
   showAllColumns: boolean,
   showModal: boolean,
+  sortedInvoices: Array<Object>,
   tableHeight: ?number,
   tableWidth: ?number,
 }
 
+const getSortedInvoices = (fn: Function, invoices: Array<Object>) => {
+  if(!invoices) {
+    return [];
+  }
+  return invoices.sort((fn));
+};
+
 class InvoicesTable extends Component<Props, State> {
   state = {
+    invoices: [],
     selectedInvoice: {},
     selectedInvoiceIndex: -1,
     showAllColumns: true,
     showModal: false,
+    sortedInvoices: [],
     tableHeight: null,
     tableWidth: null,
   }
@@ -56,6 +69,19 @@ class InvoicesTable extends Component<Props, State> {
     this.calculateHeight();
     this.calculateTableWidth();
     this.tableWrapper.addEventListener('transitionend', this.transitionEnds);
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const retObj = {};
+
+    if(props.invoices !== state.invoices) {
+      retObj.invoices = props.invoices;
+      retObj.sortedInvoices = getSortedInvoices(sortByDueDateDesc, props.invoices);
+    }
+    if(!isEmpty(retObj)) {
+      return retObj;
+    }
+    return null;
   }
 
   componentDidUpdate() {
@@ -174,12 +200,13 @@ class InvoicesTable extends Component<Props, State> {
   }
 
   render () {
-    const {invoiceAttributes, invoices} = this.props;
+    const {invoiceAttributes} = this.props;
     const {
       selectedInvoice,
       selectedInvoiceIndex,
       showAllColumns,
       showModal,
+      sortedInvoices,
       tableHeight,
       tableWidth,
     } = this.state;
@@ -195,9 +222,9 @@ class InvoicesTable extends Component<Props, State> {
           className='table-wrapper'
           ref={(ref) => this.tableWrapper = ref}
           style={{maxWidth: tableWidth}}>
-          <div className={classNames('table-fixed-header', 'invoice-fixed-table', {'is-open': showModal})}>
-            <div className="table-fixed-header__container" style={{maxHeight: tableHeight}}>
-              <div className="table-fixed-header__header-border" />
+          <div className={classNames('table__fixed-header', 'invoice-fixed-table', {'is-open': showModal})}>
+            <div className="table__fixed-header_wrapper" style={{maxHeight: tableHeight}}>
+              <div className="table__fixed-header_header-border" />
               <table
                 ref={(ref) => this.tableElement = ref}>
                 <thead>
@@ -207,9 +234,9 @@ class InvoicesTable extends Component<Props, State> {
                     </tr>
                   }
                 </thead>
-                {invoices && !!invoices.length &&
+                {sortedInvoices && !!sortedInvoices.length &&
                   <tbody>
-                    {invoices.map((invoice, index) => {
+                    {sortedInvoices.map((invoice, index) => {
                       return (
                         <tr
                           className={classNames({'selected': selectedInvoiceIndex === index})}
@@ -253,7 +280,7 @@ class InvoicesTable extends Component<Props, State> {
                     })}
                   </tbody>
                 }
-                {!invoices || !invoices.length && <tbody><tr className='no-data'><td colSpan={showAllColumns ? 11 : 4}>Ei laskuja</td></tr></tbody>}
+                {!sortedInvoices || !sortedInvoices.length && <tbody><tr className='no-data'><td colSpan={showAllColumns ? 11 : 4}>Ei laskuja</td></tr></tbody>}
               </table>
             </div>
           </div>

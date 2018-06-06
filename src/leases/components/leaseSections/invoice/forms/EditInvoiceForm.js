@@ -12,6 +12,7 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceSharePercentage} from '$src/invoices/helpers';
+import {getContentTenantItem} from '$src/leases/helpers';
 import {
   formatDate,
   formatNumber,
@@ -210,7 +211,7 @@ const EditInvoiceForm = ({
           {!!rows.length &&
             <div>
               {rows.map((row) => {
-                const contact = row.tenant;
+                const contact = get(getContentTenantItem(row.tenant), 'contact');
                 return (
                   <Row key={row.id}>
                     <Column small={4} medium={5}><p>{getContactFullName(contact) || '-'}</p></Column>
