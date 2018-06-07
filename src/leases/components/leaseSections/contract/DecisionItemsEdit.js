@@ -52,7 +52,7 @@ const DecisionItemsEdit = ({attributes, fields}: Props) =>
                 fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
                 name={`${decision}.decision_date`}
                 overrideValues={{
-                  label: 'Päätöspäivämäärä',
+                  label: 'Päätöspvm',
                 }}
               />
             </Column>
@@ -107,9 +107,9 @@ const DecisionItemsEdit = ({attributes, fields}: Props) =>
     <Row>
       <Column>
         <AddButton
-          label='Lisää uusi päätös'
+          label='Lisää päätös'
           onClick={() => fields.push({})}
-          title='Lisää uusi päätös'
+          title='Lisää päätös'
         />
       </Column>
     </Row>

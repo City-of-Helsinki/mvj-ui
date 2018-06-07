@@ -48,7 +48,7 @@ const NewInvoiceForm = ({
       <FormSection>
         <WhiteBoxEdit>
           <BoxContentWrapper>
-            <h3>Luo uusi lasku</h3>
+            <h3>Luo lasku</h3>
             <CloseButton
               className="position-topright"
               onClick={() => onClose()}
@@ -115,7 +115,6 @@ const NewInvoiceForm = ({
                   </Column>
                   <Column small={6}>
                     <FormField
-                      className='with-dash'
                       fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
                       name='billing_period_end_date'
                       overrideValues={{

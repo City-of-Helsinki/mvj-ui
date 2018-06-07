@@ -701,8 +701,8 @@ export const getContentRents = (lease: Object) => {
       is_active: get(rent, 'is_active'),
       due_dates: getContentRentDueDate(rent),
       fixed_initial_year_rents: getContentFixedInitialYearRents(rent),
-      contract_rents: getContentContractRents(rent).sort(sortByStartDateDesc),
-      index_adjusted_rents: getContentIndexAdjustedRents(rent).sort(sortByStartDateDesc),
+      contract_rents: getContentContractRents(rent),
+      index_adjusted_rents: getContentIndexAdjustedRents(rent),
       rent_adjustments: getContentRentAdjustments(rent),
       payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
     };

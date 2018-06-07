@@ -59,7 +59,7 @@ const DecisionConditionsEdit = ({
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
                     name={`${condition}.supervision_date`}
                     overrideValues={{
-                      label: 'Valvonta päivämäärä',
+                      label: 'Valvontapvm',
                     }}
                   />
                 </Column>
@@ -68,7 +68,7 @@ const DecisionConditionsEdit = ({
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
                     name={`${condition}.supervised_date`}
                     overrideValues={{
-                      label: 'Valvottu päivämäärä',
+                      label: 'Valvottu pvm',
                     }}
                   />
                 </Column>

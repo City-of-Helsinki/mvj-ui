@@ -126,7 +126,6 @@ const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRents
               </Column>
               <Column small={2} medium={2} large={1}>
                 <FormField
-                  className='with-dash'
                   fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}
                   name={`${rent}.end_date`}
                   overrideValues={{
@@ -211,7 +210,6 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
-            className='with-dash'
             fieldAttributes={get(attributes, 'rents.child.children.end_date')}
             name='end_date'
             overrideValues={{
@@ -320,24 +318,22 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
             />
           </Column>
           <Column small={12} medium={4} large={2}>
-            <label>Tasaus pvm</label>
             <Row>
               <Column small={6}>
                 <FormField
                   fieldAttributes={get(attributes, 'rents.child.children.equalization_start_date')}
                   name='equalization_start_date'
                   overrideValues={{
-                    label: '',
+                    label: 'Tasaus alkupvm',
                   }}
                 />
               </Column>
               <Column small={6}>
                 <FormField
-                  className='with-dash'
                   fieldAttributes={get(attributes, 'rents.child.children.equalization_end_date')}
                   name='equalization_end_date'
                   overrideValues={{
-                    label: '',
+                    label: 'Tasaus loppupvm',
                   }}
                 />
               </Column>
@@ -394,7 +390,6 @@ const BasicInfoOneTime = ({attributes}: Props) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
-            className='with-dash'
             fieldAttributes={get(attributes, 'rents.child.children.end_date')}
             name='end_date'
             overrideValues={{
@@ -451,7 +446,6 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
-            className='with-dash'
             fieldAttributes={get(attributes, 'rents.child.children.end_date')}
             name='end_date'
             overrideValues={{
@@ -528,7 +522,6 @@ const BasicInfoFree = ({attributes}: Props) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
-            className='with-dash'
             fieldAttributes={get(attributes, 'rents.child.children.end_date')}
             name='end_date'
             overrideValues={{

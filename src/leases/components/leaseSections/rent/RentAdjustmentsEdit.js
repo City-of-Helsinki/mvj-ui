@@ -70,7 +70,6 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                       </Column>
                       <Column small={6}>
                         <FormField
-                          className='with-dash'
                           fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.end_date')}
                           name={`${discount}.end_date`}
                           overrideValues={{

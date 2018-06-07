@@ -56,7 +56,7 @@ const renderContractChanges = ({
                       fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.signing_date')}
                       name={`${change}.signing_date`}
                       overrideValues={{
-                        label: 'Allekirjoituspäivä',
+                        label: 'Allekirjoituspvm',
                       }}
                     />
                   </Column>
@@ -261,7 +261,7 @@ const ContractItemsEdit = ({
                   fieldAttributes={get(attributes, 'contracts.child.children.signing_date')}
                   name={`${contract}.signing_date`}
                   overrideValues={{
-                    label: 'Allekirjoituspäivämäärä',
+                    label: 'Allekirjoituspvm',
                   }}
                 />
               </Column>
@@ -377,9 +377,9 @@ const ContractItemsEdit = ({
     <Row>
       <Column>
         <AddButton
-          label='Lisää uusi sopimus'
+          label='Lisää sopimus'
           onClick={() => fields.push({})}
-          title='Lisää uusi sopimus'
+          title='Lisää sopimus'
         />
       </Column>
     </Row>

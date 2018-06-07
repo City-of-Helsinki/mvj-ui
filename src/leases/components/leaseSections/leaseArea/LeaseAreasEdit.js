@@ -212,13 +212,13 @@ const LeaseAreaItems = ({
       <Row>
         <Column>
           <AddButton
-            label='Lisää uusi kohde'
+            label='Lisää kohde'
             onClick={() => fields.push({
               addresses: [{}],
               location: AreaLocation.SURFACE,
 
             })}
-            title='Lisää uusi kohde'
+            title='Lisää kohde'
           />
         </Column>
       </Row>

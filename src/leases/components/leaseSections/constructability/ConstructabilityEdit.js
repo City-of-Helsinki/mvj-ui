@@ -211,7 +211,7 @@ const renderAreas = ({
                     fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_date')}
                     name={`${area}.polluted_land_rent_condition_date`}
                     overrideValues={{
-                      label: 'Päivämäärä',
+                      label: 'Pvm',
                     }}
                   />
                 </Column>
@@ -282,7 +282,7 @@ const renderAreas = ({
                     fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_signing_date')}
                     name={`${area}.constructability_report_signing_date`}
                     overrideValues={{
-                      label: 'Allekirjoituspäivämäärä',
+                      label: 'Allekirjoituspvm',
                     }}
                   />
                 </Column>

@@ -78,7 +78,7 @@ class LeaseInfoEdit extends Component<Props, State> {
               fieldAttributes={get(attributes, 'start_date')}
               name='start_date'
               overrideValues={{
-                label: 'Alkupäivämäärä',
+                label: 'Alkupvm',
               }}
             />
           </Column>
@@ -88,7 +88,7 @@ class LeaseInfoEdit extends Component<Props, State> {
               fieldAttributes={get(attributes, 'end_date')}
               name='end_date'
               overrideValues={{
-                label: 'Loppupäivämäärä',
+                label: 'Loppupvm',
               }}
             />
           </Column>

@@ -91,7 +91,7 @@ const TenantItemsEdit = ({
                                 isNew: true,
                               });
                               showContactModal();
-                            }}>Luo uusi asiakas</a>
+                            }}>Luo asiakas</a>
                           </div>
                         </Column>
                       </Row>
@@ -135,7 +135,6 @@ const TenantItemsEdit = ({
                     </Column>
                     <Column small={6} medium={3} large={2}>
                       <FormField
-                        className='with-dash'
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
                         name={`${tenant}.tenant.end_date`}
                         overrideValues={{
@@ -200,9 +199,9 @@ const TenantItemsEdit = ({
         <Column>
           <AddButton
             className='no-margin'
-            label='Lisää uusi vuokralainen'
+            label='Lisää vuokralainen'
             onClick={() => fields.push({})}
-            title='Lisää uusi vuokralainen'
+            title='Lisää vuokralainen'
           />
         </Column>
       </Row>

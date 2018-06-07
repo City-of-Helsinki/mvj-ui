@@ -156,7 +156,7 @@ const ConstructabilityItem = ({
               <p>{getLabelOfOption(pollutedLandConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <label>Päivämäärä</label>
+              <label>Pvm</label>
               <p>{formatDate(area.polluted_land_rent_condition_date) || '–'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
@@ -203,7 +203,7 @@ const ConstructabilityItem = ({
               <p>{getLabelOfOption(constructabilityReportStateOptions, area.constructability_report_investigation_state) || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <label>Allekirjoituspäivämäärä</label>
+              <label>Allekirjoituspvm</label>
               <p>{formatDate(area.constructability_report_signing_date) || '–'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>

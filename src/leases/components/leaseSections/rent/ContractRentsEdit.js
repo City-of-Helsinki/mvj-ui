@@ -109,24 +109,22 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                     </Column>
                   }
                   <Column small={6} medium={4} large={2}>
-                    <FormFieldLabel>Voimassaoloaika</FormFieldLabel>
                     <Row>
                       <Column small={6}>
                         <FormField
                           fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.start_date')}
                           name={`${rent}.start_date`}
                           overrideValues={{
-                            label: '',
+                            label: 'Alkupvm',
                           }}
                         />
                       </Column>
                       <Column small={6}>
                         <FormField
-                          className='with-dash'
                           fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.end_date')}
                           name={`${rent}.end_date`}
                           overrideValues={{
-                            label: '',
+                            label: 'Loppupvm',
                           }}
                         />
                       </Column>

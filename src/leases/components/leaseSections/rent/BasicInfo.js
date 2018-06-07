@@ -7,7 +7,6 @@ import ListItems from '$components/content/ListItems';
 import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {
   formatDate,
-  formatDateRange,
   formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
@@ -98,8 +97,17 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
         }
         {(rent.equalization_start_date || rent.equalization_end_date) &&
           <Column small={12} medium={4} large={2}>
-            <label>Tasaus pvm</label>
-            <p>{formatDateRange(rent.equalization_start_date, rent.equalization_end_date) || '-'}</p>
+            <Row>
+              <Column small={6}>
+                <label>Tasaus alkupvm</label>
+                <p>{formatDate(rent.equalization_start_date) || '-'}</p>
+              </Column>
+              <Column small={6}>
+                <label>Tasaus loppupvm</label>
+                <p>{formatDate(rent.equalization_end_date) || '-'}</p>
+              </Column>
+            </Row>
+
           </Column>
         }
       </Row>

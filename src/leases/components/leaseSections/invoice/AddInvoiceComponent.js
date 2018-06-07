@@ -49,9 +49,9 @@ class AddInvoiceComponent extends Component <Props> {
             <Button
               className='button-green no-margin'
               disabled={editMode}
-              label='+ Luo uusi lasku'
+              label='+ Luo lasku'
               onClick={this.handleOnAdd}
-              title='Luo uusi lasku'
+              title='Luo lasku'
             />
             {showStartInvoicingButton
               ? (

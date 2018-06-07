@@ -467,26 +467,39 @@ export const getDecisionById = (decisions: Array<Object>, decisionId: number) =>
   return decisions.find((decision) => decision.id === decisionId);
 };
 
-export const sortByLabelAsc = (a, b) => {
-  const keyA = a.label ? a.label.toLowerCase() : '',
-    keyB = b.label ? b.label.toLowerCase() : '';
-  if(keyA < keyB) return -1;
+export const sortNumberByKeyAsc = (a, b, key) => {
+  const keyA = a[key],
+    keyB = b[key];
+  return Number(keyA) - Number(keyB);
+};
+
+export const sortNumberByKeyDesc = (a, b, key) => {
+  const keyA = a[key],
+    keyB = b[key];
+  return Number(keyB) - Number(keyA);
+};
+
+export const sortStringByKeyAsc = (a, b, key) => {
+  const keyA = a[key] ? a[key].toLowerCase() : '',
+    keyB = b[key] ? b[key].toLowerCase() : '';
   if(keyA > keyB) return 1;
+  if(keyA < keyB) return -1;
   return 0;
 };
 
-export const sortByStartDateDesc = (a, b) => {
-  const keyA = a.start_date ? a.start_date : '',
-    keyB = b.start_date ? b.start_date : '';
-  if(keyA < keyB) return 1;
+export const sortStringByKeyDesc = (a, b, key) => {
+  const keyA = a[key] ? a[key].toLowerCase() : '',
+    keyB = b[key] ? b[key].toLowerCase() : '';
   if(keyA > keyB) return -1;
+  if(keyA < keyB) return 1;
   return 0;
 };
 
-export const sortByDueDateDesc = (a, b) => {
-  const keyA = a.due_date ? a.due_date : '',
-    keyB = b.due_date ? b.due_date : '';
-  if(keyA < keyB) return 1;
-  if(keyA > keyB) return -1;
-  return 0;
-};
+export const sortByLabelAsc = (a, b) =>
+  sortStringByKeyDesc(a, b, 'label');
+
+export const sortByStartDateDesc = (a, b) =>
+  sortStringByKeyDesc(a, b, 'start_date');
+
+export const sortByDueDateDesc = (a, b) =>
+  sortStringByKeyDesc(a, b, 'due_date');

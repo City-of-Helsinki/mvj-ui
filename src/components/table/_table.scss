@@ -57,6 +57,24 @@
     table-layout: fixed;
   }
 
+  &__sortable {
+    &_header-link {
+      cursor: pointer;
+
+      div {
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    &_sort-icon {
+      fill: $black;
+      margin-left: 10px;
+      height: 16px;
+      width: 16px;
+    }
+  }
+
   &.secondary-table {
     border: 1px solid #d7d5d5;
     margin: 0;

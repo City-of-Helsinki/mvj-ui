@@ -8,6 +8,8 @@ import {
   formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
+  sortNumberByKeyAsc,
+  sortNumberByKeyDesc,
 } from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
@@ -26,13 +28,14 @@ const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
     <Table
       data={indexAdjustedRents}
       dataKeys={[
-        {key: 'amount', label: 'Indeksitarkastettu vuokra (€)', renderer: (val) => formatNumber(val)},
+        {key: 'amount', label: 'Indeksitarkastettu vuokra (€)', renderer: (val) => formatNumber(val), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val)},
-        {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val)},
+        {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
         {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
-        {key: 'factor', label: 'Laskentakerroin'},
+        {key: 'factor', label: 'Laskentakerroin', renderer: (val) => formatNumber(val), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
       ]}
       fixedHeader
+      sortable
       tableFixedLayout
     />
   );
