@@ -191,9 +191,9 @@ class ContactListPage extends Component<Props, State> {
           buttonComponent={
             <Button
               className='no-margin'
-              label='Luo uusi asiakas'
+              label='Luo asiakas'
               onClick={() => this.handleCreateButtonClick()}
-              title='Luo uusi asiakas'
+              title='Luo asiakas'
             />
           }
           searchComponent={

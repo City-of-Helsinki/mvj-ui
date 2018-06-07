@@ -92,7 +92,7 @@ const OtherTenantItemsEdit = ({
                                 isNew: true,
                               });
                               showContactModal();
-                            }}>Luo uusi asiakas</a>
+                            }}>Luo asiakas</a>
                           </div>
                         </Column>
                       </Row>

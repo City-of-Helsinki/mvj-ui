@@ -91,7 +91,7 @@ const TenantItemsEdit = ({
                                 isNew: true,
                               });
                               showContactModal();
-                            }}>Luo uusi asiakas</a>
+                            }}>Luo asiakas</a>
                           </div>
                         </Column>
                       </Row>
@@ -199,9 +199,9 @@ const TenantItemsEdit = ({
         <Column>
           <AddButton
             className='no-margin'
-            label='Lisää uusi vuokralainen'
+            label='Lisää vuokralainen'
             onClick={() => fields.push({})}
-            title='Lisää uusi vuokralainen'
+            title='Lisää vuokralainen'
           />
         </Column>
       </Row>

@@ -377,9 +377,9 @@ const ContractItemsEdit = ({
     <Row>
       <Column>
         <AddButton
-          label='Lisää uusi sopimus'
+          label='Lisää sopimus'
           onClick={() => fields.push({})}
-          title='Lisää uusi sopimus'
+          title='Lisää sopimus'
         />
       </Column>
     </Row>

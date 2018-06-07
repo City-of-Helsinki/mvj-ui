@@ -107,9 +107,9 @@ const DecisionItemsEdit = ({attributes, fields}: Props) =>
     <Row>
       <Column>
         <AddButton
-          label='Lisää uusi päätös'
+          label='Lisää päätös'
           onClick={() => fields.push({})}
-          title='Lisää uusi päätös'
+          title='Lisää päätös'
         />
       </Column>
     </Row>

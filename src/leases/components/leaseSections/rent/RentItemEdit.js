@@ -130,9 +130,9 @@ class RentItemEdit extends Component<Props> {
         <Row>
           <Column>
             <AddButton
-              label='Lisää uusi vuokra'
+              label='Lisää vuokra'
               onClick={() => fields.push({})}
-              title='Lisää uusi vuokra'
+              title='Lisää vuokra'
             />
           </Column>
         </Row>

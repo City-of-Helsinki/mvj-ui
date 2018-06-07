@@ -50,13 +50,13 @@
       "billingInformation": "Laskutustiedot",
       "contactPerson": "Yhteyshenkilö",
       "editTenant": "Muokkaa vuokralaisen tietoja",
-      "addTenant": "Lisää uusi vuokralainen"
+      "addTenant": "Lisää vuokralainen"
     },
     "leases": {
       "title": "Vuokrat",
       "single": "Vuokra",
       "editLease": "Muokkaa vuokraa",
-      "addLease": "Lisää uusi vuokra",
+      "addLease": "Lisää vuokra",
       "types": {
         "fixed": "Kiinteä summa",
         "index": "Sidottu indeksiin",
@@ -69,7 +69,7 @@
       "title": "Ehdot",
       "single": "Ehto",
       "editCondition": "Muokkaa ehtoa",
-      "addCondition": "Lisää uusi ehto",
+      "addCondition": "Lisää ehto",
       "types": {
         "special_condition": "Erikoisehto",
         "hitas": "Hitas",

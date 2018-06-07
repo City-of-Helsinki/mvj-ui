@@ -48,7 +48,7 @@ const NewInvoiceForm = ({
       <FormSection>
         <WhiteBoxEdit>
           <BoxContentWrapper>
-            <h3>Luo uusi lasku</h3>
+            <h3>Luo lasku</h3>
             <CloseButton
               className="position-topright"
               onClick={() => onClose()}
