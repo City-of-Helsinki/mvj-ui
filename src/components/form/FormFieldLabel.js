@@ -7,6 +7,6 @@ type Props = {
 }
 
 const FormFieldLabel = ({children, required = false}: Props) =>
-  <label className='form-field__label'>{children}{required &&<i className='required'> *</i>}</label>;
+  <label className='form-field__label' title={children ? `${children}${required ? ' *' : ''}` : ''}>{children}{required &&<i className='required'> *</i>}</label>;
 
 export default FormFieldLabel;

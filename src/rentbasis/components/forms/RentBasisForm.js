@@ -217,7 +217,6 @@ class RentBasisForm extends Component<Props> {
                 </Column>
                 <Column small={6}>
                   <FormField
-                    className='with-dash'
                     fieldAttributes={get(attributes, 'end_date')}
                     name='end_date'
                     overrideValues={{

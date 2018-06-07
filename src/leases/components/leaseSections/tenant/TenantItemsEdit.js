@@ -135,7 +135,6 @@ const TenantItemsEdit = ({
                     </Column>
                     <Column small={6} medium={3} large={2}>
                       <FormField
-                        className='with-dash'
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
                         name={`${tenant}.tenant.end_date`}
                         overrideValues={{

@@ -115,7 +115,6 @@ const NewInvoiceForm = ({
                   </Column>
                   <Column small={6}>
                     <FormField
-                      className='with-dash'
                       fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
                       name='billing_period_end_date'
                       overrideValues={{

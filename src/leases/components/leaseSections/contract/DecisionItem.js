@@ -28,7 +28,7 @@ const DecisionItem = ({
         <p>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '–'}</p>
       </Column>
       <Column small={6} medium={4} large={2}>
-        <label>Päätöspäivämäärä</label>
+        <label>Päätöspvm</label>
         <p>{formatDate(decision.decision_date) || '–'}</p>
       </Column>
       <Column small={6} medium={4} large={2}>
@@ -72,7 +72,7 @@ const DecisionItem = ({
                     <p>{getLabelOfOption(conditionTypeOptions, condition.type) || '–'}</p>
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <label>Valvonta päivämäärä</label>
+                    <label>Valvontapvm</label>
                     {condition.supervision_date
                       ? (
                         <p className={
@@ -84,7 +84,7 @@ const DecisionItem = ({
                     }
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <label>Valvottu päivämäärä</label>
+                    <label>Valvottu pvm</label>
                     {condition.supervised_date
                       ? (
                         <p className={

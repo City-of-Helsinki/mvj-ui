@@ -89,7 +89,7 @@ const PlotItem = ({attributes, plot}: Props) => {
           <p>{formatNumber(plot.section_area) || '-'}</p>
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Rekisteröintipäivä</FormFieldLabel>
+          <FormFieldLabel>Rekisteröintipvm</FormFieldLabel>
           <p>{formatDate(plot.registration_date) || '-'}</p>
         </Column>
         <Column small={12} medium={6} large={3}>

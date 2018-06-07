@@ -18,7 +18,7 @@ const InspectionItem = ({inspection}: Props) => {
           <p>{inspection.inspector || '–'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Valvonta päivämäärä</label>
+          <label>Valvontapvm</label>
           {inspection.supervision_date
             ? (
               <p className={classNames({'alert': inspection.supervision_date && !inspection.supervised_date})}>
@@ -29,7 +29,7 @@ const InspectionItem = ({inspection}: Props) => {
           }
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Valvottu päivämäärä</label>
+          <label>Valvottu pvm</label>
           {inspection.supervised_date
             ? (
               <p className={classNames({'success': inspection.supervised_date})}>

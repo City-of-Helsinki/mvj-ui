@@ -52,7 +52,7 @@ const DecisionItemsEdit = ({attributes, fields}: Props) =>
                 fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
                 name={`${decision}.decision_date`}
                 overrideValues={{
-                  label: 'Päätöspäivämäärä',
+                  label: 'Päätöspvm',
                 }}
               />
             </Column>

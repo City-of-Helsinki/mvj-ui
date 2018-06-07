@@ -35,11 +35,11 @@ const LeaseInfo = ({attributes, currentLease}: Props) => {
           <p>{getLabelOfOption(stateOptions, leaseInfo.state) || '-'}</p>
         </Column>
         <Column>
-          <FormFieldLabel className='mvj-form-field-label'>Alkupäivämäärä</FormFieldLabel>
+          <FormFieldLabel className='mvj-form-field-label'>Alkupvm</FormFieldLabel>
           <p>{formatDate(leaseInfo.start_date) || '-'}</p>
         </Column>
         <Column>
-          <FormFieldLabel>Loppupäivämäärä</FormFieldLabel>
+          <FormFieldLabel>Loppupvm</FormFieldLabel>
           <p>{formatDate(leaseInfo.end_date) || '-'}</p>
         </Column>
         <Column>

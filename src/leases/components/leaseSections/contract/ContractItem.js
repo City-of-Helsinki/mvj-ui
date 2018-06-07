@@ -32,7 +32,7 @@ const ContractItem = ({contract, decisionOptions, decisions, typeOptions}: Props
           <p>{contract.contract_number || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Allekirjoituspäivämäärä</label>
+          <label>Allekirjoituspvm</label>
           <p>{formatDate(contract.signing_date) || '–'}</p>
         </Column>
         <Column small={6} medium={12} large={6}>
@@ -139,7 +139,7 @@ const ContractItem = ({contract, decisionOptions, decisions, typeOptions}: Props
                   className='no-border-on-first-child'>
                   <Row>
                     <Column small={6} medium={4} large={2}>
-                      <label>Allekirjoituspäivämäärä</label>
+                      <label>Allekirjoituspvm</label>
                       <p>{formatDate(change.signing_date) || '–'}</p>
                     </Column>
                     <Column small={6} medium={4} large={2}>

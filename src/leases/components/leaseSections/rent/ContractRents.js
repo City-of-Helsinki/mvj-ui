@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 
 import {RentTypes} from '$src/leases/enums';
 import {
-  formatDateRange,
+  formatDate,
   formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
@@ -55,7 +55,8 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
           {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
             <th>Uusi perusvuosi vuokra</th>
           }
-          <th>Voimassaoloaika</th>
+          <th>Alkupvm</th>
+          <th>Loppupvm</th>
         </tr>
       </thead>
       <tbody>
@@ -73,7 +74,8 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
               {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
                 <td>{rent.base_year_rent ? `${formatNumber(rent.base_year_rent)} €` : '-'}</td>
               }
-              <td>{formatDateRange(rent.start_date, rent.end_date) || '-'}</td>
+              <td>{formatDate(rent.start_date) || '-'}</td>
+              <td>{formatDate(rent.end_date) || '-'}</td>
             </tr>
           );
         })}

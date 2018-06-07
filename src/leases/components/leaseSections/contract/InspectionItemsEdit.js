@@ -49,7 +49,7 @@ const InspectionItemsEdit = ({
                   fieldAttributes={get(attributes, 'inspections.child.children.supervision_date')}
                   name={`${inspection}.supervision_date`}
                   overrideValues={{
-                    label: 'Valvonta päivämäärä',
+                    label: 'Valvontapvm',
                   }}
                 />
               </Column>
@@ -58,7 +58,7 @@ const InspectionItemsEdit = ({
                   fieldAttributes={get(attributes, 'inspections.child.children.supervised_date')}
                   name={`${inspection}.supervised_date`}
                   overrideValues={{
-                    label: 'Valvottu päivämäärä',
+                    label: 'Valvottu pvm',
                   }}
                 />
               </Column>

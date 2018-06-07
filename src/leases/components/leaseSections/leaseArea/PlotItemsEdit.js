@@ -167,7 +167,7 @@ const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.registration_date')}
                       name={`${plot}.registration_date`}
                       overrideValues={{
-                        label: 'Rekisteröintipäivä',
+                        label: 'Rekisteröintipvm',
                       }}
                     />
                   </Column>

@@ -113,7 +113,6 @@ const OtherTenantItemsEdit = ({
                     </Column>
                     <Column small={6} medium={3} large={2}>
                       <FormField
-                        className='no-margin'
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.start_date')}
                         name={`${tenant}.start_date`}
                         overrideValues={{
@@ -123,7 +122,6 @@ const OtherTenantItemsEdit = ({
                     </Column>
                     <Column small={6} medium={3} large={2}>
                       <FormField
-                        className='with-dash no-margin'
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
                         name={`${tenant}.end_date`}
                         overrideValues={{
