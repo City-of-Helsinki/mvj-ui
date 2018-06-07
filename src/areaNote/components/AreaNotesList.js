@@ -6,51 +6,51 @@ import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import Button from '$components/button/Button';
-import EditableMap from '$src/rememberableTerms/components/EditableMap';
+import EditableMap from '$src/areaNote/components/EditableMap';
 import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
-import {fetchRememberableTermList, hideEditMode, initializeRememberableTerm, showEditMode} from '$src/rememberableTerms/actions';
+import {fetchAreaNoteList, hideEditMode, initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {FormNames} from '$src/rememberableTerms/enums';
+import {FormNames} from '$src/areaNote/enums';
 import {getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getIsEditMode, getRememberableTermList} from '$src/rememberableTerms/selectors';
+import {getAreaNoteList, getIsEditMode} from '$src/areaNote/selectors';
 
-import type {RememberableTermList} from '$src/rememberableTerms/types';
+import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
-  initialize: Function,
-  fetchRememberableTermList: Function,
+  areaNotes: AreaNoteList,
+  fetchAreaNoteList: Function,
   hideEditMode: Function,
-  initializeRememberableTerm: Function,
+  initialize: Function,
+  initializeAreaNote: Function,
   isEditMode: boolean,
   plansUnderground: ?Array<Object>,
   receiveTopNavigationSettings: Function,
-  rememberableTerms: RememberableTermList,
   router: Object,
   showEditMode: Function,
 }
 
-class RememberableTermsList extends Component<Props> {
+class AreaNotesList extends Component<Props> {
   static contextTypes = {
     router: PropTypes.object,
   };
 
   componentWillMount() {
     const {
-      fetchRememberableTermList,
+      fetchAreaNoteList,
       receiveTopNavigationSettings,
       router: {location: {query}},
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('rememberableTerms'),
+      linkUrl: getRouteById('areaNotes'),
       pageTitle: 'Muistettavat ehdot',
       showSearch: false,
     });
 
-    fetchRememberableTermList(getSearchQuery(query));
+    fetchAreaNoteList(getSearchQuery(query));
   }
 
   componentDidMount() {
@@ -64,11 +64,11 @@ class RememberableTermsList extends Component<Props> {
   }
 
   handleCreateButtonClick = () => {
-    this.props.initializeRememberableTerm({
-      comment: '',
+    this.props.initializeAreaNote({
       geoJSON: {},
       id: -1,
       isNew: true,
+      note: '',
     });
 
     this.props.showEditMode();
@@ -76,12 +76,12 @@ class RememberableTermsList extends Component<Props> {
 
   handleSearchChange = (query) => {
     const {router} = this.context;
-    const {fetchRememberableTermList} = this.props;
+    const {fetchAreaNoteList} = this.props;
 
-    fetchRememberableTermList(getSearchQuery(query));
+    fetchAreaNoteList(getSearchQuery(query));
 
     return router.push({
-      pathname: getRouteById('rememberableTerms'),
+      pathname: getRouteById('areaNotes'),
       query,
     });
   }
@@ -121,17 +121,17 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        areaNotes: getAreaNoteList(state),
         isEditMode: getIsEditMode(state),
-        rememberableTerms: getRememberableTermList(state),
       };
     },
     {
-      fetchRememberableTermList,
+      fetchAreaNoteList,
       hideEditMode,
       initialize,
-      initializeRememberableTerm,
+      initializeAreaNote,
       receiveTopNavigationSettings,
       showEditMode,
     },
   ),
-)(RememberableTermsList);
+)(AreaNotesList);

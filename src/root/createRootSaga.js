@@ -1,6 +1,7 @@
 // @flow
 
 import {all, fork} from 'redux-saga/effects';
+import areaNoteSaga from '../areaNote/saga';
 import authSaga from '../auth/saga';
 import billingPeriodsSaga from '../billingPeriods/saga';
 import commentSaga from '../comments/saga';
@@ -12,7 +13,6 @@ import invoiceSaga from '../invoices/saga';
 import leaseSaga from '../leases/saga';
 import mapDataSaga from '../mapData/saga';
 import noticePeriodSaga from '../noticePeriod/saga';
-import rememberableTermSaga from '../rememberableTerms/saga';
 import rentBasisSaga from '../rentbasis/saga';
 import rentForPeriodSaga from '../rentForPeriod/saga';
 import userSaga from '../users/saga';
@@ -21,6 +21,7 @@ export default () =>
   // $FlowFixMe
   function* rootSaga() {
     yield all([
+      fork(areaNoteSaga),
       fork(authSaga),
       fork(billingPeriodsSaga),
       fork(commentSaga),
@@ -32,7 +33,6 @@ export default () =>
       fork(leaseSaga),
       fork(mapDataSaga),
       fork(noticePeriodSaga),
-      fork(rememberableTermSaga),
       fork(rentBasisSaga),
       fork(rentForPeriodSaga),
       fork(userSaga),

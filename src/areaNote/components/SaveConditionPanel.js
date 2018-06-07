@@ -17,21 +17,33 @@ type Props = {
 }
 
 type State = {
-  comment: string,
+  note: string,
 }
 
 class SaveConditionPanel extends Component<Props, State> {
   state = {
-    comment: '',
+    note: '',
   }
 
-  setCommentField = (comment: string) => {
-    this.setState({comment: comment});
+  setNoteField = (note: string) => {
+    this.setState({note: note});
+  }
+
+  handleFieldChange = (e: any) => {
+    this.setState({
+      note: e.target.value,
+    });
+  }
+
+  handleSave = () => {
+    const {onSave} = this.props;
+    const {note} = this.state;
+    onSave(note);
   }
 
   render() {
-    const {disableDelete, disableSave, onCancel, onDelete, onSave, show, title = 'Luo muistettava ehto'} = this.props;
-    const {comment} = this.state;
+    const {disableDelete, disableSave, onCancel, onDelete, show, title = 'Luo muistettava ehto'} = this.props;
+    const {note} = this.state;
 
     return (
       <div className={classNames('save-condition-panel', {'is-panel-open': show})}>
@@ -41,10 +53,10 @@ class SaveConditionPanel extends Component<Props, State> {
             <Column>
               <TextAreaInput
                 className="no-margin"
-                onChange={(e) => this.setState({comment: e.target.value})}
+                onChange={this.handleFieldChange}
                 placeholder='Kirjoita huomautus'
                 rows={4}
-                value={comment}
+                value={note}
               />
             </Column>
           </Row>
@@ -68,7 +80,7 @@ class SaveConditionPanel extends Component<Props, State> {
                   className='button-green'
                   disabled={disableSave}
                   label='Tallenna'
-                  onClick={() => onSave(this.state.comment)}
+                  onClick={this.handleSave}
                   title='Tallenna muistettava ehto'
                 />
               </Column>

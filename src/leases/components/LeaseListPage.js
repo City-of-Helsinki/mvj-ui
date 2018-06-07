@@ -11,7 +11,7 @@ import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
-import EditableMap from '$src/rememberableTerms/components/EditableMap';
+import EditableMap from '$src/areaNote/components/EditableMap';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import MapIcon from '$components/icons/MapIcon';
@@ -23,42 +23,41 @@ import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
 import TableIcon from '$components/icons/TableIcon';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
-import {getRouteById} from '$src/root/routes';
+import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {
   createLease,
   fetchAttributes,
   fetchLeases,
 } from '$src/leases/actions';
-import {fetchRememberableTermList} from '$src/rememberableTerms/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContentLeases, getLeasesFilteredByDocumentType} from '$src/leases/helpers';
-import {formatDate, getSearchQuery} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {getRouteById} from '$src/root/routes';
+import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
   getAttributes,
   getIsFetching,
   getLeasesList,
 } from '$src/leases/selectors';
-import {getRememberableTermList} from '$src/rememberableTerms/selectors';
 
 import type {LeaseList} from '../types';
-import type {RememberableTermList} from '$src/rememberableTerms/types';
+import type {AreaNoteList} from '$src/areaNote/types';
 
 const PAGE_SIZE = 25;
 
 type Props = {
+  areaNotes: AreaNoteList,
   attributes: Object,
   createLease: Function,
+  fetchAreaNoteList: Function,
   fetchAttributes: Function,
   fetchLeases: Function,
-  fetchRememberableTermList: Function,
   initialize: Function,
   isFetching: boolean,
   leases: LeaseList,
   lessors: Array<Object>,
   router: Object,
   receiveTopNavigationSettings: Function,
-  rememberableTerms: RememberableTermList,
 }
 
 type State = {
@@ -83,9 +82,9 @@ class LeaseListPage extends Component<Props, State> {
   componentWillMount() {
     const {
       attributes,
+      fetchAreaNoteList,
       fetchAttributes,
       fetchLeases,
-      fetchRememberableTermList,
       receiveTopNavigationSettings,
     } = this.props;
     const {router: {location: {query}}} = this.props;
@@ -112,7 +111,7 @@ class LeaseListPage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
-    fetchRememberableTermList();
+    fetchAreaNoteList();
   }
 
   componentDidMount = () => {
@@ -210,11 +209,11 @@ class LeaseListPage extends Component<Props, State> {
       visualizationType,
     } = this.state;
     const {
+      areaNotes,
       attributes,
       createLease,
       leases: content,
       isFetching,
-      rememberableTerms,
     } = this.props;
     const leases = getContentLeases(content);
     const count = this.getLeasesCount(content);
@@ -288,7 +287,7 @@ class LeaseListPage extends Component<Props, State> {
             )}
             {visualizationType === 'map' && (
               <EditableMap
-                rememberableTerms={rememberableTerms}
+                areaNotes={areaNotes}
                 showEditTools={false}
               />
             )}
@@ -303,17 +302,17 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        areaNotes: getAreaNoteList(state),
         attributes: getAttributes(state),
         isFetching: getIsFetching(state),
         leases: getLeasesList(state),
-        rememberableTerms: getRememberableTermList(state),
       };
     },
     {
       createLease,
+      fetchAreaNoteList,
       fetchAttributes,
       fetchLeases,
-      fetchRememberableTermList,
       initialize,
       receiveTopNavigationSettings,
     },

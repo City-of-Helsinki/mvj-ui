@@ -1,6 +1,7 @@
 @import "./styles/fonts";
 @import "./styles/variables";
 @import "~foundation-sites/scss/foundation";
+@import '~react-leaflet-fullscreen/dist/styles.css';
 @import "styles/mixins";
 
 @include foundation-everything(true);
@@ -50,6 +51,7 @@
 // App
 @import "api/api";
 @import "app/app";
+@import "areaNote/components/save-condition-panel";
 @import "auth/components/login-page";
 @import "leases/components/createLease/create-lease";
 @import "leases/components/leaseSections/constructability/constructability";
@@ -62,7 +64,6 @@
 @import "leases/components/leaseSections/tenant/tenant-edit";
 @import "leases/components/lease-page";
 @import "leases/components/search/search";
-@import "rememberableTerms/components/save-condition-panel";
 @import "rentbasis/components/rent-basis-page";
 
 @import "foundation/styles";

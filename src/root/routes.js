@@ -4,6 +4,7 @@ import {Route, IndexRedirect} from 'react-router';
 
 import ErrorPage from '$src/errorPage/ErrorPage';
 import App from '$src/app/App';
+import AreaNotesList from '$src/areaNote/components/AreaNotesList';
 import CallbackPage from '$src/auth/components/CallbackPage';
 import ContactListPage from '$src/contacts/components/ContactsListPage';
 import ContactPage from '$src/contacts/components/ContactPage';
@@ -14,12 +15,12 @@ import LeasePage from '$src/leases/components/LeasePage';
 import LoginPage from '$src/auth/components/LoginPage';
 import NewContactPage from '$src/contacts/components/NewContactPage';
 import NewRentBasisPage from '$src/rentbasis/components/NewRentBasisPage';
-import RememberableTermsList from '$src/rememberableTerms/components/RememberableTermsList';
 import RentBasisListPage from '$src/rentbasis/components/RentBasisListPage';
 import RentBasisPage from '$src/rentbasis/components/RentBasisPage';
 
 export const getRouteById = (id: string): string => {
   const routes = {
+    areaNotes: '/muistettavatehdot',
     callback: '/callback',
     contacts: '/asiakkaat',
     infillDevelopment: '/taydennysrakentaminen',
@@ -28,7 +29,6 @@ export const getRouteById = (id: string): string => {
     newContact: '/uusiasiakas',
     newRentBasis: '/uusivuokrausperuste',
     rentBasis: '/vuokrausperusteet',
-    rememberableTerms: '/muistettavatehdot',
   };
 
   return routes[id] ? routes[id] : '';
@@ -37,6 +37,7 @@ export const getRouteById = (id: string): string => {
 export default
 <Route path="/" component={App}>
   <IndexRedirect to={getRouteById('leases')} />
+  <Route path={getRouteById('areaNotes')} components={AreaNotesList} />
   <Route path={getRouteById('contacts')} components={ContactListPage} />
   <Route path={`${getRouteById('contacts')}/:contactId`} components={ContactPage}/>
   <Route path={getRouteById('newContact')} components={NewContactPage} />
@@ -44,7 +45,6 @@ export default
   <Route path={`${getRouteById('infillDevelopment')}/:infillDevelopmentId`} components={InfillDevelopmentPage} />
   <Route path={getRouteById('leases')} components={LeaseListPage} />
   <Route path={`${getRouteById('leases')}/:leaseId`} components={LeasePage}/>
-  <Route path={getRouteById('rememberableTerms')} components={RememberableTermsList} />
   <Route path={getRouteById('newRentBasis')} components={NewRentBasisPage} />
   <Route path={getRouteById('rentBasis')} components={RentBasisListPage} />
   <Route path={`${getRouteById('rentBasis')}/:rentBasisId`} components={RentBasisPage} />

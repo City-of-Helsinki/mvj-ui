@@ -3,24 +3,46 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {GeoJSON} from 'react-leaflet';
 
-import {initializeRememberableTerm, showEditMode} from '../actions';
-import {getRememberableTermsById} from '../helpers';
-import {getIsEditMode, getRememberableTermList} from '../selectors';
+import {initializeAreaNote, showEditMode} from '$src/areaNote/actions';
+import {convertAreaNoteListToGeoJson, convertFeatureForDraw} from '$src/areaNote/helpers';
 import {getCoordsToLatLng} from '$util/helpers';
+import {getAreaNoteList, getIsEditMode} from '$src/areaNote/selectors';
 
+import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
   allowEditing?: boolean,
-  initializeRememberableTerm: Function,
+  areaNotes: AreaNoteList,
+  initializeAreaNote: Function,
   isEditMode: boolean,
-  rememberableTerms: Object,
   showEditMode: Function,
 }
 
-class RememberableTermsLayer extends Component<Props> {
+type State = {
+  areaNotes: AreaNoteList,
+  areaNotesGeoJson: Object,
+}
+
+class AreaNotesLayer extends Component<Props, State> {
   static defaultProps = {
     allowEditing: false,
   }
+
+  state = {
+    areaNotes: [],
+    areaNotesGeoJson: {},
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if(props.areaNotes !== state.areaNotes) {
+      return {
+        areaNotesGeoJson: convertAreaNoteListToGeoJson(props.areaNotes),
+        areaNotes: props.areaNotes,
+      };
+    }
+    return null;
+  }
+
   onMouseOver = (e) => {
     const {isEditMode} = this.props;
 
@@ -41,22 +63,22 @@ class RememberableTermsLayer extends Component<Props> {
       layer.setStyle({
         fillOpacity: 0.2,
       });
-      // layer.closePopup();
     }
   }
   render() {
-    const {rememberableTerms} = this.props;
+    const {areaNotesGeoJson} = this.state;
+
     return (
       <GeoJSON
-        // Change key when rememberableTerms is changes to force update after editing shapes
-        key={JSON.stringify(rememberableTerms)}
-        data={rememberableTerms}
-        coordsToLatLng={getCoordsToLatLng(rememberableTerms)}
+        // Change key when area notes is changes to force update after editing shapes
+        key={JSON.stringify(areaNotesGeoJson)}
+        data={areaNotesGeoJson}
+        coordsToLatLng={getCoordsToLatLng(areaNotesGeoJson)}
         onEachFeature={(feature, layer) => {
-          if (feature.properties && feature.properties.comment) {
+          if (feature.properties && feature.properties.note) {
             const popupContent = `<p>
               <strong>Muistettava ehto</strong><br/>
-              ${feature.properties.comment}
+              ${feature.properties.note}
             </p>`;
             layer.bindPopup(popupContent);
           }
@@ -67,14 +89,15 @@ class RememberableTermsLayer extends Component<Props> {
               if(!allowEditing) {
                 return;
               }
+              const {initializeAreaNote, showEditMode} = this.props;
 
-              const {initializeRememberableTerm, rememberableTerms, showEditMode} = this.props;
-              initializeRememberableTerm({
-                comment: feature.properties.comment,
-                geoJSON: getRememberableTermsById(rememberableTerms, feature.properties.id),
+              initializeAreaNote({
+                geoJSON: convertFeatureForDraw(feature),
                 id: feature.properties.id,
                 isNew: false,
+                note: feature.properties.note,
               });
+
               showEditMode();
               e.target.setStyle({
                 fillOpacity: 0.2,
@@ -97,12 +120,12 @@ class RememberableTermsLayer extends Component<Props> {
 export default connect(
   (state) => {
     return {
+      areaNotes: getAreaNoteList(state),
       isEditMode: getIsEditMode(state),
-      rememberableTerms: getRememberableTermList(state),
     };
   },
   {
-    initializeRememberableTerm,
+    initializeAreaNote,
     showEditMode,
   }
-)(RememberableTermsLayer);
+)(AreaNotesLayer);
