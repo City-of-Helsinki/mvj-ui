@@ -18,17 +18,15 @@ import 'proj4leaflet';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import GeoSearch from '$components/map/GeoSearch';
-import RememberableTermsLayer from '$src/rememberableTerms/components/RememberableTermsLayer';
 import ZoomBox from '$components/map/ZoomBox';
 import {fetchMapDataByType} from '$src/mapData/actions';
-import {initializeRememberableTerm, showEditMode} from '$src/rememberableTerms/actions';
+import {initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 import {minZoom, maxZoom} from '$src/constants';
-import {getMapDataByType} from '$src/mapData/selectors';
-import {getIsEditMode, getRememberableTermList} from '$src/rememberableTerms/selectors';
 import {getCoordsToLatLng} from '$util/helpers';
-
-import 'react-leaflet-fullscreen/dist/styles.css';
+import {getMapDataByType} from '$src/mapData/selectors';
+import {getAreaNoteList, getIsEditMode} from '$src/areaNote/selectors';
 
 const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
 const CRS = new L.Proj.CRS(
@@ -40,13 +38,13 @@ const CRS = new L.Proj.CRS(
 
 type Props = {
   allowEditing?: boolean,
+  areaNotes?: Array<Object>,
   center: Object,
   children: Object,
   fetchMapDataByType: Function,
-  initializeRememberableTerm: Function,
+  initializeAreaNote: Function,
   isEditMode: boolean,
   plansUnderground: ?Array<Object>,
-  rememberableTerms?: Array<Object>,
   showEditMode: Function,
   zoom: Number,
   areas: Array<any>,
@@ -88,7 +86,7 @@ class MapContainer extends Component<Props> {
   }
 
   render() {
-    const {allowEditing, center, children, plansUnderground, rememberableTerms, zoom} = this.props;
+    const {allowEditing, areaNotes, center, children, plansUnderground, zoom} = this.props;
 
     return (
       <Map
@@ -158,7 +156,7 @@ class MapContainer extends Component<Props> {
 
           <Overlay checked name="Muistettavat ehdot">
             <LayerGroup>
-              {!isEmpty(rememberableTerms) && <RememberableTermsLayer allowEditing={allowEditing}/>}
+              {!isEmpty(areaNotes) && <AreaNotesLayer allowEditing={allowEditing}/>}
             </LayerGroup>
           </Overlay>
         </LayersControl>
@@ -188,14 +186,14 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        areaNotes: getAreaNoteList(state),
         isEditMode: getIsEditMode(state),
         plansUnderground: getMapDataByType(state, 'avoindata:Kaavahakemisto_alue_maanalainenkaava_voimassa'),
-        rememberableTerms: getRememberableTermList(state),
       };
     },
     {
       fetchMapDataByType,
-      initializeRememberableTerm,
+      initializeAreaNote,
       showEditMode,
     },
   ),

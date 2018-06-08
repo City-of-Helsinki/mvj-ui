@@ -16,7 +16,7 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
-import EditableMap from '$src/rememberableTerms/components/EditableMap';
+import EditableMap from '$src/areaNote/components/EditableMap';
 import Invoices from './leaseSections/invoice/Invoices';
 import InvoicesEdit from './leaseSections/invoice/InvoicesEdit';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
@@ -34,6 +34,7 @@ import TabPane from '$components/tabs/TabPane';
 import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
+import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {fetchAttributes as fetchCommentAttributes, fetchCommentsByLease} from '$src/comments/actions';
 import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {fetchDecisionsByLease} from '$src/decision/actions';
@@ -48,7 +49,6 @@ import {
   showEditMode,
 } from '$src/leases/actions';
 import {fetchNoticePeriods} from '$src/noticePeriod/actions';
-import {fetchRememberableTermList} from '$src/rememberableTerms/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/leases/enums';
 import {FormNames as ComponentFormNames} from '$components/enums';
@@ -56,7 +56,7 @@ import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
 import {getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
+import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
@@ -68,16 +68,16 @@ import {
   getIsFormValidById,
   getIsFormValidFlags,
 } from '$src/leases/selectors';
-import {getRememberableTermList} from '$src/rememberableTerms/selectors';
-
+import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
 import type {Attributes as CommentAttributes, CommentList} from '$src/comments/types';
 import type {Attributes as ContactAttributes} from '$src/contacts/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 import type {Attributes, Lease} from '$src/leases/types';
-import type {RememberableTermList} from '$src/rememberableTerms/types';
+import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
+  areaNotes: AreaNoteList,
   areasFormValues: Object,
   attributes: Attributes,
   change: Function,
@@ -90,6 +90,7 @@ type Props = {
   currentLease: Object,
   decisionsFormValues: Object,
   destroy: Function,
+  fetchAreaNoteList: Function,
   fetchAttributes: Function,
   fetchCommentAttributes: Function,
   fetchCommentsByLease: Function,
@@ -98,7 +99,6 @@ type Props = {
   fetchInvoiceAttributes: Function,
   fetchInvoices: Function,
   fetchNoticePeriods: Function,
-  fetchRememberableTermList: Function,
   fetchSingleLease: Function,
   hideEditMode: Function,
   initialize: Function,
@@ -131,7 +131,6 @@ type Props = {
   patchLease: Function,
   receiveFormValidFlags: Function,
   receiveTopNavigationSettings: Function,
-  rememberableTerms: RememberableTermList,
   rentsFormValues: Object,
   router: Object,
   showEditMode: Function,
@@ -165,6 +164,7 @@ class LeasePage extends Component<Props, State> {
       attributes,
       commentAttributes,
       contactAttributes,
+      fetchAreaNoteList,
       fetchAttributes,
       fetchCommentAttributes,
       fetchCommentsByLease,
@@ -173,7 +173,6 @@ class LeasePage extends Component<Props, State> {
       fetchInvoiceAttributes,
       fetchInvoices,
       fetchNoticePeriods,
-      fetchRememberableTermList,
       fetchSingleLease,
       invoiceAttributes,
       location,
@@ -212,7 +211,7 @@ class LeasePage extends Component<Props, State> {
     fetchDecisionsByLease(leaseId);
     fetchInvoices(getSearchQuery({lease: leaseId}));
     fetchNoticePeriods();
-    fetchRememberableTermList();
+    fetchAreaNoteList();
   }
 
   componentDidUpdate(prevProps) {
@@ -678,6 +677,7 @@ class LeasePage extends Component<Props, State> {
     } = this.state;
 
     const {
+      areaNotes,
       comments,
       currentLease,
       isEditMode,
@@ -698,7 +698,6 @@ class LeasePage extends Component<Props, State> {
       isSummaryFormValid,
       isTenantsFormDirty,
       isTenantsFormValid,
-      rememberableTerms,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -848,7 +847,7 @@ class LeasePage extends Component<Props, State> {
           <TabPane>
             <ContentContainer>
               <EditableMap
-                rememberableTerms={rememberableTerms}
+                areaNotes={areaNotes}
                 showEditTools={false}
               />
             </ContentContainer>
@@ -865,6 +864,7 @@ export default flowRight(
     (state) => {
       const currentLease = getCurrentLease(state);
       return {
+        areaNotes: getAreaNoteList(state),
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
         attributes: getAttributes(state),
         commentAttributes: getCommentAttributes(state),
@@ -898,7 +898,6 @@ export default flowRight(
         isTenantsFormValid: getIsFormValidById(state, FormNames.TENANTS),
         isFetching: getIsFetching(state),
         leaseInfoFormValues: getFormValues(FormNames.LEASE_INFO)(state),
-        rememberableTerms: getRememberableTermList(state),
         rentsFormValues: getFormValues(FormNames.RENTS)(state),
         summaryFormValues: getFormValues(FormNames.SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.TENANTS)(state),
@@ -908,6 +907,7 @@ export default flowRight(
       change,
       clearFormValidFlags,
       destroy,
+      fetchAreaNoteList,
       fetchAttributes,
       fetchCommentAttributes,
       fetchCommentsByLease,
@@ -916,7 +916,6 @@ export default flowRight(
       fetchInvoiceAttributes,
       fetchInvoices,
       fetchNoticePeriods,
-      fetchRememberableTermList,
       fetchSingleLease,
       hideEditMode,
       initialize,

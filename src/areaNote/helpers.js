@@ -29,7 +29,7 @@ export const convertFeatureGeometryToWSG84 = (feature: Object) => {
   };
 };
 
-export const convertFeaturesToRememberableTermList = (features: Array<Object>): Array<Object> => {
+export const convertFeaturesToAreaNoteList = (features: Array<Object>): Array<Object> => {
   return features.map((feature) => {
     return {
       type: feature.type,
@@ -58,11 +58,11 @@ const convertFeatureGeometryTo3879 = (feature: Object) => {
 
   return {
     type: feature.type,
-    coordinates: [convertCoordinatesTo3879(coordinates)],
+    coordinates: convertCoordinatesTo3879(coordinates),
   };
 };
 
-export const convertRememberableTermListToFeatures = (features: Array<Object>): Array<Object> => {
+export const convertAreaNoteListToFeatures = (features: Array<Object>): Array<Object> => {
   return features.map((feature) => {
     return {
       type: feature.type,
@@ -72,10 +72,66 @@ export const convertRememberableTermListToFeatures = (features: Array<Object>): 
   });
 };
 
-export const getRememberableTermsById = (geoJSON: Object, id: number) => {
-  const rememberableTerms = {...geoJSON};
-  const features = rememberableTerms.features.filter((feature) => id === feature.properties.id);
-  rememberableTerms.features = features;
+export const convertAreaNoteListToGeoJson = (areaNotes: Array<Object>) => {
+  const features: Array<Object> = areaNotes.map((areaNote) => {
+    return {
+      type: 'Feature',
+      geometry: areaNote.geometry,
+      properties: {
+        id: areaNote.id,
+        note: areaNote.note,
+      },
+    };
+  });
+  return {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:EPSG::3879',
+      },
+    },
+    features: features,
+  };
+};
 
-  return rememberableTerms;
+export const convertFeatureForDraw = (feature: Object) => {
+  const polygons = get(feature, 'geometry.coordinates[0]', []);
+
+  return {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:EPSG::3879',
+      },
+    },
+    features: polygons.map((polygon) => {
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [
+            polygon,
+          ],
+        },
+      };
+    }),
+    properties: feature.properties,
+  };
+};
+
+export const getGeometryForDb = (polygons: Array<Object>) => {
+  const coordinates: Array<Object> = polygons.map((polygon: Object) => {
+    return get(convertFeatureGeometryTo3879(polygon.geometry), 'coordinates');
+  });
+
+  return {
+    geometry: {
+      coordinates: [
+        coordinates,
+      ],
+      type: 'MultiPolygon',
+    },
+  };
 };

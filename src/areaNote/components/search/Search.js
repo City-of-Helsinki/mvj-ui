@@ -7,7 +7,7 @@ import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
 
 import FormField from '$components/form/FormField';
-import {FormNames} from '$src/rememberableTerms/enums';
+import {FormNames} from '$src/areaNote/enums';
 
 type Props = {
   onSearch: Function,

@@ -10,12 +10,11 @@ import isEmpty from 'lodash/isEmpty';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import MapContainer from './MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
-import {createRememberableTerm, deleteRememberableTerm, editRememberableTerm} from '$src/rememberableTerms/actions';
+import {createAreaNote, deleteAreaNote, editAreaNote, hideEditMode} from '$src/areaNote/actions';
 import {defaultCoordinates, defaultZoom} from '$src/constants';
-import {convertFeaturesToRememberableTermList, convertRememberableTermListToFeatures} from '$src/rememberableTerms/helpers';
+import {convertFeaturesToAreaNoteList, getGeometryForDb} from '$src/areaNote/helpers';
 import {localizeMap} from '$util/helpers';
-import {hideEditMode} from '$src/rememberableTerms/actions';
-import {getInitialRememberableTerm, getIsEditMode} from '$src/rememberableTerms/selectors';
+import {getInitialAreaNote, getIsEditMode} from '$src/areaNote/selectors';
 
 localizeMap();
 
@@ -25,9 +24,9 @@ const SHAPE_ERROR_COLOR = '#bd2719';
 
 type Props = {
   allowEditing?: boolean,
-  createRememberableTerm: Function,
-  deleteRememberableTerm: Function,
-  editRememberableTerm: Function,
+  createAreaNote: Function,
+  deleteAreaNote: Function,
+  editAreaNote: Function,
   hideEditMode: Function,
   initialValues: Object,
   isEditMode: boolean;
@@ -60,7 +59,7 @@ class EditableMap extends Component<Props, State> {
       // Initialize select features for editing
       const geoJSON = {...initialValues.geoJSON};
       if(!isEmpty(geoJSON)) {
-        geoJSON.features = convertFeaturesToRememberableTermList(geoJSON.features);
+        geoJSON.features = convertFeaturesToAreaNoteList(geoJSON.features);
         const featuresGeoJSON = new L.GeoJSON(geoJSON);
         featuresGeoJSON.eachLayer( (layer) => {
           layer.options.color = SHAPE_COLOR;
@@ -73,11 +72,13 @@ class EditableMap extends Component<Props, State> {
         this.setState({isValid: false});
       }
 
-      // Initialize comment field value when opening edit isEditMode
-      this.saveConditionPanel.setCommentField(initialValues.comment);
+      // Initialize note field value when opening edit mode
+      this.saveConditionPanel.setNoteField(initialValues.note);
 
-      this.setState({id: initialValues.id});
-      this.setState({isNew: initialValues.isNew});
+      this.setState({
+        id: initialValues.id,
+        isNew: initialValues.isNew,
+      });
     }
 
     if(!this.props.isEditMode && prevProps.isEditMode) {
@@ -88,19 +89,17 @@ class EditableMap extends Component<Props, State> {
   }
 
   handleAction = () => {
-    let amount = 0;
-    this.featureGroup.leafletElement.eachLayer(() => amount++);
-    this.setState({isValid: !!amount});
+    this.setState({
+      isValid: !!Object.keys(this.featureGroup.leafletElement._layers).length,
+    });
   }
 
   handleCreated = (e: Object) => {
     const {layer} = e;
     layer.showMeasurements();
-
-    let amount = 0;
-    this.featureGroup.leafletElement.eachLayer(() => amount++);
-    this.setState({isValid: !!amount});
-
+    this.setState({
+      isValid: !!Object.keys(this.featureGroup.leafletElement._layers).length,
+    });
   }
 
   handleCancel = () => {
@@ -108,49 +107,38 @@ class EditableMap extends Component<Props, State> {
     hideEditMode();
   }
 
-  handleSave = (comment: string) => {
-    const {isNew} = this.state;
+  handleSave = (note: string) => {
+    const {createAreaNote, editAreaNote} = this.props;
+    const {id, isNew} = this.state;
+
+    const features = [];
+    this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
+
+    const payload = getGeometryForDb(features);
+    payload.note = note;
 
     if(isNew) {
-      this.handleCreate(comment);
+      createAreaNote(payload);
     } else {
-      this.handleEdit(comment);
+      payload.id = id;
+      editAreaNote(payload);
     }
   }
 
-  handleCreate = (comment: string) => {
-    const {createRememberableTerm} = this.props;
-
-    const features = [];
-    this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
-    // Inject comment to the Feature properties if comment exists
-    if(comment) {
-      features.forEach((feature) => feature.properties.comment = comment);
-    }
-
-    createRememberableTerm(convertRememberableTermListToFeatures(features));
-  }
-
-  handleEdit = (comment: string) => {
-    const {editRememberableTerm} = this.props;
-    const {id} = this.state;
-
-    const features = [];
-    this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
-    // Inject comment to the Feature properties if comment exists
-    if(comment) {
-      features.forEach((feature) => {
-        feature.properties.comment = comment;
-        feature.properties.id = id;
-      });
-    }
-
-    editRememberableTerm(convertRememberableTermListToFeatures(features));
+  handleDeleteModalOpen = () => {
+    this.setState({
+      isDeleteModalOpen: true,
+    });
   }
 
   handleDelete = () => {
-    this.props.deleteRememberableTerm(this.state.id);
-    this.setState({isDeleteModalOpen: false});
+    const {deleteAreaNote} = this.props;
+    const {id} = this.state;
+
+    deleteAreaNote(id);
+    this.setState({
+      isDeleteModalOpen: false,
+    });
   }
 
   render() {
@@ -187,17 +175,18 @@ class EditableMap extends Component<Props, State> {
                   circlemarker: false,
                   circle: false,
                   marker: false,
-                  polyline: {
-                    allowIntersection: false,
-                    drawError: {
-                      color: SHAPE_ERROR_COLOR,
-                      timeout: 1000,
-                    },
-                    shapeOptions: {
-                      color: SHAPE_COLOR,
-                      fillOpacity: SHAPE_FILL_OPACITY,
-                    },
-                  },
+                  polyline: false,
+                  // polyline: {
+                  //   allowIntersection: false,
+                  //   drawError: {
+                  //     color: SHAPE_ERROR_COLOR,
+                  //     timeout: 1000,
+                  //   },
+                  //   shapeOptions: {
+                  //     color: SHAPE_COLOR,
+                  //     fillOpacity: SHAPE_FILL_OPACITY,
+                  //   },
+                  // },
                   polygon: {
                     allowIntersection: false,
                     showArea: true,
@@ -221,12 +210,12 @@ class EditableMap extends Component<Props, State> {
             }
           </FeatureGroup>
           <SaveConditionPanel
-            ref={(input) => {this.saveConditionPanel = input;}}
+            ref={(input) => this.saveConditionPanel = input}
             disableDelete={isNew}
             disableSave={!isValid}
             onCancel={this.handleCancel}
-            onDelete={() => this.setState({isDeleteModalOpen: true})}
-            onSave={(comment) => this.handleSave(comment)}
+            onDelete={this.handleDeleteModalOpen}
+            onSave={this.handleSave}
             show={isEditMode}
             title={isEditMode ? 'Muokkaa muistettavaa ehtoa' : 'Luo muistettava ehto'}
           />
@@ -239,14 +228,14 @@ class EditableMap extends Component<Props, State> {
 export default connect(
   (state) => {
     return {
-      initialValues: getInitialRememberableTerm(state),
+      initialValues: getInitialAreaNote(state),
       isEditMode: getIsEditMode(state),
     };
   },
   {
-    createRememberableTerm,
-    deleteRememberableTerm,
-    editRememberableTerm,
+    createAreaNote,
+    deleteAreaNote,
+    editAreaNote,
     hideEditMode,
   }
 )(EditableMap);
