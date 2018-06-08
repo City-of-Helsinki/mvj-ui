@@ -94,19 +94,18 @@ class LeaseListPage extends Component<Props, State> {
       pageTitle: 'Vuokraukset',
       showSearch: false,
     });
+    const searchQuery = {...query};
+    const page = Number(searchQuery.page);
 
-    const page = Number(query.page);
-
-    if(!page || !isNumber(page) || query.page <= 1) {
+    if(!page || !isNumber(page) || page <= 1) {
       this.setState({activePage: 1});
     } else {
       this.setState({activePage: page});
-      query.offset = (page - 1) * PAGE_SIZE;
+      searchQuery.offset = (page - 1) * PAGE_SIZE;
     }
-    query.limit = PAGE_SIZE;
+    searchQuery.limit = PAGE_SIZE;
 
     fetchLeases(getSearchQuery(query));
-    delete query.limit;
 
     if(isEmpty(attributes)) {
       fetchAttributes();
@@ -138,14 +137,12 @@ class LeaseListPage extends Component<Props, State> {
     const {fetchLeases} = this.props;
     const {router} = this.context;
 
-    query.limit = PAGE_SIZE;
-    fetchLeases(getSearchQuery(query));
-
-    this.setState({activePage: 1});
-    delete query.limit;
-    delete query.offset;
+    const searchQuery = {...query};
+    searchQuery.limit = PAGE_SIZE;
+    fetchLeases(getSearchQuery(searchQuery));
     delete query.page;
 
+    this.setState({activePage: 1});
     return router.push({
       pathname: getRouteById('leases'),
       query,

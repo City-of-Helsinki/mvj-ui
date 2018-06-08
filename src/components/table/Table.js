@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import classnames from 'classnames';
 import forEach from 'lodash/forEach';
+import findIndex from 'lodash/findIndex';
 
 import SortableTableBody from './SortableTableBody';
 import SortableTableHeader from './SortableTableHeader';
@@ -13,13 +14,21 @@ type Props = {
   dataKeys: Array<any>,
   displayHeaders: boolean,
   fixedHeader?: boolean,
+  fixedHeaderClassName?: string,
+  maxHeight: ?number,
   noDataText?: string,
+  onDataUpdate?: Function,
   onRowClick?: Function,
+  onSelectNext?: Function,
+  onSelectPrevious?: Function;
+  secondaryTable?: boolean,
+  selectedRow?: ?Object,
   sortable?: boolean,
   tableFixedLayout?: boolean,
 };
 
 type State = {
+  sortedData: Array<Object>,
   sortings: Array<string>,
 }
 
@@ -27,13 +36,18 @@ class Table extends Component<Props, State> {
   static defaultProps = {
     displayHeaders: true,
     fixedHeader: false,
+    maxHeight: null,
+    secondaryTable: false,
     sortable: false,
     tableFixedLayout: false,
   };
 
   state = {
+    sortedData: [],
     sortings: this.getDefaultSortings(),
   }
+
+  tableElement: any
 
   getDefaultSortings() {
     const {dataKeys} = this.props;
@@ -49,6 +63,28 @@ class Table extends Component<Props, State> {
       }
       return sorting;
     });
+  }
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    const {sortable} = this.props;
+    if(!sortable) {
+      return;
+    }
+
+    if(this.state.sortings !== prevState.sortings ||
+      this.props.dataKeys !== prevProps.dataKeys
+    ) {
+      this.setState({
+        sortedData: this.sortData(),
+      });
+
+    }
+    if(this.state.sortedData !== prevState.sortedData) {
+      const {onDataUpdate} = this.props;
+      if(onDataUpdate) {
+        onDataUpdate();
+      }
+    }
   }
 
   onSortingChange = (index: number) => {
@@ -84,6 +120,9 @@ class Table extends Component<Props, State> {
     let sortedData = data;
 
     forEach(sortings, (sorting, index) => {
+      if(index + 1 >= dataKeys.length) {
+        return false;
+      }
       const column = dataKeys[index];
       const key = column.key;
       switch (sorting) {
@@ -108,32 +147,66 @@ class Table extends Component<Props, State> {
     return sortedData;
   }
 
+  selectPrevious = () => {
+    const {sortedData} = this.state;
+    const {onSelectPrevious, selectedRow} = this.props;
+    if(!selectedRow || !onSelectPrevious) {
+      return null;
+    }
+    const index = findIndex(sortedData, (row) => row.id === selectedRow.id);
+    if(index > 0) {
+      onSelectPrevious(sortedData[index - 1]);
+    }
+  }
+
+  selectNext = () => {
+    const {sortedData} = this.state;
+    const {onSelectNext, selectedRow} = this.props;
+    if(!selectedRow || !onSelectNext) {
+      return null;
+    }
+    const index = findIndex(sortedData, (row) => row.id === selectedRow.id);
+    if(index < (sortedData.length - 1)) {
+      onSelectNext(sortedData[index + 1]);
+    }
+  }
+
   render() {
     const {
       className,
+      data,
       dataKeys,
       displayHeaders,
       fixedHeader,
+      fixedHeaderClassName,
+      maxHeight,
       noDataText,
       onRowClick,
+      secondaryTable,
+      selectedRow,
       sortable,
       tableFixedLayout,
     } = this.props;
+    const {sortedData, sortings} = this.state;
 
-    const {sortings} = this.state;
-    const sortedData = this.sortData();
     return (
-      <div className={classnames({'table__fixed-header': fixedHeader})}>
-        <div className={classnames({'table__fixed-header_wrapper': fixedHeader})}>
+      <div className={classnames({'table__fixed-header': fixedHeader}, fixedHeaderClassName)}>
+        <div
+          className={classnames({'table__fixed-header_wrapper': fixedHeader})}
+          style={{maxHeight: maxHeight}}>
           {fixedHeader &&
             <div className="table__fixed-header_header-border" />
           }
-          <table className={classnames(
-            className,
-            'table',
-            {'table__fixed-layout': tableFixedLayout},
-            {'clickable-row': !!onRowClick}
-          )}>
+          <table
+            ref={(ref) => this.tableElement = ref}
+            className={classnames(
+              className,
+              'table',
+              {'table__fixed-layout': tableFixedLayout},
+              {'table__secondary': secondaryTable},
+              {'clickable-row': !!onRowClick}
+            )}
+          >
             {displayHeaders &&
               <SortableTableHeader
                 dataKeys={dataKeys}
@@ -144,10 +217,11 @@ class Table extends Component<Props, State> {
               />
             }
             <SortableTableBody
-              data={sortedData}
+              data={sortable ? sortedData : data}
               dataKeys={dataKeys}
               noDataText={noDataText}
               onRowClick={onRowClick}
+              selectedRow={selectedRow}
             />
           </table>
         </div>

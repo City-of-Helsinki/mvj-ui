@@ -13,20 +13,87 @@ const Pagination = ({
   maxPage,
   onPageClick,
 }: Props) => {
-  const getPages = () => {
-    const pages = [];
-    for(let i = 1; i <= maxPage; i++) {
-      pages.push(
-        <li key={i} className={classNames('page-item', {'active': i === activePage})}>
-          <a className='page-link' onClick={() => onPageClick(i)}>{i}</a>
-        </li>
-      );
-    }
-    return pages;
-  };
   if(!maxPage || maxPage === 1) {
     return null;
   }
+
+  const getPages = () => {
+    const pages = [];
+    const maxShownPages = 4;
+    // Add first page and previous button
+    pages.push(
+      <li key='previous' className={classNames('pagination__page-item', {'disabled': activePage === 1})}>
+        <a onClick={() => onPageClick(activePage - 1)}>&lt;&lt;</a>
+      </li>
+    );
+    pages.push(
+      <li key={1} className={classNames('pagination__page-item', {'active': activePage === 1})}>
+        <a onClick={() => onPageClick(1)}>{1}</a>
+      </li>
+    );
+
+    // Add first ...
+    if(!(activePage <= maxShownPages) && activePage <= maxPage) {
+      pages.push(
+        <li key='...1' className={'pagination__page-item disabled'}>
+          <a>...</a>
+        </li>
+      );
+    }
+
+    if(activePage > maxPage) {
+      console.error('Pagination active page is greater than max page');
+    } else if(activePage <= maxShownPages) {
+      for(let i = 2; i <= activePage + 1; i++) {
+        if(i > maxPage - 1) {
+          break;
+        }
+        pages.push(
+          <li key={i} className={classNames('pagination__page-item', {'active': i === activePage})}>
+            <a onClick={() => onPageClick(i)}>{i}</a>
+          </li>
+        );
+      }
+    } else if (activePage > maxPage - maxShownPages) {
+      for(let i = activePage - 1; i <= maxPage - 1; i++) {
+        pages.push(
+          <li key={i} className={classNames('pagination__page-item', {'active': i === activePage})}>
+            <a onClick={() => onPageClick(i)}>{i}</a>
+          </li>
+        );
+      }
+    } else {
+      for(let i = activePage - 1; i <= activePage + 1; i++) {
+        pages.push(
+          <li key={i} className={classNames('pagination__page-item', {'active': i === activePage})}>
+            <a onClick={() => onPageClick(i)}>{i}</a>
+          </li>
+        );
+      }
+    }
+
+    // Add second ...
+    if(((activePage + 2 < maxPage) || !((maxPage - activePage) < maxShownPages)) && activePage <= maxPage) {
+      pages.push(
+        <li key='...2' className={'pagination__page-item disabled'}>
+          <a>...</a>
+        </li>
+      );
+    }
+
+    // Add last page and next button
+    pages.push(
+      <li key={maxPage} className={classNames('pagination__page-item', {'active': activePage === maxPage})}>
+        <a onClick={() => onPageClick(maxPage)}>{maxPage}</a>
+      </li>
+    );
+    pages.push(
+      <li key='next' className={classNames('pagination__page-item', {'disabled': activePage === maxPage})}>
+        <a onClick={() => onPageClick(activePage + 1)}>&gt;&gt;</a>
+      </li>
+    );
+    return pages;
+  };
 
   return (
     <ul className='pagination'>

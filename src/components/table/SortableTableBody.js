@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import classNames from 'classnames';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
 
@@ -8,20 +9,26 @@ type Props = {
   dataKeys: Array<any>,
   noDataText?: string,
   onRowClick?: Function,
+  selectedRow?: ?Object,
 }
 const SortableTableBody = ({
   data,
   dataKeys,
   noDataText,
   onRowClick,
+  selectedRow,
 }: Props) =>
   <tbody>
     {data.map((row, rowIndex) => (
-      <tr key={rowIndex} onClick={() => onRowClick && onRowClick(row.id)}>
+      <tr
+        key={rowIndex}
+        className={classNames({'selected': selectedRow === row})}
+        onClick={() => onRowClick && onRowClick(row.id, row)}
+      >
         {dataKeys.map(({key, renderer}, cellIndex) => (
           <td key={cellIndex}>
             {renderer ?
-              isArray(key) ? key.map(item => renderer(get(row, item))) : renderer(get(row, key)) :
+              isArray(key) ? key.map(item => renderer(get(row, item), row)) : renderer(get(row, key), row) :
               isArray(key) ? key.map(item => `${get(row, item)} `) : get(row, key, '-') || ' - '
             }
           </td>

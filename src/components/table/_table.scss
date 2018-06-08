@@ -46,7 +46,7 @@
       tr {
         &:hover > td {
           cursor: pointer;
-          background-color: $engel-lighter !important;
+          background-color: #D9EFE4 !important;
           color: $black !important;
         }
       }
@@ -69,13 +69,14 @@
 
     &_sort-icon {
       fill: $black;
-      margin-left: 10px;
-      height: 16px;
-      width: 16px;
+      margin-left: 5px;
+      height: 14px;
+      width: 14px;
+      min-width: 14px
     }
   }
 
-  &.secondary-table {
+  &__secondary {
     border: 1px solid #d7d5d5;
     margin: 0;
     margin-bottom: rem-calc(10px);
@@ -182,8 +183,8 @@
   list-style: none;
   border-radius: rem-calc(4px);
 
-  .page-item {
-    .page-link {
+  &__page-item {
+    a {
       position: relative;
       display: block;
       padding: .5rem .75rem;
@@ -191,11 +192,18 @@
       line-height: 1.25;
       color: $black;
       background-color: $white;
-      border: 1px solid $engel;
+      border: 1px solid $medium-gray;
+      border-right: none;
+    }
+
+    &:last-child {
+      a {
+        border-right: 1px solid $medium-gray;
+      }
     }
 
     &.active {
-      .page-link {
+      a {
         z-index: 1;
         color: $black;
         background-color: $engel;
@@ -203,13 +211,15 @@
       }
     }
 
-    &:disabled {
-      .page-link {
-        color: $dark-gray;
+    &.disabled {
+      padding: 0;
+      cursor: unset;
+
+      a {
+        color: $medium-gray;
         pointer-events: none;
         cursor: auto;
         background-color: $white;
-        border-color: $engel;
       }
     }
   }

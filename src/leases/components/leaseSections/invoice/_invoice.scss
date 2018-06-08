@@ -8,23 +8,57 @@
     }
   }
 
+  &__contract-rent-table {
+    th.amount {
+      width: 200px;
+    }
+    th.base-year-rent {
+      width: 200px;
+    }
+    th.end-date {
+      width: 100px;
+    }
+    th.intended-use {
+      width: 200px;
+    }
+    th.start-date {
+      width: 100px;
+    }
+  }
+
   &__invoice-table {
     position: relative;
     z-index: 3;
     overflow: hidden;
 
-    .table-wrapper {
+    &_wrapper {
       width: 100%;
       z-index: 1;
       @include transition(0.5s, all, ease-in-out);
     }
 
-    .invoice-fixed-table {
+    .table__fixed-header {
       border: none;
 
-      .table__fixed-header_wrapper {
+      &_wrapper {
         height: 1000px;
         overflow: auto;
+      }
+      table {
+        border: none;
+        box-shadow: none;
+      }
+
+      th.billing-period-start-date {
+        width: 155px;
+      }
+
+      th.id {
+        width: 110px;
+      }
+
+      th.recipient {
+        width: 200px;
       }
 
       table tbody tr {

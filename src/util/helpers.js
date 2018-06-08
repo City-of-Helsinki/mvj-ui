@@ -479,17 +479,33 @@ export const sortNumberByKeyDesc = (a, b, key) => {
   return Number(keyB) - Number(keyA);
 };
 
-export const sortStringByKeyAsc = (a, b, key) => {
-  const keyA = a[key] ? a[key].toLowerCase() : '',
-    keyB = b[key] ? b[key].toLowerCase() : '';
+export const sortStringByKeyAsc = (a, b, key?: string = null) => {
+  const keyA = key ? (a[key] ? a[key].toLowerCase() : '') : a,
+    keyB = key ? (b[key] ? b[key].toLowerCase() : '') : b;
   if(keyA > keyB) return 1;
   if(keyA < keyB) return -1;
   return 0;
 };
 
-export const sortStringByKeyDesc = (a, b, key) => {
-  const keyA = a[key] ? a[key].toLowerCase() : '',
-    keyB = b[key] ? b[key].toLowerCase() : '';
+export const sortStringByKeyDesc = (a, b, key?: string = null) => {
+  const keyA = key ? (a[key] ? a[key].toLowerCase() : '') : a,
+    keyB = key ? (b[key] ? b[key].toLowerCase() : '') : b;
+  if(keyA > keyB) return -1;
+  if(keyA < keyB) return 1;
+  return 0;
+};
+
+export const sortByOptionsAsc = (a: Object, b: Object, key, options: Array<Object>) => {
+  const keyA = a[key] ? getLabelOfOption(options, a[key]) : '',
+    keyB = b[key] ? getLabelOfOption(options, b[key]) : '';
+  if(keyA > keyB) return 1;
+  if(keyA < keyB) return -1;
+  return 0;
+};
+
+export const sortByOptionsDesc = (a: Object, b: Object, key, options: Array<Object>) => {
+  const keyA = a[key] ? getLabelOfOption(options, a[key]) : '',
+    keyB = b[key] ? getLabelOfOption(options, b[key]) : '';
   if(keyA > keyB) return -1;
   if(keyA < keyB) return 1;
   return 0;
