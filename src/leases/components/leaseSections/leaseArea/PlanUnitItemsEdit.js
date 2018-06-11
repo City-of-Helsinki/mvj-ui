@@ -188,7 +188,7 @@ const PlanUnitItemsEdit = (props: Props) => {
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date_note')}
                       name={`${planunit}.detailed_plan_latest_processing_date_note`}
                       overrideValues={{
-                        label: 'Asemakaavan viimeisin käsittelypvm selite',
+                        label: 'Asemakaavan viimeisin käsittelypvm huomautus',
                       }}
                     />
                   </Column>

@@ -171,6 +171,7 @@ class App extends Component<Props, State> {
         />
 
         <TopNavigation
+          isMenuOpen={displaySideMenu}
           linkUrl={linkUrl}
           onLogout={this.logOut}
           pageTitle={pageTitle}

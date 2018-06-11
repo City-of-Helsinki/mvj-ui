@@ -24,6 +24,7 @@ type State = {
 class Collapse extends Component<Props, State> {
   component: any
   content: any
+  _isMounted: boolean;
 
   static defaultProps = {
     defaultOpen: false,
@@ -42,10 +43,12 @@ class Collapse extends Component<Props, State> {
   componentDidMount() {
     this.component.addEventListener('transitionend', this.transitionEnds);
     this.calculateHeight();
+    this._isMounted = true;
   }
 
   componentWillUnmount() {
     this.component.removeEventListener('transitionend', this.transitionEnds);
+    this._isMounted = false;
   }
 
   componentDidUpdate = (nextProps: Object, nextState: Object) => {
@@ -59,7 +62,11 @@ class Collapse extends Component<Props, State> {
     this.calculateHeight();
 
     setTimeout(
-      () => this.setState({isResizing: false}),
+      () => {
+        if(this._isMounted) {
+          this.setState({isResizing: false});
+        }
+      },
       200
     );
   }

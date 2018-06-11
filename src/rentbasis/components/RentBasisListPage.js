@@ -216,7 +216,7 @@ class RentBasisListPage extends Component<Props, State> {
           }
         />
         <TableControllers
-          title={`Löytyi ${count} kpl`}
+          title={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
         />
 
         {isFetching && <Row><Column><LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper></Column></Row>}

@@ -1,12 +1,14 @@
 // @flow
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import {Link} from 'react-router';
 
 import {getRouteById} from '$src/root/routes';
 import SearchInput from '../inputs/SearchInput';
 
 type Props = {
+  isMenuOpen: boolean,
   linkUrl: string,
   onLogout: Function,
   pageTitle: string,
@@ -53,6 +55,7 @@ class TopNavigation extends Component<Props, State> {
 
   render() {
     const {
+      isMenuOpen,
       linkUrl,
       onLogout,
       pageTitle,
@@ -65,9 +68,16 @@ class TopNavigation extends Component<Props, State> {
     return (
       <section className="top-navigation">
         <div className="top-navigation__left-wrapper">
-          <svg className="menuIcon" viewBox="0 0 27 27" onClick={toggleSideMenu}>
+          <div
+            onClick={toggleSideMenu}
+            className={classNames('top-navigation__menu-icon', {'open': isMenuOpen})}>
+            <div className='bar1' />
+            <div className='bar2' />
+            <div className='bar3' />
+          </div>
+          {/* <svg className="menuIcon" viewBox="0 0 27 27" onClick={toggleSideMenu}>
             <path d="M1.5,2.9h27v2.2h-27V2.9z M1.5,11.9h27v2.2h-27V11.9z M1.5,20.9h27v2.2h-27V20.9z"/>
-          </svg>
+          </svg> */}
           <div className="title">
             <span>Maanvuokrausjärjestelmä</span>
           </div>

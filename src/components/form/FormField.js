@@ -98,12 +98,14 @@ const FormFieldInput = ({
   const type = resolveType(fieldType);
 
   return (
-    <div className={classNames('form-field', className)}>
-      {label && <label className="form-field__label" htmlFor={input.name} title={label ? `${label}${required ? ' *' : ''}` : ''}>{label}{required &&<i className='required'> *</i>}</label>}
-      <div className='form-field__component'>
-        {createElement(fieldComponent, {autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
+    <div className='form-field__container'>
+      <div className={classNames('form-field', className)}>
+        {label && <label className="form-field__label" htmlFor={input.name} title={label ? `${label}${required ? ' *' : ''}` : ''}>{label}{required &&<i className='required'> *</i>}</label>}
+        <div className='form-field__component'>
+          {createElement(fieldComponent, {autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
+        </div>
+        {displayError && <ErrorComponent {...meta}/>}
       </div>
-      {displayError && <ErrorComponent {...meta}/>}
     </div>
   );
 };
