@@ -88,6 +88,7 @@ class LeaseSelectInput extends Component<Props> {
     return(
       <AsyncComponent
         arrowRenderer={arrowRenderer}
+        autoload={false}
         backspaceRemoves={false}
         className='form-field__select'
         clearable={false}
