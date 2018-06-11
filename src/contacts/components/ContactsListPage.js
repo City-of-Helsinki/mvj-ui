@@ -203,7 +203,7 @@ class ContactListPage extends Component<Props, State> {
           }
         />
         <TableControllers
-          title={`Löytyi ${count} kpl`}
+          title={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
         />
 
         {isFetching &&

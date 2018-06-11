@@ -41,7 +41,7 @@ export const getContentLeaseAddress = (lease: Object) => {
   if(!address) {
     return null;
   }
-  return `${address.address ? `${address.address}, ` : ''}${address.postal_code || ''} ${address.city || ''}`;
+  return getFullAddress(address);
 };
 
 export const getContentLeaseItem = (lease: Object) => {

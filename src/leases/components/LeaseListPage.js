@@ -254,7 +254,7 @@ class LeaseListPage extends Component<Props, State> {
           onIconSelectorChange={
             (value) => this.setState({visualizationType: value})
           }
-          title={`Löytyi ${count} kpl`}
+          title={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
         />
         {isFetching && <Row><Column><LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper></Column></Row>}
         {!isFetching &&

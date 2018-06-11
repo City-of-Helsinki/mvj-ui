@@ -9,7 +9,7 @@ import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {getContactFullName} from '$src/contacts/helpers';
-import {formatDate} from '$util/helpers';
+import {formatDate, formatNumber} from '$util/helpers';
 
 type Props = {
   contact: ?Object,
@@ -28,13 +28,14 @@ const TenantItem = ({
       !isNumber(Number(tenant.share_denominator))) {
       return null;
     }
-    return `${(Number(tenant.share_numerator)*100/Number(tenant.share_denominator)).toFixed(1)} %`;
+    return (Number(tenant.share_numerator)*100/Number(tenant.share_denominator));
   };
 
   if(!contact) {
     return null;
   }
 
+  const share = getInvoiceManagementShare();
   return (
     <div>
       <FormWrapper>
@@ -54,7 +55,7 @@ const TenantItem = ({
             </Column>
             <Column small={12} medium={6} large={4}>
               <label>Laskun hallintaosuus</label>
-              <p>{getInvoiceManagementShare()}</p>
+              <p>{share ? `${formatNumber(share)} %` : '-'}</p>
             </Column>
             <Column small={12} medium={6} large={4}>
               <Row>

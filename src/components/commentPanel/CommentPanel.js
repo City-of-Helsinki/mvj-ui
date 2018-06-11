@@ -135,10 +135,6 @@ class CommentPanel extends PureComponent<Props, State> {
       topicFilterOptions,
     } = this.state;
 
-    if(!comments) {
-      return null;
-    }
-
     const filteredComments = this.getFilteredComments(comments);
 
     return (
@@ -160,7 +156,7 @@ class CommentPanel extends PureComponent<Props, State> {
           />
 
           <h2>Ajankohtaiset</h2>
-          {!!comments.length &&
+          {comments && !!comments.length &&
             <div className='filters'>
               <StyledCheckboxButtons
                 checkboxName='checkbox-buttons-document-type'

@@ -92,12 +92,18 @@
   line-height: 1;
   margin-bottom: rem-calc(10px);
   font-family: $font-family-source;
+  align-self: flex-end;
+  width: 100%;
+
+  &__container {
+    display: flex;
+    height: 100%;
+  }
 
   &__label {
-    white-space: nowrap;
-    overflow: hidden;
+    white-space: normal;
+    overflow: visible;
     max-width: 100%;
-    text-overflow: ellipsis;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
     color: $dark-gray;
@@ -112,7 +118,8 @@
     display: block;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
-    margin-bottom: rem-calc(5px);
+    margin-bottom: 0;
+    position: absolute;
   }
 
   &__boolean, &__checkbox {
