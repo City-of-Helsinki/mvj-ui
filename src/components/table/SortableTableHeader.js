@@ -21,7 +21,6 @@ type ItemProps = {
 
 const SortableTableHeaderItem = ({
   dataKey,
-  fixedHeader,
   headerProps = {},
   index,
   label,
@@ -54,14 +53,10 @@ const SortableTableHeaderItem = ({
       className={classnames({'table__sortable_header-link': sortable}, kebabCase(dataKey))}
       onClick={handleOnClick}
       {...headerProps} >
-      {!fixedHeader && label}
-      {!fixedHeader && sortIcon}
-      {fixedHeader &&
-        <div>
-          {label}
-          {sortIcon}
-        </div>
-      }
+      <div>
+        {label}
+        {sortIcon}
+      </div>
     </th>
   );
 };

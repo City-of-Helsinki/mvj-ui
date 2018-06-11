@@ -734,8 +734,8 @@ export const getFullAddress = (item: Object) => {
   if(isEmpty(item)) {
     return null;
   }
-
-  return `${item.address ? `${item.address}, ` : ''}${item.postal_code || ''} ${item.city || ''}`;
+  return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''}
+    ${item.postal_code || ''} ${item.city || ''}`;
 };
 
 export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>): Array<Object> => {

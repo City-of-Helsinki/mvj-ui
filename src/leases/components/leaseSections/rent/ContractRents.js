@@ -2,12 +2,17 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import Table from '$components/table/Table';
 import {RentTypes} from '$src/leases/enums';
 import {
   formatDate,
   formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
+  sortByOptionsAsc,
+  sortByOptionsDesc,
+  sortNumberByKeyAsc,
+  sortNumberByKeyDesc,
 } from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
@@ -43,44 +48,37 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
     return `${formatNumber(rent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, rent.base_amount_period)}`;
   };
 
+  const getDataKeys = () => {
+    if(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) {
+      return [
+        {key: 'amount', label: 'Sopimusvuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
+        {key: 'base_amount', label: 'Vuokranlaskennan perusteena oleva vuokra', renderer: (val, item) => getBaseAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'base_year_rent ', label: 'Uusi perusvuosi vuokra', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
+        {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
+      ];
+    } else {
+      return [
+        {key: 'amount', label: 'Sopimusvuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
+        {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
+        {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
+      ];
+    }
+  };
+
+  const dataKeys = getDataKeys();
+
   return (
-    <table className="secondary-table table">
-      <thead>
-        <tr>
-          <th>Sopimusvuokra</th>
-          <th>Käyttötarkoitus</th>
-          {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
-            <th>Vuokranlaskennan perusteena oleva vuokra</th>
-          }
-          {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
-            <th>Uusi perusvuosi vuokra</th>
-          }
-          <th>Alkupvm</th>
-          <th>Loppupvm</th>
-        </tr>
-      </thead>
-      <tbody>
-        {(!contractRents || !contractRents.length) &&
-          <tr className='no-data'><td colSpan={(rentType === RentTypes.INDEX || rentType === rentType === RentTypes.MANUAL) ? 5 : 3}>Ei sopimusvuokria</td></tr>
-        }
-        {contractRents && !!contractRents.length && contractRents.map((rent, index) => {
-          return (
-            <tr key={index}>
-              <td>{getAmount(rent) || '-'}</td>
-              <td>{getLabelOfOption(intendedUseOptions, rent.intended_use) || '-'}</td>
-              {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
-                <td>{getBaseAmount(rent) || '-'}</td>
-              }
-              {(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
-                <td>{rent.base_year_rent ? `${formatNumber(rent.base_year_rent)} €` : '-'}</td>
-              }
-              <td>{formatDate(rent.start_date) || '-'}</td>
-              <td>{formatDate(rent.end_date) || '-'}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+    <Table
+      className='invoice__contract-rent-table'
+      data={contractRents}
+      dataKeys={dataKeys}
+      secondaryTable
+      sortable
+      tableFixedLayout
+    />
   );
 };
 

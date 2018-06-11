@@ -8,6 +8,10 @@ import {
   formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
+  sortByOptionsAsc,
+  sortByOptionsDesc,
+  sortNumberByKeyAsc,
+  sortNumberByKeyDesc,
 } from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -26,19 +30,20 @@ const BasisOfRents = ({attributes, currentLease}: Props) => {
   return (
     <div>
       <Table
-        className='secondary-table'
         data={basisOfRents}
         dataKeys={[
-          {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val) || '-'},
-          {key: 'floor_m2', label: 'K-m2', renderer: (val) => formatNumber(val) || '-'},
-          {key: 'index', label: 'Indeksi', renderer: (val) => formatNumber(val) || '-'},
-          {key: 'amount_per_floor_m2_index_100', label: '€/k-m2 (ind 100)', renderer: (val) => formatNumber(val) || '-'},
-          {key: 'amount_per_floor_m2_index', label: '€/k-m2 (ind)', renderer: (val) => formatNumber(val) || '-'},
-          {key: 'percent', label: 'Prosenttia', renderer: (val) => val ? `${formatNumber(val)} %` : '-'},
-          {key: 'year_rent_index_100', label: 'Perusvuosivuokra €/v (ind 100)', renderer: (val) => formatNumber(val) || '-'},
-          {key: 'year_rent_index', label: 'Alkuvuosivuokra €/v (ind)', renderer: (val) => formatNumber(val) || '-'},
+          {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val) || '-', ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
+          {key: 'floor_m2', label: 'K-m2', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'index', label: 'Indeksi', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'amount_per_floor_m2_index_100', label: '€/k-m2 (ind 100)', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'amount_per_floor_m2_index', label: '€/k-m2 (ind)', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'percent', label: 'Prosenttia', renderer: (val) => val ? `${formatNumber(val)} %` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'year_rent_index_100', label: 'Perusvuosivuokra €/v (ind 100)', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'year_rent_index', label: 'Alkuvuosivuokra €/v (ind)', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         ]}
         noDataText='Ei vuokranperusteita'
+        secondaryTable
+        sortable
       />
     </div>
   );

@@ -6,6 +6,7 @@ import {change, formValueSelector, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 import toArray from 'lodash/toArray';
 
 import FormField from '$components/form/FormField';
@@ -45,8 +46,10 @@ class Search extends Component<Props, State> {
   componentDidMount() {
     const {router: {location: {query}}} = this.props;
     this._isMounted = true;
+    const searchQuery = {...query};
+    delete searchQuery.page;
     // TODO: This is only temporarily solution to filter using search parameter and should be fixed when search parameter exists on API
-    if(!!toArray(query).length && !query.identifier) {
+    if(!!toArray(searchQuery).length && !searchQuery.identifier) {
       this.setState({
         isBasicSearch: false,
       });
@@ -57,11 +60,11 @@ class Search extends Component<Props, State> {
     this._isMounted = false;
   }
 
-  componentWillUpdate(nextProps: Object) {
+  componentDidUpdate(prevProps: Props) {
     const {change, fetchDistrictsByMunicipality} = this.props;
-    if (Number(this.props.municipality) !== Number(nextProps.municipality)) {
-      if(nextProps.municipality) {
-        fetchDistrictsByMunicipality(nextProps.municipality);
+    if (Number(prevProps.municipality) !== Number(this.props.municipality)) {
+      if(this.props.municipality) {
+        fetchDistrictsByMunicipality(this.props.municipality);
         if(this.props.municipality) {
           change('district', '');
         }
@@ -70,15 +73,16 @@ class Search extends Component<Props, State> {
       }
     }
 
-    if(this.props.formValues !== nextProps.formValues) {
-      this.onSearchChange();
+    if(prevProps.formValues !== this.props.formValues) {
+      if(!(isEmpty(prevProps.formValues))) {
+        this.onSearchChange();
+      }
     }
   }
 
   onSearchChange = debounce(() => {
-    if(!this._isMounted) {
-      return;
-    }
+    if(!this._isMounted) { return;}
+
     const {
       formValues,
       identifier,
@@ -93,7 +97,7 @@ class Search extends Component<Props, State> {
         filters.identifier = identifier || undefined;
       }
     } else {
-      filters = formValues || {};
+      filters = {...formValues};
       filters.type = filters.type ? Number(filters.type) : undefined;
       filters.municipality = filters.municipality ? Number(filters.municipality) : undefined;
       filters.district = filters.district ? Number(filters.district) : undefined;
