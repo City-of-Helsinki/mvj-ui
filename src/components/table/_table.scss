@@ -197,9 +197,12 @@
     a {
       position: relative;
       display: block;
-      padding: .5rem .75rem;
+      padding: rem-calc(8px 12px);
       margin-left: -1px;
       line-height: 1.25;
+      height: rem-calc(35px);
+      min-width: rem-calc(35px);
+      text-align: center;
       color: $black;
       background-color: $white;
       border: 1px solid $medium-gray;
@@ -211,10 +214,9 @@
       cursor: unset;
 
       a {
-        color: $medium-gray;
+        background-color: $light-gray;
         pointer-events: none;
         cursor: auto;
-        background-color: $white;
       }
     }
 
@@ -231,6 +233,29 @@
       a {
         border-right: 1px solid $medium-gray;
       }
+    }
+  }
+
+  &__next-icon {
+    height: 17px;
+    display: flex;
+    align-items: center;
+
+    svg {
+      height: 14px;
+      width: 14px;
+    }
+  }
+
+  &__previous-icon {
+    height: 17px;
+    display: flex;
+    align-items: center;
+
+    svg {
+      height: 14px;
+      width: 14px;
+      @include transform(rotateY(180deg));
     }
   }
 }

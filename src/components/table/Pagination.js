@@ -2,6 +2,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import {NextIcon} from './Icons';
+
 type Props = {
   activePage: number,
   maxPage: number,
@@ -23,7 +25,7 @@ const Pagination = ({
     // Add first page and previous button
     pages.push(
       <li key='previous' className={classNames('pagination__page-item', {'disabled': activePage === 1})}>
-        <a onClick={() => onPageClick(activePage - 1)}>&lt;&lt;</a>
+        <a onClick={() => onPageClick(activePage - 1)}><div className='pagination__previous-icon'><NextIcon /></div></a>
       </li>
     );
     pages.push(
@@ -33,7 +35,7 @@ const Pagination = ({
     );
 
     // Add first ...
-    if(!(activePage <= maxShownPages) && activePage <= maxPage) {
+    if(!(activePage <= (maxShownPages + 1)) && activePage <= maxPage) {
       pages.push(
         <li key='...1' className={'pagination__page-item disabled'}>
           <a>...</a>
@@ -43,8 +45,8 @@ const Pagination = ({
 
     if(activePage > maxPage) {
       console.error('Pagination active page is greater than max page');
-    } else if(activePage <= maxShownPages) {
-      for(let i = 2; i <= activePage + 1; i++) {
+    } else if(activePage <= (maxShownPages + 1)) {
+      for(let i = 2; i <= (maxShownPages + 1); i++) {
         if(i > maxPage - 1) {
           break;
         }
@@ -89,7 +91,7 @@ const Pagination = ({
     );
     pages.push(
       <li key='next' className={classNames('pagination__page-item', {'disabled': activePage === maxPage})}>
-        <a onClick={() => onPageClick(activePage + 1)}>&gt;&gt;</a>
+        <a onClick={() => onPageClick(activePage + 1)}><div className='pagination__next-icon'><NextIcon /></div></a>
       </li>
     );
     return pages;
