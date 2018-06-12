@@ -5,6 +5,7 @@ import {FieldArray, getFormValues} from 'redux-form';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -29,18 +30,22 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  errors: ?Object,
   fields: any,
   formValues: Object,
   initializeContactForm: Function,
+  isSaveClicked: boolean,
   receiveContactModalSettings: Function,
   showContactModal: Function,
 }
 
 const TenantItemsEdit = ({
   attributes,
+  errors,
   fields,
   formValues,
   initializeContactForm,
+  isSaveClicked,
   receiveContactModalSettings,
   showContactModal,
 }: Props) => {
@@ -49,12 +54,13 @@ const TenantItemsEdit = ({
       {fields && !!fields.length && fields.map((tenant, index) => {
         const contact = get(formValues, `${tenant}.tenant.contact`);
         const isActive = isTenantActive(get(formValues, `${tenant}.tenant`));
-
+        const tenantErrors = get(errors, tenant);
         return (
           <Collapse
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames({'not-active': !isActive})}
             defaultOpen={isActive}
+            hasErrors={!isEmpty(tenantErrors)}
             headerTitle={
               <h3 className='collapse__header-title'>Vuokralainen {index + 1}</h3>
             }
@@ -73,6 +79,7 @@ const TenantItemsEdit = ({
                       <Row>
                         <Column small={9} medium={8} large={8}>
                           <FormField
+                            disableTouched={isSaveClicked}
                             fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.contact')}
                             name={`${tenant}.tenant.contact`}
                             overrideValues={{
@@ -105,6 +112,7 @@ const TenantItemsEdit = ({
                       <Row>
                         <Column>
                           <FormField
+                            disableTouched={isSaveClicked}
                             fieldAttributes={get(attributes, 'tenants.child.children.share_numerator')}
                             name={`${tenant}.share_numerator`}
                             overrideValues={{
@@ -114,6 +122,7 @@ const TenantItemsEdit = ({
                         </Column>
                         <Column>
                           <FormField
+                            disableTouched={isSaveClicked}
                             className='with-slash'
                             fieldAttributes={get(attributes, 'tenants.child.children.share_denominator')}
                             name={`${tenant}.share_denominator`}
@@ -126,6 +135,7 @@ const TenantItemsEdit = ({
                     </Column>
                     <Column small={6} medium={3} large={2}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.start_date')}
                         name={`${tenant}.tenant.start_date`}
                         overrideValues={{
@@ -135,6 +145,7 @@ const TenantItemsEdit = ({
                     </Column>
                     <Column small={6} medium={3} large={2}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
                         name={`${tenant}.tenant.end_date`}
                         overrideValues={{
@@ -175,6 +186,7 @@ const TenantItemsEdit = ({
                   <Row>
                     <Column>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'tenants.child.children.reference')}
                         name={`${tenant}.reference`}
                         overrideValues={{
@@ -189,6 +201,8 @@ const TenantItemsEdit = ({
 
             <FieldArray
               component={OtherTenantItemsEdit}
+              errors={errors}
+              isSaveClicked={isSaveClicked}
               name={`${tenant}.tenantcontact_set`}
             />
           </Collapse>

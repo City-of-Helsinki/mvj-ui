@@ -11,13 +11,14 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContentLeaseInfo} from '$src/leases/helpers';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
+  isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -52,7 +53,7 @@ class LeaseInfoEdit extends Component<Props, State> {
   }
 
   render () {
-    const {attributes} = this.props;
+    const {attributes, isSaveClicked} = this.props;
     const {leaseInfo} = this.state;
 
     return (
@@ -65,6 +66,7 @@ class LeaseInfoEdit extends Component<Props, State> {
           <Column>
             <FormField
               className='no-margin'
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'state')}
               name='state'
               overrideValues={{
@@ -75,6 +77,7 @@ class LeaseInfoEdit extends Component<Props, State> {
           <Column>
             <FormField
               className='no-margin'
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'start_date')}
               name='start_date'
               overrideValues={{
@@ -85,6 +88,7 @@ class LeaseInfoEdit extends Component<Props, State> {
           <Column>
             <FormField
               className='no-margin'
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'end_date')}
               name='end_date'
               overrideValues={{
@@ -106,6 +110,7 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

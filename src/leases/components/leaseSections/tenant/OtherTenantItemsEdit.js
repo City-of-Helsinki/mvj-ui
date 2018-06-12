@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -28,18 +29,22 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  errors: ?Object,
   fields: any,
   formValues: Object,
   initializeContactForm: Function,
+  isSaveClicked: boolean,
   receiveContactModalSettings: Function,
   showContactModal: Function,
 }
 
 const OtherTenantItemsEdit = ({
   attributes,
+  errors,
   fields,
   formValues,
   initializeContactForm,
+  isSaveClicked,
   receiveContactModalSettings,
   showContactModal,
 }: Props) => {
@@ -51,12 +56,14 @@ const OtherTenantItemsEdit = ({
       {fields && !!fields.length && fields.map((tenant, index) => {
         const contact = get(formValues, `${tenant}.contact`);
         const isActive = isTenantActive(get(formValues, tenant));
+        const tenantErrors = get(errors, tenant);
 
         return (
           <Collapse
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames('collapse__secondary', {'not-active': !isActive})}
             defaultOpen={isActive}
+            hasErrors={!isEmpty(tenantErrors)}
             headerTitle={
               <h4 className='collapse__header-title edit-row'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
             }>
@@ -74,6 +81,7 @@ const OtherTenantItemsEdit = ({
                       <Row>
                         <Column small={9} medium={8} large={8}>
                           <FormField
+                            disableTouched={isSaveClicked}
                             fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.contact')}
                             name={`${tenant}.contact`}
                             overrideValues={{
@@ -103,6 +111,7 @@ const OtherTenantItemsEdit = ({
                   <Row>
                     <Column small={12} medium={6} large={4}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.type')}
                         name={`${tenant}.type`}
                         overrideValues={{
@@ -113,6 +122,7 @@ const OtherTenantItemsEdit = ({
                     </Column>
                     <Column small={6} medium={3} large={2}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.start_date')}
                         name={`${tenant}.start_date`}
                         overrideValues={{
@@ -122,6 +132,7 @@ const OtherTenantItemsEdit = ({
                     </Column>
                     <Column small={6} medium={3} large={2}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
                         name={`${tenant}.end_date`}
                         overrideValues={{

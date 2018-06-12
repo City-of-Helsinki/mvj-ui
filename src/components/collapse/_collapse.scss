@@ -52,6 +52,7 @@
     .header-info-wrapper {
       flex: 1 1 0%;
       margin-left: rem-calc(-22px);
+      position: relative;
 
       .header-info-link {
         display: inline-block;
@@ -60,6 +61,19 @@
         padding-left: rem-calc(22px);
         margin-bottom: 0;
       }
+    }
+
+    &_error-badge {
+      background-image: url(../assets/icons/icon_error.svg);
+      height: 16px;
+      width: 16px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: 50%;
+      position: absolute;
+      top: 50%;
+      @include transform(translate(0, -50%));
+      right: 0;
     }
 
     &-title {

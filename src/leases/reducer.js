@@ -17,6 +17,7 @@ import type {
   ContactModalSettings,
   ReceiveContactModalSettingsAction,
   ReceiveFormValidFlagsAction,
+  ReceiveIsSaveClickedAction,
 } from '$src/leases/types';
 
 
@@ -136,6 +137,12 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   [FormNames.TENANTS]: true,
 });
 
+const isSaveClickedReducer: Reducer<boolean> = handleActions({
+  ['mvj/leases/RECEIVE_SAVE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsSaveClickedAction) => {
+    return isClicked;
+  },
+}, false);
+
 export default combineReducers({
   attributes: attributesReducer,
   byId: byIdReducer,
@@ -148,5 +155,6 @@ export default combineReducers({
   isFetching: isFetchingReducer,
   isFetchingById: isFetchingByIdReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
+  isSaveClicked: isSaveClickedReducer,
   list: leasesListReducer,
 });

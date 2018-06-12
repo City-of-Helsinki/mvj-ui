@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -17,17 +18,24 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  errors: ?Object,
   fields: any,
+  isSaveClicked: boolean,
 }
 
 const DecisionConditionsEdit = ({
   attributes,
+  errors,
   fields,
+  fields: {name},
+  isSaveClicked,
 }: Props) => {
+  const decisionConditionsErrors = get(errors, name);
   return(
     <Collapse
       className='collapse__secondary'
       defaultOpen={true}
+      hasErrors={!isEmpty(decisionConditionsErrors)}
       headerTitle={
         <h4 className='collapse__header-title'>Ehdot</h4>
       }
@@ -47,6 +55,7 @@ const DecisionConditionsEdit = ({
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.type')}
                     name={`${condition}.type`}
                     overrideValues={{
@@ -56,6 +65,7 @@ const DecisionConditionsEdit = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
                     name={`${condition}.supervision_date`}
                     overrideValues={{
@@ -65,6 +75,7 @@ const DecisionConditionsEdit = ({
                 </Column>
                 <Column small={12} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
                     name={`${condition}.supervised_date`}
                     overrideValues={{
@@ -74,6 +85,7 @@ const DecisionConditionsEdit = ({
                 </Column>
                 <Column small={12} medium={12} large={6}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.description')}
                     name={`${condition}.description`}
                     overrideValues={{

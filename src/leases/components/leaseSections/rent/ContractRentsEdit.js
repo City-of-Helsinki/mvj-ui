@@ -19,10 +19,11 @@ import type {Attributes} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
   rentType: string,
 }
 
-const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
+const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props) => {
   return (
     <div>
       <BoxItemContainer>
@@ -43,6 +44,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                     <Row>
                       <Column small={6}>
                         <FormField
+                          disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.amount')}
                           name={`${rent}.amount`}
                           overrideValues={{
@@ -52,6 +54,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                       </Column>
                       <Column small={6}>
                         <FormField
+                          disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.period')}
                           name={`${rent}.period`}
                           overrideValues={{
@@ -63,6 +66,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                   </Column>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.intended_use')}
                       name={`${rent}.intended_use`}
                       overrideValues={{
@@ -77,6 +81,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                       <Row>
                         <Column small={6}>
                           <FormField
+                            disableTouched={isSaveClicked}
                             fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.base_amount')}
                             name={`${rent}.base_amount`}
                             overrideValues={{
@@ -86,6 +91,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                         </Column>
                         <Column small={6}>
                           <FormField
+                            disableTouched={isSaveClicked}
                             fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.base_amount_period')}
                             name={`${rent}.base_amount_period`}
                             overrideValues={{
@@ -100,6 +106,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                     rentType === RentTypes.MANUAL) &&
                     <Column small={6} medium={4} large={2} offsetOnLarge={1}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.base_year_rent')}
                         name={`${rent}.base_year_rent`}
                         overrideValues={{
@@ -112,6 +119,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                     <Row>
                       <Column small={6}>
                         <FormField
+                          disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.start_date')}
                           name={`${rent}.start_date`}
                           overrideValues={{
@@ -121,6 +129,7 @@ const ContractRentsEdit = ({attributes, fields, rentType}: Props) => {
                       </Column>
                       <Column small={6}>
                         <FormField
+                          disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.end_date')}
                           name={`${rent}.end_date`}
                           overrideValues={{

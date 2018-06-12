@@ -21,6 +21,7 @@ import {
   clearFormValidFlags,
   showDeleteRelatedLeaseModal,
   hideDeleteRelatedLeaseModal,
+  receiveIsSaveClicked,
 } from './actions';
 import leasesReducer from './reducer';
 
@@ -46,6 +47,7 @@ const stateTemplate = {
     'summary-form': true,
     'tenants-form': true,
   },
+  isSaveClicked: false,
   list: {},
 };
 
@@ -270,6 +272,14 @@ describe('Leases', () => {
         newState.isDeleteRelatedLeaseModalOpen = false;
 
         const state = leasesReducer({}, hideDeleteRelatedLeaseModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaveClicked', () => {
+        const newState = {...stateTemplate};
+        newState.isSaveClicked = true;
+
+        const state = leasesReducer({}, receiveIsSaveClicked(true));
         expect(state).to.deep.equal(newState);
       });
     });

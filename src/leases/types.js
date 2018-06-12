@@ -44,6 +44,8 @@ export type EditContactAction = Action<'mvj/leases/EDIT_CONTACT', Contact>;
 export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;
 
+export type ReceiveIsSaveClickedAction = Action<'mvj/leases/RECEIVE_SAVE_CLICKED', boolean>;
+
 export type CreateRelatedLeaseAction = Action<'mvj/leases/CREATE_RELATED_LEASE', CreateRelatedLeasePayload>;
 export type DeleteRelatedLeaseAction = Action<'mvj/leases/DELETE_RELATED_LEASE', DeleteRelatedLeasePayload>;
 export type HideDeleteRelatedLeaseModalAction = Action<'mvj/leases/HIDE_RELATED_LEASE_MODAL', void>;

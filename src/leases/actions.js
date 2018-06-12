@@ -38,6 +38,7 @@ import type {
   ShowDeleteRelatedLeaseModalAction,
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
+  ReceiveIsSaveClickedAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -115,9 +116,11 @@ export const hideDeleteRelatedLeaseModal = (): HideDeleteRelatedLeaseModalAction
 export const showDeleteRelatedLeaseModal = (): ShowDeleteRelatedLeaseModalAction =>
   createAction('mvj/leases/SHOW_RELATED_LEASE_MODAL')();
 
-// Actions to manage form validity statuses
 export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsAction =>
   createAction('mvj/leases/RECEIVE_FORM_VALID_FLAGS')(valid);
 
 export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
   createAction('mvj/leases/CLEAR_FORM_VALID_FLAGS')();
+
+export const receiveIsSaveClicked = (isClicked: boolean): ReceiveIsSaveClickedAction =>
+  createAction('mvj/leases/RECEIVE_SAVE_CLICKED')(isClicked);

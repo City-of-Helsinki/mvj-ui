@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import {reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
@@ -13,7 +14,7 @@ import RelatedLeasesEdit from './RelatedLeasesEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
-import {getAttributes} from '$src/leases/selectors';
+import {getAttributes, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -21,7 +22,9 @@ import type {NoticePeriodList} from '$src/noticePeriod/types';
 
 type Props = {
   attributes: Object,
+  errors: ?Object,
   handleSubmit: Function,
+  isSaveClicked: boolean,
   noticePeriods: NoticePeriodList,
   receiveFormValidFlags: Function,
   valid: boolean,
@@ -39,9 +42,8 @@ class SummaryEdit extends Component<Props> {
   }
 
   render () {
-    const {attributes, handleSubmit, noticePeriods} = this.props;
+    const {attributes, errors, handleSubmit, isSaveClicked, noticePeriods} = this.props;
     const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
-
     return (
       <form onSubmit={handleSubmit}>
         <h2>Yhteenveto</h2>
@@ -50,6 +52,7 @@ class SummaryEdit extends Component<Props> {
           <Column medium={9}>
             <Collapse
               defaultOpen={true}
+              hasErrors={!isEmpty(errors)}
               headerTitle={
                 <h3 className='collapse__header-title'>Perustiedot</h3>
               }
@@ -57,6 +60,7 @@ class SummaryEdit extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lessor')}
                     name='lessor'
                     overrideValues={{
@@ -67,6 +71,7 @@ class SummaryEdit extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'preparer')}
                     name='preparer'
                     overrideValues={{
@@ -77,6 +82,7 @@ class SummaryEdit extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'classification')}
                     name='classification'
                     overrideValues={{
@@ -88,6 +94,7 @@ class SummaryEdit extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'intended_use')}
                     name='intended_use'
                     overrideValues={{
@@ -97,6 +104,7 @@ class SummaryEdit extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={8}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'intended_use_note')}
                     name='intended_use_note'
                     overrideValues={{
@@ -108,6 +116,7 @@ class SummaryEdit extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'financing')}
                     name='financing'
                     overrideValues={{
@@ -117,6 +126,7 @@ class SummaryEdit extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'management')}
                     name='management'
                     overrideValues={{
@@ -126,6 +136,7 @@ class SummaryEdit extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'transferable')}
                     name='transferable'
                     overrideValues={{
@@ -135,6 +146,7 @@ class SummaryEdit extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'hitas')}
                     name='hitas'
                     overrideValues={{
@@ -146,6 +158,7 @@ class SummaryEdit extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'notice_period')}
                     name='notice_period'
                     overrideValues={{
@@ -156,6 +169,7 @@ class SummaryEdit extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={8}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'notice_note')}
                     name='notice_note'
                     overrideValues={{
@@ -167,6 +181,7 @@ class SummaryEdit extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'reference_number')}
                     name='reference_number'
                     validate={referenceNumber}
@@ -177,6 +192,7 @@ class SummaryEdit extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={8}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'note')}
                     name='note'
                     overrideValues={{
@@ -196,6 +212,7 @@ class SummaryEdit extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'supportive_housing')}
                     name='supportive_housing'
                     overrideValues={{
@@ -205,6 +222,7 @@ class SummaryEdit extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'statistical_use')}
                     name='statistical_use'
                     overrideValues={{
@@ -216,6 +234,7 @@ class SummaryEdit extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'regulated')}
                     name='regulated'
                     overrideValues={{
@@ -225,6 +244,7 @@ class SummaryEdit extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'regulation')}
                     name='regulation'
                     overrideValues={{
@@ -251,6 +271,8 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
+        errors: getErrorsByFormName(state, formName),
+        isSaveClicked: getIsSaveClicked(state),
         noticePeriods: getNoticePeriods(state),
       };
     },

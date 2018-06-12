@@ -11,14 +11,16 @@ import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getDecisionsOptions} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   decisions: Array<Object>,
+  errors: ?Object,
   handleSubmit: Function,
+  isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -57,7 +59,7 @@ class ContractsEdit extends Component<Props, State> {
   }
 
   render() {
-    const {attributes, handleSubmit} = this.props;
+    const {attributes, errors, handleSubmit, isSaveClicked} = this.props;
     const {decisionOptions} = this.state;
 
     return (
@@ -67,6 +69,8 @@ class ContractsEdit extends Component<Props, State> {
             attributes={attributes}
             component={ContractItemsEdit}
             decisionOptions={decisionOptions}
+            errors={errors}
+            isSaveClicked={isSaveClicked}
             name="contracts"
           />
         </FormSection>
@@ -84,6 +88,8 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         decisions: getDecisionsByLease(state, currentLease.id),
+        errors: getErrorsByFormName(state, formName),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

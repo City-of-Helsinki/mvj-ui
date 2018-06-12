@@ -1,4 +1,5 @@
 // @flow
+import isEmpty from 'lodash/isEmpty';
 
 import type {Selector} from '../types';
 import type {
@@ -37,6 +38,9 @@ export const getIsFormValidById: Selector<boolean, string> = (state: LeaseState,
 export const getIsFormValidFlags: Selector<Object, void> = (state: LeaseState): Object =>
   state.lease.isFormValidById;
 
+export const getIsSaveClicked: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.lease.isSaveClicked;
+
 export const getAttributes: Selector<Attributes, void> = (state: LeaseState): LeaseState =>
   state.lease.attributes;
 
@@ -48,3 +52,11 @@ export const getCurrentLease: Selector<Lease, void> = (state: LeaseState): Lease
 
 export const getLeaseById: Selector<Lease, LeaseId> = (state: LeaseState, id: LeaseId): Lease =>
   state.lease.byId[id];
+
+export const getErrorsByFormName: Selector<?Object, string> = (state: Object, formName: string): ?Object => {
+  const form = state.form[formName];
+  if(!isEmpty(form)) {
+    return form.syncErrors;
+  }
+  return null;
+};

@@ -3,6 +3,7 @@ import React from 'react';
 import {FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
@@ -20,20 +21,27 @@ import type {Attributes} from '$src/leases/types';
 type ContractChangesProps = {
   attributes: Attributes,
   decisionOptions: Array<Object>,
+  errors: ?Object,
   fields: any,
+  isSaveClicked: boolean,
   title: string,
 }
 
 const renderContractChanges = ({
   attributes,
   decisionOptions,
+  errors,
   fields,
+  fields: {name},
+  isSaveClicked,
   title,
 }: ContractChangesProps): Element<*> => {
+  const contractChangeErrors = get(errors, name);
   return(
     <Collapse
       className='collapse__secondary'
       defaultOpen={true}
+      hasErrors={!isEmpty(contractChangeErrors)}
       headerTitle={
         <h4 className='collapse__header-title'>{title}</h4>
       }
@@ -53,6 +61,7 @@ const renderContractChanges = ({
                 <Row>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.signing_date')}
                       name={`${change}.signing_date`}
                       overrideValues={{
@@ -62,6 +71,7 @@ const renderContractChanges = ({
                   </Column>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.sign_by_date')}
                       name={`${change}.sign_by_date`}
                       overrideValues={{
@@ -71,6 +81,7 @@ const renderContractChanges = ({
                   </Column>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.first_call_sent')}
                       name={`${change}.first_call_sent`}
                       overrideValues={{
@@ -80,6 +91,7 @@ const renderContractChanges = ({
                   </Column>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.second_call_sent')}
                       name={`${change}.second_call_sent`}
                       overrideValues={{
@@ -89,6 +101,7 @@ const renderContractChanges = ({
                   </Column>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.third_call_sent')}
                       name={`${change}.third_call_sent`}
                       overrideValues={{
@@ -100,6 +113,7 @@ const renderContractChanges = ({
                 <Row>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.decision')}
                       name={`${change}.decision`}
                       overrideValues={{
@@ -110,6 +124,7 @@ const renderContractChanges = ({
                   </Column>
                   <Column small={6} medium={8} large={10}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'contracts.child.children.contract_changes.child.children.description')}
                       name={`${change}.description`}
                       overrideValues={{
@@ -139,9 +154,10 @@ const renderContractChanges = ({
 type MortgageDocumentsProps = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps): Element<*> => {
+const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDocumentsProps): Element<*> => {
   return(
     <div>
       <p className='sub-title'>Panttikirjat</p>
@@ -162,6 +178,7 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps): 
             <Row key={doc.id ? doc.id : `index_${index}`} className='pledge-book'>
               <Column small={4} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.number')}
                   name={`${doc}.number`}
                   overrideValues={{
@@ -171,6 +188,7 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps): 
               </Column>
               <Column small={4} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.date')}
                   name={`${doc}.date`}
                   overrideValues={{
@@ -180,6 +198,7 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps): 
               </Column>
               <Column small={3} medium={3} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.note')}
                   name={`${doc}.note`}
                   overrideValues={{
@@ -213,20 +232,26 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps): 
 type Props = {
   attributes: Attributes,
   decisionOptions: Array<Object>,
+  errors: ?Object,
   fields: any,
+  isSaveClicked: boolean,
 }
 
 const ContractItemsEdit = ({
   attributes,
   decisionOptions,
+  errors,
   fields,
+  isSaveClicked,
 }: Props) =>
   <div>
     {fields && !!fields.length && fields.map((contract, index) => {
+      const contractErrors = get(errors, contract);
       return(
         <Collapse
           key={contract.id ? contract.id : `index_${index}`}
           defaultOpen={true}
+          hasErrors={!isEmpty(contractErrors)}
           headerTitle={
             <h3 className='collapse__header-title'>Sopimus {index + 1}</h3>
           }
@@ -240,6 +265,7 @@ const ContractItemsEdit = ({
             <Row>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.type')}
                   name={`${contract}.type`}
                   overrideValues={{
@@ -249,6 +275,7 @@ const ContractItemsEdit = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.contract_number')}
                   name={`${contract}.contract_number`}
                   overrideValues={{
@@ -258,6 +285,7 @@ const ContractItemsEdit = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.signing_date')}
                   name={`${contract}.signing_date`}
                   overrideValues={{
@@ -267,6 +295,7 @@ const ContractItemsEdit = ({
               </Column>
               <Column small={6} medium={12} large={6}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.signing_note')}
                   name={`${contract}.signing_note`}
                   overrideValues={{
@@ -278,6 +307,7 @@ const ContractItemsEdit = ({
             <Row>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.is_readjustment_decision')}
                   name={`${contract}.is_readjustment_decision`}
                   overrideValues={{
@@ -287,6 +317,7 @@ const ContractItemsEdit = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.institution_identifier')}
                   name={`${contract}.institution_identifier`}
                   overrideValues={{
@@ -296,6 +327,7 @@ const ContractItemsEdit = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.decision')}
                   name={`${contract}.decision`}
                   overrideValues={{
@@ -307,6 +339,7 @@ const ContractItemsEdit = ({
               <Column small={6} medium={12} large={6}>
                 <FormField
                   // add KTJ integration
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.ktj_link')}
                   name={`${contract}.ktj_link`}
                   overrideValues={{
@@ -318,6 +351,7 @@ const ContractItemsEdit = ({
             <Row>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.collateral_number')}
                   name={`${contract}.collateral_number`}
                   overrideValues={{
@@ -327,6 +361,7 @@ const ContractItemsEdit = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.collateral_start_date')}
                   name={`${contract}.collateral_start_date`}
                   overrideValues={{
@@ -336,6 +371,7 @@ const ContractItemsEdit = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.collateral_end_date')}
                   name={`${contract}.collateral_end_date`}
                   overrideValues={{
@@ -345,6 +381,7 @@ const ContractItemsEdit = ({
               </Column>
               <Column small={6} medium={12} large={6}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'contracts.child.children.collateral_note')}
                   name={`${contract}.collateral_note`}
                   overrideValues={{
@@ -358,6 +395,7 @@ const ContractItemsEdit = ({
                 <FieldArray
                   attributes={attributes}
                   component={renderMortgageDocuments}
+                  isSaveClicked={isSaveClicked}
                   name={`${contract}.mortgage_documents`}
                 />
               </Column>
@@ -368,7 +406,9 @@ const ContractItemsEdit = ({
             attributes={attributes}
             component={renderContractChanges}
             decisionOptions={decisionOptions}
+            errors={errors}
             name={`${contract}.contract_changes`}
+            isSaveClicked={isSaveClicked}
             title='Sopimuksen muutokset'
           />
         </Collapse>

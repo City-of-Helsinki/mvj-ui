@@ -22,6 +22,7 @@ type Props = {
   basisOfRents: Array<Object>,
   change: Function,
   fields: any,
+  isSaveClicked: boolean,
 }
 
 class BasisOfRentsEdit extends Component<Props> {
@@ -79,7 +80,7 @@ class BasisOfRentsEdit extends Component<Props> {
   }
 
   render() {
-    const {attributes, fields} = this.props;
+    const {attributes, fields, isSaveClicked} = this.props;
     return (
       <div>
         <BoxItemContainer>
@@ -97,6 +98,7 @@ class BasisOfRentsEdit extends Component<Props> {
                   <Row>
                     <Column small={6} medium={4} large={2}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.intended_use')}
                         name={`${item}.intended_use`}
                         overrideValues={{
@@ -106,6 +108,7 @@ class BasisOfRentsEdit extends Component<Props> {
                     </Column>
                     <Column small={3} medium={2} large={1}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.floor_m2')}
                         name={`${item}.floor_m2`}
                         overrideValues={{
@@ -115,6 +118,7 @@ class BasisOfRentsEdit extends Component<Props> {
                     </Column>
                     <Column small={3} medium={2} large={1}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.index')}
                         name={`${item}.index`}
                         overrideValues={{
@@ -124,6 +128,7 @@ class BasisOfRentsEdit extends Component<Props> {
                     </Column>
                     <Column small={3} medium={2} large={1}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.amount_per_floor_m2_index_100')}
                         name={`${item}.amount_per_floor_m2_index_100`}
                         overrideValues={{
@@ -133,6 +138,7 @@ class BasisOfRentsEdit extends Component<Props> {
                     </Column>
                     <Column small={3} medium={2} large={1}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.percent')}
                         name={`${item}.percent`}
                         overrideValues={{
@@ -142,6 +148,7 @@ class BasisOfRentsEdit extends Component<Props> {
                     </Column>
                     <Column small={3} medium={2} large={1}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.amount_per_floor_m2_index')}
                         name={`${item}.amount_per_floor_m2_index`}
                         disabled
@@ -153,6 +160,7 @@ class BasisOfRentsEdit extends Component<Props> {
                     </Column>
                     <Column small={6} medium={4} large={2}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.year_rent_index_100')}
                         name={`${item}.year_rent_index_100`}
                         disabled
@@ -164,6 +172,7 @@ class BasisOfRentsEdit extends Component<Props> {
                     </Column>
                     <Column small={6} medium={4} large={2}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.year_rent_index')}
                         name={`${item}.year_rent_index`}
                         disabled

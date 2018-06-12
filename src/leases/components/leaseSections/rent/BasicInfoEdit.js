@@ -17,9 +17,10 @@ import type {Attributes} from '$src/leases/types';
 type DueDatesProps = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const renderDueDates = ({attributes, fields}: DueDatesProps): Element<*> => {
+const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Element<*> => {
   return (
     <div>
       <Row>
@@ -34,6 +35,7 @@ const renderDueDates = ({attributes, fields}: DueDatesProps): Element<*> => {
               <Row>
                 <Column small={6}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.day')}
                     name={`${due_date}.day`}
                     overrideValues={{
@@ -43,6 +45,7 @@ const renderDueDates = ({attributes, fields}: DueDatesProps): Element<*> => {
                 </Column>
                 <Column small={6}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.month')}
                     name={`${due_date}.month`}
                     overrideValues={{
@@ -77,9 +80,10 @@ const renderDueDates = ({attributes, fields}: DueDatesProps): Element<*> => {
 type FixedInitialYearRentsProps = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRentsProps): Element<*> => {
+const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedInitialYearRentsProps): Element<*> => {
   return (
     <div>
       <Row>
@@ -99,6 +103,7 @@ const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRents
             <Row>
               <Column small={3} medium={3} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use')}
                   name={`${rent}.intended_use`}
                   overrideValues={{
@@ -108,6 +113,7 @@ const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRents
               </Column>
               <Column small={3} medium={3} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
                   name={`${rent}.amount`}
                   overrideValues={{
@@ -117,6 +123,7 @@ const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRents
               </Column>
               <Column small={2} medium={2} large={1}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.start_date')}
                   name={`${rent}.start_date`}
                   overrideValues={{
@@ -126,6 +133,7 @@ const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRents
               </Column>
               <Column small={2} medium={2} large={1}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}
                   name={`${rent}.end_date`}
                   overrideValues={{
@@ -158,16 +166,18 @@ const renderFixedInitialYearRents = ({attributes, fields}: FixedInitialYearRents
 
 type Props = {
   attributes: Attributes,
+  isSaveClicked: boolean,
   rent: Object,
   rentType: ?string,
 }
 
-const BasicInfoEmpty = ({attributes}: Props) => {
+const BasicInfoEmpty = ({attributes, isSaveClicked}: Props) => {
   return (
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.type')}
             name='type'
             overrideValues={{
@@ -183,15 +193,17 @@ const BasicInfoEmpty = ({attributes}: Props) => {
 type BasicInfoIndexProps = {
   attributes: Attributes,
   isIndex: boolean,
+  isSaveClicked: boolean,
   rent: Object,
 }
 
-const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
+const BasicInfoIndex = ({attributes, isIndex, isSaveClicked, rent}: BasicInfoIndexProps) => {
   return (
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.type')}
             name='type'
             overrideValues={{
@@ -201,6 +213,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.start_date')}
             name='start_date'
             overrideValues={{
@@ -210,6 +223,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.end_date')}
             name='end_date'
             overrideValues={{
@@ -219,6 +233,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
         </Column>
         <Column small={6} medium={4} large={2}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.cycle')}
             name='cycle'
             overrideValues={{
@@ -228,6 +243,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
         </Column>
         <Column small={6} medium={4} large={2}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.index_type')}
             name='index_type'
             overrideValues={{
@@ -237,6 +253,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
         </Column>
         <Column small={6} medium={4} large={2}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.due_dates_type')}
             name='due_dates_type'
             overrideValues={{
@@ -249,6 +266,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
             <FieldArray
               attributes={attributes}
               component={renderDueDates}
+              isSaveClicked={isSaveClicked}
               name="due_dates"
             />
           </Column>
@@ -256,6 +274,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'rents.child.children.due_dates_per_year')}
               name='due_dates_per_year'
               overrideValues={{
@@ -272,6 +291,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
             <Row>
               <Column small={6}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rents.child.children.elementary_index')}
                   name='elementary_index'
                   overrideValues={{
@@ -281,6 +301,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
               </Column>
               <Column small={6}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rents.child.children.index_rounding')}
                   name='index_rounding'
                   overrideValues={{
@@ -292,6 +313,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
           </Column>
           <Column small={4} medium={2} large={1}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'rents.child.children.x_value')}
               name='x_value'
               overrideValues={{
@@ -301,6 +323,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
           </Column>
           <Column small={4} medium={2} large={1}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'rents.child.children.y_value')}
               name='y_value'
               overrideValues={{
@@ -310,6 +333,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
           </Column>
           <Column small={4} medium={2} large={1}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'rents.child.children.y_value_start')}
               name='y_value_start'
               overrideValues={{
@@ -321,6 +345,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
             <Row>
               <Column small={6}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rents.child.children.equalization_start_date')}
                   name='equalization_start_date'
                   overrideValues={{
@@ -330,6 +355,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
               </Column>
               <Column small={6}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rents.child.children.equalization_end_date')}
                   name='equalization_end_date'
                   overrideValues={{
@@ -347,6 +373,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
           <FieldArray
             attributes={attributes}
             component={renderFixedInitialYearRents}
+            isSaveClicked={isSaveClicked}
             name="fixed_initial_year_rents"
           />
         </Column>
@@ -354,6 +381,7 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
       <Row>
         <Column>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.note')}
             name='note'
             overrideValues={{
@@ -366,12 +394,13 @@ const BasicInfoIndex = ({attributes, isIndex, rent}: BasicInfoIndexProps) => {
   );
 };
 
-const BasicInfoOneTime = ({attributes}: Props) => {
+const BasicInfoOneTime = ({attributes, isSaveClicked}: Props) => {
   return (
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.type')}
             name='type'
             overrideValues={{
@@ -381,6 +410,7 @@ const BasicInfoOneTime = ({attributes}: Props) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.start_date')}
             name='start_date'
             overrideValues={{
@@ -390,6 +420,7 @@ const BasicInfoOneTime = ({attributes}: Props) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.end_date')}
             name='end_date'
             overrideValues={{
@@ -399,6 +430,7 @@ const BasicInfoOneTime = ({attributes}: Props) => {
         </Column>
         <Column small={6} medium={4} large={2}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.amount')}
             name='amount'
             overrideValues={{
@@ -410,6 +442,7 @@ const BasicInfoOneTime = ({attributes}: Props) => {
       <Row>
         <Column>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.note')}
             name='note'
             overrideValues={{
@@ -422,12 +455,13 @@ const BasicInfoOneTime = ({attributes}: Props) => {
   );
 };
 
-const BasicInfoFixed = ({attributes, rent}: Props) => {
+const BasicInfoFixed = ({attributes, isSaveClicked, rent}: Props) => {
   return (
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.type')}
             name='type'
             overrideValues={{
@@ -437,6 +471,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.start_date')}
             name='start_date'
             overrideValues={{
@@ -446,6 +481,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.end_date')}
             name='end_date'
             overrideValues={{
@@ -455,6 +491,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
         </Column>
         <Column small={6} medium={4} large={2}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.due_dates_type')}
             name='due_dates_type'
             overrideValues={{
@@ -467,6 +504,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
             <FieldArray
               attributes={attributes}
               component={renderDueDates}
+              isSaveClicked={isSaveClicked}
               name="due_dates"
             />
           </Column>
@@ -474,6 +512,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'rents.child.children.due_dates_per_year')}
               name='due_dates_per_year'
               overrideValues={{
@@ -486,6 +525,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
       <Row>
         <Column>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.note')}
             name='note'
             overrideValues={{
@@ -498,12 +538,13 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
   );
 };
 
-const BasicInfoFree = ({attributes}: Props) => {
+const BasicInfoFree = ({attributes, isSaveClicked}: Props) => {
   return (
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.type')}
             name='type'
             overrideValues={{
@@ -513,6 +554,7 @@ const BasicInfoFree = ({attributes}: Props) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.start_date')}
             name='start_date'
             overrideValues={{
@@ -522,6 +564,7 @@ const BasicInfoFree = ({attributes}: Props) => {
         </Column>
         <Column small={3} medium={2} large={1}>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.end_date')}
             name='end_date'
             overrideValues={{
@@ -533,6 +576,7 @@ const BasicInfoFree = ({attributes}: Props) => {
       <Row>
         <Column>
           <FormField
+            disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.note')}
             name='note'
             overrideValues={{
@@ -545,12 +589,13 @@ const BasicInfoFree = ({attributes}: Props) => {
   );
 };
 
-const BasicInfoEdit = ({attributes, rent, rentType}: Props) => {
+const BasicInfoEdit = ({attributes, isSaveClicked, rent, rentType}: Props) => {
   return (
     <div>
       {!rentType &&
         <BasicInfoEmpty
           attributes={attributes}
+          isSaveClicked={isSaveClicked}
           rent={rent}
           rentType={rentType}
         />
@@ -559,6 +604,7 @@ const BasicInfoEdit = ({attributes, rent, rentType}: Props) => {
         <BasicInfoIndex
           attributes={attributes}
           isIndex={true}
+          isSaveClicked={isSaveClicked}
           rent={rent}
           rentType={rentType}
         />
@@ -566,6 +612,7 @@ const BasicInfoEdit = ({attributes, rent, rentType}: Props) => {
       {rentType === RentTypes.ONE_TIME &&
         <BasicInfoOneTime
           attributes={attributes}
+          isSaveClicked={isSaveClicked}
           rent={rent}
           rentType={rentType}
         />
@@ -573,6 +620,7 @@ const BasicInfoEdit = ({attributes, rent, rentType}: Props) => {
       {rentType === RentTypes.FIXED &&
         <BasicInfoFixed
           attributes={attributes}
+          isSaveClicked={isSaveClicked}
           rent={rent}
           rentType={rentType}
         />
@@ -580,6 +628,7 @@ const BasicInfoEdit = ({attributes, rent, rentType}: Props) => {
       {rentType === RentTypes.FREE &&
         <BasicInfoFree
           attributes={attributes}
+          isSaveClicked={isSaveClicked}
           rent={rent}
           rentType={rentType}
         />
@@ -588,6 +637,7 @@ const BasicInfoEdit = ({attributes, rent, rentType}: Props) => {
         <BasicInfoIndex
           attributes={attributes}
           isIndex={false}
+          isSaveClicked={isSaveClicked}
           rent={rent}
           rentType={rentType}
         />
