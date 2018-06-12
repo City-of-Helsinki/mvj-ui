@@ -99,11 +99,6 @@
     align-self: flex-start;
   }
 
-  &__container {
-    display: flex;
-    height: 100%;
-  }
-
   &__label {
     white-space: normal;
     overflow: visible;
@@ -111,6 +106,7 @@
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
     color: $dark-gray;
+    white-space: nowrap;
 
     .required {
       color: $alert-color;
@@ -118,31 +114,11 @@
   }
 
   &__error-block {
-    background-color: rgba(189, 39, 25, 0.8);
-    color: $white;
+    color: $brick;
     display: block;
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
     margin-bottom: 0;
-    margin-top: rem-calc(12px);
-    padding: rem-calc(5px 10px);
-    position: relative;
-    max-width: rem-calc(179px);
-
-    &_wrapper {
-      position: absolute;
-    }
-
-    &::before {
-      content: '';
-      width: 0;
-      height: 0;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-bottom: 10px solid rgba(189, 39, 25, 0.8);
-      position: absolute;
-      top: rem-calc(-10px);
-    }
   }
 
   &__boolean, &__checkbox {

@@ -193,7 +193,9 @@ const PlanUnitItemsEdit = ({
                       }}
                     />
                   </Column>
-                  <Column small={12} medium={6} large={3}>
+                </Row>
+                <Row>
+                  <Column>
                     <FormField
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date_note')}
                       name={`${planunit}.detailed_plan_latest_processing_date_note`}
@@ -201,9 +203,6 @@ const PlanUnitItemsEdit = ({
                         label: 'Asemakaavan viimeisin käsittelypvm huomautus',
                       }}
                     />
-                  </Column>
-                  <Column small={12} medium={6} large={3}>
-
                   </Column>
                 </Row>
                 <Row>
@@ -218,15 +217,6 @@ const PlanUnitItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_date_of_approval')}
-                      name={`${planunit}.plot_division_date_of_approval`}
-                      overrideValues={{
-                        label: 'Tonttijaon hyväksymispvm',
-                      }}
-                    />
-                  </Column>
-                  <Column small={12} medium={6} large={3}>
-                    <FormField
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_state')}
                       name={`${planunit}.plot_division_state`}
                       overrideValues={{
@@ -235,7 +225,13 @@ const PlanUnitItemsEdit = ({
                     />
                   </Column>
                   <Column small={12} medium={6} large={3}>
-
+                    <FormField
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_date_of_approval')}
+                      name={`${planunit}.plot_division_date_of_approval`}
+                      overrideValues={{
+                        label: 'Tonttijaon hyväksymispvm',
+                      }}
+                    />
                   </Column>
                 </Row>
                 <Row>

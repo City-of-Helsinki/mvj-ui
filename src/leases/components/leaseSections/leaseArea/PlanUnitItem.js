@@ -105,7 +105,9 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
           <FormFieldLabel>Asemakaavan viimeisin käsittelypvm</FormFieldLabel>
           <p>{formatDate(planUnit.detailed_plan_latest_processing_date) || '-'}</p>
         </Column>
-        <Column small={12} medium={6} large={6}>
+      </Row>
+      <Row>
+        <Column>
           <FormFieldLabel>Asemakaavan viimeisin käsittelypvm huomautus</FormFieldLabel>
           <p>{planUnit.detailed_plan_latest_processing_date_note || '-'}</p>
         </Column>
@@ -116,12 +118,12 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
           <p>{planUnit.plot_division_identifier || '-'}</p>
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Tonttijaon hyväksymispvm</FormFieldLabel>
-          <p>{formatDate(planUnit.plot_division_date_of_approval) || '-'}</p>
-        </Column>
-        <Column small={12} medium={6} large={6}>
           <FormFieldLabel>Tonttijaon olotila</FormFieldLabel>
           <p>{getLabelOfOption(plotDivisionStateOptions, planUnit.plot_division_state) || '-'}</p>
+        </Column>
+        <Column small={12} medium={12} large={6}>
+          <FormFieldLabel>Tonttijaon hyväksymispvm</FormFieldLabel>
+          <p>{formatDate(planUnit.plot_division_date_of_approval) || '-'}</p>
         </Column>
       </Row>
       <Row>
@@ -133,7 +135,7 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
           <FormFieldLabel>Kaavayksikön olotila</FormFieldLabel>
           <p>{getLabelOfOption(planUnitStateOptions, planUnit.plan_unit_state) || '-'}</p>
         </Column>
-        <Column small={12} medium={6} large={6}>
+        <Column small={12} medium={12} large={6}>
           <FormFieldLabel>Kaavayksikön käyttötarkoitus</FormFieldLabel>
           <p>{getLabelOfOption(planUnitIntendedUseOptions, planUnit.plan_unit_intended_use) || '-'}</p>
         </Column>

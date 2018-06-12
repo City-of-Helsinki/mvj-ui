@@ -92,20 +92,18 @@ const FormFieldInput = ({
   required,
   rows,
 }: InputProps) => {
-  const displayError = meta.error;
+  const displayError = meta.error && meta.touched;
   const isDirty = meta.dirty && !disableDirty;
   const fieldComponent = resolveFieldType(fieldType);
   const type = resolveType(fieldType);
 
   return (
-    <div className='form-field__container'>
-      <div className={classNames('form-field', className)}>
-        {label && <label className="form-field__label" htmlFor={input.name} title={label ? `${label}${required ? ' *' : ''}` : ''}>{label}{required &&<i className='required'> *</i>}</label>}
-        <div className='form-field__component'>
-          {createElement(fieldComponent, {autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
-        </div>
-        {displayError && <div className='form-field__error-block_wrapper'><ErrorComponent {...meta}/></div>}
+    <div className={classNames('form-field', className)}>
+      {label && <label className="form-field__label" htmlFor={input.name} title={label ? `${label}${required ? ' *' : ''}` : ''}>{label}{required &&<i className='required'> *</i>}</label>}
+      <div className='form-field__component'>
+        {createElement(fieldComponent, {autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
       </div>
+      {displayError && <ErrorComponent {...meta}/>}
     </div>
   );
 };
