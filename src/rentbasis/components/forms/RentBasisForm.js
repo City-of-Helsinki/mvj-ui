@@ -237,6 +237,7 @@ class RentBasisForm extends Component<Props> {
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
+                className='align-top'
                 fieldAttributes={get(attributes, 'detailed_plan_identifier')}
                 name='detailed_plan_identifier'
                 overrideValues={{
@@ -246,6 +247,7 @@ class RentBasisForm extends Component<Props> {
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
+                className='align-top'
                 fieldAttributes={get(attributes, 'management')}
                 name='management'
                 overrideValues={{
@@ -255,6 +257,7 @@ class RentBasisForm extends Component<Props> {
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
+                className='align-top'
                 fieldAttributes={get(attributes, 'financing')}
                 name='financing'
                 overrideValues={{
@@ -273,6 +276,7 @@ class RentBasisForm extends Component<Props> {
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
+                className='align-top'
                 fieldAttributes={get(attributes, 'lease_rights_end_date')}
                 name='lease_rights_end_date'
                 overrideValues={{
@@ -282,6 +286,7 @@ class RentBasisForm extends Component<Props> {
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
+                className='align-top'
                 fieldAttributes={get(attributes, 'index')}
                 name='index'
                 overrideValues={{

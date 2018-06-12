@@ -95,6 +95,10 @@
   align-self: flex-end;
   width: 100%;
 
+  &.align-top {
+    align-self: flex-start;
+  }
+
   &__container {
     display: flex;
     height: 100%;
