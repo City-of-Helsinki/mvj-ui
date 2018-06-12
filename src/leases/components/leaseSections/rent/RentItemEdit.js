@@ -5,6 +5,7 @@ import {FieldArray, FormSection, getFormValues} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 
 import AddButton from '$components/form/AddButton';
@@ -20,13 +21,14 @@ import {isRentActive} from '$src/leases/helpers';
 import {FormNames, RentTypes} from '$src/leases/enums';
 
 type Props = {
+  errors: ?Object,
   fields: any,
   formValues: Array<Object>,
 }
 
 class RentItemEdit extends Component<Props> {
   render() {
-    const {fields, formValues} = this.props;
+    const {errors, fields, formValues} = this.props;
 
     return (
       <div>
@@ -34,12 +36,16 @@ class RentItemEdit extends Component<Props> {
           fields.map((item, index) => {
             const rent = get(formValues, item);
             const rentType = get(formValues, `${item}.type`);
+            const rentErrors = get(errors, item);
+            const contractRentErrors = get(errors, `${item}.contract_rents`);
+            const rentAdjustmentsErrors = get(errors, `${item}.rent_adjustments`);
 
             return (
               <Collapse
                 key={item.id ? item.id : `index_${index}`}
                 className={classNames({'not-active': !isRentActive(rent)})}
                 defaultOpen={true}
+                hasErrors={!isEmpty(rentErrors)}
                 headerTitle={
                   <h3 className='collapse__header-title'>Vuokra {index + 1}</h3>
                 }>
@@ -65,6 +71,7 @@ class RentItemEdit extends Component<Props> {
                   <Collapse
                     className='collapse__secondary'
                     defaultOpen={true}
+                    hasErrors={!isEmpty(contractRentErrors)}
                     headerTitle={
                       <h3 className='collapse__header-title'>Sopimusvuokra</h3>
                     }>
@@ -98,6 +105,7 @@ class RentItemEdit extends Component<Props> {
                   <Collapse
                     className='collapse__secondary'
                     defaultOpen={true}
+                    hasErrors={!isEmpty(rentAdjustmentsErrors)}
                     headerTitle={
                       <h3 className='collapse__header-title'>Alennukset ja korotukset</h3>
                     }>

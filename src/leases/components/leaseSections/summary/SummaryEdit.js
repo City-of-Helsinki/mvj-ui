@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import {reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
@@ -13,7 +14,7 @@ import RelatedLeasesEdit from './RelatedLeasesEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
-import {getAttributes} from '$src/leases/selectors';
+import {getAttributes, getErrorsByFormName} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -21,6 +22,7 @@ import type {NoticePeriodList} from '$src/noticePeriod/types';
 
 type Props = {
   attributes: Object,
+  errors: ?Object,
   handleSubmit: Function,
   noticePeriods: NoticePeriodList,
   receiveFormValidFlags: Function,
@@ -39,9 +41,8 @@ class SummaryEdit extends Component<Props> {
   }
 
   render () {
-    const {attributes, handleSubmit, noticePeriods} = this.props;
+    const {attributes, errors, handleSubmit, noticePeriods} = this.props;
     const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
-
     return (
       <form onSubmit={handleSubmit}>
         <h2>Yhteenveto</h2>
@@ -50,6 +51,7 @@ class SummaryEdit extends Component<Props> {
           <Column medium={9}>
             <Collapse
               defaultOpen={true}
+              hasErrors={!isEmpty(errors)}
               headerTitle={
                 <h3 className='collapse__header-title'>Perustiedot</h3>
               }
@@ -251,6 +253,7 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
+        errors: getErrorsByFormName(state, formName),
         noticePeriods: getNoticePeriods(state),
       };
     },

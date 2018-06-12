@@ -9,6 +9,7 @@ type Props = {
   children: Object,
   className?: string,
   defaultOpen: boolean,
+  hasErrors: boolean,
   header?: any,
   headerTitle: any,
   showTitleOnOpen?: boolean,
@@ -28,6 +29,7 @@ class Collapse extends Component<Props, State> {
 
   static defaultProps = {
     defaultOpen: false,
+    hasErrors: false,
     showTitleOnOpen: false,
   };
 
@@ -98,7 +100,7 @@ class Collapse extends Component<Props, State> {
 
   render() {
     const {contentHeight, isOpen, isResizing, isVisible} = this.state;
-    const {children, className, header, headerTitle, showTitleOnOpen} = this.props;
+    const {children, className, hasErrors, header, headerTitle, showTitleOnOpen} = this.props;
 
     return (
       <div
@@ -122,6 +124,7 @@ class Collapse extends Component<Props, State> {
               }
               {(showTitleOnOpen || !isOpen) && this.getChildrenOfHeader(header)}
             </Row>
+            {!isOpen && hasErrors && <span className='collapse__header_error-badge' />}
           </div>
         </div>
         <div

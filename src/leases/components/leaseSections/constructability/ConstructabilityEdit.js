@@ -21,7 +21,7 @@ import {FormNames} from '$src/leases/enums';
 import {getFullAddress, getContentConstructability} from '$src/leases/helpers';
 import {getUserOptions} from '$src/users/helpers';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease, getErrorsByFormName} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes, Lease} from '$src/leases/types';
@@ -85,14 +85,60 @@ const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
 type AreaProps = {
   areas: Array<Object>,
   attributes: Attributes,
+  errors: ?Object,
   fields: any,
   locationOptions: Array<Object>,
   typeOptions: Array<Object>,
 }
 
+const getPreconstructionErrors = (errors: ?Object, area: string) => {
+  return {
+    ...get(errors, `${area}.preconstruction_state`, {}),
+    ...get(errors, `${area}.descriptionsPreconstruction`, {}),
+  };
+};
+
+const getDemolitionErrors = (errors: ?Object, area: string) => {
+  return {
+    ...get(errors, `${area}.demolition_state`, {}),
+    ...get(errors, `${area}.descriptionsDemolition`, {}),
+  };
+};
+
+const getPollutedLandErrors = (errors: ?Object, area: string) => {
+  return {
+    ...get(errors, `${area}.polluted_land_state`, {}),
+    ...get(errors, `${area}.polluted_land_rent_condition_state`, {}),
+    ...get(errors, `${area}.polluted_land_rent_condition_date`, {}),
+    ...get(errors, `${area}.polluted_land_planner`, {}),
+    ...get(errors, `${area}.polluted_land_projectwise_number`, {}),
+    ...get(errors, `${area}.polluted_land_matti_report_number`, {}),
+    ...get(errors, `${area}.descriptionsPollutedLand`, {}),
+  };
+};
+
+const getConstructabilityReportErrors = (errors: ?Object, area: string) => {
+  return {
+    ...get(errors, `${area}.constructability_report_state`),
+    ...get(errors, `${area}.constructability_report_investigation_state`, {}),
+    ...get(errors, `${area}.constructability_report_signing_date`, {}),
+    ...get(errors, `${area}.constructability_report_signer`, {}),
+    ...get(errors, `${area}.constructability_report_geotechnical_number`, {}),
+    ...get(errors, `${area}.descriptionsReport`, {}),
+  };
+};
+
+const getOtherErrors = (errors: ?Object, area: string) => {
+  return {
+    ...get(errors, `${area}.other_state`),
+    ...get(errors, `${area}.descriptionsOther`),
+  };
+};
+
 const renderAreas = ({
   areas,
   attributes,
+  errors,
   fields,
   locationOptions,
   typeOptions,
@@ -103,10 +149,18 @@ const renderAreas = ({
         <p className='no-margin'>Ei vuokra-alueita</p>
       }
       {areas && !!areas.length &&fields && !!fields.length && fields.map((area, index) => {
+        const areaErrors = get(errors, area);
+        const preconstructionErrors = getPreconstructionErrors(errors, area);
+        const demolitionErrors = getDemolitionErrors(errors, area);
+        const pollutedLandErrors = getPollutedLandErrors(errors, area);
+        const constructabilityReportErrors = getConstructabilityReportErrors(errors, area);
+        const otherErrors = getOtherErrors(errors, area);
+
         return (
           <Collapse
             key={area.id ? area.id : `index_${index}`}
             defaultOpen={true}
+            hasErrors={!isEmpty(areaErrors)}
             header={
               <div>
                 <Column>
@@ -133,6 +187,7 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
+              hasErrors={!isEmpty(preconstructionErrors)}
               headerTitle={
                 <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
               }
@@ -158,6 +213,7 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
+              hasErrors={!isEmpty(demolitionErrors)}
               headerTitle={
                 <h4 className='collapse__header-title'>Purku</h4>
               }
@@ -183,6 +239,7 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
+              hasErrors={!isEmpty(pollutedLandErrors)}
               headerTitle={
                 <h4 className='collapse__header-title'>PIMA</h4>
               }
@@ -254,6 +311,7 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
+              hasErrors={!isEmpty(constructabilityReportErrors)}
               headerTitle={
                 <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
               }
@@ -315,6 +373,7 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
+              hasErrors={!isEmpty(otherErrors)}
               headerTitle={
                 <h4 className='collapse__header-title'>Muut</h4>
               }
@@ -346,6 +405,7 @@ const renderAreas = ({
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
+  errors: ?Object,
   handleSubmit: Function,
   receiveFormValidFlags: Function,
   valid: boolean,
@@ -400,6 +460,7 @@ class ConstructabilityEdit extends Component<Props, State> {
   render () {
     const {
       attributes,
+      errors,
       handleSubmit,
     } = this.props;
     const {
@@ -419,6 +480,7 @@ class ConstructabilityEdit extends Component<Props, State> {
             areas={areas}
             attributes={attributes}
             component={renderAreas}
+            errors={errors}
             locationOptions={locationOptions}
             name="lease_areas"
             typeOptions={typeOptions}
@@ -437,6 +499,7 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
+        errors: getErrorsByFormName(state, formName),
       };
     },
     {

@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -17,17 +18,22 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  errors: ?Object,
   fields: any,
 }
 
 const DecisionConditionsEdit = ({
   attributes,
+  errors,
   fields,
+  fields: {name},
 }: Props) => {
+  const decisionConditionsErrors = get(errors, name);
   return(
     <Collapse
       className='collapse__secondary'
       defaultOpen={true}
+      hasErrors={!isEmpty(decisionConditionsErrors)}
       headerTitle={
         <h4 className='collapse__header-title'>Ehdot</h4>
       }

@@ -3,6 +3,7 @@ import React from 'react';
 import {FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
@@ -20,6 +21,7 @@ import type {Attributes} from '$src/leases/types';
 type ContractChangesProps = {
   attributes: Attributes,
   decisionOptions: Array<Object>,
+  errors: ?Object,
   fields: any,
   title: string,
 }
@@ -27,13 +29,17 @@ type ContractChangesProps = {
 const renderContractChanges = ({
   attributes,
   decisionOptions,
+  errors,
   fields,
+  fields: {name},
   title,
 }: ContractChangesProps): Element<*> => {
+  const contractChangeErrors = get(errors, name);
   return(
     <Collapse
       className='collapse__secondary'
       defaultOpen={true}
+      hasErrors={!isEmpty(contractChangeErrors)}
       headerTitle={
         <h4 className='collapse__header-title'>{title}</h4>
       }
@@ -213,20 +219,24 @@ const renderMortgageDocuments = ({attributes, fields}: MortgageDocumentsProps): 
 type Props = {
   attributes: Attributes,
   decisionOptions: Array<Object>,
+  errors: ?Object,
   fields: any,
 }
 
 const ContractItemsEdit = ({
   attributes,
   decisionOptions,
+  errors,
   fields,
 }: Props) =>
   <div>
     {fields && !!fields.length && fields.map((contract, index) => {
+      const contractErrors = get(errors, contract);
       return(
         <Collapse
           key={contract.id ? contract.id : `index_${index}`}
           defaultOpen={true}
+          hasErrors={!isEmpty(contractErrors)}
           headerTitle={
             <h3 className='collapse__header-title'>Sopimus {index + 1}</h3>
           }
@@ -368,6 +378,7 @@ const ContractItemsEdit = ({
             attributes={attributes}
             component={renderContractChanges}
             decisionOptions={decisionOptions}
+            errors={errors}
             name={`${contract}.contract_changes`}
             title='Sopimuksen muutokset'
           />

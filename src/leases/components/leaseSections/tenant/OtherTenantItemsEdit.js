@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -28,6 +29,7 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  errors: ?Object,
   fields: any,
   formValues: Object,
   initializeContactForm: Function,
@@ -37,6 +39,7 @@ type Props = {
 
 const OtherTenantItemsEdit = ({
   attributes,
+  errors,
   fields,
   formValues,
   initializeContactForm,
@@ -51,12 +54,14 @@ const OtherTenantItemsEdit = ({
       {fields && !!fields.length && fields.map((tenant, index) => {
         const contact = get(formValues, `${tenant}.contact`);
         const isActive = isTenantActive(get(formValues, tenant));
+        const tenantErrors = get(errors, tenant);
 
         return (
           <Collapse
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames('collapse__secondary', {'not-active': !isActive})}
             defaultOpen={isActive}
+            hasErrors={!isEmpty(tenantErrors)}
             headerTitle={
               <h4 className='collapse__header-title edit-row'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
             }>

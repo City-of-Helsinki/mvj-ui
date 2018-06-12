@@ -3,6 +3,7 @@ import React from 'react';
 import {FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -15,13 +16,6 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
 
 import type {Attributes} from '$src/leases/types';
-
-type Props = {
-  attributes: Attributes,
-  buttonTitle: string,
-  title: string,
-  fields: any,
-}
 
 type AddressesProps = {
   attributes: Attributes,
@@ -96,14 +90,30 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
   );
 };
 
-const PlanUnitItemsEdit = (props: Props) => {
-  const {attributes, buttonTitle, title, fields} = props;
+type Props = {
+  attributes: Attributes,
+  buttonTitle: string,
+  errors: ?Object,
+  fields: any,
+  title: string,
+}
+
+const PlanUnitItemsEdit = ({
+  attributes,
+  buttonTitle,
+  errors,
+  fields,
+  fields: {name},
+  title,
+}: Props) => {
+  const planUnitErrors = get(errors, name);
 
   return (
     <div>
       <Collapse
         className='collapse__secondary'
         defaultOpen={true}
+        hasErrors={!isEmpty(planUnitErrors)}
         headerTitle={
           <h4 className='collapse__header-title'>{title}</h4>
         }

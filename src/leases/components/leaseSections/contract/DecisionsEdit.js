@@ -4,12 +4,14 @@ import {connect} from 'react-redux';
 import {FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
-import {receiveFormValidFlags} from '$src/leases/actions';
-import {FormNames} from '$src/leases/enums';
 import FormSection from '$components/form/FormSection';
 import DecisionItemsEdit from './DecisionItemsEdit';
+import {receiveFormValidFlags} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
+import {getErrorsByFormName} from '$src/leases/selectors';
 
 type Props = {
+  errors: ?Object,
   handleSubmit: Function,
   receiveFormValidFlags: Function,
   valid: boolean,
@@ -27,13 +29,14 @@ class DecisionsEdit extends Component<Props> {
   }
 
   render() {
-    const {handleSubmit} = this.props;
+    const {errors, handleSubmit} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <FieldArray
             component={DecisionItemsEdit}
+            errors={errors}
             name="decisions"
           />
         </FormSection>
@@ -46,7 +49,11 @@ const formName = FormNames.DECISIONS;
 
 export default flowRight(
   connect(
-    null,
+    (state) => {
+      return {
+        errors: getErrorsByFormName(state, formName),
+      };
+    },
     {
       receiveFormValidFlags,
     },

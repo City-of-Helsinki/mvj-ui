@@ -14,8 +14,10 @@ import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
+import {getErrorsByFormName} from '$src/leases/selectors';
 
 type Props = {
+  errors: ?Object,
   handleSubmit: Function,
   params: Object,
   receiveFormValidFlags: Function,
@@ -34,7 +36,7 @@ class RentsEdit extends Component<Props> {
   }
 
   render() {
-    const {handleSubmit} = this.props;
+    const {errors, handleSubmit} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -55,6 +57,7 @@ class RentsEdit extends Component<Props> {
           <Divider />
           <FieldArray
             component={RentItemEdit}
+            errors={errors}
             name='rents'
           />
 
@@ -77,7 +80,11 @@ const formName = FormNames.RENTS;
 
 export default flowRight(
   connect(
-    null,
+    (state) => {
+      return {
+        errors: getErrorsByFormName(state, formName),
+      };
+    },
     {
       receiveFormValidFlags,
     }

@@ -5,6 +5,7 @@ import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
@@ -23,7 +24,7 @@ import {receiveFormValidFlags} from '$src/leases/actions';
 import {AreaLocation, FormNames} from '$src/leases/enums';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
 import {formatNumber} from '$util/helpers';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease, getErrorsByFormName} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
 
@@ -98,20 +99,24 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
 
 type AreaItemProps = {
   attributes: Attributes,
+  errors: ?Object,
   fields: any,
 }
 
 const LeaseAreaItems = ({
   attributes,
+  errors,
   fields,
 }: AreaItemProps): Element<*> => {
   return (
     <div>
       {fields && !!fields.length && fields.map((area, index) => {
+        const areaErrors = get(errors, area);
         return (
           <Collapse
             key={index}
             defaultOpen={true}
+            hasErrors={!isEmpty(areaErrors)}
             headerTitle={
               <h3 className='collapse__header-title'>Kohde {index + 1}</h3>
             }
@@ -173,6 +178,7 @@ const LeaseAreaItems = ({
                 <FieldArray
                   buttonTitle='Lisää kiinteistö/määräala'
                   component={PlotItemsEdit}
+                  errors={errors}
                   name={`${area}.plots_contract`}
                   title='Kiinteistöt / määräalat sopimuksessa'
                 />
@@ -181,6 +187,7 @@ const LeaseAreaItems = ({
                 <FieldArray
                   buttonTitle='Lisää kiinteistö/määräala'
                   component={PlotItemsEdit}
+                  errors={errors}
                   name={`${area}.plots_current`}
                   title='Kiinteistöt / määräalat nykyhetkellä'
                 />
@@ -192,6 +199,7 @@ const LeaseAreaItems = ({
                   attributes={attributes}
                   buttonTitle='Lisää kaavayksikkö'
                   component={PlanUnitItemsEdit}
+                  errors={errors}
                   name={`${area}.plan_units_contract`}
                   title='Kaavayksiköt sopimuksessa'
                 />
@@ -201,6 +209,7 @@ const LeaseAreaItems = ({
                   attributes={attributes}
                   buttonTitle='Lisää kaavayksikkö'
                   component={PlanUnitItemsEdit}
+                  errors={errors}
                   name={`${area}.plan_units_current`}
                   title='Kaavayksiköt nykyhetkellä'
                 />
@@ -229,6 +238,7 @@ const LeaseAreaItems = ({
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
+  errors: ?Object,
   handleSubmit: Function,
   receiveFormValidFlags: Function,
   valid: boolean,
@@ -268,7 +278,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
   }
 
   render () {
-    const {attributes, handleSubmit} = this.props;
+    const {attributes, errors, handleSubmit} = this.props;
     const {areasSum} = this.state;
 
     return (
@@ -283,6 +293,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
           <FieldArray
             attributes={attributes}
             component={LeaseAreaItems}
+            errors={errors}
             name="lease_areas"
           />
         </FormSection>
@@ -299,6 +310,7 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
+        errors: getErrorsByFormName(state, formName),
       };
     },
     {

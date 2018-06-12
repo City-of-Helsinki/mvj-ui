@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {FieldArray} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -94,16 +95,26 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
 type Props = {
   attributes: Attributes,
   buttonTitle: string,
+  errors: ?Object,
   fields: any,
   title: string,
 }
 
-const PlotItemsEdit = ({attributes, buttonTitle, fields, title}: Props) => {
+const PlotItemsEdit = ({
+  attributes,
+  buttonTitle,
+  errors,
+  fields,
+  fields: {name},
+  title,
+}: Props) => {
+  const plotErrors = get(errors, name);
   return (
     <div>
       <Collapse
         className='collapse__secondary'
         defaultOpen={true}
+        hasErrors={!isEmpty(plotErrors)}
         headerTitle={
           <h4 className='collapse__header-title'>{title}</h4>
         }

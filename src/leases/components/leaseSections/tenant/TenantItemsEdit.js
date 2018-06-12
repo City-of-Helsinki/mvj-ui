@@ -5,6 +5,7 @@ import {FieldArray, getFormValues} from 'redux-form';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import AddButton from '$components/form/AddButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -29,6 +30,7 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  errors: ?Object,
   fields: any,
   formValues: Object,
   initializeContactForm: Function,
@@ -38,6 +40,7 @@ type Props = {
 
 const TenantItemsEdit = ({
   attributes,
+  errors,
   fields,
   formValues,
   initializeContactForm,
@@ -49,12 +52,13 @@ const TenantItemsEdit = ({
       {fields && !!fields.length && fields.map((tenant, index) => {
         const contact = get(formValues, `${tenant}.tenant.contact`);
         const isActive = isTenantActive(get(formValues, `${tenant}.tenant`));
-
+        const tenantErrors = get(errors, tenant);
         return (
           <Collapse
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames({'not-active': !isActive})}
             defaultOpen={isActive}
+            hasErrors={!isEmpty(tenantErrors)}
             headerTitle={
               <h3 className='collapse__header-title'>Vuokralainen {index + 1}</h3>
             }
@@ -189,6 +193,7 @@ const TenantItemsEdit = ({
 
             <FieldArray
               component={OtherTenantItemsEdit}
+              errors={errors}
               name={`${tenant}.tenantcontact_set`}
             />
           </Collapse>
