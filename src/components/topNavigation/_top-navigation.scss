@@ -35,8 +35,8 @@
         transform-origin: right bottom;
         height: 4px;
         background: $black;
-        transition: -webkit-transform 0.15s, top 0.15s;
-        transition: transform 0.15s, top 0.15s;
+        transition: -webkit-transform 0.3s, top 0.3s;
+        transition: transform 0.3s, top 0.3s;
       }
 
       &::before {
@@ -49,8 +49,8 @@
         transform-origin: left bottom;
         height: 4px;
         background: $black;
-        transition: -webkit-transform 0.15s, top 0.15s;
-        transition: transform 0.15s, top 0.15s;
+        transition: -webkit-transform 0.3s, top 0.3s;
+        transition: transform 0.3s, top 0.3s;
       }
     }
 
@@ -63,8 +63,10 @@
       background: $black;
       -webkit-transform: translate(-50%, -50%);
       transform: translate(-50%, -50%);
-      transition: -webkit-transform 0.15s 0.15s, width 0.15s 0.15s;
-      transition: transform 0.15s 0.15s, width 0.15s 0.15s;
+      opacity: 1;
+      @include transition(0.1s opacity);
+      transition-delay: 0.2s;
+
     }
 
     .bar3 {
@@ -78,8 +80,8 @@
         transform-origin: right top;
         height: 4px;
         background: $black;
-        transition: -webkit-transform 0.15s, bottom 0.15s;
-        transition: transform 0.15s, bottom 0.15s;
+        transition: -webkit-transform 0.3s, bottom 0.3s;
+        transition: transform 0.3s, bottom 0.3s;
       }
 
       &::before {
@@ -92,8 +94,8 @@
         transform-origin: left top;
         height: 4px;
         background: $black;
-        transition: -webkit-transform 0.15s, bottom 0.15s;
-        transition: transform 0.15s, bottom 0.15s;
+        transition: -webkit-transform 0.3s, bottom 0.3s;
+        transition: transform 0.3s, bottom 0.3s;
       }
     }
 
@@ -107,8 +109,8 @@
           transform: rotate(-45deg);
           -webkit-transform-origin: right bottom;
           transform-origin: right bottom;
-          transition: -webkit-transform 0.3s 0.3s, width 0.3s 0.3s, top 0.3s 0.3s;
-          transition: transform 0.3s 0.3s, width 0.3s 0.3s, top 0.3s 0.3s;
+          transition: -webkit-transform 0.3s, width 0.3s, top 0.3s;
+          transition: transform 0.3s, width 0.3s, top 0.3s;
         }
         &::before {
           top: 0;
@@ -118,17 +120,15 @@
           transform: rotate(45deg);
           -webkit-transform-origin: left bottom;
           transform-origin: left bottom;
-          transition: -webkit-transform 0.3s 0.3s, width 0.3s 0.3s, top 0.3s 0.3s;
-          transition: transform 0.3s 0.3s, width 0.3s 0.3s, top 0.3s 0.3s;
+          transition: -webkit-transform 0.3s, width 0.3s, top 0.3s;
+          transition: transform 0.3s, width 0.3s, top 0.3s ;
         }
       }
 
       .bar2 {
-        width: 4px;
-        -webkit-transform: translate(-50%, -50%) rotate(45deg);
-        transform: translate(-50%, -50%) rotate(45deg);
-        transition: -webkit-transform 0.3s 0.3s, width 0.3s;
-        transition: transform 0.3s 0.3s, width 0.3s;
+        opacity: 0;
+        @include transition(0.3s opacity);
+        transition-delay: 0.0s;
       }
 
       .bar3 {
@@ -140,8 +140,8 @@
           transform: rotate(45deg);
           -webkit-transform-origin: right top;
           transform-origin: right top;
-          transition: -webkit-transform 0.3s 0.3s, width 0.3s 0.3s, bottom 0.3s 0.3s;
-          transition: transform 0.3s 0.3s, width 0.3s 0.3s, bottom 0.3s 0.3s;
+          transition: -webkit-transform 0.3s, width 0.3s, bottom 0.3s;
+          transition: transform 0.3s, width 0.3s, bottom 0.3s;
         }
 
         &::before {
@@ -152,8 +152,8 @@
           transform: rotate(-45deg);
           -webkit-transform-origin: left top;
           transform-origin: left top;
-          transition: -webkit-transform 0.3s 0.3s, width 0.3s 0.3s, bottom 0.3s 0.3s;
-          transition: transform 0.3s 0.3s, width 0.3s 0.3s, bottom 0.3s 0.3s;
+          transition: -webkit-transform 0.3s, width 0.3s, bottom 0.3s;
+          transition: transform 0.3s, width 0.3s, bottom 0.3s;
         }
       }
     }
