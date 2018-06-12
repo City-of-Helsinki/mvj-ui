@@ -34,7 +34,7 @@ const validate = values => {
   if (!values.end_date) {
     errors.end_date = 'Loppupäivämäärä on pakollinen';
   } else if(new Date(values.start_date).getFullYear() !== new Date(values.end_date).getFullYear()) {
-    errors.end_date = 'Alku- ja loppupäivät tulee olla samana vuonna';
+    errors.end_date = 'Alku- ja loppupäivämäärän tulee olla samana vuonna';
   } else if(!moment(values.end_date).isAfter(moment(values.start_date))) {
     errors.end_date = 'Loppupäivämäärän tulee olla alkupäivämäärän jälkeen';
   }

@@ -104,7 +104,7 @@ const FormFieldInput = ({
         <div className='form-field__component'>
           {createElement(fieldComponent, {autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
         </div>
-        {displayError && <ErrorComponent {...meta}/>}
+        {displayError && <div className='form-field__error-block_wrapper'><ErrorComponent {...meta}/></div>}
       </div>
     </div>
   );
