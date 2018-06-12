@@ -46,6 +46,7 @@ import {
   hideEditMode,
   patchLease,
   receiveFormValidFlags,
+  receiveIsSaveClicked,
   showEditMode,
 } from '$src/leases/actions';
 import {fetchNoticePeriods} from '$src/noticePeriod/actions';
@@ -67,6 +68,7 @@ import {
   getIsFetching,
   getIsFormValidById,
   getIsFormValidFlags,
+  getIsSaveClicked,
 } from '$src/leases/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
@@ -125,11 +127,13 @@ type Props = {
   isSummaryFormValid: boolean,
   isTenantsFormDirty: boolean,
   isTenantsFormValid: boolean,
+  isSaveClicked: boolean,
   leaseInfoFormValues: Object,
   location: Object,
   params: Object,
   patchLease: Function,
   receiveFormValidFlags: Function,
+  receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   rentsFormValues: Object,
   router: Object,
@@ -177,6 +181,7 @@ class LeasePage extends Component<Props, State> {
       invoiceAttributes,
       location,
       params: {leaseId},
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
 
@@ -212,6 +217,8 @@ class LeasePage extends Component<Props, State> {
     fetchInvoices(getSearchQuery({lease: leaseId}));
     fetchNoticePeriods();
     fetchAreaNoteList();
+
+    receiveIsSaveClicked(false);
   }
 
   componentDidUpdate(prevProps) {
@@ -380,6 +387,11 @@ class LeasePage extends Component<Props, State> {
       this.bulkChange(FormNames.SUMMARY, storedSummaryFormValues);
     }
 
+    const storedTenantsFormValues = getSessionStorageItem(FormNames.TENANTS);
+    if(storedTenantsFormValues) {
+      this.bulkChange(FormNames.TENANTS, storedTenantsFormValues);
+    }
+
     const storedFormValidity = getSessionStorageItem('leaseValidity');
     if(storedFormValidity) {
       const {receiveFormValidFlags} = this.props;
@@ -513,6 +525,16 @@ class LeasePage extends Component<Props, State> {
       removeSessionStorageItem('leaseValidity');
     }
   };
+
+  handleSaveClick = () => {
+    const {receiveIsSaveClicked} = this.props;
+    receiveIsSaveClicked(true);
+
+    const areFormsValid = this.validateForms();
+    if(areFormsValid) {
+      this.save();
+    }
+  }
 
   save = () => {
     const {
@@ -698,6 +720,7 @@ class LeasePage extends Component<Props, State> {
       isSummaryFormValid,
       isTenantsFormDirty,
       isTenantsFormValid,
+      isSaveClicked,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -749,11 +772,11 @@ class LeasePage extends Component<Props, State> {
               isCancelDisabled={false}
               isEditDisabled={false}
               isEditMode={isEditMode}
-              isSaveDisabled={!areFormsValid || activeTab === 6}
+              isSaveDisabled={isSaveClicked && (!areFormsValid || activeTab === 6)}
               onCancelClick={this.handleCancel}
               onCommentClick={this.toggleCommentPanel}
               onEditClick={this.openEditMode}
-              onSaveClick={this.save}
+              onSaveClick={this.handleSaveClick}
             />
           }
           infoComponent={isEditMode
@@ -897,6 +920,7 @@ export default flowRight(
         isTenantsFormDirty: isDirty(FormNames.TENANTS)(state),
         isTenantsFormValid: getIsFormValidById(state, FormNames.TENANTS),
         isFetching: getIsFetching(state),
+        isSaveClicked: getIsSaveClicked(state),
         leaseInfoFormValues: getFormValues(FormNames.LEASE_INFO)(state),
         rentsFormValues: getFormValues(FormNames.RENTS)(state),
         summaryFormValues: getFormValues(FormNames.SUMMARY)(state),
@@ -921,6 +945,7 @@ export default flowRight(
       initialize,
       patchLease,
       receiveFormValidFlags,
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
       showEditMode,
     }

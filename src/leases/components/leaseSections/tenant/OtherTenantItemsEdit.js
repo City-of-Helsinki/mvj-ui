@@ -33,6 +33,7 @@ type Props = {
   fields: any,
   formValues: Object,
   initializeContactForm: Function,
+  isSaveClicked: boolean,
   receiveContactModalSettings: Function,
   showContactModal: Function,
 }
@@ -43,6 +44,7 @@ const OtherTenantItemsEdit = ({
   fields,
   formValues,
   initializeContactForm,
+  isSaveClicked,
   receiveContactModalSettings,
   showContactModal,
 }: Props) => {
@@ -79,6 +81,7 @@ const OtherTenantItemsEdit = ({
                       <Row>
                         <Column small={9} medium={8} large={8}>
                           <FormField
+                            disableTouched={isSaveClicked}
                             fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.contact')}
                             name={`${tenant}.contact`}
                             overrideValues={{
@@ -108,6 +111,7 @@ const OtherTenantItemsEdit = ({
                   <Row>
                     <Column small={12} medium={6} large={4}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.type')}
                         name={`${tenant}.type`}
                         overrideValues={{
@@ -118,6 +122,7 @@ const OtherTenantItemsEdit = ({
                     </Column>
                     <Column small={6} medium={3} large={2}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.start_date')}
                         name={`${tenant}.start_date`}
                         overrideValues={{
@@ -127,6 +132,7 @@ const OtherTenantItemsEdit = ({
                     </Column>
                     <Column small={6} medium={3} large={2}>
                       <FormField
+                        disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.end_date')}
                         name={`${tenant}.end_date`}
                         overrideValues={{

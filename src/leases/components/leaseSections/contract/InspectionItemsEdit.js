@@ -16,11 +16,13 @@ import type {Attributes} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
 const InspectionItemsEdit = ({
   attributes,
   fields,
+  isSaveClicked,
 }: Props) =>
   <GreenBoxEdit>
     <BoxItemContainer>
@@ -37,6 +39,7 @@ const InspectionItemsEdit = ({
             <Row>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'inspections.child.children.inspector')}
                   name={`${inspection}.inspector`}
                   overrideValues={{
@@ -46,6 +49,7 @@ const InspectionItemsEdit = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'inspections.child.children.supervision_date')}
                   name={`${inspection}.supervision_date`}
                   overrideValues={{
@@ -55,6 +59,7 @@ const InspectionItemsEdit = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'inspections.child.children.supervised_date')}
                   name={`${inspection}.supervised_date`}
                   overrideValues={{
@@ -64,6 +69,7 @@ const InspectionItemsEdit = ({
               </Column>
               <Column small={6} medium={12} large={6}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'inspections.child.children.description')}
                   name={`${inspection}.description`}
                   overrideValues={{

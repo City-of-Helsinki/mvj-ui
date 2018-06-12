@@ -21,9 +21,10 @@ type Props = {
   attributes: Attributes,
   fields: any,
   decisions: Array<Object>,
+  isSaveClicked: boolean,
 }
 
-const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
+const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Props) => {
   const decisionOptions = getDecisionsOptions(decisions);
 
   return (
@@ -41,6 +42,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                 <Row>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.type')}
                       name={`${discount}.type`}
                       overrideValues={{
@@ -50,6 +52,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                   </Column>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.intended_use')}
                       name={`${discount}.intended_use`}
                       overrideValues={{
@@ -61,6 +64,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                     <Row>
                       <Column small={6}>
                         <FormField
+                          disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.start_date')}
                           name={`${discount}.start_date`}
                           overrideValues={{
@@ -70,6 +74,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                       </Column>
                       <Column small={6}>
                         <FormField
+                          disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.end_date')}
                           name={`${discount}.end_date`}
                           overrideValues={{
@@ -84,6 +89,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                     <Row>
                       <Column small={6}>
                         <FormField
+                          disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.full_amount')}
                           name={`${discount}.full_amount`}
                           overrideValues={{
@@ -93,6 +99,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                       </Column>
                       <Column small={6}>
                         <FormField
+                          disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.amount_type')}
                           name={`${discount}.amount_type`}
                           overrideValues={{
@@ -104,6 +111,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                   </Column>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.amount_left')}
                       name={`${discount}.amount_left`}
                       overrideValues={{
@@ -113,6 +121,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                   </Column>
                   <Column small={6} medium={4} large={2}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.decision')}
                       name={`${discount}.decision`}
                       overrideValues={{
@@ -125,6 +134,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields}: Props) => {
                 <Row>
                   <Column medium={12}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.note')}
                       name={`${discount}.note`}
                       overrideValues={{

@@ -14,11 +14,12 @@ import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getErrorsByFormName} from '$src/leases/selectors';
+import {getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
 type Props = {
   errors: ?Object,
   handleSubmit: Function,
+  isSaveClicked: boolean,
   params: Object,
   receiveFormValidFlags: Function,
   valid: boolean,
@@ -36,7 +37,7 @@ class RentsEdit extends Component<Props> {
   }
 
   render() {
-    const {errors, handleSubmit} = this.props;
+    const {errors, handleSubmit, isSaveClicked} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -58,6 +59,7 @@ class RentsEdit extends Component<Props> {
           <FieldArray
             component={RentItemEdit}
             errors={errors}
+            isSaveClicked={isSaveClicked}
             name='rents'
           />
 
@@ -66,6 +68,7 @@ class RentsEdit extends Component<Props> {
           <GreenBoxEdit>
             <FieldArray
               component={BasisOfRentsEdit}
+              isSaveClicked={isSaveClicked}
               name="basis_of_rents"
             />
           </GreenBoxEdit>
@@ -83,6 +86,7 @@ export default flowRight(
     (state) => {
       return {
         errors: getErrorsByFormName(state, formName),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

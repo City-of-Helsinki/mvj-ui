@@ -21,7 +21,7 @@ import {FormNames} from '$src/leases/enums';
 import {getFullAddress, getContentConstructability} from '$src/leases/helpers';
 import {getUserOptions} from '$src/users/helpers';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
-import {getAttributes, getCurrentLease, getErrorsByFormName} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes, Lease} from '$src/leases/types';
@@ -29,9 +29,10 @@ import type {Attributes, Lease} from '$src/leases/types';
 type CommentProps = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
+const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Element<*> => {
   return (
     <div>
       <BoxItemContainer>
@@ -40,6 +41,7 @@ const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
             <Row key={index}>
               <Column small={6} medium={6} large={8}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
                   name={`${comment}.text`}
                   overrideValues={{
@@ -49,6 +51,7 @@ const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
               </Column>
               <Column small={4} medium={3} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
                   name={`${comment}.ahjo_reference_number`}
                   validate={referenceNumber}
@@ -80,16 +83,6 @@ const renderComments = ({attributes, fields}: CommentProps): Element<*> => {
     </div>
   );
 };
-
-
-type AreaProps = {
-  areas: Array<Object>,
-  attributes: Attributes,
-  errors: ?Object,
-  fields: any,
-  locationOptions: Array<Object>,
-  typeOptions: Array<Object>,
-}
 
 const getPreconstructionErrors = (errors: ?Object, area: string) => {
   return {
@@ -135,11 +128,22 @@ const getOtherErrors = (errors: ?Object, area: string) => {
   };
 };
 
+type AreaProps = {
+  areas: Array<Object>,
+  attributes: Attributes,
+  errors: ?Object,
+  fields: any,
+  isSaveClicked: boolean,
+  locationOptions: Array<Object>,
+  typeOptions: Array<Object>,
+}
+
 const renderAreas = ({
   areas,
   attributes,
   errors,
   fields,
+  isSaveClicked,
   locationOptions,
   typeOptions,
 }: AreaProps): Element<*> => {
@@ -195,6 +199,7 @@ const renderAreas = ({
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.preconstruction_state')}
                     name={`${area}.preconstruction_state`}
                     overrideValues={{
@@ -207,6 +212,7 @@ const renderAreas = ({
                 attributes={attributes}
                 name={`${area}.descriptionsPreconstruction`}
                 component={renderComments}
+                isSaveClicked={isSaveClicked}
               />
             </Collapse>
 
@@ -221,6 +227,7 @@ const renderAreas = ({
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.demolition_state')}
                     name={`${area}.demolition_state`}
                     overrideValues={{
@@ -232,6 +239,7 @@ const renderAreas = ({
               <FieldArray
                 attributes={attributes}
                 component={renderComments}
+                isSaveClicked={isSaveClicked}
                 name={`${area}.descriptionsDemolition`}
               />
             </Collapse>
@@ -247,6 +255,7 @@ const renderAreas = ({
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_state')}
                     name={`${area}.polluted_land_state`}
                     overrideValues={{
@@ -256,6 +265,7 @@ const renderAreas = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_state')}
                     name={`${area}.polluted_land_rent_condition_state`}
                     overrideValues={{
@@ -265,6 +275,7 @@ const renderAreas = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_date')}
                     name={`${area}.polluted_land_rent_condition_date`}
                     overrideValues={{
@@ -274,6 +285,7 @@ const renderAreas = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_planner')}
                     name={`${area}.polluted_land_planner`}
                     overrideValues={{
@@ -284,6 +296,7 @@ const renderAreas = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_projectwise_number')}
                     name={`${area}.polluted_land_projectwise_number`}
                     overrideValues={{
@@ -293,6 +306,7 @@ const renderAreas = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_matti_report_number')}
                     name={`${area}.polluted_land_matti_report_number`}
                     overrideValues={{
@@ -304,6 +318,7 @@ const renderAreas = ({
               <FieldArray
                 attributes={attributes}
                 component={renderComments}
+                isSaveClicked={isSaveClicked}
                 name={`${area}.descriptionsPollutedLand`}
               />
             </Collapse>
@@ -319,6 +334,7 @@ const renderAreas = ({
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_state')}
                     name={`${area}.constructability_report_state`}
                     overrideValues={{
@@ -328,6 +344,7 @@ const renderAreas = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_investigation_state')}
                     name={`${area}.constructability_report_investigation_state`}
                     overrideValues={{
@@ -337,6 +354,7 @@ const renderAreas = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_signing_date')}
                     name={`${area}.constructability_report_signing_date`}
                     overrideValues={{
@@ -346,6 +364,7 @@ const renderAreas = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_signer')}
                     name={`${area}.constructability_report_signer`}
                     overrideValues={{
@@ -355,6 +374,7 @@ const renderAreas = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_geotechnical_number')}
                     name={`${area}.constructability_report_geotechnical_number`}
                     overrideValues={{
@@ -366,6 +386,7 @@ const renderAreas = ({
               <FieldArray
                 attributes={attributes}
                 component={renderComments}
+                isSaveClicked={isSaveClicked}
                 name={`${area}.descriptionsReport`}
               />
             </Collapse>
@@ -381,6 +402,7 @@ const renderAreas = ({
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.other_state')}
                     name={`${area}.other_state`}
                     overrideValues={{
@@ -392,6 +414,7 @@ const renderAreas = ({
               <FieldArray
                 attributes={attributes}
                 component={renderComments}
+                isSaveClicked={isSaveClicked}
                 name={`${area}.descriptionsOther`}
               />
             </Collapse>
@@ -407,6 +430,7 @@ type Props = {
   currentLease: Lease,
   errors: ?Object,
   handleSubmit: Function,
+  isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -462,6 +486,7 @@ class ConstructabilityEdit extends Component<Props, State> {
       attributes,
       errors,
       handleSubmit,
+      isSaveClicked,
     } = this.props;
     const {
       areas,
@@ -481,6 +506,7 @@ class ConstructabilityEdit extends Component<Props, State> {
             attributes={attributes}
             component={renderAreas}
             errors={errors}
+            isSaveClicked={isSaveClicked}
             locationOptions={locationOptions}
             name="lease_areas"
             typeOptions={typeOptions}
@@ -500,6 +526,7 @@ export default flowRight(
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

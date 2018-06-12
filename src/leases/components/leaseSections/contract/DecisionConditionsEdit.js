@@ -20,6 +20,7 @@ type Props = {
   attributes: Attributes,
   errors: ?Object,
   fields: any,
+  isSaveClicked: boolean,
 }
 
 const DecisionConditionsEdit = ({
@@ -27,6 +28,7 @@ const DecisionConditionsEdit = ({
   errors,
   fields,
   fields: {name},
+  isSaveClicked,
 }: Props) => {
   const decisionConditionsErrors = get(errors, name);
   return(
@@ -53,6 +55,7 @@ const DecisionConditionsEdit = ({
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.type')}
                     name={`${condition}.type`}
                     overrideValues={{
@@ -62,6 +65,7 @@ const DecisionConditionsEdit = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
                     name={`${condition}.supervision_date`}
                     overrideValues={{
@@ -71,6 +75,7 @@ const DecisionConditionsEdit = ({
                 </Column>
                 <Column small={12} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
                     name={`${condition}.supervised_date`}
                     overrideValues={{
@@ -80,6 +85,7 @@ const DecisionConditionsEdit = ({
                 </Column>
                 <Column small={12} medium={12} large={6}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.description')}
                     name={`${condition}.description`}
                     overrideValues={{

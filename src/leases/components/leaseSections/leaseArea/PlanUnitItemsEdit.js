@@ -20,9 +20,10 @@ import type {Attributes} from '$src/leases/types';
 type AddressesProps = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
+const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Element<*> => {
   return (
     <div>
       <Row>
@@ -40,6 +41,7 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
         <Row key={index}>
           <Column small={6} large={6}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.addresses.child.children.address')}
               name={`${field}.address`}
               overrideValues={{
@@ -49,6 +51,7 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
           </Column>
           <Column small={3} large={3}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.addresses.child.children.postal_code')}
               name={`${field}.postal_code`}
               overrideValues={{
@@ -60,6 +63,7 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
             <div style={{display: 'flex'}}>
               <div style={{flex: '1 1 0%'}}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.addresses.child.children.city')}
                   name={`${field}.city`}
                   overrideValues={{
@@ -95,6 +99,7 @@ type Props = {
   buttonTitle: string,
   errors: ?Object,
   fields: any,
+  isSaveClicked: boolean,
   title: string,
 }
 
@@ -104,6 +109,7 @@ const PlanUnitItemsEdit = ({
   errors,
   fields,
   fields: {name},
+  isSaveClicked,
   title,
 }: Props) => {
   const planUnitErrors = get(errors, name);
@@ -130,6 +136,7 @@ const PlanUnitItemsEdit = ({
                 <Row>
                   <Column small={12} medium={6} large={6}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.identifier')}
                       name={`${planunit}.identifier`}
                       overrideValues={{
@@ -139,6 +146,7 @@ const PlanUnitItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.type')}
                       name={`${planunit}.type`}
                       overrideValues={{
@@ -151,12 +159,14 @@ const PlanUnitItemsEdit = ({
                 <FieldArray
                   attributes={attributes}
                   component={AddressItems}
+                  isSaveClicked={isSaveClicked}
                   name={`${planunit}.addresses`}
                 />
 
                 <Row>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.area')}
                       name={`${planunit}.area`}
                       overrideValues={{
@@ -166,6 +176,7 @@ const PlanUnitItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.section_area')}
                       name={`${planunit}.section_area`}
                       overrideValues={{
@@ -177,6 +188,7 @@ const PlanUnitItemsEdit = ({
                 <Row>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_identifier')}
                       name={`${planunit}.detailed_plan_identifier`}
                       overrideValues={{
@@ -186,6 +198,7 @@ const PlanUnitItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date')}
                       name={`${planunit}.detailed_plan_latest_processing_date`}
                       overrideValues={{
@@ -197,6 +210,7 @@ const PlanUnitItemsEdit = ({
                 <Row>
                   <Column>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.detailed_plan_latest_processing_date_note')}
                       name={`${planunit}.detailed_plan_latest_processing_date_note`}
                       overrideValues={{
@@ -208,6 +222,7 @@ const PlanUnitItemsEdit = ({
                 <Row>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_identifier')}
                       name={`${planunit}.plot_division_identifier`}
                       overrideValues={{
@@ -217,6 +232,7 @@ const PlanUnitItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_state')}
                       name={`${planunit}.plot_division_state`}
                       overrideValues={{
@@ -226,6 +242,7 @@ const PlanUnitItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plot_division_date_of_approval')}
                       name={`${planunit}.plot_division_date_of_approval`}
                       overrideValues={{
@@ -237,6 +254,7 @@ const PlanUnitItemsEdit = ({
                 <Row>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_type')}
                       name={`${planunit}.plan_unit_type`}
                       overrideValues={{
@@ -246,6 +264,7 @@ const PlanUnitItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_state')}
                       name={`${planunit}.plan_unit_state`}
                       overrideValues={{
@@ -255,6 +274,7 @@ const PlanUnitItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use')}
                       name={`${planunit}.plan_unit_intended_use`}
                       overrideValues={{

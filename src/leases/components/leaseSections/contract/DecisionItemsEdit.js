@@ -21,9 +21,10 @@ type Props = {
   attributes: Attributes,
   errors: ?Object,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const DecisionItemsEdit = ({attributes, errors, fields}: Props) =>
+const DecisionItemsEdit = ({attributes, errors, fields, isSaveClicked}: Props) =>
   <div>
     {fields && !!fields.length && fields.map((decision, index) => {
       const decisionErrors = get(errors, decision);
@@ -46,6 +47,7 @@ const DecisionItemsEdit = ({attributes, errors, fields}: Props) =>
             <Row>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'decisions.child.children.decision_maker')}
                   name={`${decision}.decision_maker`}
                   overrideValues={{
@@ -55,6 +57,7 @@ const DecisionItemsEdit = ({attributes, errors, fields}: Props) =>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
                   name={`${decision}.decision_date`}
                   overrideValues={{
@@ -64,6 +67,7 @@ const DecisionItemsEdit = ({attributes, errors, fields}: Props) =>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'decisions.child.children.section')}
                   name={`${decision}.section`}
                   overrideValues={{
@@ -73,6 +77,7 @@ const DecisionItemsEdit = ({attributes, errors, fields}: Props) =>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'decisions.child.children.type')}
                   name={`${decision}.type`}
                   overrideValues={{
@@ -82,6 +87,7 @@ const DecisionItemsEdit = ({attributes, errors, fields}: Props) =>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'decisions.child.children.reference_number')}
                   name={`${decision}.reference_number`}
                   validate={referenceNumber}
@@ -94,6 +100,7 @@ const DecisionItemsEdit = ({attributes, errors, fields}: Props) =>
             <Row>
               <Column small={12}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'decisions.child.children.description')}
                   name={`${decision}.description`}
                   overrideValues={{
@@ -107,6 +114,7 @@ const DecisionItemsEdit = ({attributes, errors, fields}: Props) =>
           <FieldArray
             component={DecisionConditionsEdit}
             errors={errors}
+            isSaveClicked={isSaveClicked}
             name={`${decision}.conditions`}
           />
         </Collapse>

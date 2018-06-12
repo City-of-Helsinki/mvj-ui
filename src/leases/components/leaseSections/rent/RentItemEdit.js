@@ -24,11 +24,12 @@ type Props = {
   errors: ?Object,
   fields: any,
   formValues: Array<Object>,
+  isSaveClicked: boolean,
 }
 
 class RentItemEdit extends Component<Props> {
   render() {
-    const {errors, fields, formValues} = this.props;
+    const {errors, fields, formValues, isSaveClicked} = this.props;
 
     return (
       <div>
@@ -57,6 +58,7 @@ class RentItemEdit extends Component<Props> {
                       title="Poista alennus/korotus"
                     />
                     <BasicInfoEdit
+                      isSaveClicked={isSaveClicked}
                       rent={rent}
                       rentType={rentType}
                     />
@@ -77,6 +79,7 @@ class RentItemEdit extends Component<Props> {
                     }>
                     <FieldArray
                       component={ContractRentsEdit}
+                      isSaveClicked={isSaveClicked}
                       name={`${item}.contract_rents`}
                       rentType={rentType}
                     />
@@ -111,6 +114,7 @@ class RentItemEdit extends Component<Props> {
                     }>
                     <FieldArray
                       component={RentAdjustmentsEdit}
+                      isSaveClicked={isSaveClicked}
                       name={`${item}.rent_adjustments`}
                     />
                   </Collapse>

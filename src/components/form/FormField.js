@@ -62,6 +62,7 @@ type InputProps = {
   className?: string,
   disabled: boolean,
   disableDirty: boolean,
+  disableTouched: boolean,
   ErrorComponent: Function | Object,
   fieldType: string,
   input: Object,
@@ -80,6 +81,7 @@ const FormFieldInput = ({
   className,
   disabled,
   disableDirty,
+  disableTouched,
   ErrorComponent,
   fieldType,
   input,
@@ -92,7 +94,7 @@ const FormFieldInput = ({
   required,
   rows,
 }: InputProps) => {
-  const displayError = meta.error && meta.touched;
+  const displayError = meta.error && (disableTouched || meta.touched);
   const isDirty = meta.dirty && !disableDirty;
   const fieldComponent = resolveFieldType(fieldType);
   const type = resolveType(fieldType);
@@ -113,6 +115,7 @@ type Props = {
   className?: string,
   disabled?: boolean,
   disableDirty?: boolean,
+  disableTouched?: boolean,
   ErrorComponent?: any,
   fieldAttributes: Object,
   isLoading?: boolean,
@@ -141,6 +144,7 @@ class FormField extends PureComponent<Props, State> {
   static defualtProps = {
     disabled: false,
     disableDirty: false,
+    disableTouched: false,
     isLoading: false,
   };
 
@@ -191,6 +195,7 @@ class FormField extends PureComponent<Props, State> {
       className,
       disabled,
       disableDirty,
+      disableTouched,
       ErrorComponent = ErrorBlock,
       isLoading,
       name,
@@ -213,6 +218,7 @@ class FormField extends PureComponent<Props, State> {
         component={FormFieldInput}
         disabled={disabled}
         disableDirty={disableDirty}
+        disableTouched={disableTouched}
         ErrorComponent={ErrorComponent}
         fieldType={fieldType}
         isLoading={isLoading}

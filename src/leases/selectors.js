@@ -38,6 +38,9 @@ export const getIsFormValidById: Selector<boolean, string> = (state: LeaseState,
 export const getIsFormValidFlags: Selector<Object, void> = (state: LeaseState): Object =>
   state.lease.isFormValidById;
 
+export const getIsSaveClicked: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.lease.isSaveClicked;
+
 export const getAttributes: Selector<Attributes, void> = (state: LeaseState): LeaseState =>
   state.lease.attributes;
 

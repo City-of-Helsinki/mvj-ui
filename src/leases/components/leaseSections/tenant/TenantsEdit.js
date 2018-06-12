@@ -13,7 +13,7 @@ import {createContact, editContact, hideContactModal, receiveContactModalSetting
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContentContact} from '$src/leases/helpers';
-import {getContactModalSettings, getErrorsByFormName, getIsContactModalOpen} from '$src/leases/selectors';
+import {getContactModalSettings, getErrorsByFormName, getIsContactModalOpen, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {ContactModalSettings} from '$src/leases/types';
 
@@ -27,6 +27,7 @@ type Props = {
   handleSubmit: Function,
   hideContactModal: Function,
   isContactModalOpen: boolean,
+  isSaveClicked: boolean,
   receiveContactModalSettings: Function,
   receiveFormValidFlags: Function,
   valid: boolean,
@@ -66,6 +67,7 @@ class TenantsEdit extends Component<Props> {
       handleSubmit,
       hideContactModal,
       isContactModalOpen,
+      isSaveClicked,
       receiveContactModalSettings,
     } = this.props;
 
@@ -104,6 +106,7 @@ class TenantsEdit extends Component<Props> {
                 <FieldArray
                   component={TenantItemsEdit}
                   errors={errors}
+                  isSaveClicked={isSaveClicked}
                   name="tenants"
                 />
               </Column>
@@ -125,6 +128,7 @@ export default flowRight(
         contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
         errors: getErrorsByFormName(state, formName),
         isContactModalOpen: getIsContactModalOpen(state),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

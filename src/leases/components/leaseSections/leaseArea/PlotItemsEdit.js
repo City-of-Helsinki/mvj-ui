@@ -22,9 +22,10 @@ import type {Attributes} from '$src/leases/types';
 type AddressesProps = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
+const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Element<*> => {
   return (
     <div>
       <Row>
@@ -42,6 +43,7 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
         <Row key={index}>
           <Column small={6} large={6}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.addresses.child.children.address')}
               name={`${field}.address`}
               overrideValues={{
@@ -51,6 +53,7 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
           </Column>
           <Column small={3} large={3}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.addresses.child.children.postal_code')}
               name={`${field}.postal_code`}
               overrideValues={{
@@ -62,6 +65,7 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
             <div style={{display: 'flex'}}>
               <div style={{flex: '1 1 0%'}}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.addresses.child.children.city')}
                   name={`${field}.city`}
                   overrideValues={{
@@ -97,6 +101,7 @@ type Props = {
   buttonTitle: string,
   errors: ?Object,
   fields: any,
+  isSaveClicked: boolean,
   title: string,
 }
 
@@ -106,6 +111,7 @@ const PlotItemsEdit = ({
   errors,
   fields,
   fields: {name},
+  isSaveClicked,
   title,
 }: Props) => {
   const plotErrors = get(errors, name);
@@ -131,6 +137,7 @@ const PlotItemsEdit = ({
                 <Row>
                   <Column small={12} medium={6} large={6}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.identifier')}
                       name={`${plot}.identifier`}
                       overrideValues={{
@@ -140,6 +147,7 @@ const PlotItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.type')}
                       name={`${plot}.type`}
                       overrideValues={{
@@ -152,11 +160,13 @@ const PlotItemsEdit = ({
                 <FieldArray
                   attributes={attributes}
                   component={AddressItems}
+                  isSaveClicked={isSaveClicked}
                   name={`${plot}.addresses`}
                 />
                 <Row>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.area')}
                       name={`${plot}.area`}
                       overrideValues={{
@@ -166,6 +176,7 @@ const PlotItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.section_area')}
                       name={`${plot}.section_area`}
                       overrideValues={{
@@ -175,6 +186,7 @@ const PlotItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.registration_date')}
                       name={`${plot}.registration_date`}
                       overrideValues={{
@@ -184,6 +196,7 @@ const PlotItemsEdit = ({
                   </Column>
                   <Column small={12} medium={6} large={3}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.repeal_date')}
                       name={`${plot}.repeal_date`}
                       overrideValues={{

@@ -24,16 +24,17 @@ import {receiveFormValidFlags} from '$src/leases/actions';
 import {AreaLocation, FormNames} from '$src/leases/enums';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
 import {formatNumber} from '$util/helpers';
-import {getAttributes, getCurrentLease, getErrorsByFormName} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
 
 type AddressesProps = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
+const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Element<*> => {
   return (
     <div>
       <Row>
@@ -51,6 +52,7 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
         <Row key={index}>
           <Column small={6} large={4}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.address')}
               name={`${field}.address`}
               overrideValues={{
@@ -60,6 +62,7 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
           </Column>
           <Column small={3} large={2}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.postal_code')}
               name={`${field}.postal_code`}
               overrideValues={{
@@ -69,6 +72,7 @@ const AddressItems = ({attributes, fields}: AddressesProps): Element<*> => {
           </Column>
           <Column small={2} large={2}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.city')}
               name={`${field}.city`}
               overrideValues={{
@@ -101,12 +105,14 @@ type AreaItemProps = {
   attributes: Attributes,
   errors: ?Object,
   fields: any,
+  isSaveClicked: boolean,
 }
 
 const LeaseAreaItems = ({
   attributes,
   errors,
   fields,
+  isSaveClicked,
 }: AreaItemProps): Element<*> => {
   return (
     <div>
@@ -130,6 +136,7 @@ const LeaseAreaItems = ({
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.identifier')}
                     name={`${area}.identifier`}
                     overrideValues={{
@@ -139,6 +146,7 @@ const LeaseAreaItems = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.type')}
                     name={`${area}.type`}
                     overrideValues={{
@@ -148,6 +156,7 @@ const LeaseAreaItems = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.area')}
                     name={`${area}.area`}
                     overrideValues={{
@@ -157,6 +166,7 @@ const LeaseAreaItems = ({
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.location')}
                     name={`${area}.location`}
                     overrideValues={{
@@ -169,6 +179,7 @@ const LeaseAreaItems = ({
               <FieldArray
                 attributes={attributes}
                 component={AddressItems}
+                isSaveClicked={isSaveClicked}
                 name={`${area}.addresses`}
               />
 
@@ -179,6 +190,7 @@ const LeaseAreaItems = ({
                   buttonTitle='Lisää kiinteistö/määräala'
                   component={PlotItemsEdit}
                   errors={errors}
+                  isSaveClicked={isSaveClicked}
                   name={`${area}.plots_contract`}
                   title='Kiinteistöt / määräalat sopimuksessa'
                 />
@@ -188,6 +200,7 @@ const LeaseAreaItems = ({
                   buttonTitle='Lisää kiinteistö/määräala'
                   component={PlotItemsEdit}
                   errors={errors}
+                  isSaveClicked={isSaveClicked}
                   name={`${area}.plots_current`}
                   title='Kiinteistöt / määräalat nykyhetkellä'
                 />
@@ -200,6 +213,7 @@ const LeaseAreaItems = ({
                   buttonTitle='Lisää kaavayksikkö'
                   component={PlanUnitItemsEdit}
                   errors={errors}
+                  isSaveClicked={isSaveClicked}
                   name={`${area}.plan_units_contract`}
                   title='Kaavayksiköt sopimuksessa'
                 />
@@ -210,6 +224,7 @@ const LeaseAreaItems = ({
                   buttonTitle='Lisää kaavayksikkö'
                   component={PlanUnitItemsEdit}
                   errors={errors}
+                  isSaveClicked={isSaveClicked}
                   name={`${area}.plan_units_current`}
                   title='Kaavayksiköt nykyhetkellä'
                 />
@@ -240,6 +255,7 @@ type Props = {
   currentLease: Lease,
   errors: ?Object,
   handleSubmit: Function,
+  isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -278,7 +294,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
   }
 
   render () {
-    const {attributes, errors, handleSubmit} = this.props;
+    const {attributes, errors, handleSubmit, isSaveClicked} = this.props;
     const {areasSum} = this.state;
 
     return (
@@ -294,6 +310,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
             attributes={attributes}
             component={LeaseAreaItems}
             errors={errors}
+            isSaveClicked={isSaveClicked}
             name="lease_areas"
           />
         </FormSection>
@@ -311,6 +328,7 @@ export default flowRight(
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

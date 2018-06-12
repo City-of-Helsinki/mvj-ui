@@ -8,13 +8,14 @@ import FormSection from '$components/form/FormSection';
 import InspectionItemsEdit from './InspectionItemsEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getAttributes} from '$src/leases/selectors';
+import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   handleSubmit: Function,
+  isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -31,13 +32,14 @@ class InspectionsEdit extends Component<Props> {
   }
 
   render() {
-    const {attributes, handleSubmit} = this.props;
+    const {attributes, handleSubmit, isSaveClicked} = this.props;
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <FieldArray
             attributes={attributes}
             component={InspectionItemsEdit}
+            isSaveClicked={isSaveClicked}
             name="inspections"
           />
         </FormSection>
@@ -53,6 +55,7 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

@@ -8,11 +8,12 @@ import FormSection from '$components/form/FormSection';
 import DecisionItemsEdit from './DecisionItemsEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getErrorsByFormName} from '$src/leases/selectors';
+import {getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
 type Props = {
   errors: ?Object,
   handleSubmit: Function,
+  isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -29,7 +30,7 @@ class DecisionsEdit extends Component<Props> {
   }
 
   render() {
-    const {errors, handleSubmit} = this.props;
+    const {errors, handleSubmit, isSaveClicked} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -37,6 +38,7 @@ class DecisionsEdit extends Component<Props> {
           <FieldArray
             component={DecisionItemsEdit}
             errors={errors}
+            isSaveClicked={isSaveClicked}
             name="decisions"
           />
         </FormSection>
@@ -52,6 +54,7 @@ export default flowRight(
     (state) => {
       return {
         errors: getErrorsByFormName(state, formName),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {
