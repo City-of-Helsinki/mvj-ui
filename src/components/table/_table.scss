@@ -236,10 +236,16 @@
     }
   }
 
-  &__next-icon {
-    height: 17px;
-    display: flex;
-    align-items: center;
+  &__next-button {
+    a {
+      padding: rem-calc(8px 10px);
+    }
+
+    div {
+      height: 17px;
+      display: flex;
+      align-items: center;
+    }
 
     svg {
       height: 14px;
@@ -247,10 +253,16 @@
     }
   }
 
-  &__previous-icon {
-    height: 17px;
-    display: flex;
-    align-items: center;
+  &__previous-button {
+    a {
+      padding: rem-calc(8px 10px);
+    }
+
+    div {
+      height: 17px;
+      display: flex;
+      align-items: center;
+    }
 
     svg {
       height: 14px;

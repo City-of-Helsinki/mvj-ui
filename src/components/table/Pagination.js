@@ -24,8 +24,8 @@ const Pagination = ({
     const maxShownPages = 4;
     // Add first page and previous button
     pages.push(
-      <li key='previous' className={classNames('pagination__page-item', {'disabled': activePage === 1})}>
-        <a onClick={() => onPageClick(activePage - 1)}><div className='pagination__previous-icon'><NextIcon /></div></a>
+      <li key='previous' className={classNames('pagination__page-item pagination__previous-button', {'disabled': activePage === 1})}>
+        <a onClick={() => onPageClick(activePage - 1)}><div><NextIcon /></div></a>
       </li>
     );
     pages.push(
@@ -90,8 +90,8 @@ const Pagination = ({
       </li>
     );
     pages.push(
-      <li key='next' className={classNames('pagination__page-item', {'disabled': activePage === maxPage})}>
-        <a onClick={() => onPageClick(activePage + 1)}><div className='pagination__next-icon'><NextIcon /></div></a>
+      <li key='next' className={classNames('pagination__page-item pagination__next-button', {'disabled': activePage === maxPage})}>
+        <a onClick={() => onPageClick(activePage + 1)}><div><NextIcon /></div></a>
       </li>
     );
     return pages;
