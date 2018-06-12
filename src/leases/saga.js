@@ -12,6 +12,7 @@ import {
   notFoundById,
   receiveAttributes,
   receiveContactModalSettings,
+  receiveIsSaveClicked,
   receiveLeases,
   receiveSingleLease,
   receiveLeaseById,
@@ -143,6 +144,7 @@ function* patchLeaseSaga({payload: lease}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
+        yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());
         break;
       case 400:

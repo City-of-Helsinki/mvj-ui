@@ -412,9 +412,10 @@ class LeasePage extends Component<Props, State> {
   }
 
   cancel = () => {
-    const {hideEditMode} = this.props;
+    const {hideEditMode, receiveIsSaveClicked} = this.props;
     this.hideModal('CancelLease');
     hideEditMode();
+    receiveIsSaveClicked(false);
   }
 
   startAutoSaveTimer = () => {
