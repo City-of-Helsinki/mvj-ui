@@ -12,6 +12,7 @@ import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
+import SubTitle from '$components/content/SubTitle';
 import {receiveFormValid} from '$src/rentbasis/actions';
 import {FormNames} from '$src/rentbasis/enums';
 import {getAttributes, getIsFormValid, getRentBasisInitialValues} from '$src/rentbasis/selectors';
@@ -70,20 +71,61 @@ type DecisionsProps = {
 const renderDecisions = ({attributes, fields}: DecisionsProps): Element<*> => {
   return (
     <div>
-      <FormFieldLabel>Päätökset</FormFieldLabel>
+      <SubTitle>Päätökset</SubTitle>
+      <Row>
+        <Column small={3} large={2}>
+          <FormFieldLabel>Päättäjä</FormFieldLabel>
+        </Column>
+        <Column small={3} large={1}>
+          <FormFieldLabel>Pvm</FormFieldLabel>
+        </Column>
+        <Column small={3} large={2}>
+          <FormFieldLabel>Pykälä</FormFieldLabel>
+        </Column>
+        <Column small={3} large={2}>
+          <FormFieldLabel>Hel diaarinumero</FormFieldLabel>
+        </Column>
+      </Row>
       {fields && !!fields.length && fields.map((field, index) =>
         <Row key={index}>
-          <Column small={8}>
+          <Column small={3} large={2}>
             <FormField
-              fieldAttributes={get(attributes, 'decisions.child.children.identifier')}
-              name={`${field}.identifier`}
+              fieldAttributes={get(attributes, 'decisions.child.children.decision_maker')}
+              name={`${field}.decision_maker`}
+              overrideValues={{
+                label: '',
+              }}
+            />
+          </Column>
+          <Column small={3} large={1}>
+            <FormField
+              fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
+              name={`${field}.decision_date`}
+              overrideValues={{
+                label: '',
+              }}
+            />
+          </Column>
+          <Column small={3} large={2}>
+            <FormField
+              fieldAttributes={get(attributes, 'decisions.child.children.section')}
+              name={`${field}.section`}
+              overrideValues={{
+                label: '',
+              }}
+            />
+          </Column>
+          <Column small={1} large={2}>
+            <FormField
+              fieldAttributes={get(attributes, 'decisions.child.children.reference_number')}
+              name={`${field}.reference_number`}
               validate={referenceNumber}
               overrideValues={{
                 label: '',
               }}
             />
           </Column>
-          <Column small={4}>
+          <Column small={1}>
             <RemoveButton
               onClick={() => fields.remove(index)}
               title="Poista päätös"
@@ -112,7 +154,7 @@ type RentRatesProps = {
 const renderRentRates = ({attributes, fields}: RentRatesProps): Element<*> => {
   return (
     <div>
-      <p className="sub-title">Hinnat</p>
+      <SubTitle>Hinnat</SubTitle>
       {fields && !!fields.length &&
         <div>
           <Row>
@@ -124,8 +166,8 @@ const renderRentRates = ({attributes, fields}: RentRatesProps): Element<*> => {
             <Row key={index}>
               <Column small={4} medium={4} large={2}>
                 <FormField
-                  fieldAttributes={get(attributes, 'rent_rates.child.children.intended_use')}
-                  name={`${field}.intended_use`}
+                  fieldAttributes={get(attributes, 'rent_rates.child.children.build_permission_type')}
+                  name={`${field}.build_permission_type`}
                   overrideValues={{
                     label: '',
                   }}
@@ -142,8 +184,8 @@ const renderRentRates = ({attributes, fields}: RentRatesProps): Element<*> => {
               </Column>
               <Column small={3} medium={2} large={1}>
                 <FormField
-                  fieldAttributes={get(attributes, 'rent_rates.child.children.period')}
-                  name={`${field}.period`}
+                  fieldAttributes={get(attributes, 'rent_rates.child.children.area_unit')}
+                  name={`${field}.area_unit`}
                   overrideValues={{
                     label: '',
                   }}
@@ -267,16 +309,8 @@ class RentBasisForm extends Component<Props> {
             </Column>
           </Row>
           <Row>
-            <Column small={6} medium={4} large={3}>
-              <FieldArray
-                attributes={attributes}
-                component={renderDecisions}
-                name="decisions"
-              />
-            </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
-                className='align-top'
                 fieldAttributes={get(attributes, 'lease_rights_end_date')}
                 name='lease_rights_end_date'
                 overrideValues={{
@@ -284,14 +318,22 @@ class RentBasisForm extends Component<Props> {
                 }}
               />
             </Column>
-            <Column small={6} medium={4} large={2}>
+            <Column small={6} medium={4} large={2} offsetOnLarge={1}>
               <FormField
-                className='align-top'
                 fieldAttributes={get(attributes, 'index')}
                 name='index'
                 overrideValues={{
                   label: 'Indeksi',
                 }}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <FieldArray
+                attributes={attributes}
+                component={renderDecisions}
+                name="decisions"
               />
             </Column>
           </Row>
