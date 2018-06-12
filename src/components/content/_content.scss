@@ -58,8 +58,6 @@
     font-weight: normal;
     color: $black;
     margin-bottom: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
     max-width: 100%;
   }
 
@@ -127,8 +125,6 @@
     font-weight: normal;
     color: $black;
     margin-bottom: rem-calc(10px);
-    overflow: hidden;
-    text-overflow: ellipsis;
     max-width: 100%;
   }
 

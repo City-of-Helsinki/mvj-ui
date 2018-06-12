@@ -10,9 +10,9 @@ const getContentRentRates = (rentBasis: Object) => {
   return items.map((item) => {
     return {
       id: item.id || undefined,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      build_permission_type: get(item, 'build_permission_type.id') || get(item, 'build_permission_type'),
       amount: get(item, 'amount'),
-      period: get(item, 'period'),
+      area_unit: get(item, 'area_unit'),
     };
   });
 };
@@ -34,15 +34,19 @@ const getContentDecisions = (rentBasis: Object) => {
   return items.map((item) => {
     return {
       id: item.id || undefined,
-      identifier: get(item, 'identifier'),
+      reference_number: get(item, 'reference_number'),
+      decision_maker: get(item, 'decision_maker.id'),
+      decision_date: get(item, 'decision_date'),
+      section: get(item, 'section'),
     };
   });
 };
 
+
 export const getContentRentBasis = (content: Object) => {
   return {
     id: content.id || undefined,
-    plot_type: get(content, 'plot_type'),
+    plot_type: get(content, 'plot_type.id') || get(content, 'plot_type'),
     start_date: get(content, 'start_date'),
     end_date: get(content, 'end_date'),
     detailed_plan_identifier: get(content, 'detailed_plan_identifier'),
@@ -62,9 +66,9 @@ const getContentCopiedRentRates = (rentBasis: Object) => {
 
   return items.map((item) => {
     return {
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      build_permission_type: get(item, 'build_permission_type.id') || get(item, 'build_permission_type'),
       amount: get(item, 'amount'),
-      period: get(item, 'period'),
+      area_unit: get(item, 'area_unit'),
     };
   });
 };
@@ -84,14 +88,17 @@ const getContentCopiedDecisions = (rentBasis: Object) => {
 
   return items.map((item) => {
     return {
-      identifier: get(item, 'identifier'),
+      reference_number: get(item, 'reference_number'),
+      decision_maker: get(item, 'decision_maker.id'),
+      decision_date: get(item, 'decision_date'),
+      section: get(item, 'section'),
     };
   });
 };
 
 export const getContentCopiedRentBasis = (content: Object) => {
   return {
-    plot_type: get(content, 'plot_type'),
+    plot_type: get(content, 'plot_type.id') || get(content, 'plot_type'),
     start_date: get(content, 'start_date'),
     end_date: get(content, 'end_date'),
     detailed_plan_identifier: get(content, 'detailed_plan_identifier'),

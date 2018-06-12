@@ -32,6 +32,13 @@ const FieldTypeSelect = ({
     onBlur(value);
   };
 
+  const handleChange = (val: any) => {
+    if(val) {
+      const {value} = val;
+      onChange(value);
+    }
+  };
+
   return (
     <Select
       {...input}
@@ -44,7 +51,7 @@ const FieldTypeSelect = ({
       options={options}
       placeholder={placeholder || 'Valitse...'}
       onBlur={() => handleBlur(value)}
-      onChange={({value}) => onChange(value)}
+      onChange={handleChange}
     />
   );
 };

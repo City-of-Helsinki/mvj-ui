@@ -172,7 +172,7 @@ class RentBasisListPage extends Component<Props, State> {
       return {
         id: item.id,
         property_identifier: get(item, 'property_identifiers[0].identifier'),
-        intended_use: get(item, 'rent_rates[0].intended_use.id') || get(item, 'rent_rates[0].intended_use'),
+        build_permission_type: get(item, 'rent_rates[0].build_permission_type.id') || get(item, 'rent_rates[0].build_permission_type'),
         start_date: get(item, 'start_date'),
         end_date: get(item, 'end_date'),
       };
@@ -196,7 +196,7 @@ class RentBasisListPage extends Component<Props, State> {
     const rentBasisList = this.getRentBasisList(rentBasisListData);
     const maxPage = this.getRentBasisMaxPage(rentBasisListData);
 
-    const intendedUseOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.intended_use');
+    const buildPermissionTypeOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.build_permission_type');
 
     return (
       <PageContainer>
@@ -226,7 +226,7 @@ class RentBasisListPage extends Component<Props, State> {
               data={rentBasisList}
               dataKeys={[
                 {key: 'property_identifier', label: 'Kiinteistötunnus'},
-                {key: 'intended_use', label: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(intendedUseOptions, val) : '-'},
+                {key: 'build_permission_type', label: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(buildPermissionTypeOptions, val) : '-'},
                 {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val) || '-'},
                 {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val) || '-'},
               ]}
