@@ -6,7 +6,9 @@ import get from 'lodash/get';
 
 import BoxItem from '$components/content/BoxItem';
 import FormFieldLabel from '$components/form/FormFieldLabel';
+import KtjLink from '$components/ktj/KtjLink';
 import ListItems from '$components/content/ListItems';
+import {PlotType} from '$src/leases/enums';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
@@ -98,23 +100,50 @@ const PlotItem = ({attributes, plot}: Props) => {
         </Column>
       </Row>
       <p className='sub-title'>Ktj-dokumentit</p>
-      <Row>
-        <Column small={12} medium={6}>
-          <a onClick={() => alert('TODO')}>Lainhuutotodistus</a>
-        </Column>
-        <Column small={12} medium={6}>
-          <a onClick={() => alert('TODO')}>Lainhuutotodistus</a>
-        </Column>
-        <Column small={12} medium={6}>
-          <a onClick={() => alert('TODO')}>Kiinteistörekisteriote</a>
-        </Column>
-        <Column small={12} medium={6}>
-          <a onClick={() => alert('TODO')}>Kiinteistörekisteriote</a>
-        </Column>
-        <Column small={12} medium={6}>
-          <a onClick={() => alert('TODO')}>Rasitustodistus</a>
-        </Column>
-      </Row>
+      {plot.identifier &&
+        <Row>
+          {plot.type === PlotType.REAL_PROPERTY &&
+            <Column small={12} medium={6}>
+              <KtjLink
+                fileKey='kiinteistorekisteriote/rekisteriyksikko'
+                fileName='kiinteistorekisteriote'
+                identifier={plot.identifier}
+                idKey='kiinteistotunnus'
+                label='Kiinteistörekisteriote'
+              />
+            </Column>
+          }
+          {plot.type === PlotType.UNSEPARATED_PARCEL &&
+            <Column small={12} medium={6}>
+              <KtjLink
+                fileKey='kiinteistorekisteriote/maaraala'
+                fileName='kiinteistorekisteriote'
+                identifier={plot.identifier}
+                idKey='maaraalatunnus'
+                label='Kiinteistörekisteriote'
+              />
+            </Column>
+          }
+          <Column small={12} medium={6}>
+            <KtjLink
+              fileKey='lainhuutotodistus'
+              fileName='lainhuutotodistus'
+              identifier={plot.identifier}
+              idKey='kohdetunnus'
+              label='Lainhuutotodistus'
+            />
+          </Column>
+          <Column small={12} medium={6}>
+            <KtjLink
+              fileKey='rasitustodistus'
+              fileName='rasitustodistus'
+              identifier={plot.identifier}
+              idKey='kohdetunnus'
+              label='Rasitustodistus'
+            />
+          </Column>
+        </Row>
+      }
     </BoxItem>
   );
 };

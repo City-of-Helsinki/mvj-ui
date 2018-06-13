@@ -336,17 +336,6 @@ const ContractItemsEdit = ({
                   }}
                 />
               </Column>
-              <Column small={6} medium={12} large={6}>
-                <FormField
-                  // add KTJ integration
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.ktj_link')}
-                  name={`${contract}.ktj_link`}
-                  overrideValues={{
-                    label: 'KTJ vuokraoikeustodistuksen linkki',
-                  }}
-                />
-              </Column>
             </Row>
             <Row>
               <Column small={6} medium={4} large={2}>
