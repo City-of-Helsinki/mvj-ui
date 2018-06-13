@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import KtjLink from '$components/ktj/KtjLink';
 import ListItems from '$components/content/ListItems';
 import {formatDate, getDecisionById, getLabelOfOption, getReferenceNumberLink} from '$src/util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
@@ -61,7 +62,16 @@ const ContractItem = ({contract, decisionOptions, decisions, typeOptions}: Props
         </Column>
         <Column small={6} medium={12} large={6}>
           <label>KTJ dokumentti</label>
-          <p>{contract.ktj_link || '-'}</p>
+          {contract.institution_identifier
+            ? <KtjLink
+              fileKey='vuokraoikeustodistus'
+              fileName='vuokraoikeustodistus'
+              identifier={contract.institution_identifier}
+              idKey='kohdetunnus'
+              label='Vuokraoikeustodistus'
+            />
+            : <p>-</p>
+          }
         </Column>
       </Row>
       <Row>
