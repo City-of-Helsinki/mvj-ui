@@ -103,7 +103,7 @@ const LeaseArea = ({area, attributes}: Props) => {
           >
             <BoxItemContainer>
               {!area.plots_contract || !area.plots_contract.length &&
-                <p>Ei kiinteistöjä/määräalojaa sopimuksessa</p>
+                <p>Ei kiinteistöjä/määräaloja sopimuksessa</p>
               }
               {area.plots_contract.map((item, index) =>
                 <PlotItem
