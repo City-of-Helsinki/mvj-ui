@@ -38,7 +38,7 @@ const LeaseArea = ({area, attributes}: Props) => {
         </Column>
         <Column small={6} medium={4} large={2}>
           <FormFieldLabel>Pinta-ala</FormFieldLabel>
-          <p>{formatNumber(area.area) || '-'}</p>
+          <p>{area.area ? `${formatNumber(area.area)} m²` : '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
           <FormFieldLabel>Sijainti</FormFieldLabel>

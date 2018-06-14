@@ -33,7 +33,7 @@ const DecisionItem = ({
       </Column>
       <Column small={6} medium={4} large={2}>
         <label>Pykälä</label>
-        <p>{decision.section || '–'}</p>
+        <p>{decision.section ? `${decision.section} §` : '–'}</p>
       </Column>
       <Column small={6} medium={4} large={2}>
         <label>Päätöksen tyyppi</label>

@@ -159,6 +159,7 @@ const LeaseAreaItems = ({
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.area')}
                     name={`${area}.area`}
+                    unit='m²'
                     overrideValues={{
                       label: 'Pinta-ala',
                     }}

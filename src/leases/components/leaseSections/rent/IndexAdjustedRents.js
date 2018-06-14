@@ -30,7 +30,7 @@ const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
     <Table
       data={indexAdjustedRents}
       dataKeys={[
-        {key: 'amount', label: 'Indeksitarkastettu vuokra (€)', renderer: (val) => formatNumber(val), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'amount', label: 'Indeksitarkastettu vuokra', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
         {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
         {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},

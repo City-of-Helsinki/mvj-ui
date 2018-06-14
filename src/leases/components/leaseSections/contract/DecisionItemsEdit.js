@@ -70,6 +70,7 @@ const DecisionItemsEdit = ({attributes, errors, fields, isSaveClicked}: Props) =
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'decisions.child.children.section')}
                   name={`${decision}.section`}
+                  unit='§'
                   overrideValues={{
                     label: 'Pykälä',
                   }}

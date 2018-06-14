@@ -33,13 +33,13 @@ const BasisOfRents = ({attributes, currentLease}: Props) => {
         data={basisOfRents}
         dataKeys={[
           {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val) || '-', ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
-          {key: 'floor_m2', label: 'K-m2', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'floor_m2', label: 'Pinta-ala', renderer: (val) => val ? `${formatNumber(val)} k-m²` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
           {key: 'index', label: 'Indeksi', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-          {key: 'amount_per_floor_m2_index_100', label: '€/k-m2 (ind 100)', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-          {key: 'amount_per_floor_m2_index', label: '€/k-m2 (ind)', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'amount_per_floor_m2_index_100', label: 'Yksikköhinta (ind 100)', renderer: (val) => val ? `${formatNumber(val)} €/k-m²` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'amount_per_floor_m2_index', label: 'Yksikköhinta (ind)', renderer: (val) => val ? `${formatNumber(val)} €/k-m²` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
           {key: 'percent', label: 'Prosenttia', renderer: (val) => val ? `${formatNumber(val)} %` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-          {key: 'year_rent_index_100', label: 'Perusvuosivuokra €/v (ind 100)', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-          {key: 'year_rent_index', label: 'Alkuvuosivuokra €/v (ind)', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'year_rent_index_100', label: 'Perusvuosivuokra (ind 100)', renderer: (val) => val ? `${formatNumber(val)} €/v` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+          {key: 'year_rent_index', label: 'Alkuvuosivuokra (ind)', renderer: (val) => val ? `${formatNumber(val)} €/v` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         ]}
         noDataText='Ei vuokranperusteita'
         secondaryTable

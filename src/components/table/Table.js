@@ -44,25 +44,20 @@ class Table extends Component<Props, State> {
 
   state = {
     sortedData: [],
-    sortings: this.getDefaultSortings(),
+    sortings: [],
   }
 
   tableElement: any
 
-  getDefaultSortings() {
-    const {dataKeys} = this.props;
-    return dataKeys.map((column) => {
-      let sorting = 'both';
-      if (column.defaultSorting) {
-        const defaultSorting = column.defaultSorting.toLowerCase();
-        if (defaultSorting == 'desc') {
-          sorting = 'desc';
-        } else if (defaultSorting == 'asc') {
-          sorting = 'asc';
-        }
-      }
-      return sorting;
-    });
+  componentWillMount() {
+    const {sortable} = this.props;
+    if(sortable) {
+      const sortings = this.getDefaultSortings(this.props.dataKeys);
+      this.setState({
+        sortedData: this.sortData(sortings),
+        sortings: sortings,
+      });
+    }
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -75,10 +70,10 @@ class Table extends Component<Props, State> {
       this.props.dataKeys !== prevProps.dataKeys
     ) {
       this.setState({
-        sortedData: this.sortData(),
+        sortedData: this.sortData(this.state.sortings),
       });
-
     }
+
     if(this.state.sortedData !== prevState.sortedData) {
       const {onDataUpdate} = this.props;
       if(onDataUpdate) {
@@ -86,6 +81,21 @@ class Table extends Component<Props, State> {
       }
     }
   }
+
+  getDefaultSortings = (dataKeys: Array<Object>): Array<string> => {
+    return dataKeys.map((column) => {
+      let sorting = 'both';
+      if (column.defaultSorting) {
+        const defaultSorting = column.defaultSorting.toLowerCase();
+        if (defaultSorting == 'desc') {
+          sorting = 'desc';
+        } else if (defaultSorting == 'asc') {
+          sorting = 'asc';
+        }
+      }
+      return sorting;
+    });
+  };
 
   onSortingChange = (index: number) => {
     const {sortings} = this.state;
@@ -114,9 +124,8 @@ class Table extends Component<Props, State> {
     }
   }
 
-  sortData = () => {
+  sortData = (sortings: Array<string>) => {
     const {data, dataKeys} = this.props;
-    const {sortings} = this.state;
     let sortedData = data;
 
     forEach(sortings, (sorting, index) => {
@@ -162,9 +171,11 @@ class Table extends Component<Props, State> {
   selectNext = () => {
     const {sortedData} = this.state;
     const {onSelectNext, selectedRow} = this.props;
+
     if(!selectedRow || !onSelectNext) {
       return null;
     }
+
     const index = findIndex(sortedData, (row) => row.id === selectedRow.id);
     if(index < (sortedData.length - 1)) {
       onSelectNext(sortedData[index + 1]);

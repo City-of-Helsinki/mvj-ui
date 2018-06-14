@@ -114,8 +114,9 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Pro
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.amount_left')}
                       name={`${discount}.amount_left`}
+                      unit='€'
                       overrideValues={{
-                        label: 'Jäljellä (€)',
+                        label: 'Jäljellä',
                       }}
                     />
                   </Column>

@@ -84,11 +84,11 @@ const PlotItem = ({attributes, plot}: Props) => {
       <Row>
         <Column small={12} medium={6} large={3}>
           <FormFieldLabel>Kokonaisala</FormFieldLabel>
-          <p>{formatNumber(plot.area) || '-'}</p>
+          <p>{plot.area ? `${formatNumber(plot.area)} m²` : '-'}</p>
         </Column>
         <Column small={12} medium={6} large={3}>
           <FormFieldLabel>Leikkausala</FormFieldLabel>
-          <p>{formatNumber(plot.section_area) || '-'}</p>
+          <p>{plot.section_area ? `${formatNumber(plot.section_area)} m²` : '-'}</p>
         </Column>
         <Column small={12} medium={6} large={3}>
           <FormFieldLabel>Rekisteröintipvm</FormFieldLabel>

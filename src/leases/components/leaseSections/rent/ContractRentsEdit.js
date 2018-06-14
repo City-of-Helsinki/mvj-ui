@@ -47,6 +47,7 @@ const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props)
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.amount')}
                           name={`${rent}.amount`}
+                          unit='€'
                           overrideValues={{
                             label: '',
                           }}
@@ -84,6 +85,7 @@ const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props)
                             disableTouched={isSaveClicked}
                             fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.base_amount')}
                             name={`${rent}.base_amount`}
+                            unit='€'
                             overrideValues={{
                               label: '',
                             }}
@@ -109,6 +111,7 @@ const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props)
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.base_year_rent')}
                         name={`${rent}.base_year_rent`}
+                        unit='€'
                         overrideValues={{
                           label: 'Uusi perusvuosivuokra',
                         }}

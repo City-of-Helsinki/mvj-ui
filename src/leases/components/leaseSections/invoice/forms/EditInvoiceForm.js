@@ -127,6 +127,7 @@ const EditInvoiceForm = ({
           <FormField
             fieldAttributes={get(invoiceAttributes, 'total_amount')}
             name='total_amount'
+            unit='€'
             overrideValues={{
               label: 'Laskun pääoma',
             }}

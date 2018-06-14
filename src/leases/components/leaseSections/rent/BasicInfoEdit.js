@@ -116,6 +116,7 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
                   disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
                   name={`${rent}.amount`}
+                  unit='€'
                   overrideValues={{
                     label: '',
                   }}
@@ -433,6 +434,7 @@ const BasicInfoOneTime = ({attributes, isSaveClicked}: Props) => {
             disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.amount')}
             name='amount'
+            unit='€'
             overrideValues={{
               label: 'Kertakaikkinen vuokra',
             }}
