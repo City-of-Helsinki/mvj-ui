@@ -1,5 +1,4 @@
 // @flow
-
 import type {Action} from '../types';
 
 export type ContactState = Object;

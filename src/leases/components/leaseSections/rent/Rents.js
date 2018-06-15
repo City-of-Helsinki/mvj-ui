@@ -21,7 +21,7 @@ type Props = {
 
 const Rents = ({currentLease}: Props) => {
   const rents = getContentRents(currentLease);
-  console.log('rents');
+
   return (
     <div className="rent-section">
       <h2>Vuokrat</h2>

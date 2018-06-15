@@ -181,7 +181,6 @@ class LeasePage extends Component<Props, State> {
       invoiceAttributes,
       location,
       params: {leaseId},
-      receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
 
@@ -217,8 +216,6 @@ class LeasePage extends Component<Props, State> {
     fetchInvoices(getSearchQuery({lease: leaseId}));
     fetchNoticePeriods();
     fetchAreaNoteList();
-
-    receiveIsSaveClicked(false);
   }
 
   componentDidUpdate(prevProps) {
@@ -288,8 +285,9 @@ class LeasePage extends Component<Props, State> {
   }
 
   openEditMode = () => {
-    const {clearFormValidFlags, currentLease, showEditMode} = this.props;
+    const {clearFormValidFlags, currentLease, receiveIsSaveClicked, showEditMode} = this.props;
 
+    receiveIsSaveClicked(false);
     this.destroyAllForms();
     this.initializeForms(currentLease);
     clearFormValidFlags();
@@ -412,10 +410,9 @@ class LeasePage extends Component<Props, State> {
   }
 
   cancel = () => {
-    const {hideEditMode, receiveIsSaveClicked} = this.props;
+    const {hideEditMode} = this.props;
     this.hideModal('CancelLease');
     hideEditMode();
-    receiveIsSaveClicked(false);
   }
 
   startAutoSaveTimer = () => {

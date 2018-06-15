@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
@@ -18,22 +19,25 @@ import SearchWrapper from '$components/search/SearchWrapper';
 import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {fetchInfillDevelopments} from '$src/infillDevelopment/actions';
+import {fetchInfillDevelopmentAttributes, fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
-import {cloneObject, getSearchQuery} from '$util/helpers';
+import {cloneObject, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
+import {getAttributes, getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
 
-import type {InfillDevelopmentList} from '$src/infillDevelopment/types';
+import type {Attributes, InfillDevelopmentList} from '$src/infillDevelopment/types';
 
 const PAGE_SIZE = 25;
 
 type Props = {
+  attributes: Attributes,
+  fetchInfillDevelopmentAttributes: Function,
   fetchInfillDevelopments: Function,
   infillDevelopmentList: InfillDevelopmentList,
   initialize: Function,
   isFetching: boolean,
   location: Object,
+  receiveFormInitialValues: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
 }
@@ -43,6 +47,7 @@ type State = {
   count: number,
   infillDevelopments: Array<Object>,
   maxPage: number,
+  selectedStates: Array<string>,
 }
 
 class InfillDevelopmentListPage extends Component<Props, State> {
@@ -51,19 +56,24 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     count: 0,
     infillDevelopments: [],
     maxPage: 1,
+    selectedStates: [],
   }
 
   static contextTypes = {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
-    const {receiveTopNavigationSettings} = this.props;
-    const {router: {location: {query}}} = this.props;
+  componentDidMount() {
+    const {
+      attributes,
+      fetchInfillDevelopmentAttributes,
+      receiveTopNavigationSettings,
+      router: {location: {query}},
+    } = this.props;
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById('infillDevelopment'),
-      pageTitle: 'Täydennysrakentaminen',
+      pageTitle: 'Täydennysrakentamiskorvaus',
       showSearch: false,
     });
 
@@ -75,10 +85,11 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     }
 
     this.handleSearch();
-  }
-
-  componentDidMount = () => {
     this.initializeSearchForm();
+
+    if(isEmpty(attributes)) {
+      fetchInfillDevelopmentAttributes();
+    }
   }
 
   componentDidUpdate = (prevProps) => {
@@ -97,7 +108,16 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   }
 
   handleCreateButtonClick = () => {
-    alert('TODO: Luo täydennysrakentaminen');
+    const {receiveFormInitialValues} = this.props;
+    const {router} = this.context;
+    const {router: {location: {query}}} = this.props;
+
+    receiveFormInitialValues({});
+
+    return router.push({
+      pathname: getRouteById('newInfillDevelopment'),
+      query,
+    });
   }
 
   handleSearchChange = (query: Object) => {
@@ -149,7 +169,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     this.setState({activePage: page});
 
     return router.push({
-      pathname: getRouteById('infillDevelopments'),
+      pathname: getRouteById('infillDevelopment'),
       query,
     });
   }
@@ -179,9 +199,19 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     return Math.ceil(count/PAGE_SIZE);
   }
 
+  handleSelectedStatesChange = (states: Array<string>) => {
+    this.setState({
+      selectedStates: states,
+    });
+  }
+
   render() {
-    const {isFetching} = this.props;
-    const {activePage, infillDevelopments, maxPage} = this.state;
+    const {attributes, isFetching} = this.props;
+    const {activePage, infillDevelopments, maxPage, selectedStates} = this.state;
+    const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
+    const filteredInfillDevelopments = selectedStates.length
+      ? (infillDevelopments.filter((infillDevelopment) => selectedStates.indexOf(infillDevelopment.state.toString())  !== -1))
+      : infillDevelopments;
 
     return (
       <PageContainer>
@@ -189,9 +219,9 @@ class InfillDevelopmentListPage extends Component<Props, State> {
           buttonComponent={
             <Button
               className='no-margin'
-              label='Luo täydennysrakentaminen'
+              label='Luo täydennysrakentamiskorvaus'
               onClick={this.handleCreateButtonClick}
-              title='Luo täydennysrakentaminen'
+              title='Luo täydennysrakentamiskorvaus'
             />
           }
           searchComponent={
@@ -212,16 +242,18 @@ class InfillDevelopmentListPage extends Component<Props, State> {
         {!isFetching &&
           <div>
             <TableControllers
+              buttonSelectorOptions={stateOptions}
+              buttonSelectorValue={selectedStates}
+              onButtonSelectorChange={this.handleSelectedStatesChange}
               title={`Viimeksi muokattuja`}
             />
             <Table
-              data={infillDevelopments}
+              data={filteredInfillDevelopments}
               dataKeys={[
-                {key: 'station_code_number', label: 'Asemakaavan nro'},
-                {key: 'state', label: 'Asemakaavan käsittelyvaihe'},
+                {key: 'project_name', label: 'Hankkeen nimi'},
+                {key: 'plan_number', label: 'Asemakaavan nro'},
+                {key: 'state', label: 'Asemakaavan käsittelyvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
                 {key: 'tenant', label: 'Vuokralainen'},
-                {key: 'lease_identifier', label: 'Vuokratunnus'},
-                {key: 'plot_identifiers', label: 'Kiinteistötunnus'},
                 {key: 'nagotiation_state', label: 'Neuvotteluvaihe'},
               ]}
               onRowClick={this.handleRowClick}
@@ -243,13 +275,16 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        attributes: getAttributes(state),
         infillDevelopmentList: getInfillDevelopments(state),
         isFetching: getIsFetching(state),
       };
     },
     {
+      fetchInfillDevelopmentAttributes,
       fetchInfillDevelopments,
       initialize,
+      receiveFormInitialValues,
       receiveTopNavigationSettings,
     }
   )

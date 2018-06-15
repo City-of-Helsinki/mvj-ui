@@ -1,64 +1,3 @@
-.form-section {
-  .add-button {
-    font-family: $font-family-source;
-    font-size: rem-calc(16px);
-    font-weight: $semibold;
-    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
-    height: rem-calc(30px);
-    padding: 0 1rem;
-    margin: 0 0.5rem 0 0;
-    text-transform: uppercase;
-    cursor: pointer;
-    outline: none;
-
-    background-color: $tram;
-    color: $white;
-
-    &:hover {
-      background-color: $tram-lighter;
-    }
-
-    &:disabled {
-      background-color: #99d3b5;
-      cursor: not-allowed;
-    }
-  }
-
-  .add-button-secondary {
-    font-family: $font-family-source;
-    font-size: rem-calc(14px);
-    line-height: rem-calc(20px);
-    font-weight: $semibold;
-    color: $tram;
-    margin: rem-calc(5px) 0 rem-calc(10px);
-    float: left;
-    cursor: pointer;
-
-    i {
-      background-image: url(../assets/icons/plus-green.svg);
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      display: inline-block;
-      margin-right: rem-calc(5px);
-      float: left;
-      line-height: 1;
-    }
-
-    &:hover {
-      color: $tram-lighter;
-    }
-
-    &.no-margin {
-      margin: 0;
-    }
-
-    &.uppercase-label {
-      font-size: rem-calc(16px);
-      text-transform: uppercase;
-    }
-  }
-}
-
 .form-wrapper {
   display: flex;
   flex-flow: row wrap;
@@ -518,20 +457,18 @@
   }
 
   &__component {
-    position: relative;
-
     &.has-unit {
+      display: flex;
       input {
-        padding-right: rem-calc(25px);
+        flex: 1 1 0%;
       }
     }
   }
 
   &__unit {
-    position: absolute;
-    top: 3px;
-    right: 5px;
-    font-size: 0.875rem;
+    line-height: rem-calc(20px);
+    font-size: rem-calc(14px);
+    margin-left: rem-calc(5px);
   }
 }
 
@@ -564,5 +501,98 @@
     position: absolute;
     top: rem-calc(-10px);
     right: 0;
+  }
+}
+
+.add-button {
+  font-family: $font-family-source;
+  font-size: rem-calc(16px);
+  font-weight: $semibold;
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+  height: rem-calc(30px);
+  padding: 0 1rem;
+  margin: 0 0.5rem rem-calc(10px) 0;
+  text-transform: uppercase;
+  cursor: pointer;
+  outline: none;
+
+  background-color: $tram;
+  color: $white;
+
+  &:hover {
+    background-color: $tram-lighter;
+  }
+
+  &:disabled {
+    background-color: #99d3b5;
+    cursor: not-allowed;
+  }
+}
+
+.add-button-secondary {
+  font-family: $font-family-source;
+  font-size: rem-calc(14px) !important;
+  line-height: rem-calc(20px) !important;
+  font-weight: $semibold !important;
+  color: $tram !important;
+  margin: rem-calc(5px) 0 rem-calc(10px);
+  float: left;
+  cursor: pointer;
+
+  i {
+    background-image: url(../assets/icons/plus-green.svg);
+    height: rem-calc(20px);
+    width: rem-calc(20px);
+    display: inline-block;
+    margin-right: rem-calc(5px);
+    float: left;
+    line-height: 1;
+  }
+
+  &:hover {
+    color: $tram-lighter;
+  }
+
+  &.no-margin {
+    margin: 0;
+  }
+
+  &.uppercase-label {
+    font-size: rem-calc(16px);
+    text-transform: uppercase;
+  }
+}
+
+.add-file-button {
+  display: inline-block;
+  width: 100%;
+
+  &__label {
+    font-family: $font-family-source;
+    font-size: rem-calc(14px) !important;
+    line-height: rem-calc(20px) !important;
+    font-weight: $semibold !important;
+    color: $tram !important;
+    margin: rem-calc(5px) 0 rem-calc(10px);
+    float: left;
+    cursor: pointer;
+
+    i {
+      background-image: url(../assets/icons/plus-green.svg);
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      display: inline-block;
+      margin-right: rem-calc(5px);
+      float: left;
+      line-height: 1;
+    }
+
+    &:hover {
+      color: $tram-lighter;
+    }
+  }
+
+  &__input {
+    display: none;
   }
 }

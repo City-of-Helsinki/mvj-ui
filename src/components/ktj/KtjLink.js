@@ -46,11 +46,16 @@ const KtjLink = ({
         }
       })
       .then((blob) => {
-        const tempLink = document.createElement('a');
-        var fileURL = window.URL.createObjectURL(blob);
-        tempLink.href = fileURL;
-        tempLink.setAttribute('download', `${fileName}_${identifier}.pdf`);
-        tempLink.click();
+        const filename = `${fileName}_${identifier}.pdf`;
+        if (window.navigator.msSaveOrOpenBlob) { // for IE and Edge
+          window.navigator.msSaveBlob(blob, filename);
+        } else { // for modern browsers
+          const tempLink = document.createElement('a');
+          const fileURL = window.URL.createObjectURL(blob);
+          tempLink.href = fileURL;
+          tempLink.setAttribute('download', `${fileName}_${identifier}.pdf`);
+          tempLink.click();
+        }
       })
       .catch((e) => {
         console.error('Error when downloading file: ', e);

@@ -94,6 +94,7 @@ class LeaseListPage extends Component<Props, State> {
       pageTitle: 'Vuokraukset',
       showSearch: false,
     });
+
     const searchQuery = {...query};
     const page = Number(searchQuery.page);
 
@@ -110,6 +111,7 @@ class LeaseListPage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
+
     fetchAreaNoteList();
   }
 
@@ -124,6 +126,7 @@ class LeaseListPage extends Component<Props, State> {
     this.setState({
       isModalOpen: true,
     });
+
     initialize(FormNames.CREATE_LEASE, {});
   }
 
@@ -212,6 +215,7 @@ class LeaseListPage extends Component<Props, State> {
       leases: content,
       isFetching,
     } = this.props;
+
     const leases = getContentLeases(content);
     const count = this.getLeasesCount(content);
     const maxPage = this.getLeasesMaxPage(content);
@@ -245,7 +249,9 @@ class LeaseListPage extends Component<Props, State> {
         <TableControllers
           buttonSelectorOptions={stateOptions}
           buttonSelectorValue={documentType}
-          onButtonSelectorChange={(value) => {this.setState({documentType: value});}}
+          onButtonSelectorChange={(value) => {
+            this.setState({documentType: value});}
+          }
           iconSelectorOptions={[
             {value: 'table', label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
             {value: 'map', label: 'Kartta', icon: <MapIcon className='icon-medium' />},

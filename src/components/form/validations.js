@@ -9,7 +9,7 @@ const decimalPlaces = (n) => {
 
 export const required = (value: any, error?: string) => (!!value || value === 0) ? undefined : (error ? error : 'Pakollinen kenttä');
 
-export const integer = (value: any, error?: string) => (Number.isInteger(Number(value)) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
+export const integer = (value: any, error?: string) => (value === null || value === undefined || (Number.isInteger(Number(value))) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
 
 export const isDate = (value: any, error?: string) => (value === null || value === undefined || moment(value).isValid() ? undefined : (error ? error : 'Arvon tulee olla päivämäärä'));
 

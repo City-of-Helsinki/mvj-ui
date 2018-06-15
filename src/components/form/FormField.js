@@ -11,6 +11,7 @@ import FieldTypeBoolean from './FieldTypeBoolean';
 import FieldTypeCheckbox from './FieldTypeCheckbox';
 import FieldTypeContactSelect from './FieldTypeContactSelect';
 import FieldTypeDatePicker from './FieldTypeDatePicker';
+import FieldTypeLeaseSelect from './FieldTypeLeaseSelect';
 import FieldTypeLessorSelect from './FieldTypeLessorSelect';
 import FieldTypeMultiSelect from './FieldTypeMultiSelect';
 import FieldTypeSelect from './FieldTypeSelect';
@@ -30,6 +31,7 @@ const FieldTypes = {
   'decimal': FieldTypeBasic,
   'field': FieldTypeSelect,
   'integer': FieldTypeBasic,
+  'lease': FieldTypeLeaseSelect,
   'lessor': FieldTypeLessorSelect,
   'multiselect': FieldTypeMultiSelect,
   'string': FieldTypeBasic,

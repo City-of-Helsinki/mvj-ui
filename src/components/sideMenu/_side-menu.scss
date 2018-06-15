@@ -1,12 +1,12 @@
 .side-menu {
   z-index: 1001;
   background-color: $tram;
-  width: 220px;
+  width: 246px;
   height: 100vh;
   position: fixed;
   top: 0;
-  left: -220px;
-  padding: rem-calc(100px) rem-calc(20px) 0 rem-calc(30px);
+  left: -246px;
+  padding: rem-calc(100px) rem-calc(20px) 0 rem-calc(20px);
   box-shadow: 2px 0 5px 0 rgba(0, 0, 0, 0.06);
 
   @include transition(0.3s, all, ease-in-out);
