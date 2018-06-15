@@ -169,6 +169,7 @@ const PlanUnitItemsEdit = ({
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.area')}
                       name={`${planunit}.area`}
+                      unit='m²'
                       overrideValues={{
                         label: 'Kokonaisala',
                       }}
@@ -179,6 +180,7 @@ const PlanUnitItemsEdit = ({
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.section_area')}
                       name={`${planunit}.section_area`}
+                      unit='m²'
                       overrideValues={{
                         label: 'Leikkausala',
                       }}

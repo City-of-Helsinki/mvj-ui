@@ -89,11 +89,11 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
       <Row>
         <Column small={12} medium={6} large={3}>
           <FormFieldLabel>Kokonaisala</FormFieldLabel>
-          <p>{formatNumber(planUnit.area) || '-'}</p>
+          <p>{planUnit.area ? `${formatNumber(planUnit.area)} m²` : '-'}</p>
         </Column>
         <Column small={12} medium={6} large={3}>
           <FormFieldLabel>Leikkausala</FormFieldLabel>
-          <p>{formatNumber(planUnit.section_area) || '-'}</p>
+          <p>{planUnit.section_area ? `${formatNumber(planUnit.section_area)} m²` : '-'}</p>
         </Column>
       </Row>
       <Row>

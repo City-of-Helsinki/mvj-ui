@@ -516,6 +516,23 @@
       left: rem-calc(-10px);
     }
   }
+
+  &__component {
+    position: relative;
+
+    &.has-unit {
+      input {
+        padding-right: rem-calc(25px);
+      }
+    }
+  }
+
+  &__unit {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+    font-size: 0.875rem;
+  }
 }
 
 .remove-button {

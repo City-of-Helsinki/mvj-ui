@@ -111,8 +111,9 @@ class BasisOfRentsEdit extends Component<Props> {
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.floor_m2')}
                         name={`${item}.floor_m2`}
+                        unit='k-m²'
                         overrideValues={{
-                          label: 'K-m2',
+                          label: 'Pinta-ala',
                         }}
                       />
                     </Column>
@@ -126,13 +127,14 @@ class BasisOfRentsEdit extends Component<Props> {
                         }}
                       />
                     </Column>
-                    <Column small={3} medium={2} large={1}>
+                    <Column small={3} medium={2} large={2}>
                       <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.amount_per_floor_m2_index_100')}
                         name={`${item}.amount_per_floor_m2_index_100`}
+                        unit='€/k-m²'
                         overrideValues={{
-                          label: '€/k-m2 (ind 100)',
+                          label: 'Yksikköhinta (ind 100)',
                         }}
                       />
                     </Column>
@@ -141,20 +143,24 @@ class BasisOfRentsEdit extends Component<Props> {
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.percent')}
                         name={`${item}.percent`}
+                        unit='%'
                         overrideValues={{
                           label: 'Prosenttia',
                         }}
                       />
                     </Column>
-                    <Column small={3} medium={2} large={1}>
+                  </Row>
+                  <Row>
+                    <Column small={3} medium={4} large={2}>
                       <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'basis_of_rents.child.children.amount_per_floor_m2_index')}
                         name={`${item}.amount_per_floor_m2_index`}
                         disabled
                         disableDirty
+                        unit='€/k-m²'
                         overrideValues={{
-                          label: '€/k-m2 (ind)',
+                          label: 'Yksikköhinta (ind)',
                         }}
                       />
                     </Column>
@@ -165,8 +171,9 @@ class BasisOfRentsEdit extends Component<Props> {
                         name={`${item}.year_rent_index_100`}
                         disabled
                         disableDirty
+                        unit='€/v'
                         overrideValues={{
-                          label: 'Perusvuosivuokra €/v (ind 100)',
+                          label: 'Perusvuosivuokra (ind 100)',
                         }}
                       />
                     </Column>
@@ -177,8 +184,9 @@ class BasisOfRentsEdit extends Component<Props> {
                         name={`${item}.year_rent_index`}
                         disabled
                         disableDirty
+                        unit='€/v'
                         overrideValues={{
-                          label: 'Alkuvuosivuokra €/v (ind)',
+                          label: 'Alkuvuosivuokra (ind)',
                         }}
                       />
                     </Column>

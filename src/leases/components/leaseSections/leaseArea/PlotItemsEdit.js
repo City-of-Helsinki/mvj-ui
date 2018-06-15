@@ -169,6 +169,7 @@ const PlotItemsEdit = ({
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.area')}
                       name={`${plot}.area`}
+                      unit='m²'
                       overrideValues={{
                         label: 'Kokonaisala',
                       }}
@@ -179,6 +180,7 @@ const PlotItemsEdit = ({
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.section_area')}
                       name={`${plot}.section_area`}
+                      unit='m²'
                       overrideValues={{
                         label: 'Leikkausala',
                       }}

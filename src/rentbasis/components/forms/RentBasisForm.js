@@ -110,6 +110,7 @@ const renderDecisions = ({attributes, fields}: DecisionsProps): Element<*> => {
             <FormField
               fieldAttributes={get(attributes, 'decisions.child.children.section')}
               name={`${field}.section`}
+              unit='§'
               overrideValues={{
                 label: '',
               }}

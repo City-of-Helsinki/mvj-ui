@@ -45,7 +45,7 @@ const Types = {
   'date': null,
   'decimal': 'text',
   'field': null,
-  'integer': 'number',
+  'integer': 'text',
   'lessor': null,
   'multiselect': null,
   'string': 'text',
@@ -74,6 +74,7 @@ type InputProps = {
   placeholder?: string,
   required: boolean,
   rows?: number,
+  unit?: string,
 }
 
 const FormFieldInput = ({
@@ -93,6 +94,7 @@ const FormFieldInput = ({
   placeholder,
   required,
   rows,
+  unit,
 }: InputProps) => {
   const displayError = meta.error && (disableTouched || meta.touched);
   const isDirty = meta.dirty && !disableDirty;
@@ -102,8 +104,9 @@ const FormFieldInput = ({
   return (
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name} title={label ? `${label}${required ? ' *' : ''}` : ''}>{label}{required &&<i className='required'> *</i>}</label>}
-      <div className='form-field__component'>
+      <div className={classNames('form-field__component', {'has-unit': unit})}>
         {createElement(fieldComponent, {autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
+        {unit && <span className='form-field__unit'>{unit}</span>}
       </div>
       {displayError && <ErrorComponent {...meta}/>}
     </div>
@@ -125,6 +128,7 @@ type Props = {
   placeholder?: string,
   rows?: number,
   validate?: Function,
+  unit?: string,
 }
 
 type State = {
@@ -203,6 +207,7 @@ class FormField extends PureComponent<Props, State> {
       overrideValues,
       placeholder,
       rows,
+      unit,
     } = this.props;
     const {
       fieldType,
@@ -234,6 +239,7 @@ class FormField extends PureComponent<Props, State> {
           this.handleGenericValidate,
           this.handleValidate,
         ]}
+        unit={unit}
         {...overrideValues}
       />
     );

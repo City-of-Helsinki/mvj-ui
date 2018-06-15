@@ -70,7 +70,7 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
                   <p>{getFullAmount(adjustment) || '-'}</p>
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <label>Jäljellä (€)</label>
+                  <label>Jäljellä</label>
                   <p>{adjustment.amount_left ? `${formatNumber(adjustment.amount_left)} €` : '-'}</p>
                 </Column>
                 <Column small={6} medium={4} large={2}>
