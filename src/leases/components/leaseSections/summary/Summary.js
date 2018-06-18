@@ -149,7 +149,7 @@ class Summary extends Component<Props, State> {
       summary,
       supportiveHousingOptions,
     } = this.state;
-    const tenants = get(summary, 'tenants', []);
+    const tenants = summary.tenants;
     const leaseAreas = get(summary, 'lease_areas', []);
     const constructabilityAreas = get(summary, 'constructability_areas', []);
 

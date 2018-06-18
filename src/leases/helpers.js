@@ -173,7 +173,7 @@ export const getContentSummary = (lease: Object) => {
     notice_note: get(lease, 'notice_note'),
     reference_number: get(lease, 'reference_number'),
     note: get(lease, 'note'),
-    tenants: getContentTenants(lease),
+    tenants: getContentTenants(lease).filter((tenant) => isTenantActive(get(tenant, 'tenant'))),
     lease_areas: getContentLeaseAreas(lease),
     constructability_areas: getContentConstructability(lease),
   };
