@@ -14,6 +14,7 @@ import LeaseListPage from '$src/leases/components/LeaseListPage';
 import LeasePage from '$src/leases/components/LeasePage';
 import LoginPage from '$src/auth/components/LoginPage';
 import NewContactPage from '$src/contacts/components/NewContactPage';
+import NewInfillDevelopmentPage from '$src/infillDevelopment/components/NewInfillDevelopmentPage';
 import NewRentBasisPage from '$src/rentbasis/components/NewRentBasisPage';
 import RentBasisListPage from '$src/rentbasis/components/RentBasisListPage';
 import RentBasisPage from '$src/rentbasis/components/RentBasisPage';
@@ -23,10 +24,11 @@ export const getRouteById = (id: string): string => {
     areaNotes: '/muistettavatehdot',
     callback: '/callback',
     contacts: '/asiakkaat',
-    infillDevelopment: '/taydennysrakentaminen',
+    infillDevelopment: '/taydennysrakennuskorvaus',
     leases: '/vuokraukset',
     logout: '/logout',
     newContact: '/uusiasiakas',
+    newInfillDevelopment: '/uusitaydennysrakennuskorvaus',
     newRentBasis: '/uusivuokrausperuste',
     rentBasis: '/vuokrausperusteet',
   };
@@ -43,6 +45,7 @@ export default
   <Route path={getRouteById('newContact')} components={NewContactPage} />
   <Route path={`${getRouteById('infillDevelopment')}`} components={InfillDevelopmentListPage} />
   <Route path={`${getRouteById('infillDevelopment')}/:infillDevelopmentId`} components={InfillDevelopmentPage} />
+  <Route path={getRouteById('newInfillDevelopment')} components={NewInfillDevelopmentPage} />
   <Route path={getRouteById('leases')} components={LeaseListPage} />
   <Route path={`${getRouteById('leases')}/:leaseId`} components={LeasePage}/>
   <Route path={getRouteById('newRentBasis')} components={NewRentBasisPage} />

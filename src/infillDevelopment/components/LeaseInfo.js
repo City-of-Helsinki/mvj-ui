@@ -100,14 +100,17 @@ const LeaseInfo = ({
               <p className='no-margin'>{decision.section ? `${decision.section} §` : '-'}</p>
             </Column>
             <Column small={3} large={2}>
-              <p className='no-margin'>
-                <a
-                  className='no-margin'
-                  target='_blank'
-                  href={getReferenceNumberLink(decision.reference_number)}>
-                  {decision.reference_number}
-                </a>
-              </p>
+              {decision.reference_number
+                ? <p className='no-margin'>
+                  <a
+                    className='no-margin'
+                    target='_blank'
+                    href={getReferenceNumberLink(decision.reference_number)}>
+                    {decision.reference_number}
+                  </a>
+                </p>
+                : <p className='no-margin'>-</p>
+              }
             </Column>
           </Row>
         )}

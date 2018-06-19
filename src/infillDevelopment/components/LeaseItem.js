@@ -13,25 +13,27 @@ import ListItems from '$components/content/ListItems';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SubTitle from '$components/content/SubTitle';
-import {fetchAttributes as fetchLeaseAttributes, fetchLeaseById} from '$src/leases/actions';
-import {formatDate, formatNumber, getAttributeFieldOptions} from '$util/helpers';
+import {fetchLeaseById} from '$src/leases/actions';
+import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {
   getContentDecisions,
   getContentLeaseAreas,
   getContentLeaseIdentifier,
   getContentTenants,
 } from '$src/leases/helpers';
+import {getAttributes} from '$src/infillDevelopment/selectors';
 import {getAttributes as getLeaseAttributes, getIsFetchingById, getLeaseById} from '$src/leases/selectors';
 
+import type {Attributes} from '$src/infillDevelopment/types';
 import type {Attributes as LeaseAttributes, Lease, LeaseId} from '$src/leases/types';
 
 type Props = {
-  fetchLeaseAttributes: Function,
+  attributes: Attributes,
   fetchLeaseById: Function,
   id: LeaseId,
   isFetching: boolean,
   lease: Lease,
-  leaseMock: Object,
+  leaseData: Object,
   leaseAttributes: LeaseAttributes,
 }
 
@@ -39,6 +41,7 @@ type State = {
   decisionMakerOptions: Array<Object>,
   decisions: Array<Object>,
   identifier: ?string,
+  intendedUseOptions: Array<Object>,
   planUnits: Array<Object>,
   plots: Array<Object>,
   tenants: Array<Object>,
@@ -49,22 +52,26 @@ class LeaseItem extends Component<Props, State> {
     decisionMakerOptions: [],
     decisions: [],
     identifier: null,
+    intendedUseOptions: [],
     planUnits: [],
     plots: [],
     tenants: [],
   }
+
   componentWillMount() {
     const {
-      fetchLeaseAttributes,
+      attributes,
       fetchLeaseById,
       id,
       lease,
       leaseAttributes,
     } = this.props;
 
-    if(isEmpty(leaseAttributes)) {
-      fetchLeaseAttributes();
-    } else {
+    if(!isEmpty(attributes)) {
+      this.updateAttributeStates();
+    }
+
+    if(!isEmpty(leaseAttributes)) {
       this.updateLeaseAttributeStates();
     }
     if(isEmpty(lease)) {
@@ -81,6 +88,14 @@ class LeaseItem extends Component<Props, State> {
     if(prevProps.lease !== this.props.lease) {
       this.updateLeaseContentStates();
     }
+  }
+
+  updateAttributeStates = () => {
+    const {attributes} = this.props;
+
+    this.setState({
+      intendedUseOptions: getAttributeFieldOptions(attributes, 'leases.child.children.intended_uses.child.children.intended_use'),
+    });
   }
 
   updateLeaseAttributeStates = () => {
@@ -120,16 +135,19 @@ class LeaseItem extends Component<Props, State> {
   }
 
   render() {
-    const {id, isFetching, leaseMock} = this.props;
+    const {id, isFetching, leaseData} = this.props;
     const {
       decisionMakerOptions,
       decisions,
       identifier,
+      intendedUseOptions,
       planUnits,
       plots,
       tenants,
     } = this.state;
-    const intendedUses = get(leaseMock, 'intended_uses', []);
+    const intendedUses = get(leaseData, 'intended_uses', []);
+    const attachments = get(leaseData, 'attachments', []);
+
     return (
       <Collapse
         className='collapse__secondary'
@@ -163,13 +181,13 @@ class LeaseItem extends Component<Props, State> {
             {intendedUses.map((intendedUse, index) =>
               <Row key={index}>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{intendedUse.type || '-'}</p>
+                  <p className='no-margin'>{getLabelOfOption(intendedUseOptions, intendedUse.intended_use) || '-'}</p>
                 </Column>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{intendedUse.km2 ? `${formatNumber(intendedUse. km2)} €` : '-'}</p>
+                  <p className='no-margin'>{intendedUse.km2 ? `${formatNumber(intendedUse. km2)} k-m²` : '-'}</p>
                 </Column>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{intendedUse.ekm2 ? `${formatNumber(intendedUse.ekm2)} €` : '-'}</p>
+                  <p className='no-margin'>{intendedUse.ekm2 ? `${formatNumber(intendedUse.ekm2)} €/k-m²` : '-'}</p>
                 </Column>
               </Row>
             )}
@@ -179,49 +197,71 @@ class LeaseItem extends Component<Props, State> {
         <Row>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Rahakorvaus</FormFieldLabel>
-            <p>{leaseMock.cash_compensation ? formatNumber(leaseMock.cash_compensation) : '-'}</p>
+            <p>{leaseData.cash_compensation ? `${formatNumber(leaseData.cash_compensation)} €` : '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Korvausinsvestoinnit</FormFieldLabel>
-            <p>{leaseMock.replacement_investments ? formatNumber(leaseMock.replacement_investments) : '-'}</p>
+            <FormFieldLabel>Korvausinvestoinnit</FormFieldLabel>
+            <p>{leaseData.replacement_investments ? `${formatNumber(leaseData.replacement_investments)} €` : '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Korvaus yhteensä</FormFieldLabel>
-            <p>{leaseMock.total ? formatNumber(leaseMock.total) : '-'}</p>
+            <p>{leaseData.total ? `${formatNumber(leaseData.total)} €` : '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Arvon nousu</FormFieldLabel>
-            <p>{leaseMock.increase_in_value || '-'}</p>
+            <FormFieldLabel>Arvonnousu</FormFieldLabel>
+            <p>{leaseData.increase_in_value ? `${formatNumber(leaseData.increase_in_value)} €` : '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Arvon osuus noususta</FormFieldLabel>
-            <p>{leaseMock.share_in_increase_in_value || '-'}</p>
+            <FormFieldLabel>Osuus arvonnoususta</FormFieldLabel>
+            <p>{leaseData.share_in_increase_in_value ? `${formatNumber(leaseData.share_in_increase_in_value)} €` : '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Vuokranalennus</FormFieldLabel>
-            <p>{leaseMock.rent_reduction ? formatNumber(leaseMock.rent_reduction) : '-'}</p>
+            <p>{leaseData.rent_reduction ? `${formatNumber(leaseData.rent_reduction)} €` : '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Arvioitu maksuvuosi</FormFieldLabel>
-            <p>{leaseMock.estimated_payment_year || '-'}</p>
+            <p>{leaseData.estimated_payment_year || '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Maksu lähetetty SAP</FormFieldLabel>
-            <p>{formatDate(leaseMock.sent_to_sap_date) || '-'}</p>
+            <p>{formatDate(leaseData.sent_to_sap_date) || '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Maksettu</FormFieldLabel>
-            <p>{formatDate(leaseMock.payment_date) || '-'}</p>
+            <p>{formatDate(leaseData.payment_date) || '-'}</p>
           </Column>
         </Row>
 
         <SubTitle>Liitetiedostot</SubTitle>
-        <p>Ei liitetiedostoja</p>
-
+        {!!attachments.length &&
+          <div>
+            <Row>
+              <Column small={6} large={4}>
+                <FormFieldLabel>Nimi</FormFieldLabel>
+              </Column>
+              <Column small={4} large={2}>
+                <FormFieldLabel>Pvm</FormFieldLabel>
+              </Column>
+            </Row>
+            {attachments.map((file, index) => {
+              return (
+                <Row key={index}>
+                  <Column small={6} large={4}>
+                    <a>{get(file, 'file.name') || '-'}</a>
+                  </Column>
+                  <Column small={4} large={2}>
+                    <p>{formatDate(file.date) || '-'}</p>
+                  </Column>
+                </Row>
+              );
+            })}
+          </div>
+        }
         <Row>
           <Column>
-            <FormFieldLabel>Kommentti</FormFieldLabel>
-            <p>{leaseMock.note || '-'}</p>
+            <FormFieldLabel>Huomautus</FormFieldLabel>
+            <p>{leaseData.note || '-'}</p>
           </Column>
         </Row>
       </Collapse>
@@ -233,13 +273,13 @@ export default flowRight(
   connect(
     (state, props) => {
       return {
+        attributes: getAttributes(state),
         isFetching: getIsFetchingById(state, props.id),
         lease: getLeaseById(state, props.id),
         leaseAttributes: getLeaseAttributes(state),
       };
     },
     {
-      fetchLeaseAttributes,
       fetchLeaseById,
     }
   )

@@ -247,10 +247,13 @@ function* createContactSaga({payload: contact}): Generator<any, any, any> {
 
 function* editContactSaga({payload: contact}): Generator<any, any, any> {
   try {
+    const contactModalSettings = yield select(getContactModalSettings);
     const {response: {status: statusCode}, bodyAsJson} = yield call(editContact, contact);
 
     switch (statusCode) {
       case 200:
+        contactModalSettings.contact = bodyAsJson;
+        yield put(receiveContactModalSettings(contactModalSettings));
         yield put(hideContactModal());
         break;
       case 400:

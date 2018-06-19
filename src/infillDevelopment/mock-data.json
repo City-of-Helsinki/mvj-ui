@@ -1,25 +1,56 @@
 [
   {
     "id": 0,
-    "station_code_number": "12345",
-    "state": "Kaavaluonnos",
-    "decision_type": "Lorem ipsum",
+    "project_name": "Sörnäistenkatu 1",
+    "plan_number": "12345",
+    "plan_reference_number": "12345",
+    "state": 0,
+    "decision_type": 0,
     "state_date": "2018-01-01",
-    "responsible_person": "Käsittelijän nimi",
-    "nagotiation_state": "Päätös",
+    "responsible_person": {
+      "id": 1,
+      "value": 1,
+      "label": "Lindell Jori",
+      "first_name": "Jori",
+      "last_name": "Lindell"
+    },
+    "nagotiation_state": 2,
     "change_of_lease_date": "2018-01-01",
+    "note": "Lorem ipsum",
 
     "leases": [
       {
         "id": 6,
+        "identifier": {
+          "type": {
+            "id": 7,
+            "name": "Käyttöoikeudet",
+            "identifier": "O1",
+            "sap_material_code": null,
+            "sap_order_item_number": null,
+            "due_dates_position": "start_of_month"
+          },
+          "municipality": {
+            "id": 1,
+            "name": "Helsinki",
+            "identifier": "1"
+          },
+          "district": {
+            "id": 34,
+            "name": "Kaarela",
+            "identifier": "33",
+            "municipality": 1
+          },
+          "sequence": 28
+        },
         "intended_uses": [
           {
-            "type": "Asunto",
+            "intended_use": 1,
             "km2": 1200,
             "ekm2": 1200
           },
           {
-            "type": "Asunto",
+            "intended_use": 1,
             "km2": 1200,
             "ekm2": 1200
           }
@@ -27,8 +58,8 @@
         "cash_compensation": 12000,
         "replacement_investments": 30000,
         "total": 42000,
-        "increase_in_value": "???",
-        "share_in_increase_in_value": "???",
+        "increase_in_value": 1200,
+        "share_in_increase_in_value": 1200,
         "rent_reduction": 5000,
         "estimated_payment_year": "2019",
         "sent_to_sap_date": "2018-01-01",
@@ -37,6 +68,28 @@
       },
       {
         "id": 1,
+        "identifier": {
+          "type": {
+            "id": 5,
+            "name": "Sekalaiset vuokraukset",
+            "identifier": "S0",
+            "sap_material_code": null,
+            "sap_order_item_number": null,
+            "due_dates_position": "middle_of_month"
+          },
+          "municipality": {
+            "id": 1,
+            "name": "Helsinki",
+            "identifier": "1"
+          },
+          "district": {
+            "id": 60,
+            "name": "Ultuna",
+            "identifier": "59",
+            "municipality": 1
+          },
+          "sequence": 5
+        },
         "note": "Lorem ipsum"
       }
     ]

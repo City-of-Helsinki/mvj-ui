@@ -15,6 +15,8 @@ import {getUserFullName} from '$src/users/helpers';
 import {fixedLengthNumber, formatDecimalNumberForDb, sortByStartDateDesc} from '$util/helpers';
 import {removeSessionStorageItem} from '$util/storage';
 
+import type {Lease} from './types';
+
 export const getContentLeaseIdentifier = (item:Object) => {
   if(isEmpty(item)) {
     return null;
@@ -34,6 +36,13 @@ export const getContentLeaseTenant = (lease: Object) => {
   }
 
   return getContactFullName(tenant.contact);
+};
+
+export const getContentLeaseOption = (lease: Lease) => {
+  return {
+    value: lease.id,
+    label: getContentLeaseIdentifier(lease),
+  };
 };
 
 export const getContentLeaseAddress = (lease: Object) => {
