@@ -9,7 +9,7 @@ import scrollToComponent from 'react-scroll-to-component';
 import InvoiceModal from './InvoiceModal';
 import Table from '$components/table/Table';
 import {getContactFullName} from '$src/contacts/helpers';
-import {getInvoiceSharePercentage} from '$src/invoices/helpers';
+import {getContentInvoices} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDateRange,
@@ -165,7 +165,7 @@ class InvoicesTable extends Component<Props, State> {
         {key: 'recipient', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => sortStringByKeyAsc(getContactFullName(a), getContactFullName(b)), descSortFunction: (a, b) => sortStringByKeyDesc(getContactFullName(a), getContactFullName(b))},
         {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
         {key: 'id', label: 'Laskun numero', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'share', label: 'Osuus', renderer: (val, invoice) => getInvoiceSharePercentage(invoice) || '-'},
+        {key: 'total_share', label: 'Osuus', renderer: (val) => `${val * 100} %`},
         {key: 'billing_period_start_date', label: 'Laskutuskausi', renderer: (val, invoice) => formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-'},
         {key: 'receivable_type', label: 'Saamislaji', renderer: (val) => getLabelOfOption(receivableTypeOptions, val) || '-'},
         {key: 'state', label: 'Laskun tila', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
@@ -179,7 +179,7 @@ class InvoicesTable extends Component<Props, State> {
         {key: 'recipient', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => sortStringByKeyAsc(getContactFullName(a), getContactFullName(b)), descSortFunction: (a, b) => sortStringByKeyDesc(getContactFullName(a), getContactFullName(b))},
         {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
         {key: 'id', label: 'Laskun numero', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'share', label: 'Osuus', renderer: (val, invoice) => getInvoiceSharePercentage(invoice) || '-'},
+        {key: 'total_share', label: 'Osuus', renderer: (val) => `${val * 100} %`},
       ];
     }
   }
@@ -202,6 +202,7 @@ class InvoicesTable extends Component<Props, State> {
       tableWidth,
     } = this.state;
     const {invoices} = this.props;
+    const invoiceItems = getContentInvoices(invoices);
     const dataKeys = this.getDataKeys();
 
     return (
@@ -214,7 +215,7 @@ class InvoicesTable extends Component<Props, State> {
           style={{maxWidth: tableWidth}}>
           <Table
             ref={(input) => this.table = input}
-            data={invoices}
+            data={invoiceItems}
             dataKeys={dataKeys}
             fixedHeader
             fixedHeaderClassName={classNames('invoice-fixed-table', {'is-open': showModal})}

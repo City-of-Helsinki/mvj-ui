@@ -15,6 +15,10 @@ import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
+const formatDueDate = (date: Object) => {
+  return `${date.day}.${date.month}`;
+};
+
 type Props = {
   attributes: Attributes,
   rent: Object,
@@ -56,7 +60,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
             <ListItems>
               {rent.due_dates && !!rent.due_dates.length
                 ? (rent.due_dates.map((date, index) => {
-                  return (<p className='no-margin' key={index}>{`${date.day}.${date.month}`}</p>);
+                  return <p className='no-margin' key={index}>{formatDueDate(date)}</p>;
                 }))
                 : <p className='no-margin'>Ei eräpäiviä</p>
               }
@@ -65,8 +69,15 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <label>Laskut kpl / vuodessa</label>
-            <p>{rent.due_dates_per_year || '-'}</p>
+            <label>Eräpäivät</label>
+            <ListItems>
+              {rent.yearly_due_dates && !!rent.yearly_due_dates.length
+                ? (rent.yearly_due_dates.map((date, index) => {
+                  return <p className='no-margin' key={index}>{formatDueDate(date)}</p>;
+                }))
+                : <p className='no-margin'>Ei eräpäiviä</p>
+              }
+            </ListItems>
           </Column>
         }
       </Row>
@@ -224,8 +235,15 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <label>Laskut kpl / vuodessa</label>
-            <p>{rent.due_dates_per_year || '-'}</p>
+            <label>Eräpäivät</label>
+            <ListItems>
+              {rent.yearly_due_dates && !!rent.yearly_due_dates.length
+                ? (rent.yearly_due_dates.map((date, index) => {
+                  return <p className='no-margin' key={index}>{formatDueDate(date)}</p>;
+                }))
+                : <p className='no-margin'>Ei eräpäiviä</p>
+              }
+            </ListItems>
           </Column>
         }
       </Row>

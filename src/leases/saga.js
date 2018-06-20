@@ -5,6 +5,7 @@ import {SubmissionError} from 'redux-form';
 
 import {getRouteById} from '../root/routes';
 import {
+  fetchSingleLease as fetchSingleLeaseAction,
   hideContactModal,
   hideEditMode,
   hideDeleteRelatedLeaseModal,
@@ -143,7 +144,7 @@ function* patchLeaseSaga({payload: lease}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        yield put(receiveSingleLease(bodyAsJson));
+        yield put(fetchSingleLeaseAction(lease.id));
         yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());
         break;

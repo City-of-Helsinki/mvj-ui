@@ -170,9 +170,10 @@ const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
                 const contact = get(getContentTenantItem(row.tenant), 'contact');
                 return (
                   <Row key={row.id}>
-                    <Column small={4} medium={5}><p>{getContactFullName(contact) || '-'}</p></Column>
-                    <Column small={4} medium={5}><p>{row.description || '-'}</p></Column>
-                    <Column small={4} medium={2}><p className='invoice__rows_amount'>{row.amount ? `${formatNumber(row.amount)} €` : '-'}</p></Column>
+                    <Column small={3} medium={3}><p>{getContactFullName(contact) || '-'}</p></Column>
+                    <Column small={3} medium={3}><p>{getLabelOfOption(receivableTypeOptions, row.receivable_type) || '-'}</p></Column>
+                    <Column small={4} medium={4}><p>{row.description || '-'}</p></Column>
+                    <Column small={2} medium={2}><p className='invoice__rows_amount'>{row.amount ? `${formatNumber(row.amount)} €` : '-'}</p></Column>
                   </Row>
                 );
               })}
