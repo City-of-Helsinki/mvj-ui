@@ -777,7 +777,7 @@ export const getInvoiceRecipientOptions = (lease: Object) =>{
   return items.map((item) => {
     return {
       value: item.id,
-      label: get(item, 'tenant.contact'),
+      label: getContactFullName(get(item, 'tenant.contact')),
     };
   });
 };

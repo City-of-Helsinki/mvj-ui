@@ -5,11 +5,13 @@ import flowRight from 'lodash/flowRight';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import scrollToComponent from 'react-scroll-to-component';
+import isEmpty from 'lodash/isEmpty';
 
 import InvoiceModal from './InvoiceModal';
 import Table from '$components/table/Table';
+import TruncatedText from '$components/content/TruncatedText';
 import {getContactFullName} from '$src/contacts/helpers';
-import {getContentInvoices} from '$src/invoices/helpers';
+import {formatReceivableTypesString, getContentInvoices} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDateRange,
@@ -34,6 +36,7 @@ type Props = {
 }
 
 type State = {
+  invoiceItems: InvoiceList,
   selectedInvoice: Object,
   selectedInvoiceId: number,
   showAllColumns: boolean,
@@ -44,6 +47,7 @@ type State = {
 
 class InvoicesTable extends Component<Props, State> {
   state = {
+    invoiceItems: [],
     selectedInvoice: {},
     selectedInvoiceId: -1,
     showAllColumns: true,
@@ -59,18 +63,37 @@ class InvoicesTable extends Component<Props, State> {
   tableWrapper : any
 
   componentDidMount() {
+    const {invoices} = this.props;
+
     this.calculateHeight();
     this.calculateTableWidth();
     this.tableWrapper.addEventListener('transitionend', this.transitionEnds);
+
+    if(!isEmpty(invoices)) {
+      this.updateInvoiceItems();
+    }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.calculateHeight();
     this.calculateTableWidth();
+
+    if(prevProps.invoices !== this.props.invoices) {
+      this.updateInvoiceItems();
+    }
+  }
+
+  updateInvoiceItems = () => {
+    const {invoices} = this.props;
+
+    this.setState({
+      invoiceItems: getContentInvoices(invoices),
+    });
   }
 
   shouldComponentUpdate(nextProps: Object, nextState: Object) {
     return (
+      this.state.invoiceItems !== nextState.invoiceItems ||
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
       this.state.tableWidth !== nextState.tableWidth ||
@@ -139,6 +162,14 @@ class InvoicesTable extends Component<Props, State> {
     });
   }
 
+  handleInvoiceModalOnClose = () => {
+    this.setState({
+      selectedInvoice: {},
+      selectedInvoiceId: -1,
+      showModal: false,
+    });
+  }
+
   handleKeyCodeDown = () => {
     this.table.selectNext();
   }
@@ -157,7 +188,7 @@ class InvoicesTable extends Component<Props, State> {
   getDataKeys = () => {
     const {invoiceAttributes} = this.props;
     const {showAllColumns} = this.state;
-    const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'receivable_type');
+    const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type');
     const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
 
     if(showAllColumns) {
@@ -165,9 +196,9 @@ class InvoicesTable extends Component<Props, State> {
         {key: 'recipient', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => sortStringByKeyAsc(getContactFullName(a), getContactFullName(b)), descSortFunction: (a, b) => sortStringByKeyDesc(getContactFullName(a), getContactFullName(b))},
         {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
         {key: 'id', label: 'Laskun numero', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'total_share', label: 'Osuus', renderer: (val) => `${val * 100} %`},
+        {key: 'total_share', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'billing_period_start_date', label: 'Laskutuskausi', renderer: (val, invoice) => formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-'},
-        {key: 'receivable_type', label: 'Saamislaji', renderer: (val) => getLabelOfOption(receivableTypeOptions, val) || '-'},
+        {key: 'receivable_types', label: 'Saamislaji', renderer: (val) => <TruncatedText text={formatReceivableTypesString(receivableTypeOptions, val) || '-'} />},
         {key: 'state', label: 'Laskun tila', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
         {key: 'billed_amount', label: 'Laskutettu', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'outstanding_amount', label: 'Maksamatta', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
@@ -179,7 +210,7 @@ class InvoicesTable extends Component<Props, State> {
         {key: 'recipient', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => sortStringByKeyAsc(getContactFullName(a), getContactFullName(b)), descSortFunction: (a, b) => sortStringByKeyDesc(getContactFullName(a), getContactFullName(b))},
         {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
         {key: 'id', label: 'Laskun numero', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'total_share', label: 'Osuus', renderer: (val) => `${val * 100} %`},
+        {key: 'total_share', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
       ];
     }
   }
@@ -196,13 +227,12 @@ class InvoicesTable extends Component<Props, State> {
 
   render () {
     const {
+      invoiceItems,
       selectedInvoice,
       showModal,
       tableHeight,
       tableWidth,
     } = this.state;
-    const {invoices} = this.props;
-    const invoiceItems = getContentInvoices(invoices);
     const dataKeys = this.getDataKeys();
 
     return (
@@ -235,13 +265,9 @@ class InvoicesTable extends Component<Props, State> {
           ref={(ref) => this.modal = ref}
           containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
           invoice={selectedInvoice}
-          onClose={() => this.setState({
-            selectedInvoice: {},
-            selectedInvoiceId: -1,
-            showModal: false,
-          })}
-          onKeyCodeDown={() => this.handleKeyCodeDown()}
-          onKeyCodeUp={() => this.handleKeyCodeUp()}
+          onClose={this.handleInvoiceModalOnClose}
+          onKeyCodeDown={this.handleKeyCodeDown}
+          onKeyCodeUp={this.handleKeyCodeUp}
           show={showModal}
         />
       </div>

@@ -1,7 +1,7 @@
 // @flow
 import get from 'lodash/get';
 
-import {formatDecimalNumberForDb} from '$util/helpers';
+import {formatDecimalNumberForDb, getLabelOfOption} from '$util/helpers';
 
 const getContentIncoiceRows = (invoice: Object) => {
   const rows = get(invoice, 'rows', []);
@@ -14,6 +14,17 @@ const getContentIncoiceRows = (invoice: Object) => {
       receivable_type: get(row, 'receivable_type'),
     };
   });
+};
+
+const getInvoiceReceivableTypes = (rows: Array<Object>) => {
+  const receivableTypes = [];
+  rows.forEach((row) => {
+    const receivableType = get(row, 'receivable_type');
+    if(receivableType && receivableTypes.indexOf(receivableType) < 0) {
+      receivableTypes.push(receivableType);
+    }
+  });
+  return receivableTypes;
 };
 
 const getInvoiceTotalSharePercentage = (rows: Array<Object>) => {
@@ -56,6 +67,7 @@ const getContentIncoiveItem = (invoice: Object) => {
     generated: get(invoice, 'generated'),
     description: get(invoice, 'description'),
     total_share: getInvoiceTotalSharePercentage(rows),
+    receivable_types: getInvoiceReceivableTypes(rows),
   };
 };
 
@@ -101,4 +113,20 @@ export const getNewInvoiceForDb = (invoice: Object) => {
     total_amount: formatDecimalNumberForDb(get(invoice, 'total_amount')),
     notes: get(invoice, 'notes'),
   };
+};
+
+export const formatReceivableTypesString = (receivableTypeOptions: Array<Object>, receivableTypes: Array<Object>) => {
+  let text = '';
+
+  receivableTypes.forEach((receivableType, index, receivableTypes) => {
+    const receivableTypeString = getLabelOfOption(receivableTypeOptions, receivableType);
+    if(receivableTypeString) {
+      if (Object.is(receivableTypes.length - 1, index)) {
+        text += receivableTypeString;
+      } else {
+        text += `${receivableTypeString}, `;
+      }
+    }
+  });
+  return text;
 };

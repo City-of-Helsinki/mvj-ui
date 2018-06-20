@@ -11,7 +11,6 @@ import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {getInvoiceSharePercentage} from '$src/invoices/helpers';
 import {getContentTenantItem} from '$src/leases/helpers';
 import {
   formatDate,
@@ -43,7 +42,7 @@ const EditInvoiceForm = ({
   invoice,
   invoiceAttributes,
 }: Props) => {
-  const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'receivable_type');
+  const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type');
   const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
   const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
   const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
@@ -79,10 +78,6 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <label>Laskutuspvm</label>
           <p>{formatDate(invoice.invoicing_date) || '-'}</p>
-        </Column>
-        <Column medium={4}>
-          <label>Saamislaji</label>
-          <p>{getLabelOfOption(receivableTypeOptions, invoice.receivable_type) || '-'}</p>
         </Column>
       </Row>
       <Row>
@@ -136,14 +131,12 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <label>Laskun osuus</label>
           <p>
-            {getInvoiceSharePercentage(invoice)
-              ? `${getInvoiceSharePercentage(invoice)} %`
+            {invoice.total_share
+              ? `${formatNumber(invoice.total_share * 100)} %`
               : '-'
             }
           </p>
         </Column>
-      </Row>
-      <Row>
         <Column medium={4}>
           <label>Laskutettu määrä</label>
           <p>
@@ -151,6 +144,23 @@ const EditInvoiceForm = ({
               ? `${formatNumber(invoice.billed_amount)} €`
               : '-'
             }
+          </p>
+        </Column>
+      </Row>
+      <Row>
+        <Column medium={4}>
+          <label>Maksettu määrä</label>
+          <p>
+            {invoice.paid_amount
+              ? `${formatNumber(invoice.paid_amount)} €`
+              : '-'
+            }
+          </p>
+        </Column>
+        <Column medium={4}>
+          <label>Maksettu pvm</label>
+          <p>
+            {formatDate(invoice.paid_date) || '-'}
           </p>
         </Column>
         <Column medium={4}>
@@ -214,18 +224,17 @@ const EditInvoiceForm = ({
                 const contact = get(getContentTenantItem(row.tenant), 'contact');
                 return (
                   <Row key={row.id}>
-                    <Column small={4} medium={5}><p>{getContactFullName(contact) || '-'}</p></Column>
-                    <Column small={4} medium={5}><p>{row.description || '-'}</p></Column>
-                    <Column small={4} medium={2}><p className='invoice__rows_amount'>{row.amount ? `${formatNumber(row.amount)} €` : '-'}</p></Column>
+                    <Column small={4}><p>{getContactFullName(contact) || '-'}</p></Column>
+                    <Column small={2}><p>{getLabelOfOption(receivableTypeOptions, row.receivable_type) || '-'}</p></Column>
+                    <Column small={4}><p>{row.description || '-'}</p></Column>
+                    <Column small={2}><p className='invoice__rows_amount'>{row.amount ? `${formatNumber(row.amount)} €` : '-'}</p></Column>
                   </Row>
                 );
               })}
-              <Divider
-                className='invoice-divider'
-              />
+              <Divider className='invoice-divider' />
               <Row>
-                <Column small={8} medium={10}><p><strong>Yhteensä</strong></p></Column>
-                <Column small={4} medium={2}><p className='invoice__rows_amount'><strong>{`${formatNumber(sum)} €`}</strong></p></Column>
+                <Column small={10}><p><strong>Yhteensä</strong></p></Column>
+                <Column small={2}><p className='invoice__rows_amount'><strong>{`${formatNumber(sum)} €`}</strong></p></Column>
               </Row>
             </div>
           }

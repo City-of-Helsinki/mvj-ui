@@ -1,3 +1,10 @@
+.content__truncated-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .page-container {
   font-family: $font-family-source;
   min-height: calc(100vh - 60px);
