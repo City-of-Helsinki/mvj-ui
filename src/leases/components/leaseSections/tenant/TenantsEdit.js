@@ -40,7 +40,7 @@ class TenantsEdit extends Component<Props> {
   }
 
   componentDidUpdate(prevProps) {
-    const {change, contactModalSettings, receiveFormValidFlags} = this.props;
+    const {change, contactModalSettings, receiveContactModalSettings, receiveFormValidFlags} = this.props;
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
