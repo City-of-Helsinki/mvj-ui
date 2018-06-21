@@ -2,16 +2,16 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
-import {reduxForm} from 'redux-form';
+import {FieldArray, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
-import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
+import InvoiceRowsEdit from './InvoiceRowsEdit';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {getContentTenantItem} from '$src/leases/helpers';
+import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {
   formatDate,
   formatNumber,
@@ -19,21 +19,15 @@ import {
   getLabelOfOption,
 } from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
-
-const getRowsSum = (rows: Array<Object>) => {
-  let sum = 0;
-  rows.forEach((row) => {
-    sum += Number(row.amount);
-  });
-  return sum;
-};
-
+import type {Lease} from '$src/leases/types';
 type Props = {
   handleSubmit: Function,
   invoice: Object,
   invoiceAttributes: InvoiceAttributes,
+  lease: Lease,
   startDate: string,
 }
 
@@ -41,20 +35,19 @@ const EditInvoiceForm = ({
   handleSubmit,
   invoice,
   invoiceAttributes,
+  lease,
 }: Props) => {
-  const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type');
+  const tenantOptions = getInvoiceTenantOptions(lease);
   const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
   const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
   const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
-  const rows = get(invoice, 'rows', []);
-  const sum = getRowsSum(rows);
 
   return (
     <form onSubmit={handleSubmit}>
       <Row>
         <Column medium={4}>
           <label>Laskunsaaja</label>
-          <p>{getContactFullName(invoice.recipient) || '-'}</p>
+          <p>{getContactFullName(invoice.recipientFull) || '-'}</p>
         </Column>
         <Column medium={4}>
           <label>Lähetetty SAP:iin</label>
@@ -130,12 +123,7 @@ const EditInvoiceForm = ({
         </Column>
         <Column medium={4}>
           <label>Laskun osuus</label>
-          <p>
-            {invoice.total_share
-              ? `${formatNumber(invoice.total_share * 100)} %`
-              : '-'
-            }
-          </p>
+          <p>{`${formatNumber(invoice.totalShare * 100)} %`}</p>
         </Column>
         <Column medium={4}>
           <label>Laskutettu määrä</label>
@@ -214,32 +202,12 @@ const EditInvoiceForm = ({
           />
         </Column>
       </Row>
-      <Row>
-        <Column medium={12}>
-          <label>Erittely</label>
-          {!rows.length && <p>-</p>}
-          {!!rows.length &&
-            <div>
-              {rows.map((row) => {
-                const contact = get(getContentTenantItem(row.tenant), 'contact');
-                return (
-                  <Row key={row.id}>
-                    <Column small={4}><p>{getContactFullName(contact) || '-'}</p></Column>
-                    <Column small={2}><p>{getLabelOfOption(receivableTypeOptions, row.receivable_type) || '-'}</p></Column>
-                    <Column small={4}><p>{row.description || '-'}</p></Column>
-                    <Column small={2}><p className='invoice__rows_amount'>{row.amount ? `${formatNumber(row.amount)} €` : '-'}</p></Column>
-                  </Row>
-                );
-              })}
-              <Divider className='invoice-divider' />
-              <Row>
-                <Column small={10}><p><strong>Yhteensä</strong></p></Column>
-                <Column small={2}><p className='invoice__rows_amount'><strong>{`${formatNumber(sum)} €`}</strong></p></Column>
-              </Row>
-            </div>
-          }
-        </Column>
-      </Row>
+      <FieldArray
+        attributes={invoiceAttributes}
+        component={InvoiceRowsEdit}
+        name='rows'
+        tenantOptions={tenantOptions}
+      />
     </form>
   );
 };
@@ -251,6 +219,7 @@ export default flowRight(
     (state) => {
       return {
         invoiceAttributes: getInvoiceAttributes(state),
+        lease: getCurrentLease(state),
       };
     },
   ),

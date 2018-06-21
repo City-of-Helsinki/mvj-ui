@@ -45,7 +45,7 @@ const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
       <Row>
         <Column medium={4}>
           <label>Laskunsaaja</label>
-          <p>{getContactFullName(invoice.recipient) || '-'}</p>
+          <p>{getContactFullName(invoice.recipientFull) || '-'}</p>
         </Column>
         <Column medium={4}>
           <label>Lähetetty SAP:iin</label>
@@ -92,12 +92,7 @@ const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
         </Column>
         <Column medium={4}>
           <label>Laskun osuus</label>
-          <p>
-            {invoice.total_share
-              ? `${formatNumber(invoice.total_share * 100)} %`
-              : '-'
-            }
-          </p>
+          <p>{`${formatNumber(invoice.totalShare * 100)} %`}</p>
         </Column>
         <Column medium={4}>
           <label>Laskutettu määrä</label>
@@ -177,7 +172,7 @@ const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
           {!!rows.length &&
             <div>
               {rows.map((row) => {
-                const contact = get(getContentTenantItem(row.tenant), 'contact');
+                const contact = get(getContentTenantItem(row.tenantFull), 'contact');
                 return (
                   <Row key={row.id}>
                     <Column small={4}><p>{getContactFullName(contact) || '-'}</p></Column>

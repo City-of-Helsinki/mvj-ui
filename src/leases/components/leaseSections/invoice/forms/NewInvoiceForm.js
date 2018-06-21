@@ -2,7 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {getFormValues, isValid, reduxForm} from 'redux-form';
+import {FieldArray, getFormValues, isValid, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
@@ -10,11 +10,11 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
 import FormSection from '$components/form/FormSection';
+import InvoiceRowsEdit from './InvoiceRowsEdit';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
 import {FormNames} from '$src/leases/enums';
-import {getInvoiceRecipientOptions} from '$src/leases/helpers';
+import {getInvoiceRecipientOptions, getInvoiceTenantOptions} from '$src/leases/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
@@ -42,6 +42,7 @@ const NewInvoiceForm = ({
 }: Props) => {
 
   const recipientOptions = getInvoiceRecipientOptions(lease);
+  const tenantOptions = getInvoiceTenantOptions(lease);
 
   return (
     <form onSubmit={handleSubmit} className='invoice__add-invoice_form'>
@@ -76,15 +77,6 @@ const NewInvoiceForm = ({
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormField
-                  fieldAttributes={get(invoiceAttributes, 'receivable_type')}
-                  name='receivable_type'
-                  overrideValues={{
-                    label: 'Saamislaji',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
                   fieldAttributes={get(invoiceAttributes, 'total_amount')}
                   name='total_amount'
                   unit='€'
@@ -103,27 +95,16 @@ const NewInvoiceForm = ({
                 />
               </Column>
               <Column small={6} medium={4} large={2}>
-                <FormFieldLabel required>Laskutuskausi</FormFieldLabel>
-                <Row>
-                  <Column small={6}>
-                    <FormField
-                      fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
-                      name='billing_period_start_date'
-                      overrideValues={{
-                        label: '',
-                      }}
-                    />
-                  </Column>
-                  <Column small={6}>
-                    <FormField
-                      fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
-                      name='billing_period_end_date'
-                      overrideValues={{
-                        label: '',
-                      }}
-                    />
-                  </Column>
-                </Row>
+                <FormField
+                  fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
+                  name='billing_period_start_date'
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
+                  name='billing_period_end_date'
+                />
               </Column>
             </Row>
             <Row>
@@ -137,6 +118,12 @@ const NewInvoiceForm = ({
                 />
               </Column>
             </Row>
+            <FieldArray
+              attributes={invoiceAttributes}
+              component={InvoiceRowsEdit}
+              name='rows'
+              tenantOptions={tenantOptions}
+            />
             <Row style={{marginBottom: '10px'}}>
               <Column>
                 <Button

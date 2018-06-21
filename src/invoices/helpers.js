@@ -8,7 +8,8 @@ const getContentIncoiceRows = (invoice: Object) => {
   return rows.map((row) => {
     return {
       id: row.id,
-      tenant: get(row, 'tenant'),
+      tenant: get(row, 'tenant.id'),
+      tenantFull: get(row, 'tenant'),
       description: get(row, 'description'),
       amount: get(row, 'amount'),
       receivable_type: get(row, 'receivable_type'),
@@ -30,8 +31,8 @@ const getInvoiceReceivableTypes = (rows: Array<Object>) => {
 const getInvoiceTotalSharePercentage = (rows: Array<Object>) => {
   let totalShare = 0;
   rows.forEach((row) => {
-    const numerator = get(row, 'tenant.share_numerator');
-    const denominator = get(row, 'tenant.share_denominator');
+    const numerator = get(row, 'tenantFull.share_numerator');
+    const denominator = get(row, 'tenantFull.share_denominator');
     if(numerator && denominator) {
       totalShare +=  numerator/denominator;
     }
@@ -43,7 +44,8 @@ const getContentIncoiveItem = (invoice: Object) => {
   const rows = getContentIncoiceRows(invoice);
   return {
     id: invoice.id,
-    recipient: get(invoice, 'recipient'),
+    recipient: get(invoice, 'recipient.id'),
+    recipientFull: get(invoice, 'recipient'),
     rows: rows,
     sent_to_sap_at: get(invoice, 'sent_to_sap_at'),
     sap_id: get(invoice, 'sap_id'),
@@ -66,8 +68,8 @@ const getContentIncoiveItem = (invoice: Object) => {
     notes: get(invoice, 'notes'),
     generated: get(invoice, 'generated'),
     description: get(invoice, 'description'),
-    total_share: getInvoiceTotalSharePercentage(rows),
-    receivable_types: getInvoiceReceivableTypes(rows),
+    totalShare: getInvoiceTotalSharePercentage(rows),
+    receivableTypes: getInvoiceReceivableTypes(rows),
   };
 };
 
@@ -88,30 +90,40 @@ export const getInvoiceSharePercentage = (invoice: Object, precision: number = 0
 export const getEditedInvoiceForDb = (invoice: Object) => {
   return {
     id: invoice.id,
-    lease: invoice.lease,
     due_date: get(invoice, 'due_date'),
     billing_period_start_date: get(invoice, 'billing_period_start_date'),
     billing_period_end_date: get(invoice, 'billing_period_end_date'),
     total_amount: formatDecimalNumberForDb(get(invoice, 'total_amount')),
     notes: get(invoice, 'notes'),
+    rows: getInvoiceRowsForDb(invoice),
   };
+};
+
+export const getInvoiceRowsForDb = (invoice: Object) => {
+  const rows = get(invoice, 'rows', []);
+
+  return rows.map((row) => {
+    return {
+      tenant: get(row, 'tenant'),
+      receivable_type: get(row, 'receivable_type'),
+      description: get(row, 'description'),
+      amount: formatDecimalNumberForDb(get(row, 'amount')),
+    };
+  });
 };
 
 export const getNewInvoiceForDb = (invoice: Object) => {
   return {
+    lease: invoice.lease,
     recipient: get(invoice, 'recipient'),
+    type: get(invoice, 'type'),
+    total_amount: formatDecimalNumberForDb(get(invoice, 'total_amount')),
     billed_amount: formatDecimalNumberForDb(get(invoice, 'billed_amount')),
     due_date: get(invoice, 'due_date'),
-    lease: invoice.lease,
-    share_numerator: get(invoice, 'share_numerator'),
     billing_period_end_date: get(invoice, 'billing_period_end_date'),
-    type: get(invoice, 'type'),
-    receivable_type: get(invoice, 'receivable_type'),
     billing_period_start_date: get(invoice, 'billing_period_start_date'),
-    share_denominator: get(invoice, 'share_denominator'),
-    state: get(invoice, 'state'),
-    total_amount: formatDecimalNumberForDb(get(invoice, 'total_amount')),
     notes: get(invoice, 'notes'),
+    rows: getInvoiceRowsForDb(invoice),
   };
 };
 

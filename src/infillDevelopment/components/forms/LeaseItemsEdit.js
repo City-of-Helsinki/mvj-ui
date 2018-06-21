@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
+import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
 import LeaseItemEdit from './LeaseItemEdit';
@@ -10,7 +11,7 @@ type Props = {
   isSaveClicked: boolean,
 }
 
-const LeaseItemsEdit = ({fields, isSaveClicked}: Props) => {
+const LeaseItemsEdit = ({fields, isSaveClicked}: Props): Element<*> => {
   return (
     <div>
       {!!fields && !!fields.length && fields.map((lease, index) => {

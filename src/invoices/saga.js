@@ -93,7 +93,7 @@ function* patchInvoiceSaga({payload: invoice}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        yield put(fetchInvoicesAction(getSearchQuery({lease: invoice.lease})));
+        yield put(fetchInvoicesAction(getSearchQuery({lease: bodyAsJson.lease})));
         break;
       case 400:
         yield put(notFound());
