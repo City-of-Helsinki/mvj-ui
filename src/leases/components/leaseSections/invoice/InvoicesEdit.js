@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 
 import AddInvoiceComponent from './AddInvoiceComponent';
 import Collapse from '$components/collapse/Collapse';
@@ -19,9 +18,7 @@ import {
 import {getIsCreateOpen} from '$src/invoices/selectors';
 import {createInvoice, receiveIsCreateOpen} from '$src/invoices/actions';
 import {getCurrentLease} from '$src/leases/selectors';
-import {getContentTenants} from '$src/leases/helpers';
 import {getNewInvoiceForDb} from '$src/invoices/helpers';
-import {InvoiceState} from '$src/invoices/enums';
 
 import type {Lease} from '$src/leases/types';
 
@@ -76,21 +73,12 @@ class InvoicesEdit extends Component<Props, State> {
   createInvoice = (invoice: Object) => {
     const {
       createInvoice,
-      currentLease,
       params: {leaseId},
     } = this.props;
 
-    const recipients = getContentTenants(currentLease);
-    const recipient = recipients.find(x => x.id === invoice.recipient);
-    const contact = get(recipient, 'tenant.contact');
-    const recObj = {id: get(contact, 'id'), type: get(contact, 'type')};
-
-    invoice.recipient = recObj;
-    invoice.share_numerator = get(recipient, 'share_numerator');
-    invoice.share_denominator = get(recipient, 'share_denominator');
     invoice.lease = leaseId;
     invoice.billed_amount = invoice.total_amount;
-    invoice.state = InvoiceState.OPEN;
+    // invoice.state = InvoiceState.OPEN;
 
     createInvoice(getNewInvoiceForDb(invoice));
   }

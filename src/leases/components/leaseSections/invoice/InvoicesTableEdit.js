@@ -3,16 +3,17 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {destroy, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import scrollToComponent from 'react-scroll-to-component';
+import isEmpty from 'lodash/isEmpty';
 
 import InvoiceModalEdit from './InvoiceModalEdit';
 import Table from '$components/table/Table';
+import TruncatedText from '$components/content/TruncatedText';
 import {patchInvoice} from '$src/invoices/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {getEditedInvoiceForDb, getInvoiceSharePercentage} from '$src/invoices/helpers';
+import {formatReceivableTypesString, getContentInvoices, getEditedInvoiceForDb} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDateRange,
@@ -28,7 +29,7 @@ import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/
 
 import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
-const MODAL_HEIGHT = 580;
+const TABLE_MAX_HEIGHT = 400;
 const MODAL_WIDTH = 700;
 
 type Props = {
@@ -41,6 +42,7 @@ type Props = {
 }
 
 type State = {
+  invoiceItems: InvoiceList,
   selectedInvoice: Object,
   selectedInvoiceId: number,
   showAllColumns: boolean,
@@ -51,6 +53,7 @@ type State = {
 
 class InvoicesTableEdit extends Component<Props, State> {
   state = {
+    invoiceItems: [],
     selectedInvoice: {},
     selectedInvoiceId: -1,
     showAllColumns: true,
@@ -66,18 +69,37 @@ class InvoicesTableEdit extends Component<Props, State> {
   tableWrapper : any
 
   componentDidMount() {
+    const {invoices} = this.props;
+
     this.calculateHeight();
     this.calculateTableWidth();
     this.tableWrapper.addEventListener('transitionend', this.transitionEnds);
+
+    if(!isEmpty(invoices)) {
+      this.updateInvoiceItems();
+    }
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.calculateHeight();
     this.calculateTableWidth();
+
+    if(prevProps.invoices !== this.props.invoices) {
+      this.updateInvoiceItems();
+    }
+  }
+
+  updateInvoiceItems = () => {
+    const {invoices} = this.props;
+
+    this.setState({
+      invoiceItems: getContentInvoices(invoices),
+    });
   }
 
   shouldComponentUpdate(nextProps: Object, nextState: Object) {
     return (
+      this.state.invoiceItems !== nextState.invoiceItems ||
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
       this.state.tableWidth !== nextState.tableWidth ||
@@ -102,18 +124,25 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   calculateHeight = () => {
-    if(!this.table) {
+    if(!this.table && !this.modal) {
       return;
     }
-
-    let {clientHeight} = this.table.tableElement;
     const {showModal} = this.state;
+    let {clientHeight: tableHeight} = this.table.tableElement;
 
-    if(showModal) {clientHeight = MODAL_HEIGHT;}
-    if(clientHeight > MODAL_HEIGHT) {clientHeight = MODAL_HEIGHT;}
+    const {clientHeight: modalHeight} = this.modal.wrappedInstance.modal;
+
+    if(showModal) {
+      tableHeight = modalHeight;
+    } else {
+      tableHeight += 31;
+      if(tableHeight > TABLE_MAX_HEIGHT) {
+        tableHeight = TABLE_MAX_HEIGHT;
+      }
+    }
 
     this.setState({
-      tableHeight: clientHeight,
+      tableHeight: tableHeight,
     });
   }
 
@@ -135,8 +164,12 @@ class InvoicesTableEdit extends Component<Props, State> {
       this.setState({showAllColumns: true});
     }
   }
+
   handleKeyCodeUp = () => {
-    this.table.selectPrevious();
+    const {showModal} = this.state;
+    if(showModal) {
+      this.table.selectPrevious();
+    }
   }
 
   handleSelectPrevious = (invoice) => {
@@ -148,7 +181,10 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   handleKeyCodeDown = () => {
-    this.table.selectNext();
+    const {showModal} = this.state;
+    if(showModal) {
+      this.table.selectNext();
+    }
   }
 
   handleSelectNext = (invoice) => {
@@ -173,17 +209,17 @@ class InvoicesTableEdit extends Component<Props, State> {
   getDataKeys = () => {
     const {invoiceAttributes} = this.props;
     const {showAllColumns} = this.state;
-    const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'receivable_type');
+    const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type');
     const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
 
     if(showAllColumns) {
       return [
-        {key: 'recipient', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => sortStringByKeyAsc(getContactFullName(a), getContactFullName(b)), descSortFunction: (a, b) => sortStringByKeyDesc(getContactFullName(a), getContactFullName(b))},
+        {key: 'recipientFull', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => sortStringByKeyAsc(getContactFullName(a), getContactFullName(b)), descSortFunction: (a, b) => sortStringByKeyDesc(getContactFullName(a), getContactFullName(b))},
         {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
         {key: 'id', label: 'Laskun numero', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'share', label: 'Osuus', renderer: (val, invoice) => getInvoiceSharePercentage(invoice) || '-'},
+        {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'billing_period_start_date', label: 'Laskutuskausi', renderer: (val, invoice) => formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-'},
-        {key: 'receivable_type', label: 'Saamislaji', renderer: (val) => getLabelOfOption(receivableTypeOptions, val) || '-'},
+        {key: 'receivableTypes', label: 'Saamislaji', renderer: (val) => <TruncatedText text={formatReceivableTypesString(receivableTypeOptions, val) || '-'} />, sortable: false},
         {key: 'state', label: 'Laskun tila', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
         {key: 'billed_amount', label: 'Laskutettu', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'outstanding_amount', label: 'Maksamatta', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
@@ -192,12 +228,16 @@ class InvoicesTableEdit extends Component<Props, State> {
       ];
     } else {
       return [
-        {key: 'recipient', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => sortStringByKeyAsc(getContactFullName(a), getContactFullName(b)), descSortFunction: (a, b) => sortStringByKeyDesc(getContactFullName(a), getContactFullName(b))},
+        {key: 'recipientFull', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => sortStringByKeyAsc(getContactFullName(a), getContactFullName(b)), descSortFunction: (a, b) => sortStringByKeyDesc(getContactFullName(a), getContactFullName(b))},
         {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
         {key: 'id', label: 'Laskun numero', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'share', label: 'Osuus', renderer: (val, invoice) => getInvoiceSharePercentage(invoice) || '-'},
+        {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
       ];
     }
+  }
+
+  handleModalHeightChange = () => {
+    this.calculateHeight();
   }
 
   handleRowClick = (id, invoice) => {
@@ -207,6 +247,7 @@ class InvoicesTableEdit extends Component<Props, State> {
       selectedInvoiceId: id,
       showModal: true,
     });
+    this.initilizeEditInvoiceForm(invoice);
     this.scrolToModal();
   }
 
@@ -217,18 +258,17 @@ class InvoicesTableEdit extends Component<Props, State> {
 
   editInvoice = (invoice: Object) => {
     const {patchInvoice} = this.props;
-
     patchInvoice(getEditedInvoiceForDb(invoice));
   }
 
   render () {
     const {
+      invoiceItems,
       selectedInvoice,
       showModal,
       tableHeight,
       tableWidth,
     } = this.state;
-    const {invoices} = this.props;
     const dataKeys = this.getDataKeys();
 
     return (
@@ -241,11 +281,11 @@ class InvoicesTableEdit extends Component<Props, State> {
           style={{maxWidth: tableWidth}}>
           <Table
             ref={(input) => this.table = input}
-            data={invoices}
+            data={invoiceItems}
             dataKeys={dataKeys}
             fixedHeader
             fixedHeaderClassName={classNames('invoice-fixed-table', {'is-open': showModal})}
-            maxHeight={tableHeight}
+            maxHeight={tableHeight ? tableHeight - 31 : null}
             noDataText='Ei laskuja'
             onDataUpdate={this.handleDataUpdate}
             onRowClick={this.handleRowClick}
@@ -259,8 +299,8 @@ class InvoicesTableEdit extends Component<Props, State> {
         </div>
         <InvoiceModalEdit
           ref={(ref) => this.modal = ref}
-          containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
           invoice={selectedInvoice}
+          minHeight={!showModal ? tableHeight : null}
           onClose={() => this.setState({
             selectedInvoice: {},
             showModal: false,
@@ -268,6 +308,7 @@ class InvoicesTableEdit extends Component<Props, State> {
           onKeyCodeDown={() => this.handleKeyCodeDown()}
           onKeyCodeUp={() => this.handleKeyCodeUp()}
           onRefund={(invoice) => this.refundSingle(invoice)}
+          onResize={this.handleModalHeightChange}
           onSave={(invoice) => this.editInvoice(invoice)}
           show={showModal}
         />

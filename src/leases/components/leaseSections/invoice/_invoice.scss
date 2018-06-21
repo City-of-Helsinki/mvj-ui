@@ -34,7 +34,7 @@
     &_wrapper {
       width: 100%;
       z-index: 1;
-      @include transition(0.5s, all, ease-in-out);
+      @include transition(0.5s, max-width, ease-in-out);
     }
 
     .table__fixed-header {
@@ -57,7 +57,7 @@
         width: 110px;
       }
 
-      th.recipient {
+      th.recipient-full {
         width: 200px;
       }
 

@@ -674,8 +674,8 @@ export const getContentFixedInitialYearRents = (rent: Object) => {
   });
 };
 
-export const getContentRentDueDate = (rent: Object) => {
-  const dueDates = get(rent, 'due_dates', []);
+export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates') => {
+  const dueDates = get(rent, path, []);
   return dueDates.map((date) => {
     return {
       id: date.id || undefined,
@@ -714,6 +714,7 @@ export const getContentRents = (lease: Object) => {
       index_adjusted_rents: getContentIndexAdjustedRents(rent),
       rent_adjustments: getContentRentAdjustments(rent),
       payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
+      yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
     };
   });
 };
@@ -775,8 +776,18 @@ export const getInvoiceRecipientOptions = (lease: Object) =>{
   const items = getContentTenants(lease);
   return items.map((item) => {
     return {
+      value: get(item, 'tenant.contact.id'),
+      label: getContactFullName(get(item, 'tenant.contact')),
+    };
+  });
+};
+
+export const getInvoiceTenantOptions = (lease: Object) =>{
+  const items = getContentTenants(lease);
+  return items.map((item) => {
+    return {
       value: item.id,
-      label: get(item, 'tenant.contact'),
+      label: getContactFullName(get(item, 'tenant.contact')),
     };
   });
 };

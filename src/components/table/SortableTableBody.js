@@ -22,7 +22,7 @@ const SortableTableBody = ({
     {data.map((row, rowIndex) => (
       <tr
         key={rowIndex}
-        className={classNames({'selected': selectedRow === row})}
+        className={classNames({'selected': selectedRow && selectedRow.id === row.id})}
         onClick={() => onRowClick && onRowClick(row.id, row)}
       >
         {dataKeys.map(({key, renderer}, cellIndex) => (

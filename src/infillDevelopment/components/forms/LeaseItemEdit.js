@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 import isEmpty from 'lodash/isEmpty';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddFileButton from '$components/form/AddFileButton';
@@ -47,7 +48,7 @@ type AttachmentsProps = {
   files: Array<Object>,
 }
 
-const renderAttachments = ({fields, files}: AttachmentsProps) => {
+const renderAttachments = ({fields, files}: AttachmentsProps): Element<*> => {
 
   const handleFileChange = (e) => {
     fields.push({
@@ -105,7 +106,7 @@ type IntendedUsesProps = {
   isSaveClicked: boolean,
 }
 
-const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesProps) => {
+const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesProps): Element<*> => {
   return (
     <div>
       <SubTitle>Käyttötarkoitus</SubTitle>
