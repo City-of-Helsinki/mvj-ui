@@ -1,6 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import classNames from 'classnames';
+import ReactResizeDetector from 'react-resize-detector';
 
 import CloseButton from '$components/button/CloseButton';
 import InvoiceTemplate from './InvoiceTemplate';
@@ -9,20 +10,22 @@ const ARROW_UP_KEY = 38;
 const ARROW_DOWN_KEY = 40;
 
 type Props = {
-  containerHeight: ?number,
   invoice: Object,
+  minHeight: ?number,
   onClose: Function,
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
+  onResize: Function,
   show: boolean,
 }
 
 class InvoiceModal extends Component<Props> {
-  componentWillMount(){
+  modal: any
+  componentWillMount() {
     document.addEventListener('keydown', this.handleKeyDown);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
   }
 
@@ -43,12 +46,33 @@ class InvoiceModal extends Component<Props> {
     }
   }
 
+  onResize = () => {
+    const {onResize} = this.props;
+    onResize();
+  }
+
+
   render() {
-    const {containerHeight, invoice, onClose, show} = this.props;
+    const {
+      invoice,
+      minHeight,
+      onClose,
+      show,
+    } = this.props;
 
     return(
-      <div className={classNames('invoice-modal', {'is-open': show})} style={{height: containerHeight}}>
-        <div className="invoice-modal__container">
+      <div
+        className={classNames('invoice-modal', {'is-open': show})}
+        ref={(ref) => this.modal = ref}
+      >
+        <ReactResizeDetector
+          handleHeight
+          onResize={this.onResize}
+          refreshMode='debounce'
+          refreshRate={1}
+        />
+        <div className="invoice-modal__container" style={{minHeight: minHeight}}>
+
           <div className='invoice-modal__header'>
             <h1>Laskun tiedot</h1>
             <CloseButton

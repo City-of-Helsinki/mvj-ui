@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {destroy, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import scrollToComponent from 'react-scroll-to-component';
 import isEmpty from 'lodash/isEmpty';
@@ -30,7 +29,7 @@ import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/
 
 import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
 
-const MODAL_HEIGHT = 580;
+const TABLE_MAX_HEIGHT = 400;
 const MODAL_WIDTH = 700;
 
 type Props = {
@@ -125,18 +124,25 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   calculateHeight = () => {
-    if(!this.table) {
+    if(!this.table && !this.modal) {
       return;
     }
-
-    let {clientHeight} = this.table.tableElement;
     const {showModal} = this.state;
+    let {clientHeight: tableHeight} = this.table.tableElement;
 
-    if(showModal) {clientHeight = MODAL_HEIGHT;}
-    if(clientHeight > MODAL_HEIGHT) {clientHeight = MODAL_HEIGHT;}
+    const {clientHeight: modalHeight} = this.modal.wrappedInstance.modal;
+
+    if(showModal) {
+      tableHeight = modalHeight;
+    } else {
+      tableHeight += 31;
+      if(tableHeight > TABLE_MAX_HEIGHT) {
+        tableHeight = TABLE_MAX_HEIGHT;
+      }
+    }
 
     this.setState({
-      tableHeight: clientHeight,
+      tableHeight: tableHeight,
     });
   }
 
@@ -158,6 +164,7 @@ class InvoicesTableEdit extends Component<Props, State> {
       this.setState({showAllColumns: true});
     }
   }
+
   handleKeyCodeUp = () => {
     const {showModal} = this.state;
     if(showModal) {
@@ -212,7 +219,7 @@ class InvoicesTableEdit extends Component<Props, State> {
         {key: 'id', label: 'Laskun numero', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'billing_period_start_date', label: 'Laskutuskausi', renderer: (val, invoice) => formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-'},
-        {key: 'receivableTypes', label: 'Saamislaji', renderer: (val) => <TruncatedText text={formatReceivableTypesString(receivableTypeOptions, val) || '-'} />},
+        {key: 'receivableTypes', label: 'Saamislaji', renderer: (val) => <TruncatedText text={formatReceivableTypesString(receivableTypeOptions, val) || '-'} />, sortable: false},
         {key: 'state', label: 'Laskun tila', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
         {key: 'billed_amount', label: 'Laskutettu', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'outstanding_amount', label: 'Maksamatta', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
@@ -227,6 +234,10 @@ class InvoicesTableEdit extends Component<Props, State> {
         {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
       ];
     }
+  }
+
+  handleModalHeightChange = () => {
+    this.calculateHeight();
   }
 
   handleRowClick = (id, invoice) => {
@@ -274,7 +285,7 @@ class InvoicesTableEdit extends Component<Props, State> {
             dataKeys={dataKeys}
             fixedHeader
             fixedHeaderClassName={classNames('invoice-fixed-table', {'is-open': showModal})}
-            maxHeight={tableHeight}
+            maxHeight={tableHeight ? tableHeight - 31 : null}
             noDataText='Ei laskuja'
             onDataUpdate={this.handleDataUpdate}
             onRowClick={this.handleRowClick}
@@ -288,8 +299,8 @@ class InvoicesTableEdit extends Component<Props, State> {
         </div>
         <InvoiceModalEdit
           ref={(ref) => this.modal = ref}
-          containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
           invoice={selectedInvoice}
+          minHeight={!showModal ? tableHeight : null}
           onClose={() => this.setState({
             selectedInvoice: {},
             showModal: false,
@@ -297,6 +308,7 @@ class InvoicesTableEdit extends Component<Props, State> {
           onKeyCodeDown={() => this.handleKeyCodeDown()}
           onKeyCodeUp={() => this.handleKeyCodeUp()}
           onRefund={(invoice) => this.refundSingle(invoice)}
+          onResize={this.handleModalHeightChange}
           onSave={(invoice) => this.editInvoice(invoice)}
           show={showModal}
         />

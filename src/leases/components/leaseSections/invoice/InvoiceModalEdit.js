@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {getFormValues, isValid} from 'redux-form';
 import classNames from 'classnames';
 import flowRight from 'lodash/flowRight';
+import ReactResizeDetector from 'react-resize-detector';
 
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
@@ -19,21 +20,29 @@ type Props = {
   editedInvoice: Object,
   invoice: Object,
   isValid: boolean,
+  minHeight?: number,
   onClose: Function,
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
   onRefund: Function,
+  onResize: Function,
   onSave: Function,
   show: boolean,
 }
 
 class InvoiceModalEdit extends Component<Props> {
-  componentWillMount(){
+  modal: any
+  componentWillMount() {
     document.addEventListener('keydown', this.handleKeyDown);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
+  onResize = () => {
+    const {onResize} = this.props;
+    onResize();
   }
 
   handleKeyDown = (e: any) => {
@@ -55,10 +64,10 @@ class InvoiceModalEdit extends Component<Props> {
 
   render() {
     const {
-      containerHeight,
       editedInvoice,
       invoice,
       isValid,
+      minHeight,
       onClose,
       onRefund,
       onSave,
@@ -66,8 +75,17 @@ class InvoiceModalEdit extends Component<Props> {
     } = this.props;
 
     return (
-      <div className={classNames('invoice-modal', {'is-open': show})} style={{height: containerHeight}}>
-        <div className="invoice-modal__container">
+      <div
+        className={classNames('invoice-modal', {'is-open': show})}
+        ref={(ref) => this.modal = ref}
+      >
+        <ReactResizeDetector
+          handleHeight
+          onResize={this.onResize}
+          refreshMode='debounce'
+          refreshRate={1}
+        />
+        <div className="invoice-modal__container" style={{minHeight: minHeight}}>
           <div className='invoice-modal__header'>
             <h1>Laskun tiedot</h1>
             <CloseButton
@@ -133,6 +151,11 @@ export default flowRight(
         editedInvoice: getFormValues(FormNames.INVOICE_EDIT)(state),
         isValid: isValid(FormNames.INVOICE_EDIT)(state),
       };
-    }
+    },
+    null,
+    null,
+    {
+      withRef: true,
+    },
   ),
 )(InvoiceModalEdit);
