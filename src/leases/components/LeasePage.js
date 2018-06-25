@@ -327,10 +327,10 @@ class LeasePage extends Component<Props, State> {
     initialize(FormNames.RENTS, {
       basis_of_rents: contentHelpers.getContentBasisOfRents(lease),
       is_rent_info_complete: lease.is_rent_info_complete,
-      rents: contentHelpers.getContentRents(lease),
+      rents: contentHelpers.getContentRentsFormData(lease),
     });
     initialize(FormNames.SUMMARY, contentHelpers.getContentSummary(lease));
-    initialize(FormNames.TENANTS, {tenants: contentHelpers.getContentTenants(lease)});
+    initialize(FormNames.TENANTS, {tenants: contentHelpers.getContentTenantsFormData(lease)});
   }
 
   cancelRestoreUnsavedChanges = () => {

@@ -53,7 +53,7 @@ const getContentIncoiveItem = (invoice: Object) => {
     invoicing_date: get(invoice, 'invoicing_date'),
     state: get(invoice, 'state'),
     billing_period_end_date: get(invoice, 'billing_period_end_date'),
-    billing_period_start_date: get(invoice, 'billing_period_end_date'),
+    billing_period_start_date: get(invoice, 'billing_period_start_date'),
     postpone_date: get(invoice, 'postpone_date'),
     total_amount: get(invoice, 'total_amount'),
     billed_amount: get(invoice, 'billed_amount'),

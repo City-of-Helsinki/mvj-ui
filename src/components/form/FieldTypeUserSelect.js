@@ -7,7 +7,7 @@ import classNames from 'classnames';
 
 import createUrl from '$src/api/createUrl';
 import {getContentUser} from '$src/leases/helpers';
-import {sortByLabelAsc} from '$util/helpers';
+import {addEmptyOption as addEmptyOptionFn, sortByLabelAsc} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
 
 const arrowRenderer = () => {
@@ -17,6 +17,7 @@ const arrowRenderer = () => {
 };
 
 type Props = {
+  addEmptyOption: boolean,
   apiToken: string,
   creatable?: boolean,
   disabled?: boolean,
@@ -30,6 +31,7 @@ type Props = {
 
 class FieldTypeLessorSelect extends Component<Props> {
   static defaultProps = {
+    addEmptyOption: true,
     creatable: false,
     disabled: false,
     value: '',
@@ -46,9 +48,16 @@ class FieldTypeLessorSelect extends Component<Props> {
   }
 
   getOptions = (json: Object) => {
-    return json.map((lessor) => {
+    const {addEmptyOption} = this.props;
+
+    const options = json.map((lessor) => {
       return getContentUser(lessor);
     }).sort(sortByLabelAsc);
+
+    if(addEmptyOption) {
+      return addEmptyOptionFn(options);
+    }
+    return options;
   }
 
   getLeases = (input) => {
@@ -93,7 +102,7 @@ class FieldTypeLessorSelect extends Component<Props> {
       <AsyncComponent
         {...input}
         arrowRenderer={arrowRenderer}
-        autoload={false}
+        autoload={true}
         backspaceRemoves={false}
         className={classNames(
           'form-field__select',

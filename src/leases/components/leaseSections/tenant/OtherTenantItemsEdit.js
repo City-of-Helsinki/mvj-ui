@@ -36,6 +36,7 @@ type Props = {
   isSaveClicked: boolean,
   receiveContactModalSettings: Function,
   showContactModal: Function,
+  tenant: Object,
 }
 
 const OtherTenantItemsEdit = ({
@@ -47,7 +48,17 @@ const OtherTenantItemsEdit = ({
   isSaveClicked,
   receiveContactModalSettings,
   showContactModal,
+  tenant,
 }: Props) => {
+  const getOtherTenantById = (id: number) => {
+    const tenantContactSet = get(tenant, 'tenantcontact_set', []);
+    if(!id) {
+      return null;
+    }
+
+    return tenantContactSet.find((tenant) => tenant.id === id);
+  };
+
   const tenantTypeOptions = getAttributeFieldOptions(attributes,
     'tenants.child.children.tenantcontact_set.child.children.type').filter((x) => x.value !== TenantContactType.TENANT);
 
@@ -55,7 +66,8 @@ const OtherTenantItemsEdit = ({
     <div>
       {fields && !!fields.length && fields.map((tenant, index) => {
         const contact = get(formValues, `${tenant}.contact`);
-        const isActive = isTenantActive(get(formValues, tenant));
+        const savedOtherTenant = getOtherTenantById(get(formValues, `${tenant}.id`));
+        const isActive = isTenantActive(savedOtherTenant);
         const tenantErrors = get(errors, tenant);
 
         return (
