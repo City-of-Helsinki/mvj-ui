@@ -46,7 +46,7 @@ class RentItemEdit extends Component<Props> {
                 key={item.id ? item.id : `index_${index}`}
                 className={classNames({'not-active': !isRentActive(rent)})}
                 defaultOpen={true}
-                hasErrors={!isEmpty(rentErrors)}
+                hasErrors={isSaveClicked && !isEmpty(rentErrors)}
                 headerTitle={
                   <h3 className='collapse__header-title'>Vuokra {index + 1}</h3>
                 }>
@@ -73,7 +73,7 @@ class RentItemEdit extends Component<Props> {
                   <Collapse
                     className='collapse__secondary'
                     defaultOpen={true}
-                    hasErrors={!isEmpty(contractRentErrors)}
+                    hasErrors={isSaveClicked && !isEmpty(contractRentErrors)}
                     headerTitle={
                       <h3 className='collapse__header-title'>Sopimusvuokra</h3>
                     }>
@@ -108,7 +108,7 @@ class RentItemEdit extends Component<Props> {
                   <Collapse
                     className='collapse__secondary'
                     defaultOpen={true}
-                    hasErrors={!isEmpty(rentAdjustmentsErrors)}
+                    hasErrors={isSaveClicked && !isEmpty(rentAdjustmentsErrors)}
                     headerTitle={
                       <h3 className='collapse__header-title'>Alennukset ja korotukset</h3>
                     }>

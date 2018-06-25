@@ -119,7 +119,7 @@ const PlanUnitItemsEdit = ({
       <Collapse
         className='collapse__secondary'
         defaultOpen={true}
-        hasErrors={!isEmpty(planUnitErrors)}
+        hasErrors={isSaveClicked && !isEmpty(planUnitErrors)}
         headerTitle={
           <h4 className='collapse__header-title'>{title}</h4>
         }

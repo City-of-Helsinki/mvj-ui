@@ -63,7 +63,7 @@ const OtherTenantItemsEdit = ({
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames('collapse__secondary', {'not-active': !isActive})}
             defaultOpen={isActive}
-            hasErrors={!isEmpty(tenantErrors)}
+            hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
             headerTitle={
               <h4 className='collapse__header-title edit-row'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
             }>

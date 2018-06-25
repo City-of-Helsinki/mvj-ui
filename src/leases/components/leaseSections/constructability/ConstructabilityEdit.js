@@ -164,7 +164,7 @@ const renderAreas = ({
           <Collapse
             key={area.id ? area.id : `index_${index}`}
             defaultOpen={true}
-            hasErrors={!isEmpty(areaErrors)}
+            hasErrors={isSaveClicked && !isEmpty(areaErrors)}
             header={
               <div>
                 <Column>
@@ -191,7 +191,7 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
-              hasErrors={!isEmpty(preconstructionErrors)}
+              hasErrors={isSaveClicked && !isEmpty(preconstructionErrors)}
               headerTitle={
                 <h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>
               }
@@ -219,7 +219,7 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
-              hasErrors={!isEmpty(demolitionErrors)}
+              hasErrors={isSaveClicked && !isEmpty(demolitionErrors)}
               headerTitle={
                 <h4 className='collapse__header-title'>Purku</h4>
               }
@@ -247,7 +247,7 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
-              hasErrors={!isEmpty(pollutedLandErrors)}
+              hasErrors={isSaveClicked && !isEmpty(pollutedLandErrors)}
               headerTitle={
                 <h4 className='collapse__header-title'>PIMA</h4>
               }
@@ -326,7 +326,7 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
-              hasErrors={!isEmpty(constructabilityReportErrors)}
+              hasErrors={isSaveClicked && !isEmpty(constructabilityReportErrors)}
               headerTitle={
                 <h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>
               }
@@ -394,7 +394,7 @@ const renderAreas = ({
             <Collapse
               className='collapse__secondary'
               defaultOpen={true}
-              hasErrors={!isEmpty(otherErrors)}
+              hasErrors={isSaveClicked && !isEmpty(otherErrors)}
               headerTitle={
                 <h4 className='collapse__header-title'>Muut</h4>
               }

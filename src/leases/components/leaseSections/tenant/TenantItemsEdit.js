@@ -60,7 +60,7 @@ const TenantItemsEdit = ({
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames({'not-active': !isActive})}
             defaultOpen={isActive}
-            hasErrors={!isEmpty(tenantErrors)}
+            hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
             headerTitle={
               <h3 className='collapse__header-title'>Vuokralainen {index + 1}</h3>
             }

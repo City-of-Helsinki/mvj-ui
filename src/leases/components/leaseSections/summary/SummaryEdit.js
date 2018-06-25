@@ -52,7 +52,7 @@ class SummaryEdit extends Component<Props> {
           <Column medium={9}>
             <Collapse
               defaultOpen={true}
-              hasErrors={!isEmpty(errors)}
+              hasErrors={isSaveClicked && !isEmpty(errors)}
               headerTitle={
                 <h3 className='collapse__header-title'>Perustiedot</h3>
               }

@@ -48,7 +48,10 @@
     white-space: nowrap;
 
     .required {
-      color: $alert-color;
+      color: $brick;
+      font-size: 18px;
+      font-weight: $semibold;
+      position: absolute;
     }
   }
 
@@ -81,7 +84,7 @@
     &.is-dirty {
       .option-label {
         span {
-          background-color: $engel;
+          background-color: $engel-lightest-opaque;
         }
       }
     }
@@ -102,26 +105,19 @@
     &:focus {
       transition: none !important;
       outline: none !important;
-      border: 1px solid $focus-color !important;
-      box-shadow: 0 0 0 1px $focus-color;
+      border: 1px solid $medium-gray !important;
+      box-shadow: 0 0 0 1px $medium-gray;
     }
 
     &.is-dirty {
-      background-color: $engel-lighter;
-      border: 1px solid $engel !important;
-
-      &:focus {
-        border: 1px solid $engel !important;
-        box-shadow: 0 0 0 1px $engel;
-      }
+      background-color: $engel-lightest-opaque;
     }
 
     &.has-error {
-      border: 1px solid $alert-color !important;
+      border: 2px solid $brick !important;
 
       &:focus {
-        border: 1px solid $alert-color !important;
-        box-shadow: 0 0 0 1px $alert-color;
+        box-shadow: 0 0 0 1px $brick;
       }
     }
   }
@@ -138,26 +134,19 @@
     &:focus {
       transition: none !important;
       outline: none !important;
-      border: 1px solid $focus-color !important;
-      box-shadow: 0 0 0 1px $focus-color;
+      border: 1px solid $medium-gray !important;
+      box-shadow: 0 0 0 1px $medium-gray;
     }
 
     &.is-dirty {
-      background-color: $engel-lighter;
-      border: 1px solid $engel !important;
-
-      &:focus {
-        border: 1px solid $engel !important;
-        box-shadow: 0 0 0 1px $engel;
-      }
+      background-color: $engel-lightest-opaque;
     }
 
     &.has-error {
-      border: 1px solid $alert-color !important;
+      border: 2px solid $brick !important;
 
       &:focus {
-        border: 1px solid $alert-color !important;
-        box-shadow: 0 0 0 1px $alert-color;
+        box-shadow: 0 0 0 1px $brick;
       }
     }
   }
@@ -189,30 +178,23 @@
       &:focus {
         transition: none !important;
         outline: none !important;
-        border: 1px solid $focus-color !important;
-        box-shadow: 0 0 0 1px $focus-color;
+        border: 1px solid $medium-gray !important;
+        box-shadow: 0 0 0 1px $medium-gray
       }
     }
 
     &.is-dirty {
       input {
-        background-color: $engel-lighter;
-        border: 1px solid $engel;
-
-        &:focus {
-          border: 1px solid $engel !important;
-          box-shadow: 0 0 0 1px $engel;
-        }
+        background-color: $engel-lightest-opaque;
       }
     }
 
     &.has-error {
       input {
-        border: 1px solid $alert-color;
+        border: 2px solid $brick;
 
         &:focus {
-          border: 1px solid $alert-color !important;
-          box-shadow: 0 0 0 1px $alert-color;
+          box-shadow: 0 0 0 1px $brick;
         }
       }
     }
@@ -315,7 +297,7 @@
       white-space: nowrap;
 
       &.is-focused, &.Select-option.is-selected {
-        background-color: $engel-lighter !important;
+        background-color: $engel-lightest-opaque !important;
       }
 
       &:hover, &:focus, &:active {
@@ -333,33 +315,26 @@
     &.is-focused {
       .Select-control {
         outline: none !important;
-        border: 1px solid $focus-color !important;
+        border: 1px solid $medium-gray !important;
         box-shadow: 0 0 0 1px $focus-color !important;
       }
     }
 
     &.is-dirty {
       .Select-control {
-        background-color: $engel-lighter !important;
-        border: 1px solid $engel !important;
-      }
-
-      &.is-focused {
-        .Select-control {
-          box-shadow: 0 0 0 1px $engel !important;
-        }
+        background-color: $engel-lightest-opaque !important;
       }
     }
 
     &.has-error {
       .Select-control {
         transition: none !important;
-        border: 1px solid $alert-color !important;
+        border: 2px solid $brick !important;
       }
 
       &.is-focused {
         .Select-control {
-          box-shadow: 0 0 0 1px $alert-color !important;
+          box-shadow: 0 0 0 1px $brick !important;
         }
       }
     }

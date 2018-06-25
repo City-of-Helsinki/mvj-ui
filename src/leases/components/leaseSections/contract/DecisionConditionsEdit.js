@@ -35,7 +35,7 @@ const DecisionConditionsEdit = ({
     <Collapse
       className='collapse__secondary'
       defaultOpen={true}
-      hasErrors={!isEmpty(decisionConditionsErrors)}
+      hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)}
       headerTitle={
         <h4 className='collapse__header-title'>Ehdot</h4>
       }

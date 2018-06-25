@@ -20,12 +20,13 @@
       color: $black;
       font-size: rem-calc(14px);
 	    font-weight: 600;
-      padding: rem-calc(0 10px);
+      padding: rem-calc(0 0 0 20px);
       display: flex;
       height: 32px;
       align-items: center;
       position: relative;
     }
+
     > a::after {
       position: absolute;
       content: "";
@@ -45,26 +46,32 @@
     }
   }
 
+  &__label {
+    padding-right: rem-calc(20px);
+  }
+
   &__error-badge {
     background-image: url(../assets/icons/icon_error.svg);
-    height: 16px;
-    width: 16px;
+    height: 14px;
+    width: 14px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 50%;
-    display: inline-block;
-    margin-left: 5px;
+    right: 3px;
+    position: absolute;
+    z-index: 2;
   }
 
   &__dirty-badge {
     background-image: url(../assets/icons/icon_unsaved.svg);
-    height: 16px;
-    width: 16px;
+    height: 14px;
+    width: 14px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: 50%;
-    display: inline-block;
-    margin-left: 5px;
+    right: 3px;
+    position: absolute;
+    z-index: 2;
   }
 
   &__content {
