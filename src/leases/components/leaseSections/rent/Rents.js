@@ -3,13 +3,14 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
+import get from 'lodash/get';
 
 import BasisOfRents from './BasisOfRents';
 import Divider from '$components/content/Divider';
 import GreenBox from '$components/content/GreenBox';
 import RentItem from './RentItem';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {getContentRents} from '$src/leases/helpers';
+import {getContentRentsFormData} from '$src/leases/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 
 import type {Lease} from '$src/leases/types';
@@ -20,7 +21,9 @@ type Props = {
 }
 
 const Rents = ({currentLease}: Props) => {
-  const rents = getContentRents(currentLease);
+  const rentsData = getContentRentsFormData(currentLease);
+  const rents = get(rentsData, 'rents', []);
+  const rentsArchived = get(rentsData, 'rentsArchived', []);
 
   return (
     <div className="rent-section">
@@ -34,18 +37,24 @@ const Rents = ({currentLease}: Props) => {
       <Divider />
 
       {!rents || !rents.length && <p className='no-margin'>Ei vuokria</p>}
-      {rents && !!rents.length &&
-        <div>
-          {rents.map((rent) => {
-            return (
-              <RentItem
-                key={rent.id}
-                rent={rent}
-              />
-            );
-          })}
-        </div>
-      }
+      {rents && !!rents.length && rents.map((rent) => {
+        return (
+          <RentItem
+            key={rent.id}
+            rent={rent}
+            rents={rents}
+          />
+        );
+      })}
+
+      {!!rentsArchived.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+      {!!rentsArchived.length && rentsArchived.map((rent) =>
+        <RentItem
+          key={rent.id}
+          rent={rent}
+          rents={rentsArchived}
+        />
+      )}
 
       <h2>Vuokranperusteet</h2>
       <Divider />

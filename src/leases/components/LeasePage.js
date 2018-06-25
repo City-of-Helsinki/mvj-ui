@@ -327,10 +327,10 @@ class LeasePage extends Component<Props, State> {
     initialize(FormNames.RENTS, {
       basis_of_rents: contentHelpers.getContentBasisOfRents(lease),
       is_rent_info_complete: lease.is_rent_info_complete,
-      rents: contentHelpers.getContentRents(lease),
+      rents: contentHelpers.getContentRentsFormData(lease),
     });
     initialize(FormNames.SUMMARY, contentHelpers.getContentSummary(lease));
-    initialize(FormNames.TENANTS, {tenants: contentHelpers.getContentTenants(lease)});
+    initialize(FormNames.TENANTS, {tenants: contentHelpers.getContentTenantsFormData(lease)});
   }
 
   cancelRestoreUnsavedChanges = () => {
@@ -789,12 +789,12 @@ class LeasePage extends Component<Props, State> {
           className="hero__navigation"
           isEditMode={isEditMode}
           tabs={[
-            {label: 'Yhteenveto', isDirty: isSummaryFormDirty, hasError: !isSummaryFormValid},
-            {label: 'Vuokra-alue', isDirty: isLeaseAreasFormDirty, hasError: !isLeaseAreasFormValid},
-            {label: 'Vuokralaiset', isDirty: isTenantsFormDirty, hasError: !isTenantsFormValid},
-            {label: 'Vuokrat', isDirty: isRentsFormDirty, hasError: !isRentsFormValid},
-            {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty || isInspectionsFormDirty), hasError: (!isContractsFormValid || !isDecisionsFormValid || !isInspectionsFormValid)},
-            {label: 'Rakentamiskelpoisuus', isDirty: isConstructabilityFormDirty, hasError: !isConstructabilityFormValid},
+            {label: 'Yhteenveto', isDirty: isSummaryFormDirty, hasError: isSaveClicked && !isSummaryFormValid},
+            {label: 'Vuokra-alue', isDirty: isLeaseAreasFormDirty, hasError: isSaveClicked && !isLeaseAreasFormValid},
+            {label: 'Vuokralaiset', isDirty: isTenantsFormDirty, hasError: isSaveClicked && !isTenantsFormValid},
+            {label: 'Vuokrat', isDirty: isRentsFormDirty, hasError: isSaveClicked && !isRentsFormValid},
+            {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty || isInspectionsFormDirty), hasError: isSaveClicked && (!isContractsFormValid || !isDecisionsFormValid || !isInspectionsFormValid)},
+            {label: 'Rakentamiskelpoisuus', isDirty: isConstructabilityFormDirty, hasError: isSaveClicked && !isConstructabilityFormValid},
             {label: 'Laskutus'},
             {label: 'Kartta'},
           ]}

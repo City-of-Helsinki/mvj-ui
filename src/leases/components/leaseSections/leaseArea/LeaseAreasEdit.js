@@ -122,7 +122,7 @@ const LeaseAreaItems = ({
           <Collapse
             key={index}
             defaultOpen={true}
-            hasErrors={!isEmpty(areaErrors)}
+            hasErrors={isSaveClicked && !isEmpty(areaErrors)}
             headerTitle={
               <h3 className='collapse__header-title'>Kohde {index + 1}</h3>
             }

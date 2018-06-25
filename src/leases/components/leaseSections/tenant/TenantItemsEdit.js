@@ -23,6 +23,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import {initializeContactForm} from '$src/contacts/actions';
 import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
+import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
@@ -30,6 +31,7 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  enableAddButton: boolean,
   errors: ?Object,
   fields: any,
   formValues: Object,
@@ -37,10 +39,12 @@ type Props = {
   isSaveClicked: boolean,
   receiveContactModalSettings: Function,
   showContactModal: Function,
+  tenants: Array<Object>,
 }
 
 const TenantItemsEdit = ({
   attributes,
+  enableAddButton,
   errors,
   fields,
   formValues,
@@ -48,21 +52,31 @@ const TenantItemsEdit = ({
   isSaveClicked,
   receiveContactModalSettings,
   showContactModal,
+  tenants,
 }: Props) => {
+  const getTenantById = (id: number) => {
+    if(!id) {
+      return {};
+    }
+    return tenants.find((tenant) => tenant.id === id);
+  };
+
   return (
     <div>
       {fields && !!fields.length && fields.map((tenant, index) => {
         const contact = get(formValues, `${tenant}.tenant.contact`);
-        const isActive = isTenantActive(get(formValues, `${tenant}.tenant`));
+        const savedTenant = getTenantById(get(formValues, `${tenant}.id`));
+        const isActive = isTenantActive(get(savedTenant, 'tenant'));
         const tenantErrors = get(errors, tenant);
+
         return (
           <Collapse
             key={tenant.id ? tenant.id : `index_${index}`}
             className={classNames({'not-active': !isActive})}
             defaultOpen={isActive}
-            hasErrors={!isEmpty(tenantErrors)}
+            hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
             headerTitle={
-              <h3 className='collapse__header-title'>Vuokralainen {index + 1}</h3>
+              <h3 className='collapse__header-title'>{getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}</h3>
             }
           >
             <BoxContentWrapper>
@@ -204,21 +218,24 @@ const TenantItemsEdit = ({
               errors={errors}
               isSaveClicked={isSaveClicked}
               name={`${tenant}.tenantcontact_set`}
+              tenant={savedTenant}
             />
           </Collapse>
         );
       })
       }
-      <Row>
-        <Column>
-          <AddButton
-            className='no-margin'
-            label='Lisää vuokralainen'
-            onClick={() => fields.push({})}
-            title='Lisää vuokralainen'
-          />
-        </Column>
-      </Row>
+      {enableAddButton &&
+        <Row>
+          <Column>
+            <AddButton
+              className='no-margin'
+              label='Lisää vuokralainen'
+              onClick={() => fields.push({})}
+              title='Lisää vuokralainen'
+            />
+          </Column>
+        </Row>
+      }
     </div>
   );
 };

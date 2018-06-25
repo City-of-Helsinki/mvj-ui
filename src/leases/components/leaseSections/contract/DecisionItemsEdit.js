@@ -33,7 +33,7 @@ const DecisionItemsEdit = ({attributes, errors, fields, isSaveClicked}: Props) =
         <Collapse
           key={decision.id ? decision.id : `index_${index}`}
           defaultOpen={true}
-          hasErrors={!isEmpty(decisionErrors)}
+          hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
           headerTitle={
             <h3 className='collapse__header-title'>Päätös {index + 1}</h3>
           }

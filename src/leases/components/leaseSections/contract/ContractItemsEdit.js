@@ -41,7 +41,7 @@ const renderContractChanges = ({
     <Collapse
       className='collapse__secondary'
       defaultOpen={true}
-      hasErrors={!isEmpty(contractChangeErrors)}
+      hasErrors={isSaveClicked &&!isEmpty(contractChangeErrors)}
       headerTitle={
         <h4 className='collapse__header-title'>{title}</h4>
       }
@@ -251,7 +251,7 @@ const ContractItemsEdit = ({
         <Collapse
           key={contract.id ? contract.id : `index_${index}`}
           defaultOpen={true}
-          hasErrors={!isEmpty(contractErrors)}
+          hasErrors={isSaveClicked && !isEmpty(contractErrors)}
           headerTitle={
             <h3 className='collapse__header-title'>Sopimus {index + 1}</h3>
           }

@@ -480,16 +480,17 @@ export const sortNumberByKeyDesc = (a, b, key) => {
 };
 
 export const sortStringByKeyAsc = (a, b, key?: string = null) => {
-  const keyA = key ? (a[key] ? a[key].toLowerCase() : '') : a,
-    keyB = key ? (b[key] ? b[key].toLowerCase() : '') : b;
+  const keyA = key ? (get(a, key) ? get(a, key).toLowerCase() : '') : a,
+    keyB = key ? (get(b, key) ? get(b, key).toLowerCase() : '') : b;
+
   if(keyA > keyB) return 1;
   if(keyA < keyB) return -1;
   return 0;
 };
 
 export const sortStringByKeyDesc = (a, b, key?: string = null) => {
-  const keyA = key ? (a[key] ? a[key].toLowerCase() : '') : a,
-    keyB = key ? (b[key] ? b[key].toLowerCase() : '') : b;
+  const keyA = key ? (get(a, key) ? get(a, key).toLowerCase() : '') : a,
+    keyB = key ? (get(b, key) ? get(b, key).toLowerCase() : '') : b;
   if(keyA > keyB) return -1;
   if(keyA < keyB) return 1;
   return 0;
@@ -512,6 +513,9 @@ export const sortByOptionsDesc = (a: Object, b: Object, key, options: Array<Obje
 };
 
 export const sortByLabelAsc = (a, b) =>
+  sortStringByKeyAsc(a, b, 'label');
+
+export const sortByLabelDesc = (a, b) =>
   sortStringByKeyDesc(a, b, 'label');
 
 export const sortByStartDateDesc = (a, b) =>

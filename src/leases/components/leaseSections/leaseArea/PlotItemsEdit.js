@@ -120,7 +120,7 @@ const PlotItemsEdit = ({
       <Collapse
         className='collapse__secondary'
         defaultOpen={true}
-        hasErrors={!isEmpty(plotErrors)}
+        hasErrors={isSaveClicked && !isEmpty(plotErrors)}
         headerTitle={
           <h4 className='collapse__header-title'>{title}</h4>
         }

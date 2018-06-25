@@ -32,6 +32,7 @@ const NewCommentForm = ({
     <form onSubmit={handleSubmit}>
       <FormSection>
         <FormField
+          disableDirty
           fieldAttributes={get(attributes, 'topic')}
           name='topic'
           overrideValues={{
@@ -39,6 +40,7 @@ const NewCommentForm = ({
           }}
         />
         <FormField
+          disableDirty
           fieldAttributes={get(attributes, 'text')}
           name='text'
           overrideValues={{
@@ -48,9 +50,9 @@ const NewCommentForm = ({
         />
         <AddButton
           disabled={!valid}
-          label='Lisää kommentti'
+          label='Kommentoi'
           onClick={() => onAddComment(text, topic)}
-          title='Lisää kommentti'
+          title='Kommentoi'
         />
       </FormSection>
     </form>

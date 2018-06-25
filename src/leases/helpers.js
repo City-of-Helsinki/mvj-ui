@@ -12,7 +12,7 @@ import {
 } from './enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {fixedLengthNumber, formatDecimalNumberForDb, sortByStartDateDesc} from '$util/helpers';
+import {fixedLengthNumber, formatDecimalNumberForDb, sortByStartDateDesc, sortStringByKeyDesc} from '$util/helpers';
 import {removeSessionStorageItem} from '$util/storage';
 
 import type {Lease} from './types';
@@ -575,13 +575,11 @@ export const getContentTenantContactSet = (tenant: Object) => {
       start_date: get(contact, 'start_date'),
       end_date: get(contact, 'end_date'),
     };
-  });
+  }).sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
 };
 
 export const getContentTenants = (lease: Object) => {
-  const tenants = get(lease, 'tenants', []);
-
-  return tenants.map((tenant) => {
+  return get(lease, 'tenants', []).map((tenant) => {
     return {
       id: get(tenant, 'id'),
       share_numerator: get(tenant, 'share_numerator'),
@@ -590,7 +588,15 @@ export const getContentTenants = (lease: Object) => {
       tenant: getContentTenantItem(tenant),
       tenantcontact_set: getContentTenantContactSet(tenant),
     };
-  });
+  }).sort((a, b) => sortStringByKeyDesc(a, b, 'tenant.start_date'));
+};
+
+export const getContentTenantsFormData = (lease: Object) => {
+  const tenants = getContentTenants(lease);
+  return {
+    tenants: tenants.filter((tenant) => !isTenantArchived(tenant.tenant)),
+    tenantsArchived: tenants.filter((tenant) => isTenantArchived(tenant.tenant)),
+  };
 };
 
 export const getContentPayableRents = (rent: Object) => {
@@ -686,9 +692,7 @@ export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates')
 };
 
 export const getContentRents = (lease: Object) => {
-  const rents = get(lease, 'rents', []);
-
-  return rents.map((rent) => {
+  return get(lease, 'rents', []).map((rent) => {
     return {
       id: rent.id || undefined,
       type: get(rent, 'type'),
@@ -716,7 +720,16 @@ export const getContentRents = (lease: Object) => {
       payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
       yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
     };
-  });
+  }).sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
+};
+
+export const getContentRentsFormData = (lease: Object) => {
+  const rents = getContentRents(lease);
+
+  return {
+    rents: rents.filter((rent) => !isRentArchived(rent)),
+    rentsArchived: rents.filter((rent) => isRentArchived(rent)),
+  };
 };
 
 export const getContentBasisOfRents = (lease: Object) => {
@@ -801,7 +814,7 @@ export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {
 
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
   payload.lessor = get(summary, 'lessor.value');
-  payload.preparer = get(summary, 'preparer');
+  payload.preparer = get(summary, 'preparer.value');
   payload.classification = get(summary, 'classification');
   payload.intended_use = get(summary, 'intended_use');
   payload.supportive_housing = get(summary, 'supportive_housing');
@@ -1092,7 +1105,7 @@ export const getConstructabilityItemForDb = (area: Object, values: Object) => {
   area.polluted_land_state = get(values, 'polluted_land_state');
   area.polluted_land_rent_condition_state = get(values, 'polluted_land_rent_condition_state');
   area.polluted_land_rent_condition_date = get(values, 'polluted_land_rent_condition_date');
-  area.polluted_land_planner = get(values, 'polluted_land_planner');
+  area.polluted_land_planner = get(values, 'polluted_land_planner.value');
   area.polluted_land_projectwise_number = get(values, 'polluted_land_projectwise_number');
   area.polluted_land_matti_report_number = get(values, 'polluted_land_matti_report_number');
   area.constructability_report_state = get(values, 'constructability_report_state');
@@ -1161,7 +1174,10 @@ export const getTenantContactSetForDb = (tenant: Object) => {
 };
 
 export const addTenantsFormValues = (payload: Object, values: Object) => {
-  const tenants = get(values, 'tenants', []);
+  const tenantsCurrent = get(values, 'tenants.tenants', []);
+  const tenantsArchived = get(values, 'tenants.tenantsArchived', []);
+  const tenants = [...tenantsCurrent, ...tenantsArchived];
+
   if(!tenants.length) {
     payload.tenants = [];
   } else {
@@ -1263,8 +1279,10 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       };
     });
   }
+  const rentsCurrent = get(values, 'rents.rents', []);
+  const rentsArchived = get(values, 'rents.rentsArchived', []);
+  const rents = [...rentsCurrent, ...rentsArchived];
 
-  const rents = get(values, 'rents', []);
   payload.rents = rents.map((rent) => {
     return {
       id: rent.id || undefined,
@@ -1319,7 +1337,7 @@ export const isContractActive = (contract: Object) => {
   return true;
 };
 
-export const isRentActive = (rent: Object) => {
+export const isRentActive = (rent: ?Object) => {
   const now = moment();
   const startDate = get(rent, 'start_date');
   const endDate = get(rent, 'end_date');
@@ -1331,7 +1349,18 @@ export const isRentActive = (rent: Object) => {
   return true;
 };
 
-export const isTenantActive = (tenant: Object) => {
+export const isRentArchived = (rent: Object) => {
+  const now = moment();
+  const endDate = get(rent, 'end_date');
+
+  if(endDate && now.isAfter(endDate)) {
+    return true;
+  }
+
+  return false;
+};
+
+export const isTenantActive = (tenant: ?Object) => {
   const now = moment();
   const startDate = get(tenant, 'start_date');
   const endDate = get(tenant, 'end_date');
@@ -1341,6 +1370,17 @@ export const isTenantActive = (tenant: Object) => {
   }
 
   return true;
+};
+
+export const isTenantArchived = (tenant: ?Object) => {
+  const now = moment();
+  const endDate = get(tenant, 'end_date');
+
+  if(endDate && now.isAfter(endDate)) {
+    return true;
+  }
+
+  return false;
 };
 
 export const clearUnsavedChanges = () => {

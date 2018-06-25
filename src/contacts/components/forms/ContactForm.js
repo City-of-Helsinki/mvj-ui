@@ -86,7 +86,7 @@ class ContactForm extends Component<Props> {
                   </Column>
                 }
                 {type && type !== ContactType.PERSON &&
-                  <Column small={12} medium={6} large={4}>
+                  <Column small={12} medium={6} large={8}>
                     <FormField
                       fieldAttributes={get(attributes, 'name')}
                       name='name'
