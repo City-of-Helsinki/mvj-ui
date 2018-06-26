@@ -68,7 +68,9 @@ class Search extends Component<Props, State> {
       if(this.props.municipality) {
         fetchDistrictsByMunicipality(this.props.municipality);
       }
-      change('district', '');
+      if(this.props.anyTouched) {
+        change('district', null);
+      }
     }
 
     if(this.props.anyTouched  && (JSON.stringify(prevProps.formValues || {}) !== JSON.stringify(this.props.formValues || {}))) {
@@ -88,6 +90,7 @@ class Search extends Component<Props, State> {
 
         const searchQuery = {...query};
         delete searchQuery.page;
+
         if(JSON.stringify(searchQuery) !== JSON.stringify(this.props.formValues)) {
           this.onSearchChange();
         }
