@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 type Props = {
+  autoBlur: boolean,
   autoComplete?: string,
   className: string,
   disabled: boolean,
@@ -13,7 +14,25 @@ type Props = {
   type?: string,
 }
 
-const FieldTypeBasic = ({autoComplete, displayError, disabled, input, isDirty, placeholder, type = 'text'}: Props) => {
+const FieldTypeBasic = ({
+  autoBlur,
+  autoComplete,
+  displayError,
+  disabled,
+  input,
+  input: {onBlur, onChange},
+  isDirty,
+  placeholder,
+  type = 'text',
+}: Props) => {
+  const handleChange = (e: any) => {
+    if(autoBlur) {
+      onBlur(e.target.value);
+    } else {
+      onChange(e.target.value);
+    }
+  };
+
   return (
     <input className={classNames('form-field__input', {'has-error': displayError}, {'is-dirty': isDirty})}
       id={input.name}
@@ -22,6 +41,7 @@ const FieldTypeBasic = ({autoComplete, displayError, disabled, input, isDirty, p
       placeholder={placeholder}
       type={type}
       {...input}
+      onChange={handleChange}
     />
   );
 };

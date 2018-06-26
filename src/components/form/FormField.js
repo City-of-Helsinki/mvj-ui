@@ -60,6 +60,7 @@ const resolveFieldType = (type: string): Object => FieldTypes.hasOwnProperty(typ
 const resolveType = (type: string): ?string => Types.hasOwnProperty(type) ? Types[type] : null;
 
 type InputProps = {
+  autoBlur: boolean,
   autoComplete?: string,
   className?: string,
   disabled: boolean,
@@ -80,6 +81,7 @@ type InputProps = {
 }
 
 const FormFieldInput = ({
+  autoBlur,
   autoComplete = 'nope',
   className,
   disabled,
@@ -107,7 +109,7 @@ const FormFieldInput = ({
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name} title={label ? `${label}${required ? ' *' : ''}` : ''}>{label}{required &&<i className='required'> *</i>}</label>}
       <div className={classNames('form-field__component', {'has-unit': unit})}>
-        {createElement(fieldComponent, {autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
+        {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
         {unit && <span className='form-field__unit'>{unit}</span>}
       </div>
       {displayError && <ErrorComponent {...meta}/>}
@@ -116,6 +118,7 @@ const FormFieldInput = ({
 };
 
 type Props = {
+  autoBlur?: boolean,
   autoComplete?: string,
   className?: string,
   disabled?: boolean,
@@ -148,6 +151,7 @@ class FormField extends PureComponent<Props, State> {
     required: false,
   }
   static defualtProps = {
+    autoBlur: false,
     disabled: false,
     disableDirty: false,
     disableTouched: false,
@@ -197,6 +201,7 @@ class FormField extends PureComponent<Props, State> {
 
   render() {
     const {
+      autoBlur,
       autoComplete,
       className,
       disabled,
@@ -220,6 +225,7 @@ class FormField extends PureComponent<Props, State> {
 
     return(
       <Field
+        autoBlur={autoBlur}
         autoComplete={autoComplete}
         className={className}
         component={FormFieldInput}

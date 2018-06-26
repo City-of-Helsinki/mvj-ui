@@ -82,7 +82,10 @@ class RentBasisListPage extends Component<Props, State> {
 
   componentDidMount = () => {
     const {initialize, router: {location: {query}}} = this.props;
-    initialize(FormNames.SEARCH, query);
+
+    const searchQuery = {...query};
+    delete searchQuery.page;
+    initialize(FormNames.SEARCH, searchQuery);
   }
 
   componentDidUpdate(prevProps) {

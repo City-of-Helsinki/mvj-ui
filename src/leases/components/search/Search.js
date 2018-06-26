@@ -20,6 +20,7 @@ import {getAttributes, getIsFetchingAttributes} from '$src/leases/selectors';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
+  anyTouched: boolean,
   attributes: Attributes,
   change: Function,
   districts: Array<Object>,
@@ -46,9 +47,9 @@ class Search extends Component<Props, State> {
   componentDidMount() {
     const {router: {location: {query}}} = this.props;
     this._isMounted = true;
-
     const searchQuery = {...query};
     delete searchQuery.page;
+
     if(toArray(searchQuery).length && !searchQuery.identifier) {
       this.setState({
         isBasicSearch: false,
@@ -60,7 +61,7 @@ class Search extends Component<Props, State> {
     this._isMounted = false;
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
+  componentDidUpdate(prevProps: Props) {
     const {change, fetchDistrictsByMunicipality} = this.props;
 
     if(Number(prevProps.municipality) !== Number(this.props.municipality)) {
@@ -70,22 +71,26 @@ class Search extends Component<Props, State> {
       change('district', '');
     }
 
-    if(prevState.isBasicSearch !== this.state.isBasicSearch) {
-      this.onSearchChange();
-    } else if(JSON.stringify(prevProps.formValues || {}) !== JSON.stringify(this.props.formValues || {})) {
-      const {location: {query, search: currentSearch}} = this.props;
-      const {location: {search: prevSearch}} = prevProps;
+    if(this.props.anyTouched  && (JSON.stringify(prevProps.formValues || {}) !== JSON.stringify(this.props.formValues || {}))) {
+      const {isBasicSearch} = this.state;
+      let newIsBasicSearch = isBasicSearch;
+      if(toArray(this.props.formValues).length && !this.props.formValues.identifier) {
+        newIsBasicSearch = false;
+      } else {
+        newIsBasicSearch = true;
+      }
 
-      if(currentSearch !== prevSearch) {
+      if(newIsBasicSearch !== isBasicSearch) {
+        this.setState({isBasicSearch: newIsBasicSearch});
+        this.onSearchChange();
+      } else {
+        const {location: {query}} = this.props;
+
         const searchQuery = {...query};
         delete searchQuery.page;
-        if(toArray(searchQuery).length && !searchQuery.identifier) {
-          this.setState({isBasicSearch: false});
-        } else {
-          this.setState({isBasicSearch: true});
+        if(JSON.stringify(searchQuery) !== JSON.stringify(this.props.formValues)) {
+          this.onSearchChange();
         }
-      } else {
-        this.onSearchChange();
       }
     }
   }
@@ -147,6 +152,7 @@ class Search extends Component<Props, State> {
             <Row>
               <Column large={12}>
                 <FormField
+                  autoBlur
                   disableDirty
                   fieldAttributes={{}}
                   name='identifier'
@@ -167,6 +173,7 @@ class Search extends Component<Props, State> {
                   <label className='lease-search__label'>Vuokralainen</label>
                   <div className='lease-search__input-wrapper'>
                     <FormField
+                      autoBlur
                       disableDirty
                       fieldAttributes={{}}
                       name='tenant'
@@ -179,6 +186,7 @@ class Search extends Component<Props, State> {
               </Column>
               <Column small={12} medium={3}>
                 <FormField
+                  autoBlur
                   disableDirty
                   fieldAttributes={{}}
                   name='only_past_tentants'
@@ -196,6 +204,7 @@ class Search extends Component<Props, State> {
                   <label className='lease-search__label'>Rooli</label>
                   <div className='lease-search__input-wrapper'>
                     <FormField
+                      autoBlur
                       disableDirty
                       fieldAttributes={{}}
                       isLoading={isFetchingAttributes}
@@ -218,6 +227,7 @@ class Search extends Component<Props, State> {
                     <Row>
                       <Column>
                         <FormField
+                          autoBlur
                           disableDirty
                           fieldAttributes={{}}
                           name='type'
@@ -230,6 +240,7 @@ class Search extends Component<Props, State> {
                       </Column>
                       <Column>
                         <FormField
+                          autoBlur
                           disableDirty
                           fieldAttributes={{}}
                           name='municipality'
@@ -242,6 +253,7 @@ class Search extends Component<Props, State> {
                       </Column>
                       <Column>
                         <FormField
+                          autoBlur
                           disableDirty
                           disableRequired
                           fieldAttributes={{}}
@@ -255,6 +267,7 @@ class Search extends Component<Props, State> {
                       </Column>
                       <Column>
                         <FormField
+                          autoBlur
                           disableDirty
                           fieldAttributes={{}}
                           name='sequence'
@@ -271,6 +284,7 @@ class Search extends Component<Props, State> {
                 <Row>
                   <Column>
                     <FormField
+                      autoBlur
                       disableDirty
                       fieldAttributes={{}}
                       name='on_going'
@@ -285,6 +299,7 @@ class Search extends Component<Props, State> {
                   </Column>
                   <Column>
                     <FormField
+                      autoBlur
                       disableDirty
                       fieldAttributes={{}}
                       name='expired'
@@ -305,6 +320,7 @@ class Search extends Component<Props, State> {
                   <label className='lease-search__label'>Tyyppi</label>
                   <div className='lease-search__input-wrapper'>
                     <FormField
+                      autoBlur
                       disableDirty
                       fieldAttributes={{}}
                       isLoading={isFetchingAttributes}
@@ -326,6 +342,7 @@ class Search extends Component<Props, State> {
                   <label className='lease-search__label'>Kiinteistö</label>
                   <div className='lease-search__input-wrapper'>
                     <FormField
+                      autoBlur
                       disableDirty
                       fieldAttributes={{}}
                       name='property_identifier'
@@ -341,6 +358,7 @@ class Search extends Component<Props, State> {
                   <label className='lease-search__label'>Osoite</label>
                   <div className='lease-search__input-wrapper'>
                     <FormField
+                      autoBlur
                       disableDirty
                       fieldAttributes={{}}
                       name='address'

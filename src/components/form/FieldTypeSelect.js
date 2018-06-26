@@ -4,7 +4,8 @@ import Select from 'react-select';
 import classNames from 'classnames';
 
 type Props = {
-  disabled: Boolean,
+  autoBlur: boolean,
+  disabled: boolean,
   displayError: boolean,
   input: Object,
   isDirty: boolean,
@@ -19,6 +20,7 @@ const arrowRenderer = () => {
 };
 
 const FieldTypeSelect = ({
+  autoBlur,
   disabled,
   displayError,
   input,
@@ -35,7 +37,12 @@ const FieldTypeSelect = ({
   const handleChange = (val: any) => {
     if(val) {
       const {value} = val;
-      onChange(value);
+      if(autoBlur) {
+        onBlur(value);
+      } else {
+        onChange(value);
+      }
+
     }
   };
 

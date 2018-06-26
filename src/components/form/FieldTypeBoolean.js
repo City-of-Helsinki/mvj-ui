@@ -3,6 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 
 type Props = {
+  autoBlur: boolean,
   disabled: boolean,
   displayError: boolean,
   input: Object,
@@ -10,10 +11,11 @@ type Props = {
 }
 
 const FieldTypeBoolean = ({
+  autoBlur = false,
   disabled = false,
   displayError = false,
   input,
-  input: {name, onChange, value},
+  input: {name, onBlur, onChange, value},
   isDirty = false,
 
 }: Props) => {
@@ -21,6 +23,15 @@ const FieldTypeBoolean = ({
     {value: false, label: 'Ei'},
     {value: true, label: 'Kyllä'},
   ];
+
+  const handleChange = (e: any) =>  {
+    if(autoBlur) {
+      onBlur(e.target.value === 'true' ? true : false);
+    } else {
+      onChange(e.target.value === 'true' ? true : false);
+    }
+  };
+
   return (
     <fieldset
       id={name}
@@ -39,7 +50,7 @@ const FieldTypeBoolean = ({
               type='radio'
               checked={optionValue === value}
               name={name}
-              onChange={(event) => onChange(event.target.value === 'true' ? true : false)}
+              onChange={handleChange}
               value={optionValue}
             />
             <span>{optionLabel}</span>

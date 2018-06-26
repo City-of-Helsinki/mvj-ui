@@ -108,7 +108,10 @@ class LeaseListPage extends Component<Props, State> {
 
   componentDidMount = () => {
     const {initialize, router: {location: {query}}} = this.props;
-    initialize(FormNames.SEARCH, query);
+
+    const searchQuery = {...query};
+    delete searchQuery.page;
+    initialize(FormNames.SEARCH, searchQuery);
   }
 
   componentDidUpdate(prevProps) {
@@ -118,11 +121,13 @@ class LeaseListPage extends Component<Props, State> {
 
     if(currentSearch !== prevSearch) {
       this.search();
-      if(query !== searchFormValues) {
-        const searchQuery = {...query};
-        delete searchQuery.page;
+
+      const searchQuery = {...query};
+      delete searchQuery.page;
+      if(searchQuery !== searchFormValues) {
         initialize(FormNames.SEARCH, searchQuery);
       }
+
       const page = query.page ? Number(query.page) : 1;
       if(page !== activePage) {
         this.setState({activePage: page});
