@@ -2,12 +2,11 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {initialize} from 'redux-form';
+import {formValueSelector, initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
 import Loader from '$components/loader/Loader';
@@ -29,6 +28,8 @@ import {getAttributes, getIsFetching, getRentBasisList} from '$src/rentbasis/sel
 
 import type {Attributes, RentBasisList} from '../types';
 
+const PAGE_SIZE = 25;
+
 type Props = {
   attributes: Attributes,
   fetchAttributes: Function,
@@ -36,9 +37,11 @@ type Props = {
   initialize: Function,
   initializeRentBasis: Function,
   isFetching: boolean,
+  location: Object,
   receiveTopNavigationSettings: Function,
   rentBasisListData: RentBasisList,
   router: Object,
+  search: ?string,
 }
 
 type State = {
@@ -58,7 +61,6 @@ class RentBasisListPage extends Component<Props, State> {
     const {
       attributes,
       fetchAttributes,
-      fetchRentBasisList,
       receiveTopNavigationSettings,
       router: {location: {query}},
     } = this.props;
@@ -69,18 +71,9 @@ class RentBasisListPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    const page = Number(query.page);
-
-    if(!page || !isNumber(page) || query.page <= 1) {
-      this.setState({activePage: 1});
-    } else {
-      this.setState({activePage: page});
-      query.offset = (page - 1) * TABLE_PAGE_SIZE;
-    }
-    query.limit = TABLE_PAGE_SIZE;
-
-    fetchRentBasisList(getSearchQuery(query));
-    delete query.limit;
+    const page = query.page ? Number(query.page) : 1;
+    this.setState({activePage: page});
+    this.search();
 
     if(isEmpty(attributes)) {
       fetchAttributes();
@@ -92,22 +85,46 @@ class RentBasisListPage extends Component<Props, State> {
     initialize(FormNames.SEARCH, query);
   }
 
+  componentDidUpdate(prevProps) {
+    const {location: {query, search: currentSearch}, search, initialize} = this.props;
+    const {location: {search: prevSearch}} = prevProps;
+    const {activePage} = this.state;
+
+    if(currentSearch !== prevSearch) {
+      this.search();
+      if(query.search !== search) {
+        const searchQuery = {...query};
+        delete searchQuery.page;
+        initialize(FormNames.SEARCH, searchQuery);
+      }
+      const page = query.page ? Number(query.page) : 1;
+      if(page !== activePage) {
+        this.setState({activePage: page});
+      }
+    }
+  }
+
   handleSearchChange = (query) => {
-    const {fetchRentBasisList} = this.props;
     const {router} = this.context;
 
-    query.limit = TABLE_PAGE_SIZE;
-    fetchRentBasisList(getSearchQuery(query));
-
     this.setState({activePage: 1});
-    delete query.limit;
-    delete query.offset;
-    delete query.page;
 
     return router.push({
       pathname: getRouteById('rentBasis'),
       query,
     });
+  }
+
+  search = () => {
+    const {fetchRentBasisList, router: {location: {query}}} = this.props;
+
+    const searchQuery = {...query};
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+    if(page > 1) {
+      searchQuery.offset = (page - 1) * PAGE_SIZE;
+    }
+    searchQuery.limit = PAGE_SIZE;
+    fetchRentBasisList(getSearchQuery(searchQuery));
   }
 
   handleCreateButtonClick = () => {
@@ -139,22 +156,15 @@ class RentBasisListPage extends Component<Props, State> {
 
   handlePageClick = (page: number) => {
     const {router} = this.context;
-    const {fetchRentBasisList, router: {location: {query}}} = this.props;
+    const {router: {location: {query}}} = this.props;
 
     if(page > 1) {
       query.page = page;
-      query.offset = (page - 1) * TABLE_PAGE_SIZE;
     } else {
-      query.page = undefined;
-      query.offset = undefined;
+      delete query.page;
     }
-    query.limit = TABLE_PAGE_SIZE;
-
-    fetchRentBasisList(getSearchQuery(query));
 
     this.setState({activePage: page});
-    delete query.limit;
-    delete query.offset;
 
     return router.push({
       pathname: getRouteById('rentBasis'),
@@ -244,6 +254,9 @@ class RentBasisListPage extends Component<Props, State> {
   }
 }
 
+const formName = FormNames.SEARCH;
+const selector = formValueSelector(formName);
+
 export default flowRight(
   connect(
     (state) => {
@@ -251,6 +264,7 @@ export default flowRight(
         attributes: getAttributes(state),
         isFetching: getIsFetching(state),
         rentBasisListData: getRentBasisList(state),
+        search: selector(state, 'search'),
       };
     },
     {

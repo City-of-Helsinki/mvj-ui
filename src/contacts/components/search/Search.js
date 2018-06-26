@@ -25,8 +25,8 @@ class Search extends Component<Props> {
     this._isMounted = true;
   }
 
-  componentWillUpdate(nextProps: Object) {
-    if(this.props.search !== nextProps.search) {
+  componentDidUpdate(prevProps: Object) {
+    if(prevProps.search && (this.props.search !== prevProps.search)) {
       this.onSearchChange();
     }
   }
@@ -37,7 +37,9 @@ class Search extends Component<Props> {
     }
     const {onSearch, search} = this.props;
     const filters = {};
-    filters.search = search || undefined;
+    if(search) {
+      filters.search = search;
+    }
     onSearch(filters);
   }, 300);
 
@@ -68,7 +70,6 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     state => {
-
       return {
         search: selector(state, 'search'),
       };

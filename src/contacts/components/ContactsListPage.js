@@ -2,11 +2,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {initialize} from 'redux-form';
+import {formValueSelector, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import isNumber from 'lodash/isNumber';
 import {Row, Column} from 'react-foundation';
 
 import Button from '$components/button/Button';
@@ -42,8 +41,10 @@ type Props = {
   initializeContactForm: Function,
   initialize: Function,
   isFetching: boolean,
+  location: Object,
   receiveTopNavigationSettings: Function,
   router: Object,
+  search: ?string,
 }
 
 type State = {
@@ -62,7 +63,7 @@ class ContactListPage extends Component<Props, State> {
   };
 
   componentWillMount() {
-    const {attributes, fetchAttributes, fetchContacts, receiveTopNavigationSettings} = this.props;
+    const {attributes, fetchAttributes, receiveTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
 
     receiveTopNavigationSettings({
@@ -71,18 +72,9 @@ class ContactListPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    const page = Number(query.page);
-
-    if(!page || !isNumber(page) || query.page <= 1) {
-      this.setState({activePage: 1});
-    } else {
-      this.setState({activePage: page});
-      query.offset = (page - 1) * PAGE_SIZE;
-    }
-    query.limit = PAGE_SIZE;
-
-    fetchContacts(getSearchQuery(query));
-    delete query.limit;
+    const page = query.page ? Number(query.page) : 1;
+    this.setState({activePage: page});
+    this.search();
 
     if(isEmpty(attributes)) {
       fetchAttributes();
@@ -91,7 +83,28 @@ class ContactListPage extends Component<Props, State> {
 
   componentDidMount = () => {
     const {initialize, router: {location: {query}}} = this.props;
-    initialize(FormNames.SEARCH, query);
+    const searchQuery = {...query};
+    delete searchQuery.page;
+    initialize(FormNames.SEARCH, searchQuery);
+  }
+
+  componentDidUpdate(prevProps) {
+    const {location: {query, search: currentSearch}, search, initialize} = this.props;
+    const {location: {search: prevSearch}} = prevProps;
+    const {activePage} = this.state;
+
+    if(currentSearch !== prevSearch) {
+      this.search();
+      if(query.search !== search) {
+        const searchQuery = {...query};
+        delete searchQuery.page;
+        initialize(FormNames.SEARCH, searchQuery);
+      }
+      const page = query.page ? Number(query.page) : 1;
+      if(page !== activePage) {
+        this.setState({activePage: page});
+      }
+    }
   }
 
   handleCreateButtonClick = () => {
@@ -108,21 +121,25 @@ class ContactListPage extends Component<Props, State> {
   }
 
   handleSearchChange = (query: any) => {
-    const {fetchContacts} = this.props;
     const {router} = this.context;
-
-    query.limit = PAGE_SIZE;
-    fetchContacts(getSearchQuery(query));
-
     this.setState({activePage: 1});
-    delete query.limit;
-    delete query.offset;
-    delete query.page;
 
     return router.push({
       pathname: getRouteById('contacts'),
       query,
     });
+  }
+
+  search = () => {
+    const {fetchContacts, router: {location: {query}}} = this.props;
+
+    const searchQuery = {...query};
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+    if(page > 1) {
+      searchQuery.offset = (page - 1) * PAGE_SIZE;
+    }
+    searchQuery.limit = PAGE_SIZE;
+    fetchContacts(getSearchQuery(searchQuery));
   }
 
   handleRowClick = (id) => {
@@ -137,22 +154,15 @@ class ContactListPage extends Component<Props, State> {
 
   handlePageClick = (page: number) => {
     const {router} = this.context;
-    const {fetchContacts, router: {location: {query}}} = this.props;
+    const {router: {location: {query}}} = this.props;
 
     if(page > 1) {
       query.page = page;
-      query.offset = (page - 1) * PAGE_SIZE;
     } else {
-      query.page = undefined;
-      query.offset = undefined;
+      delete query.page;
     }
-    query.limit = PAGE_SIZE;
-
-    fetchContacts(getSearchQuery(query));
 
     this.setState({activePage: page});
-    delete query.limit;
-    delete query.offset;
 
     return router.push({
       pathname: getRouteById('contacts'),
@@ -235,6 +245,9 @@ class ContactListPage extends Component<Props, State> {
   }
 }
 
+const formName = FormNames.SEARCH;
+const selector = formValueSelector(formName);
+
 export default flowRight(
   connect(
     (state: RootState) => {
@@ -242,6 +255,7 @@ export default flowRight(
         attributes: getAttributes(state),
         contactList: getContactList(state),
         isFetching: getIsFetching(state),
+        search: selector(state, 'search'),
       };
     },
     {

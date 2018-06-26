@@ -3,11 +3,10 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
-import {initialize} from 'redux-form';
+import {getFormValues, initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
@@ -56,8 +55,10 @@ type Props = {
   isFetching: boolean,
   leases: LeaseList,
   lessors: Array<Object>,
+  location: Object,
   router: Object,
   receiveTopNavigationSettings: Function,
+  searchFormValues: Object,
 }
 
 type State = {
@@ -84,7 +85,6 @@ class LeaseListPage extends Component<Props, State> {
       attributes,
       fetchAreaNoteList,
       fetchAttributes,
-      fetchLeases,
       receiveTopNavigationSettings,
     } = this.props;
     const {router: {location: {query}}} = this.props;
@@ -95,18 +95,9 @@ class LeaseListPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    const searchQuery = {...query};
-    const page = Number(searchQuery.page);
-
-    if(!page || !isNumber(page) || page <= 1) {
-      this.setState({activePage: 1});
-    } else {
-      this.setState({activePage: page});
-      searchQuery.offset = (page - 1) * PAGE_SIZE;
-    }
-    searchQuery.limit = PAGE_SIZE;
-
-    fetchLeases(getSearchQuery(query));
+    const page = query.page ? Number(query.page) : 1;
+    this.setState({activePage: page});
+    this.search();
 
     if(isEmpty(attributes)) {
       fetchAttributes();
@@ -118,6 +109,25 @@ class LeaseListPage extends Component<Props, State> {
   componentDidMount = () => {
     const {initialize, router: {location: {query}}} = this.props;
     initialize(FormNames.SEARCH, query);
+  }
+
+  componentDidUpdate(prevProps) {
+    const {location: {query, search: currentSearch}, searchFormValues, initialize} = this.props;
+    const {location: {search: prevSearch}} = prevProps;
+    const {activePage} = this.state;
+
+    if(currentSearch !== prevSearch) {
+      this.search();
+      if(query !== searchFormValues) {
+        const searchQuery = {...query};
+        delete searchQuery.page;
+        initialize(FormNames.SEARCH, searchQuery);
+      }
+      const page = query.page ? Number(query.page) : 1;
+      if(page !== activePage) {
+        this.setState({activePage: page});
+      }
+    }
   }
 
   showCreateLeaseModal = () => {
@@ -136,14 +146,20 @@ class LeaseListPage extends Component<Props, State> {
     });
   }
 
-  handleSearchChange = (query) => {
-    const {fetchLeases} = this.props;
-    const {router} = this.context;
+  search = () => {
+    const {fetchLeases, router: {location: {query}}} = this.props;
 
     const searchQuery = {...query};
+    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+    if(page > 1) {
+      searchQuery.offset = (page - 1) * PAGE_SIZE;
+    }
     searchQuery.limit = PAGE_SIZE;
     fetchLeases(getSearchQuery(searchQuery));
-    delete query.page;
+  }
+
+  handleSearchChange = (query) => {
+    const {router} = this.context;
 
     this.setState({activePage: 1});
     return router.push({
@@ -164,23 +180,15 @@ class LeaseListPage extends Component<Props, State> {
 
   handlePageClick = (page: number) => {
     const {router} = this.context;
-    const {fetchLeases, router: {location: {query}}} = this.props;
+    const {router: {location: {query}}} = this.props;
 
     if(page > 1) {
       query.page = page;
-      query.offset = (page - 1) * PAGE_SIZE;
     } else {
-      query.page = undefined;
-      query.offset = undefined;
+      delete query.page;
     }
-    query.limit = PAGE_SIZE;
-
-    fetchLeases(getSearchQuery(query));
 
     this.setState({activePage: page});
-    delete query.limit;
-    delete query.offset;
-
     return router.push({
       pathname: getRouteById('leases'),
       query,
@@ -300,6 +308,7 @@ class LeaseListPage extends Component<Props, State> {
     );
   }
 }
+const formName = FormNames.SEARCH;
 
 export default flowRight(
   connect(
@@ -309,6 +318,7 @@ export default flowRight(
         attributes: getAttributes(state),
         isFetching: getIsFetching(state),
         leases: getLeasesList(state),
+        searchFormValues: getFormValues(formName)(state),
       };
     },
     {

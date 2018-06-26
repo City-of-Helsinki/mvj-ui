@@ -25,8 +25,8 @@ type Props = {
   districts: Array<Object>,
   fetchDistrictsByMunicipality: Function,
   formValues: Object,
-  identifier: string,
   isFetchingAttributes: boolean,
+  location: Object,
   municipality: string,
   onSearch: Function,
   router: Object,
@@ -37,19 +37,19 @@ type State = {
 }
 
 class Search extends Component<Props, State> {
+  _isMounted: boolean;
+
   state = {
     isBasicSearch: true,
   }
 
-  _isMounted: boolean;
-
   componentDidMount() {
     const {router: {location: {query}}} = this.props;
     this._isMounted = true;
+
     const searchQuery = {...query};
     delete searchQuery.page;
-    // TODO: This is only temporarily solution to filter using search parameter and should be fixed when search parameter exists on API
-    if(!!toArray(searchQuery).length && !searchQuery.identifier) {
+    if(toArray(searchQuery).length && !searchQuery.identifier) {
       this.setState({
         isBasicSearch: false,
       });
@@ -60,21 +60,31 @@ class Search extends Component<Props, State> {
     this._isMounted = false;
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const {change, fetchDistrictsByMunicipality} = this.props;
-    if (Number(prevProps.municipality) !== Number(this.props.municipality)) {
+
+    if(Number(prevProps.municipality) !== Number(this.props.municipality)) {
       if(this.props.municipality) {
         fetchDistrictsByMunicipality(this.props.municipality);
-        if(this.props.municipality) {
-          change('district', '');
-        }
-      } else {
-        change('district', '');
       }
+      change('district', '');
     }
 
-    if(prevProps.formValues !== this.props.formValues) {
-      if(!(isEmpty(prevProps.formValues))) {
+    if(prevState.isBasicSearch !== this.state.isBasicSearch) {
+      this.onSearchChange();
+    } else if(JSON.stringify(prevProps.formValues || {}) !== JSON.stringify(this.props.formValues || {})) {
+      const {location: {query, search: currentSearch}} = this.props;
+      const {location: {search: prevSearch}} = prevProps;
+
+      if(currentSearch !== prevSearch) {
+        const searchQuery = {...query};
+        delete searchQuery.page;
+        if(toArray(searchQuery).length && !searchQuery.identifier) {
+          this.setState({isBasicSearch: false});
+        } else {
+          this.setState({isBasicSearch: true});
+        }
+      } else {
         this.onSearchChange();
       }
     }
@@ -83,34 +93,35 @@ class Search extends Component<Props, State> {
   onSearchChange = debounce(() => {
     if(!this._isMounted) { return;}
 
-    const {
-      formValues,
-      identifier,
-      onSearch,
-    } = this.props;
+    const {formValues, onSearch} = this.props;
     const {isBasicSearch} = this.state;
 
-    let filters = {};
+    const filters = {};
     if(isBasicSearch) {
-      if(identifier) {
-        // TODO: This is only temporarily solution to filter using search parameter and should be fixed when search parameter exists on API
-        filters.identifier = identifier || undefined;
+      if(!isEmpty(formValues)) {
+        if(formValues.identifier) {
+          filters.identifier = formValues.identifier;
+        }
       }
     } else {
-      filters = {...formValues};
-      filters.type = filters.type ? Number(filters.type) : undefined;
-      filters.municipality = filters.municipality ? Number(filters.municipality) : undefined;
-      filters.district = filters.district ? Number(filters.district) : undefined;
-      // TODO: This is only temporarily solution to filter using search parameter and should be fixed when search parameter exists on API
-      filters.identifier = undefined;
+      if(!isEmpty(formValues)) {
+        if(formValues.type) {
+          filters.type = Number(formValues.type);
+        }
+        if(formValues.municipality) {
+          filters.municipality = Number(formValues.municipality);
+        }
+        if(formValues.district) {
+          filters.district = Number(formValues.district);
+        }
+      }
     }
-
     onSearch(filters);
-  }, 500);
+  }, 300);
 
   toggleSearchType = () => {
-    this.onSearchChange();
     this.setState({isBasicSearch: !this.state.isBasicSearch});
+    this.onSearchChange();
   }
 
   render () {
@@ -365,7 +376,6 @@ export default flowRight(
         attributes: getAttributes(state),
         districts: getDistrictsByMunicipality(state, municipality),
         formValues: getFormValues(formName)(state),
-        identifier: selector(state, 'identifier'),
         isFetchingAttributes: getIsFetchingAttributes(state),
         municipality: municipality,
       };
