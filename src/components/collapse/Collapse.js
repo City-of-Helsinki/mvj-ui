@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 import ReactResizeDetector from 'react-resize-detector';
@@ -17,12 +17,12 @@ type Props = {
 
 type State = {
   contentHeight: number,
+  isCollapsing: boolean,
+  isExpanding: boolean,
   isOpen: boolean,
-  isResizing: boolean,
-  isVisible: boolean,
 }
 
-class Collapse extends Component<Props, State> {
+class Collapse extends PureComponent<Props, State> {
   component: any
   content: any
   _isMounted: boolean;
@@ -33,18 +33,15 @@ class Collapse extends Component<Props, State> {
     showTitleOnOpen: false,
   };
 
-  componentWillMount() {
-    const {defaultOpen} = this.props;
-    this.setState({
-      isOpen: defaultOpen,
-      isResizing: false,
-      isVisible: defaultOpen,
-    });
-  }
+  state = {
+    contentHeight: 0,
+    isCollapsing: false,
+    isExpanding: false,
+    isOpen: this.props.defaultOpen,
+  };
 
   componentDidMount() {
     this.component.addEventListener('transitionend', this.transitionEnds);
-    this.calculateHeight();
     this._isMounted = true;
   }
 
@@ -53,24 +50,14 @@ class Collapse extends Component<Props, State> {
     this._isMounted = false;
   }
 
-  componentDidUpdate = (nextProps: Object, nextState: Object) => {
-    if(this.state.isOpen !== nextState.isOpen || this.props !== nextProps) {
+  componentDidUpdate = (prevProps: Object, prevState: Object) => {
+    if(this.state.isOpen !== prevState.isOpen || this.props !== prevProps) {
       this.calculateHeight();
     }
   }
 
   onResize = () => {
-    this.setState({isResizing: true});
     this.calculateHeight();
-
-    setTimeout(
-      () => {
-        if(this._isMounted) {
-          this.setState({isResizing: false});
-        }
-      },
-      200
-    );
   }
 
   calculateHeight = () => {
@@ -81,14 +68,27 @@ class Collapse extends Component<Props, State> {
   }
 
   transitionEnds = () => {
-    const {isOpen} = this.state;
-    this.setState({isVisible: isOpen});
+    this.setState({
+      isCollapsing: false,
+      isExpanding: false,
+    });
   }
 
   handleToggle = () => {
-    return this.setState({
-      isOpen: !this.state.isOpen,
-    });
+    const {isOpen} = this.state;
+    if(isOpen) {
+      this.setState({
+        isCollapsing: true,
+        isExpanding: false,
+        isOpen: false,
+      });
+    } else {
+      this.setState({
+        isCollapsing: false,
+        isExpanding: true,
+        isOpen: true,
+      });
+    }
   };
 
   getChildrenOfHeader = (header: any) => {
@@ -99,13 +99,19 @@ class Collapse extends Component<Props, State> {
   }
 
   render() {
-    const {contentHeight, isOpen, isResizing, isVisible} = this.state;
+    const {contentHeight, isOpen, isCollapsing, isExpanding} = this.state;
     const {children, className, hasErrors, header, headerTitle, showTitleOnOpen} = this.props;
 
     return (
       <div
         ref={(ref) => this.component = ref}
-        className={classNames('collapse', className, {'open': isOpen}, {'is-resizing': isResizing})}
+        className={classNames(
+          'collapse',
+          className,
+          {'open': isOpen},
+          {'is-collapsing': isCollapsing},
+          {'is-expanding': isExpanding},
+        )}
       >
         <div className="collapse__header">
           <div className='icon-wrapper' onClick={this.handleToggle}>
@@ -128,7 +134,7 @@ class Collapse extends Component<Props, State> {
           </div>
         </div>
         <div
-          className={classNames('collapse__content', {'visible': isVisible})}
+          className={classNames('collapse__content')}
           style={{maxHeight: contentHeight}}>
           <div
             ref={(ref) => this.content = ref}
