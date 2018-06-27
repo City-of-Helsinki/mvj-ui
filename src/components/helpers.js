@@ -18,15 +18,18 @@ export const getRentsTotalAmount = (rents: Array<Object>) => {
 };
 
 const getRentAmount = (rent: Object) => {
-  return Number(get(rent, 'amount', 0));
+  const amount = get(rent, 'amount');
+  return amount !== null ? Number(amount) : null;
 };
 
 export const getRentExplanationAmount = (explanation: Object) => {
-  return Number(get(explanation, 'amount', 0));
+  const amount = get(explanation, 'amount');
+  return amount !== null ? Number(amount) : null;
 };
 
 export const getRentSubItemAmount = (subItem: Object) => {
-  return Number(get(subItem, 'amount', 0));
+  const amount = get(subItem, 'amount');
+  return amount !== null ? Number(amount) : null;
 };
 
 export const getRentExplanationDescription = (explanation: Object, attributes: Attributes) => {
@@ -59,6 +62,10 @@ export const getRentSubItemDescription = (subItem: Object, attributes: Attribute
   switch(subjectType) {
     case RentSubItemSubjectType.INDEX:
       return `Indeksitarkistus (vertailuluku ${get(subItem, 'subject.number')})`;
+    case RentSubItemSubjectType.RATIO:
+      return get(subItem, 'subject.description') || '-' ;
+    case RentSubItemSubjectType.NEW_BASE_RENT:
+      return get(subItem, 'subject.description') || '-' ;
     case RentSubItemSubjectType.RENT_ADJUSTMENT:
       switch (type) {
         case RentSubItemType.DISCOUNT:
@@ -66,7 +73,7 @@ export const getRentSubItemDescription = (subItem: Object, attributes: Attribute
         case RentSubItemType.INCREASE:
           return `${getLabelOfOption(rentAdjustementTypeOptions, get(subItem, 'subject.type'))} (${get(subItem, 'subject.full_amount')} ${getLabelOfOption(amountTypeOptions, get(subItem, 'subject.amount_type'))})`;
         default:
-          return 0;
+          return '-';
       }
     default:
       return 0;
