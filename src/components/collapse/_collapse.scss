@@ -155,6 +155,7 @@
 
   &__content {
     overflow: hidden;
+    position: relative;
     padding: 0;
   }
 
@@ -172,6 +173,7 @@
 
     .collapse__content {
       height: auto;
+      overflow: visible;
     }
   }
 
@@ -184,6 +186,7 @@
    {
     .collapse__content {
       @include transition(0.4s, max-height, ease);
+      overflow: hidden;
     }
 
     .collapse__header {
@@ -231,10 +234,22 @@
     }
 
     &.open {
+      .collapse__content {
+        overflow: visible !important;
+      }
+
       .collapse__header {
         i.arrow-icon {
           @include rotate(90deg);
         }
+      }
+    }
+
+    &.is-collapsing,
+    &.is-expanding
+     {
+      .collapse__content {
+        overflow: hidden !important;
       }
     }
   }
