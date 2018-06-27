@@ -3,6 +3,17 @@ import get from 'lodash/get';
 
 import {formatDecimalNumberForDb, getLabelOfOption} from '$util/helpers';
 
+const getContentIncoicePayments = (invoice: Object) => {
+  const payments = get(invoice, 'payments', []);
+  return payments.map((payment) => {
+    return {
+      id: payment.id,
+      paid_amount: get(payment, 'paid_amount'),
+      paid_date: get(payment, 'paid_date'),
+    };
+  });
+};
+
 const getContentIncoiceRows = (invoice: Object) => {
   const rows = get(invoice, 'rows', []);
   return rows.map((row) => {
@@ -57,8 +68,7 @@ const getContentIncoiveItem = (invoice: Object) => {
     postpone_date: get(invoice, 'postpone_date'),
     total_amount: get(invoice, 'total_amount'),
     billed_amount: get(invoice, 'billed_amount'),
-    paid_amount: get(invoice, 'paid_amount'),
-    paid_date: get(invoice, 'paid_date'),
+    payments: getContentIncoicePayments(invoice),
     outstanding_amount: get(invoice, 'outstanding_amount'),
     payment_notification_date: get(invoice, 'payment_notification_date'),
     collection_charge: get(invoice, 'collection_charge'),
@@ -87,13 +97,26 @@ export const getInvoiceSharePercentage = (invoice: Object, precision: number = 0
   return (Number(numerator)/Number(denominator)*100).toFixed(precision);
 };
 
+export const getInvoicePaymentsForDb = (invoice: Object) => {
+  const payments = get(invoice, 'payments', []);
+  return payments.map((payment) => {
+    return {
+      id: invoice.id,
+      paid_amount: formatDecimalNumberForDb(get(payment, 'paid_amount')),
+      paid_date: get(payment, 'paid_date'),
+    };
+  });
+};
+
 export const getEditedInvoiceForDb = (invoice: Object) => {
   return {
     id: invoice.id,
+    state: get(invoice, 'state'),
     due_date: get(invoice, 'due_date'),
     billing_period_start_date: get(invoice, 'billing_period_start_date'),
     billing_period_end_date: get(invoice, 'billing_period_end_date'),
     total_amount: formatDecimalNumberForDb(get(invoice, 'total_amount')),
+    payments: getInvoicePaymentsForDb(invoice),
     notes: get(invoice, 'notes'),
     rows: getInvoiceRowsForDb(invoice),
   };
