@@ -34,10 +34,12 @@ export const RentExplanationType = {
 /**
  * Rent sub item subject type enumerable.
  *
- * @type {{RENT_ADJUSTMENT: string,}}
+ * @type {{INDEX: string, NEW_BASE_RENT: string, RATIO: string, RENT_ADJUSTMENT: string,}}
  */
 export const RentSubItemSubjectType = {
   INDEX: 'index',
+  NEW_BASE_RENT: 'new_base_rent',
+  RATIO: 'ratio',
   RENT_ADJUSTMENT: 'rentadjustment',
 };
 

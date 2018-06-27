@@ -6,9 +6,12 @@ import type {Reducer} from '../types';
 import type {
   Attributes,
   ReceiveAttributesAction,
+  Invoice,
   InvoiceList,
   ReceiveInvoicesAction,
   ReceiveIsCreateOpenAction,
+  ReceiveIsCreateCreditOpenAction,
+  ReceivePatchedInvoiceAction,
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -25,6 +28,12 @@ const isCreateOpenReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
+const isCreateCreditOpenReducer: Reducer<boolean> = handleActions({
+  ['mvj/invoices/RECEIVE_IS_CREATE_CREDIT_OPEN']: (state: boolean, {payload: isOpen}: ReceiveIsCreateCreditOpenAction) => {
+    return isOpen;
+  },
+}, false);
+
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/invoices/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
@@ -37,9 +46,18 @@ const invoicesReducer: Reducer<InvoiceList> = handleActions({
   },
 }, []);
 
+const patchedInvoiceReducer: Reducer<?Invoice> = handleActions({
+  ['mvj/invoices/RECEIVE_PATCHED']: (state: ?Invoice, {payload: invoice}: ReceivePatchedInvoiceAction) => {
+    return invoice;
+  },
+  'mvj/invoices/CLEAR_PATCHED': () => null,
+}, null);
+
 export default combineReducers({
   attributes: attributesReducer,
   invoices: invoicesReducer,
   isCreateOpen: isCreateOpenReducer,
+  isCreateCreditOpen: isCreateCreditOpenReducer,
   isFetching: isFetchingReducer,
+  patchedInvoice: patchedInvoiceReducer,
 });

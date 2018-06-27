@@ -8114,8 +8114,8 @@ react-reconciler@^0.7.0:
     prop-types "^15.6.0"
 
 react-redux-toastr@^7.2.6:
-  version "7.2.6"
-  resolved "https://registry.yarnpkg.com/react-redux-toastr/-/react-redux-toastr-7.2.6.tgz#fce26c72623856aba87a9e95124076cff3033e2a"
+  version "7.3.0"
+  resolved "https://registry.yarnpkg.com/react-redux-toastr/-/react-redux-toastr-7.3.0.tgz#716c5916375e65106e9173faaf975182e8c1dc8a"
   dependencies:
     classnames "^2.2.3"
     eventemitter3 "^2.0.3"

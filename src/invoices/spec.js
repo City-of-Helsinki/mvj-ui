@@ -3,12 +3,24 @@ import {
   receiveAttributes,
   receiveInvoices,
   receiveIsCreateOpen,
+  receiveIsCreateCreditOpen,
   fetchInvoices,
   createInvoice,
   patchInvoice,
+  receivePatchedInvoice,
+  clearPatchedInvoice,
   notFound,
 } from './actions';
 import invoiceReducer from './reducer';
+
+const rootState = {
+  attributes: {},
+  invoices: [],
+  isCreateOpen: false,
+  isCreateCreditOpen: false,
+  isFetching: false,
+  patchedInvoice: null,
+};
 
 describe('Invoices', () => {
 
@@ -21,13 +33,8 @@ describe('Invoices', () => {
           val1: 'Foo',
           val2: 'Bar',
         };
-
-        const newState = {
-          attributes: dummyAttributes,
-          invoices: [],
-          isCreateOpen: false,
-          isFetching: false,
-        };
+        const newState = {...rootState};
+        newState.attributes = dummyAttributes;
 
         const state = invoiceReducer({}, receiveAttributes(dummyAttributes));
         expect(state).to.deep.equal(newState);
@@ -40,13 +47,8 @@ describe('Invoices', () => {
             label: 'Foo',
           },
         ];
-
-        const newState = {
-          attributes: {},
-          invoices: dummyInvoices,
-          isCreateOpen: false,
-          isFetching: false,
-        };
+        const newState = {...rootState};
+        newState.invoices = dummyInvoices;
 
         const state = invoiceReducer({}, receiveInvoices(dummyInvoices));
         expect(state).to.deep.equal(newState);
@@ -54,63 +56,75 @@ describe('Invoices', () => {
 
       it('should update isCreateOpen flag to false', () => {
         const isCreateOpen = true;
-        const newState = {
-          attributes: {},
-          invoices: [],
-          isCreateOpen: isCreateOpen,
-          isFetching: false,
-        };
+        const newState = {...rootState};
+        newState.isCreateOpen = isCreateOpen;
 
         const state = invoiceReducer({}, receiveIsCreateOpen(isCreateOpen));
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update isCreateCreditOpen flag to false', () => {
+        const isCreateCreditOpen = true;
+        const newState = {...rootState};
+        newState.isCreateCreditOpen = isCreateCreditOpen;
+
+        const state = invoiceReducer({}, receiveIsCreateCreditOpen(isCreateCreditOpen));
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isFetching flag to true when fetching invoices', () => {
-        const newState = {
-          attributes: {},
-          invoices: [],
-          isCreateOpen: false,
-          isFetching: true,
-        };
+        const newState = {...rootState};
+        newState.isFetching = true;
 
         const state = invoiceReducer({}, fetchInvoices());
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true when creating invoice', () => {
-        const newState = {
-          attributes: {},
-          invoices: [],
-          isCreateOpen: false,
-          isFetching: true,
-        };
+        const newState = {...rootState};
+        newState.isFetching = true;
 
         const state = invoiceReducer({}, createInvoice({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true when patching invoice', () => {
-        const newState = {
-          attributes: {},
-          invoices: [],
-          isCreateOpen: false,
-          isFetching: true,
-        };
+        const newState = {...rootState};
+        newState.isFetching = true;
 
         const state = invoiceReducer({}, patchInvoice({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to false by notFound', () => {
-        const newState = {
-          attributes: {},
-          invoices: [],
-          isCreateOpen: false,
-          isFetching: false,
-        };
+        const newState = {...rootState};
+        newState.isFetching = false;
 
         let state = invoiceReducer({}, fetchInvoices());
         state = invoiceReducer(state, notFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update patchedInvoice', () => {
+        const dummyInvoice = {
+          foo: 'bar',
+        };
+        const newState = {...rootState};
+        newState.patchedInvoice = dummyInvoice;
+
+        const state = invoiceReducer({}, receivePatchedInvoice(dummyInvoice));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should clear patchedInvoice', () => {
+        const dummyInvoice = {
+          foo: 'bar',
+        };
+        const newState = {...rootState};
+        newState.patchedInvoice = null;
+
+        let state = invoiceReducer({}, receivePatchedInvoice(dummyInvoice));
+        state = invoiceReducer(state, clearPatchedInvoice());
         expect(state).to.deep.equal(newState);
       });
     });
