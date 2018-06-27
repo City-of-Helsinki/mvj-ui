@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
-import {change, formValueSelector, getFormValues, reduxForm} from 'redux-form';
+import {clearFields, formValueSelector, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
@@ -23,6 +23,7 @@ type Props = {
   anyTouched: boolean,
   attributes: Attributes,
   change: Function,
+  clearFields: Function,
   districts: Array<Object>,
   fetchDistrictsByMunicipality: Function,
   formValues: Object,
@@ -47,10 +48,11 @@ class Search extends Component<Props, State> {
   componentDidMount() {
     const {router: {location: {query}}} = this.props;
     this._isMounted = true;
-    const searchQuery = {...query};
-    delete searchQuery.page;
+    const advancedSearchValues = {...query};
+    delete advancedSearchValues.page;
+    delete advancedSearchValues.identifier;
 
-    if(toArray(searchQuery).length && !searchQuery.identifier) {
+    if(toArray(advancedSearchValues).length) {
       this.setState({
         isBasicSearch: false,
       });
@@ -62,21 +64,26 @@ class Search extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const {change, fetchDistrictsByMunicipality} = this.props;
+    const {clearFields, fetchDistrictsByMunicipality} = this.props;
 
     if(Number(prevProps.municipality) !== Number(this.props.municipality)) {
       if(this.props.municipality) {
         fetchDistrictsByMunicipality(this.props.municipality);
       }
       if(this.props.anyTouched) {
-        change('district', null);
+        clearFields(false, false, 'district');
       }
     }
 
     if(this.props.anyTouched  && (JSON.stringify(prevProps.formValues || {}) !== JSON.stringify(this.props.formValues || {}))) {
       const {isBasicSearch} = this.state;
+      const {formValues} = this.props;
+
       let newIsBasicSearch = isBasicSearch;
-      if(toArray(this.props.formValues).length && !this.props.formValues.identifier) {
+      const advancedFormValues = {...formValues};
+      delete advancedFormValues.identifier;
+
+      if(toArray(advancedFormValues).length) {
         newIsBasicSearch = false;
       } else {
         newIsBasicSearch = true;
@@ -402,7 +409,7 @@ export default flowRight(
       };
     },
     {
-      change,
+      clearFields,
       fetchDistrictsByMunicipality,
     }
   ),
