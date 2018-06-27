@@ -46,7 +46,7 @@ export const RentSubItemSubjectType = {
 /**
  * Rent sub item type enumerable.
  *
- * @type {{DISCOUNT: string, INCREASE: string, RATIO: string,}}
+ * @type {{DISCOUNT: string, INCREASE: string,}}
  */
 export const RentSubItemType = {
   DISCOUNT: 'discount',

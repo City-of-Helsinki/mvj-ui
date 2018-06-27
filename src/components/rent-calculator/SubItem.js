@@ -52,9 +52,7 @@ const SubItem = ({attributes, level = 1, subItem}: Props) => {
             subItem={item}
           />
         );
-      })
-
-      }
+      })}
     </div>
   );
 };

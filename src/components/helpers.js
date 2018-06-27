@@ -76,6 +76,6 @@ export const getRentSubItemDescription = (subItem: Object, attributes: Attribute
           return '-';
       }
     default:
-      return 0;
+      return '-';
   }
 };
