@@ -10,10 +10,10 @@ import isEmpty from 'lodash/isEmpty';
 import InvoiceModalEdit from './InvoiceModalEdit';
 import Table from '$components/table/Table';
 import TruncatedText from '$components/content/TruncatedText';
-import {patchInvoice} from '$src/invoices/actions';
+import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {formatReceivableTypesString, getContentInvoices, getEditedInvoiceForDb} from '$src/invoices/helpers';
+import {formatReceivableTypesString, getContentIncoiveItem, getContentInvoices, getEditedInvoiceForDb} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDateRange,
@@ -25,20 +25,22 @@ import {
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
-import {getAttributes as getInvoiceAttributes, getInvoices} from '$src/invoices/selectors';
+import {getAttributes as getInvoiceAttributes, getInvoices, getPatchedInvoice} from '$src/invoices/selectors';
 
-import type {Attributes as InvoiceAttributes, InvoiceList} from '$src/invoices/types';
+import type {Attributes as InvoiceAttributes, Invoice, InvoiceList} from '$src/invoices/types';
 
 const TABLE_MAX_HEIGHT = 400;
 const MODAL_WIDTH = 700;
 
 type Props = {
-    destroy: Function,
-    initialize: Function,
-    invoiceAttributes: InvoiceAttributes,
-    invoices: InvoiceList,
-    patchInvoice: Function,
-    refundBill: Function,
+  clearPatchedInvoice: Function,
+  destroy: Function,
+  initialize: Function,
+  invoiceAttributes: InvoiceAttributes,
+  invoices: InvoiceList,
+  patchInvoice: Function,
+  patchedInvoice: ?Invoice,
+  refundBill: Function,
 }
 
 type State = {
@@ -69,7 +71,7 @@ class InvoicesTableEdit extends Component<Props, State> {
   tableWrapper : any
 
   componentDidMount() {
-    const {invoices} = this.props;
+    const {clearPatchedInvoice, invoices} = this.props;
 
     this.calculateHeight();
     this.calculateTableWidth();
@@ -78,6 +80,7 @@ class InvoicesTableEdit extends Component<Props, State> {
     if(!isEmpty(invoices)) {
       this.updateInvoiceItems();
     }
+    clearPatchedInvoice();
   }
 
   componentDidUpdate(prevProps) {
@@ -86,6 +89,11 @@ class InvoicesTableEdit extends Component<Props, State> {
 
     if(prevProps.invoices !== this.props.invoices) {
       this.updateInvoiceItems();
+    }
+    if(this.props.patchedInvoice) {
+      const {clearPatchedInvoice, patchedInvoice} = this.props;
+      this.initilizeEditInvoiceForm(getContentIncoiveItem(patchedInvoice));
+      clearPatchedInvoice();
     }
   }
 
@@ -323,9 +331,11 @@ export default flowRight(
       return {
         invoiceAttributes: getInvoiceAttributes(state),
         invoices: getInvoices(state),
+        patchedInvoice: getPatchedInvoice(state),
       };
     },
     {
+      clearPatchedInvoice,
       destroy,
       initialize,
       patchInvoice,

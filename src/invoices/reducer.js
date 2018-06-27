@@ -6,9 +6,11 @@ import type {Reducer} from '../types';
 import type {
   Attributes,
   ReceiveAttributesAction,
+  Invoice,
   InvoiceList,
   ReceiveInvoicesAction,
   ReceiveIsCreateOpenAction,
+  ReceivePatchedInvoiceAction,
 } from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
@@ -37,9 +39,17 @@ const invoicesReducer: Reducer<InvoiceList> = handleActions({
   },
 }, []);
 
+const patchedInvoiceReducer: Reducer<?Invoice> = handleActions({
+  ['mvj/invoices/RECEIVE_PATCHED']: (state: ?Invoice, {payload: invoice}: ReceivePatchedInvoiceAction) => {
+    return invoice;
+  },
+  'mvj/invoices/CLEAR_PATCHED': () => null,
+}, null);
+
 export default combineReducers({
   attributes: attributesReducer,
   invoices: invoicesReducer,
   isCreateOpen: isCreateOpenReducer,
   isFetching: isFetchingReducer,
+  patchedInvoice: patchedInvoiceReducer,
 });

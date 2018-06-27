@@ -23,7 +23,7 @@ const getContentIncoiceRows = (invoice: Object) => {
       tenantFull: get(row, 'tenant'),
       description: get(row, 'description'),
       amount: get(row, 'amount'),
-      receivable_type: get(row, 'receivable_type'),
+      receivable_type: get(row, 'receivable_type.id') || get(row, 'receivable_type'),
     };
   });
 };
@@ -51,7 +51,7 @@ const getInvoiceTotalSharePercentage = (rows: Array<Object>) => {
   return totalShare;
 };
 
-const getContentIncoiveItem = (invoice: Object) => {
+export const getContentIncoiveItem = (invoice: Object) => {
   const rows = getContentIncoiceRows(invoice);
   return {
     id: invoice.id,
@@ -111,7 +111,6 @@ export const getInvoicePaymentsForDb = (invoice: Object) => {
 export const getEditedInvoiceForDb = (invoice: Object) => {
   return {
     id: invoice.id,
-    state: get(invoice, 'state'),
     due_date: get(invoice, 'due_date'),
     billing_period_start_date: get(invoice, 'billing_period_start_date'),
     billing_period_end_date: get(invoice, 'billing_period_end_date'),

@@ -136,13 +136,6 @@ const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
               })}
             </ListItems>
           }
-          <FormFieldLabel>Maksettu määrä</FormFieldLabel>
-          <p>
-            {invoice.paid_amount
-              ? `${formatNumber(invoice.paid_amount)} €`
-              : '-'
-            }
-          </p>
         </Column>
         <Column small={6} medium={4}>
           <FormFieldLabel>Maksamaton määrä</FormFieldLabel>

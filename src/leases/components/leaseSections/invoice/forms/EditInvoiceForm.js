@@ -102,6 +102,7 @@ const EditInvoiceForm = ({
   invoiceAttributes,
   lease,
 }: Props) => {
+  const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
   const tenantOptions = getInvoiceTenantOptions(lease);
   const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
   const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
@@ -139,10 +140,8 @@ const EditInvoiceForm = ({
       </Row>
       <Row>
         <Column medium={4}>
-          <FormField
-            fieldAttributes={get(invoiceAttributes, 'state')}
-            name='state'
-          />
+          <FormFieldLabel>Laskun tila</FormFieldLabel>
+          <p>{getLabelOfOption(stateOptions, invoice.state) || '-'}</p>
         </Column>
         <Column medium={4}>
           <Row>

@@ -5,6 +5,7 @@ import type {Selector} from '../types';
 import type {
   Attributes,
   InvoiceState,
+  Invoice,
   InvoiceList,
 } from './types';
 
@@ -19,3 +20,6 @@ export const getAttributes: Selector<Attributes, void> = (state: InvoiceState): 
 
 export const getInvoices: Selector<InvoiceList, void> = (state: InvoiceState): InvoiceList =>
   state.invoice.invoices;
+
+export const getPatchedInvoice: Selector<?Invoice, void> = (state: InvoiceState): ?Invoice =>
+  state.invoice.patchedInvoice;

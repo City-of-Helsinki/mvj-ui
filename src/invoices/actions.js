@@ -12,6 +12,8 @@ import type {
   ReceiveInvoicesAction,
   CreateInvoiceAction,
   PatchInvoiceAction,
+  ReceivePatchedInvoiceAction,
+  ClearPatchedInvoiceAction,
   InvoiceNotFoundAction,
   ReceiveIsCreateOpenAction,
 } from './types';
@@ -33,6 +35,12 @@ export const createInvoice = (invoice: Invoice): CreateInvoiceAction =>
 
 export const patchInvoice = (invoice: Invoice): PatchInvoiceAction =>
   createAction('mvj/invoices/PATCH')(invoice);
+
+export const receivePatchedInvoice = (invoice: Invoice): ReceivePatchedInvoiceAction =>
+  createAction('mvj/invoices/RECEIVE_PATCHED')(invoice);
+
+export const clearPatchedInvoice = (): ClearPatchedInvoiceAction =>
+  createAction('mvj/invoices/CLEAR_PATCHED')();
 
 export const receiveIsCreateOpen = (isOpen: boolean): ReceiveIsCreateOpenAction =>
   createAction('mvj/invoices/RECEIVE_IS_CREATE_OPEN')(isOpen);

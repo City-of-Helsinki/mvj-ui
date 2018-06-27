@@ -8,6 +8,7 @@ import {
   receiveAttributes,
   receiveInvoices,
   receiveIsCreateOpen,
+  receivePatchedInvoice,
   notFound,
 } from './actions';
 import {
@@ -94,6 +95,7 @@ function* patchInvoiceSaga({payload: invoice}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(fetchInvoicesAction(getSearchQuery({lease: bodyAsJson.lease})));
+        yield put(receivePatchedInvoice(bodyAsJson));
         break;
       case 400:
         yield put(notFound());

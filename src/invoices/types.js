@@ -14,6 +14,8 @@ export type FetchInvoicesAction = Action<'mvj/invoices/FETCH_ALL', string>;
 export type ReceiveInvoicesAction = Action<'mvj/invoices/RECEIVE_ALL', InvoiceList>;
 export type CreateInvoiceAction = Action<'mvj/invoices/CREATE', Invoice>;
 export type PatchInvoiceAction = Action<'mvj/invoices/PATCH', Invoice>;
+export type ReceivePatchedInvoiceAction = Action<'mvj/invoices/RECEIVE_PATCHED', Invoice>;
+export type ClearPatchedInvoiceAction = Action<'mvj/invoices/CLEAR_PATCHED', void>;
 
 export type InvoiceNotFoundAction = Action<'mvj/invoices/NOT_FOUND', void>;
 
