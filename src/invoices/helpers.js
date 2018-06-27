@@ -149,6 +149,19 @@ export const getNewInvoiceForDb = (invoice: Object) => {
   };
 };
 
+export const getCreditInvoiceForDb = (invoice: Object) => {
+  return {
+    lease: invoice.lease,
+    recipient: get(invoice, 'recipient'),
+    type: get(invoice, 'type'),
+    total_amount: formatDecimalNumberForDb(get(invoice, 'total_amount')),
+    billed_amount: formatDecimalNumberForDb(get(invoice, 'billed_amount')),
+    due_date: get(invoice, 'due_date'),
+    rows: getInvoiceRowsForDb(invoice),
+    credited_invoice: get(invoice, 'credited_invoice'),
+  };
+};
+
 export const formatReceivableTypesString = (receivableTypeOptions: Array<Object>, receivableTypes: Array<Object>) => {
   let text = '';
 

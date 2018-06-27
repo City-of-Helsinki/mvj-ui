@@ -109,6 +109,7 @@ export const FormNames = {
   CREATE_LEASE: 'create-lease-form',
   DECISIONS: 'decisions-form',
   INSPECTIONS: 'inspections-form',
+  INVOICE_CREDIT: 'credit-invoice-form',
   INVOICE_EDIT: 'edit-invoice-form',
   INVOICE_NEW: 'new-invoice-form',
   LEASE_AREAS: 'lease-areas-form',

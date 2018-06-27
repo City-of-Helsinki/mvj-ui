@@ -114,4 +114,14 @@
       overflow: visible;
     }
   }
+
+  &__credit-invoice-modal {
+    &_footer {
+      margin-top: rem-calc(10px);
+
+      .mvj-button:first-child {
+        margin-left: 0;
+      }
+    }
+  }
 }

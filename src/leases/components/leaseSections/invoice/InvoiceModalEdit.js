@@ -10,6 +10,7 @@ import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import EditInvoiceForm from './forms/EditInvoiceForm';
 import InvoiceTemplate from './InvoiceTemplate';
+import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
 
 const ARROW_UP_KEY = 38;
@@ -24,7 +25,7 @@ type Props = {
   onClose: Function,
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
-  onRefund: Function,
+  onCreditInvoice: Function,
   onResize: Function,
   onSave: Function,
   show: boolean,
@@ -43,6 +44,16 @@ class InvoiceModalEdit extends Component<Props> {
   onResize = () => {
     const {onResize} = this.props;
     onResize();
+  }
+
+  handleCreditInvoice = () => {
+    const {onCreditInvoice} = this.props;
+    onCreditInvoice();
+  }
+
+  handleSave = () => {
+    const {editedInvoice, onSave} = this.props;
+    onSave(editedInvoice);
   }
 
   handleKeyDown = (e: any) => {
@@ -64,13 +75,10 @@ class InvoiceModalEdit extends Component<Props> {
 
   render() {
     const {
-      editedInvoice,
       invoice,
       isValid,
       minHeight,
       onClose,
-      onRefund,
-      onSave,
       show,
     } = this.props;
 
@@ -114,18 +122,20 @@ class InvoiceModalEdit extends Component<Props> {
             }
           </div>
           <div className='invoice-modal__footer'>
-            <Button
-              className="button-green no-margin"
-              label='Hyvitä'
-              onClick={() => onRefund(editedInvoice)}
-              title='Hyvitä'
-            />
+            {(invoice && invoice.type !== InvoiceType.CREDIT_NOTE) &&
+              <Button
+                className="button-green no-margin"
+                label='Hyvitä'
+                onClick={this.handleCreditInvoice}
+                title='Hyvitä'
+              />
+            }
             {(!invoice || !invoice.sap_id) &&
               <Button
                 className="button-green no-margin pull-right"
                 disabled={!isValid}
                 label='Tallenna'
-                onClick={() => onSave(editedInvoice)}
+                onClick={this.handleSave}
                 title='Tallenna'
               />
             }

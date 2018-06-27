@@ -13,8 +13,10 @@ import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
 import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
+import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
 import {getInvoiceRecipientOptions, getInvoiceTenantOptions} from '$src/leases/helpers';
+import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
@@ -43,6 +45,7 @@ const NewInvoiceForm = ({
 
   const recipientOptions = getInvoiceRecipientOptions(lease);
   const tenantOptions = getInvoiceTenantOptions(lease);
+  const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type').filter((item) => item.value !== InvoiceType.CREDIT_NOTE);
 
   return (
     <form onSubmit={handleSubmit} className='invoice__add-invoice_form'>
@@ -72,6 +75,7 @@ const NewInvoiceForm = ({
                   name='type'
                   overrideValues={{
                     label: 'Tyyppi',
+                    options: typeOptions,
                   }}
                 />
               </Column>

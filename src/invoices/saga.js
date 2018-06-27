@@ -8,6 +8,7 @@ import {
   receiveAttributes,
   receiveInvoices,
   receiveIsCreateOpen,
+  receiveIsCreateCreditOpen,
   receivePatchedInvoice,
   notFound,
 } from './actions';
@@ -88,6 +89,31 @@ function* createInvoiceSaga({payload: invoice}): Generator<any, any, any> {
   }
 }
 
+function* createCreditInvoiceSaga({payload: invoice}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createInvoice, invoice);
+
+    switch (statusCode) {
+      case 201:
+        yield put(fetchInvoicesAction(getSearchQuery({lease: invoice.lease})));
+        yield put(receiveIsCreateCreditOpen(false));
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create invoice with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 function* patchInvoiceSaga({payload: invoice}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(patchInvoice, invoice);
@@ -119,6 +145,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/invoices/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/invoices/FETCH_ALL', fetchInvoicesSaga);
       yield takeLatest('mvj/invoices/CREATE', createInvoiceSaga);
+      yield takeLatest('mvj/invoices/CREATE_CREDIT', createCreditInvoiceSaga);
       yield takeLatest('mvj/invoices/PATCH', patchInvoiceSaga);
     }),
   ]);

@@ -1,19 +1,21 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {destroy, initialize} from 'redux-form';
+import {destroy, formValueSelector, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 import scrollToComponent from 'react-scroll-to-component';
 import isEmpty from 'lodash/isEmpty';
 
+import CreditInvoiceModal from './CreditInvoiceModal';
 import InvoiceModalEdit from './InvoiceModalEdit';
 import Table from '$components/table/Table';
 import TruncatedText from '$components/content/TruncatedText';
-import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
+import {clearPatchedInvoice, createCreditInvoice, patchInvoice, receiveIsCreateCreditOpen} from '$src/invoices/actions';
+import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {formatReceivableTypesString, getContentIncoiveItem, getContentInvoices, getEditedInvoiceForDb} from '$src/invoices/helpers';
+import {formatReceivableTypesString, getContentIncoiveItem, getContentInvoices, getCreditInvoiceForDb, getEditedInvoiceForDb} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDateRange,
@@ -25,21 +27,29 @@ import {
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
-import {getAttributes as getInvoiceAttributes, getInvoices, getPatchedInvoice} from '$src/invoices/selectors';
+import {getAttributes as getInvoiceAttributes, getInvoices, getIsCreateCreditOpen, getPatchedInvoice} from '$src/invoices/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes as InvoiceAttributes, Invoice, InvoiceList} from '$src/invoices/types';
+import type {Lease} from '$src/leases/types';
 
 const TABLE_MAX_HEIGHT = 400;
 const MODAL_WIDTH = 700;
 
 type Props = {
   clearPatchedInvoice: Function,
+  createCreditInvoice: Function,
+  creditDueDate: string,
+  creditTotalAmount: string,
+  currentLease: Lease,
   destroy: Function,
   initialize: Function,
   invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
+  isCreateCreditOpen: boolean,
   patchInvoice: Function,
   patchedInvoice: ?Invoice,
+  receiveIsCreateCreditOpen: Function,
   refundBill: Function,
 }
 
@@ -174,8 +184,9 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   handleKeyCodeUp = () => {
+    const {isCreateCreditOpen} = this.props;
     const {showModal} = this.state;
-    if(showModal) {
+    if(showModal && !isCreateCreditOpen) {
       this.table.selectPrevious();
     }
   }
@@ -189,8 +200,9 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   handleKeyCodeDown = () => {
+    const {isCreateCreditOpen} = this.props;
     const {showModal} = this.state;
-    if(showModal) {
+    if(showModal && !isCreateCreditOpen) {
       this.table.selectNext();
     }
   }
@@ -259,9 +271,34 @@ class InvoicesTableEdit extends Component<Props, State> {
     this.scrolToModal();
   }
 
-  refundSingle = (invoice: Object) => {
-    console.log(invoice);
-    alert('TODO: Refund invoice');
+  handleInvoiceModalCredit = () => {
+    const {initialize, receiveIsCreateCreditOpen} = this.props;
+    const {selectedInvoice} = this.state;
+
+    initialize(FormNames.INVOICE_CREDIT, {total_amount: selectedInvoice.total_amount || '0'});
+    receiveIsCreateCreditOpen(true);
+  }
+
+  handleCreditInvoiceModalCancel = () => {
+    const {receiveIsCreateCreditOpen} = this.props;
+    receiveIsCreateCreditOpen(false);
+  }
+
+  handleCreditInvoiceModalSave = () => {
+    const {createCreditInvoice, creditDueDate, creditTotalAmount, currentLease} = this.props;
+    const {selectedInvoice} = this.state;
+
+    const invoice = {
+      type: InvoiceType.CREDIT_NOTE,
+      recipient: selectedInvoice.recipient,
+      lease: currentLease.id,
+      total_amount: creditTotalAmount,
+      billed_amount: creditTotalAmount,
+      due_date: creditDueDate,
+      credited_invoice: selectedInvoice.id,
+      rows: [],
+    };
+    createCreditInvoice(getCreditInvoiceForDb(invoice));
   }
 
   editInvoice = (invoice: Object) => {
@@ -270,9 +307,11 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   render () {
+    const {invoiceAttributes, isCreateCreditOpen} = this.props;
     const {
       invoiceItems,
       selectedInvoice,
+      selectedInvoiceId,
       showModal,
       tableHeight,
       tableWidth,
@@ -283,6 +322,16 @@ class InvoicesTableEdit extends Component<Props, State> {
       <div
         className='invoice__invoice-table'
         ref={(ref) => this.container = ref}>
+        <CreditInvoiceModal
+          attributes={invoiceAttributes}
+          label={`Hyvitä lasku ${selectedInvoiceId}`}
+          isOpen={isCreateCreditOpen}
+          onCancel={this.handleCreditInvoiceModalCancel}
+          onClose={this.handleCreditInvoiceModalCancel}
+          onSave={this.handleCreditInvoiceModalSave}
+          selectedInvoice={selectedInvoice}
+          title='Hyvitä lasku'
+        />
         <div
           className='invoice__invoice-table_wrapper'
           ref={(ref) => this.tableWrapper = ref}
@@ -313,11 +362,11 @@ class InvoicesTableEdit extends Component<Props, State> {
             selectedInvoice: {},
             showModal: false,
           })}
-          onKeyCodeDown={() => this.handleKeyCodeDown()}
-          onKeyCodeUp={() => this.handleKeyCodeUp()}
-          onRefund={(invoice) => this.refundSingle(invoice)}
+          onKeyCodeDown={this.handleKeyCodeDown}
+          onKeyCodeUp={this.handleKeyCodeUp}
+          onCreditInvoice={this.handleInvoiceModalCredit}
           onResize={this.handleModalHeightChange}
-          onSave={(invoice) => this.editInvoice(invoice)}
+          onSave={this.editInvoice}
           show={showModal}
         />
       </div>
@@ -325,20 +374,29 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 }
 
+const formName = FormNames.INVOICE_CREDIT;
+const selector = formValueSelector(formName);
+
 export default flowRight(
   connect(
     (state) => {
       return {
+        creditDueDate: selector(state, 'due_date'),
+        creditTotalAmount: selector(state, 'total_amount'),
+        currentLease: getCurrentLease(state),
         invoiceAttributes: getInvoiceAttributes(state),
         invoices: getInvoices(state),
+        isCreateCreditOpen: getIsCreateCreditOpen(state),
         patchedInvoice: getPatchedInvoice(state),
       };
     },
     {
       clearPatchedInvoice,
+      createCreditInvoice,
       destroy,
       initialize,
       patchInvoice,
+      receiveIsCreateCreditOpen,
     }
   ),
 )(InvoicesTableEdit);

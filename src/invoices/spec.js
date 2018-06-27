@@ -3,6 +3,7 @@ import {
   receiveAttributes,
   receiveInvoices,
   receiveIsCreateOpen,
+  receiveIsCreateCreditOpen,
   fetchInvoices,
   createInvoice,
   patchInvoice,
@@ -16,6 +17,7 @@ const rootState = {
   attributes: {},
   invoices: [],
   isCreateOpen: false,
+  isCreateCreditOpen: false,
   isFetching: false,
   patchedInvoice: null,
 };
@@ -58,6 +60,15 @@ describe('Invoices', () => {
         newState.isCreateOpen = isCreateOpen;
 
         const state = invoiceReducer({}, receiveIsCreateOpen(isCreateOpen));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isCreateCreditOpen flag to false', () => {
+        const isCreateCreditOpen = true;
+        const newState = {...rootState};
+        newState.isCreateCreditOpen = isCreateCreditOpen;
+
+        const state = invoiceReducer({}, receiveIsCreateCreditOpen(isCreateCreditOpen));
         expect(state).to.deep.equal(newState);
       });
 
