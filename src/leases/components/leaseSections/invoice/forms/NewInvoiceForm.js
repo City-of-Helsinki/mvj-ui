@@ -12,7 +12,7 @@ import CloseButton from '$components/button/CloseButton';
 import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
-import WhiteBoxEdit from '$components/content/WhiteBoxEdit';
+import WhiteBox from '$components/content/WhiteBox';
 import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
 import {getInvoiceRecipientOptions, getInvoiceTenantOptions} from '$src/leases/helpers';
@@ -50,7 +50,7 @@ const NewInvoiceForm = ({
   return (
     <form onSubmit={handleSubmit} className='invoice__add-invoice_form'>
       <FormSection>
-        <WhiteBoxEdit>
+        <WhiteBox>
           <BoxContentWrapper>
             <h3>Luo lasku</h3>
             <CloseButton
@@ -146,7 +146,7 @@ const NewInvoiceForm = ({
               </Column>
             </Row>
           </BoxContentWrapper>
-        </WhiteBoxEdit>
+        </WhiteBox>
       </FormSection>
     </form>
   );

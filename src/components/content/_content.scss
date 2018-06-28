@@ -1,8 +1,24 @@
-.content__truncated-text {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.content {
+  &__truncated-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__white-box {
+    padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
+    background-color: $white;
+    margin-bottom: rem-calc(10px);
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    h3 {
+      margin-bottom: rem-calc(15px);
+    }
+  }
 }
 
 .page-container {
@@ -269,20 +285,6 @@
 
     &.no-margin {
       margin: 0;
-    }
-  }
-
-  .white-box-edit {
-    padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
-    background-color: $white;
-    margin-bottom: rem-calc(10px);
-
-    &.no-margin {
-      margin: 0;
-    }
-
-    h3 {
-      margin-bottom: rem-calc(15px);
     }
   }
 
