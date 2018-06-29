@@ -9,6 +9,7 @@ import Divider from '$components/content/Divider';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
+import {InvoiceType} from '$src/invoices/enums';
 import {
   formatDate,
   formatDateRange,
@@ -33,9 +34,14 @@ const getRowsSum = (rows: Array<Object>) => {
 type Props = {
   invoice: Object,
   invoiceAttributes: InvoiceAttributes,
+  onCreditedInvoiceClick: Function,
 }
 
-const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
+const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: Props) => {
+  const handleCreditedInvoiceClick = () => {
+    onCreditedInvoiceClick(invoice.credited_invoice);
+  };
+
   const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type');
   const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
   const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
@@ -175,6 +181,15 @@ const InvoiceTemplate = ({invoice, invoiceAttributes}: Props) => {
           <FormFieldLabel>Laskun tyyppi</FormFieldLabel>
           <p>{getLabelOfOption(typeOptions, invoice.type) || '-'}</p>
         </Column>
+        {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
+          <Column medium={4}>
+            <FormFieldLabel>Hyvitetty lasku</FormFieldLabel>
+            <p>{invoice.credited_invoice
+              ? <a onClick={handleCreditedInvoiceClick}>{invoice.credited_invoice}</a>
+              : '-'
+            }</p>
+          </Column>
+        }
       </Row>
       <Row>
         <Column medium={12}>

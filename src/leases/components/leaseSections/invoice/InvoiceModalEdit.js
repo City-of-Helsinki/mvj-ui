@@ -26,6 +26,7 @@ type Props = {
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
   onCreditInvoice: Function,
+  onCreditedInvoiceClick: Function,
   onResize: Function,
   onSave: Function,
   show: boolean,
@@ -79,6 +80,7 @@ class InvoiceModalEdit extends Component<Props> {
       isValid,
       minHeight,
       onClose,
+      onCreditedInvoiceClick,
       show,
     } = this.props;
 
@@ -111,10 +113,12 @@ class InvoiceModalEdit extends Component<Props> {
                     <EditInvoiceForm
                       invoice={invoice}
                       initialValues={{...invoice}}
+                      onCreditedInvoiceClick={onCreditedInvoiceClick}
                     />
                   ) : (
                     <InvoiceTemplate
                       invoice={invoice}
+                      onCreditedInvoiceClick={onCreditedInvoiceClick}
                     />
                   )
                 }

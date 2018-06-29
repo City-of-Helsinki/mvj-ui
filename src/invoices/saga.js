@@ -16,6 +16,7 @@ import {
   fetchAttributes,
   fetchInvoices,
   createInvoice,
+  creditInvoice,
   patchInvoice,
 } from './requests';
 import {receiveError} from '$src/api/actions';
@@ -89,13 +90,13 @@ function* createInvoiceSaga({payload: invoice}): Generator<any, any, any> {
   }
 }
 
-function* createCreditInvoiceSaga({payload: invoice}): Generator<any, any, any> {
+function* createCreditInvoiceSaga({payload: {invoiceId, lease}}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(createInvoice, invoice);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(creditInvoice, invoiceId);
 
     switch (statusCode) {
-      case 201:
-        yield put(fetchInvoicesAction(getSearchQuery({lease: invoice.lease})));
+      case 200:
+        yield put(fetchInvoicesAction(getSearchQuery({lease: lease})));
         yield put(receiveIsCreateCreditOpen(false));
         break;
       case 400:

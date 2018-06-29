@@ -22,6 +22,13 @@ export const createInvoice = (invoice: Invoice): Generator<any, any, any> => {
   }));
 };
 
+export const creditInvoice = (invoiceId: number): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`invoice/${invoiceId}/credit/`), {
+    method: 'POST',
+  }));
+
+};
+
 export const patchInvoice = (invoice: Invoice): Generator<any, any, any> => {
   const {id} = invoice;
   const body = JSON.stringify(invoice);

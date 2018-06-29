@@ -245,6 +245,17 @@ class InvoicesTable extends Component<Props, State> {
     this.scrolToModal();
   }
 
+  handleCreditedInvoiceClick = (invoiceId: number) => {
+    const {invoiceItems} = this.state;
+    const selectedInvoice = invoiceItems.find((invoice) => invoice.id === invoiceId);
+    if(selectedInvoice) {
+      this.setState({
+        selectedInvoice: selectedInvoice,
+        selectedInvoiceId: invoiceId,
+      });
+    }
+  }
+
   render () {
     const {
       invoiceItems,
@@ -287,6 +298,7 @@ class InvoicesTable extends Component<Props, State> {
           invoice={selectedInvoice}
           minHeight={!showModal ? tableHeight : null}
           onClose={this.handleInvoiceModalOnClose}
+          onCreditedInvoiceClick={this.handleCreditedInvoiceClick}
           onKeyCodeDown={this.handleKeyCodeDown}
           onKeyCodeUp={this.handleKeyCodeUp}
           onResize={this.handleModalHeightChange}

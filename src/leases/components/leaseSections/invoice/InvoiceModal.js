@@ -15,6 +15,7 @@ type Props = {
   onClose: Function,
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
+  onCreditedInvoiceClick: Function,
   onResize: Function,
   show: boolean,
 }
@@ -57,6 +58,7 @@ class InvoiceModal extends Component<Props> {
       invoice,
       minHeight,
       onClose,
+      onCreditedInvoiceClick,
       show,
     } = this.props;
 
@@ -85,6 +87,7 @@ class InvoiceModal extends Component<Props> {
           <div className="invoice-modal__body">
             <InvoiceTemplate
               invoice={invoice}
+              onCreditedInvoiceClick={onCreditedInvoiceClick}
             />
           </div>
         </div>

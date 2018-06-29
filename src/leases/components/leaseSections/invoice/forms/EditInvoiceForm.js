@@ -13,6 +13,7 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
+import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
@@ -93,7 +94,7 @@ type Props = {
   invoice: Object,
   invoiceAttributes: InvoiceAttributes,
   lease: Lease,
-  startDate: string,
+  onCreditedInvoiceClick: Function,
 }
 
 const EditInvoiceForm = ({
@@ -101,7 +102,12 @@ const EditInvoiceForm = ({
   invoice,
   invoiceAttributes,
   lease,
+  onCreditedInvoiceClick,
 }: Props) => {
+  const handleCreditedInvoiceClick = () => {
+    onCreditedInvoiceClick(invoice.credited_invoice);
+  };
+
   const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
   const tenantOptions = getInvoiceTenantOptions(lease);
   const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
@@ -247,6 +253,15 @@ const EditInvoiceForm = ({
           <FormFieldLabel>Laskun tyyppi</FormFieldLabel>
           <p>{getLabelOfOption(typeOptions, invoice.type) || '-'}</p>
         </Column>
+        {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
+          <Column medium={4}>
+            <FormFieldLabel>Hyvitetty lasku</FormFieldLabel>
+            <p>{invoice.credited_invoice
+              ? <a onClick={handleCreditedInvoiceClick}>{invoice.credited_invoice}</a>
+              : '-'
+            }</p>
+          </Column>
+        }
       </Row>
       <Row>
         <Column medium={12}>

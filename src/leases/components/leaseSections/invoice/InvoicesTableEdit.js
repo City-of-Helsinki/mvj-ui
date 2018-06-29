@@ -12,10 +12,9 @@ import InvoiceModalEdit from './InvoiceModalEdit';
 import Table from '$components/table/Table';
 import TruncatedText from '$components/content/TruncatedText';
 import {clearPatchedInvoice, createCreditInvoice, patchInvoice, receiveIsCreateCreditOpen} from '$src/invoices/actions';
-import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {formatReceivableTypesString, getContentIncoiveItem, getContentInvoices, getCreditInvoiceForDb, getEditedInvoiceForDb} from '$src/invoices/helpers';
+import {formatReceivableTypesString, getContentIncoiveItem, getContentInvoices, getEditedInvoiceForDb} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDateRange,
@@ -271,11 +270,9 @@ class InvoicesTableEdit extends Component<Props, State> {
     this.scrolToModal();
   }
 
-  handleInvoiceModalCredit = () => {
-    const {initialize, receiveIsCreateCreditOpen} = this.props;
-    const {selectedInvoice} = this.state;
+  handleOpenCreditInvoiceModal = () => {
+    const {receiveIsCreateCreditOpen} = this.props;
 
-    initialize(FormNames.INVOICE_CREDIT, {total_amount: selectedInvoice.total_amount || '0'});
     receiveIsCreateCreditOpen(true);
   }
 
@@ -285,25 +282,30 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   handleCreditInvoiceModalSave = () => {
-    const {createCreditInvoice, creditDueDate, creditTotalAmount, currentLease} = this.props;
+    const {createCreditInvoice, currentLease} = this.props;
     const {selectedInvoice} = this.state;
 
-    const invoice = {
-      type: InvoiceType.CREDIT_NOTE,
-      recipient: selectedInvoice.recipient,
+    createCreditInvoice({
       lease: currentLease.id,
-      total_amount: creditTotalAmount,
-      billed_amount: creditTotalAmount,
-      due_date: creditDueDate,
-      credited_invoice: selectedInvoice.id,
-      rows: [],
-    };
-    createCreditInvoice(getCreditInvoiceForDb(invoice));
+      invoiceId: selectedInvoice.id,
+    });
   }
 
   editInvoice = (invoice: Object) => {
     const {patchInvoice} = this.props;
     patchInvoice(getEditedInvoiceForDb(invoice));
+  }
+
+  handleCreditedInvoiceClick = (invoiceId: number) => {
+    const {invoiceItems} = this.state;
+    const selectedInvoice = invoiceItems.find((invoice) => invoice.id === invoiceId);
+    if(selectedInvoice) {
+      this.initilizeEditInvoiceForm(selectedInvoice);
+      this.setState({
+        selectedInvoice: selectedInvoice,
+        selectedInvoiceId: invoiceId,
+      });
+    }
   }
 
   render () {
@@ -364,7 +366,8 @@ class InvoicesTableEdit extends Component<Props, State> {
           })}
           onKeyCodeDown={this.handleKeyCodeDown}
           onKeyCodeUp={this.handleKeyCodeUp}
-          onCreditInvoice={this.handleInvoiceModalCredit}
+          onCreditInvoice={this.handleOpenCreditInvoiceModal}
+          onCreditedInvoiceClick={this.handleCreditedInvoiceClick}
           onResize={this.handleModalHeightChange}
           onSave={this.editInvoice}
           show={showModal}
