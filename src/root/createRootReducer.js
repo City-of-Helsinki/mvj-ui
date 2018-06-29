@@ -15,6 +15,7 @@ import decisionsReducer from '../decision/reducer';
 import districtsReducer from '../district/reducer';
 import infillDevelopmentReducer from '$src/infillDevelopment/reducer';
 import invoiceReducer from '$src/invoices/reducer';
+import landUseContractReducer from '$src/landUseContract/reducer';
 import leaseReducer from '../leases/reducer';
 import mapDataReducer from '../mapData/reducer';
 import noticePeriodReducer from '../noticePeriod/reducer';
@@ -39,6 +40,7 @@ export default (): Reducer<RootState> =>
     form: formReducer,
     infillDevelopment: infillDevelopmentReducer,
     invoice: invoiceReducer,
+    landUseContract: landUseContractReducer,
     lease: leaseReducer,
     mapData: mapDataReducer,
     noticePeriod: noticePeriodReducer,

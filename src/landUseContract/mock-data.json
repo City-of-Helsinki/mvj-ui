@@ -1,0 +1,118 @@
+[
+  {
+    "id": 1,
+    "identifier": {
+      "type": {
+        "id": 5,
+        "name": "Sekalaiset vuokraukset",
+        "identifier": "S0",
+        "sap_material_code": null,
+        "sap_order_item_number": null,
+        "due_dates_position": "middle_of_month"
+      },
+      "municipality": {
+        "id": 1,
+        "name": "Helsinki",
+        "identifier": "1"
+      },
+      "district": {
+        "id": 11,
+        "name": "Sörnäinen",
+        "identifier": "10",
+        "municipality": 1
+      },
+      "sequence": 261
+    },
+    "areas": [
+      "12345678",
+      "23456789"
+    ],
+    "litigants": [
+      "Kaarina Mäkelä",
+      "Antero Mäkelä"
+    ],
+    "preparer": "Hannele Pesonen",
+    "land_use_contract_number": "Maankäyttösopimus",
+    "estimate_completion_year": "2019",
+    "estimate_introduction_year": "2020",
+    "project_area": "12345566779",
+    "plan_reference_number": "12345",
+    "plan_number": "12345",
+    "plan_acceptor": "Kaupunginvirasto",
+    "plan_lawfulness_date": "2018-06-01",
+    "state": 0,
+
+    "decisions": [
+      {
+        "decision_maker": "Kaupunkiympäristölautakunta",
+        "decision_date": "2018-01-01",
+        "section": "123",
+        "type": "Maankäyttösopimus",
+        "reference_number": "202849820",
+        "conditions": [
+          {
+            "management_type": "Aravuokra",
+            "area": 400,
+            "deposit": "4000",
+            "compensation": "2000",
+            "note": "Lorem ipsum"
+          },
+          {
+            "management_type": "Aravuokra",
+            "area": 400,
+            "deposit": "4000",
+            "compensation": "2000",
+            "note": "Lorem ipsum"
+          }
+        ]
+      }
+    ],
+
+    "contracts": [
+      {
+        "state": "Vireillä",
+        "decision_date": "2018-04-01",
+        "sign_date": "2018-04-01",
+        "ed_contract_number": "12345678",
+        "reference_number": "12345678",
+        "area_arrengements": false
+      }
+    ],
+
+    "compensations": {
+      "cash_compensation": "200",
+      "land_compensation": "200",
+      "other_compensation": "200",
+      "first_installment_increase": "200",
+      "free_delivery_area": "200",
+      "free_delivery_amount": "20000",
+      "additional_floor_area_apartment": "200",
+      "additional_floor_area_company": "200",
+      "invoices": [
+        {
+          "amount": "5000",
+          "due_date": "2018-06-05"
+        },
+        {
+          "amount": "5000",
+          "due_date": "2018-06-05"
+        }
+      ]
+    },
+
+    "invoices": [
+      {
+        "amount": "5000",
+        "due_date": "2018-06-05",
+        "sent_date": "2018-04-01",
+        "paid_date": "2018-09-01"
+      },
+      {
+        "amount": "5000",
+        "due_date": "2018-06-05",
+        "sent_date": "2018-04-01",
+        "paid_date": "2018-09-01"
+      }
+    ]
+  }
+]

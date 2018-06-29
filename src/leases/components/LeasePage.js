@@ -786,7 +786,6 @@ class LeasePage extends Component<Props, State> {
 
         <Tabs
           active={activeTab}
-          className="hero__navigation"
           isEditMode={isEditMode}
           tabs={[
             {label: 'Yhteenveto', isDirty: isSummaryFormDirty, hasError: isSaveClicked && !isSummaryFormValid},

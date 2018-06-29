@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 type Props = {
   active: ?number,
-  className: ?string,
+  className?: string,
   isEditMode: boolean,
   tabs: Array<any>,
   onTabClick: Function

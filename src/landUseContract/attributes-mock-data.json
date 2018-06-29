@@ -1,0 +1,32 @@
+{
+  "name": "Infill development List",
+  "description": "",
+  "fields": {
+    "id": {
+      "type": "field",
+      "required": false,
+      "read_only": true,
+      "label": "Id"
+    },
+    "state": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Käsittelyvaihe",
+      "choices": [
+        {
+            "display_name": "Vireillä",
+            "value": 0
+        },
+        {
+            "display_name": "Neuvottelu",
+            "value": 1
+        },
+        {
+            "display_name": "Päätös",
+            "value": 2
+        }
+      ]
+    }
+  }
+}

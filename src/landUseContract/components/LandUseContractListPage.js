@@ -7,7 +7,6 @@ import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
-import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
 import Loader from '$components/loader/Loader';
@@ -19,43 +18,43 @@ import SearchWrapper from '$components/search/SearchWrapper';
 import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {fetchInfillDevelopmentAttributes, fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
-import {FormNames} from '$src/infillDevelopment/enums';
-import {cloneObject, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {fetchLandUseContractAttributes, fetchLandUseContractList} from '$src/landUseContract/actions';
+import {FormNames} from '$src/landUseContract/enums';
+import {getContentLandUseContractList} from '$src/landUseContract/helpers';
+import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
+import {getAttributes, getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
 
-import type {Attributes, InfillDevelopmentList} from '$src/infillDevelopment/types';
+import type {Attributes, LandUseContractList} from '$src/landUseContract/types';
 
 const PAGE_SIZE = 25;
 
 type Props = {
   attributes: Attributes,
-  fetchInfillDevelopmentAttributes: Function,
-  fetchInfillDevelopments: Function,
-  infillDevelopmentList: InfillDevelopmentList,
+  fetchLandUseContractAttributes: Function,
+  fetchLandUseContractList: Function,
   initialize: Function,
   isFetching: boolean,
+  landUseContractListData: LandUseContractList,
   location: Object,
-  receiveFormInitialValues: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
-}
+};
 
 type State = {
   activePage: number,
   count: number,
-  infillDevelopments: Array<Object>,
+  landUseContracts: Array<Object>,
   maxPage: number,
   selectedStates: Array<string>,
 }
 
-class InfillDevelopmentListPage extends Component<Props, State> {
+class LandUseContractListPage extends Component<Props, State> {
   state = {
     activePage: 1,
     count: 0,
-    infillDevelopments: [],
-    maxPage: 1,
+    landUseContracts: [],
+    maxPage: 0,
     selectedStates: [],
   }
 
@@ -66,14 +65,14 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   componentDidMount() {
     const {
       attributes,
-      fetchInfillDevelopmentAttributes,
+      fetchLandUseContractAttributes,
       receiveTopNavigationSettings,
       router: {location: {query}},
     } = this.props;
 
     receiveTopNavigationSettings({
-      linkUrl: getRouteById('infillDevelopment'),
-      pageTitle: 'Täydennysrakentamiskorvaukset',
+      linkUrl: getRouteById('landUseContract'),
+      pageTitle: 'Maankäyttösopimukset',
       showSearch: false,
     });
 
@@ -84,40 +83,26 @@ class InfillDevelopmentListPage extends Component<Props, State> {
       this.setState({activePage: page});
     }
 
-    this.handleSearch();
+    this.search();
     this.initializeSearchForm();
 
     if(isEmpty(attributes)) {
-      fetchInfillDevelopmentAttributes();
+      fetchLandUseContractAttributes();
     }
   }
 
   componentDidUpdate = (prevProps) => {
     if(JSON.stringify(this.props.location.query) !== JSON.stringify(prevProps.location.query)) {
-      this.handleSearch();
+      this.search();
       this.initializeSearchForm();
     }
-    if(prevProps.infillDevelopmentList !== this.props.infillDevelopmentList) {
+    if(prevProps.landUseContractListData !== this.props.landUseContractListData) {
       this.updateTableData();
     }
   }
 
-  initializeSearchForm = () => {
-    const {initialize, router: {location: {query}}} = this.props;
-    initialize(FormNames.SEARCH, query);
-  }
-
   handleCreateButtonClick = () => {
-    const {receiveFormInitialValues} = this.props;
-    const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
-
-    receiveFormInitialValues({});
-
-    return router.push({
-      pathname: getRouteById('newInfillDevelopment'),
-      query,
-    });
+    alert('TODO: Create land use contract');
   }
 
   handleSearchChange = (query: Object) => {
@@ -127,23 +112,25 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     delete query.page;
 
     return router.push({
-      pathname: getRouteById('infillDevelopment'),
+      pathname: getRouteById('landUseContract'),
       query,
     });
   }
 
-  handleSearch = () => {
-    const {fetchInfillDevelopments} = this.props;
-    const {router: {location: {query: locationQuery}}} = this.context;
-    const query = cloneObject(locationQuery);
+  initializeSearchForm = () => {
+    const {initialize, router: {location: {query}}} = this.props;
 
-    const page = Number(query.page);
-    if(page && isNumber(page) && query.page <= 1) {
-      query.offset = (page - 1) * PAGE_SIZE;
-    }
+    const searchValues = {...query};
+    delete searchValues.page;
+    initialize(FormNames.LAND_USE_CONTRACT_SEARCH, searchValues);
+  }
 
-    query.limit = PAGE_SIZE;
-    fetchInfillDevelopments(getSearchQuery(query));
+  search = () => {
+    const {fetchLandUseContractList, router: {location: {query}}} = this.props;
+
+    const searchQuery = {...query};
+    delete searchQuery.page;
+    fetchLandUseContractList(searchQuery);
   }
 
   handleRowClick = (id) => {
@@ -151,7 +138,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     const {router: {location: {query}}} = this.props;
 
     return router.push({
-      pathname: `${getRouteById('infillDevelopment')}/${id}`,
+      pathname: `${getRouteById('landUseContract')}/${id}`,
       query,
     });
   };
@@ -163,36 +150,31 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     if(page > 1) {
       query.page = page;
     } else {
-      query.page = undefined;
+      delete query.page;
     }
 
-    this.setState({activePage: page});
-
     return router.push({
-      pathname: getRouteById('infillDevelopment'),
+      pathname: getRouteById('landUseContract'),
       query,
     });
   }
 
   updateTableData = () => {
-    const {infillDevelopmentList} = this.props;
+    const {landUseContractListData} = this.props;
+
     this.setState({
-      count: this.getInfillDevelopmentCount(infillDevelopmentList),
-      infillDevelopments: this.getInfillDevelopments(infillDevelopmentList),
-      maxPage: this.getInfillDevelopmentMaxPage(infillDevelopmentList),
+      count: this.getLandUseContractListCount(landUseContractListData),
+      landUseContracts: getContentLandUseContractList(landUseContractListData),
+      maxPage: this.getLandUseContractListMaxPage(landUseContractListData),
     });
   }
 
-  getInfillDevelopmentCount = (infillDevelopmentList: InfillDevelopmentList) => {
-    return get(infillDevelopmentList, 'count', 0);
+  getLandUseContractListCount = (landUseContractListData: LandUseContractList) => {
+    return get(landUseContractListData, 'count', 0);
   }
 
-  getInfillDevelopments = (infillDevelopmentList: InfillDevelopmentList) => {
-    return get(infillDevelopmentList, 'results', []);
-  }
-
-  getInfillDevelopmentMaxPage = (infillDevelopmentList: InfillDevelopmentList) => {
-    const count = this.getInfillDevelopmentCount(infillDevelopmentList);
+  getLandUseContractListMaxPage = (landUseContractListData: LandUseContractList) => {
+    const count = this.getLandUseContractListCount(landUseContractListData);
     if(!count) {
       return 0;
     }
@@ -207,11 +189,11 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
   render() {
     const {attributes, isFetching} = this.props;
-    const {activePage, infillDevelopments, maxPage, selectedStates} = this.state;
+    const {activePage, landUseContracts, maxPage, selectedStates} = this.state;
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
-    const filteredInfillDevelopments = selectedStates.length
-      ? (infillDevelopments.filter((infillDevelopment) => selectedStates.indexOf(infillDevelopment.state.toString())  !== -1))
-      : infillDevelopments;
+    const filteredLandUseContracts = selectedStates.length
+      ? (landUseContracts.filter((contract) => selectedStates.indexOf(contract.state.toString())  !== -1))
+      : landUseContracts;
 
     return (
       <PageContainer>
@@ -219,9 +201,9 @@ class InfillDevelopmentListPage extends Component<Props, State> {
           buttonComponent={
             <Button
               className='no-margin'
-              label='Luo täydennysrakentamiskorvaus'
+              label='Luo maankäyttösopimus'
               onClick={this.handleCreateButtonClick}
-              title='Luo täydennysrakentamiskorvaus'
+              title='Luo maankäyttösopimus'
             />
           }
           searchComponent={
@@ -248,13 +230,14 @@ class InfillDevelopmentListPage extends Component<Props, State> {
               title={`Viimeksi muokattuja`}
             />
             <Table
-              data={filteredInfillDevelopments}
+              data={filteredLandUseContracts}
               dataKeys={[
-                {key: 'project_name', label: 'Hankkeen nimi'},
-                {key: 'plan_number', label: 'Asemakaavan nro'},
-                {key: 'state', label: 'Asemakaavan käsittelyvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
-                {key: 'tenant', label: 'Vuokralainen'},
-                {key: 'nagotiation_state', label: 'Neuvotteluvaihe'},
+                {key: 'identifier', label: 'MA1-tunnus'},
+                {key: 'litigant', label: 'Osapuoli'},
+                {key: 'plan_number', label: 'Asemakaavan numero'},
+                {key: 'area', label: 'Kohde'},
+                {key: 'project_area', label: 'Hankealue'},
+                {key: 'state', label: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
               ]}
               onRowClick={this.handleRowClick}
             />
@@ -268,7 +251,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
       </PageContainer>
     );
   }
-
 }
 
 export default flowRight(
@@ -276,16 +258,15 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
-        infillDevelopmentList: getInfillDevelopments(state),
         isFetching: getIsFetching(state),
+        landUseContractListData: getLandUseContractList(state),
       };
     },
     {
-      fetchInfillDevelopmentAttributes,
-      fetchInfillDevelopments,
+      fetchLandUseContractAttributes,
+      fetchLandUseContractList,
       initialize,
-      receiveFormInitialValues,
       receiveTopNavigationSettings,
     }
-  )
-)(InfillDevelopmentListPage);
+  ),
+)(LandUseContractListPage);

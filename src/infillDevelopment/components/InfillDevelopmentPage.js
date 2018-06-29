@@ -95,7 +95,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById('infillDevelopment'),
-      pageTitle: 'Täydennysrakentamiskorvaus',
+      pageTitle: 'Täydennysrakentamiskorvaukset',
       showSearch: false,
     });
 
