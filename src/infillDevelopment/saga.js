@@ -1,6 +1,7 @@
 // @flow
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
+import {SubmissionError} from 'redux-form';
 
 import {
   hideEditMode,
@@ -10,10 +11,8 @@ import {
   receiveSingleInfillDevelopment,
 } from './actions';
 import {receiveError} from '$src/api/actions';
-import {fetchAttributes, fetchInfillDevelopments} from './requests';
+import {fetchAttributes, fetchInfillDevelopments, fetchSingleInfillDevelopment} from './requests';
 import {getRouteById} from '$src/root/routes';
-
-import mockData from './mock-data.json';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -57,9 +56,26 @@ function* fetchInfillDevelopmentsSaga({payload: search}): Generator<any, any, an
 }
 
 function* fetchSingleInfillDevelopmentSaga({payload: id}): Generator<any, any, any> {
-  console.log(id);
-  const bodyAsJson = mockData[0];
-  yield put(receiveSingleInfillDevelopment(bodyAsJson));
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchSingleInfillDevelopment, id);
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveSingleInfillDevelopment(bodyAsJson));
+        break;
+      case 404:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch single infill development compensation with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
 }
 
 function* createInfillDevelopmentSaga({payload: infillDevelopment}): Generator<any, any, any> {

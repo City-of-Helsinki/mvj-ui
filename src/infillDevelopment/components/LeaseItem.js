@@ -16,16 +16,15 @@ import SubTitle from '$components/content/SubTitle';
 import {fetchLeaseById} from '$src/leases/actions';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {
-  getContentDecisions,
   getContentLeaseAreas,
   getContentLeaseIdentifier,
   getContentTenants,
 } from '$src/leases/helpers';
 import {getAttributes} from '$src/infillDevelopment/selectors';
-import {getAttributes as getLeaseAttributes, getIsFetchingById, getLeaseById} from '$src/leases/selectors';
+import {getIsFetchingById, getLeaseById} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/infillDevelopment/types';
-import type {Attributes as LeaseAttributes, Lease, LeaseId} from '$src/leases/types';
+import type {Lease, LeaseId} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
@@ -34,12 +33,9 @@ type Props = {
   isFetching: boolean,
   lease: Lease,
   leaseData: Object,
-  leaseAttributes: LeaseAttributes,
 }
 
 type State = {
-  decisionMakerOptions: Array<Object>,
-  decisions: Array<Object>,
   identifier: ?string,
   intendedUseOptions: Array<Object>,
   planUnits: Array<Object>,
@@ -49,8 +45,6 @@ type State = {
 
 class LeaseItem extends Component<Props, State> {
   state = {
-    decisionMakerOptions: [],
-    decisions: [],
     identifier: null,
     intendedUseOptions: [],
     planUnits: [],
@@ -64,16 +58,12 @@ class LeaseItem extends Component<Props, State> {
       fetchLeaseById,
       id,
       lease,
-      leaseAttributes,
     } = this.props;
 
     if(!isEmpty(attributes)) {
       this.updateAttributeStates();
     }
 
-    if(!isEmpty(leaseAttributes)) {
-      this.updateLeaseAttributeStates();
-    }
     if(isEmpty(lease)) {
       fetchLeaseById(id);
     } else {
@@ -82,9 +72,6 @@ class LeaseItem extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    if(prevProps.leaseAttributes !== this.props.leaseAttributes) {
-      this.updateLeaseAttributeStates();
-    }
     if(prevProps.lease !== this.props.lease) {
       this.updateLeaseContentStates();
     }
@@ -94,15 +81,7 @@ class LeaseItem extends Component<Props, State> {
     const {attributes} = this.props;
 
     this.setState({
-      intendedUseOptions: getAttributeFieldOptions(attributes, 'leases.child.children.intended_uses.child.children.intended_use'),
-    });
-  }
-
-  updateLeaseAttributeStates = () => {
-    const {leaseAttributes} = this.props;
-
-    this.setState({
-      decisionMakerOptions: getAttributeFieldOptions(leaseAttributes, 'decisions.child.children.decision_maker'),
+      intendedUseOptions: getAttributeFieldOptions(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.intended_use'),
     });
   }
 
@@ -122,7 +101,6 @@ class LeaseItem extends Component<Props, State> {
     });
 
     this.setState({
-      decisions: getContentDecisions(lease),
       identifier: getContentLeaseIdentifier(lease),
       planUnits: planUnits,
       plots: plots,
@@ -134,11 +112,15 @@ class LeaseItem extends Component<Props, State> {
     alert('TODO: open map link');
   }
 
+  getTotalCompensation = (lease: Object) => {
+    const monetaryCompensation = Number(get(lease, 'monetary_compensation_amount')),
+      compensationInvestment = Number(get(lease, 'compensation_investment_amount'));
+    return monetaryCompensation + compensationInvestment;
+  }
+
   render() {
     const {id, isFetching, leaseData} = this.props;
     const {
-      decisionMakerOptions,
-      decisions,
       identifier,
       intendedUseOptions,
       planUnits,
@@ -147,6 +129,7 @@ class LeaseItem extends Component<Props, State> {
     } = this.state;
     const intendedUses = get(leaseData, 'intended_uses', []);
     const attachments = get(leaseData, 'attachments', []);
+    const totalCompensation = this.getTotalCompensation(leaseData);
 
     return (
       <Collapse
@@ -159,8 +142,6 @@ class LeaseItem extends Component<Props, State> {
         {isFetching
           ? <LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper>
           : <LeaseInfo
-            decisionMakerOptions={decisionMakerOptions}
-            decisions={decisions}
             id={id}
             identifier={identifier}
             planUnits={planUnits}
@@ -184,10 +165,10 @@ class LeaseItem extends Component<Props, State> {
                   <p className='no-margin'>{getLabelOfOption(intendedUseOptions, intendedUse.intended_use) || '-'}</p>
                 </Column>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{intendedUse.km2 ? `${formatNumber(intendedUse. km2)} k-m²` : '-'}</p>
+                  <p className='no-margin'>{intendedUse.floor_m2 ? `${formatNumber(intendedUse. floor_m2)} k-m²` : '-'}</p>
                 </Column>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{intendedUse.ekm2 ? `${formatNumber(intendedUse.ekm2)} €/k-m²` : '-'}</p>
+                  <p className='no-margin'>{intendedUse.amount_per_floor_m2 ? `${formatNumber(intendedUse.amount_per_floor_m2)} €/k-m²` : '-'}</p>
                 </Column>
               </Row>
             )}
@@ -197,15 +178,15 @@ class LeaseItem extends Component<Props, State> {
         <Row>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Rahakorvaus</FormFieldLabel>
-            <p>{leaseData.cash_compensation ? `${formatNumber(leaseData.cash_compensation)} €` : '-'}</p>
+            <p>{leaseData.monetary_compensation_amount ? `${formatNumber(leaseData.monetary_compensation_amount)} €` : '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Korvausinvestoinnit</FormFieldLabel>
-            <p>{leaseData.replacement_investments ? `${formatNumber(leaseData.replacement_investments)} €` : '-'}</p>
+            <p>{leaseData.compensation_investment_amount ? `${formatNumber(leaseData.compensation_investment_amount)} €` : '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Korvaus yhteensä</FormFieldLabel>
-            <p>{leaseData.total ? `${formatNumber(leaseData.total)} €` : '-'}</p>
+            <p>{formatNumber(totalCompensation)} €</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Arvonnousu</FormFieldLabel>
@@ -213,15 +194,15 @@ class LeaseItem extends Component<Props, State> {
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Osuus arvonnoususta</FormFieldLabel>
-            <p>{leaseData.share_in_increase_in_value ? `${formatNumber(leaseData.share_in_increase_in_value)} €` : '-'}</p>
+            <p>{leaseData.part_of_the_increase_in_value ? `${formatNumber(leaseData.part_of_the_increase_in_value)} €` : '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Vuokranalennus</FormFieldLabel>
-            <p>{leaseData.rent_reduction ? `${formatNumber(leaseData.rent_reduction)} €` : '-'}</p>
+            <p>{leaseData.discount_in_rent ? `${formatNumber(leaseData.discount_in_rent)} €` : '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Arvioitu maksuvuosi</FormFieldLabel>
-            <p>{leaseData.estimated_payment_year || '-'}</p>
+            <p>{leaseData.year || '-'}</p>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Maksu lähetetty SAP</FormFieldLabel>
@@ -229,7 +210,7 @@ class LeaseItem extends Component<Props, State> {
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Maksettu</FormFieldLabel>
-            <p>{formatDate(leaseData.payment_date) || '-'}</p>
+            <p>{formatDate(leaseData.paid_date) || '-'}</p>
           </Column>
         </Row>
 
@@ -276,7 +257,6 @@ export default flowRight(
         attributes: getAttributes(state),
         isFetching: getIsFetchingById(state, props.id),
         lease: getLeaseById(state, props.id),
-        leaseAttributes: getLeaseAttributes(state),
       };
     },
     {

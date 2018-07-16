@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, formValueSelector} from 'redux-form';
+import {change, FieldArray, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import isEmpty from 'lodash/isEmpty';
 import flowRight from 'lodash/flowRight';
@@ -17,17 +17,15 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {fetchAttributes as fetchLeaseAttributes, fetchLeaseById} from '$src/leases/actions';
+import {fetchLeaseById} from '$src/leases/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {
   formatDate,
-  getAttributeFieldOptions,
-  getLabelOfOption,
-  getReferenceNumberLink,
+  formatDecimalNumberForDb,
+  formatNumber,
 } from '$util/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
 import {
-  getContentDecisions,
   getContentLeaseAreas,
   getContentLeaseIdentifier,
   getContentTenants,
@@ -35,13 +33,12 @@ import {
 import {getRouteById} from '$src/root/routes';
 import {getAttributes} from '$src/infillDevelopment/selectors';
 import {
-  getAttributes as getLeaseAttributes,
   getIsFetchingById,
   getLeaseById,
 } from '$src/leases/selectors';
 
 import type {Attributes} from '$src/infillDevelopment/types';
-import type {Attributes as LeaseAttributes, Lease} from '$src/leases/types';
+import type {Lease} from '$src/leases/types';
 
 type AttachmentsProps = {
   fields: any,
@@ -123,7 +120,7 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
                 <Column small={3} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'leases.child.children.intended_uses.child.children.intended_use')}
+                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.intended_use')}
                     name={`${field}.intended_use`}
                     overrideValues={{
                       label: '',
@@ -133,8 +130,8 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
                 <Column small={3} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'leases.child.children.intended_uses.child.children.km2')}
-                    name={`${field}.km2`}
+                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.floor_m2')}
+                    name={`${field}.floor_m2`}
                     unit='k-m²'
                     overrideValues={{
                       label: '',
@@ -144,8 +141,8 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
                 <Column small={3} large={2}>
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'leases.child.children.intended_uses.child.children.ekm2')}
-                    name={`${field}.ekm2`}
+                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.amount_per_floor_m2')}
+                    name={`${field}.amount_per_floor_m2`}
                     unit='€/k-m²'
                     overrideValues={{
                       label: '',
@@ -178,7 +175,8 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
 
 type Props = {
   attributes: Attributes,
-  fetchLeaseAttributes: Function,
+  change: Function,
+  compensationInvestment: ?number,
   fetchLeaseById: Function,
   field: string,
   fields: any,
@@ -188,13 +186,10 @@ type Props = {
   isSaveClicked: boolean,
   lease: Lease,
   leaseFieldValue: Object,
-  leaseAttributes: LeaseAttributes,
-  leaseFieldValue: Object,
+  monetaryCompensation: ?number,
 }
 
 type State = {
-  decisionMakerOptions: Array<Object>,
-  decisions: Array<Object>,
   identifier: ?string,
   planUnits: Array<Object>,
   plots: Array<Object>,
@@ -203,8 +198,6 @@ type State = {
 
 class LeaseItemEdit extends Component<Props, State> {
   state = {
-    decisionMakerOptions: [],
-    decisions: [],
     identifier: null,
     planUnits: [],
     plots: [],
@@ -213,31 +206,21 @@ class LeaseItemEdit extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      fetchLeaseAttributes,
       fetchLeaseById,
       leaseFieldValue,
       lease,
-      leaseAttributes,
     } = this.props;
-
-    if(isEmpty(leaseAttributes)) {
-      fetchLeaseAttributes();
-    } else {
-      this.updateLeaseAttributeStates();
-    }
 
     if(isEmpty(lease) && !isEmpty(leaseFieldValue)) {
       fetchLeaseById(leaseFieldValue.value);
     } else {
       this.updateLeaseContentStates();
     }
+
+    this.updateTotalCompensation();
   }
 
   componentDidUpdate(prevProps) {
-    if(prevProps.leaseAttributes !== this.props.leaseAttributes) {
-      this.updateLeaseAttributeStates();
-    }
-
     if(prevProps.leaseFieldValue !== this.props.leaseFieldValue) {
       const {fetchLeaseById, lease, leaseFieldValue} = this.props;
       if(isEmpty(lease) && !isEmpty(leaseFieldValue)) {
@@ -247,17 +230,14 @@ class LeaseItemEdit extends Component<Props, State> {
       }
     }
 
+    if(prevProps.compensationInvestment !== this.props.compensationInvestment ||
+      prevProps.monetaryCompensation !== this.props.monetaryCompensation) {
+      this.updateTotalCompensation();
+    }
+
     if(prevProps.lease !== this.props.lease) {
       this.updateLeaseContentStates();
     }
-  }
-
-  updateLeaseAttributeStates = () => {
-    const {leaseAttributes} = this.props;
-
-    this.setState({
-      decisionMakerOptions: getAttributeFieldOptions(leaseAttributes, 'decisions.child.children.decision_maker'),
-    });
   }
 
   updateLeaseContentStates = () => {
@@ -276,12 +256,16 @@ class LeaseItemEdit extends Component<Props, State> {
     });
 
     this.setState({
-      decisions: getContentDecisions(lease),
       identifier: getContentLeaseIdentifier(lease),
       planUnits: planUnits,
       plots: plots,
       tenants: getContentTenants(lease),
     });
+  }
+
+  updateTotalCompensation = () => {
+    const {compensationInvestment, change, field, monetaryCompensation} = this.props;
+    change(FormNames.INFILL_DEVELOPMENT, `${field}.compensation_total`, formatNumber(formatDecimalNumberForDb(monetaryCompensation) + formatDecimalNumberForDb(compensationInvestment)));
   }
 
   handleMapLink = () => {
@@ -297,12 +281,9 @@ class LeaseItemEdit extends Component<Props, State> {
       index,
       isFetching,
       isSaveClicked,
-      leaseAttributes,
     } = this.props;
 
     const {
-      decisionMakerOptions,
-      decisions,
       identifier,
       planUnits,
       plots,
@@ -327,7 +308,7 @@ class LeaseItemEdit extends Component<Props, State> {
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(leaseAttributes, 'leases.child.children.lease')}
+                fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.lease')}
                 name={`${field}.lease`}
                 overrideValues={{
                   fieldType: 'lease',
@@ -379,51 +360,6 @@ class LeaseItemEdit extends Component<Props, State> {
               {!isFetching && <a onClick={() => {alert('TODO. OPEN MAP LINK');}}>Karttalinkki</a>}
             </Column>
           </Row>
-          <div>
-            <SubTitle>Korvauksen päätös</SubTitle>
-            {isFetching && <p>Ladataan...</p>}
-            {!isFetching &&
-              <div>
-                {!decisions.length && <p>Ei päätöksiä</p>}
-                {!!decisions.length &&
-                  <ListItems>
-                    <Row>
-                      <Column small={3} large={2}><FormFieldLabel>Päättäjä</FormFieldLabel></Column>
-                      <Column small={3} large={2}><FormFieldLabel>Pvm</FormFieldLabel></Column>
-                      <Column small={3} large={2}><FormFieldLabel>Pykälä</FormFieldLabel></Column>
-                      <Column small={3} large={2}><FormFieldLabel>Diaarinumero</FormFieldLabel></Column>
-                    </Row>
-                    {decisions.map((decision) =>
-                      <Row key={decision.id}>
-                        <Column small={3} large={2}>
-                          <p className='no-margin'>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</p>
-                        </Column>
-                        <Column small={3} large={2}>
-                          <p className='no-margin'>{formatDate(decision.decision_date) || '-'}</p>
-                        </Column>
-                        <Column small={3} large={2}>
-                          <p className='no-margin'>{decision.section ? `${decision.section} §` : '-'}</p>
-                        </Column>
-                        <Column small={3} large={2}>
-                          {decision.reference_number
-                            ? <p className='no-margin'>
-                              <a
-                                className='no-margin'
-                                target='_blank'
-                                href={getReferenceNumberLink(decision.reference_number)}>
-                                {decision.reference_number}
-                              </a>
-                            </p>
-                            : <p className='no-margin'>-</p>
-                          }
-                        </Column>
-                      </Row>
-                    )}
-                  </ListItems>
-                }
-              </div>
-            }
-          </div>
           <FieldArray
             attributes={attributes}
             component={renderIntendedUses}
@@ -435,31 +371,36 @@ class LeaseItemEdit extends Component<Props, State> {
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'leases.child.children.cash_compensation')}
-                name={`${field}.cash_compensation`}
+                fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.monetary_compensation_amount')}
+                name={`${field}.monetary_compensation_amount`}
                 unit='€'
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'leases.child.children.replacement_investments')}
-                name={`${field}.replacement_investments`}
+                fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.compensation_investment_amount')}
+                name={`${field}.compensation_investment_amount`}
                 unit='€'
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
+                disabled
+                disableDirty
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'leases.child.children.total')}
-                name={`${field}.total`}
+                fieldAttributes={{}}
+                name={`${field}.compensation_total`}
                 unit='€'
+                overrideValues={{
+                  label: 'Korvaus yhteensä',
+                }}
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'leases.child.children.increase_in_value')}
+                fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.increase_in_value')}
                 name={`${field}.increase_in_value`}
                 unit='€'
               />
@@ -467,16 +408,16 @@ class LeaseItemEdit extends Component<Props, State> {
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'leases.child.children.share_in_increase_in_value')}
-                name={`${field}.share_in_increase_in_value`}
+                fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.part_of_the_increase_in_value')}
+                name={`${field}.part_of_the_increase_in_value`}
                 unit='€'
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'leases.child.children.rent_reduction')}
-                name={`${field}.rent_reduction`}
+                fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.discount_in_rent')}
+                name={`${field}.discount_in_rent`}
                 unit='€'
               />
             </Column>
@@ -485,22 +426,22 @@ class LeaseItemEdit extends Component<Props, State> {
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'leases.child.children.estimated_payment_year')}
-                name={`${field}.estimated_payment_year`}
+                fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.year')}
+                name={`${field}.year`}
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'leases.child.children.sent_to_sap_date')}
+                fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.sent_to_sap_date')}
                 name={`${field}.sent_to_sap_date`}
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'leases.child.children.payment_date')}
-                name={`${field}.payment_date`}
+                fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.paid_date')}
+                name={`${field}.paid_date`}
               />
             </Column>
           </Row>
@@ -537,22 +478,23 @@ export default flowRight(
       if(leaseFieldValue) {
         return {
           attributes: getAttributes(state),
+          compensationInvestment: selector(state, `${field}.compensation_investment_amount`),
           files: selector(state, `${field}.attachments`),
           isFetching: getIsFetchingById(state, leaseFieldValue.value),
           lease: getLeaseById(state, leaseFieldValue.value),
-          leaseAttributes: getLeaseAttributes(state),
           leaseFieldValue: leaseFieldValue,
+          monetaryCompensation: selector(state, `${field}.monetary_compensation_amount`),
         };
       }
       return {
         attributes: getAttributes(state),
-        leaseAttributes: getLeaseAttributes(state),
+        compensationInvestment: selector(state, `${field}.compensation_investment_amount`),
         leaseFieldValue: leaseFieldValue,
+        monetaryCompensation: selector(state, `${field}.monetary_compensation_amount`),
       };
-
     },
     {
-      fetchLeaseAttributes,
+      change,
       fetchLeaseById,
     }
   )
