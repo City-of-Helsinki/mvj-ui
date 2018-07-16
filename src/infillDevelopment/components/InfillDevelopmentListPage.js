@@ -21,6 +21,7 @@ import TableControllers from '$components/table/TableControllers';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchInfillDevelopmentAttributes, fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
+import {getContentInfillDevelopmentList} from '$src/infillDevelopment/helpers';
 import {cloneObject, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
@@ -178,17 +179,13 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     const {infillDevelopmentList} = this.props;
     this.setState({
       count: this.getInfillDevelopmentCount(infillDevelopmentList),
-      infillDevelopments: this.getInfillDevelopments(infillDevelopmentList),
+      infillDevelopments: getContentInfillDevelopmentList(infillDevelopmentList),
       maxPage: this.getInfillDevelopmentMaxPage(infillDevelopmentList),
     });
   }
 
   getInfillDevelopmentCount = (infillDevelopmentList: InfillDevelopmentList) => {
     return get(infillDevelopmentList, 'count', 0);
-  }
-
-  getInfillDevelopments = (infillDevelopmentList: InfillDevelopmentList) => {
-    return get(infillDevelopmentList, 'results', []);
   }
 
   getInfillDevelopmentMaxPage = (infillDevelopmentList: InfillDevelopmentList) => {
@@ -210,7 +207,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     const {activePage, infillDevelopments, maxPage, selectedStates} = this.state;
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
     const filteredInfillDevelopments = selectedStates.length
-      ? (infillDevelopments.filter((infillDevelopment) => selectedStates.indexOf(infillDevelopment.state.toString())  !== -1))
+      ? (infillDevelopments.filter((infillDevelopment) => selectedStates.indexOf(infillDevelopment.state) !== -1))
       : infillDevelopments;
 
     return (
@@ -230,7 +227,12 @@ class InfillDevelopmentListPage extends Component<Props, State> {
             />
           }
         />
-
+        <TableControllers
+          buttonSelectorOptions={stateOptions}
+          buttonSelectorValue={selectedStates}
+          onButtonSelectorChange={this.handleSelectedStatesChange}
+          title={isFetching ? 'Ladataan...' : `Löytyi ${infillDevelopments.length} kpl`}
+        />
         {isFetching &&
           <Row>
             <Column>
@@ -238,23 +240,15 @@ class InfillDevelopmentListPage extends Component<Props, State> {
             </Column>
           </Row>
         }
-
         {!isFetching &&
           <div>
-            <TableControllers
-              buttonSelectorOptions={stateOptions}
-              buttonSelectorValue={selectedStates}
-              onButtonSelectorChange={this.handleSelectedStatesChange}
-              title={`Viimeksi muokattuja`}
-            />
             <Table
               data={filteredInfillDevelopments}
               dataKeys={[
-                {key: 'project_name', label: 'Hankkeen nimi'},
-                {key: 'plan_number', label: 'Asemakaavan nro'},
-                {key: 'state', label: 'Asemakaavan käsittelyvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
-                {key: 'tenant', label: 'Vuokralainen'},
-                {key: 'nagotiation_state', label: 'Neuvotteluvaihe'},
+                {key: 'name', label: 'Hankkeen nimi'},
+                {key: 'detailed_plan_identifier', label: 'Asemakaavan nro'},
+                {key: 'leaseIdentifiers', label: 'Vuokratunnus', renderer: (val) => val.length ? val.map((item, index) => <p key={index}>{item}</p>) : '-'},
+                {key: 'state', label: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
               ]}
               onRowClick={this.handleRowClick}
             />

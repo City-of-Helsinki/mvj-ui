@@ -10,7 +10,7 @@ import {
   receiveSingleInfillDevelopment,
 } from './actions';
 import {receiveError} from '$src/api/actions';
-import {fetchAttributes} from './requests';
+import {fetchAttributes, fetchInfillDevelopments} from './requests';
 import {getRouteById} from '$src/root/routes';
 
 import mockData from './mock-data.json';
@@ -37,12 +37,23 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
 }
 
 function* fetchInfillDevelopmentsSaga({payload: search}): Generator<any, any, any> {
-  console.log(search);
-  const bodyAsJson = {
-    count: 1,
-    results: mockData,
-  };
-  yield put(receiveInfillDevelopments(bodyAsJson));
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchInfillDevelopments, search);
+    switch (statusCode) {
+      case 200:
+        yield put(receiveInfillDevelopments(bodyAsJson));
+        break;
+      case 401:
+      case 404:
+      case 500:
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch infill development compensations with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
 }
 
 function* fetchSingleInfillDevelopmentSaga({payload: id}): Generator<any, any, any> {

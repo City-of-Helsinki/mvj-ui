@@ -2,7 +2,7 @@
 import get from 'lodash/get';
 
 import {FormNames} from '$src/infillDevelopment/enums';
-import {getContentLeaseOption, getContentUser} from '$src/leases/helpers';
+import {getContentLeaseIdentifier, getContentLeaseOption} from '$src/leases/helpers';
 import {removeSessionStorageItem} from '$util/storage';
 
 export const getContentIntendedUses = (lease: Object) => {
@@ -38,18 +38,32 @@ export const getContentLeaseItem = (lease: Object) => {
 export const getContentInfillDevelopment = (infillDevelopment: Object) => {
   return {
     id: get(infillDevelopment, 'id'),
-    project_name: get(infillDevelopment, 'project_name'),
-    plan_number: get(infillDevelopment, 'plan_number'),
-    plan_reference_number: get(infillDevelopment, 'plan_reference_number'),
+    name: get(infillDevelopment, 'name'),
+    detailed_plan_identifier: get(infillDevelopment, 'detailed_plan_identifier'),
+    // plan_reference_number: get(infillDevelopment, 'plan_reference_number'),
     state: get(infillDevelopment, 'state'),
-    decision_type: get(infillDevelopment, 'decision_type'),
-    state_date: get(infillDevelopment, 'state_date'),
-    responsible_person: getContentUser(get(infillDevelopment, 'responsible_person')),
-    nagotiation_state: get(infillDevelopment, 'nagotiation_state'),
-    change_of_lease_date: get(infillDevelopment, 'change_of_lease_date'),
-    note: get(infillDevelopment, 'note'),
-    leases: get(infillDevelopment, 'leases', []).map(lease => getContentLeaseItem(lease)),
+    // decision_type: get(infillDevelopment, 'decision_type'),
+    // state_date: get(infillDevelopment, 'state_date'),
+    // responsible_person: getContentUser(get(infillDevelopment, 'responsible_person')),
+    // nagotiation_state: get(infillDevelopment, 'nagotiation_state'),
+    // change_of_lease_date: get(infillDevelopment, 'change_of_lease_date'),
+    // note: get(infillDevelopment, 'note'),
+    // leases: get(infillDevelopment, 'leases', []).map(lease => getContentLeaseItem(lease)),
   };
+};
+
+export const getContentInfillDevelopmentList = (content: Object) => {
+  const items = get(content, 'results', []);
+  return items.map((item) => {
+    const leases = get(item, 'infill_development_compensation_leases', []);
+    return {
+      id: get(item, 'id'),
+      name: get(item, 'name'),
+      detailed_plan_identifier: get(item, 'detailed_plan_identifier'),
+      leaseIdentifiers: leases.map((lease) => getContentLeaseIdentifier(lease.lease)),
+      state: get(item, 'state'),
+    };
+  });
 };
 
 export const clearUnsavedChanges = () => {
