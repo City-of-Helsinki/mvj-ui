@@ -1,21 +1,39 @@
 // @flow
-import {all, fork, put, takeLatest} from 'redux-saga/effects';
+import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 
 import {
   hideEditMode,
+  notFound,
   receiveInfillDevelopmentAttributes,
   receiveInfillDevelopments,
   receiveSingleInfillDevelopment,
 } from './actions';
+import {receiveError} from '$src/api/actions';
+import {fetchAttributes} from './requests';
 import {getRouteById} from '$src/root/routes';
 
-import attributesMockData from './attributes-mock-data.json';
 import mockData from './mock-data.json';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
-  const attributes = attributesMockData.fields;
-  yield put(receiveInfillDevelopmentAttributes(attributes));
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
+    const attributes = bodyAsJson.fields;
+
+    switch (statusCode) {
+      case 200:
+        yield put(receiveInfillDevelopmentAttributes(attributes));
+        break;
+      case 401:
+      case 404:
+      case 500:
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch identifiers with error "%s"', error);
+    yield put(receiveError(error));
+  }
 }
 
 function* fetchInfillDevelopmentsSaga({payload: search}): Generator<any, any, any> {
