@@ -338,7 +338,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
         />
         <ContentContainer>
           {isEditMode
-            ? <InfillDevelopmentForm isSaveClicked={isSaveClicked} />
+            ? <InfillDevelopmentForm infillDevelopment={infillDevelopment} isSaveClicked={isSaveClicked} />
             : <InfillDevelopmentTemplate infillDevelopment={infillDevelopment} />
           }
 

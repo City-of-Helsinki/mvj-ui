@@ -14,6 +14,7 @@ import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SubTitle from '$components/content/SubTitle';
 import {fetchLeaseById} from '$src/leases/actions';
+import {getUserFullName} from '$src/users/helpers';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {
   getContentLeaseAreas,
@@ -128,6 +129,7 @@ class LeaseItem extends Component<Props, State> {
       tenants,
     } = this.state;
     const intendedUses = get(leaseData, 'intended_uses', []);
+    const decisions = get(leaseData, 'decisions', []);
     const attachments = get(leaseData, 'attachments', []);
     const totalCompensation = this.getTotalCompensation(leaseData);
 
@@ -150,6 +152,8 @@ class LeaseItem extends Component<Props, State> {
           />
         }
 
+        <SubTitle>Korvauksen päätös</SubTitle>
+        {!decisions.length && <p>Ei päätöksiä</p>}
         <SubTitle>Käyttötarkoitus</SubTitle>
         {!intendedUses.length && <p>Ei käyttötarkoituksia</p>}
         {!!intendedUses.length &&
@@ -215,24 +219,31 @@ class LeaseItem extends Component<Props, State> {
         </Row>
 
         <SubTitle>Liitetiedostot</SubTitle>
+        {!attachments.length && <p>Ei liitetiedostoja</p>}
         {!!attachments.length &&
           <div>
             <Row>
-              <Column small={6} large={4}>
+              <Column small={4} large={4}>
                 <FormFieldLabel>Nimi</FormFieldLabel>
               </Column>
               <Column small={4} large={2}>
                 <FormFieldLabel>Pvm</FormFieldLabel>
               </Column>
+              <Column small={4} large={2}>
+                <FormFieldLabel>Lataaja</FormFieldLabel>
+              </Column>
             </Row>
             {attachments.map((file, index) => {
               return (
                 <Row key={index}>
-                  <Column small={6} large={4}>
-                    <a>{get(file, 'file.name') || '-'}</a>
+                  <Column small={4} large={4}>
+                    <a href={file.file}>{get(file.filename) || 'TODO: Add file name'}</a>
                   </Column>
                   <Column small={4} large={2}>
-                    <p>{formatDate(file.date) || '-'}</p>
+                    <p>{formatDate(file.uploaded_at) || '-'}</p>
+                  </Column>
+                  <Column small={4} large={2}>
+                    <p>{getUserFullName((file.uploader)) || '-'}</p>
                   </Column>
                 </Row>
               );

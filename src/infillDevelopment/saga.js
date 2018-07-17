@@ -4,6 +4,7 @@ import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
 import {
+  fetchSingleInfillDevelopment as fetchSingleInfillDevelopmentAction,
   hideEditMode,
   notFound,
   receiveInfillDevelopmentAttributes,
@@ -11,7 +12,12 @@ import {
   receiveSingleInfillDevelopment,
 } from './actions';
 import {receiveError} from '$src/api/actions';
-import {fetchAttributes, fetchInfillDevelopments, fetchSingleInfillDevelopment} from './requests';
+import {
+  fetchAttributes,
+  fetchInfillDevelopments,
+  fetchSingleInfillDevelopment,
+  uploadInfillDevelopmentFile,
+} from './requests';
 import {getRouteById} from '$src/root/routes';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -90,6 +96,29 @@ function* editInfillDevelopmentSaga({payload: infillDevelopment}): Generator<any
   yield put(hideEditMode());
 }
 
+function* uploadInfillDevelopmentFileSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(uploadInfillDevelopmentFile, payload);
+
+    switch (statusCode) {
+      case 201:
+        yield put(fetchSingleInfillDevelopmentAction(payload.id));
+        break;
+      case 404:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to upload a file with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -98,6 +127,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/infillDevelopment/FETCH_SINGLE', fetchSingleInfillDevelopmentSaga);
       yield takeLatest('mvj/infillDevelopment/CREATE', createInfillDevelopmentSaga);
       yield takeLatest('mvj/infillDevelopment/EDIT', editInfillDevelopmentSaga);
+      yield takeLatest('mvj/infillDevelopment/UPLOAD_FILE', uploadInfillDevelopmentFileSaga);
     }),
   ]);
 }

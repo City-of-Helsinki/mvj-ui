@@ -17,6 +17,7 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
+import {uploadInfillDevelopmentFile} from '$src/infillDevelopment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {
@@ -30,6 +31,7 @@ import {
   getContentLeaseIdentifier,
   getContentTenants,
 } from '$src/leases/helpers';
+import {getUserFullName} from '$src/users/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes} from '$src/infillDevelopment/selectors';
 import {
@@ -39,63 +41,6 @@ import {
 
 import type {Attributes} from '$src/infillDevelopment/types';
 import type {Lease} from '$src/leases/types';
-
-type AttachmentsProps = {
-  fields: any,
-  files: Array<Object>,
-}
-
-const renderAttachments = ({fields, files}: AttachmentsProps): Element<*> => {
-
-  const handleFileChange = (e) => {
-    fields.push({
-      date: new Date().toISOString(),
-      file: e.target.files[0],
-    });
-  };
-
-  return (
-    <div>
-      <SubTitle>Liitetiedostot</SubTitle>
-      {!!fields && !!fields.length &&
-        <div>
-          <Row>
-            <Column small={6} large={4}>
-              <FormFieldLabel>Nimi</FormFieldLabel>
-            </Column>
-            <Column small={4} large={2}>
-              <FormFieldLabel>Pvm</FormFieldLabel>
-            </Column>
-          </Row>
-          {fields.map((field, index) => {
-            const file = files[index];
-            return (
-              <Row key={index}>
-                <Column small={6} large={4}>
-                  <p>{get(file, 'file.name') || '-'}</p>
-                </Column>
-                <Column small={4} large={2}>
-                  <p>{formatDate(file.date) || '-'}</p>
-                </Column>
-                <Column small={2} large={2}>
-                  <RemoveButton
-                    onClick={() => fields.remove(index)}
-                    title="Poista tiedosto"
-                  />
-                </Column>
-              </Row>
-            );
-          })}
-        </div>
-      }
-      <AddFileButton
-        label='Lisää tiedosto'
-        name={get(fields, 'name')}
-        onChange={handleFileChange}
-      />
-    </div>
-  );
-};
 
 type IntendedUsesProps = {
   attributes: Attributes,
@@ -107,6 +52,7 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
   return (
     <div>
       <SubTitle>Käyttötarkoitus</SubTitle>
+      {!fields || !fields.length && <p>Ei käyttötarkoituksia</p>}
       {!!fields && !!fields.length &&
         <div>
           <Row>
@@ -180,13 +126,15 @@ type Props = {
   fetchLeaseById: Function,
   field: string,
   fields: any,
-  files: any,
   index: number,
   isFetching: boolean,
   isSaveClicked: boolean,
   lease: Lease,
+  infillDevelopment: Object,
+  infillDevelopmentCompensationLeaseId: number,
   leaseFieldValue: Object,
   monetaryCompensation: ?number,
+  uploadInfillDevelopmentFile: Function,
 }
 
 type State = {
@@ -268,6 +216,22 @@ class LeaseItemEdit extends Component<Props, State> {
     change(FormNames.INFILL_DEVELOPMENT, `${field}.compensation_total`, formatNumber(formatDecimalNumberForDb(monetaryCompensation) + formatDecimalNumberForDb(compensationInvestment)));
   }
 
+  handleFileChange = (e) => {
+    const {
+      infillDevelopment,
+      infillDevelopmentCompensationLeaseId,
+      uploadInfillDevelopmentFile,
+    } = this.props;
+
+    uploadInfillDevelopmentFile({
+      id: infillDevelopment.id,
+      data: {
+        infill_development_compensation_lease: infillDevelopmentCompensationLeaseId,
+      },
+      file: e.target.files[0],
+    });
+  };
+
   handleMapLink = () => {
     alert('TODO: open map link');
   }
@@ -277,8 +241,9 @@ class LeaseItemEdit extends Component<Props, State> {
       attributes,
       field,
       fields,
-      files,
       index,
+      infillDevelopment,
+      infillDevelopmentCompensationLeaseId,
       isFetching,
       isSaveClicked,
     } = this.props;
@@ -289,6 +254,8 @@ class LeaseItemEdit extends Component<Props, State> {
       plots,
       tenants,
     } = this.state;
+
+    const attachments = get(infillDevelopment, `${field}.attachments`, []);
 
     return (
       <Collapse
@@ -445,18 +412,48 @@ class LeaseItemEdit extends Component<Props, State> {
               />
             </Column>
           </Row>
-          <FieldArray
-            attributes={attributes}
-            files={files}
+          <SubTitle>Liitetiedostot</SubTitle>
+          {!attachments || !attachments.length && <p>Ei liitetiedostoja</p>}
+          {!!attachments && !!attachments.length &&
+            <div>
+              <Row>
+                <Column small={4} large={4}>
+                  <FormFieldLabel>Nimi</FormFieldLabel>
+                </Column>
+                <Column small={4} large={2}>
+                  <FormFieldLabel>Pvm</FormFieldLabel>
+                </Column>
+                <Column small={4} large={2}>
+                  <FormFieldLabel>Lataaja</FormFieldLabel>
+                </Column>
+              </Row>
+              {attachments.map((file, index) => {
+                return (
+                  <Row key={index}>
+                    <Column small={4} large={4}>
+                      <a href={file.file}>{get(file.filename) || 'TODO: Add file name'}</a>
+                    </Column>
+                    <Column small={4} large={2}>
+                      <p>{formatDate(file.uploaded_at) || '-'}</p>
+                    </Column>
+                    <Column small={4} large={2}>
+                      <p>{getUserFullName((file.uploader)) || '-'}</p>
+                    </Column>
+                  </Row>
+                );
+              })}
+            </div>
+          }
+          <AddFileButton
             label='Lisää tiedosto'
-            name={`${field}.attachments`}
-            component={renderAttachments}
+            name={`${infillDevelopmentCompensationLeaseId}`}
+            onChange={this.handleFileChange}
           />
           <Row>
             <Column>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'leases.child.children.note')}
+                fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.note')}
                 name={`${field}.note`}
               />
             </Column>
@@ -479,7 +476,7 @@ export default flowRight(
         return {
           attributes: getAttributes(state),
           compensationInvestment: selector(state, `${field}.compensation_investment_amount`),
-          files: selector(state, `${field}.attachments`),
+          infillDevelopmentCompensationLeaseId: selector(state, `${field}.id`),
           isFetching: getIsFetchingById(state, leaseFieldValue.value),
           lease: getLeaseById(state, leaseFieldValue.value),
           leaseFieldValue: leaseFieldValue,
@@ -489,6 +486,7 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         compensationInvestment: selector(state, `${field}.compensation_investment_amount`),
+        infillDevelopmentCompensationLeaseId: selector(state, `${field}.id`),
         leaseFieldValue: leaseFieldValue,
         monetaryCompensation: selector(state, `${field}.monetary_compensation_amount`),
       };
@@ -496,6 +494,7 @@ export default flowRight(
     {
       change,
       fetchLeaseById,
+      uploadInfillDevelopmentFile,
     }
   )
 )(LeaseItemEdit);

@@ -14,10 +14,11 @@ import {receiveFormValidFlags} from '$src/infillDevelopment/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {getAttributes, getFormInitialValues} from '$src/infillDevelopment/selectors';
 
-import type {Attributes} from '$src/infillDevelopment/types';
+import type {Attributes, InfillDevelopment} from '$src/infillDevelopment/types';
 
 type Props = {
   attributes: Attributes,
+  infillDevelopment: InfillDevelopment,
   isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
@@ -35,7 +36,7 @@ class InfillDevelopmentForm extends Component<Props> {
   }
 
   render() {
-    const {attributes, isSaveClicked} = this.props;
+    const {attributes, infillDevelopment, isSaveClicked} = this.props;
 
     return (
       <form>
@@ -118,6 +119,7 @@ class InfillDevelopmentForm extends Component<Props> {
           <SubTitle>Vuokraukset</SubTitle>
           <FieldArray
             attributes={attributes}
+            infillDevelopment={infillDevelopment}
             isSaveClicked={isSaveClicked}
             name={`infill_development_compensation_leases`}
             component={LeaseItemsEdit}

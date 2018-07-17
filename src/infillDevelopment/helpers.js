@@ -5,6 +5,19 @@ import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentLeaseIdentifier, getContentLeaseOption, getContentUser} from '$src/leases/helpers';
 import {removeSessionStorageItem} from '$util/storage';
 
+export const getContentAttachments = (lease: Object) => {
+  const items = get(lease, 'attachments', []);
+  return items.map((item) => {
+    return {
+      id: get(item, 'id'),
+      file: get(item, 'file'),
+      filename: get(item, 'filename'),
+      uploaded_at: get(item, 'uploaded_at'),
+      uploader: get(item, 'uploader'),
+    };
+  });
+};
+
 export const getContentIntendedUses = (lease: Object) => {
   const intendedUses = get(lease, 'intended_uses', []);
   return intendedUses.map((item) => {
@@ -29,8 +42,8 @@ export const getContentInfillDevelopmentCompensationLeaseItem = (lease: Object) 
     year: get(lease, 'year'),
     sent_to_sap_date: get(lease, 'sent_to_sap_date'),
     paid_date: get(lease, 'paid_date'),
-    // note: get(lease, 'note'),
-    // attachments: get(lease, 'attachments', []),
+    note: get(lease, 'note'),
+    attachments: getContentAttachments(lease),
   };
 };
 
