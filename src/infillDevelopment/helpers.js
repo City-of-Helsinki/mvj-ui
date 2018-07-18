@@ -3,6 +3,7 @@ import get from 'lodash/get';
 
 import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentLeaseIdentifier, getContentLeaseOption, getContentUser} from '$src/leases/helpers';
+import {formatDecimalNumberForDb} from '$util/helpers';
 import {removeSessionStorageItem} from '$util/storage';
 
 export const getContentAttachments = (lease: Object) => {
@@ -18,7 +19,57 @@ export const getContentAttachments = (lease: Object) => {
   });
 };
 
+export const getContentDecisions = (lease: Object) => {
+  const items = get(lease, 'decisions', []);
+  return items.map((item) => {
+    return {
+      id: get(item, 'id'),
+      reference_number: get(item, 'reference_number'),
+      decision_maker: get(item, 'decision_maker.id') || get(item, 'decision_maker'),
+      decision_date: get(item, 'decision_date'),
+      section: get(item, 'section'),
+    };
+  });
+};
+
+export const getContentDecisionsCopy = (lease: Object) => {
+  const items = get(lease, 'decisions', []);
+  return items.map((item) => {
+    return {
+      reference_number: get(item, 'reference_number'),
+      decision_maker: get(item, 'decision_maker.id') || get(item, 'decision_maker'),
+      decision_date: get(item, 'decision_date'),
+      section: get(item, 'section'),
+    };
+  });
+};
+
+export const getContentDecisionsForDb = (lease: Object) => {
+  const items = get(lease, 'decisions', []);
+  return items.map((item) => {
+    return {
+      id: get(item, 'id'),
+      reference_number: get(item, 'reference_number'),
+      decision_maker: get(item, 'decision_maker.id') || get(item, 'decision_maker'),
+      decision_date: get(item, 'decision_date'),
+      section: get(item, 'section'),
+    };
+  });
+};
+
 export const getContentIntendedUses = (lease: Object) => {
+  const intendedUses = get(lease, 'intended_uses', []);
+  return intendedUses.map((item) => {
+    return {
+      id: get(item, 'id'),
+      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      floor_m2: get(item, 'floor_m2'),
+      amount_per_floor_m2: get(item, 'amount_per_floor_m2'),
+    };
+  });
+};
+
+export const getContentIntendedUsesCopy = (lease: Object) => {
   const intendedUses = get(lease, 'intended_uses', []);
   return intendedUses.map((item) => {
     return {
@@ -29,10 +80,23 @@ export const getContentIntendedUses = (lease: Object) => {
   });
 };
 
-export const getContentInfillDevelopmentCompensationLeaseItem = (lease: Object) => {
+export const getContentIntendedUsesForDb = (lease: Object) => {
+  const intendedUses = get(lease, 'intended_uses', []);
+  return intendedUses.map((item) => {
+    return {
+      id: get(item, 'id'),
+      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      floor_m2: formatDecimalNumberForDb(get(item, 'floor_m2')),
+      amount_per_floor_m2: formatDecimalNumberForDb(get(item, 'amount_per_floor_m2')),
+    };
+  });
+};
+
+export const getContentLeaseItem = (lease: Object) => {
   return {
     id: get(lease, 'id'),
     lease: getContentLeaseOption(get(lease, 'lease')),
+    decisions: getContentDecisions(lease),
     intended_uses: getContentIntendedUses(lease),
     monetary_compensation_amount: get(lease, 'monetary_compensation_amount'),
     compensation_investment_amount: get(lease, 'compensation_investment_amount'),
@@ -47,6 +111,41 @@ export const getContentInfillDevelopmentCompensationLeaseItem = (lease: Object) 
   };
 };
 
+export const getContentLeaseItemCopy = (lease: Object) => {
+  return {
+    lease: getContentLeaseOption(get(lease, 'lease')),
+    decisions: getContentDecisionsCopy(lease),
+    intended_uses: getContentIntendedUsesCopy(lease),
+    monetary_compensation_amount: get(lease, 'monetary_compensation_amount'),
+    compensation_investment_amount: get(lease, 'compensation_investment_amount'),
+    increase_in_value: get(lease, 'increase_in_value'),
+    part_of_the_increase_in_value: get(lease, 'part_of_the_increase_in_value'),
+    discount_in_rent: get(lease, 'discount_in_rent'),
+    year: get(lease, 'year'),
+    sent_to_sap_date: get(lease, 'sent_to_sap_date'),
+    paid_date: get(lease, 'paid_date'),
+    note: get(lease, 'note'),
+  };
+};
+
+export const getContentLeaseItemForDb = (lease: Object) => {
+  return {
+    id: get(lease, 'id'),
+    lease: get(lease, 'lease.value'),
+    decisions: getContentDecisionsForDb(lease),
+    intended_uses: getContentIntendedUsesForDb(lease),
+    monetary_compensation_amount: formatDecimalNumberForDb(get(lease, 'monetary_compensation_amount')),
+    compensation_investment_amount: formatDecimalNumberForDb(get(lease, 'compensation_investment_amount')),
+    increase_in_value: formatDecimalNumberForDb(get(lease, 'increase_in_value')),
+    part_of_the_increase_in_value: formatDecimalNumberForDb(get(lease, 'part_of_the_increase_in_value')),
+    discount_in_rent: formatDecimalNumberForDb(get(lease, 'discount_in_rent')),
+    year: get(lease, 'year'),
+    sent_to_sap_date: get(lease, 'sent_to_sap_date'),
+    paid_date: get(lease, 'paid_date'),
+    note: get(lease, 'note'),
+  };
+};
+
 export const getContentInfillDevelopment = (infillDevelopment: Object) => {
   return {
     id: get(infillDevelopment, 'id'),
@@ -57,7 +156,34 @@ export const getContentInfillDevelopment = (infillDevelopment: Object) => {
     user: getContentUser(get(infillDevelopment, 'user')),
     lease_contract_change_date: get(infillDevelopment, 'lease_contract_change_date'),
     note: get(infillDevelopment, 'note'),
-    infill_development_compensation_leases: get(infillDevelopment, 'infill_development_compensation_leases', []).map(lease => getContentInfillDevelopmentCompensationLeaseItem(lease)),
+    infill_development_compensation_leases: get(infillDevelopment, 'infill_development_compensation_leases', []).map(lease => getContentLeaseItem(lease)),
+  };
+};
+
+export const getContentInfillDevelopmentCopy = (infillDevelopment: Object) => {
+  return {
+    name: get(infillDevelopment, 'name'),
+    detailed_plan_identifier: get(infillDevelopment, 'detailed_plan_identifier'),
+    reference_number: get(infillDevelopment, 'reference_number'),
+    state: get(infillDevelopment, 'state'),
+    user: getContentUser(get(infillDevelopment, 'user')),
+    lease_contract_change_date: get(infillDevelopment, 'lease_contract_change_date'),
+    note: get(infillDevelopment, 'note'),
+    infill_development_compensation_leases: get(infillDevelopment, 'infill_development_compensation_leases', []).map(lease => getContentLeaseItemCopy(lease)),
+  };
+};
+
+export const getContentInfillDevelopmentForDb = (infillDevelopment: Object) => {
+  return {
+    id: get(infillDevelopment, 'id'),
+    name: get(infillDevelopment, 'name'),
+    detailed_plan_identifier: get(infillDevelopment, 'detailed_plan_identifier'),
+    reference_number: get(infillDevelopment, 'reference_number'),
+    state: get(infillDevelopment, 'state'),
+    user: getContentUser(get(infillDevelopment, 'user')),
+    lease_contract_change_date: get(infillDevelopment, 'lease_contract_change_date'),
+    note: get(infillDevelopment, 'note'),
+    infill_development_compensation_leases: get(infillDevelopment, 'infill_development_compensation_leases', []).map(lease => getContentLeaseItemForDb(lease)),
   };
 };
 

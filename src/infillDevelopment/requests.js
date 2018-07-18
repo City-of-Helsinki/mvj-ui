@@ -6,7 +6,7 @@ import createUrl from '../api/createUrl';
 import {getApiToken} from '$src/auth/selectors';
 import {receiveError} from '$src/api/actions';
 
-import type {InfillDevelopmentId, InfillDevelopmentFileData} from './types';
+import type {InfillDevelopment, InfillDevelopmentId, InfillDevelopmentFileData} from './types';
 
 function* callUploadRequest(request: Request): Generator<any, any, any> {
   const apiToken = yield select(getApiToken);
@@ -37,6 +37,16 @@ export const fetchSingleInfillDevelopment = (id: InfillDevelopmentId): Generator
   return callApi(new Request(createUrl(`infill_development_compensation/${id}/`)));
 };
 
+export const editInfillDevelopment = (infillDevelopment: InfillDevelopment): Generator<any, any, any> => {
+  const {id} = infillDevelopment;
+  const body = JSON.stringify(infillDevelopment);
+
+  return callApi(new Request(createUrl(`infill_development_compensation/${id}/`), {
+    method: 'PATCH',
+    body,
+  }));
+};
+
 export const uploadInfillDevelopmentFile = (data: InfillDevelopmentFileData): Generator<any, any, any> => {
   const formData = new FormData();
   formData.set('file', data.file);
@@ -47,4 +57,8 @@ export const uploadInfillDevelopmentFile = (data: InfillDevelopmentFileData): Ge
     method: 'POST',
     body,
   }));
+};
+
+export const deleteInfillDevelopmentFile = (fileId: number): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`infill_development_compensation_attachment/${fileId}/`), {method: 'DELETE'}));
 };

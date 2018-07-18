@@ -17,7 +17,7 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {uploadInfillDevelopmentFile} from '$src/infillDevelopment/actions';
+import {deleteInfillDevelopmentFile, uploadInfillDevelopmentFile} from '$src/infillDevelopment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {
@@ -123,6 +123,7 @@ type Props = {
   attributes: Attributes,
   change: Function,
   compensationInvestment: ?number,
+  deleteInfillDevelopmentFile: Function,
   fetchLeaseById: Function,
   field: string,
   fields: any,
@@ -231,6 +232,14 @@ class LeaseItemEdit extends Component<Props, State> {
       file: e.target.files[0],
     });
   };
+
+  handleDeleteInfillDevelopmentFile = (fileId: number) => {
+    const {deleteInfillDevelopmentFile, infillDevelopment} = this.props;
+    deleteInfillDevelopmentFile({
+      id: infillDevelopment.id,
+      fileId,
+    });
+  }
 
   handleMapLink = () => {
     alert('TODO: open map link');
@@ -412,43 +421,53 @@ class LeaseItemEdit extends Component<Props, State> {
               />
             </Column>
           </Row>
-          <SubTitle>Liitetiedostot</SubTitle>
-          {!attachments || !attachments.length && <p>Ei liitetiedostoja</p>}
-          {!!attachments && !!attachments.length &&
+          {!!infillDevelopmentCompensationLeaseId &&
             <div>
-              <Row>
-                <Column small={4} large={4}>
-                  <FormFieldLabel>Nimi</FormFieldLabel>
-                </Column>
-                <Column small={4} large={2}>
-                  <FormFieldLabel>Pvm</FormFieldLabel>
-                </Column>
-                <Column small={4} large={2}>
-                  <FormFieldLabel>Lataaja</FormFieldLabel>
-                </Column>
-              </Row>
-              {attachments.map((file, index) => {
-                return (
-                  <Row key={index}>
-                    <Column small={4} large={4}>
-                      <a href={file.file}>{get(file.filename) || 'TODO: Add file name'}</a>
+              <SubTitle>Liitetiedostot</SubTitle>
+              {!attachments || !attachments.length && <p>Ei liitetiedostoja</p>}
+              {!!attachments && !!attachments.length &&
+                <div>
+                  <Row>
+                    <Column small={3} large={4}>
+                      <FormFieldLabel>Nimi</FormFieldLabel>
                     </Column>
-                    <Column small={4} large={2}>
-                      <p>{formatDate(file.uploaded_at) || '-'}</p>
+                    <Column small={3} large={2}>
+                      <FormFieldLabel>Pvm</FormFieldLabel>
                     </Column>
-                    <Column small={4} large={2}>
-                      <p>{getUserFullName((file.uploader)) || '-'}</p>
+                    <Column small={3} large={2}>
+                      <FormFieldLabel>Lataaja</FormFieldLabel>
                     </Column>
                   </Row>
-                );
-              })}
+                  {attachments.map((file, index) => {
+                    return (
+                      <Row key={index}>
+                        <Column small={3} large={4}>
+                          <a href={file.file}>{get(file.filename) || 'TODO: Add file name'}</a>
+                        </Column>
+                        <Column small={3} large={2}>
+                          <p>{formatDate(file.uploaded_at) || '-'}</p>
+                        </Column>
+                        <Column small={3} large={2}>
+                          <p>{getUserFullName((file.uploader)) || '-'}</p>
+                        </Column>
+                        <Column small={3} large={2}>
+                          <RemoveButton
+                            onClick={() => this.handleDeleteInfillDevelopmentFile(file.id)}
+                            title="Poista liitetiedosto"
+                          />
+                        </Column>
+                      </Row>
+                    );
+                  })}
+                </div>
+              }
+              <AddFileButton
+                label='Lisää tiedosto'
+                name={`${infillDevelopmentCompensationLeaseId}`}
+                onChange={this.handleFileChange}
+              />
             </div>
           }
-          <AddFileButton
-            label='Lisää tiedosto'
-            name={`${infillDevelopmentCompensationLeaseId}`}
-            onChange={this.handleFileChange}
-          />
           <Row>
             <Column>
               <FormField
@@ -493,6 +512,7 @@ export default flowRight(
     },
     {
       change,
+      deleteInfillDevelopmentFile,
       fetchLeaseById,
       uploadInfillDevelopmentFile,
     }

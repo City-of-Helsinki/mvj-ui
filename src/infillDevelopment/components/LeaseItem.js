@@ -15,7 +15,13 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SubTitle from '$components/content/SubTitle';
 import {fetchLeaseById} from '$src/leases/actions';
 import {getUserFullName} from '$src/users/helpers';
-import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {
+  formatDate,
+  formatNumber,
+  getAttributeFieldOptions,
+  getLabelOfOption,
+  getReferenceNumberLink,
+} from '$util/helpers';
 import {
   getContentLeaseAreas,
   getContentLeaseIdentifier,
@@ -37,6 +43,7 @@ type Props = {
 }
 
 type State = {
+  decisionMakerOptions: Array<Object>,
   identifier: ?string,
   intendedUseOptions: Array<Object>,
   planUnits: Array<Object>,
@@ -46,6 +53,7 @@ type State = {
 
 class LeaseItem extends Component<Props, State> {
   state = {
+    decisionMakerOptions: [],
     identifier: null,
     intendedUseOptions: [],
     planUnits: [],
@@ -76,12 +84,16 @@ class LeaseItem extends Component<Props, State> {
     if(prevProps.lease !== this.props.lease) {
       this.updateLeaseContentStates();
     }
+    if(prevProps.attributes !== this.props.attributes) {
+      this.updateAttributeStates();
+    }
   }
 
   updateAttributeStates = () => {
     const {attributes} = this.props;
 
     this.setState({
+      decisionMakerOptions: getAttributeFieldOptions(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.decision_maker'),
       intendedUseOptions: getAttributeFieldOptions(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.intended_use'),
     });
   }
@@ -122,6 +134,7 @@ class LeaseItem extends Component<Props, State> {
   render() {
     const {id, isFetching, leaseData} = this.props;
     const {
+      decisionMakerOptions,
       identifier,
       intendedUseOptions,
       planUnits,
@@ -154,6 +167,43 @@ class LeaseItem extends Component<Props, State> {
 
         <SubTitle>Korvauksen päätös</SubTitle>
         {!decisions.length && <p>Ei päätöksiä</p>}
+        {!!decisions.length &&
+          <ListItems>
+            <Row>
+              <Column small={3} large={2}><FormFieldLabel>Päättäjä</FormFieldLabel></Column>
+              <Column small={3} large={2}><FormFieldLabel>Pvm</FormFieldLabel></Column>
+              <Column small={3} large={2}><FormFieldLabel>Pykälä</FormFieldLabel></Column>
+              <Column small={3} large={2}><FormFieldLabel>Diaarinumero</FormFieldLabel></Column>
+            </Row>
+            {decisions.map((decision, index) =>
+              <Row key={index}>
+                <Column small={3} large={2}>
+                  <p className='no-margin'>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</p>
+                </Column>
+                <Column small={3} large={2}>
+                  <p className='no-margin'>{formatDate(decision.decision_date) || '-'}</p>
+                </Column>
+                <Column small={3} large={2}>
+                  <p className='no-margin'>{decision.section ? `${decision.section} §` : '-'}</p>
+                </Column>
+                <Column small={3} large={2}>
+                  {decision.reference_number
+                    ? <p className='no-margin'>
+                      <a
+                        className='no-margin'
+                        target='_blank'
+                        href={getReferenceNumberLink(decision.reference_number)}
+                      >
+                        {decision.reference_number}
+                      </a>
+                    </p>
+                    : <p className='no-margin'>-</p>
+                  }
+                </Column>
+              </Row>
+            )}
+          </ListItems>
+        }
         <SubTitle>Käyttötarkoitus</SubTitle>
         {!intendedUses.length && <p>Ei käyttötarkoituksia</p>}
         {!!intendedUses.length &&

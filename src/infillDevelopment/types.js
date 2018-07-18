@@ -7,8 +7,14 @@ export type InfillDevelopmentId = number;
 export type InfillDevelopment = Object;
 export type InfillDevelopmentList = Object;
 export type InfillDevelopmentFileData = {
+  id: InfillDevelopmentId,
   data: Object,
   file: Object,
+}
+
+export type InfillDevelopmentFileDeleteObj = {
+  id: InfillDevelopmentId,
+  fileId: number,
 }
 
 export type FetchAttributesAction = Action<'mvj/infillDevelopment/FETCH_ATTRIBUTES', void>;
@@ -22,6 +28,7 @@ export type ReceiveSingleInfillDevelopmentAction = Action<'mvj/infillDevelopment
 export type CreateInfillDevelopmentAction = Action<'mvj/infillDevelopment/CREATE', InfillDevelopment>;
 export type EditInfillDevelopmentAction = Action<'mvj/infillDevelopment/EDIT', InfillDevelopment>;
 export type UploadInfillDevelopmentFileAction = Action<'mvj/infillDevelopment/UPLOAD_FILE', InfillDevelopmentFileData>;
+export type DeleteInfillDevelopmentFileAction = Action<'mvj/infillDevelopment/DELETE_FILE', InfillDevelopmentFileDeleteObj>;
 
 export type InfillDevelopmentNotFoundAction = Action<'mvj/infillDevelopment/NOT_FOUND', void>;
 

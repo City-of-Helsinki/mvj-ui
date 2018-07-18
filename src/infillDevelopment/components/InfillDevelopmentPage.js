@@ -29,6 +29,8 @@ import {FormNames} from '$src/infillDevelopment/enums';
 import {
   clearUnsavedChanges,
   getContentInfillDevelopment,
+  getContentInfillDevelopmentCopy,
+  getContentInfillDevelopmentForDb,
 } from '$src/infillDevelopment/helpers';
 import {getRouteById} from '$src/root/routes';
 import {
@@ -234,7 +236,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const infillDevelopment = {...currentInfillDevelopment};
     infillDevelopment.id = undefined;
 
-    receiveFormInitialValues(getContentInfillDevelopment(infillDevelopment));
+    receiveFormInitialValues(getContentInfillDevelopmentCopy(infillDevelopment));
     hideEditMode();
     clearUnsavedChanges();
 
@@ -286,8 +288,11 @@ class InfillDevelopmentPage extends Component<Props, State> {
   }
 
   saveInfillDevelopment = () => {
-    const {infillDevelopmentFormValues, editInfillDevelopment} = this.props;
-    editInfillDevelopment(infillDevelopmentFormValues);
+    const {currentInfillDevelopment, infillDevelopmentFormValues, editInfillDevelopment} = this.props;
+
+    const editedInfillDevelopment = getContentInfillDevelopmentForDb(infillDevelopmentFormValues);
+    editedInfillDevelopment.id = currentInfillDevelopment.id;
+    editInfillDevelopment(editedInfillDevelopment);
   }
 
   destroyAllForms = () => {
@@ -341,7 +346,6 @@ class InfillDevelopmentPage extends Component<Props, State> {
             ? <InfillDevelopmentForm infillDevelopment={infillDevelopment} isSaveClicked={isSaveClicked} />
             : <InfillDevelopmentTemplate infillDevelopment={infillDevelopment} />
           }
-
         </ContentContainer>
       </PageContainer>
     );

@@ -7,22 +7,31 @@ import get from 'lodash/get';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import GreenBox from '$components/content/GreenBox';
 import LeaseItem from './LeaseItem';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SubTitle from '$components/content/SubTitle';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {getAttributes} from '$src/infillDevelopment/selectors';
+import {getAttributes, getIsFetching} from '$src/infillDevelopment/selectors';
 
 import type {Attributes, InfillDevelopment} from '../types';
 
 type Props = {
   attributes: Attributes,
   infillDevelopment: InfillDevelopment,
+  isFetching: boolean,
 }
 
-const InfillDevelopmentTemplate = ({attributes, infillDevelopment}: Props) => {
+const InfillDevelopmentTemplate = ({attributes, infillDevelopment, isFetching}: Props) => {
   const leases = get(infillDevelopment, 'infill_development_compensation_leases', []);
   const stateOptions = getAttributeFieldOptions(attributes, 'state');
-
+  if(isFetching) {
+    return (
+      <GreenBox>
+        <LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper>
+      </GreenBox>
+    );
+  }
   return (
     <GreenBox>
       <Row>
@@ -87,6 +96,7 @@ export default connect(
   (state) => {
     return {
       attributes: getAttributes(state),
+      isFetching: getIsFetching(state),
     };
   }
 )(InfillDevelopmentTemplate);
