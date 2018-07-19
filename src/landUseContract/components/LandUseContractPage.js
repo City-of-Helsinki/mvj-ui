@@ -3,10 +3,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
+import {destroy, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import BasicInformation from './sections/BasicInformation';
+import BasicInformationEdit from './sections/BasicInformationEdit';
 import Compensations from './sections/Compensations';
 import ContentContainer from '$components/content/ContentContainer';
 import Contracts from './sections/Contracts';
@@ -21,22 +23,37 @@ import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {fetchLandUseContractAttributes, fetchSingleLandUseContract} from '$src/landUseContract/actions';
-import {getContentLandUseContractIdentifier} from '$src/landUseContract/helpers';
+import {
+  fetchLandUseContractAttributes,
+  fetchSingleLandUseContract,
+  hideEditMode,
+  showEditMode,
+} from '$src/landUseContract/actions';
+import {FormNames} from '$src/landUseContract/enums';
+import {getContentLandUseContractIdentifier, getContentBasicInformation} from '$src/landUseContract/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getCurrentLandUseContract} from '$src/landUseContract/selectors';
+import {
+  getAttributes,
+  getCurrentLandUseContract,
+  getIsEditMode,
+} from '$src/landUseContract/selectors';
 
 import type {Attributes, LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Attributes,
   currentLandUseContract: LandUseContract,
+  destroy: Function,
   fetchLandUseContractAttributes: Function,
   fetchSingleLandUseContract: Function,
+  hideEditMode: Function,
+  initialize: Function,
+  isEditMode: boolean,
   location: Object,
   params: Object,
   receiveTopNavigationSettings: Function,
   router: Object,
+  showEditMode: Function,
 }
 
 type State = {
@@ -105,29 +122,48 @@ class LandUseContractPage extends Component<Props, State> {
   }
 
   handleControlButtonCancel = () => {
-    alert('TODO: Close edit mode');
+    const {hideEditMode} = this.props;
+
+    hideEditMode();
   }
 
   handleControlButtonEdit = () => {
-    alert('TODO: Open edit mode');
+    const {currentLandUseContract, showEditMode} = this.props;
+
+    showEditMode();
+    this.destroyAllForms();
+    this.initializeForms(currentLandUseContract);
   }
+
+  initializeForms = (landUseContract: LandUseContract) => {
+    const {initialize} = this.props;
+
+    initialize(FormNames.BASIC_INFORMATION, getContentBasicInformation(landUseContract));
+  }
+
   handleControlButtonSave = () => {
     alert('TODO: Save changes');
   }
 
+  destroyAllForms = () => {
+    const {destroy} = this.props;
+
+    destroy(FormNames.BASIC_INFORMATION);
+  }
+
   render() {
     const {activeTab} = this.state;
-    const {currentLandUseContract} = this.props;
-    const isEditMode = false;
+    const {currentLandUseContract, isEditMode} = this.props;
     const identifier = getContentLandUseContractIdentifier(currentLandUseContract);
+
     return (
       <PageContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              isCancelDisabled={true}
+              isCancelDisabled={false}
               isCopyDisabled={true}
-              isEditDisabled={true}
+              isEditDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={true}
               onCancelClick={this.handleControlButtonCancel}
@@ -157,7 +193,7 @@ class LandUseContractPage extends Component<Props, State> {
             <ContentContainer>
               {!isEditMode
                 ? <BasicInformation />
-                : null
+                : <BasicInformationEdit />
               }
             </ContentContainer>
           </TabPane>
@@ -218,12 +254,17 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         currentLandUseContract: getCurrentLandUseContract(state),
+        isEditMode: getIsEditMode(state),
       };
     },
     {
+      destroy,
       fetchLandUseContractAttributes,
       fetchSingleLandUseContract,
+      hideEditMode,
+      initialize,
       receiveTopNavigationSettings,
+      showEditMode,
     }
   ),
 )(LandUseContractPage);

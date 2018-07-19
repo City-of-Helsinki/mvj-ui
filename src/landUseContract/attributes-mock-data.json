@@ -8,6 +8,82 @@
       "read_only": true,
       "label": "Id"
     },
+    "areas": {
+      "child": {
+        "children": {
+          "area": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Kohde",
+            "max_length": 255
+          }
+        }
+      }
+    },
+    "litigants": {
+      "child": {
+        "children": {
+          "litigant": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Kohde",
+            "max_length": 255
+          }
+        }
+      }
+    },
+    "preparer": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "User"
+    },
+    "land_use_contract_number": {
+      "type": "string",
+      "required": false,
+      "read_only": false,
+      "label": "Maankäyttösopimus",
+      "max_length": 255
+    },
+    "estimated_completion_year": {
+      "type": "integer",
+      "required": false,
+      "read_only": false,
+      "label": "Arvioitu toteutumisvuosi",
+      "min_value": 0,
+      "max_value": 32767
+    },
+    "estimated_introduction_year": {
+      "type": "integer",
+      "required": false,
+      "read_only": false,
+      "label": "Arvioitu esittelyvuosi",
+      "min_value": 0,
+      "max_value": 32767
+    },
+    "project_area": {
+      "type": "string",
+      "required": false,
+      "read_only": false,
+      "label": "Hankealue",
+      "max_length": 255
+    },
+    "plan_reference_number": {
+      "type": "string",
+      "required": false,
+      "read_only": false,
+      "label": "Asemakaavan diaarinumero",
+      "max_length": 255
+    },
+    "plan_number": {
+      "type": "string",
+      "required": false,
+      "read_only": false,
+      "label": "Asemakaavan numero",
+      "max_length": 255
+    },
     "state": {
       "type": "field",
       "required": false,
@@ -27,6 +103,36 @@
             "value": 2
         }
       ]
+    },
+    "plan_acceptor": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Asemakaavan hyväksyjä",
+      "choices": [
+        {
+            "display_name": "Alueiden käyttö tiimipäällikkö",
+            "value": 2
+        },
+        {
+            "display_name": "Alueidenkäyttö toimistopäällik",
+            "value": 1
+        },
+        {
+            "display_name": "Apulaiskaupunginjohtaja",
+            "value": 41
+        },
+        {
+            "display_name": "Asuntoasiainosasto",
+            "value": 4
+        }
+      ]
+    },
+    "plan_lawfulness_date": {
+      "type": "date",
+      "required": false,
+      "read_only": false,
+      "label": "Asemakaavan lainvoimaisuuspvm"
     }
   }
 }

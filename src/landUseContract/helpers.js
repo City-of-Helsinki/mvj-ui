@@ -2,6 +2,7 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
+import {getContentUser} from '$src/leases/helpers';
 import {fixedLengthNumber} from '$util/helpers';
 
 import type {LandUseContract} from './types';
@@ -26,16 +27,32 @@ export const getContentLandUseContractListItem = (contract: LandUseContract) => 
   };
 };
 
-export const getContentLandUseContractBasicInformation = (contract: LandUseContract) => {
+const getContentBasicInformationAreas = (contract: LandUseContract) => {
+  return get(contract, 'areas', []).map((area) => {
+    return {
+      area: get(area, 'area'),
+    };
+  });
+};
+
+const getContentBasicInformationLitigants = (contract: LandUseContract) => {
+  return get(contract, 'litigants', []).map((litigant) => {
+    return {
+      litigant: get(litigant, 'litigant'),
+    };
+  });
+};
+
+export const getContentBasicInformation = (contract: LandUseContract) => {
   return {
     id: contract.id,
     identifier: getContentLandUseContractIdentifier(contract),
-    areas: get(contract, 'areas', []),
-    litigants: get(contract, 'litigants', []),
-    preparer: get(contract, 'preparer'),
+    areas: getContentBasicInformationAreas(contract),
+    litigants: getContentBasicInformationLitigants(contract),
+    preparer: getContentUser(get(contract, 'preparer')),
     land_use_contract_number: get(contract, 'land_use_contract_number'),
-    estimate_completion_year: get(contract, 'estimate_completion_year'),
-    estimate_introduction_year: get(contract, 'estimate_introduction_year'),
+    estimated_completion_year: get(contract, 'estimated_completion_year'),
+    estimated_introduction_year: get(contract, 'estimated_introduction_year'),
     project_area: get(contract, 'project_area'),
     plan_reference_number: get(contract, 'plan_reference_number'),
     plan_number: get(contract, 'plan_number'),

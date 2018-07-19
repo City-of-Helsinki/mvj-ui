@@ -288,9 +288,10 @@ class LeasePage extends Component<Props, State> {
     const {clearFormValidFlags, currentLease, receiveIsSaveClicked, showEditMode} = this.props;
 
     receiveIsSaveClicked(false);
+    clearFormValidFlags();
+
     this.destroyAllForms();
     this.initializeForms(currentLease);
-    clearFormValidFlags();
     showEditMode();
     this.startAutoSaveTimer();
   }

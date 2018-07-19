@@ -11,6 +11,9 @@ import type {
 export const getAttributes: Selector<Attributes, void> = (state: LandUseContractState): Attributes =>
   state.landUseContract.attributes;
 
+export const getIsEditMode: Selector<boolean, void> = (state: LandUseContractState): boolean =>
+  state.landUseContract.isEditMode;
+
 export const getIsFetching: Selector<boolean, void> = (state: LandUseContractState): boolean =>
   state.landUseContract.isFetching;
 

@@ -14,3 +14,7 @@ export type FetchLandUseContractListAction = Action<'mvj/landUseContract/FETCH_A
 export type ReceiveLandUseContractListAction = Action<'mvj/landUseContract/RECEIVE_ALL', LandUseContractList>;
 export type FetchSingleLandUseContractAction = Action<'mvj/landUseContract/FETCH_SINGLE', LandUseContractId>;
 export type ReceiveSingleLandUseContractAction = Action<'mvj/landUseContract/RECEIVE_SINGLE', LandUseContract>;
+export type LandUseContractNotFoundAction = Action<'mvj/landUseContract/NOT_FOUND', void>;
+
+export type HideEditModeAction = Action<'mvj/landUseContract/HIDE_EDIT', void>;
+export type ShowEditModeAction = Action<'mvj/landUseContract/SHOW_EDIT', void>;
