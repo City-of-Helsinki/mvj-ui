@@ -12,7 +12,12 @@ import LeaseItemsEdit from './LeaseItemsEdit';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValidFlags} from '$src/infillDevelopment/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
-import {getAttributes, getFormInitialValues, getIsSaveClicked} from '$src/infillDevelopment/selectors';
+import {
+  getAttributes,
+  getFormInitialValues,
+  getIsSaveClicked,
+} from '$src/infillDevelopment/selectors';
+import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes, InfillDevelopment} from '$src/infillDevelopment/types';
 
@@ -67,6 +72,7 @@ class InfillDevelopmentForm extends Component<Props> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'reference_number')}
                 name='reference_number'
+                validate={referenceNumber}
                 overrideValues={{
                   label: 'Diaarinumero',
                 }}

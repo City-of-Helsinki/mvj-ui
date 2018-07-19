@@ -38,9 +38,97 @@ import {
   getIsFetchingById,
   getLeaseById,
 } from '$src/leases/selectors';
+import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/infillDevelopment/types';
 import type {Lease} from '$src/leases/types';
+
+type DecisionsProps = {
+  attributes: Attributes,
+  fields: any,
+  isSaveClicked: boolean,
+}
+
+const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): Element<*> => {
+  return (
+    <div>
+      <SubTitle>Korvauksen päätökset</SubTitle>
+      {!fields || !fields.length && <p>Ei päätöksiä</p>}
+      {!!fields && !!fields.length &&
+        <div>
+          <Row>
+            <Column small={3} large={2}><FormFieldLabel>Päättäjä</FormFieldLabel></Column>
+            <Column small={3} large={2}><FormFieldLabel>Pvm</FormFieldLabel></Column>
+            <Column small={3} large={2}><FormFieldLabel>Pykälä</FormFieldLabel></Column>
+            <Column small={3} large={2}><FormFieldLabel>Diaarunumero</FormFieldLabel></Column>
+          </Row>
+          {fields.map((field, index) => {
+            return (
+              <Row key={index}>
+                <Column small={3} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.decision_maker')}
+                    name={`${field}.decision_maker`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={3} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.decision_date')}
+                    name={`${field}.decision_date`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={3} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.section')}
+                    name={`${field}.section`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={3} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.reference_number')}
+                    name={`${field}.reference_number`}
+                    validate={referenceNumber}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={3} large={2}>
+                  <RemoveButton
+                    onClick={() => fields.remove(index)}
+                    title="Poista päätös"
+                  />
+                </Column>
+              </Row>
+            );
+          })}
+        </div>
+      }
+      <Row>
+        <Column>
+          <AddButtonSecondary
+            label='Lisää päätös'
+            onClick={() => fields.push({})}
+            title='Lisää päätös'
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
 
 type IntendedUsesProps = {
   attributes: Attributes,
@@ -336,6 +424,14 @@ class LeaseItemEdit extends Component<Props, State> {
               {!isFetching && <a onClick={() => {alert('TODO. OPEN MAP LINK');}}>Karttalinkki</a>}
             </Column>
           </Row>
+
+          <FieldArray
+            attributes={attributes}
+            component={renderDecisions}
+            isSaveClicked={isSaveClicked}
+            name={`${field}.decisions`}
+          />
+
           <FieldArray
             attributes={attributes}
             component={renderIntendedUses}

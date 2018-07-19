@@ -248,7 +248,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
                 {key: 'name', label: 'Hankkeen nimi'},
                 {key: 'detailed_plan_identifier', label: 'Asemakaavan nro'},
                 {key: 'leaseIdentifiers', label: 'Vuokratunnus', renderer: (val) => val.length ? val.map((item, index) => <p key={index}>{item}</p>) : '-'},
-                {key: 'state', label: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
+                {key: 'state', label: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
               ]}
               onRowClick={this.handleRowClick}
             />
