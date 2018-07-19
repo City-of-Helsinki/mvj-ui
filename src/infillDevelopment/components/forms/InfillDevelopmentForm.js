@@ -9,14 +9,21 @@ import get from 'lodash/get';
 import FormField from '$components/form/FormField';
 import GreenBox from '$components/content/GreenBox';
 import LeaseItemsEdit from './LeaseItemsEdit';
+import SubTitle from '$components/content/SubTitle';
 import {receiveFormValidFlags} from '$src/infillDevelopment/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
-import {getAttributes, getFormInitialValues} from '$src/infillDevelopment/selectors';
+import {
+  getAttributes,
+  getFormInitialValues,
+  getIsSaveClicked,
+} from '$src/infillDevelopment/selectors';
+import {referenceNumber} from '$components/form/validations';
 
-import type {Attributes} from '$src/infillDevelopment/types';
+import type {Attributes, InfillDevelopment} from '$src/infillDevelopment/types';
 
 type Props = {
   attributes: Attributes,
+  infillDevelopment: InfillDevelopment,
   isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
@@ -34,7 +41,7 @@ class InfillDevelopmentForm extends Component<Props> {
   }
 
   render() {
-    const {attributes, isSaveClicked} = this.props;
+    const {attributes, infillDevelopment, isSaveClicked} = this.props;
 
     return (
       <form>
@@ -43,22 +50,32 @@ class InfillDevelopmentForm extends Component<Props> {
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'project_name')}
-                name='project_name'
+                fieldAttributes={get(attributes, 'name')}
+                name='name'
+                overrideValues={{
+                  label: 'Hankkeen nimi',
+                }}
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plan_number')}
-                name='plan_number'
+                fieldAttributes={get(attributes, 'detailed_plan_identifier')}
+                name='detailed_plan_identifier'
+                overrideValues={{
+                  label: 'Asemakaavan nro.',
+                }}
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plan_reference_number')}
-                name='plan_reference_number'
+                fieldAttributes={get(attributes, 'reference_number')}
+                name='reference_number'
+                validate={referenceNumber}
+                overrideValues={{
+                  label: 'Diaarinumero',
+                }}
               />
             </Column>
             <Column small={6} medium={4} large={2}>
@@ -66,20 +83,9 @@ class InfillDevelopmentForm extends Component<Props> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'state')}
                 name='state'
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'decision_type')}
-                name='decision_type'
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'state_date')}
-                name='state_date'
+                overrideValues={{
+                  label: 'Neuvotteluvaihe',
+                }}
               />
             </Column>
           </Row>
@@ -87,39 +93,41 @@ class InfillDevelopmentForm extends Component<Props> {
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'responsible_person')}
-                name='responsible_person'
+                fieldAttributes={get(attributes, 'user')}
+                name='user'
                 overrideValues={{
                   fieldType: 'user',
+                  label: 'Vastuuhenkilö',
                 }}
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'nagotiation_state')}
-                name='nagotiation_state'
+                fieldAttributes={get(attributes, 'lease_contract_change_date')}
+                name='lease_contract_change_date'
+                overrideValues={{
+                  label: 'Vuokrasopimuksen muutospvm',
+                }}
               />
             </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'change_of_lease_date')}
-                name='change_of_lease_date'
-              />
-            </Column>
-            <Column small={12} medium={12} large={6}>
+            <Column small={12} medium={4} large={8}>
               <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'note')}
                 name='note'
+                overrideValues={{
+                  label: 'Huomautus',
+                }}
               />
             </Column>
           </Row>
+          <SubTitle>Vuokraukset</SubTitle>
           <FieldArray
             attributes={attributes}
+            infillDevelopment={infillDevelopment}
             isSaveClicked={isSaveClicked}
-            name={`leases`}
+            name={`infill_development_compensation_leases`}
             component={LeaseItemsEdit}
           />
         </GreenBox>
@@ -136,6 +144,7 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         initialValues: getFormInitialValues(state),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

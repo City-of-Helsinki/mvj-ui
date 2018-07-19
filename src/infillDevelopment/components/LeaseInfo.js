@@ -5,16 +5,12 @@ import get from 'lodash/get';
 
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
-import SubTitle from '$components/content/SubTitle';
 import {getRouteById} from '$src/root/routes';
 import {getContactFullName} from '$src/contacts/helpers';
-import {formatDate, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 
 import type {LeaseId} from '$src/leases/types';
 
 type Props = {
-  decisionMakerOptions: Array<Object>,
-  decisions: Array<Object>,
   id: LeaseId,
   identifier: ?string,
   planUnits: Array<Object>,
@@ -24,8 +20,6 @@ type Props = {
 
 const LeaseInfo = ({
   id,
-  decisionMakerOptions,
-  decisions,
   identifier,
   planUnits,
   plots,
@@ -75,47 +69,9 @@ const LeaseInfo = ({
         }
       </Column>
       <Column small={6} medium={4} large={2}>
-        <a onClick={() => {alert('TODO. OPEN MAP LINK');}}>Karttalinkki</a>
+        <a href={`${getRouteById('leases')}/${id}?tab=7`} target='_blank'>Karttalinkki</a>
       </Column>
     </Row>
-    <SubTitle>Korvauksen päätös</SubTitle>
-    {!decisions.length && <p>Ei päätöksiä</p>}
-    {!!decisions.length &&
-      <ListItems>
-        <Row>
-          <Column small={3} large={2}><FormFieldLabel>Päättäjä</FormFieldLabel></Column>
-          <Column small={3} large={2}><FormFieldLabel>Pvm</FormFieldLabel></Column>
-          <Column small={3} large={2}><FormFieldLabel>Pykälä</FormFieldLabel></Column>
-          <Column small={3} large={2}><FormFieldLabel>Diaarinumero</FormFieldLabel></Column>
-        </Row>
-        {decisions.map((decision) =>
-          <Row key={decision.id}>
-            <Column small={3} large={2}>
-              <p className='no-margin'>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</p>
-            </Column>
-            <Column small={3} large={2}>
-              <p className='no-margin'>{formatDate(decision.decision_date) || '-'}</p>
-            </Column>
-            <Column small={3} large={2}>
-              <p className='no-margin'>{decision.section ? `${decision.section} §` : '-'}</p>
-            </Column>
-            <Column small={3} large={2}>
-              {decision.reference_number
-                ? <p className='no-margin'>
-                  <a
-                    className='no-margin'
-                    target='_blank'
-                    href={getReferenceNumberLink(decision.reference_number)}>
-                    {decision.reference_number}
-                  </a>
-                </p>
-                : <p className='no-margin'>-</p>
-              }
-            </Column>
-          </Row>
-        )}
-      </ListItems>
-    }
   </div>;
 
 export default LeaseInfo;

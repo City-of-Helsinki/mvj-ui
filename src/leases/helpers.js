@@ -21,8 +21,8 @@ export const getContentLeaseIdentifier = (item:Object) => {
   if(isEmpty(item)) {
     return null;
   }
-  const unit = `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
-  return unit;
+
+  return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
 };
 
 export const getContentLeaseTenant = (lease: Object) => {

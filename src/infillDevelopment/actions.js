@@ -7,12 +7,16 @@ import type {
   FetchInfillDevelopmentListAction,
   FetchSingleInfillDevelopmentAction,
   InfillDevelopment,
+  InfillDevelopmentFileData,
+  InfillDevelopmentFileDeleteObj,
   InfillDevelopmentId,
   InfillDevelopmentList,
   ReceiveInfillDevelopmentListAction,
   ReceiveSingleInfillDevelopmentAction,
   CreateInfillDevelopmentAction,
   EditInfillDevelopmentAction,
+  UploadInfillDevelopmentFileAction,
+  DeleteInfillDevelopmentFileAction,
   InfillDevelopmentNotFoundAction,
   HideEditModeAction,
   ShowEditModeAction,
@@ -45,6 +49,12 @@ export const createInfillDevelopment = (infillDevelopment: InfillDevelopment): C
 
 export const editInfillDevelopment = (infillDevelopment: InfillDevelopment): EditInfillDevelopmentAction =>
   createAction('mvj/infillDevelopment/EDIT')(infillDevelopment);
+
+export const uploadInfillDevelopmentFile = (data: InfillDevelopmentFileData): UploadInfillDevelopmentFileAction =>
+  createAction('mvj/infillDevelopment/UPLOAD_FILE')(data);
+
+export const deleteInfillDevelopmentFile = (data: InfillDevelopmentFileDeleteObj): DeleteInfillDevelopmentFileAction =>
+  createAction('mvj/infillDevelopment/DELETE_FILE')(data);
 
 export const notFound = (): InfillDevelopmentNotFoundAction =>
   createAction('mvj/infillDevelopment/NOT_FOUND')();

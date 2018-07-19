@@ -6,12 +6,15 @@ import type {Element} from 'react';
 import AddButton from '$components/form/AddButton';
 import LeaseItemEdit from './LeaseItemEdit';
 
+import type {InfillDevelopment} from '$src/infillDevelopment/types';
+
 type Props = {
   fields: any,
+  infillDevelopment: InfillDevelopment,
   isSaveClicked: boolean,
 }
 
-const LeaseItemsEdit = ({fields, isSaveClicked}: Props): Element<*> => {
+const LeaseItemsEdit = ({fields, infillDevelopment, isSaveClicked}: Props): Element<*> => {
   return (
     <div>
       {!!fields && !!fields.length && fields.map((lease, index) => {
@@ -19,6 +22,7 @@ const LeaseItemsEdit = ({fields, isSaveClicked}: Props): Element<*> => {
           key={index}
           field={lease}
           fields={fields}
+          infillDevelopment={infillDevelopment}
           index={index}
           isSaveClicked={isSaveClicked}
         />;

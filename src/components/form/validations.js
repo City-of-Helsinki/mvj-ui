@@ -7,7 +7,13 @@ const decimalPlaces = (n) => {
   return result === null ? 0 : result[1].length;
 };
 
-export const required = (value: any, error?: string) => (!!value || value === 0) ? undefined : (error ? error : 'Pakollinen kenttä');
+export const required = (value: any, error?: string) => {
+  let val = value;
+  if(value === Object(value)) {
+    val = value.value;
+  }
+  return (!!val || val === 0) ? undefined : (error ? error : 'Pakollinen kenttä');
+};
 
 export const integer = (value: any, error?: string) => (value === null || value === undefined || (Number.isInteger(Number(value))) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
 
@@ -15,9 +21,9 @@ export const isDate = (value: any, error?: string) => (value === null || value =
 
 export const decimalNumber = (value: any, error?: string) => (value === null || value === undefined || !isNaN(value.toString().replace(',', '.')) ? undefined : (error ? error : 'Arvon tulee olla numero'));
 
-export const min = (value: any, min: number, error?: string) => ((Number(value) >= min) ? undefined : (error ? error : `Minimiarvo on ${min}`));
+export const min = (value: any, min: number, error?: string) => (value === null || value === undefined || (Number(value) >= min) ? undefined : (error ? error : `Minimiarvo on ${min}`));
 
-export const max = (value: any, max: number, error?: string) => ((Number(value) <= max) ? undefined : (error ? error : `Maksimiarvo on ${max}`));
+export const max = (value: any, max: number, error?: string) => (value === null || value === undefined || (Number(value) <= max) ? undefined : (error ? error : `Maksimiarvo on ${max}`));
 
 export const maxLength = (value: any, max: number, error?: string) => ((!value || value.length <= max) ? undefined : (error ? error : `Maksimipituus on ${max}`));
 

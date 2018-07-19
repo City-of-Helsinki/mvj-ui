@@ -3,8 +3,7 @@
   padding: 0;
   background-color: $tram-lighter-solid;
   margin-bottom: rem-calc(15px);
-  display: inline-block;
-  width: 100%;
+  display: block;
 
   .collapse__header {
     padding: rem-calc(15px);
@@ -198,7 +197,7 @@
 
   &.collapse__secondary {
     background-color: rgba(255, 255, 255, 0.8);
-    margin: rem-calc(5px) 0 rem-calc(10px);
+    margin: rem-calc(5px) 0 rem-calc(15px);
     padding: 0;
 
     &.not-active {

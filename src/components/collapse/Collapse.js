@@ -16,7 +16,7 @@ type Props = {
 }
 
 type State = {
-  contentHeight: number,
+  contentHeight: ?number,
   isCollapsing: boolean,
   isExpanding: boolean,
   isOpen: boolean,
@@ -34,7 +34,7 @@ class Collapse extends PureComponent<Props, State> {
   };
 
   state = {
-    contentHeight: 0,
+    contentHeight: null,
     isCollapsing: false,
     isExpanding: false,
     isOpen: this.props.defaultOpen,

@@ -29,6 +29,8 @@ import {FormNames} from '$src/infillDevelopment/enums';
 import {
   clearUnsavedChanges,
   getContentInfillDevelopment,
+  getContentInfillDevelopmentCopy,
+  getContentInfillDevelopmentForDb,
 } from '$src/infillDevelopment/helpers';
 import {getRouteById} from '$src/root/routes';
 import {
@@ -70,11 +72,13 @@ type Props = {
 }
 
 type State = {
+  infillDevelopment: InfillDevelopment,
   isRestoreModalOpen: boolean,
 }
 
 class InfillDevelopmentPage extends Component<Props, State> {
   state = {
+    infillDevelopment: {},
     isRestoreModalOpen: false,
   }
 
@@ -90,6 +94,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
       fetchInfillDevelopmentAttributes,
       fetchSingleInfillDevelopment,
       params: {infillDevelopmentId},
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
 
@@ -104,6 +109,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     }
 
     fetchSingleInfillDevelopment(infillDevelopmentId);
+    receiveIsSaveClicked(false);
 
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
@@ -113,8 +119,14 @@ class InfillDevelopmentPage extends Component<Props, State> {
     if(isEmpty(prevProps.currentInfillDevelopment) && !isEmpty(this.props.currentInfillDevelopment)) {
       const storedInfillDevelopmentId = getSessionStorageItem('infillDevelopmentId');
       if(Number(infillDevelopmentId) === storedInfillDevelopmentId) {
-        this.setState({isRestoreModalOpen: true});
+        this.setState({
+          isRestoreModalOpen: true,
+        });
       }
+    }
+
+    if(prevProps.currentInfillDevelopment !== this.props.currentInfillDevelopment) {
+      this.updateInfillDevelopment();
     }
 
     // Stop autosave timer and clear form data from session storage after saving/cancelling changes
@@ -138,6 +150,13 @@ class InfillDevelopmentPage extends Component<Props, State> {
     this.stopAutoSaveTimer();
 
     window.removeEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  updateInfillDevelopment = () => {
+    const {currentInfillDevelopment} = this.props;
+    this.setState({
+      infillDevelopment: getContentInfillDevelopment(currentInfillDevelopment),
+    });
   }
 
   handleLeavePage = (e) => {
@@ -219,7 +238,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const infillDevelopment = {...currentInfillDevelopment};
     infillDevelopment.id = undefined;
 
-    receiveFormInitialValues(getContentInfillDevelopment(infillDevelopment));
+    receiveFormInitialValues(getContentInfillDevelopmentCopy(infillDevelopment));
     hideEditMode();
     clearUnsavedChanges();
 
@@ -271,8 +290,11 @@ class InfillDevelopmentPage extends Component<Props, State> {
   }
 
   saveInfillDevelopment = () => {
-    const {infillDevelopmentFormValues, editInfillDevelopment} = this.props;
-    editInfillDevelopment(infillDevelopmentFormValues);
+    const {currentInfillDevelopment, infillDevelopmentFormValues, editInfillDevelopment} = this.props;
+
+    const editedInfillDevelopment = getContentInfillDevelopmentForDb(infillDevelopmentFormValues);
+    editedInfillDevelopment.id = currentInfillDevelopment.id;
+    editInfillDevelopment(editedInfillDevelopment);
   }
 
   destroyAllForms = () => {
@@ -283,13 +305,12 @@ class InfillDevelopmentPage extends Component<Props, State> {
 
   render() {
     const {
-      currentInfillDevelopment,
       isEditMode,
       isFormValid,
       isSaveClicked,
     } = this.props;
 
-    const {isRestoreModalOpen} = this.state;
+    const {infillDevelopment, isRestoreModalOpen} = this.state;
 
     return (
       <PageContainer>
@@ -319,15 +340,14 @@ class InfillDevelopmentPage extends Component<Props, State> {
               showCopyButton={true}
             />
           }
-          infoComponent={<h1>{currentInfillDevelopment.project_name}</h1>}
+          infoComponent={<h1>{infillDevelopment.name}</h1>}
           onBack={this.handleControlButtonBarBack}
         />
         <ContentContainer>
           {isEditMode
-            ? <InfillDevelopmentForm isSaveClicked={isSaveClicked} />
-            : <InfillDevelopmentTemplate infillDevelopment={currentInfillDevelopment} />
+            ? <InfillDevelopmentForm infillDevelopment={infillDevelopment}/>
+            : <InfillDevelopmentTemplate infillDevelopment={infillDevelopment} />
           }
-
         </ContentContainer>
       </PageContainer>
     );
