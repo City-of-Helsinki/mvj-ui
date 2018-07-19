@@ -94,6 +94,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
       fetchInfillDevelopmentAttributes,
       fetchSingleInfillDevelopment,
       params: {infillDevelopmentId},
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
 
@@ -108,6 +109,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     }
 
     fetchSingleInfillDevelopment(infillDevelopmentId);
+    receiveIsSaveClicked(false);
 
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
@@ -343,7 +345,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
         />
         <ContentContainer>
           {isEditMode
-            ? <InfillDevelopmentForm infillDevelopment={infillDevelopment} isSaveClicked={isSaveClicked} />
+            ? <InfillDevelopmentForm infillDevelopment={infillDevelopment}/>
             : <InfillDevelopmentTemplate infillDevelopment={infillDevelopment} />
           }
         </ContentContainer>

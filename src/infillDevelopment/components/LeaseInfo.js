@@ -69,7 +69,7 @@ const LeaseInfo = ({
         }
       </Column>
       <Column small={6} medium={4} large={2}>
-        <a onClick={() => {alert('TODO. OPEN MAP LINK');}}>Karttalinkki</a>
+        <a href={`${getRouteById('leases')}/${id}?tab=7`} target='_blank'>Karttalinkki</a>
       </Column>
     </Row>
   </div>;

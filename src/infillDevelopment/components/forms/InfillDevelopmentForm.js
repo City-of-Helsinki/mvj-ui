@@ -12,7 +12,7 @@ import LeaseItemsEdit from './LeaseItemsEdit';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValidFlags} from '$src/infillDevelopment/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
-import {getAttributes, getFormInitialValues} from '$src/infillDevelopment/selectors';
+import {getAttributes, getFormInitialValues, getIsSaveClicked} from '$src/infillDevelopment/selectors';
 
 import type {Attributes, InfillDevelopment} from '$src/infillDevelopment/types';
 
@@ -138,6 +138,7 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         initialValues: getFormInitialValues(state),
+        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

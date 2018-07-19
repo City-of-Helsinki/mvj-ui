@@ -16,6 +16,7 @@ import {
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {
+  createInfillDevelopment,
   editInfillDevelopment,
   fetchAttributes,
   fetchInfillDevelopments,
@@ -41,7 +42,7 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch identifiers with error "%s"', error);
+    console.error('Failed to fetch infill development identifiers with error "%s"', error);
     yield put(receiveError(error));
   }
 }
@@ -90,8 +91,27 @@ function* fetchSingleInfillDevelopmentSaga({payload: id}): Generator<any, any, a
 }
 
 function* createInfillDevelopmentSaga({payload: infillDevelopment}): Generator<any, any, any> {
-  console.log(infillDevelopment);
-  yield put(push(getRouteById('infillDevelopment')));
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createInfillDevelopment, infillDevelopment);
+
+    switch (statusCode) {
+      case 201:
+        yield put(push(`${getRouteById('infillDevelopment')}/${bodyAsJson.id}`));
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create infill development compensation with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
 }
 
 function* editInfillDevelopmentSaga({payload: infillDevelopment}): Generator<any, any, any> {

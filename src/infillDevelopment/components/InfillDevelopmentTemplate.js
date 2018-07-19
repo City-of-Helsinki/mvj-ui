@@ -80,13 +80,15 @@ const InfillDevelopmentTemplate = ({attributes, infillDevelopment, isFetching}: 
       <SubTitle>Vuokraukset</SubTitle>
       {!leases.length && <p>Ei vuokrauksia</p>}
       {!!leases.length &&
-        leases.map((lease) =>
-          <LeaseItem
-            key={lease.id}
-            id={lease.id}
-            leaseData={lease}
-          />
-        )
+        <div style={{marginBottom: 10}}>
+          {leases.map((lease) =>
+            <LeaseItem
+              key={lease.id}
+              id={get(lease, 'lease.value')}
+              leaseData={lease}
+            />
+          )}
+        </div>
       }
     </GreenBox>
   );

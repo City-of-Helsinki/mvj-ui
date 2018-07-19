@@ -37,6 +37,15 @@ export const fetchSingleInfillDevelopment = (id: InfillDevelopmentId): Generator
   return callApi(new Request(createUrl(`infill_development_compensation/${id}/`)));
 };
 
+export const createInfillDevelopment = (infillDevelopment: InfillDevelopment): Generator<any, any, any> => {
+  const body = JSON.stringify(infillDevelopment);
+
+  return callApi(new Request(createUrl('infill_development_compensation/'), {
+    method: 'POST',
+    body,
+  }));
+};
+
 export const editInfillDevelopment = (infillDevelopment: InfillDevelopment): Generator<any, any, any> => {
   const {id} = infillDevelopment;
   const body = JSON.stringify(infillDevelopment);

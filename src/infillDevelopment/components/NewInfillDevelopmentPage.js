@@ -15,22 +15,32 @@ import InfillDevelopmentForm from './forms/InfillDevelopmentForm';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
-import {createInfillDevelopment, fetchInfillDevelopmentAttributes} from '$src/infillDevelopment/actions';
+import {
+  clearFormValidFlags,
+  createInfillDevelopment,
+  fetchInfillDevelopmentAttributes,
+  receiveIsSaveClicked,
+} from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '../enums';
+import {getContentInfillDevelopmentForDb} from '$src/infillDevelopment/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getIsFormValidById} from '$src/infillDevelopment/selectors';
+import {getAttributes, getIsFormValidById, getIsSaveClicked} from '$src/infillDevelopment/selectors';
 
 import type {RootState} from '$src/root/types';
 import type {Attributes} from '../types';
 
 type Props = {
   attributes: Attributes,
+  clearFormValidFlags: Function,
   createInfillDevelopment: Function,
   fetchAttributes: Function,
   fetchInfillDevelopmentAttributes: Function,
   formValues: Object,
   isFormDirty: boolean,
+  isFormValid: boolean,
+  isSaveClicked: boolean,
+  receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
 }
@@ -48,8 +58,14 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
-    const {attributes, fetchInfillDevelopmentAttributes, receiveTopNavigationSettings} = this.props;
+  componentDidMount() {
+    const {
+      attributes,
+      clearFormValidFlags,
+      fetchInfillDevelopmentAttributes,
+      receiveIsSaveClicked,
+      receiveTopNavigationSettings,
+    } = this.props;
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById('infillDevelopment'),
@@ -60,9 +76,9 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchInfillDevelopmentAttributes();
     }
-  }
+    receiveIsSaveClicked(false);
+    clearFormValidFlags();
 
-  componentDidMount() {
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
@@ -115,12 +131,16 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
   }
 
   handleSave = () => {
-    const {formValues, createInfillDevelopment} = this.props;
-    createInfillDevelopment(formValues);
+    const {formValues, createInfillDevelopment, isFormValid, receiveIsSaveClicked} = this.props;
+
+    receiveIsSaveClicked(true);
+    if(isFormValid) {
+      createInfillDevelopment(getContentInfillDevelopmentForDb(formValues));
+    }
   }
 
   render() {
-    const {attributes} = this.props;
+    const {attributes, isFormValid, isSaveClicked} = this.props;
     const {isCancelModalOpen} = this.state;
 
     return (
@@ -140,14 +160,14 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
-              isSaveDisabled={false}
+              isSaveDisabled={isSaveClicked && !isFormValid}
               onCancelClick={this.handleControlButtonCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}
               showCopyButton={true}
             />
           }
-          infoComponent={<h1>Uusi asiakas</h1>}
+          infoComponent={<h1>Uusi täydennysrakentamiskorvaus</h1>}
           onBack={this.handleBack}
         />
         <ContentContainer>
@@ -173,6 +193,7 @@ const mapStateToProps = (state: RootState) => {
     formValues: getFormValues(FormNames.INFILL_DEVELOPMENT)(state),
     isFormValid: getIsFormValidById(state, FormNames.INFILL_DEVELOPMENT),
     isFormDirty: isDirty(FormNames.INFILL_DEVELOPMENT)(state),
+    isSaveClicked: getIsSaveClicked(state),
   };
 };
 
@@ -180,8 +201,10 @@ export default flowRight(
   connect(
     mapStateToProps,
     {
+      clearFormValidFlags,
       createInfillDevelopment,
       fetchInfillDevelopmentAttributes,
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
     },
   ),
