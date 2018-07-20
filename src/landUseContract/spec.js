@@ -5,9 +5,13 @@ import {
   receiveLandUseContractList,
   fetchSingleLandUseContract,
   receiveSingleLandUseContract,
+  editLandUseContract,
   notFound,
+  receiveIsSaveClicked,
   hideEditMode,
   showEditMode,
+  receiveFormValidFlags,
+  clearFormValidFlags,
 } from './actions';
 import landUseContractReducer from './reducer';
 
@@ -16,6 +20,12 @@ const baseState = {
   current: {},
   isEditMode: false,
   isFetching: false,
+  isFormValidById: {
+    'land-use-contract-basic-info-form': true,
+    'land-use-contract-contracts-form': true,
+    'land-use-contract-decisions-form': true,
+  },
+  isSaveClicked: false,
   list: {},
 };
 
@@ -85,11 +95,27 @@ describe('Land use contract', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update isFetching flag to true by editLandUseContract', () => {
+        const newState = {...baseState};
+        newState.isFetching = true;
+
+        const state = landUseContractReducer({}, editLandUseContract({}));
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isFetching flag to false by notFound', () => {
         const newState = {...baseState};
         newState.isFetching = false;
 
         const state = landUseContractReducer({}, notFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaveClicked', () => {
+        const newState = {...baseState};
+        newState.isSaveClicked = true;
+
+        const state = landUseContractReducer({}, receiveIsSaveClicked(true));
         expect(state).to.deep.equal(newState);
       });
 
@@ -106,6 +132,24 @@ describe('Land use contract', () => {
         newState.isEditMode = true;
 
         const state = landUseContractReducer({}, showEditMode());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFormValidById', () => {
+        const newState = {...baseState};
+        const flags = {...newState.isFormValidById};
+        flags['land-use-contract-basic-info-form'] = false;
+        newState.isFormValidById = flags;
+
+        const state = landUseContractReducer({}, receiveFormValidFlags({['land-use-contract-basic-info-form']: false}));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should clear isFormValidById', () => {
+        const newState = {...baseState};
+
+        let state = landUseContractReducer({}, receiveFormValidFlags({['land-use-contract-basic-info-form']: false}));
+        state = landUseContractReducer(state, clearFormValidFlags());
         expect(state).to.deep.equal(newState);
       });
     });
