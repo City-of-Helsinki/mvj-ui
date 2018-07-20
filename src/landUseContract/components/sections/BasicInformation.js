@@ -10,7 +10,7 @@ import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {getContentBasicInformation} from '$src/landUseContract/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getAttributes, getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
 import type {Attributes, LandUseContract} from '$src/landUseContract/types';
@@ -92,7 +92,10 @@ const BasicInformation = ({attributes, currentLandUseContract}: Props) => {
         <Row>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Asemakaavan diaarinumero</FormFieldLabel>
-            <p>{basicInformation.plan_reference_number || '-'}</p>
+            {basicInformation.plan_reference_number
+              ? <a target='_blank' href={getReferenceNumberLink(basicInformation.plan_reference_number)}>{basicInformation.plan_reference_number}</a>
+              : <p>-</p>
+            }
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Asemakaavan numero</FormFieldLabel>

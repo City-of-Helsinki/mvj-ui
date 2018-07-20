@@ -133,6 +133,210 @@
       "required": false,
       "read_only": false,
       "label": "Asemakaavan lainvoimaisuuspvm"
+    },
+    "decisions": {
+      "child": {
+        "children": {
+          "reference_number": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Diaarinumero",
+            "max_length": 255
+          },
+          "decision_maker": {
+            "type": "field",
+            "required": false,
+            "read_only": false,
+            "label": "Decision maker",
+            "choices": [
+              {
+                "display_name": "Alueiden käyttö tiimipäällikkö",
+                "value": 2
+              },
+              {
+                "display_name": "Alueidenkäyttö toimistopäällik",
+                "value": 1
+              },
+              {
+                "display_name": "Apulaiskaupunginjohtaja",
+                "value": 41
+              },
+              {
+                "display_name": "Asuntoasiainosasto",
+                "value": 4
+              }
+            ]
+          },
+          "decision_date": {
+            "type": "date",
+            "required": false,
+            "read_only": false,
+            "label": "Päätöspäivämäärä"
+          },
+          "section": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Pykälä",
+            "max_length": 255
+          },
+          "type": {
+            "type": "field",
+            "required": false,
+            "read_only": false,
+            "label": "Type",
+            "choices": [
+              {
+                  "display_name": "Ehdon lisääm.ja/tai muuttam.tai poistam.",
+                  "value": 11
+              },
+              {
+                  "display_name": "Esityksen hylkääminen",
+                  "value": 46
+              },
+              {
+                  "display_name": "Hallinta- ja/tai rahoitusmuodon muutos",
+                  "value": 27
+              },
+              {
+                  "display_name": "Hallintaoikeuden jatkaminen",
+                  "value": 66
+              }
+            ]
+          },
+          "conditions": {
+            "child": {
+              "children": {
+                "type": {
+                  "type": "field",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Hallintamuoto",
+                  "choices": [
+                    {
+                      "display_name": "Alennusehto",
+                      "value": 6
+                    },
+                    {
+                      "display_name": "ALV:n perintäehto",
+                      "value": 25
+                    },
+                    {
+                      "display_name": "Erityissiirtoehto",
+                      "value": 2
+                    },
+                    {
+                      "display_name": "Korkotukiehto",
+                      "value": 23
+                    }
+                  ]
+                },
+                "area": {
+                  "type": "integer",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Ala",
+                  "min_value": 0,
+                  "max_value": 2147483647
+                },
+                "deposit": {
+                  "type": "decimal",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Vakuus",
+                  "decimal_places": 2,
+                  "max_digits": 10
+                },
+                "compensation": {
+                  "type": "decimal",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Korvaus",
+                  "decimal_places": 2,
+                  "max_digits": 10
+                },
+                "note": {
+                  "type": "string",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Kommentti"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "contracts": {
+      "child": {
+        "children": {
+          "state": {
+            "type": "field",
+            "required": true,
+            "read_only": false,
+            "label": "Sopimuksen vaihe",
+            "choices": [
+              {
+                  "display_name": "Kumottu kokonaan",
+                  "value": 5
+              },
+              {
+                  "display_name": "Kumottu osittain",
+                  "value": 4
+              },
+              {
+                  "display_name": "Numeronvaraus",
+                  "value": 1
+              },
+              {
+                  "display_name": "Peruutettu",
+                  "value": 9
+              },
+              {
+                  "display_name": "Vireillä",
+                  "value": 2
+              },
+              {
+                  "display_name": "Voimassa",
+                  "value": 3
+              }
+            ]
+          },
+          "decision_date": {
+            "type": "date",
+            "required": false,
+            "read_only": false,
+            "label": "Päätöspvm"
+          },
+          "sign_date": {
+            "type": "date",
+            "required": false,
+            "read_only": false,
+            "label": "Allekirjoituspvm"
+          },
+          "ed_contract_number": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "ED sopimusnumero",
+            "max_length": 255
+          },
+          "reference_number": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Diaarinumero",
+            "max_length": 255
+          },
+          "area_arrengements": {
+            "type": "boolean",
+            "required": false,
+            "read_only": false,
+            "label": "AlueJärjestelyt"
+          }
+        }
+      }
     }
   }
 }

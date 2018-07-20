@@ -5,18 +5,21 @@ import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
 import FormFieldLabel from '$components/form/FormFieldLabel';
-import {getContentLandUseContractContracts} from '$src/landUseContract/helpers';
-import {formatDate} from '$util/helpers';
-import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
+import {getContentContracts} from '$src/landUseContract/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {getAttributes, getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
-import type {LandUseContract} from '$src/landUseContract/types';
+import type {Attributes, LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
+  attributes: Attributes,
   currentLandUseContract: LandUseContract,
 }
 
-const Contracts = ({currentLandUseContract}: Props) => {
-  const contracts = getContentLandUseContractContracts(currentLandUseContract);
+const Contracts = ({attributes, currentLandUseContract}: Props) => {
+  const contracts = getContentContracts(currentLandUseContract),
+    stateOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.state');
+
   return (
     <div>
       {!contracts.length && <p>Ei sopimuksia</p>}
@@ -26,20 +29,20 @@ const Contracts = ({currentLandUseContract}: Props) => {
             key={index}
             defaultOpen={true}
             headerTitle={
-              <h3 className='collapse__header-title'>{contract.state || '-'}</h3>
+              <h3 className='collapse__header-title'>{getLabelOfOption(stateOptions, contract.state) || '-'}</h3>
             }
           >
             <Row>
               <Column small={6} medium={4} large={2}>
                 <FormFieldLabel>Sopimuksen vaihe</FormFieldLabel>
-                <p>{contract.state || '-'}</p>
+                <p>{getLabelOfOption(stateOptions, contract.state) || '-'}</p>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormFieldLabel>Päätöspvm</FormFieldLabel>
                 <p>{formatDate(contract.decision_date) || '-'}</p>
               </Column>
               <Column small={6} medium={4} large={2}>
-                <FormFieldLabel>Allekirjoitettu</FormFieldLabel>
+                <FormFieldLabel>Allekirjoituspvm</FormFieldLabel>
                 <p>{formatDate(contract.sign_date) || '-'}</p>
               </Column>
               <Column small={6} medium={4} large={2}>
@@ -48,7 +51,10 @@ const Contracts = ({currentLandUseContract}: Props) => {
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormFieldLabel>Diaarinumero</FormFieldLabel>
-                <p>{contract.reference_number || '-'}</p>
+                {contract.reference_number
+                  ? <a target='_blank' href={getReferenceNumberLink(contract.reference_number)}>{contract.reference_number}</a>
+                  : <p>-</p>
+                }
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormFieldLabel>Aluejärjestelyt</FormFieldLabel>
@@ -65,6 +71,7 @@ const Contracts = ({currentLandUseContract}: Props) => {
 export default connect(
   (state) => {
     return {
+      attributes: getAttributes(state),
       currentLandUseContract: getCurrentLandUseContract(state),
     };
   }

@@ -12,9 +12,13 @@ import type {
   ReceiveLandUseContractListAction,
   FetchSingleLandUseContractAction,
   ReceiveSingleLandUseContractAction,
+  EditLandUseContractAction,
   LandUseContractNotFoundAction,
+  ReceiveIsSaveClickedAction,
   HideEditModeAction,
   ShowEditModeAction,
+  ReceiveFormValidFlagsAction,
+  ClearFormValidFlagsAction,
 } from './types';
 
 export const fetchLandUseContractAttributes = (): FetchAttributesAction =>
@@ -35,11 +39,23 @@ export const fetchSingleLandUseContract = (id: LandUseContractId): FetchSingleLa
 export const receiveSingleLandUseContract = (contract: LandUseContract): ReceiveSingleLandUseContractAction =>
   createAction('mvj/landUseContract/RECEIVE_SINGLE')(contract);
 
+export const editLandUseContract = (landUseContract: LandUseContract): EditLandUseContractAction =>
+  createAction('mvj/landUseContract/EDIT')(landUseContract);
+
 export const notFound = (): LandUseContractNotFoundAction =>
   createAction('mvj/landUseContract/NOT_FOUND')();
+
+export const receiveIsSaveClicked = (isClicked: boolean): ReceiveIsSaveClickedAction =>
+  createAction('mvj/landUseContract/RECEIVE_SAVE_CLICKED')(isClicked);
 
 export const hideEditMode = (): HideEditModeAction =>
   createAction('mvj/landUseContract/HIDE_EDIT')();
 
 export const showEditMode = (): ShowEditModeAction =>
   createAction('mvj/landUseContract/SHOW_EDIT')();
+
+export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsAction =>
+  createAction('mvj/landUseContract/RECEIVE_FORM_VALID_FLAGS')(valid);
+
+export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
+  createAction('mvj/landUseContract/CLEAR_FORM_VALID_FLAGS')();

@@ -57,21 +57,21 @@
 
     "decisions": [
       {
-        "decision_maker": "Kaupunkiympäristölautakunta",
+        "decision_maker": 2,
         "decision_date": "2018-01-01",
         "section": "123",
-        "type": "Maankäyttösopimus",
-        "reference_number": "202849820",
+        "type": 11,
+        "reference_number": "HEL 1233-123211",
         "conditions": [
           {
-            "management_type": "Aravuokra",
+            "type": 6,
             "area": 400,
             "deposit": "4000",
             "compensation": "2000",
             "note": "Lorem ipsum"
           },
           {
-            "management_type": "Aravuokra",
+            "type": 25,
             "area": 400,
             "deposit": "4000",
             "compensation": "2000",
@@ -83,7 +83,7 @@
 
     "contracts": [
       {
-        "state": "Vireillä",
+        "state": 2,
         "decision_date": "2018-04-01",
         "sign_date": "2018-04-01",
         "ed_contract_number": "12345678",

@@ -2,6 +2,7 @@
 import {all, fork, put, takeLatest} from 'redux-saga/effects';
 
 import {
+  hideEditMode,
   receiveLandUseContractAttributes,
   receiveLandUseContractList,
   receiveSingleLandUseContract,
@@ -29,12 +30,18 @@ function* fetchSingleLandUseContractSaga({payload: contractId}): Generator<any, 
   yield put(receiveSingleLandUseContract(bodyAsJson));
 }
 
+function* editLandUseContractSaga({payload: landUseContract}): Generator<any, any, any> {
+  yield put(receiveSingleLandUseContract(landUseContract));
+  yield put(hideEditMode());
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/landUseContract/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/landUseContract/FETCH_ALL', fetchLandUseContractsSaga);
       yield takeLatest('mvj/landUseContract/FETCH_SINGLE', fetchSingleLandUseContractSaga);
+      yield takeLatest('mvj/landUseContract/EDIT', editLandUseContractSaga);
     }),
   ]);
 }

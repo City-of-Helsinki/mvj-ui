@@ -1,6 +1,7 @@
 // @flow
-import type {Selector} from '../types';
+import isEmpty from 'lodash/isEmpty';
 
+import type {Selector} from '../types';
 import type {
   Attributes,
   LandUseContractState,
@@ -17,8 +18,25 @@ export const getIsEditMode: Selector<boolean, void> = (state: LandUseContractSta
 export const getIsFetching: Selector<boolean, void> = (state: LandUseContractState): boolean =>
   state.landUseContract.isFetching;
 
+export const getIsSaveClicked: Selector<boolean, void> = (state: LandUseContractState): boolean =>
+  state.landUseContract.isSaveClicked;
+
 export const getLandUseContractList: Selector<LandUseContractList, void> = (state: LandUseContractState): LandUseContractList =>
   state.landUseContract.list;
 
 export const getCurrentLandUseContract: Selector<LandUseContract, void> = (state: LandUseContractState): LandUseContract =>
   state.landUseContract.current;
+
+export const getIsFormValidById: Selector<boolean, string> = (state: LandUseContractState, id: string): boolean =>
+  state.landUseContract.isFormValidById[id];
+
+export const getIsFormValidFlags: Selector<Object, void> = (state: LandUseContractState): Object =>
+  state.landUseContract.isFormValidById;
+
+export const getErrorsByFormName: Selector<?Object, string> = (state: Object, formName: string): ?Object => {
+  const form = state.form[formName];
+  if(!isEmpty(form)) {
+    return form.syncErrors;
+  }
+  return null;
+};

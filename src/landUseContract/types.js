@@ -14,7 +14,14 @@ export type FetchLandUseContractListAction = Action<'mvj/landUseContract/FETCH_A
 export type ReceiveLandUseContractListAction = Action<'mvj/landUseContract/RECEIVE_ALL', LandUseContractList>;
 export type FetchSingleLandUseContractAction = Action<'mvj/landUseContract/FETCH_SINGLE', LandUseContractId>;
 export type ReceiveSingleLandUseContractAction = Action<'mvj/landUseContract/RECEIVE_SINGLE', LandUseContract>;
+
+export type EditLandUseContractAction = Action<'mvj/landUseContract/EDIT', LandUseContract>;
 export type LandUseContractNotFoundAction = Action<'mvj/landUseContract/NOT_FOUND', void>;
+
+export type ReceiveIsSaveClickedAction = Action<'mvj/landUseContract/RECEIVE_SAVE_CLICKED', boolean>;
 
 export type HideEditModeAction = Action<'mvj/landUseContract/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/landUseContract/SHOW_EDIT', void>;
+
+export type ReceiveFormValidFlagsAction = Action<'mvj/landUseContract/RECEIVE_FORM_VALID_FLAGS', Object>;
+export type ClearFormValidFlagsAction = Action<'mvj/landUseContract/CLEAR_FORM_VALID_FLAGS', void>;

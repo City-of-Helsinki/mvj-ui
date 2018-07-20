@@ -6,8 +6,8 @@ import {Row, Column} from 'react-foundation';
 import Collapse from '$components/collapse/Collapse';
 import DecisionConditions from './DecisionConditions';
 import FormFieldLabel from '$components/form/FormFieldLabel';
-import {getContentLandUseContractDecisions} from '$src/landUseContract/helpers';
-import {formatDate} from '$util/helpers';
+import {getContentDecisions} from '$src/landUseContract/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getAttributes, getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
 import type {Attributes, LandUseContract} from '$src/landUseContract/types';
@@ -18,7 +18,10 @@ type Props = {
 }
 
 const Decisions = ({attributes, currentLandUseContract}: Props) => {
-  const decisions = getContentLandUseContractDecisions(currentLandUseContract);
+  const decisions = getContentDecisions(currentLandUseContract),
+    decisionMakerOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker'),
+    typeOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.type');
+
   return (
     <div>
       {!!decisions.length && decisions.map((decision, index) => {
@@ -27,13 +30,13 @@ const Decisions = ({attributes, currentLandUseContract}: Props) => {
             key={index}
             defaultOpen={true}
             headerTitle={
-              <h3 className='collapse__header-title'>{decision.decision_maker || '-'}</h3>
+              <h3 className='collapse__header-title'>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</h3>
             }
           >
             <Row>
               <Column small={6} medium={4} large={2}>
                 <FormFieldLabel>Päättäjä</FormFieldLabel>
-                <p>{decision.decision_maker || '-'}</p>
+                <p>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</p>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormFieldLabel>Päätöspvm</FormFieldLabel>
@@ -45,11 +48,14 @@ const Decisions = ({attributes, currentLandUseContract}: Props) => {
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormFieldLabel>Päätöksen tyyppi</FormFieldLabel>
-                <p>{decision.type || '-'}</p>
+                <p>{getLabelOfOption(typeOptions, decision.type) || '-'}</p>
               </Column>
               <Column small={6} medium={4} large={2}>
                 <FormFieldLabel>Diaarinumero</FormFieldLabel>
-                <p>{decision.reference_number || '-'}</p>
+                {decision.reference_number
+                  ? <a target='_blank' href={getReferenceNumberLink(decision.reference_number)}>{decision.reference_number}</a>
+                  : <p>-</p>
+                }
               </Column>
             </Row>
 
