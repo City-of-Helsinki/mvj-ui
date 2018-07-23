@@ -1,5 +1,6 @@
 // @flow
 import {all, fork, put, takeLatest} from 'redux-saga/effects';
+import {push} from 'react-router-redux';
 
 import {
   hideEditMode,
@@ -7,6 +8,7 @@ import {
   receiveLandUseContractList,
   receiveSingleLandUseContract,
 } from './actions';
+import {getRouteById} from '$src/root/routes';
 import attributesMockData from './attributes-mock-data.json';
 import mockData from './mock-data.json';
 
@@ -30,6 +32,11 @@ function* fetchSingleLandUseContractSaga({payload: contractId}): Generator<any, 
   yield put(receiveSingleLandUseContract(bodyAsJson));
 }
 
+function* createLandUseContractSaga({payload: landUseContract}): Generator<any, any, any> {
+  console.log(landUseContract);
+  yield put(push(`${getRouteById('landUseContract')}/1`));
+}
+
 function* editLandUseContractSaga({payload: landUseContract}): Generator<any, any, any> {
   yield put(receiveSingleLandUseContract(landUseContract));
   yield put(hideEditMode());
@@ -41,6 +48,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/landUseContract/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/landUseContract/FETCH_ALL', fetchLandUseContractsSaga);
       yield takeLatest('mvj/landUseContract/FETCH_SINGLE', fetchSingleLandUseContractSaga);
+      yield takeLatest('mvj/landUseContract/CREATE', createLandUseContractSaga);
       yield takeLatest('mvj/landUseContract/EDIT', editLandUseContractSaga);
     }),
   ]);

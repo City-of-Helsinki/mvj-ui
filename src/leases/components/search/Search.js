@@ -12,7 +12,7 @@ import toArray from 'lodash/toArray';
 import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {FormNames} from '$src/leases/enums';
-import {getDistrictOptions} from '$src/leases/helpers';
+import {getDistrictOptions} from '$src/district/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes, getIsFetchingAttributes} from '$src/leases/selectors';

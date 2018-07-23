@@ -9,14 +9,14 @@ import get from 'lodash/get';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
-import {Classification, FormNames} from '$src/leases/enums';
+import {FormNames} from '$src/landUseContract/enums';
 import {getDistrictOptions} from '$src/district/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
-import {getAttributes} from '$src/leases/selectors';
+import {getAttributes} from '$src/landUseContract/selectors';
 
 import type {DistrictList} from '$src/district/types';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Attributes,
@@ -24,24 +24,22 @@ type Props = {
   district: string,
   districts: DistrictList,
   fetchDistrictsByMunicipality: Function,
-  handleSubmit: Function,
   municipality: string,
-  note: string,
   onClose: Function,
   onSubmit: Function,
-  reference_number: string,
+  plan_reference_number: string,
   state: string,
   type: string,
   valid: boolean,
 }
 
-class CreateLeaseForm extends Component<Props> {
-  componentWillReceiveProps(nextProps) {
-    if(this.props.municipality !== nextProps.municipality) {
+class CreateLandUseContractForm extends Component<Props> {
+  componentDidUpdate(prevProps) {
+    if(this.props.municipality !== prevProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
 
-      if(nextProps.municipality) {
-        fetchDistrictsByMunicipality(nextProps.municipality);
+      if(this.props.municipality) {
+        fetchDistrictsByMunicipality(this.props.municipality);
         change('district', '');
       } else {
         change('district', '');
@@ -55,8 +53,7 @@ class CreateLeaseForm extends Component<Props> {
       type,
       municipality,
       district,
-      reference_number,
-      note,
+      plan_reference_number,
       onSubmit,
     } = this.props;
 
@@ -65,9 +62,7 @@ class CreateLeaseForm extends Component<Props> {
       type: type,
       municipality: municipality,
       district: district,
-      reference_number: reference_number,
-      note: note,
-      classification: Classification.PUBLIC,
+      plan_reference_number: plan_reference_number,
     });
   };
 
@@ -75,7 +70,6 @@ class CreateLeaseForm extends Component<Props> {
     const {
       attributes,
       districts,
-      handleSubmit,
       onClose,
       valid,
     } = this.props;
@@ -83,7 +77,7 @@ class CreateLeaseForm extends Component<Props> {
     const districtOptions = getDistrictOptions(districts);
 
     return (
-      <form onSubmit={handleSubmit}>
+      <form>
         <Row>
           <Column small={4} medium={3}>
             <FormField
@@ -128,19 +122,10 @@ class CreateLeaseForm extends Component<Props> {
         <Row>
           <Column small={4} medium={3}>
             <FormField
-              fieldAttributes={get(attributes, 'reference_number')}
-              name='reference_number'
+              fieldAttributes={get(attributes, 'plan_reference_number')}
+              name='plan_reference_number'
               overrideValues={{
                 label: 'Diaarinumero',
-              }}
-            />
-          </Column>
-          <Column small={8} medium={6}>
-            <FormField
-              fieldAttributes={get(attributes, 'note')}
-              name='note'
-              overrideValues={{
-                label: 'Huomautus',
               }}
             />
           </Column>
@@ -167,7 +152,7 @@ class CreateLeaseForm extends Component<Props> {
   }
 }
 
-const formName = FormNames.CREATE_LEASE;
+const formName = FormNames.CREATE_LAND_USE_CONTRACT;
 const selector = formValueSelector(formName);
 
 export default flowRight(
@@ -179,8 +164,7 @@ export default flowRight(
         district: selector(state, 'district'),
         districts: getDistrictsByMunicipality(state, municipality),
         municipality: municipality,
-        note: selector(state, 'note'),
-        reference_number: selector(state, 'reference_number'),
+        plan_reference_number: selector(state, 'plan_reference_number'),
         state: selector(state, 'state'),
         type: selector(state, 'type'),
       };
@@ -193,4 +177,4 @@ export default flowRight(
   reduxForm({
     form: formName,
   }),
-)(CreateLeaseForm);
+)(CreateLandUseContractForm);

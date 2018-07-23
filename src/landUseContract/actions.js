@@ -12,6 +12,7 @@ import type {
   ReceiveLandUseContractListAction,
   FetchSingleLandUseContractAction,
   ReceiveSingleLandUseContractAction,
+  CreateLandUseContractAction,
   EditLandUseContractAction,
   LandUseContractNotFoundAction,
   ReceiveIsSaveClickedAction,
@@ -38,6 +39,9 @@ export const fetchSingleLandUseContract = (id: LandUseContractId): FetchSingleLa
 
 export const receiveSingleLandUseContract = (contract: LandUseContract): ReceiveSingleLandUseContractAction =>
   createAction('mvj/landUseContract/RECEIVE_SINGLE')(contract);
+
+export const createLandUseContract = (landUseContract: LandUseContract): CreateLandUseContractAction =>
+  createAction('mvj/landUseContract/CREATE')(landUseContract);
 
 export const editLandUseContract = (landUseContract: LandUseContract): EditLandUseContractAction =>
   createAction('mvj/landUseContract/EDIT')(landUseContract);

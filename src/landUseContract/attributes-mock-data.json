@@ -8,6 +8,225 @@
       "read_only": true,
       "label": "Id"
     },
+    "type": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Laji",
+      "choices": [
+        {
+          "display_name": "Asuntotontit (A1)",
+          "value": 1
+        },
+        {
+          "display_name": "Asuntotontteihin liittyvä pysäköintit. (A4)",
+          "value": 4
+        },
+        {
+          "display_name": "Elintarviketukkukaupan keskus (V1)",
+          "value": 22
+        },
+        {
+          "display_name": "Helsingin Energia (V2)",
+          "value": 19
+        },
+        {
+          "display_name": "Helsingin Satama (V5)",
+          "value": 18
+        },
+        {
+          "display_name": "Helsingin Vesi (V6)",
+          "value": 20
+        },
+        {
+          "display_name": "Huoltoasema (H1)",
+          "value": 9
+        },
+        {
+          "display_name": "Jakeluasema (H2)",
+          "value": 10
+        },
+        {
+          "display_name": "Kaupungin sisäiset (tilapäiset vuokr.) (K0)",
+          "value": 17
+        },
+        {
+          "display_name": "Keskuspesula (V3)",
+          "value": 23
+        },
+        {
+          "display_name": "Kiinteistövirasto tilakeskus (Y9)",
+          "value": 34
+        },
+        {
+          "display_name": "Kokoontumisluvat (O3)",
+          "value": 15
+        },
+        {
+          "display_name": "Korkeasaari (Y1)",
+          "value": 30
+        },
+        {
+          "display_name": "Käyttöoikeudet (O1)",
+          "value": 7
+        },
+        {
+          "display_name": "Laiturinpito ja poijuluvat (O2)",
+          "value": 14
+        },
+        {
+          "display_name": "Liike- ja toimistotontit (L1)",
+          "value": 11
+        },
+        {
+          "display_name": "Liikennelaitos (V4)",
+          "value": 21
+        },
+        {
+          "display_name": "Liike/Yleistenr. tonttien pysäköintit. (L3)",
+          "value": 13
+        },
+        {
+          "display_name": "Liikuntavirasto (Y3)",
+          "value": 24
+        },
+        {
+          "display_name": "Liikuntaviraston ulosvuokraus (S1)",
+          "value": 40
+        },
+        {
+          "display_name": "Maapoliittinen sopimus (MA)",
+          "value": 33
+        },
+        {
+          "display_name": "Muut luvat (O4)",
+          "value": 16
+        },
+        {
+          "display_name": "Myynti/maksamaton kauppahinta (MY)",
+          "value": 35
+        },
+        {
+          "display_name": "Nuorisoasiainkeskus (Y8)",
+          "value": 31
+        },
+        {
+          "display_name": "Opetusvirasto (Y2)",
+          "value": 28
+        },
+        {
+          "display_name": "Opiskelija-asuntotontit (A2)",
+          "value": 2
+        },
+        {
+          "display_name": "Pelastuslaitos (Y4)",
+          "value": 29
+        },
+        {
+          "display_name": "Rakennusvirasto (Y5)",
+          "value": 25
+        },
+        {
+          "display_name": "Sekalaiset vuokraukset (S0)",
+          "value": 5
+        },
+        {
+          "display_name": "SIIRTOLAPUUTARHA ei käytössä (R0)",
+          "value": 36
+        },
+        {
+          "display_name": "Sosiaalivirasto (Y6)",
+          "value": 26
+        },
+        {
+          "display_name": "Teollisuus- ja varastotontit (T1)",
+          "value": 6
+        },
+        {
+          "display_name": "Teollisuus- ja varatotontit (alv:set) (T3)",
+          "value": 39
+        },
+        {
+          "display_name": "Teollis./varastot. liittyv. pysäköintit. (T2)",
+          "value": 8
+        },
+        {
+          "display_name": "Terveysvirasto (Y7)",
+          "value": 27
+        },
+        {
+          "display_name": "TYHJÄ TONTTI (TY)",
+          "value": 32
+        },
+        {
+          "display_name": "Vanhusten asunto- ja vanhainkotitontit (A3)",
+          "value": 3
+        },
+        {
+          "display_name": "Varhaiskasvatusvirasto (Y0)",
+          "value": 38
+        },
+        {
+          "display_name": "Väestönsuojakorvaukset (VS)",
+          "value": 37
+        },
+        {
+          "display_name": "Yleisen rakennuksen tontit (L2)",
+          "value": 12
+        }
+      ]
+    },
+    "municipality": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Kaupunki",
+      "choices": [
+        {
+          "display_name": "Helsinki (1)",
+          "value": 1
+        },
+        {
+          "display_name": "Espoo (2)",
+          "value": 2
+        },
+        {
+          "display_name": "Inkoo (3)",
+          "value": 3
+        },
+        {
+          "display_name": "Kirkkonummi (4)",
+          "value": 4
+        },
+        {
+          "display_name": "Vihti (5)",
+          "value": 5
+        },
+        {
+          "display_name": "Vantaa (6)",
+          "value": 6
+        },
+        {
+          "display_name": "Sipoo (7)",
+          "value": 7
+        },
+        {
+          "display_name": "Hanko (8)",
+          "value": 8
+        },
+        {
+          "display_name": "Lohja (9)",
+          "value": 9
+        }
+      ]
+    },
+    "district": {
+      "type": "field",
+      "required": true,
+      "read_only": false,
+      "label": "Kaupunginosa",
+      "choices": []
+    },
     "areas": {
       "child": {
         "children": {

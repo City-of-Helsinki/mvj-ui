@@ -5,6 +5,7 @@ import {
   receiveLandUseContractList,
   fetchSingleLandUseContract,
   receiveSingleLandUseContract,
+  createLandUseContract,
   editLandUseContract,
   notFound,
   receiveIsSaveClicked,
@@ -22,8 +23,10 @@ const baseState = {
   isFetching: false,
   isFormValidById: {
     'land-use-contract-basic-info-form': true,
+    'land-use-contract-compensations-form': true,
     'land-use-contract-contracts-form': true,
     'land-use-contract-decisions-form': true,
+    'land-use-contract-invoices-form': true,
   },
   isSaveClicked: false,
   list: {},
@@ -92,6 +95,14 @@ describe('Land use contract', () => {
         newState.current = dummyLandUseContract;
 
         const state = landUseContractReducer({}, receiveSingleLandUseContract(dummyLandUseContract));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true by createLandUseContract', () => {
+        const newState = {...baseState};
+        newState.isFetching = true;
+
+        const state = landUseContractReducer({}, createLandUseContract({}));
         expect(state).to.deep.equal(newState);
       });
 

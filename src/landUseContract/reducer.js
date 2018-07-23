@@ -33,6 +33,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   ['mvj/landUseContract/RECEIVE_ALL']: () => false,
   ['mvj/landUseContract/FETCH_SINGLE']: () => true,
   ['mvj/landUseContract/RECEIVE_SINGLE']: () => false,
+  ['mvj/landUseContract/CREATE']: () => true,
   ['mvj/landUseContract/EDIT']: () => true,
   ['mvj/landUseContract/NOT_FOUND']: () => false,
 }, false);
