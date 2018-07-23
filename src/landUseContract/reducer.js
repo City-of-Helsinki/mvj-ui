@@ -55,14 +55,18 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   ['mvj/landUseContract/CLEAR_FORM_VALID_FLAGS']: () => {
     return {
       [FormNames.BASIC_INFORMATION]: true,
+      [FormNames.COMPENSATIONS]: true,
       [FormNames.CONTRACTS]: true,
       [FormNames.DECISIONS]: true,
+      [FormNames.INVOICES]: true,
     };
   },
 }, {
   [FormNames.BASIC_INFORMATION]: true,
+  [FormNames.COMPENSATIONS]: true,
   [FormNames.CONTRACTS]: true,
   [FormNames.DECISIONS]: true,
+  [FormNames.INVOICES]: true,
 });
 
 const isSaveClickedReducer: Reducer<boolean> = handleActions({

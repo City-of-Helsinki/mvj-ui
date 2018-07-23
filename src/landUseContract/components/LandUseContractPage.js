@@ -10,6 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 import BasicInformation from './sections/BasicInformation';
 import BasicInformationEdit from './sections/BasicInformationEdit';
 import Compensations from './sections/Compensations';
+import CompensationsEdit from './sections/CompensationsEdit';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContentContainer from '$components/content/ContentContainer';
 import Contracts from './sections/Contracts';
@@ -21,6 +22,7 @@ import DecisionsEdit from './sections/DecisionsEdit';
 import Divider from '$components/content/Divider';
 import EditableMap from '$src/areaNote/components/EditableMap';
 import Invoices from './sections/Invoices';
+import InvoicesEdit from './sections/InvoicesEdit';
 import PageContainer from '$components/content/PageContainer';
 import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
@@ -41,8 +43,10 @@ import {
   clearUnsavedChanges,
   getContentLandUseContractIdentifier,
   getContentBasicInformation,
+  getContentCompensations,
   getContentContracts,
   getContentDecisions,
+  getContentInvoices,
 } from '$src/landUseContract/helpers';
 import {getRouteById} from '$src/root/routes';
 import {
@@ -62,6 +66,7 @@ type Props = {
   basicInformationFormValues: Object,
   change: Function,
   clearFormValidFlags: Function,
+  compensationsFormValues: Object,
   contractsFormValues: Object,
   currentLandUseContract: LandUseContract,
   decisionsFormValues: Object,
@@ -71,12 +76,17 @@ type Props = {
   fetchSingleLandUseContract: Function,
   hideEditMode: Function,
   initialize: Function,
+  invoicesFormValues: Object,
   isBasicInformationFormDirty: boolean,
   isBasicInformationFormValid: boolean,
+  isCompensationsFormDirty: boolean,
+  isCompensationsFormValid: boolean,
   isContractsFormDirty: boolean,
   isContractsFormValid: boolean,
   isDecisionsFormDirty: boolean,
   isDecisionsFormValid: boolean,
+  isInvoicesFormDirty: boolean,
+  isInvoicesFormValid: boolean,
   isEditMode: boolean,
   isFormValidFlags: boolean,
   isSaveClicked: boolean,
@@ -187,11 +197,15 @@ class LandUseContractPage extends Component<Props, State> {
   saveUnsavedChanges = () => {
     const {
       basicInformationFormValues,
+      compensationsFormValues,
       contractsFormValues,
       decisionsFormValues,
+      invoicesFormValues,
       isBasicInformationFormDirty,
+      isCompensationsFormDirty,
       isContractsFormDirty,
       isDecisionsFormDirty,
+      isInvoicesFormDirty,
       isFormValidFlags,
       params: {landUseContractId},
     } = this.props;
@@ -217,6 +231,20 @@ class LandUseContractPage extends Component<Props, State> {
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.CONTRACTS);
+    }
+
+    if(isCompensationsFormDirty) {
+      setSessionStorageItem(FormNames.COMPENSATIONS, compensationsFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.COMPENSATIONS);
+    }
+
+    if(isInvoicesFormDirty) {
+      setSessionStorageItem(FormNames.INVOICES, invoicesFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.INVOICES);
     }
 
     if(isDirty) {
@@ -255,6 +283,16 @@ class LandUseContractPage extends Component<Props, State> {
     const storedContractsFormValues = getSessionStorageItem(FormNames.CONTRACTS);
     if(storedContractsFormValues) {
       this.bulkChange(FormNames.CONTRACTS, storedContractsFormValues);
+    }
+
+    const storedCompensationsFormValues = getSessionStorageItem(FormNames.COMPENSATIONS);
+    if(storedCompensationsFormValues) {
+      this.bulkChange(FormNames.COMPENSATIONS, storedCompensationsFormValues);
+    }
+
+    const storedInvoicesFormValues = getSessionStorageItem(FormNames.INVOICES);
+    if(storedInvoicesFormValues) {
+      this.bulkChange(FormNames.INVOICES, storedInvoicesFormValues);
     }
 
     const storedFormValidity = getSessionStorageItem('leaseValidity');
@@ -337,6 +375,8 @@ class LandUseContractPage extends Component<Props, State> {
     initialize(FormNames.BASIC_INFORMATION, getContentBasicInformation(landUseContract));
     initialize(FormNames.DECISIONS, {decisions: getContentDecisions(landUseContract)});
     initialize(FormNames.CONTRACTS, {contracts: getContentContracts(landUseContract)});
+    initialize(FormNames.COMPENSATIONS, {compensations: getContentCompensations(landUseContract)});
+    initialize(FormNames.INVOICES, {invoices: getContentInvoices(landUseContract)});
   }
 
   handleControlButtonSave = () => {
@@ -352,41 +392,53 @@ class LandUseContractPage extends Component<Props, State> {
   getAreFormsValid = () => {
     const {
       isBasicInformationFormValid,
+      isCompensationsFormValid,
       isContractsFormValid,
       isDecisionsFormValid,
+      isInvoicesFormValid,
     } = this.props;
 
     return (
       isBasicInformationFormValid &&
+      isCompensationsFormValid &&
       isContractsFormValid &&
-      isDecisionsFormValid
+      isDecisionsFormValid &&
+      isInvoicesFormValid
     );
   }
 
   isAnyFormDirty = () => {
     const {
       isBasicInformationFormDirty,
+      isCompensationsFormDirty,
       isContractsFormDirty,
       isDecisionsFormDirty,
+      isInvoicesFormDirty,
     } = this.props;
 
     return (
       isBasicInformationFormDirty ||
+      isCompensationsFormDirty ||
       isContractsFormDirty ||
-      isDecisionsFormDirty
+      isDecisionsFormDirty ||
+      isInvoicesFormDirty
     );
   }
 
   save = () => {
     const {
       basicInformationFormValues,
+      compensationsFormValues,
       contractsFormValues,
       currentLandUseContract,
       decisionsFormValues,
       editLandUseContract,
+      invoicesFormValues,
       isBasicInformationFormDirty,
+      isCompensationsFormDirty,
       isContractsFormDirty,
       isDecisionsFormDirty,
+      isInvoicesFormDirty,
     } = this.props;
 
     //TODO: Add helper functions to save land use contract to DB when API is ready
@@ -402,6 +454,14 @@ class LandUseContractPage extends Component<Props, State> {
 
     if(isContractsFormDirty) {
       payload = {...payload, ...contractsFormValues};
+    }
+
+    if(isCompensationsFormDirty) {
+      payload = {...payload, ...compensationsFormValues};
+    }
+
+    if(isInvoicesFormDirty) {
+      payload = {...payload, ...invoicesFormValues};
     }
 
     payload.identifier = currentLandUseContract.identifier;
@@ -428,6 +488,8 @@ class LandUseContractPage extends Component<Props, State> {
     destroy(FormNames.BASIC_INFORMATION);
     destroy(FormNames.DECISIONS);
     destroy(FormNames.CONTRACTS);
+    destroy(FormNames.COMPENSATIONS);
+    destroy(FormNames.INVOICES);
   }
 
   render() {
@@ -436,10 +498,14 @@ class LandUseContractPage extends Component<Props, State> {
       currentLandUseContract,
       isBasicInformationFormDirty,
       isBasicInformationFormValid,
+      isCompensationsFormDirty,
+      isCompensationsFormValid,
       isContractsFormDirty,
       isContractsFormValid,
       isDecisionsFormDirty,
       isDecisionsFormValid,
+      isInvoicesFormDirty,
+      isInvoicesFormValid,
       isEditMode,
       isSaveClicked,
     } = this.props;
@@ -494,7 +560,7 @@ class LandUseContractPage extends Component<Props, State> {
           tabs={[
             {label: 'Perustiedot', isDirty: isBasicInformationFormDirty, hasError: isSaveClicked && !isBasicInformationFormValid},
             {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty), hasError: isSaveClicked && (!isDecisionsFormValid || !isContractsFormValid)},
-            {label: 'Korvaukset ja laskutus'},
+            {label: 'Korvaukset ja laskutus', isDirty: isCompensationsFormDirty || isInvoicesFormDirty, hasError: isSaveClicked && (!isCompensationsFormValid || !isInvoicesFormValid)},
             {label: 'Kartta'},
           ]}
           onTabClick={(id) => this.handleTabClick(id)}
@@ -533,14 +599,14 @@ class LandUseContractPage extends Component<Props, State> {
               <Divider />
               {!isEditMode
                 ? <Compensations />
-                : null
+                : <CompensationsEdit />
               }
 
               <h2>Laskutus</h2>
               <Divider />
               {!isEditMode
                 ? <Invoices />
-                : null
+                : <InvoicesEdit />
               }
             </ContentContainer>
           </TabPane>
@@ -565,15 +631,21 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         basicInformationFormValues: getFormValues(FormNames.BASIC_INFORMATION)(state),
+        compensationsFormValues: getFormValues(FormNames.COMPENSATIONS)(state),
         contractsFormValues: getFormValues(FormNames.CONTRACTS)(state),
         currentLandUseContract: getCurrentLandUseContract(state),
         decisionsFormValues: getFormValues(FormNames.DECISIONS)(state),
+        invoicesFormValues: getFormValues(FormNames.INVOICES)(state),
         isBasicInformationFormDirty: isDirty(FormNames.BASIC_INFORMATION)(state),
         isBasicInformationFormValid: getIsFormValidById(state, FormNames.BASIC_INFORMATION),
+        isCompensationsFormDirty: isDirty(FormNames.COMPENSATIONS)(state),
+        isCompensationsFormValid: getIsFormValidById(state, FormNames.COMPENSATIONS),
         isContractsFormDirty: isDirty(FormNames.CONTRACTS)(state),
         isContractsFormValid: getIsFormValidById(state, FormNames.CONTRACTS),
         isDecisionsFormDirty: isDirty(FormNames.DECISIONS)(state),
         isDecisionsFormValid: getIsFormValidById(state, FormNames.DECISIONS),
+        isInvoicesFormDirty: isDirty(FormNames.INVOICES)(state),
+        isInvoicesFormValid: getIsFormValidById(state, FormNames.INVOICES),
         isEditMode: getIsEditMode(state),
         isFormValidFlags: getIsFormValidFlags(state),
         isSaveClicked: getIsSaveClicked(state),

@@ -10,7 +10,7 @@ import GreenBox from '$components/content/GreenBox';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
-import {getContentLandUseContractCompensations} from '$src/landUseContract/helpers';
+import {getContentCompensations} from '$src/landUseContract/helpers';
 import {formatDate, formatNumber} from '$util/helpers';
 import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
@@ -29,7 +29,7 @@ const Compensations = ({currentLandUseContract}: Props) => {
     return cash + land + other + increase;
   };
 
-  const compensations = getContentLandUseContractCompensations(currentLandUseContract);
+  const compensations = getContentCompensations(currentLandUseContract);
   const invoices = get(compensations, 'invoices', []);
   const total = getTotal(compensations);
 
@@ -101,11 +101,11 @@ const Compensations = ({currentLandUseContract}: Props) => {
         </Column>
         <Column small={6} medium={3} large={2}>
           <FormFieldLabel>Lisäkerrosala asunto</FormFieldLabel>
-          <p>{compensations.additional_floor_area_apartment ? `${formatNumber(compensations.additional_floor_area_apartment)} €` : '-'}</p>
+          <p>{compensations.additional_floor_area_apartment ? `${formatNumber(compensations.additional_floor_area_apartment)} k-m²` : '-'}</p>
         </Column>
         <Column small={6} medium={3} large={2}>
           <FormFieldLabel>Lisäkerrosala yritys</FormFieldLabel>
-          <p>{compensations.additional_floor_area_company ? `${formatNumber(compensations.additional_floor_area_company)} €` : '-'}</p>
+          <p>{compensations.additional_floor_area_company ? `${formatNumber(compensations.additional_floor_area_company)} k-m²` : '-'}</p>
         </Column>
       </Row>
 

@@ -107,7 +107,7 @@ export const getContentContracts = (contract: LandUseContract) => {
   return get(contract, 'contracts', []).map((contract) => getContentContractItem(contract));
 };
 
-export const getContentLandUseContractCompensationInvoices = (compensation: Object) => {
+export const getContentCompensationInvoices = (compensation: Object) => {
   const invoices = get(compensation, 'invoices', []);
   return invoices.map((invoice) => {
     return {
@@ -117,7 +117,7 @@ export const getContentLandUseContractCompensationInvoices = (compensation: Obje
   });
 };
 
-export const getContentLandUseContractCompensations = (contract: LandUseContract) => {
+export const getContentCompensations = (contract: LandUseContract) => {
   const compensations = get(contract, 'compensations', {});
 
   return {
@@ -129,11 +129,11 @@ export const getContentLandUseContractCompensations = (contract: LandUseContract
     free_delivery_amount: get(compensations, 'free_delivery_area'),
     additional_floor_area_apartment: get(compensations, 'additional_floor_area_apartment'),
     additional_floor_area_company: get(compensations, 'additional_floor_area_company'),
-    invoices: getContentLandUseContractCompensationInvoices(compensations),
+    invoices: getContentCompensationInvoices(compensations),
   };
 };
 
-const getContentLandUseContractInvoiceItem = (invoice: Object) => {
+const getContentInvoiceItem = (invoice: Object) => {
   return {
     amount: get(invoice, 'amount'),
     due_date: get(invoice, 'due_date'),
@@ -142,8 +142,8 @@ const getContentLandUseContractInvoiceItem = (invoice: Object) => {
   };
 };
 
-export const getContentLandUseContractInvoices = (contract: LandUseContract) => {
-  return get(contract, 'invoices', []).map((invoice) => getContentLandUseContractInvoiceItem(invoice));
+export const getContentInvoices = (contract: LandUseContract) => {
+  return get(contract, 'invoices', []).map((invoice) => getContentInvoiceItem(invoice));
 };
 
 export const getContentLandUseContractList = (content: Object) => {
@@ -153,6 +153,10 @@ export const getContentLandUseContractList = (content: Object) => {
 
 export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.BASIC_INFORMATION);
+  removeSessionStorageItem(FormNames.COMPENSATIONS);
+  removeSessionStorageItem(FormNames.CONTRACTS);
+  removeSessionStorageItem(FormNames.DECISIONS);
+  removeSessionStorageItem(FormNames.INVOICES);
   removeSessionStorageItem('landUseContractId');
   removeSessionStorageItem('landUseContractValidity');
 };

@@ -337,6 +337,136 @@
           }
         }
       }
+    },
+    "compensations": {
+      "child": {
+        "children": {
+          "cash_compensation": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "cash_compensation": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "land_compensation": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "other_compensation": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "first_installment_increase": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "free_delivery_area": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "free_delivery_amount": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "additional_floor_area_apartment": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "additional_floor_area_company": {
+            "type": "decimal",
+            "required": false,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "invoices": {
+            "child": {
+              "children": {
+                "amount": {
+                  "type": "decimal",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Vakuus",
+                  "decimal_places": 2,
+                  "max_digits": 10
+                },
+                "due_date": {
+                  "type": "date",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Allekirjoituspvm"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "invoices": {
+      "child": {
+        "children": {
+          "amount": {
+            "type": "decimal",
+            "required": true,
+            "read_only": false,
+            "label": "Vakuus",
+            "decimal_places": 2,
+            "max_digits": 10
+          },
+          "due_date": {
+            "type": "date",
+            "required": true,
+            "read_only": false,
+            "label": "Eräpäivä"
+          },
+          "sent_date": {
+            "type": "date",
+            "required": false,
+            "read_only": false,
+            "label": "Lähetetty pvm"
+          },
+          "paid_date": {
+            "type": "date",
+            "required": false,
+            "read_only": false,
+            "label": "Maksettu pvm"
+          }
+        }
+      }
     }
   }
 }
