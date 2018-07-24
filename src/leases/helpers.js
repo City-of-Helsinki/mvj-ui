@@ -771,20 +771,6 @@ export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTy
 
 };
 
-export const getDistrictOptions = (districts: Array<Object>) => {
-  if(!districts || !districts.length) {
-    return [];
-  }
-
-  return [{value: '', label: ''}, ...districts.map((choice) => {
-    return {
-      value: get(choice, 'id'),
-      label: `${get(choice, 'name')} (${get(choice, 'identifier')})`,
-    };
-  })];
-};
-
-
 export const getInvoiceRecipientOptions = (lease: Object) =>{
   const items = getContentTenants(lease);
   return items.map((item) => {

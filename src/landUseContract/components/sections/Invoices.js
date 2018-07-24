@@ -6,7 +6,7 @@ import {Row, Column} from 'react-foundation';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import GreenBox from '$components/content/GreenBox';
 import ListItems from '$components/content/ListItems';
-import {getContentLandUseContractInvoices} from '$src/landUseContract/helpers';
+import {getContentInvoices} from '$src/landUseContract/helpers';
 import {formatDate, formatNumber} from '$util/helpers';
 import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
@@ -17,7 +17,7 @@ type Props = {
 }
 
 const Invoices = ({currentLandUseContract}: Props) => {
-  const invoices = getContentLandUseContractInvoices(currentLandUseContract);
+  const invoices = getContentInvoices(currentLandUseContract);
   return (
     <GreenBox>
       {!invoices.length && <p>Ei laskuja</p>}

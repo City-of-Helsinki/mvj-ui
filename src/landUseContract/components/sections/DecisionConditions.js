@@ -6,7 +6,7 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormFieldLabel from '$components/form/FormFieldLabel';
-import {formatNumber} from '$util/helpers';
+import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
 import type {Attributes} from '$src/landUseContract/types';
 
@@ -16,7 +16,8 @@ type Props = {
 }
 
 const DecisionConditions = ({attributes, conditions}: Props) => {
-  console.log(attributes);
+  const typeOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.conditions.child.children.type');
+
   return (
     <Collapse
       className='collapse__secondary'
@@ -33,7 +34,7 @@ const DecisionConditions = ({attributes, conditions}: Props) => {
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormFieldLabel>Hallintamuoto</FormFieldLabel>
-                  <p>{condition.management_type || '-'}</p>
+                  <p>{getLabelOfOption(typeOptions, condition.type) || '-'}</p>
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormFieldLabel>Ala</FormFieldLabel>
@@ -45,7 +46,7 @@ const DecisionConditions = ({attributes, conditions}: Props) => {
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <FormFieldLabel>Korvaus</FormFieldLabel>
-                  <p>{condition.compensation ? `${formatNumber(condition.compensation)} €` : '-'}</p>
+                  <p>{condition.compensation ? `${formatNumber(condition.compensation)} €/k-m²` : '-'}</p>
                 </Column>
                 <Column small={12} medium={8} large={4}>
                   <FormFieldLabel>Huomautus</FormFieldLabel>

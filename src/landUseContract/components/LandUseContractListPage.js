@@ -9,6 +9,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import Button from '$components/button/Button';
+import CreateLandUseContractModal from './createLandUseContract/CreateLandUseContractModal';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
@@ -18,19 +19,20 @@ import SearchWrapper from '$components/search/SearchWrapper';
 import Table from '$components/table/Table';
 import TableControllers from '$components/table/TableControllers';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {fetchLandUseContractAttributes, fetchLandUseContractList} from '$src/landUseContract/actions';
+import {createLandUseContract, fetchLandUseContractAttributes, fetchLandUseContractList} from '$src/landUseContract/actions';
 import {FormNames} from '$src/landUseContract/enums';
 import {getContentLandUseContractList} from '$src/landUseContract/helpers';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
 
-import type {Attributes, LandUseContractList} from '$src/landUseContract/types';
+import type {Attributes, LandUseContract, LandUseContractList} from '$src/landUseContract/types';
 
 const PAGE_SIZE = 25;
 
 type Props = {
   attributes: Attributes,
+  createLandUseContract: Function,
   fetchLandUseContractAttributes: Function,
   fetchLandUseContractList: Function,
   initialize: Function,
@@ -44,6 +46,7 @@ type Props = {
 type State = {
   activePage: number,
   count: number,
+  isModalOpen: boolean,
   landUseContracts: Array<Object>,
   maxPage: number,
   selectedStates: Array<string>,
@@ -53,6 +56,7 @@ class LandUseContractListPage extends Component<Props, State> {
   state = {
     activePage: 1,
     count: 0,
+    isModalOpen: false,
     landUseContracts: [],
     maxPage: 0,
     selectedStates: [],
@@ -102,7 +106,24 @@ class LandUseContractListPage extends Component<Props, State> {
   }
 
   handleCreateButtonClick = () => {
-    alert('TODO: Create land use contract');
+    const {initialize} = this.props;
+
+    this.setState({
+      isModalOpen: true,
+    });
+
+    initialize(FormNames.CREATE_LAND_USE_CONTRACT, {});
+  }
+
+  hideCreateLandUseContractModal = () => {
+    this.setState({
+      isModalOpen: false,
+    });
+  }
+
+  handleCreateLease = (landUseContract: LandUseContract) => {
+    const {createLandUseContract} = this.props;
+    createLandUseContract(landUseContract);
   }
 
   handleSearchChange = (query: Object) => {
@@ -189,7 +210,7 @@ class LandUseContractListPage extends Component<Props, State> {
 
   render() {
     const {attributes, isFetching} = this.props;
-    const {activePage, landUseContracts, maxPage, selectedStates} = this.state;
+    const {activePage, isModalOpen, landUseContracts, maxPage, selectedStates} = this.state;
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
     const filteredLandUseContracts = selectedStates.length
       ? (landUseContracts.filter((contract) => selectedStates.indexOf(contract.state.toString())  !== -1))
@@ -197,6 +218,12 @@ class LandUseContractListPage extends Component<Props, State> {
 
     return (
       <PageContainer>
+        <CreateLandUseContractModal
+          isOpen={isModalOpen}
+          onClose={this.hideCreateLandUseContractModal}
+          onSubmit={this.handleCreateLease}
+        />
+
         <SearchWrapper
           buttonComponent={
             <Button
@@ -263,6 +290,7 @@ export default flowRight(
       };
     },
     {
+      createLandUseContract,
       fetchLandUseContractAttributes,
       fetchLandUseContractList,
       initialize,

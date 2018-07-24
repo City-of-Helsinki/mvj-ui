@@ -24,41 +24,54 @@
       "sequence": 261
     },
     "areas": [
-      "12345678",
-      "23456789"
+      {
+        "area": "12345678"
+      },
+      {
+        "area": "23456789"
+      }
     ],
     "litigants": [
-      "Kaarina Mäkelä",
-      "Antero Mäkelä"
+      {
+        "litigant": "Kaarina Mäkelä"
+      },
+      {
+        "litigant": "Antero Mäkelä"
+      }
     ],
-    "preparer": "Hannele Pesonen",
+    "preparer": {
+      "id": 1,
+      "first_name": "Jori",
+      "is_staff": false,
+      "last_name": "Lindell"
+    },
     "land_use_contract_number": "Maankäyttösopimus",
-    "estimate_completion_year": "2019",
-    "estimate_introduction_year": "2020",
+    "estimated_completion_year": "2019",
+    "estimated_introduction_year": "2020",
     "project_area": "12345566779",
-    "plan_reference_number": "12345",
+    "plan_reference_number": "HEL 2018-123456",
     "plan_number": "12345",
-    "plan_acceptor": "Kaupunginvirasto",
+    "plan_acceptor": 41,
     "plan_lawfulness_date": "2018-06-01",
     "state": 0,
 
     "decisions": [
       {
-        "decision_maker": "Kaupunkiympäristölautakunta",
+        "decision_maker": 2,
         "decision_date": "2018-01-01",
         "section": "123",
-        "type": "Maankäyttösopimus",
-        "reference_number": "202849820",
+        "type": 11,
+        "reference_number": "HEL 1233-123211",
         "conditions": [
           {
-            "management_type": "Aravuokra",
+            "type": 6,
             "area": 400,
             "deposit": "4000",
             "compensation": "2000",
             "note": "Lorem ipsum"
           },
           {
-            "management_type": "Aravuokra",
+            "type": 25,
             "area": 400,
             "deposit": "4000",
             "compensation": "2000",
@@ -70,11 +83,11 @@
 
     "contracts": [
       {
-        "state": "Vireillä",
+        "state": 2,
         "decision_date": "2018-04-01",
         "sign_date": "2018-04-01",
         "ed_contract_number": "12345678",
-        "reference_number": "12345678",
+        "reference_number": "HEL 2018-198237",
         "area_arrengements": false
       }
     ],

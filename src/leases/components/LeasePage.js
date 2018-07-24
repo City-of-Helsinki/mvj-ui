@@ -288,9 +288,10 @@ class LeasePage extends Component<Props, State> {
     const {clearFormValidFlags, currentLease, receiveIsSaveClicked, showEditMode} = this.props;
 
     receiveIsSaveClicked(false);
+    clearFormValidFlags();
+
     this.destroyAllForms();
     this.initializeForms(currentLease);
-    clearFormValidFlags();
     showEditMode();
     this.startAutoSaveTimer();
   }
@@ -685,7 +686,6 @@ class LeasePage extends Component<Props, State> {
       isSummaryFormDirty ||
       isTenantsFormDirty
     );
-
   }
 
   render() {
@@ -753,7 +753,7 @@ class LeasePage extends Component<Props, State> {
           isOpen={isRestoreModalOpen}
           label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
           onCancel={this.cancelRestoreUnsavedChanges}
-          onClose={this.restoreUnsavedChanges}
+          onClose={this.cancelRestoreUnsavedChanges}
           onSave={this.restoreUnsavedChanges}
           title='Palauta tallentamattomat muutokset'
         />
