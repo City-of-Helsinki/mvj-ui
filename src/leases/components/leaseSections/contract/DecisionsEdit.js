@@ -1,24 +1,50 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, reduxForm} from 'redux-form';
+import {FieldArray, getFormValues, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import FormSection from '$components/form/FormSection';
 import DecisionItemsEdit from './DecisionItemsEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {getContentDecisions} from '$src/leases/helpers';
+import {getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+
+import type {Lease} from '$src/leases/types';
 
 type Props = {
+  currentLease: Lease,
   errors: ?Object,
+  formValues: Object,
   handleSubmit: Function,
   isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
 
-class DecisionsEdit extends Component<Props> {
+type State = {
+  currentLease: ?Lease,
+  decisionsData: Array<Object>,
+}
+
+class DecisionsEdit extends Component<Props, State> {
+  state = {
+    currentLease: null,
+    decisionsData: [],
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if(props.currentLease !== state.currentLease) {
+      const decisions = getContentDecisions(props.currentLease);
+      return {
+        currentLease: props.currentLease,
+        decisionsData: decisions,
+      };
+    }
+    return null;
+  }
+
   componentDidUpdate(prevProps) {
     const {receiveFormValidFlags} = this.props;
 
@@ -30,14 +56,17 @@ class DecisionsEdit extends Component<Props> {
   }
 
   render() {
-    const {errors, handleSubmit, isSaveClicked} = this.props;
+    const {errors, formValues, handleSubmit, isSaveClicked} = this.props,
+      {decisionsData} = this.state;
 
     return (
       <form onSubmit={handleSubmit}>
         <FormSection>
           <FieldArray
             component={DecisionItemsEdit}
+            decisionsData={decisionsData}
             errors={errors}
+            formValues={formValues}
             isSaveClicked={isSaveClicked}
             name="decisions"
           />
@@ -53,7 +82,9 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
+        formValues: getFormValues(formName)(state),
         isSaveClicked: getIsSaveClicked(state),
       };
     },

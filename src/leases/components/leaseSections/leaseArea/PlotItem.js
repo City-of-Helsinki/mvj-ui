@@ -8,6 +8,7 @@ import BoxItem from '$components/content/BoxItem';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import KtjLink from '$components/ktj/KtjLink';
 import ListItems from '$components/content/ListItems';
+import SubTitle from '$components/content/SubTitle';
 import {PlotType} from '$src/leases/enums';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
@@ -99,7 +100,7 @@ const PlotItem = ({attributes, plot}: Props) => {
           <p>{formatDate(plot.repeal_date) || '-'}</p>
         </Column>
       </Row>
-      <p className='sub-title'>Ktj-dokumentit</p>
+      <SubTitle>Ktj-dokumentit</SubTitle>
       {plot.identifier &&
         <Row>
           {plot.type === PlotType.REAL_PROPERTY &&

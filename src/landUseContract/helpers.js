@@ -79,6 +79,7 @@ const getContentDecisionConditions = (decision: Object) => {
 
 const getContentDecisionItem = (decision: Object) => {
   return {
+    id: get(decision, 'id'),
     decision_maker: get(decision, 'decision_maker'),
     decision_date: get(decision, 'decision_date'),
     section: get(decision, 'section'),
@@ -94,6 +95,7 @@ export const getContentDecisions = (contract: LandUseContract) => {
 
 const getContentContractItem = (contract: Object) => {
   return {
+    id: get(contract, 'id'),
     state: get(contract, 'state'),
     decision_date: get(contract, 'decision_date'),
     sign_date: get(contract, 'sign_date'),

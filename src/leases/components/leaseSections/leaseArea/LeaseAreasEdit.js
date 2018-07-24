@@ -1,7 +1,7 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, reduxForm} from 'redux-form';
+import {FieldArray, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -102,29 +102,41 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
 };
 
 type AreaItemProps = {
+  areasData: Array<Object>,
   attributes: Attributes,
   errors: ?Object,
   fields: any,
+  formValues: Object,
   isSaveClicked: boolean,
 }
 
 const LeaseAreaItems = ({
+  areasData,
   attributes,
   errors,
   fields,
+  formValues,
   isSaveClicked,
 }: AreaItemProps): Element<*> => {
+  const getAreaById = (id: number) => {
+    if(!id) {
+      return {};
+    }
+    return areasData.find((area) => area.id === id);
+  };
   return (
     <div>
       {fields && !!fields.length && fields.map((area, index) => {
         const areaErrors = get(errors, area);
+        const savedArea = getAreaById(get(formValues, `${area}.id`));
+
         return (
           <Collapse
             key={index}
             defaultOpen={true}
             hasErrors={isSaveClicked && !isEmpty(areaErrors)}
             headerTitle={
-              <h3 className='collapse__header-title'>Kohde {index + 1}</h3>
+              <h3 className='collapse__header-title'>{savedArea ? (savedArea.identifier || '-') : '-'}</h3>
             }
           >
             <BoxContentWrapper>
@@ -191,8 +203,10 @@ const LeaseAreaItems = ({
                   buttonTitle='Lisää kiinteistö/määräala'
                   component={PlotItemsEdit}
                   errors={errors}
+                  formValues={formValues}
                   isSaveClicked={isSaveClicked}
                   name={`${area}.plots_contract`}
+                  plotsData={get(savedArea, 'plots_contract', [])}
                   title='Kiinteistöt / määräalat sopimuksessa'
                 />
               </Column>
@@ -201,8 +215,10 @@ const LeaseAreaItems = ({
                   buttonTitle='Lisää kiinteistö/määräala'
                   component={PlotItemsEdit}
                   errors={errors}
+                  formValues={formValues}
                   isSaveClicked={isSaveClicked}
                   name={`${area}.plots_current`}
+                  plotsData={get(savedArea, 'plots_current', [])}
                   title='Kiinteistöt / määräalat nykyhetkellä'
                 />
               </Column>
@@ -255,6 +271,7 @@ type Props = {
   attributes: Attributes,
   currentLease: Lease,
   errors: ?Object,
+  formValues: Object,
   handleSubmit: Function,
   isSaveClicked: boolean,
   receiveFormValidFlags: Function,
@@ -263,12 +280,14 @@ type Props = {
 
 type State = {
   areasSum: ?number,
+  areasData: Array<Object>,
   currentLease: ?Lease,
 }
 
 class LeaseAreasEdit extends PureComponent<Props, State> {
   state = {
     areasSum: null,
+    areasData: [],
     currentLease: null,
   }
 
@@ -277,6 +296,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
       const areas = getContentLeaseAreas(props.currentLease);
       return {
         areasSum: getAreasSum(areas),
+        areasData: areas,
         currentLease: props.currentLease,
       };
     }
@@ -295,8 +315,8 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
   }
 
   render () {
-    const {attributes, errors, handleSubmit, isSaveClicked} = this.props;
-    const {areasSum} = this.state;
+    const {attributes, errors, formValues, handleSubmit, isSaveClicked} = this.props;
+    const {areasSum, areasData} = this.state;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -308,9 +328,11 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
 
         <FormSection>
           <FieldArray
+            areasData={areasData}
             attributes={attributes}
             component={LeaseAreaItems}
             errors={errors}
+            formValues={formValues}
             isSaveClicked={isSaveClicked}
             name="lease_areas"
           />
@@ -329,6 +351,7 @@ export default flowRight(
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
+        formValues: getFormValues(formName)(state),
         isSaveClicked: getIsSaveClicked(state),
       };
     },

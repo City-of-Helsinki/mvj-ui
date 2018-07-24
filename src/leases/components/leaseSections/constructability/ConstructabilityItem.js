@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import {formatDate, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {ConstructabilityStatus} from '$src/leases/enums';
@@ -152,23 +153,23 @@ const ConstructabilityItem = ({
         <div>
           <Row>
             <Column small={6} medium={3} large={2}>
-              <label>Vuokraehdot</label>
+              <FormFieldLabel>Vuokraehdot</FormFieldLabel>
               <p>{getLabelOfOption(pollutedLandConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <label>Pvm</label>
+              <FormFieldLabel>Pvm</FormFieldLabel>
               <p>{formatDate(area.polluted_land_rent_condition_date) || '–'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <label>PIMA valmistelija</label>
+              <FormFieldLabel>PIMA valmistelija</FormFieldLabel>
               <p>{getUserFullName(area.polluted_land_planner) || '–'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <label>ProjectWise numero</label>
+              <FormFieldLabel>ProjectWise numero</FormFieldLabel>
               <p>{area.polluted_land_projectwise_number || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <label>Matti raportti</label>
+              <FormFieldLabel>Matti raportti</FormFieldLabel>
               <p>{area.polluted_land_matti_report_number || '-'}</p>
             </Column>
           </Row>
@@ -199,19 +200,19 @@ const ConstructabilityItem = ({
         <div>
           <Row>
             <Column small={6} medium={3} large={2}>
-              <label>Selvitys</label>
+              <FormFieldLabel>Selvitys</FormFieldLabel>
               <p>{getLabelOfOption(constructabilityReportStateOptions, area.constructability_report_investigation_state) || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <label>Allekirjoituspvm</label>
+              <FormFieldLabel>Allekirjoituspvm</FormFieldLabel>
               <p>{formatDate(area.constructability_report_signing_date) || '–'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <label>Allekirjoittaja</label>
+              <FormFieldLabel>Allekirjoittaja</FormFieldLabel>
               <p>{area.constructability_report_signer || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <label>Geotekninenpalvelun tiedosto</label>
+              <FormFieldLabel>Geoteknisen palvelun tiedosto</FormFieldLabel>
               <p>{area.constructability_report_geotechnical_number || '-'}</p>
             </Column>
           </Row>

@@ -14,7 +14,10 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
+import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
+import SubTitle from '$components/content/SubTitle';
+import {PlotType} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -101,7 +104,9 @@ type Props = {
   buttonTitle: string,
   errors: ?Object,
   fields: any,
+  formValues: Object,
   isSaveClicked: boolean,
+  plotsData: Array<Object>,
   title: string,
 }
 
@@ -111,9 +116,18 @@ const PlotItemsEdit = ({
   errors,
   fields,
   fields: {name},
+  formValues,
   isSaveClicked,
+  plotsData,
   title,
 }: Props) => {
+  const getPlotById = (id: number) => {
+    if(!id) {
+      return {};
+    }
+    return plotsData.find((plot) => plot.id === id);
+  };
+
   const plotErrors = get(errors, name);
   return (
     <div>
@@ -126,90 +140,140 @@ const PlotItemsEdit = ({
         }
       >
         <BoxItemContainer>
-          {fields.map((plot, index) =>
-            <BoxItem className='no-border-on-first-child'  key={plot.id ? plot.id : `index_${index}`}>
-              <BoxContentWrapper>
-                <RemoveButton
-                  className='position-topright'
-                  onClick={() => fields.remove(index)}
-                  title="Poista kiinteistö / määräala"
-                />
-                <Row>
-                  <Column small={12} medium={6} large={6}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.identifier')}
-                      name={`${plot}.identifier`}
-                      overrideValues={{
-                        label: 'Tunnus',
-                      }}
-                    />
-                  </Column>
-                  <Column small={12} medium={6} large={3}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.type')}
-                      name={`${plot}.type`}
-                      overrideValues={{
-                        label: 'Määritelmä',
-                      }}
-                    />
-                  </Column>
-                </Row>
+          {fields.map((plot, index) => {
+            const savedPlot = getPlotById(get(formValues, `${plot}.id`));
+            return (
+              <BoxItem className='no-border-on-first-child'  key={plot.id ? plot.id : `index_${index}`}>
+                <BoxContentWrapper>
+                  <RemoveButton
+                    className='position-topright'
+                    onClick={() => fields.remove(index)}
+                    title="Poista kiinteistö / määräala"
+                  />
+                  <Row>
+                    <Column small={12} medium={6} large={6}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.identifier')}
+                        name={`${plot}.identifier`}
+                        overrideValues={{
+                          label: 'Tunnus',
+                        }}
+                      />
+                    </Column>
+                    <Column small={12} medium={6} large={3}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.type')}
+                        name={`${plot}.type`}
+                        overrideValues={{
+                          label: 'Määritelmä',
+                        }}
+                      />
+                    </Column>
+                  </Row>
 
-                <FieldArray
-                  attributes={attributes}
-                  component={AddressItems}
-                  isSaveClicked={isSaveClicked}
-                  name={`${plot}.addresses`}
-                />
-                <Row>
-                  <Column small={12} medium={6} large={3}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.area')}
-                      name={`${plot}.area`}
-                      unit='m²'
-                      overrideValues={{
-                        label: 'Kokonaisala',
-                      }}
-                    />
-                  </Column>
-                  <Column small={12} medium={6} large={3}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.section_area')}
-                      name={`${plot}.section_area`}
-                      unit='m²'
-                      overrideValues={{
-                        label: 'Leikkausala',
-                      }}
-                    />
-                  </Column>
-                  <Column small={12} medium={6} large={3}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.registration_date')}
-                      name={`${plot}.registration_date`}
-                      overrideValues={{
-                        label: 'Rekisteröintipvm',
-                      }}
-                    />
-                  </Column>
-                  <Column small={12} medium={6} large={3}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.repeal_date')}
-                      name={`${plot}.repeal_date`}
-                      overrideValues={{
-                        label: 'Kumoamispvm',
-                      }}
-                    />
-                  </Column>
-                </Row>
-              </BoxContentWrapper>
-            </BoxItem>
-          )}
+                  <FieldArray
+                    attributes={attributes}
+                    component={AddressItems}
+                    isSaveClicked={isSaveClicked}
+                    name={`${plot}.addresses`}
+                  />
+                  <Row>
+                    <Column small={12} medium={6} large={3}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.area')}
+                        name={`${plot}.area`}
+                        unit='m²'
+                        overrideValues={{
+                          label: 'Kokonaisala',
+                        }}
+                      />
+                    </Column>
+                    <Column small={12} medium={6} large={3}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.section_area')}
+                        name={`${plot}.section_area`}
+                        unit='m²'
+                        overrideValues={{
+                          label: 'Leikkausala',
+                        }}
+                      />
+                    </Column>
+                    <Column small={12} medium={6} large={3}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.registration_date')}
+                        name={`${plot}.registration_date`}
+                        overrideValues={{
+                          label: 'Rekisteröintipvm',
+                        }}
+                      />
+                    </Column>
+                    <Column small={12} medium={6} large={3}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.repeal_date')}
+                        name={`${plot}.repeal_date`}
+                        overrideValues={{
+                          label: 'Kumoamispvm',
+                        }}
+                      />
+                    </Column>
+                  </Row>
+                  {get(savedPlot, 'identifier') &&
+                    <SubTitle>Ktj-dokumentit</SubTitle>
+                  }
+                  {get(savedPlot, 'identifier') &&
+                    <Row>
+                      {get(savedPlot, 'type') === PlotType.REAL_PROPERTY &&
+                        <Column small={12} medium={6}>
+                          <KtjLink
+                            fileKey='kiinteistorekisteriote/rekisteriyksikko'
+                            fileName='kiinteistorekisteriote'
+                            identifier={get(savedPlot, 'identifier')}
+                            idKey='kiinteistotunnus'
+                            label='Kiinteistörekisteriote'
+                          />
+                        </Column>
+                      }
+                      {get(savedPlot, 'type') === PlotType.UNSEPARATED_PARCEL &&
+                        <Column small={12} medium={6}>
+                          <KtjLink
+                            fileKey='kiinteistorekisteriote/maaraala'
+                            fileName='kiinteistorekisteriote'
+                            identifier={get(savedPlot, 'identifier')}
+                            idKey='maaraalatunnus'
+                            label='Kiinteistörekisteriote'
+                          />
+                        </Column>
+                      }
+                      <Column small={12} medium={6}>
+                        <KtjLink
+                          fileKey='lainhuutotodistus'
+                          fileName='lainhuutotodistus'
+                          identifier={get(savedPlot, 'identifier')}
+                          idKey='kohdetunnus'
+                          label='Lainhuutotodistus'
+                        />
+                      </Column>
+                      <Column small={12} medium={6}>
+                        <KtjLink
+                          fileKey='rasitustodistus'
+                          fileName='rasitustodistus'
+                          identifier={get(savedPlot, 'identifier')}
+                          idKey='kohdetunnus'
+                          label='Rasitustodistus'
+                        />
+                      </Column>
+                    </Row>
+                  }
+                </BoxContentWrapper>
+              </BoxItem>
+            );
+          })}
         </BoxItemContainer>
         <Row>
           <Column>

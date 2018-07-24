@@ -378,7 +378,7 @@ const renderAreas = ({
                     fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_report_geotechnical_number')}
                     name={`${area}.constructability_report_geotechnical_number`}
                     overrideValues={{
-                      label: 'Geotekninen palvelun tiedosto',
+                      label: 'Geoteknisen palvelun tiedosto',
                     }}
                   />
                 </Column>

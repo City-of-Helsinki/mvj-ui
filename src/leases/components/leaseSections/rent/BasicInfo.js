@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {
@@ -29,34 +30,39 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
   const cycleOptions = getAttributeFieldOptions(attributes, 'rents.child.children.cycle');
   const indexTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.index_type');
+  const dueDatesTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.due_dates_type');
   const intendedUseOptions = getAttributeFieldOptions(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use');
 
   return (
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <label>Vuokralaji</label>
+          <FormFieldLabel>Vuokralaji</FormFieldLabel>
           <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <label>Alkupvm</label>
+          <FormFieldLabel>Alkupvm</FormFieldLabel>
           <p>{formatDate(rent.start_date) || '-'}</p>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <label>Loppupvm</label>
+          <FormFieldLabel>Loppupvm</FormFieldLabel>
           <p>{formatDate(rent.end_date) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Vuokrakausi</label>
+          <FormFieldLabel>Vuokrakausi</FormFieldLabel>
           <p>{getLabelOfOption(cycleOptions, rent.cycle) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Indeksin tunnusnumero</label>
+          <FormFieldLabel>Indeksin tunnusnumero</FormFieldLabel>
           <p>{getLabelOfOption(indexTypeOptions, rent.index_type) || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <FormFieldLabel>Laskutusjako</FormFieldLabel>
+          <p>{getLabelOfOption(dueDatesTypeOptions, rent.due_dates_type) || '-'}</p>
         </Column>
         {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
-            <label>Eräpäivät</label>
+            <FormFieldLabel>Eräpäivät</FormFieldLabel>
             <ListItems>
               {rent.due_dates && !!rent.due_dates.length
                 ? (rent.due_dates.map((date, index) => {
@@ -69,7 +75,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <label>Eräpäivät</label>
+            <FormFieldLabel>Eräpäivät</FormFieldLabel>
             <ListItems>
               {rent.yearly_due_dates && !!rent.yearly_due_dates.length
                 ? (rent.yearly_due_dates.map((date, index) => {
@@ -84,25 +90,25 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
       <Row>
         {(!!rent.elementary_index || !!rent.index_rounding) &&
           <Column small={12} medium={4} large={2}>
-            <label>Perusindeksi/pyöristys</label>
+            <FormFieldLabel>Perusindeksi/pyöristys</FormFieldLabel>
             <p>{rent.elementary_index || '-'} / {rent.index_rounding || '-'}</p>
           </Column>
         }
         {!!rent.x_value &&
           <Column small={4} medium={2} large={1}>
-            <label>X-luku</label>
+            <FormFieldLabel>X-luku</FormFieldLabel>
             <p>{rent.x_value || '-'}</p>
           </Column>
         }
         {!!rent.y_value &&
           <Column small={4} medium={2} large={1}>
-            <label>Y-luku</label>
+            <FormFieldLabel>Y-luku</FormFieldLabel>
             <p>{rent.y_value || '-'}</p>
           </Column>
         }
         {!!rent.y_value_start &&
           <Column small={4} medium={2} large={1}>
-            <label>Y-alkaen</label>
+            <FormFieldLabel>Y-alkaen</FormFieldLabel>
             <p>{rent.y_value_start || '-'}</p>
           </Column>
         }
@@ -110,11 +116,11 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
           <Column small={12} medium={4} large={2}>
             <Row>
               <Column small={6}>
-                <label>Tasaus alkupvm</label>
+                <FormFieldLabel>Tasaus alkupvm</FormFieldLabel>
                 <p>{formatDate(rent.equalization_start_date) || '-'}</p>
               </Column>
               <Column small={6}>
-                <label>Tasaus loppupvm</label>
+                <FormFieldLabel>Tasaus loppupvm</FormFieldLabel>
                 <p>{formatDate(rent.equalization_end_date) || '-'}</p>
               </Column>
             </Row>
@@ -127,16 +133,16 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
           <p className='sub-title'>Kiinteät alkuvuosivuokrat</p>
           <Row>
             <Column small={3} medium={3} large={2}>
-              <label>Käyttötarkoitus</label>
+              <FormFieldLabel>Käyttötarkoitus</FormFieldLabel>
             </Column>
             <Column small={3} medium={3} large={2}>
-              <label>Kiinteä alkuvuosivuokra</label>
+              <FormFieldLabel>Kiinteä alkuvuosivuokra</FormFieldLabel>
             </Column>
             <Column small={3} medium={3} large={1}>
-              <label>Alkupvm</label>
+              <FormFieldLabel>Alkupvm</FormFieldLabel>
             </Column>
             <Column small={3} medium={3} large={1}>
-              <label>Loppupvm</label>
+              <FormFieldLabel>Loppupvm</FormFieldLabel>
             </Column>
           </Row>
           {rent.fixed_initial_year_rents.map((item, index) => {
@@ -161,7 +167,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
       }
       <Row>
         <Column>
-          <label>Huomautus</label>
+          <FormFieldLabel>Huomautus</FormFieldLabel>
           <p>{rent.note || '-'}</p>
         </Column>
       </Row>
@@ -176,25 +182,25 @@ const BasicInfoOneTime = ({attributes, rent}: Props) => {
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <label>Vuokralaji</label>
+          <FormFieldLabel>Vuokralaji</FormFieldLabel>
           <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <label>Alkupvm</label>
+          <FormFieldLabel>Alkupvm</FormFieldLabel>
           <p>{formatDate(rent.start_date) || '-'}</p>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <label>Loppupvm</label>
+          <FormFieldLabel>Loppupvm</FormFieldLabel>
           <p>{formatDate(rent.end_date) || '-'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Kertakaikkinen vuokra</label>
+          <FormFieldLabel>Kertakaikkinen vuokra</FormFieldLabel>
           <p>{formatNumber(rent.amount) || '-'}</p>
         </Column>
       </Row>
       <Row>
         <Column>
-          <label>Huomautus</label>
+          <FormFieldLabel>Huomautus</FormFieldLabel>
           <p>{rent.note || '-'}</p>
         </Column>
       </Row>
@@ -204,25 +210,30 @@ const BasicInfoOneTime = ({attributes, rent}: Props) => {
 
 const BasicInfoFixed = ({attributes, rent}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
+  const dueDatesTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.due_dates_type');
 
   return (
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <label>Vuokralaji</label>
+          <FormFieldLabel>Vuokralaji</FormFieldLabel>
           <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <label>Alkupvm</label>
+          <FormFieldLabel>Alkupvm</FormFieldLabel>
           <p>{formatDate(rent.start_date) || '-'}</p>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <label>Loppupvm</label>
+          <FormFieldLabel>Loppupvm</FormFieldLabel>
           <p>{formatDate(rent.end_date) || '-'}</p>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <FormFieldLabel>Laskutusjako</FormFieldLabel>
+          <p>{getLabelOfOption(dueDatesTypeOptions, rent.due_dates_type) || '-'}</p>
         </Column>
         {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
-            <label>Eräpäivät</label>
+            <FormFieldLabel>Eräpäivät</FormFieldLabel>
             <ListItems>
               {rent.due_dates && !!rent.due_dates.length
                 ? (rent.due_dates.map((date, index) => {
@@ -235,7 +246,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <label>Eräpäivät</label>
+            <FormFieldLabel>Eräpäivät</FormFieldLabel>
             <ListItems>
               {rent.yearly_due_dates && !!rent.yearly_due_dates.length
                 ? (rent.yearly_due_dates.map((date, index) => {
@@ -249,7 +260,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
       </Row>
       <Row>
         <Column>
-          <label>Huomautus</label>
+          <FormFieldLabel>Huomautus</FormFieldLabel>
           <p>{rent.note || '-'}</p>
         </Column>
       </Row>
@@ -264,21 +275,21 @@ const BasicInfoFree = ({attributes, rent}: Props) => {
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <label>Vuokralaji</label>
+          <FormFieldLabel>Vuokralaji</FormFieldLabel>
           <p>{getLabelOfOption(typeOptions, rent.type) || '-'}</p>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <label>Alkupvm</label>
+          <FormFieldLabel>Alkupvm</FormFieldLabel>
           <p>{formatDate(rent.start_date) || '-'}</p>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <label>Loppupvm</label>
+          <FormFieldLabel>Loppupvm</FormFieldLabel>
           <p>{formatDate(rent.end_date) || '-'}</p>
         </Column>
       </Row>
       <Row>
         <Column>
-          <label>Huomautus</label>
+          <FormFieldLabel>Huomautus</FormFieldLabel>
           <p>{rent.note || '-'}</p>
         </Column>
       </Row>

@@ -85,7 +85,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Pro
                     </Row>
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <FormFieldLabel>Määrä</FormFieldLabel>
+                    <FormFieldLabel>Kokonaismäärä</FormFieldLabel>
                     <Row>
                       <Column small={6}>
                         <FormField
