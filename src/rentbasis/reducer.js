@@ -13,6 +13,7 @@ import type {
   ReceiveRentBasisInitialValuesAction,
   ReceiveSingleRentBasisAction,
   ReceiveFormValidAction,
+  ReceiveIsSaveClickedAction,
 } from './types';
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
@@ -64,12 +65,19 @@ const isFormValidReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
+const isSaveClickedReducer: Reducer<boolean> = handleActions({
+  ['mvj/rentbasis/RECEIVE_SAVE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsSaveClickedAction) => {
+    return isClicked;
+  },
+}, false);
+
 export default combineReducers({
   attributes: attributesReducer,
   initialValues: initialValuesReducer,
   isEditMode: isEditModeReducer,
   isFormValid: isFormValidReducer,
   isFetching: isFetchingReducer,
+  isSaveClicked: isSaveClickedReducer,
   list: rentBasisListReducer,
   rentbasis: rentBasisReducer,
 });

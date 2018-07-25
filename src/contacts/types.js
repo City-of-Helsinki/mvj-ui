@@ -25,6 +25,8 @@ export type ReceiveContactsAction = Action<'mvj/contacts/RECEIVE_ALL', ContactLi
 export type FetchSingleContactAction = Action<'mvj/contacts/FETCH_SINGLE', ContactId>;
 export type ReceiveSingleContactAction = Action<'mvj/contacts/RECEIVE_SINGLE', Contact>;
 
+export type ReceiveIsSaveClickedAction = Action<'mvj/contacts/RECEIVE_SAVE_CLICKED', boolean>;
+
 export type InitializeContactFormValuesAction = Action<'mvj/contacts/INITIALIZE_FORM', Contact>;
 export type ReceiveContactFormValidAction = Action<'mvj/contacts/RECEIVE_CONTACT_FORM_VALID', boolean>;
 export type HideEditModeAction = Action<'mvj/contacts/HIDE_EDIT', void>;

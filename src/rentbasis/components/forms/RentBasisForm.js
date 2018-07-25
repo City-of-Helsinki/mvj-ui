@@ -15,7 +15,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValid} from '$src/rentbasis/actions';
 import {FormNames} from '$src/rentbasis/enums';
-import {getAttributes, getIsFormValid, getRentBasisInitialValues} from '$src/rentbasis/selectors';
+import {getAttributes, getIsFormValid, getIsSaveClicked, getRentBasisInitialValues} from '$src/rentbasis/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/rentbasis/types';
@@ -25,9 +25,10 @@ import type {RootState} from '$src/root/types';
 type PropertyIdentifiersProps = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const renderPropertyIdentifiers = ({attributes, fields}: PropertyIdentifiersProps): Element<*> => {
+const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked}: PropertyIdentifiersProps): Element<*> => {
   return (
     <div>
       <FormFieldLabel>Kiinteistötunnukset</FormFieldLabel>
@@ -35,6 +36,7 @@ const renderPropertyIdentifiers = ({attributes, fields}: PropertyIdentifiersProp
         <Row key={index}>
           <Column small={8}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'property_identifiers.child.children.identifier')}
               name={`${field}.identifier`}
               overrideValues={{
@@ -66,30 +68,32 @@ const renderPropertyIdentifiers = ({attributes, fields}: PropertyIdentifiersProp
 type DecisionsProps = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const renderDecisions = ({attributes, fields}: DecisionsProps): Element<*> => {
+const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): Element<*> => {
   return (
     <div>
       <SubTitle>Päätökset</SubTitle>
       <Row>
         <Column small={3} large={2}>
-          <FormFieldLabel>Päättäjä</FormFieldLabel>
+          <FormFieldLabel required={get(attributes, 'decisions.child.children.decision_maker.required')}>Päättäjä</FormFieldLabel>
         </Column>
         <Column small={3} large={1}>
-          <FormFieldLabel>Pvm</FormFieldLabel>
+          <FormFieldLabel required={get(attributes, 'decisions.child.children.decision_date.required')}>Pvm</FormFieldLabel>
         </Column>
         <Column small={3} large={2}>
-          <FormFieldLabel>Pykälä</FormFieldLabel>
+          <FormFieldLabel required={get(attributes, 'decisions.child.children.section.required')}>Pykälä</FormFieldLabel>
         </Column>
         <Column small={3} large={2}>
-          <FormFieldLabel>Hel diaarinumero</FormFieldLabel>
+          <FormFieldLabel required={get(attributes, 'decisions.child.children.reference_number.required')}>Hel diaarinumero</FormFieldLabel>
         </Column>
       </Row>
       {fields && !!fields.length && fields.map((field, index) =>
         <Row key={index}>
           <Column small={3} large={2}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'decisions.child.children.decision_maker')}
               name={`${field}.decision_maker`}
               overrideValues={{
@@ -99,6 +103,7 @@ const renderDecisions = ({attributes, fields}: DecisionsProps): Element<*> => {
           </Column>
           <Column small={3} large={1}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
               name={`${field}.decision_date`}
               overrideValues={{
@@ -108,6 +113,7 @@ const renderDecisions = ({attributes, fields}: DecisionsProps): Element<*> => {
           </Column>
           <Column small={3} large={2}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'decisions.child.children.section')}
               name={`${field}.section`}
               unit='§'
@@ -118,6 +124,7 @@ const renderDecisions = ({attributes, fields}: DecisionsProps): Element<*> => {
           </Column>
           <Column small={1} large={2}>
             <FormField
+              disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'decisions.child.children.reference_number')}
               name={`${field}.reference_number`}
               validate={referenceNumber}
@@ -150,23 +157,25 @@ const renderDecisions = ({attributes, fields}: DecisionsProps): Element<*> => {
 type RentRatesProps = {
   attributes: Attributes,
   fields: any,
+  isSaveClicked: boolean,
 }
 
-const renderRentRates = ({attributes, fields}: RentRatesProps): Element<*> => {
+const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): Element<*> => {
   return (
     <div>
       <SubTitle>Hinnat</SubTitle>
       {fields && !!fields.length &&
         <div>
           <Row>
-            <Column small={4} medium={4} large={2}><FormFieldLabel>Pääkäyttötarkoitus</FormFieldLabel></Column>
-            <Column small={3} medium={4} large={1}><FormFieldLabel>Euroa</FormFieldLabel></Column>
-            <Column small={3} medium={4} large={1}><FormFieldLabel>Yksikkö</FormFieldLabel></Column>
+            <Column small={4} medium={4} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.build_permission_type.required')}>Pääkäyttötarkoitus</FormFieldLabel></Column>
+            <Column small={3} medium={4} large={1}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.amount.required')}>Euroa</FormFieldLabel></Column>
+            <Column small={3} medium={4} large={1}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.area_unit.required')}>Yksikkö</FormFieldLabel></Column>
           </Row>
           {fields.map((field, index) =>
             <Row key={index}>
               <Column small={4} medium={4} large={2}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rent_rates.child.children.build_permission_type')}
                   name={`${field}.build_permission_type`}
                   overrideValues={{
@@ -176,6 +185,7 @@ const renderRentRates = ({attributes, fields}: RentRatesProps): Element<*> => {
               </Column>
               <Column small={3} medium={2} large={1}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rent_rates.child.children.amount')}
                   name={`${field}.amount`}
                   overrideValues={{
@@ -185,6 +195,7 @@ const renderRentRates = ({attributes, fields}: RentRatesProps): Element<*> => {
               </Column>
               <Column small={3} medium={2} large={1}>
                 <FormField
+                  disableTouched={isSaveClicked}
                   fieldAttributes={get(attributes, 'rent_rates.child.children.area_unit')}
                   name={`${field}.area_unit`}
                   overrideValues={{
@@ -220,6 +231,7 @@ type Props = {
   handleSubmit: Function,
   initialValues: Object,
   isFormValid: boolean,
+  isSaveClicked: boolean,
   receiveFormValid: Function,
   valid: boolean,
 }
@@ -232,7 +244,7 @@ class RentBasisForm extends Component<Props> {
   }
 
   render() {
-    const {attributes, handleSubmit} = this.props;
+    const {attributes, handleSubmit, isSaveClicked} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -240,6 +252,7 @@ class RentBasisForm extends Component<Props> {
           <Row>
             <Column small={6} medium={4} large={2}>
               <FormField
+                disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'plot_type')}
                 name='plot_type'
                 overrideValues={{
@@ -251,6 +264,7 @@ class RentBasisForm extends Component<Props> {
               <Row>
                 <Column small={6}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'start_date')}
                     name='start_date'
                     overrideValues={{
@@ -260,6 +274,7 @@ class RentBasisForm extends Component<Props> {
                 </Column>
                 <Column small={6}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'end_date')}
                     name='end_date'
                     overrideValues={{
@@ -276,11 +291,13 @@ class RentBasisForm extends Component<Props> {
                 attributes={attributes}
                 component={renderPropertyIdentifiers}
                 name="property_identifiers"
+                isSaveClicked={isSaveClicked}
               />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
                 className='align-top'
+                disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'detailed_plan_identifier')}
                 name='detailed_plan_identifier'
                 overrideValues={{
@@ -291,6 +308,7 @@ class RentBasisForm extends Component<Props> {
             <Column small={6} medium={4} large={2}>
               <FormField
                 className='align-top'
+                disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'management')}
                 name='management'
                 overrideValues={{
@@ -301,6 +319,7 @@ class RentBasisForm extends Component<Props> {
             <Column small={6} medium={4} large={2}>
               <FormField
                 className='align-top'
+                disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'financing')}
                 name='financing'
                 overrideValues={{
@@ -312,6 +331,7 @@ class RentBasisForm extends Component<Props> {
           <Row>
             <Column small={6} medium={4} large={2}>
               <FormField
+                disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'lease_rights_end_date')}
                 name='lease_rights_end_date'
                 overrideValues={{
@@ -321,6 +341,7 @@ class RentBasisForm extends Component<Props> {
             </Column>
             <Column small={6} medium={4} large={2} offsetOnLarge={1}>
               <FormField
+                disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'index')}
                 name='index'
                 overrideValues={{
@@ -335,6 +356,7 @@ class RentBasisForm extends Component<Props> {
                 attributes={attributes}
                 component={renderDecisions}
                 name="decisions"
+                isSaveClicked={isSaveClicked}
               />
             </Column>
           </Row>
@@ -344,12 +366,14 @@ class RentBasisForm extends Component<Props> {
                 attributes={attributes}
                 component={renderRentRates}
                 name="rent_rates"
+                isSaveClicked={isSaveClicked}
               />
             </Column>
           </Row>
           <Row>
             <Column>
               <FormField
+                disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'note')}
                 name='note'
                 overrideValues={{
@@ -369,6 +393,7 @@ const mapStateToProps = (state: RootState) => {
     attributes: getAttributes(state),
     initialValues: getRentBasisInitialValues(state),
     isFormValid: getIsFormValid(state),
+    isSaveClicked: getIsSaveClicked(state),
   };
 };
 

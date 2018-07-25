@@ -20,6 +20,8 @@ export type ReceiveSingleRentBasisAction = Action<'mvj/rentbasis/RECEIVE_SINGLE'
 export type CreateRentBasisAction = Action<'mvj/rentbasis/CREATE', RentBasis>;
 export type EditRentBasisAction = Action<'mvj/rentbasis/EDIT', RentBasis>;
 
+export type ReceiveIsSaveClickedAction = Action<'mvj/rentbasis/RECEIVE_SAVE_CLICKED', boolean>;
+
 export type HideEditModeAction = Action<'mvj/rentbasis/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/rentbasis/SHOW_EDIT', void>;
 export type ReceiveRentBasisInitialValuesAction = Action<'mvj/rentbasis/INITIALIZE', RentBasis>;

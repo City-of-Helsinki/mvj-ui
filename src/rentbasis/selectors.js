@@ -8,6 +8,9 @@ export const getIsEditMode: Selector<boolean, void> = (state: RentBasisState): b
 export const getIsFetching: Selector<boolean, void> = (state: RentBasisState): boolean =>
   state.rentBasis.isFetching;
 
+export const getIsSaveClicked: Selector<boolean, void> = (state: RentBasisState): boolean =>
+  state.rentBasis.isSaveClicked;
+
 export const getAttributes: Selector<Attributes, void> = (state: RentBasisState): Attributes =>
   state.rentBasis.attributes;
 

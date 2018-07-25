@@ -14,7 +14,7 @@ import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {receiveContactFormValid} from '$src/contacts/actions';
 import {ContactType, FormNames} from '$src/contacts/enums';
-import {getAttributes, getInitialContactFormValues, getIsContactFormValid} from '$src/contacts/selectors';
+import {getAttributes, getInitialContactFormValues, getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
 
 import type {Attributes} from '$src/contacts/types';
 import type {RootState} from '$src/root/types';
@@ -24,6 +24,7 @@ type Props = {
   initialValues: Object,
   isContactFormValid: boolean,
   handleSubmit: Function,
+  isSaveClicked: boolean,
   receiveContactFormValid: Function,
   type: ?string,
   valid: boolean,
@@ -43,7 +44,7 @@ class ContactForm extends Component<Props> {
   }
 
   render() {
-    const {attributes, handleSubmit, type} = this.props;
+    const {attributes, handleSubmit, isSaveClicked, type} = this.props;
     if (isEmpty(attributes)) {
       return null;
     }
@@ -56,6 +57,7 @@ class ContactForm extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'type')}
                     name='type'
                     overrideValues={{
@@ -66,6 +68,7 @@ class ContactForm extends Component<Props> {
                 {type === ContactType.PERSON &&
                   <Column small={12} medium={6} large={4}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'last_name')}
                       name='last_name'
                       overrideValues={{
@@ -77,6 +80,7 @@ class ContactForm extends Component<Props> {
                 {type === ContactType.PERSON &&
                   <Column small={12} medium={6} large={4}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'first_name')}
                       name='first_name'
                       overrideValues={{
@@ -88,6 +92,7 @@ class ContactForm extends Component<Props> {
                 {type && type !== ContactType.PERSON &&
                   <Column small={12} medium={6} large={8}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'name')}
                       name='name'
                       overrideValues={{
@@ -100,6 +105,7 @@ class ContactForm extends Component<Props> {
               <Row>
                 <Column>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'address')}
                     name='address'
                     overrideValues={{
@@ -111,6 +117,7 @@ class ContactForm extends Component<Props> {
               <Row>
                 <Column small={12} medium={4} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'postal_code')}
                     name='postal_code'
                     overrideValues={{
@@ -120,6 +127,7 @@ class ContactForm extends Component<Props> {
                 </Column>
                 <Column small={12} medium={4} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'city')}
                     name='city'
                     overrideValues={{
@@ -129,6 +137,7 @@ class ContactForm extends Component<Props> {
                 </Column>
                 <Column small={12} medium={4} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'country')}
                     name='country'
                     overrideValues={{
@@ -140,6 +149,7 @@ class ContactForm extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'phone')}
                     name='phone'
                     overrideValues={{
@@ -149,6 +159,7 @@ class ContactForm extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={8}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'email')}
                     name='email'
                     overrideValues={{
@@ -163,6 +174,7 @@ class ContactForm extends Component<Props> {
                 {type === ContactType.PERSON &&
                   <Column small={23} medium={6} large={4}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'national_identification_number')}
                       name='national_identification_number'
                       overrideValues={{
@@ -174,6 +186,7 @@ class ContactForm extends Component<Props> {
                 {type && type !== ContactType.PERSON &&
                   <Column small={23} medium={6} large={4}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'business_id')}
                       name='business_id'
                       overrideValues={{
@@ -184,6 +197,7 @@ class ContactForm extends Component<Props> {
                 }
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'language')}
                     name='language'
                     overrideValues={{
@@ -193,6 +207,7 @@ class ContactForm extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'sap_customer_number')}
                     name='sap_customer_number'
                     overrideValues={{
@@ -204,6 +219,7 @@ class ContactForm extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'partner_code')}
                     name='partner_code'
                     overrideValues={{
@@ -213,6 +229,7 @@ class ContactForm extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'electronic_billing_address')}
                     name='electronic_billing_address'
                     overrideValues={{
@@ -222,6 +239,7 @@ class ContactForm extends Component<Props> {
                 </Column>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'customer_number')}
                     name='customer_number'
                     overrideValues={{
@@ -233,6 +251,7 @@ class ContactForm extends Component<Props> {
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'is_lessor')}
                     name='is_lessor'
                     overrideValues={{
@@ -243,6 +262,7 @@ class ContactForm extends Component<Props> {
                 {type === ContactType.PERSON &&
                   <Column small={12} medium={6} large={6}>
                     <FormField
+                      disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'address_protection')}
                       name='address_protection'
                       overrideValues={{
@@ -255,6 +275,7 @@ class ContactForm extends Component<Props> {
               <Row>
                 <Column>
                   <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'note')}
                     name='note'
                     overrideValues={{
@@ -279,6 +300,7 @@ const mapStateToProps = (state: RootState) => {
     attributes: getAttributes(state),
     isContactFormValid: getIsContactFormValid(state),
     initialValues: getInitialContactFormValues(state),
+    isSaveClicked: getIsSaveClicked(state),
     type: selector(state, 'type'),
   };
 };

@@ -15,9 +15,10 @@ import type {
   ReceiveSingleRentBasisAction,
   CreateRentBasisAction,
   EditRentBasisAction,
+  ReceiveIsSaveClickedAction,
   HideEditModeAction,
-  ReceiveRentBasisInitialValuesAction,
   ShowEditModeAction,
+  ReceiveRentBasisInitialValuesAction,
   ReceiveFormValidAction,
   RentBasisNotFoundAction,
 } from './types';
@@ -31,11 +32,11 @@ export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAct
 export const fetchRentBasisList = (search: string): FetchRentBasisListAction =>
   createAction('mvj/rentbasis/FETCH_ALL')(search);
 
-export const fetchSingleRentBasis = (id: RentBasisId): FetchSingleRentBasisAction =>
-  createAction('mvj/rentbasis/FETCH_SINGLE')(id);
-
 export const receiveRentBasisList = (rentbasis: RentBasisList): ReceiveRentBasisListAction =>
   createAction('mvj/rentbasis/RECEIVE_ALL')(rentbasis);
+
+export const fetchSingleRentBasis = (id: RentBasisId): FetchSingleRentBasisAction =>
+  createAction('mvj/rentbasis/FETCH_SINGLE')(id);
 
 export const receiveSingleRentBasis = (rentbasis: RentBasis): ReceiveSingleRentBasisAction =>
   createAction('mvj/rentbasis/RECEIVE_SINGLE')(rentbasis);
@@ -46,8 +47,14 @@ export const createRentBasis = (rentbasis: RentBasis): CreateRentBasisAction =>
 export const editRentBasis = (rentbasis: RentBasis): EditRentBasisAction =>
   createAction('mvj/rentbasis/EDIT')(rentbasis);
 
+export const notFound = (): RentBasisNotFoundAction =>
+  createAction('mvj/rentbasis/NOT_FOUND')();
+
 export const initializeRentBasis = (rentbasis: RentBasis): ReceiveRentBasisInitialValuesAction =>
   createAction('mvj/rentbasis/INITIALIZE')(rentbasis);
+
+export const receiveIsSaveClicked = (isClicked: boolean): ReceiveIsSaveClickedAction =>
+  createAction('mvj/rentbasis/RECEIVE_SAVE_CLICKED')(isClicked);
 
 export const hideEditMode = (): HideEditModeAction =>
   createAction('mvj/rentbasis/HIDE_EDIT')();
@@ -57,6 +64,3 @@ export const showEditMode = (): ShowEditModeAction =>
 
 export const receiveFormValid = (valid: boolean): ReceiveFormValidAction =>
   createAction('mvj/rentbasis/RECEIVE_FORM_VALID')(valid);
-
-export const notFound = (): RentBasisNotFoundAction =>
-  createAction('mvj/rentbasis/NOT_FOUND')();

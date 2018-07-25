@@ -21,6 +21,7 @@ import {
   fetchSingleRentBasis,
   hideEditMode,
   initializeRentBasis,
+  receiveIsSaveClicked,
   showEditMode,
 } from '$src/rentbasis/actions';
 import {FormNames} from '$src/rentbasis/enums';
@@ -29,6 +30,7 @@ import {
   getIsEditMode,
   getIsFetching,
   getIsFormValid,
+  getIsSaveClicked,
   getRentBasis,
 } from '$src/rentbasis/selectors';
 import {clearUnsavedChanges, getContentCopiedRentBasis, getContentRentBasis} from '$src/rentbasis/helpers';
@@ -52,7 +54,9 @@ type Props = {
   isFetching: boolean,
   isFormDirty: boolean,
   isFormValid: boolean,
+  isSaveClicked: boolean,
   params: Object,
+  receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   rentBasisData: RentBasis,
   router: Object,
@@ -83,9 +87,11 @@ class RentBasisPage extends Component<Props, State> {
       fetchSingleRentBasis,
       hideEditMode,
       params: {rentBasisId},
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
 
+    receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
       linkUrl: getRouteById('rentBasis'),
       pageTitle: 'Vuokrausperusteet',
@@ -205,9 +211,8 @@ class RentBasisPage extends Component<Props, State> {
   }
 
   copyRentBasis = () => {
-    const {initializeRentBasis, rentBasisData, router} = this.props;
-    const rentBasis = getContentCopiedRentBasis(rentBasisData);
-    const {router: {location: {query}}} = this.props;
+    const {initializeRentBasis, rentBasisData, router, router: {location: {query}}} = this.props,
+      rentBasis = getContentCopiedRentBasis(rentBasisData);
 
     initializeRentBasis(rentBasis);
 
@@ -218,8 +223,13 @@ class RentBasisPage extends Component<Props, State> {
   }
 
   editRentBasis = () => {
-    const {editRentBasis, editedRentBasis} = this.props;
-    editRentBasis(editedRentBasis);
+    const {editRentBasis, editedRentBasis, isFormValid, receiveIsSaveClicked} = this.props;
+
+    receiveIsSaveClicked(true);
+    if(isFormValid) {
+      editRentBasis(editedRentBasis);
+    }
+
   }
 
   handleBack = () => {
@@ -232,6 +242,24 @@ class RentBasisPage extends Component<Props, State> {
     });
   }
 
+  handelCanceModalCancelClick = () => {
+    this.setState({isCancelModalOpen: false});
+  }
+
+  handelCanceModalCloseClick = () => {
+    this.setState({isCancelModalOpen: false});
+  }
+
+  handleCancelClick = () => {
+    const {hideEditMode, isFormDirty} = this.props;
+
+    if(isFormDirty) {
+      this.setState({isCancelModalOpen: true});
+    } else {
+      hideEditMode();
+    }
+  }
+
   handleCancel = () => {
     const {hideEditMode} = this.props;
 
@@ -239,9 +267,11 @@ class RentBasisPage extends Component<Props, State> {
     hideEditMode();
   }
 
-  showEditMode = (rentBasis: Object) => {
-    const {initializeRentBasis, showEditMode} = this.props;
+  showEditMode = () => {
+    const {initializeRentBasis, rentBasisData, receiveIsSaveClicked, showEditMode} = this.props,
+      rentBasis = getContentRentBasis(rentBasisData);
 
+    receiveIsSaveClicked(false);
     initializeRentBasis(rentBasis);
     showEditMode();
     this.startAutoSaveTimer();
@@ -249,11 +279,10 @@ class RentBasisPage extends Component<Props, State> {
 
   render() {
     const {
-      hideEditMode,
       isEditMode,
       isFetching,
-      isFormDirty,
       isFormValid,
+      isSaveClicked,
       rentBasisData,
     } = this.props;
 
@@ -275,8 +304,8 @@ class RentBasisPage extends Component<Props, State> {
           confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelModalOpen}
           label='Haluatko varmasti hylätä muutokset?'
-          onCancel={() => this.setState({isCancelModalOpen: false})}
-          onClose={() => this.setState({isCancelModalOpen: false})}
+          onCancel={this.handelCanceModalCancelClick}
+          onClose={this.handelCanceModalCloseClick}
           onSave={this.handleCancel}
           title='Hylkää muutokset'
         />
@@ -296,10 +325,10 @@ class RentBasisPage extends Component<Props, State> {
             <ControlButtons
               isCopyDisabled={false}
               isEditMode={isEditMode}
-              isSaveDisabled={!isFormValid}
-              onCancelClick={isFormDirty ? () => this.setState({isCancelModalOpen: true}) : hideEditMode}
+              isSaveDisabled={isSaveClicked && !isFormValid}
+              onCancelClick={this.handleCancelClick}
               onCopyClick={this.copyRentBasis}
-              onEditClick={() => this.showEditMode(rentBasis)}
+              onEditClick={this.showEditMode}
               onSaveClick={this.editRentBasis}
               showCommentButton={false}
               showCopyButton={true}
@@ -331,6 +360,7 @@ const mapStateToProps = (state: RootState) => {
     isFetching: getIsFetching(state),
     isFormDirty: isDirty(FormNames.RENT_BASIS)(state),
     isFormValid: getIsFormValid(state),
+    isSaveClicked: getIsSaveClicked(state),
     rentBasisData: getRentBasis(state),
   };
 };
@@ -346,6 +376,7 @@ export default flowRight(
       fetchSingleRentBasis,
       hideEditMode,
       initializeRentBasis,
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
       showEditMode,
     }

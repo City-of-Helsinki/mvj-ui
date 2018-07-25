@@ -19,6 +19,7 @@ import {
   fetchSingleContact,
   hideEditMode,
   initializeContactForm,
+  receiveIsSaveClicked,
   showEditMode,
 } from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
@@ -31,6 +32,7 @@ import {
   getIsContactFormValid,
   getIsEditMode,
   getIsFetching,
+  getIsSaveClicked,
 } from '$src/contacts/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
@@ -52,8 +54,10 @@ type Props = {
   isContactFormValid: boolean,
   isEditMode: boolean,
   isFetching: boolean,
+  isSaveClicked: boolean,
   location: Object,
   params: Object,
+  receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
   showEditMode: Function,
@@ -82,9 +86,11 @@ class ContactPage extends Component<Props, State> {
       fetchAttributes,
       fetchSingleContact,
       params: {contactId},
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
     } = this.props;
 
+    receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
       linkUrl: getRouteById('contacts'),
       pageTitle: 'Asiakkaat',
@@ -216,8 +222,12 @@ class ContactPage extends Component<Props, State> {
   }
 
   saveContact = () => {
-    const {contactFormValues, editContact} = this.props;
-    editContact(contactFormValues);
+    const {contactFormValues, editContact, isSaveClicked, receiveIsSaveClicked} = this.props;
+
+    receiveIsSaveClicked(true);
+    if(isSaveClicked) {
+      editContact(contactFormValues);
+    }
   }
 
   hideEditMode = () => {
@@ -235,6 +245,20 @@ class ContactPage extends Component<Props, State> {
     });
   }
 
+  handleCancelModalClose = () => {
+    this.setState({isCancelModalOpen: false});
+  }
+
+  handleCancelClick = () => {
+    const {isContactFormDirty} = this.props;
+
+    if(isContactFormDirty) {
+      this.setState({isCancelModalOpen: true});
+    } else {
+      this.hideEditMode();
+    }
+  }
+
   handleCancel = () => {
     const {hideEditMode} = this.props;
 
@@ -246,15 +270,18 @@ class ContactPage extends Component<Props, State> {
     const {
       contact,
       initializeContactForm,
+      receiveIsSaveClicked,
       showEditMode,
     } = this.props;
+
+    receiveIsSaveClicked(false);
     initializeContactForm(contact);
     showEditMode();
     this.startAutoSaveTimer();
   }
 
   render() {
-    const {contact, isContactFormDirty, isContactFormValid, isEditMode, isFetching} = this.props;
+    const {contact, isContactFormValid, isEditMode, isFetching, isSaveClicked} = this.props;
     const {isCancelModalOpen, isRestoreModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
@@ -273,8 +300,8 @@ class ContactPage extends Component<Props, State> {
           confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelModalOpen}
           label='Haluatko varmasti hylätä muutokset?'
-          onCancel={() => this.setState({isCancelModalOpen: false})}
-          onClose={() => this.setState({isCancelModalOpen: false})}
+          onCancel={this.handleCancelModalClose}
+          onClose={this.handleCancelModalClose}
           onSave={this.handleCancel}
           title='Hylkää muutokset'
         />
@@ -294,8 +321,8 @@ class ContactPage extends Component<Props, State> {
             <ControlButtons
               isCopyDisabled={false}
               isEditMode={isEditMode}
-              isSaveDisabled={!isContactFormValid}
-              onCancelClick={isContactFormDirty ? () => this.setState({isCancelModalOpen: true}) : this.hideEditMode}
+              isSaveDisabled={isSaveClicked && !isContactFormValid}
+              onCancelClick={this.handleCancelClick}
               onCopyClick={this.copyContact}
               onEditClick={this.showEditMode}
               onSaveClick={this.saveContact}
@@ -324,6 +351,7 @@ const mapStateToProps = (state: RootState) => {
     isContactFormValid: getIsContactFormValid(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
+    isSaveClicked: getIsSaveClicked(state),
   };
 };
 
@@ -337,6 +365,7 @@ export default flowRight(
       fetchSingleContact,
       hideEditMode,
       initializeContactForm,
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
       showEditMode,
     }

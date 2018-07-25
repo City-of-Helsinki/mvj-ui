@@ -16,11 +16,11 @@ import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
-import {createContact, fetchAttributes} from '../actions';
+import {createContact, fetchAttributes, receiveIsSaveClicked} from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '../enums';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getIsContactFormValid} from '../selectors';
+import {getAttributes, getIsContactFormValid, getIsSaveClicked} from '../selectors';
 
 import type {RootState} from '$src/root/types';
 import type {Attributes, Contact} from '../types';
@@ -32,6 +32,8 @@ type Props = {
   fetchAttributes: Function,
   isContactFormDirty: boolean,
   isContactFormValid: boolean,
+  isSaveClicked: boolean,
+  receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
 }
@@ -50,7 +52,9 @@ class NewContactPage extends Component<Props, State> {
   };
 
   componentWillMount() {
-    const {attributes, fetchAttributes, receiveTopNavigationSettings} = this.props;
+    const {attributes, fetchAttributes, receiveIsSaveClicked, receiveTopNavigationSettings} = this.props;
+
+    receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
       linkUrl: getRouteById('contacts'),
       pageTitle: 'Asiakkaat',
@@ -97,12 +101,15 @@ class NewContactPage extends Component<Props, State> {
   }
 
   handleSave = () => {
-    const {contactFormValues, createContact} = this.props;
-    createContact(contactFormValues);
+    const {contactFormValues, createContact, isSaveClicked, receiveIsSaveClicked} = this.props;
+    receiveIsSaveClicked(true);
+    if(isSaveClicked) {
+      createContact(contactFormValues);
+    }
   }
 
   render() {
-    const {attributes, isContactFormDirty, isContactFormValid} = this.props;
+    const {attributes, isContactFormDirty, isContactFormValid, isSaveClicked} = this.props;
     const {isCancelModalOpen} = this.state;
 
     return (
@@ -122,7 +129,7 @@ class NewContactPage extends Component<Props, State> {
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
-              isSaveDisabled={!isContactFormValid}
+              isSaveDisabled={isSaveClicked && !isContactFormValid}
               onCancelClick={isContactFormDirty ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
               onSaveClick={this.handleSave}
               showCommentButton={false}
@@ -157,6 +164,7 @@ const mapStateToProps = (state: RootState) => {
     contactFormValues: getFormValues(FormNames.CONTACT)(state),
     isContactFormDirty: isDirty(FormNames.CONTACT)(state),
     isContactFormValid: getIsContactFormValid(state),
+    isSaveClicked: getIsSaveClicked(state),
   };
 };
 
@@ -166,6 +174,7 @@ export default flowRight(
     {
       createContact,
       fetchAttributes,
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
     },
   ),

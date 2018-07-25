@@ -6,13 +6,14 @@ import Button from '$components/button/Button';
 import ContactForm from '$src/contacts/components/forms/ContactForm';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import Modal from '$components/modal/Modal';
-import {getIsContactFormValid} from '$src/contacts/selectors';
+import {getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
 
 import type {RootState} from '$src/root/types';
 
 type Props = {
   isContactFormValid: boolean,
   isOpen: boolean,
+  isSaveClicked: boolean,
   onCancel: Function,
   onClose: Function,
   onSave: Function,
@@ -23,6 +24,7 @@ type Props = {
 const ContactModal = ({
   isContactFormValid,
   isOpen,
+  isSaveClicked,
   onCancel,
   onClose,
   onSave,
@@ -54,14 +56,14 @@ const ContactModal = ({
             />
             <Button
               className='button-green'
-              disabled={!isContactFormValid}
+              disabled={isSaveClicked && !isContactFormValid}
               label='Tallenna'
               onClick={onSave}
             />
             {showSaveAndAdd &&
               <Button
                 className='button-green'
-                disabled={!isContactFormValid}
+                disabled={isSaveClicked && !isContactFormValid}
                 label='Tallenna ja Lisää'
                 onClick={onSaveAndAdd}
               />
@@ -76,6 +78,7 @@ const ContactModal = ({
 const mapStateToProps = (state: RootState) => {
   return {
     isContactFormValid: getIsContactFormValid(state),
+    isSaveClicked: getIsSaveClicked(state),
   };
 };
 

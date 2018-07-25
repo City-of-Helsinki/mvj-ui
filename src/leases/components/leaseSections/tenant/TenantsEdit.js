@@ -9,10 +9,18 @@ import ContactModal from './ContactModal';
 import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
 import TenantItemsEdit from './TenantItemsEdit';
-import {createContact, editContact, hideContactModal, receiveContactModalSettings, receiveFormValidFlags} from '$src/leases/actions';
+import {receiveIsSaveClicked} from '$src/contacts/actions';
+import {
+  createContact,
+  editContact,
+  hideContactModal,
+  receiveContactModalSettings,
+  receiveFormValidFlags,
+} from '$src/leases/actions';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContentContact, getContentTenantsFormData} from '$src/leases/helpers';
+import {getIsContactFormValid} from '$src/contacts/selectors';
 import {
   getContactModalSettings,
   getCurrentLease,
@@ -33,10 +41,12 @@ type Props = {
   errors: ?Object,
   handleSubmit: Function,
   hideContactModal: Function,
+  isContactFormValid: boolean,
   isContactModalOpen: boolean,
   isSaveClicked: boolean,
   receiveContactModalSettings: Function,
   receiveFormValidFlags: Function,
+  receiveIsSaveClicked: Function,
   valid: boolean,
 }
 
@@ -83,18 +93,56 @@ class TenantsEdit extends Component<Props, State> {
     }
   }
 
+  handleCancel = () => {
+    const {hideContactModal, receiveContactModalSettings} = this.props;
+
+    hideContactModal();
+    receiveContactModalSettings(null);
+  }
+
+  handleClose = () => {
+    const {hideContactModal, receiveContactModalSettings} = this.props;
+
+    hideContactModal();
+    receiveContactModalSettings(null);
+  }
+
+  handleSave = () => {
+    const {
+      contactFormValues,
+      contactModalSettings,
+      createContact,
+      editContact,
+      isContactFormValid,
+      receiveIsSaveClicked,
+    } = this.props;
+
+    receiveIsSaveClicked(true);
+    if(!isContactFormValid) {return;}
+    if(contactModalSettings && contactModalSettings.isNew) {
+      createContact(contactFormValues);
+    } else if(contactModalSettings && !contactModalSettings.isNew){
+      editContact(contactFormValues);
+    }
+  }
+
+  handleSaveAndAdd = () => {
+    const {contactFormValues, createContact, isContactFormValid, receiveIsSaveClicked} = this.props,
+      contact = {...contactFormValues};
+
+    receiveIsSaveClicked(true);
+    if(!isContactFormValid) {return;}
+    contact.isSelected = true;
+    createContact(contact);
+  }
+
   render () {
     const {
       contactModalSettings,
-      contactFormValues,
-      createContact,
-      editContact,
       errors,
       handleSubmit,
-      hideContactModal,
       isContactModalOpen,
       isSaveClicked,
-      receiveContactModalSettings,
     } = this.props;
 
     const {tenantsData} = this.state;
@@ -105,25 +153,10 @@ class TenantsEdit extends Component<Props, State> {
       <div>
         <ContactModal
           isOpen={isContactModalOpen}
-          onCancel={() => {
-            hideContactModal();
-            receiveContactModalSettings(null);
-          }}
-          onClose={() => {
-            hideContactModal();
-            receiveContactModalSettings(null);
-          }}
-          onSave={() => {
-            if(contactModalSettings && contactModalSettings.isNew) {
-              createContact(contactFormValues);
-            } else if(contactModalSettings && !contactModalSettings.isNew){
-              editContact(contactFormValues);
-            }
-          }}
-          onSaveAndAdd={() => {
-            contactFormValues.isSelected = true;
-            createContact(contactFormValues);
-          }}
+          onCancel={this.handleCancel}
+          onClose={this.handleClose}
+          onSave={this.handleSave}
+          onSaveAndAdd={this.handleSaveAndAdd}
           showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
         />
         <form onSubmit={handleSubmit}>
@@ -168,6 +201,7 @@ export default flowRight(
         contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
+        isContactFormValid: getIsContactFormValid(state),
         isContactModalOpen: getIsContactModalOpen(state),
         isSaveClicked: getIsSaveClicked(state),
       };
@@ -179,6 +213,7 @@ export default flowRight(
       hideContactModal,
       receiveContactModalSettings,
       receiveFormValidFlags,
+      receiveIsSaveClicked,
     }
   ),
   reduxForm({
