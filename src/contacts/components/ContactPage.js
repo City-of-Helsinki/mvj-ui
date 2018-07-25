@@ -270,9 +270,11 @@ class ContactPage extends Component<Props, State> {
     const {
       contact,
       initializeContactForm,
+      receiveIsSaveClicked,
       showEditMode,
     } = this.props;
 
+    receiveIsSaveClicked(false);
     initializeContactForm(contact);
     showEditMode();
     this.startAutoSaveTimer();
