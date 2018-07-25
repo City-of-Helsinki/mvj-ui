@@ -14,7 +14,9 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
+import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
+import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -231,187 +233,225 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
 
 type Props = {
   attributes: Attributes,
+  contractsData: Array<Object>,
   decisionOptions: Array<Object>,
   errors: ?Object,
   fields: any,
+  formValues: Object,
   isSaveClicked: boolean,
 }
 
 const ContractItemsEdit = ({
   attributes,
+  contractsData,
   decisionOptions,
   errors,
   fields,
+  formValues,
   isSaveClicked,
-}: Props) =>
-  <div>
-    {fields && !!fields.length && fields.map((contract, index) => {
-      const contractErrors = get(errors, contract);
-      return(
-        <Collapse
-          key={contract.id ? contract.id : `index_${index}`}
-          defaultOpen={true}
-          hasErrors={isSaveClicked && !isEmpty(contractErrors)}
-          headerTitle={
-            <h3 className='collapse__header-title'>Sopimus {index + 1}</h3>
-          }
-        >
-          <BoxContentWrapper>
-            <RemoveButton
-              className='position-topright-no-padding'
-              onClick={() => fields.remove(index)}
-              title="Poista sopimus"
-            />
-            <Row>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.type')}
-                  name={`${contract}.type`}
-                  overrideValues={{
-                    label: 'Sopimuksen tyyppi',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.contract_number')}
-                  name={`${contract}.contract_number`}
-                  overrideValues={{
-                    label: 'Sopimusnumero',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.signing_date')}
-                  name={`${contract}.signing_date`}
-                  overrideValues={{
-                    label: 'Allekirjoituspvm',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={12} large={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.signing_note')}
-                  name={`${contract}.signing_note`}
-                  overrideValues={{
-                    label: 'Allekirjoituksen huomautus',
-                  }}
-                />
-              </Column>
-            </Row>
-            <Row>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.is_readjustment_decision')}
-                  name={`${contract}.is_readjustment_decision`}
-                  overrideValues={{
-                    label: 'Järjestelypäätös',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.institution_identifier')}
-                  name={`${contract}.institution_identifier`}
-                  overrideValues={{
-                    label: 'Laitostunnus',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.decision')}
-                  name={`${contract}.decision`}
-                  overrideValues={{
-                    label: 'Päätös',
-                    options: decisionOptions,
-                  }}
-                />
-              </Column>
-            </Row>
-            <Row>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.collateral_number')}
-                  name={`${contract}.collateral_number`}
-                  overrideValues={{
-                    label: 'Vuokravakuusnumero',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.collateral_start_date')}
-                  name={`${contract}.collateral_start_date`}
-                  overrideValues={{
-                    label: 'Vuokravakuus alkupvm',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.collateral_end_date')}
-                  name={`${contract}.collateral_end_date`}
-                  overrideValues={{
-                    label: 'Vuokravakuus loppupvm',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={12} large={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.collateral_note')}
-                  name={`${contract}.collateral_note`}
-                  overrideValues={{
-                    label: 'Vuokravakuuden huomautus',
-                  }}
-                />
-              </Column>
-            </Row>
-            <Row>
-              <Column small={12}>
-                <FieldArray
-                  attributes={attributes}
-                  component={renderMortgageDocuments}
-                  isSaveClicked={isSaveClicked}
-                  name={`${contract}.mortgage_documents`}
-                />
-              </Column>
+}: Props) => {
+  const getContractById = (id: number) => {
+    if(!id) {
+      return {};
+    }
+    return contractsData.find((decision) => decision.id === id);
+  };
 
-            </Row>
-          </BoxContentWrapper>
-          <FieldArray
-            attributes={attributes}
-            component={renderContractChanges}
-            decisionOptions={decisionOptions}
-            errors={errors}
-            name={`${contract}.contract_changes`}
-            isSaveClicked={isSaveClicked}
-            title='Sopimuksen muutokset'
+  const typeOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.type');
+
+  const getContractTitle = (contract: ?Object) => {
+    if(!contract) {
+      return null;
+    }
+    return `${getLabelOfOption(typeOptions, contract.type) || '-'} ${contract.contract_number || ''}`;
+  };
+
+  return (
+    <div>
+      {fields && !!fields.length && fields.map((contract, index) => {
+        const contractErrors = get(errors, contract),
+          savedContract = getContractById(get(formValues, `${contract}.id`));
+
+        return(
+          <Collapse
+            key={contract.id ? contract.id : `index_${index}`}
+            defaultOpen={true}
+            hasErrors={isSaveClicked && !isEmpty(contractErrors)}
+            headerTitle={
+              <h3 className='collapse__header-title'>{getContractTitle(savedContract) || '-'}</h3>
+            }
+          >
+            <BoxContentWrapper>
+              <RemoveButton
+                className='position-topright-no-padding'
+                onClick={() => fields.remove(index)}
+                title="Poista sopimus"
+              />
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.type')}
+                    name={`${contract}.type`}
+                    overrideValues={{
+                      label: 'Sopimuksen tyyppi',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.contract_number')}
+                    name={`${contract}.contract_number`}
+                    overrideValues={{
+                      label: 'Sopimusnumero',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.signing_date')}
+                    name={`${contract}.signing_date`}
+                    overrideValues={{
+                      label: 'Allekirjoituspvm',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={12} large={6}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.signing_note')}
+                    name={`${contract}.signing_note`}
+                    overrideValues={{
+                      label: 'Allekirjoituksen huomautus',
+                    }}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.is_readjustment_decision')}
+                    name={`${contract}.is_readjustment_decision`}
+                    overrideValues={{
+                      label: 'Järjestelypäätös',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.institution_identifier')}
+                    name={`${contract}.institution_identifier`}
+                    overrideValues={{
+                      label: 'Laitostunnus',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.decision')}
+                    name={`${contract}.decision`}
+                    overrideValues={{
+                      label: 'Päätös',
+                      options: decisionOptions,
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={12} large={6}>
+                  <FormFieldLabel>KTJ dokumentti</FormFieldLabel>
+                  {get(savedContract, 'institution_identifier')
+                    ? <KtjLink
+                      fileKey='vuokraoikeustodistus'
+                      fileName='vuokraoikeustodistus'
+                      identifier={get(savedContract, 'institution_identifier')}
+                      idKey='kohdetunnus'
+                      label='Vuokraoikeustodistus'
+                    />
+                    : <p>-</p>
+                  }
+                </Column>
+              </Row>
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_number')}
+                    name={`${contract}.collateral_number`}
+                    overrideValues={{
+                      label: 'Vuokravakuusnumero',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_start_date')}
+                    name={`${contract}.collateral_start_date`}
+                    overrideValues={{
+                      label: 'Vuokravakuus alkupvm',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_end_date')}
+                    name={`${contract}.collateral_end_date`}
+                    overrideValues={{
+                      label: 'Vuokravakuus loppupvm',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={12} large={6}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.collateral_note')}
+                    name={`${contract}.collateral_note`}
+                    overrideValues={{
+                      label: 'Vuokravakuuden huomautus',
+                    }}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12}>
+                  <FieldArray
+                    attributes={attributes}
+                    component={renderMortgageDocuments}
+                    isSaveClicked={isSaveClicked}
+                    name={`${contract}.mortgage_documents`}
+                  />
+                </Column>
+
+              </Row>
+            </BoxContentWrapper>
+            <FieldArray
+              attributes={attributes}
+              component={renderContractChanges}
+              decisionOptions={decisionOptions}
+              errors={errors}
+              name={`${contract}.contract_changes`}
+              isSaveClicked={isSaveClicked}
+              title='Sopimuksen muutokset'
+            />
+          </Collapse>
+        );
+      })}
+      <Row>
+        <Column>
+          <AddButton
+            label='Lisää sopimus'
+            onClick={() => fields.push({})}
+            title='Lisää sopimus'
           />
-        </Collapse>
-      );
-    })}
-    <Row>
-      <Column>
-        <AddButton
-          label='Lisää sopimus'
-          onClick={() => fields.push({})}
-          title='Lisää sopimus'
-        />
-      </Column>
-    </Row>
-  </div>;
+        </Column>
+      </Row>
+    </div>
+  );
+};
 
 export default ContractItemsEdit;

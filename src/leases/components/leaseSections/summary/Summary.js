@@ -2,57 +2,34 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import classNames from 'classnames';
-import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import FormFieldLabel from '$components/form/FormFieldLabel';
-import ListItems from '$components/content/ListItems';
 import RelatedLeases from './RelatedLeases';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
-import {ConstructabilityStatus} from '$src/leases/enums';
+import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {getContactFullName} from '$src/contacts/helpers';
-import {getContentSummary, getFullAddress} from '$src/leases/helpers';
+import {getContentSummary} from '$src/leases/helpers';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
 import {getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
 import type {NoticePeriodList} from '$src/NoticePeriod/types';
 
-type StatusIndicatorProps = {
-  researchState: string,
-  stateOptions: Array<Object>,
-}
-
-const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
-  <p
-    className={classNames(
-      'no-margin',
-      {'summary__status-indicator_neutral': !researchState || researchState === ConstructabilityStatus.UNVERIFIED},
-      {'summary__status-indicator_alert': researchState === ConstructabilityStatus.REQUIRES_MEASURES},
-      {'summary__status-indicator_success': researchState === ConstructabilityStatus.COMPLETE}
-    )}
-  >
-    {getLabelOfOption(stateOptions, researchState || ConstructabilityStatus.UNVERIFIED)}
-  </p>;
-
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
   noticePeriods: NoticePeriodList,
-  summary: Object,
 }
 
 type State = {
   classificationOptions: Array<Object>,
-  constructabilityStateOptions: Array<Object>,
   financingOptions: Array<Object>,
   hitasOptions: Array<Object>,
   intendedUseOptions: Array<Object>,
@@ -67,7 +44,6 @@ type State = {
 class Summary extends Component<Props, State> {
   state = {
     classificationOptions: [],
-    constructabilityStateOptions: [],
     financingOptions: [],
     hitasOptions: [],
     intendedUseOptions: [],
@@ -112,7 +88,6 @@ class Summary extends Component<Props, State> {
   updateOptions = (attributes: Attributes) => {
     this.setState({
       classificationOptions: getAttributeFieldOptions(attributes, 'classification'),
-      constructabilityStateOptions: getAttributeFieldOptions(attributes, 'lease_areas.child.children.preconstruction_state'),
       financingOptions: getAttributeFieldOptions(attributes, 'financing'),
       hitasOptions: getAttributeFieldOptions(attributes, 'hitas'),
       intendedUseOptions: getAttributeFieldOptions(attributes, 'intended_use'),
@@ -138,7 +113,6 @@ class Summary extends Component<Props, State> {
   render() {
     const {
       classificationOptions,
-      constructabilityStateOptions,
       financingOptions,
       hitasOptions,
       intendedUseOptions,
@@ -149,9 +123,6 @@ class Summary extends Component<Props, State> {
       summary,
       supportiveHousingOptions,
     } = this.state;
-    const tenants = summary.tenants;
-    const leaseAreas = get(summary, 'lease_areas', []);
-    const constructabilityAreas = get(summary, 'constructability_areas', []);
 
     return (
       <div>
@@ -213,6 +184,7 @@ class Summary extends Component<Props, State> {
                   <FormFieldLabel>Hitas</FormFieldLabel>
                   <p>{getLabelOfOption(hitasOptions, summary.hitas) || '-'}</p>
                 </Column>
+                {/* TODO: Get vuokrausperuste and täydennysrakentaminen via API */}
                 <Column small={12} medium={6} large={4}>
                   <FormFieldLabel>Vuokrausperuste</FormFieldLabel>
                   <p>-</p>
@@ -245,138 +217,7 @@ class Summary extends Component<Props, State> {
                   <ShowMore text={summary.note || '-'} />
                 </Column>
               </Row>
-              <p className='sub-title'>Vuokralaiset</p>
-              {!tenants.length && <p>Ei vuokralaisia</p>}
-              {!!tenants.length &&
-                <div>
-                  <Row>
-                    <Column small={6} large={4}>
-                      <FormFieldLabel>Vuokralainen</FormFieldLabel>
-                    </Column>
-                    <Column small={6} large={4}>
-                      <FormFieldLabel>Osuus</FormFieldLabel>
-                    </Column>
-                  </Row>
-                  <ListItems>
-                    {tenants.map((contact, index) => {
-                      return (
-                        <Row key={index}>
-                          <Column small={6} large={4}>
-                            <p className='no-margin'>
-                              <a href={`${getRouteById('contacts')}/${get(contact, 'tenant.contact.id')}`} className='no-margin' target='_blank'>
-                                {getContactFullName(get(contact, 'tenant.contact')) || '-'}
-                              </a>
-                            </p>
-                          </Column>
-                          <Column small={6} large={4}><p className='no-margin'>{contact.share_numerator} / {contact.share_denominator}</p></Column>
-                        </Row>
-                      );
-                    })}
-                  </ListItems>
-                </div>
-              }
-              <p className='sub-title'>Vuokrakohteet</p>
-              {!leaseAreas.length && <p>Ei vuokrakohteita</p>}
-              {!!leaseAreas.length &&
-                <div>
-                  <Row>
-                    <Column small={6} large={4}>
-                      <FormFieldLabel>Kohteen tunnus</FormFieldLabel>
-                    </Column>
-                    <Column small={6} large={4}>
-                      <FormFieldLabel>Kohteen osoite</FormFieldLabel>
-                    </Column>
-                  </Row>
-                  {leaseAreas.map((area, index) => {
-                    return (
-                      <ListItems key={index}>
-                        <Row>
-                          <Column small={6} large={4}>
-                            <p className='no-margin'>{area.identifier || '-'}</p>
-                          </Column>
-                          <Column small={6} large={4}>
-                            {!area.addresses || !area.addresses.length && <p className='no-margin'>-</p>}
-
-                            {!!area.addresses && !!area.addresses.length &&
-                              area.addresses.map((address, index) => {
-                                return <p key={index} className='no-margin'>{getFullAddress(address)}</p>;
-                              })
-                            }
-                          </Column>
-                        </Row>
-                      </ListItems>
-                    );
-                  })}
-                </div>
-              }
-              <p className='sub-title'>Rakentamiskelpoisuus</p>
-              {!constructabilityAreas.length && <p>Ei vuokrakohteita</p>}
-              {!!constructabilityAreas.length &&
-                constructabilityAreas.map((area, index) => {
-                  return (
-                    <ListItems key={index}>
-                      <Row>
-                        <Column><p className='no-margin'><strong>{area.identifier || '-'}</strong></p></Column>
-                      </Row>
-                      <Row>
-                        <Column small={6} large={4}>
-                          <p className='no-margin'>Esirakentaminen, johtosiirrot, kunnallistekniikka</p>
-                        </Column>
-                        <Column small={6} large={4}>
-                          <StatusIndicator
-                            researchState={area.preconstruction_state}
-                            stateOptions={constructabilityStateOptions}
-                          />
-                        </Column>
-                      </Row>
-                      <Row>
-                        <Column small={6} large={4}>
-                          <p className='no-margin'>Purku</p>
-                        </Column>
-                        <Column small={6} large={4}>
-                          <StatusIndicator
-                            researchState={area.demolition_state}
-                            stateOptions={constructabilityStateOptions}
-                          />
-                        </Column>
-                      </Row>
-                      <Row>
-                        <Column small={6} large={4}>
-                          <p className='no-margin'>Pima</p>
-                        </Column>
-                        <Column small={6} large={4}>
-                          <StatusIndicator
-                            researchState={area.polluted_land_state}
-                            stateOptions={constructabilityStateOptions}
-                          />
-                        </Column>
-                      </Row>
-                      <Row>
-                        <Column small={6} large={4}>
-                          <p className='no-margin'>Rakennettavuusselvitys</p>
-                        </Column>
-                        <Column small={6} large={4}>
-                          <StatusIndicator
-                            researchState={area.constructability_report_state}
-                            stateOptions={constructabilityStateOptions}
-                          />
-                        </Column>
-                      </Row>
-                      <Row>
-                        <Column small={6} large={4}>
-                          <p className='no-margin'>Muut</p>
-                        </Column>
-                        <Column small={6} large={4}>
-                          <StatusIndicator
-                            researchState={area.other_state}
-                            stateOptions={constructabilityStateOptions}
-                          />
-                        </Column>
-                      </Row>
-                    </ListItems>
-                  );
-                })
-              }
+              <SummaryLeaseInfo />
             </Collapse>
 
             <Collapse

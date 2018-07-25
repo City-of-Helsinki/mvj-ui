@@ -12,6 +12,7 @@ import Collapse from '$components/collapse/Collapse';
 import DecisionConditionsEdit from './DecisionConditionsEdit';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
+import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -19,120 +20,132 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  decisionsData: Array<Object>,
   errors: ?Object,
   fields: any,
+  formValues: Object,
   isSaveClicked: boolean,
 }
 
-const DecisionItemsEdit = ({attributes, errors, fields, isSaveClicked}: Props) =>
-  <div>
-    {fields && !!fields.length && fields.map((decision, index) => {
-      const decisionErrors = get(errors, decision);
-
-      return (
-        <Collapse
-          key={decision.id ? decision.id : `index_${index}`}
-          defaultOpen={true}
-          hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
-          headerTitle={
-            <h3 className='collapse__header-title'>Päätös {index + 1}</h3>
-          }
-        >
-          <BoxContentWrapper>
-            <RemoveButton
-              className='position-topright'
-              onClick={() => fields.remove(index)}
-              title="Poista sopimus"
-            />
-            <Row>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'decisions.child.children.decision_maker')}
-                  name={`${decision}.decision_maker`}
-                  overrideValues={{
-                    label: 'Päättäjä',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
-                  name={`${decision}.decision_date`}
-                  overrideValues={{
-                    label: 'Päätöspvm',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'decisions.child.children.section')}
-                  name={`${decision}.section`}
-                  unit='§'
-                  overrideValues={{
-                    label: 'Pykälä',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'decisions.child.children.type')}
-                  name={`${decision}.type`}
-                  overrideValues={{
-                    label: 'Päätöksen tyyppi',
-                  }}
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'decisions.child.children.reference_number')}
-                  name={`${decision}.reference_number`}
-                  validate={referenceNumber}
-                  overrideValues={{
-                    label: 'Diaarinumero',
-                  }}
-                />
-              </Column>
-            </Row>
-            <Row>
-              <Column small={12}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'decisions.child.children.description')}
-                  name={`${decision}.description`}
-                  overrideValues={{
-                    label: 'Huomautus',
-                  }}
-                />
-              </Column>
-            </Row>
-          </BoxContentWrapper>
-
-          <FieldArray
-            component={DecisionConditionsEdit}
-            errors={errors}
-            isSaveClicked={isSaveClicked}
-            name={`${decision}.conditions`}
-          />
-        </Collapse>
-      );
+const DecisionItemsEdit = ({attributes, decisionsData, errors, fields, formValues, isSaveClicked}: Props) => {
+  const getDecisionById = (id: number) => {
+    if(!id) {
+      return {};
     }
+    return decisionsData.find((decision) => decision.id === id);
+  };
+  const decisionMakerOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker');
 
-    )}
-    <Row>
-      <Column>
-        <AddButton
-          label='Lisää päätös'
-          onClick={() => fields.push({})}
-          title='Lisää päätös'
-        />
-      </Column>
-    </Row>
-  </div>;
+  return (
+    <div>
+      {fields && !!fields.length && fields.map((decision, index) => {
+        const decisionErrors = get(errors, decision),
+          savedDecision = getDecisionById(get(formValues, `${decision}.id`));
+
+        return (
+          <Collapse
+            key={decision.id ? decision.id : `index_${index}`}
+            defaultOpen={true}
+            hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
+            headerTitle={
+              <h3 className='collapse__header-title'>{savedDecision ? (getLabelOfOption(decisionMakerOptions, savedDecision.decision_maker) || '-') : '-'}</h3>
+            }
+          >
+            <BoxContentWrapper>
+              <RemoveButton
+                className='position-topright'
+                onClick={() => fields.remove(index)}
+                title="Poista sopimus"
+              />
+              <Row>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'decisions.child.children.decision_maker')}
+                    name={`${decision}.decision_maker`}
+                    overrideValues={{
+                      label: 'Päättäjä',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
+                    name={`${decision}.decision_date`}
+                    overrideValues={{
+                      label: 'Päätöspvm',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'decisions.child.children.section')}
+                    name={`${decision}.section`}
+                    unit='§'
+                    overrideValues={{
+                      label: 'Pykälä',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'decisions.child.children.type')}
+                    name={`${decision}.type`}
+                    overrideValues={{
+                      label: 'Päätöksen tyyppi',
+                    }}
+                  />
+                </Column>
+                <Column small={6} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'decisions.child.children.reference_number')}
+                    name={`${decision}.reference_number`}
+                    validate={referenceNumber}
+                    overrideValues={{
+                      label: 'Diaarinumero',
+                    }}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'decisions.child.children.description')}
+                    name={`${decision}.description`}
+                    overrideValues={{
+                      label: 'Huomautus',
+                    }}
+                  />
+                </Column>
+              </Row>
+            </BoxContentWrapper>
+
+            <FieldArray
+              component={DecisionConditionsEdit}
+              errors={errors}
+              isSaveClicked={isSaveClicked}
+              name={`${decision}.conditions`}
+            />
+          </Collapse>
+        );
+      })}
+      <Row>
+        <Column>
+          <AddButton
+            label='Lisää päätös'
+            onClick={() => fields.push({})}
+            title='Lisää päätös'
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
 
 export default connect(
   (state) => {

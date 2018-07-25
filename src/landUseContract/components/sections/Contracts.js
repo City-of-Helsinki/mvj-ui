@@ -20,6 +20,13 @@ const Contracts = ({attributes, currentLandUseContract}: Props) => {
   const contracts = getContentContracts(currentLandUseContract),
     stateOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.state');
 
+  const getContractTitle = (contract: ?Object) => {
+    if(!contract) {
+      return null;
+    }
+    return `${getLabelOfOption(stateOptions, contract.state) || '-'}`;
+  };
+
   return (
     <div>
       {!contracts.length && <p>Ei sopimuksia</p>}
@@ -29,7 +36,7 @@ const Contracts = ({attributes, currentLandUseContract}: Props) => {
             key={index}
             defaultOpen={true}
             headerTitle={
-              <h3 className='collapse__header-title'>{getLabelOfOption(stateOptions, contract.state) || '-'}</h3>
+              <h3 className='collapse__header-title'>{getContractTitle(contract) || '-'}</h3>
             }
           >
             <Row>

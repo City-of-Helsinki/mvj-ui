@@ -10,7 +10,9 @@ import isEmpty from 'lodash/isEmpty';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import RelatedLeasesEdit from './RelatedLeasesEdit';
+import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
@@ -154,6 +156,15 @@ class SummaryEdit extends Component<Props> {
                     }}
                   />
                 </Column>
+                {/* TODO: Allow to edit vuokrausperuste and täydennysrakentaminen */}
+                <Column small={12} medium={6} large={4}>
+                  <FormFieldLabel>Vuokrausperuste</FormFieldLabel>
+                  <p>-</p>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <FormFieldLabel>Täydennysrakentaminen</FormFieldLabel>
+                  <p>-</p>
+                </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -201,6 +212,7 @@ class SummaryEdit extends Component<Props> {
                   />
                 </Column>
               </Row>
+              <SummaryLeaseInfo />
             </Collapse>
 
             <Collapse

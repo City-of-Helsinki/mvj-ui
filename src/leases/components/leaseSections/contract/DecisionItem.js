@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import {formatDate, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 
 type Props = {
@@ -24,23 +25,23 @@ const DecisionItem = ({
   <div>
     <Row>
       <Column small={6} medium={4} large={2}>
-        <label>Päättäjä</label>
+        <FormFieldLabel>Päättäjä</FormFieldLabel>
         <p>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '–'}</p>
       </Column>
       <Column small={6} medium={4} large={2}>
-        <label>Päätöspvm</label>
+        <FormFieldLabel>Päätöspvm</FormFieldLabel>
         <p>{formatDate(decision.decision_date) || '–'}</p>
       </Column>
       <Column small={6} medium={4} large={2}>
-        <label>Pykälä</label>
+        <FormFieldLabel>Pykälä</FormFieldLabel>
         <p>{decision.section ? `${decision.section} §` : '–'}</p>
       </Column>
       <Column small={6} medium={4} large={2}>
-        <label>Päätöksen tyyppi</label>
+        <FormFieldLabel>Päätöksen tyyppi</FormFieldLabel>
         <p>{getLabelOfOption(typeOptions, decision.type) || '–'}</p>
       </Column>
       <Column small={6} medium={4} large={2}>
-        <label>Diaarinumero</label>
+        <FormFieldLabel>Diaarinumero</FormFieldLabel>
         {decision.reference_number
           ? <a target='_blank' href={getReferenceNumberLink(decision.reference_number)}>{decision.reference_number}</a>
           : <p>-</p>
@@ -49,7 +50,7 @@ const DecisionItem = ({
     </Row>
     <Row>
       <Column small={12}>
-        <label>Huomautus</label>
+        <FormFieldLabel>Huomautus</FormFieldLabel>
         <p>{decision.description || '–'}</p>
       </Column>
     </Row>
@@ -68,11 +69,11 @@ const DecisionItem = ({
               <BoxItem key={condition.id} className='no-border-on-first-child'>
                 <Row>
                   <Column small={6} medium={4} large={2}>
-                    <label>Ehtotyyppi</label>
+                    <FormFieldLabel>Käyttötarkoitusehto</FormFieldLabel>
                     <p>{getLabelOfOption(conditionTypeOptions, condition.type) || '–'}</p>
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <label>Valvontapvm</label>
+                    <FormFieldLabel>Valvontapvm</FormFieldLabel>
                     {condition.supervision_date
                       ? (
                         <p className={
@@ -84,7 +85,7 @@ const DecisionItem = ({
                     }
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <label>Valvottu pvm</label>
+                    <FormFieldLabel>Valvottu pvm</FormFieldLabel>
                     {condition.supervised_date
                       ? (
                         <p className={
@@ -96,7 +97,7 @@ const DecisionItem = ({
                     }
                   </Column>
                   <Column small={12} medium={12} large={6}>
-                    <label>Huomautus</label>
+                    <FormFieldLabel>Huomautus</FormFieldLabel>
                     <p>{condition.description || '–'}</p>
                   </Column>
                 </Row>

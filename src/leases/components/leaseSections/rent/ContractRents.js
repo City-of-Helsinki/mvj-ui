@@ -54,7 +54,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
         {key: 'amount', label: 'Sopimusvuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
         {key: 'base_amount', label: 'Vuokranlaskennan perusteena oleva vuokra', renderer: (val, item) => getBaseAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'base_year_rent ', label: 'Uusi perusvuosi vuokra', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'base_year_rent ', label: 'Uusi perusvuosivuokra', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
         {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
       ];

@@ -8,7 +8,9 @@ import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
+import SubTitle from '$components/content/SubTitle';
 import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 
@@ -25,7 +27,7 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
     <div>
       <Row>
         <Column>
-          <label className="mvj-form-field-label">Eräpäivät</label>
+          <FormFieldLabel>Eräpäivät</FormFieldLabel>
         </Column>
       </Row>
       {fields && !!fields.length && fields.map((due_date, index) => {
@@ -87,14 +89,14 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
   return (
     <div>
       <Row>
-        <Column><p className="sub-title">Kiinteät alkuvuosivuokrat</p></Column>
+        <Column><SubTitle>Kiinteät alkuvuosivuokrat</SubTitle></Column>
       </Row>
       {fields && !!fields.length &&
         <Row>
-          <Column small={3} medium={3} large={2}><label className="mvj-form-field-label">Käyttötarkoitus</label></Column>
-          <Column small={3} medium={3} large={2}><label className="mvj-form-field-label">Vuokra</label></Column>
-          <Column small={2} medium={2} large={1}><label className="mvj-form-field-label">Alkupvm</label></Column>
-          <Column small={2} medium={2} large={1}><label className="mvj-form-field-label">Loppupvm</label></Column>
+          <Column small={3} medium={3} large={2}><FormFieldLabel>Käyttötarkoitus</FormFieldLabel></Column>
+          <Column small={3} medium={3} large={2}><FormFieldLabel>Kiinteä alkuvuosivuokra</FormFieldLabel></Column>
+          <Column small={2} medium={2} large={1}><FormFieldLabel>Alkupvm</FormFieldLabel></Column>
+          <Column small={2} medium={2} large={1}><FormFieldLabel>Loppupvm</FormFieldLabel></Column>
         </Row>
       }
       {fields && !!fields.length && fields.map((rent, index) => {

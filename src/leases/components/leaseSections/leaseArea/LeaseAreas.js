@@ -48,11 +48,6 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
                 </Column>
                 <Column>
                   <span className='collapse__header-subtitle'>
-                    {area.identifier || '-'}
-                  </span>
-                </Column>
-                <Column>
-                  <span className='collapse__header-subtitle'>
                     {getFullAddress(get(area, 'addresses[0]')) || '-'}
                   </span>
                 </Column>
@@ -68,7 +63,7 @@ const LeaseAreas = ({attributes, currentLease}: Props) => {
                 </Column>
               </div>
             }
-            headerTitle={<h3 className='collapse__header-title'>Kohde {index + 1}</h3>}
+            headerTitle={<h3 className='collapse__header-title'>{area.identifier || '-'}</h3>}
           >
             <LeaseArea area={area} />
           </Collapse>

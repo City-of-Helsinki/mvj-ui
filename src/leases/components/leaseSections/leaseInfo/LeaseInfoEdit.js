@@ -10,7 +10,7 @@ import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getContentLeaseInfo} from '$src/leases/helpers';
+import {getContentLeaseInfo, getContentLeaseStatus} from '$src/leases/helpers';
 import {getAttributes, getCurrentLease, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
@@ -24,12 +24,16 @@ type Props = {
 }
 
 type State = {
+  currentLease: Lease,
   leaseInfo: Object,
+  leaseStatus: ?string,
 }
 
 class LeaseInfoEdit extends Component<Props, State> {
   state = {
+    currentLease: {},
     leaseInfo: {},
+    leaseStatus: null,
   }
 
   componentDidUpdate(prevProps) {
@@ -45,8 +49,9 @@ class LeaseInfoEdit extends Component<Props, State> {
   static getDerivedStateFromProps(props, state) {
     if(props.currentLease !== state.currentLease) {
       return {
-        leaseInfo: getContentLeaseInfo(props.currentLease),
         currentLease: props.currentLease,
+        leaseInfo: getContentLeaseInfo(props.currentLease),
+        leaseStatus: getContentLeaseStatus(props.currentLease),
       };
     }
     return null;
@@ -54,10 +59,10 @@ class LeaseInfoEdit extends Component<Props, State> {
 
   render () {
     const {attributes, isSaveClicked} = this.props;
-    const {leaseInfo} = this.state;
+    const {leaseInfo, leaseStatus} = this.state;
 
     return (
-      <form className='lease-info-edit'>
+      <form className='lease-info'>
         <Row>
           <Column>
             <FormFieldLabel>Vuokratunnus</FormFieldLabel>
@@ -95,6 +100,10 @@ class LeaseInfoEdit extends Component<Props, State> {
                 label: 'Loppupvm',
               }}
             />
+          </Column>
+          <Column>
+            <FormFieldLabel>Olotila</FormFieldLabel>
+            <p>{leaseStatus || '-'}</p>
           </Column>
         </Row>
       </form>
