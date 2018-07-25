@@ -13,11 +13,11 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import PageContainer from '$components/content/PageContainer';
 import RentBasisForm from './forms/RentBasisForm';
-import {createRentBasis, fetchAttributes} from '$src/rentbasis/actions';
+import {createRentBasis, fetchAttributes, receiveIsSaveClicked} from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/rentbasis/enums';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getIsFormValid} from '$src/rentbasis/selectors';
+import {getAttributes, getIsFormValid, getIsSaveClicked} from '$src/rentbasis/selectors';
 
 import type {RootState} from '$src/root/types';
 import type {Attributes} from '$src/rentbasis/types';
@@ -29,6 +29,8 @@ type Props = {
   fetchAttributes: Function,
   isFormDirty: boolean,
   isFormValid: boolean,
+  isSaveClicked: boolean,
+  receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
 }
@@ -47,8 +49,9 @@ class NewRentBasisPage extends Component<Props, State> {
   };
 
   componentWillMount() {
-    const {attributes, fetchAttributes, receiveTopNavigationSettings} = this.props;
+    const {attributes, fetchAttributes, receiveIsSaveClicked, receiveTopNavigationSettings} = this.props;
 
+    receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
       linkUrl: getRouteById('rentBasis'),
       pageTitle: 'Vuokrausperusteet',
@@ -86,6 +89,24 @@ class NewRentBasisPage extends Component<Props, State> {
     });
   }
 
+  handleCancelModalCancelClick = () => {
+    this.setState({isCancelModalOpen: false});
+  }
+
+  handleCancelModalCloseClick = () => {
+    this.setState({isCancelModalOpen: false});
+  }
+
+  handleCancelClick = () => {
+    const {isFormDirty} = this.props;
+
+    if(isFormDirty) {
+      this.setState({isCancelModalOpen: true});
+    } else {
+      this.handleCancel();
+    }
+  }
+
   handleCancel = () => {
     const {router} = this.context;
 
@@ -95,12 +116,16 @@ class NewRentBasisPage extends Component<Props, State> {
   }
 
   handleSave = () => {
-    const {createRentBasis, editedRentBasis} = this.props;
-    createRentBasis(editedRentBasis);
+    const {createRentBasis, editedRentBasis, isFormValid, receiveIsSaveClicked} = this.props;
+
+    receiveIsSaveClicked(true);
+    if(isFormValid) {
+      createRentBasis(editedRentBasis);
+    }
   }
 
   render() {
-    const {isFormDirty, isFormValid} = this.props;
+    const {isFormValid, isSaveClicked} = this.props;
     const {isCancelModalOpen} = this.state;
 
     return (
@@ -109,8 +134,8 @@ class NewRentBasisPage extends Component<Props, State> {
           confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelModalOpen}
           label='Haluatko varmasti hylätä muutokset?'
-          onCancel={() => this.setState({isCancelModalOpen: false})}
-          onClose={() => this.setState({isCancelModalOpen: false})}
+          onCancel={this.handleCancelModalCancelClick}
+          onClose={this.handleCancelModalCloseClick}
           onSave={this.handleCancel}
           title='Hylkää muutokset'
         />
@@ -120,8 +145,8 @@ class NewRentBasisPage extends Component<Props, State> {
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
-              isSaveDisabled={!isFormValid}
-              onCancelClick={isFormDirty ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
+              isSaveDisabled={isSaveClicked && !isFormValid}
+              onCancelClick={this.handleCancelClick}
               onSaveClick={this.handleSave}
               showCommentButton={false}
               showCopyButton={true}
@@ -146,6 +171,7 @@ const mapStateToProps = (state: RootState) => {
     editedRentBasis: getFormValues(FormNames.RENT_BASIS)(state),
     isFormDirty: isDirty(FormNames.RENT_BASIS)(state),
     isFormValid: getIsFormValid(state),
+    isSaveClicked: getIsSaveClicked(state),
   };
 };
 
@@ -155,6 +181,7 @@ export default flowRight(
     {
       createRentBasis,
       fetchAttributes,
+      receiveIsSaveClicked,
       receiveTopNavigationSettings,
     },
   ),
