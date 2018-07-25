@@ -17,6 +17,7 @@ import type {
   ReceiveContactsAction,
   FetchSingleContactAction,
   ReceiveSingleContactAction,
+  ReceiveIsSaveClickedAction,
   ReceiveContactFormValidAction,
   HideEditModeAction,
   ShowEditModeAction,
@@ -51,6 +52,9 @@ export const receiveSingleContact = (contact: Contact): ReceiveSingleContactActi
 
 export const initializeContactForm = (contact: Contact): InitializeContactFormValuesAction =>
   createAction('mvj/contacts/INITIALIZE_FORM')(contact);
+
+export const receiveIsSaveClicked = (isClicked: boolean): ReceiveIsSaveClickedAction =>
+  createAction('mvj/contacts/RECEIVE_SAVE_CLICKED')(isClicked);
 
 export const receiveContactFormValid = (valid: boolean): ReceiveContactFormValidAction =>
   createAction('mvj/contacts/RECEIVE_CONTACT_FORM_VALID')(valid);

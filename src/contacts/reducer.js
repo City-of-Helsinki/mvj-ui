@@ -12,6 +12,7 @@ import type {
   ReceiveContactsAction,
   ReceiveSingleContactAction,
   ReceiveContactFormValidAction,
+  ReceiveIsSaveClickedAction,
 } from './types';
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
@@ -25,6 +26,8 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/contacts/NOT_FOUND': () => false,
   'mvj/contacts/RECEIVE_ALL': () => false,
   'mvj/contacts/RECEIVE_SINGLE': () => false,
+  'mvj/contacts/CREATE': () => true,
+  'mvj/contacts/EDIT': () => true,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -61,6 +64,12 @@ const isContactFormValidReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
+const isSaveClickedReducer: Reducer<boolean> = handleActions({
+  ['mvj/contacts/RECEIVE_SAVE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsSaveClickedAction) => {
+    return isClicked;
+  },
+}, false);
+
 export default combineReducers({
   attributes: attributesReducer,
   currentContact: contactReducer,
@@ -68,5 +77,6 @@ export default combineReducers({
   isContactFormValid: isContactFormValidReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  isSaveClicked: isSaveClickedReducer,
   list: contactsListReducer,
 });

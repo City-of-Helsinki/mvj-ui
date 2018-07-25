@@ -16,6 +16,9 @@ export const getIsEditMode: Selector<boolean, void> = (state: ContactState): boo
 export const getIsFetching: Selector<boolean, void> = (state: ContactState): boolean =>
   state.contacts.isFetching;
 
+export const getIsSaveClicked: Selector<boolean, void> = (state: ContactState): boolean =>
+  state.contacts.isSaveClicked;
+
 export const getAttributes: Selector<Attributes, void> = (state: ContactState): Attributes =>
   state.contacts.attributes;
 
