@@ -1,15 +1,13 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {Column} from 'react-foundation';
 import isEmpty from 'lodash/isEmpty';
 
-import Collapse from '$components/collapse/Collapse';
 import ConstructabilityItem from './ConstructabilityItem';
 import Divider from '$components/content/Divider';
 import SendEmail from './SendEmail';
-import {getContentConstructability, getFullAddress} from '$src/leases/helpers';
-import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$src/util/helpers';
+import {getContentConstructability} from '$src/leases/helpers';
+import {getAttributeFieldOptions} from '$src/util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
@@ -98,38 +96,15 @@ class Constructability extends Component<Props, State> {
           <p className='no-margin'>Ei vuokra-alueita</p>
         }
         {areas && !!areas.length && areas.map((area) =>
-          <Collapse key={area.id}
-            defaultOpen={true}
-            header={
-              <div>
-                <Column>
-                  <span className='collapse__header-subtitle'>
-                    {getLabelOfOption(typeOptions, area.type) || '-'}
-                  </span>
-                </Column>
-                <Column>
-                  <span className='collapse__header-subtitle'>
-                    {getFullAddress(area)}
-                  </span>
-                </Column>
-                <Column>
-                  <span className='collapse__header-subtitle'>
-                    {formatNumber(area.area)} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location)}
-                  </span>
-                </Column>
-              </div>
-            }
-            headerTitle={
-              <h3 className='collapse__header-title'>{area.identifier || '-'}</h3>
-            }
-          >
-            <ConstructabilityItem
-              area={area}
-              constructabilityReportStateOptions={constructabilityReportStateOptions}
-              pollutedLandConditionStateOptions={pollutedLandConditionStateOptions}
-              stateOptions={stateOptions}
-            />
-          </Collapse>
+          <ConstructabilityItem
+            key={area.id}
+            area={area}
+            constructabilityReportStateOptions={constructabilityReportStateOptions}
+            locationOptions={locationOptions}
+            pollutedLandConditionStateOptions={pollutedLandConditionStateOptions}
+            stateOptions={stateOptions}
+            typeOptions={typeOptions}
+          />
         )}
       </div>
     );

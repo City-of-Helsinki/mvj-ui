@@ -1,4 +1,5 @@
 // @flow
+import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import type {Selector} from '../types';
@@ -59,4 +60,8 @@ export const getErrorsByFormName: Selector<?Object, string> = (state: Object, fo
     return form.syncErrors;
   }
   return null;
+};
+
+export const getCollapseStatusByKey: Selector<?Object, string> = (state: Object, key: string): ?Object => {
+  return get(state.lease.collapseStatuses, key);
 };

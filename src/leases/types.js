@@ -53,3 +53,5 @@ export type ShowDeleteRelatedLeaseModalAction = Action<'mvj/leases/SHOW_RELATED_
 
 export type ReceiveFormValidFlagsAction = Action<'mvj/leases/RECEIVE_FORM_VALID_FLAGS', Object>;
 export type ClearFormValidFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALID_FLAGS', void>;
+
+export type ReceiveCollapseStatusesAction = Action<'mvj/leases/RECEIVE_COLLAPSE_STATUSES', Object>;

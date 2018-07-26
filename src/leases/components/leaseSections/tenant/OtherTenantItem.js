@@ -10,30 +10,50 @@ import ContactTemplate from '$src/contacts/components/templates/ContactTemplate'
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
+import {receiveCollapseStatuses} from '$src/leases/actions';
+import {ViewModes} from '$src/enums';
+import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {formatDate, formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
-import {getAttributes} from '$src/leases/selectors';
+import {getAttributes, getCollapseStatusByKey} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  collapseStatus: boolean,
+  receiveCollapseStatuses: Function,
   tenant: Object,
 };
 
 const OtherTenantItem = ({
   attributes,
+  collapseStatus,
+  receiveCollapseStatuses,
   tenant,
 }: Props) => {
+  const handleCollapseToggle = (val: boolean) => {
+    receiveCollapseStatuses({
+      [ViewModes.READONLY]: {
+        [FormNames.TENANTS]: {
+          others: {
+            [tenant.id]: val,
+          },
+        },
+      },
+    });
+  };
+
   const tenantTypeOptions = getAttributeFieldOptions(attributes, 'tenants.child.children.tenantcontact_set.child.children.type');
   const contact = get(tenant, 'contact');
   const isActive = isTenantActive(tenant);
+  const collapseDefault = collapseStatus !== undefined ? collapseStatus : isActive;
 
   return (
     <Collapse
       className={classNames('collapse__secondary', {'not-active': !isActive})}
-      defaultOpen={isActive}
+      defaultOpen={collapseDefault}
       header={
         <div>
           <Column></Column>
@@ -46,9 +66,9 @@ const OtherTenantItem = ({
         </div>
       }
 
-      headerTitle={
-        <h4 className='collapse__header-title'>{getLabelOfOption(tenantTypeOptions, tenant.type)}</h4>
-      }>
+      headerTitle={<h4 className='collapse__header-title'>{getLabelOfOption(tenantTypeOptions, tenant.type)}</h4>}
+      onToggle={handleCollapseToggle}
+    >
       <FormWrapper>
         <FormWrapperLeft>
           <Row>
@@ -88,9 +108,14 @@ const OtherTenantItem = ({
 };
 
 export default connect(
-  (state) => {
+  (state, props) => {
+    const id = props.tenant.id;
     return {
       attributes: getAttributes(state),
+      collapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.TENANTS}.others.${id}`),
     };
+  },
+  {
+    receiveCollapseStatuses,
   }
 )(OtherTenantItem);

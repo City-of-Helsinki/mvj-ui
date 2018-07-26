@@ -7,13 +7,44 @@ import Divider from '$components/content/Divider';
 import InvoicesTable from './InvoicesTable';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {getCurrentLease} from '$src/leases/selectors';
+import {receiveCollapseStatuses} from '$src/leases/actions';
+import {ViewModes} from '$src/enums';
+import {getCollapseStatusByKey, getCurrentLease} from '$src/leases/selectors';
 
 type Props = {
+
+  invoicesCollapseStatus: boolean,
   isInvoicingEnabled: boolean,
+  receiveCollapseStatuses: Function,
+  rentCalculatorCollapseStatus: boolean,
 }
 
-const Invoices = ({isInvoicingEnabled}: Props) => {
+const Invoices = ({
+  invoicesCollapseStatus,
+  isInvoicingEnabled,
+  receiveCollapseStatuses,
+  rentCalculatorCollapseStatus,
+}: Props) => {
+  const handleInvoicesCollapseToggle = (val: boolean) => {
+    receiveCollapseStatuses({
+      [ViewModes.READONLY]: {
+        invoices: {
+          invoices: val,
+        },
+      },
+    });
+  };
+
+  const handleRentCalculatorCollapseToggle = (val: boolean) => {
+    receiveCollapseStatuses({
+      [ViewModes.READONLY]: {
+        invoices: {
+          rent_calculator: val,
+        },
+      },
+    });
+  };
+
   return (
     <div>
       <h2>Laskutus</h2>
@@ -26,17 +57,17 @@ const Invoices = ({isInvoicingEnabled}: Props) => {
       />
       <Divider />
       <Collapse
-        defaultOpen={true}
-        headerTitle={
-          <h3 className='collapse__header-title'>Laskut</h3>
-        }>
+        defaultOpen={invoicesCollapseStatus !== undefined ? invoicesCollapseStatus : true}
+        headerTitle={<h3 className='collapse__header-title'>Laskut</h3>}
+        onToggle={handleInvoicesCollapseToggle}
+      >
         <InvoicesTable/>
       </Collapse>
       <Collapse
-        defaultOpen={true}
-        headerTitle={
-          <h3 className='collapse__header-title'>Vuokralaskuri</h3>
-        }>
+        defaultOpen={rentCalculatorCollapseStatus !== undefined ? rentCalculatorCollapseStatus : true}
+        headerTitle={<h3 className='collapse__header-title'>Vuokralaskuri</h3>}
+        onToggle={handleRentCalculatorCollapseToggle}
+      >
         <RentCalculator />
       </Collapse>
     </div>
@@ -47,7 +78,12 @@ export default connect(
   (state) => {
     const currentLease = getCurrentLease(state);
     return {
+      invoicesCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.invoices.invoices`),
       isInvoicingEnabled: currentLease ? currentLease.is_invoicing_enabled : null,
+      rentCalculatorCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.invoices.rent_calculator`),
     };
   },
+  {
+    receiveCollapseStatuses,
+  }
 )(Invoices);

@@ -11,12 +11,15 @@ import RelatedLeases from './RelatedLeases';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
+import {receiveCollapseStatuses} from '$src/leases/actions';
+import {ViewModes} from '$src/enums';
+import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
 import {getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getAttributes, getCollapseStatusByKey, getCurrentLease} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
@@ -24,8 +27,11 @@ import type {NoticePeriodList} from '$src/NoticePeriod/types';
 
 type Props = {
   attributes: Attributes,
+  collapseStatusBasic: boolean,
+  collapseStatusStatistical: boolean,
   currentLease: Lease,
   noticePeriods: NoticePeriodList,
+  receiveCollapseStatuses: Function,
 }
 
 type State = {
@@ -110,6 +116,30 @@ class Summary extends Component<Props, State> {
     });
   }
 
+  handleBasicInfoToggle = (val: boolean) => {
+    const {receiveCollapseStatuses} = this.props;
+
+    receiveCollapseStatuses({
+      [ViewModes.READONLY]: {
+        [FormNames.SUMMARY]: {
+          basic: val,
+        },
+      },
+    });
+  }
+
+  handleStatisticalInfoToggle = (val: boolean) => {
+    const {receiveCollapseStatuses} = this.props;
+
+    receiveCollapseStatuses({
+      [ViewModes.READONLY]: {
+        [FormNames.SUMMARY]: {
+          statistical: val,
+        },
+      },
+    });
+  }
+
   render() {
     const {
       classificationOptions,
@@ -123,6 +153,7 @@ class Summary extends Component<Props, State> {
       summary,
       supportiveHousingOptions,
     } = this.state;
+    const {collapseStatusBasic, collapseStatusStatistical} = this.props;
 
     return (
       <div>
@@ -138,10 +169,11 @@ class Summary extends Component<Props, State> {
         <Row>
           <Column medium={9}>
             <Collapse
-              defaultOpen={true}
+              defaultOpen={collapseStatusBasic !== undefined ? collapseStatusBasic : true}
               headerTitle={
                 <h3 className='collapse__header-title'>Perustiedot</h3>
               }
+              onToggle={this.handleBasicInfoToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -221,10 +253,11 @@ class Summary extends Component<Props, State> {
             </Collapse>
 
             <Collapse
-              defaultOpen={true}
+              defaultOpen={collapseStatusStatistical !== undefined ? collapseStatusStatistical : true}
               headerTitle={
                 <h3 className='collapse__header-title'>Tilastotiedot</h3>
               }
+              onToggle={this.handleStatisticalInfoToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -261,8 +294,13 @@ export default connect(
   (state) => {
     return {
       attributes: getAttributes(state),
+      collapseStatusBasic: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.basic`),
+      collapseStatusStatistical: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.statistical`),
       currentLease: getCurrentLease(state),
       noticePeriods: getNoticePeriods(state),
     };
   },
+  {
+    receiveCollapseStatuses,
+  }
 )(Summary);
