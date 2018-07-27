@@ -7,26 +7,26 @@ import Divider from '$components/content/Divider';
 import InvoicesTable from './InvoicesTable';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {receiveCollapseStatuses} from '$src/leases/actions';
+import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {getCollapseStatusByKey, getCurrentLease} from '$src/leases/selectors';
+import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
 type Props = {
 
-  invoicesCollapseStatus: boolean,
+  invoicesCollapseState: boolean,
   isInvoicingEnabled: boolean,
-  receiveCollapseStatuses: Function,
-  rentCalculatorCollapseStatus: boolean,
+  receiveCollapseStates: Function,
+  rentCalculatorCollapseState: boolean,
 }
 
 const Invoices = ({
-  invoicesCollapseStatus,
+  invoicesCollapseState,
   isInvoicingEnabled,
-  receiveCollapseStatuses,
-  rentCalculatorCollapseStatus,
+  receiveCollapseStates,
+  rentCalculatorCollapseState,
 }: Props) => {
   const handleInvoicesCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         invoices: {
           invoices: val,
@@ -36,7 +36,7 @@ const Invoices = ({
   };
 
   const handleRentCalculatorCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         invoices: {
           rent_calculator: val,
@@ -57,14 +57,14 @@ const Invoices = ({
       />
       <Divider />
       <Collapse
-        defaultOpen={invoicesCollapseStatus !== undefined ? invoicesCollapseStatus : true}
+        defaultOpen={invoicesCollapseState !== undefined ? invoicesCollapseState : true}
         headerTitle={<h3 className='collapse__header-title'>Laskut</h3>}
         onToggle={handleInvoicesCollapseToggle}
       >
         <InvoicesTable/>
       </Collapse>
       <Collapse
-        defaultOpen={rentCalculatorCollapseStatus !== undefined ? rentCalculatorCollapseStatus : true}
+        defaultOpen={rentCalculatorCollapseState !== undefined ? rentCalculatorCollapseState : true}
         headerTitle={<h3 className='collapse__header-title'>Vuokralaskuri</h3>}
         onToggle={handleRentCalculatorCollapseToggle}
       >
@@ -78,12 +78,12 @@ export default connect(
   (state) => {
     const currentLease = getCurrentLease(state);
     return {
-      invoicesCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.invoices.invoices`),
+      invoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.invoices`),
       isInvoicingEnabled: currentLease ? currentLease.is_invoicing_enabled : null,
-      rentCalculatorCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.invoices.rent_calculator`),
+      rentCalculatorCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.rent_calculator`),
     };
   },
   {
-    receiveCollapseStatuses,
+    receiveCollapseStates,
   }
 )(Invoices);

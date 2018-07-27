@@ -8,27 +8,27 @@ import classNames from 'classnames';
 import Collapse from '$components/collapse/Collapse';
 import OtherTenantItem from './OtherTenantItem';
 import TenantItem from './TenantItem';
-import {receiveCollapseStatuses} from '$src/leases/actions';
+import {receiveCollapseStates} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {ViewModes} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {formatDateRange} from '$util/helpers';
-import {getCollapseStatusByKey} from '$src/leases/selectors';
+import {getCollapseStateByKey} from '$src/leases/selectors';
 
 type Props = {
-  collapseStatus: boolean,
-  receiveCollapseStatuses: Function,
+  collapseState: boolean,
+  receiveCollapseStates: Function,
   tenant: Object,
 }
 
 const Tenant = ({
-  collapseStatus,
-  receiveCollapseStatuses,
+  collapseState,
+  receiveCollapseStates,
   tenant,
 }: Props) => {
   const handleCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.TENANTS]: {
           tenants: {
@@ -41,7 +41,7 @@ const Tenant = ({
 
   const contact = get(tenant, 'tenant.contact');
   const isActive = isTenantActive(get(tenant, 'tenant'));
-  const collapseDefault = collapseStatus !== undefined ? collapseStatus : isActive;
+  const collapseDefault = collapseState !== undefined ? collapseState : isActive;
 
   return (
     <Collapse
@@ -92,10 +92,10 @@ export default connect(
   (state, props) => {
     const id = props.tenant.id;
     return {
-      collapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.TENANTS}.tenants.${id}`),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.TENANTS}.tenants.${id}`),
     };
   },
   {
-    receiveCollapseStatuses,
+    receiveCollapseStates,
   }
 )(Tenant);

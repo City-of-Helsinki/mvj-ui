@@ -62,6 +62,6 @@ export const getErrorsByFormName: Selector<?Object, string> = (state: Object, fo
   return null;
 };
 
-export const getCollapseStatusByKey: Selector<?Object, string> = (state: Object, key: string): ?Object => {
-  return get(state.lease.collapseStatuses, key);
+export const getCollapseStateByKey: Selector<?Object, string> = (state: Object, key: string): ?Object => {
+  return get(state.lease.collapseStates, key);
 };

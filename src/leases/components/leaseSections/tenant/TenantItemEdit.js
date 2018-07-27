@@ -1,19 +1,20 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, getFormValues} from 'redux-form';
+import {FieldArray, formValueSelector} from 'redux-form';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
+import type {Element} from 'react';
 
-import AddButton from '$components/form/AddButton';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditIcon from '$components/icons/EditIcon';
 import IconButton from '$components/button/IconButton';
-import OtherTenantItemsEdit from './OtherTenantItemsEdit';
+import OtherTenantItemEdit from './OtherTenantItemEdit';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import FormWrapper from '$components/form/FormWrapper';
@@ -21,51 +22,99 @@ import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import RemoveButton from '$components/form/RemoveButton';
 import {initializeContactForm, receiveIsSaveClicked} from '$src/contacts/actions';
-import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
+import {receiveCollapseStates, receiveContactModalSettings, showContactModal} from '$src/leases/actions';
+import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
-import {getAttributes} from '$src/leases/selectors';
+import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
-type TenantItemProps = {
+type OtherTenantsProps = {
+  fields: any,
+  tenant: Object,
+}
+
+const renderOtherTenants = ({
+  fields,
+  tenant,
+}: OtherTenantsProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
+  const handleRemove = (index: number) => {
+    fields.remove(index);
+  };
+
+  return (
+    <div>
+      {fields && !!fields.length && fields.map((field, index) => {
+        return (
+          <OtherTenantItemEdit
+            key={index}
+            field={field}
+            index={index}
+            onRemove={handleRemove}
+            tenant={tenant}
+          />
+        );
+      })}
+      <Row>
+        <Column>
+          <AddButtonSecondary
+            label='Lisää laskunsaaja tai yhteyshenkilö'
+            onClick={handleAdd}
+            title='Lisää laskunsaaja tai yhteyshenkilö'
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
+
+type Props = {
   attributes: Attributes,
+  collapseState: boolean,
+  contact: ?Object,
   errors: ?Object,
   field: string,
-  fields: any,
-  formValues: Object,
   index: number,
   initializeContactForm: Function,
   isSaveClicked: boolean,
+  onRemove: Function,
+  receiveCollapseStates: Function,
   receiveContactModalSettings: Function,
   receiveIsSaveClicked: Function,
   showContactModal: Function,
+  tenantId: number,
   tenants: Array<Object>,
 }
 
-const TenantItem = ({
+const TenantItemEdit = ({
   attributes,
+  collapseState,
+  contact,
   errors,
   field,
-  fields,
-  formValues,
   index,
   initializeContactForm,
   isSaveClicked,
+  onRemove,
+  receiveCollapseStates,
   receiveContactModalSettings,
   receiveIsSaveClicked,
   showContactModal,
+  tenantId,
   tenants,
-}: TenantItemProps) => {
+}: Props) => {
   const getTenantById = (id: number) => {
     if(!id) {
       return {};
     }
     return tenants.find((tenant) => tenant.id === id);
   };
-  const contact = get(formValues, `${field}.tenant.contact`);
-
   const handleAddClick = () => {
     initializeContactForm({});
     receiveContactModalSettings({
@@ -89,21 +138,32 @@ const TenantItem = ({
   };
 
   const handleRemoveClick = () => {
-    fields.remove(index);
+    onRemove(index);
   };
 
-  const savedTenant = getTenantById(get(formValues, `${field}.id`));
+  const handleCollapseToggle = (val: boolean) => {
+    receiveCollapseStates({
+      [ViewModes.EDIT]: {
+        [FormNames.TENANTS]: {
+          tenants: {
+            [tenantId]: val,
+          },
+        },
+      },
+    });
+  };
+
+  const savedTenant = getTenantById(tenantId);
   const isActive = isTenantActive(get(savedTenant, 'tenant'));
   const tenantErrors = get(errors, field);
 
   return (
     <Collapse
       className={classNames({'not-active': !isActive})}
-      defaultOpen={isActive}
+      defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
-      headerTitle={
-        <h3 className='collapse__header-title'>{getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}</h3>
-      }
+      headerTitle={<h3 className='collapse__header-title'>{getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}</h3>}
+      onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>
         <RemoveButton
@@ -220,9 +280,7 @@ const TenantItem = ({
       </BoxContentWrapper>
 
       <FieldArray
-        component={OtherTenantItemsEdit}
-        errors={errors}
-        isSaveClicked={isSaveClicked}
+        component={renderOtherTenants}
         name={`${field}.tenantcontact_set`}
         tenant={savedTenant}
       />
@@ -230,86 +288,26 @@ const TenantItem = ({
   );
 };
 
-type Props = {
-  attributes: Attributes,
-  enableAddButton: boolean,
-  errors: ?Object,
-  fields: any,
-  formValues: Object,
-  initializeContactForm: Function,
-  isSaveClicked: boolean,
-  receiveContactModalSettings: Function,
-  receiveIsSaveClicked: Function,
-  showContactModal: Function,
-  tenants: Array<Object>,
-}
-
-const TenantItemsEdit = ({
-  attributes,
-  enableAddButton,
-  errors,
-  fields,
-  formValues,
-  initializeContactForm,
-  isSaveClicked,
-  receiveContactModalSettings,
-  receiveIsSaveClicked,
-  showContactModal,
-  tenants,
-}: Props) => {
-  const handleAddButton = () => {
-    fields.push({});
-  };
-
-  return (
-    <div>
-      {fields && !!fields.length && fields.map((tenant, index) => {
-        return (
-          <TenantItem
-            key={index}
-            attributes={attributes}
-            errors={errors}
-            field={tenant}
-            fields={fields}
-            formValues={formValues}
-            index={index}
-            initializeContactForm={initializeContactForm}
-            isSaveClicked={isSaveClicked}
-            receiveContactModalSettings={receiveContactModalSettings}
-            receiveIsSaveClicked={receiveIsSaveClicked}
-            showContactModal={showContactModal}
-            tenants={tenants}
-          />
-        );
-
-      })}
-      {enableAddButton &&
-        <Row>
-          <Column>
-            <AddButton
-              className='no-margin'
-              label='Lisää vuokralainen'
-              onClick={handleAddButton}
-              title='Lisää vuokralainen'
-            />
-          </Column>
-        </Row>
-      }
-    </div>
-  );
-};
+const formName = FormNames.TENANTS;
+const selector = formValueSelector(formName);
 
 export default connect(
-  (state) => {
+  (state, props) => {
+    const id = selector(state, `${props.field}.id`);
     return {
       attributes: getAttributes(state),
-      formValues: getFormValues(FormNames.TENANTS)(state),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.tenants.${id}`),
+      contact: selector(state, `${props.field}.tenant.contact`),
+      errors: getErrorsByFormName(state, formName),
+      isSaveClicked: getIsSaveClicked(state),
+      tenantId: id,
     };
   },
   {
     initializeContactForm,
     receiveContactModalSettings,
+    receiveCollapseStates,
     receiveIsSaveClicked,
     showContactModal,
   },
-)(TenantItemsEdit);
+)(TenantItemEdit);

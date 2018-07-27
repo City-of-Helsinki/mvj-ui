@@ -11,7 +11,7 @@ import RelatedLeases from './RelatedLeases';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
-import {receiveCollapseStatuses} from '$src/leases/actions';
+import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
@@ -19,7 +19,7 @@ import {getContentSummary} from '$src/leases/helpers';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
 import {getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {getAttributes, getCollapseStatusByKey, getCurrentLease} from '$src/leases/selectors';
+import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
@@ -27,11 +27,11 @@ import type {NoticePeriodList} from '$src/NoticePeriod/types';
 
 type Props = {
   attributes: Attributes,
-  collapseStatusBasic: boolean,
-  collapseStatusStatistical: boolean,
+  collapseStateBasic: boolean,
+  collapseStateStatistical: boolean,
   currentLease: Lease,
   noticePeriods: NoticePeriodList,
-  receiveCollapseStatuses: Function,
+  receiveCollapseStates: Function,
 }
 
 type State = {
@@ -117,9 +117,9 @@ class Summary extends Component<Props, State> {
   }
 
   handleBasicInfoToggle = (val: boolean) => {
-    const {receiveCollapseStatuses} = this.props;
+    const {receiveCollapseStates} = this.props;
 
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.SUMMARY]: {
           basic: val,
@@ -129,9 +129,9 @@ class Summary extends Component<Props, State> {
   }
 
   handleStatisticalInfoToggle = (val: boolean) => {
-    const {receiveCollapseStatuses} = this.props;
+    const {receiveCollapseStates} = this.props;
 
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.SUMMARY]: {
           statistical: val,
@@ -153,7 +153,7 @@ class Summary extends Component<Props, State> {
       summary,
       supportiveHousingOptions,
     } = this.state;
-    const {collapseStatusBasic, collapseStatusStatistical} = this.props;
+    const {collapseStateBasic, collapseStateStatistical} = this.props;
 
     return (
       <div>
@@ -169,7 +169,7 @@ class Summary extends Component<Props, State> {
         <Row>
           <Column medium={9}>
             <Collapse
-              defaultOpen={collapseStatusBasic !== undefined ? collapseStatusBasic : true}
+              defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               headerTitle={
                 <h3 className='collapse__header-title'>Perustiedot</h3>
               }
@@ -253,10 +253,8 @@ class Summary extends Component<Props, State> {
             </Collapse>
 
             <Collapse
-              defaultOpen={collapseStatusStatistical !== undefined ? collapseStatusStatistical : true}
-              headerTitle={
-                <h3 className='collapse__header-title'>Tilastotiedot</h3>
-              }
+              defaultOpen={collapseStateStatistical !== undefined ? collapseStateStatistical : true}
+              headerTitle={<h3 className='collapse__header-title'>Tilastotiedot</h3>}
               onToggle={this.handleStatisticalInfoToggle}
             >
               <Row>
@@ -294,13 +292,13 @@ export default connect(
   (state) => {
     return {
       attributes: getAttributes(state),
-      collapseStatusBasic: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.basic`),
-      collapseStatusStatistical: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.statistical`),
+      collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.basic`),
+      collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.statistical`),
       currentLease: getCurrentLease(state),
       noticePeriods: getNoticePeriods(state),
     };
   },
   {
-    receiveCollapseStatuses,
+    receiveCollapseStates,
   }
 )(Summary);

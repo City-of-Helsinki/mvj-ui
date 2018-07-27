@@ -13,10 +13,11 @@ import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RelatedLeasesEdit from './RelatedLeasesEdit';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
-import {receiveFormValidFlags} from '$src/leases/actions';
+import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
+import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
-import {getAttributes, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -24,10 +25,13 @@ import type {NoticePeriodList} from '$src/noticePeriod/types';
 
 type Props = {
   attributes: Object,
+  collapseStateBasic: boolean,
+  collapseStateStatistical: boolean,
   errors: ?Object,
   handleSubmit: Function,
   isSaveClicked: boolean,
   noticePeriods: NoticePeriodList,
+  receiveCollapseStates: Function,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -43,9 +47,42 @@ class SummaryEdit extends Component<Props> {
     }
   }
 
+  handleBasicInfoToggle = (val: boolean) => {
+    const {receiveCollapseStates} = this.props;
+
+    receiveCollapseStates({
+      [ViewModes.EDIT]: {
+        [FormNames.SUMMARY]: {
+          basic: val,
+        },
+      },
+    });
+  }
+
+  handleStatisticalInfoToggle = (val: boolean) => {
+    const {receiveCollapseStates} = this.props;
+
+    receiveCollapseStates({
+      [ViewModes.EDIT]: {
+        [FormNames.SUMMARY]: {
+          statistical: val,
+        },
+      },
+    });
+  }
+
   render () {
-    const {attributes, errors, handleSubmit, isSaveClicked, noticePeriods} = this.props;
+    const {
+      attributes,
+      collapseStateBasic,
+      collapseStateStatistical,
+      errors,
+      handleSubmit,
+      isSaveClicked,
+      noticePeriods,
+    } = this.props;
     const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
+
     return (
       <form onSubmit={handleSubmit}>
         <h2>Yhteenveto</h2>
@@ -53,11 +90,10 @@ class SummaryEdit extends Component<Props> {
         <Row>
           <Column medium={9}>
             <Collapse
-              defaultOpen={true}
+              defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
-              headerTitle={
-                <h3 className='collapse__header-title'>Perustiedot</h3>
-              }
+              headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
+              onToggle={this.handleBasicInfoToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -216,10 +252,9 @@ class SummaryEdit extends Component<Props> {
             </Collapse>
 
             <Collapse
-              defaultOpen={true}
-              headerTitle={
-                <h3 className='collapse__header-title'>Tilastotiedot</h3>
-              }
+              defaultOpen={collapseStateStatistical !== undefined ? collapseStateStatistical : true}
+              headerTitle={<h3 className='collapse__header-title'>Tilastotiedot</h3>}
+              onToggle={this.handleStatisticalInfoToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
@@ -283,12 +318,15 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
+        collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.SUMMARY}.basic`),
+        collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.SUMMARY}.statistical`),
         errors: getErrorsByFormName(state, formName),
         isSaveClicked: getIsSaveClicked(state),
         noticePeriods: getNoticePeriods(state),
       };
     },
     {
+      receiveCollapseStates,
       receiveFormValidFlags,
     }
   ),

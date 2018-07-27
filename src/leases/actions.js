@@ -39,7 +39,7 @@ import type {
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
   ReceiveIsSaveClickedAction,
-  ReceiveCollapseStatusesAction,
+  ReceiveCollapseStatesAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -126,5 +126,5 @@ export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
 export const receiveIsSaveClicked = (isClicked: boolean): ReceiveIsSaveClickedAction =>
   createAction('mvj/leases/RECEIVE_SAVE_CLICKED')(isClicked);
 
-export const receiveCollapseStatuses = (status: Object): ReceiveCollapseStatusesAction =>
-  createAction('mvj/leases/RECEIVE_COLLAPSE_STATUSES')(status);
+export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesAction =>
+  createAction('mvj/leases/RECEIVE_COLLAPSE_STATES')(status);

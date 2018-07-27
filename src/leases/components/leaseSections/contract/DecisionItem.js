@@ -8,33 +8,33 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormFieldLabel from '$components/form/FormFieldLabel';
-import {receiveCollapseStatuses} from '$src/leases/actions';
+import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
 import {formatDate, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
-import {getCollapseStatusByKey} from '$src/leases/selectors';
+import {getCollapseStateByKey} from '$src/leases/selectors';
 
 type Props = {
   conditionTypeOptions: Array<Object>,
-  conditionsCollapseStatus: boolean,
-  decisionCollapseStatus: boolean,
+  conditionsCollapseState: boolean,
+  decisionCollapseState: boolean,
   decisionMakerOptions: Array<Object>,
   decision: Object,
-  receiveCollapseStatuses: Function,
+  receiveCollapseStates: Function,
   typeOptions: Array<Object>,
 }
 
 const DecisionItem = ({
   conditionTypeOptions,
-  conditionsCollapseStatus,
-  decisionCollapseStatus,
+  conditionsCollapseState,
+  decisionCollapseState,
   decisionMakerOptions,
   decision,
-  receiveCollapseStatuses,
+  receiveCollapseStates,
   typeOptions,
 }: Props) => {
   const handleDecisionCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.DECISIONS]: {
           [decision.id]: {
@@ -46,7 +46,7 @@ const DecisionItem = ({
   };
 
   const handleConditionsCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.DECISIONS]: {
           [decision.id]: {
@@ -60,7 +60,7 @@ const DecisionItem = ({
   return (
     <Collapse
       key={decision.id}
-      defaultOpen={decisionCollapseStatus !== undefined ? decisionCollapseStatus : false}
+      defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : false}
       header={
         <div>
           <Column>
@@ -121,7 +121,7 @@ const DecisionItem = ({
 
       <Collapse
         className='collapse__secondary'
-        defaultOpen={conditionsCollapseStatus !== undefined ? conditionsCollapseStatus : true}
+        defaultOpen={conditionsCollapseState !== undefined ? conditionsCollapseState : true}
         headerTitle={<h4 className='collapse__header-title'>Ehdot</h4>}
         onToggle={handleConditionsCollapseToggle}
       > {!decision.conditions || !decision.conditions.length && <p>Ei ehtoja</p>}
@@ -172,11 +172,11 @@ export default connect(
   (state, props) => {
     const id = props.decision.id;
     return {
-      conditionsCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${id}.conditions`),
-      decisionCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${id}.decision`),
+      conditionsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${id}.conditions`),
+      decisionCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${id}.decision`),
     };
   },
   {
-    receiveCollapseStatuses,
+    receiveCollapseStates,
   }
 )(DecisionItem);

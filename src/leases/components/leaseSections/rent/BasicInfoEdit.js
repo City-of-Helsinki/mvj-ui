@@ -23,6 +23,10 @@ type DueDatesProps = {
 }
 
 const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push('');
+  };
+
   return (
     <div>
       <Row>
@@ -31,6 +35,10 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
         </Column>
       </Row>
       {fields && !!fields.length && fields.map((due_date, index) => {
+        const handleRemove = () => {
+          fields.remove(index);
+        };
+
         return (
           <Row key={index}>
             <Column small={9}>
@@ -59,7 +67,7 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
             </Column>
             <Column small={3}>
               <RemoveButton
-                onClick={() => fields.remove(index)}
+                onClick={handleRemove}
                 title="Poista eräpäivä"
               />
             </Column>
@@ -70,7 +78,7 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
         <Column>
           <AddButtonSecondary
             label='Lisää eräpäivä'
-            onClick={() => fields.push('')}
+            onClick={handleAdd}
             title='Lisää eräpäivä'
           />
         </Column>
@@ -86,6 +94,10 @@ type FixedInitialYearRentsProps = {
 }
 
 const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedInitialYearRentsProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
   return (
     <div>
       <Row>
@@ -100,6 +112,10 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
         </Row>
       }
       {fields && !!fields.length && fields.map((rent, index) => {
+        const handleRemove = () => {
+          fields.remove(index);
+        };
+
         return (
           <div key={index}>
             <Row>
@@ -146,7 +162,7 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
               </Column>
               <Column>
                 <RemoveButton
-                  onClick={() => fields.remove(index)}
+                  onClick={handleRemove}
                   title="Poista alennus/korotus"
                 />
               </Column>
@@ -158,7 +174,7 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
         <Column>
           <AddButtonSecondary
             label='Lisää kiinteä alkuvuosivuokra'
-            onClick={() => fields.push({})}
+            onClick={handleAdd}
             title='Lisää kiinteä alkuvuosivuokra'
           />
         </Column>
@@ -169,8 +185,8 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
 
 type Props = {
   attributes: Attributes,
+  dueDatesType: ?string,
   isSaveClicked: boolean,
-  rent: Object,
   rentType: ?string,
 }
 
@@ -195,12 +211,12 @@ const BasicInfoEmpty = ({attributes, isSaveClicked}: Props) => {
 
 type BasicInfoIndexProps = {
   attributes: Attributes,
+  dueDatesType: ?string,
   isIndex: boolean,
   isSaveClicked: boolean,
-  rent: Object,
 }
 
-const BasicInfoIndex = ({attributes, isIndex, isSaveClicked, rent}: BasicInfoIndexProps) => {
+const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: BasicInfoIndexProps) => {
   return (
     <div>
       <Row>
@@ -264,7 +280,7 @@ const BasicInfoIndex = ({attributes, isIndex, isSaveClicked, rent}: BasicInfoInd
             }}
           />
         </Column>
-        {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
+        {dueDatesType === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
             <FieldArray
               attributes={attributes}
@@ -274,7 +290,7 @@ const BasicInfoIndex = ({attributes, isIndex, isSaveClicked, rent}: BasicInfoInd
             />
           </Column>
         }
-        {rent.due_dates_type === RentDueDateTypes.FIXED &&
+        {dueDatesType === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <FormField
               disableTouched={isSaveClicked}
@@ -459,7 +475,7 @@ const BasicInfoOneTime = ({attributes, isSaveClicked}: Props) => {
   );
 };
 
-const BasicInfoFixed = ({attributes, isSaveClicked, rent}: Props) => {
+const BasicInfoFixed = ({attributes, dueDatesType, isSaveClicked}: Props) => {
   return (
     <div>
       <Row>
@@ -503,7 +519,7 @@ const BasicInfoFixed = ({attributes, isSaveClicked, rent}: Props) => {
             }}
           />
         </Column>
-        {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
+        {dueDatesType === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
             <FieldArray
               attributes={attributes}
@@ -513,7 +529,7 @@ const BasicInfoFixed = ({attributes, isSaveClicked, rent}: Props) => {
             />
           </Column>
         }
-        {rent.due_dates_type === RentDueDateTypes.FIXED &&
+        {dueDatesType === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <FormField
               disableTouched={isSaveClicked}
@@ -593,56 +609,56 @@ const BasicInfoFree = ({attributes, isSaveClicked}: Props) => {
   );
 };
 
-const BasicInfoEdit = ({attributes, isSaveClicked, rent, rentType}: Props) => {
+const BasicInfoEdit = ({attributes, dueDatesType, isSaveClicked, rentType}: Props) => {
   return (
     <div>
       {!rentType &&
         <BasicInfoEmpty
           attributes={attributes}
+          dueDatesType={dueDatesType}
           isSaveClicked={isSaveClicked}
-          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.INDEX &&
         <BasicInfoIndex
           attributes={attributes}
+          dueDatesType={dueDatesType}
           isIndex={true}
           isSaveClicked={isSaveClicked}
-          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.ONE_TIME &&
         <BasicInfoOneTime
           attributes={attributes}
+          dueDatesType={dueDatesType}
           isSaveClicked={isSaveClicked}
-          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.FIXED &&
         <BasicInfoFixed
           attributes={attributes}
+          dueDatesType={dueDatesType}
           isSaveClicked={isSaveClicked}
-          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.FREE &&
         <BasicInfoFree
           attributes={attributes}
+          dueDatesType={dueDatesType}
           isSaveClicked={isSaveClicked}
-          rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.MANUAL &&
         <BasicInfoIndex
           attributes={attributes}
+          dueDatesType={dueDatesType}
           isIndex={false}
           isSaveClicked={isSaveClicked}
-          rent={rent}
           rentType={rentType}
         />
       }

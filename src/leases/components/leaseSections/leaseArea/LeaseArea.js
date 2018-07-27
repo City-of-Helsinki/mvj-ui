@@ -10,38 +10,38 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import PlanUnitItem from './PlanUnitItem';
 import PlotItem from './PlotItem';
-import {receiveCollapseStatuses} from '$src/leases/actions';
+import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
 import {getFullAddress} from '$src/leases/helpers';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
-import {getAttributes, getCollapseStatusByKey} from '$src/leases/selectors';
+import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   area: Object,
-  areaCollapseStatus: boolean,
+  areaCollapseState: boolean,
   attributes: Attributes,
-  planUnitsContractCollapseStatus: boolean,
-  planUnitsCurrentCollapseStatus: boolean,
-  plotsContractCollapseStatus: boolean,
-  plotsCurrentCollapseStatus: boolean,
-  receiveCollapseStatuses: Function,
+  planUnitsContractCollapseState: boolean,
+  planUnitsCurrentCollapseState: boolean,
+  plotsContractCollapseState: boolean,
+  plotsCurrentCollapseState: boolean,
+  receiveCollapseStates: Function,
 }
 
 const LeaseArea = ({
   area,
-  areaCollapseStatus,
+  areaCollapseState,
   attributes,
-  planUnitsContractCollapseStatus,
-  planUnitsCurrentCollapseStatus,
-  plotsContractCollapseStatus,
-  plotsCurrentCollapseStatus,
-  receiveCollapseStatuses,
+  planUnitsContractCollapseState,
+  planUnitsCurrentCollapseState,
+  plotsContractCollapseState,
+  plotsCurrentCollapseState,
+  receiveCollapseStates,
 }: Props) => {
   const handleAreaCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
           [area.id]: {
@@ -53,7 +53,7 @@ const LeaseArea = ({
   };
 
   const handlePlanUnitContractCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
           [area.id]: {
@@ -65,7 +65,7 @@ const LeaseArea = ({
   };
 
   const handlePlanUnitCurrentCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
           [area.id]: {
@@ -77,7 +77,7 @@ const LeaseArea = ({
   };
 
   const handlePlotsContractCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
           [area.id]: {
@@ -89,7 +89,7 @@ const LeaseArea = ({
   };
 
   const handlePlotsCurrentCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
           [area.id]: {
@@ -106,7 +106,7 @@ const LeaseArea = ({
 
   return (
     <Collapse
-      defaultOpen={areaCollapseStatus !== undefined ? areaCollapseStatus : true}
+      defaultOpen={areaCollapseState !== undefined ? areaCollapseState : true}
       header={
         <div>
           <Column>
@@ -203,10 +203,8 @@ const LeaseArea = ({
         <Column small={12} large={6}>
           <Collapse
             className='collapse__secondary'
-            defaultOpen={plotsContractCollapseStatus !== undefined ? plotsContractCollapseStatus : true}
-            headerTitle={
-              <h4 className='collapse__header-title'>Kiinteistöt / määräalat sopimuksessa</h4>
-            }
+            defaultOpen={plotsContractCollapseState !== undefined ? plotsContractCollapseState : true}
+            headerTitle={<h4 className='collapse__header-title'>Kiinteistöt / määräalat sopimuksessa</h4>}
             onToggle={handlePlotsContractCollapseToggle}
           >
             <BoxItemContainer>
@@ -225,10 +223,8 @@ const LeaseArea = ({
         <Column small={12} large={6}>
           <Collapse
             className='collapse__secondary'
-            defaultOpen={plotsCurrentCollapseStatus !== undefined ? plotsCurrentCollapseStatus : true}
-            headerTitle={
-              <h4 className='collapse__header-title'>Kiinteistöt / määräalat nykyhetkellä</h4>
-            }
+            defaultOpen={plotsCurrentCollapseState !== undefined ? plotsCurrentCollapseState : true}
+            headerTitle={<h4 className='collapse__header-title'>Kiinteistöt / määräalat nykyhetkellä</h4>}
             onToggle={handlePlotsCurrentCollapseToggle}
           >
             {!area.plots_current || !area.plots_current.length &&
@@ -250,10 +246,8 @@ const LeaseArea = ({
         <Column small={12} large={6}>
           <Collapse
             className='collapse__secondary'
-            defaultOpen={planUnitsContractCollapseStatus !== undefined ? planUnitsContractCollapseStatus : true}
-            headerTitle={
-              <h4 className='collapse__header-title'>Kaavayksiköt sopimuksessa</h4>
-            }
+            defaultOpen={planUnitsContractCollapseState !== undefined ? planUnitsContractCollapseState : true}
+            headerTitle={<h4 className='collapse__header-title'>Kaavayksiköt sopimuksessa</h4>}
             onToggle={handlePlanUnitContractCollapseToggle}
           >
             <BoxItemContainer>
@@ -272,10 +266,8 @@ const LeaseArea = ({
         <Column small={12} large={6}>
           <Collapse
             className='collapse__secondary'
-            defaultOpen={planUnitsCurrentCollapseStatus !== undefined ? planUnitsCurrentCollapseStatus : true}
-            headerTitle={
-              <h4 className='collapse__header-title'>Kaavayksiköt nykyhetkellä</h4>
-            }
+            defaultOpen={planUnitsCurrentCollapseState !== undefined ? planUnitsCurrentCollapseState : true}
+            headerTitle={<h4 className='collapse__header-title'>Kaavayksiköt nykyhetkellä</h4>}
             onToggle={handlePlanUnitCurrentCollapseToggle}
           >
             <BoxItemContainer>
@@ -301,15 +293,15 @@ export default connect(
     const id = props.area.id;
 
     return {
-      areaCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.area`),
+      areaCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.area`),
       attributes: getAttributes(state),
-      planUnitsContractCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plan_units_contract`),
-      planUnitsCurrentCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plan_units_current`),
-      plotsContractCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plots_contract`),
-      plotsCurrentCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plots_current`),
+      planUnitsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plan_units_contract`),
+      planUnitsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plan_units_current`),
+      plotsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plots_contract`),
+      plotsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.LEASE_AREAS}.${id}.plots_current`),
     };
   },
   {
-    receiveCollapseStatuses,
+    receiveCollapseStates,
   }
 )(LeaseArea);

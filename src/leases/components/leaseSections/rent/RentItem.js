@@ -11,38 +11,38 @@ import ContractRents from './ContractRents';
 import IndexAdjustedRents from './IndexAdjustedRents';
 import PayableRents from './PayableRents';
 import RentAdjustments from './RentAdjustments';
-import {receiveCollapseStatuses} from '$src/leases/actions';
+import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames, RentTypes} from '$src/leases/enums';
 import {isRentActive} from '$src/leases/helpers';
 import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
-import {getAttributes, getCollapseStatusByKey} from '$src/leases/selectors';
+import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
-  contractRentsCollapseStatus: boolean,
-  indexAdjustedRentsCollapseStatus: boolean,
-  payableRentsCollapseStatus: boolean,
-  receiveCollapseStatuses: Function,
+  contractRentsCollapseState: boolean,
+  indexAdjustedRentsCollapseState: boolean,
+  payableRentsCollapseState: boolean,
+  receiveCollapseStates: Function,
   rent: Object,
-  rentAdjustmentsCollapseStatus: boolean,
-  rentCollapseStatus: boolean,
+  rentAdjustmentsCollapseState: boolean,
+  rentCollapseState: boolean,
 }
 
 const RentItem = ({
   attributes,
-  contractRentsCollapseStatus,
-  indexAdjustedRentsCollapseStatus,
-  payableRentsCollapseStatus,
-  receiveCollapseStatuses,
+  contractRentsCollapseState,
+  indexAdjustedRentsCollapseState,
+  payableRentsCollapseState,
+  receiveCollapseStates,
   rent,
-  rentAdjustmentsCollapseStatus,
-  rentCollapseStatus,
+  rentAdjustmentsCollapseState,
+  rentCollapseState,
 }: Props) => {
   const handleRentCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.RENTS]: {
           [rent.id]: {
@@ -54,7 +54,7 @@ const RentItem = ({
   };
 
   const handleContractRentsCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.RENTS]: {
           [rent.id]: {
@@ -66,7 +66,7 @@ const RentItem = ({
   };
 
   const handleIndexAdjustedRentsCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.RENTS]: {
           [rent.id]: {
@@ -78,7 +78,7 @@ const RentItem = ({
   };
 
   const handleRentAdjustmentsCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.RENTS]: {
           [rent.id]: {
@@ -90,7 +90,7 @@ const RentItem = ({
   };
 
   const handlePayableRentsCollapseToggle = (val: boolean) => {
-    receiveCollapseStatuses({
+    receiveCollapseStates({
       [ViewModes.READONLY]: {
         [FormNames.RENTS]: {
           [rent.id]: {
@@ -108,7 +108,7 @@ const RentItem = ({
   return (
     <Collapse
       className={classNames({'not-active': !isActive})}
-      defaultOpen={rentCollapseStatus !== undefined ? rentCollapseStatus : isActive}
+      defaultOpen={rentCollapseState !== undefined ? rentCollapseState : isActive}
       header={
         <div>
           <Column>
@@ -131,7 +131,7 @@ const RentItem = ({
         rentType === RentTypes.MANUAL) &&
         <Collapse
           className='collapse__secondary'
-          defaultOpen={contractRentsCollapseStatus !== undefined ? contractRentsCollapseStatus : true}
+          defaultOpen={contractRentsCollapseState !== undefined ? contractRentsCollapseState : true}
           headerTitle={<h4 className='collapse__header-title'>Sopimusvuokra</h4>}
           onToggle={handleContractRentsCollapseToggle}
         >
@@ -146,7 +146,7 @@ const RentItem = ({
         rentType === RentTypes.MANUAL) &&
         <Collapse
           className='collapse__secondary'
-          defaultOpen={indexAdjustedRentsCollapseStatus !== undefined ? indexAdjustedRentsCollapseStatus : true}
+          defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : true}
           headerTitle={<h4 className='collapse__header-title'>Indeksitarkistettu vuokra</h4>}
           onToggle={handleIndexAdjustedRentsCollapseToggle}
         >
@@ -161,7 +161,7 @@ const RentItem = ({
         rentType === RentTypes.MANUAL) &&
         <Collapse
           className='collapse__secondary'
-          defaultOpen={rentAdjustmentsCollapseStatus !== undefined ? rentAdjustmentsCollapseStatus : true}
+          defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : true}
           headerTitle={<h4 className='collapse__header-title'>Alennukset ja korotukset</h4>}
           onToggle={handleRentAdjustmentsCollapseToggle}
         >
@@ -176,7 +176,7 @@ const RentItem = ({
         rentType === RentTypes.MANUAL) &&
         <Collapse
           className='collapse__secondary'
-          defaultOpen={payableRentsCollapseStatus !== undefined ? payableRentsCollapseStatus : true}
+          defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : true}
           headerTitle={<h4 className='collapse__header-title'>Perittävä vuokra</h4>}
           onToggle={handlePayableRentsCollapseToggle}
         >
@@ -196,14 +196,14 @@ export default connect(
 
     return {
       attributes: getAttributes(state),
-      contractRentsCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.contract_rents`),
-      indexAdjustedRentsCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.index_adjusted_rents`),
-      payableRentsCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.payable_rents`),
-      rentCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.rent`),
-      rentAdjustmentsCollapseStatus: getCollapseStatusByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.rent_adjustments`),
+      contractRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.contract_rents`),
+      indexAdjustedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.index_adjusted_rents`),
+      payableRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.payable_rents`),
+      rentCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.rent`),
+      rentAdjustmentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.rent_adjustments`),
     };
   },
   {
-    receiveCollapseStatuses,
+    receiveCollapseStates,
   }
 )(RentItem);

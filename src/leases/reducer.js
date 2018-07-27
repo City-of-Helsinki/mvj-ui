@@ -19,7 +19,7 @@ import type {
   ReceiveContactModalSettingsAction,
   ReceiveFormValidFlagsAction,
   ReceiveIsSaveClickedAction,
-  ReceiveCollapseStatusesAction,
+  ReceiveCollapseStatesAction,
 } from '$src/leases/types';
 
 
@@ -145,16 +145,16 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
-const collapseStatusesReducer: Reducer<Object> = handleActions({
-  ['mvj/leases/RECEIVE_COLLAPSE_STATUSES']: (state: Object, {payload: status}: ReceiveCollapseStatusesAction) => {
-    return merge(state, status);
+const collapseStatesReducer: Reducer<Object> = handleActions({
+  ['mvj/leases/RECEIVE_COLLAPSE_STATES']: (state: Object, {payload: states}: ReceiveCollapseStatesAction) => {
+    return merge(state, states);
   },
 }, {});
 
 export default combineReducers({
   attributes: attributesReducer,
   byId: byIdReducer,
-  collapseStatuses: collapseStatusesReducer,
+  collapseStates: collapseStatesReducer,
   contactModalSettings: contactModalSettingsReducer,
   current: currentLeaseReducer,
   isFormValidById: isFormValidByIdReducer,
