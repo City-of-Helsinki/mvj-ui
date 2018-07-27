@@ -132,7 +132,6 @@ const PlotItemsEdit = ({
   };
 
   const handleRemove = () => {
-    console.log('re', index);
     onRemove(index);
   };
 
