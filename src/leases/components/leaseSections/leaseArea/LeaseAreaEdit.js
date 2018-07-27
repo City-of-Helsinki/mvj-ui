@@ -284,6 +284,8 @@ const LeaseAreaEdit = ({
   };
 
   const handleAreaCollapseToggle = (val: boolean) => {
+    if(!areaId) {return;}
+
     receiveCollapseStates({
       [ViewModes.EDIT]: {
         [FormNames.LEASE_AREAS]: {

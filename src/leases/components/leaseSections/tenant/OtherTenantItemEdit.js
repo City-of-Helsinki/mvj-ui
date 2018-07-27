@@ -98,6 +98,8 @@ const OtherTenantItemEdit = ({
   };
 
   const handleCollapseToggle = (val: boolean) => {
+    if(!tenantId) {return;}
+
     receiveCollapseStates({
       [ViewModes.EDIT]: {
         [FormNames.TENANTS]: {
