@@ -1,6 +1,7 @@
 // @flow
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
+import merge from 'lodash/merge';
 
 import {FormNames} from './enums';
 
@@ -15,6 +16,7 @@ import type {
   ReceiveLandUseContractListAction,
   ReceiveSingleLandUseContractAction,
   ReceiveIsSaveClickedAction,
+  ReceiveCollapseStatesAction,
 } from './types';
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -76,8 +78,16 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
+
+const collapseStatesReducer: Reducer<Object> = handleActions({
+  ['mvj/landUseContract/RECEIVE_COLLAPSE_STATES']: (state: Object, {payload: states}: ReceiveCollapseStatesAction) => {
+    return merge(state, states);
+  },
+}, {});
+
 export default combineReducers({
   attributes: attributesReducer,
+  collapseStates: collapseStatesReducer,
   current: currentLandUseContractReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,

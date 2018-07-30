@@ -13,11 +13,13 @@ import {
   showEditMode,
   receiveFormValidFlags,
   clearFormValidFlags,
+  receiveCollapseStates,
 } from './actions';
 import landUseContractReducer from './reducer';
 
 const baseState = {
   attributes: {},
+  collapseStates: {},
   current: {},
   isEditMode: false,
   isFetching: false,
@@ -161,6 +163,14 @@ describe('Land use contract', () => {
 
         let state = landUseContractReducer({}, receiveFormValidFlags({['land-use-contract-basic-info-form']: false}));
         state = landUseContractReducer(state, clearFormValidFlags());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update collapseStates', () => {
+        const newState = {...baseState, collapseStates: {foo: 'bar', foo2: 'bar2'}};
+
+        let state = landUseContractReducer({}, receiveCollapseStates({foo: 'bar'}));
+        state = landUseContractReducer(state, receiveCollapseStates({foo2: 'bar2'}));
         expect(state).to.deep.equal(newState);
       });
     });

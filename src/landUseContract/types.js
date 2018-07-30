@@ -26,3 +26,5 @@ export type ShowEditModeAction = Action<'mvj/landUseContract/SHOW_EDIT', void>;
 
 export type ReceiveFormValidFlagsAction = Action<'mvj/landUseContract/RECEIVE_FORM_VALID_FLAGS', Object>;
 export type ClearFormValidFlagsAction = Action<'mvj/landUseContract/CLEAR_FORM_VALID_FLAGS', void>;
+
+export type ReceiveCollapseStatesAction = Action<'mvj/landUseContract/RECEIVE_COLLAPSE_STATES', Object>;
