@@ -39,3 +39,5 @@ export type ReceiveFormValidFlagsAction = Action<'mvj/infillDevelopment/RECEIVE_
 export type ClearFormValidFlagsAction = Action<'mvj/infillDevelopment/CLEAR_FORM_VALID_FLAGS', void>;
 
 export type ReceiveFormInitialValuesAction = Action<'mvj/infillDevelopment/RECEIVE_INITIAL_VALUES', InfillDevelopment>;
+
+export type ReceiveCollapseStatesAction = Action<'mvj/infillDevelopment/RECEIVE_COLLAPSE_STATES', Object>;

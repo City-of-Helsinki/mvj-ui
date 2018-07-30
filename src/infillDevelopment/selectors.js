@@ -1,4 +1,5 @@
 // @flow
+import get from 'lodash/get';
 import type {Selector} from '../types';
 import type {
   Attributes,
@@ -30,3 +31,7 @@ export const getIsSaveClicked: Selector<boolean, void> = (state: InfillDevelopme
 
 export const getIsFormValidById: Selector<boolean, string> = (state: InfillDevelopmentState, id: string): boolean =>
   state.infillDevelopment.isFormValidById[id];
+
+export const getCollapseStateByKey: Selector<?Object, string> = (state: Object, key: string): ?Object => {
+  return get(state.infillDevelopment.collapseStates, key);
+};

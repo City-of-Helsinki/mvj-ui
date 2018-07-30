@@ -24,6 +24,7 @@ import type {
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
   ReceiveFormInitialValuesAction,
+  ReceiveCollapseStatesAction,
 } from './types';
 
 export const fetchInfillDevelopmentAttributes = (): FetchAttributesAction =>
@@ -76,3 +77,6 @@ export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsActio
 
 export const clearFormValidFlags = (): ClearFormValidFlagsAction =>
   createAction('mvj/infillDevelopment/CLEAR_FORM_VALID_FLAGS')();
+
+export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesAction =>
+  createAction('mvj/infillDevelopment/RECEIVE_COLLAPSE_STATES')(status);

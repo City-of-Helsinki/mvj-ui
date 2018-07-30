@@ -83,9 +83,10 @@ const InfillDevelopmentTemplate = ({attributes, infillDevelopment, isFetching}: 
         <div style={{marginBottom: 10}}>
           {leases.map((lease) =>
             <LeaseItem
+              id={lease.id}
               key={lease.id}
-              id={get(lease, 'lease.value')}
               leaseData={lease}
+              leaseId={get(lease, 'lease.value')}
             />
           )}
         </div>

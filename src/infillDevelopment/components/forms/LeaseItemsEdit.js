@@ -15,6 +15,14 @@ type Props = {
 }
 
 const LeaseItemsEdit = ({fields, infillDevelopment, isSaveClicked}: Props): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
+  const handleRemove = (index: number) => {
+    fields.remove(index);
+  };
+
   return (
     <div>
       {!!fields && !!fields.length && fields.map((lease, index) => {
@@ -25,13 +33,14 @@ const LeaseItemsEdit = ({fields, infillDevelopment, isSaveClicked}: Props): Elem
           infillDevelopment={infillDevelopment}
           index={index}
           isSaveClicked={isSaveClicked}
+          onRemove={handleRemove}
         />;
       })}
       <Row>
         <Column>
           <AddButton
             label='Lisää vuokraus'
-            onClick={() => fields.push()}
+            onClick={handleAdd}
             title='Lisää vuokraus'
           />
         </Column>

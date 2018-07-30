@@ -11,16 +11,16 @@ import {getContactFullName} from '$src/contacts/helpers';
 import type {LeaseId} from '$src/leases/types';
 
 type Props = {
-  id: LeaseId,
   identifier: ?string,
+  leaseId: LeaseId,
   planUnits: Array<Object>,
   plots: Array<Object>,
   tenants: Array<Object>,
 }
 
 const LeaseInfo = ({
-  id,
   identifier,
+  leaseId,
   planUnits,
   plots,
   tenants,
@@ -29,7 +29,7 @@ const LeaseInfo = ({
     <Row>
       <Column small={6} medium={4} large={2}>
         <FormFieldLabel>Vuokratunnus</FormFieldLabel>
-        <a href={`${getRouteById('leases')}/${id}`} target='_blank'>{identifier || '-'}</a>
+        <a href={`${getRouteById('leases')}/${leaseId}`} target='_blank'>{identifier || '-'}</a>
       </Column>
       <Column small={6} medium={4} large={2}>
         <FormFieldLabel>Vuokralainen</FormFieldLabel>
@@ -69,7 +69,7 @@ const LeaseInfo = ({
         }
       </Column>
       <Column small={6} medium={4} large={2}>
-        <a href={`${getRouteById('leases')}/${id}?tab=7`} target='_blank'>Karttalinkki</a>
+        <a href={`${getRouteById('leases')}/${leaseId}?tab=7`} target='_blank'>Karttalinkki</a>
       </Column>
     </Row>
   </div>;

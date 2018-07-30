@@ -1,6 +1,7 @@
 // @flow
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
+import merge from 'lodash/merge';
 
 import type {Reducer} from '../types';
 import type {
@@ -13,6 +14,7 @@ import type {
   ReceiveInfillDevelopmentListAction,
   ReceiveIsSaveClickedAction,
   ReceiveSingleInfillDevelopmentAction,
+  ReceiveCollapseStatesAction,
 } from './types';
 
 import {FormNames} from '$src/infillDevelopment/enums';
@@ -78,8 +80,15 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   [FormNames.INFILL_DEVELOPMENT]: true,
 });
 
+const collapseStatesReducer: Reducer<Object> = handleActions({
+  ['mvj/infillDevelopment/RECEIVE_COLLAPSE_STATES']: (state: Object, {payload: states}: ReceiveCollapseStatesAction) => {
+    return merge(state, states);
+  },
+}, {});
+
 export default combineReducers({
   attributes: attributesReducer,
+  collapseStates: collapseStatesReducer,
   current: currentInfillDevelopmentReducer,
   initialValues: initialValuesReducer,
   isFormValidById: isFormValidByIdReducer,

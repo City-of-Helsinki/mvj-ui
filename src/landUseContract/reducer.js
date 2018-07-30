@@ -78,7 +78,6 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
-
 const collapseStatesReducer: Reducer<Object> = handleActions({
   ['mvj/landUseContract/RECEIVE_COLLAPSE_STATES']: (state: Object, {payload: states}: ReceiveCollapseStatesAction) => {
     return merge(state, states);
