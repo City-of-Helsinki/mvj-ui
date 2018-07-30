@@ -18,27 +18,34 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  collapseState: boolean,
   errors: ?Object,
   fields: any,
   isSaveClicked: boolean,
+  onCollapseToggle: Function,
 }
 
 const DecisionConditionsEdit = ({
   attributes,
+  collapseState,
   errors,
   fields,
   fields: {name},
   isSaveClicked,
+  onCollapseToggle,
 }: Props) => {
+  const handleCollapseToggle = (val: boolean) => {
+    onCollapseToggle(val);
+  };
+
   const decisionConditionsErrors = get(errors, name);
   return(
     <Collapse
       className='collapse__secondary'
-      defaultOpen={true}
+      defaultOpen={collapseState !== undefined ? collapseState : true}
       hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)}
-      headerTitle={
-        <h4 className='collapse__header-title'>Ehdot</h4>
-      }
+      headerTitle={<h4 className='collapse__header-title'>Ehdot</h4>}
+      onToggle={handleCollapseToggle}
     >
       <BoxItemContainer>
         {fields && !!fields.length && fields.map((condition, index) =>

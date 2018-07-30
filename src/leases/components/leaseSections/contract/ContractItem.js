@@ -2,6 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
@@ -10,21 +11,82 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import KtjLink from '$components/ktj/KtjLink';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
+import {receiveCollapseStates} from '$src/leases/actions';
+import {ViewModes} from '$src/enums';
+import {FormNames} from '$src/leases/enums';
+import {isContractActive} from '$src/leases/helpers';
 import {formatDate, getDecisionById, getLabelOfOption, getReferenceNumberLink} from '$src/util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
-import {getCurrentLease} from '$src/leases/selectors';
+import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
 type Props = {
   contract: Object,
+  contractCollapseState: boolean,
+  contractChangesCollapseState: boolean,
   decisionOptions: Array<Object>,
   decisions: Array<Object>,
+  receiveCollapseStates: Function,
   typeOptions: Array<Object>,
 }
 
-const ContractItem = ({contract, decisionOptions, decisions, typeOptions}: Props) => {
+const ContractItem = ({
+  contract,
+  contractCollapseState,
+  contractChangesCollapseState,
+  decisionOptions,
+  decisions,
+  receiveCollapseStates,
+  typeOptions,
+}: Props) => {
+  const handleContractCollapseToggle = (val: boolean) => {
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        [FormNames.CONTRACTS]: {
+          [contract.id]: {
+            contract: val,
+          },
+        },
+      },
+    });
+  };
+
+  const handleContractChangesCollapseToggle = (val: boolean) => {
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        [FormNames.CONTRACTS]: {
+          [contract.id]: {
+            contract_changes: val,
+          },
+        },
+      },
+    });
+  };
+
   const decision = getDecisionById(decisions, contract.decision);
   return (
-    <div>
+    <Collapse
+      defaultOpen={contractCollapseState !== undefined ? contractCollapseState : false}
+      header={
+        <div>
+          <Column>
+            <span className='collapse__header-subtitle'>
+              {formatDate(contract.signing_date) || '-'}
+            </span>
+          </Column>
+          <Column>
+            <span className='collapse__header-subtitle'>
+              {isContractActive(contract) ? 'Voimassa' : 'Ei voimassa'}
+            </span>
+          </Column>
+        </div>
+      }
+      headerTitle={
+        <h3 className='collapse__header-title'>
+          {getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}
+        </h3>
+      }
+      onToggle={handleContractCollapseToggle}
+    >
       <Row>
         <Column small={6} medium={4} large={2}>
           <FormFieldLabel>Sopimuksen tyyppi</FormFieldLabel>
@@ -133,10 +195,9 @@ const ContractItem = ({contract, decisionOptions, decisions, typeOptions}: Props
 
       <Collapse
         className='collapse__secondary'
-        defaultOpen={true}
-        headerTitle={
-          <h4 className='collapse__header-title'>Sopimuksen muutokset</h4>
-        }
+        defaultOpen={contractChangesCollapseState !== undefined ? contractChangesCollapseState : true}
+        headerTitle={<h4 className='collapse__header-title'>Sopimuksen muutokset</h4>}
+        onToggle={handleContractChangesCollapseToggle}
       >
         {(!contract.contract_changes || !contract.contract_changes.length) &&
           <p>Ei sopimuksen muutoksia</p>
@@ -193,16 +254,22 @@ const ContractItem = ({contract, decisionOptions, decisions, typeOptions}: Props
           </BoxItemContainer>
         }
       </Collapse>
-    </div>
+    </Collapse>
   );
 };
 
 export default connect(
-  (state) => {
+  (state, props) => {
+    const id = props.contract.id;
     const currentLease = getCurrentLease(state);
 
     return {
+      contractCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.contract`),
+      contractChangesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRACTS}.${id}.contract_changes`),
       decisions: getDecisionsByLease(state, currentLease.id),
     };
+  },
+  {
+    receiveCollapseStates,
   }
 )(ContractItem);

@@ -3,12 +3,15 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import {change, FieldArray, getFormValues, reduxForm} from 'redux-form';
+import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import type {Element} from 'react';
 
+import AddButton from '$components/form/AddButton';
 import ContactModal from './ContactModal';
 import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
-import TenantItemsEdit from './TenantItemsEdit';
+import TenantItemEdit from './TenantItemEdit';
 import {receiveIsSaveClicked} from '$src/contacts/actions';
 import {
   createContact,
@@ -24,12 +27,58 @@ import {getIsContactFormValid} from '$src/contacts/selectors';
 import {
   getContactModalSettings,
   getCurrentLease,
-  getErrorsByFormName,
   getIsContactModalOpen,
-  getIsSaveClicked,
 } from '$src/leases/selectors';
 
 import type {ContactModalSettings, Lease} from '$src/leases/types';
+
+type TenantsProps = {
+  fields: any,
+  showAddButton: boolean,
+  tenants: Array<Object>,
+}
+
+const renderTenants = ({
+  fields,
+  showAddButton,
+  tenants,
+}: TenantsProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
+  const handleRemove = (index: number) => {
+    fields.remove(index);
+  };
+
+  return (
+    <div>
+      {fields && !!fields.length && fields.map((tenant, index) => {
+        return (
+          <TenantItemEdit
+            key={index}
+            field={tenant}
+            index={index}
+            onRemove={handleRemove}
+            tenants={tenants}
+          />
+        );
+      })}
+      {showAddButton &&
+        <Row>
+          <Column>
+            <AddButton
+              className='no-margin'
+              label='Lisää vuokralainen'
+              onClick={handleAdd}
+              title='Lisää vuokralainen'
+            />
+          </Column>
+        </Row>
+      }
+    </div>
+  );
+};
 
 type Props = {
   change: Function,
@@ -38,12 +87,10 @@ type Props = {
   createContact: Function,
   currentLease: Lease,
   editContact: Function,
-  errors: ?Object,
   handleSubmit: Function,
   hideContactModal: Function,
   isContactFormValid: boolean,
   isContactModalOpen: boolean,
-  isSaveClicked: boolean,
   receiveContactModalSettings: Function,
   receiveFormValidFlags: Function,
   receiveIsSaveClicked: Function,
@@ -139,10 +186,8 @@ class TenantsEdit extends Component<Props, State> {
   render () {
     const {
       contactModalSettings,
-      errors,
       handleSubmit,
       isContactModalOpen,
-      isSaveClicked,
     } = this.props;
 
     const {tenantsData} = this.state;
@@ -165,22 +210,18 @@ class TenantsEdit extends Component<Props, State> {
 
           <FormSection>
             <FieldArray
-              component={TenantItemsEdit}
-              enableAddButton={true}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
+              component={renderTenants}
               name="tenants.tenants"
+              showAddButton={true}
               tenants={tenants}
             />
 
             {!!tenantsArchived.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
             {!!tenantsArchived.length &&
               <FieldArray
-                component={TenantItemsEdit}
-                enableAddButton={false}
-                errors={errors}
-                isSaveClicked={isSaveClicked}
+                component={renderTenants}
                 name="tenants.tenantsArchived"
+                showAddButton={false}
                 tenants={tenantsArchived}
               />
             }
@@ -200,10 +241,8 @@ export default flowRight(
         contactModalSettings: getContactModalSettings(state),
         contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
         currentLease: getCurrentLease(state),
-        errors: getErrorsByFormName(state, formName),
         isContactFormValid: getIsContactFormValid(state),
         isContactModalOpen: getIsContactModalOpen(state),
-        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

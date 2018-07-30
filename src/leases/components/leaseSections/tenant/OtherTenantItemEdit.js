@@ -1,13 +1,12 @@
 // @flow
 import React from 'react';
-import {getFormValues} from 'redux-form';
+import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
@@ -19,43 +18,50 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import IconButton from '$components/button/IconButton';
 import RemoveButton from '$components/form/RemoveButton';
 import {initializeContactForm, receiveIsSaveClicked} from '$src/contacts/actions';
-import {receiveContactModalSettings, showContactModal} from '$src/leases/actions';
+import {receiveCollapseStates, receiveContactModalSettings, showContactModal} from '$src/leases/actions';
+import {ViewModes} from '$src/enums';
 import {FormNames, TenantContactType} from '$src/leases/enums';
 import {isTenantActive} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
-import {getAttributes} from '$src/leases/selectors';
+import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
-type OtherTenantItemProps = {
+type Props = {
   attributes: Attributes,
+  collapseState: boolean,
+  contact: ?Object,
   errors: ?Object,
   field: string,
-  fields: any,
-  formValues: Object,
   index: number,
   initializeContactForm: Function,
   isSaveClicked: boolean,
+  onRemove: Function,
+  receiveCollapseStates: Function,
   receiveContactModalSettings: Function,
   receiveIsSaveClicked: Function,
   showContactModal: Function,
   tenant: Object,
+  tenantId: number,
 }
 
-const OtherTenantItem = ({
+const OtherTenantItemEdit = ({
   attributes,
+  collapseState,
+  contact,
   errors,
   field,
-  fields,
-  formValues,
   index,
   initializeContactForm,
   isSaveClicked,
+  onRemove,
+  receiveCollapseStates,
   receiveContactModalSettings,
   receiveIsSaveClicked,
   showContactModal,
   tenant,
-}: OtherTenantItemProps) => {
+  tenantId,
+}: Props) => {
   const getOtherTenantById = (id: number) => {
     const tenantContactSet = get(tenant, 'tenantcontact_set', []);
 
@@ -88,25 +94,37 @@ const OtherTenantItem = ({
   };
 
   const handleRemoveClick = () => {
-    fields.remove(index);
+    onRemove(index);
   };
 
-  const contact = get(formValues, `${field}.contact`);
-  const savedOtherTenant = getOtherTenantById(get(formValues, `${field}.id`));
-  const isActive = isTenantActive(savedOtherTenant);
-  const tenantErrors = get(errors, field);
+  const handleCollapseToggle = (val: boolean) => {
+    if(!tenantId) {return;}
 
-  const tenantTypeOptions = getAttributeFieldOptions(attributes,
-    'tenants.child.children.tenantcontact_set.child.children.type').filter((x) => x.value !== TenantContactType.TENANT);
+    receiveCollapseStates({
+      [ViewModes.EDIT]: {
+        [FormNames.TENANTS]: {
+          others: {
+            [tenantId]: val,
+          },
+        },
+      },
+    });
+  };
+
+  const savedOtherTenant = getOtherTenantById(tenantId),
+    isActive = isTenantActive(savedOtherTenant),
+    tenantErrors = get(errors, field),
+    tenantTypeOptions = getAttributeFieldOptions(attributes,
+      'tenants.child.children.tenantcontact_set.child.children.type').filter((x) => x.value !== TenantContactType.TENANT);
 
   return (
     <Collapse
       className={classNames('collapse__secondary', {'not-active': !isActive})}
-      defaultOpen={isActive}
+      defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
-      headerTitle={
-        <h4 className='collapse__header-title edit-row'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>
-      }>
+      headerTitle={<h4 className='collapse__header-title edit-row'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>}
+      onToggle={handleCollapseToggle}
+    >
       <BoxContentWrapper>
         <RemoveButton
           className='position-topright'
@@ -193,76 +211,26 @@ const OtherTenantItem = ({
   );
 };
 
-type Props = {
-  attributes: Attributes,
-  errors: ?Object,
-  fields: any,
-  formValues: Object,
-  initializeContactForm: Function,
-  isSaveClicked: boolean,
-  receiveContactModalSettings: Function,
-  receiveIsSaveClicked: Function,
-  showContactModal: Function,
-  tenant: Object,
-}
-
-const OtherTenantItemsEdit = ({
-  attributes,
-  errors,
-  fields,
-  formValues,
-  initializeContactForm,
-  isSaveClicked,
-  receiveContactModalSettings,
-  receiveIsSaveClicked,
-  showContactModal,
-  tenant,
-}: Props) => {
-  return (
-    <div>
-      {fields && !!fields.length && fields.map((field, index) => {
-        return (
-          <OtherTenantItem
-            key={index}
-            attributes={attributes}
-            errors={errors}
-            field={field}
-            fields={fields}
-            formValues={formValues}
-            index={index}
-            initializeContactForm={initializeContactForm}
-            isSaveClicked={isSaveClicked}
-            receiveContactModalSettings={receiveContactModalSettings}
-            receiveIsSaveClicked={receiveIsSaveClicked}
-            showContactModal={showContactModal}
-            tenant={tenant}
-          />
-        );
-      })}
-      <Row>
-        <Column>
-          <AddButtonSecondary
-            label='Lisää laskunsaaja tai yhteyshenkilö'
-            onClick={() => fields.push({})}
-            title='Lisää laskunsaaja tai yhteyshenkilö'
-          />
-        </Column>
-      </Row>
-    </div>
-  );
-};
+const formName = FormNames.TENANTS;
+const selector = formValueSelector(formName);
 
 export default connect(
-  (state) => {
+  (state, props) => {
+    const id = selector(state, `${props.field}.id`);
     return {
       attributes: getAttributes(state),
-      formValues: getFormValues(FormNames.TENANTS)(state),
+      collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.TENANTS}.others.${id}`),
+      contact: selector(state, `${props.field}.contact`),
+      errors: getErrorsByFormName(state, formName),
+      isSaveClicked: getIsSaveClicked(state),
+      tenantId: id,
     };
   },
   {
     initializeContactForm,
+    receiveCollapseStates,
     receiveContactModalSettings,
     receiveIsSaveClicked,
     showContactModal,
   }
-)(OtherTenantItemsEdit);
+)(OtherTenantItemEdit);

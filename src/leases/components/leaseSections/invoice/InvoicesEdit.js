@@ -11,24 +11,25 @@ import Divider from '$components/content/Divider';
 import InvoicesTableEdit from './InvoicesTableEdit';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {
-  startInvoicing,
-  stopInvoicing,
-} from '$src/leases/actions';
-import {getIsCreateOpen} from '$src/invoices/selectors';
+import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
 import {createInvoice, receiveIsCreateOpen} from '$src/invoices/actions';
-import {getCurrentLease} from '$src/leases/selectors';
+import {ViewModes} from '$src/enums';
 import {getNewInvoiceForDb} from '$src/invoices/helpers';
+import {getIsCreateOpen} from '$src/invoices/selectors';
+import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
 import type {Lease} from '$src/leases/types';
 
 type Props = {
   createInvoice: Function,
   currentLease: Lease,
+  invoicesCollapseState: boolean,
   isCreateOpen: boolean,
   isInvoicingEnabled: boolean,
   params: Object,
+  receiveCollapseStates: Function,
   receiveIsCreateOpen: Function,
+  rentCalculatorCollapseState: boolean,
   startInvoicing: Function,
   stopInvoicing: Function,
 }
@@ -103,11 +104,37 @@ class InvoicesEdit extends Component<Props, State> {
     stopInvoicing(leaseId);
   }
 
+  handleInvoicesCollapseToggle = (val: boolean) => {
+    const {receiveCollapseStates} = this.props;
+
+    receiveCollapseStates({
+      [ViewModes.EDIT]: {
+        invoices: {
+          invoices: val,
+        },
+      },
+    });
+  };
+
+  handleRentCalculatorCollapseToggle = (val: boolean) => {
+    const {receiveCollapseStates} = this.props;
+
+    receiveCollapseStates({
+      [ViewModes.EDIT]: {
+        invoices: {
+          rent_calculator: val,
+        },
+      },
+    });
+  };
+
   render() {
     const {
       currentLease,
+      invoicesCollapseState,
       isCreateOpen,
       receiveIsCreateOpen,
+      rentCalculatorCollapseState,
     } = this.props;
     const {
       isStartInvoicingModalOpen,
@@ -146,10 +173,10 @@ class InvoicesEdit extends Component<Props, State> {
         <Divider />
 
         <Collapse
-          defaultOpen={true}
-          headerTitle={
-            <h3 className='collapse__header-title'>Laskut</h3>
-          }>
+          defaultOpen={invoicesCollapseState !== undefined ? invoicesCollapseState : true}
+          headerTitle={<h3 className='collapse__header-title'>Laskut</h3>}
+          onToggle={this.handleInvoicesCollapseToggle}
+        >
           <InvoicesTableEdit/>
 
           <AddInvoiceComponent
@@ -163,10 +190,10 @@ class InvoicesEdit extends Component<Props, State> {
           />
         </Collapse>
         <Collapse
-          defaultOpen={true}
-          headerTitle={
-            <h3 className='collapse__header-title'>Vuokralaskuri</h3>
-          }>
+          defaultOpen={rentCalculatorCollapseState !== undefined ? rentCalculatorCollapseState : true}
+          headerTitle={<h3 className='collapse__header-title'>Vuokralaskuri</h3>}
+          onToggle={this.handleRentCalculatorCollapseToggle}
+        >
           <RentCalculator />
         </Collapse>
       </div>
@@ -180,11 +207,14 @@ export default flowRight(
     (state) => {
       return {
         currentLease: getCurrentLease(state),
+        invoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.invoices.invoices`),
         isCreateOpen: getIsCreateOpen(state),
+        rentCalculatorCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.invoices.rent_calculator`),
       };
     },
     {
       createInvoice,
+      receiveCollapseStates,
       receiveIsCreateOpen,
       startInvoicing,
       stopInvoicing,

@@ -3,15 +3,18 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
 import {reduxForm, FieldArray} from 'redux-form';
+import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import type {Element} from 'react';
 
+import AddButton from '$components/form/AddButton';
 import BasisOfRentsEdit from './BasisOfRentsEdit';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import FormSectionComponent from '$components/form/FormSection';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
-import RentItemsEdit from './RentItemsEdit';
+import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
@@ -20,10 +23,53 @@ import {getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/lease
 
 import type {Lease} from '$src/leases/types';
 
+type RentsProps = {
+  fields: any,
+  rents: Array<Object>,
+  showAddButton: boolean,
+};
+
+const renderRents = ({
+  fields,
+  rents,
+  showAddButton,
+}:RentsProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
+  const handleRemove = (index: number) => {
+    fields.remove(index);
+  };
+
+  return (
+    <div>
+      {fields && !!fields.length && fields.map((item, index) =>
+        <RentItemEdit
+          key={index}
+          field={item}
+          index={index}
+          onRemove={handleRemove}
+          rents={rents}
+        />
+      )}
+      {showAddButton &&
+        <Row>
+          <Column>
+            <AddButton
+              label='Lisää vuokra'
+              onClick={handleAdd}
+              title='Lisää vuokra'
+            />
+          </Column>
+        </Row>
+      }
+    </div>
+  );
+};
+
 type Props = {
   currentLease: Lease,
-  errors: ?Object,
-  handleSubmit: Function,
   isSaveClicked: boolean,
   params: Object,
   receiveFormValidFlags: Function,
@@ -62,14 +108,14 @@ class RentsEdit extends Component<Props, State> {
   }
 
   render() {
-    const {errors, handleSubmit, isSaveClicked} = this.props;
+    const {isSaveClicked} = this.props;
     const {rentsData} = this.state;
 
     const rents = get(rentsData, 'rents', []);
     const rentsArchived = get(rentsData, 'rentsArchived', []);
 
     return (
-      <form onSubmit={handleSubmit}>
+      <form>
         <FormSectionComponent>
           <h2>Vuokra</h2>
           <RightSubtitle
@@ -86,23 +132,19 @@ class RentsEdit extends Component<Props, State> {
           />
           <Divider />
           <FieldArray
-            component={RentItemsEdit}
-            enableAddButton={true}
-            errors={errors}
-            isSaveClicked={isSaveClicked}
+            component={renderRents}
             name='rents.rents'
             rents={rents}
+            showAddButton={true}
           />
 
           {!!rentsArchived.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
           {!!rentsArchived.length &&
             <FieldArray
-              component={RentItemsEdit}
-              enableAddButton={false}
-              errors={errors}
-              isSaveClicked={isSaveClicked}
+              component={renderRents}
               name='rents.rentsArchived'
               rents={rentsArchived}
+              showAddButton={false}
             />
           }
 

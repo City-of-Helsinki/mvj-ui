@@ -8,19 +8,51 @@ import Divider from '$components/content/Divider';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
+import {receiveCollapseStates} from '$src/landUseContract/actions';
+import {ViewModes} from '$src/enums';
+import {FormNames} from '$src/landUseContract/enums';
 import {getContentBasicInformation} from '$src/landUseContract/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
-import {getAttributes, getCurrentLandUseContract} from '$src/landUseContract/selectors';
+import {getAttributes, getCollapseStateByKey, getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
 import type {Attributes, LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Attributes,
+  basicInformationCollapseState: boolean,
   currentLandUseContract: LandUseContract,
+  planInformationCollapseState: boolean,
+  receiveCollapseStates: Function,
 }
 
-const BasicInformation = ({attributes, currentLandUseContract}: Props) => {
+const BasicInformation = ({
+  attributes,
+  basicInformationCollapseState,
+  currentLandUseContract,
+  planInformationCollapseState,
+  receiveCollapseStates,
+}: Props) => {
+  const handleBasicInformationCollapseToggle = (val: boolean) => {
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        [FormNames.BASIC_INFORMATION]: {
+          basic_information: val,
+        },
+      },
+    });
+  };
+
+  const handlePlanInformationCollapseToggle = (val: boolean) => {
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        [FormNames.BASIC_INFORMATION]: {
+          plan_information: val,
+        },
+      },
+    });
+  };
+
   const basicInformation = getContentBasicInformation(currentLandUseContract);
   const stateOptions = getAttributeFieldOptions(attributes, 'state');
   const planAcceptorOptions = getAttributeFieldOptions(attributes, 'plan_acceptor');
@@ -30,10 +62,9 @@ const BasicInformation = ({attributes, currentLandUseContract}: Props) => {
       <h2>Perustiedot</h2>
       <Divider />
       <Collapse
-        defaultOpen={true}
-        headerTitle={
-          <h3 className='collapse__header-title'>Perustiedot</h3>
-        }
+        defaultOpen={basicInformationCollapseState !== undefined ? basicInformationCollapseState : true}
+        headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
+        onToggle={handleBasicInformationCollapseToggle}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -78,10 +109,9 @@ const BasicInformation = ({attributes, currentLandUseContract}: Props) => {
       </Collapse>
 
       <Collapse
-        defaultOpen={true}
-        headerTitle={
-          <h3 className='collapse__header-title'>Asemakaavatiedot</h3>
-        }
+        defaultOpen={planInformationCollapseState !== undefined ? planInformationCollapseState : true}
+        headerTitle={<h3 className='collapse__header-title'>Asemakaavatiedot</h3>}
+        onToggle={handlePlanInformationCollapseToggle}
       >
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -123,7 +153,12 @@ export default connect(
   (state) => {
     return {
       attributes: getAttributes(state),
+      basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.BASIC_INFORMATION}.basic_information`),
       currentLandUseContract: getCurrentLandUseContract(state),
+      planInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.BASIC_INFORMATION}.plan_information`),
     };
+  },
+  {
+    receiveCollapseStates,
   }
 )(BasicInformation);

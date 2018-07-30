@@ -1,24 +1,64 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, getFormValues, reduxForm} from 'redux-form';
+import {FieldArray, reduxForm} from 'redux-form';
+import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
+import type {Element} from 'react';
 
+import AddButton from '$components/form/AddButton';
 import FormSection from '$components/form/FormSection';
-import DecisionItemsEdit from './DecisionItemsEdit';
+import DecisionItemEdit from './DecisionItemEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContentDecisions} from '$src/leases/helpers';
-import {getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
 
 import type {Lease} from '$src/leases/types';
 
+type DecisionsProps = {
+  decisionsData: Array<Object>,
+  fields: any,
+}
+
+const renderDecisions = ({
+  decisionsData,
+  fields,
+}: DecisionsProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
+  const handleRemove = (index: number) => {
+    fields.remove(index);
+  };
+
+  return (
+    <div>
+      {fields && !!fields.length && fields.map((decision, index) =>
+        <DecisionItemEdit
+          key={index}
+          decisionsData={decisionsData}
+          index={index}
+          field={decision}
+          onRemove={handleRemove}
+        />
+      )}
+      <Row>
+        <Column>
+          <AddButton
+            label='Lisää päätös'
+            onClick={handleAdd}
+            title='Lisää päätös'
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
+
 type Props = {
   currentLease: Lease,
-  errors: ?Object,
-  formValues: Object,
-  handleSubmit: Function,
-  isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -56,18 +96,14 @@ class DecisionsEdit extends Component<Props, State> {
   }
 
   render() {
-    const {errors, formValues, handleSubmit, isSaveClicked} = this.props,
-      {decisionsData} = this.state;
+    const {decisionsData} = this.state;
 
     return (
-      <form onSubmit={handleSubmit}>
+      <form>
         <FormSection>
           <FieldArray
-            component={DecisionItemsEdit}
+            component={renderDecisions}
             decisionsData={decisionsData}
-            errors={errors}
-            formValues={formValues}
-            isSaveClicked={isSaveClicked}
             name="decisions"
           />
         </FormSection>
@@ -83,9 +119,6 @@ export default flowRight(
     (state) => {
       return {
         currentLease: getCurrentLease(state),
-        errors: getErrorsByFormName(state, formName),
-        formValues: getFormValues(formName)(state),
-        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

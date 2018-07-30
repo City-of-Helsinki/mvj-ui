@@ -13,7 +13,10 @@ import ListItems from '$components/content/ListItems';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SubTitle from '$components/content/SubTitle';
+import {receiveCollapseStates} from '$src/infillDevelopment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
+import {ViewModes} from '$src/enums';
+import {FormNames} from '$src/infillDevelopment/enums';
 import {getUserFullName} from '$src/users/helpers';
 import {
   formatDate,
@@ -27,7 +30,7 @@ import {
   getContentLeaseIdentifier,
   getContentTenants,
 } from '$src/leases/helpers';
-import {getAttributes} from '$src/infillDevelopment/selectors';
+import {getAttributes, getCollapseStateByKey} from '$src/infillDevelopment/selectors';
 import {getIsFetchingById, getLeaseById} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/infillDevelopment/types';
@@ -35,11 +38,14 @@ import type {Lease, LeaseId} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  collapseState: boolean,
   fetchLeaseById: Function,
-  id: LeaseId,
+  id: number,
   isFetching: boolean,
   lease: Lease,
+  leaseId: LeaseId,
   leaseData: Object,
+  receiveCollapseStates: Function,
 }
 
 type State = {
@@ -65,8 +71,8 @@ class LeaseItem extends Component<Props, State> {
     const {
       attributes,
       fetchLeaseById,
-      id,
       lease,
+      leaseId,
     } = this.props;
 
     if(!isEmpty(attributes)) {
@@ -74,7 +80,7 @@ class LeaseItem extends Component<Props, State> {
     }
 
     if(isEmpty(lease)) {
-      fetchLeaseById(id);
+      fetchLeaseById(leaseId);
     } else {
       this.updateLeaseContentStates();
     }
@@ -121,6 +127,18 @@ class LeaseItem extends Component<Props, State> {
     });
   }
 
+  handleCollapseToggle = (val: boolean) => {
+    const {id, receiveCollapseStates} = this.props;
+
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        [FormNames.INFILL_DEVELOPMENT]: {
+          [id]: val,
+        },
+      },
+    });
+  }
+
   handleMapLink = () => {
     alert('TODO: open map link');
   }
@@ -132,7 +150,12 @@ class LeaseItem extends Component<Props, State> {
   }
 
   render() {
-    const {id, isFetching, leaseData} = this.props;
+    const {
+      collapseState,
+      isFetching,
+      leaseData,
+      leaseId,
+    } = this.props;
     const {
       decisionMakerOptions,
       identifier,
@@ -141,24 +164,23 @@ class LeaseItem extends Component<Props, State> {
       plots,
       tenants,
     } = this.state;
-    const intendedUses = get(leaseData, 'intended_uses', []);
-    const decisions = get(leaseData, 'decisions', []);
-    const attachments = get(leaseData, 'attachments', []);
-    const totalCompensation = this.getTotalCompensation(leaseData);
+    const intendedUses = get(leaseData, 'intended_uses', []),
+      decisions = get(leaseData, 'decisions', []),
+      attachments = get(leaseData, 'attachments', []),
+      totalCompensation = this.getTotalCompensation(leaseData);
 
     return (
       <Collapse
         className='collapse__secondary'
-        defaultOpen={true}
-        headerTitle={
-          <h4 className='collapse__header-title'>{identifier || '-'}</h4>
-        }
+        defaultOpen={collapseState !== undefined ? collapseState : true}
+        headerTitle={<h4 className='collapse__header-title'>{identifier || '-'}</h4>}
+        onToggle={this.handleCollapseToggle}
       >
         {isFetching
           ? <LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper>
           : <LeaseInfo
-            id={id}
             identifier={identifier}
+            leaseId={leaseId}
             planUnits={planUnits}
             plots={plots}
             tenants={tenants}
@@ -314,14 +336,17 @@ class LeaseItem extends Component<Props, State> {
 export default flowRight(
   connect(
     (state, props) => {
+      const id = props.id;
       return {
         attributes: getAttributes(state),
-        isFetching: getIsFetchingById(state, props.id),
-        lease: getLeaseById(state, props.id),
+        collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.INFILL_DEVELOPMENT}.${id}`),
+        isFetching: getIsFetchingById(state, props.leaseId),
+        lease: getLeaseById(state, props.leaseId),
       };
     },
     {
       fetchLeaseById,
+      receiveCollapseStates,
     }
   )
 )(LeaseItem);

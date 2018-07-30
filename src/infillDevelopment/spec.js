@@ -14,11 +14,13 @@ import {
   receiveFormValidFlags,
   clearFormValidFlags,
   receiveIsSaveClicked,
+  receiveCollapseStates,
 } from './actions';
 import infillDevelopmentReducer from './reducer';
 
 const baseState = {
   attributes: {},
+  collapseStates: {},
   current: {},
   initialValues: {},
   isEditMode: false,
@@ -183,6 +185,14 @@ describe('Infill development', () => {
         newState.isSaveClicked = true;
 
         const state = infillDevelopmentReducer({}, receiveIsSaveClicked(true));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update collapseStates', () => {
+        const newState = {...baseState, collapseStates: {foo: 'bar', foo2: 'bar2'}};
+
+        let state = infillDevelopmentReducer({}, receiveCollapseStates({foo: 'bar'}));
+        state = infillDevelopmentReducer(state, receiveCollapseStates({foo2: 'bar2'}));
         expect(state).to.deep.equal(newState);
       });
     });

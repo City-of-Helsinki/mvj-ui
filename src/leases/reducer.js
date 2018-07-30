@@ -1,6 +1,7 @@
 // @flow
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
+import merge from 'lodash/merge';
 
 import type {Reducer} from '$src/types';
 import {FormNames} from '$src/leases/enums';
@@ -18,6 +19,7 @@ import type {
   ReceiveContactModalSettingsAction,
   ReceiveFormValidFlagsAction,
   ReceiveIsSaveClickedAction,
+  ReceiveCollapseStatesAction,
 } from '$src/leases/types';
 
 
@@ -143,9 +145,16 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
+const collapseStatesReducer: Reducer<Object> = handleActions({
+  ['mvj/leases/RECEIVE_COLLAPSE_STATES']: (state: Object, {payload: states}: ReceiveCollapseStatesAction) => {
+    return merge(state, states);
+  },
+}, {});
+
 export default combineReducers({
   attributes: attributesReducer,
   byId: byIdReducer,
+  collapseStates: collapseStatesReducer,
   contactModalSettings: contactModalSettingsReducer,
   current: currentLeaseReducer,
   isFormValidById: isFormValidByIdReducer,

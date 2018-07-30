@@ -1,29 +1,75 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, getFormValues, reduxForm} from 'redux-form';
+import {FieldArray, reduxForm} from 'redux-form';
+import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
+import type {Element} from 'react';
 
-import ContractItemsEdit from './ContractItemsEdit';
+import AddButton from '$components/form/AddButton';
+import ContractItemEdit from './ContractItemEdit';
 import FormSection from '$components/form/FormSection';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContentContracts} from '$src/leases/helpers';
 import {getDecisionsOptions} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
-import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
+
+type ContractsProps = {
+  attributes: Attributes,
+  contractsData: Array<Object>,
+  decisionOptions: Array<Object>,
+  fields: any,
+}
+
+const renderContracts = ({
+  attributes,
+  contractsData,
+  decisionOptions,
+  fields,
+}: ContractsProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
+  const handleRemove = (index: number) => {
+    fields.remove(index);
+  };
+
+  return (
+    <div>
+      {fields && !!fields.length && fields.map((contract, index) =>
+        <ContractItemEdit
+          key={index}
+          attributes={attributes}
+          contractsData={contractsData}
+          decisionOptions={decisionOptions}
+          field={contract}
+          index={index}
+          onRemove={handleRemove}
+        />
+      )}
+      <Row>
+        <Column>
+          <AddButton
+            label='Lisää sopimus'
+            onClick={handleAdd}
+            title='Lisää sopimus'
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
 
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
   decisions: Array<Object>,
-  errors: ?Object,
-  formValues: Object,
-  handleSubmit: Function,
-  isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -71,20 +117,17 @@ class ContractsEdit extends Component<Props, State> {
   }
 
   render() {
-    const {attributes, errors, formValues, handleSubmit, isSaveClicked} = this.props;
+    const {attributes} = this.props;
     const {contractsData, decisionOptions} = this.state;
 
     return (
-      <form onSubmit={handleSubmit}>
+      <form>
         <FormSection>
           <FieldArray
             attributes={attributes}
-            component={ContractItemsEdit}
+            component={renderContracts}
             contractsData={contractsData}
             decisionOptions={decisionOptions}
-            errors={errors}
-            formValues={formValues}
-            isSaveClicked={isSaveClicked}
             name="contracts"
           />
         </FormSection>
@@ -103,9 +146,6 @@ export default flowRight(
         attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
         decisions: getDecisionsByLease(state, currentLease.id),
-        errors: getErrorsByFormName(state, formName),
-        formValues: getFormValues(formName)(state),
-        isSaveClicked: getIsSaveClicked(state),
       };
     },
     {

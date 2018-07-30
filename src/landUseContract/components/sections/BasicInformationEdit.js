@@ -14,9 +14,10 @@ import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {receiveFormValidFlags} from '$src/landUseContract/actions';
+import {receiveCollapseStates, receiveFormValidFlags} from '$src/landUseContract/actions';
+import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
-import {getAttributes, getIsSaveClicked} from '$src/landUseContract/selectors';
+import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/landUseContract/types';
@@ -109,8 +110,11 @@ const renderLitigants = ({attributes, fields, isSaveClicked}: LitigantsProps): E
 
 type Props = {
   attributes: Attributes,
-  receiveFormValidFlags: Function,
+  basicInformationCollapseState: boolean,
   isSaveClicked: boolean,
+  planInformationCollapseState: boolean,
+  receiveCollapseStates: Function,
+  receiveFormValidFlags: Function,
   valid: boolean,
 }
 
@@ -125,18 +129,46 @@ class BasicInformationEdit extends Component<Props> {
     }
   }
 
+  handleBasicInformationCollapseToggle = (val: boolean) => {
+    const {receiveCollapseStates} = this.props;
+
+    receiveCollapseStates({
+      [ViewModes.EDIT]: {
+        [FormNames.BASIC_INFORMATION]: {
+          basic_information: val,
+        },
+      },
+    });
+  }
+
+  handlePlanInformationCollapseToggle = (val: boolean) => {
+    const {receiveCollapseStates} = this.props;
+
+    receiveCollapseStates({
+      [ViewModes.EDIT]: {
+        [FormNames.BASIC_INFORMATION]: {
+          plan_information: val,
+        },
+      },
+    });
+  }
+
   render() {
-    const {attributes, isSaveClicked} = this.props;
+    const {
+      attributes,
+      basicInformationCollapseState,
+      isSaveClicked,
+      planInformationCollapseState,
+    } = this.props;
 
     return (
       <form>
         <h2>Perustiedot</h2>
         <Divider />
         <Collapse
-          defaultOpen={true}
-          headerTitle={
-            <h3 className='collapse__header-title'>Perustiedot</h3>
-          }
+          defaultOpen={basicInformationCollapseState !== undefined ? basicInformationCollapseState : true}
+          headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
+          onToggle={this.handleBasicInformationCollapseToggle}
         >
           <Row>
             <Column small={6} medium={4} large={2}>
@@ -204,10 +236,9 @@ class BasicInformationEdit extends Component<Props> {
         </Collapse>
 
         <Collapse
-          defaultOpen={true}
-          headerTitle={
-            <h3 className='collapse__header-title'>Asemakaavatiedot</h3>
-          }
+          defaultOpen={planInformationCollapseState !== undefined ? planInformationCollapseState : true}
+          headerTitle={<h3 className='collapse__header-title'>Asemakaavatiedot</h3>}
+          onToggle={this.handlePlanInformationCollapseToggle}
         >
           <Row>
             <Column small={6} medium={4} large={2}>
@@ -287,10 +318,13 @@ export default flowRight(
     (state) => {
       return {
         attributes: getAttributes(state),
+        basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.basic_information`),
         isSaveClicked: getIsSaveClicked(state),
+        planInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.plan_information`),
       };
     },
     {
+      receiveCollapseStates,
       receiveFormValidFlags,
     }
   ),

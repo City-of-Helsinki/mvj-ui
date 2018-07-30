@@ -1,30 +1,55 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
+import {connect} from 'react-redux';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormFieldLabel from '$components/form/FormFieldLabel';
+import {receiveCollapseStates} from '$src/landUseContract/actions';
+import {ViewModes} from '$src/enums';
+import {FormNames} from '$src/landUseContract/enums';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 
 import type {Attributes} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Attributes,
+  collapseState: boolean,
   conditions: Array<Object>,
+  decisionId: number,
+  receiveCollapseStates: Function,
 }
 
-const DecisionConditions = ({attributes, conditions}: Props) => {
+const DecisionConditions = ({
+  attributes,
+  collapseState,
+  conditions,
+  decisionId,
+  receiveCollapseStates,
+}: Props) => {
+  const handleCollapseToggle = (val: boolean) => {
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        [FormNames.DECISIONS]: {
+          [decisionId]: {
+            conditions: val,
+          },
+        },
+      },
+    });
+  };
+
   const typeOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.conditions.child.children.type');
 
   return (
     <Collapse
       className='collapse__secondary'
-      defaultOpen={true}
-      headerTitle={
-        <h4 className='collapse__header-title'>Ehdot</h4>
-      }
+      defaultOpen={collapseState !== undefined ? collapseState : true}
+      headerTitle={<h4 className='collapse__header-title'>Ehdot</h4>}
+      onToggle={handleCollapseToggle}
     >
       <BoxItemContainer>
         {!conditions.length && <p>Ei ehtoja</p>}
@@ -61,4 +86,15 @@ const DecisionConditions = ({attributes, conditions}: Props) => {
   );
 };
 
-export default DecisionConditions;
+export default connect(
+  (state, props) => {
+    const decisionId = props.decisionId;
+
+    return {
+      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.DECISIONS}.${decisionId}.conditions`),
+    };
+  },
+  {
+    receiveCollapseStates,
+  }
+)(DecisionConditions);

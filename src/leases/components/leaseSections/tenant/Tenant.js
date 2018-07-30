@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import get from 'lodash/get';
 import {Column} from 'react-foundation';
 import classNames from 'classnames';
@@ -7,24 +8,45 @@ import classNames from 'classnames';
 import Collapse from '$components/collapse/Collapse';
 import OtherTenantItem from './OtherTenantItem';
 import TenantItem from './TenantItem';
+import {receiveCollapseStates} from '$src/leases/actions';
+import {FormNames} from '$src/leases/enums';
+import {ViewModes} from '$src/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {formatDateRange} from '$util/helpers';
+import {getCollapseStateByKey} from '$src/leases/selectors';
 
 type Props = {
+  collapseState: boolean,
+  receiveCollapseStates: Function,
   tenant: Object,
 }
 
 const Tenant = ({
+  collapseState,
+  receiveCollapseStates,
   tenant,
 }: Props) => {
+  const handleCollapseToggle = (val: boolean) => {
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        [FormNames.TENANTS]: {
+          tenants: {
+            [tenant.id]: val,
+          },
+        },
+      },
+    });
+  };
+
   const contact = get(tenant, 'tenant.contact');
   const isActive = isTenantActive(get(tenant, 'tenant'));
+  const collapseDefault = collapseState !== undefined ? collapseState : isActive;
 
   return (
     <Collapse
       className={classNames({'not-active': !isActive})}
-      defaultOpen={isActive}
+      defaultOpen={collapseDefault}
       header={
         <div>
           <Column>
@@ -44,6 +66,7 @@ const Tenant = ({
       headerTitle={
         <h3 className='collapse__header-title'>{getContactFullName(contact)}</h3>
       }
+      onToggle={handleCollapseToggle}
     >
       <div>
         <TenantItem
@@ -65,4 +88,14 @@ const Tenant = ({
   );
 };
 
-export default Tenant;
+export default connect(
+  (state, props) => {
+    const id = props.tenant.id;
+    return {
+      collapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.TENANTS}.tenants.${id}`),
+    };
+  },
+  {
+    receiveCollapseStates,
+  }
+)(Tenant);

@@ -12,6 +12,7 @@ type Props = {
   hasErrors: boolean,
   header?: any,
   headerTitle: any,
+  onToggle: ?Function,
   showTitleOnOpen?: boolean,
 }
 
@@ -75,6 +76,7 @@ class Collapse extends PureComponent<Props, State> {
   }
 
   handleToggle = () => {
+    const {onToggle} = this.props;
     const {isOpen} = this.state;
     if(isOpen) {
       this.setState({
@@ -88,6 +90,9 @@ class Collapse extends PureComponent<Props, State> {
         isExpanding: true,
         isOpen: true,
       });
+    }
+    if(onToggle) {
+      onToggle(!isOpen);
     }
   };
 

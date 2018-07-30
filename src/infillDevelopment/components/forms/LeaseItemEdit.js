@@ -17,8 +17,13 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {deleteInfillDevelopmentFile, uploadInfillDevelopmentFile} from '$src/infillDevelopment/actions';
+import {
+  deleteInfillDevelopmentFile,
+  receiveCollapseStates,
+  uploadInfillDevelopmentFile,
+} from '$src/infillDevelopment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
+import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {
   formatDate,
@@ -33,7 +38,7 @@ import {
 } from '$src/leases/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes} from '$src/infillDevelopment/selectors';
+import {getAttributes, getCollapseStateByKey} from '$src/infillDevelopment/selectors';
 import {
   getIsFetchingById,
   getLeaseById,
@@ -41,7 +46,7 @@ import {
 import {referenceNumber} from '$components/form/validations';
 
 import type {Attributes} from '$src/infillDevelopment/types';
-import type {Lease} from '$src/leases/types';
+import type {Lease, LeaseId} from '$src/leases/types';
 
 type DecisionsProps = {
   attributes: Attributes,
@@ -50,6 +55,10 @@ type DecisionsProps = {
 }
 
 const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
   return (
     <div>
       <SubTitle>Korvauksen päätökset</SubTitle>
@@ -63,6 +72,10 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
             <Column small={3} large={2}><FormFieldLabel>Diaarunumero</FormFieldLabel></Column>
           </Row>
           {fields.map((field, index) => {
+            const handleRemove = () => {
+              fields.remove(index);
+            };
+
             return (
               <Row key={index}>
                 <Column small={3} large={2}>
@@ -108,7 +121,7 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                 </Column>
                 <Column small={3} large={2}>
                   <RemoveButton
-                    onClick={() => fields.remove(index)}
+                    onClick={handleRemove}
                     title="Poista päätös"
                   />
                 </Column>
@@ -121,7 +134,7 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
         <Column>
           <AddButtonSecondary
             label='Lisää päätös'
-            onClick={() => fields.push({})}
+            onClick={handleAdd}
             title='Lisää päätös'
           />
         </Column>
@@ -137,6 +150,10 @@ type IntendedUsesProps = {
 }
 
 const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
   return (
     <div>
       <SubTitle>Käyttötarkoitus</SubTitle>
@@ -149,6 +166,10 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
             <Column small={3} large={2}><FormFieldLabel>€/k-m²</FormFieldLabel></Column>
           </Row>
           {fields.map((field, index) => {
+            const handleRemove = () => {
+              fields.remove(index);
+            };
+
             return (
               <Row key={index}>
                 <Column small={3} large={2}>
@@ -185,7 +206,7 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
                 </Column>
                 <Column small={3} large={2}>
                   <RemoveButton
-                    onClick={() => fields.remove(index)}
+                    onClick={handleRemove}
                     title="Poista käyttötarkoitus"
                   />
                 </Column>
@@ -198,7 +219,7 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
         <Column>
           <AddButtonSecondary
             label='Lisää käyttötarkoitus'
-            onClick={() => fields.push({})}
+            onClick={handleAdd}
             title='Lisää käyttötarkoitus'
           />
         </Column>
@@ -210,19 +231,22 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
 type Props = {
   attributes: Attributes,
   change: Function,
+  collapseState: boolean,
   compensationInvestment: ?number,
   deleteInfillDevelopmentFile: Function,
   fetchLeaseById: Function,
   field: string,
-  fields: any,
   index: number,
   isFetching: boolean,
   isSaveClicked: boolean,
   lease: Lease,
+  leaseId: LeaseId,
   infillDevelopment: Object,
   infillDevelopmentCompensationLeaseId: number,
   leaseFieldValue: Object,
   monetaryCompensation: ?number,
+  onRemove: Function,
+  receiveCollapseStates: Function,
   uploadInfillDevelopmentFile: Function,
 }
 
@@ -329,20 +353,34 @@ class LeaseItemEdit extends Component<Props, State> {
     });
   }
 
-  handleMapLink = () => {
-    alert('TODO: open map link');
+  handleRemove = () => {
+    const {index, onRemove} = this.props;
+    onRemove(index);
+  }
+
+  handleCollapseToggle = (val: boolean) => {
+    const {infillDevelopmentCompensationLeaseId, receiveCollapseStates} = this.props;
+    if(!infillDevelopmentCompensationLeaseId){return;}
+
+    receiveCollapseStates({
+      [ViewModes.EDIT]: {
+        [FormNames.INFILL_DEVELOPMENT]: {
+          [infillDevelopmentCompensationLeaseId]: val,
+        },
+      },
+    });
   }
 
   render() {
     const {
       attributes,
+      collapseState,
       field,
-      fields,
-      index,
       infillDevelopment,
       infillDevelopmentCompensationLeaseId,
       isFetching,
       isSaveClicked,
+      leaseId,
     } = this.props;
 
     const {
@@ -357,15 +395,14 @@ class LeaseItemEdit extends Component<Props, State> {
     return (
       <Collapse
         className='collapse__secondary'
-        defaultOpen={true}
-        headerTitle={
-          <h4 className='collapse__header-title'>{isFetching ? 'Ladataan...' : (identifier || '-')}</h4>
-        }
+        defaultOpen={collapseState !== undefined ? collapseState : true}
+        headerTitle={<h4 className='collapse__header-title'>{isFetching ? 'Ladataan...' : (identifier || '-')}</h4>}
+        onToggle={this.handleCollapseToggle}
       >
         <BoxContentWrapper>
           <RemoveButton
             className='position-topright-no-padding'
-            onClick={() => fields.remove(index)}
+            onClick={this.handleRemove}
             title="Poista käyttötarkoitus"
           />
           <Row>
@@ -421,7 +458,9 @@ class LeaseItemEdit extends Component<Props, State> {
               }
             </Column>
             <Column small={6} medium={4} large={2}>
-              {!isFetching && <a onClick={() => {alert('TODO. OPEN MAP LINK');}}>Karttalinkki</a>}
+              {isFetching && <p>Ladataan...</p>}
+              {!isFetching && !leaseId && <p>-</p>}
+              {!isFetching && leaseId && <a href={`${getRouteById('leases')}/${leaseId}?tab=7`} target='_blank'>Karttalinkki</a>}
             </Column>
           </Row>
 
@@ -535,6 +574,10 @@ class LeaseItemEdit extends Component<Props, State> {
                     </Column>
                   </Row>
                   {attachments.map((file, index) => {
+                    const handleDelete = () => {
+                      this.handleDeleteInfillDevelopmentFile(file.id);
+                    };
+
                     return (
                       <Row key={index}>
                         <Column small={3} large={4}>
@@ -548,7 +591,7 @@ class LeaseItemEdit extends Component<Props, State> {
                         </Column>
                         <Column small={3} large={2}>
                           <RemoveButton
-                            onClick={() => this.handleDeleteInfillDevelopmentFile(file.id)}
+                            onClick={handleDelete}
                             title="Poista liitetiedosto"
                           />
                         </Column>
@@ -586,22 +629,17 @@ export default flowRight(
     (state, props) => {
       const {field} = props;
       const leaseFieldValue = selector(state, `${field}.lease`);
+      const lease = selector(state, `${field}.lease.value`);
+      const leaseId = selector(state, `${field}.id`);
 
-      if(leaseFieldValue) {
-        return {
-          attributes: getAttributes(state),
-          compensationInvestment: selector(state, `${field}.compensation_investment_amount`),
-          infillDevelopmentCompensationLeaseId: selector(state, `${field}.id`),
-          isFetching: getIsFetchingById(state, leaseFieldValue.value),
-          lease: getLeaseById(state, leaseFieldValue.value),
-          leaseFieldValue: leaseFieldValue,
-          monetaryCompensation: selector(state, `${field}.monetary_compensation_amount`),
-        };
-      }
       return {
         attributes: getAttributes(state),
+        collapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.INFILL_DEVELOPMENT}.${leaseId}`),
         compensationInvestment: selector(state, `${field}.compensation_investment_amount`),
-        infillDevelopmentCompensationLeaseId: selector(state, `${field}.id`),
+        infillDevelopmentCompensationLeaseId: leaseId,
+        isFetching: getIsFetchingById(state, lease),
+        lease: getLeaseById(state, lease),
+        leaseId: lease,
         leaseFieldValue: leaseFieldValue,
         monetaryCompensation: selector(state, `${field}.monetary_compensation_amount`),
       };
@@ -610,6 +648,7 @@ export default flowRight(
       change,
       deleteInfillDevelopmentFile,
       fetchLeaseById,
+      receiveCollapseStates,
       uploadInfillDevelopmentFile,
     }
   )

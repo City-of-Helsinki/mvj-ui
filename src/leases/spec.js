@@ -22,12 +22,14 @@ import {
   showDeleteRelatedLeaseModal,
   hideDeleteRelatedLeaseModal,
   receiveIsSaveClicked,
+  receiveCollapseStates,
 } from './actions';
 import leasesReducer from './reducer';
 
 const stateTemplate = {
   attributes: {},
   byId: {},
+  collapseStates: {},
   contactModalSettings: null,
   current: {},
   isContactModalOpen: false,
@@ -280,6 +282,14 @@ describe('Leases', () => {
         newState.isSaveClicked = true;
 
         const state = leasesReducer({}, receiveIsSaveClicked(true));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update collapseStates', () => {
+        const newState = {...stateTemplate, collapseStates: {foo: 'bar', foo2: 'bar2'}};
+
+        let state = leasesReducer({}, receiveCollapseStates({foo: 'bar'}));
+        state = leasesReducer(state, receiveCollapseStates({foo2: 'bar2'}));
         expect(state).to.deep.equal(newState);
       });
     });

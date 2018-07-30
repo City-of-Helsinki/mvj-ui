@@ -1,15 +1,11 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {Column} from 'react-foundation';
-import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import Collapse from '$components/collapse/Collapse';
 import ContractItem from './ContractItem';
 import {getContentContracts} from '$src/leases/helpers';
-import {isContractActive} from '$src/leases/helpers';
-import {formatDate, getAttributeFieldOptions, getDecisionsOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributeFieldOptions, getDecisionsOptions} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -92,35 +88,12 @@ class Contracts extends PureComponent<Props, State> {
       <div>
         {(!contracts || !contracts.length) && <p>Ei sopimuksia</p>}
         {contracts && !!contracts.length && contracts.map((contract, index) =>
-          <Collapse
+          <ContractItem
             key={index}
-            defaultOpen={false}
-            header={
-              <div>
-                <Column>
-                  <span className='collapse__header-subtitle'>
-                    {formatDate(contract.signing_date) || '-'}
-                  </span>
-                </Column>
-                <Column>
-                  <span className='collapse__header-subtitle'>
-                    {isContractActive(contract) ? 'Voimassa' : 'Ei voimassa'}
-                  </span>
-                </Column>
-              </div>
-            }
-            headerTitle={
-              <h3 className='collapse__header-title'>
-                {getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}
-              </h3>
-            }
-          >
-            <ContractItem
-              contract={contract}
-              decisionOptions={decisionOptions}
-              typeOptions={typeOptions}
-            />
-          </Collapse>
+            contract={contract}
+            decisionOptions={decisionOptions}
+            typeOptions={typeOptions}
+          />
         )}
       </div>
     );
