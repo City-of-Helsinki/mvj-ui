@@ -88,10 +88,10 @@ export const getContentLeaseStatus = (lease: Object) => {
   const now = moment();
   const startDate = get(lease, 'start_date');
   const endDate = get(lease, 'end_date');
-  if(endDate && now.isAfter(endDate)) {
+  if(endDate && now.isAfter(endDate, 'day')) {
     return LeaseStatus.FINISHED;
   }
-  if((!endDate && !startDate) || moment(startDate).isAfter(now)) {
+  if((!endDate && !startDate) || moment(startDate).isAfter(now, 'day')) {
     return LeaseStatus.PREPARATION;
   }
 
@@ -1316,7 +1316,7 @@ export const isContractActive = (contract: Object) => {
   const startDate = get(contract, 'collateral_start_date');
   const endDate = get(contract, 'collateral_end_date');
 
-  if(startDate && moment(startDate).isAfter(now) || endDate && now.isAfter(endDate)) {
+  if(startDate && moment(startDate).isAfter(now, 'day') || endDate && now.isAfter(endDate, 'day')) {
     return false;
   }
 
@@ -1328,7 +1328,7 @@ export const isRentActive = (rent: ?Object) => {
   const startDate = get(rent, 'start_date');
   const endDate = get(rent, 'end_date');
 
-  if(startDate && moment(startDate).isAfter(now) || endDate && now.isAfter(endDate)) {
+  if(startDate && moment(startDate).isAfter(now, 'day') || endDate && now.isAfter(endDate, 'day')) {
     return false;
   }
 
@@ -1339,7 +1339,7 @@ export const isRentArchived = (rent: Object) => {
   const now = moment();
   const endDate = get(rent, 'end_date');
 
-  if(endDate && now.isAfter(endDate)) {
+  if(endDate && now.isAfter(endDate, 'day')) {
     return true;
   }
 
@@ -1350,8 +1350,8 @@ export const isTenantActive = (tenant: ?Object) => {
   const now = moment();
   const startDate = get(tenant, 'start_date');
   const endDate = get(tenant, 'end_date');
-
-  if(startDate && moment(startDate).isAfter(now) || endDate && now.isAfter(endDate)) {
+  console.log(moment(startDate));
+  if(startDate && moment(startDate).isAfter(now, 'day') || endDate && now.isAfter(endDate, 'day')) {
     return false;
   }
 
@@ -1362,7 +1362,7 @@ export const isTenantArchived = (tenant: ?Object) => {
   const now = moment();
   const endDate = get(tenant, 'end_date');
 
-  if(endDate && now.isAfter(endDate)) {
+  if(endDate && now.isAfter(endDate, 'day')) {
     return true;
   }
 
