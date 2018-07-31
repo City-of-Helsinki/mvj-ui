@@ -27,7 +27,7 @@ const FieldTypeSelect = ({
         {...input}
         id={name}
         options={options}
-        onSelectedChanged={(value) => onChange(value)}
+        onSelectedChanged={onChange}
         selected={value}
         disabled={disabled}
         isLoading={isLoading}

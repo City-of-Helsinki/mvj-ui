@@ -101,6 +101,7 @@ class FieldTypeLessorSelect extends Component<Props> {
         {...input}
         arrowRenderer={arrowRenderer}
         autoload={true}
+        autosize={false}
         backspaceRemoves={false}
         className={classNames(
           'form-field__select',

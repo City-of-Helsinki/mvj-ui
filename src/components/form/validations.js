@@ -35,7 +35,7 @@ export const dateGreaterOrEqual = (date: ?Moment, otherDate: ?Moment, error?: st
   if(!date || !otherDate) {
     return undefined;
   }
-  return !moment(otherDate, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).isAfter(moment(date, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY'])) ? undefined : (error ? error : 'Loppupäivämäärä on aikaisempi kuin alkupäivämäärää');
+  return !moment(otherDate, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).isAfter(moment(date, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']), 'day') ? undefined : (error ? error : 'Loppupäivämäärä on aikaisempi kuin alkupäivämäärää');
 };
 
 export const referenceNumber = (value: any, error?: string) => {

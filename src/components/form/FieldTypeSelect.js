@@ -30,7 +30,7 @@ const FieldTypeSelect = ({
   placeholder,
 }: Props) => {
 
-  const handleBlur = (value: any) => {
+  const handleBlur = () => {
     onBlur(value);
   };
 
@@ -51,13 +51,14 @@ const FieldTypeSelect = ({
       {...input}
       className={classNames('form-field__select', {'has-error': displayError}, {'is-dirty': isDirty})}
       arrowRenderer={arrowRenderer}
+      autosize={false}
       clearable={false}
       disabled={disabled}
       id={name}
       noResultsText={'Ei tuloksia'}
       options={options}
       placeholder={placeholder || 'Valitse...'}
-      onBlur={() => handleBlur(value)}
+      onBlur={handleBlur}
       onChange={handleChange}
     />
   );

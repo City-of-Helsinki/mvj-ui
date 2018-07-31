@@ -92,6 +92,7 @@ class FieldTypeContactSelect extends Component<Props> {
         {...input}
         arrowRenderer={arrowRenderer}
         autoload={false}
+        autosize={false}
         backspaceRemoves={false}
         className={classNames(
           'form-field__select',
