@@ -433,9 +433,11 @@
 
   &__component {
     &.has-unit {
-      display: flex;
+      display: table;
+      width: 100%;
+
       input {
-        flex: 1 1 0%;
+        display: table-cell;
       }
     }
   }
@@ -443,7 +445,9 @@
   &__unit {
     line-height: rem-calc(20px);
     font-size: rem-calc(14px);
-    margin-left: rem-calc(5px);
+    padding-left: rem-calc(5px);
+    display: table-cell;
+    vertical-align: middle;
   }
 }
 
