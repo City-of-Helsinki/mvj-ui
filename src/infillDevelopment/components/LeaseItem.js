@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import Collapse from '$src/components/collapse/Collapse';
+import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import LeaseInfo from './LeaseInfo';
 import ListItems from '$components/content/ListItems';
@@ -309,7 +310,11 @@ class LeaseItem extends Component<Props, State> {
               return (
                 <Row key={index}>
                   <Column small={4} large={4}>
-                    <a href={file.file}>{get(file.filename) || 'TODO: Add file name'}</a>
+                    <FileDownloadLink
+                      fileName={get(file.filename) || 'TODO: Add file name'}
+                      fileUrl={file.file}
+                      label={get(file.filename) || 'TODO: Add file name'}
+                    />
                   </Column>
                   <Column small={4} large={2}>
                     <p>{formatDate(file.uploaded_at) || '-'}</p>

@@ -258,7 +258,7 @@ const ConstructabilityItem = ({
             </Column>
           </div>
         }
-        headerTitle={<h4 className='collapse__header-title'>Pima</h4>}
+        headerTitle={<h4 className='collapse__header-title'>Pima ja jäte</h4>}
         onToggle={handlePollutedLandCollapseToggle}
         showTitleOnOpen={true}
       >

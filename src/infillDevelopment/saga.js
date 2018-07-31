@@ -146,7 +146,7 @@ function* uploadInfillDevelopmentFileSaga({payload}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
-        yield put(displayUIMessage({title: '', body: 'Tiedoston lataaminen onnistui'}));
+        displayUIMessage({title: '', body: 'Tiedoston lataaminen onnistui'});
         yield put(fetchSingleInfillDevelopmentAction(payload.id));
         break;
       case 404:
@@ -170,7 +170,7 @@ function* deleteInfillDevelopmentFileSaga({payload}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 204:
-        yield put(displayUIMessage({title: '', body: 'Tiedosto on poistettu onnistuneesti'}));
+        displayUIMessage({title: '', body: 'Tiedosto on poistettu onnistuneesti'});
         yield put(fetchSingleInfillDevelopmentAction(payload.id));
         break;
       case 404:
