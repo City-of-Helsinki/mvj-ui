@@ -3,36 +3,30 @@ import React from 'react';
 import {connect} from 'react-redux';
 import debounce from 'lodash/debounce';
 
+import {displayUIMessage} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
-import {displayUIMessage, getApiUrlWithOutVersionSuffix} from '$util/helpers';
 
 type Props = {
   apiToken: string,
-  fileKey: string,
-  fileName?: string,
-  identifier: string,
-  idKey?: string,
+  className?: string,
+  fileName: string,
+  fileUrl: string,
   label: string,
-  langCode?: string,
 }
 
-const KtjLink = ({
+const FileDownloadLink = ({
   apiToken,
-  fileKey,
-  fileName = 'ktj_document',
-  identifier,
-  idKey = 'kohdetunnus',
+  className,
+  fileName,
+  fileUrl,
   label,
-  langCode = 'fi',
 }: Props) => {
 
   const handleClick =  debounce(() => {
-    const apiUrlWithOutVersionSuffix = getApiUrlWithOutVersionSuffix();
-    const request = new Request(`${apiUrlWithOutVersionSuffix}/ktjkir/tuloste/${fileKey}/pdf?${idKey}=${identifier}&lang=${langCode}`);
+    const request = new Request(fileUrl);
     if (apiToken) {
       request.headers.set('Authorization', `Bearer ${apiToken}`);
     }
-    request.headers.set('Content-Type', 'application/pdf');
 
     return fetch(request)
       .then((response) => {
@@ -44,14 +38,13 @@ const KtjLink = ({
         }
       })
       .then((blob) => {
-        const filename = `${fileName}_${identifier}.pdf`;
         if (window.navigator.msSaveOrOpenBlob) { // for IE and Edge
-          window.navigator.msSaveBlob(blob, filename);
+          window.navigator.msSaveBlob(blob, fileName);
         } else { // for modern browsers
           const tempLink = document.createElement('a');
           const fileURL = window.URL.createObjectURL(blob);
           tempLink.href = fileURL;
-          tempLink.setAttribute('download', filename);
+          tempLink.setAttribute('download', fileName);
           tempLink.click();
         }
       })
@@ -61,7 +54,7 @@ const KtjLink = ({
       });
   }, 1000, {leading: true});
 
-  return <a onClick={handleClick}>{label}</a>;
+  return <a className={className} onClick={handleClick}>{label}</a>;
 };
 
 export default connect(
@@ -70,4 +63,4 @@ export default connect(
       apiToken: getApiToken(state),
     };
   }
-)(KtjLink);
+)(FileDownloadLink);

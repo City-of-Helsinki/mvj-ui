@@ -330,7 +330,7 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={pollutedLandCollapseState !== undefined ? pollutedLandCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(pollutedLandErrors)}
-        headerTitle={<h4 className='collapse__header-title'>PIMA</h4>}
+        headerTitle={<h4 className='collapse__header-title'>Pima ja jäte</h4>}
         onToggle={handlePollutedLandCollapseToggle}
       >
         <Row>

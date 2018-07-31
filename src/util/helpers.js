@@ -309,6 +309,15 @@ export const formatDateObj = (unix, format = 'DD.MM.YYYY HH:mm') => {
 };
 
 /**
+ * get API-url without version suffix
+ * @returns {string}
+ */
+export const getApiUrlWithOutVersionSuffix = () => {
+  /* global API_URL */
+  return API_URL.split('/v1')[0];
+};
+
+/**
  * Proxied KTJ-link
  * @param id
  * @param key
@@ -316,8 +325,7 @@ export const formatDateObj = (unix, format = 'DD.MM.YYYY HH:mm') => {
  * @returns {string}
  */
 export const getKtjLink = (id, key, lang = 'fi') => {
-  /* global API_URL */
-  const apiUrlWithOutVersionSuffix = API_URL.split('/v1')[0];
+  const apiUrlWithOutVersionSuffix = getApiUrlWithOutVersionSuffix();
   return `${apiUrlWithOutVersionSuffix}/ktjkir/tuloste/${key}/pdf?kohdetunnus=${id}&lang=${lang}`;
 };
 

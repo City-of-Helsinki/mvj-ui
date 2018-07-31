@@ -145,7 +145,7 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
               </Row>
               <Row>
                 <Column small={6} large={4}>
-                  <p className='no-margin'>Pima</p>
+                  <p className='no-margin'>Pima ja jäte</p>
                 </Column>
                 <Column small={6} large={4}>
                   <StatusIndicator
