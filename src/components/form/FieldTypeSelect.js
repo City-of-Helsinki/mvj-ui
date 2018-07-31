@@ -51,6 +51,7 @@ const FieldTypeSelect = ({
       {...input}
       className={classNames('form-field__select', {'has-error': displayError}, {'is-dirty': isDirty})}
       arrowRenderer={arrowRenderer}
+      autosize={false}
       clearable={false}
       disabled={disabled}
       id={name}

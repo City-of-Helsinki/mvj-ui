@@ -3,7 +3,6 @@ import React, {createElement, PureComponent} from 'react';
 import {Field} from 'redux-form';
 import classNames from 'classnames';
 import get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
 
 import ErrorBlock from './ErrorBlock';
 import FieldTypeBasic from './FieldTypeBasic';
@@ -137,6 +136,7 @@ type Props = {
 }
 
 type State = {
+  fieldAttributes: ?Object,
   fieldType: ?string,
   label: ?string,
   options: Array<Object>,
@@ -145,6 +145,7 @@ type State = {
 
 class FormField extends PureComponent<Props, State> {
   state = {
+    fieldAttributes: null,
     fieldType: null,
     label: null,
     options: [],
@@ -155,30 +156,21 @@ class FormField extends PureComponent<Props, State> {
     disabled: false,
     disableDirty: false,
     disableTouched: false,
+    fieldAttributes: null,
     isLoading: false,
   };
 
-  componentDidMount() {
-    const {fieldAttributes} = this.props;
-    if(!isEmpty(fieldAttributes)) {
-      this.updateSettings();
+  static getDerivedStateFromProps(props: Props, state: State) {
+    if (props.fieldAttributes !== state.fieldAttributes) {
+      return {
+        fieldAttributes: props.fieldAttributes,
+        fieldType: get(props.fieldAttributes, 'type'),
+        label: get(props.fieldAttributes, 'label'),
+        options: getFieldOptions(props.fieldAttributes),
+        required: !!get(props.fieldAttributes, 'required'),
+      };
     }
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    if(JSON.stringify(prevProps.fieldAttributes) !== JSON.stringify(this.props.fieldAttributes)) {
-      this.updateSettings();
-    }
-  }
-
-  updateSettings = () => {
-    const {fieldAttributes} = this.props;
-    this.setState({
-      label: get(fieldAttributes, 'label'),
-      fieldType: get(fieldAttributes, 'type'),
-      required: !!get(fieldAttributes, 'required'),
-      options: getFieldOptions(fieldAttributes),
-    });
+    return null;
   }
 
   handleGenericNormalize = (value: any) => {
