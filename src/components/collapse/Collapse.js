@@ -35,7 +35,7 @@ class Collapse extends PureComponent<Props, State> {
   };
 
   state = {
-    contentHeight: null,
+    contentHeight: this.props.defaultOpen ? null : 0,
     isCollapsing: false,
     isExpanding: false,
     isOpen: this.props.defaultOpen,

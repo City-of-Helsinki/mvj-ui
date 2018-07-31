@@ -1350,7 +1350,7 @@ export const isTenantActive = (tenant: ?Object) => {
   const now = moment();
   const startDate = get(tenant, 'start_date');
   const endDate = get(tenant, 'end_date');
-  console.log(moment(startDate));
+
   if(startDate && moment(startDate).isAfter(now, 'day') || endDate && now.isAfter(endDate, 'day')) {
     return false;
   }

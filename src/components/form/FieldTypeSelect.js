@@ -30,7 +30,7 @@ const FieldTypeSelect = ({
   placeholder,
 }: Props) => {
 
-  const handleBlur = (value: any) => {
+  const handleBlur = () => {
     onBlur(value);
   };
 
@@ -57,7 +57,7 @@ const FieldTypeSelect = ({
       noResultsText={'Ei tuloksia'}
       options={options}
       placeholder={placeholder || 'Valitse...'}
-      onBlur={() => handleBlur(value)}
+      onBlur={handleBlur}
       onChange={handleChange}
     />
   );
