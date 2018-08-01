@@ -12,6 +12,7 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddFileButton from '$components/form/AddFileButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$src/components/collapse/Collapse';
+import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
@@ -581,7 +582,11 @@ class LeaseItemEdit extends Component<Props, State> {
                     return (
                       <Row key={index}>
                         <Column small={3} large={4}>
-                          <a href={file.file}>{get(file.filename) || 'TODO: Add file name'}</a>
+                          <FileDownloadLink
+                            fileName={file.filename}
+                            fileUrl={file.file}
+                            label={file.filename}
+                          />
                         </Column>
                         <Column small={3} large={2}>
                           <p>{formatDate(file.uploaded_at) || '-'}</p>

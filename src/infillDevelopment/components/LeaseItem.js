@@ -311,9 +311,9 @@ class LeaseItem extends Component<Props, State> {
                 <Row key={index}>
                   <Column small={4} large={4}>
                     <FileDownloadLink
-                      fileName={get(file.filename) || 'TODO: Add file name'}
+                      fileName={file.filename}
                       fileUrl={file.file}
-                      label={get(file.filename) || 'TODO: Add file name'}
+                      label={file.filename}
                     />
                   </Column>
                   <Column small={4} large={2}>
