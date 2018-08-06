@@ -5,6 +5,11 @@
   overflow: hidden;
   min-height: 100%;
 
+  [type="radio"] {
+    margin: 0;
+    transition: none;
+  }
+
   &__content {
     flex: 1;
     display: flex;

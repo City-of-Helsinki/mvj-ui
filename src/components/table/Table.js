@@ -82,14 +82,14 @@ class Table extends Component<Props, State> {
     }
   }
 
-  getDefaultSortings = (dataKeys: Array<Object>): Array<string> => {
-    return dataKeys.map((column) => {
+  getDefaultSortings = (columns: Array<Object>): Array<string> => {
+    return columns.map((column) => {
       let sorting = 'both';
       if (column.defaultSorting) {
         const defaultSorting = column.defaultSorting.toLowerCase();
-        if (defaultSorting == 'desc') {
+        if (defaultSorting === 'desc') {
           sorting = 'desc';
-        } else if (defaultSorting == 'asc') {
+        } else if (defaultSorting === 'asc') {
           sorting = 'asc';
         }
       }

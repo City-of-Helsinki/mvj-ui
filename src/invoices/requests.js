@@ -22,11 +22,14 @@ export const createInvoice = (invoice: Invoice): Generator<any, any, any> => {
   }));
 };
 
-export const creditInvoice = (invoiceId: number): Generator<any, any, any> => {
+export const creditInvoice = (payload: Object): Generator<any, any, any> => {
+  const {creditData, invoiceId} = payload;
+  const body = JSON.stringify(creditData);
+
   return callApi(new Request(createUrl(`invoice/${invoiceId}/credit/`), {
     method: 'POST',
+    body,
   }));
-
 };
 
 export const patchInvoice = (invoice: Invoice): Generator<any, any, any> => {

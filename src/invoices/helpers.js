@@ -81,6 +81,7 @@ export const getContentIncoiveItem = (invoice: Object) => {
     totalShare: getInvoiceTotalSharePercentage(rows),
     receivableTypes: getInvoiceReceivableTypes(rows),
     credited_invoice: get(invoice, 'credited_invoice'),
+    invoiceset: get(invoice, 'invoiceset'),
   };
 };
 

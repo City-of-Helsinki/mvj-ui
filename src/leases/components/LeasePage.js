@@ -39,6 +39,7 @@ import {fetchAttributes as fetchCommentAttributes, fetchCommentsByLease} from '$
 import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {fetchDecisionsByLease} from '$src/decision/actions';
 import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
+import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {
   clearFormValidFlags,
   fetchAttributes,
@@ -100,6 +101,7 @@ type Props = {
   fetchDecisionsByLease: Function,
   fetchInvoiceAttributes: Function,
   fetchInvoices: Function,
+  fetchInvoiceSetsByLease: Function,
   fetchNoticePeriods: Function,
   fetchSingleLease: Function,
   hideEditMode: Function,
@@ -176,6 +178,7 @@ class LeasePage extends Component<Props, State> {
       fetchDecisionsByLease,
       fetchInvoiceAttributes,
       fetchInvoices,
+      fetchInvoiceSetsByLease,
       fetchNoticePeriods,
       fetchSingleLease,
       invoiceAttributes,
@@ -214,6 +217,7 @@ class LeasePage extends Component<Props, State> {
     fetchCommentsByLease(leaseId);
     fetchDecisionsByLease(leaseId);
     fetchInvoices(getSearchQuery({lease: leaseId}));
+    fetchInvoiceSetsByLease(leaseId);
     fetchNoticePeriods();
     fetchAreaNoteList();
   }
@@ -936,6 +940,7 @@ export default flowRight(
       fetchDecisionsByLease,
       fetchInvoiceAttributes,
       fetchInvoices,
+      fetchInvoiceSetsByLease,
       fetchNoticePeriods,
       fetchSingleLease,
       hideEditMode,

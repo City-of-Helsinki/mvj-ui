@@ -67,8 +67,8 @@
         &:hover {
           background-color: #D9EFE4;
         }
-        &.selected {
-          background-color: #D9EFE4;
+        &.selected > td {
+          background-color: #D9EFE4 !important;
         }
 
         &.active {

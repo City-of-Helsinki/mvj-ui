@@ -10,6 +10,7 @@ import decisionSaga from '../decision/saga';
 import districtSaga from '../district/saga';
 import infillDevelopmentSaga from '../infillDevelopment/saga';
 import invoiceSaga from '../invoices/saga';
+import invoiceSetSaga from '../invoiceSets/saga';
 import landUseContractSaga from '../landUseContract/saga';
 import leaseSaga from '../leases/saga';
 import mapDataSaga from '../mapData/saga';
@@ -31,6 +32,7 @@ export default () =>
       fork(districtSaga),
       fork(infillDevelopmentSaga),
       fork(invoiceSaga),
+      fork(invoiceSetSaga),
       fork(landUseContractSaga),
       fork(leaseSaga),
       fork(mapDataSaga),

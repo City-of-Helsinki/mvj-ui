@@ -10,7 +10,6 @@ import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import EditInvoiceForm from './forms/EditInvoiceForm';
 import InvoiceTemplate from './InvoiceTemplate';
-import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
 
 const ARROW_UP_KEY = 38;
@@ -45,11 +44,6 @@ class InvoiceModalEdit extends Component<Props> {
   onResize = () => {
     const {onResize} = this.props;
     onResize();
-  }
-
-  handleCreditInvoice = () => {
-    const {onCreditInvoice} = this.props;
-    onCreditInvoice();
   }
 
   handleSave = () => {
@@ -126,14 +120,6 @@ class InvoiceModalEdit extends Component<Props> {
             }
           </div>
           <div className='invoice-modal__footer'>
-            {(invoice && invoice.type !== InvoiceType.CREDIT_NOTE) &&
-              <Button
-                className="button-green no-margin"
-                label='Hyvitä'
-                onClick={this.handleCreditInvoice}
-                title='Hyvitä'
-              />
-            }
             {(!invoice || !invoice.sap_id) &&
               <Button
                 className="button-green no-margin pull-right"

@@ -3,15 +3,15 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {destroy, formValueSelector, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import classNames from 'classnames';
 import scrollToComponent from 'react-scroll-to-component';
+import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import CreditInvoiceModal from './CreditInvoiceModal';
 import InvoiceModalEdit from './InvoiceModalEdit';
-import Table from '$components/table/Table';
+import InvoiceTable from './InvoiceTable';
 import TruncatedText from '$components/content/TruncatedText';
-import {clearPatchedInvoice, createCreditInvoice, patchInvoice, receiveIsCreateCreditOpen} from '$src/invoices/actions';
+import {clearPatchedInvoice, creditInvoice, patchInvoice, receiveIsCreateCreditOpen} from '$src/invoices/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {formatReceivableTypesString, getContentIncoiveItem, getContentInvoices, getEditedInvoiceForDb} from '$src/invoices/helpers';
@@ -23,8 +23,6 @@ import {
   getLabelOfOption,
   sortNumberByKeyAsc,
   sortNumberByKeyDesc,
-  sortStringByKeyAsc,
-  sortStringByKeyDesc,
 } from '$util/helpers';
 import {getAttributes as getInvoiceAttributes, getInvoices, getIsCreateCreditOpen, getPatchedInvoice} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -33,11 +31,11 @@ import type {Attributes as InvoiceAttributes, Invoice, InvoiceList} from '$src/i
 import type {Lease} from '$src/leases/types';
 
 const TABLE_MAX_HEIGHT = 400;
-const MODAL_WIDTH = 700;
+const MODAL_WIDTH = 607.5;
 
 type Props = {
   clearPatchedInvoice: Function,
-  createCreditInvoice: Function,
+  creditInvoice: Function,
   creditDueDate: string,
   creditTotalAmount: string,
   currentLease: Lease,
@@ -46,10 +44,12 @@ type Props = {
   invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
   isCreateCreditOpen: boolean,
+  onCreditItemChange: Function,
   patchInvoice: Function,
   patchedInvoice: ?Invoice,
   receiveIsCreateCreditOpen: Function,
   refundBill: Function,
+  selectedCreditItem: ?string,
 }
 
 type State = {
@@ -145,7 +145,7 @@ class InvoicesTableEdit extends Component<Props, State> {
       return;
     }
     const {showModal} = this.state;
-    let {clientHeight: tableHeight} = this.table.tableElement;
+    let {clientHeight: tableHeight} = this.table.getWrappedInstance().tableElement;
 
     const {clientHeight: modalHeight} = this.modal.wrappedInstance.modal;
 
@@ -186,32 +186,32 @@ class InvoicesTableEdit extends Component<Props, State> {
     const {isCreateCreditOpen} = this.props;
     const {showModal} = this.state;
     if(showModal && !isCreateCreditOpen) {
-      this.table.selectPrevious();
+      this.table.getWrappedInstance().selectPrevious();
     }
   }
 
   handleSelectPrevious = (invoice) => {
     this.setState({
-      selectedInvoice: invoice,
-      selectedInvoiceId: invoice.id,
+      selectedInvoice: invoice.data,
+      selectedInvoiceId: invoice.data.id,
     });
-    this.initilizeEditInvoiceForm(invoice);
+    this.initilizeEditInvoiceForm(invoice.data);
   }
 
   handleKeyCodeDown = () => {
     const {isCreateCreditOpen} = this.props;
     const {showModal} = this.state;
     if(showModal && !isCreateCreditOpen) {
-      this.table.selectNext();
+      this.table.getWrappedInstance().selectNext();
     }
   }
 
   handleSelectNext = (invoice) => {
     this.setState({
-      selectedInvoice: invoice,
-      selectedInvoiceId: invoice.id,
+      selectedInvoice: invoice.data,
+      selectedInvoiceId: invoice.data.id,
     });
-    this.initilizeEditInvoiceForm(invoice);
+    this.initilizeEditInvoiceForm(invoice.data);
   }
 
   initilizeEditInvoiceForm = (invoice: Object) => {
@@ -225,48 +225,18 @@ class InvoicesTableEdit extends Component<Props, State> {
     this.calculateHeight();
   }
 
-  getDataKeys = () => {
-    const {invoiceAttributes} = this.props;
-    const {showAllColumns} = this.state;
-    const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type');
-    const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
-
-    if(showAllColumns) {
-      return [
-        {key: 'recipientFull', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => sortStringByKeyAsc(getContactFullName(a), getContactFullName(b)), descSortFunction: (a, b) => sortStringByKeyDesc(getContactFullName(a), getContactFullName(b))},
-        {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
-        {key: 'id', label: 'Laskun numero', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'billing_period_start_date', label: 'Laskutuskausi', renderer: (val, invoice) => formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-'},
-        {key: 'receivableTypes', label: 'Saamislaji', renderer: (val) => <TruncatedText text={formatReceivableTypesString(receivableTypeOptions, val) || '-'} />, sortable: false},
-        {key: 'state', label: 'Laskun tila', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
-        {key: 'billed_amount', label: 'Laskutettu', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'outstanding_amount', label: 'Maksamatta', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'notes', label: 'Tiedote', renderer: (val) => val ? 'Kyllä' : 'Ei' || '-'},
-        {key: 'sent_to_sap_at', label: 'Läh. SAP:iin', renderer: (val) => formatDate(val) || '-'},
-      ];
-    } else {
-      return [
-        {key: 'recipientFull', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => sortStringByKeyAsc(getContactFullName(a), getContactFullName(b)), descSortFunction: (a, b) => sortStringByKeyDesc(getContactFullName(a), getContactFullName(b))},
-        {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
-        {key: 'id', label: 'Laskun numero', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-      ];
-    }
-  }
-
   handleModalHeightChange = () => {
     this.calculateHeight();
   }
 
-  handleRowClick = (id, invoice) => {
+  handleRowClick = (id, row) => {
     this.setState({
       showAllColumns: false,
-      selectedInvoice: invoice,
+      selectedInvoice: row.data,
       selectedInvoiceId: id,
       showModal: true,
     });
-    this.initilizeEditInvoiceForm(invoice);
+    this.initilizeEditInvoiceForm(row.data);
     this.scrolToModal();
   }
 
@@ -282,10 +252,10 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   handleCreditInvoiceModalSave = () => {
-    const {createCreditInvoice, currentLease} = this.props;
+    const {creditInvoice, currentLease} = this.props;
     const {selectedInvoice} = this.state;
 
-    createCreditInvoice({
+    creditInvoice({
       lease: currentLease.id,
       invoiceId: selectedInvoice.id,
     });
@@ -308,8 +278,68 @@ class InvoicesTableEdit extends Component<Props, State> {
     }
   }
 
+  handleInvoiceModalClose = () => {
+    this.setState({
+      selectedInvoice: {},
+      showModal: false,
+    });
+  }
+
+  sortStringByRecipientNameAsc = (a, b) => {
+    const valA = getContactFullName(get(a, 'data.recipientFull')) ? getContactFullName(get(a, 'data.recipientFull')).toLowerCase() : '',
+      valB = getContactFullName(get(a, 'data.recipientFull')) ? getContactFullName(get(b, 'data.recipientFull')).toLowerCase() : '';
+
+    if(valA > valB) return 1;
+    if(valA < valB) return -1;
+    return 0;
+  };
+
+  sortStringByRecipientNameDesc = (a, b) => {
+    const valA = getContactFullName(get(a, 'data.recipientFull')) ? getContactFullName(get(a, 'data.recipientFull')).toLowerCase() : '',
+      valB = getContactFullName(get(a, 'data.recipientFull')) ? getContactFullName(get(b, 'data.recipientFull')).toLowerCase() : '';
+
+    if(valA > valB) return -1;
+    if(valA < valB) return 1;
+    return 0;
+  };
+
+  getColumns = () => {
+    const {invoiceAttributes} = this.props,
+      {showAllColumns} = this.state;
+    const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type');
+    const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
+
+    if(showAllColumns) {
+      return [
+        {key: 'invoiceset', label: 'Laskuryhmä', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'recipientFull', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => this.sortStringByRecipientNameAsc(a, b), descSortFunction: (a, b) => this.sortStringByRecipientNameDesc(a, b)},
+        {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
+        {key: 'id', label: 'Laskunro', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'billing_period_start_date', label: 'Laskutuskausi', renderer: (val, invoice) => formatDateRange(invoice.data.billing_period_start_date, invoice.data.billing_period_end_date) || '-'},
+        {key: 'receivableTypes', label: 'Saamislaji', renderer: (val) => <TruncatedText text={formatReceivableTypesString(receivableTypeOptions, val) || '-'} />, sortable: false},
+        {key: 'state', label: 'Laskun tila', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
+        {key: 'billed_amount', label: 'Laskutettu', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'outstanding_amount', label: 'Maksamatta', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+      ];
+    } else {
+      return [
+        {key: 'invoiceset', label: 'Laskuryhmä', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'recipientFull', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: (a, b) => this.sortStringByRecipientNameAsc(a, b), descSortFunction: (a, b) => this.sortStringByRecipientNameDesc(a, b)},
+        {key: 'due_date', label: 'Eräpäivä', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
+        {key: 'id', label: 'Laskunro', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+      ];
+    }
+  }
+
   render () {
-    const {invoiceAttributes, isCreateCreditOpen} = this.props;
+    const {
+      invoiceAttributes,
+      isCreateCreditOpen,
+      onCreditItemChange,
+      selectedCreditItem,
+    } = this.props;
     const {
       invoiceItems,
       selectedInvoice,
@@ -318,7 +348,7 @@ class InvoicesTableEdit extends Component<Props, State> {
       tableHeight,
       tableWidth,
     } = this.state;
-    const dataKeys = this.getDataKeys();
+    const columns = this.getColumns();
 
     return (
       <div
@@ -337,33 +367,27 @@ class InvoicesTableEdit extends Component<Props, State> {
         <div
           className='invoice__invoice-table_wrapper'
           ref={(ref) => this.tableWrapper = ref}
-          style={{maxWidth: tableWidth}}>
-          <Table
+          style={{maxWidth: tableWidth}}
+        >
+          <InvoiceTable
             ref={(input) => this.table = input}
+            columns={columns}
             data={invoiceItems}
-            dataKeys={dataKeys}
-            fixedHeader
-            fixedHeaderClassName={classNames('invoice-fixed-table', {'is-open': showModal})}
             maxHeight={tableHeight ? tableHeight - 31 : null}
-            noDataText='Ei laskuja'
+            onCreditItemChange={onCreditItemChange}
             onDataUpdate={this.handleDataUpdate}
             onRowClick={this.handleRowClick}
             onSelectNext={this.handleSelectNext}
             onSelectPrevious={this.handleSelectPrevious}
-            secondaryTable
+            selectedCreditItem={selectedCreditItem}
             selectedRow={selectedInvoice}
-            sortable
-            tableFixedLayout
           />
         </div>
         <InvoiceModalEdit
           ref={(ref) => this.modal = ref}
           invoice={selectedInvoice}
           minHeight={!showModal ? tableHeight : null}
-          onClose={() => this.setState({
-            selectedInvoice: {},
-            showModal: false,
-          })}
+          onClose={this.handleInvoiceModalClose}
           onKeyCodeDown={this.handleKeyCodeDown}
           onKeyCodeUp={this.handleKeyCodeUp}
           onCreditInvoice={this.handleOpenCreditInvoiceModal}
@@ -395,7 +419,7 @@ export default flowRight(
     },
     {
       clearPatchedInvoice,
-      createCreditInvoice,
+      creditInvoice,
       destroy,
       initialize,
       patchInvoice,
