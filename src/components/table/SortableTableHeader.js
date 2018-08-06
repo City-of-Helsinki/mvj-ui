@@ -63,6 +63,7 @@ const SortableTableHeaderItem = ({
 
 type Props = {
   dataKeys: Array<Object>,
+  emptyFirstColumn?: boolean,
   fixedHeader?: boolean,
   onStateChange: Function,
   sortable?: boolean,
@@ -71,6 +72,7 @@ type Props = {
 
 const SortableTableHeader = ({
   dataKeys,
+  emptyFirstColumn,
   fixedHeader,
   onStateChange,
   sortable = false,
@@ -90,6 +92,7 @@ const SortableTableHeader = ({
   return (
     <thead>
       <tr>
+        {emptyFirstColumn && <th className='empty-cell'></th>}
         {dataKeys.map((column, index) => {
           const sorting = sortings[index];
           return (

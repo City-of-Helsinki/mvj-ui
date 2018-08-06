@@ -11,7 +11,7 @@ import type {
   FetchInvoicesAction,
   ReceiveInvoicesAction,
   CreateInvoiceAction,
-  CreateCreditInvoiceAction,
+  CreditInvoiceAction,
   PatchInvoiceAction,
   ReceivePatchedInvoiceAction,
   ClearPatchedInvoiceAction,
@@ -35,8 +35,8 @@ export const receiveInvoices = (invoices: InvoiceList): ReceiveInvoicesAction =>
 export const createInvoice = (invoice: Invoice): CreateInvoiceAction =>
   createAction('mvj/invoices/CREATE')(invoice);
 
-export const createCreditInvoice = (invoice: Invoice): CreateCreditInvoiceAction =>
-  createAction('mvj/invoices/CREATE_CREDIT')(invoice);
+export const creditInvoice = (invoice: Object): CreditInvoiceAction =>
+  createAction('mvj/invoices/CREDIT_INVOICE')(invoice);
 
 export const patchInvoice = (invoice: Invoice): PatchInvoiceAction =>
   createAction('mvj/invoices/PATCH')(invoice);

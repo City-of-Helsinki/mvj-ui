@@ -8,6 +8,16 @@
     border: none;
   }
 
+  &.grouped-table {
+    tbody {
+      border-bottom: 1px solid $medium-gray;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
   thead th, thead td {
     background-color: $engel;
     font-size: $font-small;
@@ -17,6 +27,10 @@
     padding: 0.36rem 0.75rem 0.3rem;
     border: none;
     display: table-cell;
+
+    &.empty-cell {
+      width: 25px;
+    }
   }
 
   tbody th, tbody td {
@@ -41,12 +55,18 @@
     }
   }
 
+  tr.has-group {
+    > td {
+      background-color: $light-gray;
+    }
+  }
+
   &.clickable-row {
     tbody {
       tr {
         &:hover > td {
           cursor: pointer;
-          background-color: $engel-lighter;
+          background-color: #D9EFE4;
         }
       }
     }

@@ -1,8 +1,7 @@
 // @flow
 import React from 'react';
-import classNames from 'classnames';
-import get from 'lodash/get';
-import isArray from 'lodash/isArray';
+
+import SortableTableBodyRow from './SortableTableBodyRow';
 
 type Props = {
   data: Array<any>,
@@ -19,22 +18,15 @@ const SortableTableBody = ({
   selectedRow,
 }: Props) =>
   <tbody>
-    {data.map((row, rowIndex) => (
-      <tr
-        key={rowIndex}
-        className={classNames({'selected': selectedRow && selectedRow.id === row.id})}
-        onClick={() => onRowClick && onRowClick(row.id, row)}
-      >
-        {dataKeys.map(({key, renderer}, cellIndex) => (
-          <td key={cellIndex}>
-            {renderer ?
-              isArray(key) ? key.map(item => renderer(get(row, item), row)) : renderer(get(row, key), row) :
-              isArray(key) ? key.map(item => `${get(row, item)} `) : get(row, key, '-') || ' - '
-            }
-          </td>
-        ))}
-      </tr>
-    ))}
+    {data.map((row, index) =>
+      <SortableTableBodyRow
+        key={index}
+        dataKeys={dataKeys}
+        onRowClick={onRowClick}
+        row={row}
+        selectedRow={selectedRow}
+      />
+    )}
     {!data.length &&
       <tr className='no-data'><td colSpan={dataKeys.length}>{noDataText ? noDataText : 'Ei tuloksia'}</td></tr>
     }

@@ -11,7 +11,7 @@ import CreditInvoiceModal from './CreditInvoiceModal';
 import InvoiceModalEdit from './InvoiceModalEdit';
 import Table from '$components/table/Table';
 import TruncatedText from '$components/content/TruncatedText';
-import {clearPatchedInvoice, createCreditInvoice, patchInvoice, receiveIsCreateCreditOpen} from '$src/invoices/actions';
+import {clearPatchedInvoice, creditInvoice, patchInvoice, receiveIsCreateCreditOpen} from '$src/invoices/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {formatReceivableTypesString, getContentIncoiveItem, getContentInvoices, getEditedInvoiceForDb} from '$src/invoices/helpers';
@@ -37,7 +37,7 @@ const MODAL_WIDTH = 700;
 
 type Props = {
   clearPatchedInvoice: Function,
-  createCreditInvoice: Function,
+  creditInvoice: Function,
   creditDueDate: string,
   creditTotalAmount: string,
   currentLease: Lease,
@@ -282,10 +282,10 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   handleCreditInvoiceModalSave = () => {
-    const {createCreditInvoice, currentLease} = this.props;
+    const {creditInvoice, currentLease} = this.props;
     const {selectedInvoice} = this.state;
 
-    createCreditInvoice({
+    creditInvoice({
       lease: currentLease.id,
       invoiceId: selectedInvoice.id,
     });
@@ -395,7 +395,7 @@ export default flowRight(
     },
     {
       clearPatchedInvoice,
-      createCreditInvoice,
+      creditInvoice,
       destroy,
       initialize,
       patchInvoice,

@@ -476,14 +476,15 @@ export const getDecisionById = (decisions: Array<Object>, decisionId: number) =>
 };
 
 export const sortNumberByKeyAsc = (a, b, key) => {
-  const keyA = a[key],
-    keyB = b[key];
+  const keyA = get(a, key),
+    keyB = get(b, key);
+
   return Number(keyA) - Number(keyB);
 };
 
 export const sortNumberByKeyDesc = (a, b, key) => {
-  const keyA = a[key],
-    keyB = b[key];
+  const keyA = get(a, key),
+    keyB = get(b, key);
   return Number(keyB) - Number(keyA);
 };
 
