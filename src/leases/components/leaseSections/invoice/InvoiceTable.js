@@ -136,7 +136,7 @@ const TableBodyRow = ({
       <td colSpan={hasGroup ? 2 : 1} style={{textAlign: 'right'}}>
         <input type="radio" value={`invoice_${row.data.id}`}
           checked={selectedCreditItem === `invoice_${row.data.id}`}
-          disabled={row.data.type === InvoiceType.CREDIT_NOTE}
+          disabled={row.data.type === InvoiceType.CREDIT_NOTE|| !get(row, 'data.rows', []).length}
           onChange={handleOptionChange}
         />
       </td>
