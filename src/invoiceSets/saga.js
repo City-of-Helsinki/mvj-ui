@@ -2,7 +2,7 @@
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {SubmissionError} from 'redux-form';
 
-import {fetchInvoices as fetchInvoicesAction} from '$src/invoices/actions';
+import {fetchInvoices as fetchInvoicesAction, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction, notFound, receiveInvoiceSetsByLease} from './actions';
 import {receiveError} from '$src/api/actions';
 import {getSearchQuery} from '$util/helpers';
@@ -34,11 +34,12 @@ function* fetchInvoiceSetsByLeaseSaga({payload: leaseId}): Generator<any, any, a
 function* creditInvoiceSetSaga({payload: {creditData, invoiceSetId, lease}}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(creditInvoiceSet, {creditData: creditData, invoiceSetId: invoiceSetId});
-    console.log(invoiceSetId);
+
     switch (statusCode) {
       case 200:
         yield put(fetchInvoicesAction(getSearchQuery({lease: lease})));
         yield put(fetchInvoiceSetsByLeaseAction(lease));
+        yield put(receiveIsCreditInvoicePanelOpen(false));
         break;
       case 400:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));

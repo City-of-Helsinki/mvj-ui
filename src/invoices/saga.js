@@ -7,8 +7,8 @@ import {
   fetchInvoices as fetchInvoicesAction,
   receiveAttributes,
   receiveInvoices,
-  receiveIsCreateOpen,
-  receiveIsCreateCreditOpen,
+  receiveIsCreateInvoicePanelOpen,
+  receiveIsCreditInvoicePanelOpen,
   receivePatchedInvoice,
   notFound,
 } from './actions';
@@ -72,7 +72,7 @@ function* createInvoiceSaga({payload: invoice}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(fetchInvoicesAction(getSearchQuery({lease: invoice.lease})));
-        yield put(receiveIsCreateOpen(false));
+        yield put(receiveIsCreateInvoicePanelOpen(false));
         break;
       case 400:
         yield put(notFound());
@@ -97,7 +97,7 @@ function* creditInvoiceSaga({payload: {creditData, invoiceId, lease}}): Generato
     switch (statusCode) {
       case 200:
         yield put(fetchInvoicesAction(getSearchQuery({lease: lease})));
-        yield put(receiveIsCreateCreditOpen(false));
+        yield put(receiveIsCreditInvoicePanelOpen(false));
         break;
       case 400:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));

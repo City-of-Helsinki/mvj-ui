@@ -5,6 +5,10 @@
 
     &_form {
       margin-top: rem-calc(15px);
+
+      h3 {
+        margin-bottom: rem-calc(10px);
+      }
     }
   }
 
@@ -49,12 +53,24 @@
         box-shadow: none;
       }
 
+      th.invoiceset {
+        width: 100px;
+      }
+
       th.billing-period-start-date {
         width: 155px;
       }
 
+      th.due-date {
+        width: 80px;
+      }
+
       th.id {
-        width: 110px;
+        width: 80px;
+      }
+
+      th.total-share {
+        width: 70px;
       }
 
       th.recipient-full {

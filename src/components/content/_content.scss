@@ -171,6 +171,27 @@
     line-height: rem-calc(24px);
     font-weight: $semibold;
     margin-bottom: 0;
+
+    &.invoicing-status {
+      .alert {
+        display: inline-block;
+        color: $brick !important;
+        text-align: right;
+        font-weight: $semibold;
+      }
+
+      .success {
+        display: inline-block;
+        color: $tram !important;
+        text-align: right;
+        font-weight: $semibold;
+      }
+    }
+
+    &__button-component {
+      display: inline-block;
+      margin-right: 10px;
+    }
   }
 
   .list-items {

@@ -2,8 +2,8 @@ import {expect} from 'chai';
 import {
   receiveAttributes,
   receiveInvoices,
-  receiveIsCreateOpen,
-  receiveIsCreateCreditOpen,
+  receiveIsCreateInvoicePanelOpen,
+  receiveIsCreditInvoicePanelOpen,
   fetchInvoices,
   createInvoice,
   patchInvoice,
@@ -16,8 +16,8 @@ import invoiceReducer from './reducer';
 const rootState = {
   attributes: {},
   invoices: [],
-  isCreateOpen: false,
-  isCreateCreditOpen: false,
+  isCreatePanelOpen: false,
+  isCreditPanelOpen: false,
   isFetching: false,
   patchedInvoice: null,
 };
@@ -55,20 +55,20 @@ describe('Invoices', () => {
       });
 
       it('should update isCreateOpen flag to false', () => {
-        const isCreateOpen = true;
+        const isCreatePanelOpen = true;
         const newState = {...rootState};
-        newState.isCreateOpen = isCreateOpen;
+        newState.isCreatePanelOpen = isCreatePanelOpen;
 
-        const state = invoiceReducer({}, receiveIsCreateOpen(isCreateOpen));
+        const state = invoiceReducer({}, receiveIsCreateInvoicePanelOpen(isCreatePanelOpen));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isCreateCreditOpen flag to false', () => {
-        const isCreateCreditOpen = true;
+        const isCreditPanelOpen = true;
         const newState = {...rootState};
-        newState.isCreateCreditOpen = isCreateCreditOpen;
+        newState.isCreditPanelOpen = isCreditPanelOpen;
 
-        const state = invoiceReducer({}, receiveIsCreateCreditOpen(isCreateCreditOpen));
+        const state = invoiceReducer({}, receiveIsCreditInvoicePanelOpen(isCreditPanelOpen));
         expect(state).to.deep.equal(newState);
       });
 

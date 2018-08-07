@@ -12,11 +12,11 @@ import type {
 export const getIsFetching: Selector<boolean, void> = (state: InvoiceState): boolean =>
   state.invoice.isFetching;
 
-export const getIsCreateOpen: Selector<boolean, void> = (state: InvoiceState): boolean =>
-  state.invoice.isCreateOpen;
+export const getIsCreateInvoicePanelOpen: Selector<boolean, void> = (state: InvoiceState): boolean =>
+  state.invoice.isCreatePanelOpen;
 
-export const getIsCreateCreditOpen: Selector<boolean, void> = (state: InvoiceState): boolean =>
-  state.invoice.isCreateCreditOpen;
+export const getIsCreditInvoicePanelOpen: Selector<boolean, void> = (state: InvoiceState): boolean =>
+  state.invoice.isCreditPanelOpen;
 
 export const getAttributes: Selector<Attributes, void> = (state: InvoiceState): InvoiceState =>
   state.invoice.attributes;

@@ -20,5 +20,5 @@ export type ClearPatchedInvoiceAction = Action<'mvj/invoices/CLEAR_PATCHED', voi
 
 export type InvoiceNotFoundAction = Action<'mvj/invoices/NOT_FOUND', void>;
 
-export type ReceiveIsCreateOpenAction = Action<'mvj/invoices/RECEIVE_IS_CREATE_OPEN', boolean>;
-export type ReceiveIsCreateCreditOpenAction = Action<'mvj/invoices/RECEIVE_IS_CREATE_CREDIT_OPEN', boolean>;
+export type ReceiveIsCreateInvoicePanelOpenAction = Action<'mvj/invoices/RECEIVE_IS_CREATE_PANEL_OPEN', boolean>;
+export type ReceiveIsCreditInvoicePanelOpenAction = Action<'mvj/invoices/RECEIVE_IS_CREDIT_PANEL_OPEN', boolean>;

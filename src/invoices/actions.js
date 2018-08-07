@@ -16,8 +16,8 @@ import type {
   ReceivePatchedInvoiceAction,
   ClearPatchedInvoiceAction,
   InvoiceNotFoundAction,
-  ReceiveIsCreateOpenAction,
-  ReceiveIsCreateCreditOpenAction,
+  ReceiveIsCreateInvoicePanelOpenAction,
+  ReceiveIsCreditInvoicePanelOpenAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -47,11 +47,11 @@ export const receivePatchedInvoice = (invoice: Invoice): ReceivePatchedInvoiceAc
 export const clearPatchedInvoice = (): ClearPatchedInvoiceAction =>
   createAction('mvj/invoices/CLEAR_PATCHED')();
 
-export const receiveIsCreateOpen = (isOpen: boolean): ReceiveIsCreateOpenAction =>
-  createAction('mvj/invoices/RECEIVE_IS_CREATE_OPEN')(isOpen);
+export const receiveIsCreateInvoicePanelOpen = (isOpen: boolean): ReceiveIsCreateInvoicePanelOpenAction =>
+  createAction('mvj/invoices/RECEIVE_IS_CREATE_PANEL_OPEN')(isOpen);
 
-export const receiveIsCreateCreditOpen = (isOpen: boolean): ReceiveIsCreateCreditOpenAction =>
-  createAction('mvj/invoices/RECEIVE_IS_CREATE_CREDIT_OPEN')(isOpen);
+export const receiveIsCreditInvoicePanelOpen = (isOpen: boolean): ReceiveIsCreditInvoicePanelOpenAction =>
+  createAction('mvj/invoices/RECEIVE_IS_CREDIT_PANEL_OPEN')(isOpen);
 
 export const notFound = (): InvoiceNotFoundAction =>
   createAction('mvj/invoices/NOT_FOUND')();

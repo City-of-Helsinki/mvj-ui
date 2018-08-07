@@ -50,11 +50,12 @@ const CreditInvoiceForm = ({
                     type: 'decimal',
                     required: false,
                     read_only: false,
-                    label: 'Hyvitettävä summan',
+                    label: 'Hyvitettävä summa',
                     decimal_places: 2,
                     max_digits: 10,
                   }}
                   name='amount'
+                  unit='€'
                 />
               </Column>
               <Column small={6} medium={4} large={2}>
@@ -64,7 +65,6 @@ const CreditInvoiceForm = ({
                     required: get(formValues, 'amount') ? true : false,
                   }}
                   name='receivable_type'
-                  unit='€'
                   overrideValues={{
                     label: 'Saamislaji',
                   }}

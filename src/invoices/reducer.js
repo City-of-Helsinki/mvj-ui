@@ -9,8 +9,8 @@ import type {
   Invoice,
   InvoiceList,
   ReceiveInvoicesAction,
-  ReceiveIsCreateOpenAction,
-  ReceiveIsCreateCreditOpenAction,
+  ReceiveIsCreateInvoicePanelOpenAction,
+  ReceiveIsCreditInvoicePanelOpenAction,
   ReceivePatchedInvoiceAction,
 } from './types';
 
@@ -22,14 +22,14 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/invoices/RECEIVE_ALL': () => false,
 }, false);
 
-const isCreateOpenReducer: Reducer<boolean> = handleActions({
-  ['mvj/invoices/RECEIVE_IS_CREATE_OPEN']: (state: boolean, {payload: isOpen}: ReceiveIsCreateOpenAction) => {
+const isCreatePanelOpenReducer: Reducer<boolean> = handleActions({
+  ['mvj/invoices/RECEIVE_IS_CREATE_PANEL_OPEN']: (state: boolean, {payload: isOpen}: ReceiveIsCreateInvoicePanelOpenAction) => {
     return isOpen;
   },
 }, false);
 
-const isCreateCreditOpenReducer: Reducer<boolean> = handleActions({
-  ['mvj/invoices/RECEIVE_IS_CREATE_CREDIT_OPEN']: (state: boolean, {payload: isOpen}: ReceiveIsCreateCreditOpenAction) => {
+const isCreditPanelOpenReducer: Reducer<boolean> = handleActions({
+  ['mvj/invoices/RECEIVE_IS_CREDIT_PANEL_OPEN']: (state: boolean, {payload: isOpen}: ReceiveIsCreditInvoicePanelOpenAction) => {
     return isOpen;
   },
 }, false);
@@ -56,8 +56,8 @@ const patchedInvoiceReducer: Reducer<?Invoice> = handleActions({
 export default combineReducers({
   attributes: attributesReducer,
   invoices: invoicesReducer,
-  isCreateOpen: isCreateOpenReducer,
-  isCreateCreditOpen: isCreateCreditOpenReducer,
+  isCreatePanelOpen: isCreatePanelOpenReducer,
+  isCreditPanelOpen: isCreditPanelOpenReducer,
   isFetching: isFetchingReducer,
   patchedInvoice: patchedInvoiceReducer,
 });

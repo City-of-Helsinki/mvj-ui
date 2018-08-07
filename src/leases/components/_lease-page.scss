@@ -53,38 +53,6 @@
     margin-bottom: 0;
   }
 
-  .invoicing-status {
-    .alert {
-      color: $brick !important;
-      text-align: right;
-      font-weight: $semibold;
-
-      i {
-        height: rem-calc(20px);
-        width: rem-calc(20px);
-        vertical-align: text-bottom;
-        background-image: url(../assets/icons/icon-alert.svg);
-        display: inline-block;
-        margin-left: rem-calc(5px);
-      }
-    }
-
-    .success {
-      color: $tram !important;
-      text-align: right;
-      font-weight: $semibold;
-
-      i {
-        height: rem-calc(20px);
-        width: rem-calc(20px);
-        vertical-align: text-bottom;
-        background-image: url(../assets/icons/icon_checked.svg);
-        display: inline-block;
-        margin-left: rem-calc(5px);
-      }
-    }
-  }
-
   .construction-eligibility {
     &__comment-item {
       border-top: 1px dashed #009246;

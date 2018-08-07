@@ -1,18 +1,14 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import scrollToComponent from 'react-scroll-to-component';
-import {Row, Column} from 'react-foundation';
 
-import Button from '$components/button/Button';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import InvoicesTable from './InvoicesTable';
-import CreditInvoiceForm from './forms/CreditInvoiceForm';
+import CreateAndCreditInvoiceComponent from './CreateAndCreditInvoiceComponent';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {creditInvoice} from '$src/invoices/actions';
-import {creditInvoiceSet} from '$src/invoiceSets/actions';
+import {receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
@@ -20,18 +16,17 @@ import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
-  creditInvoice: Function,
-  creditInvoiceSet: Function,
   currentLease: Lease,
   invoicesCollapseState: boolean,
   isInvoicingEnabled: boolean,
   receiveCollapseStates: Function,
+  receiveIsCreateInvoicePanelOpen: Function,
+  receiveIsCreditInvoicePanelOpen: Function,
   rentCalculatorCollapseState: boolean,
 }
 
 type State = {
   selectedCreditItem: ?string,
-  showCreditPanel: boolean,
 }
 
 class Invoices extends Component<Props, State> {
@@ -40,6 +35,12 @@ class Invoices extends Component<Props, State> {
   state = {
     selectedCreditItem: null,
     showCreditPanel: false,
+  }
+
+  componentWillMount = () => {
+    const {receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} = this.props;
+    receiveIsCreateInvoicePanelOpen(false);
+    receiveIsCreditInvoicePanelOpen(false);
   }
 
   handleInvoicesCollapseToggle = (val: boolean) => {
@@ -70,46 +71,6 @@ class Invoices extends Component<Props, State> {
     this.setState({selectedCreditItem: val});
   }
 
-  handleCreditButtonClick = () => {
-    this.setState({showCreditPanel: true});
-
-    setTimeout(() => {
-      scrollToComponent(this.creditPanel, {
-        offset: -70,
-        align: 'top',
-        duration: 450,
-      });
-    }, 50);
-  }
-
-  handleCloseCreditPanel = () => {
-    this.setState({showCreditPanel: false});
-  }
-
-  handleCredit = (invoice: Object) => {
-    const {currentLease} = this.props,
-      {selectedCreditItem} = this.state,
-      parts = selectedCreditItem ? selectedCreditItem.split('_') : [];
-
-    if(parts[0] === 'invoice') {
-      const {creditInvoice} = this.props;
-
-      creditInvoice({
-        creditData: invoice,
-        invoiceId: parts[1],
-        lease: currentLease.id,
-      });
-    } else {
-      const {creditInvoiceSet} = this.props;
-
-      creditInvoiceSet({
-        creditData: invoice,
-        invoiceSetId: parts[1],
-        lease: currentLease.id,
-      });
-    }
-  }
-
   render() {
     const {
       invoicesCollapseState,
@@ -117,7 +78,7 @@ class Invoices extends Component<Props, State> {
       rentCalculatorCollapseState,
     } = this.props;
 
-    const {selectedCreditItem, showCreditPanel} = this.state;
+    const {selectedCreditItem} = this.state;
 
     return (
       <div>
@@ -125,8 +86,8 @@ class Invoices extends Component<Props, State> {
         <RightSubtitle
           className='invoicing-status'
           text={isInvoicingEnabled
-            ? <p className="success">Laskutus käynnissä<i /></p>
-            : <p className="alert">Laskutus ei käynnissä<i /></p>
+            ? <p className="success">Laskutus käynnissä</p>
+            : <p className="alert">Laskutus ei käynnissä</p>
           }
         />
         <Divider />
@@ -139,26 +100,12 @@ class Invoices extends Component<Props, State> {
             onCreditItemChange={this.handleCreditItemChange}
             selectedCreditItem={selectedCreditItem}
           />
-          <Row>
-            <Column>
-              <Button
-                className='button-green no-margin'
-                disabled={!selectedCreditItem}
-                label='Hyvitä'
-                onClick={this.handleCreditButtonClick}
-                title='Hyvitä'
-              />
-            </Column>
-          </Row>
-          <div ref={(ref) => this.creditPanel = ref}>
-            {showCreditPanel &&
-              <CreditInvoiceForm
-                onClose={this.handleCloseCreditPanel}
-                onSave={this.handleCredit}
-              />
-            }
-          </div>
 
+          <CreateAndCreditInvoiceComponent
+            enableCreateInvoice={false}
+            enableCreditInvoice={true}
+            selectedCreditInvoice={selectedCreditItem}
+          />
         </Collapse>
         <Collapse
           defaultOpen={rentCalculatorCollapseState !== undefined ? rentCalculatorCollapseState : true}
@@ -183,8 +130,8 @@ export default connect(
     };
   },
   {
-    creditInvoice,
-    creditInvoiceSet,
     receiveCollapseStates,
+    receiveIsCreateInvoicePanelOpen,
+    receiveIsCreditInvoicePanelOpen,
   }
 )(Invoices);

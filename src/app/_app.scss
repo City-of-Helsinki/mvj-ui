@@ -8,6 +8,10 @@
   [type="radio"] {
     margin: 0;
     transition: none;
+
+    &:disabled {
+      opacity: 0.5;
+    }
   }
 
   &__content {

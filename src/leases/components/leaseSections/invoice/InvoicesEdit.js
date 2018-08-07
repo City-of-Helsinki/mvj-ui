@@ -4,7 +4,8 @@ import {withRouter} from 'react-router';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 
-import AddInvoiceComponent from './AddInvoiceComponent';
+import CreateAndCreditInvoiceComponent from './CreateAndCreditInvoiceComponent';
+import Button from '$components/button/Button';
 import Collapse from '$components/collapse/Collapse';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Divider from '$components/content/Divider';
@@ -12,26 +13,20 @@ import InvoicesTableEdit from './InvoicesTableEdit';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
-import {creditInvoice, createInvoice, receiveIsCreateOpen} from '$src/invoices/actions';
-import {creditInvoiceSet} from '$src/invoiceSets/actions';
+import {receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {ViewModes} from '$src/enums';
-import {getNewInvoiceForDb} from '$src/invoices/helpers';
-import {getIsCreateOpen} from '$src/invoices/selectors';
 import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
 import type {Lease} from '$src/leases/types';
 
 type Props = {
-  createInvoice: Function,
-  creditInvoice: Function,
-  creditInvoiceSet: Function,
   currentLease: Lease,
   invoicesCollapseState: boolean,
-  isCreateOpen: boolean,
   isInvoicingEnabled: boolean,
   params: Object,
   receiveCollapseStates: Function,
-  receiveIsCreateOpen: Function,
+  receiveIsCreateInvoicePanelOpen: Function,
+  receiveIsCreditInvoicePanelOpen: Function,
   rentCalculatorCollapseState: boolean,
   startInvoicing: Function,
   stopInvoicing: Function,
@@ -41,9 +36,6 @@ type State = {
   isStartInvoicingModalOpen: boolean,
   isStopInvoicingModalOpen: boolean,
   selectedCreditItem: ?string,
-  selectedDebtIndex: number,
-  selectedDebtToDeleteIndex: number,
-  showCreditPanel: boolean,
 }
 
 class InvoicesEdit extends Component<Props, State> {
@@ -51,16 +43,15 @@ class InvoicesEdit extends Component<Props, State> {
     isStartInvoicingModalOpen: false,
     isStopInvoicingModalOpen: false,
     selectedCreditItem: null,
-    selectedDebtIndex: -1,
-    selectedDebtToDeleteIndex: -1,
     showCreditPanel: false,
   }
 
   abnormalDebtTable: any
 
   componentWillMount = () => {
-    const {receiveIsCreateOpen} = this.props;
-    receiveIsCreateOpen(false);
+    const {receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} = this.props;
+    receiveIsCreateInvoicePanelOpen(false);
+    receiveIsCreditInvoicePanelOpen(false);
   }
 
   showModal = (modalName: string) => {
@@ -74,25 +65,27 @@ class InvoicesEdit extends Component<Props, State> {
     const modalVisibilityKey = `is${modalName}ModalOpen`;
     this.setState({
       [modalVisibilityKey]: false,
-      selectedDebtIndex: -1,
     });
-  }
-
-  createInvoice = (invoice: Object) => {
-    const {
-      createInvoice,
-      params: {leaseId},
-    } = this.props;
-
-    invoice.lease = leaseId;
-    invoice.billed_amount = invoice.total_amount;
-    // invoice.state = InvoiceState.OPEN;
-
-    createInvoice(getNewInvoiceForDb(invoice));
   }
 
   handleCreditItemChange = (val: string) => {
     this.setState({selectedCreditItem: val});
+  }
+
+  handleStartInvoicingButtonClick = () => {
+    this.showModal('StartInvoicing');
+  }
+
+  handleStartInvoicingCancelButtonClick = () => {
+    this.hideModal('StartInvoicing');
+  }
+
+  handleStopInvoicingButtonClick = () => {
+    this.showModal('StopInvoicing');
+  }
+
+  handleStopInvoicingCancelButtonClick = () => {
+    this.hideModal('StopInvoicing');
   }
 
   startInvoicing = () => {
@@ -139,50 +132,15 @@ class InvoicesEdit extends Component<Props, State> {
     });
   };
 
-  handleCreditButtonClick = () => {
-    this.setState({showCreditPanel: true});
-  }
-
-  handleCloseCreditPanel = () => {
-    this.setState({showCreditPanel: false});
-  }
-
-  handleCredit = (invoice: Object) => {
-    const {currentLease} = this.props,
-      {selectedCreditItem} = this.state,
-      parts = selectedCreditItem ? selectedCreditItem.split('_') : [];
-
-    if(parts[0] === 'invoice') {
-      const {creditInvoice} = this.props;
-
-      creditInvoice({
-        creditData: invoice,
-        invoiceId: parts[1],
-        lease: currentLease.id,
-      });
-    } else {
-      const {creditInvoiceSet} = this.props;
-
-      creditInvoiceSet({
-        creditData: invoice,
-        invoiceSetId: parts[1],
-        lease: currentLease.id,
-      });
-    }
-  }
-
   render() {
     const {
       currentLease,
       invoicesCollapseState,
-      isCreateOpen,
-      receiveIsCreateOpen,
       rentCalculatorCollapseState,
     } = this.props;
     const {
       isStartInvoicingModalOpen,
       isStopInvoicingModalOpen,
-      showCreditPanel,
       selectedCreditItem,
     } = this.state;
 
@@ -192,8 +150,8 @@ class InvoicesEdit extends Component<Props, State> {
           confirmButtonLabel='Käynnistä laskutus'
           isOpen={isStartInvoicingModalOpen}
           label='Haluatko varmasti käynnistää laskutuksen?'
-          onCancel={() => this.hideModal('StartInvoicing')}
-          onClose={() => this.hideModal('StartInvoicing')}
+          onCancel={this.handleStartInvoicingCancelButtonClick}
+          onClose={this.handleStartInvoicingCancelButtonClick}
           onSave={this.startInvoicing}
           title='Käynnistä laskutus'
         />
@@ -201,18 +159,34 @@ class InvoicesEdit extends Component<Props, State> {
           confirmButtonLabel='Keskeytä laskutus'
           isOpen={isStopInvoicingModalOpen}
           label='Haluatko varmasti keskeyttää laskutuksen?'
-          onCancel={() => this.hideModal('StopInvoicing')}
-          onClose={() => this.hideModal('StopInvoicing')}
+          onCancel={this.handleStopInvoicingCancelButtonClick}
+          onClose={this.handleStopInvoicingCancelButtonClick}
           onSave={this.stopInvoicing}
           title='Keskeytä laskutus'
         />
 
         <h2>Laskutus</h2>
+
         <RightSubtitle
+          buttonComponent={
+            currentLease.is_invoicing_enabled
+              ? <Button
+                className='button-red'
+                label='Keskeytä laskutus'
+                onClick={this.handleStopInvoicingButtonClick}
+                title='Keskeytä laskutus'
+              />
+              : <Button
+                className='button-green'
+                label='Käynnistä laskutus'
+                onClick={this.handleStartInvoicingButtonClick}
+                title='Käynnistä laskutus'
+              />
+          }
           className='invoicing-status'
           text={currentLease.is_invoicing_enabled
-            ? <p className="success">Laskutus käynnissä<i /></p>
-            : <p className="alert">Laskutus ei käynnissä<i /></p>
+            ? <p className="success">Laskutus käynnissä</p>
+            : <p className="alert">Laskutus ei käynnissä</p>
           }
         />
         <Divider />
@@ -226,20 +200,10 @@ class InvoicesEdit extends Component<Props, State> {
             onCreditItemChange={this.handleCreditItemChange}
             selectedCreditItem={selectedCreditItem}
           />
-
-          <AddInvoiceComponent
-            disableShowCreditButton={!selectedCreditItem}
-            editMode={isCreateOpen}
-            onAdd={() => receiveIsCreateOpen(true)}
-            onClose={() => receiveIsCreateOpen(false)}
-            onCloseCreditPanel={this.handleCloseCreditPanel}
-            onCredit={this.handleCredit}
-            onSave={this.createInvoice}
-            onShowCreditPanel={this.handleCreditButtonClick}
-            onStartInvoicing={() => this.showModal('StartInvoicing')}
-            onStopInvoicing={() => this.showModal('StopInvoicing')}
-            showCreditPanel={showCreditPanel}
-            showStartInvoicingButton={!currentLease.is_invoicing_enabled}
+          <CreateAndCreditInvoiceComponent
+            enableCreateInvoice={true}
+            enableCreditInvoice={true}
+            selectedCreditInvoice={selectedCreditItem}
           />
         </Collapse>
         <Collapse
@@ -261,16 +225,13 @@ export default flowRight(
       return {
         currentLease: getCurrentLease(state),
         invoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.invoices.invoices`),
-        isCreateOpen: getIsCreateOpen(state),
         rentCalculatorCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.invoices.rent_calculator`),
       };
     },
     {
-      createInvoice,
-      creditInvoice,
-      creditInvoiceSet,
       receiveCollapseStates,
-      receiveIsCreateOpen,
+      receiveIsCreateInvoicePanelOpen,
+      receiveIsCreditInvoicePanelOpen,
       startInvoicing,
       stopInvoicing,
     }

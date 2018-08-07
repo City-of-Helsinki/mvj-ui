@@ -7,6 +7,7 @@ import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 
 import SortableTableHeader from '$components/table/SortableTableHeader';
+import {InvoiceType} from '$src/invoices/enums';
 import {
   sortStringByKeyAsc,
   sortStringByKeyDesc,
@@ -39,12 +40,25 @@ const TableBodyGroup = ({
     onCreditItemChange(e.target.value);
   };
 
+  const isGroupDisabled = () => {
+    let isDisabled = true;
+    const invoices = get(row, 'invoices', []);
+    invoices.forEach((invoice) => {
+      if(invoice.data.type !== InvoiceType.CREDIT_NOTE) {
+        isDisabled = false;
+      }
+    });
+    return isDisabled;
+  };
+  const isDisabled = isGroupDisabled();
+
   return (
     <tbody>
       <tr>
         <td>
           <input type="radio" value={`invoiceset_${row.data.id}`}
             checked={selectedCreditItem === `invoiceset_${row.data.id}`}
+            disabled={isDisabled}
             onChange={handleOptionChange}
           />
         </td>
@@ -119,26 +133,33 @@ const TableBodyRow = ({
     <tr
       className={classNames({'selected': selectedRow && selectedRow.id === row.data.id, 'has-group': hasGroup})}
     >
-      <td>
+      <td colSpan={hasGroup ? 2 : 1} style={{textAlign: 'right'}}>
         <input type="radio" value={`invoice_${row.data.id}`}
           checked={selectedCreditItem === `invoice_${row.data.id}`}
+          disabled={row.data.type === InvoiceType.CREDIT_NOTE}
           onChange={handleOptionChange}
         />
       </td>
-      {columns.map(({key, renderer}, index) => (
-        <td
-          key={index}
-          onTouchStart={handleButtonPress}
-          onTouchEnd={handleButtonRelease}
-          onMouseDown={handleButtonPress}
-          onMouseUp={handleButtonRelease}
-        >
-          {renderer ?
-            renderer(get(row, `data.${key}`), row) :
-            get(row, `data.${key}`) || ' - '
-          }
-        </td>
-      ))}
+      {columns.map(({key, renderer}, index) => {
+        if(!hasGroup || key !== 'invoiceset') {
+          return (
+            <td
+              key={index}
+              onTouchStart={handleButtonPress}
+              onTouchEnd={handleButtonRelease}
+              onMouseDown={handleButtonPress}
+              onMouseUp={handleButtonRelease}
+            >
+              {renderer ?
+                renderer(get(row, `data.${key}`), row) :
+                get(row, `data.${key}`) || ' - '
+              }
+            </td>
+          );
+        } else {
+          return null;
+        }
+      })}
     </tr>
   );
 };

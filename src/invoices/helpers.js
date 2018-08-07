@@ -152,16 +152,18 @@ export const getNewInvoiceForDb = (invoice: Object) => {
 };
 
 export const getCreditInvoiceForDb = (invoice: Object) => {
-  return {
-    lease: invoice.lease,
-    recipient: get(invoice, 'recipient'),
-    type: get(invoice, 'type'),
-    total_amount: formatDecimalNumberForDb(get(invoice, 'total_amount')),
-    billed_amount: formatDecimalNumberForDb(get(invoice, 'billed_amount')),
-    due_date: get(invoice, 'due_date'),
-    rows: getInvoiceRowsForDb(invoice),
-    credited_invoice: get(invoice, 'credited_invoice'),
-  };
+  if(!invoice) {
+    return undefined;
+  }
+
+  const payload = {};
+  if(invoice.amount) {
+    payload.amount = formatDecimalNumberForDb(invoice.amount);
+  }
+  if(invoice.receivable_type) {
+    payload.receivable_type = invoice.receivable_type;
+  }
+  return payload;
 };
 
 export const formatReceivableTypesString = (receivableTypeOptions: Array<Object>, receivableTypes: Array<Object>) => {

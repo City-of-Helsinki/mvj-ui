@@ -1,17 +1,16 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {destroy, formValueSelector, initialize} from 'redux-form';
+import {destroy, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import scrollToComponent from 'react-scroll-to-component';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import CreditInvoiceModal from './CreditInvoiceModal';
 import InvoiceModalEdit from './InvoiceModalEdit';
 import InvoiceTable from './InvoiceTable';
 import TruncatedText from '$components/content/TruncatedText';
-import {clearPatchedInvoice, creditInvoice, patchInvoice, receiveIsCreateCreditOpen} from '$src/invoices/actions';
+import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {formatReceivableTypesString, getContentIncoiveItem, getContentInvoices, getEditedInvoiceForDb} from '$src/invoices/helpers';
@@ -24,7 +23,7 @@ import {
   sortNumberByKeyAsc,
   sortNumberByKeyDesc,
 } from '$util/helpers';
-import {getAttributes as getInvoiceAttributes, getInvoices, getIsCreateCreditOpen, getPatchedInvoice} from '$src/invoices/selectors';
+import {getAttributes as getInvoiceAttributes, getInvoices, getPatchedInvoice} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes as InvoiceAttributes, Invoice, InvoiceList} from '$src/invoices/types';
@@ -35,19 +34,14 @@ const MODAL_WIDTH = 607.5;
 
 type Props = {
   clearPatchedInvoice: Function,
-  creditInvoice: Function,
-  creditDueDate: string,
-  creditTotalAmount: string,
   currentLease: Lease,
   destroy: Function,
   initialize: Function,
   invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
-  isCreateCreditOpen: boolean,
   onCreditItemChange: Function,
   patchInvoice: Function,
   patchedInvoice: ?Invoice,
-  receiveIsCreateCreditOpen: Function,
   refundBill: Function,
   selectedCreditItem: ?string,
 }
@@ -183,9 +177,9 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   handleKeyCodeUp = () => {
-    const {isCreateCreditOpen} = this.props;
     const {showModal} = this.state;
-    if(showModal && !isCreateCreditOpen) {
+
+    if(showModal) {
       this.table.getWrappedInstance().selectPrevious();
     }
   }
@@ -199,9 +193,9 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 
   handleKeyCodeDown = () => {
-    const {isCreateCreditOpen} = this.props;
     const {showModal} = this.state;
-    if(showModal && !isCreateCreditOpen) {
+
+    if(showModal) {
       this.table.getWrappedInstance().selectNext();
     }
   }
@@ -238,27 +232,6 @@ class InvoicesTableEdit extends Component<Props, State> {
     });
     this.initilizeEditInvoiceForm(row.data);
     this.scrolToModal();
-  }
-
-  handleOpenCreditInvoiceModal = () => {
-    const {receiveIsCreateCreditOpen} = this.props;
-
-    receiveIsCreateCreditOpen(true);
-  }
-
-  handleCreditInvoiceModalCancel = () => {
-    const {receiveIsCreateCreditOpen} = this.props;
-    receiveIsCreateCreditOpen(false);
-  }
-
-  handleCreditInvoiceModalSave = () => {
-    const {creditInvoice, currentLease} = this.props;
-    const {selectedInvoice} = this.state;
-
-    creditInvoice({
-      lease: currentLease.id,
-      invoiceId: selectedInvoice.id,
-    });
   }
 
   editInvoice = (invoice: Object) => {
@@ -307,6 +280,7 @@ class InvoicesTableEdit extends Component<Props, State> {
     const {invoiceAttributes} = this.props,
       {showAllColumns} = this.state;
     const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type');
+    const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
     const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
 
     if(showAllColumns) {
@@ -318,6 +292,7 @@ class InvoicesTableEdit extends Component<Props, State> {
         {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'billing_period_start_date', label: 'Laskutuskausi', renderer: (val, invoice) => formatDateRange(invoice.data.billing_period_start_date, invoice.data.billing_period_end_date) || '-'},
         {key: 'receivableTypes', label: 'Saamislaji', renderer: (val) => <TruncatedText text={formatReceivableTypesString(receivableTypeOptions, val) || '-'} />, sortable: false},
+        {key: 'type', label: 'Tyyppi', renderer: (val) => getLabelOfOption(typeOptions, val) || '-'},
         {key: 'state', label: 'Laskun tila', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
         {key: 'billed_amount', label: 'Laskutettu', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'outstanding_amount', label: 'Maksamatta', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
@@ -335,15 +310,12 @@ class InvoicesTableEdit extends Component<Props, State> {
 
   render () {
     const {
-      invoiceAttributes,
-      isCreateCreditOpen,
       onCreditItemChange,
       selectedCreditItem,
     } = this.props;
     const {
       invoiceItems,
       selectedInvoice,
-      selectedInvoiceId,
       showModal,
       tableHeight,
       tableWidth,
@@ -354,16 +326,6 @@ class InvoicesTableEdit extends Component<Props, State> {
       <div
         className='invoice__invoice-table'
         ref={(ref) => this.container = ref}>
-        <CreditInvoiceModal
-          attributes={invoiceAttributes}
-          label={`Hyvitä lasku ${selectedInvoiceId}`}
-          isOpen={isCreateCreditOpen}
-          onCancel={this.handleCreditInvoiceModalCancel}
-          onClose={this.handleCreditInvoiceModalCancel}
-          onSave={this.handleCreditInvoiceModalSave}
-          selectedInvoice={selectedInvoice}
-          title='Hyvitä lasku'
-        />
         <div
           className='invoice__invoice-table_wrapper'
           ref={(ref) => this.tableWrapper = ref}
@@ -390,8 +352,6 @@ class InvoicesTableEdit extends Component<Props, State> {
           onClose={this.handleInvoiceModalClose}
           onKeyCodeDown={this.handleKeyCodeDown}
           onKeyCodeUp={this.handleKeyCodeUp}
-          onCreditInvoice={this.handleOpenCreditInvoiceModal}
-          onCreditedInvoiceClick={this.handleCreditedInvoiceClick}
           onResize={this.handleModalHeightChange}
           onSave={this.editInvoice}
           show={showModal}
@@ -401,29 +361,21 @@ class InvoicesTableEdit extends Component<Props, State> {
   }
 }
 
-const formName = FormNames.INVOICE_CREDIT;
-const selector = formValueSelector(formName);
-
 export default flowRight(
   connect(
     (state) => {
       return {
-        creditDueDate: selector(state, 'due_date'),
-        creditTotalAmount: selector(state, 'total_amount'),
         currentLease: getCurrentLease(state),
         invoiceAttributes: getInvoiceAttributes(state),
         invoices: getInvoices(state),
-        isCreateCreditOpen: getIsCreateCreditOpen(state),
         patchedInvoice: getPatchedInvoice(state),
       };
     },
     {
       clearPatchedInvoice,
-      creditInvoice,
       destroy,
       initialize,
       patchInvoice,
-      receiveIsCreateCreditOpen,
     }
   ),
 )(InvoicesTableEdit);

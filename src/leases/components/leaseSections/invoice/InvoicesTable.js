@@ -248,6 +248,7 @@ class InvoicesTable extends Component<Props, State> {
     const {invoiceAttributes} = this.props,
       {showAllColumns} = this.state;
     const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type');
+    const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
     const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
 
     if(showAllColumns) {
@@ -259,6 +260,7 @@ class InvoicesTable extends Component<Props, State> {
         {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'billing_period_start_date', label: 'Laskutuskausi', renderer: (val, invoice) => formatDateRange(invoice.data.billing_period_start_date, invoice.data.billing_period_end_date) || '-'},
         {key: 'receivableTypes', label: 'Saamislaji', renderer: (val) => <TruncatedText text={formatReceivableTypesString(receivableTypeOptions, val) || '-'} />, sortable: false},
+        {key: 'type', label: 'Tyyppi', renderer: (val) => getLabelOfOption(typeOptions, val) || '-'},
         {key: 'state', label: 'Laskun tila', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
         {key: 'billed_amount', label: 'Laskutettu', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'outstanding_amount', label: 'Maksamatta', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
