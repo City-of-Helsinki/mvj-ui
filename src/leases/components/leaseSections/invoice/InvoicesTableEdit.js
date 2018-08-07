@@ -276,6 +276,17 @@ class InvoicesTableEdit extends Component<Props, State> {
     return 0;
   };
 
+  handleCreditedInvoiceClick = (invoiceId: number) => {
+    const {invoiceItems} = this.state;
+    const selectedInvoice = invoiceItems.find((invoice) => invoice.id === invoiceId);
+    if(selectedInvoice) {
+      this.setState({
+        selectedInvoice: selectedInvoice,
+        selectedInvoiceId: invoiceId,
+      });
+    }
+  }
+
   getColumns = () => {
     const {invoiceAttributes} = this.props,
       {showAllColumns} = this.state;
@@ -350,6 +361,7 @@ class InvoicesTableEdit extends Component<Props, State> {
           invoice={selectedInvoice}
           minHeight={!showModal ? tableHeight : null}
           onClose={this.handleInvoiceModalClose}
+          onCreditedInvoiceClick={this.handleCreditedInvoiceClick}
           onKeyCodeDown={this.handleKeyCodeDown}
           onKeyCodeUp={this.handleKeyCodeUp}
           onResize={this.handleModalHeightChange}
