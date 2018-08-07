@@ -34,6 +34,8 @@ export const getRentSubItemAmount = (subItem: Object) => {
 
 export const getRentExplanationDescription = (explanation: Object, attributes: Attributes) => {
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
+  const periodOptions = getAttributeFieldOptions(attributes,
+    'rents.child.children.contract_rents.child.children.period');
   const baseAmountPeriodOptions = getAttributeFieldOptions(attributes,
     'rents.child.children.contract_rents.child.children.base_amount_period');
   const subjectType = get(explanation, 'subject.subject_type');
@@ -41,7 +43,10 @@ export const getRentExplanationDescription = (explanation: Object, attributes: A
 
   switch(subjectType) {
     case RentExplanationSubjectType.CONTRACT_RENT:
-      return `Sopimusvuokra - ${get(explanation, 'subject.intended_use.name')} (${get(explanation, 'subject.base_amount')} € ${getLabelOfOption(baseAmountPeriodOptions, get(explanation, 'subject.base_amount_period'))})`;
+      if(get(explanation, 'subject.base_amount') !== null) {
+        return `Sopimusvuokra - ${get(explanation, 'subject.intended_use.name')} (${get(explanation, 'subject.base_amount')} € ${getLabelOfOption(baseAmountPeriodOptions, get(explanation, 'subject.base_amount_period'))})`;
+      }
+      return `Sopimusvuokra - ${get(explanation, 'subject.intended_use.name')} (${get(explanation, 'subject.amount')} € ${getLabelOfOption(periodOptions, get(explanation, 'subject.period'))})`;
     case RentExplanationSubjectType.FIXED_INITIAL_YEAR_RENT:
       return 'Kiinteä alkuvuosivuokra';
     case RentExplanationSubjectType.RENT:
