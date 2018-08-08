@@ -9,6 +9,7 @@ import get from 'lodash/get';
 import SortableTableHeader from '$components/table/SortableTableHeader';
 import {InvoiceType} from '$src/invoices/enums';
 import {
+  formatDateRange,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
@@ -62,9 +63,14 @@ const TableBodyGroup = ({
             onChange={handleOptionChange}
           />
         </td>
-        <td colSpan={columns.length}>
+        <td colSpan={5}>
           {row.data.invoiceset || '-'}
         </td>
+        {columns.length > 5 &&
+          <td colSpan={columns.length - 5}>
+            {formatDateRange(row.data.billing_period_start_date, row.data.billing_period_end_date) || '-'}
+          </td>
+        }
       </tr>
       {row.invoices.map((row, index) => {
         return (
@@ -133,7 +139,7 @@ const TableBodyRow = ({
     <tr
       className={classNames({'selected': selectedRow && selectedRow.id === row.data.id, 'has-group': hasGroup})}
     >
-      <td colSpan={hasGroup ? 2 : 1} style={{textAlign: 'right'}}>
+      <td colSpan={hasGroup ? 2 : 1}>
         <input type="radio" value={`invoice_${row.data.id}`}
           checked={selectedCreditItem === `invoice_${row.data.id}`}
           disabled={row.data.type === InvoiceType.CREDIT_NOTE|| !get(row, 'data.rows', []).length}
@@ -286,15 +292,15 @@ class InvoiceTable extends Component<Props, State> {
       switch (sorting) {
         case 'desc':
         case 'asc':
-          if(column.key === 'invoiceset') {
+          if(column.key === 'invoiceset' || column.key === 'billing_period_start_date') {
             data.forEach((invoice) => {
               if(invoice.invoiceset) {
-                const invoiceSet = invoiceSets && invoiceSets.find((set) => set.id === invoice.invoiceset);
-                if(invoiceSet) {
-                  const index = invoiceSetsData.findIndex((set) => set.data.id === invoice.invoiceset);
-                  if(index !== -1) {
-                    invoiceSetsData[index].invoices.push({type: 'invoice', data: invoice});
-                  } else {
+                const index = invoiceSetsData.findIndex((set) => set.data.id === invoice.invoiceset);
+                if(index !== -1) {
+                  invoiceSetsData[index].invoices.push({type: 'invoice', data: invoice});
+                } else {
+                  const invoiceSet = invoiceSets && invoiceSets.find((set) => set.id === invoice.invoiceset);
+                  if(invoiceSet) {
                     invoiceSetsData.push({
                       type: 'invoiceset',
                       data: {...invoiceSet, invoiceset: invoiceSet.id},
@@ -309,6 +315,7 @@ class InvoiceTable extends Component<Props, State> {
           }
       }
     });
+
     groupedData = [...invoiceSetsData, ...groupedData];
     return groupedData.length ? groupedData : data.map((invoice) => {return {type: 'invoice', data: invoice};});
   }
@@ -327,19 +334,33 @@ class InvoiceTable extends Component<Props, State> {
 
       switch (sorting) {
         case 'desc':
-          if (column.descSortFunction &&
-            typeof(column.descSortFunction) == 'function') {
-            sortedData.sort((a, b) => column.descSortFunction(a, b, key));
-          } else {
-            sortedData.sort((a, b) => sortStringByKeyDesc(a, b, key));
+          sortedData.sort(column.descSortFunction && typeof(column.descSortFunction) == 'function'
+            ? (a, b) => column.descSortFunction(a, b, key)
+            : (a, b) => sortStringByKeyDesc(a, b, key));
+          // Sort also invoices inside invoice set if column is billing_period_start_date
+          if(key === 'data.billing_period_start_date') {
+            forEach(sortedData, (item) => {
+              if(item.type === 'invoiceset') {
+                (item.invoices.sort(column.descSortFunction && typeof(column.descSortFunction)) == 'function'
+                  ? (a, b) => column.descSortFunction(a, b, key)
+                  : (a, b) => sortStringByKeyDesc(a, b, key));
+              }
+            });
           }
           break;
         case 'asc':
-          if (column.descSortFunction &&
-            typeof(column.ascSortFunction) == 'function') {
-            sortedData.sort((a, b) => column.ascSortFunction(a, b, key));
-          } else {
-            sortedData.sort((a, b) => sortStringByKeyAsc(a, b, key));
+          sortedData.sort(column.ascSortFunction && typeof(column.ascSortFunction) == 'function'
+            ? (a, b) => column.ascSortFunction(a, b, key)
+            : (a, b) => sortStringByKeyAsc(a, b, key));
+          // Sort also invoices inside invoice set if column is billing_period_start_date
+          if(key === 'data.billing_period_start_date') {
+            forEach(sortedData, (item) => {
+              if(item.type === 'invoiceset') {
+                (item.invoices.sort(column.ascSortFunction && typeof(column.ascSortFunction)) == 'function'
+                  ? (a, b) => column.ascSortFunction(a, b, key)
+                  : (a, b) => sortStringByKeyAsc(a, b, key));
+              }
+            });
           }
           break;
       }
