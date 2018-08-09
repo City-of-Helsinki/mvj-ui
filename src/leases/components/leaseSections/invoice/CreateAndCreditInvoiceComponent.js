@@ -7,7 +7,7 @@ import Button from '$components/button/Button';
 import CreditInvoiceForm from './forms/CreditInvoiceForm';
 import FormSection from '$components/form/FormSection';
 import NewInvoiceForm from './forms/NewInvoiceForm';
-import {createInvoice, creditInvoice, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
+import {createInvoice, creditInvoice, receiveIsCreateInvoicePanelOpen, receiveIsCreateClicked, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {creditInvoiceSet} from '$src/invoiceSets/actions';
 import {getCreditInvoiceForDb, getNewInvoiceForDb} from '$src/invoices/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -22,12 +22,13 @@ type Props = {
   currentLease: Lease,
   enableCreateInvoice: boolean,
   enableCreditInvoice: boolean,
+  invoiceToCredit: ?string,
   isCreateInvoicePanelOpen: boolean,
   isCreditInvoicePanelOpen: boolean,
   receiveIsCreateInvoicePanelOpen: Function,
+  receiveIsCreateClicked: Function,
   receiveIsCreditInvoicePanelOpen: Function,
   ref?: Function,
-  selectedCreditInvoice: ?string,
 }
 
 class CreateAndCreditInvoiceComponent extends Component <Props> {
@@ -35,7 +36,8 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
   panel: any
 
   handleOpenCreateInvoicePanelButtonClick = () => {
-    const {receiveIsCreateInvoicePanelOpen} = this.props;
+    const {receiveIsCreateClicked, receiveIsCreateInvoicePanelOpen} = this.props;
+    receiveIsCreateClicked(false);
     receiveIsCreateInvoicePanelOpen(true);
 
     setTimeout(() => {
@@ -84,8 +86,8 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
   }
 
   handleCreditInvoice = (invoice: Object) => {
-    const {currentLease, selectedCreditInvoice} = this.props,
-      parts = selectedCreditInvoice ? selectedCreditInvoice.split('_') : [];
+    const {currentLease, invoiceToCredit} = this.props,
+      parts = invoiceToCredit ? invoiceToCredit.split('_') : [];
 
     if(parts[0] === 'invoice') {
       const {creditInvoice} = this.props;
@@ -106,14 +108,22 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
     }
   }
 
+  isInvoiceSet = () => {
+    const {invoiceToCredit} = this.props,
+      parts = invoiceToCredit ? invoiceToCredit.split('_') : [];
+
+    return parts.length ? parts[0] === 'invoiceset' : false;
+  }
+
   render() {
     const {
       enableCreateInvoice,
       enableCreditInvoice,
+      invoiceToCredit,
       isCreateInvoicePanelOpen,
       isCreditInvoicePanelOpen,
-      selectedCreditInvoice,
     } = this.props;
+    const isInvoiceSet = this.isInvoiceSet();
 
     return (
       <div className='invoice__add-invoice'>
@@ -122,7 +132,7 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
             {enableCreditInvoice &&
               <Button
                 className='button-green no-margin'
-                disabled={!selectedCreditInvoice}
+                disabled={!invoiceToCredit}
                 label='Hyvitä'
                 onClick={this.handleOpenCreditInvoicePanelButtonClick}
                 title='Hyvitä'
@@ -141,6 +151,7 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
           <div ref={(ref) => this.creditPanel = ref}>
             {(isCreditInvoicePanelOpen && enableCreditInvoice) &&
               <CreditInvoiceForm
+                isInvoiceSet={isInvoiceSet}
                 onClose={this.handleCloseCreditInvoicePanel}
                 onSave={this.handleCreditInvoice}
               />
@@ -173,6 +184,7 @@ export default connect(
     creditInvoice,
     creditInvoiceSet,
     receiveIsCreateInvoicePanelOpen,
+    receiveIsCreateClicked,
     receiveIsCreditInvoicePanelOpen,
   },
 )(CreateAndCreditInvoiceComponent);

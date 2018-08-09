@@ -20,6 +20,17 @@ export const Classification = {
 };
 
 /**
+ * CreditInvoiceOptions enumerable.
+ *
+ * @type {{FULL: string, RECEIVABLE_TYPE: string, RECEIVABLE_TYPE_AMOUNT: string,}}
+ */
+export const CreditInvoiceOptionsEnum = {
+  FULL: 'full',
+  RECEIVABLE_TYPE: 'receivable_type',
+  RECEIVABLE_TYPE_AMOUNT: 'receivable_type_amount',
+};
+
+/**
  * Constructability status enumerable.
  *
  * @type {{UNVERIFIED: string, REQUIRES_MEASURES: string, COMPLETE: string,}}
@@ -85,6 +96,15 @@ export const RentTypes = {
   FIXED: 'fixed',
   FREE: 'free',
   MANUAL: 'manual',
+};
+
+/**
+ * Recipient options enumerable.
+ *
+ * @type {{ALL: string}}
+ */
+export const RecipientOptions = {
+  ALL: 'all',
 };
 
 /**

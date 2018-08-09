@@ -1,5 +1,6 @@
 // @flow
 import React, {Component} from 'react';
+import {findDOMNode} from 'react-dom';
 import {connect} from 'react-redux';
 import {destroy, initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
@@ -39,14 +40,15 @@ type Props = {
   initialize: Function,
   invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
-  onCreditItemChange: Function,
+  invoiceToCredit: ?string,
+  onInvoiceToCreditChange: Function,
   patchInvoice: Function,
   patchedInvoice: ?Invoice,
   refundBill: Function,
-  selectedCreditItem: ?string,
 }
 
 type State = {
+  columns: Array<Object>,
   invoiceItems: InvoiceList,
   selectedInvoice: Object,
   selectedInvoiceId: number,
@@ -58,6 +60,7 @@ type State = {
 
 class InvoicesTableEdit extends Component<Props, State> {
   state = {
+    columns: [],
     invoiceItems: [],
     selectedInvoice: {},
     selectedInvoiceId: -1,
@@ -84,19 +87,29 @@ class InvoicesTableEdit extends Component<Props, State> {
       this.updateInvoiceItems();
     }
     clearPatchedInvoice();
+    this.updateColumns();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     this.calculateHeight();
     this.calculateTableWidth();
 
     if(prevProps.invoices !== this.props.invoices) {
       this.updateInvoiceItems();
     }
+
+    if(prevState.showAllColumns !== this.state.showAllColumns) {
+      this.updateColumns();
+    }
+
     if(this.props.patchedInvoice) {
       const {clearPatchedInvoice, patchedInvoice} = this.props;
       this.initilizeEditInvoiceForm(getContentIncoiveItem(patchedInvoice));
       clearPatchedInvoice();
+    }
+
+    if(prevState.selectedInvoice !== this.state.selectedInvoice) {
+      this.scrollToSelectedRow();
     }
   }
 
@@ -110,6 +123,7 @@ class InvoicesTableEdit extends Component<Props, State> {
 
   shouldComponentUpdate(nextProps: Object, nextState: Object) {
     return (
+      this.state.columns !== nextState.columns ||
       this.state.invoiceItems !== nextState.invoiceItems ||
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
@@ -132,6 +146,13 @@ class InvoicesTableEdit extends Component<Props, State> {
         duration: 450,
       });
     }, 50);
+  }
+
+  scrollToSelectedRow = () => {
+    if(this.table && this.table.getWrappedInstance().tableElement.getElementsByClassName('selected').length) {
+      var domNode: any = findDOMNode(this.table.getWrappedInstance().tableElement.getElementsByClassName('selected')[0]);
+      domNode.scrollIntoViewIfNeeded();
+    }
   }
 
   calculateHeight = () => {
@@ -217,6 +238,7 @@ class InvoicesTableEdit extends Component<Props, State> {
 
   handleDataUpdate = () => {
     this.calculateHeight();
+    this.scrollToSelectedRow();
   }
 
   handleModalHeightChange = () => {
@@ -287,6 +309,10 @@ class InvoicesTableEdit extends Component<Props, State> {
     }
   }
 
+  updateColumns = () => {
+    this.setState({columns: this.getColumns()});
+  }
+
   getColumns = () => {
     const {invoiceAttributes} = this.props,
       {showAllColumns} = this.state;
@@ -321,17 +347,17 @@ class InvoicesTableEdit extends Component<Props, State> {
 
   render () {
     const {
-      onCreditItemChange,
-      selectedCreditItem,
+      invoiceToCredit,
+      onInvoiceToCreditChange,
     } = this.props;
     const {
+      columns,
       invoiceItems,
       selectedInvoice,
       showModal,
       tableHeight,
       tableWidth,
     } = this.state;
-    const columns = this.getColumns();
 
     return (
       <div
@@ -346,13 +372,13 @@ class InvoicesTableEdit extends Component<Props, State> {
             ref={(input) => this.table = input}
             columns={columns}
             data={invoiceItems}
+            invoiceToCredit={invoiceToCredit}
             maxHeight={tableHeight ? tableHeight - 31 : null}
-            onCreditItemChange={onCreditItemChange}
             onDataUpdate={this.handleDataUpdate}
+            onInvoiceToCreditChange={onInvoiceToCreditChange}
             onRowClick={this.handleRowClick}
             onSelectNext={this.handleSelectNext}
             onSelectPrevious={this.handleSelectPrevious}
-            selectedCreditItem={selectedCreditItem}
             selectedRow={selectedInvoice}
           />
         </div>

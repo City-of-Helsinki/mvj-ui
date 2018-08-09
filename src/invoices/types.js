@@ -22,3 +22,6 @@ export type InvoiceNotFoundAction = Action<'mvj/invoices/NOT_FOUND', void>;
 
 export type ReceiveIsCreateInvoicePanelOpenAction = Action<'mvj/invoices/RECEIVE_IS_CREATE_PANEL_OPEN', boolean>;
 export type ReceiveIsCreditInvoicePanelOpenAction = Action<'mvj/invoices/RECEIVE_IS_CREDIT_PANEL_OPEN', boolean>;
+export type ReceiveInvoiceToCreditAction = Action<'mvj/invoices/RECEIVE_INVOICE_TO_CREDIT', ?string>;
+
+export type ReceiveIsCreateClickedAction = Action<'mvj/invoices/RECEIVE_CREATE_CLICKED', boolean>;

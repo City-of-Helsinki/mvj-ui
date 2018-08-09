@@ -22,23 +22,23 @@ import type {Attributes} from '$src/invoices/types';
 
 type BodyGroupProps = {
   columns: Array<any>,
-  onCreditItemChange: Function,
+  invoiceToCredit: ?string,
+  onInvoiceToCreditChange: Function,
   onRowClick: Function,
   row: Object,
-  selectedCreditItem: ?string,
   selectedRow: ?Object,
 }
 
 const TableBodyGroup = ({
   columns,
-  onCreditItemChange,
+  invoiceToCredit,
+  onInvoiceToCreditChange,
   onRowClick,
   row,
-  selectedCreditItem,
   selectedRow,
 }: BodyGroupProps) => {
   const handleOptionChange = (e: any) => {
-    onCreditItemChange(e.target.value);
+    onInvoiceToCreditChange(e.target.value);
   };
 
   const isGroupDisabled = () => {
@@ -58,7 +58,7 @@ const TableBodyGroup = ({
       <tr>
         <td>
           <input type="radio" value={`invoiceset_${row.data.id}`}
-            checked={selectedCreditItem === `invoiceset_${row.data.id}`}
+            checked={invoiceToCredit === `invoiceset_${row.data.id}`}
             disabled={isDisabled}
             onChange={handleOptionChange}
           />
@@ -78,10 +78,10 @@ const TableBodyGroup = ({
             key={index}
             columns={columns}
             hasGroup={true}
-            onCreditItemChange={onCreditItemChange}
+            invoiceToCredit={invoiceToCredit}
+            onInvoiceToCreditChange={onInvoiceToCreditChange}
             onRowClick={onRowClick}
             row={row}
-            selectedCreditItem={selectedCreditItem}
             selectedRow={selectedRow}
           />
         );
@@ -93,20 +93,20 @@ const TableBodyGroup = ({
 type BodyRowProps = {
   columns: Array<any>,
   hasGroup: boolean,
-  onCreditItemChange: Function,
+  invoiceToCredit: ?string,
+  onInvoiceToCreditChange: Function,
   onRowClick: Function,
   row: Object,
-  selectedCreditItem: ?string,
   selectedRow: ?Object,
 }
 
 const TableBodyRow = ({
   columns,
   hasGroup,
-  onCreditItemChange,
+  invoiceToCredit,
+  onInvoiceToCreditChange,
   onRowClick,
   row,
-  selectedCreditItem,
   selectedRow,
 }: BodyRowProps) => {
   let buttonPressTimer;
@@ -114,7 +114,7 @@ const TableBodyRow = ({
   let isLongPress = false;
 
   const handleOptionChange = (e: any) => {
-    onCreditItemChange(e.target.value);
+    onInvoiceToCreditChange(e.target.value);
   };
 
   const handleRowClick = () => {
@@ -141,7 +141,7 @@ const TableBodyRow = ({
     >
       <td colSpan={hasGroup ? 2 : 1}>
         <input type="radio" value={`invoice_${row.data.id}`}
-          checked={selectedCreditItem === `invoice_${row.data.id}`}
+          checked={invoiceToCredit === `invoice_${row.data.id}`}
           disabled={row.data.type === InvoiceType.CREDIT_NOTE|| !get(row, 'data.rows', []).length}
           onChange={handleOptionChange}
         />
@@ -174,14 +174,14 @@ type Props = {
   columns: Array<Object>,
   invoiceAttributes: Attributes,
   invoices: Array<Object>,
+  invoiceToCredit: ?string,
   invoiceSets: Array<Object>,
   maxHeight: ?number,
-  onCreditItemChange: Function,
+  onInvoiceToCreditChange: Function,
   onDataUpdate: Function,
   onRowClick: Function,
   onSelectNext: Function,
   onSelectPrevious: Function,
-  selectedCreditItem: ?string,
   selectedRow: ?Object,
 }
 
@@ -202,7 +202,7 @@ class InvoiceTable extends Component<Props, State> {
     sortings: [],
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const {columns, invoices} = this.props,
       invoiceItems = getContentInvoices(invoices),
       groupedData = this.groupData(invoiceItems),
@@ -216,16 +216,20 @@ class InvoiceTable extends Component<Props, State> {
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     if(this.state.sortings !== prevState.sortings ||
-      this.props.columns !== prevProps.columns
+      this.props.columns !== prevProps.columns ||
+      this.props.invoices !== prevProps.invoices
     ) {
       const {invoices} = this.props,
         invoiceItems = getContentInvoices(invoices),
         groupedData = this.groupData(invoiceItems),
         sortedData = this.sortData(groupedData);
-
       this.setState({
         sortedData: sortedData,
       });
+    }
+
+    if(!this.state.sortings.length && this.props.columns !== prevProps.columns) {
+      this.setState({sortings: this.getDefaultSortings(this.props.columns)});
     }
 
     if(this.state.sortedData !== prevState.sortedData) {
@@ -410,8 +414,15 @@ class InvoiceTable extends Component<Props, State> {
   }
 
   render() {
-    const {columns, maxHeight, onCreditItemChange, onRowClick, selectedCreditItem, selectedRow} = this.props,
-      {sortedData, sortings} = this.state;
+    const {
+      columns,
+      invoiceToCredit,
+      maxHeight,
+      onInvoiceToCreditChange,
+      onRowClick,
+      selectedRow,
+    } = this.props;
+    const {sortedData, sortings} = this.state;
 
     return(
       <div className={'table__fixed-header'}>
@@ -443,10 +454,10 @@ class InvoiceTable extends Component<Props, State> {
                     <TableBodyRow
                       columns={columns}
                       hasGroup={false}
-                      onCreditItemChange={onCreditItemChange}
+                      invoiceToCredit={invoiceToCredit}
+                      onInvoiceToCreditChange={onInvoiceToCreditChange}
                       onRowClick={onRowClick}
                       row={row}
-                      selectedCreditItem={selectedCreditItem}
                       selectedRow={selectedRow}
                     />
                   </tbody>
@@ -456,10 +467,10 @@ class InvoiceTable extends Component<Props, State> {
                   <TableBodyGroup
                     key={index}
                     columns={columns}
-                    onCreditItemChange={onCreditItemChange}
+                    invoiceToCredit={invoiceToCredit}
+                    onInvoiceToCreditChange={onInvoiceToCreditChange}
                     onRowClick={onRowClick}
                     row={row}
-                    selectedCreditItem={selectedCreditItem}
                     selectedRow={selectedRow}
                   />
                 );

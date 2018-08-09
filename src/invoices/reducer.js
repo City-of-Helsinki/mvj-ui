@@ -9,8 +9,10 @@ import type {
   Invoice,
   InvoiceList,
   ReceiveInvoicesAction,
+  ReceiveInvoiceToCreditAction,
   ReceiveIsCreateInvoicePanelOpenAction,
   ReceiveIsCreditInvoicePanelOpenAction,
+  ReceiveIsCreateClickedAction,
   ReceivePatchedInvoiceAction,
 } from './types';
 
@@ -34,6 +36,12 @@ const isCreditPanelOpenReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
+const isCreateClickedReducer: Reducer<boolean> = handleActions({
+  ['mvj/invoices/RECEIVE_CREATE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsCreateClickedAction) => {
+    return isClicked;
+  },
+}, false);
+
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/invoices/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
@@ -46,6 +54,12 @@ const invoicesReducer: Reducer<InvoiceList> = handleActions({
   },
 }, []);
 
+const invoiceToCreditReducer: Reducer<?string> = handleActions({
+  ['mvj/invoices/RECEIVE_INVOICE_TO_CREDIT']: (state: ?string, {payload: invoiceId}: ReceiveInvoiceToCreditAction) => {
+    return invoiceId;
+  },
+}, null);
+
 const patchedInvoiceReducer: Reducer<?Invoice> = handleActions({
   ['mvj/invoices/RECEIVE_PATCHED']: (state: ?Invoice, {payload: invoice}: ReceivePatchedInvoiceAction) => {
     return invoice;
@@ -56,8 +70,10 @@ const patchedInvoiceReducer: Reducer<?Invoice> = handleActions({
 export default combineReducers({
   attributes: attributesReducer,
   invoices: invoicesReducer,
+  invoiceToCredit: invoiceToCreditReducer,
   isCreatePanelOpen: isCreatePanelOpenReducer,
   isCreditPanelOpen: isCreditPanelOpenReducer,
   isFetching: isFetchingReducer,
+  isCreateClicked: isCreateClickedReducer,
   patchedInvoice: patchedInvoiceReducer,
 });

@@ -1,6 +1,8 @@
 // @flow
 import get from 'lodash/get';
+import findIndex from 'lodash/findIndex';
 
+import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
 import {formatDecimalNumberForDb, getLabelOfOption} from '$util/helpers';
 
 const getContentIncoicePayments = (invoice: Object) => {
@@ -41,9 +43,17 @@ const getInvoiceReceivableTypes = (rows: Array<Object>) => {
 
 const getInvoiceTotalSharePercentage = (rows: Array<Object>) => {
   let totalShare = 0;
-  rows.forEach((row) => {
-    const numerator = get(row, 'tenantFull.share_numerator');
-    const denominator = get(row, 'tenantFull.share_denominator');
+  const tenants = [];
+
+  rows.forEach((row) =>{
+    if(findIndex(tenants, (tenant) => get(tenant, 'id') === get(row, 'tenantFull.id')) === -1) {
+      tenants.push(row.tenantFull);
+    }
+  });
+
+  tenants.forEach((row) => {
+    const numerator = get(row, 'share_numerator');
+    const denominator = get(row, 'share_denominator');
     if(numerator && denominator) {
       totalShare +=  numerator/denominator;
     }
@@ -157,12 +167,14 @@ export const getCreditInvoiceForDb = (invoice: Object) => {
   }
 
   const payload = {};
-  if(invoice.amount) {
+  if(invoice.type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && invoice.amount) {
     payload.amount = formatDecimalNumberForDb(invoice.amount);
   }
-  if(invoice.receivable_type) {
+  if(invoice.type !== CreditInvoiceOptionsEnum.FULL && invoice.receivable_type) {
     payload.receivable_type = invoice.receivable_type;
   }
+  payload.notes = invoice.notes;
+
   return payload;
 };
 

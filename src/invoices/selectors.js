@@ -18,11 +18,17 @@ export const getIsCreateInvoicePanelOpen: Selector<boolean, void> = (state: Invo
 export const getIsCreditInvoicePanelOpen: Selector<boolean, void> = (state: InvoiceState): boolean =>
   state.invoice.isCreditPanelOpen;
 
+export const getIsCreateClicked: Selector<boolean, void> = (state: InvoiceState): boolean =>
+  state.invoice.isCreateClicked;
+
 export const getAttributes: Selector<Attributes, void> = (state: InvoiceState): InvoiceState =>
   state.invoice.attributes;
 
 export const getInvoices: Selector<InvoiceList, void> = (state: InvoiceState): InvoiceList =>
   state.invoice.invoices;
+
+export const getInvoiceToCredit: Selector<?string, void> = (state: InvoiceState): ?string =>
+  state.invoice.invoiceToCredit;
 
 export const getPatchedInvoice: Selector<?Invoice, void> = (state: InvoiceState): ?Invoice =>
   state.invoice.patchedInvoice;

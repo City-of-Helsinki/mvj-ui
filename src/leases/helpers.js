@@ -8,11 +8,18 @@ import {
   ConstructabilityType,
   FormNames,
   LeaseStatus,
+  RecipientOptions,
   TenantContactType,
 } from './enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {fixedLengthNumber, formatDecimalNumberForDb, sortByStartDateDesc, sortStringByKeyDesc} from '$util/helpers';
+import {
+  fixedLengthNumber,
+  formatDecimalNumberForDb,
+  sortByStartDateDesc,
+  sortStringByKeyAsc,
+  sortStringByKeyDesc,
+} from '$util/helpers';
 import {removeSessionStorageItem} from '$util/storage';
 
 import type {Lease} from './types';
@@ -773,12 +780,18 @@ export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTy
 
 export const getInvoiceRecipientOptions = (lease: Object) =>{
   const items = getContentTenants(lease);
-  return items.map((item) => {
-    return {
-      value: get(item, 'tenant.contact.id'),
-      label: getContactFullName(get(item, 'tenant.contact')),
-    };
-  });
+
+  return [
+    {value: RecipientOptions.ALL, label: 'Kaikki'}, ...items
+      .filter((item) => isTenantActive(item.tenant))
+      .map((item) => {
+        return {
+          value: get(item, 'tenant.contact.id'),
+          label: getContactFullName(get(item, 'tenant.contact')),
+        };
+      })
+      .sort((a, b) => sortStringByKeyAsc(a, b, 'label')),
+  ];
 };
 
 export const getInvoiceTenantOptions = (lease: Object) =>{

@@ -1,5 +1,6 @@
 // @flow
 import React, {Component} from 'react';
+import {findDOMNode} from 'react-dom';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import isNumber from 'lodash/isNumber';
@@ -31,11 +32,12 @@ const MODAL_WIDTH = 607.5;
 type Props = {
   invoiceAttributes: InvoiceAttributes,
   invoices: InvoiceList,
-  onCreditItemChange: Function,
-  selectedCreditItem: ?string,
+  invoiceToCredit: ?string,
+  onInvoiceToCreditChange: Function,
 }
 
 type State = {
+  columns: Array<Object>,
   invoiceItems: InvoiceList,
   selectedInvoice: Object,
   selectedInvoiceId: number,
@@ -47,6 +49,7 @@ type State = {
 
 class InvoicesTable extends Component<Props, State> {
   state = {
+    columns: [],
     invoiceItems: [],
     selectedInvoice: {},
     selectedInvoiceId: -1,
@@ -72,14 +75,24 @@ class InvoicesTable extends Component<Props, State> {
     if(!isEmpty(invoices)) {
       this.updateInvoiceItems();
     }
+
+    this.updateColumns();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     this.calculateHeight();
     this.calculateTableWidth();
 
     if(prevProps.invoices !== this.props.invoices) {
       this.updateInvoiceItems();
+    }
+
+    if(prevState.showAllColumns !== this.state.showAllColumns) {
+      this.updateColumns();
+    }
+
+    if(prevState.selectedInvoice !== this.state.selectedInvoice) {
+      this.scrollToSelectedRow();
     }
   }
 
@@ -94,6 +107,7 @@ class InvoicesTable extends Component<Props, State> {
   shouldComponentUpdate(nextProps: Object, nextState: Object) {
     return (
       this.state.invoiceItems !== nextState.invoiceItems ||
+      this.state.columns !== nextState.columns ||
       this.state.showAllColumns !== nextState.showAllColumns ||
       this.state.tableHeight !== nextState.tableHeight ||
       this.state.tableWidth !== nextState.tableWidth ||
@@ -115,6 +129,13 @@ class InvoicesTable extends Component<Props, State> {
         duration: 450,
       });
     }, 50);
+  }
+
+  scrollToSelectedRow = () => {
+    if(this.table && this.table.getWrappedInstance().tableElement.getElementsByClassName('selected').length) {
+      var domNode: any = findDOMNode(this.table.getWrappedInstance().tableElement.getElementsByClassName('selected')[0]);
+      domNode.scrollIntoViewIfNeeded();
+    }
   }
 
   calculateHeight = () => {
@@ -199,6 +220,7 @@ class InvoicesTable extends Component<Props, State> {
 
   handleDataUpdate = () => {
     this.calculateHeight();
+    this.scrollToSelectedRow();
   }
 
   handleModalHeightChange = () => {
@@ -244,6 +266,10 @@ class InvoicesTable extends Component<Props, State> {
     return 0;
   };
 
+  updateColumns = () => {
+    this.setState({columns: this.getColumns()});
+  }
+
   getColumns = () => {
     const {invoiceAttributes} = this.props,
       {showAllColumns} = this.state;
@@ -278,14 +304,14 @@ class InvoicesTable extends Component<Props, State> {
 
   render () {
     const {
+      columns,
       invoiceItems,
       selectedInvoice,
       showModal,
       tableHeight,
       tableWidth,
     } = this.state;
-    const {onCreditItemChange, selectedCreditItem} = this.props;
-    const columns = this.getColumns();
+    const {invoiceToCredit, onInvoiceToCreditChange} = this.props;
 
     return (
       <div
@@ -300,13 +326,13 @@ class InvoicesTable extends Component<Props, State> {
             ref={(input) => this.table = input}
             columns={columns}
             data={invoiceItems}
+            invoiceToCredit={invoiceToCredit}
             maxHeight={tableHeight ? tableHeight - 31 : null}
-            onCreditItemChange={onCreditItemChange}
             onDataUpdate={this.handleDataUpdate}
+            onInvoiceToCreditChange={onInvoiceToCreditChange}
             onRowClick={this.handleRowClick}
             onSelectNext={this.handleSelectNext}
             onSelectPrevious={this.handleSelectPrevious}
-            selectedCreditItem={selectedCreditItem}
             selectedRow={selectedInvoice}
           />
         </div>

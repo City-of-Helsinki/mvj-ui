@@ -7,6 +7,7 @@ import {
   fetchInvoices as fetchInvoicesAction,
   receiveAttributes,
   receiveInvoices,
+  receiveInvoiceToCredit,
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditInvoicePanelOpen,
   receivePatchedInvoice,
@@ -98,6 +99,7 @@ function* creditInvoiceSaga({payload: {creditData, invoiceId, lease}}): Generato
       case 200:
         yield put(fetchInvoicesAction(getSearchQuery({lease: lease})));
         yield put(receiveIsCreditInvoicePanelOpen(false));
+        yield put(receiveInvoiceToCredit(null));
         break;
       case 400:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
