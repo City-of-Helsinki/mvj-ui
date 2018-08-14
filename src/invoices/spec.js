@@ -5,6 +5,8 @@ import {
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditInvoicePanelOpen,
   receiveIsCreateClicked,
+  receiveIsCreditClicked,
+  receiveIsEditClicked,
   fetchInvoicesByLease,
   createInvoice,
   patchInvoice,
@@ -19,9 +21,11 @@ const rootState = {
   attributes: {},
   byLease: {},
   invoiceToCredit: null,
-  isCreatePanelOpen: false,
   isCreateClicked: false,
+  isCreatePanelOpen: false,
+  isCreditClicked: false,
   isCreditPanelOpen: false,
+  isEditClicked: false,
   isFetching: false,
   patchedInvoice: null,
 };
@@ -70,6 +74,22 @@ describe('Invoices', () => {
         const newState = {...rootState, isCreateClicked: isCreateClicked};
 
         const state = invoiceReducer({}, receiveIsCreateClicked(isCreateClicked));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isCreditClicked flag to true', () => {
+        const isCreditClicked = true;
+        const newState = {...rootState, isCreditClicked: isCreditClicked};
+
+        const state = invoiceReducer({}, receiveIsCreditClicked(isCreditClicked));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isEditClicked flag to true', () => {
+        const isEditClicked = true;
+        const newState = {...rootState, isEditClicked: isEditClicked};
+
+        const state = invoiceReducer({}, receiveIsEditClicked(isEditClicked));
         expect(state).to.deep.equal(newState);
       });
 

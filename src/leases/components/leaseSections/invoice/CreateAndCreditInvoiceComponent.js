@@ -9,7 +9,14 @@ import CreditInvoiceForm from './forms/CreditInvoiceForm';
 import FormSection from '$components/form/FormSection';
 import NewInvoiceForm from './forms/NewInvoiceForm';
 import {createCharge} from '$src/leases/actions';
-import {createInvoice, creditInvoice, receiveIsCreateInvoicePanelOpen, receiveIsCreateClicked, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
+import {
+  createInvoice,
+  creditInvoice,
+  receiveIsCreateClicked,
+  receiveIsCreateInvoicePanelOpen,
+  receiveIsCreditClicked,
+  receiveIsCreditInvoicePanelOpen,
+} from '$src/invoices/actions';
 import {creditInvoiceSet} from '$src/invoiceSets/actions';
 import {RecipientOptions} from '$src/leases/enums';
 import {formatNewChargeForDb, formatCreditInvoiceForDb, formatNewInvoiceForDb} from '$src/invoices/helpers';
@@ -30,8 +37,9 @@ type Props = {
   invoiceToCredit: ?string,
   isCreateInvoicePanelOpen: boolean,
   isCreditInvoicePanelOpen: boolean,
-  receiveIsCreateInvoicePanelOpen: Function,
   receiveIsCreateClicked: Function,
+  receiveIsCreateInvoicePanelOpen: Function,
+  receiveIsCreditClicked: Function,
   receiveIsCreditInvoicePanelOpen: Function,
   ref?: Function,
 }
@@ -88,7 +96,8 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
   }
 
   handleOpenCreditInvoicePanelButtonClick = () => {
-    const {receiveIsCreditInvoicePanelOpen} = this.props;
+    const {receiveIsCreditClicked, receiveIsCreditInvoicePanelOpen} = this.props;
+    receiveIsCreditClicked(false);
     receiveIsCreditInvoicePanelOpen(true);
 
     setTimeout(() => {
@@ -152,7 +161,7 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
             {enableCreditInvoice &&
               <Button
                 className='button-green no-margin'
-                disabled={!invoiceToCredit}
+                disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
                 label='Hyvitä'
                 onClick={this.handleOpenCreditInvoicePanelButtonClick}
                 title='Hyvitä'
@@ -206,6 +215,7 @@ export default connect(
     creditInvoiceSet,
     receiveIsCreateInvoicePanelOpen,
     receiveIsCreateClicked,
+    receiveIsCreditClicked,
     receiveIsCreditInvoicePanelOpen,
   },
 )(CreateAndCreditInvoiceComponent);

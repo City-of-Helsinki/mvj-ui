@@ -12,18 +12,21 @@ import CloseButton from '$components/button/CloseButton';
 import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
 import WhiteBox from '$components/content/WhiteBox';
+import {receiveIsCreditClicked} from '$src/invoices/actions';
 import {CreditInvoiceOptions, CreditInvoiceSetOptions} from '$src/leases/constants';
 import {CreditInvoiceOptionsEnum, FormNames} from '$src/leases/enums';
-import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
+import {getAttributes as getInvoiceAttributes, getIsCreditClicked} from '$src/invoices/selectors';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 type Props = {
   formValues: Object,
   invoiceAttributes: InvoiceAttributes,
+  isCreditClicked: boolean,
   isInvoiceSet: boolean,
   onClose: Function,
   onSave: Function,
+  receiveIsCreditClicked: Function,
   type: string,
   valid: boolean,
 }
@@ -31,12 +34,20 @@ type Props = {
 const CreditInvoiceForm = ({
   formValues,
   invoiceAttributes,
+  isCreditClicked,
   isInvoiceSet,
   onClose,
   onSave,
+  receiveIsCreditClicked,
   type,
   valid,
 }: Props) => {
+  const handleSave = () => {
+    receiveIsCreditClicked(true);
+
+    if(valid) {onSave(formValues);}
+  };
+
   return (
     <form className='invoice__add-invoice_form'>
       <FormSection>
@@ -51,6 +62,7 @@ const CreditInvoiceForm = ({
             <Row>
               <Column small={6} medium={4} large={2}>
                 <FormField
+                  disableTouched={isCreditClicked}
                   fieldAttributes={{
                     type: 'choice',
                     required: true,
@@ -65,6 +77,7 @@ const CreditInvoiceForm = ({
               {(type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE || type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT) &&
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isCreditClicked}
                     fieldAttributes={{
                       ...get(invoiceAttributes, 'rows.child.children.receivable_type'),
                       required: true,
@@ -79,6 +92,7 @@ const CreditInvoiceForm = ({
               {type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT &&
                 <Column small={6} medium={4} large={2}>
                   <FormField
+                    disableTouched={isCreditClicked}
                     fieldAttributes={{
                       type: 'decimal',
                       required: true,
@@ -96,6 +110,7 @@ const CreditInvoiceForm = ({
             <Row>
               <Column small={12}>
                 <FormField
+                  disableTouched={isCreditClicked}
                   fieldAttributes={get(invoiceAttributes, 'notes')}
                   name='notes'
                   overrideValues={{
@@ -108,9 +123,9 @@ const CreditInvoiceForm = ({
               <Column>
                 <Button
                   className='button-green no-margin pull-right'
-                  disabled={!valid}
+                  disabled={isCreditClicked && !valid}
                   label='Tallenna'
-                  onClick={() => onSave(formValues)}
+                  onClick={handleSave}
                   title='Tallenna'
                 />
                 <Button
@@ -137,8 +152,12 @@ export default flowRight(
       return {
         formValues: getFormValues(formName)(state),
         invoiceAttributes: getInvoiceAttributes(state),
+        isCreditClicked: getIsCreditClicked(state),
         type: selector(state, 'type'),
       };
+    },
+    {
+      receiveIsCreditClicked,
     }
   ),
   reduxForm({

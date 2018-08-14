@@ -20,6 +20,8 @@ import type {
   ReceiveIsCreateInvoicePanelOpenAction,
   ReceiveIsCreditInvoicePanelOpenAction,
   ReceiveIsCreateClickedAction,
+  ReceiveIsCreditClickedAction,
+  ReceiveIsEditClickedAction,
 } from './types';
 import type {LeaseId} from '$src/leases/types';
 
@@ -58,6 +60,12 @@ export const receiveIsCreditInvoicePanelOpen = (isOpen: boolean): ReceiveIsCredi
 
 export const receiveIsCreateClicked = (isClicked: boolean): ReceiveIsCreateClickedAction =>
   createAction('mvj/invoices/RECEIVE_CREATE_CLICKED')(isClicked);
+
+export const receiveIsCreditClicked = (isClicked: boolean): ReceiveIsCreditClickedAction =>
+  createAction('mvj/invoices/RECEIVE_CREDIT_CLICKED')(isClicked);
+
+export const receiveIsEditClicked = (isClicked: boolean): ReceiveIsEditClickedAction =>
+  createAction('mvj/invoices/RECEIVE_EDIT_CLICKED')(isClicked);
 
 export const receiveInvoiceToCredit = (invoiceId: ?string): ReceiveInvoiceToCreditAction =>
   createAction('mvj/invoices/RECEIVE_INVOICE_TO_CREDIT')(invoiceId);

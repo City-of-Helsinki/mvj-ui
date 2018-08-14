@@ -22,6 +22,12 @@ export const getIsCreditInvoicePanelOpen: Selector<boolean, void> = (state: Invo
 export const getIsCreateClicked: Selector<boolean, void> = (state: InvoiceState): boolean =>
   state.invoice.isCreateClicked;
 
+export const getIsCreditClicked: Selector<boolean, void> = (state: InvoiceState): boolean =>
+  state.invoice.isCreditClicked;
+
+export const getIsEditClicked: Selector<boolean, void> = (state: InvoiceState): boolean =>
+  state.invoice.isEditClicked;
+
 export const getAttributes: Selector<Attributes, void> = (state: InvoiceState): InvoiceState =>
   state.invoice.attributes;
 

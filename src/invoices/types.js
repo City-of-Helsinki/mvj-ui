@@ -27,3 +27,5 @@ export type ReceiveIsCreditInvoicePanelOpenAction = Action<'mvj/invoices/RECEIVE
 export type ReceiveInvoiceToCreditAction = Action<'mvj/invoices/RECEIVE_INVOICE_TO_CREDIT', ?string>;
 
 export type ReceiveIsCreateClickedAction = Action<'mvj/invoices/RECEIVE_CREATE_CLICKED', boolean>;
+export type ReceiveIsCreditClickedAction = Action<'mvj/invoices/RECEIVE_CREDIT_CLICKED', boolean>;
+export type ReceiveIsEditClickedAction = Action<'mvj/invoices/RECEIVE_EDIT_CLICKED', boolean>;

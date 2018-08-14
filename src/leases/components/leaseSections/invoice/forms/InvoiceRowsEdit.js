@@ -15,10 +15,11 @@ import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 type Props = {
   attributes: InvoiceAttributes,
   fields: any,
+  isEditClicked: boolean,
   tenantOptions: Array<Object>,
 }
 
-const InvoiceRowsEdit = ({attributes, fields, tenantOptions}: Props): Element<*> => {
+const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Props): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -48,6 +49,7 @@ const InvoiceRowsEdit = ({attributes, fields, tenantOptions}: Props): Element<*>
               <Row key={index}>
                 <Column small={3} large={3}>
                   <FormField
+                    disableTouched={isEditClicked}
                     fieldAttributes={get(attributes, 'rows.child.children.tenant')}
                     name={`${row}.tenant`}
                     overrideValues={{
@@ -58,6 +60,7 @@ const InvoiceRowsEdit = ({attributes, fields, tenantOptions}: Props): Element<*>
                 </Column>
                 <Column small={3} large={3}>
                   <FormField
+                    disableTouched={isEditClicked}
                     fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
                     name={`${row}.receivable_type`}
                     overrideValues={{
@@ -67,6 +70,7 @@ const InvoiceRowsEdit = ({attributes, fields, tenantOptions}: Props): Element<*>
                 </Column>
                 <Column small={2} large={3}>
                   <FormField
+                    disableTouched={isEditClicked}
                     fieldAttributes={get(attributes, 'rows.child.children.amount')}
                     name={`${row}.amount`}
                     unit='€'

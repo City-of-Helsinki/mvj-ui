@@ -2,7 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {FieldArray, getFormValues, reduxForm} from 'redux-form';
+import {FieldArray, formValueSelector, getFormValues, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
@@ -110,6 +110,7 @@ type Props = {
   onClose: Function,
   onSave: Function,
   receiveIsCreateClicked: Function,
+  recipient: string,
   valid: boolean,
 }
 
@@ -122,6 +123,7 @@ const NewInvoiceForm = ({
   onClose,
   onSave,
   receiveIsCreateClicked,
+  recipient,
   valid,
 }: Props) => {
   const handleSave = () => {
@@ -189,7 +191,10 @@ const NewInvoiceForm = ({
               <Column>
                 <FormField
                   disableTouched={isCreateClicked}
-                  fieldAttributes={get(invoiceAttributes, 'notes')}
+                  fieldAttributes={recipient === RecipientOptions.ALL
+                    ? {...get(invoiceAttributes, 'notes'), required: true}
+                    : get(invoiceAttributes, 'notes')
+                  }
                   name='notes'
                   overrideValues={{
                     label: 'Tiedote',
@@ -228,6 +233,7 @@ const NewInvoiceForm = ({
 };
 
 const formName = FormNames.INVOICE_NEW;
+const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
@@ -237,6 +243,7 @@ export default flowRight(
         invoiceAttributes: getInvoiceAttributes(state),
         isCreateClicked: getIsCreateClicked(state),
         lease: getCurrentLease(state),
+        recipient: selector(state, 'recipient'),
       };
     },
     {

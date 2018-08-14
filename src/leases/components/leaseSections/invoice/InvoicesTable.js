@@ -308,15 +308,6 @@ class InvoicesTable extends Component<Props, State> {
     return sortStringByKeyDesc(valA, valB);
   };
 
-  sortByReceivableTypesDesc = (a, b) => {
-    const {invoiceAttributes} = this.props,
-      receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type'),
-      valA = formatReceivableTypesString(receivableTypeOptions, get(a, 'data.receivableTypes')) || '',
-      valB = formatReceivableTypesString(receivableTypeOptions, get(b, 'data.receivableTypes')) || '';
-
-    return sortStringByKeyDesc(valA, valB);
-  };
-
   sortByRecipientNameAsc = (a, b) => {
     const valA = getContactFullName(get(a, 'data.recipientFull')) ? getContactFullName(get(a, 'data.recipientFull')).toLowerCase() : '',
       valB = getContactFullName(get(a, 'data.recipientFull')) ? getContactFullName(get(b, 'data.recipientFull')).toLowerCase() : '';

@@ -13,6 +13,8 @@ import type {
   ReceiveIsCreateInvoicePanelOpenAction,
   ReceiveIsCreditInvoicePanelOpenAction,
   ReceiveIsCreateClickedAction,
+  ReceiveIsCreditClickedAction,
+  ReceiveIsEditClickedAction,
   ReceivePatchedInvoiceAction,
 } from './types';
 
@@ -38,6 +40,18 @@ const isCreditPanelOpenReducer: Reducer<boolean> = handleActions({
 
 const isCreateClickedReducer: Reducer<boolean> = handleActions({
   ['mvj/invoices/RECEIVE_CREATE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsCreateClickedAction) => {
+    return isClicked;
+  },
+}, false);
+
+const isCreditClickedReducer: Reducer<boolean> = handleActions({
+  ['mvj/invoices/RECEIVE_CREDIT_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsCreditClickedAction) => {
+    return isClicked;
+  },
+}, false);
+
+const isEditClickedReducer: Reducer<boolean> = handleActions({
+  ['mvj/invoices/RECEIVE_EDIT_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsEditClickedAction) => {
     return isClicked;
   },
 }, false);
@@ -74,9 +88,11 @@ export default combineReducers({
   attributes: attributesReducer,
   byLease: byLeaseReducer,
   invoiceToCredit: invoiceToCreditReducer,
-  isCreatePanelOpen: isCreatePanelOpenReducer,
-  isCreditPanelOpen: isCreditPanelOpenReducer,
-  isFetching: isFetchingReducer,
   isCreateClicked: isCreateClickedReducer,
+  isCreatePanelOpen: isCreatePanelOpenReducer,
+  isCreditClicked: isCreditClickedReducer,
+  isCreditPanelOpen: isCreditPanelOpenReducer,
+  isEditClicked: isEditClickedReducer,
+  isFetching: isFetchingReducer,
   patchedInvoice: patchedInvoiceReducer,
 });
