@@ -18,7 +18,10 @@ import {
   receiveSingleLease,
   receiveLeaseById,
 } from './actions';
+import {fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen} from '$src/invoices/actions';
+import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {
+  createCharge,
   createLease,
   fetchAttributes,
   fetchLeases,
@@ -297,6 +300,27 @@ function* createReleatedLeaseSaga({payload}): Generator<any, any, any> {
   }
 }
 
+function* createChargeSaga({payload}): Generator<any, any, any> {
+  try {
+    const {leaseId} = payload;
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createCharge, payload);
+
+    switch (statusCode) {
+      case 201:
+        yield put(fetchInvoicesByLease(leaseId));
+        yield put(fetchInvoiceSetsByLease(leaseId));
+        yield put(receiveIsCreateInvoicePanelOpen(false));
+        break;
+      default:
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create charge with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
 function* deleteReleatedLeaseSaga({payload}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(deleteReleatedLease, payload.id);
@@ -339,6 +363,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/leases/CREATE_CONTACT', createContactSaga);
       yield takeLatest('mvj/leases/EDIT_CONTACT', editContactSaga);
+      yield takeLatest('mvj/leases/CREATE_CHARGE', createChargeSaga);
       yield takeLatest('mvj/leases/CREATE_RELATED_LEASE', createReleatedLeaseSaga);
       yield takeLatest('mvj/leases/DELETE_RELATED_LEASE', deleteReleatedLeaseSaga);
     }),

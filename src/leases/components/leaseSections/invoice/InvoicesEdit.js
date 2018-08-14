@@ -13,8 +13,9 @@ import InvoicesTableEdit from './InvoicesTableEdit';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
-import {receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
+import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {ViewModes} from '$src/enums';
+import {getInvoiceToCredit} from '$src/invoices/selectors';
 import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
 import type {Lease} from '$src/leases/types';
@@ -22,9 +23,11 @@ import type {Lease} from '$src/leases/types';
 type Props = {
   currentLease: Lease,
   invoicesCollapseState: boolean,
+  invoiceToCredit: ?string,
   isInvoicingEnabled: boolean,
   params: Object,
   receiveCollapseStates: Function,
+  receiveInvoiceToCredit: Function,
   receiveIsCreateInvoicePanelOpen: Function,
   receiveIsCreditInvoicePanelOpen: Function,
   rentCalculatorCollapseState: boolean,
@@ -35,23 +38,21 @@ type Props = {
 type State = {
   isStartInvoicingModalOpen: boolean,
   isStopInvoicingModalOpen: boolean,
-  selectedCreditItem: ?string,
 }
 
 class InvoicesEdit extends Component<Props, State> {
   state = {
     isStartInvoicingModalOpen: false,
     isStopInvoicingModalOpen: false,
-    selectedCreditItem: null,
-    showCreditPanel: false,
   }
 
   abnormalDebtTable: any
 
   componentWillMount = () => {
-    const {receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} = this.props;
+    const {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} = this.props;
     receiveIsCreateInvoicePanelOpen(false);
     receiveIsCreditInvoicePanelOpen(false);
+    receiveInvoiceToCredit(null);
   }
 
   showModal = (modalName: string) => {
@@ -68,8 +69,9 @@ class InvoicesEdit extends Component<Props, State> {
     });
   }
 
-  handleCreditItemChange = (val: string) => {
-    this.setState({selectedCreditItem: val});
+  handleInvoiceToCreditChange = (val: string) => {
+    const {receiveInvoiceToCredit} = this.props;
+    receiveInvoiceToCredit(val);
   }
 
   handleStartInvoicingButtonClick = () => {
@@ -136,12 +138,12 @@ class InvoicesEdit extends Component<Props, State> {
     const {
       currentLease,
       invoicesCollapseState,
+      invoiceToCredit,
       rentCalculatorCollapseState,
     } = this.props;
     const {
       isStartInvoicingModalOpen,
       isStopInvoicingModalOpen,
-      selectedCreditItem,
     } = this.state;
 
     return (
@@ -197,13 +199,13 @@ class InvoicesEdit extends Component<Props, State> {
           onToggle={this.handleInvoicesCollapseToggle}
         >
           <InvoicesTableEdit
-            onCreditItemChange={this.handleCreditItemChange}
-            selectedCreditItem={selectedCreditItem}
+            invoiceToCredit={invoiceToCredit}
+            onInvoiceToCreditChange={this.handleInvoiceToCreditChange}
           />
           <CreateAndCreditInvoiceComponent
             enableCreateInvoice={true}
             enableCreditInvoice={true}
-            selectedCreditInvoice={selectedCreditItem}
+            invoiceToCredit={invoiceToCredit}
           />
         </Collapse>
         <Collapse
@@ -225,11 +227,13 @@ export default flowRight(
       return {
         currentLease: getCurrentLease(state),
         invoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.invoices.invoices`),
+        invoiceToCredit: getInvoiceToCredit(state),
         rentCalculatorCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.invoices.rent_calculator`),
       };
     },
     {
       receiveCollapseStates,
+      receiveInvoiceToCredit,
       receiveIsCreateInvoicePanelOpen,
       receiveIsCreditInvoicePanelOpen,
       startInvoicing,

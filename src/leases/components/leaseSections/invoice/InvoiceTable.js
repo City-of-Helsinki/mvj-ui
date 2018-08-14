@@ -3,17 +3,18 @@ import React, {Component} from 'react';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import findIndex from 'lodash/findIndex';
-import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 
+import Loader from '$components/loader/Loader';
 import SortableTableHeader from '$components/table/SortableTableHeader';
 import {InvoiceType} from '$src/invoices/enums';
 import {
+  formatDateRange,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
 import {getContentInvoices} from '$src/invoices/helpers';
-import {getAttributes, getInvoices} from '$src/invoices/selectors';
+import {getAttributes, getInvoicesByLease} from '$src/invoices/selectors';
 import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
@@ -21,23 +22,23 @@ import type {Attributes} from '$src/invoices/types';
 
 type BodyGroupProps = {
   columns: Array<any>,
-  onCreditItemChange: Function,
+  invoiceToCredit: ?string,
+  onInvoiceToCreditChange: Function,
   onRowClick: Function,
   row: Object,
-  selectedCreditItem: ?string,
   selectedRow: ?Object,
 }
 
 const TableBodyGroup = ({
   columns,
-  onCreditItemChange,
+  invoiceToCredit,
+  onInvoiceToCreditChange,
   onRowClick,
   row,
-  selectedCreditItem,
   selectedRow,
 }: BodyGroupProps) => {
   const handleOptionChange = (e: any) => {
-    onCreditItemChange(e.target.value);
+    onInvoiceToCreditChange(e.target.value);
   };
 
   const isGroupDisabled = () => {
@@ -57,14 +58,19 @@ const TableBodyGroup = ({
       <tr>
         <td>
           <input type="radio" value={`invoiceset_${row.data.id}`}
-            checked={selectedCreditItem === `invoiceset_${row.data.id}`}
+            checked={invoiceToCredit === `invoiceset_${row.data.id}`}
             disabled={isDisabled}
             onChange={handleOptionChange}
           />
         </td>
-        <td colSpan={columns.length}>
+        <td colSpan={5}>
           {row.data.invoiceset || '-'}
         </td>
+        {columns.length > 5 &&
+          <td colSpan={columns.length - 5}>
+            {formatDateRange(row.data.billing_period_start_date, row.data.billing_period_end_date) || '-'}
+          </td>
+        }
       </tr>
       {row.invoices.map((row, index) => {
         return (
@@ -72,10 +78,10 @@ const TableBodyGroup = ({
             key={index}
             columns={columns}
             hasGroup={true}
-            onCreditItemChange={onCreditItemChange}
+            invoiceToCredit={invoiceToCredit}
+            onInvoiceToCreditChange={onInvoiceToCreditChange}
             onRowClick={onRowClick}
             row={row}
-            selectedCreditItem={selectedCreditItem}
             selectedRow={selectedRow}
           />
         );
@@ -87,20 +93,20 @@ const TableBodyGroup = ({
 type BodyRowProps = {
   columns: Array<any>,
   hasGroup: boolean,
-  onCreditItemChange: Function,
+  invoiceToCredit: ?string,
+  onInvoiceToCreditChange: Function,
   onRowClick: Function,
   row: Object,
-  selectedCreditItem: ?string,
   selectedRow: ?Object,
 }
 
 const TableBodyRow = ({
   columns,
   hasGroup,
-  onCreditItemChange,
+  invoiceToCredit,
+  onInvoiceToCreditChange,
   onRowClick,
   row,
-  selectedCreditItem,
   selectedRow,
 }: BodyRowProps) => {
   let buttonPressTimer;
@@ -108,7 +114,7 @@ const TableBodyRow = ({
   let isLongPress = false;
 
   const handleOptionChange = (e: any) => {
-    onCreditItemChange(e.target.value);
+    onInvoiceToCreditChange(e.target.value);
   };
 
   const handleRowClick = () => {
@@ -133,9 +139,9 @@ const TableBodyRow = ({
     <tr
       className={classNames({'selected': selectedRow && selectedRow.id === row.data.id, 'has-group': hasGroup})}
     >
-      <td colSpan={hasGroup ? 2 : 1} style={{textAlign: 'right'}}>
+      <td colSpan={hasGroup ? 2 : 1}>
         <input type="radio" value={`invoice_${row.data.id}`}
-          checked={selectedCreditItem === `invoice_${row.data.id}`}
+          checked={invoiceToCredit === `invoice_${row.data.id}`}
           disabled={row.data.type === InvoiceType.CREDIT_NOTE|| !get(row, 'data.rows', []).length}
           onChange={handleOptionChange}
         />
@@ -164,22 +170,109 @@ const TableBodyRow = ({
   );
 };
 
+const groupData = (data: Array<Object>, sortings: Array<string>, columns: Array<Object>, invoiceSets: Array<Object>) => {
+  const invoiceSetsData = [];
+  let groupedData = [];
+
+  sortings.forEach((sorting, index) => {
+    if(index >= columns.length) {return false;}
+
+    switch (sorting) {
+      case 'desc':
+      case 'asc':
+        const column = columns[index];
+        if(column.key === 'invoiceset' || column.key === 'billing_period_start_date') {
+          data.forEach((invoice) => {
+            if(invoice.invoiceset) {
+              const index = invoiceSetsData.findIndex((set) => set.data.id === invoice.invoiceset);
+              if(index !== -1) {
+                invoiceSetsData[index].invoices.push({type: 'invoice', data: invoice});
+              } else {
+                const invoiceSet = invoiceSets && invoiceSets.find((set) => set.id === invoice.invoiceset);
+                if(invoiceSet) {
+                  invoiceSetsData.push({
+                    type: 'invoiceset',
+                    data: {...invoiceSet, invoiceset: invoiceSet.id},
+                    invoices: [{type: 'invoice', data: invoice}],
+                  });
+                }
+              }
+            } else {
+              groupedData.push({type: 'invoice', data: invoice});
+            }
+          });
+        }
+    }
+  });
+
+  groupedData = [...invoiceSetsData, ...groupedData];
+  return groupedData.length ? groupedData : data.map((invoice) => {return {type: 'invoice', data: invoice};});
+};
+
+const sortData = (data: Array<Object>, sortings: Array<string>, columns: Array<Object>) => {
+  let sortedData = data;
+
+  sortings.forEach((sorting, index) => {
+    if(index >= columns.length) {return false;}
+
+    const column = columns[index];
+    const key = `data.${column.key}`;
+
+    switch (sorting) {
+      case 'desc':
+        sortedData.sort(column.descSortFunction && typeof(column.descSortFunction) == 'function'
+          ? (a, b) => column.descSortFunction(a, b, key)
+          : (a, b) => sortStringByKeyDesc(a, b, key));
+        // Sort also invoices inside invoice set if column is billing_period_start_date
+        if(key === 'data.billing_period_start_date') {
+          sortedData.forEach((item) => {
+            if(item.type === 'invoiceset') {
+              (item.invoices.sort(column.descSortFunction && typeof(column.descSortFunction)) == 'function'
+                ? (a, b) => column.descSortFunction(a, b, key)
+                : (a, b) => sortStringByKeyDesc(a, b, key));
+            }
+          });
+        }
+        break;
+      case 'asc':
+        sortedData.sort(column.ascSortFunction && typeof(column.ascSortFunction) == 'function'
+          ? (a, b) => column.ascSortFunction(a, b, key)
+          : (a, b) => sortStringByKeyAsc(a, b, key));
+        // Sort also invoices inside invoice set if column is billing_period_start_date
+        if(key === 'data.billing_period_start_date') {
+          sortedData.forEach((item) => {
+            if(item.type === 'invoiceset') {
+              (item.invoices.sort(column.ascSortFunction && typeof(column.ascSortFunction)) == 'function'
+                ? (a, b) => column.ascSortFunction(a, b, key)
+                : (a, b) => sortStringByKeyAsc(a, b, key));
+            }
+          });
+        }
+        break;
+    }
+  });
+  return sortedData;
+};
+
 type Props = {
   columns: Array<Object>,
   invoiceAttributes: Attributes,
   invoices: Array<Object>,
+  invoiceToCredit: ?string,
   invoiceSets: Array<Object>,
+  isLoading: boolean,
   maxHeight: ?number,
-  onCreditItemChange: Function,
+  onInvoiceToCreditChange: Function,
   onDataUpdate: Function,
   onRowClick: Function,
   onSelectNext: Function,
   onSelectPrevious: Function,
-  selectedCreditItem: ?string,
   selectedRow: ?Object,
 }
 
 type State = {
+  columns: Array<Object>,
+  invoices: Array<Object>,
   sortedData: Array<Object>,
   sortings: Array<string>,
 }
@@ -192,41 +285,40 @@ class InvoiceTable extends Component<Props, State> {
   };
 
   state = {
+    columns: [],
+    invoices: [],
     sortedData: [],
     sortings: [],
   }
 
-  componentWillMount() {
-    const {columns, invoices} = this.props,
-      invoiceItems = getContentInvoices(invoices),
-      groupedData = this.groupData(invoiceItems),
-      sortedData = this.sortData(groupedData);
+  componentDidMount() {
+    const {columns} = this.props;
+    this.setState({sortings: this.getDefaultSortings(columns)});
+  }
 
-    this.setState({
-      sortedData: sortedData,
-      sortings: this.getDefaultSortings(columns),
-    });
+  static getDerivedStateFromProps(props, state) {
+    if(props.columns !== state.columns || props.invoices !== state.invoices) {
+      const invoiceItems = getContentInvoices(props.invoices),
+        groupedData = groupData(invoiceItems, state.sortings, props.columns, props.invoiceSets),
+        sortedData = sortData(groupedData, state.sortings, props.columns);
+
+      return {
+        columns: props.columns,
+        invoices: props.invoices,
+        sortedData: sortedData,
+      };
+    }
+    return null;
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    if(this.state.sortings !== prevState.sortings ||
-      this.props.columns !== prevProps.columns
-    ) {
-      const {invoices} = this.props,
-        invoiceItems = getContentInvoices(invoices),
-        groupedData = this.groupData(invoiceItems),
-        sortedData = this.sortData(groupedData);
-
-      this.setState({
-        sortedData: sortedData,
-      });
+    if(!this.state.sortings.length && this.props.columns !== prevProps.columns) {
+      this.setState({sortings: this.getDefaultSortings(this.props.columns)});
     }
 
     if(this.state.sortedData !== prevState.sortedData) {
       const {onDataUpdate} = this.props;
-      if(onDataUpdate) {
-        onDataUpdate();
-      }
+      if(onDataUpdate) {onDataUpdate();}
     }
   }
 
@@ -246,23 +338,27 @@ class InvoiceTable extends Component<Props, State> {
   };
 
   onSortingChange = (index: number) => {
+    const {columns, invoices, invoiceSets} = this.props;
     const {sortings} = this.state;
     const newSortings = sortings.map(((sorting, i) => {
-      if (i == index) {
-        return this.nextSorting(sorting);
-      }
+      if (i == index) {return this.nextSorting(sorting, columns[i].primarySorting);}
       return 'both';
     }));
 
+    const invoiceItems = getContentInvoices(invoices),
+      groupedData = groupData(invoiceItems, newSortings, columns, invoiceSets),
+      sortedData = sortData(groupedData, newSortings, columns);
+
     this.setState({
+      sortedData: sortedData,
       sortings: newSortings,
     });
   }
 
-  nextSorting = (state: string) => {
+  nextSorting = (state: string, primarySorting: ?string) => {
     switch (state) {
       case 'both':
-        return 'desc';
+        return primarySorting || 'asc';
       case 'desc':
         return 'asc';
       case 'asc':
@@ -272,84 +368,10 @@ class InvoiceTable extends Component<Props, State> {
     }
   }
 
-  groupData = (data: Array<Object>) => {
-    const {sortings} = this.state,
-      {columns, invoiceSets} = this.props,
-      invoiceSetsData = [];
-    let groupedData = [];
-
-    forEach(sortings, (sorting, index) => {
-      if(index >= columns.length) {
-        return false;
-      }
-      const column = columns[index];
-      switch (sorting) {
-        case 'desc':
-        case 'asc':
-          if(column.key === 'invoiceset') {
-            data.forEach((invoice) => {
-              if(invoice.invoiceset) {
-                const invoiceSet = invoiceSets && invoiceSets.find((set) => set.id === invoice.invoiceset);
-                if(invoiceSet) {
-                  const index = invoiceSetsData.findIndex((set) => set.data.id === invoice.invoiceset);
-                  if(index !== -1) {
-                    invoiceSetsData[index].invoices.push({type: 'invoice', data: invoice});
-                  } else {
-                    invoiceSetsData.push({
-                      type: 'invoiceset',
-                      data: {...invoiceSet, invoiceset: invoiceSet.id},
-                      invoices: [{type: 'invoice', data: invoice}],
-                    });
-                  }
-                }
-              } else {
-                groupedData.push({type: 'invoice', data: invoice});
-              }
-            });
-          }
-      }
-    });
-    groupedData = [...invoiceSetsData, ...groupedData];
-    return groupedData.length ? groupedData : data.map((invoice) => {return {type: 'invoice', data: invoice};});
-  }
-
-  sortData = (data: Array<Object>) => {
-    const {sortings} = this.state,
-      {columns} = this.props;
-    let sortedData = data;
-
-    forEach(sortings, (sorting, index) => {
-      if(index >= columns.length) {
-        return false;
-      }
-      const column = columns[index];
-      const key = `data.${column.key}`;
-
-      switch (sorting) {
-        case 'desc':
-          if (column.descSortFunction &&
-            typeof(column.descSortFunction) == 'function') {
-            sortedData.sort((a, b) => column.descSortFunction(a, b, key));
-          } else {
-            sortedData.sort((a, b) => sortStringByKeyDesc(a, b, key));
-          }
-          break;
-        case 'asc':
-          if (column.descSortFunction &&
-            typeof(column.ascSortFunction) == 'function') {
-            sortedData.sort((a, b) => column.ascSortFunction(a, b, key));
-          } else {
-            sortedData.sort((a, b) => sortStringByKeyAsc(a, b, key));
-          }
-          break;
-      }
-    });
-    return sortedData;
-  }
-
   getInvoicesFromSortedData = () => {
     const {sortedData} = this.state;
     let invoicesData = [];
+
     sortedData.forEach((row) => {
       if(row.type === 'invoice') {
         invoicesData.push(row);
@@ -361,36 +383,36 @@ class InvoiceTable extends Component<Props, State> {
   }
 
   selectPrevious = () => {
-    const sortedInvoices = this.getInvoicesFromSortedData();
     const {onSelectPrevious, selectedRow} = this.props;
+    if(!selectedRow || !onSelectPrevious) {return null;}
 
-    if(!selectedRow || !onSelectPrevious) {
-      return null;
-    }
+    const sortedInvoices = this.getInvoicesFromSortedData(),
+      index = findIndex(sortedInvoices, (row) => row.data.id === selectedRow.id);
 
-    const index = findIndex(sortedInvoices, (row) => row.data.id === selectedRow.id);
-    if(index > 0) {
-      onSelectPrevious(sortedInvoices[index - 1]);
-    }
+    if(index > 0) {onSelectPrevious(sortedInvoices[index - 1]);}
   }
 
   selectNext = () => {
-    const sortedInvoices = this.getInvoicesFromSortedData();
     const {onSelectNext, selectedRow} = this.props;
+    if(!selectedRow || !onSelectNext) {return null;}
 
-    if(!selectedRow || !onSelectNext) {
-      return null;
-    }
+    const sortedInvoices = this.getInvoicesFromSortedData(),
+      index = findIndex(sortedInvoices, (row) => row.data.id === selectedRow.id);
 
-    const index = findIndex(sortedInvoices, (row) => row.data.id === selectedRow.id);
-    if(index < (sortedInvoices.length - 1)) {
-      onSelectNext(sortedInvoices[index + 1]);
-    }
+    if(index < (sortedInvoices.length - 1)) {onSelectNext(sortedInvoices[index + 1]);}
   }
 
   render() {
-    const {columns, maxHeight, onCreditItemChange, onRowClick, selectedCreditItem, selectedRow} = this.props,
-      {sortedData, sortings} = this.state;
+    const {
+      columns,
+      invoiceToCredit,
+      isLoading,
+      maxHeight,
+      onInvoiceToCreditChange,
+      onRowClick,
+      selectedRow,
+    } = this.props;
+    const {sortedData, sortings} = this.state;
 
     return(
       <div className={'table__fixed-header'}>
@@ -398,6 +420,9 @@ class InvoiceTable extends Component<Props, State> {
           className={'table__fixed-header_wrapper'}
           style={{maxHeight: maxHeight}}>
           <div className="table__fixed-header_header-border" />
+          {isLoading &&
+            <div className='invoice__invoice-table_loader-wrapper'><Loader isLoading={true} /></div>
+          }
           <table
             ref={(ref) => this.tableElement = ref}
             className={classNames(
@@ -422,10 +447,10 @@ class InvoiceTable extends Component<Props, State> {
                     <TableBodyRow
                       columns={columns}
                       hasGroup={false}
-                      onCreditItemChange={onCreditItemChange}
+                      invoiceToCredit={invoiceToCredit}
+                      onInvoiceToCreditChange={onInvoiceToCreditChange}
                       onRowClick={onRowClick}
                       row={row}
-                      selectedCreditItem={selectedCreditItem}
                       selectedRow={selectedRow}
                     />
                   </tbody>
@@ -435,10 +460,10 @@ class InvoiceTable extends Component<Props, State> {
                   <TableBodyGroup
                     key={index}
                     columns={columns}
-                    onCreditItemChange={onCreditItemChange}
+                    invoiceToCredit={invoiceToCredit}
+                    onInvoiceToCreditChange={onInvoiceToCreditChange}
                     onRowClick={onRowClick}
                     row={row}
-                    selectedCreditItem={selectedCreditItem}
                     selectedRow={selectedRow}
                   />
                 );
@@ -459,7 +484,7 @@ export default connect(
     const currentLease = getCurrentLease(state);
     return {
       invoiceAttributes: getAttributes(state),
-      invoices: getInvoices(state),
+      invoices: getInvoicesByLease(state, currentLease.id),
       invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
     };
   },

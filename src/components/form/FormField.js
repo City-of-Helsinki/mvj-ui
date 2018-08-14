@@ -185,9 +185,7 @@ class FormField extends PureComponent<Props, State> {
 
   handleValidate = (value: any) => {
     const {validate} = this.props;
-    if(!validate) {
-      return undefined;
-    }
+    if(!validate) {return undefined;}
     return validate(value);
   }
 

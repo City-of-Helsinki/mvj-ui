@@ -7,18 +7,23 @@ import type {
   FetchAttributesAction,
   ReceiveAttributesAction,
   Invoice,
-  InvoiceList,
-  FetchInvoicesAction,
-  ReceiveInvoicesAction,
+  InvoiceListMap,
+  FetchInvoicesByLeaseAction,
+  ReceiveInvoicesByLeaseAction,
   CreateInvoiceAction,
   CreditInvoiceAction,
   PatchInvoiceAction,
   ReceivePatchedInvoiceAction,
   ClearPatchedInvoiceAction,
   InvoiceNotFoundAction,
+  ReceiveInvoiceToCreditAction,
   ReceiveIsCreateInvoicePanelOpenAction,
   ReceiveIsCreditInvoicePanelOpenAction,
+  ReceiveIsCreateClickedAction,
+  ReceiveIsCreditClickedAction,
+  ReceiveIsEditClickedAction,
 } from './types';
+import type {LeaseId} from '$src/leases/types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/invoices/FETCH_ATTRIBUTES')();
@@ -26,11 +31,11 @@ export const fetchAttributes = (): FetchAttributesAction =>
 export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAction =>
   createAction('mvj/invoices/RECEIVE_ATTRIBUTES')(identifiers);
 
-export const fetchInvoices = (search: string): FetchInvoicesAction =>
-  createAction('mvj/invoices/FETCH_ALL')(search);
+export const fetchInvoicesByLease = (leaseId: LeaseId): FetchInvoicesByLeaseAction =>
+  createAction('mvj/invoices/FETCH_BY_LEASE')(leaseId);
 
-export const receiveInvoices = (invoices: InvoiceList): ReceiveInvoicesAction =>
-  createAction('mvj/invoices/RECEIVE_ALL')(invoices);
+export const receiveInvoicesByLease = (invoices: InvoiceListMap): ReceiveInvoicesByLeaseAction =>
+  createAction('mvj/invoices/RECEIVE_BY_LEASE')(invoices);
 
 export const createInvoice = (invoice: Invoice): CreateInvoiceAction =>
   createAction('mvj/invoices/CREATE')(invoice);
@@ -52,6 +57,18 @@ export const receiveIsCreateInvoicePanelOpen = (isOpen: boolean): ReceiveIsCreat
 
 export const receiveIsCreditInvoicePanelOpen = (isOpen: boolean): ReceiveIsCreditInvoicePanelOpenAction =>
   createAction('mvj/invoices/RECEIVE_IS_CREDIT_PANEL_OPEN')(isOpen);
+
+export const receiveIsCreateClicked = (isClicked: boolean): ReceiveIsCreateClickedAction =>
+  createAction('mvj/invoices/RECEIVE_CREATE_CLICKED')(isClicked);
+
+export const receiveIsCreditClicked = (isClicked: boolean): ReceiveIsCreditClickedAction =>
+  createAction('mvj/invoices/RECEIVE_CREDIT_CLICKED')(isClicked);
+
+export const receiveIsEditClicked = (isClicked: boolean): ReceiveIsEditClickedAction =>
+  createAction('mvj/invoices/RECEIVE_EDIT_CLICKED')(isClicked);
+
+export const receiveInvoiceToCredit = (invoiceId: ?string): ReceiveInvoiceToCreditAction =>
+  createAction('mvj/invoices/RECEIVE_INVOICE_TO_CREDIT')(invoiceId);
 
 export const notFound = (): InvoiceNotFoundAction =>
   createAction('mvj/invoices/NOT_FOUND')();

@@ -15,84 +15,88 @@ import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 type Props = {
   attributes: InvoiceAttributes,
   fields: any,
+  isEditClicked: boolean,
   tenantOptions: Array<Object>,
 }
 
-const InvoiceRowsEdit = ({attributes, fields, tenantOptions}: Props): Element<*> => {
+const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Props): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
   return (
     <div>
       <SubTitle>Erittely</SubTitle>
       {!!fields && !!fields.length &&
         <div>
           <Row>
-            <Column small={3} large={2}>
+            <Column small={3} large={3}>
               <FormFieldLabel required={get(attributes, 'rows.child.children.tenant.required')}>Vuokralainen</FormFieldLabel>
             </Column>
-            <Column small={3} large={2}>
+            <Column small={3} large={3}>
               <FormFieldLabel  required={get(attributes, 'rows.child.children.receivable_type.required')}>Saamislaji</FormFieldLabel>
             </Column>
-            <Column small={3} large={4}>
-              <FormFieldLabel required={get(attributes, 'rows.child.children.description.required')}>Selite</FormFieldLabel>
-            </Column>
-            <Column small={3} large={2}>
+            <Column small={3} large={3}>
               <FormFieldLabel required={get(attributes, 'rows.child.children.amount.required')}>Määrä</FormFieldLabel>
             </Column>
           </Row>
-          {fields.map((row, index) =>
-            <Row key={index}>
-              <Column small={3} large={2}>
-                <FormField
-                  fieldAttributes={get(attributes, 'rows.child.children.tenant')}
-                  name={`${row}.tenant`}
-                  overrideValues={{
-                    label: '',
-                    options: tenantOptions,
-                  }}
-                />
-              </Column>
-              <Column small={3} large={2}>
-                <FormField
-                  fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
-                  name={`${row}.receivable_type`}
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column small={3} large={4}>
-                <FormField
-                  fieldAttributes={get(attributes, 'rows.child.children.description')}
-                  name={`${row}.description`}
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column small={2} large={2}>
-                <FormField
-                  fieldAttributes={get(attributes, 'rows.child.children.amount')}
-                  name={`${row}.amount`}
-                  unit='€'
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column small={1} large={2}>
-                <RemoveButton
-                  onClick={() => fields.remove(index)}
-                  title="Poista tiedosto"
-                />
-              </Column>
-            </Row>
-          )}
+          {fields.map((row, index) => {
+            const handleRemove = () => {
+              fields.remove(index);
+            };
+
+            return (
+              <Row key={index}>
+                <Column small={3} large={3}>
+                  <FormField
+                    disableTouched={isEditClicked}
+                    fieldAttributes={get(attributes, 'rows.child.children.tenant')}
+                    name={`${row}.tenant`}
+                    overrideValues={{
+                      label: '',
+                      options: tenantOptions,
+                    }}
+                  />
+                </Column>
+                <Column small={3} large={3}>
+                  <FormField
+                    disableTouched={isEditClicked}
+                    fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
+                    name={`${row}.receivable_type`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={2} large={3}>
+                  <FormField
+                    disableTouched={isEditClicked}
+                    fieldAttributes={get(attributes, 'rows.child.children.amount')}
+                    name={`${row}.amount`}
+                    unit='€'
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={1} large={2}>
+                  {fields.length > 1 &&
+                    <RemoveButton
+                      onClick={handleRemove}
+                      title="Poista rivi"
+                    />
+                  }
+                </Column>
+              </Row>
+            );
+          })}
         </div>
       }
       <Row>
         <Column>
           <AddButtonSecondary
             label='Lisää rivi'
-            onClick={() => fields.push({})}
+            onClick={handleAdd}
             title='Lisää rivi'
           />
         </Column>

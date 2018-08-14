@@ -4,9 +4,10 @@ import {SubmissionError} from 'redux-form';
 
 import {getSearchQuery} from '$util/helpers';
 import {
-  fetchInvoices as fetchInvoicesAction,
+  fetchInvoicesByLease,
   receiveAttributes,
-  receiveInvoices,
+  receiveInvoicesByLease,
+  receiveInvoiceToCredit,
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditInvoicePanelOpen,
   receivePatchedInvoice,
@@ -40,9 +41,9 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
   }
 }
 
-function* fetchInvoicesSaga({payload: search}): Generator<any, any, any> {
+function* fetchInvoicesByLeaseSaga({payload: leaseId}): Generator<any, any, any> {
   try {
-    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchInvoices, search);
+    let {response: {status: statusCode}, bodyAsJson: body} = yield call(fetchInvoices, getSearchQuery({lease: leaseId, limit: 10000}));
     let invoices = body.results;
     while(statusCode === 200 && body.next) {
       const {response: {status}, bodyAsJson} = yield call(fetchInvoices, `?${body.next.split('?').pop()}`);
@@ -53,7 +54,7 @@ function* fetchInvoicesSaga({payload: search}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        yield put(receiveInvoices(invoices));
+        yield put(receiveInvoicesByLease({leaseId: leaseId, invoices: invoices}));
         break;
       case 404:
       case 500:
@@ -71,7 +72,7 @@ function* createInvoiceSaga({payload: invoice}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
-        yield put(fetchInvoicesAction(getSearchQuery({lease: invoice.lease})));
+        yield put(fetchInvoicesByLease(invoice.lease));
         yield put(receiveIsCreateInvoicePanelOpen(false));
         break;
       case 400:
@@ -96,8 +97,9 @@ function* creditInvoiceSaga({payload: {creditData, invoiceId, lease}}): Generato
 
     switch (statusCode) {
       case 200:
-        yield put(fetchInvoicesAction(getSearchQuery({lease: lease})));
+        yield put(fetchInvoicesByLease(lease));
         yield put(receiveIsCreditInvoicePanelOpen(false));
+        yield put(receiveInvoiceToCredit(null));
         break;
       case 400:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
@@ -118,7 +120,7 @@ function* patchInvoiceSaga({payload: invoice}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        yield put(fetchInvoicesAction(getSearchQuery({lease: bodyAsJson.lease})));
+        yield put(fetchInvoicesByLease(bodyAsJson.lease));
         yield put(receivePatchedInvoice(bodyAsJson));
         break;
       case 400:
@@ -141,7 +143,7 @@ export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/invoices/FETCH_ATTRIBUTES', fetchAttributesSaga);
-      yield takeLatest('mvj/invoices/FETCH_ALL', fetchInvoicesSaga);
+      yield takeLatest('mvj/invoices/FETCH_BY_LEASE', fetchInvoicesByLeaseSaga);
       yield takeLatest('mvj/invoices/CREATE', createInvoiceSaga);
       yield takeLatest('mvj/invoices/CREDIT_INVOICE', creditInvoiceSaga);
       yield takeLatest('mvj/invoices/PATCH', patchInvoiceSaga);

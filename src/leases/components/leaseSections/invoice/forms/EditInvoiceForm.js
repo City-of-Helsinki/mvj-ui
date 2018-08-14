@@ -23,7 +23,7 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
 } from '$util/helpers';
-import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
+import {getAttributes as getInvoiceAttributes, getIsEditClicked} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
@@ -32,24 +32,30 @@ import type {Lease} from '$src/leases/types';
 type PaymentsProps = {
   attributes: InvoiceAttributes,
   fields: any,
+  isEditClicked: boolean,
 }
 
-const renderPayments = ({attributes, fields}: PaymentsProps): Element<*> => {
+const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Element<*> => {
   return (
     <div>
-      <Row>
-        <Column small={6}>
-          <FormFieldLabel required={get(attributes, 'payments.child.children.paid_amount.required')}>Maksettu määrä</FormFieldLabel>
-        </Column>
-        <Column small={6}>
-          <FormFieldLabel required={get(attributes, 'payments.child.children.paid_date.required')}>Maksettu pvm</FormFieldLabel>
-        </Column>
-      </Row>
+      {!fields || !fields.length && <p>Ei maksuja</p>}
+
+      {fields && !!fields.length &&
+        <Row>
+          <Column small={6}>
+            <FormFieldLabel required={get(attributes, 'payments.child.children.paid_amount.required')}>Maksettu määrä</FormFieldLabel>
+          </Column>
+          <Column small={6}>
+            <FormFieldLabel required={get(attributes, 'payments.child.children.paid_date.required')}>Maksettu pvm</FormFieldLabel>
+          </Column>
+        </Row>
+      }
       {fields && !!fields.length && fields.map((payment, index) => {
         return (
           <Row key={index}>
             <Column small={6}>
               <FormField
+                disableTouched={isEditClicked}
                 fieldAttributes={get(attributes, 'payments.child.children.paid_amount')}
                 name={`${payment}.paid_amount`}
                 unit='€'
@@ -60,6 +66,7 @@ const renderPayments = ({attributes, fields}: PaymentsProps): Element<*> => {
             </Column>
             <Column small={4}>
               <FormField
+                disableTouched={isEditClicked}
                 fieldAttributes={get(attributes, 'payments.child.children.paid_date')}
                 name={`${payment}.paid_date`}
                 overrideValues={{
@@ -93,6 +100,7 @@ type Props = {
   handleSubmit: Function,
   invoice: Object,
   invoiceAttributes: InvoiceAttributes,
+  isEditClicked: boolean,
   lease: Lease,
   onCreditedInvoiceClick: Function,
 }
@@ -101,6 +109,7 @@ const EditInvoiceForm = ({
   handleSubmit,
   invoice,
   invoiceAttributes,
+  isEditClicked,
   lease,
   onCreditedInvoiceClick,
 }: Props) => {
@@ -132,6 +141,7 @@ const EditInvoiceForm = ({
       <Row>
         <Column medium={4}>
           <FormField
+            disableTouched={isEditClicked}
             fieldAttributes={get(invoiceAttributes, 'due_date')}
             name='due_date'
             overrideValues={{
@@ -158,6 +168,7 @@ const EditInvoiceForm = ({
           <Row>
             <Column medium={6}>
               <FormField
+                disableTouched={isEditClicked}
                 fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
                 name='billing_period_start_date'
                 overrideValues={{
@@ -167,6 +178,7 @@ const EditInvoiceForm = ({
             </Column>
             <Column medium={6}>
               <FormField
+                disableTouched={isEditClicked}
                 fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
                 name='billing_period_end_date'
                 overrideValues={{
@@ -184,6 +196,7 @@ const EditInvoiceForm = ({
       <Row>
         <Column medium={4}>
           <FormField
+            disableTouched={isEditClicked}
             fieldAttributes={get(invoiceAttributes, 'total_amount')}
             name='total_amount'
             unit='€'
@@ -212,6 +225,7 @@ const EditInvoiceForm = ({
           <FieldArray
             attributes={invoiceAttributes}
             component={renderPayments}
+            isEditClicked={isEditClicked}
             name='payments'
           />
         </Column>
@@ -257,7 +271,7 @@ const EditInvoiceForm = ({
           <Column medium={4}>
             <FormFieldLabel>Hyvitetty lasku</FormFieldLabel>
             <p>{invoice.credited_invoice
-              ? <a onClick={handleCreditedInvoiceClick}>{invoice.credited_invoice}</a>
+              ? <a className='no-margin' onClick={handleCreditedInvoiceClick}>{invoice.credited_invoice}</a>
               : '-'
             }</p>
           </Column>
@@ -266,6 +280,7 @@ const EditInvoiceForm = ({
       <Row>
         <Column medium={12}>
           <FormField
+            disableTouched={isEditClicked}
             fieldAttributes={get(invoiceAttributes, 'notes')}
             name='notes'
             overrideValues={{
@@ -279,6 +294,7 @@ const EditInvoiceForm = ({
         attributes={invoiceAttributes}
         component={InvoiceRowsEdit}
         name='rows'
+        isEditClicked={isEditClicked}
         tenantOptions={tenantOptions}
       />
     </form>
@@ -292,6 +308,7 @@ export default flowRight(
     (state) => {
       return {
         invoiceAttributes: getInvoiceAttributes(state),
+        isEditClicked: getIsEditClicked(state),
         lease: getCurrentLease(state),
       };
     },

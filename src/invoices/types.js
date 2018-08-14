@@ -1,17 +1,19 @@
 // @flow
 
 import type {Action} from '../types';
+import type {LeaseId} from '$src/leases/types';
 
 export type InvoiceState = Object;
 export type Attributes = Object;
 export type Invoice = Object;
 export type InvoiceList = Array<Object>;
+export type InvoiceListMap = Object;
 
 export type FetchAttributesAction = Action<'mvj/invoices/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/invoices/RECEIVE_ATTRIBUTES', Attributes>;
 
-export type FetchInvoicesAction = Action<'mvj/invoices/FETCH_ALL', string>;
-export type ReceiveInvoicesAction = Action<'mvj/invoices/RECEIVE_ALL', InvoiceList>;
+export type FetchInvoicesByLeaseAction = Action<'mvj/invoices/FETCH_BY_LEASE', LeaseId>;
+export type ReceiveInvoicesByLeaseAction = Action<'mvj/invoices/RECEIVE_BY_LEASE', InvoiceListMap>;
 export type CreateInvoiceAction = Action<'mvj/invoices/CREATE', Invoice>;
 export type CreditInvoiceAction = Action<'mvj/invoices/CREDIT_INVOICE', Object>;
 export type PatchInvoiceAction = Action<'mvj/invoices/PATCH', Invoice>;
@@ -22,3 +24,8 @@ export type InvoiceNotFoundAction = Action<'mvj/invoices/NOT_FOUND', void>;
 
 export type ReceiveIsCreateInvoicePanelOpenAction = Action<'mvj/invoices/RECEIVE_IS_CREATE_PANEL_OPEN', boolean>;
 export type ReceiveIsCreditInvoicePanelOpenAction = Action<'mvj/invoices/RECEIVE_IS_CREDIT_PANEL_OPEN', boolean>;
+export type ReceiveInvoiceToCreditAction = Action<'mvj/invoices/RECEIVE_INVOICE_TO_CREDIT', ?string>;
+
+export type ReceiveIsCreateClickedAction = Action<'mvj/invoices/RECEIVE_CREATE_CLICKED', boolean>;
+export type ReceiveIsCreditClickedAction = Action<'mvj/invoices/RECEIVE_CREDIT_CLICKED', boolean>;
+export type ReceiveIsEditClickedAction = Action<'mvj/invoices/RECEIVE_EDIT_CLICKED', boolean>;
