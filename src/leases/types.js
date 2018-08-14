@@ -15,6 +15,11 @@ export type CreateRelatedLeasePayload = {
   from_lease: LeaseId,
   to_lease: LeaseId,
 }
+export type CreateChargePayload = {
+  leaseId: LeaseId,
+  data: Object,
+}
+
 export type DeleteRelatedLeasePayload = {
   id: number,
   leaseId: number,
@@ -50,6 +55,8 @@ export type CreateRelatedLeaseAction = Action<'mvj/leases/CREATE_RELATED_LEASE',
 export type DeleteRelatedLeaseAction = Action<'mvj/leases/DELETE_RELATED_LEASE', DeleteRelatedLeasePayload>;
 export type HideDeleteRelatedLeaseModalAction = Action<'mvj/leases/HIDE_RELATED_LEASE_MODAL', void>;
 export type ShowDeleteRelatedLeaseModalAction = Action<'mvj/leases/SHOW_RELATED_LEASE_MODAL', void>;
+
+export type CreateChargeAction = Action<'mvj/leases/CREATE_CHARGE', CreateChargePayload>;
 
 export type ReceiveFormValidFlagsAction = Action<'mvj/leases/RECEIVE_FORM_VALID_FLAGS', Object>;
 export type ClearFormValidFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALID_FLAGS', void>;

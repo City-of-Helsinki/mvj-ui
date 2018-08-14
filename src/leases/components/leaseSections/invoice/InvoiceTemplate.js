@@ -185,7 +185,7 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
           <Column medium={4}>
             <FormFieldLabel>Hyvitetty lasku</FormFieldLabel>
             <p>{invoice.credited_invoice
-              ? <a onClick={handleCreditedInvoiceClick}>{invoice.credited_invoice}</a>
+              ? <a className='no-margin' onClick={handleCreditedInvoiceClick}>{invoice.credited_invoice}</a>
               : '-'
             }</p>
           </Column>

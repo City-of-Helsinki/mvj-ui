@@ -7,9 +7,9 @@ import type {
   FetchAttributesAction,
   ReceiveAttributesAction,
   Invoice,
-  InvoiceList,
-  FetchInvoicesAction,
-  ReceiveInvoicesAction,
+  InvoiceListMap,
+  FetchInvoicesByLeaseAction,
+  ReceiveInvoicesByLeaseAction,
   CreateInvoiceAction,
   CreditInvoiceAction,
   PatchInvoiceAction,
@@ -21,6 +21,7 @@ import type {
   ReceiveIsCreditInvoicePanelOpenAction,
   ReceiveIsCreateClickedAction,
 } from './types';
+import type {LeaseId} from '$src/leases/types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/invoices/FETCH_ATTRIBUTES')();
@@ -28,11 +29,11 @@ export const fetchAttributes = (): FetchAttributesAction =>
 export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAction =>
   createAction('mvj/invoices/RECEIVE_ATTRIBUTES')(identifiers);
 
-export const fetchInvoices = (search: string): FetchInvoicesAction =>
-  createAction('mvj/invoices/FETCH_ALL')(search);
+export const fetchInvoicesByLease = (leaseId: LeaseId): FetchInvoicesByLeaseAction =>
+  createAction('mvj/invoices/FETCH_BY_LEASE')(leaseId);
 
-export const receiveInvoices = (invoices: InvoiceList): ReceiveInvoicesAction =>
-  createAction('mvj/invoices/RECEIVE_ALL')(invoices);
+export const receiveInvoicesByLease = (invoices: InvoiceListMap): ReceiveInvoicesByLeaseAction =>
+  createAction('mvj/invoices/RECEIVE_BY_LEASE')(invoices);
 
 export const createInvoice = (invoice: Invoice): CreateInvoiceAction =>
   createAction('mvj/invoices/CREATE')(invoice);

@@ -8,6 +8,7 @@ import type {
   Invoice,
   InvoiceList,
 } from './types';
+import type {LeaseId} from '$src/leases/types';
 
 export const getIsFetching: Selector<boolean, void> = (state: InvoiceState): boolean =>
   state.invoice.isFetching;
@@ -24,8 +25,8 @@ export const getIsCreateClicked: Selector<boolean, void> = (state: InvoiceState)
 export const getAttributes: Selector<Attributes, void> = (state: InvoiceState): InvoiceState =>
   state.invoice.attributes;
 
-export const getInvoices: Selector<InvoiceList, void> = (state: InvoiceState): InvoiceList =>
-  state.invoice.invoices;
+export const getInvoicesByLease: Selector<InvoiceList, LeaseId> = (state: InvoiceState, leaseId: LeaseId): InvoiceList =>
+  state.invoice.byLease[leaseId];
 
 export const getInvoiceToCredit: Selector<?string, void> = (state: InvoiceState): ?string =>
   state.invoice.invoiceToCredit;

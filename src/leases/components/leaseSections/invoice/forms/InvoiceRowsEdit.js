@@ -29,16 +29,13 @@ const InvoiceRowsEdit = ({attributes, fields, tenantOptions}: Props): Element<*>
       {!!fields && !!fields.length &&
         <div>
           <Row>
-            <Column small={3} large={2}>
+            <Column small={3} large={3}>
               <FormFieldLabel required={get(attributes, 'rows.child.children.tenant.required')}>Vuokralainen</FormFieldLabel>
             </Column>
-            <Column small={3} large={2}>
+            <Column small={3} large={3}>
               <FormFieldLabel  required={get(attributes, 'rows.child.children.receivable_type.required')}>Saamislaji</FormFieldLabel>
             </Column>
-            <Column small={3} large={4}>
-              <FormFieldLabel required={get(attributes, 'rows.child.children.description.required')}>Selite</FormFieldLabel>
-            </Column>
-            <Column small={3} large={2}>
+            <Column small={3} large={3}>
               <FormFieldLabel required={get(attributes, 'rows.child.children.amount.required')}>Määrä</FormFieldLabel>
             </Column>
           </Row>
@@ -49,7 +46,7 @@ const InvoiceRowsEdit = ({attributes, fields, tenantOptions}: Props): Element<*>
 
             return (
               <Row key={index}>
-                <Column small={3} large={2}>
+                <Column small={3} large={3}>
                   <FormField
                     fieldAttributes={get(attributes, 'rows.child.children.tenant')}
                     name={`${row}.tenant`}
@@ -59,7 +56,7 @@ const InvoiceRowsEdit = ({attributes, fields, tenantOptions}: Props): Element<*>
                     }}
                   />
                 </Column>
-                <Column small={3} large={2}>
+                <Column small={3} large={3}>
                   <FormField
                     fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
                     name={`${row}.receivable_type`}
@@ -68,16 +65,7 @@ const InvoiceRowsEdit = ({attributes, fields, tenantOptions}: Props): Element<*>
                     }}
                   />
                 </Column>
-                <Column small={3} large={4}>
-                  <FormField
-                    fieldAttributes={get(attributes, 'rows.child.children.description')}
-                    name={`${row}.description`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={2} large={2}>
+                <Column small={2} large={3}>
                   <FormField
                     fieldAttributes={get(attributes, 'rows.child.children.amount')}
                     name={`${row}.amount`}
@@ -91,7 +79,7 @@ const InvoiceRowsEdit = ({attributes, fields, tenantOptions}: Props): Element<*>
                   {fields.length > 1 &&
                     <RemoveButton
                       onClick={handleRemove}
-                      title="Poista tiedosto"
+                      title="Poista rivi"
                     />
                   }
                 </Column>

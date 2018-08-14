@@ -38,7 +38,7 @@ import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {fetchAttributes as fetchCommentAttributes, fetchCommentsByLease} from '$src/comments/actions';
 import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {fetchDecisionsByLease} from '$src/decision/actions';
-import {fetchAttributes as fetchInvoiceAttributes, fetchInvoices} from '$src/invoices/actions';
+import {fetchAttributes as fetchInvoiceAttributes, fetchInvoicesByLease} from '$src/invoices/actions';
 import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {
   clearFormValidFlags,
@@ -56,7 +56,6 @@ import {FormNames} from '$src/leases/enums';
 import {FormNames as ComponentFormNames} from '$components/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
-import {getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
@@ -100,7 +99,7 @@ type Props = {
   fetchContactAttributes: Function,
   fetchDecisionsByLease: Function,
   fetchInvoiceAttributes: Function,
-  fetchInvoices: Function,
+  fetchInvoicesByLease: Function,
   fetchInvoiceSetsByLease: Function,
   fetchNoticePeriods: Function,
   fetchSingleLease: Function,
@@ -177,7 +176,7 @@ class LeasePage extends Component<Props, State> {
       fetchContactAttributes,
       fetchDecisionsByLease,
       fetchInvoiceAttributes,
-      fetchInvoices,
+      fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
       fetchNoticePeriods,
       fetchSingleLease,
@@ -216,7 +215,7 @@ class LeasePage extends Component<Props, State> {
     fetchSingleLease(leaseId);
     fetchCommentsByLease(leaseId);
     fetchDecisionsByLease(leaseId);
-    fetchInvoices(getSearchQuery({lease: leaseId}));
+    fetchInvoicesByLease(leaseId);
     fetchInvoiceSetsByLease(leaseId);
     fetchNoticePeriods();
     fetchAreaNoteList();
@@ -939,7 +938,7 @@ export default flowRight(
       fetchContactAttributes,
       fetchDecisionsByLease,
       fetchInvoiceAttributes,
-      fetchInvoices,
+      fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
       fetchNoticePeriods,
       fetchSingleLease,

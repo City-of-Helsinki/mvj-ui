@@ -7,8 +7,8 @@ import type {
   Attributes,
   ReceiveAttributesAction,
   Invoice,
-  InvoiceList,
-  ReceiveInvoicesAction,
+  InvoiceListMap,
+  ReceiveInvoicesByLeaseAction,
   ReceiveInvoiceToCreditAction,
   ReceiveIsCreateInvoicePanelOpenAction,
   ReceiveIsCreditInvoicePanelOpenAction,
@@ -19,9 +19,9 @@ import type {
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/invoices/CREATE': () => true,
   'mvj/invoices/PATCH': () => true,
-  'mvj/invoices/FETCH_ALL': () => true,
+  'mvj/invoices/FETCH_BY_LEASE': () => true,
   'mvj/invoices/NOT_FOUND': () => false,
-  'mvj/invoices/RECEIVE_ALL': () => false,
+  'mvj/invoices/RECEIVE_BY_LEASE': () => false,
 }, false);
 
 const isCreatePanelOpenReducer: Reducer<boolean> = handleActions({
@@ -48,11 +48,14 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   },
 }, {});
 
-const invoicesReducer: Reducer<InvoiceList> = handleActions({
-  ['mvj/invoices/RECEIVE_ALL']: (state: InvoiceList, {payload: invoices}: ReceiveInvoicesAction) => {
-    return invoices;
+const byLeaseReducer: Reducer<InvoiceListMap> = handleActions({
+  ['mvj/invoices/RECEIVE_BY_LEASE']: (state: InvoiceListMap, {payload}: ReceiveInvoicesByLeaseAction) => {
+    return {
+      ...state,
+      [payload.leaseId]: payload.invoices,
+    };
   },
-}, []);
+}, {});
 
 const invoiceToCreditReducer: Reducer<?string> = handleActions({
   ['mvj/invoices/RECEIVE_INVOICE_TO_CREDIT']: (state: ?string, {payload: invoiceId}: ReceiveInvoiceToCreditAction) => {
@@ -69,7 +72,7 @@ const patchedInvoiceReducer: Reducer<?Invoice> = handleActions({
 
 export default combineReducers({
   attributes: attributesReducer,
-  invoices: invoicesReducer,
+  byLease: byLeaseReducer,
   invoiceToCredit: invoiceToCreditReducer,
   isCreatePanelOpen: isCreatePanelOpenReducer,
   isCreditPanelOpen: isCreditPanelOpenReducer,

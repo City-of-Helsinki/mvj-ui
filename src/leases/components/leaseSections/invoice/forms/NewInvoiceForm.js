@@ -22,6 +22,7 @@ import {FormNames, RecipientOptions} from '$src/leases/enums';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
 import {getAttributes as getInvoiceAttributes, getIsCreateClicked} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
+import {dateGreaterOrEqual} from '$components/form/validations';
 
 import type {Lease} from '$src/leases/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
@@ -44,9 +45,6 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
             <Column small={3} large={2}>
               <FormFieldLabel  required={get(attributes, 'rows.child.children.receivable_type.required')}>Saamislaji</FormFieldLabel>
             </Column>
-            <Column small={3} large={4}>
-              <FormFieldLabel required={get(attributes, 'rows.child.children.description.required')}>Selite</FormFieldLabel>
-            </Column>
             <Column small={3} large={2}>
               <FormFieldLabel required={get(attributes, 'rows.child.children.amount.required')}>Määrä</FormFieldLabel>
             </Column>
@@ -61,16 +59,6 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                     disableTouched={isCreateClicked}
                     fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
                     name={`${row}.receivable_type`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={3} large={4}>
-                  <FormField
-                    disableTouched={isCreateClicked}
-                    fieldAttributes={get(attributes, 'rows.child.children.description')}
-                    name={`${row}.description`}
                     overrideValues={{
                       label: '',
                     }}
@@ -141,7 +129,12 @@ const NewInvoiceForm = ({
     if(valid) {onSave(formValues);}
   };
 
-  const recipientOptions = getInvoiceRecipientOptions(lease);
+  const recipientOptions = getInvoiceRecipientOptions(lease),
+    billingPeriodStartDate = get(formValues, 'billing_period_start_date');
+
+  const validateBillingPeriodEndDate = (val: any) => {
+    return dateGreaterOrEqual(val, billingPeriodStartDate);
+  };
 
   return (
     <form onSubmit={handleSubmit} className='invoice__add-invoice_form'>
@@ -188,6 +181,7 @@ const NewInvoiceForm = ({
                   disableTouched={isCreateClicked}
                   fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
                   name='billing_period_end_date'
+                  validate={validateBillingPeriodEndDate}
                 />
               </Column>
             </Row>

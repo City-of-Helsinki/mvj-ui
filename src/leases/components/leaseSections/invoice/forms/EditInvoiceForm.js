@@ -37,14 +37,18 @@ type PaymentsProps = {
 const renderPayments = ({attributes, fields}: PaymentsProps): Element<*> => {
   return (
     <div>
-      <Row>
-        <Column small={6}>
-          <FormFieldLabel required={get(attributes, 'payments.child.children.paid_amount.required')}>Maksettu määrä</FormFieldLabel>
-        </Column>
-        <Column small={6}>
-          <FormFieldLabel required={get(attributes, 'payments.child.children.paid_date.required')}>Maksettu pvm</FormFieldLabel>
-        </Column>
-      </Row>
+      {!fields || !fields.length && <p>Ei maksuja</p>}
+
+      {fields && !!fields.length &&
+        <Row>
+          <Column small={6}>
+            <FormFieldLabel required={get(attributes, 'payments.child.children.paid_amount.required')}>Maksettu määrä</FormFieldLabel>
+          </Column>
+          <Column small={6}>
+            <FormFieldLabel required={get(attributes, 'payments.child.children.paid_date.required')}>Maksettu pvm</FormFieldLabel>
+          </Column>
+        </Row>
+      }
       {fields && !!fields.length && fields.map((payment, index) => {
         return (
           <Row key={index}>
@@ -257,7 +261,7 @@ const EditInvoiceForm = ({
           <Column medium={4}>
             <FormFieldLabel>Hyvitetty lasku</FormFieldLabel>
             <p>{invoice.credited_invoice
-              ? <a onClick={handleCreditedInvoiceClick}>{invoice.credited_invoice}</a>
+              ? <a className='no-margin' onClick={handleCreditedInvoiceClick}>{invoice.credited_invoice}</a>
               : '-'
             }</p>
           </Column>

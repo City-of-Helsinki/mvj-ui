@@ -1,11 +1,11 @@
 import {expect} from 'chai';
 import {
   receiveAttributes,
-  receiveInvoices,
+  receiveInvoicesByLease,
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditInvoicePanelOpen,
   receiveIsCreateClicked,
-  fetchInvoices,
+  fetchInvoicesByLease,
   createInvoice,
   patchInvoice,
   receivePatchedInvoice,
@@ -17,7 +17,7 @@ import invoiceReducer from './reducer';
 
 const rootState = {
   attributes: {},
-  invoices: [],
+  byLease: {},
   invoiceToCredit: null,
   isCreatePanelOpen: false,
   isCreateClicked: false,
@@ -51,9 +51,9 @@ describe('Invoices', () => {
             label: 'Foo',
           },
         ];
-        const newState = {...rootState, invoices: dummyInvoices};
+        const newState = {...rootState, byLease: {1: dummyInvoices}};
 
-        const state = invoiceReducer({}, receiveInvoices(dummyInvoices));
+        const state = invoiceReducer({}, receiveInvoicesByLease({leaseId: 1, invoices: dummyInvoices}));
         expect(state).to.deep.equal(newState);
       });
 
@@ -84,7 +84,7 @@ describe('Invoices', () => {
       it('should update isFetching flag to true when fetching invoices', () => {
         const newState = {...rootState, isFetching: true};
 
-        const state = invoiceReducer({}, fetchInvoices());
+        const state = invoiceReducer({}, fetchInvoicesByLease());
         expect(state).to.deep.equal(newState);
       });
 
@@ -105,8 +105,7 @@ describe('Invoices', () => {
       it('should update isFetching flag to false by notFound', () => {
         const newState = {...rootState, isFetching: false};
 
-        let state = invoiceReducer({}, fetchInvoices());
-        state = invoiceReducer(state, notFound());
+        const state = invoiceReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });
 

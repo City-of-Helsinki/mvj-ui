@@ -24,7 +24,6 @@ type Props = {
   onClose: Function,
   onKeyCodeDown: Function,
   onKeyCodeUp: Function,
-  onCreditInvoice: Function,
   onCreditedInvoiceClick: Function,
   onResize: Function,
   onSave: Function,

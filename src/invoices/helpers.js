@@ -3,7 +3,7 @@ import get from 'lodash/get';
 import findIndex from 'lodash/findIndex';
 
 import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
-import {formatDecimalNumberForDb, getLabelOfOption} from '$util/helpers';
+import {formatDecimalNumberForDb, getLabelOfOption, sortStringByKeyAsc} from '$util/helpers';
 
 const getContentIncoicePayments = (invoice: Object) => {
   const payments = get(invoice, 'payments', []);
@@ -96,7 +96,7 @@ export const getContentIncoiveItem = (invoice: Object) => {
 };
 
 export const getContentInvoices = (invoices: Array<Object>): Array<Object> => {
-  return invoices.map((invoice) => getContentIncoiveItem(invoice));
+  return invoices && invoices.length ? invoices.map((invoice) => getContentIncoiveItem(invoice)) : [];
 };
 
 export const getInvoiceSharePercentage = (invoice: Object, precision: number = 0) => {
@@ -109,7 +109,7 @@ export const getInvoiceSharePercentage = (invoice: Object, precision: number = 0
   return (Number(numerator)/Number(denominator)*100).toFixed(precision);
 };
 
-export const getInvoicePaymentsForDb = (invoice: Object) => {
+const formatInvoicePaymentsForDb = (invoice: Object) => {
   const payments = get(invoice, 'payments', []);
   return payments.map((payment) => {
     return {
@@ -120,33 +120,30 @@ export const getInvoicePaymentsForDb = (invoice: Object) => {
   });
 };
 
-export const getEditedInvoiceForDb = (invoice: Object) => {
+export const formatEditedInvoiceForDb = (invoice: Object) => {
   return {
     id: invoice.id,
     due_date: get(invoice, 'due_date'),
     billing_period_start_date: get(invoice, 'billing_period_start_date'),
     billing_period_end_date: get(invoice, 'billing_period_end_date'),
     total_amount: formatDecimalNumberForDb(get(invoice, 'total_amount')),
-    payments: getInvoicePaymentsForDb(invoice),
-    notes: get(invoice, 'notes'),
-    rows: getInvoiceRowsForDb(invoice),
+    payments: formatInvoicePaymentsForDb(invoice),
+    notes: get(invoice, 'notes', ''),
+    rows: formatInvoiceRowsForDb(invoice),
   };
 };
 
-export const getInvoiceRowsForDb = (invoice: Object) => {
-  const rows = get(invoice, 'rows', []);
-
-  return rows.map((row) => {
+export const formatInvoiceRowsForDb = (invoice: Object) => {
+  return get(invoice, 'rows', []).map((row) => {
     return {
       tenant: get(row, 'tenant'),
       receivable_type: get(row, 'receivable_type'),
-      description: get(row, 'description'),
       amount: formatDecimalNumberForDb(get(row, 'amount')),
     };
   });
 };
 
-export const getNewInvoiceForDb = (invoice: Object) => {
+export const formatNewInvoiceForDb = (invoice: Object) => {
   return {
     lease: invoice.lease,
     recipient: get(invoice, 'recipient'),
@@ -156,15 +153,33 @@ export const getNewInvoiceForDb = (invoice: Object) => {
     due_date: get(invoice, 'due_date'),
     billing_period_end_date: get(invoice, 'billing_period_end_date'),
     billing_period_start_date: get(invoice, 'billing_period_start_date'),
-    notes: get(invoice, 'notes'),
-    rows: getInvoiceRowsForDb(invoice),
+    notes: get(invoice, 'notes', ''),
+    rows: formatInvoiceRowsForDb(invoice),
   };
 };
 
-export const getCreditInvoiceForDb = (invoice: Object) => {
-  if(!invoice) {
-    return undefined;
-  }
+export const formatChargeRowsForDb = (invoice: Object) => {
+  return get(invoice, 'rows', []).map((row) => {
+    return {
+      receivable_type: get(row, 'receivable_type'),
+      amount: formatDecimalNumberForDb(get(row, 'amount')),
+    };
+  });
+};
+
+export const formatNewChargeForDb = (invoice: Object) => {
+  return {
+    type: get(invoice, 'type'),
+    due_date: get(invoice, 'due_date'),
+    billing_period_end_date: get(invoice, 'billing_period_end_date'),
+    billing_period_start_date: get(invoice, 'billing_period_start_date'),
+    notes: get(invoice, 'notes', ''),
+    rows: formatChargeRowsForDb(invoice),
+  };
+};
+
+export const formatCreditInvoiceForDb = (invoice: Object) => {
+  if(!invoice) {return undefined;}
 
   const payload = {};
   if(invoice.type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && invoice.amount) {
@@ -173,23 +188,13 @@ export const getCreditInvoiceForDb = (invoice: Object) => {
   if(invoice.type !== CreditInvoiceOptionsEnum.FULL && invoice.receivable_type) {
     payload.receivable_type = invoice.receivable_type;
   }
-  payload.notes = invoice.notes;
+  payload.notes = invoice.notes || '';
 
   return payload;
 };
 
 export const formatReceivableTypesString = (receivableTypeOptions: Array<Object>, receivableTypes: Array<Object>) => {
-  let text = '';
-
-  receivableTypes.forEach((receivableType, index, receivableTypes) => {
-    const receivableTypeString = getLabelOfOption(receivableTypeOptions, receivableType);
-    if(receivableTypeString) {
-      if (Object.is(receivableTypes.length - 1, index)) {
-        text += receivableTypeString;
-      } else {
-        text += `${receivableTypeString}, `;
-      }
-    }
-  });
-  return text;
+  return receivableTypes.map((receivableType) => {
+    return getLabelOfOption(receivableTypeOptions, receivableType);
+  }).sort(sortStringByKeyAsc).join(', ');
 };

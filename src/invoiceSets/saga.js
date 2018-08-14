@@ -2,10 +2,9 @@
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {SubmissionError} from 'redux-form';
 
-import {fetchInvoices as fetchInvoicesAction, receiveInvoiceToCredit, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
+import {fetchInvoicesByLease, receiveInvoiceToCredit, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction, notFound, receiveInvoiceSetsByLease} from './actions';
 import {receiveError} from '$src/api/actions';
-import {getSearchQuery} from '$util/helpers';
 import {creditInvoiceSet, fetchInvoiceSetsByLease} from './requests';
 
 
@@ -37,7 +36,7 @@ function* creditInvoiceSetSaga({payload: {creditData, invoiceSetId, lease}}): Ge
 
     switch (statusCode) {
       case 200:
-        yield put(fetchInvoicesAction(getSearchQuery({lease: lease})));
+        yield put(fetchInvoicesByLease(lease));
         yield put(fetchInvoiceSetsByLeaseAction(lease));
         yield put(receiveIsCreditInvoicePanelOpen(false));
         yield put(receiveInvoiceToCredit(null));

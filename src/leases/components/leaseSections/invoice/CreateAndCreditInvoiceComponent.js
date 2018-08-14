@@ -2,20 +2,25 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import scrollToComponent from 'react-scroll-to-component';
+import get from 'lodash/get';
 
 import Button from '$components/button/Button';
 import CreditInvoiceForm from './forms/CreditInvoiceForm';
 import FormSection from '$components/form/FormSection';
 import NewInvoiceForm from './forms/NewInvoiceForm';
+import {createCharge} from '$src/leases/actions';
 import {createInvoice, creditInvoice, receiveIsCreateInvoicePanelOpen, receiveIsCreateClicked, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {creditInvoiceSet} from '$src/invoiceSets/actions';
-import {getCreditInvoiceForDb, getNewInvoiceForDb} from '$src/invoices/helpers';
+import {RecipientOptions} from '$src/leases/enums';
+import {formatNewChargeForDb, formatCreditInvoiceForDb, formatNewInvoiceForDb} from '$src/invoices/helpers';
+import {formatDecimalNumberForDb} from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen} from '$src/invoices/selectors';
 
 import type {Lease} from '$src/leases/types';
 
 type Props = {
+  createCharge: Function,
   createInvoice: Function,
   creditInvoice: Function,
   creditInvoiceSet: Function,
@@ -56,15 +61,30 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
 
   handleCreateInvoice = (invoice: Object) => {
     const {
+      createCharge,
       createInvoice,
       currentLease,
     } = this.props;
 
-    invoice.lease = currentLease.id;
-    invoice.billed_amount = invoice.total_amount;
-    // invoice.state = InvoiceState.OPEN;
+    if(invoice.recipient === RecipientOptions.ALL) {
+      createCharge({
+        leaseId: currentLease.id,
+        data: formatNewChargeForDb(invoice),
+      });
+    } else {
+      const rows = get(invoice, 'rows', []);
+      let totalAmount = 0;
+      rows.forEach((row) => {
+        if(row.amount) {
+          totalAmount += formatDecimalNumberForDb(row.amount);
+        }
 
-    createInvoice(getNewInvoiceForDb(invoice));
+      });
+      invoice.total_amount = totalAmount;
+      invoice.billed_amount = totalAmount;
+      invoice.lease = currentLease.id;
+      createInvoice(formatNewInvoiceForDb(invoice));
+    }
   }
 
   handleOpenCreditInvoicePanelButtonClick = () => {
@@ -93,7 +113,7 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
       const {creditInvoice} = this.props;
 
       creditInvoice({
-        creditData: getCreditInvoiceForDb(invoice),
+        creditData: formatCreditInvoiceForDb(invoice),
         invoiceId: parts[1],
         lease: currentLease.id,
       });
@@ -101,7 +121,7 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
       const {creditInvoiceSet} = this.props;
 
       creditInvoiceSet({
-        creditData: getCreditInvoiceForDb(invoice),
+        creditData: formatCreditInvoiceForDb(invoice),
         invoiceSetId: parts[1],
         lease: currentLease.id,
       });
@@ -180,6 +200,7 @@ export default connect(
     };
   },
   {
+    createCharge,
     createInvoice,
     creditInvoice,
     creditInvoiceSet,
