@@ -8,6 +8,7 @@ import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
@@ -49,8 +50,10 @@ const renderContractChanges = ({
   const handleCollapseToggle = (val) => {
     onCollapseToggle(val);
   };
+  const handleAdd = () => fields.push({});
 
   const contractChangeErrors = get(errors, name);
+
   return(
     <Collapse
       className='collapse__secondary'
@@ -61,14 +64,13 @@ const renderContractChanges = ({
     >
       <BoxItemContainer>
         {fields && !!fields.length && fields.map((change, index) => {
+          const handleRemove = () => fields.remove(index);
           return (
-            <BoxItem
-              key={change.id ? change.id : `index_${index}`}
-              className='no-border-on-first-child'>
+            <BoxItem key={index}>
               <BoxContentWrapper>
                 <RemoveButton
                   className='position-topright'
-                  onClick={() => fields.remove(index)}
+                  onClick={handleRemove}
                   title="Poista sopimuksen muutos"
                 />
                 <Row>
@@ -155,7 +157,7 @@ const renderContractChanges = ({
         <Column>
           <AddButtonSecondary
             label='Lisää sopimuksen muutos'
-            onClick={() => fields.push({})}
+            onClick={handleAdd}
             title='Lisää sopimuksen muutos'
           />
         </Column>
@@ -171,6 +173,8 @@ type MortgageDocumentsProps = {
 }
 
 const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDocumentsProps): Element<*> => {
+  const handleAdd = () => fields.push({});
+
   return(
     <div>
       <p className='sub-title'>Panttikirjat</p>
@@ -187,53 +191,58 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
               <FormFieldLabel>Huomautus</FormFieldLabel>
             </Column>
           </Row>
-          {fields.map((doc, index) =>
-            <Row key={doc.id ? doc.id : `index_${index}`} className='pledge-book'>
-              <Column small={4} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.number')}
-                  name={`${doc}.number`}
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column small={4} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.date')}
-                  name={`${doc}.date`}
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column small={3} medium={3} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.note')}
-                  name={`${doc}.note`}
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column>
-                <RemoveButton
-                  onClick={() => fields.remove(index)}
-                  title="Poista panttikirja"
-                />
-              </Column>
-            </Row>
-          )}
+          {fields.map((doc, index) => {
+            const handleRemove = () => fields.remove(index);
+
+            return (
+              <Row key={index} className='pledge-book'>
+                <Column small={4} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.number')}
+                    name={`${doc}.number`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={4} medium={4} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.date')}
+                    name={`${doc}.date`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={3} medium={3} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.note')}
+                    name={`${doc}.note`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column>
+                  <RemoveButton
+                    className='third-level'
+                    onClick={handleRemove}
+                    title="Poista panttikirja"
+                  />
+                </Column>
+              </Row>
+            );
+          })}
         </div>
       }
       <Row>
         <Column medium={12}>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää panttikirja'
-            onClick={() => fields.push({})}
+            onClick={handleAdd}
             title='Lisää panttikirja'
           />
         </Column>
@@ -326,14 +335,10 @@ const ContractItemEdit = ({
       defaultOpen={contractCollapseState !== undefined ? contractCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(contractErrors)}
       headerTitle={<h3 className='collapse__header-title'>{getContractTitle(savedContract) || '-'}</h3>}
+      onRemove={handleRemove}
       onToggle={handleContractCollapseToggle}
     >
       <BoxContentWrapper>
-        <RemoveButton
-          className='position-topright-no-padding'
-          onClick={handleRemove}
-          title="Poista sopimus"
-        />
         <Row>
           <Column small={6} medium={4} large={2}>
             <FormField

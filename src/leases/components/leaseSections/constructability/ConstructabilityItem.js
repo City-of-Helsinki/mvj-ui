@@ -8,6 +8,7 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormFieldLabel from '$components/form/FormFieldLabel';
+import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {ConstructabilityStatus, FormNames} from '$src/leases/enums';
@@ -24,11 +25,13 @@ const Comments = ({
   comments,
 }: CommentsProps) =>
   <div>
+    <SubTitle>Huomautukset</SubTitle>
     {comments && !!comments.length
       ? (
         <BoxItemContainer>
           {comments.map((comment) =>
             <BoxItem
+              className='no-border-on-last-child'
               key={comment.id}>
               <Row>
                 <Column small={12}>

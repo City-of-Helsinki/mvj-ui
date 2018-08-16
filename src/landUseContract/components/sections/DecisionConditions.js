@@ -55,7 +55,7 @@ const DecisionConditions = ({
         {!conditions.length && <p>Ei ehtoja</p>}
         {!!conditions.length && conditions.map((condition, index) => {
           return (
-            <BoxItem key={index} className='no-border-on-first-child'>
+            <BoxItem key={index} className='no-border-on-last-child'>
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormFieldLabel>Hallintamuoto</FormFieldLabel>

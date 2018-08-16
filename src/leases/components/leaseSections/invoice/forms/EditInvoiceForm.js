@@ -7,7 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
-import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
@@ -36,6 +36,7 @@ type PaymentsProps = {
 }
 
 const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Element<*> => {
+  const handleAdd = () => fields.push({});
   return (
     <div>
       {!fields || !fields.length && <p>Ei maksuja</p>}
@@ -51,6 +52,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
         </Row>
       }
       {fields && !!fields.length && fields.map((payment, index) => {
+        const handleRemove = () => fields.remove(index);
         return (
           <Row key={index}>
             <Column small={6}>
@@ -76,7 +78,8 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
             </Column>
             <Column small={2}>
               <RemoveButton
-                onClick={() => fields.remove(index)}
+                className='third-level'
+                onClick={handleRemove}
                 title="Poista maksu"
               />
             </Column>
@@ -85,9 +88,9 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
       })}
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää maksu'
-            onClick={() => fields.push({})}
+            onClick={handleAdd}
             title='Lisää maksu'
           />
         </Column>

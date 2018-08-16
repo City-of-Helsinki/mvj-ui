@@ -16,7 +16,6 @@ import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import IconButton from '$components/button/IconButton';
-import RemoveButton from '$components/form/RemoveButton';
 import {initializeContactForm, receiveIsSaveClicked} from '$src/contacts/actions';
 import {receiveCollapseStates, receiveContactModalSettings, showContactModal} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
@@ -123,15 +122,10 @@ const OtherTenantItemEdit = ({
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
       headerTitle={<h4 className='collapse__header-title edit-row'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>}
+      onRemove={handleRemoveClick}
       onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>
-        <RemoveButton
-          className='position-topright'
-          label='Poista henkilö'
-          onClick={handleRemoveClick}
-          title='Poista henkilö'
-        />
         <FormWrapper>
           <FormWrapperLeft>
             <Row>

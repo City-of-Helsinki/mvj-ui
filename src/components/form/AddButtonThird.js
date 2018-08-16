@@ -9,13 +9,12 @@ type Props = {
   title: ?string,
 }
 
-const AddButtonSecondary = ({className, label, onClick, title}: Props) =>
+const AddButtonThird = ({className, label, onClick, title}: Props) =>
   <button
-    className={classNames('form__add-button-secondary', className)}
+    className={classNames('form__add-button-third-level', className)}
     onClick={onClick}
     title={title || label}
     type='button'
   ><i/><span>{label}</span></button>;
 
-
-export default AddButtonSecondary;
+export default AddButtonThird;

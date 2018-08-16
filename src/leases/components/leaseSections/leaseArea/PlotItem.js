@@ -26,7 +26,7 @@ const PlotItem = ({attributes, plot}: Props) => {
   const addresses = get(plot, 'addresses', []);
 
   return (
-    <BoxItem className='no-border-on-first-child'>
+    <BoxItem className='no-border-on-last-child'>
       <Row>
         <Column small={12} medium={6} large={6}>
           <FormFieldLabel>Tunnus</FormFieldLabel>
@@ -37,32 +37,21 @@ const PlotItem = ({attributes, plot}: Props) => {
           <p>{getLabelOfOption(typeOptions, plot.type) || '-'}</p>
         </Column>
       </Row>
-      <Row>
-        <Column small={6} large={6}>
-          <FormFieldLabel>Osoite</FormFieldLabel>
-        </Column>
-        <Column small={3} large={3}>
-          <FormFieldLabel>Postinumero</FormFieldLabel>
-        </Column>
-        <Column small={3} large={3}>
-          <FormFieldLabel>Kaupunki</FormFieldLabel>
-        </Column>
-      </Row>
-      {!addresses.length &&
-        <Row>
-          <Column small={6} large={6}>
-            <p>-</p>
-          </Column>
-          <Column small={3} large={3}>
-            <p>-</p>
-          </Column>
-          <Column small={3} large={3}>
-            <p>-</p>
-          </Column>
-        </Row>
-      }
+      <SubTitle>Osoite</SubTitle>
+      {!addresses || !addresses.length && <p>Ei osoitteita</p>}
       {!!addresses.length &&
         <div>
+          <Row>
+            <Column small={6} large={6}>
+              <FormFieldLabel>Osoite</FormFieldLabel>
+            </Column>
+            <Column small={3} large={3}>
+              <FormFieldLabel>Postinumero</FormFieldLabel>
+            </Column>
+            <Column small={3} large={3}>
+              <FormFieldLabel>Kaupunki</FormFieldLabel>
+            </Column>
+          </Row>
           <ListItems>
             {addresses.map((address) => {
               return (

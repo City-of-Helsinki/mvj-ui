@@ -20,7 +20,6 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
-import RemoveButton from '$components/form/RemoveButton';
 import {initializeContactForm, receiveIsSaveClicked} from '$src/contacts/actions';
 import {receiveCollapseStates, receiveContactModalSettings, showContactModal} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
@@ -165,15 +164,10 @@ const TenantItemEdit = ({
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
       headerTitle={<h3 className='collapse__header-title'>{getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}</h3>}
+      onRemove={handleRemoveClick}
       onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>
-        <RemoveButton
-          className='position-topright'
-          label='Poista vuokralainen'
-          onClick={handleRemoveClick}
-          title='Poista vuokralainen'
-        />
         <FormWrapper>
           <FormWrapperLeft>
             <Row>

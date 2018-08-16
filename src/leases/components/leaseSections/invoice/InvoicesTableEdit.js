@@ -365,7 +365,7 @@ class InvoicesTableEdit extends Component<Props, State> {
     if(showAllColumns) {
       return [
         {key: 'invoiceset', label: 'Laskuryhmä', primarySorting: 'desc', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'recipientFull', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: this.sortByRecipientNameAsc, descSortFunction: this.sortByRecipientNameDesc},
+        {key: 'recipientFull', label: 'Laskunsaaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: this.sortByRecipientNameAsc, descSortFunction: this.sortByRecipientNameDesc},
         {key: 'due_date', label: 'Eräpäivä', primarySorting: 'desc', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
         {key: 'id', label: 'Laskunro', primarySorting: 'desc', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
@@ -379,7 +379,7 @@ class InvoicesTableEdit extends Component<Props, State> {
     } else {
       return [
         {key: 'invoiceset', label: 'Laskuryhmä', primarySorting: 'desc', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'recipientFull', label: 'Vuokraaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: this.sortByRecipientNameAsc, descSortFunction: this.sortByRecipientNameDesc},
+        {key: 'recipientFull', label: 'Laskunsaaja', renderer: (val) => getContactFullName(val) || '-', ascSortFunction: this.sortByRecipientNameAsc, descSortFunction: this.sortByRecipientNameDesc},
         {key: 'due_date', label: 'Eräpäivä', primarySorting: 'desc', renderer: (val) => formatDate(val) || '-', defaultSorting: 'desc'},
         {key: 'id', label: 'Laskunro', primarySorting: 'desc', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'totalShare', label: 'Osuus', renderer: (val) => `${formatNumber(val * 100)} %`, ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},

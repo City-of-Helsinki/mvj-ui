@@ -8,7 +8,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
-import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import AddFileButton from '$components/form/AddFileButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$src/components/collapse/Collapse';
@@ -56,14 +56,11 @@ type DecisionsProps = {
 }
 
 const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
+  const handleAdd = () => fields.push({});
 
   return (
     <div>
       <SubTitle>Korvauksen päätökset</SubTitle>
-      {!fields || !fields.length && <p>Ei päätöksiä</p>}
       {!!fields && !!fields.length &&
         <div>
           <Row>
@@ -73,9 +70,7 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
             <Column small={3} large={2}><FormFieldLabel>Diaarunumero</FormFieldLabel></Column>
           </Row>
           {fields.map((field, index) => {
-            const handleRemove = () => {
-              fields.remove(index);
-            };
+            const handleRemove = () => fields.remove(index);
 
             return (
               <Row key={index}>
@@ -122,6 +117,7 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                 </Column>
                 <Column small={3} large={2}>
                   <RemoveButton
+                    className='third-level'
                     onClick={handleRemove}
                     title="Poista päätös"
                   />
@@ -133,7 +129,7 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
       }
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää päätös'
             onClick={handleAdd}
             title='Lisää päätös'
@@ -151,14 +147,11 @@ type IntendedUsesProps = {
 }
 
 const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
+  const handleAdd = () => fields.push({});
 
   return (
     <div>
       <SubTitle>Käyttötarkoitus</SubTitle>
-      {!fields || !fields.length && <p>Ei käyttötarkoituksia</p>}
       {!!fields && !!fields.length &&
         <div>
           <Row>
@@ -167,9 +160,7 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
             <Column small={3} large={2}><FormFieldLabel>€/k-m²</FormFieldLabel></Column>
           </Row>
           {fields.map((field, index) => {
-            const handleRemove = () => {
-              fields.remove(index);
-            };
+            const handleRemove = () => fields.remove(index);
 
             return (
               <Row key={index}>
@@ -207,6 +198,7 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
                 </Column>
                 <Column small={3} large={2}>
                   <RemoveButton
+                    className='third-level'
                     onClick={handleRemove}
                     title="Poista käyttötarkoitus"
                   />
@@ -218,7 +210,7 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
       }
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää käyttötarkoitus'
             onClick={handleAdd}
             title='Lisää käyttötarkoitus'
@@ -398,14 +390,10 @@ class LeaseItemEdit extends Component<Props, State> {
         className='collapse__secondary'
         defaultOpen={collapseState !== undefined ? collapseState : true}
         headerTitle={<h4 className='collapse__header-title'>{isFetching ? 'Ladataan...' : (identifier || '-')}</h4>}
+        onRemove={this.handleRemove}
         onToggle={this.handleCollapseToggle}
       >
         <BoxContentWrapper>
-          <RemoveButton
-            className='position-topright-no-padding'
-            onClick={this.handleRemove}
-            title="Poista käyttötarkoitus"
-          />
           <Row>
             <Column small={6} medium={4} large={2}>
               <FormField
@@ -560,7 +548,6 @@ class LeaseItemEdit extends Component<Props, State> {
           {!!infillDevelopmentCompensationLeaseId &&
             <div>
               <SubTitle>Liitetiedostot</SubTitle>
-              {!attachments || !attachments.length && <p>Ei liitetiedostoja</p>}
               {!!attachments && !!attachments.length &&
                 <div>
                   <Row>
@@ -596,6 +583,7 @@ class LeaseItemEdit extends Component<Props, State> {
                         </Column>
                         <Column small={3} large={2}>
                           <RemoveButton
+                            className='third-level'
                             onClick={handleDelete}
                             title="Poista liitetiedosto"
                           />

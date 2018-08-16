@@ -4,7 +4,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
-import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
@@ -82,6 +82,7 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
                 <Column small={1} large={2}>
                   {fields.length > 1 &&
                     <RemoveButton
+                      className='third-level'
                       onClick={handleRemove}
                       title="Poista rivi"
                     />
@@ -94,7 +95,7 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
       }
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää rivi'
             onClick={handleAdd}
             title='Lisää rivi'

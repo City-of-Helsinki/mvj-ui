@@ -7,7 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
-import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
@@ -78,6 +78,7 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                 <Column small={1} large={2}>
                   {fields.length > 1 &&
                     <RemoveButton
+                      className='third-level'
                       onClick={handleRemove}
                       title="Poista tiedosto"
                     />
@@ -90,7 +91,7 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
       }
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää rivi'
             onClick={handleAdd}
             title='Lisää rivi'

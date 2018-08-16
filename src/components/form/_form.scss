@@ -448,97 +448,135 @@
     padding-left: rem-calc(5px);
     display: table-cell;
     vertical-align: middle;
+    white-space: nowrap;
   }
 }
 
-.remove-button {
-  z-index: 1;
-  cursor: pointer;
-  position: relative;
-  top: rem-calc(-4px);
-
-  img {
-    height: rem-calc(20px);
-    width: rem-calc(20px);
-  }
-
-  &:hover {
-    opacity: 0.85;
-  }
-
-  &.no-label {
-    margin-top: rem-calc(19px);
-  }
-
-  &.position-topright {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-
-  &.position-topright-no-padding {
-    position: absolute;
-    top: rem-calc(-10px);
-    right: 0;
-  }
-}
-
-.add-button {
-  font-family: $font-family-source;
-  font-size: rem-calc(16px);
-  font-weight: $semibold;
-  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
-  height: rem-calc(30px);
-  padding: 0 1rem;
-  margin: 0 0.5rem rem-calc(10px) 0;
-  text-transform: uppercase;
-  cursor: pointer;
-  outline: none;
-
-  background-color: $tram;
-  color: $white;
-
-  &:hover {
-    background-color: $tram-lighter;
-  }
-
-  &:disabled {
-    background-color: #99d3b5;
-    cursor: not-allowed;
-  }
-}
-
-.add-button-secondary {
-  font-family: $font-family-source;
-  font-size: rem-calc(14px) !important;
-  line-height: rem-calc(20px) !important;
-  font-weight: $semibold !important;
-  color: $tram !important;
-  margin: rem-calc(5px) 0 rem-calc(10px);
-  float: left;
-  cursor: pointer;
-
-  i {
-    background-image: url(../assets/icons/plus-green.svg);
-    height: rem-calc(20px);
-    width: rem-calc(20px);
-    display: inline-block;
-    margin-right: rem-calc(5px);
-    float: left;
-    line-height: 1;
-  }
-
-  &:hover {
-    color: $tram-lighter;
-  }
-
-  &.no-margin {
+.form {
+  &__add-button {
+    font-family: $font-family-source;
+    font-size: rem-calc(16px) !important;
+    line-height: rem-calc(20px) !important;
+    font-weight: $semibold !important;
+    color: $tram !important;
     margin: 0;
+    cursor: pointer;
+
+    i {
+      background-image: url(../assets/icons/plus-green.svg);
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      display: inline-block;
+      margin-right: rem-calc(5px);
+      float: left;
+      line-height: 1;
+    }
+
+    &:hover {
+      color: $tram-lighter;
+    }
   }
 
-  &.uppercase-label {
-    font-size: rem-calc(16px);
-    text-transform: uppercase;
+  &__add-button-secondary {
+    font-family: $font-family-source;
+    font-size: rem-calc(16px) !important;
+    line-height: rem-calc(20px) !important;
+    font-weight: $semibold !important;
+    color: $tram !important;
+    margin: rem-calc(5px) 0 rem-calc(10px);
+    float: left;
+    cursor: pointer;
+
+    i {
+      background-image: url(../assets/icons/plus-green.svg);
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+      display: inline-block;
+      margin-right: rem-calc(5px);
+      float: left;
+      line-height: 1;
+    }
+
+    &:hover {
+      color: $tram-lighter;
+    }
+
+    &.no-margin {
+      margin: 0;
+    }
+  }
+
+  &__add-button-third-level {
+    font-family: $font-family-source;
+    font-size: rem-calc(14px) !important;
+    line-height: rem-calc(15px) !important;
+    font-weight: $semibold !important;
+    color: $tram !important;
+    margin: 0 0 rem-calc(10px);
+    float: left;
+    cursor: pointer;
+
+    i {
+      background-image: url(../assets/icons/plus-green.svg);
+      height: rem-calc(15px);
+      width: rem-calc(15px);
+      display: inline-block;
+      margin-right: rem-calc(5px);
+      float: left;
+      line-height: 1;
+    }
+
+    &:hover {
+      color: $tram-lighter;
+    }
+
+    &.no-margin {
+      margin: 0;
+    }
+  }
+
+  &__remove-button {
+    z-index: 1;
+    cursor: pointer;
+    position: relative;
+    top: 0;
+
+    img {
+      height: rem-calc(20px);
+      width: rem-calc(20px);
+    }
+
+    &:hover {
+      opacity: 0.85;
+    }
+
+    &.no-label {
+      margin-top: rem-calc(19px);
+    }
+
+    &.position-topright {
+      position: absolute;
+      top: rem-calc(-7px);
+      right: 0;
+    }
+
+    &.third-level {
+      top: -3px;
+      height: 20px;
+
+      img {
+        height: rem-calc(15px);
+        width: rem-calc(15px);
+      }
+    }
+  }
+
+  &__field-and-remove-button-wrapper {
+    display: flex;
+
+    &_button {
+      padding-left: rem-calc(5px);
+    }
   }
 }
 

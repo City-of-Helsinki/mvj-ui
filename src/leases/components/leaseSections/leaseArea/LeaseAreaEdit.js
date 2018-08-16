@@ -8,6 +8,7 @@ import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
@@ -16,6 +17,7 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import PlanUnitItemEdit from './PlanUnitItemEdit';
 import PlotItemEdit from './PlotItemEdit';
 import RemoveButton from '$components/form/RemoveButton';
+import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
@@ -173,64 +175,80 @@ type AddressesProps = {
 }
 
 const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
   return (
     <div>
-      <Row>
-        <Column small={6} large={4}>
-          <FormFieldLabel required>Osoite</FormFieldLabel>
-        </Column>
-        <Column small={3} large={2}>
-          <FormFieldLabel>Postinumero</FormFieldLabel>
-        </Column>
-        <Column small={3} large={2}>
-          <FormFieldLabel>Kaupunki</FormFieldLabel>
-        </Column>
-      </Row>
-      {fields && !!fields.length && fields.map((field, index) =>
-        <Row key={index}>
+      <SubTitle>Osoite</SubTitle>
+      {fields && !!fields.length &&
+        <Row>
           <Column small={6} large={4}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.address')}
-              name={`${field}.address`}
-              overrideValues={{
-                label: '',
-              }}
-            />
+            <FormFieldLabel required>Osoite</FormFieldLabel>
           </Column>
           <Column small={3} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.postal_code')}
-              name={`${field}.postal_code`}
-              overrideValues={{
-                label: '',
-              }}
-            />
+            <FormFieldLabel>Postinumero</FormFieldLabel>
           </Column>
-          <Column small={2} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.city')}
-              name={`${field}.city`}
-              overrideValues={{
-                label: '',
-              }}
-            />
-          </Column>
-          <Column small={1}>
-            <RemoveButton
-              onClick={() => fields.remove(index)}
-              title="Poista osoite"
-            />
+          <Column small={3} large={2}>
+            <FormFieldLabel>Kaupunki</FormFieldLabel>
           </Column>
         </Row>
+      }
+      {fields && !!fields.length && fields.map((field, index) => {
+        const handleRemove = () => {
+          fields.remove(index);
+        };
+
+        return (
+          <Row key={index}>
+            <Column small={6} large={4}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.address')}
+                name={`${field}.address`}
+                overrideValues={{
+                  label: '',
+                }}
+              />
+            </Column>
+            <Column small={3} large={2}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.postal_code')}
+                name={`${field}.postal_code`}
+                overrideValues={{
+                  label: '',
+                }}
+              />
+            </Column>
+            <Column small={2} large={2}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.city')}
+                name={`${field}.city`}
+                overrideValues={{
+                  label: '',
+                }}
+              />
+            </Column>
+            <Column small={1}>
+              <RemoveButton
+                className='third-level'
+                onClick={handleRemove}
+                title="Poista osoite"
+              />
+            </Column>
+          </Row>
+        );
+      }
+
       )}
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää osoite'
-            onClick={() => fields.push({})}
+            onClick={handleAdd}
             title='Lisää osoite'
           />
         </Column>
@@ -354,14 +372,10 @@ const LeaseAreaEdit = ({
       defaultOpen={areaCollapseState !== undefined ? areaCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(areaErrors)}
       headerTitle={<h3 className='collapse__header-title'>{savedArea ? (savedArea.identifier || '-') : '-'}</h3>}
+      onRemove={handleRemove}
       onToggle={handleAreaCollapseToggle}
     >
       <BoxContentWrapper>
-        <RemoveButton
-          className='position-topright'
-          onClick={handleRemove}
-          title="Poista vuokra-alue"
-        />
         <Row>
           <Column small={6} medium={4} large={2}>
             <FormField

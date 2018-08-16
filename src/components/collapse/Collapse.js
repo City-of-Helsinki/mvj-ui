@@ -3,6 +3,7 @@ import React, {PureComponent} from 'react';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
 import ReactResizeDetector from 'react-resize-detector';
+import RemoveButton from '../form/RemoveButton';
 import {Row, Column} from 'react-foundation';
 
 type Props = {
@@ -12,6 +13,7 @@ type Props = {
   hasErrors: boolean,
   header?: any,
   headerTitle: any,
+  onRemove: Function,
   onToggle: ?Function,
   showTitleOnOpen?: boolean,
 }
@@ -105,7 +107,7 @@ class Collapse extends PureComponent<Props, State> {
 
   render() {
     const {contentHeight, isOpen, isCollapsing, isExpanding} = this.state;
-    const {children, className, hasErrors, header, headerTitle, showTitleOnOpen} = this.props;
+    const {children, className, hasErrors, header, headerTitle, onRemove, showTitleOnOpen} = this.props;
 
     return (
       <div
@@ -135,7 +137,15 @@ class Collapse extends PureComponent<Props, State> {
               }
               {(showTitleOnOpen || !isOpen) && this.getChildrenOfHeader(header)}
             </Row>
-            {!isOpen && hasErrors && <span className='collapse__header_error-badge' />}
+            <div className='collapse__header_button-wrapper'>
+              {!isOpen && hasErrors && <span className='collapse__header_error-badge' />}
+              {onRemove &&
+                <RemoveButton
+                  onClick={onRemove}
+                  title='Poista'
+                />
+              }
+            </div>
           </div>
         </div>
         <div

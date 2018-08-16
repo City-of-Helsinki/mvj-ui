@@ -51,20 +51,17 @@ class Inspections extends PureComponent<Props, State> {
     return (
       <div>
         <GreenBox>
-          {inspections && !!inspections.length
-            ? (
-              <BoxItemContainer>
-                {inspections.map((inspection) =>
-                  <BoxItem
-                    className='no-border-on-first-child'
-                    key={inspection.id}>
-                    <InspectionItem
-                      inspection={inspection}
-                    />
-                  </BoxItem>
-                )}
-              </BoxItemContainer>
-            ) : <p>Ei tarkastuksia tai huomautuksia</p>
+          {!inspections || !inspections.length && <p>Ei tarkastuksia tai huomautuksia</p>}
+          {inspections && !!inspections.length &&
+            <BoxItemContainer>
+              {inspections.map((inspection) =>
+                <BoxItem
+                  key={inspection.id}
+                  className='no-border-on-last-child'>
+                  <InspectionItem inspection={inspection} />
+                </BoxItem>
+              )}
+            </BoxItemContainer>
           }
         </GreenBox>
       </div>

@@ -41,9 +41,7 @@ const renderDecisionConditions = ({
   isSaveClicked,
   onCollapseToggle,
 }: DecisionConditionsProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
+  const handleAdd = () => fields.push({});
 
   const decisionConditionsErrors = get(errors, name);
 
@@ -57,18 +55,13 @@ const renderDecisionConditions = ({
     >
       <BoxItemContainer>
         {fields && !!fields.length && fields.map((condition, index) => {
-          const handleRemove = () => {
-            fields.remove(index);
-          };
+          const handleRemove = () => fields.remove(index);
 
           return (
-            <BoxItem
-              key={condition.id ? condition.id : `index_${index}`}
-              className='no-border-on-first-child'
-            >
+            <BoxItem key={index}>
               <BoxContentWrapper>
                 <RemoveButton
-                  className='position-topright-no-padding'
+                  className='position-topright'
                   onClick={handleRemove}
                   title="Poista ehto"
                 />
@@ -220,14 +213,10 @@ const DecisionItemEdit = ({
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
       headerTitle={<h3 className='collapse__header-title'>{savedDecision ? (getLabelOfOption(decisionMakerOptions, savedDecision.decision_maker) || '-') : '-'}</h3>}
+      onRemove={handleRemove}
       onToggle={handleDecisionCollapseToggle}
     >
       <BoxContentWrapper>
-        <RemoveButton
-          className='position-topright'
-          onClick={handleRemove}
-          title="Poista sopimus"
-        />
         <Row>
           <Column small={6} medium={4} large={2}>
             <FormField

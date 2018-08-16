@@ -7,9 +7,10 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
-import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
+import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
@@ -29,34 +30,44 @@ type AreasProps = {
 }
 
 const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*> => {
+  const handleAdd = () => fields.push({});
   return (
     <div>
       <FormFieldLabel>Kohteet</FormFieldLabel>
-      {fields && !!fields.length && fields.map((field, index) =>
-        <Row key={index}>
-          <Column small={9}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'areas.child.children.area')}
-              name={`${field}.area`}
-              overrideValues={{
-                label: '',
-              }}
-            />
-          </Column>
-          <Column small={3}>
-            <RemoveButton
-              onClick={() => fields.remove(index)}
-              title="Poista kohde"
-            />
-          </Column>
-        </Row>
-      )}
+      {fields && !!fields.length && fields.map((field, index) => {
+        const handleRemove = () => fields.remove(index);
+
+        return(
+          <Row key={index}>
+            <Column>
+              <FieldAndRemoveButtonWrapper
+                field={
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'areas.child.children.area')}
+                    name={`${field}.area`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                }
+                removeButton={
+                  <RemoveButton
+                    className='third-level'
+                    onClick={handleRemove}
+                    title="Poista kohde"
+                  />
+                }
+              />
+            </Column>
+          </Row>
+        );
+      })}
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää kohde'
-            onClick={() => fields.push('')}
+            onClick={handleAdd}
             title='Lisää kohde'
           />
         </Column>
@@ -72,34 +83,44 @@ type LitigantsProps = {
 }
 
 const renderLitigants = ({attributes, fields, isSaveClicked}: LitigantsProps): Element<*> => {
+  const handleAdd = () => fields.push({});
   return (
     <div>
       <FormFieldLabel>Osapuolet</FormFieldLabel>
-      {fields && !!fields.length && fields.map((field, index) =>
-        <Row key={index}>
-          <Column small={9}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'litigants.child.children.litigant')}
-              name={`${field}.litigant`}
-              overrideValues={{
-                label: '',
-              }}
-            />
-          </Column>
-          <Column small={3}>
-            <RemoveButton
-              onClick={() => fields.remove(index)}
-              title="Poista osapuoli"
-            />
-          </Column>
-        </Row>
-      )}
+      {fields && !!fields.length && fields.map((field, index) => {
+        const handleRemove = () => fields.remove(index);
+
+        return (
+          <Row key={index}>
+            <Column>
+              <FieldAndRemoveButtonWrapper
+                field={
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'litigants.child.children.litigant')}
+                    name={`${field}.litigant`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                }
+                removeButton={
+                  <RemoveButton
+                    className='third-level'
+                    onClick={handleRemove}
+                    title="Poista osapuoli"
+                  />
+                }
+              />
+            </Column>
+          </Row>
+        );
+      })}
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää osapuoli'
-            onClick={() => fields.push('')}
+            onClick={handleAdd}
             title='Lisää osapuoli'
           />
         </Column>

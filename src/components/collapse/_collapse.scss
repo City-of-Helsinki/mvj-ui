@@ -5,7 +5,7 @@
   margin-bottom: rem-calc(15px);
   display: block;
 
-  .collapse__header {
+  &__header {
     padding: rem-calc(15px);
     display: flex;
     align-items: center;
@@ -60,17 +60,27 @@
       }
     }
 
+    &_button-wrapper {
+      position: absolute;
+      right: 0;
+      align-items: center;
+      top: 50%;
+      @include transform(translate(0, -50%));
+      display: flex;
+
+      .form__remove-button {
+        margin-left: rem-calc(10px);
+      }
+    }
+
     &_error-badge {
       background-image: url(../assets/icons/icon_error.svg);
       height: 14px;
       width: 14px;
+      display: inline-block;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: 50%;
-      position: absolute;
-      top: 50%;
-      @include transform(translate(0, -50%));
-      right: 0;
     }
 
     &-title {

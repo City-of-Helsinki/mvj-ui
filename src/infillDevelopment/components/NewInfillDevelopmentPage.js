@@ -76,6 +76,7 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchInfillDevelopmentAttributes();
     }
+
     receiveIsSaveClicked(false);
     clearFormValidFlags();
 
