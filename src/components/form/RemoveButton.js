@@ -13,7 +13,7 @@ type Props = {
 
 const RemoveButton = ({className, onClick, title, type = 'button'}: Props) =>
   <button
-    className={classNames('remove-button', className)}
+    className={classNames('form__remove-button', className)}
     type={type}
     title={title}
     onClick={onClick}>

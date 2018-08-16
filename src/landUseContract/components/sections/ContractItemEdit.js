@@ -9,7 +9,6 @@ import isEmpty from 'lodash/isEmpty';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
-import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
@@ -80,14 +79,10 @@ const ContractItemEdit = ({
       defaultOpen={collapseState !== undefined ? collapseState : true}
       hasErrors={isSaveClicked && !isEmpty(contractErrors)}
       headerTitle={<h3 className='collapse__header-title'>{getCollapseTitle(savedContract)}</h3>}
+      onRemove={handleRemove}
       onToggle={handleCollapseChange}
     >
       <BoxContentWrapper>
-        <RemoveButton
-          className='position-topright'
-          onClick={handleRemove}
-          title="Poista sopimus"
-        />
         <Row>
           <Column small={6} medium={4} large={2}>
             <FormField

@@ -7,7 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
-import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
@@ -28,60 +28,67 @@ type InvoicesProps = {
   isSaveClicked: boolean,
 }
 
-const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Element<*> =>
-  <div>
-    <SubTitle>Korvauksen maksaminen</SubTitle>
-    {!fields || !fields.length && <p>Ei laskuja</p>}
-    {fields && !!fields.length &&
-      <div>
-        <Row>
-          <Column small={4} medium={3} large={2}><FormFieldLabel>Määrä</FormFieldLabel></Column>
-          <Column small={4} medium={3} large={2}><FormFieldLabel>Eräpäivä</FormFieldLabel></Column>
-        </Row>
-        {fields.map((invoice, index) => {
-          return (
-            <Row key={index}>
-              <Column small={4} medium={3} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'compensations.child.children.invoices.child.children.amount')}
-                  name={`${invoice}.amount`}
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column small={4} medium={3} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'compensations.child.children.invoices.child.children.due_date')}
-                  name={`${invoice}.due_date`}
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column small={4} medium={3} large={2}>
-                <RemoveButton
-                  onClick={() => fields.remove(index)}
-                  title="Poista korvaus"
-                />
-              </Column>
-            </Row>
-          );
-        })}
-      </div>
-    }
-    <Row>
-      <Column>
-        <AddButtonSecondary
-          label='Lisää korvaus'
-          onClick={() => fields.push({})}
-          title='Lisää korvaus'
-        />
-      </Column>
-    </Row>
-  </div>;
+const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Element<*> => {
+  const handleAdd = () => fields.push({});
+
+  return(
+    <div>
+      <SubTitle>Korvauksen maksaminen</SubTitle>
+      {!fields || !fields.length && <p>Ei laskuja</p>}
+      {fields && !!fields.length &&
+        <div>
+          <Row>
+            <Column small={4} medium={3} large={2}><FormFieldLabel>Määrä</FormFieldLabel></Column>
+            <Column small={4} medium={3} large={2}><FormFieldLabel>Eräpäivä</FormFieldLabel></Column>
+          </Row>
+          {fields.map((invoice, index) => {
+            const handleRemove = () => fields.remove(index);
+            return (
+              <Row key={index}>
+                <Column small={4} medium={3} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'compensations.child.children.invoices.child.children.amount')}
+                    name={`${invoice}.amount`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={4} medium={3} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'compensations.child.children.invoices.child.children.due_date')}
+                    name={`${invoice}.due_date`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={4} medium={3} large={2}>
+                  <RemoveButton
+                    className='third-level'
+                    onClick={handleRemove}
+                    title="Poista korvaus"
+                  />
+                </Column>
+              </Row>
+            );
+          })}
+        </div>
+      }
+      <Row>
+        <Column>
+          <AddButtonThird
+            label='Lisää korvaus'
+            onClick={handleAdd}
+            title='Lisää korvaus'
+          />
+        </Column>
+      </Row>
+    </div>
+  );
+};
 
 type Props = {
   attributes: Attributes,

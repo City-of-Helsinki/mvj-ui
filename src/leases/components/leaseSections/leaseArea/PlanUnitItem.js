@@ -7,6 +7,7 @@ import get from 'lodash/get';
 import BoxItem from '$components/content/BoxItem';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
+import SubTitle from '$components/content/SubTitle';
 import {getAttributes} from '$src/leases/selectors';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import type {Attributes} from '$src/leases/types';
@@ -30,43 +31,32 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
   const addresses = get(planUnit, 'addresses', []);
 
   return (
-    <BoxItem className='no-border-on-first-child'>
+    <BoxItem className='no-border-on-last-child'>
       <Row>
         <Column small={12} medium={6} large={6}>
           <FormFieldLabel>Tunnus</FormFieldLabel>
-          <p><strong>{planUnit.identifier || '-'}</strong></p>
+          <p>{planUnit.identifier || '-'}</p>
         </Column>
         <Column small={12} medium={6} large={3}>
           <FormFieldLabel>Määritelmä</FormFieldLabel>
           <p>{getLabelOfOption(typeOptions, planUnit.type) || '-'}</p>
         </Column>
       </Row>
-      <Row>
-        <Column small={6} large={6}>
-          <FormFieldLabel>Osoite</FormFieldLabel>
-        </Column>
-        <Column small={3} large={3}>
-          <FormFieldLabel>Postinumero</FormFieldLabel>
-        </Column>
-        <Column small={3} large={3}>
-          <FormFieldLabel>Kaupunki</FormFieldLabel>
-        </Column>
-      </Row>
-      {!addresses.length &&
-        <Row>
-          <Column small={6} large={6}>
-            <p>-</p>
-          </Column>
-          <Column small={3} large={3}>
-            <p>-</p>
-          </Column>
-          <Column small={3} large={3}>
-            <p>-</p>
-          </Column>
-        </Row>
-      }
+      <SubTitle>Osoite</SubTitle>
+      {!addresses || !addresses.length && <p>Ei osoitteita</p>}
       {!!addresses.length &&
         <div>
+          <Row>
+            <Column small={6} large={6}>
+              <FormFieldLabel>Osoite</FormFieldLabel>
+            </Column>
+            <Column small={3} large={3}>
+              <FormFieldLabel>Postinumero</FormFieldLabel>
+            </Column>
+            <Column small={3} large={3}>
+              <FormFieldLabel>Kaupunki</FormFieldLabel>
+            </Column>
+          </Row>
           <ListItems>
             {addresses.map((address) => {
               return (

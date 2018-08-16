@@ -12,12 +12,12 @@ type Props = {
 
 const AddButton = ({className, disabled = false, label, onClick, title}: Props) =>
   <button
-    className={classNames('add-button', className)}
+    className={classNames('form__add-button', className)}
     disabled={disabled}
-    onClick={() => onClick()}
+    onClick={onClick}
     title={title || label}
     type='button'
-  >+&nbsp;{label}</button>;
+  ><i/><span>{label}</span></button>;
 
 
 export default AddButton;

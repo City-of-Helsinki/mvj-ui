@@ -7,11 +7,12 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
-import AddButtonSecondary from '$components/form/AddButtonSecondary';
-import BoxItemContainer from '$components/content/BoxItemContainer';
+import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
+import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
@@ -79,45 +80,57 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
 
   return (
     <div>
-      <BoxItemContainer>
-        {fields && !!fields.length && fields.map((comment, index) => {
-          return (
-            <Row key={index}>
-              <Column small={6} medium={6} large={8}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
-                  name={`${comment}.text`}
-                  overrideValues={{
-                    label: 'Huomautus',
-                  }}
-                />
-              </Column>
-              <Column small={4} medium={3} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
-                  name={`${comment}.ahjo_reference_number`}
-                  validate={referenceNumber}
-                  overrideValues={{
-                    label: 'AHJO diaarinumero',
-                  }}
-                />
-              </Column>
-              <Column small={2} medium={3} large={2}>
-                <RemoveButton
-                  className='no-label'
-                  onClick={() => fields.remove(index)}
-                  title="Poista huomautus"
-                />
-              </Column>
-            </Row>
-          );
-        })}
-      </BoxItemContainer>
+      <SubTitle>Huomautukset</SubTitle>
+      {fields && !!fields.length &&
+        <div>
+          <Row>
+            <Column small={6} medium={6} large={8}>
+              <FormFieldLabel required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text.required')}>Huomautus</FormFieldLabel>
+            </Column>
+            <Column small={4} medium={3} large={2}>
+              <FormFieldLabel required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number.required')}>AHJO diaarinumero</FormFieldLabel>
+            </Column>
+          </Row>
+          {fields.map((comment, index) => {
+            const handleRemove = () => fields.remove(index);
+            return (
+              <Row key={index}>
+                <Column small={6} medium={6} large={8}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
+                    name={`${comment}.text`}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={4} medium={3} large={2}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
+                    name={`${comment}.ahjo_reference_number`}
+                    validate={referenceNumber}
+                    overrideValues={{
+                      label: '',
+                    }}
+                  />
+                </Column>
+                <Column small={2} medium={3} large={2}>
+                  <RemoveButton
+                    className='third-level'
+                    onClick={handleRemove}
+                    title="Poista huomautus"
+                  />
+                </Column>
+              </Row>
+            );
+          })}
+        </div>
+      }
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää huomautus'
             onClick={handleAdd}
             title='Lisää huomautus'

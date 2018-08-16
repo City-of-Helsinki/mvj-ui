@@ -203,6 +203,7 @@ class TenantsEdit extends Component<Props, State> {
           onSave={this.handleSave}
           onSaveAndAdd={this.handleSaveAndAdd}
           showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
+          title={get(contactModalSettings, 'isNew') ? 'Uusi asiakas' : 'Muokkaa asiakasta'}
         />
         <form onSubmit={handleSubmit}>
           <h2>Vuokralaiset</h2>

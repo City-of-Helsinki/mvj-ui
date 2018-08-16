@@ -24,10 +24,14 @@ type Props = {
 }
 
 const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props) => {
+  const handleAdd = () => fields.push({});
+
   return (
     <div>
       <BoxItemContainer>
         {fields && !!fields.length && fields.map((rent, index) => {
+          const handleRemove = () => fields.remove(index);
+
           return(
             <BoxItem
               key={index}
@@ -35,7 +39,7 @@ const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props)
               <BoxContentWrapper>
                 <RemoveButton
                   className='position-topright'
-                  onClick={() => fields.remove(index)}
+                  onClick={handleRemove}
                   title="Poista alennus/korotus"
                 />
                 <Row>
@@ -152,7 +156,7 @@ const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props)
         <Column>
           <AddButtonSecondary
             label='Lisää sopimusvuokra'
-            onClick={() => fields.push({})}
+            onClick={handleAdd}
             title='Lisää sopimusvuokra'
           />
         </Column>

@@ -9,7 +9,6 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import KtjLink from '$components/ktj/KtjLink';
-import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
@@ -165,7 +164,7 @@ const ContractItem = ({
         <p>Ei panttikirjoja</p>
       }
       {contract.mortgage_documents && !!contract.mortgage_documents.length &&
-        <ListItems>
+        <div>
           <Row>
             <Column small={4} medium={4} large={2}>
               <FormFieldLabel>Panttikirjan numero</FormFieldLabel>
@@ -180,17 +179,17 @@ const ContractItem = ({
           {contract.mortgage_documents.map((doc) =>
             <Row key={doc.id}>
               <Column small={4} medium={4} large={2}>
-                <p className='no-margin'>{doc.number || '–'}</p>
+                <p>{doc.number || '–'}</p>
               </Column>
               <Column small={4} medium={4} large={2}>
-                <p className='no-margin'>{formatDate(doc.date) || '–'}</p>
+                <p>{formatDate(doc.date) || '–'}</p>
               </Column>
               <Column small={4} medium={4} large={2}>
-                <p className='no-margin'>{doc.note || '–'}</p>
+                <p>{doc.note || '–'}</p>
               </Column>
             </Row>
           )}
-        </ListItems>
+        </div>
       }
 
       <Collapse
@@ -199,7 +198,7 @@ const ContractItem = ({
         headerTitle={<h4 className='collapse__header-title'>Sopimuksen muutokset</h4>}
         onToggle={handleContractChangesCollapseToggle}
       >
-        {(!contract.contract_changes || !contract.contract_changes.length) &&
+        {!contract.contract_changes || !contract.contract_changes.length &&
           <p>Ei sopimuksen muutoksia</p>
         }
         {contract.contract_changes && !!contract.contract_changes.length &&
@@ -209,7 +208,7 @@ const ContractItem = ({
               return (
                 <BoxItem
                   key={change.id}
-                  className='no-border-on-first-child'>
+                  className='no-border-on-last-child'>
                   <Row>
                     <Column small={6} medium={4} large={2}>
                       <FormFieldLabel>Allekirjoituspvm</FormFieldLabel>

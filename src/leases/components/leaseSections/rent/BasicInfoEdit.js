@@ -7,6 +7,7 @@ import get from 'lodash/get';
 import type {Element} from 'react';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
@@ -162,6 +163,7 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
               </Column>
               <Column>
                 <RemoveButton
+                  className='third-level'
                   onClick={handleRemove}
                   title="Poista alennus/korotus"
                 />
@@ -172,7 +174,7 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
       })}
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää kiinteä alkuvuosivuokra'
             onClick={handleAdd}
             title='Lisää kiinteä alkuvuosivuokra'

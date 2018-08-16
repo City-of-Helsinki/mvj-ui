@@ -6,9 +6,10 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
-import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
+import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import KtjLink from '$components/ktj/KtjLink';
@@ -32,17 +33,20 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
 
   return (
     <div>
-      <Row>
-        <Column small={6} large={6}>
-          <FormFieldLabel required>Osoite</FormFieldLabel>
-        </Column>
-        <Column small={3} large={3}>
-          <FormFieldLabel>Postinumero</FormFieldLabel>
-        </Column>
-        <Column small={3} large={3}>
-          <FormFieldLabel>Kaupunki</FormFieldLabel>
-        </Column>
-      </Row>
+      <SubTitle>Osoite</SubTitle>
+      {fields && !!fields.length &&
+        <Row>
+          <Column small={6} large={6}>
+            <FormFieldLabel required>Osoite</FormFieldLabel>
+          </Column>
+          <Column small={3} large={3}>
+            <FormFieldLabel>Postinumero</FormFieldLabel>
+          </Column>
+          <Column small={3} large={3}>
+            <FormFieldLabel>Kaupunki</FormFieldLabel>
+          </Column>
+        </Row>
+      }
       {fields && !!fields.length && fields.map((field, index) => {
         const handleRemove = () => {
           fields.remove(index);
@@ -70,8 +74,8 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
               />
             </Column>
             <Column small={3} large={3}>
-              <div style={{display: 'flex'}}>
-                <div style={{flex: '1 1 0%'}}>
+              <FieldAndRemoveButtonWrapper
+                field={
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.addresses.child.children.city')}
@@ -80,21 +84,22 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
                       label: '',
                     }}
                   />
-                </div>
-                <div style={{paddingLeft: '7.5px'}}>
+                }
+                removeButton={
                   <RemoveButton
+                    className='third-level'
                     onClick={handleRemove}
                     title="Poista osoite"
                   />
-                </div>
-              </div>
+                }
+              />
             </Column>
           </Row>
         );
       })}
       <Row>
         <Column>
-          <AddButtonSecondary
+          <AddButtonThird
             label='Lisää osoite'
             onClick={handleAdd}
             title='Lisää osoite'
@@ -138,7 +143,7 @@ const PlotItemsEdit = ({
   const savedPlot = getPlotById(plotId);
 
   return (
-    <BoxItem className='no-border-on-first-child'>
+    <BoxItem>
       <BoxContentWrapper>
         <RemoveButton
           className='position-topright'

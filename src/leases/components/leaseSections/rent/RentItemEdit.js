@@ -12,7 +12,6 @@ import ContractRentsEdit from './ContractRentsEdit';
 import Collapse from '$components/collapse/Collapse';
 import IndexAdjustedRents from './IndexAdjustedRents';
 import PayableRents from './PayableRents';
-import RemoveButton from '$components/form/RemoveButton';
 import RentAdjustmentsEdit from './RentAdjustmentsEdit';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
@@ -155,15 +154,11 @@ const RentItemEdit = ({
       defaultOpen={rentCollapseState !== undefined ? rentCollapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(rentErrors)}
       headerTitle={<h3 className='collapse__header-title'>{getLabelOfOption(typeOptions, get(savedRent, 'type')) || '-'}</h3>}
+      onRemove={handleRemove}
       onToggle={handleRentCollapseToggle}
     >
       <FormSection name={field}>
         <BoxContentWrapper>
-          <RemoveButton
-            className='position-topright-no-padding'
-            onClick={handleRemove}
-            title="Poista alennus/korotus"
-          />
           <BasicInfoEdit
             dueDatesType={dueDatesType}
             isSaveClicked={isSaveClicked}

@@ -5,7 +5,7 @@ import {formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
-import AddButton from '$components/form/AddButton';
+import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
 
@@ -28,6 +28,10 @@ const NewCommentForm = ({
   topic,
   valid,
 }: Props) => {
+  const handleAddComment = () => {
+    onAddComment(text, topic);
+  };
+
   return (
     <form onSubmit={handleSubmit}>
       <FormSection>
@@ -48,10 +52,11 @@ const NewCommentForm = ({
             fieldType: 'textarea',
           }}
         />
-        <AddButton
+        <Button
+          className={'button-green no-margin'}
           disabled={!valid}
           label='Kommentoi'
-          onClick={() => onAddComment(text, topic)}
+          onClick={handleAddComment}
           title='Kommentoi'
         />
       </FormSection>

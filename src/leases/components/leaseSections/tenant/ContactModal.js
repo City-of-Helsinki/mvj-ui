@@ -19,6 +19,7 @@ type Props = {
   onSave: Function,
   onSaveAndAdd : Function,
   showSaveAndAdd: Function,
+  title: string,
 }
 
 const ContactModal = ({
@@ -30,6 +31,7 @@ const ContactModal = ({
   onSave,
   onSaveAndAdd,
   showSaveAndAdd,
+  title,
 }: Props) => {
   return(
     <div className='contact-modal'>
@@ -37,7 +39,7 @@ const ContactModal = ({
         className='modal-center modal-large'
         isOpen={isOpen}
         onClose={onClose}
-        title='Uusi asiakas'
+        title={title || 'Uusi asiakas'}
       >
         <div>
           <GreenBoxEdit

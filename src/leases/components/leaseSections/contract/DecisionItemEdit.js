@@ -10,7 +10,6 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import DecisionConditionsEdit from './DecisionConditionsEdit';
 import FormField from '$components/form/FormField';
-import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
@@ -95,14 +94,10 @@ const DecisionItemEdit = ({
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
       headerTitle={<h3 className='collapse__header-title'>{savedDecision ? (getLabelOfOption(decisionMakerOptions, savedDecision.decision_maker) || '-') : '-'}</h3>}
+      onRemove={handleRemove}
       onToggle={handleDecisionCollapseToggle}
     >
       <BoxContentWrapper>
-        <RemoveButton
-          className='position-topright'
-          onClick={handleRemove}
-          title="Poista sopimus"
-        />
         <Row>
           <Column small={6} medium={4} large={2}>
             <FormField

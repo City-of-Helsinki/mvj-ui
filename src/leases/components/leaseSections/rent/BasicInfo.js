@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
+import SubTitle from '$components/content/SubTitle';
 import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {
   formatDate,
@@ -18,6 +19,10 @@ import type {Attributes} from '$src/leases/types';
 
 const formatDueDate = (date: Object) => {
   return `${date.day}.${date.month}`;
+};
+
+const displayDueDates = (dates: Object) => {
+  return dates.map((date) => formatDueDate(date)).join(', ');
 };
 
 type Props = {
@@ -63,27 +68,19 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
         {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Eräpäivät</FormFieldLabel>
-            <ListItems>
-              {rent.due_dates && !!rent.due_dates.length
-                ? (rent.due_dates.map((date, index) => {
-                  return <p className='no-margin' key={index}>{formatDueDate(date)}</p>;
-                }))
-                : <p className='no-margin'>Ei eräpäiviä</p>
-              }
-            </ListItems>
+            {rent.due_dates && !!rent.due_dates.length
+              ? <p>{displayDueDates(rent.due_dates)}</p>
+              : <p>Ei eräpäiviä</p>
+            }
           </Column>
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Eräpäivät</FormFieldLabel>
-            <ListItems>
-              {rent.yearly_due_dates && !!rent.yearly_due_dates.length
-                ? (rent.yearly_due_dates.map((date, index) => {
-                  return <p className='no-margin' key={index}>{formatDueDate(date)}</p>;
-                }))
-                : <p className='no-margin'>Ei eräpäiviä</p>
-              }
-            </ListItems>
+            {rent.yearly_due_dates && !!rent.yearly_due_dates.length
+              ? <p>{displayDueDates(rent.yearly_due_dates)}</p>
+              : <p>Ei eräpäiviä</p>
+            }
           </Column>
         }
       </Row>
@@ -128,9 +125,10 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
           </Column>
         }
       </Row>
+      <SubTitle>Kiinteät alkuvuosivuokrat</SubTitle>
+      {!rent.fixed_initial_year_rents || !rent.fixed_initial_year_rents.length && <p>Eii kiinteitä alkuvuosivuokria</p>}
       {!!rent.fixed_initial_year_rents && !!rent.fixed_initial_year_rents.length &&
         <ListItems>
-          <p className='sub-title'>Kiinteät alkuvuosivuokrat</p>
           <Row>
             <Column small={3} medium={3} large={2}>
               <FormFieldLabel>Käyttötarkoitus</FormFieldLabel>
@@ -234,27 +232,19 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
         {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Eräpäivät</FormFieldLabel>
-            <ListItems>
-              {rent.due_dates && !!rent.due_dates.length
-                ? (rent.due_dates.map((date, index) => {
-                  return (<p className='no-margin' key={index}>{`${date.day}.${date.month}`}</p>);
-                }))
-                : <p className='no-margin'>Ei eräpäiviä</p>
-              }
-            </ListItems>
+            {rent.due_dates && !!rent.due_dates.length
+              ? <p>{displayDueDates(rent.due_dates)}</p>
+              : <p>Ei eräpäiviä</p>
+            }
           </Column>
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Eräpäivät</FormFieldLabel>
-            <ListItems>
-              {rent.yearly_due_dates && !!rent.yearly_due_dates.length
-                ? (rent.yearly_due_dates.map((date, index) => {
-                  return <p className='no-margin' key={index}>{formatDueDate(date)}</p>;
-                }))
-                : <p className='no-margin'>Ei eräpäiviä</p>
-              }
-            </ListItems>
+            {rent.yearly_due_dates && !!rent.yearly_due_dates.length
+              ? <p>{displayDueDates(rent.yearly_due_dates)}</p>
+              : <p>Ei eräpäiviä</p>
+            }
           </Column>
         }
       </Row>

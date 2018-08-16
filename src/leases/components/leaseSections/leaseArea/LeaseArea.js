@@ -10,6 +10,7 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import PlanUnitItem from './PlanUnitItem';
 import PlotItem from './PlotItem';
+import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
@@ -153,32 +154,21 @@ const LeaseArea = ({
         </Column>
       </Row>
 
-      <Row>
-        <Column small={6} large={4}>
-          <FormFieldLabel>Osoite</FormFieldLabel>
-        </Column>
-        <Column small={3} large={2}>
-          <FormFieldLabel>Postinumero</FormFieldLabel>
-        </Column>
-        <Column small={3} large={2}>
-          <FormFieldLabel>Kaupunki</FormFieldLabel>
-        </Column>
-      </Row>
-      {!addresses.length &&
-        <Row>
-          <Column small={6} large={4}>
-            <p>-</p>
-          </Column>
-          <Column small={3} large={2}>
-            <p>-</p>
-          </Column>
-          <Column small={3} large={2}>
-            <p>-</p>
-          </Column>
-        </Row>
-      }
+      <SubTitle>Osoite</SubTitle>
+      {!addresses || !addresses.length && <p>Ei osoitteita</p>}
       {!!addresses.length &&
         <div>
+          <Row>
+            <Column small={6} large={4}>
+              <FormFieldLabel>Osoite</FormFieldLabel>
+            </Column>
+            <Column small={3} large={2}>
+              <FormFieldLabel>Postinumero</FormFieldLabel>
+            </Column>
+            <Column small={3} large={2}>
+              <FormFieldLabel>Kaupunki</FormFieldLabel>
+            </Column>
+          </Row>
           <ListItems>
             {addresses.map((address) => {
               return (

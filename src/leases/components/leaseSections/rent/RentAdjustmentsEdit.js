@@ -35,7 +35,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Pro
             <BoxItem className='no-border-on-first-child' key={index}>
               <BoxContentWrapper>
                 <RemoveButton
-                  className='position-topright-no-padding'
+                  className='position-topright'
                   onClick={() => fields.remove(index)}
                   title="Poista alennus/korotus"
                 />

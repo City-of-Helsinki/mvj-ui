@@ -3,6 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import {formatDate} from '$util/helpers';
 
 type Props = {
@@ -14,11 +15,11 @@ const InspectionItem = ({inspection}: Props) => {
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <label>Tarkastaja</label>
+          <FormFieldLabel>Tarkastaja</FormFieldLabel>
           <p>{inspection.inspector || '–'}</p>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Valvontapvm</label>
+          <FormFieldLabel>Valvontapvm</FormFieldLabel>
           {inspection.supervision_date
             ? (
               <p className={classNames({'alert': inspection.supervision_date && !inspection.supervised_date})}>
@@ -29,7 +30,7 @@ const InspectionItem = ({inspection}: Props) => {
           }
         </Column>
         <Column small={6} medium={4} large={2}>
-          <label>Valvottu pvm</label>
+          <FormFieldLabel>Valvottu pvm</FormFieldLabel>
           {inspection.supervised_date
             ? (
               <p className={classNames({'success': inspection.supervised_date})}>
@@ -40,7 +41,7 @@ const InspectionItem = ({inspection}: Props) => {
           }
         </Column>
         <Column small={6} medium={12} large={6}>
-          <label>Huomautus</label>
+          <FormFieldLabel>Huomautus</FormFieldLabel>
           <p>{inspection.description || '–'}</p>
         </Column>
       </Row>

@@ -310,22 +310,21 @@
   }
 
   .box-item-container {
+    padding-top: rem-calc(2px);
+
     .box-item {
-      border-top: 1px dashed #009246;
-      padding: rem-calc(15px) 0 rem-calc(5px);
+      border-bottom: 1px dashed $black;
+      padding: 0 0 rem-calc(5px);
+      margin-bottom: rem-calc(10px);
       position: relative;
 
       &:first-child {
         margin-top: rem-calc(5px);
       }
 
-      &.no-border-on-first-child:first-child {
+      &.no-border-on-last-child:last-child {
         border: none;
-        padding-top: 0;
-      }
-
-      &:last-child {
-        padding-bottom: 0;
+        margin-bottom: 0;
       }
     }
   }
