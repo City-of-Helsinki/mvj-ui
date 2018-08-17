@@ -2,17 +2,14 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import Select from 'react-select';
 import fetch from 'isomorphic-fetch';
+import debounce from 'lodash/debounce';
 import forEach from 'lodash/forEach';
 
 import createUrl from '$src/api/createUrl';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {getApiToken} from '$src/auth/selectors';
 
-const arrowRenderer = () => {
-  return (
-    <i className='select-input__arrow-renderer'/>
-  );
-};
+const arrowRenderer = () => <i className='select-input__arrow-renderer'/>;
 
 type Props = {
   apiToken: string,
@@ -31,7 +28,7 @@ class LeaseSelectInput extends Component<Props> {
     value: '',
   };
 
-  onChange = (value: Object) => {
+  handleChange = (value: Object) => {
     const {onChange} = this.props;
     onChange(value);
   }
@@ -55,29 +52,24 @@ class LeaseSelectInput extends Component<Props> {
     });
   }
 
-  getLeases = (input) => {
+  getLeases = debounce((input, callback) => {
     const {apiToken} = this.props;
-    if (!apiToken || !input) {
-      return Promise.resolve({options: []});
-    }
+    if (!apiToken || !input) {return Promise.resolve({options: []});}
 
     const request = new Request(createUrl(`lease/?succinct=true&identifier=${input ? input.toUpperCase() : ''}`));
     request.headers.set('Authorization', `Bearer ${apiToken}`);
 
-    return fetch(request)
+    fetch(request)
       .then((response) => response.json())
       .then((json) => {
-        return {
+        callback(null, {
           options: this.getOptions(json.results),
           complete: true,
-        };
+        });
       });
-  };
+  }, 500);
 
-  handleFilterOptions = (options: Array<Object>) => {
-    // Do no filtering, just return all options
-    return options;
-  }
+  handleFilterOptions = (options: Array<Object>) => options;
 
   render() {
     const {creatable, disabled, placeholder, value} = this.props;
@@ -98,7 +90,7 @@ class LeaseSelectInput extends Component<Props> {
         loadOptions={this.getLeases}
         multi={false}
         noResultsText={'Ei tuloksia'}
-        onChange={this.onChange}
+        onChange={this.handleChange}
         placeholder={placeholder || 'Valitse...'}
         searchPromptText='Hae vuokratunnuksella...'
         value={value}

@@ -4,17 +4,14 @@ import {connect} from 'react-redux';
 import Select from 'react-select';
 import fetch from 'isomorphic-fetch';
 import classNames from 'classnames';
+import debounce from 'lodash/debounce';
 
 import createUrl from '$src/api/createUrl';
 import {getContentLessor} from '$src/leases/helpers';
 import {addEmptyOption as addEmptyOptionFn, sortByLabelAsc} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
 
-const arrowRenderer = () => {
-  return (
-    <i className='select-input__arrow-renderer'/>
-  );
-};
+const arrowRenderer = () => <i className='select-input__arrow-renderer'/>;
 
 type Props = {
   addEmptyOption: boolean,
@@ -50,9 +47,7 @@ class FieldTypeLessorSelect extends Component<Props> {
   getOptions = (json: Object) => {
     const {addEmptyOption} = this.props;
 
-    const options = json.map((lessor) => {
-      return getContentLessor(lessor);
-    }).sort(sortByLabelAsc);
+    const options = json.map((lessor) => getContentLessor(lessor)).sort(sortByLabelAsc);
 
     if(addEmptyOption) {
       return addEmptyOptionFn(options);
@@ -60,24 +55,22 @@ class FieldTypeLessorSelect extends Component<Props> {
     return options;
   }
 
-  getLeases = (input) => {
+  getLessors = debounce((input, callback) => {
     const {apiToken} = this.props;
-    if (!apiToken) {
-      return Promise.resolve({options: []});
-    }
+    if (!apiToken) {return Promise.resolve({options: []});}
 
     const request = new Request(createUrl(`contact/?is_lessor=true&search=${input}`));
     request.headers.set('Authorization', `Bearer ${apiToken}`);
 
-    return fetch(request)
+    fetch(request)
       .then((response) => response.json())
       .then((json) => {
-        return {
+        callback(null, {
           options: this.getOptions(json.results),
           complete: true,
-        };
+        });
       });
-  };
+  }, 500);
 
   handleFilterOptions = (options: Array<Object>) => options;
 
@@ -103,6 +96,7 @@ class FieldTypeLessorSelect extends Component<Props> {
         autoload={true}
         autosize={false}
         backspaceRemoves={false}
+        cache={false}
         className={classNames(
           'form-field__select',
           {'has-error': displayError},
@@ -112,7 +106,7 @@ class FieldTypeLessorSelect extends Component<Props> {
         disabled={disabled}
         filterOptions={this.handleFilterOptions}
         loadingPlaceholder='Ladataan...'
-        loadOptions={this.getLeases}
+        loadOptions={this.getLessors}
         multi={false}
         noResultsText={'Ei tuloksia'}
         onBlur={this.handleBlur}

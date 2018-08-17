@@ -4,17 +4,14 @@ import {connect} from 'react-redux';
 import Select from 'react-select';
 import fetch from 'isomorphic-fetch';
 import classNames from 'classnames';
+import debounce from 'lodash/debounce';
 
 import createUrl from '$src/api/createUrl';
 import {getContentContact} from '$src/leases/helpers';
 import {sortByLabelAsc} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
 
-const arrowRenderer = () => {
-  return (
-    <i className='select-input__arrow-renderer'/>
-  );
-};
+const arrowRenderer = () => <i className='select-input__arrow-renderer'/>;
 
 type Props = {
   apiToken: string,
@@ -45,30 +42,24 @@ class FieldTypeContactSelect extends Component<Props> {
     onChange(value);
   }
 
-  getOptions = (json: Object) => {
-    return json.map((contact) => {
-      return getContentContact(contact);
-    }).sort(sortByLabelAsc);
-  }
+  getOptions = (json: Object) => json.map((contact) => getContentContact(contact)).sort(sortByLabelAsc);
 
-  getLeases = (input) => {
+  getContacts = debounce((input, callback) => {
     const {apiToken} = this.props;
-    if (!apiToken) {
-      return Promise.resolve({options: []});
-    }
+    if (!apiToken) {return Promise.resolve({options: []});}
 
     const request = new Request(createUrl(`contact/?search=${input}`));
     request.headers.set('Authorization', `Bearer ${apiToken}`);
 
-    return fetch(request)
+    fetch(request)
       .then((response) => response.json())
       .then((json) => {
-        return {
+        callback(null, {
           options: this.getOptions(json.results),
           complete: true,
-        };
+        });
       });
-  };
+  }, 500);
 
   handleFilterOptions = (options: Array<Object>) => options;
 
@@ -83,9 +74,7 @@ class FieldTypeContactSelect extends Component<Props> {
       placeholder,
     } = this.props;
 
-    const AsyncComponent = creatable
-      ? Select.AsyncCreatable
-      : Select.Async;
+    const AsyncComponent = creatable ? Select.AsyncCreatable : Select.Async;
 
     return(
       <AsyncComponent
@@ -94,6 +83,7 @@ class FieldTypeContactSelect extends Component<Props> {
         autoload={false}
         autosize={false}
         backspaceRemoves={false}
+        cache={false}
         className={classNames(
           'form-field__select',
           {'has-error': displayError},
@@ -103,7 +93,7 @@ class FieldTypeContactSelect extends Component<Props> {
         disabled={disabled}
         filterOptions={this.handleFilterOptions}
         loadingPlaceholder='Ladataan...'
-        loadOptions={this.getLeases}
+        loadOptions={this.getContacts}
         multi={false}
         noResultsText={'Ei tuloksia'}
         onBlur={this.handleBlur}
