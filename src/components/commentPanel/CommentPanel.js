@@ -11,7 +11,7 @@ import Comment from './Comment';
 import NewCommentForm from './forms/NewCommentForm';
 import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
 import {createComment} from '$src/comments/actions';
-import {getAttributeFieldOptions} from '$src/util/helpers';
+import {getAttributeFieldOptions, sortStringByKeyDesc} from '$src/util/helpers';
 import {getContentComments} from '$src/leases/helpers';
 import {getAttributes, getCommentsByLease} from '$src/comments/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -37,11 +37,9 @@ type State = {
   topicFilterOptions: Array<Object>,
 }
 
-const getCommentsByTopic = (comments: Array<Object>, topic: Object) => {
+const getCommentsByTopic = (comments: Array<Object>, topic: Object): Array<Object> => {
   if(!comments || !comments.length) {return [];}
-  return comments.filter((comment) => {
-    return comment.topic === topic.value;
-  });
+  return comments.filter((comment) => comment.topic === topic.value);
 };
 
 class CommentPanel extends PureComponent<Props, State> {
@@ -55,11 +53,11 @@ class CommentPanel extends PureComponent<Props, State> {
   getFilteredComments = (comments: ?Array<Object>) => {
     const {selectedTopics} = this.state;
     if(!comments || !comments.length) {return [];}
-    if(!selectedTopics.length) {return comments;}
 
-    return comments.filter((comment) => {
-      return selectedTopics.indexOf(comment.topic.toString()) !== -1;}
-    );
+    const sortedComments = [...comments].sort((a, b) => sortStringByKeyDesc(a, b, 'modified_at'));
+
+    if(!selectedTopics.length) {return sortedComments;}
+    return sortedComments.filter((comment) => selectedTopics.indexOf(comment.topic.toString()) !== -1);
   }
 
   componentWillMount() {
@@ -134,7 +132,6 @@ class CommentPanel extends PureComponent<Props, State> {
       topicOptions,
       topicFilterOptions,
     } = this.state;
-
     const filteredComments = this.getFilteredComments(comments);
 
     return (
@@ -160,7 +157,7 @@ class CommentPanel extends PureComponent<Props, State> {
             <div className='filters'>
               <StyledCheckboxButtons
                 checkboxName='checkbox-buttons-document-type'
-                onChange={(value) => this.handleFilterChange(value)}
+                onChange={this.handleFilterChange}
                 options={topicFilterOptions}
                 selectAllButton
                 selectAllButtonLabel='Kaikki'
@@ -171,33 +168,29 @@ class CommentPanel extends PureComponent<Props, State> {
 
           {!filteredComments || !filteredComments.length &&
             <div className='comments'>
-              <p className='no-comments-text'>Ei ajankohtaisia kommentteja</p>
+              <p className='no-comments-text'>Ei kommentteja</p>
             </div>
           }
           {filteredComments && !!filteredComments.length &&
             <div className='comments'>
-              {topicOptions && !!topicOptions.length &&
-                topicOptions.map((topic) => {
-                  const comments = getCommentsByTopic(filteredComments, topic);
-                  if(!comments.length) {
-                    return null;
-                  }
-                  return (
-                    <div className='comments-section' key={topic.value}>
-                      <h3>{topic.label}</h3>
-                      {comments.map((comment) => {
-                        return (
-                          <Comment
-                            key={comment.id}
-                            comment={comment}
-                            user={comment.user}
-                          />
-                        );
-                      })}
-                    </div>
-                  );
-                })
-              }
+              {topicOptions && !!topicOptions.length && topicOptions.map((topic) => {
+                const comments = getCommentsByTopic(filteredComments, topic);
+
+                if(!comments.length) {return null;}
+
+                return (
+                  <div className='comments-section' key={topic.value}>
+                    <h3>{topic.label}</h3>
+                    {comments.map((comment) =>
+                      <Comment
+                        key={comment.id}
+                        comment={comment}
+                        user={comment.user}
+                      />
+                    )}
+                  </div>
+                );
+              })}
             </div>
           }
         </div>

@@ -8,7 +8,7 @@ import EditButton from '$components/button/EditButton';
 import ShowMore from '../showMore/ShowMore';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {editComment, hideEditModeById, showEditModeById} from '$src/comments/actions';
-import {formatDate} from '$util/helpers';
+import {formatDateObj} from '$util/helpers';
 import {getIsEditModeById} from '$src/comments/selectors';
 
 type Props = {
@@ -59,6 +59,7 @@ class Comment extends PureComponent<Props, State> {
   render() {
     const {editedText} = this.state;
     const {comment, isEditMode, user} = this.props;
+
     return (
       <div className='comment'>
         {!isEditMode &&
@@ -70,7 +71,7 @@ class Comment extends PureComponent<Props, State> {
             />
             <div className='content-wrapper'>
               <p className='comment-info'>
-                <span className='date'>{formatDate(comment.date)}</span>
+                <span className='date'>{formatDateObj(comment.modified_at)}</span>
                 &nbsp;
                 <span>{user.last_name} {user.first_name}</span>
               </p>
