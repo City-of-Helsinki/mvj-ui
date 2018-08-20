@@ -50,7 +50,6 @@ import {
   receiveIsSaveClicked,
   showEditMode,
 } from '$src/leases/actions';
-import {fetchNoticePeriods} from '$src/noticePeriod/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/leases/enums';
 import {FormNames as ComponentFormNames} from '$components/enums';
@@ -101,7 +100,6 @@ type Props = {
   fetchInvoiceAttributes: Function,
   fetchInvoicesByLease: Function,
   fetchInvoiceSetsByLease: Function,
-  fetchNoticePeriods: Function,
   fetchSingleLease: Function,
   hideEditMode: Function,
   initialize: Function,
@@ -178,7 +176,6 @@ class LeasePage extends Component<Props, State> {
       fetchInvoiceAttributes,
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
-      fetchNoticePeriods,
       fetchSingleLease,
       invoiceAttributes,
       location,
@@ -217,7 +214,6 @@ class LeasePage extends Component<Props, State> {
     fetchDecisionsByLease(leaseId);
     fetchInvoicesByLease(leaseId);
     fetchInvoiceSetsByLease(leaseId);
-    fetchNoticePeriods();
     fetchAreaNoteList();
   }
 
@@ -940,7 +936,6 @@ export default flowRight(
       fetchInvoiceAttributes,
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
-      fetchNoticePeriods,
       fetchSingleLease,
       hideEditMode,
       initialize,

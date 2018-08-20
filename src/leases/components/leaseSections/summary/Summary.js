@@ -16,22 +16,18 @@ import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
-import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
 import {getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
-import {getNoticePeriods} from '$src/noticePeriod/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
-import type {NoticePeriodList} from '$src/NoticePeriod/types';
 
 type Props = {
   attributes: Attributes,
   collapseStateBasic: boolean,
   collapseStateStatistical: boolean,
   currentLease: Lease,
-  noticePeriods: NoticePeriodList,
   receiveCollapseStates: Function,
 }
 
@@ -63,7 +59,7 @@ class Summary extends Component<Props, State> {
     supportiveHousingOptions: [],
   }
   componentWillMount() {
-    const {attributes, currentLease, noticePeriods} = this.props;
+    const {attributes, currentLease} = this.props;
 
     if(!isEmpty(attributes)) {
       this.updateOptions(attributes);
@@ -71,10 +67,6 @@ class Summary extends Component<Props, State> {
 
     if(!isEmpty(currentLease)) {
       this.updateSummary(currentLease);
-    }
-
-    if(!isEmpty(noticePeriods)) {
-      this.updateNoticePeriodOptions(noticePeriods);
     }
   }
 
@@ -86,10 +78,6 @@ class Summary extends Component<Props, State> {
     if(prevProps.currentLease !== this.props.currentLease) {
       this.updateSummary(this.props.currentLease);
     }
-
-    if(prevProps.noticePeriods !== this.props.noticePeriods) {
-      this.updateNoticePeriodOptions(this.props.noticePeriods);
-    }
   }
 
   updateOptions = (attributes: Attributes) => {
@@ -99,15 +87,10 @@ class Summary extends Component<Props, State> {
       hitasOptions: getAttributeFieldOptions(attributes, 'hitas'),
       intendedUseOptions: getAttributeFieldOptions(attributes, 'intended_use'),
       managementOptions: getAttributeFieldOptions(attributes, 'management'),
+      noticePeriodOptions: getAttributeFieldOptions(attributes, 'notice_period'),
       regulationOptions: getAttributeFieldOptions(attributes, 'regulation'),
       statisticalUseOptions: getAttributeFieldOptions(attributes, 'statistical_use'),
       supportiveHousingOptions: getAttributeFieldOptions(attributes, 'supportive_housing'),
-    });
-  }
-
-  updateNoticePeriodOptions = (noticePeriods: NoticePeriodList) => {
-    this.setState({
-      noticePeriodOptions: getNoticePeriodOptions(noticePeriods),
     });
   }
 
@@ -304,7 +287,6 @@ export default connect(
       collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.basic`),
       collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.SUMMARY}.statistical`),
       currentLease: getCurrentLease(state),
-      noticePeriods: getNoticePeriods(state),
     };
   },
   {

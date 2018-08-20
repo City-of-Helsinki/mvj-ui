@@ -17,7 +17,6 @@ import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions'
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContentSummary} from '$src/leases/helpers';
-import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
 import {getRouteById} from '$src/root/routes';
 import {
   getAttributes,
@@ -26,11 +25,9 @@ import {
   getErrorsByFormName,
   getIsSaveClicked,
 } from '$src/leases/selectors';
-import {getNoticePeriods} from '$src/noticePeriod/selectors';
 import {referenceNumber} from '$components/form/validations';
 
 import type {Lease} from '$src/leases/types';
-import type {NoticePeriodList} from '$src/noticePeriod/types';
 
 type Props = {
   attributes: Object,
@@ -40,7 +37,6 @@ type Props = {
   errors: ?Object,
   handleSubmit: Function,
   isSaveClicked: boolean,
-  noticePeriods: NoticePeriodList,
   receiveCollapseStates: Function,
   receiveFormValidFlags: Function,
   valid: boolean,
@@ -115,10 +111,8 @@ class SummaryEdit extends Component<Props, State> {
       errors,
       handleSubmit,
       isSaveClicked,
-      noticePeriods,
     } = this.props;
     const {summary} = this.state;
-    const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
     const infillDevelopmentCompensations = summary.infill_development_compensations;
 
     return (
@@ -255,7 +249,6 @@ class SummaryEdit extends Component<Props, State> {
                     name='notice_period'
                     overrideValues={{
                       label: 'Irtisanomisaika',
-                      options: noticePeriodOptions,
                     }}
                   />
                 </Column>
@@ -368,7 +361,6 @@ export default flowRight(
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
         isSaveClicked: getIsSaveClicked(state),
-        noticePeriods: getNoticePeriods(state),
       };
     },
     {

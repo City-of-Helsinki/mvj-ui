@@ -19,7 +19,6 @@ import invoiceSetReducer from '$src/invoiceSets/reducer';
 import landUseContractReducer from '$src/landUseContract/reducer';
 import leaseReducer from '../leases/reducer';
 import mapDataReducer from '../mapData/reducer';
-import noticePeriodReducer from '../noticePeriod/reducer';
 import rentBasisReducer from '../rentbasis/reducer';
 import rentForPeriodReducer from '../rentForPeriod/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
@@ -45,7 +44,6 @@ export default (): Reducer<RootState> =>
     landUseContract: landUseContractReducer,
     lease: leaseReducer,
     mapData: mapDataReducer,
-    noticePeriod: noticePeriodReducer,
     oidc,
     rentBasis: rentBasisReducer,
     rentForPeriod: rentForPeriodReducer,
