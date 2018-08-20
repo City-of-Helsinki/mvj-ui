@@ -34,13 +34,10 @@ export const getContentLeaseIdentifier = (item:Object) => {
 
 export const getContentLeaseTenant = (lease: Object) => {
   const tenants = get(lease, 'tenants[0].tenantcontact_set', []);
-  if(!tenants.length) {
-    return null;
-  }
+  if(!tenants.length) {return null;}
+
   const tenant = tenants.find((x) => x.type === TenantContactType.TENANT);
-  if(!tenant) {
-    return null;
-  }
+  if(!tenant) {return null;}
 
   return getContactFullName(tenant.contact);
 };
@@ -170,6 +167,15 @@ export const getContentUser = (user: Object) => {
   };
 };
 
+const getContentInfillDevelopmentCompensations = (lease: Lease) => {
+  return get(lease, 'infill_development_compensations', []).map((item) => {
+    return {
+      id: item.id,
+      name: item.name,
+    };
+  });
+};
+
 export const getContentSummary = (lease: Object) => {
   return {
     lessor: getContentLessor(get(lease, 'lessor')),
@@ -192,6 +198,7 @@ export const getContentSummary = (lease: Object) => {
     tenants: getContentTenants(lease).filter((tenant) => isTenantActive(get(tenant, 'tenant'))),
     lease_areas: getContentLeaseAreas(lease),
     constructability_areas: getContentConstructability(lease),
+    infill_development_compensations: getContentInfillDevelopmentCompensations(lease),
   };
 };
 

@@ -36,6 +36,7 @@ import {
   getContentLeaseAreas,
   getContentLeaseIdentifier,
   getContentTenants,
+  isTenantActive,
 } from '$src/leases/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {getRouteById} from '$src/root/routes';
@@ -313,7 +314,7 @@ class LeaseItemEdit extends Component<Props, State> {
       identifier: getContentLeaseIdentifier(lease),
       planUnits: planUnits,
       plots: plots,
-      tenants: getContentTenants(lease),
+      tenants: getContentTenants(lease).filter((tenant) => isTenantActive(get(tenant, 'tenant'))),
     });
   }
 

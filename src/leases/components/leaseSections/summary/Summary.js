@@ -19,6 +19,7 @@ import {getContentSummary} from '$src/leases/helpers';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
 import {getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
+import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 
@@ -154,6 +155,7 @@ class Summary extends Component<Props, State> {
       supportiveHousingOptions,
     } = this.state;
     const {collapseStateBasic, collapseStateStatistical} = this.props;
+    const infillDevelopmentCompensations = summary.infill_development_compensations;
 
     return (
       <div>
@@ -222,8 +224,15 @@ class Summary extends Component<Props, State> {
                   <p>-</p>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Täydennysrakentaminen</FormFieldLabel>
-                  <p>-</p>
+                  <FormFieldLabel>Täydennysrakentamiskorvaus</FormFieldLabel>
+                  {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length &&
+                    <p>-</p>
+                  }
+                  {infillDevelopmentCompensations && !!infillDevelopmentCompensations.length && infillDevelopmentCompensations.map((item) =>
+                    <p className='no-margin' key={item.id}>
+                      <a className='no-margin' target='_blank' href={`${getRouteById('infillDevelopment')}/${item.id}`}>{item.name || item.id}</a>
+                    </p>
+                  )}
                 </Column>
               </Row>
               <Row>

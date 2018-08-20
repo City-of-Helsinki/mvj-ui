@@ -16,17 +16,27 @@ import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
+import {getContentSummary} from '$src/leases/helpers';
 import {getNoticePeriodOptions} from '$src/noticePeriod/helpers';
-import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {getRouteById} from '$src/root/routes';
+import {
+  getAttributes,
+  getCollapseStateByKey,
+  getCurrentLease,
+  getErrorsByFormName,
+  getIsSaveClicked,
+} from '$src/leases/selectors';
 import {getNoticePeriods} from '$src/noticePeriod/selectors';
 import {referenceNumber} from '$components/form/validations';
 
+import type {Lease} from '$src/leases/types';
 import type {NoticePeriodList} from '$src/noticePeriod/types';
 
 type Props = {
   attributes: Object,
   collapseStateBasic: boolean,
   collapseStateStatistical: boolean,
+  currentLease: Lease,
   errors: ?Object,
   handleSubmit: Function,
   isSaveClicked: boolean,
@@ -36,7 +46,23 @@ type Props = {
   valid: boolean,
 }
 
-class SummaryEdit extends Component<Props> {
+type State = {
+  summary: Object,
+}
+
+class SummaryEdit extends Component<Props, State> {
+  state = {
+    summary: {},
+  }
+
+  componentDidMount() {
+    const {currentLease} = this.props;
+
+    if(!isEmpty(currentLease)) {
+      this.updateSummary(currentLease);
+    }
+  }
+
   componentDidUpdate(prevProps) {
     const {receiveFormValidFlags} = this.props;
 
@@ -44,6 +70,10 @@ class SummaryEdit extends Component<Props> {
       receiveFormValidFlags({
         [FormNames.SUMMARY]: this.props.valid,
       });
+    }
+
+    if(prevProps.currentLease !== this.props.currentLease) {
+      this.updateSummary(this.props.currentLease);
     }
   }
 
@@ -71,6 +101,12 @@ class SummaryEdit extends Component<Props> {
     });
   }
 
+  updateSummary = (currentLease: Lease) => {
+    this.setState({
+      summary: getContentSummary(currentLease),
+    });
+  }
+
   render () {
     const {
       attributes,
@@ -81,7 +117,9 @@ class SummaryEdit extends Component<Props> {
       isSaveClicked,
       noticePeriods,
     } = this.props;
+    const {summary} = this.state;
     const noticePeriodOptions = getNoticePeriodOptions(noticePeriods);
+    const infillDevelopmentCompensations = summary.infill_development_compensations;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -198,8 +236,15 @@ class SummaryEdit extends Component<Props> {
                   <p>-</p>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Täydennysrakentaminen</FormFieldLabel>
-                  <p>-</p>
+                  <FormFieldLabel>Täydennysrakentamiskorvaus</FormFieldLabel>
+                  {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length &&
+                    <p>-</p>
+                  }
+                  {infillDevelopmentCompensations && !!infillDevelopmentCompensations.length && infillDevelopmentCompensations.map((item) =>
+                    <p className='no-margin' key={item.id}>
+                      <a className='no-margin' target='_blank' href={`${getRouteById('infillDevelopment')}/${item.id}`}>{item.name || item.id}</a>
+                    </p>
+                  )}
                 </Column>
               </Row>
               <Row>
@@ -320,6 +365,7 @@ export default flowRight(
         attributes: getAttributes(state),
         collapseStateBasic: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.SUMMARY}.basic`),
         collapseStateStatistical: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.SUMMARY}.statistical`),
+        currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
         isSaveClicked: getIsSaveClicked(state),
         noticePeriods: getNoticePeriods(state),

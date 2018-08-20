@@ -30,6 +30,7 @@ import {
   getContentLeaseAreas,
   getContentLeaseIdentifier,
   getContentTenants,
+  isTenantActive,
 } from '$src/leases/helpers';
 import {getAttributes, getCollapseStateByKey} from '$src/infillDevelopment/selectors';
 import {getIsFetchingById, getLeaseById} from '$src/leases/selectors';
@@ -124,7 +125,7 @@ class LeaseItem extends Component<Props, State> {
       identifier: getContentLeaseIdentifier(lease),
       planUnits: planUnits,
       plots: plots,
-      tenants: getContentTenants(lease),
+      tenants: getContentTenants(lease).filter((tenant) => isTenantActive(get(tenant, 'tenant'))),
     });
   }
 
