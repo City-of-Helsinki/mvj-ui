@@ -6,18 +6,41 @@ import closeIcon from '$assets/icons/icon_close.svg';
 
 type Props = {
   className?: string,
+  disabled?: boolean,
   onClick: Function,
+  setReference?: Function,
   title: string,
   type?: string,
 }
 
-const CloseButton = ({className, onClick, title, type = 'button'}: Props) =>
-  <button
-    className={classNames('close-button-component', className)}
-    type={type}
-    title={title}
-    onClick={() => onClick()}>
-    <img src={closeIcon} alt='Poista' />
-  </button>;
+const CloseButton = ({className, disabled, onClick, setReference, title, type = 'button'}: Props) => {
+  const handleSetReference = (element: any) => {
+    if(element && setReference) {
+      setReference(element);
+    }
+  };
+
+  const handleKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
+  return (
+    <button
+      ref={handleSetReference}
+      aria-label='Sulje'
+      className={classNames('close-button-component', className)}
+      disabled={disabled}
+      type={type}
+      title={title}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+    >
+      <img src={closeIcon} alt='Poista' />
+    </button>
+  );
+};
 
 export default CloseButton;

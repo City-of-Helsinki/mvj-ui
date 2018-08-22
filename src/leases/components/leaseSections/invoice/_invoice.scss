@@ -1,5 +1,5 @@
 .invoice {
-  &__add-invoice {
+  &__new-invoice {
     margin-top: rem-calc(5px);
     margin-bottom: rem-calc(10px);
 
@@ -8,6 +8,41 @@
 
       h3 {
         margin-bottom: rem-calc(10px);
+      }
+
+      .button-wrapper {
+        margin-top: 0;
+        margin-bottom: rem-calc(10px);
+        text-align: right;
+        padding-top: rem-calc(5px);
+
+        .mvj-button:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+  &__credit-invoice {
+    margin-top: rem-calc(5px);
+    margin-bottom: rem-calc(10px);
+
+    &_form {
+      margin-top: rem-calc(15px);
+
+      h3 {
+        margin-bottom: rem-calc(10px);
+      }
+
+      .button-wrapper {
+        margin-top: 0;
+        margin-bottom: rem-calc(10px);
+        text-align: right;
+        padding-top: rem-calc(5px);
+
+        .mvj-button:last-child {
+          margin-right: 0;
+        }
       }
     }
   }
@@ -88,6 +123,7 @@
 
       table tbody tr {
         cursor: pointer;
+        outline-offset: -4px;
 
         &:hover {
           background-color: #D9EFE4;

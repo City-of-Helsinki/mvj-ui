@@ -46,14 +46,23 @@ const SortableTableHeaderItem = ({
       onClick(index);
   };
 
+  const handleKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      handleOnClick();
+    }
+  };
+
+
   const sortIcon = getSortIcon();
 
   return (
     <th
       className={classnames({'table__sortable_header-link': sortable}, kebabCase(dataKey))}
       onClick={handleOnClick}
+
       {...headerProps} >
-      <div>
+      <div aria-label={label} onKeyDown={handleKeyDown} tabIndex={sortable ? 0 : undefined}>
         {label}
         {sortIcon}
       </div>

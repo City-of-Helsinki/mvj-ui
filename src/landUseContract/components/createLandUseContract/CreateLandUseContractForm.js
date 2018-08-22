@@ -34,6 +34,12 @@ type Props = {
 }
 
 class CreateLandUseContractForm extends Component<Props> {
+  firstField: any
+
+  componentDidMount() {
+    this.firstField.focus();
+  }
+
   componentDidUpdate(prevProps) {
     if(this.props.municipality !== prevProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
@@ -45,6 +51,10 @@ class CreateLandUseContractForm extends Component<Props> {
         change('district', '');
       }
     }
+  }
+
+  setRefForFirstField = (element: any) => {
+    this.firstField = element;
   }
 
   handleCreate = () => {
@@ -83,6 +93,7 @@ class CreateLandUseContractForm extends Component<Props> {
             <FormField
               fieldAttributes={get(attributes, 'state')}
               name='state'
+              setRefForField={this.setRefForFirstField}
               overrideValues={{
                 label: 'Tyyppi',
               }}

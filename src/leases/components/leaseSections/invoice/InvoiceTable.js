@@ -128,6 +128,14 @@ const TableBodyRow = ({
     buttonPressTimer = setTimeout(() => {isLongPress = true;}, 1000);
   };
 
+  const handleKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      handleRowClick();
+    }
+  };
+
+
   const handleButtonRelease = () => {
     if(!isLongPress && isClicked) {handleRowClick();}
 
@@ -138,6 +146,8 @@ const TableBodyRow = ({
   return (
     <tr
       className={classNames({'selected': selectedRow && selectedRow.id === row.data.id, 'has-group': hasGroup})}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
     >
       <td colSpan={hasGroup ? 2 : 1}>
         <input type="radio" value={`invoice_${row.data.id}`}

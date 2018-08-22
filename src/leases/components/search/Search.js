@@ -139,6 +139,13 @@ class Search extends Component<Props, State> {
     this.onSearchChange();
   }
 
+  handleLinkKeyDown = (e: any) => {
+    if(e.keyCode === 13){
+      e.preventDefault();
+      this.toggleSearchType();
+    }
+  }
+
   render () {
     const {
       attributes,
@@ -384,7 +391,7 @@ class Search extends Component<Props, State> {
         )}
         <Row>
           <Column large={12}>
-            <a onClick={this.toggleSearchType} className='readme-link'>{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</a>
+            <a tabIndex={0} onKeyDown={this.handleLinkKeyDown} onClick={this.toggleSearchType} className='readme-link'>{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</a>
           </Column>
         </Row>
       </div>

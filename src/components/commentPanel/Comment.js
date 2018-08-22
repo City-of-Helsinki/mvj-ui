@@ -13,6 +13,7 @@ import {getIsEditModeById} from '$src/comments/selectors';
 
 type Props = {
   comment: Object,
+  disabled?: boolean,
   editComment: Function,
   hideEditModeById: Function,
   isEditMode: boolean,
@@ -58,7 +59,7 @@ class Comment extends PureComponent<Props, State> {
 
   render() {
     const {editedText} = this.state;
-    const {comment, isEditMode, user} = this.props;
+    const {comment, disabled, isEditMode, user} = this.props;
 
     return (
       <div className='comment'>
@@ -66,16 +67,17 @@ class Comment extends PureComponent<Props, State> {
           <div>
             <EditButton
               className='position-topright'
+              disabled={disabled}
               onClick={this.handleEditButtonClick}
               title='Muokkaa'
             />
-            <div className='content-wrapper'>
-              <p className='comment-info'>
-                <span className='date'>{formatDateObj(comment.modified_at)}</span>
+            <div className='comment__content-wrapper'>
+              <p className='comment__info'>
+                <span className='comment__info_date'>{formatDateObj(comment.modified_at)}</span>
                 &nbsp;
                 <span>{user.last_name} {user.first_name}</span>
               </p>
-              <div className='comment-text'>
+              <div className='comment__text'>
                 <ShowMore text={comment.text} />
               </div>
             </div>
@@ -83,7 +85,7 @@ class Comment extends PureComponent<Props, State> {
         }
         {isEditMode &&
           <div>
-            <div className='content-wrapper no-padding'>
+            <div className='comment__content-wrapper no-padding'>
               <Row>
                 <Column>
                   <TextAreaInput
@@ -96,19 +98,22 @@ class Comment extends PureComponent<Props, State> {
               </Row>
               <Row>
                 <Column>
-                  <Button
-                    className='button-green pull-right no-margin-right'
-                    disabled={!editedText}
-                    label='Tallenna'
-                    onClick={this.handleSaveButtonClick}
-                    title='Tallenna'
-                  />
-                  <Button
-                    className='button-red pull-right'
-                    label='Kumoa'
-                    onClick={this.handleCancelButtonClick}
-                    title='Kumoa'
-                  />
+                  <div className='comment__button-wrapper'>
+                    <Button
+                      className='button-red'
+                      disabled={disabled}
+                      label='Kumoa'
+                      onClick={this.handleCancelButtonClick}
+                      title='Kumoa'
+                    />
+                    <Button
+                      className='button-green'
+                      disabled={disabled || !editedText}
+                      label='Tallenna'
+                      onClick={this.handleSaveButtonClick}
+                      title='Tallenna'
+                    />
+                  </div>
                 </Column>
               </Row>
             </div>

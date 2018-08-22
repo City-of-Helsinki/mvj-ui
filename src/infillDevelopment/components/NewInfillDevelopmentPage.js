@@ -180,7 +180,7 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
             </Row>
           }
           {!isEmpty(attributes) &&
-            <InfillDevelopmentForm />
+            <InfillDevelopmentForm isFocusedOnMount/>
           }
         </ContentContainer>
       </PageContainer>

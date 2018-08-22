@@ -28,6 +28,8 @@ type State = {
 }
 
 class SendEmailModal extends Component<Props, State> {
+  dualListBox: any
+
   state = {
     selected: [],
     userOptions: [],
@@ -57,8 +59,15 @@ class SendEmailModal extends Component<Props, State> {
   componentDidUpdate(prevProps) {
     // Clear selected list when opening modal
     if(!prevProps.isOpen && this.props.isOpen) {
+      if(this.dualListBox) {
+        this.dualListBox.focus();
+      }
       this.setState({selected: []});
     }
+  }
+
+  handleSetAvailableReference = (element: any) => {
+    this.dualListBox = element;
   }
 
   onChange = (selected: Array<string>) => {
@@ -82,17 +91,24 @@ class SendEmailModal extends Component<Props, State> {
         onClose={onClose}
       >
         <p>Valitse sähköpostitiedotteen vastaanottajat</p>
-        <DualListBoxInput options={userOptions} selected={selected} onChange={this.onChange} />
+        <DualListBoxInput
+          disabled={!isOpen}
+          onChange={this.onChange}
+          options={userOptions}
+          selected={selected}
+          setAvailabelReference={this.handleSetAvailableReference}
+        />
         <div className='constructability__send-email-modal_footer'>
           <Button
             className='button-red'
+            disabled={!isOpen}
             label='Peruuta'
             onClick={onCancel}
             title='Peruuta'
           />
           <Button
             className='button-green'
-            disabled={!selected.length}
+            disabled={!isOpen || !selected.length}
             label='Lähetä'
             onClick={onSend}
             title='Lähetä sähköpostitiedote'

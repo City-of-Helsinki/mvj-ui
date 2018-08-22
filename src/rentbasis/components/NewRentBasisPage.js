@@ -157,7 +157,7 @@ class NewRentBasisPage extends Component<Props, State> {
         />
         <ContentContainer>
           <GreenBoxEdit className='no-margin'>
-            <RentBasisForm />
+            <RentBasisForm isFocusedOnMount/>
           </GreenBoxEdit>
         </ContentContainer>
       </PageContainer>

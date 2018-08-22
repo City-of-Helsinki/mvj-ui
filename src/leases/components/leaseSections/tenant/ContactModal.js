@@ -46,26 +46,26 @@ const ContactModal = ({
             className='no-margin'
           >
             {isOpen &&
-              <ContactForm />
+              <ContactForm isFocusedOnMount/>
             }
-
           </GreenBoxEdit>
           <div className='button-wrapper'>
             <Button
               className='button-red'
+              disabled={!isOpen}
               label='Peruuta'
               onClick={onCancel}
             />
             <Button
               className='button-green'
-              disabled={isSaveClicked && !isContactFormValid}
+              disabled={!isOpen || (isSaveClicked && !isContactFormValid)}
               label='Tallenna'
               onClick={onSave}
             />
             {showSaveAndAdd &&
               <Button
                 className='button-green'
-                disabled={isSaveClicked && !isContactFormValid}
+                disabled={!isOpen || (isSaveClicked && !isContactFormValid)}
                 label='Tallenna ja Lisää'
                 onClick={onSaveAndAdd}
               />

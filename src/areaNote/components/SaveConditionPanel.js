@@ -21,8 +21,20 @@ type State = {
 }
 
 class SaveConditionPanel extends Component<Props, State> {
+  firstField: any
+
   state = {
     note: '',
+  }
+
+  componentDidUpdate(prevProps: Props)  {
+    if(!prevProps.show && this.props.show) {
+      this.firstField.focus();
+    }
+  }
+
+  setFirstFieldRef = (element: any) => {
+    this.firstField = element;
   }
 
   setNoteField = (note: string) => {
@@ -56,6 +68,7 @@ class SaveConditionPanel extends Component<Props, State> {
                 onChange={this.handleFieldChange}
                 placeholder='Kirjoita huomautus'
                 rows={4}
+                setRefForField={this.setFirstFieldRef}
                 value={note}
               />
             </Column>

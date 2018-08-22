@@ -28,8 +28,9 @@ class CreateLease extends Component<Props> {
       >
         {isOpen &&
           <CreateLeaseForm
+            disabled={!isOpen}
             onClose={onClose}
-            onSubmit={(lease) => onSubmit(lease)}
+            onSubmit={onSubmit}
           />
         }
       </Modal>

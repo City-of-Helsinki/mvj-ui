@@ -68,13 +68,15 @@ class TopNavigation extends Component<Props, State> {
     return (
       <section className="top-navigation">
         <div className="top-navigation__left-wrapper">
-          <div
+          <button
+            className={classNames('top-navigation__menu-icon', {'open': isMenuOpen})}
             onClick={toggleSideMenu}
-            className={classNames('top-navigation__menu-icon', {'open': isMenuOpen})}>
+            tabIndex={0}
+          >
             <div className='bar1' />
             <div className='bar2' />
             <div className='bar3' />
-          </div>
+          </button>
           {/* <svg className="menuIcon" viewBox="0 0 27 27" onClick={toggleSideMenu}>
             <path d="M1.5,2.9h27v2.2h-27V2.9z M1.5,11.9h27v2.2h-27V11.9z M1.5,20.9h27v2.2h-27V20.9z"/>
           </svg> */}
@@ -105,7 +107,7 @@ class TopNavigation extends Component<Props, State> {
 
           <div className="username-wrapper">
             <p className="username">{username}</p>
-            <a className='logout-link' onClick={onLogout}>Kirjaudu ulos</a>
+            <button className='logout-link' onClick={onLogout}>Kirjaudu ulos</button>
           </div>
         </div>
       </section>

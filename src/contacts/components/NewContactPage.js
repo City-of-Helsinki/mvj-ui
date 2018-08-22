@@ -149,7 +149,7 @@ class NewContactPage extends Component<Props, State> {
           }
           {!isEmpty(attributes) &&
             <GreenBoxEdit className='no-margin'>
-              <ContactForm />
+              <ContactForm isFocusedOnMount/>
             </GreenBoxEdit>
           }
         </ContentContainer>

@@ -6,10 +6,10 @@ import {Button} from 'react-foundation';
 import {reveal} from '../foundation/reveal';
 import {Sizes} from '../foundation/enums';
 
-const ApiErrorModal = ({data, handleDismiss}) => (
+const ApiErrorModal = ({data, handleDismiss, isOpen}) => (
   <div className="api-error-modal">
     {data ? <ApiErrorContent data={data}/> : null}
-    <Button className="api-error-modal__close" size={Sizes.LARGE} onClick={handleDismiss}>Dismiss</Button>
+    <Button className="api-error-modal__close" disabled={!isOpen} size={Sizes.LARGE} onClick={handleDismiss}>Dismiss</Button>
   </div>
 );
 

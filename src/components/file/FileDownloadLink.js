@@ -54,7 +54,14 @@ const FileDownloadLink = ({
       });
   }, 1000, {leading: true});
 
-  return <a className={className} onClick={handleClick}>{label}</a>;
+  const handleKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
+  return <a className={className} onClick={handleClick} onKeyDown={handleKeyDown} tabIndex={0}>{label}</a>;
 };
 
 export default connect(

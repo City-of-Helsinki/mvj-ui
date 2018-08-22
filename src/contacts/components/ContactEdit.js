@@ -9,7 +9,7 @@ const ContactEdit = () => {
   return (
     <ContentContainer>
       <GreenBoxEdit className='no-margin'>
-        <ContactForm />
+        <ContactForm/>
       </GreenBoxEdit>
     </ContentContainer>
   );

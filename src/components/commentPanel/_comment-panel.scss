@@ -56,7 +56,7 @@
       position: relative;
       margin-bottom: rem-calc(15px);
 
-      .content-wrapper {
+      &__content-wrapper {
         padding-right: 25px;
 
         &.no-padding {
@@ -64,19 +64,27 @@
         }
       }
 
-      .comment-text {
+      &__text {
         font-size: rem-calc(14px);
         line-height: rem-calc(16px);
         margin-bottom: rem-calc(5px);
         padding-left: rem-calc(20px);
       }
 
-      .comment-info {
+      &__info {
         font-size: $font-small;
         margin-bottom: 0px;
 
-        .date {
+        &_date {
           font-weight: $semibold;
+        }
+      }
+
+      &__button-wrapper {
+        text-align: right;
+
+        .mvj-button:last-child {
+          margin-right: 0;
         }
       }
     }

@@ -24,6 +24,7 @@ type Props = {
   initialValues: Object,
   isContactFormValid: boolean,
   handleSubmit: Function,
+  isFocusedOnMount?: boolean,
   isSaveClicked: boolean,
   receiveContactFormValid: Function,
   type: ?string,
@@ -31,10 +32,23 @@ type Props = {
 }
 
 class ContactForm extends Component<Props> {
+  firstField: any
+
   componentDidMount() {
-    const {receiveContactFormValid, valid} = this.props;
+    const {isFocusedOnMount, receiveContactFormValid, valid} = this.props;
     receiveContactFormValid(valid);
+
+    if(isFocusedOnMount) {
+      this.firstField.focus();
+    }
   }
+
+  setRefForFirstField = (element: any) => {
+    if(element) {
+      this.firstField = element;
+    }
+  }
+
 
   componentDidUpdate() {
     const {isContactFormValid, receiveContactFormValid, valid} = this.props;
@@ -60,6 +74,7 @@ class ContactForm extends Component<Props> {
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'type')}
                     name='type'
+                    setRefForField={this.setRefForFirstField}
                     overrideValues={{
                       label: 'Asiakastyyppi',
                     }}

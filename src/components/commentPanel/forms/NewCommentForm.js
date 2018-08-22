@@ -13,8 +13,9 @@ import type {RootState} from '$src/root/types';
 
 type Props = {
   attributes: Object,
-  handleSubmit: Function,
+  disabled: boolean,
   onAddComment: Function,
+  setRefForFirstField: Function,
   text: string,
   topic: string,
   valid: boolean,
@@ -22,8 +23,9 @@ type Props = {
 
 const NewCommentForm = ({
   attributes,
-  handleSubmit,
+  disabled,
   onAddComment,
+  setRefForFirstField,
   text,
   topic,
   valid,
@@ -33,17 +35,20 @@ const NewCommentForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
       <FormSection>
         <FormField
+          disabled={disabled}
           disableDirty
           fieldAttributes={get(attributes, 'topic')}
           name='topic'
+          setRefForField={setRefForFirstField}
           overrideValues={{
             label: 'Aihealue',
           }}
         />
         <FormField
+          disabled={disabled}
           disableDirty
           fieldAttributes={get(attributes, 'text')}
           name='text'
@@ -54,7 +59,7 @@ const NewCommentForm = ({
         />
         <Button
           className={'button-green no-margin'}
-          disabled={!valid}
+          disabled={disabled || !valid}
           label='Kommentoi'
           onClick={handleAddComment}
           title='Kommentoi'

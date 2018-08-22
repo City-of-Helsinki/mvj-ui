@@ -213,7 +213,7 @@
   list-style: none;
   border-radius: rem-calc(4px);
 
-  &__page-item {
+  &__item {
     a {
       position: relative;
       display: block;
@@ -273,7 +273,7 @@
     }
   }
 
-  &__previous-button {
+  &__previous {
     a {
       padding: rem-calc(8px 10px);
     }

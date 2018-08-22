@@ -30,12 +30,21 @@ type Props = {
   onClose: Function,
   onSubmit: Function,
   reference_number: string,
+  setRefForFirstField?: Function,
   state: string,
   type: string,
   valid: boolean,
 }
 
 class CreateLeaseForm extends Component<Props> {
+  firstField: any
+
+  componentDidMount() {
+    if(this.firstField) {
+      this.firstField.focus();
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if(this.props.municipality !== nextProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
@@ -47,6 +56,10 @@ class CreateLeaseForm extends Component<Props> {
         change('district', '');
       }
     }
+  }
+
+  setRefForFirstField = (element: any) => {
+    this.firstField = element;
   }
 
   handleCreate = () => {
@@ -89,6 +102,7 @@ class CreateLeaseForm extends Component<Props> {
             <FormField
               fieldAttributes={get(attributes, 'state')}
               name='state'
+              setRefForField={this.setRefForFirstField}
               overrideValues={{
                 label: 'Tyyppi',
               }}

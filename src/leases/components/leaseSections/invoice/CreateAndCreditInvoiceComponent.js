@@ -46,7 +46,9 @@ type Props = {
 
 class CreateAndCreditInvoiceComponent extends Component <Props> {
   creditPanel: any
-  panel: any
+  creditPanelFirstField: any
+  createPanel: any
+  createPanelFirstField: any
 
   handleOpenCreateInvoicePanelButtonClick = () => {
     const {receiveIsCreateClicked, receiveIsCreateInvoicePanelOpen} = this.props;
@@ -54,12 +56,23 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
     receiveIsCreateInvoicePanelOpen(true);
 
     setTimeout(() => {
-      scrollToComponent(this.panel, {
+      scrollToComponent(this.createPanel, {
         offset: -70,
         align: 'top',
         duration: 450,
       });
+      this.setFocusOnCreatePanel();
     }, 50);
+  }
+
+  handleSetRefForCreatePanelFirstField = (element: any) => {
+    this.createPanelFirstField = element;
+  }
+
+  setFocusOnCreatePanel = () => {
+    if(this.createPanelFirstField) {
+      this.createPanelFirstField.focus();
+    }
   }
 
   handleCloseCreateInvoicePanel = () => {
@@ -106,7 +119,18 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
         align: 'top',
         duration: 450,
       });
+      this.setFocusOnCreditPanel();
     }, 50);
+  }
+
+  handleSetRefForCreditPanelFirstField = (element: any) => {
+    this.creditPanelFirstField = element;
+  }
+
+  setFocusOnCreditPanel = () => {
+    if(this.creditPanelFirstField) {
+      this.creditPanelFirstField.focus();
+    }
   }
 
   handleCloseCreditInvoicePanel = () => {
@@ -155,7 +179,7 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
     const isInvoiceSet = this.isInvoiceSet();
 
     return (
-      <div className='invoice__add-invoice'>
+      <div className='invoice__new-invoice'>
         <FormSection>
           <div>
             {enableCreditInvoice &&
@@ -183,14 +207,16 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
                 isInvoiceSet={isInvoiceSet}
                 onClose={this.handleCloseCreditInvoicePanel}
                 onSave={this.handleCreditInvoice}
+                setRefForFirstField={this.handleSetRefForCreditPanelFirstField}
               />
             }
           </div>
-          <div ref={(ref) => this.panel = ref}>
+          <div ref={(ref) => this.createPanel = ref}>
             {(isCreateInvoicePanelOpen && enableCreateInvoice) &&
               <NewInvoiceForm
                 onClose={this.handleCloseCreateInvoicePanel}
                 onSave={this.handleCreateInvoice}
+                setRefForFirstField={this.handleSetRefForCreatePanelFirstField}
               />
             }
           </div>

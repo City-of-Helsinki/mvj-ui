@@ -31,12 +31,14 @@ import type {Lease} from '$src/leases/types';
 
 type PaymentsProps = {
   attributes: InvoiceAttributes,
+  disabled?: boolean,
   fields: any,
   isEditClicked: boolean,
 }
 
-const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Element<*> => {
+const renderPayments = ({attributes, disabled, fields, isEditClicked}: PaymentsProps): Element<*> => {
   const handleAdd = () => fields.push({});
+
   return (
     <div>
       {!fields || !fields.length && <p>Ei maksuja</p>}
@@ -53,10 +55,12 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
       }
       {fields && !!fields.length && fields.map((payment, index) => {
         const handleRemove = () => fields.remove(index);
+
         return (
           <Row key={index}>
             <Column small={6}>
               <FormField
+                disabled={disabled}
                 disableTouched={isEditClicked}
                 fieldAttributes={get(attributes, 'payments.child.children.paid_amount')}
                 name={`${payment}.paid_amount`}
@@ -68,6 +72,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
             </Column>
             <Column small={4}>
               <FormField
+                disabled={disabled}
                 disableTouched={isEditClicked}
                 fieldAttributes={get(attributes, 'payments.child.children.paid_date')}
                 name={`${payment}.paid_date`}
@@ -79,6 +84,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
             <Column small={2}>
               <RemoveButton
                 className='third-level'
+                disabled={disabled}
                 onClick={handleRemove}
                 title="Poista maksu"
               />
@@ -100,21 +106,25 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
 };
 
 type Props = {
+  disabled?: boolean,
   handleSubmit: Function,
   invoice: Object,
   invoiceAttributes: InvoiceAttributes,
   isEditClicked: boolean,
   lease: Lease,
   onCreditedInvoiceClick: Function,
+  setRefForFirstField?: Function,
 }
 
 const EditInvoiceForm = ({
+  disabled,
   handleSubmit,
   invoice,
   invoiceAttributes,
   isEditClicked,
   lease,
   onCreditedInvoiceClick,
+  setRefForFirstField,
 }: Props) => {
   const handleCreditedInvoiceClick = () => {
     onCreditedInvoiceClick(invoice.credited_invoice);
@@ -144,9 +154,11 @@ const EditInvoiceForm = ({
       <Row>
         <Column medium={4}>
           <FormField
+            disabled={disabled}
             disableTouched={isEditClicked}
             fieldAttributes={get(invoiceAttributes, 'due_date')}
             name='due_date'
+            setRefForField={setRefForFirstField}
             overrideValues={{
               label: 'Eräpäivä',
             }}
@@ -171,6 +183,7 @@ const EditInvoiceForm = ({
           <Row>
             <Column medium={6}>
               <FormField
+                disabled={disabled}
                 disableTouched={isEditClicked}
                 fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
                 name='billing_period_start_date'
@@ -181,6 +194,7 @@ const EditInvoiceForm = ({
             </Column>
             <Column medium={6}>
               <FormField
+                disabled={disabled}
                 disableTouched={isEditClicked}
                 fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
                 name='billing_period_end_date'
@@ -199,6 +213,7 @@ const EditInvoiceForm = ({
       <Row>
         <Column medium={4}>
           <FormField
+            disabled={disabled}
             disableTouched={isEditClicked}
             fieldAttributes={get(invoiceAttributes, 'total_amount')}
             name='total_amount'
@@ -228,6 +243,7 @@ const EditInvoiceForm = ({
           <FieldArray
             attributes={invoiceAttributes}
             component={renderPayments}
+            disabled={disabled}
             isEditClicked={isEditClicked}
             name='payments'
           />

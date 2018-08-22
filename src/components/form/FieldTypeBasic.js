@@ -11,6 +11,7 @@ type Props = {
   input: Object,
   isDirty: boolean,
   placeholder: string,
+  setRefForField: Function,
   type?: string,
 }
 
@@ -23,6 +24,7 @@ const FieldTypeBasic = ({
   input: {onBlur, onChange},
   isDirty,
   placeholder,
+  setRefForField,
   type = 'text',
 }: Props) => {
   const handleChange = (e: any) => {
@@ -33,8 +35,15 @@ const FieldTypeBasic = ({
     }
   };
 
+  const handleSetRefForField = (element: any) => {
+    if(setRefForField) {
+      setRefForField(element);
+    }
+  };
+
   return (
     <input className={classNames('form-field__input', {'has-error': displayError}, {'is-dirty': isDirty})}
+      ref={handleSetRefForField}
       id={input.name}
       autoComplete={autoComplete}
       disabled={disabled}

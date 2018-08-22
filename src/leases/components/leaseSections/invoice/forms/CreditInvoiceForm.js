@@ -27,6 +27,7 @@ type Props = {
   onClose: Function,
   onSave: Function,
   receiveIsCreditClicked: Function,
+  setRefForFirstField?: Function,
   type: string,
   valid: boolean,
 }
@@ -39,6 +40,7 @@ const CreditInvoiceForm = ({
   onClose,
   onSave,
   receiveIsCreditClicked,
+  setRefForFirstField,
   type,
   valid,
 }: Props) => {
@@ -49,7 +51,7 @@ const CreditInvoiceForm = ({
   };
 
   return (
-    <form className='invoice__add-invoice_form'>
+    <form className='invoice__credit-invoice_form'>
       <FormSection>
         <WhiteBox>
           <BoxContentWrapper>
@@ -69,6 +71,7 @@ const CreditInvoiceForm = ({
                     label: 'Hyvityksen tyyppi',
                   }}
                   name='type'
+                  setRefForField={setRefForFirstField}
                   overrideValues={{
                     options: isInvoiceSet ? CreditInvoiceSetOptions : CreditInvoiceOptions,
                   }}
@@ -119,21 +122,23 @@ const CreditInvoiceForm = ({
                 />
               </Column>
             </Row>
-            <Row style={{marginBottom: '10px'}}>
+            <Row>
               <Column>
-                <Button
-                  className='button-green no-margin pull-right'
-                  disabled={isCreditClicked && !valid}
-                  label='Tallenna'
-                  onClick={handleSave}
-                  title='Tallenna'
-                />
-                <Button
-                  className='button-red pull-right'
-                  label='Peruuta'
-                  onClick={onClose}
-                  title='Peruuta'
-                />
+                <div className='button-wrapper'>
+                  <Button
+                    className='button-red'
+                    label='Peruuta'
+                    onClick={onClose}
+                    title='Peruuta'
+                  />
+                  <Button
+                    className='button-green'
+                    disabled={isCreditClicked && !valid}
+                    label='Tallenna'
+                    onClick={handleSave}
+                    title='Tallenna'
+                  />
+                </div>
               </Column>
             </Row>
           </BoxContentWrapper>

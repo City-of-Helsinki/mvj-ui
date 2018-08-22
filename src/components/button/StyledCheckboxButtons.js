@@ -4,6 +4,7 @@ import forEach from 'lodash/forEach';
 
 type Props = {
   checkboxName: string,
+  disabled?: boolean,
   onChange: Function,
   options: Array<Object>,
   selectAllButton?: boolean,
@@ -12,19 +13,6 @@ type Props = {
 }
 
 class StyledCheckboxButtons extends Component<Props> {
-  handleChange = (event: any) => {
-    const {onChange, value} = this.props;
-    const newValue = value ? [...value] : [];
-    const optionValue = event.target.value;
-
-    if (event.target.checked) {
-      newValue.push(optionValue);
-    } else {
-      newValue.splice(newValue.indexOf(optionValue), 1);
-    }
-    onChange(newValue);
-  }
-
   areAllOptionsSelected = () => {
     const {options, value} = this.props;
 
@@ -38,52 +26,98 @@ class StyledCheckboxButtons extends Component<Props> {
     return allSelected;
   }
 
+  handleSelectAllClick = () => {
+    const areAllSelected = this.areAllOptionsSelected();
+
+    if(!areAllSelected) {
+      this.selectAll();
+    } else {
+      this.unselectAll();
+    }
+  }
+
+  handleSelectAllKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      this.handleSelectAllClick();
+    }
+  };
+
   unselectAll = () => {
     const {onChange} = this.props;
     onChange([]);
   }
 
   selectAll = () => {
-    const {onChange, options} = this.props;
-    const newValues = [];
+    const {onChange, options} = this.props,
+      newValues = [];
+
     forEach(options, (option) => {
       newValues.push(option.value.toString());
     });
-
     onChange(newValues);
   }
 
   render () {
-    const {checkboxName, options, selectAllButton, selectAllButtonLabel = 'Kaikki', value} = this.props;
+    const {checkboxName, disabled, options, selectAllButton, selectAllButtonLabel = 'Kaikki', value} = this.props;
     const areAllSelected = this.areAllOptionsSelected();
 
     return (
       <div className='styled-checkbox-buttons'>
         {selectAllButton &&
-          <label className='label select-all'>
+          <label
+            aria-checked={areAllSelected}
+            aria-label='Valitse kaikki'
+            className='label select-all'
+            onKeyDown={this.handleSelectAllKeyDown}
+            tabIndex={disabled ? undefined : 0}
+          >
             <input
               checked={areAllSelected}
               className='checkbox'
-              onChange={() => {
-                if(!areAllSelected) {
-                  this.selectAll();
-                } else {
-                  this.unselectAll();
-                }
-              }}
+              onKeyDown={this.handleSelectAllKeyDown}
               type='checkbox'
             />
             <span className='option-label'>{selectAllButtonLabel}</span>
           </label>
         }
         {options.map((option, index) => {
+          const handleChange = () => {
+            const {onChange, value} = this.props,
+              newValue = value ? [...value] : [],
+              optionValue = option.value;
+
+            if (newValue.indexOf(optionValue) === -1) {
+              newValue.push(optionValue);
+            } else {
+              newValue.splice(newValue.indexOf(optionValue), 1);
+            }
+            onChange(newValue);
+          };
+
+          const handleKeyDown = (e: any) => {
+            if(e.keyCode === 13) {
+              e.preventDefault();
+              handleChange();
+            }
+          };
+
+          const isChecked = value ? value.toString().indexOf(option.value.toString()) !== -1 : false;
+
           return (
-            <label className='label' key={index}>
+            <label
+              key={index}
+              aria-checked={isChecked}
+              aria-label={option.label}
+              tabIndex={disabled ? undefined : 0}
+              onKeyDown={handleKeyDown}
+              className='label'
+            >
               <input
                 className='checkbox'
-                checked={value ? value.toString().indexOf(option.value.toString()) !== -1 : false}
+                checked={isChecked}
                 name={checkboxName}
-                onChange={this.handleChange}
+                onChange={handleChange}
                 type='checkbox'
                 value={option.value}
               />

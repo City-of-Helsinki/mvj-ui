@@ -24,12 +24,23 @@ import type {Attributes, InfillDevelopment} from '$src/infillDevelopment/types';
 type Props = {
   attributes: Attributes,
   infillDevelopment: InfillDevelopment,
+  isFocusedOnMount?: boolean,
   isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 };
 
 class InfillDevelopmentForm extends Component<Props> {
+  firstField: any
+
+  componentDidMount() {
+    const {isFocusedOnMount} = this.props;
+
+    if(isFocusedOnMount) {
+      this.setFocusOnFirstField();
+    }
+  }
+
   componentDidUpdate(prevProps) {
     const {receiveFormValidFlags} = this.props;
 
@@ -38,6 +49,14 @@ class InfillDevelopmentForm extends Component<Props> {
         [FormNames.INFILL_DEVELOPMENT]: this.props.valid,
       });
     }
+  }
+
+  setRefForFirstField = (element: any) => {
+    this.firstField = element;
+  }
+
+  setFocusOnFirstField = () => {
+    this.firstField.focus();
   }
 
   render() {
@@ -52,6 +71,7 @@ class InfillDevelopmentForm extends Component<Props> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'name')}
                 name='name'
+                setRefForField={this.setRefForFirstField}
                 overrideValues={{
                   label: 'Hankkeen nimi',
                 }}

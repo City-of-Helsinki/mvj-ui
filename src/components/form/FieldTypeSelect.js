@@ -11,6 +11,7 @@ type Props = {
   isDirty: boolean,
   options: ?Array<any>,
   placeholder: String,
+  setRefForField: Function,
 }
 
 const arrowRenderer = () => {
@@ -28,6 +29,7 @@ const FieldTypeSelect = ({
   isDirty,
   options,
   placeholder,
+  setRefForField,
 }: Props) => {
 
   const handleBlur = () => {
@@ -46,9 +48,16 @@ const FieldTypeSelect = ({
     }
   };
 
+  const handleSetRefForField = (element: any) => {
+    if(setRefForField) {
+      setRefForField(element);
+    }
+  };
+
   return (
     <Select
       {...input}
+      ref={handleSetRefForField}
       className={classNames('form-field__select', {'has-error': displayError}, {'is-dirty': isDirty})}
       arrowRenderer={arrowRenderer}
       autosize={false}

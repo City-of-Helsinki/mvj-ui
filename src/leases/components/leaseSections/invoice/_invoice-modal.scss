@@ -50,5 +50,10 @@
     left: 0;
     width: 100%;
     padding: rem-calc(10px) rem-calc(15px) rem-calc(15px);
+    text-align: right;
+
+    .mvj-button:last-child {
+      margin-right: 0;
+    }
   }
 }
