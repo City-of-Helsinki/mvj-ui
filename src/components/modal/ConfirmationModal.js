@@ -50,12 +50,13 @@ class ConfirmationModal extends Component<Props> {
         >
           <p>{label}</p>
           <div className='confirmation-modal__footer'>
-            <button
-              ref={this.setCancelButtonRef}
-              className='mvj-button button-red'
+            <Button
+              className='button-red'
+              innerRef={this.setCancelButtonRef}
+              label='Peruuta'
               onClick={onCancel}
               title='Peruuta'
-            >Peruuta</button>
+            />
             <Button
               className='button-green'
               label={confirmButtonLabel}

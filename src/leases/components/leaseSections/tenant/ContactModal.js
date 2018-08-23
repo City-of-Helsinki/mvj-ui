@@ -52,20 +52,19 @@ const ContactModal = ({
           <div className='button-wrapper'>
             <Button
               className='button-red'
-              disabled={!isOpen}
               label='Peruuta'
               onClick={onCancel}
             />
             <Button
               className='button-green'
-              disabled={!isOpen || (isSaveClicked && !isContactFormValid)}
+              disabled={isSaveClicked && !isContactFormValid}
               label='Tallenna'
               onClick={onSave}
             />
             {showSaveAndAdd &&
               <Button
                 className='button-green'
-                disabled={!isOpen || (isSaveClicked && !isContactFormValid)}
+                disabled={isSaveClicked && !isContactFormValid}
                 label='Tallenna ja Lisää'
                 onClick={onSaveAndAdd}
               />

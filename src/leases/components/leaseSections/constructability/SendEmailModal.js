@@ -92,7 +92,6 @@ class SendEmailModal extends Component<Props, State> {
       >
         <p>Valitse sähköpostitiedotteen vastaanottajat</p>
         <DualListBoxInput
-          disabled={!isOpen}
           onChange={this.onChange}
           options={userOptions}
           selected={selected}
@@ -101,14 +100,13 @@ class SendEmailModal extends Component<Props, State> {
         <div className='constructability__send-email-modal_footer'>
           <Button
             className='button-red'
-            disabled={!isOpen}
             label='Peruuta'
             onClick={onCancel}
             title='Peruuta'
           />
           <Button
             className='button-green'
-            disabled={!isOpen || !selected.length}
+            disabled={!selected.length}
             label='Lähetä'
             onClick={onSend}
             title='Lähetä sähköpostitiedote'
