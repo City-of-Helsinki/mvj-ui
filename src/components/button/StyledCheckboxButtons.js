@@ -65,7 +65,6 @@ class StyledCheckboxButtons extends Component<Props> {
       <div className='styled-checkbox-buttons'>
         {selectAllButton &&
           <label
-            aria-checked={areAllSelected}
             aria-label='Valitse kaikki'
             className='label select-all'
             onKeyDown={this.handleSelectAllKeyDown}
@@ -106,7 +105,6 @@ class StyledCheckboxButtons extends Component<Props> {
           return (
             <label
               key={index}
-              aria-checked={isChecked}
               aria-label={option.label}
               tabIndex={0}
               onKeyDown={handleKeyDown}

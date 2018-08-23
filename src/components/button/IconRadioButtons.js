@@ -31,7 +31,7 @@ class StyledRadioButtons extends Component<Props> {
 
           return (
             <label className='option' key={index}>
-              <label aria-checked={isChecked} aria-label={option.label} className='label' onKeyDown={handleKeyDown} tabIndex={0}>
+              <label aria-label={option.label} className='label' onKeyDown={handleKeyDown} tabIndex={0}>
                 <input className='radio' type='radio' name={radioName} checked={isChecked} value={option.value} onChange={handleChange} />
                 <span className='option-label'>{option.label}</span>
                 {option.icon}
