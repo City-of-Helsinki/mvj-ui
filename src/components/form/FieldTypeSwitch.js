@@ -21,11 +21,15 @@ const FieldTypeSwitch = ({
     return onChange(value ? false : true);
   };
 
+  const handleKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      handleChange();
+    }
+  };
+
   return (
-    <div className={classNames(
-      `form-field__switch`,
-      {'has-error': displayError},
-      {'is-dirty': isDirty})}>
+    <div className={classNames(`form-field__switch`, {'has-error': displayError}, {'is-dirty': isDirty})}>
       {optionLabel && <label className={classNames('switch-option-label', {'label-off': !value})}>{optionLabel}</label>}
       <div className="switch">
         <input
@@ -36,7 +40,13 @@ const FieldTypeSwitch = ({
           onChange={handleChange}
           value={value}
         />
-        <div className="slider" onClick={handleChange}></div>
+        <div
+          aria-label={optionLabel}
+          className="slider"
+          onClick={handleChange}
+          onKeyDown={handleKeyDown}
+          tabIndex={0}
+        ></div>
       </div>
     </div>
   );

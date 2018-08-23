@@ -112,6 +112,7 @@ type Props = {
   onSave: Function,
   receiveIsCreateClicked: Function,
   recipient: string,
+  setRefForFirstField?: Function,
   valid: boolean,
 }
 
@@ -125,6 +126,7 @@ const NewInvoiceForm = ({
   onSave,
   receiveIsCreateClicked,
   recipient,
+  setRefForFirstField,
   valid,
 }: Props) => {
   const handleSave = () => {
@@ -140,7 +142,7 @@ const NewInvoiceForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className='invoice__add-invoice_form'>
+    <form onSubmit={handleSubmit} className='invoice__new-invoice_form'>
       <FormSection>
         <WhiteBox>
           <BoxContentWrapper>
@@ -156,6 +158,7 @@ const NewInvoiceForm = ({
                   disableTouched={isCreateClicked}
                   fieldAttributes={get(invoiceAttributes, 'recipient')}
                   name='recipient'
+                  setRefForField={setRefForFirstField}
                   overrideValues={{
                     label: 'Vuokralainen',
                     options: recipientOptions,
@@ -209,21 +212,23 @@ const NewInvoiceForm = ({
               isCreateClicked={isCreateClicked}
               name='rows'
             />
-            <Row style={{marginBottom: '10px'}}>
+            <Row>
               <Column>
-                <Button
-                  className='button-green no-margin pull-right'
-                  disabled={isCreateClicked && !valid}
-                  label='Tallenna'
-                  onClick={handleSave}
-                  title='Tallenna'
-                />
-                <Button
-                  className='button-red pull-right'
-                  label='Peruuta'
-                  onClick={onClose}
-                  title='Peruuta'
-                />
+                <div className='button-wrapper'>
+                  <Button
+                    className='button-red'
+                    label='Peruuta'
+                    onClick={onClose}
+                    title='Peruuta'
+                  />
+                  <Button
+                    className='button-green'
+                    disabled={isCreateClicked && !valid}
+                    label='Tallenna'
+                    onClick={handleSave}
+                    title='Tallenna'
+                  />
+                </div>
               </Column>
             </Row>
           </BoxContentWrapper>

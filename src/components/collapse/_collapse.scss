@@ -166,6 +166,7 @@
     overflow: hidden;
     position: relative;
     padding: 0;
+    display: none;
   }
 
   &__content-wrapper {
@@ -183,6 +184,7 @@
     .collapse__content {
       height: auto;
       overflow: visible;
+      display: inherit;
     }
   }
 
@@ -196,6 +198,7 @@
     .collapse__content {
       @include transition(0.4s, max-height, ease);
       overflow: hidden;
+      display: inherit;
     }
 
     .collapse__header {

@@ -40,8 +40,17 @@ const SortableTableBodyRow = ({
     clearTimeout(buttonPressTimer);
   };
 
+  const handleKeyUp = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      handleRowClick();
+    }
+  };
+
   return (
     <tr
+      tabIndex={onRowClick ? 0 : undefined}
+      onKeyUp={handleKeyUp}
       className={classNames({'selected': selectedRow && selectedRow.id === row.id})}
       onTouchStart={handleButtonPress}
       onTouchEnd={handleButtonRelease}

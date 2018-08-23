@@ -30,12 +30,15 @@ type Props = {
   onClose: Function,
   onSubmit: Function,
   reference_number: string,
+  setRefForFirstField?: Function,
   state: string,
   type: string,
   valid: boolean,
 }
 
 class CreateLeaseForm extends Component<Props> {
+  firstField: any
+
   componentWillReceiveProps(nextProps) {
     if(this.props.municipality !== nextProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
@@ -46,6 +49,16 @@ class CreateLeaseForm extends Component<Props> {
       } else {
         change('district', '');
       }
+    }
+  }
+
+  setRefForFirstField = (element: any) => {
+    this.firstField = element;
+  }
+
+  setFocus = () => {
+    if(this.firstField) {
+      this.firstField.focus();
     }
   }
 
@@ -89,6 +102,7 @@ class CreateLeaseForm extends Component<Props> {
             <FormField
               fieldAttributes={get(attributes, 'state')}
               name='state'
+              setRefForField={this.setRefForFirstField}
               overrideValues={{
                 label: 'Tyyppi',
               }}
@@ -188,7 +202,9 @@ export default flowRight(
     {
       change,
       fetchDistrictsByMunicipality,
-    }
+    },
+    null,
+    {withRef: true}
   ),
   reduxForm({
     form: formName,

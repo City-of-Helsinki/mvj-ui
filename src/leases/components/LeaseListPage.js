@@ -69,6 +69,8 @@ type State = {
 }
 
 class LeaseListPage extends Component<Props, State> {
+  firstLeaseModalField: any
+
   state = {
     activePage: 1,
     documentType: [],
@@ -136,13 +138,9 @@ class LeaseListPage extends Component<Props, State> {
   }
 
   showCreateLeaseModal = () => {
-    const {initialize} = this.props;
-
     this.setState({
       isModalOpen: true,
     });
-
-    initialize(FormNames.CREATE_LEASE, {});
   }
 
   hideCreateLeaseModal = () => {

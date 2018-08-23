@@ -12,6 +12,18 @@ type Props = {
 }
 
 class CreateLease extends Component<Props> {
+  form: any
+
+  componentDidUpdate(prevProps: Props) {
+    if(!prevProps.isOpen && this.props.isOpen) {
+      this.form.getWrappedInstance().wrappedInstance.setFocus();
+    }
+  }
+
+  setRefForForm = (element: any) => {
+    this.form = element;
+  }
+
   render () {
     const {
       isOpen,
@@ -26,12 +38,11 @@ class CreateLease extends Component<Props> {
         onClose={onClose}
         title='Luo vuokratunnus'
       >
-        {isOpen &&
-          <CreateLeaseForm
-            onClose={onClose}
-            onSubmit={(lease) => onSubmit(lease)}
-          />
-        }
+        <CreateLeaseForm
+          ref={this.setRefForForm}
+          onClose={onClose}
+          onSubmit={onSubmit}
+        />
       </Modal>
     );
   }

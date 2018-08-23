@@ -76,6 +76,7 @@ type InputProps = {
   placeholder?: string,
   required: boolean,
   rows?: number,
+  setRefForField?: Function,
   unit?: string,
 }
 
@@ -97,6 +98,7 @@ const FormFieldInput = ({
   placeholder,
   required,
   rows,
+  setRefForField,
   unit,
 }: InputProps) => {
   const displayError = meta.error && (disableTouched || meta.touched);
@@ -108,7 +110,7 @@ const FormFieldInput = ({
     <div className={classNames('form-field', className)}>
       {label && <label className="form-field__label" htmlFor={input.name} title={label ? `${label}${required ? ' *' : ''}` : ''}>{label}{required &&<i className='required'> *</i>}</label>}
       <div className={classNames('form-field__component', {'has-unit': unit})}>
-        {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, type})}
+        {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, setRefForField, type})}
         {unit && <span className='form-field__unit'>{unit}</span>}
       </div>
       {displayError && <ErrorComponent {...meta}/>}
@@ -131,6 +133,7 @@ type Props = {
   overrideValues?: Object,
   placeholder?: string,
   rows?: number,
+  setRefForField?: Function,
   validate?: Function,
   unit?: string,
 }
@@ -204,6 +207,7 @@ class FormField extends PureComponent<Props, State> {
       overrideValues,
       placeholder,
       rows,
+      setRefForField,
       unit,
     } = this.props;
     const {
@@ -233,6 +237,7 @@ class FormField extends PureComponent<Props, State> {
         placeholder={placeholder}
         required={required}
         rows={rows}
+        setRefForField={setRefForField}
         validate={[
           this.handleGenericValidate,
           this.handleValidate,

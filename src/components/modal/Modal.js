@@ -1,6 +1,8 @@
 // @flow
-import React from 'react';
+import React, {Component} from 'react';
 import classnames from 'classnames';
+
+import CloseButton from '../button/CloseButton';
 
 type Props = {
   children?: any,
@@ -10,29 +12,82 @@ type Props = {
   title: string,
 }
 
-const Modal = ({
-  children,
-  className,
-  isOpen,
-  onClose,
-  title,
-}: Props) => {
+type State = {
+  isClosing: boolean,
+  isOpening: boolean,
+}
 
-  return (
-    <div className={classnames('modal', className, {'modal-open': isOpen})}>
-      <div className='modal__overlay'></div>
-      <div className='modal__wrapper'>
+class Modal extends Component<Props, State> {
+  component: any
 
-        <div className='modal__header'>
-          <h1 className='title'>{title}</h1>
-          <button type='button' className='close-button' onClick={onClose}><svg viewBox="0 0 30 30"><path d="M5.16,3.47,15,13.38l9.84-9.91,1.69,1.69L16.62,15l9.91,9.84-1.69,1.69L15,16.62,5.16,26.53,3.47,24.84,13.38,15,3.47,5.16Z"/></svg></button>
-        </div>
-        <div className='modal__content'>
-          {children}
+  state = {
+    isClosing: false,
+    isOpening: false,
+  }
+
+  componentDidMount() {
+    this.component.addEventListener('transitionend', this.transitionEnds);
+  }
+
+  componentWillUnmount() {
+    this.component.removeEventListener('transitionend', this.transitionEnds);
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if(!prevProps.isOpen && this.props.isOpen) {
+      this.setState({
+        isOpening: true,
+      });
+    } else if(prevProps.isOpen && !this.props.isOpen) {
+      this.setState({
+        isClosing: true,
+      });
+    }
+  }
+
+  setComponentRef = (element: any) => {
+    this.component = element;
+  }
+
+  transitionEnds = () => {
+    this.setState({
+      isClosing: false,
+      isOpening: false,
+    });
+  }
+
+  render() {
+    const {
+      children,
+      className,
+      isOpen,
+      onClose,
+      title,
+    } = this.props;
+    const {isClosing, isOpening} = this.state;
+
+    return (
+      <div ref={this.setComponentRef} className={classnames('modal', className, {'modal-open': isOpen})}>
+        <div className='modal__overlay'></div>
+        <div className='modal__wrapper'>
+
+          <div className='modal__header' hidden={!isOpen && !isClosing && !isOpening}>
+            <div className='modal__header_wrapper'>
+              <h1 className='title'>{title}</h1>
+              <CloseButton
+                className='position-topright'
+                onClick={onClose}
+                title='Sulje'
+              />
+            </div>
+          </div>
+          <div className='modal__content' hidden={!isOpen && !isClosing && !isOpening}>
+            {children}
+          </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
 export default Modal;

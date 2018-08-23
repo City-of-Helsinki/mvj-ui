@@ -262,17 +262,36 @@ type Props = {
   attributes: Attributes,
   handleSubmit: Function,
   initialValues: Object,
+  isFocusedOnMount?: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
   receiveFormValid: Function,
   valid: boolean,
 }
 class RentBasisForm extends Component<Props> {
+  firstField: any
+
+  componentDidMount() {
+    const {isFocusedOnMount} = this.props;
+
+    if(isFocusedOnMount) {
+      this.setFocusOnFirstField();
+    }
+  }
+
   componentDidUpdate() {
     const {isFormValid, receiveFormValid, valid} = this.props;
     if(isFormValid !== valid) {
       receiveFormValid(valid);
     }
+  }
+
+  setRefForFirstField = (element: any) => {
+    this.firstField = element;
+  }
+
+  setFocusOnFirstField = () => {
+    this.firstField.focus();
   }
 
   render() {
@@ -287,6 +306,7 @@ class RentBasisForm extends Component<Props> {
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'plot_type')}
                 name='plot_type'
+                setRefForField={this.setRefForFirstField}
                 overrideValues={{
                   label: 'Tonttityyppi',
                 }}

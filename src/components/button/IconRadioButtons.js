@@ -9,25 +9,34 @@ type Props = {
 }
 
 class StyledRadioButtons extends Component<Props> {
-  handleChange = (event: any) => {
-    const {onChange} = this.props;
-    onChange(event.target.value);
-  }
-
   render () {
     const {radioName, options, value} = this.props;
 
     return (
       <div className='icon-radio-buttons'>
         {options.map((option, index) => {
+          const handleChange = () => {
+            const {onChange} = this.props;
+            onChange(option.value);
+          };
+
+          const handleKeyDown = (e: any) => {
+            if(e.keyCode === 13) {
+              e.preventDefault();
+              handleChange();
+            }
+          };
+
+          const isChecked = (value === option.value);
+
           return (
-            <div className='option' key={index}>
-              <label className='label'>
-                <input className='radio' type='radio' name={radioName} checked={value === option.value} value={option.value} onChange={this.handleChange} />
+            <label className='option' key={index}>
+              <label aria-label={option.label} className='label' onKeyDown={handleKeyDown} tabIndex={0}>
+                <input className='radio' type='radio' name={radioName} checked={isChecked} value={option.value} onChange={handleChange} />
                 <span className='option-label'>{option.label}</span>
                 {option.icon}
               </label>
-            </div>
+            </label>
           );
         })}
       </div>

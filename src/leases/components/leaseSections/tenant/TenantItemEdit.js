@@ -125,6 +125,13 @@ const TenantItemEdit = ({
     showContactModal();
   };
 
+  const handleAddKeyDown = (e:any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      handleAddClick();
+    }
+  };
+
   const handleEditClick = () => {
     initializeContactForm({...contact});
     receiveContactModalSettings({
@@ -186,7 +193,7 @@ const TenantItemEdit = ({
                   </Column>
                   <Column small={3} medium={4} large={4}>
                     <div className='contact-buttons-wrapper'>
-                      <a onClick={handleAddClick}>Luo asiakas</a>
+                      <a onKeyDown={handleAddKeyDown} onClick={handleAddClick} tabIndex={0}>Luo asiakas</a>
                     </div>
                   </Column>
                 </Row>

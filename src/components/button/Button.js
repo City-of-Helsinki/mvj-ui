@@ -5,6 +5,7 @@ import classNames from 'classnames';
 type Props = {
   className?: string,
   disabled?: boolean,
+  innerRef?: Function,
   label: string,
   onClick: Function,
   style?: Object,
@@ -13,9 +14,10 @@ type Props = {
 
 }
 
-const Button = ({className, disabled, label, onClick, style, title, type = 'button'}: Props) => {
+const Button = ({className, disabled, innerRef, label, onClick, style, title, type = 'button'}: Props) => {
   return (
     <button
+      ref={innerRef}
       className={classNames('mvj-button', className)}
       onClick={onClick}
       disabled={disabled}

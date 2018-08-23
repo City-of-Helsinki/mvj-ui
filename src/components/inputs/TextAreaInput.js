@@ -8,12 +8,14 @@ type Props = {
   onChange: Function,
   placeholder?: string,
   rows?: number,
+  setRefForField?: Function,
   value: string,
 }
 
-const TextAreaInput = ({className, disabled, onChange, placeholder = '', rows = 3, value = ''}: Props) => {
+const TextAreaInput = ({className, disabled, onChange, placeholder = '', rows = 3, setRefForField, value = ''}: Props) => {
   return (
     <textarea
+      ref={setRefForField}
       className={classNames('text-area-input', className)}
       disabled={disabled}
       onChange={onChange}

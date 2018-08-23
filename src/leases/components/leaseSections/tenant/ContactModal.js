@@ -46,9 +46,8 @@ const ContactModal = ({
             className='no-margin'
           >
             {isOpen &&
-              <ContactForm />
+              <ContactForm isFocusedOnMount/>
             }
-
           </GreenBoxEdit>
           <div className='button-wrapper'>
             <Button

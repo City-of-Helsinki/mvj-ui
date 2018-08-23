@@ -10,6 +10,7 @@ type Props = {
   input: Object,
   isDirty: boolean,
   placeholder?: string,
+  setRefForField?: Function,
 }
 
 const FieldTypeDatePicker = ({
@@ -18,19 +19,28 @@ const FieldTypeDatePicker = ({
   input: {onBlur, onChange, value},
   isDirty = false,
   placeholder,
+  setRefForField,
 }: Props) => {
   let datePicker;
+
+  const handleSetReference = (element: any) => {
+    datePicker = element;
+    if(setRefForField) {
+      setRefForField(element);
+    }
+  };
 
   const handleBlur = (e: any) => {
     if(e && e.target.value) {
       const date = moment(e.target.value, ['DDMMYYYY', 'DD.MM.YYYY']);
+
+      if(datePicker) {
+        datePicker.setSelected(date.toISOString() || value);
+      }
       if(date.toISOString()) {
         return onBlur(date.toISOString());
       }
-      if(datePicker) {
-        datePicker.setSelected(value);
-      }
-      return onChange(value && moment(value).toISOString() || null);
+      return onBlur(value);
     } else {
       onBlur(null);
     }
@@ -63,7 +73,7 @@ const FieldTypeDatePicker = ({
         dateFormat='DD.MM.YYYY'
         allowSameDay={false}
         disabledKeyboardNavigation
-        ref={(ref) => datePicker = ref}
+        ref={handleSetReference}
       />
     </div>
   );

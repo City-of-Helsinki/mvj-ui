@@ -80,6 +80,7 @@ class Collapse extends PureComponent<Props, State> {
   handleToggle = () => {
     const {onToggle} = this.props;
     const {isOpen} = this.state;
+
     if(isOpen) {
       this.setState({
         isCollapsing: true,
@@ -95,6 +96,13 @@ class Collapse extends PureComponent<Props, State> {
     }
     if(onToggle) {
       onToggle(!isOpen);
+    }
+  };
+
+  handleKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      this.handleToggle();
     }
   };
 
@@ -129,7 +137,9 @@ class Collapse extends PureComponent<Props, State> {
               {headerTitle &&
                 <Column>
                   <a
+                    tabIndex={0}
                     className='header-info-link'
+                    onKeyDown={this.handleKeyDown}
                     onClick={this.handleToggle}>
                     {headerTitle}
                   </a>
@@ -153,7 +163,9 @@ class Collapse extends PureComponent<Props, State> {
           style={{maxHeight: contentHeight}}>
           <div
             ref={(ref) => this.content = ref}
-            className="collapse__content-wrapper">
+            className="collapse__content-wrapper"
+            hidden={!isOpen && !isCollapsing && !isExpanding}
+          >
             <ReactResizeDetector
               handleHeight
               onResize={this.onResize}

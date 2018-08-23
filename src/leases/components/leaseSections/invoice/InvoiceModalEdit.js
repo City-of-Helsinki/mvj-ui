@@ -14,45 +14,105 @@ import {receiveIsEditClicked} from '$src/invoices/actions';
 import {FormNames} from '$src/leases/enums';
 import {getIsEditClicked} from '$src/invoices/selectors';
 
-const ARROW_UP_KEY = 38;
-const ARROW_DOWN_KEY = 40;
+const ARROW_LEFT_KEY = 37;
+const ARROW_RIGHT_KEY = 39;
 
 type Props = {
   containerHeight: ?number,
   editedInvoice: Object,
   invoice: Object,
   isEditClicked: boolean,
+  isOpen: boolean,
   isValid: boolean,
   minHeight?: number,
   onClose: Function,
-  onKeyCodeDown: Function,
-  onKeyCodeUp: Function,
+  onKeyCodeRight: Function,
+  onKeyCodeLeft: Function,
   onCreditedInvoiceClick: Function,
   onResize: Function,
   onSave: Function,
   receiveIsEditClicked: Function,
-  show: boolean,
 }
 
-class InvoiceModalEdit extends Component<Props> {
+type State = {
+  isClosing: boolean,
+  isOpening: boolean,
+}
+
+class InvoiceModalEdit extends Component<Props, State> {
+  closeButton: any
+  invoiceFormFirstField: any
   modal: any
+
+  state = {
+    isClosing: false,
+    isOpening: false,
+  }
+
   componentDidMount() {
     const {receiveIsEditClicked} = this.props;
 
     receiveIsEditClicked(false);
     document.addEventListener('keydown', this.handleKeyDown);
+    this.modal.addEventListener('transitionend', this.transitionEnds);
   }
 
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
+    this.modal.removeEventListener('transitionend', this.transitionEnds);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if(prevProps.invoice !== this.props.invoice) {
       const {receiveIsEditClicked} = this.props;
 
       receiveIsEditClicked(false);
+    }
+    if(!prevProps.isOpen && this.props.isOpen) {
+      this.setState({
+        isOpening: true,
+      });
+    } else if(prevProps.isOpen && !this.props.isOpen) {
+      this.setState({
+        isClosing: true,
+      });
+    }
+  }
+
+  transitionEnds = () => {
+    this.setState({
+      isClosing: false,
+      isOpening: false,
+    });
+  }
+
+  setFocus = () => {
+    const {invoice} = this.props;
+    if(!invoice || !invoice.sap_id) {
+      this.setFocusOnInvoiceForm();
+    } else {
+      this.setFocusOnCloseButton();
+    }
+  }
+
+  setCloseButtonReference = (element: any) => {
+    this.closeButton = element;
+  }
+
+  setFocusOnCloseButton = () => {
+    if(this.closeButton) {
+      this.closeButton.focus();
+    }
+  }
+
+  handleSetRefForInvoiceFormFirstField = (element: any) => {
+    this.invoiceFormFirstField = element;
+  }
+
+  setFocusOnInvoiceForm = () => {
+    if(this.invoiceFormFirstField) {
+      this.invoiceFormFirstField.setFocus();
     }
   }
 
@@ -72,15 +132,15 @@ class InvoiceModalEdit extends Component<Props> {
   }
 
   handleKeyDown = (e: any) => {
-    const {onKeyCodeDown, onKeyCodeUp} = this.props;
+    const {onKeyCodeRight, onKeyCodeLeft} = this.props;
 
     switch(e.keyCode) {
-      case ARROW_DOWN_KEY:
-        onKeyCodeDown();
+      case ARROW_RIGHT_KEY:
+        onKeyCodeRight();
         e.preventDefault();
         break;
-      case ARROW_UP_KEY:
-        onKeyCodeUp();
+      case ARROW_LEFT_KEY:
+        onKeyCodeLeft();
         e.preventDefault();
         break;
       default:
@@ -92,16 +152,17 @@ class InvoiceModalEdit extends Component<Props> {
     const {
       invoice,
       isEditClicked,
+      isOpen,
       isValid,
       minHeight,
       onClose,
       onCreditedInvoiceClick,
-      show,
     } = this.props;
+    const {isClosing, isOpening} = this.state;
 
     return (
       <div
-        className={classNames('invoice-modal', {'is-open': show})}
+        className={classNames('invoice-modal', {'is-open': isOpen})}
         ref={(ref) => this.modal = ref}
       >
         <ReactResizeDetector
@@ -110,7 +171,7 @@ class InvoiceModalEdit extends Component<Props> {
           refreshMode='debounce'
           refreshRate={1}
         />
-        <div className="invoice-modal__container" style={{minHeight: minHeight}}>
+        <div className="invoice-modal__container" style={{minHeight: minHeight}} hidden={!isOpen && !isClosing && !isOpening}>
           <div className='invoice-modal__header'>
             <h1>Laskun tiedot</h1>
             <CloseButton
@@ -121,41 +182,38 @@ class InvoiceModalEdit extends Component<Props> {
           </div>
 
           <div className="invoice-modal__body with-footer">
-            {show &&
-              <div>
-                {(!invoice || !invoice.sap_id)
-                  ? (
-                    <EditInvoiceForm
-                      invoice={invoice}
-                      initialValues={{...invoice}}
-                      onCreditedInvoiceClick={onCreditedInvoiceClick}
-                    />
-                  ) : (
-                    <InvoiceTemplate
-                      invoice={invoice}
-                      onCreditedInvoiceClick={onCreditedInvoiceClick}
-                    />
-                  )
-                }
-              </div>
+            {(!invoice || !invoice.sap_id)
+              ? (
+                <EditInvoiceForm
+                  invoice={invoice}
+                  initialValues={{...invoice}}
+                  onCreditedInvoiceClick={onCreditedInvoiceClick}
+                  setRefForFirstField={this.handleSetRefForInvoiceFormFirstField}
+                />
+              ) : (
+                <InvoiceTemplate
+                  invoice={invoice}
+                  onCreditedInvoiceClick={onCreditedInvoiceClick}
+                />
+              )
             }
           </div>
           <div className='invoice-modal__footer'>
             {(!invoice || !invoice.sap_id) &&
               <Button
-                className="button-green no-margin pull-right"
-                disabled={isEditClicked && !isValid}
-                label='Tallenna'
-                onClick={this.handleSave}
-                title='Tallenna'
+                className="button-red"
+                label='Peruuta'
+                onClick={onClose}
+                title='Peruuta'
               />
             }
             {(!invoice || !invoice.sap_id) &&
               <Button
-                className="button-red pull-right"
-                label='Peruuta'
-                onClick={onClose}
-                title='Peruuta'
+                className="button-green"
+                disabled={isEditClicked && !isValid}
+                label='Tallenna'
+                onClick={this.handleSave}
+                title='Tallenna'
               />
             }
           </div>

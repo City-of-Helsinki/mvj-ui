@@ -128,6 +128,14 @@ const TableBodyRow = ({
     buttonPressTimer = setTimeout(() => {isLongPress = true;}, 1000);
   };
 
+  const handleKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      handleRowClick();
+    }
+  };
+
+
   const handleButtonRelease = () => {
     if(!isLongPress && isClicked) {handleRowClick();}
 
@@ -138,6 +146,8 @@ const TableBodyRow = ({
   return (
     <tr
       className={classNames({'selected': selectedRow && selectedRow.id === row.data.id, 'has-group': hasGroup})}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
     >
       <td colSpan={hasGroup ? 2 : 1}>
         <input type="radio" value={`invoice_${row.data.id}`}
@@ -418,7 +428,9 @@ class InvoiceTable extends Component<Props, State> {
       <div className={'table__fixed-header'}>
         <div
           className={'table__fixed-header_wrapper'}
-          style={{maxHeight: maxHeight}}>
+          style={{maxHeight: maxHeight}}
+          tabIndex={-1}
+        >
           <div className="table__fixed-header_header-border" />
           {isLoading &&
             <div className='invoice__invoice-table_loader-wrapper'><Loader isLoading={true} /></div>

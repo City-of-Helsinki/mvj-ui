@@ -8,6 +8,7 @@ type Props = {
   onChange: Function,
   options: Array<Object>,
   selected: Array<string>,
+  setAvailabelReference?: Function,
 }
 
 const DualListBoxInput = ({
@@ -16,9 +17,11 @@ const DualListBoxInput = ({
   onChange,
   options,
   selected,
+  setAvailabelReference,
 }: Props) => {
   return (
     <DualListBox
+      availableRef={setAvailabelReference}
       className={className}
       disabled={disabled}
       onChange={onChange}

@@ -34,7 +34,7 @@ class ShowMore extends PureComponent {
   checkOverflow = (textOverFlow) => {
     const {maxChars, text} = this.props;
     const t = textOverFlow || text;
-    if(t.length > (maxChars || MAX_CHARS)) {
+    if(t && t.length > (maxChars || MAX_CHARS)) {
       this.setState({
         overflows: true,
       });
@@ -61,7 +61,7 @@ class ShowMore extends PureComponent {
     if (this.state.open) {
       return text;
     }
-    if(text.length > (maxChars || MAX_CHARS)) {
+    if(text && text.length > (maxChars || MAX_CHARS)) {
       return `${this.props.text.substring(0, (maxChars || MAX_CHARS))}...`;
     } else {
       return text;

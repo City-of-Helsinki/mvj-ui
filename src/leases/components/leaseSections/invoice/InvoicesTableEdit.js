@@ -195,12 +195,15 @@ class InvoicesTableEdit extends Component<Props, State> {
   transitionEnds = () => {
     const {clientWidth} = this.container;
     const {clientWidth: tableWidth} = this.tableWrapper;
+
     if(clientWidth === tableWidth) {
       this.setState({showAllColumns: true});
+    } else {
+      this.modal.wrappedInstance.setFocus();
     }
   }
 
-  handleKeyCodeUp = () => {
+  handleKeyCodeLeft = () => {
     const {showModal} = this.state;
 
     if(showModal) {
@@ -216,7 +219,7 @@ class InvoicesTableEdit extends Component<Props, State> {
     this.initilizeEditInvoiceForm(invoice.data);
   }
 
-  handleKeyCodeDown = () => {
+  handleKeyCodeRight = () => {
     const {showModal} = this.state;
 
     if(showModal) {
@@ -409,7 +412,7 @@ class InvoicesTableEdit extends Component<Props, State> {
         <div
           className='invoice__invoice-table_wrapper'
           ref={(ref) => this.tableWrapper = ref}
-          style={{maxWidth: tableWidth}}
+          style={{maxWidth: tableWidth || null}}
         >
           <InvoiceTable
             ref={(input) => this.table = input}
@@ -429,14 +432,14 @@ class InvoicesTableEdit extends Component<Props, State> {
         <InvoiceModalEdit
           ref={(ref) => this.modal = ref}
           invoice={selectedInvoice}
+          isOpen={showModal}
           minHeight={tableHeight}
           onClose={this.handleInvoiceModalClose}
           onCreditedInvoiceClick={this.handleCreditedInvoiceClick}
-          onKeyCodeDown={this.handleKeyCodeDown}
-          onKeyCodeUp={this.handleKeyCodeUp}
+          onKeyCodeRight={this.handleKeyCodeRight}
+          onKeyCodeLeft={this.handleKeyCodeLeft}
           onResize={this.handleModalHeightChange}
           onSave={this.editInvoice}
-          show={showModal}
         />
       </div>
     );

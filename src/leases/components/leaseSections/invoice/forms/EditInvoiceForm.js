@@ -37,6 +37,7 @@ type PaymentsProps = {
 
 const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Element<*> => {
   const handleAdd = () => fields.push({});
+
   return (
     <div>
       {!fields || !fields.length && <p>Ei maksuja</p>}
@@ -53,6 +54,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
       }
       {fields && !!fields.length && fields.map((payment, index) => {
         const handleRemove = () => fields.remove(index);
+
         return (
           <Row key={index}>
             <Column small={6}>
@@ -106,6 +108,7 @@ type Props = {
   isEditClicked: boolean,
   lease: Lease,
   onCreditedInvoiceClick: Function,
+  setRefForFirstField?: Function,
 }
 
 const EditInvoiceForm = ({
@@ -115,6 +118,7 @@ const EditInvoiceForm = ({
   isEditClicked,
   lease,
   onCreditedInvoiceClick,
+  setRefForFirstField,
 }: Props) => {
   const handleCreditedInvoiceClick = () => {
     onCreditedInvoiceClick(invoice.credited_invoice);
@@ -147,6 +151,7 @@ const EditInvoiceForm = ({
             disableTouched={isEditClicked}
             fieldAttributes={get(invoiceAttributes, 'due_date')}
             name='due_date'
+            setRefForField={setRefForFirstField}
             overrideValues={{
               label: 'Eräpäivä',
             }}

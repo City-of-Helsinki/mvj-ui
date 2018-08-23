@@ -1,7 +1,7 @@
 //@flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {initialize} from 'redux-form';
+import {destroy, initialize} from 'redux-form';
 import classNames from 'classnames';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
@@ -24,6 +24,7 @@ type Props = {
   commentList: CommentList,
   createComment: Function,
   currentLease: Lease,
+  destroy: Function,
   initialize: Function,
   isOpen: boolean,
   onClose: Function,
@@ -43,6 +44,8 @@ const getCommentsByTopic = (comments: Array<Object>, topic: Object): Array<Objec
 };
 
 class CommentPanel extends PureComponent<Props, State> {
+  firstCommentModalField: any
+
   state = {
     comments: null,
     selectedTopics: [],
@@ -79,6 +82,20 @@ class CommentPanel extends PureComponent<Props, State> {
     if(prevProps.commentList !== this.props.commentList) {
       this.updateContent();
     }
+    if(!prevProps.isOpen && this.props.isOpen) {
+      this.initializeNewCommentForm();
+      this.setFocusOnCommentForm();
+    }
+  }
+
+  setRefForFirstCommentFormField = (element: any) => {
+    if(element) {
+      this.firstCommentModalField = element;
+    }
+  }
+
+  setFocusOnCommentForm = () => {
+    this.firstCommentModalField.focus();
   }
 
   updateContent = () => {
@@ -108,11 +125,13 @@ class CommentPanel extends PureComponent<Props, State> {
       topic: topic,
     });
 
-    this.resetNewCommentField();
+    this.initializeNewCommentForm();
+    this.setFocusOnCommentForm();
   }
 
-  resetNewCommentField = () => {
-    const {initialize} = this.props;
+  initializeNewCommentForm = () => {
+    const {destroy, initialize} = this.props;
+    destroy('new-comment-form');
     initialize('new-comment-form', {text: '', topic: ''});
   }
 
@@ -135,7 +154,7 @@ class CommentPanel extends PureComponent<Props, State> {
     const filteredComments = this.getFilteredComments(comments);
 
     return (
-      <div className={classNames('comment-panel', {'is-panel-open': isOpen}) }>
+      <div className={classNames('comment-panel', {'is-panel-open': isOpen})} hidden={!isOpen}>
         <div className='comment-panel__title-wrapper'>
           <div className='comment-panel__title'>
             <h1>Kommentit</h1>
@@ -150,6 +169,7 @@ class CommentPanel extends PureComponent<Props, State> {
           <NewCommentForm
             attributes={attributes}
             onAddComment={this.createComment}
+            setRefForFirstField={this.setRefForFirstCommentFormField}
           />
 
           <h2>Ajankohtaiset</h2>
@@ -211,6 +231,7 @@ export default flowRight(
     },
     {
       createComment,
+      destroy,
       initialize,
     },
   ),

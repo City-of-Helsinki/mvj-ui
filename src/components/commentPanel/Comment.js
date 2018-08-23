@@ -69,13 +69,13 @@ class Comment extends PureComponent<Props, State> {
               onClick={this.handleEditButtonClick}
               title='Muokkaa'
             />
-            <div className='content-wrapper'>
-              <p className='comment-info'>
-                <span className='date'>{formatDateObj(comment.modified_at)}</span>
+            <div className='comment__content-wrapper'>
+              <p className='comment__info'>
+                <span className='comment__info_date'>{formatDateObj(comment.modified_at)}</span>
                 &nbsp;
                 <span>{user.last_name} {user.first_name}</span>
               </p>
-              <div className='comment-text'>
+              <div className='comment__text'>
                 <ShowMore text={comment.text} />
               </div>
             </div>
@@ -83,7 +83,7 @@ class Comment extends PureComponent<Props, State> {
         }
         {isEditMode &&
           <div>
-            <div className='content-wrapper no-padding'>
+            <div className='comment__content-wrapper no-padding'>
               <Row>
                 <Column>
                   <TextAreaInput
@@ -96,19 +96,21 @@ class Comment extends PureComponent<Props, State> {
               </Row>
               <Row>
                 <Column>
-                  <Button
-                    className='button-green pull-right no-margin-right'
-                    disabled={!editedText}
-                    label='Tallenna'
-                    onClick={this.handleSaveButtonClick}
-                    title='Tallenna'
-                  />
-                  <Button
-                    className='button-red pull-right'
-                    label='Kumoa'
-                    onClick={this.handleCancelButtonClick}
-                    title='Kumoa'
-                  />
+                  <div className='comment__button-wrapper'>
+                    <Button
+                      className='button-red'
+                      label='Kumoa'
+                      onClick={this.handleCancelButtonClick}
+                      title='Kumoa'
+                    />
+                    <Button
+                      className='button-green'
+                      disabled={!editedText}
+                      label='Tallenna'
+                      onClick={this.handleSaveButtonClick}
+                      title='Tallenna'
+                    />
+                  </div>
                 </Column>
               </Row>
             </div>

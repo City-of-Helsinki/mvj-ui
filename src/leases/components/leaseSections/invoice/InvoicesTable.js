@@ -178,12 +178,15 @@ class InvoicesTable extends Component<Props, State> {
   transitionEnds = () => {
     const {clientWidth} = this.container;
     const {clientWidth: tableWidth} = this.tableWrapper;
+
     if(clientWidth === tableWidth) {
       this.setState({showAllColumns: true});
+    } else {
+      this.modal.setFocusOnCloseButton();
     }
   }
 
-  handleKeyCodeUp = () => {
+  handleKeyCodeLeft = () => {
     const {showModal} = this.state;
     if(showModal) {
       this.table.getWrappedInstance().selectPrevious();
@@ -205,7 +208,7 @@ class InvoicesTable extends Component<Props, State> {
     });
   }
 
-  handleKeyCodeDown = () => {
+  handleKeyCodeRight = () => {
     const {showModal} = this.state;
     if(showModal) {
       this.table.getWrappedInstance().selectNext();
@@ -372,7 +375,7 @@ class InvoicesTable extends Component<Props, State> {
         <div
           className='invoice__invoice-table_wrapper'
           ref={(ref) => this.tableWrapper = ref}
-          style={{maxWidth: tableWidth}}
+          style={{maxWidth: tableWidth || null}}
         >
           <InvoiceTable
             ref={(input) => this.table = input}
@@ -393,13 +396,13 @@ class InvoicesTable extends Component<Props, State> {
           ref={(ref) => this.modal = ref}
           containerHeight={isNumber(tableHeight) ? tableHeight + 31 : null}
           invoice={selectedInvoice}
+          isOpen={showModal}
           minHeight={tableHeight}
           onClose={this.handleInvoiceModalOnClose}
           onCreditedInvoiceClick={this.handleCreditedInvoiceClick}
-          onKeyCodeDown={this.handleKeyCodeDown}
-          onKeyCodeUp={this.handleKeyCodeUp}
+          onKeyCodeRight={this.handleKeyCodeRight}
+          onKeyCodeLeft={this.handleKeyCodeLeft}
           onResize={this.handleModalHeightChange}
-          show={showModal}
         />
       </div>
     );

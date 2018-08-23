@@ -13,8 +13,8 @@ import type {RootState} from '$src/root/types';
 
 type Props = {
   attributes: Object,
-  handleSubmit: Function,
   onAddComment: Function,
+  setRefForFirstField: Function,
   text: string,
   topic: string,
   valid: boolean,
@@ -22,8 +22,8 @@ type Props = {
 
 const NewCommentForm = ({
   attributes,
-  handleSubmit,
   onAddComment,
+  setRefForFirstField,
   text,
   topic,
   valid,
@@ -33,12 +33,13 @@ const NewCommentForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
       <FormSection>
         <FormField
           disableDirty
           fieldAttributes={get(attributes, 'topic')}
           name='topic'
+          setRefForField={setRefForFirstField}
           overrideValues={{
             label: 'Aihealue',
           }}

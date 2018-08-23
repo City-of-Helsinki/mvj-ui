@@ -6,40 +6,83 @@ import ReactResizeDetector from 'react-resize-detector';
 import CloseButton from '$components/button/CloseButton';
 import InvoiceTemplate from './InvoiceTemplate';
 
-const ARROW_UP_KEY = 38;
-const ARROW_DOWN_KEY = 40;
+const ARROW_LEFT_KEY = 37;
+const ARROW_RIGHT_KEY = 39;
 
 type Props = {
   invoice: Object,
+  isOpen: boolean,
   minHeight: ?number,
   onClose: Function,
-  onKeyCodeDown: Function,
-  onKeyCodeUp: Function,
+  onKeyCodeRight: Function,
+  onKeyCodeLeft: Function,
   onCreditedInvoiceClick: Function,
   onResize: Function,
-  show: boolean,
 }
 
-class InvoiceModal extends Component<Props> {
+type State = {
+  isClosing: boolean,
+  isOpening: boolean,
+}
+
+class InvoiceModal extends Component<Props, State> {
+  closeButton: any
   modal: any
-  componentWillMount() {
+
+  state = {
+    isClosing: false,
+    isOpening: false,
+  }
+
+  componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown);
+    this.modal.addEventListener('transitionend', this.transitionEnds);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
+    this.modal.removeEventListener('transitionend', this.transitionEnds);
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if(!prevProps.isOpen && this.props.isOpen) {
+      this.setState({
+        isOpening: true,
+      });
+    } else if(prevProps.isOpen && !this.props.isOpen) {
+      this.setState({
+        isClosing: true,
+      });
+    }
+  }
+
+  transitionEnds = () => {
+    this.setState({
+      isClosing: false,
+      isOpening: false,
+    });
+  }
+
+  setCloseButtonReference = (element: any) => {
+    this.closeButton = element;
+  }
+
+  setFocusOnCloseButton = () => {
+    if(this.closeButton) {
+      this.closeButton.focus();
+    }
   }
 
   handleKeyDown = (e: any) => {
-    const {onKeyCodeDown, onKeyCodeUp} = this.props;
+    const {onKeyCodeRight, onKeyCodeLeft} = this.props;
 
     switch(e.keyCode) {
-      case ARROW_DOWN_KEY:
-        onKeyCodeDown();
+      case ARROW_RIGHT_KEY:
+        onKeyCodeRight();
         e.preventDefault();
         break;
-      case ARROW_UP_KEY:
-        onKeyCodeUp();
+      case ARROW_LEFT_KEY:
+        onKeyCodeLeft();
         e.preventDefault();
         break;
       default:
@@ -56,15 +99,16 @@ class InvoiceModal extends Component<Props> {
   render() {
     const {
       invoice,
+      isOpen,
       minHeight,
       onClose,
       onCreditedInvoiceClick,
-      show,
     } = this.props;
+    const {isClosing, isOpening} = this.state;
 
     return(
       <div
-        className={classNames('invoice-modal', {'is-open': show})}
+        className={classNames('invoice-modal', {'is-open': isOpen})}
         ref={(ref) => this.modal = ref}
       >
         <ReactResizeDetector
@@ -73,13 +117,14 @@ class InvoiceModal extends Component<Props> {
           refreshMode='debounce'
           refreshRate={1}
         />
-        <div className="invoice-modal__container" style={{minHeight: minHeight}}>
+        <div className="invoice-modal__container" style={{minHeight: minHeight}} hidden={!isOpen && !isClosing && !isOpening}>
 
           <div className='invoice-modal__header'>
             <h1>Laskun tiedot</h1>
             <CloseButton
               className='position-topright'
               onClick={onClose}
+              setReference={this.setCloseButtonReference}
               title='Sulje'
             />
           </div>
