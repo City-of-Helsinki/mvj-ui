@@ -154,13 +154,12 @@ class CommentPanel extends PureComponent<Props, State> {
     const filteredComments = this.getFilteredComments(comments);
 
     return (
-      <div className={classNames('comment-panel', {'is-panel-open': isOpen}) }>
+      <div className={classNames('comment-panel', {'is-panel-open': isOpen})} hidden={!isOpen}>
         <div className='comment-panel__title-wrapper'>
           <div className='comment-panel__title'>
             <h1>Kommentit</h1>
             <CloseButton
               className='position-topright'
-              disabled={!isOpen}
               onClick={onClose}
               title='Sulje'
             />
@@ -169,7 +168,6 @@ class CommentPanel extends PureComponent<Props, State> {
         <div className='comment-panel__content-wrapper'>
           <NewCommentForm
             attributes={attributes}
-            disabled={!isOpen}
             onAddComment={this.createComment}
             setRefForFirstField={this.setRefForFirstCommentFormField}
           />
@@ -179,7 +177,6 @@ class CommentPanel extends PureComponent<Props, State> {
             <div className='filters'>
               <StyledCheckboxButtons
                 checkboxName='checkbox-buttons-document-type'
-                disabled={!isOpen}
                 onChange={this.handleFilterChange}
                 options={topicFilterOptions}
                 selectAllButton
@@ -208,7 +205,6 @@ class CommentPanel extends PureComponent<Props, State> {
                       <Comment
                         key={comment.id}
                         comment={comment}
-                        disabled={!isOpen}
                         user={comment.user}
                       />
                     )}

@@ -11,26 +11,36 @@ type Props = {
 };
 
 const Tabs = ({active, className, isEditMode, tabs, onTabClick}: Props) => {
-  const handleTabClick = (e: any, i: number) => {
-    e.preventDefault();
-    onTabClick(i);
-  };
-
   return (
     <ul className={classNames('tabs', className)}>
-      {tabs.map((tab, i) =>
-        <li key={i}
-          className={classNames({'is-active': Number(active) === i})}>
-          <a aria-selected={Number(active) === i}
-            aria-label={tab.label}
-            href=''
-            onClick={(e) => handleTabClick(e, i)}>
-            <span className='tabs__label'>{tab.label}</span>
-            {isEditMode && tab.hasError && <span className='tabs__error-badge' />}
-            {isEditMode && tab.isDirty && !tab.hasError && <span className='tabs__dirty-badge' />}
-          </a>
-        </li>
-      )}
+      {tabs.map((tab, i) => {
+        const handleTabClick = () => {
+          onTabClick(i);
+        };
+
+        const handleKeyDown = (e: any) => {
+          if(e.keyCode === 13) {
+            e.preventDefault();
+            handleTabClick();
+          }
+        };
+
+        return(
+          <li key={i}
+            className={classNames({'is-active': Number(active) === i})}>
+            <a aria-selected={Number(active) === i}
+              aria-label={tab.label}
+              onClick={handleTabClick}
+              onKeyDown={handleKeyDown}
+              tabIndex={0}
+            >
+              <span className='tabs__label'>{tab.label}</span>
+              {isEditMode && tab.hasError && <span className='tabs__error-badge' />}
+              {isEditMode && tab.isDirty && !tab.hasError && <span className='tabs__dirty-badge' />}
+            </a>
+          </li>
+        );
+      })}
     </ul>
   );
 };

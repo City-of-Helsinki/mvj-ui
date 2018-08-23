@@ -428,7 +428,9 @@ class InvoiceTable extends Component<Props, State> {
       <div className={'table__fixed-header'}>
         <div
           className={'table__fixed-header_wrapper'}
-          style={{maxHeight: maxHeight}}>
+          style={{maxHeight: maxHeight}}
+          tabIndex={-1}
+        >
           <div className="table__fixed-header_header-border" />
           {isLoading &&
             <div className='invoice__invoice-table_loader-wrapper'><Loader isLoading={true} /></div>

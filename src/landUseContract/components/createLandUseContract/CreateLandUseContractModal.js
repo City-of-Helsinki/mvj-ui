@@ -12,6 +12,18 @@ type Props = {
 }
 
 class CreateLandUseContractModal extends Component<Props> {
+  form: any
+
+  componentDidUpdate(prevProps: Props) {
+    if(!prevProps.isOpen && this.props.isOpen) {
+      this.form.getWrappedInstance().wrappedInstance.setFocus();
+    }
+  }
+
+  setRefForForm = (element: any) => {
+    this.form = element;
+  }
+
   render () {
     const {
       isOpen,
@@ -26,12 +38,11 @@ class CreateLandUseContractModal extends Component<Props> {
         onClose={onClose}
         title='Luo uusi maankäyttösopimustunnus'
       >
-        {isOpen &&
-          <CreateLandUseContractForm
-            onClose={onClose}
-            onSubmit={onSubmit}
-          />
-        }
+        <CreateLandUseContractForm
+          ref={this.setRefForForm}
+          onClose={onClose}
+          onSubmit={onSubmit}
+        />
       </Modal>
     );
   }

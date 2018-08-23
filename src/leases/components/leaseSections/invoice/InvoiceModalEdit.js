@@ -34,29 +34,57 @@ type Props = {
   receiveIsEditClicked: Function,
 }
 
-class InvoiceModalEdit extends Component<Props> {
+type State = {
+  isClosing: boolean,
+  isOpening: boolean,
+}
+
+class InvoiceModalEdit extends Component<Props, State> {
   closeButton: any
   invoiceFormFirstField: any
   modal: any
+
+  state = {
+    isClosing: false,
+    isOpening: false,
+  }
 
   componentDidMount() {
     const {receiveIsEditClicked} = this.props;
 
     receiveIsEditClicked(false);
     document.addEventListener('keydown', this.handleKeyDown);
+    this.modal.addEventListener('transitionend', this.transitionEnds);
   }
 
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
+    this.modal.removeEventListener('transitionend', this.transitionEnds);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if(prevProps.invoice !== this.props.invoice) {
       const {receiveIsEditClicked} = this.props;
 
       receiveIsEditClicked(false);
     }
+    if(!prevProps.isOpen && this.props.isOpen) {
+      this.setState({
+        isOpening: true,
+      });
+    } else if(prevProps.isOpen && !this.props.isOpen) {
+      this.setState({
+        isClosing: true,
+      });
+    }
+  }
+
+  transitionEnds = () => {
+    this.setState({
+      isClosing: false,
+      isOpening: false,
+    });
   }
 
   setFocus = () => {
@@ -130,6 +158,7 @@ class InvoiceModalEdit extends Component<Props> {
       onClose,
       onCreditedInvoiceClick,
     } = this.props;
+    const {isClosing, isOpening} = this.state;
 
     return (
       <div
@@ -142,37 +171,31 @@ class InvoiceModalEdit extends Component<Props> {
           refreshMode='debounce'
           refreshRate={1}
         />
-        <div className="invoice-modal__container" style={{minHeight: minHeight}}>
+        <div className="invoice-modal__container" style={{minHeight: minHeight}} hidden={!isOpen && !isClosing && !isOpening}>
           <div className='invoice-modal__header'>
             <h1>Laskun tiedot</h1>
             <CloseButton
               className='position-topright'
-              disabled={!isOpen}
               onClick={onClose}
               title='Sulje'
             />
           </div>
 
           <div className="invoice-modal__body with-footer">
-            {isOpen &&
-              <div>
-                {(!invoice || !invoice.sap_id)
-                  ? (
-                    <EditInvoiceForm
-                      disabled={!isOpen}
-                      invoice={invoice}
-                      initialValues={{...invoice}}
-                      onCreditedInvoiceClick={onCreditedInvoiceClick}
-                      setRefForFirstField={this.handleSetRefForInvoiceFormFirstField}
-                    />
-                  ) : (
-                    <InvoiceTemplate
-                      invoice={invoice}
-                      onCreditedInvoiceClick={onCreditedInvoiceClick}
-                    />
-                  )
-                }
-              </div>
+            {(!invoice || !invoice.sap_id)
+              ? (
+                <EditInvoiceForm
+                  invoice={invoice}
+                  initialValues={{...invoice}}
+                  onCreditedInvoiceClick={onCreditedInvoiceClick}
+                  setRefForFirstField={this.handleSetRefForInvoiceFormFirstField}
+                />
+              ) : (
+                <InvoiceTemplate
+                  invoice={invoice}
+                  onCreditedInvoiceClick={onCreditedInvoiceClick}
+                />
+              )
             }
           </div>
           <div className='invoice-modal__footer'>

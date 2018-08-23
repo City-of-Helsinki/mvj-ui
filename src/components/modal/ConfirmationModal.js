@@ -53,13 +53,11 @@ class ConfirmationModal extends Component<Props> {
             <button
               ref={this.setCancelButtonRef}
               className='mvj-button button-red'
-              disabled={!isOpen}
               onClick={onCancel}
               title='Peruuta'
             >Peruuta</button>
             <Button
               className='button-green'
-              disabled={!isOpen}
               label={confirmButtonLabel}
               onClick={onSave}
               title={confirmButtonLabel}

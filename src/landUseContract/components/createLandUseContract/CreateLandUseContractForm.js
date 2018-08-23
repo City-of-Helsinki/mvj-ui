@@ -36,10 +36,6 @@ type Props = {
 class CreateLandUseContractForm extends Component<Props> {
   firstField: any
 
-  componentDidMount() {
-    this.firstField.focus();
-  }
-
   componentDidUpdate(prevProps) {
     if(this.props.municipality !== prevProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
@@ -55,6 +51,10 @@ class CreateLandUseContractForm extends Component<Props> {
 
   setRefForFirstField = (element: any) => {
     this.firstField = element;
+  }
+
+  setFocus = () => {
+    this.firstField.focus();
   }
 
   handleCreate = () => {
@@ -183,7 +183,9 @@ export default flowRight(
     {
       change,
       fetchDistrictsByMunicipality,
-    }
+    },
+    null,
+    {withRef: true}
   ),
   reduxForm({
     form: formName,

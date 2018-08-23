@@ -18,6 +18,7 @@
 
   &__header {
     padding: rem-calc(20px) rem-calc(20px) 0;
+
     h1.title {
       font-family: $font-family-source;
 	    font-size: rem-calc(22px);
@@ -26,18 +27,15 @@
 	    color: $black;
       margin: 0;
     }
+
+    &_wrapper {
+      position: relative;
+    }
   }
 
   &__content {
     padding: rem-calc(20px) rem-calc(20px);
     height: auto;
-  }
-
-  .close-button svg {
-    width: 22px;
-    height: 22px;
-    margin-top: 0.6rem;
-    fill: $black;
   }
 
   &__overlay {

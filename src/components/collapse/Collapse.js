@@ -163,7 +163,9 @@ class Collapse extends PureComponent<Props, State> {
           style={{maxHeight: contentHeight}}>
           <div
             ref={(ref) => this.content = ref}
-            className="collapse__content-wrapper">
+            className="collapse__content-wrapper"
+            hidden={!isOpen && !isCollapsing && !isExpanding}
+          >
             <ReactResizeDetector
               handleHeight
               onResize={this.onResize}

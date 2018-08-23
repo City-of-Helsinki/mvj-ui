@@ -11,7 +11,7 @@ type Props = {
   type?: string,
 }
 
-const CloseButton = ({className, onClick, title, type = 'button'}: Props) =>
+const BackButton = ({className, onClick, title, type = 'button'}: Props) =>
   <button
     className={classNames('close-button-component', className)}
     type={type}
@@ -20,4 +20,4 @@ const CloseButton = ({className, onClick, title, type = 'button'}: Props) =>
     <img src={closeIcon} alt='Poista' />
   </button>;
 
-export default CloseButton;
+export default BackButton;

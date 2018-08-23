@@ -4,7 +4,6 @@ import forEach from 'lodash/forEach';
 
 type Props = {
   checkboxName: string,
-  disabled?: boolean,
   onChange: Function,
   options: Array<Object>,
   selectAllButton?: boolean,
@@ -59,7 +58,7 @@ class StyledCheckboxButtons extends Component<Props> {
   }
 
   render () {
-    const {checkboxName, disabled, options, selectAllButton, selectAllButtonLabel = 'Kaikki', value} = this.props;
+    const {checkboxName, options, selectAllButton, selectAllButtonLabel = 'Kaikki', value} = this.props;
     const areAllSelected = this.areAllOptionsSelected();
 
     return (
@@ -70,7 +69,7 @@ class StyledCheckboxButtons extends Component<Props> {
             aria-label='Valitse kaikki'
             className='label select-all'
             onKeyDown={this.handleSelectAllKeyDown}
-            tabIndex={disabled ? undefined : 0}
+            tabIndex={0}
           >
             <input
               checked={areAllSelected}
@@ -109,7 +108,7 @@ class StyledCheckboxButtons extends Component<Props> {
               key={index}
               aria-checked={isChecked}
               aria-label={option.label}
-              tabIndex={disabled ? undefined : 0}
+              tabIndex={0}
               onKeyDown={handleKeyDown}
               className='label'
             >

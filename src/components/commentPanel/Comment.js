@@ -13,7 +13,6 @@ import {getIsEditModeById} from '$src/comments/selectors';
 
 type Props = {
   comment: Object,
-  disabled?: boolean,
   editComment: Function,
   hideEditModeById: Function,
   isEditMode: boolean,
@@ -59,7 +58,7 @@ class Comment extends PureComponent<Props, State> {
 
   render() {
     const {editedText} = this.state;
-    const {comment, disabled, isEditMode, user} = this.props;
+    const {comment, isEditMode, user} = this.props;
 
     return (
       <div className='comment'>
@@ -67,7 +66,6 @@ class Comment extends PureComponent<Props, State> {
           <div>
             <EditButton
               className='position-topright'
-              disabled={disabled}
               onClick={this.handleEditButtonClick}
               title='Muokkaa'
             />
@@ -101,14 +99,13 @@ class Comment extends PureComponent<Props, State> {
                   <div className='comment__button-wrapper'>
                     <Button
                       className='button-red'
-                      disabled={disabled}
                       label='Kumoa'
                       onClick={this.handleCancelButtonClick}
                       title='Kumoa'
                     />
                     <Button
                       className='button-green'
-                      disabled={disabled || !editedText}
+                      disabled={!editedText}
                       label='Tallenna'
                       onClick={this.handleSaveButtonClick}
                       title='Tallenna'

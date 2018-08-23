@@ -20,17 +20,47 @@ type Props = {
   onResize: Function,
 }
 
-class InvoiceModal extends Component<Props> {
-  closeButton: any
+type State = {
+  isClosing: boolean,
+  isOpening: boolean,
+}
 
+class InvoiceModal extends Component<Props, State> {
+  closeButton: any
   modal: any
 
-  componentWillMount() {
+  state = {
+    isClosing: false,
+    isOpening: false,
+  }
+
+  componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown);
+    this.modal.addEventListener('transitionend', this.transitionEnds);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
+    this.modal.removeEventListener('transitionend', this.transitionEnds);
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if(!prevProps.isOpen && this.props.isOpen) {
+      this.setState({
+        isOpening: true,
+      });
+    } else if(prevProps.isOpen && !this.props.isOpen) {
+      this.setState({
+        isClosing: true,
+      });
+    }
+  }
+
+  transitionEnds = () => {
+    this.setState({
+      isClosing: false,
+      isOpening: false,
+    });
   }
 
   setCloseButtonReference = (element: any) => {
@@ -74,6 +104,7 @@ class InvoiceModal extends Component<Props> {
       onClose,
       onCreditedInvoiceClick,
     } = this.props;
+    const {isClosing, isOpening} = this.state;
 
     return(
       <div
@@ -86,13 +117,12 @@ class InvoiceModal extends Component<Props> {
           refreshMode='debounce'
           refreshRate={1}
         />
-        <div className="invoice-modal__container" style={{minHeight: minHeight}}>
+        <div className="invoice-modal__container" style={{minHeight: minHeight}} hidden={!isOpen && !isClosing && !isOpening}>
 
           <div className='invoice-modal__header'>
             <h1>Laskun tiedot</h1>
             <CloseButton
               className='position-topright'
-              disabled={!isOpen}
               onClick={onClose}
               setReference={this.setCloseButtonReference}
               title='Sulje'

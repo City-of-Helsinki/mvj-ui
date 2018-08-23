@@ -204,7 +204,9 @@ class Table extends Component<Props, State> {
       <div className={classnames({'table__fixed-header': fixedHeader}, fixedHeaderClassName)}>
         <div
           className={classnames({'table__fixed-header_wrapper': fixedHeader})}
-          style={{maxHeight: maxHeight}}>
+          style={{maxHeight: maxHeight}}
+          tabIndex={-1}
+        >
           {fixedHeader &&
             <div className="table__fixed-header_header-border" />
           }

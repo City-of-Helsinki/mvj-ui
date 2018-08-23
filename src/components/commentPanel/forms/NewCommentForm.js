@@ -13,7 +13,6 @@ import type {RootState} from '$src/root/types';
 
 type Props = {
   attributes: Object,
-  disabled: boolean,
   onAddComment: Function,
   setRefForFirstField: Function,
   text: string,
@@ -23,7 +22,6 @@ type Props = {
 
 const NewCommentForm = ({
   attributes,
-  disabled,
   onAddComment,
   setRefForFirstField,
   text,
@@ -38,7 +36,6 @@ const NewCommentForm = ({
     <form>
       <FormSection>
         <FormField
-          disabled={disabled}
           disableDirty
           fieldAttributes={get(attributes, 'topic')}
           name='topic'
@@ -48,7 +45,6 @@ const NewCommentForm = ({
           }}
         />
         <FormField
-          disabled={disabled}
           disableDirty
           fieldAttributes={get(attributes, 'text')}
           name='text'
@@ -59,7 +55,7 @@ const NewCommentForm = ({
         />
         <Button
           className={'button-green no-margin'}
-          disabled={disabled || !valid}
+          disabled={!valid}
           label='Kommentoi'
           onClick={handleAddComment}
           title='Kommentoi'

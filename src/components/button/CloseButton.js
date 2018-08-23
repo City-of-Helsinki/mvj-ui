@@ -6,14 +6,13 @@ import closeIcon from '$assets/icons/icon_close.svg';
 
 type Props = {
   className?: string,
-  disabled?: boolean,
   onClick: Function,
   setReference?: Function,
   title: string,
   type?: string,
 }
 
-const CloseButton = ({className, disabled, onClick, setReference, title, type = 'button'}: Props) => {
+const CloseButton = ({className, onClick, setReference, title, type = 'button'}: Props) => {
   const handleSetReference = (element: any) => {
     if(element && setReference) {
       setReference(element);
@@ -32,7 +31,6 @@ const CloseButton = ({className, disabled, onClick, setReference, title, type = 
       ref={handleSetReference}
       aria-label='Sulje'
       className={classNames('close-button-component', className)}
-      disabled={disabled}
       type={type}
       title={title}
       onClick={onClick}

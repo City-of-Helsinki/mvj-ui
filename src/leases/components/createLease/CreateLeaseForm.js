@@ -39,12 +39,6 @@ type Props = {
 class CreateLeaseForm extends Component<Props> {
   firstField: any
 
-  componentDidMount() {
-    if(this.firstField) {
-      this.firstField.focus();
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
     if(this.props.municipality !== nextProps.municipality) {
       const {change, fetchDistrictsByMunicipality} = this.props;
@@ -60,6 +54,12 @@ class CreateLeaseForm extends Component<Props> {
 
   setRefForFirstField = (element: any) => {
     this.firstField = element;
+  }
+
+  setFocus = () => {
+    if(this.firstField) {
+      this.firstField.focus();
+    }
   }
 
   handleCreate = () => {
@@ -202,7 +202,9 @@ export default flowRight(
     {
       change,
       fetchDistrictsByMunicipality,
-    }
+    },
+    null,
+    {withRef: true}
   ),
   reduxForm({
     form: formName,
