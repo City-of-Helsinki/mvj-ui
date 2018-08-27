@@ -18,6 +18,9 @@ export const getIsContactModalOpen: Selector<boolean, void> = (state: LeaseState
 export const getContactModalSettings: Selector<ContactModalSettings, void> = (state: LeaseState): ContactModalSettings =>
   state.lease.contactModalSettings;
 
+export const getIsArchiveAreaModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.lease.isArchiveAreaModalOpen;
+
 export const getIsDeleteRelatedLeaseModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isDeleteRelatedLeaseModalOpen;
 
@@ -26,6 +29,9 @@ export const getIsEditMode: Selector<boolean, void> = (state: LeaseState): boole
 
 export const getIsFetching: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isFetching;
+
+export const getIsArchiveFetching: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.lease.isArchiveFetching;
 
 export const getIsFetchingById: Selector<boolean, LeaseId> = (state: LeaseState, id: LeaseId): boolean =>
   state.lease.isFetchingById[id];
@@ -41,6 +47,9 @@ export const getIsFormValidFlags: Selector<Object, void> = (state: LeaseState): 
 
 export const getIsSaveClicked: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isSaveClicked;
+
+export const getIsUnarchiveAreaModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.lease.isUnarchiveAreaModalOpen;
 
 export const getAttributes: Selector<Attributes, void> = (state: LeaseState): LeaseState =>
   state.lease.attributes;

@@ -11,12 +11,18 @@ import {
   notFoundById,
   createLease,
   patchLease,
+  archiveLeaseArea,
+  unarchiveLeaseArea,
   notFound,
   showContactModal,
   hideContactModal,
   receiveContactModalSettings,
   showEditMode,
   hideEditMode,
+  hideArchiveAreaModal,
+  showArchiveAreaModal,
+  hideUnarchiveAreaModal,
+  showUnarchiveAreaModal,
   receiveFormValidFlags,
   clearFormValidFlags,
   showDeleteRelatedLeaseModal,
@@ -32,6 +38,8 @@ const stateTemplate = {
   collapseStates: {},
   contactModalSettings: null,
   current: {},
+  isArchiveAreaModalOpen: false,
+  isArchiveFetching: false,
   isContactModalOpen: false,
   isDeleteRelatedLeaseModalOpen: false,
   isEditMode: false,
@@ -50,6 +58,7 @@ const stateTemplate = {
     'tenants-form': true,
   },
   isSaveClicked: false,
+  isUnarchiveAreaModalOpen: false,
   list: {},
 };
 
@@ -147,6 +156,20 @@ describe('Leases', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update isArchiveFetching flag to true when archiving lease area', () => {
+        const newState = {...stateTemplate, isArchiveFetching: true};
+
+        const state = leasesReducer({}, archiveLeaseArea());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isArchiveFetching flag to true when unarchiving lease area', () => {
+        const newState = {...stateTemplate, isArchiveFetching: true};
+
+        const state = leasesReducer({}, unarchiveLeaseArea());
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isFormValidById value', () => {
         const dummyFlags = {
           'constructability-form': true,
@@ -227,6 +250,38 @@ describe('Leases', () => {
 
         let state = leasesReducer({}, showEditMode());
         state = leasesReducer({}, hideEditMode());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isArchiveAreaModalOpen flag to true', () => {
+        const newState = {...stateTemplate};
+        newState.isArchiveAreaModalOpen = true;
+
+        const state = leasesReducer({}, showArchiveAreaModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isArchiveAreaModalOpen flag to false', () => {
+        const newState = {...stateTemplate};
+        newState.isArchiveAreaModalOpen = false;
+
+        const state = leasesReducer({}, hideArchiveAreaModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isUnarchiveAreaModalOpen flag to true', () => {
+        const newState = {...stateTemplate};
+        newState.isUnarchiveAreaModalOpen = true;
+
+        const state = leasesReducer({}, showUnarchiveAreaModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isUnarchiveAreaModalOpen flag to false', () => {
+        const newState = {...stateTemplate};
+        newState.isUnarchiveAreaModalOpen = false;
+
+        const state = leasesReducer({}, hideUnarchiveAreaModal());
         expect(state).to.deep.equal(newState);
       });
 

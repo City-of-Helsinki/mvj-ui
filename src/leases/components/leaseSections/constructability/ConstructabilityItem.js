@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
+import get from 'lodash/get';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
@@ -363,7 +364,7 @@ const ConstructabilityItem = ({
 
 export default connect(
   (state, props) => {
-    const id = props.area.id;
+    const id = get(props, 'area.id');
 
     return {
       areaCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.CONTRUCTABILITY}.${id}.area`),

@@ -316,13 +316,17 @@ class LeasePage extends Component<Props, State> {
   }
 
   initializeForms = (lease: Lease) => {
-    const {initialize} = this.props;
+    const {initialize} = this.props,
+      areas = contentHelpers.getContentLeaseAreas(lease);
 
     initialize(FormNames.CONSTRUCTABILITY, {lease_areas: contentHelpers.getContentConstructability(lease)});
     initialize(FormNames.CONTRACTS, {contracts: contentHelpers.getContentContracts(lease)});
     initialize(FormNames.DECISIONS, {decisions: contentHelpers.getContentDecisions(lease)});
     initialize(FormNames.INSPECTIONS, {inspections: contentHelpers.getContentInspections(lease)});
-    initialize(FormNames.LEASE_AREAS, {lease_areas: contentHelpers.getContentLeaseAreas(lease)});
+    initialize(FormNames.LEASE_AREAS, {
+      lease_areas_active: areas.filter((area) => !area.archived_at),
+      lease_areas_archived: areas.filter((area) => area.archived_at),
+    });
     initialize(FormNames.LEASE_INFO, contentHelpers.getContentLeaseInfo(lease));
     initialize(FormNames.RENTS, {
       basis_of_rents: contentHelpers.getContentBasisOfRents(lease),

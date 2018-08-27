@@ -14,6 +14,8 @@ import type {
   LeaseList,
   CreateLeaseAction,
   PatchLeaseAction,
+  ArchiveLeaseAreaAction,
+  UnarchiveLeaseAreaAction,
   FetchLeasesAction,
   FetchSingleLeaseAction,
   ReceiveLeasesAction,
@@ -42,6 +44,10 @@ import type {
   ReceiveCollapseStatesAction,
   CreateChargePayload,
   CreateChargeAction,
+  HideArchiveAreaModalAction,
+  ShowArchiveAreaModalAction,
+  HideUnarchiveAreaModalAction,
+  ShowUnarchiveAreaModalAction,
 } from './types';
 
 export const fetchAttributes = (): FetchAttributesAction =>
@@ -73,6 +79,12 @@ export const createLease = (lease: Lease): CreateLeaseAction =>
 
 export const patchLease = (lease: Lease): PatchLeaseAction =>
   createAction('mvj/leases/PATCH')(lease);
+
+export const archiveLeaseArea = (lease: Lease): ArchiveLeaseAreaAction =>
+  createAction('mvj/leases/ARCHIVE_AREA')(lease);
+
+export const unarchiveLeaseArea = (lease: Lease): UnarchiveLeaseAreaAction =>
+  createAction('mvj/leases/UNARCHIVE_AREA')(lease);
 
 export const startInvoicing = (id: LeaseId): StartInvoicingAction =>
   createAction('mvj/leases/START_INVOICING')(id);
@@ -133,3 +145,15 @@ export const receiveCollapseStates = (status: Object): ReceiveCollapseStatesActi
 
 export const createCharge = (payload: CreateChargePayload): CreateChargeAction =>
   createAction('mvj/leases/CREATE_CHARGE')(payload);
+
+export const hideArchiveAreaModal = (): HideArchiveAreaModalAction =>
+  createAction('mvj/leases/HIDE_ARCHIVE_AREA_MODAL')();
+
+export const showArchiveAreaModal = (): ShowArchiveAreaModalAction =>
+  createAction('mvj/leases/SHOW_ARCHIVE_AREA_MODAL')();
+
+export const hideUnarchiveAreaModal = (): HideUnarchiveAreaModalAction =>
+  createAction('mvj/leases/HIDE_UNARCHIVE_AREA_MODAL')();
+
+export const showUnarchiveAreaModal = (): ShowUnarchiveAreaModalAction =>
+  createAction('mvj/leases/SHOW_UNARCHIVE_AREA_MODAL')();

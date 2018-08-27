@@ -7,6 +7,6 @@ type Props = {
 }
 
 const Divider = ({className}: Props) =>
-  <div className={classNames('divider', className)}></div>;
+  <div className={classNames('content__divider', className)}></div>;
 
 export default Divider;

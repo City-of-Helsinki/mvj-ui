@@ -258,64 +258,35 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
 };
 
 type AreaItemProps = {
-  areaCollapseState: boolean,
-  areasData: Array<Object>,
   areaId: number,
   attributes: Attributes,
   errors: ?Object,
   field: string,
-  index: number,
   isSaveClicked: boolean,
-  onRemove: Function,
   planUnitsContractCollapseState: boolean,
   planUnitsCurrentCollapseState: boolean,
   plotsContractCollapseState: boolean,
   plotsCurrentCollapseState: boolean,
   receiveCollapseStates: Function,
+  savedArea: Object,
 }
 
 const LeaseAreaEdit = ({
-  areaCollapseState,
-  areasData,
   areaId,
   attributes,
   errors,
   field,
-  index,
   isSaveClicked,
-  onRemove,
   planUnitsContractCollapseState,
   planUnitsCurrentCollapseState,
   plotsContractCollapseState,
   plotsCurrentCollapseState,
   receiveCollapseStates,
+  savedArea,
 }: AreaItemProps): Element<*> => {
-  const getAreaById = (id: number) => {
-    if(!id) {
-      return {};
-    }
-    return areasData.find((area) => area.id === id);
-  };
-
-  const handleRemove = () => {
-    onRemove(index);
-  };
-
-  const handleAreaCollapseToggle = (val: boolean) => {
+  const handlePlanUnitContractCollapseToggle = (val: boolean) => {
     if(!areaId) {return;}
 
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.LEASE_AREAS]: {
-          [areaId]: {
-            area: val,
-          },
-        },
-      },
-    });
-  };
-
-  const handlePlanUnitContractCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.EDIT]: {
         [FormNames.LEASE_AREAS]: {
@@ -328,6 +299,8 @@ const LeaseAreaEdit = ({
   };
 
   const handlePlanUnitCurrentCollapseToggle = (val: boolean) => {
+    if(!areaId) {return;}
+
     receiveCollapseStates({
       [ViewModes.EDIT]: {
         [FormNames.LEASE_AREAS]: {
@@ -340,6 +313,8 @@ const LeaseAreaEdit = ({
   };
 
   const handlePlotsContractCollapseToggle = (val: boolean) => {
+    if(!areaId) {return;}
+
     receiveCollapseStates({
       [ViewModes.EDIT]: {
         [FormNames.LEASE_AREAS]: {
@@ -352,6 +327,8 @@ const LeaseAreaEdit = ({
   };
 
   const handlePlotsCurrentCollapseToggle = (val: boolean) => {
+    if(!areaId) {return;}
+
     receiveCollapseStates({
       [ViewModes.EDIT]: {
         [FormNames.LEASE_AREAS]: {
@@ -363,18 +340,8 @@ const LeaseAreaEdit = ({
     });
   };
 
-  const areaErrors = get(errors, field);
-  const savedArea = getAreaById(areaId);
-
   return (
-
-    <Collapse
-      defaultOpen={areaCollapseState !== undefined ? areaCollapseState : true}
-      hasErrors={isSaveClicked && !isEmpty(areaErrors)}
-      headerTitle={<h3 className='collapse__header-title'>{savedArea ? (savedArea.identifier || '-') : '-'}</h3>}
-      onRemove={handleRemove}
-      onToggle={handleAreaCollapseToggle}
-    >
+    <div>
       <BoxContentWrapper>
         <Row>
           <Column small={6} medium={4} large={2}>
@@ -484,7 +451,7 @@ const LeaseAreaEdit = ({
           />
         </Column>
       </Row>
-    </Collapse>
+    </div>
   );
 };
 
@@ -497,7 +464,6 @@ export default connect(
     const id = selector(state, `${props.field}.id`);
 
     return {
-      areaCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.area`),
       areaId: id,
       attributes: getAttributes(state),
       errors: getErrorsByFormName(state, formName),

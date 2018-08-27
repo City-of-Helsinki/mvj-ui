@@ -35,6 +35,8 @@ export type FetchLeaseByIdAction = Action<'mvj/leases/FETCH_BY_ID', LeaseId>;
 export type ReceiveLeaseByIdAction = Action<'mvj/leases/RECEIVE_BY_ID', Lease>;
 export type CreateLeaseAction = Action<'mvj/leases/CREATE', Lease>;
 export type PatchLeaseAction = Action<'mvj/leases/PATCH', Lease>;
+export type ArchiveLeaseAreaAction = Action<'mvj/leases/ARCHIVE_AREA', Lease>;
+export type UnarchiveLeaseAreaAction = Action<'mvj/leases/UNARCHIVE_AREA', Lease>;
 export type StartInvoicingAction = Action<'mvj/leases/START_INVOICING', LeaseId>;
 export type StopInvoicingAction = Action<'mvj/leases/STOP_INVOICING', LeaseId>;
 export type LeaseNotFoundAction = Action<'mvj/leases/NOT_FOUND', void>;
@@ -62,3 +64,8 @@ export type ReceiveFormValidFlagsAction = Action<'mvj/leases/RECEIVE_FORM_VALID_
 export type ClearFormValidFlagsAction = Action<'mvj/leases/CLEAR_FORM_VALID_FLAGS', void>;
 
 export type ReceiveCollapseStatesAction = Action<'mvj/leases/RECEIVE_COLLAPSE_STATES', Object>;
+
+export type HideArchiveAreaModalAction = Action<'mvj/leases/HIDE_ARCHIVE_AREA_MODAL', void>;
+export type ShowArchiveAreaModalAction = Action<'mvj/leases/SHOW_ARCHIVE_AREA_MODAL', void>;
+export type HideUnarchiveAreaModalAction = Action<'mvj/leases/HIDE_UNARCHIVE_AREA_MODAL', void>;
+export type ShowUnarchiveAreaModalAction = Action<'mvj/leases/SHOW_UNARCHIVE_AREA_MODAL', void>;

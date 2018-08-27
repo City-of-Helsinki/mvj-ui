@@ -25,21 +25,15 @@ import {removeSessionStorageItem} from '$util/storage';
 import type {Lease} from './types';
 
 export const getContentLeaseIdentifier = (item:Object) => {
-  if(isEmpty(item)) {
-    return null;
-  }
+  if(isEmpty(item)) {return null;}
 
   return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
 };
 
 export const getContentLeaseTenant = (lease: Object) => {
-  const tenants = get(lease, 'tenants[0].tenantcontact_set', []);
-  if(!tenants.length) {return null;}
+  const tenant = get(lease, 'tenants[0].tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT);
 
-  const tenant = tenants.find((x) => x.type === TenantContactType.TENANT);
-  if(!tenant) {return null;}
-
-  return getContactFullName(tenant.contact);
+  return tenant ? getContactFullName(tenant.contact) : null;
 };
 
 export const getContentLeaseOption = (lease: Lease) => {
@@ -51,10 +45,8 @@ export const getContentLeaseOption = (lease: Lease) => {
 
 export const getContentLeaseAddress = (lease: Object) => {
   const address = get(lease, 'lease_areas[0].addresses[0]');
-  if(!address) {
-    return null;
-  }
-  return getFullAddress(address);
+
+  return address ? getFullAddress(address) : null;
 };
 
 export const getContentLeaseItem = (lease: Object) => {
@@ -71,13 +63,8 @@ export const getContentLeaseItem = (lease: Object) => {
   };
 };
 
-export const getContentLeases = (content: Object) => {
-  const results = get(content, 'results', []);
-
-  return results.map((item) => {
-    return getContentLeaseItem(item);
-  });
-};
+export const getContentLeases = (content: Object) =>
+  get(content, 'results', []).map((item) => getContentLeaseItem(item));
 
 export const getContentLeaseInfo = (lease: Object) => {
   return {
@@ -89,9 +76,10 @@ export const getContentLeaseInfo = (lease: Object) => {
 };
 
 export const getContentLeaseStatus = (lease: Object) => {
-  const now = moment();
-  const startDate = get(lease, 'start_date');
-  const endDate = get(lease, 'end_date');
+  const now = moment(),
+    startDate = get(lease, 'start_date'),
+    endDate = get(lease, 'end_date');
+
   if(endDate && now.isAfter(endDate, 'day')) {
     return LeaseStatus.FINISHED;
   }
@@ -102,13 +90,8 @@ export const getContentLeaseStatus = (lease: Object) => {
   return LeaseStatus.IN_EFFECT;
 };
 
-export const getContentHistory = (lease: Object) => {
-  const historyItems = get(lease, 'history', []);
-  if(!historyItems || historyItems.length === 0) {
-    return [];
-  }
-
-  return historyItems.map((item) => {
+export const getContentHistory = (lease: Object) =>
+  get(lease, 'history', []).map((item) => {
     return {
       active: get(item, 'active'),
       end_date: get(item, 'end_date'),
@@ -117,7 +100,6 @@ export const getContentHistory = (lease: Object) => {
       type: get(item, 'type'),
     };
   });
-};
 
 export const getContentContact = (contact: Object) => {
   return {
@@ -167,14 +149,13 @@ export const getContentUser = (user: Object) => {
   };
 };
 
-const getContentInfillDevelopmentCompensations = (lease: Lease) => {
-  return get(lease, 'infill_development_compensations', []).map((item) => {
+const getContentInfillDevelopmentCompensations = (lease: Lease) =>
+  get(lease, 'infill_development_compensations', []).map((item) => {
     return {
       id: item.id,
       name: item.name,
     };
   });
-};
 
 export const getContentSummary = (lease: Object) => {
   return {
@@ -202,15 +183,13 @@ export const getContentSummary = (lease: Object) => {
   };
 };
 
-export const getContentRelatedLease = (content: Object, path: string = 'from_lease') => {
-  return get(content, path, {});
-};
+export const getContentRelatedLease = (content: Object, path: string = 'from_lease') => get(content, path, {});
 
 const compareRelatedLeases = (a, b) => {
-  const endDateA = get(a, 'lease.end_date');
-  const endDateB = get(b, 'lease.end_date');
-  const startDateA = get(a, 'lease.start_date');
-  const startDateB = get(b, 'lease.start_date');
+  const endDateA = get(a, 'lease.end_date'),
+    endDateB = get(b, 'lease.end_date'),
+    startDateA = get(a, 'lease.start_date'),
+    startDateB = get(b, 'lease.start_date');
 
   if(endDateA !== endDateB) {
     if(!endDateA) {
@@ -243,30 +222,29 @@ const compareRelatedLeases = (a, b) => {
   return 0;
 };
 
-export const getContentRelatedLeasesFrom = (lease: Object) => {
-  const relatedLeases = get(lease, 'related_leases.related_from', []);
-  return relatedLeases.map((relatedLease) => {
-    return {
-      id: relatedLease.id,
-      lease: getContentRelatedLease(relatedLease, 'from_lease'),
-    };
-  }).sort(compareRelatedLeases);
-};
+export const getContentRelatedLeasesFrom = (lease: Object) =>
+  get(lease, 'related_leases.related_from', [])
+    .map((relatedLease) => {
+      return {
+        id: relatedLease.id,
+        lease: getContentRelatedLease(relatedLease, 'from_lease'),
+      };
+    })
+    .sort(compareRelatedLeases);
 
-export const getContentRelatedLeasesTo = (lease: Object) => {
-  const relatedLeases = get(lease, 'related_leases.related_to', []);
-  return relatedLeases.map((relatedLease) => {
-    return {
-      id: relatedLease.id,
-      lease: getContentRelatedLease(relatedLease, 'to_lease'),
-    };
-  }).sort(compareRelatedLeases);
-};
+export const getContentRelatedLeasesTo = (lease: Object) =>
+  get(lease, 'related_leases.related_to', [])
+    .map((relatedLease) => {
+      return {
+        id: relatedLease.id,
+        lease: getContentRelatedLease(relatedLease, 'to_lease'),
+      };
+    })
+    .sort(compareRelatedLeases);
 
 export const getContentAddresses = (addresses: Array<Object>) => {
-  if(isEmpty(addresses)) {
-    return [];
-  }
+  if(isEmpty(addresses)) {return [];}
+
   return addresses.map((address) => {
     return {
       id: get(address, 'id'),
@@ -278,9 +256,7 @@ export const getContentAddresses = (addresses: Array<Object>) => {
 };
 
 export const getContentPlots = (plots: Array<Object>, inContract: boolean): Array<Object> => {
-  if(!plots || !plots.length) {
-    return [];
-  }
+  if(!plots || !plots.length) {return [];}
 
   return plots.filter((plot) => plot.in_contract === inContract).map((plot) => {
     return {
@@ -300,9 +276,7 @@ export const getContentPlots = (plots: Array<Object>, inContract: boolean): Arra
 };
 
 export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolean): Array<Object> => {
-  if(!planunits || !planunits.length) {
-    return [];
-  }
+  if(!planunits || !planunits.length) {return [];}
 
   return planunits.filter((planunit) => planunit.in_contract === inContract).map((planunit) => {
     return {
@@ -343,24 +317,17 @@ export const getContentLeaseAreaItem = (area: Object) => {
     plots_contract: getContentPlots(get(area, 'plots'), true),
     plan_units_current: getContentPlanUnits(get(area, 'plan_units'), false),
     plan_units_contract: getContentPlanUnits(get(area, 'plan_units'), true),
+    archived_at: get(area, 'archived_at'),
+    archived_note: get(area, 'archived_note'),
+    archived_decision: get(area, 'archived_decision.id') || get(area, 'archived_decision'),
   };
 };
 
-export const getContentLeaseAreas = (lease: Object) => {
-  const leaseAreas = get(lease, 'lease_areas', []);
-  if(!leaseAreas || !leaseAreas.length) {
-    return [];
-  }
-
-  return leaseAreas.map((area) => {
-    return getContentLeaseAreaItem(area);
-  });
-};
+export const getContentLeaseAreas = (lease: Object) =>
+  get(lease, 'lease_areas', []).map((area) => getContentLeaseAreaItem(area));
 
 export const getContentComments = (content: Array<Object>): Array<Object> => {
-  if(!content || !content.length) {
-    return [];
-  }
+  if(!content || !content.length) {return [];}
 
   return content.map((comment) => {
     return {
@@ -376,13 +343,8 @@ export const getContentComments = (content: Array<Object>): Array<Object> => {
   });
 };
 
-export const getContentDecisionConditions = (decision: Object) => {
-  const conditions = get(decision, 'conditions', []);
-  if(!conditions.length) {
-    return [];
-  }
-
-  return conditions.map((condition) => {
+export const getContentDecisionConditions = (decision: Object) =>
+  get(decision, 'conditions', []).map((condition) => {
     return {
       id: get(condition, 'id'),
       type: get(condition, 'type.id') || get(condition, 'type'),
@@ -391,7 +353,6 @@ export const getContentDecisionConditions = (decision: Object) => {
       description: get(condition, 'description'),
     };
   });
-};
 
 export const getContentDecisionItem = (decision: Object) => {
   return {
@@ -406,24 +367,11 @@ export const getContentDecisionItem = (decision: Object) => {
   };
 };
 
-export const getContentDecisions = (lease: Object) => {
-  const decisions = get(lease, 'decisions', []);
-  if(!decisions.length) {
-    return [];
-  }
+export const getContentDecisions = (lease: Object) =>
+  get(lease, 'decisions', []).map((decision) => getContentDecisionItem(decision));
 
-  return decisions.map((decision) =>
-    getContentDecisionItem(decision)
-  );
-};
-
-export const getContentContractChanges = (contract: Object) => {
-  const changes = get(contract, 'contract_changes', []);
-  if(!changes.length) {
-    return [];
-  }
-
-  return changes.map((change) => {
+export const getContentContractChanges = (contract: Object) =>
+  get(contract, 'contract_changes', []).map((change) => {
     return ({
       id: get(change, 'id'),
       signing_date: get(change, 'signing_date'),
@@ -435,15 +383,9 @@ export const getContentContractChanges = (contract: Object) => {
       decision: get(change, 'decision.id') || get(change, 'decision'),
     });
   });
-};
 
-export const getContentContractMortageDocuments = (contract: Object) => {
-  const documents = get(contract, 'mortgage_documents', []);
-  if(!documents.length) {
-    return [];
-  }
-
-  return documents.map((document) => {
+export const getContentContractMortageDocuments = (contract: Object) =>
+  get(contract, 'mortgage_documents', []).map((document) => {
     return ({
       id: get(document, 'id'),
       number: get(document, 'number'),
@@ -451,7 +393,6 @@ export const getContentContractMortageDocuments = (contract: Object) => {
       note: get(document, 'note'),
     });
   });
-};
 
 export const getContentContractItem = (contract: Object) => {
   return {
@@ -473,16 +414,8 @@ export const getContentContractItem = (contract: Object) => {
   };
 };
 
-export const getContentContracts = (lease: Object) => {
-  const contracts = get(lease, 'contracts', []);
-  if(!contracts || contracts.length === 0) {
-    return [];
-  }
-
-  return contracts.map((contract) =>
-    getContentContractItem(contract)
-  );
-};
+export const getContentContracts = (lease: Object) =>
+  get(lease, 'contracts', []).map((contract) => getContentContractItem(contract));
 
 export const getContentInspectionItem = (inspection: Object) => {
   return {
@@ -494,42 +427,26 @@ export const getContentInspectionItem = (inspection: Object) => {
   };
 };
 
-export const getContentInspections = (lease: Object) => {
-  const inspections = get(lease, 'inspections', []);
-  if(!inspections.length) {
-    return [];
-  }
-
-  return inspections.map((inspection) =>
-    getContentInspectionItem(inspection)
-  );
-};
+export const getContentInspections = (lease: Object) =>
+  get(lease, 'inspections', []).map((inspection) => getContentInspectionItem(inspection));
 
 export const getContentConstructabilityDescriptions = (area: Object, type: string) => {
-  const descriptions = get(area, 'constructability_descriptions', []);
-  if(!descriptions.length) {
-    return [];
-  }
-
-  return descriptions.filter((description) => description.type === type).map((description) => {
-    return {
-      id: get(description, 'id'),
-      type: get(description, 'type'),
-      user: getContentUser(get(description, 'user')),
-      text: get(description, 'text'),
-      ahjo_reference_number: get(description, 'ahjo_reference_number'),
-      modified_at: get(description, 'modified_at'),
-    };
-  });
+  return get(area, 'constructability_descriptions', [])
+    .filter((description) => description.type === type)
+    .map((description) => {
+      return {
+        id: get(description, 'id'),
+        type: get(description, 'type'),
+        user: getContentUser(get(description, 'user')),
+        text: get(description, 'text'),
+        ahjo_reference_number: get(description, 'ahjo_reference_number'),
+        modified_at: get(description, 'modified_at'),
+      };
+    });
 };
 
-export const getContentConstructability = (lease: Object) => {
-  const lease_areas = get(lease, 'lease_areas', []);
-  if(!lease_areas.length) {
-    return [];
-  }
-
-  return lease_areas.map((area) => {
+export const getContentConstructability = (lease: Object) =>
+  get(lease, 'lease_areas', []).map((area) => {
     return {
       id: get(area, 'id'),
       identifier: get(area, 'identifier'),
@@ -561,39 +478,35 @@ export const getContentConstructability = (lease: Object) => {
       descriptionsOther: getContentConstructabilityDescriptions(area, ConstructabilityType.OTHER),
     };
   });
-};
 
 export const getContentTenantItem = (tenant: Object) => {
-  const contacts = get(tenant, 'tenantcontact_set', []);
-  const contact = contacts.find(x => x.type === TenantContactType.TENANT);
-  if(!contact) {
-    return {};
-  }
-  return {
+  const contact = get(tenant, 'tenantcontact_set', []).find(x => x.type === TenantContactType.TENANT);
+
+  return contact ? {
     id: get(contact, 'id'),
     type: get(contact, 'type'),
     contact: getContentContact(get(contact, 'contact')),
     start_date: get(contact, 'start_date'),
     end_date: get(contact, 'end_date'),
-  };
+  } : {};
 };
 
-export const getContentTenantContactSet = (tenant: Object) => {
-  const contacts = get(tenant, 'tenantcontact_set', []).filter((x) => x.type !== TenantContactType.TENANT);
+export const getContentTenantContactSet = (tenant: Object) =>
+  get(tenant, 'tenantcontact_set', [])
+    .filter((x) => x.type !== TenantContactType.TENANT)
+    .map((contact) => {
+      return {
+        id: get(contact, 'id'),
+        type: get(contact, 'type'),
+        contact: getContentContact(get(contact, 'contact')),
+        start_date: get(contact, 'start_date'),
+        end_date: get(contact, 'end_date'),
+      };
+    })
+    .sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
 
-  return contacts.map((contact) => {
-    return {
-      id: get(contact, 'id'),
-      type: get(contact, 'type'),
-      contact: getContentContact(get(contact, 'contact')),
-      start_date: get(contact, 'start_date'),
-      end_date: get(contact, 'end_date'),
-    };
-  }).sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
-};
-
-export const getContentTenants = (lease: Object) => {
-  return get(lease, 'tenants', []).map((tenant) => {
+export const getContentTenants = (lease: Object) =>
+  get(lease, 'tenants', []).map((tenant) => {
     return {
       id: get(tenant, 'id'),
       share_numerator: get(tenant, 'share_numerator'),
@@ -603,20 +516,18 @@ export const getContentTenants = (lease: Object) => {
       tenantcontact_set: getContentTenantContactSet(tenant),
     };
   }).sort((a, b) => sortStringByKeyDesc(a, b, 'tenant.start_date'));
-};
 
 export const getContentTenantsFormData = (lease: Object) => {
   const tenants = getContentTenants(lease);
+
   return {
     tenants: tenants.filter((tenant) => !isTenantArchived(tenant.tenant)),
     tenantsArchived: tenants.filter((tenant) => isTenantArchived(tenant.tenant)),
   };
 };
 
-export const getContentPayableRents = (rent: Object) => {
-  const items = get(rent, 'payable_rents', []);
-
-  return items.map((item) => {
+export const getContentPayableRents = (rent: Object) =>
+  get(rent, 'payable_rents', []).map((item) => {
     return {
       id: item.id || undefined,
       amount: get(item, 'amount'),
@@ -626,12 +537,9 @@ export const getContentPayableRents = (rent: Object) => {
       calendar_year_rent: get(item, 'calendar_year_rent'),
     };
   });
-};
 
-export const getContentRentAdjustments = (rent: Object) => {
-  const items = get(rent, 'rent_adjustments', []);
-
-  return items.map((item) => {
+export const getContentRentAdjustments = (rent: Object) =>
+  get(rent, 'rent_adjustments', []).map((item) => {
     return {
       id: item.id || undefined,
       type: get(item, 'type'),
@@ -645,12 +553,9 @@ export const getContentRentAdjustments = (rent: Object) => {
       note: get(item, 'note'),
     };
   });
-};
 
-export const getContentIndexAdjustedRents = (rent: Object) => {
-  const items = get(rent, 'index_adjusted_rents', []);
-
-  return items.map((item) => {
+export const getContentIndexAdjustedRents = (rent: Object) =>
+  get(rent, 'index_adjusted_rents', []).map((item) => {
     return {
       item: item.id || undefined,
       amount: get(item, 'amount'),
@@ -660,12 +565,9 @@ export const getContentIndexAdjustedRents = (rent: Object) => {
       factor: get(item, 'factor'),
     };
   });
-};
 
-export const getContentContractRents = (rent: Object) => {
-  const items = get(rent, 'contract_rents', []);
-
-  return items.map((item) => {
+export const getContentContractRents = (rent: Object) =>
+  get(rent, 'contract_rents', []).map((item) => {
     return {
       id: item.id || undefined,
       amount: get(item, 'amount'),
@@ -678,12 +580,9 @@ export const getContentContractRents = (rent: Object) => {
       end_date: get(item, 'end_date'),
     };
   });
-};
 
-export const getContentFixedInitialYearRents = (rent: Object) => {
-  const items = get(rent, 'fixed_initial_year_rents', []);
-
-  return items.map((item) => {
+export const getContentFixedInitialYearRents = (rent: Object) =>
+  get(rent, 'fixed_initial_year_rents', []).map((item) => {
     return {
       id: item.id || undefined,
       intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
@@ -692,50 +591,48 @@ export const getContentFixedInitialYearRents = (rent: Object) => {
       end_date: get(item, 'end_date'),
     };
   });
-};
 
-export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates') => {
-  const dueDates = get(rent, path, []);
-  return dueDates.map((date) => {
+export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates') =>
+  get(rent, path, []).map((date) => {
     return {
       id: date.id || undefined,
       day: get(date, 'day'),
       month: get(date, 'month'),
     };
   });
-};
 
-export const getContentRents = (lease: Object) => {
-  return get(lease, 'rents', []).map((rent) => {
-    return {
-      id: rent.id || undefined,
-      type: get(rent, 'type'),
-      start_date: get(rent, 'start_date'),
-      end_date: get(rent, 'end_date'),
-      cycle: get(rent, 'cycle'),
-      index_type: get(rent, 'index_type'),
-      due_dates_type: get(rent, 'due_dates_type'),
-      due_dates_per_year: get(rent, 'due_dates_per_year'),
-      elementary_index: get(rent, 'elementary_index'),
-      index_rounding: get(rent, 'index_rounding'),
-      x_value: get(rent, 'x_value'),
-      y_value: get(rent, 'y_value'),
-      y_value_start: get(rent, 'y_value_start'),
-      equalization_start_date: get(rent, 'equalization_start_date'),
-      equalization_end_date: get(rent, 'equalization_end_date'),
-      amount: get(rent, 'amount'),
-      note: get(rent, 'note'),
-      is_active: get(rent, 'is_active'),
-      due_dates: getContentRentDueDate(rent),
-      fixed_initial_year_rents: getContentFixedInitialYearRents(rent),
-      contract_rents: getContentContractRents(rent),
-      index_adjusted_rents: getContentIndexAdjustedRents(rent),
-      rent_adjustments: getContentRentAdjustments(rent),
-      payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
-      yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
-    };
-  }).sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
-};
+export const getContentRents = (lease: Object) =>
+  get(lease, 'rents', [])
+    .map((rent) => {
+      return {
+        id: rent.id || undefined,
+        type: get(rent, 'type'),
+        start_date: get(rent, 'start_date'),
+        end_date: get(rent, 'end_date'),
+        cycle: get(rent, 'cycle'),
+        index_type: get(rent, 'index_type'),
+        due_dates_type: get(rent, 'due_dates_type'),
+        due_dates_per_year: get(rent, 'due_dates_per_year'),
+        elementary_index: get(rent, 'elementary_index'),
+        index_rounding: get(rent, 'index_rounding'),
+        x_value: get(rent, 'x_value'),
+        y_value: get(rent, 'y_value'),
+        y_value_start: get(rent, 'y_value_start'),
+        equalization_start_date: get(rent, 'equalization_start_date'),
+        equalization_end_date: get(rent, 'equalization_end_date'),
+        amount: get(rent, 'amount'),
+        note: get(rent, 'note'),
+        is_active: get(rent, 'is_active'),
+        due_dates: getContentRentDueDate(rent),
+        fixed_initial_year_rents: getContentFixedInitialYearRents(rent),
+        contract_rents: getContentContractRents(rent),
+        index_adjusted_rents: getContentIndexAdjustedRents(rent),
+        rent_adjustments: getContentRentAdjustments(rent),
+        payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
+        yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
+      };
+    })
+    .sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
 
 export const getContentRentsFormData = (lease: Object) => {
   const rents = getContentRents(lease);
@@ -746,10 +643,8 @@ export const getContentRentsFormData = (lease: Object) => {
   };
 };
 
-export const getContentBasisOfRents = (lease: Object) => {
-  const items = get(lease, 'basis_of_rents', []);
-
-  return items.map((item) => {
+export const getContentBasisOfRents = (lease: Object) =>
+  get(lease, 'basis_of_rents', []).map((item) => {
     return {
       id: item.id || undefined,
       intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
@@ -762,23 +657,17 @@ export const getContentBasisOfRents = (lease: Object) => {
       year_rent_index: get(item, 'year_rent_index'),
     };
   });
-};
 
-
-// OLD HELPER FUNCTIONS
-//TODO: Remove mock data helper function when contruction eligibility tab is added to API
 export const getFullAddress = (item: Object) => {
-  if(isEmpty(item)) {
-    return null;
-  }
+  if(isEmpty(item)) {return null;}
+
   return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''}
     ${item.postal_code || ''} ${item.city || ''}`;
 };
 
 export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>): Array<Object> => {
-  if(!documentTypes || !documentTypes.length) {
-    return items;
-  }
+  if(!documentTypes || !documentTypes.length) {return items;}
+
   return items.filter((item) => {
     return documentTypes.indexOf(item.state) !== -1;
   });
@@ -788,8 +677,8 @@ export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTy
 export const getInvoiceRecipientOptions = (lease: Object) =>{
   const items = getContentTenants(lease);
 
-  return [
-    {value: RecipientOptions.ALL, label: 'Kaikki'}, ...items
+  return [{value: RecipientOptions.ALL, label: 'Kaikki'},
+    ...items
       .filter((item) => isTenantActive(item.tenant))
       .map((item) => {
         return {
@@ -803,6 +692,7 @@ export const getInvoiceRecipientOptions = (lease: Object) =>{
 
 export const getInvoiceTenantOptions = (lease: Object) =>{
   const items = getContentTenants(lease);
+
   return items.map((item) => {
     return {
       value: item.id,
@@ -812,10 +702,12 @@ export const getInvoiceTenantOptions = (lease: Object) =>{
 };
 
 export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {
-  payload.state = get(leaseInfo, 'state');
-  payload.start_date = get(leaseInfo, 'start_date');
-  payload.end_date = get(leaseInfo, 'end_date');
-  return payload;
+  return {
+    ...payload,
+    'state': get(leaseInfo, 'state'),
+    'start_date': get(leaseInfo, 'start_date'),
+    'end_date': get(leaseInfo, 'end_date'),
+  };
 };
 
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
@@ -839,8 +731,8 @@ export const addSummaryFormValues = (payload: Object, summary: Object) => {
   return payload;
 };
 
-const getAddressesForDb = (addresses: Array<Object>) => {
-  return addresses.map((address) => {
+const getAddressesForDb = (addresses: Array<Object>) =>
+  addresses.map((address) => {
     return {
       id: address.id || undefined,
       address: get(address, 'address'),
@@ -848,28 +740,23 @@ const getAddressesForDb = (addresses: Array<Object>) => {
       city: get(address, 'city'),
     };
   });
-};
 
 const getPlotsForDb = (area: Object) => {
   const currentPlots = get(area, 'plots_current', []).map((plot) => {
-    plot.in_contract = false;
-    return plot;
+    return {...plot, 'in_contract': false};
   });
   const contractPlots = get(area, 'plots_contract', []).map((plot) => {
-    plot.in_contract = true;
-    return plot;
+    return {...plot, 'in_contract': true};
   });
   const plots = currentPlots.concat(contractPlots);
-  if(!plots.length) {
-    return [];
-  }
+
   return plots.map((plot) => {
     return {
       id: plot.id || undefined,
       identifier: get(plot, 'identifier'),
       area: formatDecimalNumberForDb(get(plot, 'area')),
       section_area: formatDecimalNumberForDb(get(plot, 'section_area')),
-      addresses: getAddressesForDb(get(plot, 'addresses')),
+      addresses: getAddressesForDb(get(plot, 'addresses', [])),
       postal_code: get(plot, 'postal_code'),
       city: get(plot, 'city'),
       type: get(plot, 'type'),
@@ -883,24 +770,20 @@ const getPlotsForDb = (area: Object) => {
 
 const getPlanUnitsForDb = (area: Object) => {
   const currentPlanUnits = get(area, 'plan_units_current', []).map((planunit) => {
-    planunit.in_contract = false;
-    return planunit;
+    return {...planunit, 'in_contract': false};
   });
   const contractPlanUnits = get(area, 'plan_units_contract', []).map((planunit) => {
-    planunit.in_contract = true;
-    return planunit;
+    return {...planunit, 'in_contract': true};
   });
+
   const planUnits = currentPlanUnits.concat(contractPlanUnits);
-  if(!planUnits.length) {
-    return [];
-  }
   return planUnits.map((planunit) => {
     return {
       id: planunit.id || undefined,
       identifier: get(planunit, 'identifier'),
       area: formatDecimalNumberForDb(get(planunit, 'area')),
       section_area: formatDecimalNumberForDb(get(planunit, 'section_area')),
-      addresses: getAddressesForDb(get(planunit, 'addresses')),
+      addresses: getAddressesForDb(get(planunit, 'addresses', [])),
       postal_code: get(planunit, 'postal_code'),
       city: get(planunit, 'city'),
       type: get(planunit, 'type'),
@@ -919,36 +802,32 @@ const getPlanUnitsForDb = (area: Object) => {
 };
 
 export const addAreasFormValues = (payload: Object, values: Object) => {
-  const areas = get(values, 'lease_areas', []);
-  if(!areas.length) {
-    payload.lease_areas = [];
-  } else {
-    payload.lease_areas = areas.map((area) => {
-      return {
-        id: area.id || undefined,
-        identifier: get(area, 'identifier'),
-        area: formatDecimalNumberForDb(get(area, 'area')),
-        section_area: formatDecimalNumberForDb(get(area, 'area')),
-        addresses: getAddressesForDb(get(area, 'addresses')),
-        postal_code: get(area, 'postal_code'),
-        city: get(area, 'city'),
-        type: get(area, 'type'),
-        location: get(area, 'location'),
-        plots: getPlotsForDb(area),
-        plan_units: getPlanUnitsForDb(area),
-      };
-    });
-  }
+  const areas = [...get(values, 'lease_areas_active', []), ...get(values, 'lease_areas_archived', [])];
+
+  payload.lease_areas = areas.map((area) => {
+    return {
+      id: area.id || undefined,
+      identifier: get(area, 'identifier'),
+      area: formatDecimalNumberForDb(get(area, 'area')),
+      section_area: formatDecimalNumberForDb(get(area, 'area')),
+      addresses: getAddressesForDb(get(area, 'addresses', [])),
+      postal_code: get(area, 'postal_code'),
+      city: get(area, 'city'),
+      type: get(area, 'type'),
+      location: get(area, 'location'),
+      plots: getPlotsForDb(area),
+      plan_units: getPlanUnitsForDb(area),
+      archived_at: get(area, 'archived_at'),
+      archived_note: get(area, 'archived_note'),
+      archived_decision: get(area, 'archived_decision'),
+    };
+  });
 
   return payload;
 };
 
 const getDecisionConditionsForDb = (decision: Object) => {
-  const conditions = get(decision, 'conditions', []);
-  if(!conditions.length) {
-    return [];
-  }
-  return conditions.map((condition) => {
+  return get(decision, 'conditions', []).map((condition) => {
     return {
       id: condition.id || undefined,
       type: get(condition, 'type'),
@@ -960,33 +839,24 @@ const getDecisionConditionsForDb = (decision: Object) => {
 };
 
 export const addDecisionsFormValues = (payload: Object, values: Object) => {
-  const decisions = get(values, 'decisions', []);
-  if(!decisions.length) {
-    payload.decisions = [];
-  } else {
-    payload.decisions = decisions.map((decision) => {
-      return {
-        id: decision.id || undefined,
-        reference_number: get(decision, 'reference_number'),
-        decision_maker: get(decision, 'decision_maker'),
-        decision_date: get(decision, 'decision_date'),
-        section: get(decision, 'section'),
-        type: get(decision, 'type'),
-        description: get(decision, 'description'),
-        conditions: getDecisionConditionsForDb(decision),
-      };
-    });
-  }
+  payload.decisions = get(values, 'decisions', []).map((decision) => {
+    return {
+      id: decision.id || undefined,
+      reference_number: get(decision, 'reference_number'),
+      decision_maker: get(decision, 'decision_maker'),
+      decision_date: get(decision, 'decision_date'),
+      section: get(decision, 'section'),
+      type: get(decision, 'type'),
+      description: get(decision, 'description'),
+      conditions: getDecisionConditionsForDb(decision),
+    };
+  });
 
   return payload;
 };
 
 const getContractMortgageDocumentsForDb = (contract: Object) => {
-  const documents = get(contract, 'mortgage_documents', []);
-  if(!documents.length) {
-    return [];
-  }
-  return documents.map((doc) => {
+  return get(contract, 'mortgage_documents', []).map((doc) => {
     return {
       id: doc.id || undefined,
       number: get(doc, 'number'),
@@ -997,11 +867,7 @@ const getContractMortgageDocumentsForDb = (contract: Object) => {
 };
 
 const getContractChangesForDb = (contract: Object) => {
-  const changes = get(contract, 'contract_changes', []);
-  if(!changes.length) {
-    return [];
-  }
-  return changes.map((change) => {
+  return get(contract, 'contract_changes', []).map((change) => {
     return {
       id: change.id || undefined,
       signing_date: get(change, 'signing_date'),
@@ -1016,73 +882,58 @@ const getContractChangesForDb = (contract: Object) => {
 };
 
 export const addContractsFormValues = (payload: Object, values: Object) => {
-  const contracts = get(values, 'contracts', []);
-  if(!contracts.length) {
-    payload.contracts = [];
-  } else {
-    payload.contracts = contracts.map((contract) => {
-      return {
-        id: contract.id || undefined,
-        type: get(contract, 'type'),
-        contract_number: get(contract, 'contract_number'),
-        signing_date: get(contract, 'signing_date'),
-        signing_note: get(contract, 'signing_note'),
-        is_readjustment_decision: get(contract, 'is_readjustment_decision'),
-        decision: get(contract, 'decision'),
-        ktj_link: get(contract, 'ktj_link'),
-        collateral_number: get(contract, 'collateral_number'),
-        collateral_start_date: get(contract, 'collateral_start_date'),
-        collateral_end_date: get(contract, 'collateral_end_date'),
-        collateral_note: get(contract, 'collateral_note'),
-        institution_identifier: get(contract, 'institution_identifier'),
-        contract_changes: getContractChangesForDb(contract),
-        mortgage_documents: getContractMortgageDocumentsForDb(contract),
-      };
-    });
-  }
+  payload.contracts = get(values, 'contracts', []).map((contract) => {
+    return {
+      id: contract.id || undefined,
+      type: get(contract, 'type'),
+      contract_number: get(contract, 'contract_number'),
+      signing_date: get(contract, 'signing_date'),
+      signing_note: get(contract, 'signing_note'),
+      is_readjustment_decision: get(contract, 'is_readjustment_decision'),
+      decision: get(contract, 'decision'),
+      ktj_link: get(contract, 'ktj_link'),
+      collateral_number: get(contract, 'collateral_number'),
+      collateral_start_date: get(contract, 'collateral_start_date'),
+      collateral_end_date: get(contract, 'collateral_end_date'),
+      collateral_note: get(contract, 'collateral_note'),
+      institution_identifier: get(contract, 'institution_identifier'),
+      contract_changes: getContractChangesForDb(contract),
+      mortgage_documents: getContractMortgageDocumentsForDb(contract),
+    };
+  });
 
   return payload;
 };
 
 export const addInspectionsFormValues = (payload: Object, values: Object) => {
-  const inspections = get(values, 'inspections', []);
-  if(!inspections.length) {
-    payload.inspections = [];
-  } else {
-    payload.inspections = inspections.map((inspection) => {
-      return {
-        id: inspection.id || undefined,
-        inspector: get(inspection, 'inspector'),
-        supervision_date: get(inspection, 'supervision_date'),
-        supervised_date: get(inspection, 'supervised_date'),
-        description: get(inspection, 'description'),
-      };
-    });
-  }
+  payload.inspections = get(values, 'inspections', []).map((inspection) => {
+    return {
+      id: inspection.id || undefined,
+      inspector: get(inspection, 'inspector'),
+      supervision_date: get(inspection, 'supervision_date'),
+      supervised_date: get(inspection, 'supervised_date'),
+      description: get(inspection, 'description'),
+    };
+  });
 
   return payload;
 };
 
 export const getConstructabilityDescriptionsForDb = (area: Object) => {
   const descriptionsPreconstruction = get(area, 'descriptionsPreconstruction', []).map((description) => {
-    description.type = ConstructabilityType.PRECONSTRUCTION;
-    return description;
+    return {...description, 'type': ConstructabilityType.PRECONSTRUCTION};
   });
   const descriptionsDemolition = get(area, 'descriptionsDemolition', []).map((description) => {
-    description.type = ConstructabilityType.DEMOLITION;
-    return description;
+    return {...description, 'type': ConstructabilityType.DEMOLITION};
   });
   const descriptionsPollutedLand = get(area, 'descriptionsPollutedLand', []).map((description) => {
-    description.type = ConstructabilityType.POLLUTED_LAND;
-    return description;
+    return {...description, 'type': ConstructabilityType.POLLUTED_LAND};
   });
   const descriptionsReport = get(area, 'descriptionsReport', []).map((description) => {
-    description.type = ConstructabilityType.REPORT;
-    return description;
+    return {...description, 'type': ConstructabilityType.REPORT};
   });
   const descriptionsOther = get(area, 'descriptionsOther', []).map((description) => {
-    description.type = ConstructabilityType.OTHER;
-    return description;
+    return {...description, 'type': ConstructabilityType.OTHER};
   });
   const descriptions = [
     ...descriptionsPreconstruction,
@@ -1092,9 +943,6 @@ export const getConstructabilityDescriptionsForDb = (area: Object) => {
     ...descriptionsOther,
   ];
 
-  if(!descriptions.length) {
-    return [];
-  }
   return descriptions.map((description) => {
     return {
       id: description.id || undefined,
@@ -1184,27 +1032,21 @@ export const addTenantsFormValues = (payload: Object, values: Object) => {
   const tenantsArchived = get(values, 'tenants.tenantsArchived', []);
   const tenants = [...tenantsCurrent, ...tenantsArchived];
 
-  if(!tenants.length) {
-    payload.tenants = [];
-  } else {
-    payload.tenants = tenants.map((tenant) => {
-      return {
-        id: tenant.id || undefined,
-        share_numerator: get(tenant, 'share_numerator'),
-        share_denominator: get(tenant, 'share_denominator'),
-        reference: get(tenant, 'reference'),
-        tenantcontact_set: getTenantContactSetForDb(tenant),
-      };
-    });
-  }
+  payload.tenants = tenants.map((tenant) => {
+    return {
+      id: tenant.id || undefined,
+      share_numerator: get(tenant, 'share_numerator'),
+      share_denominator: get(tenant, 'share_denominator'),
+      reference: get(tenant, 'reference'),
+      tenantcontact_set: getTenantContactSetForDb(tenant),
+    };
+  });
 
   return payload;
 };
 
-export const getContentRentAdjustmentsForDb = (rent: Object) => {
-  const items = get(rent, 'rent_adjustments', []);
-
-  return items.map((item) => {
+export const getContentRentAdjustmentsForDb = (rent: Object) =>
+  get(rent, 'rent_adjustments', []).map((item) => {
     return {
       id: item.id || undefined,
       type: get(item, 'type'),
@@ -1218,12 +1060,9 @@ export const getContentRentAdjustmentsForDb = (rent: Object) => {
       note: get(item, 'note'),
     };
   });
-};
 
-export const getContentContractRentsForDb = (rent: Object) => {
-  const items = get(rent, 'contract_rents', []);
-
-  return items.map((item) => {
+export const getContentContractRentsForDb = (rent: Object) =>
+  get(rent, 'contract_rents', []).map((item) => {
     return {
       id: item.id || undefined,
       amount: formatDecimalNumberForDb(get(item, 'amount')),
@@ -1236,12 +1075,9 @@ export const getContentContractRentsForDb = (rent: Object) => {
       end_date: get(item, 'end_date'),
     };
   });
-};
 
-export const getContentFixedInitialYearRentsForDb = (rent: Object) => {
-  const items = get(rent, 'fixed_initial_year_rents', []);
-
-  return items.map((item) => {
+export const getContentFixedInitialYearRentsForDb = (rent: Object) =>
+  get(rent, 'fixed_initial_year_rents', []).map((item) => {
     return {
       id: item.id || undefined,
       intended_use: get(item, 'intended_use'),
@@ -1250,41 +1086,34 @@ export const getContentFixedInitialYearRentsForDb = (rent: Object) => {
       end_date: get(item, 'end_date'),
     };
   });
-};
 
-export const getContentRentDueDatesForDb = (rent: Object) => {
-  const dueDates = get(rent, 'due_dates', []);
-
-  return dueDates.map((date) => {
+export const getContentRentDueDatesForDb = (rent: Object) =>
+  get(rent, 'due_dates', []).map((date) => {
     return {
       id: date.id || undefined,
       day: get(date, 'day'),
       month: get(date, 'month'),
     };
   });
-};
 
 export const addRentsFormValues = (payload: Object, values: Object) => {
   payload.is_rent_info_complete = values.is_rent_info_complete ? true : false;
 
-  const basisOfRents = get(values, 'basis_of_rents', {});
-  if(!basisOfRents.length) {
-    payload.basis_of_rents = [];
-  } else {
-    payload.basis_of_rents = basisOfRents.map((item) => {
-      return {
-        id: item.id || undefined,
-        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-        floor_m2: formatDecimalNumberForDb(get(item, 'floor_m2')),
-        index: get(item, 'index'),
-        amount_per_floor_m2_index_100: formatDecimalNumberForDb(get(item, 'amount_per_floor_m2_index_100')),
-        amount_per_floor_m2_index: get(item, 'amount_per_floor_m2_index'),
-        percent: formatDecimalNumberForDb(get(item, 'percent')),
-        year_rent_index_100: get(item, 'year_rent_index_100'),
-        year_rent_index: get(item, 'year_rent_index'),
-      };
-    });
-  }
+  const basisOfRents = get(values, 'basis_of_rents', []);
+  payload.basis_of_rents = basisOfRents.map((item) => {
+    return {
+      id: item.id || undefined,
+      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      floor_m2: formatDecimalNumberForDb(get(item, 'floor_m2')),
+      index: get(item, 'index'),
+      amount_per_floor_m2_index_100: formatDecimalNumberForDb(get(item, 'amount_per_floor_m2_index_100')),
+      amount_per_floor_m2_index: get(item, 'amount_per_floor_m2_index'),
+      percent: formatDecimalNumberForDb(get(item, 'percent')),
+      year_rent_index_100: get(item, 'year_rent_index_100'),
+      year_rent_index: get(item, 'year_rent_index'),
+    };
+  });
+
   const rentsCurrent = get(values, 'rents.rents', []);
   const rentsArchived = get(values, 'rents.rentsArchived', []);
   const rents = [...rentsCurrent, ...rentsArchived];
@@ -1319,7 +1148,6 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
   return payload;
 };
 
-// GERERIC LEASE HELPER FUNCTIONS
 export const getAreasSum = (areas: Array<Object>) => {
   let areasSum = 0;
 

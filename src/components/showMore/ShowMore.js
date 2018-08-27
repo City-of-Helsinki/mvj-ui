@@ -49,12 +49,19 @@ class ShowMore extends PureComponent {
     return this.state.open ? 'Näytä vähemmän' : 'Näytä lisää';
   };
 
-  onReadMoreClick = () => {
+  handleReadMoreClick = () => {
     this.setState({
       open: !this.state.open,
     });
     this.checkOverflow();
   };
+
+  handleKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      e.preventDefault();
+      this.handleReadMoreClick();
+    }
+  }
 
   getTextToDisplay = () => {
     const {maxChars, text} = this.props;
@@ -78,10 +85,10 @@ class ShowMore extends PureComponent {
           <span className='show-more__text'>{this.getTextToDisplay()}&nbsp;</span>
           {overflows &&
             <a className={classNames('show-more__read-more')}
-              onClick={this.onReadMoreClick}>
-
-              {this.getLinkText()}
-            </a>
+              onClick={this.handleReadMoreClick}
+              onKeyDown={this.handleKeyDown}
+              tabIndex={0}
+            >{this.getLinkText()}</a>
           }
         </p>
       </div>

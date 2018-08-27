@@ -2,9 +2,12 @@
 import React, {PureComponent} from 'react';
 import flowRight from 'lodash/flowRight';
 import classNames from 'classnames';
-import ReactResizeDetector from 'react-resize-detector';
-import RemoveButton from '../form/RemoveButton';
 import {Row, Column} from 'react-foundation';
+import ReactResizeDetector from 'react-resize-detector';
+
+import ArchiveButton from '../form/ArchiveButton';
+import RemoveButton from '../form/RemoveButton';
+import UnarchiveButton from '../form/UnarchiveButton';
 
 type Props = {
   children: Object,
@@ -13,8 +16,10 @@ type Props = {
   hasErrors: boolean,
   header?: any,
   headerTitle: any,
+  onArchive?: Function,
   onRemove: Function,
   onToggle: ?Function,
+  onUnarchive?: Function,
   showTitleOnOpen?: boolean,
 }
 
@@ -115,7 +120,7 @@ class Collapse extends PureComponent<Props, State> {
 
   render() {
     const {contentHeight, isOpen, isCollapsing, isExpanding} = this.state;
-    const {children, className, hasErrors, header, headerTitle, onRemove, showTitleOnOpen} = this.props;
+    const {children, className, hasErrors, header, headerTitle, onArchive, onRemove, onUnarchive, showTitleOnOpen} = this.props;
 
     return (
       <div
@@ -149,6 +154,18 @@ class Collapse extends PureComponent<Props, State> {
             </Row>
             <div className='collapse__header_button-wrapper'>
               {!isOpen && hasErrors && <span className='collapse__header_error-badge' />}
+              {onArchive &&
+                <ArchiveButton
+                  onClick={onArchive}
+                  title='Arkistoi'
+                />
+              }
+              {onUnarchive &&
+                <UnarchiveButton
+                  onClick={onUnarchive}
+                  title='Poista arkistosta'
+                />
+              }
               {onRemove &&
                 <RemoveButton
                   onClick={onRemove}

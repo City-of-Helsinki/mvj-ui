@@ -73,6 +73,7 @@ class StyledCheckboxButtons extends Component<Props> {
             <input
               checked={areAllSelected}
               className='checkbox'
+              onChange={this.handleSelectAllClick}
               onKeyDown={this.handleSelectAllKeyDown}
               type='checkbox'
             />
