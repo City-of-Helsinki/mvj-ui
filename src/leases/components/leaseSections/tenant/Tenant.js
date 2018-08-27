@@ -41,12 +41,11 @@ const Tenant = ({
 
   const contact = get(tenant, 'tenant.contact');
   const isActive = isTenantActive(get(tenant, 'tenant'));
-  const collapseDefault = collapseState !== undefined ? collapseState : isActive;
 
   return (
     <Collapse
       className={classNames({'not-active': !isActive})}
-      defaultOpen={collapseDefault}
+      defaultOpen={collapseState !== undefined ? collapseState : isActive}
       header={
         <div>
           <Column>

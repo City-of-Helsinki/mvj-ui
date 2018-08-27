@@ -68,7 +68,15 @@
       @include transform(translate(0, -50%));
       display: flex;
 
+      .form__archive-button {
+        margin-left: rem-calc(10px);
+      }
+
       .form__remove-button {
+        margin-left: rem-calc(10px);
+      }
+
+      .form__unarchive-button {
         margin-left: rem-calc(10px);
       }
     }

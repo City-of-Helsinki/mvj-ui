@@ -22,6 +22,15 @@ import type {
   ReceiveCollapseStatesAction,
 } from '$src/leases/types';
 
+const isArchiveAreaModalOpenReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/HIDE_ARCHIVE_AREA_MODAL': () => false,
+  'mvj/leases/SHOW_ARCHIVE_AREA_MODAL': () => true,
+}, false);
+
+const isUnarchiveAreaModalOpenReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/HIDE_UNARCHIVE_AREA_MODAL': () => false,
+  'mvj/leases/SHOW_UNARCHIVE_AREA_MODAL': () => true,
+}, false);
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/leases/HIDE_EDIT': () => false,
@@ -52,6 +61,13 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/NOT_FOUND': () => false,
   'mvj/leases/RECEIVE_ALL': () => false,
   'mvj/leases/RECEIVE_SINGLE': () => false,
+}, false);
+
+const isArchiveFetchingReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/ARCHIVE_AREA': () => true,
+  'mvj/leases/UNARCHIVE_AREA': () => true,
+  'mvj/leases/RECEIVE_SINGLE': () => false,
+  'mvj/leases/NOT_FOUND': () => false,
 }, false);
 
 const isFetchingByIdReducer: Reducer<Object> = handleActions({
@@ -94,7 +110,7 @@ const leasesListReducer: Reducer<LeaseList> = handleActions({
 
 const currentLeaseReducer: Reducer<Lease> = handleActions({
   ['mvj/leases/RECEIVE_SINGLE']: (state: Lease, {payload: lease}: ReceiveSingleLeaseAction) => {
-    return lease;
+    return {...lease};
   },
 }, {});
 
@@ -102,7 +118,7 @@ const byIdReducer: Reducer<Lease> = handleActions({
   ['mvj/leases/RECEIVE_BY_ID']: (state: Lease, {payload}: ReceiveLeaseByIdAction) => {
     return {
       ...state,
-      [payload.leaseId]: payload.lease,
+      [payload.leaseId]: {...payload.lease},
     };
   },
 }, {});
@@ -157,6 +173,8 @@ export default combineReducers({
   collapseStates: collapseStatesReducer,
   contactModalSettings: contactModalSettingsReducer,
   current: currentLeaseReducer,
+  isArchiveAreaModalOpen: isArchiveAreaModalOpenReducer,
+  isArchiveFetching: isArchiveFetchingReducer,
   isFormValidById: isFormValidByIdReducer,
   isContactModalOpen: isContactModalOpenReducer,
   isDeleteRelatedLeaseModalOpen: isDeleteRelatedLeaseModalOpenReducer,
@@ -165,5 +183,6 @@ export default combineReducers({
   isFetchingById: isFetchingByIdReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   isSaveClicked: isSaveClickedReducer,
+  isUnarchiveAreaModalOpen: isUnarchiveAreaModalOpenReducer,
   list: leasesListReducer,
 });

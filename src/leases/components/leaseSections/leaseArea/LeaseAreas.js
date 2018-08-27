@@ -3,21 +3,26 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import Divider from '$components/content/Divider';
-import LeaseArea from './LeaseArea';
+import LeaseAreaWithArchiceInfo from './LeaseAreaWithArchiceInfo';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
-import {formatNumber}  from '$util/helpers';
+import {formatNumber, getDecisionsOptions}  from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
+import {getDecisionsByLease} from '$src/decision/selectors';
 
 import type {Lease} from '$src/leases/types';
 
 type Props = {
   currentLease: Lease,
+  decisions: Array<Object>,
 }
 
-const LeaseAreas = ({currentLease}: Props) => {
+const LeaseAreas = ({currentLease, decisions}: Props) => {
   const areas = getContentLeaseAreas(currentLease);
-  const areasSum = getAreasSum(areas);
+  const activeAreas = areas.filter((area) => !area.archived_at);
+  const archivedAreas = areas.filter((area) => area.archived_at);
+  const areasSum = getAreasSum(activeAreas);
+  const decisionOptions = getDecisionsOptions(decisions);
 
   return (
     <div>
@@ -27,11 +32,23 @@ const LeaseAreas = ({currentLease}: Props) => {
       />
       <Divider />
 
-      {!areas || !areas.length && <p className='no-margin'>Ei vuokra-alueita</p>}
-      {areas && !!areas.length && areas.map((area, index) =>
-        <LeaseArea
+      {!activeAreas || !activeAreas.length && <p className='no-margin'>Ei vuokra-alueita</p>}
+      {activeAreas && !!activeAreas.length && activeAreas.map((area, index) =>
+        <LeaseAreaWithArchiceInfo
           key={index}
           area={area}
+          decisionOptions={decisionOptions}
+          isActive={true}
+        />
+      )}
+
+      {archivedAreas && !!archivedAreas.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+      {archivedAreas && !!archivedAreas.length && archivedAreas.map((area, index) =>
+        <LeaseAreaWithArchiceInfo
+          key={index}
+          area={area}
+          decisionOptions={decisionOptions}
+          isActive={false}
         />
       )}
     </div>
@@ -40,8 +57,11 @@ const LeaseAreas = ({currentLease}: Props) => {
 
 export default connect(
   (state) => {
+    const currentLease = getCurrentLease(state);
+
     return {
-      currentLease: getCurrentLease(state),
+      currentLease: currentLease,
+      decisions: getDecisionsByLease(state, currentLease.id),
     };
   }
 )(LeaseAreas);

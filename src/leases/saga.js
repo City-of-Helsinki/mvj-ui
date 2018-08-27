@@ -6,9 +6,11 @@ import {SubmissionError} from 'redux-form';
 import {getRouteById} from '../root/routes';
 import {
   fetchSingleLease as fetchSingleLeaseAction,
+  hideArchiveAreaModal,
   hideContactModal,
   hideEditMode,
   hideDeleteRelatedLeaseModal,
+  hideUnarchiveAreaModal,
   notFound,
   notFoundById,
   receiveAttributes,
@@ -36,6 +38,7 @@ import {
   editContact,
 } from '../contacts/requests';
 import {receiveError} from '../api/actions';
+import {displayUIMessage} from '$src/util/helpers';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -150,6 +153,74 @@ function* patchLeaseSaga({payload: lease}): Generator<any, any, any> {
         yield put(fetchSingleLeaseAction(lease.id));
         yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* archiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
+  try {
+    const id = lease.id;
+    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
+
+    switch (statusCode) {
+      case 200:
+        const {response: {status}, bodyAsJson: bodyAsJsonLease} = yield call(fetchSingleLease, id);
+
+        switch (status) {
+          case 200:
+            yield put(receiveSingleLease(bodyAsJsonLease));
+            yield put(hideArchiveAreaModal());
+            yield put(notFound());
+            displayUIMessage({title: '', body: 'Kohde on arkistoitu'});
+            break;
+        }
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit lease with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* unarchiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
+  try {
+    const id = lease.id;
+    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
+
+    switch (statusCode) {
+      case 200:
+        const {response: {status}, bodyAsJson: bodyAsJsonLease} = yield call(fetchSingleLease, id);
+
+        switch (status) {
+          case 200:
+            yield put(receiveSingleLease(bodyAsJsonLease));
+            yield put(hideUnarchiveAreaModal());
+            yield put(notFound());
+            displayUIMessage({title: '', body: 'Kohde on poistettu arkistosta'});
+            break;
+        }
         break;
       case 400:
         yield put(notFound());
@@ -359,6 +430,8 @@ export default function*(): Generator<any, any, any> {
       yield takeEvery('mvj/leases/FETCH_BY_ID', fetchLeaseByIdSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
+      yield takeLatest('mvj/leases/ARCHIVE_AREA', archiveLeaseAreaSaga);
+      yield takeLatest('mvj/leases/UNARCHIVE_AREA', unarchiveLeaseAreaSaga);
       yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/leases/CREATE_CONTACT', createContactSaga);

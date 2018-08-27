@@ -1,4 +1,22 @@
 .content {
+
+  &__divider {
+    border-top: 1px dashed $tram;
+    margin: rem-calc(15px) 0;
+    height: 1px;
+    width: 100%;
+
+    &.invoice-divider {
+      margin-top: 0;
+      margin-bottom: rem-calc(10px);
+    }
+
+    &.lease-area-divider {
+      border-color: $black;
+      margin-top: rem-calc(5px);
+    }
+  }
+
   &__truncated-text {
     display: block;
     overflow: hidden;
@@ -114,18 +132,6 @@
   background-color: $white;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.07);
   padding: rem-calc(15px);
-
-  .divider {
-    border-top: 1px dashed $tram;
-    margin: rem-calc(15px) 0;
-    height: 1px;
-    width: 100%;
-
-    &.invoice-divider {
-      margin-top: 0;
-      margin-bottom: rem-calc(10px);
-    }
-  }
 
   label {
     font-size: rem-calc(13px);

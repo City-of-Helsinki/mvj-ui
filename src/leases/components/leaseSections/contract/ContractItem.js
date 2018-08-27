@@ -62,6 +62,7 @@ const ContractItem = ({
   };
 
   const decision = getDecisionById(decisions, contract.decision);
+
   return (
     <Collapse
       defaultOpen={contractCollapseState !== undefined ? contractCollapseState : false}
