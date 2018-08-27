@@ -298,7 +298,7 @@ class LeaseItemEdit extends Component<Props, State> {
   updateLeaseContentStates = () => {
     const {lease} = this.props;
 
-    const leaseAreas = getContentLeaseAreas(lease);
+    const leaseAreas = getContentLeaseAreas(lease).filter((area) => !area.archived_at);
 
     let planUnits = [];
     leaseAreas.forEach((area) => {

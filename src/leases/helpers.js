@@ -177,7 +177,7 @@ export const getContentSummary = (lease: Object) => {
     reference_number: get(lease, 'reference_number'),
     note: get(lease, 'note'),
     tenants: getContentTenants(lease).filter((tenant) => isTenantActive(get(tenant, 'tenant'))),
-    lease_areas: getContentLeaseAreas(lease),
+    lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
     constructability_areas: getContentConstructability(lease),
     infill_development_compensations: getContentInfillDevelopmentCompensations(lease),
   };
