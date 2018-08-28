@@ -2,6 +2,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import ExternalLink from '$components/links/ExternalLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {formatDate, getLabelOfOption} from '$util/helpers';
@@ -47,7 +48,12 @@ const LeaseHistoryItem = ({
         }
         {!active &&
           <div className={classNames('related-leases__item_info')}>
-            <p className="identifier"><a href={`${getRouteById('leases')}/${lease.id}`} target='_blank'>{identifier}</a></p>
+            <p className="identifier">
+              <ExternalLink
+                href={`${getRouteById('leases')}/${lease.id}`}
+                label={identifier || ''}
+              />
+            </p>
             <p>{formatDate(lease.start_date)} - {formatDate(lease.end_date)}</p>
             <p className="type">{getLabelOfOption(stateOptions, lease.state) || '-'}</p>
             {allowDelete &&

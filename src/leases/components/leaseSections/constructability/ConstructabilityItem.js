@@ -8,6 +8,7 @@ import get from 'lodash/get';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import ExternalLink from '$components/links/ExternalLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
@@ -41,7 +42,13 @@ const Comments = ({
                     <strong>{getUserFullName(comment.user)}</strong>
                     {comment.modified_at && `, ${formatDate(comment.modified_at)}`}
                     {comment.ahjo_reference_number &&
-                      <span>, <a className='no-margin' target='_blank' href={getReferenceNumberLink(comment.ahjo_reference_number)}>{comment.ahjo_reference_number}</a></span>
+                      <span>,&nbsp;
+                        <ExternalLink
+                          className='no-margin'
+                          href={getReferenceNumberLink(comment.ahjo_reference_number)}
+                          label={comment.ahjo_reference_number}
+                        />
+                      </span>
                     }
                   </p>
                 </Column>

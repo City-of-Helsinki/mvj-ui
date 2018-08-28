@@ -2,7 +2,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import trashIcon from '$assets/icons/trash.svg';
+import TrashIcon from '$components/icons/TrashIcon';
 
 type Props = {
   className?: string,
@@ -19,7 +19,7 @@ const RemoveButton = ({className, disabled, onClick, title, type = 'button'}: Pr
     type={type}
     title={title}
     onClick={onClick}>
-    <img src={trashIcon} alt='Poista' />
+    <TrashIcon className='icon-medium'/>
   </button>;
 
 export default RemoveButton;

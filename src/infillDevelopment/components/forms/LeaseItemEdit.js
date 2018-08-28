@@ -12,6 +12,7 @@ import AddButtonThird from '$components/form/AddButtonThird';
 import AddFileButton from '$components/form/AddFileButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$src/components/collapse/Collapse';
+import ExternalLink from '$components/links/ExternalLink';
 import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
@@ -415,9 +416,11 @@ class LeaseItemEdit extends Component<Props, State> {
                 <ListItems>
                   {tenants.map((tenant) =>
                     <p key={tenant.id} className='no-margin'>
-                      <a className='no-margin' href={`${getRouteById('contacts')}/${get(tenant, 'tenant.contact.id')}`} target='_blank'>
-                        {getContactFullName(get(tenant, 'tenant.contact'))}
-                      </a>
+                      <ExternalLink
+                        className='no-margin'
+                        href={`${getRouteById('contacts')}/${get(tenant, 'tenant.contact.id')}`}
+                        label={getContactFullName(get(tenant, 'tenant.contact'))}
+                      />
                     </p>
                   )}
                 </ListItems>
@@ -450,7 +453,12 @@ class LeaseItemEdit extends Component<Props, State> {
             <Column small={6} medium={4} large={2}>
               {isFetching && <p>Ladataan...</p>}
               {!isFetching && !leaseId && <p>-</p>}
-              {!isFetching && leaseId && <a href={`${getRouteById('leases')}/${leaseId}?tab=7`} target='_blank'>Karttalinkki</a>}
+              {!isFetching && leaseId &&
+                <ExternalLink
+                  href={`${getRouteById('leases')}/${leaseId}?tab=7`}
+                  label='Karttalinkki'
+                />
+              }
             </Column>
           </Row>
 

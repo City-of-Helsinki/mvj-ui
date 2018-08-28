@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
+import ExternalLink from '$components/links/ExternalLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
@@ -123,7 +124,10 @@ const BasicInformation = ({
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Asemakaavan diaarinumero</FormFieldLabel>
             {basicInformation.plan_reference_number
-              ? <a target='_blank' href={getReferenceNumberLink(basicInformation.plan_reference_number)}>{basicInformation.plan_reference_number}</a>
+              ? <ExternalLink
+                href={getReferenceNumberLink(basicInformation.plan_reference_number)}
+                label={basicInformation.plan_reference_number}
+              />
               : <p>-</p>
             }
           </Column>

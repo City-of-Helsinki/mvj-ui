@@ -1,8 +1,8 @@
 // @flow
 import React from 'react';
-import classNames from 'classnames';
 
-import closeIcon from '$assets/icons/icon_close.svg';
+import BackIcon from '$components/icons/BackIcon';
+import IconButton from './IconButton';
 
 type Props = {
   className?: string,
@@ -12,12 +12,13 @@ type Props = {
 }
 
 const BackButton = ({className, onClick, title, type = 'button'}: Props) =>
-  <button
-    className={classNames('close-button-component', className)}
-    type={type}
+  <IconButton
+    className={className}
+    onClick={onClick}
     title={title}
-    onClick={() => onClick()}>
-    <img src={closeIcon} alt='Poista' />
-  </button>;
+    type={type}
+  >
+    <BackIcon />
+  </IconButton>;
 
 export default BackButton;

@@ -2,7 +2,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import archiveIcon from '$assets/icons/icon_archive.svg';
+import ArchiveIcon from '$components/icons/ArchiveIcon';
 
 type Props = {
   className?: string,
@@ -19,7 +19,7 @@ const ArchiveButton = ({className, disabled, onClick, title, type = 'button'}: P
     type={type}
     title={title}
     onClick={onClick}>
-    <img src={archiveIcon} alt='Arkistoi' />
+    <ArchiveIcon className='icon-medium'/>
   </button>;
 
 export default ArchiveButton;

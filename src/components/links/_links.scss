@@ -1,0 +1,20 @@
+.links {
+  &__external-link {
+    .icons__external-link {
+      height: rem-calc(10px);
+      width: rem-calc(13px);
+      vertical-align: middle;
+      margin-top: rem-calc(-2px);
+      margin-left: rem-calc(10px);
+    }
+
+    &:hover {
+      text-decoration: underline;
+      color: $tram_hover;
+
+      .icons__external-link {
+        fill: $tram_hover;
+      }
+    }
+  }
+}

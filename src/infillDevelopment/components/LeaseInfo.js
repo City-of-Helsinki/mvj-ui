@@ -3,6 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
+import ExternalLink from '$components/links/ExternalLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import {getRouteById} from '$src/root/routes';
@@ -29,7 +30,10 @@ const LeaseInfo = ({
     <Row>
       <Column small={6} medium={4} large={2}>
         <FormFieldLabel>Vuokratunnus</FormFieldLabel>
-        <a href={`${getRouteById('leases')}/${leaseId}`} target='_blank'>{identifier || '-'}</a>
+        <ExternalLink
+          href={`${getRouteById('leases')}/${leaseId}`}
+          label={identifier || '-'}
+        />
       </Column>
       <Column small={6} medium={4} large={2}>
         <FormFieldLabel>Vuokralainen</FormFieldLabel>
@@ -38,9 +42,11 @@ const LeaseInfo = ({
           <ListItems>
             {tenants.map((tenant) =>
               <p key={tenant.id} className='no-margin'>
-                <a className='no-margin' href={`${getRouteById('contacts')}/${get(tenant, 'tenant.contact.id')}`} target='_blank'>
-                  {getContactFullName(get(tenant, 'tenant.contact'))}
-                </a>
+                <ExternalLink
+                  className='no-margin'
+                  href={`${getRouteById('contacts')}/${get(tenant, 'tenant.contact.id')}`}
+                  label={getContactFullName(get(tenant, 'tenant.contact'))}
+                />
               </p>
             )}
           </ListItems>
@@ -69,7 +75,10 @@ const LeaseInfo = ({
         }
       </Column>
       <Column small={6} medium={4} large={2}>
-        <a href={`${getRouteById('leases')}/${leaseId}?tab=7`} target='_blank'>Karttalinkki</a>
+        <ExternalLink
+          href={`${getRouteById('leases')}/${leaseId}?tab=7`}
+          label='Karttalinkki'
+        />
       </Column>
     </Row>
   </div>;

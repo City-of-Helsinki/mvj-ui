@@ -99,22 +99,6 @@
         margin-top: 0;
       }
     }
-
-    &.archived {
-      .no-comments-text {
-        color: $dark-gray;
-      }
-
-      .comments-section {
-        h3 {
-          color: $dark-gray;
-        }
-      }
-
-      .comment {
-        color: $dark-gray;
-      }
-    }
   }
 
   &.is-panel-open {

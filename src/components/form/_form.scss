@@ -46,6 +46,7 @@
     line-height: rem-calc(15px);
     color: $dark-gray;
     white-space: nowrap;
+    position: relative;
 
     .required {
       color: $brick;
@@ -458,80 +459,38 @@
     font-size: rem-calc(16px) !important;
     line-height: rem-calc(20px) !important;
     font-weight: $semibold !important;
-    color: $tram !important;
+    color: $tram;
     margin: 0;
     cursor: pointer;
 
-    i {
-      background-image: url(../assets/icons/plus-green.svg);
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      display: inline-block;
+    .icons {
       margin-right: rem-calc(5px);
-      float: left;
-      line-height: 1;
+      height: rem-calc(19px) !important;
+      width: rem-calc(19px) !important;
     }
 
     &:hover {
-      color: $tram-lighter;
-    }
-  }
+      text-decoration: underline;
+      color: $tram_hover;
 
-  &__add-button-secondary {
-    font-family: $font-family-source;
-    font-size: rem-calc(16px) !important;
-    line-height: rem-calc(20px) !important;
-    font-weight: $semibold !important;
-    color: $tram !important;
-    margin: rem-calc(5px) 0 rem-calc(10px);
-    float: left;
-    cursor: pointer;
-
-    i {
-      background-image: url(../assets/icons/plus-green.svg);
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      display: inline-block;
-      margin-right: rem-calc(5px);
-      float: left;
-      line-height: 1;
+      .icons {
+        fill: $tram_hover;
+      }
     }
 
-    &:hover {
-      color: $tram-lighter;
+    &.secondary {
+      margin: rem-calc(5px) 0 rem-calc(10px);
     }
 
-    &.no-margin {
-      margin: 0;
-    }
-  }
+    &.third-level {
+      font-size: rem-calc(14px) !important;
+      line-height: rem-calc(15px) !important;
+      margin: 0 0 rem-calc(10px);
 
-  &__add-button-third-level {
-    font-family: $font-family-source;
-    font-size: rem-calc(14px) !important;
-    line-height: rem-calc(15px) !important;
-    font-weight: $semibold !important;
-    color: $tram !important;
-    margin: 0 0 rem-calc(10px);
-    float: left;
-    cursor: pointer;
-
-    i {
-      background-image: url(../assets/icons/plus-green.svg);
-      height: rem-calc(15px);
-      width: rem-calc(15px);
-      display: inline-block;
-      margin-right: rem-calc(5px);
-      float: left;
-      line-height: 1;
-    }
-
-    &:hover {
-      color: $tram-lighter;
-    }
-
-    &.no-margin {
-      margin: 0;
+      .icons {
+        height: rem-calc(15px) !important;
+        width: rem-calc(15px) !important;
+      }
     }
   }
 
@@ -541,13 +500,29 @@
     position: relative;
     top: 0;
 
-    img {
-      height: rem-calc(20px);
-      width: rem-calc(20px);
+    &:hover {
+      .icons {
+        fill: $tram_hover;
+      }
     }
+  }
+
+  &__edit-button {
+    z-index: 1;
+    cursor: pointer;
+    position: relative;
+    top: 0;
 
     &:hover {
-      opacity: 0.85;
+      .icons {
+        fill: $tram_hover;
+      }
+    }
+
+    &.position-topright {
+      position: absolute;
+      top: 0;
+      right: 0;
     }
   }
 
@@ -557,13 +532,10 @@
     position: relative;
     top: 0;
 
-    img {
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-    }
-
     &:hover {
-      opacity: 0.85;
+      .icons {
+        fill: $tram_hover;
+      }
     }
 
     &.no-label {
@@ -577,13 +549,13 @@
     }
 
     &.third-level {
-      top: -3px;
-      height: 20px;
-      width: 20px;
+      top: rem-calc(-3px);
+      height: rem-calc(20px);
+      width: rem-calc(20px);
 
-      img {
-        height: rem-calc(15px);
-        width: rem-calc(15px);
+      .icons {
+        height: rem-calc(16px);
+        width: rem-calc(16px);
       }
     }
   }
@@ -594,13 +566,10 @@
     position: relative;
     top: 0;
 
-    img {
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-    }
-
     &:hover {
-      opacity: 0.85;
+      .icons {
+        fill: $tram_hover;
+      }
     }
   }
 
@@ -624,21 +593,23 @@
     font-weight: $semibold !important;
     color: $tram !important;
     margin: rem-calc(5px) 0 rem-calc(10px);
-    float: left;
     cursor: pointer;
 
-    i {
-      background-image: url(../assets/icons/plus-green.svg);
+    .icons {
+      vertical-align: middle;
+      margin-top: rem-calc(-3px);
       height: rem-calc(20px);
       width: rem-calc(20px);
-      display: inline-block;
       margin-right: rem-calc(5px);
-      float: left;
-      line-height: 1;
     }
 
     &:hover {
-      color: $tram-lighter;
+      text-decoration: underline;
+      color: $tram_hover !important;
+
+      .icons {
+        fill: $tram_hover;
+      }
     }
   }
 

@@ -2,7 +2,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import UnarchiveIcon from '$components/icons/UnarchiveIcon';
+import EditIcon from '$components/icons/EditIcon';
 
 type Props = {
   className?: string,
@@ -12,14 +12,14 @@ type Props = {
   type?: string,
 }
 
-const UnarchiveButton = ({className, disabled, onClick, title, type = 'button'}: Props) =>
+const EditButton = ({className, disabled, onClick, title, type = 'button'}: Props) =>
   <button
-    className={classNames('form__unarchive-button', className)}
+    className={classNames('form__edit-button', className)}
     disabled={disabled}
     type={type}
     title={title}
     onClick={onClick}>
-    <UnarchiveIcon className='icon-medium'/>
+    <EditIcon className='icon-medium'/>
   </button>;
 
-export default UnarchiveButton;
+export default EditButton;

@@ -42,6 +42,12 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
     onCreditedInvoiceClick(invoice.credited_invoice);
   };
 
+  const handleCreditedInvoiceKeyDown = (e: any) => {
+    if(e.keyCode === 13) {
+      handleCreditedInvoiceClick();
+    }
+  };
+
   const receivableTypeOptions = getAttributeFieldOptions(invoiceAttributes, 'rows.child.children.receivable_type');
   const stateOptions = getAttributeFieldOptions(invoiceAttributes, 'state');
   const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
@@ -185,7 +191,7 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
           <Column medium={4}>
             <FormFieldLabel>Hyvitetty lasku</FormFieldLabel>
             <p>{invoice.credited_invoice
-              ? <a className='no-margin' onClick={handleCreditedInvoiceClick}>{invoice.credited_invoice}</a>
+              ? <a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{invoice.credited_invoice}</a>
               : '-'
             }</p>
           </Column>

@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
 import DecisionConditions from './DecisionConditions';
+import ExternalLink from '$components/links/ExternalLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
@@ -67,7 +68,10 @@ const DecisionItem = ({
         <Column small={6} medium={4} large={2}>
           <FormFieldLabel>Diaarinumero</FormFieldLabel>
           {decision.reference_number
-            ? <a target='_blank' href={getReferenceNumberLink(decision.reference_number)}>{decision.reference_number}</a>
+            ? <ExternalLink
+              href={getReferenceNumberLink(decision.reference_number)}
+              label={decision.reference_number}
+            />
             : <p>-</p>
           }
         </Column>

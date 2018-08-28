@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 import get from 'lodash/get';
 
+import ExternalLink from '$components/links/ExternalLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
@@ -66,9 +67,11 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
                 <Row key={index}>
                   <Column small={6} large={4}>
                     <p className='no-margin'>
-                      <a href={`${getRouteById('contacts')}/${get(contact, 'tenant.contact.id')}`} className='no-margin' target='_blank'>
-                        {getContactFullName(get(contact, 'tenant.contact')) || '-'}
-                      </a>
+                      <ExternalLink
+                        className='no-margin'
+                        href={`${getRouteById('contacts')}/${get(contact, 'tenant.contact.id')}`}
+                        label={getContactFullName(get(contact, 'tenant.contact')) || '-'}
+                      />
                     </p>
                   </Column>
                   <Column small={6} large={4}><p className='no-margin'>{contact.share_numerator} / {contact.share_denominator}</p></Column>

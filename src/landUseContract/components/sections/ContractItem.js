@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
+import ExternalLink from '$components/links/ExternalLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
@@ -61,7 +62,10 @@ const ContractItem = ({
         <Column small={6} medium={4} large={2}>
           <FormFieldLabel>Diaarinumero</FormFieldLabel>
           {contract.reference_number
-            ? <a target='_blank' href={getReferenceNumberLink(contract.reference_number)}>{contract.reference_number}</a>
+            ? <ExternalLink
+              href={getReferenceNumberLink(contract.reference_number)}
+              label={contract.reference_number}
+            />
             : <p>-</p>
           }
         </Column>

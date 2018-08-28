@@ -9,6 +9,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
+import ExternalLink from '$components/links/ExternalLink';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RelatedLeasesEdit from './RelatedLeasesEdit';
@@ -236,7 +237,11 @@ class SummaryEdit extends Component<Props, State> {
                   }
                   {infillDevelopmentCompensations && !!infillDevelopmentCompensations.length && infillDevelopmentCompensations.map((item) =>
                     <p className='no-margin' key={item.id}>
-                      <a className='no-margin' target='_blank' href={`${getRouteById('infillDevelopment')}/${item.id}`}>{item.name || item.id}</a>
+                      <ExternalLink
+                        className='no-margin'
+                        href={`${getRouteById('infillDevelopment')}/${item.id}`}
+                        label={item.name || item.id}
+                      />
                     </p>
                   )}
                 </Column>

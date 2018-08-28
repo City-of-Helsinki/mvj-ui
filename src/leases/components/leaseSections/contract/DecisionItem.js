@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import ExternalLink from '$components/links/ExternalLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
@@ -97,7 +98,10 @@ const DecisionItem = ({
         <Column small={6} medium={4} large={2}>
           <FormFieldLabel>Diaarinumero</FormFieldLabel>
           {decision.reference_number
-            ? <a target='_blank' href={getReferenceNumberLink(decision.reference_number)}>{decision.reference_number}</a>
+            ? <ExternalLink
+              href={getReferenceNumberLink(decision.reference_number)}
+              label={decision.reference_number}
+            />
             : <p>-</p>
           }
         </Column>

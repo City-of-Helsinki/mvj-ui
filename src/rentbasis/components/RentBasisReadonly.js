@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import ContentContainer from '$components/content/ContentContainer';
+import ExternalLink from '$components/links/ExternalLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import GreenBox from '$components/content/GreenBox';
 import ListItems from '$components/content/ListItems';
@@ -120,7 +121,12 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
                       </Column>
                       <Column small={3} large={2}>
                         {decision.reference_number
-                          ? <p className='no-margin'><a href={getReferenceNumberLink(decision.reference_number)} target='_blank' className='no-margin'>{decision.reference_number}</a></p>
+                          ? <p className='no-margin'>
+                            <ExternalLink
+                              href={getReferenceNumberLink(decision.reference_number)}
+                              label={decision.reference_number}
+                            />
+                          </p>
                           : <p className='no-margin'>-</p>
                         }
                       </Column>

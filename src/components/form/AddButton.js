@@ -2,6 +2,8 @@
 import React from 'react';
 import classNames from 'classnames';
 
+import AddIcon from '$components/icons/AddIcon';
+
 type Props = {
   className?: string,
   disabled?: boolean,
@@ -17,7 +19,10 @@ const AddButton = ({className, disabled = false, label, onClick, title}: Props) 
     onClick={onClick}
     title={title || label}
     type='button'
-  ><i/><span>{label}</span></button>;
+  >
+    <AddIcon />
+    <span>{label}</span>
+  </button>;
 
 
 export default AddButton;

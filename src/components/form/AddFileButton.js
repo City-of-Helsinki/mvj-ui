@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
 
+import AddIcon from '$components/icons/AddIcon';
+
 type Props = {
   label: string,
   name: string,
@@ -23,7 +25,10 @@ const AddFileButton = ({label, name, onChange}: Props) => {
 
   return(
     <div className='add-file-button'>
-      <label htmlFor={name} onKeyDown={handleKeyDown} className='add-file-button__label' tabIndex={0}><i />{label}</label>
+      <label htmlFor={name} onKeyDown={handleKeyDown} className='add-file-button__label' tabIndex={0}>
+        <AddIcon />
+        {label}
+      </label>
       <input
         ref={setRefForFileInput}
         className='add-file-button__input'

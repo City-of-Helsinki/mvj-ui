@@ -30,25 +30,26 @@
       max-width: 200px;
     }
 
-    .icon-wrapper {
-      padding-right: rem-calc(15px);
-      cursor: pointer;
+    a {
+      .arrow-icon {
+        height: rem-calc(15px);
+        width: rem-calc(15px);
+        position: absolute;
+        left: 0;
+        top: 50%;
+        @include transform(translateY(-50%));
+      }
+
+      &:hover {
+        .arrow-icon {
+          fill: $tram_hover !important;
+        }
+      }
     }
 
-    i.arrow-icon {
-      background-image: url(../assets/icons/icon_accordion.svg);
-      display: block;
-      content: ' ';
-      height: 15px;
-      width: 7px;
-      background-repeat: no-repeat;
-      background-position: 0 50%;
-      background-size: contain;
-    }
 
     .header-info-wrapper {
       flex: 1 1 0%;
-      margin-left: rem-calc(-22px);
       position: relative;
 
       .header-info-link {
@@ -57,6 +58,7 @@
         cursor: pointer;
         padding-left: rem-calc(22px);
         margin-bottom: 0;
+        text-decoration: none !important;
       }
     }
 
@@ -184,8 +186,8 @@
   // Opened stage
   &.open {
     .collapse__header {
-      i.arrow-icon {
-        @include rotate(90deg);
+      .arrow-icon {
+        @include transform(translateY(-50%) rotate(90deg));
       }
     }
 
@@ -210,7 +212,7 @@
     }
 
     .collapse__header {
-      i.arrow-icon {
+      .arrow-icon {
         @include transition(0.4s, transform, ease-in-out);
       }
     }
@@ -240,8 +242,8 @@
         padding: 0;
       }
 
-      i.arrow-icon {
-        @include rotate(0deg);
+      .arrow-icon {
+        @include transform(translateY(-50%) rotate(0));
       }
     }
 
@@ -259,8 +261,8 @@
       }
 
       .collapse__header {
-        i.arrow-icon {
-          @include rotate(90deg);
+        .arrow-icon {
+          @include transform(translateY(-50%) rotate(90deg));
         }
       }
     }

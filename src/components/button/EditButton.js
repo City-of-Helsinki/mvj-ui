@@ -2,7 +2,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import editIcon from '$assets/icons/icon_edit.svg';
+import EditIcon from '$components/icons/EditIcon';
 
 type Props = {
   className?: string,
@@ -20,7 +20,7 @@ const EditButton = ({className, disabled, onClick, title, type = 'button'}: Prop
     title={title}
     type={type}
   >
-    <img src={editIcon} alt='Muokkaa' />
+    <EditIcon className='icon-medium'/>
   </button>;
 
 export default EditButton;

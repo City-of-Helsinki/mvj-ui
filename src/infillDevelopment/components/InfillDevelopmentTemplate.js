@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
+import ExternalLink from '$components/links/ExternalLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import GreenBox from '$components/content/GreenBox';
 import LeaseItem from './LeaseItem';
@@ -47,13 +48,10 @@ const InfillDevelopmentTemplate = ({attributes, infillDevelopment, isFetching}: 
           <FormFieldLabel>Diaarinumero</FormFieldLabel>
           {infillDevelopment.reference_number
             ? <p className='no-margin'>
-              <a
-                className='no-margin'
-                target='_blank'
+              <ExternalLink
                 href={getReferenceNumberLink(infillDevelopment.reference_number)}
-              >
-                {infillDevelopment.reference_number}
-              </a>
+                label={infillDevelopment.reference_number}
+              />
             </p>
             : <p className='no-margin'>-</p>
           }

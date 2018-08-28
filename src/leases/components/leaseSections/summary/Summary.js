@@ -6,7 +6,9 @@ import isEmpty from 'lodash/isEmpty';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
+import ExternalLink from '$components/links/ExternalLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
+import ListItems from '$components/content/ListItems';
 import RelatedLeases from './RelatedLeases';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
@@ -155,9 +157,7 @@ class Summary extends Component<Props, State> {
           <Column medium={9}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              headerTitle={
-                <h3 className='collapse__header-title'>Perustiedot</h3>
-              }
+              headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
               onToggle={this.handleBasicInfoToggle}
             >
               <Row>
@@ -211,11 +211,19 @@ class Summary extends Component<Props, State> {
                   {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length &&
                     <p>-</p>
                   }
-                  {infillDevelopmentCompensations && !!infillDevelopmentCompensations.length && infillDevelopmentCompensations.map((item) =>
-                    <p className='no-margin' key={item.id}>
-                      <a className='no-margin' target='_blank' href={`${getRouteById('infillDevelopment')}/${item.id}`}>{item.name || item.id}</a>
-                    </p>
-                  )}
+                  {infillDevelopmentCompensations && !!infillDevelopmentCompensations.length &&
+                    <ListItems>
+                      {infillDevelopmentCompensations.map((item) =>
+                        <p className='no-margin' key={item.id}>
+                          <ExternalLink
+                            className='no-margin'
+                            href={`${getRouteById('infillDevelopment')}/${item.id}`}
+                            label={item.name || item.id}
+                          />
+                        </p>
+                      )}
+                    </ListItems>
+                  }
                 </Column>
               </Row>
               <Row>
@@ -232,7 +240,10 @@ class Summary extends Component<Props, State> {
                 <Column small={12} medium={6} large={4}>
                   <FormFieldLabel>Diaarinumero</FormFieldLabel>
                   {summary.reference_number
-                    ? <a target='_blank' href={getReferenceNumberLink(summary.reference_number)}>{summary.reference_number}</a>
+                    ? <ExternalLink
+                      href={getReferenceNumberLink(summary.reference_number)}
+                      label={summary.reference_number}
+                    />
                     : <p>-</p>
                   }
                 </Column>

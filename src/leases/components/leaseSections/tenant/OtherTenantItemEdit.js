@@ -10,12 +10,11 @@ import isEmpty from 'lodash/isEmpty';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
-import EditIcon from '$components/icons/EditIcon';
+import EditButton from '$components/form/EditButton';
 import FormField from '$components/form/FormField';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
-import IconButton from '$components/button/IconButton';
 import {initializeContactForm, receiveIsSaveClicked} from '$src/contacts/actions';
 import {receiveCollapseStates, receiveContactModalSettings, showContactModal} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
@@ -197,13 +196,11 @@ const OtherTenantItemEdit = ({
 
         <BoxContentWrapper>
           {!!contact &&
-            <IconButton
+            <EditButton
               className='position-topright'
-              disabled={!contact}
               onClick={handleEditClick}
-            >
-              <EditIcon className='icon-medium' />
-            </IconButton>
+              title='Muokkaa'
+            />
           }
           <ContactTemplate contact={contact} />
         </BoxContentWrapper>

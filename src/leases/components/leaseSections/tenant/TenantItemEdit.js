@@ -12,8 +12,7 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
-import EditIcon from '$components/icons/EditIcon';
-import IconButton from '$components/button/IconButton';
+import EditButton from '$components/form/EditButton';
 import OtherTenantItemEdit from './OtherTenantItemEdit';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
@@ -254,12 +253,11 @@ const TenantItemEdit = ({
 
         <BoxContentWrapper>
           {!!contact &&
-            <IconButton
+            <EditButton
               className='position-topright'
               onClick={handleEditClick}
-            >
-              <EditIcon className='icon-medium' />
-            </IconButton>
+              title='Muokkaa'
+            />
           }
           <ContactTemplate contact={contact} />
         </BoxContentWrapper>

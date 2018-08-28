@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 import ReactResizeDetector from 'react-resize-detector';
 
+import AccordionIcon from '../icons/AccordionIcon';
 import ArchiveButton from '../form/ArchiveButton';
 import RemoveButton from '../form/RemoveButton';
 import UnarchiveButton from '../form/UnarchiveButton';
@@ -134,9 +135,6 @@ class Collapse extends PureComponent<Props, State> {
         )}
       >
         <div className="collapse__header">
-          <div className='icon-wrapper' onClick={this.handleToggle}>
-            <i className="arrow-icon"/>
-          </div>
           <div className='header-info-wrapper'>
             <Row>
               {headerTitle &&
@@ -145,7 +143,9 @@ class Collapse extends PureComponent<Props, State> {
                     tabIndex={0}
                     className='header-info-link'
                     onKeyDown={this.handleKeyDown}
-                    onClick={this.handleToggle}>
+                    onClick={this.handleToggle}
+                  >
+                    <AccordionIcon className="arrow-icon"/>
                     {headerTitle}
                   </a>
                 </Column>

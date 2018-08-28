@@ -69,6 +69,11 @@
           line-height: rem-calc(20px);
           margin-bottom: 0;
           font-weight: $semibold;
+
+          .icons__external-link {
+            height: rem-calc(13px);
+            width: rem-calc(16px);
+          }
         }
       }
 

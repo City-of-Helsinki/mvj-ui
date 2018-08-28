@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-import BackIcon from '../icons/BackIcon';
+import BackButton from '$components/button/BackButton';
 
 type Props = {
   buttonComponent?: any,
@@ -13,7 +13,10 @@ const ControlButtonBar = ({buttonComponent, infoComponent, onBack}: Props) =>
   <div className='control-button-bar'>
     {onBack &&
       <div className='back-button-wrapper'>
-        <button onClick={onBack}><BackIcon /></button>
+        <BackButton
+          onClick={onBack}
+          title='Takaisin'
+        />
       </div>
     }
 
