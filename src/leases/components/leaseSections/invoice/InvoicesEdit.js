@@ -8,6 +8,7 @@ import CreateAndCreditInvoiceComponent from './CreateAndCreditInvoiceComponent';
 import Button from '$components/button/Button';
 import Collapse from '$components/collapse/Collapse';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
+import DebtCollection from './DebtCollection';
 import Divider from '$components/content/Divider';
 import InvoicesTableEdit from './InvoicesTableEdit';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
@@ -215,6 +216,8 @@ class InvoicesEdit extends Component<Props, State> {
         >
           <RentCalculator />
         </Collapse>
+
+        <DebtCollection />
       </div>
     );
   }

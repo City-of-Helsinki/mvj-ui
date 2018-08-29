@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
+import DebtCollection from './DebtCollection';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import InvoicesTable from './InvoicesTable';
@@ -109,6 +110,8 @@ class Invoices extends Component<Props> {
         >
           <RentCalculator />
         </Collapse>
+
+        <DebtCollection />
       </div>
     );
   }

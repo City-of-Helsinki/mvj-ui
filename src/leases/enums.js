@@ -121,13 +121,14 @@ export const TenantContactType = {
 /**
  * Lease form names enumerable.
  *
- * @type {{ARCHIVE_AREA: string, CONSTRUCTABILITY: string, CONTRACTS: string, CREATE_LEASE: string, DECISIONS: string, INSPECTION: string, INVOICE_EDIT: string, INVOICE_NEW: string, LEASE_AREAS: string, LEASE_INFO: string, REFUND: string, RENTS: string, SEARCH: string, SUMMARY: string, TENANTS: string}}
+ * @type {{ARCHIVE_AREA: string, CONSTRUCTABILITY: string, CONTRACTS: string, CREATE_LEASE: string, DEBT_COLLECTION: string, DECISIONS: string, INSPECTION: string, INVOICE_EDIT: string, INVOICE_NEW: string, LEASE_AREAS: string, LEASE_INFO: string, REFUND: string, RENTS: string, SEARCH: string, SUMMARY: string, TENANTS: string}}
  */
 export const FormNames = {
   ARCHIVE_AREA: 'archive-area-form',
   CONSTRUCTABILITY: 'constructability-form',
   CONTRACTS: 'contracts-form',
   CREATE_LEASE: 'create-lease-form',
+  DEBT_COLLECTION: 'debt-collection-form',
   DECISIONS: 'decisions-form',
   INSPECTIONS: 'inspections-form',
   INVOICE_CREDIT: 'credit-invoice-form',
