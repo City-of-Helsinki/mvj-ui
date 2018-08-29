@@ -16,7 +16,7 @@ type Props = {
   url: string,
 }
 
-const DownLoadDebtCollectionFileButton = ({
+const DownloadDebtCollectionFileButton = ({
   apiToken,
   disabled,
   fileName,
@@ -45,7 +45,6 @@ const DownLoadDebtCollectionFileButton = ({
         }
       })
       .then((blob) => {
-        console.log(blob);
         if (window.navigator.msSaveOrOpenBlob) { // for IE and Edge
           window.navigator.msSaveBlob(blob, fileName);
         } else { // for modern browsers
@@ -78,4 +77,4 @@ export default connect(
       apiToken: getApiToken(state),
     };
   }
-)(DownLoadDebtCollectionFileButton);
+)(DownloadDebtCollectionFileButton);

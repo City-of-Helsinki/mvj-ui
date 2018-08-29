@@ -62,6 +62,7 @@ const FieldTypeSelect = ({
       arrowRenderer={arrowRenderer}
       autosize={false}
       clearable={false}
+      clearValue={false}
       disabled={disabled}
       id={name}
       noResultsText={'Ei tuloksia'}

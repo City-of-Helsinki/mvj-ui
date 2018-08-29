@@ -9,7 +9,7 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import AddButtonThird from '$components/form/AddButtonThird';
-import DownLoadDebtCollectionFileButton from '$components/file/DownLoadDebtCollectionFileButton';
+import DownloadDebtCollectionFileButton from '$components/file/DownloadDebtCollectionFileButton';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
@@ -38,7 +38,7 @@ const renderInvoices = ({
 
         return (
           <Row key={index}>
-            <Column small={6} medium={4} large={2}>
+            <Column small={6} medium={8} large={4}>
               <FormField
                 fieldAttributes={{
                   type: 'choice',
@@ -99,7 +99,7 @@ const DebtCollectionForm = ({
     ? invoices.map((invoice) => {
       return {
         value: invoice.id,
-        label: `${formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)} ${formatDate(invoice.due_date)}`,
+        label: `${formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}\t${formatDate(invoice.due_date)}`.trim(),
       };
     })
     : [];
@@ -159,7 +159,7 @@ const DebtCollectionForm = ({
         name='invoice_ids'
       />
       <div style={{marginBottom: 10, marginTop: 10}}>
-        <DownLoadDebtCollectionFileButton
+        <DownloadDebtCollectionFileButton
           disabled={!valid}
           label='Luo perintäkirje'
           payload={{
@@ -169,7 +169,7 @@ const DebtCollectionForm = ({
             invoice_ids: invoiceIds,
           }}
           // $FlowFixMe
-          url={`${API_URL}/lease/${lease.id}/create_collection_letter`}
+          url={`${API_URL}/lease/${lease.id}/create_collection_letter/`}
         />
       </div>
     </form>

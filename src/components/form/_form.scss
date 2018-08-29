@@ -224,6 +224,10 @@
         top: 0 !important;
         padding-left: 5px !important;
         padding-right: 5px !important;
+
+        .Select-value-label {
+          white-space: pre-wrap;
+        }
       }
 
       .Select-placeholder {
@@ -290,7 +294,7 @@
       padding-bottom: rem-calc(4px);
       min-height: 20px;
       font-size: rem-calc(14px) !important;
-      white-space: nowrap;
+      white-space: pre-wrap;
 
       &.is-focused, &.Select-option.is-selected {
         background-color: $engel-lightest-opaque !important;
