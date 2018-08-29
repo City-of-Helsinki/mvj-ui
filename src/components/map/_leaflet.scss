@@ -848,6 +848,10 @@
   display: block;
   border: 2px solid rgba(0, 0, 0, 0.2);
   border-radius: 4px;
+
+  &.active {
+    border: 2px solid $tram;
+  }
 }
 
 .leaflet-control-geosearch.bar form input {

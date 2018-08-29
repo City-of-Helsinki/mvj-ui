@@ -11,6 +11,24 @@
   text-transform: uppercase;
 }
 
+@mixin focus() {
+  &:focus {
+    outline-color: $tram;
+    outline-style: solid;
+    outline-offset: 2px;
+    outline-width: 2px;
+  }
+}
+
+@mixin focusInput() {
+  &:focus {
+    transition: none !important;
+    outline: none !important;
+    border: 1px solid $tram;
+    box-shadow: 0px 0px 0px 1px $tram;
+  }
+}
+
 @mixin placeholder($color: $light-gray) {
   ::-webkit-input-placeholder {
     color: $color;

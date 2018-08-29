@@ -1,6 +1,6 @@
 .multi-select {
   &__none-selected {
-    color: $medium-gray;
+    color: $medium-dark-gray;
   }
 
   &__panel {
@@ -20,9 +20,15 @@
       margin: 0;
       font-size: rem-calc(14px);
 
+
+      &::placeholder {
+        color: $medium-dark-gray;
+      }
+
       &.is-focused {
-        border: 1px solid $focus-color;
-        box-shadow: 0 0 0 2px $focus-color;
+        outline: none !important;
+        border: 1px solid $tram !important;
+        box-shadow: 0 0 0 1px $tram !important;
       }
 
       &-container {
@@ -41,8 +47,6 @@
     &-content {
       border-radius: 0;
       background-color: $white;
-      border: 1px solid $medium-gray;
-      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
       box-sizing: border-box;
       margin-top: -1px;
       max-height: 300px;
@@ -51,6 +55,10 @@
       width: 100%;
       z-index: 1;
       overflow-y: auto;
+      box-shadow: 0 1px 0 1px $tram;
+      border: 1px solid $tram;
+      border-bottom: none;
+      border-radius: 0;
     }
 
     &-heading {
@@ -71,12 +79,15 @@
       font-size: rem-calc(14px);
 
       &.is-expanded {
-
+        outline: none !important;
+        border: 1px solid $tram !important;
+        box-shadow: 0 0 0 1px $tram !important;
       }
 
       &.is-focused {
-        border: 1px solid $focus-color !important;
-        box-shadow: 0 0 0 2px $focus-color;
+        outline: none !important;
+        border: 1px solid $tram !important;
+        box-shadow: 0 0 0 1px $tram !important;
       }
 
       &-value {

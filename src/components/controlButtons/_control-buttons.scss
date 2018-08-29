@@ -9,6 +9,8 @@
     cursor: pointer;
     position: relative;
     line-height: 1;
+
+    @include focus();
   }
   .commentIcon {
     width: rem-calc(30px);

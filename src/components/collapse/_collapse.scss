@@ -45,6 +45,8 @@
           fill: $tram_hover !important;
         }
       }
+
+      @include focus();
     }
 
 

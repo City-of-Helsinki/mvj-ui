@@ -17,8 +17,8 @@
   }
 
   &:disabled {
-    background-color: #ffe8a5;
-    color: #666;
+    background-color: $medium-dark-gray !important;
+    color: $white !important;
     opacity: 1;
     cursor: not-allowed;
   }
@@ -30,10 +30,6 @@
     &:hover {
       background-color: $tram-lighter;
     }
-
-    &:disabled {
-      background-color: #99d3b5;
-    }
   }
 
   &.button-red {
@@ -42,10 +38,6 @@
 
     &:hover {
       background-color: $brick-lighter;
-    }
-
-    &:disabled {
-      background-color: #e5a9a3;
     }
   }
 

@@ -123,6 +123,8 @@
       margin-bottom: 0 !important;
     }
 
+    @include focus();
+
     &:hover {
       text-decoration: underline;
       color: $tram_hover;
