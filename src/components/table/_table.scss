@@ -64,9 +64,19 @@
   &.clickable-row {
     tbody {
       tr {
-        &:hover > td {
-          cursor: pointer;
-          background-color: #D9EFE4;
+        @include focus();
+
+        &:focus {
+          outline-offset: -2px;
+        }
+
+        &:hover {
+          outline: none;
+
+          > td {
+            cursor: pointer;
+            background-color: #D9EFE4;
+          }
         }
       }
     }
@@ -83,6 +93,12 @@
       div {
         display: flex;
         align-items: center;
+
+        @include focus();
+
+        &:focus {
+          outline-offset: -2px;
+        }
       }
     }
 
@@ -168,7 +184,8 @@
             color: #fff;
             padding: 0;
             top: 0;
-            margin-left: 0;
+            margin-left: -5px;
+            padding-left: 5px;
             line-height: rem-calc(30px);
             font-size: rem-calc(13px);
             font-weight: $semibold;
@@ -223,10 +240,21 @@
       height: rem-calc(35px);
       min-width: rem-calc(35px);
       text-align: center;
-      color: $black;
+      color: $black !important;
+      text-decoration: none !important;
       background-color: $white;
       border: 1px solid $medium-gray;
       border-right: none;
+
+      @include focus();
+
+      &:focus {
+        outline-offset: -2px !important;
+      }
+
+      &:hover {
+        outline: none !important;
+      }
     }
 
     &.disabled {

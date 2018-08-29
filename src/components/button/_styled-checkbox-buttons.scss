@@ -2,17 +2,23 @@
   display:inline-block;
 
   .label {
-    padding: 0 rem-calc(5px);
+    padding: 0;
+    margin: 0 rem-calc(5px) rem-calc(5px);
     background: none;
-    margin-bottom: rem-calc(5px);
+
+    @include focus();
+
+    &:hover {
+      outline: none;
+    }
   }
 
   .label:first-child {
-    padding-left: 0;
+    margin-left: 0;
   }
 
   .label:last-child {
-    padding-right: 0;
+    margin-right: 0;
   }
 
   .checkbox {
@@ -34,6 +40,10 @@
     line-height: rem-calc(30px);
     border-radius: 0;
     padding: 0 1rem;
+
+    &:hover {
+      background-color: #E6E6E6;
+    }
 
     @include transition(0.2s, all, ease);
   }

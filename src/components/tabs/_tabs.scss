@@ -16,7 +16,7 @@
     height: rem-calc(32px);
 
     > a {
-      @include transition();
+      @include transition(none);
 
       color: $black !important;
       text-decoration: none !important;
@@ -27,24 +27,60 @@
       height: 32px;
       align-items: center;
       position: relative;
+      border: 2px solid $medium-gray;
+
+      &:focus {
+        border-color: $tram !important;
+        outline: none;
+
+        &::after {
+          border-color: $tram !important;
+        }
+      }
+
+      &:hover {
+        background-color: #E6E6E6;
+        border-color: #E6E6E6 !important;
+
+        &::after {
+          background-color: #E6E6E6;
+          border-color: #E6E6E6 !important;
+        }
+      }
     }
 
     > a::after {
       position: absolute;
       content: "";
       background-color: $medium-gray;
-      top: 0;
-      right: -5px;
+      top: -2px;
+      right: -6px;
       height: rem-calc(32px);
       width: 12px;
       transform: skewX(15deg);
+      border: 2px solid $medium-gray;
+      border-left: none;
     }
   }
   > li.is-active {
-    background: $white;
+    background: $white !important;
 
+    > a {
+      border-color: $white;
+
+      &:hover {
+        background: $white;
+        border-color: $white !important;
+
+        &::after {
+          border-color: $white !important;
+        }
+      }
+    }
     > a::after {
         background-color: $white;
+        border-color: $white;
+
     }
   }
 

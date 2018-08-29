@@ -6,7 +6,7 @@
   position: fixed;
   top: 0;
   left: -268px;
-  padding: rem-calc(100px) rem-calc(20px) 0 rem-calc(20px);
+  padding: rem-calc(100px) 0 0 0;
   box-shadow: 2px 0 5px 0 rgba(0, 0, 0, 0.06);
 
   @include transition(0.3s, all, ease-in-out);
@@ -17,9 +17,21 @@
     color: $white;
     font-weight: $semibold;
     line-height: 2;
+
     li a {
+      padding: 0 rem-calc(20px);
       color: $white;
       cursor: pointer;
+      display: inline-block;
+      width: 100%;
+
+      &:focus {
+        outline-color: $white;
+        outline-offset: -2px;
+        outline-width: 2px;
+        outline-style: dotted;
+      }
+
       &:hover {
         color: $engel;
       }

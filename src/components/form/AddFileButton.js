@@ -24,14 +24,14 @@ const AddFileButton = ({label, name, onChange}: Props) => {
   };
 
   return(
-    <div className='add-file-button'>
-      <label htmlFor={name} onKeyDown={handleKeyDown} className='add-file-button__label' tabIndex={0}>
+    <div className='form__add-file-button'>
+      <label htmlFor={name} onKeyDown={handleKeyDown} className='form__add-file-button__label' tabIndex={0}>
         <AddIcon />
         {label}
       </label>
       <input
         ref={setRefForFileInput}
-        className='add-file-button__input'
+        className='form__add-file-button__input'
         name={name}
         id={name}
         type='file'

@@ -25,4 +25,34 @@
     margin: 0 auto;
     max-width: 1300px;
   }
+
+  input:-ms-input-placeholder {
+    color: $medium-dark-gray;
+    opacity: 1;
+  }
+
+  input::placeholder {
+    color: $medium-dark-gray;
+    opacity: 1;
+  }
+
+  textarea:-ms-input-placeholder {
+    color: $medium-dark-gray;
+    opacity: 1;
+  }
+
+  textarea::placeholder {
+    color: $medium-dark-gray;
+    opacity: 1;
+  }
+
+  a,
+  button {
+    @include focus();
+  }
+  input,
+  select,
+  textarea {
+    @include focusInput();
+  }
 }

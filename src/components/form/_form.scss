@@ -85,7 +85,7 @@
     &.is-dirty {
       .option-label {
         span {
-          background-color: $engel-lightest-opaque;
+          background-color: $is-dirty-color;
         }
       }
     }
@@ -103,19 +103,14 @@
     border: 1px solid $medium-gray;
     box-shadow: none;
 
-    &:focus {
-      transition: none !important;
-      outline: none !important;
-      border: 1px solid $medium-gray !important;
-      box-shadow: 0 0 0 1px $medium-gray;
-    }
+    @include focusInput();
 
     &.is-dirty {
-      background-color: $engel-lightest-opaque;
+      background-color: $is-dirty-color;
     }
 
     &.has-error {
-      border: 2px solid $brick !important;
+      border: 1px solid $brick !important;
 
       &:focus {
         box-shadow: 0 0 0 1px $brick;
@@ -132,19 +127,14 @@
     box-shadow: none;
     margin-bottom: 0;
 
-    &:focus {
-      transition: none !important;
-      outline: none !important;
-      border: 1px solid $medium-gray !important;
-      box-shadow: 0 0 0 1px $medium-gray;
-    }
+    @include focusInput();
 
     &.is-dirty {
-      background-color: $engel-lightest-opaque;
+      background-color: $is-dirty-color;
     }
 
     &.has-error {
-      border: 2px solid $brick !important;
+      border-color: $brick !important;
 
       &:focus {
         box-shadow: 0 0 0 1px $brick;
@@ -176,23 +166,18 @@
       width: 100%;
       margin-bottom: 0;
 
-      &:focus {
-        transition: none !important;
-        outline: none !important;
-        border: 1px solid $medium-gray !important;
-        box-shadow: 0 0 0 1px $medium-gray
-      }
+      @include focusInput();
     }
 
     &.is-dirty {
       input {
-        background-color: $engel-lightest-opaque;
+        background-color: $is-dirty-color;
       }
     }
 
     &.has-error {
       input {
-        border: 2px solid $brick;
+        border: 1px solid $brick;
 
         &:focus {
           box-shadow: 0 0 0 1px $brick;
@@ -241,6 +226,11 @@
         padding-right: 5px !important;
       }
 
+      .Select-placeholder {
+        color: $medium-dark-gray;
+      }
+
+
       .Select-value {
         padding-right: 20px !important;
       }
@@ -253,6 +243,8 @@
 
         > input {
           padding: 0;
+          border: none !important;
+          box-shadow: none !important;
         }
       }
 
@@ -278,14 +270,17 @@
     }
 
     .Select-menu-outer {
-      z-index: 2;
+      z-index: 500;
       width: auto;
       min-width: 100%;
-      box-shadow: 0 1px 0 1px $focus-color !important;
+      box-shadow: 0 1px 0 1px $tram;
+      border-color: $tram;
+      border-bottom: none;
+      border-radius: 0;
     }
 
     .Select-menu {
-      z-index: 2;
+      z-index: 500;
       height: auto;
     }
 
@@ -311,26 +306,27 @@
       padding-bottom: rem-calc(4px);
       min-height: 20px;
       font-size: rem-calc(14px) !important;
+      color: $medium-dark-gray;
     }
 
     &.is-focused {
       .Select-control {
         outline: none !important;
-        border: 1px solid $medium-gray !important;
-        box-shadow: 0 0 0 1px $focus-color !important;
+        border: 1px solid $tram !important;
+        box-shadow: 0 0 0 1px $tram !important;
       }
     }
 
     &.is-dirty {
       .Select-control {
-        background-color: $engel-lightest-opaque !important;
+        background-color: $is-dirty-color !important;
       }
     }
 
     &.has-error {
       .Select-control {
         transition: none !important;
-        border: 2px solid $brick !important;
+        border: 1px solid $brick !important;
       }
 
       &.is-focused {
@@ -494,6 +490,44 @@
     }
   }
 
+  &__add-file-button {
+    display: inline-block;
+    width: 100%;
+
+    &__label {
+      font-family: $font-family-source;
+      font-size: rem-calc(14px) !important;
+      line-height: rem-calc(20px) !important;
+      font-weight: $semibold !important;
+      color: $tram !important;
+      margin: rem-calc(5px) 0 rem-calc(10px);
+      cursor: pointer;
+
+      @include focus();
+
+      .icons {
+        vertical-align: middle;
+        margin-top: rem-calc(-3px);
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        margin-right: rem-calc(5px);
+      }
+
+      &:hover {
+        text-decoration: underline;
+        color: $tram_hover !important;
+
+        .icons {
+          fill: $tram_hover;
+        }
+      }
+    }
+
+    &__input {
+      display: none;
+    }
+  }
+
   &__archive-button {
     z-index: 1;
     cursor: pointer;
@@ -579,41 +613,5 @@
     &_button {
       padding-left: rem-calc(5px);
     }
-  }
-}
-
-.add-file-button {
-  display: inline-block;
-  width: 100%;
-
-  &__label {
-    font-family: $font-family-source;
-    font-size: rem-calc(14px) !important;
-    line-height: rem-calc(20px) !important;
-    font-weight: $semibold !important;
-    color: $tram !important;
-    margin: rem-calc(5px) 0 rem-calc(10px);
-    cursor: pointer;
-
-    .icons {
-      vertical-align: middle;
-      margin-top: rem-calc(-3px);
-      height: rem-calc(20px);
-      width: rem-calc(20px);
-      margin-right: rem-calc(5px);
-    }
-
-    &:hover {
-      text-decoration: underline;
-      color: $tram_hover !important;
-
-      .icons {
-        fill: $tram_hover;
-      }
-    }
-  }
-
-  &__input {
-    display: none;
   }
 }
