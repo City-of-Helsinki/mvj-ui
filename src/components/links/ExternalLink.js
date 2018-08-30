@@ -18,7 +18,7 @@ const ExternalLink = ({
   openInNewTab = true,
 }: Props) =>
   <a className={classNames('links__external-link', className)} target={openInNewTab ? '_blank' : '_self'} href={href}>
-    {label}
+    <span>{label}</span>
     <ExternalLinkIcon />
   </a>;
 

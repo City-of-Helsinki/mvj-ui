@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import debounce from 'lodash/debounce';
 
 import createUrl from '$src/api/createUrl';
-import {getContentContact} from '$src/leases/helpers';
+import {getContentContact} from '$src/contacts/helpers';
 import {sortByLabelAsc} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
 

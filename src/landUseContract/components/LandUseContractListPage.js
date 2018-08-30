@@ -260,7 +260,7 @@ class LandUseContractListPage extends Component<Props, State> {
               data={filteredLandUseContracts}
               dataKeys={[
                 {key: 'identifier', label: 'MA1-tunnus'},
-                {key: 'litigant', label: 'Osapuoli'},
+                {key: 'litigants', label: 'Osapuoli', renderer: (val) => val.map((litigant, index) => <p key={index} className='no-margin'>{litigant}</p>)},
                 {key: 'plan_number', label: 'Asemakaavan numero'},
                 {key: 'area', label: 'Kohde'},
                 {key: 'project_area', label: 'Hankealue'},

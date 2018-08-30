@@ -7,6 +7,7 @@ import classNames from 'classnames';
 
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
+import ExternalLink from '../../../../components/links/ExternalLink';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
@@ -16,6 +17,7 @@ import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {formatDate, formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -74,7 +76,13 @@ const OtherTenantItem = ({
           <Row>
             <Column small={12} medium={6} large={8}>
               <label>Asiakas</label>
-              <p>{getContactFullName(contact)}</p>
+              {contact
+                ? <p><ExternalLink
+                  href={`${getRouteById('contacts')}/${contact.id}`}
+                  label={getContactFullName(contact)}
+                /></p>
+                : <p>-</p>
+              }
             </Column>
           </Row>
         </FormWrapperLeft>

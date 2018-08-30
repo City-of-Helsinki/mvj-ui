@@ -14,9 +14,6 @@ import {
   archiveLeaseArea,
   unarchiveLeaseArea,
   notFound,
-  showContactModal,
-  hideContactModal,
-  receiveContactModalSettings,
   showEditMode,
   hideEditMode,
   hideArchiveAreaModal,
@@ -36,11 +33,9 @@ const stateTemplate = {
   attributes: {},
   byId: {},
   collapseStates: {},
-  contactModalSettings: null,
   current: {},
   isArchiveAreaModalOpen: false,
   isArchiveFetching: false,
-  isContactModalOpen: false,
   isDeleteRelatedLeaseModalOpen: false,
   isEditMode: false,
   isFetching: false,
@@ -205,34 +200,6 @@ describe('Leases', () => {
 
         let state = leasesReducer({}, receiveFormValidFlags(dummyFlags));
         state = leasesReducer(state, clearFormValidFlags());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isContactModalOpen flag to true', () => {
-        const newState = {...stateTemplate};
-        newState.isContactModalOpen = true;
-
-        const state = leasesReducer({}, showContactModal());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isContactModalOpen flag to false', () => {
-        const newState = {...stateTemplate};
-        newState.isContactModalOpen = false;
-
-        let state = leasesReducer({}, showContactModal());
-        state = leasesReducer({}, hideContactModal());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update contactModalSettings', () => {
-        const dummySettings = {
-          foo: 'bar',
-        };
-        const newState = {...stateTemplate};
-        newState.contactModalSettings = dummySettings;
-
-        const state = leasesReducer({}, receiveContactModalSettings(dummySettings));
         expect(state).to.deep.equal(newState);
       });
 

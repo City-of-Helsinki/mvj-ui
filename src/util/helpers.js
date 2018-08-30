@@ -398,20 +398,14 @@ export const addEmptyOption = (options: Array<Object>) =>
  * @param path
  */
 export const getAttributeFieldOptions = (attributes: Object, path: string, addEmpty: boolean = true, showValue: boolean = false) => {
-  let choices = get(attributes, `${path}.choices`);
-  if(!choices || !choices.length) {
-    return [];
-  }
-  const results = choices.map((item) => {
+  const results = get(attributes, `${path}.choices`, []).map((item) => {
     return {
       value: item.value,
       label: showValue ? `${item.display_name} (${item.value})`: item.display_name,
     };
   });
 
-  if(addEmpty) {
-    return addEmptyOption(results);
-  }
+  if(addEmpty) {return addEmptyOption(results);}
   return results;
 };
 
@@ -422,57 +416,15 @@ export const getAttributeFieldOptions = (attributes: Object, path: string, addEm
  * @param showValue
  */
 export const getFieldOptions = (fieldAttributes: Object, addEmpty: boolean = true, showValue: boolean = false) => {
-  let choices = get(fieldAttributes, `choices`);
-  if(!choices || !choices.length) {
-    return [];
-  }
-  const results = choices.map((item) => {
+  const results = get(fieldAttributes, `choices`, []).map((item) => {
     return {
       value: item.value,
       label: showValue ? `${item.display_name} (${item.value})`: item.display_name,
     };
   });
 
-  if(addEmpty) {
-    return addEmptyOption(results);
-  }
+  if(addEmpty) {return addEmptyOption(results);}
   return results;
-};
-
-/**
- * Get options for decisions field
- * @param decisions
- */
-export const getDecisionsOptions = (decisions: Array<Object>) => {
-  if(!decisions || !decisions.length) {
-    return [];
-  }
-
-  return addEmptyOption(decisions.map((item) => {
-    if(!item.reference_number && !item.decision_date && !item.section) {
-      return {
-        value: item.id,
-        label: item.id,
-      };
-    }
-    return {
-      value: item.id,
-      label: `${item.reference_number ? item.reference_number + ', ' : ''}${item.section ? item.section + ' §, ' : ''}${formatDate(item.decision_date)}`,
-    };
-  }));
-};
-
-/**
- * Get decision by id
- * @param decisions
- * @param decisionId
- */
-export const getDecisionById = (decisions: Array<Object>, decisionId: number) => {
-  if(!decisions || !decisions.length) {
-    return [];
-  }
-
-  return decisions.find((decision) => decision.id === decisionId);
 };
 
 export const sortNumberByKeyAsc = (a, b, key) => {

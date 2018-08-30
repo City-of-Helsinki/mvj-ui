@@ -39,7 +39,6 @@
   }
 
   &__label {
-    white-space: normal;
     overflow: visible;
     max-width: 100%;
     font-size: rem-calc(13px);
@@ -226,7 +225,7 @@
         padding-right: 5px !important;
 
         .Select-value-label {
-          white-space: pre-wrap;
+          white-space: nowrap;
         }
       }
 
@@ -294,7 +293,7 @@
       padding-bottom: rem-calc(4px);
       min-height: 20px;
       font-size: rem-calc(14px) !important;
-      white-space: pre-wrap;
+      white-space: nowrap;
 
       &.is-focused, &.Select-option.is-selected {
         background-color: $engel-lightest-opaque !important;
@@ -462,6 +461,7 @@
     color: $tram;
     margin: 0;
     cursor: pointer;
+    display: block;
 
     .icons {
       margin-right: rem-calc(5px);

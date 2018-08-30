@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, reduxForm} from 'redux-form';
+import {FieldArray, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -9,18 +9,31 @@ import type {Element} from 'react';
 
 import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
+import ContactModal from '$src/contacts/components/ContactModal';
 import Divider from '$components/content/Divider';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
+import {
+  createContactOnModal as createContact,
+  hideContactModal,
+  initializeContactForm,
+  receiveContactModalSettings,
+  receiveIsSaveClicked as receiveIsContactModalSaveClicked,
+  showContactModal,
+} from '$src/contacts/actions';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
+import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {FormNames} from '$src/landUseContract/enums';
+import {getContentContact} from '$src/contacts/helpers';
+import {getContactModalSettings, getIsContactFormValid, getIsContactModalOpen} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 
+import type {ContactModalSettings} from '$src/contacts/types';
 import type {Attributes} from '$src/landUseContract/types';
 
 type AreasProps = {
@@ -31,6 +44,7 @@ type AreasProps = {
 
 const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*> => {
   const handleAdd = () => fields.push({});
+
   return (
     <div>
       <FormFieldLabel>Kohteet</FormFieldLabel>
@@ -79,27 +93,59 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
 type LitigantsProps = {
   attributes: Attributes,
   fields: any,
+  initializeContactForm: Function,
   isSaveClicked: boolean,
+  receiveContactModalSettings: Function,
+  receiveIsContactModalSaveClicked: Function,
+  showContactModal: Function,
 }
 
-const renderLitigants = ({attributes, fields, isSaveClicked}: LitigantsProps): Element<*> => {
+const renderLitigants = ({
+  attributes,
+  fields,
+  initializeContactForm,
+  isSaveClicked,
+  receiveContactModalSettings,
+  receiveIsContactModalSaveClicked,
+  showContactModal,
+}: LitigantsProps): Element<*> => {
   const handleAdd = () => fields.push({});
+
   return (
     <div>
       <FormFieldLabel>Osapuolet</FormFieldLabel>
       {fields && !!fields.length && fields.map((field, index) => {
         const handleRemove = () => fields.remove(index);
 
+        const handleAddClick = () => {
+          initializeContactForm({});
+          receiveContactModalSettings({
+            field: `${field}.contact`,
+            contactId: null,
+            isNew: true,
+          });
+          receiveIsContactModalSaveClicked(false);
+          showContactModal();
+        };
+
+        const handleAddKeyDown = (e:any) => {
+          if(e.keyCode === 13) {
+            e.preventDefault();
+            handleAddClick();
+          }
+        };
+
         return (
           <Row key={index}>
-            <Column>
+            <Column small={8}>
               <FieldAndRemoveButtonWrapper
                 field={
                   <FormField
                     disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'litigants.child.children.litigant')}
-                    name={`${field}.litigant`}
+                    fieldAttributes={get(attributes, 'litigants.child.children.contact')}
+                    name={`${field}.contact`}
                     overrideValues={{
+                      fieldType: 'contact',
                       label: '',
                     }}
                   />
@@ -112,6 +158,16 @@ const renderLitigants = ({attributes, fields, isSaveClicked}: LitigantsProps): E
                   />
                 }
               />
+            </Column>
+            <Column small={4}>
+              {(index + 1 === fields.length) &&
+                <p><a className='no-margin'
+                  style={{lineHeight: '20px'}}
+                  onKeyDown={handleAddKeyDown}
+                  onClick={handleAddClick}
+                  tabIndex={0}
+                >Luo asiakas</a></p>
+              }
             </Column>
           </Row>
         );
@@ -132,21 +188,38 @@ const renderLitigants = ({attributes, fields, isSaveClicked}: LitigantsProps): E
 type Props = {
   attributes: Attributes,
   basicInformationCollapseState: boolean,
+  change: Function,
+  contactFormValues: Object,
+  contactModalSettings: ContactModalSettings,
+  createContact: Function,
+  hideContactModal: Function,
+  initializeContactForm: Function,
+  isContactFormValid: boolean,
+  isContactModalOpen: boolean,
   isSaveClicked: boolean,
   planInformationCollapseState: boolean,
   receiveCollapseStates: Function,
+  receiveContactModalSettings: Function,
   receiveFormValidFlags: Function,
+  receiveContactModalSettings: Function,
+  receiveIsContactModalSaveClicked: Function,
+  showContactModal: Function,
   valid: boolean,
 }
 
 class BasicInformationEdit extends Component<Props> {
   componentDidUpdate(prevProps) {
-    const {receiveFormValidFlags} = this.props;
+    const {change, contactModalSettings, receiveContactModalSettings, receiveFormValidFlags} = this.props;
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
         [FormNames.BASIC_INFORMATION]: this.props.valid,
       });
+    }
+
+    if(contactModalSettings && contactModalSettings.contact) {
+      change(contactModalSettings.field, getContentContact(contactModalSettings.contact));
+      receiveContactModalSettings(null);
     }
   }
 
@@ -174,160 +247,218 @@ class BasicInformationEdit extends Component<Props> {
     });
   }
 
+  handleContactModalCancel = () => {
+    const {hideContactModal, receiveContactModalSettings} = this.props;
+
+    hideContactModal();
+    receiveContactModalSettings(null);
+  }
+
+  handleContactModalSave = () => {
+    const {
+      contactFormValues,
+      createContact,
+      isContactFormValid,
+      receiveIsContactModalSaveClicked,
+    } = this.props;
+
+    receiveIsContactModalSaveClicked(true);
+
+    if(!isContactFormValid) {return;}
+    createContact(contactFormValues);
+  }
+
+  handleContactModalSaveAndAdd = () => {
+    const {
+      contactFormValues,
+      createContact,
+      isContactFormValid,
+      receiveIsContactModalSaveClicked,
+    } = this.props;
+    const contact = {...contactFormValues};
+
+    receiveIsContactModalSaveClicked(true);
+
+    if(!isContactFormValid) {return;}
+    contact.isSelected = true;
+    createContact(contact);
+  }
+
   render() {
     const {
       attributes,
       basicInformationCollapseState,
+      initializeContactForm,
+      isContactModalOpen,
       isSaveClicked,
       planInformationCollapseState,
+      receiveContactModalSettings,
+      receiveIsContactModalSaveClicked,
+      showContactModal,
     } = this.props;
 
     return (
-      <form>
-        <h2>Perustiedot</h2>
-        <Divider />
-        <Collapse
-          defaultOpen={basicInformationCollapseState !== undefined ? basicInformationCollapseState : true}
-          headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
-          onToggle={this.handleBasicInformationCollapseToggle}
-        >
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <FieldArray
-                attributes={attributes}
-                component={renderAreas}
-                isSaveClicked={isSaveClicked}
-                name='areas'
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FieldArray
-                attributes={attributes}
-                component={renderLitigants}
-                isSaveClicked={isSaveClicked}
-                name='litigants'
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'preparer')}
-                name='preparer'
-                overrideValues={{
-                  fieldType: 'user',
-                  label: 'Valmistelija',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'land_use_contract_number')}
-                name='land_use_contract_number'
-                overrideValues={{
-                  label: 'Maankäyttösopimus',
-                }}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'estimated_completion_year')}
-                name='estimated_completion_year'
-                overrideValues={{
-                  label: 'Arvioitu toteutumisvuosi',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'estimated_introduction_year')}
-                name='estimated_introduction_year'
-                overrideValues={{
-                  label: 'Arvioitu toteutumisvuosi',
-                }}
-              />
-            </Column>
-          </Row>
-          <SubTitle>Liitetiedostot</SubTitle>
-          <p>Ei liitetiedostoja</p>
-        </Collapse>
+      <div>
+        <ContactModal
+          isOpen={isContactModalOpen}
+          onCancel={this.handleContactModalCancel}
+          onClose={this.handleContactModalCancel}
+          onSave={this.handleContactModalSave}
+          onSaveAndAdd={this.handleContactModalSaveAndAdd}
+          showSaveAndAdd={true}
+          title={'Uusi asiakas'}
+        />
 
-        <Collapse
-          defaultOpen={planInformationCollapseState !== undefined ? planInformationCollapseState : true}
-          headerTitle={<h3 className='collapse__header-title'>Asemakaavatiedot</h3>}
-          onToggle={this.handlePlanInformationCollapseToggle}
-        >
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'project_area')}
-                name='project_area'
-                overrideValues={{
-                  label: 'Hankealue',
-                }}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plan_reference_number')}
-                name='plan_reference_number'
-                validate={referenceNumber}
-                overrideValues={{
-                  label: 'Asemakaavan diaarinumero',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plan_number')}
-                name='plan_number'
-                overrideValues={{
-                  label: 'Asemakaavan numero',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'state')}
-                name='state'
-                overrideValues={{
-                  label: 'Asemakaavan käsittelyvaihe',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plan_acceptor')}
-                name='plan_acceptor'
-                overrideValues={{
-                  label: 'Asemakaavan hyväksyjä',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plan_lawfulness_date')}
-                name='plan_lawfulness_date'
-                overrideValues={{
-                  label: 'Asemakaavan lainvoimaisuuspvm',
-                }}
-              />
-            </Column>
-          </Row>
-        </Collapse>
-      </form>
+        <form>
+          <h2>Perustiedot</h2>
+          <Divider />
+          <Collapse
+            defaultOpen={basicInformationCollapseState !== undefined ? basicInformationCollapseState : true}
+            headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
+            onToggle={this.handleBasicInformationCollapseToggle}
+          >
+            <Row>
+              <Column small={6} medium={4} large={2}>
+                <FieldArray
+                  attributes={attributes}
+                  component={renderAreas}
+                  isSaveClicked={isSaveClicked}
+                  name='areas'
+                />
+              </Column>
+              <Column small={6} medium={4} large={4}>
+                <FieldArray
+                  attributes={attributes}
+                  component={renderLitigants}
+                  initializeContactForm={initializeContactForm}
+                  isSaveClicked={isSaveClicked}
+                  name='litigants'
+                  receiveContactModalSettings={receiveContactModalSettings}
+                  receiveIsContactModalSaveClicked={receiveIsContactModalSaveClicked}
+                  showContactModal={showContactModal}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'preparer')}
+                  name='preparer'
+                  overrideValues={{
+                    fieldType: 'user',
+                    label: 'Valmistelija',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'land_use_contract_type')}
+                  name='land_use_contract_type'
+                  overrideValues={{
+                    label: 'Maankäyttösopimus',
+                  }}
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'estimated_completion_year')}
+                  name='estimated_completion_year'
+                  overrideValues={{
+                    label: 'Arvioitu toteutumisvuosi',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'estimated_introduction_year')}
+                  name='estimated_introduction_year'
+                  overrideValues={{
+                    label: 'Arvioitu toteutumisvuosi',
+                  }}
+                />
+              </Column>
+            </Row>
+            <SubTitle>Liitetiedostot</SubTitle>
+            <p>Ei liitetiedostoja</p>
+          </Collapse>
+
+          <Collapse
+            defaultOpen={planInformationCollapseState !== undefined ? planInformationCollapseState : true}
+            headerTitle={<h3 className='collapse__header-title'>Asemakaavatiedot</h3>}
+            onToggle={this.handlePlanInformationCollapseToggle}
+          >
+            <Row>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'project_area')}
+                  name='project_area'
+                  overrideValues={{
+                    label: 'Hankealue',
+                  }}
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'plan_reference_number')}
+                  name='plan_reference_number'
+                  validate={referenceNumber}
+                  overrideValues={{
+                    label: 'Asemakaavan diaarinumero',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'plan_number')}
+                  name='plan_number'
+                  overrideValues={{
+                    label: 'Asemakaavan numero',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'state')}
+                  name='state'
+                  overrideValues={{
+                    label: 'Asemakaavan käsittelyvaihe',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'plan_acceptor')}
+                  name='plan_acceptor'
+                  overrideValues={{
+                    label: 'Asemakaavan hyväksyjä',
+                  }}
+                />
+              </Column>
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'plan_lawfulness_date')}
+                  name='plan_lawfulness_date'
+                  overrideValues={{
+                    label: 'Asemakaavan lainvoimaisuuspvm',
+                  }}
+                />
+              </Column>
+            </Row>
+          </Collapse>
+        </form>
+      </div>
     );
   }
 }
@@ -340,13 +471,23 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.basic_information`),
+        contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
+        contactModalSettings: getContactModalSettings(state),
+        isContactFormValid: getIsContactFormValid(state),
+        isContactModalOpen: getIsContactModalOpen(state),
         isSaveClicked: getIsSaveClicked(state),
         planInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.plan_information`),
       };
     },
     {
+      createContact,
+      hideContactModal,
+      initializeContactForm,
       receiveCollapseStates,
+      receiveContactModalSettings,
       receiveFormValidFlags,
+      receiveIsContactModalSaveClicked,
+      showContactModal,
     }
   ),
   reduxForm({

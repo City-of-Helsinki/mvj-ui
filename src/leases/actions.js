@@ -2,7 +2,6 @@
 
 import {createAction} from 'redux-actions';
 
-import type {Contact} from '$src/contacts/types';
 import type {
   Attributes,
   FetchAttributesAction,
@@ -24,12 +23,6 @@ import type {
   ReceiveLeaseByIdAction,
   StartInvoicingAction,
   StopInvoicingAction,
-  HideContactModalAction,
-  ShowContactModalAction,
-  ContactModalSettings,
-  ReceiveContactModalSettingsAction,
-  CreateContactAction,
-  EditContactAction,
   HideEditModeAction,
   ShowEditModeAction,
   CreateRelatedLeasePayload,
@@ -97,21 +90,6 @@ export const notFound = (): LeaseNotFoundAction =>
 
 export const notFoundById = (id: LeaseId): LeaseNotFoundByIdAction =>
   createAction('mvj/leases/NOT_FOUND_BY_ID')(id);
-
-export const hideContactModal = (): HideContactModalAction =>
-  createAction('mvj/leases/HIDE_CONTACT_MODAL')();
-
-export const showContactModal = (): ShowContactModalAction =>
-  createAction('mvj/leases/SHOW_CONTACT_MODAL')();
-
-export const receiveContactModalSettings = (settings: ContactModalSettings): ReceiveContactModalSettingsAction =>
-  createAction('mvj/leases/RECEIVE_CONTACT_SETTINGS')(settings);
-
-export const createContact = (contact: Contact): CreateContactAction =>
-  createAction('mvj/leases/CREATE_CONTACT')(contact);
-
-export const editContact = (contact: Contact): EditContactAction =>
-  createAction('mvj/leases/EDIT_CONTACT')(contact);
 
 export const hideEditMode = (): HideEditModeAction =>
   createAction('mvj/leases/HIDE_EDIT')();

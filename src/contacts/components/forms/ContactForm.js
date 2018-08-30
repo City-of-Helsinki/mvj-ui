@@ -23,7 +23,6 @@ type Props = {
   attributes: Attributes,
   initialValues: Object,
   isContactFormValid: boolean,
-  handleSubmit: Function,
   isFocusedOnMount?: boolean,
   isSaveClicked: boolean,
   receiveContactFormValid: Function,
@@ -39,14 +38,14 @@ class ContactForm extends Component<Props> {
     receiveContactFormValid(valid);
 
     if(isFocusedOnMount) {
-      this.firstField.focus();
+      if(this.firstField) {
+        this.firstField.focus();
+      }
     }
   }
 
   setRefForFirstField = (element: any) => {
-    if(element) {
-      this.firstField = element;
-    }
+    this.firstField = element;
   }
 
 
@@ -58,13 +57,13 @@ class ContactForm extends Component<Props> {
   }
 
   render() {
-    const {attributes, handleSubmit, isSaveClicked, type} = this.props;
+    const {attributes, isSaveClicked, type} = this.props;
     if (isEmpty(attributes)) {
       return null;
     }
 
     return(
-      <form onSubmit={handleSubmit}>
+      <form>
         <FormSection>
           <FormWrapper>
             <FormWrapperLeft>

@@ -13,7 +13,7 @@ import FormSection from '$components/form/FormSection';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContentContracts} from '$src/leases/helpers';
-import {getDecisionsOptions} from '$util/helpers';
+import {getDecisionOptions} from '$src/decision/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -96,7 +96,7 @@ class ContractsEdit extends Component<Props, State> {
     }
 
     if(props.decisions !== state.decisions) {
-      retObj.decisionOptions = getDecisionsOptions(props.decisions);
+      retObj.decisionOptions = getDecisionOptions(props.decisions);
       retObj.decisions = props.decisions;
     }
 

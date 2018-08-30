@@ -9,9 +9,12 @@ import type {
   Contact,
   ContactId,
   ContactList,
+  ContactModalSettings,
   ContactNotFoundAction,
   CreateContactAction,
   EditContactAction,
+  CreateContactOnModalAction,
+  EditContactOnModalAction,
   InitializeContactFormValuesAction,
   FetchContactsAction,
   ReceiveContactsAction,
@@ -21,6 +24,9 @@ import type {
   ReceiveContactFormValidAction,
   HideEditModeAction,
   ShowEditModeAction,
+  HideContactModalAction,
+  ShowContactModalAction,
+  ReceiveContactModalSettingsAction,
 } from './types';
 
 export const notFound = (): ContactNotFoundAction =>
@@ -37,6 +43,12 @@ export const createContact = (contact: Contact): CreateContactAction =>
 
 export const editContact = (contact: Contact): EditContactAction =>
   createAction('mvj/contacts/EDIT')(contact);
+
+export const createContactOnModal = (contact: Contact): CreateContactOnModalAction =>
+  createAction('mvj/contacts/CREATE_ON_MODAL')(contact);
+
+export const editContactOnModal = (contact: Contact): EditContactOnModalAction =>
+  createAction('mvj/contacts/EDIT_ON_MODAL')(contact);
 
 export const fetchContacts = (search: string): FetchContactsAction =>
   createAction('mvj/contacts/FETCH_ALL')(search);
@@ -64,3 +76,12 @@ export const hideEditMode = (): HideEditModeAction =>
 
 export const showEditMode = (): ShowEditModeAction =>
   createAction('mvj/contacts/SHOW_EDIT')();
+
+export const hideContactModal = (): HideContactModalAction =>
+  createAction('mvj/contacts/HIDE_CONTACT_MODAL')();
+
+export const showContactModal = (): ShowContactModalAction =>
+  createAction('mvj/contacts/SHOW_CONTACT_MODAL')();
+
+export const receiveContactModalSettings = (settings: ContactModalSettings): ReceiveContactModalSettingsAction =>
+  createAction('mvj/contacts/RECEIVE_CONTACT_SETTINGS')(settings);

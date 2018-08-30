@@ -28,6 +28,7 @@ import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
 import TabPane from '$components/tabs/TabPane';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {
   clearFormValidFlags,
   editLandUseContract,
@@ -49,6 +50,7 @@ import {
   getContentInvoices,
 } from '$src/landUseContract/helpers';
 import {getRouteById} from '$src/root/routes';
+import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {
   getAttributes,
   getCurrentLandUseContract,
@@ -59,6 +61,7 @@ import {
 } from '$src/landUseContract/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
+import type {Attributes as ContactAttributes} from '$src/contacts/types';
 import type {Attributes, LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
@@ -67,11 +70,13 @@ type Props = {
   change: Function,
   clearFormValidFlags: Function,
   compensationsFormValues: Object,
+  contactAttributes: ContactAttributes,
   contractsFormValues: Object,
   currentLandUseContract: LandUseContract,
   decisionsFormValues: Object,
   destroy: Function,
   editLandUseContract: Function,
+  fetchContactAttributes: Function,
   fetchLandUseContractAttributes: Function,
   fetchSingleLandUseContract: Function,
   hideEditMode: Function,
@@ -122,6 +127,8 @@ class LandUseContractPage extends Component<Props, State> {
     const {
       attributes,
       clearFormValidFlags,
+      contactAttributes,
+      fetchContactAttributes,
       fetchLandUseContractAttributes,
       fetchSingleLandUseContract,
       location,
@@ -144,6 +151,10 @@ class LandUseContractPage extends Component<Props, State> {
 
     if(isEmpty(attributes)) {
       fetchLandUseContractAttributes();
+    }
+
+    if(isEmpty(contactAttributes)) {
+      fetchContactAttributes();
     }
 
     clearFormValidFlags();
@@ -632,6 +643,7 @@ export default flowRight(
         attributes: getAttributes(state),
         basicInformationFormValues: getFormValues(FormNames.BASIC_INFORMATION)(state),
         compensationsFormValues: getFormValues(FormNames.COMPENSATIONS)(state),
+        contactAttributes: getContactAttributes(state),
         contractsFormValues: getFormValues(FormNames.CONTRACTS)(state),
         currentLandUseContract: getCurrentLandUseContract(state),
         decisionsFormValues: getFormValues(FormNames.DECISIONS)(state),
@@ -656,6 +668,7 @@ export default flowRight(
       clearFormValidFlags,
       destroy,
       editLandUseContract,
+      fetchContactAttributes,
       fetchLandUseContractAttributes,
       fetchSingleLandUseContract,
       hideEditMode,

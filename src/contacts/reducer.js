@@ -7,11 +7,13 @@ import type {
   Attributes,
   Contact,
   ContactList,
+  ContactModalSettings,
   InitializeContactFormValuesAction,
   ReceiveAttributesAction,
   ReceiveContactsAction,
   ReceiveSingleContactAction,
   ReceiveContactFormValidAction,
+  ReceiveContactModalSettingsAction,
   ReceiveIsSaveClickedAction,
 } from './types';
 
@@ -23,11 +25,13 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/contacts/FETCH_ALL': () => true,
   'mvj/contacts/FETCH_SINGLE': () => true,
+  'mvj/contacts/CREATE': () => true,
+  'mvj/contacts/EDIT': () => true,
+  'mvj/contacts/CREATE_ON_MODAL': () => true,
+  'mvj/contacts/EDIT_ON_MODAL': () => true,
   'mvj/contacts/NOT_FOUND': () => false,
   'mvj/contacts/RECEIVE_ALL': () => false,
   'mvj/contacts/RECEIVE_SINGLE': () => false,
-  'mvj/contacts/CREATE': () => true,
-  'mvj/contacts/EDIT': () => true,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({
@@ -41,6 +45,12 @@ const contactsListReducer: Reducer<ContactList> = handleActions({
     return contacts;
   },
 }, {});
+
+const contactModalSettingsReducer: Reducer<ContactModalSettings> = handleActions({
+  ['mvj/contacts/RECEIVE_CONTACT_SETTINGS']: (state: ContactModalSettings, {payload: settings}: ReceiveContactModalSettingsAction) => {
+    return settings;
+  },
+}, null);
 
 const contactReducer: Reducer<Contact> = handleActions({
   ['mvj/contacts/RECEIVE_SINGLE']: (state: Contact, {payload: contact}: ReceiveSingleContactAction) => {
@@ -64,6 +74,11 @@ const isContactFormValidReducer: Reducer<boolean> = handleActions({
   },
 }, false);
 
+const isContactModalOpenReducer: Reducer<boolean> = handleActions({
+  'mvj/contacts/HIDE_CONTACT_MODAL': () => false,
+  'mvj/contacts/SHOW_CONTACT_MODAL': () => true,
+}, false);
+
 const isSaveClickedReducer: Reducer<boolean> = handleActions({
   ['mvj/contacts/RECEIVE_SAVE_CLICKED']: (state: boolean, {payload: isClicked}: ReceiveIsSaveClickedAction) => {
     return isClicked;
@@ -72,9 +87,11 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions({
 
 export default combineReducers({
   attributes: attributesReducer,
+  contactModalSettings: contactModalSettingsReducer,
   currentContact: contactReducer,
   initialContactFormValues: initialValuesReducer,
   isContactFormValid: isContactFormValidReducer,
+  isContactModalOpen: isContactModalOpenReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
   isSaveClicked: isSaveClickedReducer,

@@ -1,11 +1,15 @@
 .links {
   &__external-link {
+    span {
+      margin-right: rem-calc(5px);
+    }
+
     .icons__external-link {
       height: rem-calc(10px);
       width: rem-calc(13px);
       vertical-align: middle;
       margin-top: rem-calc(-2px);
-      margin-left: rem-calc(10px);
+
     }
 
     &:hover {
