@@ -2,6 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import get from 'lodash/get';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
@@ -12,9 +13,11 @@ import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
+import {getContactFullName} from '$src/contacts/helpers';
 import {getContentBasicInformation} from '$src/landUseContract/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCollapseStateByKey, getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
 import type {Attributes, LandUseContract} from '$src/landUseContract/types';
@@ -54,9 +57,10 @@ const BasicInformation = ({
     });
   };
 
-  const basicInformation = getContentBasicInformation(currentLandUseContract);
-  const stateOptions = getAttributeFieldOptions(attributes, 'state');
-  const planAcceptorOptions = getAttributeFieldOptions(attributes, 'plan_acceptor');
+  const basicInformation = getContentBasicInformation(currentLandUseContract),
+    stateOptions = getAttributeFieldOptions(attributes, 'state'),
+    planAcceptorOptions = getAttributeFieldOptions(attributes, 'plan_acceptor'),
+    landUseContractTypeOptions = getAttributeFieldOptions(attributes, 'land_use_contract_type');
 
   return (
     <div>
@@ -81,7 +85,15 @@ const BasicInformation = ({
             <FormFieldLabel>Osapuolet</FormFieldLabel>
             {!!basicInformation.litigants && !!basicInformation.litigants.length
               ? <ListItems>
-                {basicInformation.litigants.map((litigant, index) => <p key={index} className='no-margin'>{litigant.litigant || '-'}</p>)}
+                {basicInformation.litigants.map((litigant, index) =>
+                  <p key={index} className='no-margin'>
+                    <ExternalLink
+                      className='no-margin'
+                      href={`${getRouteById('contacts')}/${get(litigant, 'contact.id')}`}
+                      label={getContactFullName(litigant.contact)}
+                    />
+                  </p>
+                )}
               </ListItems>
               : <p>-</p>
             }
@@ -92,7 +104,7 @@ const BasicInformation = ({
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormFieldLabel>Maankäyttösopimus</FormFieldLabel>
-            <p>{basicInformation.land_use_contract_number || '-'}</p>
+            <p>{getLabelOfOption(landUseContractTypeOptions, basicInformation.land_use_contract_type) || '-'}</p>
           </Column>
         </Row>
         <Row>

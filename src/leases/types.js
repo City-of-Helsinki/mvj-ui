@@ -1,11 +1,8 @@
 // @flow
 
 import type {Action} from '../types';
-import type {Contact} from '$src/contacts/types';
 
 export type LeaseState = Object;
-
-export type ContactModalSettings = Object | null;
 
 export type Attributes = Object;
 export type Lease = Object;
@@ -19,7 +16,6 @@ export type CreateChargePayload = {
   leaseId: LeaseId,
   data: Object,
 }
-
 export type DeleteRelatedLeasePayload = {
   id: number,
   leaseId: number,
@@ -41,12 +37,6 @@ export type StartInvoicingAction = Action<'mvj/leases/START_INVOICING', LeaseId>
 export type StopInvoicingAction = Action<'mvj/leases/STOP_INVOICING', LeaseId>;
 export type LeaseNotFoundAction = Action<'mvj/leases/NOT_FOUND', void>;
 export type LeaseNotFoundByIdAction = Action<'mvj/leases/NOT_FOUND_BY_ID', LeaseId>;
-
-export type HideContactModalAction = Action<'mvj/leases/HIDE_CONTACT_MODAL', void>;
-export type ShowContactModalAction = Action<'mvj/leases/SHOW_CONTACT_MODAL', void>;
-export type ReceiveContactModalSettingsAction = Action<'mvj/leases/RECEIVE_CONTACT_SETTINGS', ContactModalSettings>;
-export type CreateContactAction = Action<'mvj/leases/CREATE_CONTACT', Contact>;
-export type EditContactAction = Action<'mvj/leases/EDIT_CONTACT', Contact>;
 
 export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;

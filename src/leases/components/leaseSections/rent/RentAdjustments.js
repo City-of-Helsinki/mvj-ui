@@ -5,7 +5,8 @@ import {Row, Column} from 'react-foundation';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
-import {formatDate, getAttributeFieldOptions, getDecisionById, getDecisionsOptions, getLabelOfOption} from '$util/helpers';
+import {getDecisionById, getDecisionOptions} from '$src/decision/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {formatNumber, getReferenceNumberLink} from '$util/helpers';
@@ -19,7 +20,7 @@ type Props = {
 }
 
 const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
-  const decisionOptions = getDecisionsOptions(decisions);
+  const decisionOptions = getDecisionOptions(decisions);
   const typeOptions = getAttributeFieldOptions(attributes,
     'rents.child.children.rent_adjustments.child.children.type');
   const intendedUseOptions = getAttributeFieldOptions(attributes,

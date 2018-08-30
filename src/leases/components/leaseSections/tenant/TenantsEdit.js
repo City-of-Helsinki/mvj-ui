@@ -2,35 +2,40 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
-import {change, FieldArray, getFormValues, reduxForm} from 'redux-form';
+import {FieldArray, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
-import ContactModal from './ContactModal';
+import ContactModal from '$src/contacts/components/ContactModal';
 import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import TenantItemEdit from './TenantItemEdit';
-import {receiveIsSaveClicked} from '$src/contacts/actions';
 import {
-  createContact,
-  editContact,
+  createContactOnModal as createContact,
+  editContactOnModal as editContact,
   hideContactModal,
   receiveContactModalSettings,
-  receiveFormValidFlags,
-} from '$src/leases/actions';
+  receiveIsSaveClicked,
+} from '$src/contacts/actions';
+import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {FormNames} from '$src/leases/enums';
-import {getContentContact, getContentTenantsFormData} from '$src/leases/helpers';
-import {getIsContactFormValid} from '$src/contacts/selectors';
+import {getContentContact} from '$src/contacts/helpers';
+import {getContentTenantsFormData} from '$src/leases/helpers';
 import {
   getContactModalSettings,
-  getCurrentLease,
+  getIsContactFormValid,
   getIsContactModalOpen,
-} from '$src/leases/selectors';
+  getIsFetching as getIsFetchingContact,
+} from '$src/contacts/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
 
-import type {ContactModalSettings, Lease} from '$src/leases/types';
+import type {ContactModalSettings} from '$src/contacts/types';
+import type {Lease} from '$src/leases/types';
 
 type TenantsProps = {
   fields: any,
@@ -91,6 +96,7 @@ type Props = {
   hideContactModal: Function,
   isContactFormValid: boolean,
   isContactModalOpen: boolean,
+  isFetchingContact: boolean,
   receiveContactModalSettings: Function,
   receiveFormValidFlags: Function,
   receiveIsSaveClicked: Function,
@@ -188,6 +194,7 @@ class TenantsEdit extends Component<Props, State> {
       contactModalSettings,
       handleSubmit,
       isContactModalOpen,
+      isFetchingContact,
     } = this.props;
 
     const {tenantsData} = this.state;
@@ -196,6 +203,11 @@ class TenantsEdit extends Component<Props, State> {
 
     return (
       <div>
+        {isFetchingContact &&
+          <LoaderWrapper className='overlay-wrapper'>
+            <Loader isLoading={isFetchingContact} />
+          </LoaderWrapper>
+        }
         <ContactModal
           isOpen={isContactModalOpen}
           onCancel={this.handleCancel}
@@ -244,10 +256,10 @@ export default flowRight(
         currentLease: getCurrentLease(state),
         isContactFormValid: getIsContactFormValid(state),
         isContactModalOpen: getIsContactModalOpen(state),
+        isFetchingContact: getIsFetchingContact(state),
       };
     },
     {
-      change,
       createContact,
       editContact,
       hideContactModal,

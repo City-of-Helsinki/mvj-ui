@@ -1,14 +1,16 @@
 // @flow
-import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
+import {all, call, fork, put, select, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
 import {getRouteById} from '../root/routes';
 
 import {
+  hideContactModal,
   hideEditMode,
   receiveAttributes,
   receiveContacts,
+  receiveContactModalSettings,
   receiveSingleContact,
   notFound,
 } from './actions';
@@ -22,6 +24,7 @@ import {
   fetchContacts,
   fetchSingleContact,
 } from './requests';
+import {getContactModalSettings} from './selectors';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -136,6 +139,67 @@ function* editContactSaga({payload: contact}): Generator<any, any, any> {
   }
 }
 
+function* createContactOnModalSaga({payload: contact}): Generator<any, any, any> {
+  try {
+    const contactModalSettings = yield select(getContactModalSettings);
+    const isSelected = contact.isSelected ? true : false;
+    delete contact.isSelected;
+
+    const {response: {status: statusCode}, bodyAsJson} = yield call(createContact, contact);
+
+    switch (statusCode) {
+      case 201:
+        if (isSelected) {
+          contactModalSettings.contact = bodyAsJson;
+          yield put(receiveContactModalSettings(contactModalSettings));
+        }
+        yield put(receiveSingleContact(bodyAsJson));
+        yield put(hideContactModal());
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to create contact with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* editContactOnModalSaga({payload: contact}): Generator<any, any, any> {
+  try {
+    const contactModalSettings = yield select(getContactModalSettings);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(editContact, contact);
+
+    switch (statusCode) {
+      case 200:
+        contactModalSettings.contact = bodyAsJson;
+        yield put(receiveContactModalSettings(contactModalSettings));
+        yield put(receiveSingleContact(bodyAsJson));
+        yield put(hideContactModal());
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to edit contact with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -144,6 +208,8 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/contacts/FETCH_SINGLE', fetchSingleContactSaga);
       yield takeLatest('mvj/contacts/CREATE', createContactSaga);
       yield takeLatest('mvj/contacts/EDIT', editContactSaga);
+      yield takeLatest('mvj/contacts/CREATE_ON_MODAL', createContactOnModalSaga);
+      yield takeLatest('mvj/contacts/EDIT_ON_MODAL', editContactOnModalSaga);
     }),
   ]);
 }

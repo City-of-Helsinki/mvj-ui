@@ -1,27 +1,27 @@
 // @flow
-import {all, call, fork, put, select, takeEvery, takeLatest} from 'redux-saga/effects';
+import {all, call, fork, put, takeEvery, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
-import {getRouteById} from '../root/routes';
+import {getRouteById} from '$src/root/routes';
 import {
   fetchSingleLease as fetchSingleLeaseAction,
   hideArchiveAreaModal,
-  hideContactModal,
   hideEditMode,
   hideDeleteRelatedLeaseModal,
   hideUnarchiveAreaModal,
   notFound,
   notFoundById,
   receiveAttributes,
-  receiveContactModalSettings,
   receiveIsSaveClicked,
   receiveLeases,
   receiveSingleLease,
   receiveLeaseById,
 } from './actions';
+import {receiveError} from '$src/api/actions';
 import {fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen} from '$src/invoices/actions';
 import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
+import {displayUIMessage} from '$src/util/helpers';
 import {
   createCharge,
   createLease,
@@ -32,13 +32,6 @@ import {
   createRelatedLease,
   deleteReleatedLease,
 } from './requests';
-import {getContactModalSettings} from './selectors';
-import {
-  createContact,
-  editContact,
-} from '../contacts/requests';
-import {receiveError} from '../api/actions';
-import {displayUIMessage} from '$src/util/helpers';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -291,59 +284,6 @@ function* stopInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
   }
 }
 
-function* createContactSaga({payload: contact}): Generator<any, any, any> {
-  try {
-    const contactModalSettings = yield select(getContactModalSettings);
-    const isSelected = contact.isSelected ? true : false;
-    contact.isSelected = undefined;
-
-    const {response: {status: statusCode}, bodyAsJson} = yield call(createContact, contact);
-
-    switch (statusCode) {
-      case 201:
-        if (isSelected) {
-          contactModalSettings.contact = bodyAsJson;
-          yield put(receiveContactModalSettings(contactModalSettings));
-        }
-        yield put(hideContactModal());
-        break;
-      case 400:
-        yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        break;
-      case 500:
-        yield put(receiveError(new Error(bodyAsJson)));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to create contact with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
-function* editContactSaga({payload: contact}): Generator<any, any, any> {
-  try {
-    const contactModalSettings = yield select(getContactModalSettings);
-    const {response: {status: statusCode}, bodyAsJson} = yield call(editContact, contact);
-
-    switch (statusCode) {
-      case 200:
-        contactModalSettings.contact = bodyAsJson;
-        yield put(receiveContactModalSettings(contactModalSettings));
-        yield put(hideContactModal());
-        break;
-      case 400:
-        yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        break;
-      case 500:
-        yield put(receiveError(new Error(bodyAsJson)));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to edit contact with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
 function* createReleatedLeaseSaga({payload}): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(createRelatedLease, payload);
@@ -434,8 +374,6 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/UNARCHIVE_AREA', unarchiveLeaseAreaSaga);
       yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
-      yield takeLatest('mvj/leases/CREATE_CONTACT', createContactSaga);
-      yield takeLatest('mvj/leases/EDIT_CONTACT', editContactSaga);
       yield takeLatest('mvj/leases/CREATE_CHARGE', createChargeSaga);
       yield takeLatest('mvj/leases/CREATE_RELATED_LEASE', createReleatedLeaseSaga);
       yield takeLatest('mvj/leases/DELETE_RELATED_LEASE', deleteReleatedLeaseSaga);

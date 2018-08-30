@@ -5,11 +5,13 @@ import get from 'lodash/get';
 import isNumber from 'lodash/isNumber';
 
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
+import ExternalLink from '$components/links/ExternalLink';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import {getContactFullName} from '$src/contacts/helpers';
 import {formatDate, formatNumber} from '$util/helpers';
+import {getRouteById} from '$src/root/routes';
 
 type Props = {
   contact: ?Object,
@@ -43,7 +45,13 @@ const TenantItem = ({
           <Row>
             <Column small={12} medium={6} large={8}>
               <label>Asiakas</label>
-              <p>{getContactFullName(contact)}</p>
+              {contact
+                ? <p><ExternalLink
+                  href={`${getRouteById('contacts')}/${contact.id}`}
+                  label={getContactFullName(contact)}
+                /></p>
+                : <p>-</p>
+              }
             </Column>
           </Row>
         </FormWrapperLeft>

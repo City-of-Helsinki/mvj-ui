@@ -2,13 +2,22 @@
 
 import type {Selector} from '../types';
 
-import type {Attributes, Contact, ContactState, ContactList} from './types';
+import type {
+  Attributes,
+  Contact,
+  ContactList,
+  ContactModalSettings,
+  ContactState,
+} from './types';
 
 export const getInitialContactFormValues: Selector<Contact, void> = (state: ContactState): Contact =>
   state.contacts.initialContactFormValues;
 
 export const getIsContactFormValid: Selector<boolean, void> = (state: ContactState): boolean =>
   state.contacts.isContactFormValid;
+
+export const getIsContactModalOpen: Selector<boolean, void> = (state: ContactState): boolean =>
+  state.contacts.isContactModalOpen;
 
 export const getIsEditMode: Selector<boolean, void> = (state: ContactState): boolean =>
   state.contacts.isEditMode;
@@ -24,6 +33,9 @@ export const getAttributes: Selector<Attributes, void> = (state: ContactState): 
 
 export const getContactList: Selector<ContactList, void> = (state: ContactState): ContactList =>
   state.contacts.list;
+
+export const getContactModalSettings: Selector<ContactModalSettings, void> = (state: ContactState): ContactModalSettings =>
+  state.contacts.contactModalSettings;
 
 export const getLessors: Selector<ContactList, void> = (state: ContactState): ContactList =>
   state.contacts.lessors;

@@ -6,11 +6,16 @@ import {
   receiveContactFormValid,
   showEditMode,
   hideEditMode,
+  showContactModal,
+  hideContactModal,
+  receiveContactModalSettings,
   receiveContacts,
   fetchContacts,
   fetchSingleContact,
   createContact,
   editContact,
+  createContactOnModal,
+  editContactOnModal,
   notFound,
   receiveIsSaveClicked,
 } from './actions';
@@ -18,6 +23,7 @@ import contactReducer from './reducer';
 
 const stateTemplate = {
   attributes: {},
+  contactModalSettings: null,
   currentContact: {},
   initialContactFormValues: {
     decisions: [''],
@@ -25,6 +31,7 @@ const stateTemplate = {
     real_estate_ids: [''],
   },
   isContactFormValid: false,
+  isContactModalOpen: false,
   isEditMode: false,
   isFetching: false,
   isSaveClicked: false,
@@ -116,6 +123,22 @@ describe('Contacts', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update isFetching flag to true by createContactOnModal', () => {
+        const newState = {...stateTemplate};
+        newState.isFetching = true;
+
+        const state = contactReducer({}, createContactOnModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetching flag to true by editContactOnModal', () => {
+        const newState = {...stateTemplate};
+        newState.isFetching = true;
+
+        const state = contactReducer({}, editContactOnModal());
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isFetching flag to false by notFound', () => {
         const newState = {...stateTemplate};
         newState.isFetching = false;
@@ -159,6 +182,34 @@ describe('Contacts', () => {
         newState.isEditMode = false;
 
         const state = contactReducer({}, hideEditMode());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isContactModalOpen flag to true', () => {
+        const newState = {...stateTemplate};
+        newState.isContactModalOpen = true;
+
+        const state = contactReducer({}, showContactModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isContactModalOpen flag to false', () => {
+        const newState = {...stateTemplate};
+        newState.isContactModalOpen = false;
+
+        let state = contactReducer({}, showContactModal());
+        state = contactReducer({}, hideContactModal());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update contactModalSettings', () => {
+        const dummySettings = {
+          foo: 'bar',
+        };
+        const newState = {...stateTemplate};
+        newState.contactModalSettings = dummySettings;
+
+        const state = contactReducer({}, receiveContactModalSettings(dummySettings));
         expect(state).to.deep.equal(newState);
       });
 

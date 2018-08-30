@@ -26,8 +26,9 @@ import {
   unarchiveLeaseArea,
 } from '$src/leases/actions';
 import {AreaLocation, FormNames} from '$src/leases/enums';
+import {getDecisionOptions} from '$src/decision/helpers';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
-import {formatNumber, getDecisionsOptions} from '$util/helpers';
+import {formatNumber} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getCurrentLease, getIsArchiveAreaModalOpen, getIsArchiveFetching, getIsUnarchiveAreaModalOpen} from '$src/leases/selectors';
 
@@ -323,7 +324,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
         activeAreas: activeAreas,
         archivedAreas: archivedAreas,
         currentLease: props.currentLease,
-        decisionOptions: getDecisionsOptions(props.decisions),
+        decisionOptions: getDecisionOptions(props.decisions),
       };
     }
     return null;

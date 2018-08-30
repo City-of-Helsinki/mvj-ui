@@ -5,8 +5,9 @@ import {connect} from 'react-redux';
 import Divider from '$components/content/Divider';
 import LeaseAreaWithArchiceInfo from './LeaseAreaWithArchiceInfo';
 import RightSubtitle from '$components/content/RightSubtitle';
+import {getDecisionOptions} from '$src/decision/helpers';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
-import {formatNumber, getDecisionsOptions}  from '$util/helpers';
+import {formatNumber}  from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getDecisionsByLease} from '$src/decision/selectors';
 
@@ -22,7 +23,7 @@ const LeaseAreas = ({currentLease, decisions}: Props) => {
   const activeAreas = areas.filter((area) => !area.archived_at);
   const archivedAreas = areas.filter((area) => area.archived_at);
   const areasSum = getAreasSum(activeAreas);
-  const decisionOptions = getDecisionsOptions(decisions);
+  const decisionOptions = getDecisionOptions(decisions);
 
   return (
     <div>

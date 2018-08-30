@@ -5,18 +5,11 @@ import isEmpty from 'lodash/isEmpty';
 import type {Selector} from '../types';
 import type {
   Attributes,
-  ContactModalSettings,
   LeaseId,
   Lease,
   LeaseList,
   LeaseState,
 } from './types';
-
-export const getIsContactModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isContactModalOpen;
-
-export const getContactModalSettings: Selector<ContactModalSettings, void> = (state: LeaseState): ContactModalSettings =>
-  state.lease.contactModalSettings;
 
 export const getIsArchiveAreaModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isArchiveAreaModalOpen;

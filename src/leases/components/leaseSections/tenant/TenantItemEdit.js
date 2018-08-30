@@ -19,8 +19,8 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
-import {initializeContactForm, receiveIsSaveClicked} from '$src/contacts/actions';
-import {receiveCollapseStates, receiveContactModalSettings, showContactModal} from '$src/leases/actions';
+import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
+import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
@@ -38,13 +38,9 @@ const renderOtherTenants = ({
   fields,
   tenant,
 }: OtherTenantsProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
+  const handleAdd = () => fields.push({});
 
-  const handleRemove = (index: number) => {
-    fields.remove(index);
-  };
+  const handleRemove = (index: number) => fields.remove(index);
 
   return (
     <div>

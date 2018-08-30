@@ -7,21 +7,28 @@ import {getContentUser} from '$src/leases/helpers';
 import {fixedLengthNumber} from '$util/helpers';
 import {removeSessionStorageItem} from '$util/storage';
 
+import {getContactFullName, getContentContact} from '$src/contacts/helpers';
+
 import type {LandUseContract} from './types';
 
 export const getContentLandUseContractIdentifier = (item: Object) => {
   if(isEmpty(item)) {
     return null;
   }
-  const unit = `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
-  return unit;
+  return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
 };
+
+export const getContentListItemLitigant = (litigant: Object) =>
+  litigant ? getContactFullName(litigant.contact) : null;
+
+export const getContentListItemLitigants = (contract: Object) =>
+  get(contract, 'litigants', []).map((litigant) => getContentListItemLitigant(litigant));
 
 export const getContentLandUseContractListItem = (contract: LandUseContract) => {
   return {
     id: contract.id,
     identifier: getContentLandUseContractIdentifier(contract),
-    litigant: get(contract, 'litigants[0].litigant'),
+    litigants: getContentListItemLitigants(contract),
     plan_number: get(contract, 'plan_number'),
     area: get(contract, 'areas[0].area'),
     project_area: get(contract, 'project_area'),
@@ -29,30 +36,34 @@ export const getContentLandUseContractListItem = (contract: LandUseContract) => 
   };
 };
 
-const getContentBasicInformationAreas = (contract: LandUseContract) => {
-  return get(contract, 'areas', []).map((area) => {
+export const getContentLandUseContractList = (content: Object) =>
+  get(content, 'results', []).map((contract) => getContentLandUseContractListItem(contract));
+
+const getContentAreas = (contract: LandUseContract) =>
+  get(contract, 'areas', []).map((area) => {
     return {
       area: get(area, 'area'),
     };
   });
+
+export const getContentLitigant = (litigant: Object) => {
+  return litigant ? {
+    id: get(litigant, 'id'),
+    contact: getContentContact(get(litigant, 'contact')),
+  } : {};
 };
 
-const getContentBasicInformationLitigants = (contract: LandUseContract) => {
-  return get(contract, 'litigants', []).map((litigant) => {
-    return {
-      litigant: get(litigant, 'litigant'),
-    };
-  });
-};
+const getContentLitigants = (contract: LandUseContract) =>
+  get(contract, 'litigants', []).map((litigant) => getContentLitigant(litigant));
 
 export const getContentBasicInformation = (contract: LandUseContract) => {
   return {
     id: contract.id,
     identifier: getContentLandUseContractIdentifier(contract),
-    areas: getContentBasicInformationAreas(contract),
-    litigants: getContentBasicInformationLitigants(contract),
+    areas: getContentAreas(contract),
+    litigants: getContentLitigants(contract),
     preparer: getContentUser(get(contract, 'preparer')),
-    land_use_contract_number: get(contract, 'land_use_contract_number'),
+    land_use_contract_type: get(contract, 'land_use_contract_type'),
     estimated_completion_year: get(contract, 'estimated_completion_year'),
     estimated_introduction_year: get(contract, 'estimated_introduction_year'),
     project_area: get(contract, 'project_area'),
@@ -64,9 +75,8 @@ export const getContentBasicInformation = (contract: LandUseContract) => {
   };
 };
 
-const getContentDecisionConditions = (decision: Object) => {
-  const conditions = get(decision, 'conditions', []);
-  return conditions.map((condition) => {
+const getContentDecisionConditions = (decision: Object) =>
+  get(decision, 'conditions', []).map((condition) => {
     return {
       type: get(condition, 'type'),
       area: get(condition, 'area'),
@@ -75,7 +85,6 @@ const getContentDecisionConditions = (decision: Object) => {
       note: get(condition, 'note'),
     };
   });
-};
 
 const getContentDecisionItem = (decision: Object) => {
   return {
@@ -89,9 +98,8 @@ const getContentDecisionItem = (decision: Object) => {
   };
 };
 
-export const getContentDecisions = (contract: LandUseContract) => {
-  return get(contract, 'decisions', []).map((decision) => getContentDecisionItem(decision));
-};
+export const getContentDecisions = (contract: LandUseContract) =>
+  get(contract, 'decisions', []).map((decision) => getContentDecisionItem(decision));
 
 const getContentContractItem = (contract: Object) => {
   return {
@@ -105,19 +113,16 @@ const getContentContractItem = (contract: Object) => {
   };
 };
 
-export const getContentContracts = (contract: LandUseContract) => {
-  return get(contract, 'contracts', []).map((contract) => getContentContractItem(contract));
-};
+export const getContentContracts = (contract: LandUseContract) =>
+  get(contract, 'contracts', []).map((contract) => getContentContractItem(contract));
 
-export const getContentCompensationInvoices = (compensation: Object) => {
-  const invoices = get(compensation, 'invoices', []);
-  return invoices.map((invoice) => {
+export const getContentCompensationInvoices = (compensation: Object) =>
+  get(compensation, 'invoices', []).map((invoice) => {
     return {
       amount: get(invoice, 'amount'),
       due_date: get(invoice, 'due_date'),
     };
   });
-};
 
 export const getContentCompensations = (contract: LandUseContract) => {
   const compensations = get(contract, 'compensations', {});
@@ -144,14 +149,8 @@ const getContentInvoiceItem = (invoice: Object) => {
   };
 };
 
-export const getContentInvoices = (contract: LandUseContract) => {
-  return get(contract, 'invoices', []).map((invoice) => getContentInvoiceItem(invoice));
-};
-
-export const getContentLandUseContractList = (content: Object) => {
-  const contracts = get(content, 'results', []);
-  return contracts.map((contract) => getContentLandUseContractListItem(contract));
-};
+export const getContentInvoices = (contract: LandUseContract) =>
+  get(contract, 'invoices', []).map((invoice) => getContentInvoiceItem(invoice));
 
 export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.BASIC_INFORMATION);

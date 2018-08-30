@@ -11,7 +11,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
-import {getDecisionsOptions} from '$util/helpers';
+import {getDecisionOptions} from '$src/decision/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -25,7 +25,7 @@ type Props = {
 }
 
 const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Props) => {
-  const decisionOptions = getDecisionsOptions(decisions);
+  const decisionOptions = getDecisionOptions(decisions);
 
   return (
     <div>

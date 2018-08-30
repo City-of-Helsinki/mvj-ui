@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import Button from '$components/button/Button';
-import ContactForm from '$src/contacts/components/forms/ContactForm';
+import ContactForm from './forms/ContactForm';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import Modal from '$components/modal/Modal';
 import {getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';

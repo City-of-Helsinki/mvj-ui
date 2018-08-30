@@ -13,8 +13,9 @@ import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
+import {getDecisionById} from '$src/decision/helpers';
 import {isContractActive} from '$src/leases/helpers';
-import {formatDate, getDecisionById, getLabelOfOption, getReferenceNumberLink} from '$src/util/helpers';
+import {formatDate, getLabelOfOption, getReferenceNumberLink} from '$src/util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 

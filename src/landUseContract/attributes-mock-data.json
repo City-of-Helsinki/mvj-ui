@@ -243,12 +243,11 @@
     "litigants": {
       "child": {
         "children": {
-          "litigant": {
-            "type": "string",
-            "required": false,
+          "contact": {
+            "type": "field",
+            "required": true,
             "read_only": false,
-            "label": "Kohde",
-            "max_length": 255
+            "label": "Kohde"
           }
         }
       }
@@ -259,12 +258,25 @@
       "read_only": false,
       "label": "User"
     },
-    "land_use_contract_number": {
-      "type": "string",
+    "land_use_contract_type": {
+      "type": "field",
       "required": false,
       "read_only": false,
       "label": "Maankäyttösopimus",
-      "max_length": 255
+      "choices": [
+        {
+            "display_name": "Maankäyttösopimus",
+            "value": 0
+        },
+        {
+            "display_name": "Sopimus arvonnoususta",
+            "value": 1
+        },
+        {
+            "display_name": "Ei sopimusta",
+            "value": 2
+        }
+      ]
     },
     "estimated_completion_year": {
       "type": "integer",

@@ -33,10 +33,31 @@
     ],
     "litigants": [
       {
-        "litigant": "Kaarina Mäkelä"
-      },
-      {
-        "litigant": "Antero Mäkelä"
+        "id": 2,
+        "contact": {
+          "id": 2,
+          "deleted": null,
+          "created_at": "2018-06-26T14:32:49.565000+03:00",
+          "modified_at": "2018-06-26T14:32:49.565000+03:00",
+          "type": "business",
+          "first_name": null,
+          "last_name": null,
+          "name": "DELETE OY/JANIKA VILKMAN",
+          "business_id": "1075521-2",
+          "address": "POSTINTAIVAL 7",
+          "postal_code": "00230",
+          "city": null,
+          "email": null,
+          "phone": null,
+          "language": null,
+          "national_identification_number": null,
+          "address_protection": false,
+          "customer_number": null,
+          "sap_customer_number": null,
+          "electronic_billing_address": null,
+          "partner_code": null,
+          "is_lessor": false
+        }
       }
     ],
     "preparer": {
@@ -45,7 +66,7 @@
       "is_staff": false,
       "last_name": "Lindell"
     },
-    "land_use_contract_number": "Maankäyttösopimus",
+    "land_use_contract_type": 0,
     "estimated_completion_year": "2019",
     "estimated_introduction_year": "2020",
     "project_area": "12345566779",

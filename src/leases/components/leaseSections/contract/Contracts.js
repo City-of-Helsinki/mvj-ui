@@ -4,8 +4,9 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 
 import ContractItem from './ContractItem';
+import {getDecisionOptions} from '$src/decision/helpers';
 import {getContentContracts} from '$src/leases/helpers';
-import {getAttributeFieldOptions, getDecisionsOptions} from '$util/helpers';
+import {getAttributeFieldOptions} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -70,7 +71,7 @@ class Contracts extends PureComponent<Props, State> {
     const {decisions} = this.props;
 
     this.setState({
-      decisionOptions: getDecisionsOptions(decisions),
+      decisionOptions: getDecisionOptions(decisions),
     });
   }
 

@@ -17,6 +17,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
+import {getDecisionById} from '$src/decision/helpers';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
@@ -165,13 +166,6 @@ const DecisionItemEdit = ({
   onRemove,
   receiveCollapseStates,
 }: Props) => {
-  const getDecisionById = (id: number) => {
-    if(!id) {
-      return {};
-    }
-    return decisionsData.find((decision) => decision.id === id);
-  };
-
   const handleRemove = () => {
     onRemove(index);
   };
@@ -206,13 +200,13 @@ const DecisionItemEdit = ({
 
   const decisionMakerOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker'),
     decisionErrors = get(errors, field),
-    savedDecision = getDecisionById(decisionId);
+    savedDecision = getDecisionById(decisionsData, decisionId);
 
   return (
     <Collapse
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
-      headerTitle={<h3 className='collapse__header-title'>{savedDecision ? (getLabelOfOption(decisionMakerOptions, savedDecision.decision_maker) || '-') : '-'}</h3>}
+      headerTitle={<h3 className='collapse__header-title'>{savedDecision ? (getLabelOfOption(decisionMakerOptions, get(savedDecision, 'decision_maker')) || '-') : '-'}</h3>}
       onRemove={handleRemove}
       onToggle={handleDecisionCollapseToggle}
     >
