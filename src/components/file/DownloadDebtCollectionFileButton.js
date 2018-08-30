@@ -34,6 +34,7 @@ const DownloadDebtCollectionFileButton = ({
     if (apiToken) {
       request.headers.set('Authorization', `Bearer ${apiToken}`);
     }
+    request.headers.set('Content-Type', 'application/json');
 
     return fetch(request)
       .then((response) => {
