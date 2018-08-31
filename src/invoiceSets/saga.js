@@ -5,6 +5,7 @@ import {SubmissionError} from 'redux-form';
 import {fetchInvoicesByLease, receiveInvoiceToCredit, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {fetchInvoiceSetsByLease as fetchInvoiceSetsByLeaseAction, notFound, receiveInvoiceSetsByLease} from './actions';
 import {receiveError} from '$src/api/actions';
+import {displayUIMessage} from '$util/helpers';
 import {creditInvoiceSet, fetchInvoiceSetsByLease} from './requests';
 
 
@@ -40,6 +41,7 @@ function* creditInvoiceSetSaga({payload: {creditData, invoiceSetId, lease}}): Ge
         yield put(fetchInvoiceSetsByLeaseAction(lease));
         yield put(receiveIsCreditInvoicePanelOpen(false));
         yield put(receiveInvoiceToCredit(null));
+        displayUIMessage({title: '', body: 'Hyvityslaskut luotu'});
         break;
       case 400:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));

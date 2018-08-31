@@ -8,6 +8,7 @@ import {
   receiveLandUseContractList,
   receiveSingleLandUseContract,
 } from './actions';
+import {displayUIMessage} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import attributesMockData from './attributes-mock-data.json';
 import mockData from './mock-data.json';
@@ -35,11 +36,13 @@ function* fetchSingleLandUseContractSaga({payload: contractId}): Generator<any, 
 function* createLandUseContractSaga({payload: landUseContract}): Generator<any, any, any> {
   console.log(landUseContract);
   yield put(push(`${getRouteById('landUseContract')}/1`));
+  displayUIMessage({title: '', body: 'Maankäyttösopimus luotu'});
 }
 
 function* editLandUseContractSaga({payload: landUseContract}): Generator<any, any, any> {
   yield put(receiveSingleLandUseContract(landUseContract));
   yield put(hideEditMode());
+  displayUIMessage({title: '', body: 'Maankäyttösopimus tallennettu'});
 }
 
 export default function*(): Generator<any, any, any> {

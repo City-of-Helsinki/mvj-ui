@@ -3,8 +3,6 @@ import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
-import {displayUIMessage} from '$util/helpers';
-
 import {
   fetchSingleInfillDevelopment as fetchSingleInfillDevelopmentAction,
   hideEditMode,
@@ -15,6 +13,7 @@ import {
   receiveSingleInfillDevelopment,
 } from './actions';
 import {receiveError} from '$src/api/actions';
+import {displayUIMessage} from '$util/helpers';
 import {
   createInfillDevelopment,
   editInfillDevelopment,
@@ -97,6 +96,7 @@ function* createInfillDevelopmentSaga({payload: infillDevelopment}): Generator<a
     switch (statusCode) {
       case 201:
         yield put(push(`${getRouteById('infillDevelopment')}/${bodyAsJson.id}`));
+        displayUIMessage({title: '', body: 'Täydennysrakentamiskorvaus luotu'});
         break;
       case 400:
         yield put(notFound());
@@ -123,6 +123,7 @@ function* editInfillDevelopmentSaga({payload: infillDevelopment}): Generator<any
         yield put(fetchSingleInfillDevelopmentAction(infillDevelopment.id));
         yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());
+        displayUIMessage({title: '', body: 'Täydennysrakentamiskorvaus tallennettu'});
         break;
       case 400:
         yield put(notFound());
@@ -146,7 +147,7 @@ function* uploadInfillDevelopmentFileSaga({payload}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
-        displayUIMessage({title: '', body: 'Tiedoston lataaminen onnistui'});
+        displayUIMessage({title: '', body: 'Tiedosto ladattu'});
         yield put(fetchSingleInfillDevelopmentAction(payload.id));
         break;
       case 404:
@@ -170,7 +171,7 @@ function* deleteInfillDevelopmentFileSaga({payload}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 204:
-        displayUIMessage({title: '', body: 'Tiedosto on poistettu onnistuneesti'});
+        displayUIMessage({title: '', body: 'Tiedosto poistettu'});
         yield put(fetchSingleInfillDevelopmentAction(payload.id));
         break;
       case 404:

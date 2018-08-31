@@ -120,6 +120,7 @@ function* createLeaseSaga({payload: lease}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(push(`${getRouteById('leases')}/${bodyAsJson.id}`));
+        displayUIMessage({title: '', body: 'Vuokraus luotu'});
         break;
       case 400:
         yield put(notFound());
@@ -146,6 +147,7 @@ function* patchLeaseSaga({payload: lease}): Generator<any, any, any> {
         yield put(fetchSingleLeaseAction(lease.id));
         yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());
+        displayUIMessage({title: '', body: 'Vuokraus tallennettu'});
         break;
       case 400:
         yield put(notFound());
@@ -177,7 +179,7 @@ function* archiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
             yield put(receiveSingleLease(bodyAsJsonLease));
             yield put(hideArchiveAreaModal());
             yield put(notFound());
-            displayUIMessage({title: '', body: 'Kohde on arkistoitu'});
+            displayUIMessage({title: '', body: 'Kohde arkistoitu'});
             break;
         }
         break;
@@ -211,7 +213,7 @@ function* unarchiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
             yield put(receiveSingleLease(bodyAsJsonLease));
             yield put(hideUnarchiveAreaModal());
             yield put(notFound());
-            displayUIMessage({title: '', body: 'Kohde on poistettu arkistosta'});
+            displayUIMessage({title: '', body: 'Kohde poistettu arkistosta'});
             break;
         }
         break;
@@ -242,6 +244,7 @@ function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
+        displayUIMessage({title: '', body: 'Laskutus käynnistetty'});
         break;
       case 400:
         yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
@@ -267,6 +270,7 @@ function* stopInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
     switch (statusCode) {
       case 200:
         yield put(receiveSingleLease(bodyAsJson));
+        displayUIMessage({title: '', body: 'Laskutus keskeytetty'});
         break;
       case 400:
         yield put(notFound());
@@ -295,6 +299,7 @@ function* createReleatedLeaseSaga({payload}): Generator<any, any, any> {
         switch (status) {
           case 200:
             yield put(receiveSingleLease(bodyAsJson));
+            displayUIMessage({title: '', body: 'Liittyvä vuokraus luotu'});
             break;
           default:
             yield put(receiveError(new SubmissionError({...bodyAsJson})));
@@ -321,6 +326,7 @@ function* createChargeSaga({payload}): Generator<any, any, any> {
         yield put(fetchInvoicesByLease(leaseId));
         yield put(fetchInvoiceSetsByLease(leaseId));
         yield put(receiveIsCreateInvoicePanelOpen(false));
+        displayUIMessage({title: '', body: 'Hyvityslasku luotu'});
         break;
       default:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
@@ -345,6 +351,7 @@ function* deleteReleatedLeaseSaga({payload}): Generator<any, any, any> {
         switch (status) {
           case 200:
             yield put(receiveSingleLease(bodyAsJson));
+            displayUIMessage({title: '', body: 'Liittyvä vuokraus poistettu'});
             break;
           default:
             yield put(receiveError(new SubmissionError({...bodyAsJson})));

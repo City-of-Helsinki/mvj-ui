@@ -13,6 +13,8 @@ import {
   receivePatchedInvoice,
   notFound,
 } from './actions';
+import {receiveError} from '$src/api/actions';
+import {displayUIMessage} from '$util/helpers';
 import {
   fetchAttributes,
   fetchInvoices,
@@ -20,7 +22,6 @@ import {
   creditInvoice,
   patchInvoice,
 } from './requests';
-import {receiveError} from '$src/api/actions';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -74,6 +75,7 @@ function* createInvoiceSaga({payload: invoice}): Generator<any, any, any> {
       case 201:
         yield put(fetchInvoicesByLease(invoice.lease));
         yield put(receiveIsCreateInvoicePanelOpen(false));
+        displayUIMessage({title: '', body: 'Lasku luotu'});
         break;
       case 400:
         yield put(notFound());
@@ -100,6 +102,7 @@ function* creditInvoiceSaga({payload: {creditData, invoiceId, lease}}): Generato
         yield put(fetchInvoicesByLease(lease));
         yield put(receiveIsCreditInvoicePanelOpen(false));
         yield put(receiveInvoiceToCredit(null));
+        displayUIMessage({title: '', body: 'Hyvityslasku luotu'});
         break;
       case 400:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
@@ -122,6 +125,7 @@ function* patchInvoiceSaga({payload: invoice}): Generator<any, any, any> {
       case 200:
         yield put(fetchInvoicesByLease(bodyAsJson.lease));
         yield put(receivePatchedInvoice(bodyAsJson));
+        displayUIMessage({title: '', body: 'Lasku tallennettu'});
         break;
       case 400:
         yield put(notFound());
