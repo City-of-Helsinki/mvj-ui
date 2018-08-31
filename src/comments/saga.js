@@ -9,13 +9,14 @@ import {
   receiveAttributes,
   receiveCommentsByLease,
 } from './actions';
+import {receiveError} from '../api/actions';
+import {displayUIMessage} from '$util/helpers';
 import {
   createComment,
   editComment,
   fetchAttributes,
   fetchComments,
 } from './requests';
-import {receiveError} from '../api/actions';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -70,6 +71,7 @@ function* createCommentSaga({payload: comment}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(fetchCommentsByLease(bodyAsJson.lease));
+        displayUIMessage({title: '', body: 'Kommentti luotu'});
         break;
       case 400:
         yield put(notFound());
@@ -95,6 +97,7 @@ function* editCommentSaga({payload: comment}): Generator<any, any, any> {
       case 200:
         yield put(fetchCommentsByLease(bodyAsJson.lease));
         yield put(hideEditModeById(comment.id));
+        displayUIMessage({title: '', body: 'Kommentti tallennettu'});
         break;
       case 400:
         yield put(notFound());

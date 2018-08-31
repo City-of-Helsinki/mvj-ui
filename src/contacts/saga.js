@@ -3,8 +3,6 @@ import {all, call, fork, put, select, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
-import {getRouteById} from '../root/routes';
-
 import {
   hideContactModal,
   hideEditMode,
@@ -14,9 +12,8 @@ import {
   receiveSingleContact,
   notFound,
 } from './actions';
-
 import {receiveError} from '$src/api/actions';
-
+import {displayUIMessage} from '$util/helpers';
 import {
   createContact,
   editContact,
@@ -24,6 +21,7 @@ import {
   fetchContacts,
   fetchSingleContact,
 } from './requests';
+import {getRouteById} from '../root/routes';
 import {getContactModalSettings} from './selectors';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
@@ -97,6 +95,7 @@ function* createContactSaga({payload: contact}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(push(`${getRouteById('contacts')}/${bodyAsJson.id}`));
+        displayUIMessage({title: '', body: 'Asiakas luotu'});
         break;
       case 400:
         yield put(notFound());
@@ -122,6 +121,7 @@ function* editContactSaga({payload: contact}): Generator<any, any, any> {
       case 200:
         yield put(receiveSingleContact(bodyAsJson));
         yield put(hideEditMode());
+        displayUIMessage({title: '', body: 'Asiakas tallennettu'});
         break;
       case 400:
         yield put(notFound());
@@ -155,6 +155,7 @@ function* createContactOnModalSaga({payload: contact}): Generator<any, any, any>
         }
         yield put(receiveSingleContact(bodyAsJson));
         yield put(hideContactModal());
+        displayUIMessage({title: '', body: 'Asiakas luotu'});
         break;
       case 400:
         yield put(notFound());
@@ -183,6 +184,7 @@ function* editContactOnModalSaga({payload: contact}): Generator<any, any, any> {
         yield put(receiveContactModalSettings(contactModalSettings));
         yield put(receiveSingleContact(bodyAsJson));
         yield put(hideContactModal());
+        displayUIMessage({title: '', body: 'Asiakas tallennettu'});
         break;
       case 400:
         yield put(notFound());

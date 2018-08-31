@@ -3,8 +3,6 @@ import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
-import {getRouteById} from '../root/routes';
-
 import {
   hideEditMode,
   notFound,
@@ -12,6 +10,8 @@ import {
   receiveRentBasisList,
   receiveSingleRentBasis,
 } from './actions';
+import {receiveError} from '../api/actions';
+import {displayUIMessage} from '$util/helpers';
 import {
   createRentBasis,
   editRentBasis,
@@ -19,7 +19,7 @@ import {
   fetchRentBasisList,
   fetchSingleRentBasis,
 } from './requests';
-import {receiveError} from '../api/actions';
+import {getRouteById} from '../root/routes';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -88,6 +88,7 @@ function* createRentBasisSaga({payload: rentBasis}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(push(`${getRouteById('rentBasis')}/${bodyAsJson.id}`));
+        displayUIMessage({title: '', body: 'Vuokrausperuste luotu'});
         break;
       case 400:
         yield put(notFound());
@@ -113,6 +114,7 @@ function* editRentBasisSaga({payload: rentBasis}): Generator<any, any, any> {
       case 200:
         yield put(receiveSingleRentBasis(bodyAsJson));
         yield put(hideEditMode());
+        displayUIMessage({title: '', body: 'Vuokrausperuste tallennettu'});
         break;
       case 400:
         yield put(notFound());

@@ -10,6 +10,7 @@ import {
   receiveDeletedAreaNote,
   receiveEditedAreaNote,
 } from './actions';
+import {displayUIMessage} from '$util/helpers';
 import {
   createAreaNote,
   deleteAreaNote,
@@ -52,6 +53,7 @@ function* createAreaNoteSaga({payload}): Generator<any, any, any> {
       case 201:
         yield put(receiveEditedAreaNote(bodyAsJson));
         yield put(hideEditMode());
+        displayUIMessage({title: '', body: 'Muistettava ehto luotu'});
         break;
       case 400:
         yield put(notFound());
@@ -77,6 +79,7 @@ function* deleteAreaNoteSaga({payload: id}): Generator<any, any, any> {
       case 204:
         yield put(receiveDeletedAreaNote(id));
         yield put(hideEditMode());
+        displayUIMessage({title: '', body: 'Muistettava ehto poistettu'});
         break;
       case 400:
         yield put(notFound());
@@ -102,6 +105,7 @@ function* editAreaNoteSaga({payload}): Generator<any, any, any> {
       case 200:
         yield put(receiveEditedAreaNote(bodyAsJson));
         yield put(hideEditMode());
+        displayUIMessage({title: '', body: 'Muistettava ehto tallennettu'});
         break;
       case 400:
         yield put(notFound());
