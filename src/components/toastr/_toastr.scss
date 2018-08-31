@@ -14,6 +14,8 @@
 .redux-toastr {
   .toastr {
     border-radius: 0;
+    font-family: $font-family-helsinki-grotesk;
+    font-weight: $semibold;
 
     &.rrt-error {
       background-color: $brick;

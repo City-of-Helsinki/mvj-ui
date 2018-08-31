@@ -114,7 +114,7 @@
       .logout-link {
         line-height: 1;
         color: $tram;
-        font-weight: 500;
+        font-weight: $semibold;
         font-size: rem-calc(16px);
         font-family: $font-family-helsinki-grotesk;
         cursor: pointer;
