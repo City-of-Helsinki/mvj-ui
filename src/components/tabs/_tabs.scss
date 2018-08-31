@@ -61,8 +61,6 @@
       transform: skewX(15deg);
       border: 2px solid $medium-gray;
       border-left: none;
-
-      @include breakpoint('small')
     }
   }
   > li.is-active {

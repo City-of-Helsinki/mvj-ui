@@ -183,7 +183,7 @@ class CommentPanel extends PureComponent<Props, State> {
       topicFilterOptions,
     } = this.state;
     const filteredComments = this.getFilteredComments(comments);
-    console.log(!isOpen && !isClosing && !isOpening);
+
     return (
       <div ref={this.setComponentRef} className={classNames('comment-panel', {'is-panel-open': isOpen})}>
         <div hidden={!isOpen && !isClosing && !isOpening}>
