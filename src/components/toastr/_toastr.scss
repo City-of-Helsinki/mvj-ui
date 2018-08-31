@@ -1,0 +1,57 @@
+.toastr {
+  &__icons {
+    width: rem-calc(32px);
+    height: rem-calc(32px);
+    fill: $white;
+    stroke: $white;
+
+    #Artboard {
+      fill: $white;
+    }
+  }
+}
+
+.redux-toastr {
+  .toastr {
+    border-radius: 0;
+
+    &.rrt-error {
+      background-color: $brick;
+    }
+
+    &.rrt-success {
+      background-color: $tram;
+    }
+
+    .rrt-left-container {
+      width: 100%;
+      position: absolute;
+      top: unset;
+      bottom: 0;
+      height: rem-calc(72px);
+
+      .rrt-holder {
+        height: rem-calc(52px);
+        top: unset;
+        margin-top: 0;
+        bottom: 0;
+        left: 50%;
+        margin-left: -16px;
+
+        svg {
+          display: block;
+        }
+      }
+    }
+    .rrt-middle-container {
+      width: 100%;
+      text-align: center;
+      margin: 0;
+      padding: rem-calc(20px 20px 64px);
+    }
+
+    .rrt-right-container {
+      display: none;
+    }
+  }
+}

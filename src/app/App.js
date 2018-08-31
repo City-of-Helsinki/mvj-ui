@@ -164,10 +164,10 @@ class App extends Component<Props, State> {
           newestOnTop={true}
           position='top-right'
           preventDuplicates={true}
-          progressBar={true}
-          timeOut={4000}
+          progressBar={false}
+          timeOut={5000}
           transitionIn='fadeIn'
-          transitionOut='bounceOutUp'
+          transitionOut='fadeOut'
         />
 
         <TopNavigation

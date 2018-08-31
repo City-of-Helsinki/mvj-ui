@@ -1,3 +1,4 @@
+import React from 'react';
 import {Languages} from '../constants';
 import find from 'lodash/find';
 import findIndex from 'lodash/findIndex';
@@ -10,6 +11,7 @@ import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
 import L from 'leaflet';
 import Fraction from 'fraction.js';
+import ToastrIcons from '../components/toastr/ToastrIcons';
 
 // import i18n from '../root/i18n';
 
@@ -215,7 +217,8 @@ export const generateFormData = (formData, data, previousKey) => {
  */
 export const displayUIMessage = (message, opts = {type: 'success'}) => {
   const {title, body} = message;
-  return toastr[opts.type](title, body, opts);
+  const icon = <ToastrIcons name={opts.type} />;
+  return toastr[opts.type](title, body, {...opts, icon: icon});
 };
 
 /**
