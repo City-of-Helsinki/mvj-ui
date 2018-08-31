@@ -14,6 +14,8 @@ import Divider from '$components/content/Divider';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {
@@ -29,7 +31,12 @@ import {ViewModes} from '$src/enums';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {FormNames} from '$src/landUseContract/enums';
 import {getContentContact} from '$src/contacts/helpers';
-import {getContactModalSettings, getIsContactFormValid, getIsContactModalOpen} from '$src/contacts/selectors';
+import {
+  getContactModalSettings,
+  getIsContactFormValid,
+  getIsContactModalOpen,
+  getIsFetching as getIsFetchingContact,
+} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -196,6 +203,7 @@ type Props = {
   initializeContactForm: Function,
   isContactFormValid: boolean,
   isContactModalOpen: boolean,
+  isFetchingContact: boolean,
   isSaveClicked: boolean,
   planInformationCollapseState: boolean,
   receiveCollapseStates: Function,
@@ -290,6 +298,7 @@ class BasicInformationEdit extends Component<Props> {
       basicInformationCollapseState,
       initializeContactForm,
       isContactModalOpen,
+      isFetchingContact,
       isSaveClicked,
       planInformationCollapseState,
       receiveContactModalSettings,
@@ -299,6 +308,11 @@ class BasicInformationEdit extends Component<Props> {
 
     return (
       <div>
+        {isFetchingContact &&
+          <LoaderWrapper className='overlay-wrapper'>
+            <Loader isLoading={isFetchingContact} />
+          </LoaderWrapper>
+        }
         <ContactModal
           isOpen={isContactModalOpen}
           onCancel={this.handleContactModalCancel}
@@ -475,6 +489,7 @@ export default flowRight(
         contactModalSettings: getContactModalSettings(state),
         isContactFormValid: getIsContactFormValid(state),
         isContactModalOpen: getIsContactModalOpen(state),
+        isFetchingContact: getIsFetchingContact(state),
         isSaveClicked: getIsSaveClicked(state),
         planInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.plan_information`),
       };

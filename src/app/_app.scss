@@ -49,10 +49,18 @@
   a,
   button {
     @include focus();
+
+    &:hover {
+      outline: none;
+    }
   }
   input,
   select,
   textarea {
     @include focusInput();
+
+    &:hover {
+      outline: none;
+    }
   }
 }
