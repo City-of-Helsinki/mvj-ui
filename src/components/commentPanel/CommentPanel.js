@@ -33,6 +33,8 @@ type Props = {
 
 type State = {
   comments: ?Array<Object>,
+  isClosing: boolean,
+  isOpening: boolean,
   selectedTopics: Array<string>,
   topicOptions: Array<Object>,
   topicFilterOptions: Array<Object>,
@@ -44,23 +46,16 @@ const getCommentsByTopic = (comments: Array<Object>, topic: Object): Array<Objec
 };
 
 class CommentPanel extends PureComponent<Props, State> {
+  component: any
   firstCommentModalField: any
 
   state = {
     comments: null,
+    isClosing: false,
+    isOpening: false,
     selectedTopics: [],
     topicOptions: [],
     topicFilterOptions: [],
-  }
-
-  getFilteredComments = (comments: ?Array<Object>) => {
-    const {selectedTopics} = this.state;
-    if(!comments || !comments.length) {return [];}
-
-    const sortedComments = [...comments].sort((a, b) => sortStringByKeyDesc(a, b, 'modified_at'));
-
-    if(!selectedTopics.length) {return sortedComments;}
-    return sortedComments.filter((comment) => selectedTopics.indexOf(comment.topic.toString()) !== -1);
   }
 
   componentWillMount() {
@@ -85,13 +80,47 @@ class CommentPanel extends PureComponent<Props, State> {
     if(!prevProps.isOpen && this.props.isOpen) {
       this.initializeNewCommentForm();
       this.setFocusOnCommentForm();
+      this.setState({
+        isOpening: true,
+      });
+    } else if(prevProps.isOpen && !this.props.isOpen) {
+      this.setState({
+        isClosing: true,
+      });
     }
   }
 
+  componentDidMount() {
+    this.component.addEventListener('transitionend', this.transitionEnds);
+  }
+
+  componentWillUnmount() {
+    this.component.removeEventListener('transitionend', this.transitionEnds);
+  }
+
+  transitionEnds = () => {
+    this.setState({
+      isClosing: false,
+      isOpening: false,
+    });
+  }
+
+  getFilteredComments = (comments: ?Array<Object>) => {
+    const {selectedTopics} = this.state;
+    if(!comments || !comments.length) {return [];}
+
+    const sortedComments = [...comments].sort((a, b) => sortStringByKeyDesc(a, b, 'modified_at'));
+
+    if(!selectedTopics.length) {return sortedComments;}
+    return sortedComments.filter((comment) => selectedTopics.indexOf(comment.topic.toString()) !== -1);
+  }
+
+  setComponentRef = (element: any) => {
+    this.component = element;
+  }
+
   setRefForFirstCommentFormField = (element: any) => {
-    if(element) {
-      this.firstCommentModalField = element;
-    }
+    this.firstCommentModalField = element;
   }
 
   setFocusOnCommentForm = () => {
@@ -147,72 +176,76 @@ class CommentPanel extends PureComponent<Props, State> {
     } = this.props;
     const {
       comments,
+      isClosing,
+      isOpening,
       selectedTopics,
       topicOptions,
       topicFilterOptions,
     } = this.state;
     const filteredComments = this.getFilteredComments(comments);
-
+    console.log(!isOpen && !isClosing && !isOpening);
     return (
-      <div className={classNames('comment-panel', {'is-panel-open': isOpen})} hidden={!isOpen}>
-        <div className='comment-panel__title-wrapper'>
-          <div className='comment-panel__title'>
-            <h1>Kommentit</h1>
-            <CloseButton
-              className='position-topright'
-              onClick={onClose}
-              title='Sulje'
-            />
-          </div>
-        </div>
-        <div className='comment-panel__content-wrapper'>
-          <NewCommentForm
-            attributes={attributes}
-            onAddComment={this.createComment}
-            setRefForFirstField={this.setRefForFirstCommentFormField}
-          />
-
-          <h2>Ajankohtaiset</h2>
-          {comments && !!comments.length &&
-            <div className='filters'>
-              <StyledCheckboxButtons
-                checkboxName='checkbox-buttons-document-type'
-                onChange={this.handleFilterChange}
-                options={topicFilterOptions}
-                selectAllButton
-                selectAllButtonLabel='Kaikki'
-                value={selectedTopics}
+      <div ref={this.setComponentRef} className={classNames('comment-panel', {'is-panel-open': isOpen})}>
+        <div hidden={!isOpen && !isClosing && !isOpening}>
+          <div className='comment-panel__title-wrapper'>
+            <div className='comment-panel__title'>
+              <h1>Kommentit</h1>
+              <CloseButton
+                className='position-topright'
+                onClick={onClose}
+                title='Sulje'
               />
             </div>
-          }
+          </div>
+          <div className='comment-panel__content-wrapper'>
+            <NewCommentForm
+              attributes={attributes}
+              onAddComment={this.createComment}
+              setRefForFirstField={this.setRefForFirstCommentFormField}
+            />
 
-          {!filteredComments || !filteredComments.length &&
-            <div className='comments'>
-              <p className='no-comments-text'>Ei kommentteja</p>
-            </div>
-          }
-          {filteredComments && !!filteredComments.length &&
-            <div className='comments'>
-              {topicOptions && !!topicOptions.length && topicOptions.map((topic) => {
-                const comments = getCommentsByTopic(filteredComments, topic);
+            <h2>Ajankohtaiset</h2>
+            {comments && !!comments.length &&
+              <div className='filters'>
+                <StyledCheckboxButtons
+                  checkboxName='checkbox-buttons-document-type'
+                  onChange={this.handleFilterChange}
+                  options={topicFilterOptions}
+                  selectAllButton
+                  selectAllButtonLabel='Kaikki'
+                  value={selectedTopics}
+                />
+              </div>
+            }
 
-                if(!comments.length) {return null;}
+            {!filteredComments || !filteredComments.length &&
+              <div className='comments'>
+                <p className='no-comments-text'>Ei kommentteja</p>
+              </div>
+            }
+            {filteredComments && !!filteredComments.length &&
+              <div className='comments'>
+                {topicOptions && !!topicOptions.length && topicOptions.map((topic) => {
+                  const comments = getCommentsByTopic(filteredComments, topic);
 
-                return (
-                  <div className='comments-section' key={topic.value}>
-                    <h3>{topic.label}</h3>
-                    {comments.map((comment) =>
-                      <Comment
-                        key={comment.id}
-                        comment={comment}
-                        user={comment.user}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          }
+                  if(!comments.length) {return null;}
+
+                  return (
+                    <div className='comments-section' key={topic.value}>
+                      <h3>{topic.label}</h3>
+                      {comments.map((comment) =>
+                        <Comment
+                          key={comment.id}
+                          comment={comment}
+                          user={comment.user}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            }
+          </div>
         </div>
       </div>
     );

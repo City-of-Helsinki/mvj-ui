@@ -100,7 +100,8 @@ class App extends Component<Props> {
           position='top-right'
           transitionIn='fadeIn'
           transitionOut='bounceOutUp'
-          progressBar={true}
+          progressBar={false}
+          closeOnToastrClick={true}
         />
         <ApiErrorModal size={Sizes.LARGE}
           data={apiError}

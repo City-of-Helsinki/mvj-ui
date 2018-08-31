@@ -1,13 +1,12 @@
 .side-menu {
   z-index: 1001;
-  background-color: $tram;
+  background-color: $engel-lighter-opaque;
   width: 268px;
   height: 100vh;
   position: fixed;
-  top: 0;
-  left: -268px;
+  top: -100%;
   padding: rem-calc(100px) 0 0 0;
-  box-shadow: 2px 0 5px 0 rgba(0, 0, 0, 0.06);
+  box-shadow: 2px 0 5px 0 rgba(0, 0, 0, 0.09);
 
   @include transition(0.3s, all, ease-in-out);
 
@@ -20,20 +19,22 @@
 
     li a {
       padding: 0 rem-calc(20px);
-      color: $white;
+      color: $black;
       cursor: pointer;
       display: inline-block;
       width: 100%;
 
       &:focus {
-        outline-color: $white;
+        outline-color: $tram;
         outline-offset: -2px;
         outline-width: 2px;
         outline-style: dotted;
       }
 
       &:hover {
-        color: $engel;
+        color: $black;
+        background-color: $engel;
+        outline: none;
       }
     }
   }
@@ -41,5 +42,5 @@
 }
 
 .is-menu-open {
-  left: 0;
+  top: 0;
 }

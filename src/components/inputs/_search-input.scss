@@ -10,7 +10,7 @@
       padding: 0 rem-calc(8px);
 
       &::-webkit-input-placeholder {
-        line-height: rem-calc(30px);
+        line-height: normal;
       }
 
       &:focus {

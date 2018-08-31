@@ -6,6 +6,7 @@
   text-align: left;
   margin: 0;
   display: flex;
+  flex-wrap: wrap;
 
   > li {
     float: none;
@@ -60,6 +61,8 @@
       transform: skewX(15deg);
       border: 2px solid $medium-gray;
       border-left: none;
+
+      @include breakpoint('small')
     }
   }
   > li.is-active {

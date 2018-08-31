@@ -11,6 +11,10 @@
     line-height: 1;
 
     @include focus();
+
+    &:hover {
+      outline: none;
+    }
   }
   .commentIcon {
     width: rem-calc(30px);
