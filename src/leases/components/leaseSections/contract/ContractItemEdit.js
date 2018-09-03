@@ -19,7 +19,7 @@ import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
@@ -33,6 +33,7 @@ type ContractChangesProps = {
   fields: any,
   isSaveClicked: boolean,
   onCollapseToggle: Function,
+  onOpenDeleteModal: Function,
   title: string,
 }
 
@@ -45,11 +46,11 @@ const renderContractChanges = ({
   fields: {name},
   isSaveClicked,
   onCollapseToggle,
+  onOpenDeleteModal,
   title,
 }: ContractChangesProps): Element<*> => {
-  const handleCollapseToggle = (val) => {
-    onCollapseToggle(val);
-  };
+  const handleCollapseToggle = (val) => onCollapseToggle(val);
+
   const handleAdd = () => fields.push({});
 
   const contractChangeErrors = get(errors, name);
@@ -64,13 +65,20 @@ const renderContractChanges = ({
     >
       <BoxItemContainer>
         {fields && !!fields.length && fields.map((change, index) => {
-          const handleRemove = () => fields.remove(index);
+          const handleOpenDeleteModal = () => {
+            onOpenDeleteModal(
+              () => fields.remove(index),
+              DeleteModalTitles.CONTRACT_CHANGE,
+              DeleteModalLabels.CONTRACT_CHANGE,
+            );
+          };
+
           return (
             <BoxItem key={index}>
               <BoxContentWrapper>
                 <RemoveButton
                   className='position-topright'
-                  onClick={handleRemove}
+                  onClick={handleOpenDeleteModal}
                   title="Poista sopimuksen muutos"
                 />
                 <Row>
@@ -170,9 +178,10 @@ type MortgageDocumentsProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDocumentsProps): Element<*> => {
+const renderMortgageDocuments = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: MortgageDocumentsProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return(
@@ -192,7 +201,13 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
             </Column>
           </Row>
           {fields.map((doc, index) => {
-            const handleRemove = () => fields.remove(index);
+            const handleOpenDeleteModal = () => {
+              onOpenDeleteModal(
+                () => fields.remove(index),
+                DeleteModalTitles.MORTGAGE_DOCUMENT,
+                DeleteModalLabels.MORTGAGE_DOCUMENT,
+              );
+            };
 
             return (
               <Row key={index} className='pledge-book'>
@@ -229,7 +244,7 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
                 <Column>
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista panttikirja"
                   />
                 </Column>
@@ -262,6 +277,7 @@ type Props = {
   field: string,
   index: number,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
 }
@@ -277,26 +293,17 @@ const ContractItemEdit = ({
   field,
   index,
   isSaveClicked,
+  onOpenDeleteModal,
   onRemove,
   receiveCollapseStates,
 }: Props) => {
-  const getContractById = (id: number) => {
-    if(!id) {
-      return {};
-    }
-    return contractsData.find((decision) => decision.id === id);
-  };
+  const getContractById = (id: number) =>
+    id ? contractsData.find((decision) => decision.id === id) : {};
 
-  const getContractTitle = (contract: ?Object) => {
-    if(!contract) {
-      return null;
-    }
-    return `${getLabelOfOption(typeOptions, contract.type) || '-'} ${contract.contract_number || ''}`;
-  };
+  const getContractTitle = (contract: ?Object) =>
+    contract ? `${getLabelOfOption(typeOptions, contract.type) || '-'} ${contract.contract_number || ''}` : null;
 
-  const handleRemove = () => {
-    onRemove(index);
-  };
+  const handleRemove = () => onRemove(index);
 
   const handleContractCollapseToggle = (val: boolean) => {
     if(!contractId) {return;}
@@ -476,6 +483,7 @@ const ContractItemEdit = ({
               component={renderMortgageDocuments}
               isSaveClicked={isSaveClicked}
               name={`${field}.mortgage_documents`}
+              onOpenDeleteModal={onOpenDeleteModal}
             />
           </Column>
 
@@ -490,6 +498,7 @@ const ContractItemEdit = ({
         name={`${field}.contract_changes`}
         isSaveClicked={isSaveClicked}
         onCollapseToggle={handleContractChangesCollapseToggle}
+        onOpenDeleteModal={onOpenDeleteModal}
         title='Sopimuksen muutokset'
       />
     </Collapse>

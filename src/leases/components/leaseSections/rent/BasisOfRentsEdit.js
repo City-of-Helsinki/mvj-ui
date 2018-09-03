@@ -11,7 +11,7 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
-import {FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 import {formatDecimalNumberForDb} from '$util/helpers';
 
@@ -23,6 +23,7 @@ type Props = {
   change: Function,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
 class BasisOfRentsEdit extends Component<Props> {
@@ -80,11 +81,19 @@ class BasisOfRentsEdit extends Component<Props> {
   }
 
   render() {
-    const {attributes, fields, isSaveClicked} = this.props;
+    const {attributes, fields, isSaveClicked, onOpenDeleteModal} = this.props;
     return (
       <div>
         <BoxItemContainer>
           {fields && !!fields.length && fields.map((item, index) => {
+            const handleOpenDeleteModal = () => {
+              onOpenDeleteModal(
+                () => fields.remove(index),
+                DeleteModalTitles.BASIS_OF_RENT,
+                DeleteModalLabels.BASIS_OF_RENT,
+              );
+            };
+
             return (
               <BoxItem
                 key={index}
@@ -92,7 +101,7 @@ class BasisOfRentsEdit extends Component<Props> {
                 <BoxContentWrapper>
                   <RemoveButton
                     className='position-topright'
-                    onClick={() => fields.remove(index)}
+                    onClick={handleOpenDeleteModal}
                     title="Poista vuokranperuste"
                   />
                   <Row>

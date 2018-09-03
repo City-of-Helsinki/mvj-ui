@@ -5,6 +5,7 @@ import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
 import LeaseItemEdit from './LeaseItemEdit';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/infillDevelopment/enums';
 
 import type {InfillDevelopment} from '$src/infillDevelopment/types';
 
@@ -12,20 +13,25 @@ type Props = {
   fields: any,
   infillDevelopment: InfillDevelopment,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const LeaseItemsEdit = ({fields, infillDevelopment, isSaveClicked}: Props): Element<*> => {
+const LeaseItemsEdit = ({fields, infillDevelopment, isSaveClicked, onOpenDeleteModal}: Props): Element<*> => {
   const handleAdd = () => {
     fields.push({});
-  };
-
-  const handleRemove = (index: number) => {
-    fields.remove(index);
   };
 
   return (
     <div>
       {!!fields && !!fields.length && fields.map((lease, index) => {
+        const handleOpenDeleteModal = (index: number) => {
+          onOpenDeleteModal(
+            () => fields.remove(index),
+            DeleteModalTitles.LEASE,
+            DeleteModalLabels.LEASE,
+          );
+        };
+
         return <LeaseItemEdit
           key={index}
           field={lease}
@@ -33,7 +39,8 @@ const LeaseItemsEdit = ({fields, infillDevelopment, isSaveClicked}: Props): Elem
           infillDevelopment={infillDevelopment}
           index={index}
           isSaveClicked={isSaveClicked}
-          onRemove={handleRemove}
+          onOpenDeleteModal={onOpenDeleteModal}
+          onRemove={handleOpenDeleteModal}
         />;
       })}
       <Row>

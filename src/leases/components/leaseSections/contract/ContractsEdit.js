@@ -8,10 +8,11 @@ import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
+import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContractItemEdit from './ContractItemEdit';
 import FormSection from '$components/form/FormSection';
 import {receiveFormValidFlags} from '$src/leases/actions';
-import {FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getContentContracts} from '$src/leases/helpers';
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
@@ -24,6 +25,7 @@ type ContractsProps = {
   contractsData: Array<Object>,
   decisionOptions: Array<Object>,
   fields: any,
+  onOpenDeleteModal: Function,
 }
 
 const renderContracts = ({
@@ -31,13 +33,16 @@ const renderContracts = ({
   contractsData,
   decisionOptions,
   fields,
+  onOpenDeleteModal,
 }: ContractsProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
+  const handleAdd = () => fields.push({});
 
-  const handleRemove = (index: number) => {
-    fields.remove(index);
+  const handleOpenDeleteModal = (index: number) => {
+    onOpenDeleteModal(
+      () => fields.remove(index),
+      DeleteModalTitles.CONTRACT,
+      DeleteModalLabels.CONTRACT,
+    );
   };
 
   return (
@@ -50,7 +55,8 @@ const renderContracts = ({
           decisionOptions={decisionOptions}
           field={contract}
           index={index}
-          onRemove={handleRemove}
+          onOpenDeleteModal={onOpenDeleteModal}
+          onRemove={handleOpenDeleteModal}
         />
       )}
       <Row>
@@ -78,6 +84,10 @@ type State = {
   contractsData: Array<Object>,
   currentLease: ?Lease,
   decisionOptions: Array<Object>,
+  deleteFunction: ?Function,
+  deleteModalLabel: string,
+  deleteModalTitle: string,
+  isDeleteModalOpen: boolean,
 }
 
 class ContractsEdit extends Component<Props, State> {
@@ -85,6 +95,10 @@ class ContractsEdit extends Component<Props, State> {
     currentLease: null,
     contractsData: [],
     decisionOptions: [],
+    deleteFunction: null,
+    deleteModalLabel: DeleteModalLabels.CONTRACT,
+    deleteModalTitle: DeleteModalTitles.CONTRACT,
+    isDeleteModalOpen: false,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -116,12 +130,51 @@ class ContractsEdit extends Component<Props, State> {
     }
   }
 
+  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.CONTRACT, modalLabel: string = DeleteModalLabels.CONTRACT) => {
+    this.setState({
+      deleteFunction: fn,
+      deleteModalLabel: modalLabel,
+      deleteModalTitle: modalTitle,
+      isDeleteModalOpen: true,
+    });
+  }
+
+  handleHideDeleteModal = () => {
+    this.setState({
+      isDeleteModalOpen: false,
+    });
+  }
+
+  handleDeleteClick = () => {
+    const {deleteFunction} = this.state;
+    if(deleteFunction) {
+      deleteFunction();
+    }
+    this.handleHideDeleteModal();
+  }
+
   render() {
     const {attributes} = this.props;
-    const {contractsData, decisionOptions} = this.state;
+    const {
+      contractsData,
+      decisionOptions,
+      deleteModalLabel,
+      deleteModalTitle,
+      isDeleteModalOpen,
+    } = this.state;
 
     return (
       <form>
+        <ConfirmationModal
+          confirmButtonLabel='Poista'
+          isOpen={isDeleteModalOpen}
+          label={deleteModalLabel}
+          onCancel={this.handleHideDeleteModal}
+          onClose={this.handleHideDeleteModal}
+          onSave={this.handleDeleteClick}
+          title={deleteModalTitle}
+        />
+
         <FormSection>
           <FieldArray
             attributes={attributes}
@@ -129,6 +182,7 @@ class ContractsEdit extends Component<Props, State> {
             contractsData={contractsData}
             decisionOptions={decisionOptions}
             name="contracts"
+            onOpenDeleteModal={this.handleOpenDeleteModal}
           />
         </FormSection>
       </form>

@@ -11,7 +11,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
-import {RentTypes} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, RentTypes} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -20,17 +20,24 @@ type Props = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
   rentType: string,
 }
 
-const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props) => {
+const ContractRentsEdit = ({attributes, fields, isSaveClicked, onOpenDeleteModal, rentType}: Props) => {
   const handleAdd = () => fields.push({});
 
   return (
     <div>
       <BoxItemContainer>
         {fields && !!fields.length && fields.map((rent, index) => {
-          const handleRemove = () => fields.remove(index);
+          const handleOpenDeleteModal = () => {
+            onOpenDeleteModal(
+              () => fields.remove(index),
+              DeleteModalTitles.CONTRACT_RENT,
+              DeleteModalLabels.CONTRACT_RENT,
+            );
+          };
 
           return(
             <BoxItem
@@ -39,8 +46,8 @@ const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props)
               <BoxContentWrapper>
                 <RemoveButton
                   className='position-topright'
-                  onClick={handleRemove}
-                  title="Poista alennus/korotus"
+                  onClick={handleOpenDeleteModal}
+                  title="Poista sopimusvuokra"
                 />
                 <Row>
                   <Column small={6} medium={4} large={2}>

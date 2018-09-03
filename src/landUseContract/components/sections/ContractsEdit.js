@@ -7,9 +7,10 @@ import flowRight from 'lodash/flowRight';
 import type {Element} from 'react';
 
 import AddButton from '$components/form/AddButton';
+import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContractItemEdit from './ContractItemEdit';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
-import {FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getContentContracts} from '$src/landUseContract/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
@@ -22,15 +23,16 @@ type ContractsProps = {
   errors: ?Object,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderContracts = ({attributes, contractsData, errors, fields, isSaveClicked}: ContractsProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
+const renderContracts = ({attributes, contractsData, errors, fields, isSaveClicked, onOpenDeleteModal}: ContractsProps): Element<*> => {
+  const handleAdd = () => fields.push({});
 
-  const handleRemove = (index: number) => {
-    fields.remove(index);
+  const handleOpenDeleteModal = (index: number) => {
+    onOpenDeleteModal(
+      () => fields.remove(index),
+    );
   };
 
   const stateOptions = getAttributeFieldOptions(attributes, 'contracts.child.children.state');
@@ -47,7 +49,7 @@ const renderContracts = ({attributes, contractsData, errors, fields, isSaveClick
             field={contract}
             index={index}
             isSaveClicked={isSaveClicked}
-            onRemove={handleRemove}
+            onRemove={handleOpenDeleteModal}
             stateOptions={stateOptions}
           />
 
@@ -78,12 +80,20 @@ type Props = {
 type State = {
   contractsData: Array<Object>,
   currentLandUseContract: ?LandUseContract,
+  deleteFunction: ?Function,
+  deleteModalLabel: string,
+  deleteModalTitle: string,
+  isDeleteModalOpen: boolean,
 }
 
 class ContractsEdit extends Component<Props, State> {
   state = {
     contractsData: [],
     currentLandUseContract: null,
+    deleteFunction: null,
+    deleteModalLabel: DeleteModalLabels.CONTRACT,
+    deleteModalTitle: DeleteModalTitles.CONTRACT,
+    isDeleteModalOpen: false,
   }
 
   componentDidUpdate(prevProps) {
@@ -106,13 +116,46 @@ class ContractsEdit extends Component<Props, State> {
     return null;
   }
 
+  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.CONTRACT, modalLabel: string = DeleteModalLabels.CONTRACT) => {
+    this.setState({
+      deleteFunction: fn,
+      deleteModalLabel: modalLabel,
+      deleteModalTitle: modalTitle,
+      isDeleteModalOpen: true,
+    });
+  }
+
+  handleHideDeleteModal = () => {
+    this.setState({
+      isDeleteModalOpen: false,
+    });
+  }
+
+  handleDeleteClick = () => {
+    const {deleteFunction} = this.state;
+    if(deleteFunction) {
+      deleteFunction();
+    }
+    this.handleHideDeleteModal();
+  }
+
   render() {
     const {attributes, errors, isSaveClicked} = this.props,
-      {contractsData} = this.state;
+      {contractsData, deleteModalLabel, deleteModalTitle, isDeleteModalOpen} = this.state;
 
     return (
 
       <form>
+        <ConfirmationModal
+          confirmButtonLabel='Poista'
+          isOpen={isDeleteModalOpen}
+          label={deleteModalLabel}
+          onCancel={this.handleHideDeleteModal}
+          onClose={this.handleHideDeleteModal}
+          onSave={this.handleDeleteClick}
+          title={deleteModalTitle}
+        />
+
         <FieldArray
           attributes={attributes}
           contractsData={contractsData}
@@ -120,6 +163,7 @@ class ContractsEdit extends Component<Props, State> {
           errors={errors}
           isSaveClicked={isSaveClicked}
           name="contracts"
+          onOpenDeleteModal={this.handleOpenDeleteModal}
         />
       </form>
     );

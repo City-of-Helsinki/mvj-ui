@@ -5,10 +5,14 @@ import ContentContainer from '$components/content/ContentContainer';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import RentBasisForm from './forms/RentBasisForm';
 
-const RentBasisEdit = () =>
+type Props = {
+  onOpenDeleteModal: Function,
+}
+
+const RentBasisEdit = ({onOpenDeleteModal}: Props) =>
   <ContentContainer>
     <GreenBoxEdit className='no-margin'>
-      <RentBasisForm />
+      <RentBasisForm onOpenDeleteModal={onOpenDeleteModal}/>
     </GreenBoxEdit>
   </ContentContainer>;
 

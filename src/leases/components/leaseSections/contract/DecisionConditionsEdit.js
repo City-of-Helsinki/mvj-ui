@@ -11,6 +11,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -22,6 +23,7 @@ type Props = {
   fields: any,
   isSaveClicked: boolean,
   onCollapseToggle: Function,
+  onOpenDeleteModal: Function,
 }
 
 const DecisionConditionsEdit = ({
@@ -32,6 +34,7 @@ const DecisionConditionsEdit = ({
   fields: {name},
   isSaveClicked,
   onCollapseToggle,
+  onOpenDeleteModal,
 }: Props) => {
   const handleCollapseToggle = (val: boolean) => onCollapseToggle(val);
   const handleAdd = () => fields.push({});
@@ -49,13 +52,19 @@ const DecisionConditionsEdit = ({
         <BoxItemContainer>
 
           {fields.map((condition, index) => {
-            const handleRemove = () => fields.remove(index);
+            const handleOpenDeleteModal = () => {
+              onOpenDeleteModal(
+                () =>fields.remove(index),
+                DeleteModalTitles.CONDITION,
+                DeleteModalLabels.CONDITION,
+              );
+            };
 
             return (
               <BoxItem key={index}>
                 <RemoveButton
                   className='position-topright'
-                  onClick={handleRemove}
+                  onClick={handleOpenDeleteModal}
                   title="Poista ehto"
                 />
                 <Row>

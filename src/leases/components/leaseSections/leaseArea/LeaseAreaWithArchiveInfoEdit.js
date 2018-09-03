@@ -16,7 +16,7 @@ import LeaseArea from './LeaseArea';
 import LeaseAreaEdit from './LeaseAreaEdit';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {formatDate} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
@@ -34,6 +34,7 @@ type Props = {
   isActive: boolean,
   isSaveClicked: boolean,
   onArchive: Function,
+  onOpenDeleteModal: Function,
   onRemove: Function,
   onUnarchive: Function,
   receiveCollapseStates: Function,
@@ -51,6 +52,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
   isActive,
   isSaveClicked,
   onArchive,
+  onOpenDeleteModal,
   onRemove,
   onUnarchive,
   receiveCollapseStates,
@@ -59,7 +61,13 @@ const LeaseAreaWithArchiveInfoEdit = ({
 
   const savedArea = getAreaById(areaId);
 
-  const handleRemove = () => onRemove(index);
+  const handleOpenDeleteModal = () => {
+    onOpenDeleteModal(
+      () => onRemove(index),
+      DeleteModalTitles.LEASE_AREA,
+      DeleteModalLabels.LEASE_AREA,
+    );
+  };
 
   const handleArchive = () => onArchive(index, savedArea);
 
@@ -90,7 +98,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
       hasErrors={isSaveClicked && !isEmpty(areaErrors)}
       headerTitle={<h3 className='collapse__header-title'>{savedArea ? (savedArea.identifier || '-') : '-'}</h3>}
       onArchive={(isActive && savedArea && savedArea.id) ? handleArchive : null}
-      onRemove={handleRemove}
+      onRemove={handleOpenDeleteModal}
       onUnarchive={(!isActive && savedArea && savedArea.id) ? handleUnarchive : null}
       onToggle={handleAreaCollapseToggle}
     >
@@ -99,7 +107,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
           areasData={areasData}
           field={field}
           index={index}
-          onRemove={handleRemove}
+          onOpenDeleteModal={onOpenDeleteModal}
           savedArea={savedArea}
         />
       }

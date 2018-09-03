@@ -16,7 +16,7 @@ import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getDecisionById} from '$src/decision/helpers';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
@@ -31,6 +31,7 @@ type DecisionConditionsProps = {
   fields: any,
   isSaveClicked: boolean,
   onCollapseToggle: Function,
+  onOpenDeleteModal: Function,
 }
 
 const renderDecisionConditions = ({
@@ -41,6 +42,7 @@ const renderDecisionConditions = ({
   fields: {name},
   isSaveClicked,
   onCollapseToggle,
+  onOpenDeleteModal,
 }: DecisionConditionsProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
@@ -56,14 +58,20 @@ const renderDecisionConditions = ({
     >
       <BoxItemContainer>
         {fields && !!fields.length && fields.map((condition, index) => {
-          const handleRemove = () => fields.remove(index);
+          const handleOpenDeleteModal = () => {
+            onOpenDeleteModal(
+              () => fields.remove(index),
+              DeleteModalTitles.CONDITION,
+              DeleteModalLabels.CONDITION,
+            );
+          };
 
           return (
             <BoxItem key={index}>
               <BoxContentWrapper>
                 <RemoveButton
                   className='position-topright'
-                  onClick={handleRemove}
+                  onClick={handleOpenDeleteModal}
                   title="Poista ehto"
                 />
                 <Row>
@@ -149,6 +157,7 @@ type Props = {
   field: string,
   index: number,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
 };
@@ -163,6 +172,7 @@ const DecisionItemEdit = ({
   field,
   index,
   isSaveClicked,
+  onOpenDeleteModal,
   onRemove,
   receiveCollapseStates,
 }: Props) => {
@@ -275,6 +285,7 @@ const DecisionItemEdit = ({
         isSaveClicked={isSaveClicked}
         name={`${field}.conditions`}
         onCollapseToggle={handleConditionsCollapseToggle}
+        onOpenDeleteModal={onOpenDeleteModal}
       />
     </Collapse>
   );

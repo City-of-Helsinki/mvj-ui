@@ -31,9 +31,10 @@ type InvoiceRowsProps = {
   attributes: InvoiceAttributes,
   fields: any,
   isCreateClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): Element<*> => {
+const InvoiceRows = ({attributes, fields, isCreateClicked, onOpenDeleteModal}: InvoiceRowsProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
@@ -50,7 +51,11 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
             </Column>
           </Row>
           {fields.map((row, index) => {
-            const handleRemove = () => fields.remove(index);
+            const handleOpenDeleteModal = () => {
+              onOpenDeleteModal(
+                () => fields.remove(index),
+              );
+            };
 
             return (
               <Row key={index}>
@@ -79,8 +84,8 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                   {fields.length > 1 &&
                     <RemoveButton
                       className='third-level'
-                      onClick={handleRemove}
-                      title="Poista tiedosto"
+                      onClick={handleOpenDeleteModal}
+                      title="Poista rivi"
                     />
                   }
                 </Column>
@@ -109,6 +114,7 @@ type Props = {
   isCreateClicked: boolean,
   lease: Lease,
   onClose: Function,
+  onOpenDeleteModal: Function,
   onSave: Function,
   receiveIsCreateClicked: Function,
   recipient: string,
@@ -123,6 +129,7 @@ const NewInvoiceForm = ({
   isCreateClicked,
   lease,
   onClose,
+  onOpenDeleteModal,
   onSave,
   receiveIsCreateClicked,
   recipient,
@@ -131,15 +138,16 @@ const NewInvoiceForm = ({
 }: Props) => {
   const handleSave = () => {
     receiveIsCreateClicked(true);
-    if(valid) {onSave(formValues);}
+    if(valid) {
+      onSave(formValues);
+    }
   };
 
   const recipientOptions = getInvoiceRecipientOptions(lease),
     billingPeriodStartDate = get(formValues, 'billing_period_start_date');
 
-  const validateBillingPeriodEndDate = (val: any) => {
-    return dateGreaterOrEqual(val, billingPeriodStartDate);
-  };
+  const validateBillingPeriodEndDate = (val: any) =>
+    dateGreaterOrEqual(val, billingPeriodStartDate);
 
   return (
     <form onSubmit={handleSubmit} className='invoice__new-invoice_form'>
@@ -211,6 +219,7 @@ const NewInvoiceForm = ({
               component={InvoiceRows}
               isCreateClicked={isCreateClicked}
               name='rows'
+              onOpenDeleteModal={onOpenDeleteModal}
             />
             <Row>
               <Column>

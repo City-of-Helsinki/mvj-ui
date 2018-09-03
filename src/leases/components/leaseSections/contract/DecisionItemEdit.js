@@ -30,6 +30,7 @@ type Props = {
   field: string,
   index: number,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
 }
@@ -44,6 +45,7 @@ const DecisionItemEdit = ({
   field,
   index,
   isSaveClicked,
+  onOpenDeleteModal,
   onRemove,
   receiveCollapseStates,
 }: Props) => {
@@ -167,6 +169,7 @@ const DecisionItemEdit = ({
         isSaveClicked={isSaveClicked}
         name={`${field}.conditions`}
         onCollapseToggle={handleConditionsCollapseToggle}
+        onOpenDeleteModal={onOpenDeleteModal}
       />
     </Collapse>
   );

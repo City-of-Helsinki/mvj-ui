@@ -15,7 +15,7 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {FormNames, PlotType} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames, PlotType} from '$src/leases/enums';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -24,12 +24,11 @@ type AddressesProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
+const AddressItems = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: AddressesProps): Element<*> => {
+  const handleAdd = () => fields.push({});
 
   return (
     <div>
@@ -48,9 +47,14 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
         </Row>
       }
       {fields && !!fields.length && fields.map((field, index) => {
-        const handleRemove = () => {
-          fields.remove(index);
+        const handleOpenDeleteModal = () => {
+          onOpenDeleteModal(
+            () => fields.remove(index),
+            DeleteModalTitles.ADDRESS,
+            DeleteModalLabels.ADDRESS,
+          );
         };
+
         return (
           <Row key={index}>
             <Column small={6} large={6}>
@@ -88,7 +92,7 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
                 removeButton={
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista osoite"
                   />
                 }
@@ -115,6 +119,7 @@ type Props = {
   field: string,
   index: number,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
   onRemove: Function,
   plotsData: Array<Object>,
   plotId: number,
@@ -125,20 +130,14 @@ const PlotItemsEdit = ({
   field,
   index,
   isSaveClicked,
+  onOpenDeleteModal,
   onRemove,
   plotsData,
   plotId,
 }: Props) => {
-  const getPlotById = (id: number) => {
-    if(!id) {
-      return {};
-    }
-    return plotsData.find((plot) => plot.id === id);
-  };
+  const getPlotById = (id: number) => id ? plotsData.find((plot) => plot.id === id) : {};
 
-  const handleRemove = () => {
-    onRemove(index);
-  };
+  const handleRemove = () => onRemove(index);
 
   const savedPlot = getPlotById(plotId);
 
@@ -178,6 +177,7 @@ const PlotItemsEdit = ({
           component={AddressItems}
           isSaveClicked={isSaveClicked}
           name={`${field}.addresses`}
+          onOpenDeleteModal={onOpenDeleteModal}
         />
         <Row>
           <Column small={12} medium={6} large={3}>
@@ -274,6 +274,7 @@ const PlotItemsEdit = ({
     </BoxItem>
   );
 };
+
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
 

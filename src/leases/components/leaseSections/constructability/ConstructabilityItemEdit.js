@@ -71,12 +71,11 @@ type CommentProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
+const renderComments = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: CommentProps): Element<*> => {
+  const handleAdd = () => fields.push({});
 
   return (
     <div>
@@ -92,7 +91,8 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
             </Column>
           </Row>
           {fields.map((comment, index) => {
-            const handleRemove = () => fields.remove(index);
+            const handleOpenDeleteModal = () => onOpenDeleteModal(() => fields.remove(index));
+
             return (
               <Row key={index}>
                 <Column small={6} medium={6} large={8}>
@@ -119,7 +119,7 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
                 <Column small={2} medium={3} large={2}>
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista huomautus"
                   />
                 </Column>
@@ -154,6 +154,7 @@ type Props = {
   field: string,
   isSaveClicked: boolean,
   locationOptions: Array<Object>,
+  onOpenDeleteModal: Function,
   otherCollapseState: boolean,
   pollutedLandCollapseState: boolean,
   pollutedLandConditionStateOptions: Array<Object>,
@@ -174,6 +175,7 @@ const ConstructabilityItemEdit = ({
   field,
   isSaveClicked,
   locationOptions,
+  onOpenDeleteModal,
   otherCollapseState,
   pollutedLandCollapseState,
   preconstructionCollapseState,
@@ -309,6 +311,7 @@ const ConstructabilityItemEdit = ({
           name={`${field}.descriptionsPreconstruction`}
           component={renderComments}
           isSaveClicked={isSaveClicked}
+          onOpenDeleteModal={onOpenDeleteModal}
         />
       </Collapse>
 
@@ -336,6 +339,7 @@ const ConstructabilityItemEdit = ({
           component={renderComments}
           isSaveClicked={isSaveClicked}
           name={`${field}.descriptionsDemolition`}
+          onOpenDeleteModal={onOpenDeleteModal}
         />
       </Collapse>
 
@@ -414,6 +418,7 @@ const ConstructabilityItemEdit = ({
           component={renderComments}
           isSaveClicked={isSaveClicked}
           name={`${field}.descriptionsPollutedLand`}
+          onOpenDeleteModal={onOpenDeleteModal}
         />
       </Collapse>
 
@@ -481,6 +486,7 @@ const ConstructabilityItemEdit = ({
           component={renderComments}
           isSaveClicked={isSaveClicked}
           name={`${field}.descriptionsReport`}
+          onOpenDeleteModal={onOpenDeleteModal}
         />
       </Collapse>
 
@@ -508,6 +514,7 @@ const ConstructabilityItemEdit = ({
           component={renderComments}
           isSaveClicked={isSaveClicked}
           name={`${field}.descriptionsOther`}
+          onOpenDeleteModal={onOpenDeleteModal}
         />
       </Collapse>
     </Collapse>
