@@ -15,7 +15,7 @@ import PageContainer from '$components/content/PageContainer';
 import RentBasisForm from './forms/RentBasisForm';
 import {createRentBasis, fetchAttributes, receiveIsSaveClicked} from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {FormNames} from '$src/rentbasis/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/rentbasis/enums';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFormValid, getIsSaveClicked} from '$src/rentbasis/selectors';
 
@@ -36,12 +36,21 @@ type Props = {
 }
 
 type State = {
+  deleteFunction: ?Function,
+  deleteModalLabel: string,
+  deleteModalTitle: string,
   isCancelModalOpen: boolean,
+  isDeleteModalOpen: boolean,
+
 }
 
 class NewRentBasisPage extends Component<Props, State> {
   state = {
+    deleteFunction: null,
+    deleteModalLabel: DeleteModalLabels.DECISION,
+    deleteModalTitle: DeleteModalTitles.DECISION,
     isCancelModalOpen: false,
+    isDeleteModalOpen: false,
   }
 
   static contextTypes = {
@@ -124,12 +133,45 @@ class NewRentBasisPage extends Component<Props, State> {
     }
   }
 
+  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.DECISION, modalLabel: string = DeleteModalLabels.DECISION) => {
+    this.setState({
+      deleteFunction: fn,
+      deleteModalLabel: modalLabel,
+      deleteModalTitle: modalTitle,
+      isDeleteModalOpen: true,
+    });
+  }
+
+  handleHideDeleteModal = () => {
+    this.setState({
+      isDeleteModalOpen: false,
+    });
+  }
+
+  handleDeleteClick = () => {
+    const {deleteFunction} = this.state;
+    if(deleteFunction) {
+      deleteFunction();
+    }
+    this.handleHideDeleteModal();
+  }
+
   render() {
     const {isFormValid, isSaveClicked} = this.props;
-    const {isCancelModalOpen} = this.state;
+    const {deleteModalLabel, deleteModalTitle, isCancelModalOpen, isDeleteModalOpen} = this.state;
 
     return (
       <PageContainer>
+        <ConfirmationModal
+          confirmButtonLabel='Poista'
+          isOpen={isDeleteModalOpen}
+          label={deleteModalLabel}
+          onCancel={this.handleHideDeleteModal}
+          onClose={this.handleHideDeleteModal}
+          onSave={this.handleDeleteClick}
+          title={deleteModalTitle}
+        />
+
         <ConfirmationModal
           confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelModalOpen}
@@ -157,7 +199,7 @@ class NewRentBasisPage extends Component<Props, State> {
         />
         <ContentContainer>
           <GreenBoxEdit className='no-margin'>
-            <RentBasisForm isFocusedOnMount/>
+            <RentBasisForm isFocusedOnMount onOpenDeleteModal={this.handleOpenDeleteModal}/>
           </GreenBoxEdit>
         </ContentContainer>
       </PageContainer>

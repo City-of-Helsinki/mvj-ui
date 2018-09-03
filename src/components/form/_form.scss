@@ -569,10 +569,13 @@
     cursor: pointer;
     position: relative;
     top: 0;
+    width: rem-calc(21px);
 
     &:hover {
       .icons {
-        fill: $tram_hover;
+        #Artboard {
+          fill: $tram_hover;
+        }
       }
     }
 
@@ -587,7 +590,7 @@
     }
 
     &.third-level {
-      top: rem-calc(-3px);
+      top: rem-calc(-5px);
       height: rem-calc(20px);
       width: rem-calc(20px);
 

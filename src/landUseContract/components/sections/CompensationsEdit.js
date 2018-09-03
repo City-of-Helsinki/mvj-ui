@@ -8,6 +8,7 @@ import get from 'lodash/get';
 import type {Element} from 'react';
 
 import AddButtonThird from '$components/form/AddButtonThird';
+import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
@@ -16,7 +17,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
-import {FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {formatDecimalNumberForDb, formatNumber} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/landUseContract/selectors';
 
@@ -26,9 +27,10 @@ type InvoicesProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Element<*> => {
+const renderInvoices = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: InvoicesProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return(
@@ -42,7 +44,14 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
             <Column small={4} medium={3} large={2}><FormFieldLabel>Eräpäivä</FormFieldLabel></Column>
           </Row>
           {fields.map((invoice, index) => {
-            const handleRemove = () => fields.remove(index);
+            const handleOpenDeleteModal = () => {
+              onOpenDeleteModal(
+                () => fields.remove(index),
+                DeleteModalTitles.COMPENSATION,
+                DeleteModalLabels.COMPENSATION,
+              );
+            };
+
             return (
               <Row key={index}>
                 <Column small={4} medium={3} large={2}>
@@ -68,7 +77,7 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
                 <Column small={4} medium={3} large={2}>
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista korvaus"
                   />
                 </Column>
@@ -101,7 +110,21 @@ type Props = {
   firstInstallmentIncrease: number,
 }
 
-class CompensationsEdit extends Component<Props> {
+type State = {
+  deleteFunction: ?Function,
+  deleteModalLabel: string,
+  deleteModalTitle: string,
+  isDeleteModalOpen: boolean,
+}
+
+class CompensationsEdit extends Component<Props, State> {
+  state = {
+    deleteFunction: null,
+    deleteModalLabel: DeleteModalLabels.DECISION,
+    deleteModalTitle: DeleteModalTitles.DECISION,
+    isDeleteModalOpen: false,
+  }
+
   componentDidUpdate(prevProps) {
     const {receiveFormValidFlags} = this.props;
 
@@ -120,12 +143,46 @@ class CompensationsEdit extends Component<Props> {
       formatDecimalNumberForDb(firstInstallmentIncrease);
   };
 
+  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.COMPENSATION, modalLabel: string = DeleteModalLabels.COMPENSATION) => {
+    this.setState({
+      deleteFunction: fn,
+      deleteModalLabel: modalLabel,
+      deleteModalTitle: modalTitle,
+      isDeleteModalOpen: true,
+    });
+  }
+
+  handleHideDeleteModal = () => {
+    this.setState({
+      isDeleteModalOpen: false,
+    });
+  }
+
+  handleDeleteClick = () => {
+    const {deleteFunction} = this.state;
+    if(deleteFunction) {
+      deleteFunction();
+    }
+    this.handleHideDeleteModal();
+  }
+
   render() {
     const {attributes, isSaveClicked} = this.props;
+    const {deleteModalLabel, deleteModalTitle, isDeleteModalOpen} = this.state;
     const total = this.getTotal();
 
     return (
       <form>
+        <ConfirmationModal
+          confirmButtonLabel='Poista'
+          isOpen={isDeleteModalOpen}
+          label={deleteModalLabel}
+          onCancel={this.handleHideDeleteModal}
+          onClose={this.handleHideDeleteModal}
+          onSave={this.handleDeleteClick}
+          title={deleteModalTitle}
+        />
+
         <GreenBox>
           <Row>
             <Column small={12} large={6}>
@@ -265,6 +322,7 @@ class CompensationsEdit extends Component<Props> {
             component={renderInvoices}
             isSaveClicked={isSaveClicked}
             name="compensations.invoices"
+            onOpenDeleteModal={this.handleOpenDeleteModal}
           />
         </GreenBox>
       </form>

@@ -14,7 +14,7 @@ import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {InvoiceType} from '$src/invoices/enums';
-import {FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {
@@ -33,9 +33,10 @@ type PaymentsProps = {
   attributes: InvoiceAttributes,
   fields: any,
   isEditClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Element<*> => {
+const renderPayments = ({attributes, fields, isEditClicked, onOpenDeleteModal}: PaymentsProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
@@ -53,7 +54,13 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
         </Row>
       }
       {fields && !!fields.length && fields.map((payment, index) => {
-        const handleRemove = () => fields.remove(index);
+        const handleOpenDeleteModal = () => {
+          onOpenDeleteModal(
+            () => fields.remove(index),
+            DeleteModalTitles.INVOICE_PAYMENT,
+            DeleteModalLabels.INVOICE_PAYMENT,
+          );
+        };
 
         return (
           <Row key={index}>
@@ -81,7 +88,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
             <Column small={2}>
               <RemoveButton
                 className='third-level'
-                onClick={handleRemove}
+                onClick={handleOpenDeleteModal}
                 title="Poista maksu"
               />
             </Column>
@@ -108,6 +115,7 @@ type Props = {
   isEditClicked: boolean,
   lease: Lease,
   onCreditedInvoiceClick: Function,
+  onOpenDeleteModal: Function,
   setRefForFirstField?: Function,
 }
 
@@ -118,6 +126,7 @@ const EditInvoiceForm = ({
   isEditClicked,
   lease,
   onCreditedInvoiceClick,
+  onOpenDeleteModal,
   setRefForFirstField,
 }: Props) => {
   const handleCreditedInvoiceClick = () => {
@@ -241,6 +250,7 @@ const EditInvoiceForm = ({
             component={renderPayments}
             isEditClicked={isEditClicked}
             name='payments'
+            onOpenDeleteModal={onOpenDeleteModal}
           />
         </Column>
         <Column medium={4}>
@@ -309,6 +319,7 @@ const EditInvoiceForm = ({
         component={InvoiceRowsEdit}
         name='rows'
         isEditClicked={isEditClicked}
+        onOpenDeleteModal={onOpenDeleteModal}
         tenantOptions={tenantOptions}
       />
     </form>

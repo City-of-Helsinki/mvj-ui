@@ -20,7 +20,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -33,6 +33,7 @@ type PlanUnitsProps = {
   fields: any,
   isSaveClicked: boolean,
   onCollapseToggle: Function,
+  onOpenDeleteModal: Function,
   title: string,
 }
 
@@ -45,6 +46,7 @@ const renderPlanUnits = ({
   fields: {name},
   isSaveClicked,
   onCollapseToggle,
+  onOpenDeleteModal,
   title,
 }: PlanUnitsProps): Element<*> => {
   const handleAdd = () => {
@@ -53,8 +55,12 @@ const renderPlanUnits = ({
     });
   };
 
-  const handleRemove = (index: number) => {
-    fields.remove(index);
+  const handleOpenDeleteModal = (index: number) => {
+    onOpenDeleteModal(
+      () => fields.remove(index),
+      DeleteModalTitles.PLAN_UNIT,
+      DeleteModalLabels.PLAN_UNIT,
+    );
   };
 
   const handleCollapseToggle = (val: boolean) => {
@@ -79,7 +85,8 @@ const renderPlanUnits = ({
             field={planunit}
             index={index}
             isSaveClicked={isSaveClicked}
-            onRemove={handleRemove}
+            onOpenDeleteModal={onOpenDeleteModal}
+            onRemove={handleOpenDeleteModal}
           />
         )}
       </BoxItemContainer>
@@ -103,6 +110,7 @@ type PlotsProps = {
   fields: any,
   isSaveClicked: boolean,
   onCollapseToggle: Function,
+  onOpenDeleteModal: Function,
   plotsData: Array<Object>,
   title: string,
 }
@@ -115,6 +123,7 @@ const renderPlots = ({
   fields: {name},
   isSaveClicked,
   onCollapseToggle,
+  onOpenDeleteModal,
   plotsData,
   title,
 }: PlotsProps): Element<*> => {
@@ -124,13 +133,15 @@ const renderPlots = ({
     });
   };
 
-  const handleRemove = (index: number) => {
-    fields.remove(index);
+  const handleOpenDeleteModal = (index: number) => {
+    onOpenDeleteModal(
+      () => fields.remove(index),
+      DeleteModalTitles.PLOT,
+      DeleteModalLabels.PLOT,
+    );
   };
 
-  const handleCollapseToggle = (val: boolean) => {
-    onCollapseToggle(val);
-  };
+  const handleCollapseToggle = (val: boolean) => onCollapseToggle(val);
 
   const plotErrors = get(errors, name);
 
@@ -149,7 +160,8 @@ const renderPlots = ({
               key={index}
               field={plot}
               index={index}
-              onRemove={handleRemove}
+              onOpenDeleteModal={onOpenDeleteModal}
+              onRemove={handleOpenDeleteModal}
               plotsData={plotsData}
             />
           );
@@ -172,12 +184,11 @@ type AddressesProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
+const AddressItems = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: AddressesProps): Element<*> => {
+  const handleAdd = () => fields.push({});
 
   return (
     <div>
@@ -196,8 +207,12 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
         </Row>
       }
       {fields && !!fields.length && fields.map((field, index) => {
-        const handleRemove = () => {
-          fields.remove(index);
+        const handleOpenDeleteModal = () => {
+          onOpenDeleteModal(
+            () => fields.remove(index),
+            DeleteModalTitles.ADDRESS,
+            DeleteModalLabels.ADDRESS,
+          );
         };
 
         return (
@@ -235,7 +250,7 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
             <Column small={1}>
               <RemoveButton
                 className='third-level'
-                onClick={handleRemove}
+                onClick={handleOpenDeleteModal}
                 title="Poista osoite"
               />
             </Column>
@@ -263,6 +278,7 @@ type AreaItemProps = {
   errors: ?Object,
   field: string,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
   planUnitsContractCollapseState: boolean,
   planUnitsCurrentCollapseState: boolean,
   plotsContractCollapseState: boolean,
@@ -277,6 +293,7 @@ const LeaseAreaEdit = ({
   errors,
   field,
   isSaveClicked,
+  onOpenDeleteModal,
   planUnitsContractCollapseState,
   planUnitsCurrentCollapseState,
   plotsContractCollapseState,
@@ -392,6 +409,7 @@ const LeaseAreaEdit = ({
           component={AddressItems}
           isSaveClicked={isSaveClicked}
           name={`${field}.addresses`}
+          onOpenDeleteModal={onOpenDeleteModal}
         />
 
       </BoxContentWrapper>
@@ -405,6 +423,7 @@ const LeaseAreaEdit = ({
             isSaveClicked={isSaveClicked}
             name={`${field}.plots_contract`}
             onCollapseToggle={handlePlotsContractCollapseToggle}
+            onOpenDeleteModal={onOpenDeleteModal}
             plotsData={get(savedArea, 'plots_contract', [])}
             title='Kiinteistöt / määräalat sopimuksessa'
           />
@@ -418,6 +437,7 @@ const LeaseAreaEdit = ({
             isSaveClicked={isSaveClicked}
             name={`${field}.plots_current`}
             onCollapseToggle={handlePlotsCurrentCollapseToggle}
+            onOpenDeleteModal={onOpenDeleteModal}
             plotsData={get(savedArea, 'plots_current', [])}
             title='Kiinteistöt / määräalat nykyhetkellä'
           />
@@ -434,6 +454,7 @@ const LeaseAreaEdit = ({
             isSaveClicked={isSaveClicked}
             name={`${field}.plan_units_contract`}
             onCollapseToggle={handlePlanUnitContractCollapseToggle}
+            onOpenDeleteModal={onOpenDeleteModal}
             title='Kaavayksiköt sopimuksessa'
           />
         </Column>
@@ -447,6 +468,7 @@ const LeaseAreaEdit = ({
             isSaveClicked={isSaveClicked}
             name={`${field}.plan_units_current`}
             onCollapseToggle={handlePlanUnitCurrentCollapseToggle}
+            onOpenDeleteModal={onOpenDeleteModal}
             title='Kaavayksiköt nykyhetkellä'
           />
         </Column>

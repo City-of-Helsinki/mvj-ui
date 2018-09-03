@@ -22,7 +22,7 @@ import FormWrapperRight from '$components/form/FormWrapperRight';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
@@ -31,16 +31,24 @@ import type {Attributes} from '$src/leases/types';
 
 type OtherTenantsProps = {
   fields: any,
+  onOpenDeleteModal: Function,
   tenant: Object,
 }
 
 const renderOtherTenants = ({
   fields,
+  onOpenDeleteModal,
   tenant,
 }: OtherTenantsProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
-  const handleRemove = (index: number) => fields.remove(index);
+  const handleOpenDeleteModal = (index: number) => {
+    onOpenDeleteModal(
+      () => fields.remove(index),
+      DeleteModalTitles.OTHER_TENANT,
+      DeleteModalLabels.OTHER_TENANT,
+    );
+  };
 
   return (
     <div>
@@ -50,7 +58,7 @@ const renderOtherTenants = ({
             key={index}
             field={field}
             index={index}
-            onRemove={handleRemove}
+            onRemove={handleOpenDeleteModal}
             tenant={tenant}
           />
         );
@@ -77,6 +85,7 @@ type Props = {
   index: number,
   initializeContactForm: Function,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
   receiveContactModalSettings: Function,
@@ -95,6 +104,7 @@ const TenantItemEdit = ({
   index,
   initializeContactForm,
   isSaveClicked,
+  onOpenDeleteModal,
   onRemove,
   receiveCollapseStates,
   receiveContactModalSettings,
@@ -279,6 +289,7 @@ const TenantItemEdit = ({
       <FieldArray
         component={renderOtherTenants}
         name={`${field}.tenantcontact_set`}
+        onOpenDeleteModal={onOpenDeleteModal}
         tenant={savedTenant}
       />
     </Collapse>

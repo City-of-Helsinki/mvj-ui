@@ -5,6 +5,16 @@
   height: rem-calc(25px);
   width: rem-calc(25px);
 
+  &.icons__trash {
+    #Artboard {
+      fill: $tram;
+    }
+  }
+
+  &.icons__archive {
+    stroke: none !important;
+  }
+
   &.icon-medium {
     height: rem-calc(20px);
     width: rem-calc(20px);

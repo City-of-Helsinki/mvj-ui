@@ -12,7 +12,7 @@ import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -92,9 +92,10 @@ type FixedInitialYearRentsProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedInitialYearRentsProps): Element<*> => {
+const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: FixedInitialYearRentsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -113,8 +114,12 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
         </Row>
       }
       {fields && !!fields.length && fields.map((rent, index) => {
-        const handleRemove = () => {
-          fields.remove(index);
+        const handleOpenDeleteModal = () => {
+          onOpenDeleteModal(
+            () => fields.remove(index),
+            DeleteModalTitles.FIXED_INITIAL_YEAR_RENT,
+            DeleteModalLabels.FIXED_INITIAL_YEAR_RENT,
+          );
         };
 
         return (
@@ -164,7 +169,7 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
               <Column>
                 <RemoveButton
                   className='third-level'
-                  onClick={handleRemove}
+                  onClick={handleOpenDeleteModal}
                   title="Poista alennus/korotus"
                 />
               </Column>
@@ -189,6 +194,7 @@ type Props = {
   attributes: Attributes,
   dueDatesType: ?string,
   isSaveClicked: boolean,
+  onOpenDeleteModal?: Function,
   rentType: ?string,
 }
 
@@ -216,9 +222,10 @@ type BasicInfoIndexProps = {
   dueDatesType: ?string,
   isIndex: boolean,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: BasicInfoIndexProps) => {
+const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked, onOpenDeleteModal}: BasicInfoIndexProps) => {
   return (
     <div>
       <Row>
@@ -396,6 +403,7 @@ const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: Basi
             component={renderFixedInitialYearRents}
             isSaveClicked={isSaveClicked}
             name="fixed_initial_year_rents"
+            onOpenDeleteModal={onOpenDeleteModal}
           />
         </Column>
       </Row>
@@ -611,7 +619,13 @@ const BasicInfoFree = ({attributes, isSaveClicked}: Props) => {
   );
 };
 
-const BasicInfoEdit = ({attributes, dueDatesType, isSaveClicked, rentType}: Props) => {
+const BasicInfoEdit = ({
+  attributes,
+  dueDatesType,
+  isSaveClicked,
+  onOpenDeleteModal = () => console.error('onOpenDeleteModal function missing'),
+  rentType,
+}: Props) => {
   return (
     <div>
       {!rentType &&
@@ -628,6 +642,7 @@ const BasicInfoEdit = ({attributes, dueDatesType, isSaveClicked, rentType}: Prop
           dueDatesType={dueDatesType}
           isIndex={true}
           isSaveClicked={isSaveClicked}
+          onOpenDeleteModal={onOpenDeleteModal}
           rentType={rentType}
         />
       }
@@ -661,6 +676,7 @@ const BasicInfoEdit = ({attributes, dueDatesType, isSaveClicked, rentType}: Prop
           dueDatesType={dueDatesType}
           isIndex={false}
           isSaveClicked={isSaveClicked}
+          onOpenDeleteModal={onOpenDeleteModal}
           rentType={rentType}
         />
       }

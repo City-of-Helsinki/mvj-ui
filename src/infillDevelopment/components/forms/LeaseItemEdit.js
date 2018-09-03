@@ -26,7 +26,7 @@ import {
 } from '$src/infillDevelopment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/infillDevelopment/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/infillDevelopment/enums';
 import {
   formatDate,
   formatDecimalNumberForDb,
@@ -55,9 +55,10 @@ type DecisionsProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): Element<*> => {
+const renderDecisions = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: DecisionsProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
@@ -72,7 +73,13 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
             <Column small={3} large={2}><FormFieldLabel>Diaarunumero</FormFieldLabel></Column>
           </Row>
           {fields.map((field, index) => {
-            const handleRemove = () => fields.remove(index);
+            const handleOpenDeleteModal = () => {
+              onOpenDeleteModal(
+                () => fields.remove(index),
+                DeleteModalTitles.DECISION,
+                DeleteModalLabels.DECISION,
+              );
+            };
 
             return (
               <Row key={index}>
@@ -120,7 +127,7 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                 <Column small={3} large={2}>
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista päätös"
                   />
                 </Column>
@@ -146,9 +153,10 @@ type IntendedUsesProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesProps): Element<*> => {
+const renderIntendedUses = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: IntendedUsesProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
@@ -162,7 +170,13 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
             <Column small={3} large={2}><FormFieldLabel>€/k-m²</FormFieldLabel></Column>
           </Row>
           {fields.map((field, index) => {
-            const handleRemove = () => fields.remove(index);
+            const handleOpenDeleteModal = () => {
+              onOpenDeleteModal(
+                () => fields.remove(index),
+                DeleteModalTitles.INTENDED_USE,
+                DeleteModalLabels.INTENDED_USE,
+              );
+            };
 
             return (
               <Row key={index}>
@@ -201,7 +215,7 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
                 <Column small={3} large={2}>
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista käyttötarkoitus"
                   />
                 </Column>
@@ -240,6 +254,7 @@ type Props = {
   infillDevelopmentCompensationLeaseId: number,
   leaseFieldValue: Object,
   monetaryCompensation: ?number,
+  onOpenDeleteModal: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
   uploadInfillDevelopmentFile: Function,
@@ -376,6 +391,7 @@ class LeaseItemEdit extends Component<Props, State> {
       isFetching,
       isSaveClicked,
       leaseId,
+      onOpenDeleteModal,
     } = this.props;
 
     const {
@@ -467,6 +483,7 @@ class LeaseItemEdit extends Component<Props, State> {
             component={renderDecisions}
             isSaveClicked={isSaveClicked}
             name={`${field}.decisions`}
+            onOpenDeleteModal={onOpenDeleteModal}
           />
 
           <FieldArray
@@ -474,6 +491,7 @@ class LeaseItemEdit extends Component<Props, State> {
             component={renderIntendedUses}
             isSaveClicked={isSaveClicked}
             name={`${field}.intended_uses`}
+            onOpenDeleteModal={onOpenDeleteModal}
           />
 
           <Row>
@@ -571,8 +589,12 @@ class LeaseItemEdit extends Component<Props, State> {
                     </Column>
                   </Row>
                   {attachments.map((file, index) => {
-                    const handleDelete = () => {
-                      this.handleDeleteInfillDevelopmentFile(file.id);
+                    const handleOpenDeleteModal = () => {
+                      onOpenDeleteModal(
+                        () => this.handleDeleteInfillDevelopmentFile(file.id),
+                        DeleteModalTitles.ATTACHMENT,
+                        DeleteModalLabels.ATTACHMENT,
+                      );
                     };
 
                     return (
@@ -593,7 +615,7 @@ class LeaseItemEdit extends Component<Props, State> {
                         <Column small={3} large={2}>
                           <RemoveButton
                             className='third-level'
-                            onClick={handleDelete}
+                            onClick={handleOpenDeleteModal}
                             title="Poista liitetiedosto"
                           />
                         </Column>

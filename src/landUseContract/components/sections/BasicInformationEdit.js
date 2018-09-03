@@ -9,6 +9,7 @@ import type {Element} from 'react';
 
 import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
+import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactModal from '$src/contacts/components/ContactModal';
 import Divider from '$components/content/Divider';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
@@ -29,7 +30,7 @@ import {
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
-import {FormNames} from '$src/landUseContract/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getContentContact} from '$src/contacts/helpers';
 import {
   getContactModalSettings,
@@ -47,16 +48,23 @@ type AreasProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*> => {
+const renderAreas = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: AreasProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
     <div>
       <FormFieldLabel>Kohteet</FormFieldLabel>
       {fields && !!fields.length && fields.map((field, index) => {
-        const handleRemove = () => fields.remove(index);
+        const handleOpenDeleteModal = () => {
+          onOpenDeleteModal(
+            () => fields.remove(index),
+            DeleteModalTitles.AREA,
+            DeleteModalLabels.AREA,
+          );
+        };
 
         return(
           <Row key={index}>
@@ -75,7 +83,7 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
                 removeButton={
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista kohde"
                   />
                 }
@@ -102,6 +110,7 @@ type LitigantsProps = {
   fields: any,
   initializeContactForm: Function,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
   receiveContactModalSettings: Function,
   receiveIsContactModalSaveClicked: Function,
   showContactModal: Function,
@@ -112,6 +121,7 @@ const renderLitigants = ({
   fields,
   initializeContactForm,
   isSaveClicked,
+  onOpenDeleteModal,
   receiveContactModalSettings,
   receiveIsContactModalSaveClicked,
   showContactModal,
@@ -122,7 +132,13 @@ const renderLitigants = ({
     <div>
       <FormFieldLabel>Osapuolet</FormFieldLabel>
       {fields && !!fields.length && fields.map((field, index) => {
-        const handleRemove = () => fields.remove(index);
+        const handleOpenDeleteModal = () => {
+          onOpenDeleteModal(
+            () => fields.remove(index),
+            DeleteModalTitles.LITIGANT,
+            DeleteModalLabels.LITIGANT,
+          );
+        };
 
         const handleAddClick = () => {
           initializeContactForm({});
@@ -160,7 +176,7 @@ const renderLitigants = ({
                 removeButton={
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista osapuoli"
                   />
                 }
@@ -215,7 +231,21 @@ type Props = {
   valid: boolean,
 }
 
-class BasicInformationEdit extends Component<Props> {
+type State = {
+  deleteFunction: ?Function,
+  deleteModalLabel: string,
+  deleteModalTitle: string,
+  isDeleteModalOpen: boolean,
+}
+
+class BasicInformationEdit extends Component<Props, State> {
+  state = {
+    deleteFunction: null,
+    deleteModalLabel: DeleteModalLabels.AREA,
+    deleteModalTitle: DeleteModalTitles.AREA,
+    isDeleteModalOpen: false,
+  }
+
   componentDidUpdate(prevProps) {
     const {change, contactModalSettings, receiveContactModalSettings, receiveFormValidFlags} = this.props;
 
@@ -292,6 +322,29 @@ class BasicInformationEdit extends Component<Props> {
     createContact(contact);
   }
 
+  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.CONTRACT, modalLabel: string = DeleteModalLabels.CONTRACT) => {
+    this.setState({
+      deleteFunction: fn,
+      deleteModalLabel: modalLabel,
+      deleteModalTitle: modalTitle,
+      isDeleteModalOpen: true,
+    });
+  }
+
+  handleHideDeleteModal = () => {
+    this.setState({
+      isDeleteModalOpen: false,
+    });
+  }
+
+  handleDeleteClick = () => {
+    const {deleteFunction} = this.state;
+    if(deleteFunction) {
+      deleteFunction();
+    }
+    this.handleHideDeleteModal();
+  }
+
   render() {
     const {
       attributes,
@@ -305,6 +358,11 @@ class BasicInformationEdit extends Component<Props> {
       receiveIsContactModalSaveClicked,
       showContactModal,
     } = this.props;
+    const {
+      deleteModalLabel,
+      deleteModalTitle,
+      isDeleteModalOpen,
+    } = this.state;
 
     return (
       <div>
@@ -313,6 +371,17 @@ class BasicInformationEdit extends Component<Props> {
             <Loader isLoading={isFetchingContact} />
           </LoaderWrapper>
         }
+
+        <ConfirmationModal
+          confirmButtonLabel='Poista'
+          isOpen={isDeleteModalOpen}
+          label={deleteModalLabel}
+          onCancel={this.handleHideDeleteModal}
+          onClose={this.handleHideDeleteModal}
+          onSave={this.handleDeleteClick}
+          title={deleteModalTitle}
+        />
+
         <ContactModal
           isOpen={isContactModalOpen}
           onCancel={this.handleContactModalCancel}
@@ -338,6 +407,7 @@ class BasicInformationEdit extends Component<Props> {
                   component={renderAreas}
                   isSaveClicked={isSaveClicked}
                   name='areas'
+                  onOpenDeleteModal={this.handleOpenDeleteModal}
                 />
               </Column>
               <Column small={6} medium={4} large={4}>
@@ -347,6 +417,7 @@ class BasicInformationEdit extends Component<Props> {
                   initializeContactForm={initializeContactForm}
                   isSaveClicked={isSaveClicked}
                   name='litigants'
+                  onOpenDeleteModal={this.handleOpenDeleteModal}
                   receiveContactModalSettings={receiveContactModalSettings}
                   receiveIsContactModalSaveClicked={receiveIsContactModalSaveClicked}
                   showContactModal={showContactModal}

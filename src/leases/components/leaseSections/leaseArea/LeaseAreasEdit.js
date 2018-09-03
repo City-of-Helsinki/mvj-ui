@@ -25,7 +25,7 @@ import {
   showUnarchiveAreaModal,
   unarchiveLeaseArea,
 } from '$src/leases/actions';
-import {AreaLocation, FormNames} from '$src/leases/enums';
+import {AreaLocation, DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
 import {formatNumber} from '$util/helpers';
@@ -48,6 +48,7 @@ type AreaItemProps = {
   isActive: boolean,
   leaseId: number,
   onArchiveCallback: Function,
+  onOpenDeleteModal: Function,
   onUnarchiveCallback: Function,
   showArchiveAreaModal: Function,
   showUnarchiveAreaModal: Function,
@@ -222,6 +223,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps, AreaItemState> {
       isActive,
       isArchiveAreaModalOpen,
       isUnarchiveAreaModalOpen,
+      onOpenDeleteModal,
     } = this.props;
 
     return (
@@ -253,6 +255,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps, AreaItemState> {
             index={index}
             isActive={isActive}
             onArchive={this.handleShowArchiveAreaModal}
+            onOpenDeleteModal={onOpenDeleteModal}
             onRemove={this.handleRemove}
             onUnarchive={this.handleShowUnarchiveAreaModal}
           />
@@ -300,6 +303,10 @@ type State = {
   archivedAreas: Array<Object>,
   currentLease: ?Lease,
   decisionOptions: Array<Object>,
+  deleteFunction: ?Function,
+  deleteModalLabel: string,
+  deleteModalTitle: string,
+  isDeleteModalOpen: boolean,
 }
 
 class LeaseAreasEdit extends PureComponent<Props, State> {
@@ -310,6 +317,10 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
     archivedAreas: [],
     currentLease: null,
     decisionOptions: [],
+    deleteFunction: null,
+    deleteModalLabel: DeleteModalLabels.LEASE_AREA,
+    deleteModalTitle: DeleteModalTitles.LEASE_AREA,
+    isDeleteModalOpen: false,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -354,8 +365,40 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
     change('lease_areas_active', newAreas);
   }
 
+  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.LEASE_AREA, modalLabel: string = DeleteModalLabels.LEASE_AREA) => {
+    this.setState({
+      deleteFunction: fn,
+      deleteModalLabel: modalLabel,
+      deleteModalTitle: modalTitle,
+      isDeleteModalOpen: true,
+    });
+  }
+
+  handleHideDeleteModal = () => {
+    this.setState({
+      isDeleteModalOpen: false,
+    });
+  }
+
+  handleDeleteClick = () => {
+    const {deleteFunction} = this.state;
+    if(deleteFunction) {
+      deleteFunction();
+    }
+    this.handleHideDeleteModal();
+  }
+
   render () {
-    const {activeAreas, archivedAreas, areas, areasSum, decisionOptions} = this.state;
+    const {
+      activeAreas,
+      archivedAreas,
+      areas,
+      areasSum,
+      decisionOptions,
+      deleteModalLabel,
+      deleteModalTitle,
+      isDeleteModalOpen,
+    } = this.state;
     const {
       archiveLeaseArea,
       currentLease,
@@ -370,8 +413,18 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
       unarchiveLeaseArea,
     } = this.props;
 
+
     return (
       <form>
+        <ConfirmationModal
+          confirmButtonLabel='Poista'
+          isOpen={isDeleteModalOpen}
+          label={deleteModalLabel}
+          onCancel={this.handleHideDeleteModal}
+          onClose={this.handleHideDeleteModal}
+          onSave={this.handleDeleteClick}
+          title={deleteModalTitle}
+        />
         {isArchiveFetching &&
           <LoaderWrapper className='overlay-wrapper'>
             <Loader isLoading={isArchiveFetching} />
@@ -395,6 +448,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
             leaseId={currentLease.id}
             name="lease_areas_active"
             onArchiveCallback={this.handleArchiveCallback}
+            onOpenDeleteModal={this.handleOpenDeleteModal}
             showArchiveAreaModal={showArchiveAreaModal}
           />
           <FieldArray
@@ -408,6 +462,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
             isActive={false}
             leaseId={currentLease.id}
             name="lease_areas_archived"
+            onOpenDeleteModal={this.handleOpenDeleteModal}
             onUnarchiveCallback={this.handleUnarchiveCallback}
             showUnarchiveAreaModal={showUnarchiveAreaModal}
             unarchiveLeaseArea={unarchiveLeaseArea}

@@ -16,12 +16,14 @@ type Props = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
 const InspectionItemsEdit = ({
   attributes,
   fields,
   isSaveClicked,
+  onOpenDeleteModal,
 }: Props) => {
   const handleAdd = () => fields.push({});
 
@@ -30,13 +32,17 @@ const InspectionItemsEdit = ({
       {fields && !!fields.length &&
         <BoxItemContainer>
           {fields.map((inspection, index) => {
-            const handleRemove = () => fields.remove(index);
+            const handleOpenDeleteModal = () => {
+              onOpenDeleteModal(
+                () => fields.remove(index),
+              );
+            };
 
             return (
               <BoxItem key={index}>
                 <RemoveButton
                   className='position-topright'
-                  onClick={handleRemove}
+                  onClick={handleOpenDeleteModal}
                   title="Poista tarkastus"
                 />
                 <Row>

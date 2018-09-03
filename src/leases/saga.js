@@ -299,7 +299,7 @@ function* createReleatedLeaseSaga({payload}): Generator<any, any, any> {
         switch (status) {
           case 200:
             yield put(receiveSingleLease(bodyAsJson));
-            displayUIMessage({title: '', body: 'Liittyvä vuokraus luotu'});
+            displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos luotu'});
             break;
           default:
             yield put(receiveError(new SubmissionError({...bodyAsJson})));
@@ -351,7 +351,7 @@ function* deleteReleatedLeaseSaga({payload}): Generator<any, any, any> {
         switch (status) {
           case 200:
             yield put(receiveSingleLease(bodyAsJson));
-            displayUIMessage({title: '', body: 'Liittyvä vuokraus poistettu'});
+            displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos poistettu'});
             break;
           default:
             yield put(receiveError(new SubmissionError({...bodyAsJson})));

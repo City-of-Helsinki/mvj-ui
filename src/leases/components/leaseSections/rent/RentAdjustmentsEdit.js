@@ -11,6 +11,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -22,21 +23,32 @@ type Props = {
   fields: any,
   decisions: Array<Object>,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Props) => {
+const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked, onOpenDeleteModal}: Props) => {
+  const handleAdd = () => fields.push({});
+
   const decisionOptions = getDecisionOptions(decisions);
 
   return (
     <div>
       <BoxItemContainer>
         {fields && !!fields.length && fields.map((discount, index) => {
+          const handleOpenDeleteModal = () => {
+            onOpenDeleteModal(
+              () => fields.remove(index),
+              DeleteModalTitles.RENT_ADJUSTMENT,
+              DeleteModalLabels.RENT_ADJUSTMENT,
+            );
+          };
+
           return (
             <BoxItem className='no-border-on-first-child' key={index}>
               <BoxContentWrapper>
                 <RemoveButton
                   className='position-topright'
-                  onClick={() => fields.remove(index)}
+                  onClick={handleOpenDeleteModal}
                   title="Poista alennus/korotus"
                 />
                 <Row>
@@ -153,7 +165,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Pro
         <Column>
           <AddButtonSecondary
             label='Lisää alennus/korotus'
-            onClick={() => fields.push({})}
+            onClick={handleAdd}
             title='Lisää alennus/korotus'
           />
         </Column>

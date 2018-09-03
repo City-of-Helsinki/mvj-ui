@@ -15,7 +15,7 @@ import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValid} from '$src/rentbasis/actions';
-import {FormNames} from '$src/rentbasis/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/rentbasis/enums';
 import {getAttributes, getIsFormValid, getIsSaveClicked, getRentBasisInitialValues} from '$src/rentbasis/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -27,15 +27,22 @@ type PropertyIdentifiersProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked}: PropertyIdentifiersProps): Element<*> => {
+const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: PropertyIdentifiersProps): Element<*> => {
   const handleAdd = () => fields.push({});
   return (
     <div>
       <FormFieldLabel required={get(attributes, 'property_identifiers.child.children.identifier.required')}>Kiinteistötunnukset</FormFieldLabel>
       {fields && !!fields.length && fields.map((field, index) => {
-        const handleRemove = () => fields.remove(index);
+        const handleOpenDeleteModal = () => {
+          onOpenDeleteModal(
+            () => fields.remove(index),
+            DeleteModalTitles.IDENTIFIER,
+            DeleteModalLabels.IDENTIFIER,
+          );
+        };
 
         return (
           <Row key={index}>
@@ -54,7 +61,7 @@ const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked}: Property
                 removeButton={
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista kiinteistötunnus"
                   />
                 }
@@ -80,9 +87,10 @@ type DecisionsProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): Element<*> => {
+const renderDecisions = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: DecisionsProps): Element<*> => {
   const handleAdd = () => fields.push({});
   return (
     <div>
@@ -102,7 +110,13 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
         </Column>
       </Row>
       {fields && !!fields.length && fields.map((field, index) => {
-        const handleRemove = () => fields.remove(index);
+        const handleOpenDeleteModal = () => {
+          onOpenDeleteModal(
+            () => fields.remove(index),
+            DeleteModalTitles.DECISION,
+            DeleteModalLabels.DECISION,
+          );
+        };
 
         return(
           <Row key={index}>
@@ -153,7 +167,7 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                 removeButton={
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista päätös"
                   />
                 }
@@ -179,9 +193,10 @@ type RentRatesProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): Element<*> => {
+const renderRentRates = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: RentRatesProps): Element<*> => {
   const handleAdd = () => fields.push({});
   return (
     <div>
@@ -194,7 +209,13 @@ const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): E
             <Column small={3} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.area_unit.required')}>Yksikkö</FormFieldLabel></Column>
           </Row>
           {fields.map((field, index) => {
-            const handleRemove = () => fields.remove(index);
+            const handleOpenDeleteModal = () => {
+              onOpenDeleteModal(
+                () => fields.remove(index),
+                DeleteModalTitles.RENT_RATE,
+                DeleteModalLabels.RENT_RATE,
+              );
+            };
 
             return(
               <Row key={index}>
@@ -233,7 +254,7 @@ const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): E
                     removeButton={
                       <RemoveButton
                         className='third-level'
-                        onClick={handleRemove}
+                        onClick={handleOpenDeleteModal}
                         title="Poista hinta"
                       />
                     }
@@ -265,6 +286,7 @@ type Props = {
   isFocusedOnMount?: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
   receiveFormValid: Function,
   valid: boolean,
 }
@@ -295,7 +317,7 @@ class RentBasisForm extends Component<Props> {
   }
 
   render() {
-    const {attributes, handleSubmit, isSaveClicked} = this.props;
+    const {attributes, handleSubmit, isSaveClicked, onOpenDeleteModal} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -340,6 +362,7 @@ class RentBasisForm extends Component<Props> {
                 component={renderPropertyIdentifiers}
                 name='property_identifiers'
                 isSaveClicked={isSaveClicked}
+                onOpenDeleteModal={onOpenDeleteModal}
               />
             </Column>
             <Column small={6} medium={4} large={2}>
@@ -405,6 +428,7 @@ class RentBasisForm extends Component<Props> {
                 component={renderDecisions}
                 name="decisions"
                 isSaveClicked={isSaveClicked}
+                onOpenDeleteModal={onOpenDeleteModal}
               />
             </Column>
           </Row>
@@ -415,6 +439,7 @@ class RentBasisForm extends Component<Props> {
                 component={renderRentRates}
                 name="rent_rates"
                 isSaveClicked={isSaveClicked}
+                onOpenDeleteModal={onOpenDeleteModal}
               />
             </Column>
           </Row>

@@ -13,6 +13,7 @@ import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -20,12 +21,11 @@ type AddressesProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
 }
 
-const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
+const AddressItems = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: AddressesProps): Element<*> => {
+  const handleAdd = () => fields.push({});
 
   return (
     <div>
@@ -44,8 +44,12 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
         </Row>
       }
       {fields && !!fields.length && fields.map((field, index) => {
-        const handleRemove = () => {
-          fields.remove(index);
+        const handleOpenDeleteModal = () => {
+          onOpenDeleteModal(
+            () => fields.remove(index),
+            DeleteModalTitles.ADDRESS,
+            DeleteModalLabels.ADDRESS,
+          );
         };
 
         return (
@@ -85,7 +89,7 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
                 removeButton={
                   <RemoveButton
                     className='third-level'
-                    onClick={handleRemove}
+                    onClick={handleOpenDeleteModal}
                     title="Poista osoite"
                   />
                 }
@@ -112,6 +116,7 @@ type Props = {
   field: string,
   index: number,
   isSaveClicked: boolean,
+  onOpenDeleteModal: Function,
   onRemove: Function,
 }
 
@@ -120,11 +125,10 @@ const PlanUnitItemEdit = ({
   field,
   index,
   isSaveClicked,
+  onOpenDeleteModal,
   onRemove,
 }: Props) => {
-  const handleRemove = () => {
-    onRemove(index);
-  };
+  const handleRemove = () => onRemove(index);
 
   return (
     <BoxItem>
@@ -162,6 +166,7 @@ const PlanUnitItemEdit = ({
           component={AddressItems}
           isSaveClicked={isSaveClicked}
           name={`${field}.addresses`}
+          onOpenDeleteModal={onOpenDeleteModal}
         />
 
         <Row>

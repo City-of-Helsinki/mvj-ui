@@ -16,10 +16,11 @@ type Props = {
   attributes: InvoiceAttributes,
   fields: any,
   isEditClicked: boolean,
+  onOpenDeleteModal: Function,
   tenantOptions: Array<Object>,
 }
 
-const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Props): Element<*> => {
+const InvoiceRowsEdit = ({attributes, fields, isEditClicked, onOpenDeleteModal, tenantOptions}: Props): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
@@ -41,8 +42,8 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
             </Column>
           </Row>
           {fields.map((row, index) => {
-            const handleRemove = () => {
-              fields.remove(index);
+            const handleOpenDeleteModal = () => {
+              onOpenDeleteModal(() => fields.remove(index));
             };
 
             return (
@@ -83,7 +84,7 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
                   {fields.length > 1 &&
                     <RemoveButton
                       className='third-level'
-                      onClick={handleRemove}
+                      onClick={handleOpenDeleteModal}
                       title="Poista rivi"
                     />
                   }
