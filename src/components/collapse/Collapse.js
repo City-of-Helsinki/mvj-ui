@@ -34,7 +34,7 @@ type State = {
 class Collapse extends PureComponent<Props, State> {
   component: any
   content: any
-  _isMounted: boolean;
+  _isMounted: boolean
 
   static defaultProps = {
     defaultOpen: false,
@@ -60,12 +60,17 @@ class Collapse extends PureComponent<Props, State> {
   }
 
   componentDidUpdate = (prevProps: Object, prevState: Object) => {
-    if(this.state.isOpen !== prevState.isOpen || this.props !== prevProps) {
+    if((this.state.isOpen && !this.state.contentHeight) ||
+      (this.state.isOpen !== prevState.isOpen)) {
       this.calculateHeight();
     }
   }
 
   onResize = () => {
+    if(!this._isMounted) {
+      return;
+    }
+
     this.calculateHeight();
   }
 
@@ -73,10 +78,14 @@ class Collapse extends PureComponent<Props, State> {
     const {clientHeight} = this.content;
     const {isOpen} = this.state;
 
-    this.setState({contentHeight: isOpen ? clientHeight : 0});
+    this.setState({contentHeight: isOpen ? (clientHeight || null) : 0});
   }
 
   transitionEnds = () => {
+    if(!this._isMounted) {
+      return;
+    }
+
     this.setState({
       isCollapsing: false,
       isExpanding: false,
@@ -100,6 +109,7 @@ class Collapse extends PureComponent<Props, State> {
         isOpen: true,
       });
     }
+
     if(onToggle) {
       onToggle(!isOpen);
     }
@@ -113,9 +123,8 @@ class Collapse extends PureComponent<Props, State> {
   };
 
   getChildrenOfHeader = (header: any) => {
-    if(!header) {
-      return null;
-    }
+    if(!header) {return null;}
+
     return header.props.children;
   }
 
