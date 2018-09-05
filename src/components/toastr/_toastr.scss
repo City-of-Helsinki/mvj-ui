@@ -28,13 +28,13 @@
     .rrt-left-container {
       width: 100%;
       position: absolute;
-      top: unset;
+      top: auto;
       bottom: 0;
       height: rem-calc(72px);
 
       .rrt-holder {
         height: rem-calc(52px);
-        top: unset;
+        top: auto;
         margin-top: 0;
         bottom: 0;
         left: 50%;
