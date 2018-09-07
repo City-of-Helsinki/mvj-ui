@@ -20,7 +20,6 @@ import {formatDate, formatDateRange} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 
-
 type Props = {
   billingPerson: Object,
   collapseState: boolean,

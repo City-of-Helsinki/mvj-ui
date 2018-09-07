@@ -22,7 +22,7 @@ type Props = {
   receiveCollapseStates: Function,
 }
 
-const Tenant = ({
+const Litigant = ({
   collapseState,
   litigant,
   receiveCollapseStates,
@@ -62,9 +62,7 @@ const Tenant = ({
           </Column>
         </div>
       }
-      headerTitle={
-        <h3 className='collapse__header-title'>{getContactFullName(contact)}</h3>
-      }
+      headerTitle={<h3 className='collapse__header-title'>{getContactFullName(contact)}</h3>}
       onToggle={handleCollapseToggle}
     >
       <div>
@@ -97,4 +95,4 @@ export default connect(
   {
     receiveCollapseStates,
   }
-)(Tenant);
+)(Litigant);

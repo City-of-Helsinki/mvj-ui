@@ -199,7 +199,6 @@ export default connect(
       contact: selector(state, `${props.field}.contact`),
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),
-
     };
   },
   {

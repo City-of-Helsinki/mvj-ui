@@ -55,7 +55,7 @@ class Litigants extends Component<Props, State> {
         )}
 
         {/* Archived litigants */}
-        {(archivedLitigants.length) &&
+        {!!archivedLitigants.length &&
           <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
         }
         {!!archivedLitigants.length && archivedLitigants.map((litigant, index) =>
