@@ -3,9 +3,9 @@
     "id": 1,
     "identifier": {
       "type": {
-        "id": 5,
-        "name": "Sekalaiset vuokraukset",
-        "identifier": "S0",
+        "id": 33,
+        "name": "Maapoliittinen sopimus",
+        "identifier": "MA",
         "sap_material_code": null,
         "sap_order_item_number": null,
         "due_dates_position": "middle_of_month"
@@ -33,31 +33,178 @@
     ],
     "litigants": [
       {
-        "id": 2,
-        "contact": {
-          "id": 2,
-          "deleted": null,
-          "created_at": "2018-06-26T14:32:49.565000+03:00",
-          "modified_at": "2018-06-26T14:32:49.565000+03:00",
-          "type": "business",
-          "first_name": null,
-          "last_name": null,
-          "name": "DELETE OY/JANIKA VILKMAN",
-          "business_id": "1075521-2",
-          "address": "POSTINTAIVAL 7",
-          "postal_code": "00230",
-          "city": null,
-          "email": null,
-          "phone": null,
-          "language": null,
-          "national_identification_number": null,
-          "address_protection": false,
-          "customer_number": null,
-          "sap_customer_number": null,
-          "electronic_billing_address": null,
-          "partner_code": null,
-          "is_lessor": false
-        }
+        "id": 943,
+        "share_numerator": 1,
+        "share_denominator": 2,
+        "reference": null,
+        "litigantcontact_set": [
+          {
+            "id": 1610,
+            "type": "billing",
+            "contact": {
+                "id": 926,
+                "deleted": null,
+                "created_at": "2018-06-26T14:38:24.080000+03:00",
+                "modified_at": "2018-06-26T14:38:24.080000+03:00",
+                "type": "business",
+                "first_name": null,
+                "last_name": null,
+                "name": "AS OY HAAPAPERHOSENPOLKU 2 C/O RAKLIIKE HALONEN OY",
+                "business_id": "2785137-4",
+                "address": "KAUPPAKATU 31 L 2",
+                "postal_code": "87100",
+                "city": null,
+                "email": null,
+                "phone": null,
+                "language": null,
+                "national_identification_number": null,
+                "address_protection": false,
+                "customer_number": null,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false
+            },
+            "start_date": "2018-08-01",
+            "end_date": "2018-08-31"
+          },
+          {
+            "id": 1609,
+            "type": "litigant",
+            "contact": {
+                "id": 750,
+                "deleted": null,
+                "created_at": "2018-06-26T14:37:21.031000+03:00",
+                "modified_at": "2018-06-26T14:37:21.031000+03:00",
+                "type": "business",
+                "first_name": null,
+                "last_name": null,
+                "name": "ARKK SARANPÄÄ OY / SARANPÄÄ EVE",
+                "business_id": "2298220-1",
+                "address": "EINO LEINON KATU 6 C 45-46",
+                "postal_code": "00250",
+                "city": null,
+                "email": null,
+                "phone": null,
+                "language": null,
+                "national_identification_number": null,
+                "address_protection": false,
+                "customer_number": null,
+                "sap_customer_number": null,
+                "electronic_billing_address": null,
+                "partner_code": null,
+                "is_lessor": false
+            },
+            "start_date": "2018-08-01",
+            "end_date": "2020-12-31"
+          }
+        ]
+      },
+      {
+        "id": 942,
+        "share_numerator": 1,
+        "share_denominator": 2,
+        "reference": "Viitenumero",
+        "litigantcontact_set": [
+          {
+            "id": 1608,
+            "type": "litigant",
+            "contact": {
+              "id": 711,
+              "deleted": null,
+              "created_at": "2018-06-26T14:37:05.980000+03:00",
+              "modified_at": "2018-06-26T14:37:05.980000+03:00",
+              "type": "business",
+              "first_name": null,
+              "last_name": null,
+              "name": "AHVONEN LEENA/TASOTERÄS OY",
+              "business_id": "0315234-1",
+              "address": "SIENIKUJA 10",
+              "postal_code": "00760",
+              "city": null,
+              "email": null,
+              "phone": null,
+              "language": null,
+              "national_identification_number": null,
+              "address_protection": false,
+              "customer_number": null,
+              "sap_customer_number": null,
+              "electronic_billing_address": null,
+              "partner_code": null,
+              "is_lessor": false
+            },
+            "start_date": "2018-08-01",
+            "end_date": "2020-12-31"
+          }
+        ]
+      },
+      {
+        "id": 941,
+        "share_numerator": 2,
+        "share_denominator": 3,
+        "reference": "0123456780",
+        "litigantcontact_set": [
+          {
+            "id": 1606,
+            "type": "billing",
+            "contact": {
+              "id": 817,
+              "deleted": null,
+              "created_at": "2018-06-26T14:37:43.042000+03:00",
+              "modified_at": "2018-06-27T14:39:18.709585+03:00",
+              "type": "business",
+              "first_name": null,
+              "last_name": null,
+              "name": "A-KRUUNU OY",
+              "business_id": "1736841-8",
+              "address": "PL 30791",
+              "postal_code": "01051",
+              "city": null,
+              "email": null,
+              "phone": "0444997745",
+              "language": null,
+              "national_identification_number": null,
+              "address_protection": false,
+              "customer_number": null,
+              "sap_customer_number": null,
+              "electronic_billing_address": null,
+              "partner_code": null,
+              "is_lessor": false
+            },
+            "start_date": "2018-07-01",
+            "end_date": "2018-08-05"
+          },
+          {
+            "id": 1605,
+            "type": "litigant",
+            "contact": {
+              "id": 1061,
+              "deleted": null,
+              "created_at": "2018-07-26T11:49:22.429686+03:00",
+              "modified_at": "2018-08-15T15:18:06.229182+03:00",
+              "type": "person",
+              "first_name": "Lindell",
+              "last_name": "Jori",
+              "name": null,
+              "business_id": null,
+              "address": "Kivelänkatu 9§12",
+              "postal_code": null,
+              "city": null,
+              "email": null,
+              "phone": null,
+              "language": null,
+              "national_identification_number": null,
+              "address_protection": false,
+              "customer_number": null,
+              "sap_customer_number": null,
+              "electronic_billing_address": null,
+              "partner_code": null,
+              "is_lessor": false
+            },
+            "start_date": "2018-07-01",
+            "end_date": "2018-07-31"
+          }
+        ]
       }
     ],
     "preparer": {
@@ -86,18 +233,18 @@
         "reference_number": "HEL 1233-123211",
         "conditions": [
           {
+            "id": 12,
             "type": 6,
-            "area": 400,
-            "deposit": "4000",
-            "compensation": "2000",
-            "note": "Lorem ipsum"
+            "supervision_date": "2018-06-12",
+            "supervised_date": "2018-06-29",
+            "description": "Huomautus 1"
           },
           {
+            "id": 18,
             "type": 25,
-            "area": 400,
-            "deposit": "4000",
-            "compensation": "2000",
-            "note": "Lorem ipsum"
+            "supervision_date": "2018-08-01",
+            "supervised_date": "2018-07-29",
+            "description": "Huomautus 2"
           }
         ]
       }

@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, getFormValues, reduxForm} from 'redux-form';
+import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -10,38 +10,18 @@ import type {Element} from 'react';
 import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
-import ContactModal from '$src/contacts/components/ContactModal';
 import Divider from '$components/content/Divider';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
-import Loader from '$components/loader/Loader';
-import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {
-  createContactOnModal as createContact,
-  hideContactModal,
-  initializeContactForm,
-  receiveContactModalSettings,
-  receiveIsSaveClicked as receiveIsContactModalSaveClicked,
-  showContactModal,
-} from '$src/contacts/actions';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
-import {getContentContact} from '$src/contacts/helpers';
-import {
-  getContactModalSettings,
-  getIsContactFormValid,
-  getIsContactModalOpen,
-  getIsFetching as getIsFetchingContact,
-} from '$src/contacts/selectors';
 import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 
-import type {ContactModalSettings} from '$src/contacts/types';
 import type {Attributes} from '$src/landUseContract/types';
 
 type AreasProps = {
@@ -105,129 +85,13 @@ const renderAreas = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: Are
   );
 };
 
-type LitigantsProps = {
-  attributes: Attributes,
-  fields: any,
-  initializeContactForm: Function,
-  isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
-  receiveContactModalSettings: Function,
-  receiveIsContactModalSaveClicked: Function,
-  showContactModal: Function,
-}
-
-const renderLitigants = ({
-  attributes,
-  fields,
-  initializeContactForm,
-  isSaveClicked,
-  onOpenDeleteModal,
-  receiveContactModalSettings,
-  receiveIsContactModalSaveClicked,
-  showContactModal,
-}: LitigantsProps): Element<*> => {
-  const handleAdd = () => fields.push({});
-
-  return (
-    <div>
-      <FormFieldLabel>Osapuolet</FormFieldLabel>
-      {fields && !!fields.length && fields.map((field, index) => {
-        const handleOpenDeleteModal = () => {
-          onOpenDeleteModal(
-            () => fields.remove(index),
-            DeleteModalTitles.LITIGANT,
-            DeleteModalLabels.LITIGANT,
-          );
-        };
-
-        const handleAddClick = () => {
-          initializeContactForm({});
-          receiveContactModalSettings({
-            field: `${field}.contact`,
-            contactId: null,
-            isNew: true,
-          });
-          receiveIsContactModalSaveClicked(false);
-          showContactModal();
-        };
-
-        const handleAddKeyDown = (e:any) => {
-          if(e.keyCode === 13) {
-            e.preventDefault();
-            handleAddClick();
-          }
-        };
-
-        return (
-          <Row key={index}>
-            <Column small={8}>
-              <FieldAndRemoveButtonWrapper
-                field={
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'litigants.child.children.contact')}
-                    name={`${field}.contact`}
-                    overrideValues={{
-                      fieldType: 'contact',
-                      label: '',
-                    }}
-                  />
-                }
-                removeButton={
-                  <RemoveButton
-                    className='third-level'
-                    onClick={handleOpenDeleteModal}
-                    title="Poista osapuoli"
-                  />
-                }
-              />
-            </Column>
-            <Column small={4}>
-              {(index + 1 === fields.length) &&
-                <p><a className='no-margin'
-                  style={{lineHeight: '20px'}}
-                  onKeyDown={handleAddKeyDown}
-                  onClick={handleAddClick}
-                  tabIndex={0}
-                >Luo asiakas</a></p>
-              }
-            </Column>
-          </Row>
-        );
-      })}
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää osapuoli'
-            onClick={handleAdd}
-            title='Lisää osapuoli'
-          />
-        </Column>
-      </Row>
-    </div>
-  );
-};
-
 type Props = {
   attributes: Attributes,
   basicInformationCollapseState: boolean,
   change: Function,
-  contactFormValues: Object,
-  contactModalSettings: ContactModalSettings,
-  createContact: Function,
-  hideContactModal: Function,
-  initializeContactForm: Function,
-  isContactFormValid: boolean,
-  isContactModalOpen: boolean,
-  isFetchingContact: boolean,
   isSaveClicked: boolean,
-  planInformationCollapseState: boolean,
   receiveCollapseStates: Function,
-  receiveContactModalSettings: Function,
   receiveFormValidFlags: Function,
-  receiveContactModalSettings: Function,
-  receiveIsContactModalSaveClicked: Function,
-  showContactModal: Function,
   valid: boolean,
 }
 
@@ -247,17 +111,12 @@ class BasicInformationEdit extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    const {change, contactModalSettings, receiveContactModalSettings, receiveFormValidFlags} = this.props;
+    const {receiveFormValidFlags} = this.props;
 
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
         [FormNames.BASIC_INFORMATION]: this.props.valid,
       });
-    }
-
-    if(contactModalSettings && contactModalSettings.contact) {
-      change(contactModalSettings.field, getContentContact(contactModalSettings.contact));
-      receiveContactModalSettings(null);
     }
   }
 
@@ -271,55 +130,6 @@ class BasicInformationEdit extends Component<Props, State> {
         },
       },
     });
-  }
-
-  handlePlanInformationCollapseToggle = (val: boolean) => {
-    const {receiveCollapseStates} = this.props;
-
-    receiveCollapseStates({
-      [ViewModes.EDIT]: {
-        [FormNames.BASIC_INFORMATION]: {
-          plan_information: val,
-        },
-      },
-    });
-  }
-
-  handleContactModalCancel = () => {
-    const {hideContactModal, receiveContactModalSettings} = this.props;
-
-    hideContactModal();
-    receiveContactModalSettings(null);
-  }
-
-  handleContactModalSave = () => {
-    const {
-      contactFormValues,
-      createContact,
-      isContactFormValid,
-      receiveIsContactModalSaveClicked,
-    } = this.props;
-
-    receiveIsContactModalSaveClicked(true);
-
-    if(!isContactFormValid) {return;}
-    createContact(contactFormValues);
-  }
-
-  handleContactModalSaveAndAdd = () => {
-    const {
-      contactFormValues,
-      createContact,
-      isContactFormValid,
-      receiveIsContactModalSaveClicked,
-    } = this.props;
-    const contact = {...contactFormValues};
-
-    receiveIsContactModalSaveClicked(true);
-
-    if(!isContactFormValid) {return;}
-    contact.isSelected = true;
-    createContact(contact);
   }
 
   handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.CONTRACT, modalLabel: string = DeleteModalLabels.CONTRACT) => {
@@ -349,14 +159,7 @@ class BasicInformationEdit extends Component<Props, State> {
     const {
       attributes,
       basicInformationCollapseState,
-      initializeContactForm,
-      isContactModalOpen,
-      isFetchingContact,
       isSaveClicked,
-      planInformationCollapseState,
-      receiveContactModalSettings,
-      receiveIsContactModalSaveClicked,
-      showContactModal,
     } = this.props;
     const {
       deleteModalLabel,
@@ -366,12 +169,6 @@ class BasicInformationEdit extends Component<Props, State> {
 
     return (
       <div>
-        {isFetchingContact &&
-          <LoaderWrapper className='overlay-wrapper'>
-            <Loader isLoading={isFetchingContact} />
-          </LoaderWrapper>
-        }
-
         <ConfirmationModal
           confirmButtonLabel='Poista'
           isOpen={isDeleteModalOpen}
@@ -380,16 +177,6 @@ class BasicInformationEdit extends Component<Props, State> {
           onClose={this.handleHideDeleteModal}
           onSave={this.handleDeleteClick}
           title={deleteModalTitle}
-        />
-
-        <ContactModal
-          isOpen={isContactModalOpen}
-          onCancel={this.handleContactModalCancel}
-          onClose={this.handleContactModalCancel}
-          onSave={this.handleContactModalSave}
-          onSaveAndAdd={this.handleContactModalSaveAndAdd}
-          showSaveAndAdd={true}
-          title={'Uusi asiakas'}
         />
 
         <form>
@@ -410,17 +197,14 @@ class BasicInformationEdit extends Component<Props, State> {
                   onOpenDeleteModal={this.handleOpenDeleteModal}
                 />
               </Column>
-              <Column small={6} medium={4} large={4}>
-                <FieldArray
-                  attributes={attributes}
-                  component={renderLitigants}
-                  initializeContactForm={initializeContactForm}
-                  isSaveClicked={isSaveClicked}
-                  name='litigants'
-                  onOpenDeleteModal={this.handleOpenDeleteModal}
-                  receiveContactModalSettings={receiveContactModalSettings}
-                  receiveIsContactModalSaveClicked={receiveIsContactModalSaveClicked}
-                  showContactModal={showContactModal}
+              <Column small={6} medium={4} large={2}>
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'project_area')}
+                  name='project_area'
+                  overrideValues={{
+                    label: 'Hankealue',
+                  }}
                 />
               </Column>
               <Column small={6} medium={4} large={2}>
@@ -430,7 +214,16 @@ class BasicInformationEdit extends Component<Props, State> {
                   name='preparer'
                   overrideValues={{
                     fieldType: 'user',
-                    label: 'Valmistelija',
+                    label: 'Valmistelijat',
+                  }}
+                />
+                <FormField
+                  disableTouched={isSaveClicked}
+                  fieldAttributes={get(attributes, 'preparer')}
+                  name='preparer2'
+                  overrideValues={{
+                    fieldType: 'user',
+                    label: '',
                   }}
                 />
               </Column>
@@ -467,27 +260,11 @@ class BasicInformationEdit extends Component<Props, State> {
                 />
               </Column>
             </Row>
+
             <SubTitle>Liitetiedostot</SubTitle>
             <p>Ei liitetiedostoja</p>
-          </Collapse>
 
-          <Collapse
-            defaultOpen={planInformationCollapseState !== undefined ? planInformationCollapseState : true}
-            headerTitle={<h3 className='collapse__header-title'>Asemakaavatiedot</h3>}
-            onToggle={this.handlePlanInformationCollapseToggle}
-          >
-            <Row>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'project_area')}
-                  name='project_area'
-                  overrideValues={{
-                    label: 'Hankealue',
-                  }}
-                />
-              </Column>
-            </Row>
+            <SubTitle>Asemakaavatiedot</SubTitle>
             <Row>
               <Column small={6} medium={4} large={2}>
                 <FormField
@@ -556,24 +333,12 @@ export default flowRight(
       return {
         attributes: getAttributes(state),
         basicInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.basic_information`),
-        contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
-        contactModalSettings: getContactModalSettings(state),
-        isContactFormValid: getIsContactFormValid(state),
-        isContactModalOpen: getIsContactModalOpen(state),
-        isFetchingContact: getIsFetchingContact(state),
         isSaveClicked: getIsSaveClicked(state),
-        planInformationCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${formName}.plan_information`),
       };
     },
     {
-      createContact,
-      hideContactModal,
-      initializeContactForm,
       receiveCollapseStates,
-      receiveContactModalSettings,
       receiveFormValidFlags,
-      receiveIsContactModalSaveClicked,
-      showContactModal,
     }
   ),
   reduxForm({

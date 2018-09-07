@@ -81,48 +81,35 @@ const renderDecisionConditions = ({
                       fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.type')}
                       name={`${condition}.type`}
                       overrideValues={{
-                        label: 'Hallintamuoto',
+                        label: 'Käyttötarkoitusehto',
                       }}
                     />
                   </Column>
                   <Column small={6} medium={4} large={2}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.area')}
-                      name={`${condition}.area`}
-                      unit='k-m²'
+                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
+                      name={`${condition}.supervision_date`}
                       overrideValues={{
-                        label: 'Ala',
+                        label: 'Valvontapvm',
                       }}
                     />
                   </Column>
                   <Column small={12} medium={4} large={2}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.deposit')}
-                      name={`${condition}.deposit`}
-                      unit='€'
+                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
+                      name={`${condition}.supervised_date`}
                       overrideValues={{
-                        label: 'Vakuus',
+                        label: 'Valvottu pvm',
                       }}
                     />
                   </Column>
-                  <Column small={12} medium={4} large={2}>
+                  <Column small={12} medium={12} large={6}>
                     <FormField
                       disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.compensation')}
-                      name={`${condition}.compensation`}
-                      unit='€/k-m²'
-                      overrideValues={{
-                        label: 'Korvaus',
-                      }}
-                    />
-                  </Column>
-                  <Column small={12} medium={8} large={4}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.note')}
-                      name={`${condition}.note`}
+                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.description')}
+                      name={`${condition}.description`}
                       overrideValues={{
                         label: 'Huomautus',
                       }}

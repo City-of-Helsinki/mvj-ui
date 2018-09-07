@@ -17,6 +17,7 @@ const getContentCostructabilityEmails = (content: Object) => {
 
     return {
       time: email.time,
+      sender: email.sender,
       recipients: recipients.map((recipient) => {
         return {
           first_name: recipient.first_name,
@@ -35,6 +36,10 @@ const getRecipientsString = (recipients: Array<Object>) => {
     text += (index !== (length - 1)) ? ', ' : '';
   });
   return text;
+};
+
+const getSenderString = (sender: Object) => {
+  return `${sender.last_name} ${sender.first_name}`;
 };
 
 type State = {
@@ -68,10 +73,10 @@ class SendEmail extends Component<{}, State> {
           <Column small={12} medium={4} large={3}>
             <Button
               className='button-green no-margin'
-              label='Lähetä sähköpostitiedote'
+              label='Lähetä sähköposti'
               onClick={() => this.setState({isOpen: true})}
               style={{marginBottom: 15}}
-              title='Lähetä sähköpostitiedote'
+              title='Lähetä sähköposti'
             />
           </Column>
           <Column small={12} medium={8} large={9}>
@@ -82,7 +87,10 @@ class SendEmail extends Component<{}, State> {
                   <Column small={4} medium={3} large={2}>
                     <FormFieldLabel>Lähetetty</FormFieldLabel>
                   </Column>
-                  <Column small={8} medium={9} large={10}>
+                  <Column small={4} medium={3} large={2}>
+                    <FormFieldLabel>Lähettäjä</FormFieldLabel>
+                  </Column>
+                  <Column small={4} medium={6} large={8}>
                     <FormFieldLabel>Vastaanottajat</FormFieldLabel>
                   </Column>
                 </Row>
@@ -92,7 +100,10 @@ class SendEmail extends Component<{}, State> {
                       <Column small={4} medium={3} large={2}>
                         <p className='no-margin'>{formatDateObj(email.time) || '-'}</p>
                       </Column>
-                      <Column small={8} medium={9} large={10}>
+                      <Column small={4} medium={3} large={2}>
+                        <p className='no-margin'>{getSenderString(email.sender) || '-'}</p>
+                      </Column>
+                      <Column small={4} medium={6} large={8}>
                         <p className='no-margin'>{getRecipientsString(email.recipients) || '-'}</p>
                       </Column>
                     </Row>

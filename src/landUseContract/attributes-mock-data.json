@@ -241,13 +241,96 @@
       }
     },
     "litigants": {
+      "type": "field",
+      "required": false,
+      "read_only": false,
+      "label": "Osapuolet",
       "child": {
+        "type": "nested object",
+        "required": false,
+        "read_only": false,
         "children": {
-          "contact": {
-            "type": "field",
+          "id": {
+            "type": "integer",
+            "required": false,
+            "read_only": false,
+            "label": "Id"
+          },
+          "share_numerator": {
+            "type": "integer",
             "required": true,
             "read_only": false,
-            "label": "Kohde"
+            "label": "Jaettava",
+            "min_value": 0,
+            "max_value": 2147483647
+          },
+          "share_denominator": {
+            "type": "integer",
+            "required": true,
+            "read_only": false,
+            "label": "Jakaja",
+            "min_value": 0,
+            "max_value": 2147483647
+          },
+          "reference": {
+            "type": "string",
+            "required": false,
+            "read_only": false,
+            "label": "Viite",
+            "max_length": 255
+          },
+          "litigantcontact_set": {
+            "type": "field",
+            "required": false,
+            "read_only": false,
+            "label": "Litigantcontact set",
+            "child": {
+              "type": "nested object",
+              "required": false,
+              "read_only": false,
+              "children": {
+                "id": {
+                  "type": "integer",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Id"
+                },
+                "type": {
+                  "type": "choice",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Tyyppi",
+                  "choices": [
+                    {
+                      "display_name": "Vuokralainen",
+                      "value": "tenant"
+                    },
+                    {
+                      "display_name": "Laskunsaaja",
+                      "value": "billing"
+                    }
+                  ]
+                },
+                "contact": {
+                  "type": "field",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Asiakas"
+                },
+                "start_date": {
+                  "type": "date",
+                  "required": true,
+                  "read_only": false,
+                  "label": "Alkupvm"
+                },
+                "end_date": {
+                  "type": "date",
+                  "required": false,
+                  "read_only": false,
+                  "label": "Loppupvm"
+                }
+              }
+            }
           }
         }
       }
@@ -463,31 +546,19 @@
                     }
                   ]
                 },
-                "area": {
-                  "type": "integer",
+                "supervision_date": {
+                  "type": "date",
                   "required": false,
                   "read_only": false,
-                  "label": "Ala",
-                  "min_value": 0,
-                  "max_value": 2147483647
+                  "label": "Valvontapvm"
                 },
-                "deposit": {
-                  "type": "decimal",
+                "supervised_date": {
+                  "type": "date",
                   "required": false,
                   "read_only": false,
-                  "label": "Vakuus",
-                  "decimal_places": 2,
-                  "max_digits": 10
+                  "label": "Valvottu pvm"
                 },
-                "compensation": {
-                  "type": "decimal",
-                  "required": false,
-                  "read_only": false,
-                  "label": "Korvaus",
-                  "decimal_places": 2,
-                  "max_digits": 10
-                },
-                "note": {
+                "description": {
                   "type": "string",
                   "required": false,
                   "read_only": false,

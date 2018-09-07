@@ -140,10 +140,23 @@ class App extends Component<Props, State> {
     if (isEmpty(user) || isEmpty(apiToken)) {
       return (
         <div className={'app'}>
+          <ReduxToastr
+            newestOnTop={true}
+            position="top-right"
+            preventDuplicates={true}
+            progressBar={false}
+            timeOut={5000}
+            transitionIn="fadeIn"
+            transitionOut="fadeOut"
+            closeOnToastrClick={false}
+          />
+
           <ApiErrorModal size={Sizes.MEDIUM}
             data={apiError}
             isOpen={Boolean(apiError)}
-            handleDismiss={this.handleDismissErrorModal}/>
+            handleDismiss={this.handleDismissErrorModal}
+          />
+
           <LoginPage buttonDisabled={Boolean(isApiTokenFetching)}/>
           <Loader isLoading={Boolean(isApiTokenFetching)} />
 
@@ -156,18 +169,21 @@ class App extends Component<Props, State> {
 
     return (
       <div className={'app'}>
-        <ApiErrorModal size={Sizes.LARGE}
-          data={apiError}
-          isOpen={Boolean(apiError)}
-          handleDismiss={this.handleDismissErrorModal}/>
         <ReduxToastr
           newestOnTop={true}
-          position='top-right'
+          position="top-right"
           preventDuplicates={true}
           progressBar={false}
           timeOut={5000}
-          transitionIn='fadeIn'
-          transitionOut='fadeOut'
+          transitionIn="fadeIn"
+          transitionOut="fadeOut"
+          closeOnToastrClick={false}
+        />
+
+        <ApiErrorModal size={Sizes.LARGE}
+          data={apiError}
+          isOpen={Boolean(apiError)}
+          handleDismiss={this.handleDismissErrorModal}
         />
 
         <TopNavigation

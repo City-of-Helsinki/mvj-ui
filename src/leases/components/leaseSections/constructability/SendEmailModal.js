@@ -6,6 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 import Button from '$components/button/Button';
 import DualListBoxInput from '$components/inputs/DualListBoxInput';
 import Modal from '$components/modal/Modal';
+import TextAreaInput from '$components/inputs/TextAreaInput';
 import {fetchUsers} from '$src/users/actions';
 import {getUserOptions} from '$src/users/helpers';
 import {getUsers} from '$src/users/selectors';
@@ -22,7 +23,8 @@ type Props = {
 }
 
 type State = {
-  selected: Array<string>,
+  note: string,
+  selectedUsers: Array<string>,
   userOptions: Array<Object>,
   users: UserList,
 }
@@ -31,7 +33,8 @@ class SendEmailModal extends Component<Props, State> {
   dualListBox: any
 
   state = {
-    selected: [],
+    note: '',
+    selectedUsers: [],
     userOptions: [],
     users: [],
   };
@@ -62,7 +65,10 @@ class SendEmailModal extends Component<Props, State> {
       if(this.dualListBox) {
         this.dualListBox.focus();
       }
-      this.setState({selected: []});
+      this.setState({
+        note: '',
+        selectedUsers: [],
+      });
     }
   }
 
@@ -70,8 +76,14 @@ class SendEmailModal extends Component<Props, State> {
     this.dualListBox = element;
   }
 
-  onChange = (selected: Array<string>) => {
-    this.setState({selected: selected});
+  handleChangeUserList = (selected: Array<string>) => {
+    this.setState({selectedUsers: selected});
+  }
+
+  handleChangeNote = (e: any) => {
+    this.setState({
+      note: e.target.value,
+    });
   }
 
   render() {
@@ -81,21 +93,31 @@ class SendEmailModal extends Component<Props, State> {
       onClose,
       onSend,
     } = this.props;
-    const {selected, userOptions} = this.state;
+    const {note, selectedUsers, userOptions} = this.state;
 
     return (
       <Modal
         className='modal-autoheight modal-center'
-        title='Lähetä sähköpostitiedote'
+        title='Lähetä sähköposti'
         isOpen={isOpen}
         onClose={onClose}
       >
-        <p>Valitse sähköpostitiedotteen vastaanottajat</p>
+        <p>Valitse sähköpostin vastaanottajat</p>
         <DualListBoxInput
-          onChange={this.onChange}
+          filterPlaceholder='Hae vastaanottajia...'
+          onChange={this.handleChangeUserList}
           options={userOptions}
-          selected={selected}
+          selected={selectedUsers}
           setAvailabelReference={this.handleSetAvailableReference}
+        />
+
+        <p>Sähköpostiin liittyvä kommentti</p>
+        <TextAreaInput
+          className="no-margin"
+          onChange={this.handleChangeNote}
+          placeholder=''
+          rows={4}
+          value={note}
         />
         <div className='constructability__send-email-modal_footer'>
           <Button
@@ -106,10 +128,10 @@ class SendEmailModal extends Component<Props, State> {
           />
           <Button
             className='button-green'
-            disabled={!selected.length}
+            disabled={!selectedUsers.length}
             label='Lähetä'
             onClick={onSend}
-            title='Lähetä sähköpostitiedote'
+            title='Lähetä sähköposti'
           />
         </div>
       </Modal>

@@ -62,6 +62,7 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
       [FormNames.CONTRACTS]: true,
       [FormNames.DECISIONS]: true,
       [FormNames.INVOICES]: true,
+      [FormNames.LITIGANTS]: true,
     };
   },
 }, {
@@ -70,6 +71,7 @@ const isFormValidByIdReducer: Reducer<Object> = handleActions({
   [FormNames.CONTRACTS]: true,
   [FormNames.DECISIONS]: true,
   [FormNames.INVOICES]: true,
+  [FormNames.LITIGANTS]: true,
 });
 
 const isSaveClickedReducer: Reducer<boolean> = handleActions({

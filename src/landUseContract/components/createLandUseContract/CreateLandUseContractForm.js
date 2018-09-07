@@ -27,9 +27,6 @@ type Props = {
   municipality: string,
   onClose: Function,
   onSubmit: Function,
-  plan_reference_number: string,
-  state: string,
-  type: string,
   valid: boolean,
 }
 
@@ -59,20 +56,14 @@ class CreateLandUseContractForm extends Component<Props> {
 
   handleCreate = () => {
     const {
-      state,
-      type,
       municipality,
       district,
-      plan_reference_number,
       onSubmit,
     } = this.props;
 
     onSubmit({
-      state: state,
-      type: type,
       municipality: municipality,
       district: district,
-      plan_reference_number: plan_reference_number,
     });
   };
 
@@ -91,27 +82,7 @@ class CreateLandUseContractForm extends Component<Props> {
         <Row>
           <Column small={4} medium={3}>
             <FormField
-              fieldAttributes={get(attributes, 'state')}
-              name='state'
               setRefForField={this.setRefForFirstField}
-              overrideValues={{
-                label: 'Tyyppi',
-              }}
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column small={4} medium={3}>
-            <FormField
-              fieldAttributes={get(attributes, 'type')}
-              name={'type'}
-              overrideValues={{
-                label: 'Vuokrauksen laji',
-              }}
-            />
-          </Column>
-          <Column small={4} medium={3}>
-            <FormField
               fieldAttributes={get(attributes, 'municipality')}
               name='municipality'
               overrideValues={{
@@ -126,17 +97,6 @@ class CreateLandUseContractForm extends Component<Props> {
               overrideValues={{
                 label: 'Kaupunginosa',
                 options: districtOptions,
-              }}
-            />
-          </Column>
-        </Row>
-        <Row>
-          <Column small={4} medium={3}>
-            <FormField
-              fieldAttributes={get(attributes, 'plan_reference_number')}
-              name='plan_reference_number'
-              overrideValues={{
-                label: 'Diaarinumero',
               }}
             />
           </Column>
@@ -175,9 +135,6 @@ export default flowRight(
         district: selector(state, 'district'),
         districts: getDistrictsByMunicipality(state, municipality),
         municipality: municipality,
-        plan_reference_number: selector(state, 'plan_reference_number'),
-        state: selector(state, 'state'),
-        type: selector(state, 'type'),
       };
     },
     {

@@ -2,6 +2,10 @@
   "emails": [
     {
       "time": "2018-05-09T09:00:17+00:00",
+      "sender": {
+        "first_name": "Jori",
+        "last_name": "Lindell"
+      },
       "recipients": [
         {
           "first_name": "Erkki",
@@ -15,6 +19,10 @@
     },
     {
       "time": "2018-05-08T12:35:17+00:00",
+      "sender": {
+        "first_name": "Jori",
+        "last_name": "Lindell"
+      },
       "recipients": [
         {
           "first_name": "Katja",

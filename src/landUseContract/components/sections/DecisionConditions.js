@@ -2,6 +2,7 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
+import classNames from 'classnames';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
@@ -10,7 +11,7 @@ import FormFieldLabel from '$components/form/FormFieldLabel';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
-import {formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 
 import type {Attributes} from '$src/landUseContract/types';
@@ -58,24 +59,26 @@ const DecisionConditions = ({
             <BoxItem key={index} className='no-border-on-last-child'>
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <FormFieldLabel>Hallintamuoto</FormFieldLabel>
-                  <p>{getLabelOfOption(typeOptions, condition.type) || '-'}</p>
+                  <FormFieldLabel>Käyttötarkoitusehto</FormFieldLabel>
+                  <p>{getLabelOfOption(typeOptions, condition.type) || '–'}</p>
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <FormFieldLabel>Ala</FormFieldLabel>
-                  <p>{condition.area ? `${formatNumber(condition.area)} k-m²` : '-'}</p>
+                  <FormFieldLabel>Valvontapvm</FormFieldLabel>
+                  {condition.supervision_date
+                    ? <p className={classNames({'alert': condition.supervision_date && !condition.supervised_date})}><i/>{formatDate(condition.supervision_date)}</p>
+                    : <p>–</p>
+                  }
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <FormFieldLabel>Vakuus</FormFieldLabel>
-                  <p>{condition.deposit ? `${formatNumber(condition.deposit)} €` : '-'}</p>
+                  <FormFieldLabel>Valvottu pvm</FormFieldLabel>
+                  {condition.supervised_date
+                    ? <p className={classNames({'success': condition.supervised_date})}><i/>{formatDate(condition.supervised_date)}</p>
+                    : <p>–</p>
+                  }
                 </Column>
-                <Column small={6} medium={4} large={2}>
-                  <FormFieldLabel>Korvaus</FormFieldLabel>
-                  <p>{condition.compensation ? `${formatNumber(condition.compensation)} €/k-m²` : '-'}</p>
-                </Column>
-                <Column small={12} medium={8} large={4}>
+                <Column small={12} medium={12} large={6}>
                   <FormFieldLabel>Huomautus</FormFieldLabel>
-                  <p>{condition.note || '-'}</p>
+                  <p>{condition.description || '–'}</p>
                 </Column>
               </Row>
             </BoxItem>

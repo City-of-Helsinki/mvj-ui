@@ -280,7 +280,7 @@ const ConstructabilityItem = ({
               <p>{getLabelOfOption(pollutedLandConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>
-              <FormFieldLabel>Pvm</FormFieldLabel>
+              <FormFieldLabel>Vuokraehdot pvm</FormFieldLabel>
               <p>{formatDate(area.polluted_land_rent_condition_date) || '–'}</p>
             </Column>
             <Column small={6} medium={3} large={2}>

@@ -5,6 +5,7 @@ import DualListBox from 'react-dual-listbox';
 type Props = {
   className?: string,
   disabled?: boolean,
+  filterPlaceholder?: string,
   onChange: Function,
   options: Array<Object>,
   selected: Array<string>,
@@ -14,6 +15,7 @@ type Props = {
 const DualListBoxInput = ({
   className,
   disabled = false,
+  filterPlaceholder,
   onChange,
   options,
   selected,
@@ -22,6 +24,8 @@ const DualListBoxInput = ({
   return (
     <DualListBox
       availableRef={setAvailabelReference}
+      canFilter
+      filterPlaceholder={filterPlaceholder}
       className={className}
       disabled={disabled}
       onChange={onChange}

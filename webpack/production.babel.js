@@ -6,7 +6,7 @@ import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CleanPlugin from 'clean-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import OfflinePlugin from 'offline-plugin';
+// import OfflinePlugin from 'offline-plugin';
 import FaviconsWebpackPlugin from 'favicons-webpack-plugin';
 
 const context = path.resolve(__dirname, '..');
@@ -82,14 +82,14 @@ export default createConfig({
       sourceMap: true,
     }),
     extractStylesPlugin,
-    new OfflinePlugin({
-      AppCache: false,
-      publicPath: '/',
-      relativePaths: false,
-      ServiceWorker: {
-        events: true,
-      },
-    }),
+    // new OfflinePlugin({
+    //   AppCache: false,
+    //   publicPath: '/',
+    //   relativePaths: false,
+    //   ServiceWorker: {
+    //     events: true,
+    //   },
+    // }),
     new FaviconsWebpackPlugin(path.resolve(context, 'assets/images/favicon.png')),
   ],
 });

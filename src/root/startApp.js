@@ -25,7 +25,7 @@ export default () => {
     });
   }
 
-  if (process.env.NODE_ENV === 'production') {
-    require('./enableOfflineMode');
-  }
+  // if (process.env.NODE_ENV === 'production') {
+  //   require('./enableOfflineMode');
+  // }
 };
