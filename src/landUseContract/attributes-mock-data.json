@@ -502,20 +502,12 @@
             "label": "Type",
             "choices": [
               {
-                  "display_name": "Ehdon lisääm.ja/tai muuttam.tai poistam.",
-                  "value": 11
+                  "display_name": "Maankäyttösopimus",
+                  "value": 1
               },
               {
-                  "display_name": "Esityksen hylkääminen",
-                  "value": 46
-              },
-              {
-                  "display_name": "Hallinta- ja/tai rahoitusmuodon muutos",
-                  "value": 27
-              },
-              {
-                  "display_name": "Hallintaoikeuden jatkaminen",
-                  "value": 66
+                  "display_name": "Maankäyttösopimus ja kiinteistöjärjestely",
+                  "value": 2
               }
             ]
           },
@@ -580,27 +572,15 @@
             "label": "Sopimuksen vaihe",
             "choices": [
               {
-                  "display_name": "Kumottu kokonaan",
-                  "value": 5
-              },
-              {
-                  "display_name": "Kumottu osittain",
-                  "value": 4
-              },
-              {
-                  "display_name": "Numeronvaraus",
+                  "display_name": "Neuvottelu",
                   "value": 1
               },
               {
-                  "display_name": "Peruutettu",
-                  "value": 9
-              },
-              {
-                  "display_name": "Vireillä",
+                  "display_name": "Esitys",
                   "value": 2
               },
               {
-                  "display_name": "Voimassa",
+                  "display_name": "Toteutunut",
                   "value": 3
               }
             ]
