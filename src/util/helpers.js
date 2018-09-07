@@ -352,6 +352,16 @@ export const findIndexOfArrayfield = (collection, id) => {
   return findIndex(collection, {id});
 };
 
+/**
+ * Find item from collection with ID
+ * @param collection
+ * @param id
+ * @returns {*}
+ */
+export const findItemById = (collection, id) => {
+  return collection.find((item) => item.id === id);
+};
+
 export const getLabelOfOption = (options: Array<Object>, value: string) => {
   if(!options || !options.length || value === undefined || value === null) {
     return null;

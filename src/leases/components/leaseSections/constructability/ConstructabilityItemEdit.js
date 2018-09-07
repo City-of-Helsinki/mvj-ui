@@ -377,7 +377,7 @@ const ConstructabilityItemEdit = ({
               fieldAttributes={get(attributes, 'lease_areas.child.children.polluted_land_rent_condition_date')}
               name={`${field}.polluted_land_rent_condition_date`}
               overrideValues={{
-                label: 'Pvm',
+                label: 'Vuokraehdot pvm',
               }}
             />
           </Column>

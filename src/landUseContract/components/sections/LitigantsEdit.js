@@ -10,11 +10,10 @@ import type {Element} from 'react';
 import AddButton from '$components/form/AddButton';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactModal from '$src/contacts/components/ContactModal';
-import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
+import LitigantItemEdit from './LitigantItemEdit';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
-import TenantItemEdit from './TenantItemEdit';
 import {
   createContactOnModal as createContact,
   editContactOnModal as editContact,
@@ -22,57 +21,59 @@ import {
   receiveContactModalSettings,
   receiveIsSaveClicked,
 } from '$src/contacts/actions';
-import {receiveFormValidFlags} from '$src/leases/actions';
+import {receiveFormValidFlags} from '$src/landUseContract/actions';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getContentContact} from '$src/contacts/helpers';
-import {getContentTenantsFormData} from '$src/leases/helpers';
+import {getContentLitigants} from '$src/landUseContract/helpers';
 import {
   getContactModalSettings,
   getIsContactFormValid,
   getIsContactModalOpen,
   getIsFetching as getIsFetchingContact,
 } from '$src/contacts/selectors';
-import {getCurrentLease} from '$src/leases/selectors';
+import {getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
 import type {ContactModalSettings} from '$src/contacts/types';
-import type {Lease} from '$src/leases/types';
+import type {LandUseContract} from '$src/landUseContract/types';
 
-type TenantsProps = {
+type LitigantsProps = {
   fields: any,
+  litigants: Array<Object>,
   onOpenDeleteModal: Function,
   showAddButton: boolean,
-  tenants: Array<Object>,
 }
 
-const renderTenants = ({
+const renderLitigants = ({
   fields,
+  litigants,
   onOpenDeleteModal,
   showAddButton,
-  tenants,
-}: TenantsProps): Element<*> => {
+}: LitigantsProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   const handleOpenDeleteModal = (index: number) => {
     onOpenDeleteModal(
       () => fields.remove(index),
-      DeleteModalTitles.TENANT,
-      DeleteModalLabels.TENANT,
+      DeleteModalTitles.LITIGANT,
+      DeleteModalLabels.LITIGANT,
     );
   };
 
   return (
     <div>
-      {!showAddButton && fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
-      {fields && !!fields.length && fields.map((tenant, index) => {
+      {!showAddButton && fields && !!fields.length &&
+        <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
+      }
+      {fields && !!fields.length && fields.map((litigant, index) => {
         return (
-          <TenantItemEdit
+          <LitigantItemEdit
             key={index}
-            field={tenant}
+            field={litigant}
             index={index}
+            litigants={litigants}
             onOpenDeleteModal={onOpenDeleteModal}
             onRemove={handleOpenDeleteModal}
-            tenants={tenants}
           />
         );
       })}
@@ -81,9 +82,9 @@ const renderTenants = ({
           <Column>
             <AddButton
               className='no-margin'
-              label='Lisää vuokralainen'
+              label='Lisää osapuoli'
               onClick={handleAdd}
-              title='Lisää vuokralainen'
+              title='Lisää osapuoli'
             />
           </Column>
         </Row>
@@ -97,9 +98,8 @@ type Props = {
   contactModalSettings: ContactModalSettings,
   contactFormValues: Object,
   createContact: Function,
-  currentLease: Lease,
+  currentLandUseContract: LandUseContract,
   editContact: Function,
-  handleSubmit: Function,
   hideContactModal: Function,
   isContactFormValid: boolean,
   isContactModalOpen: boolean,
@@ -111,22 +111,23 @@ type Props = {
 }
 
 type State = {
+  litigants: Array<Object>,
+  currentLandUseContract: LandUseContract,
   deleteFunction: ?Function,
   deleteModalLabel: string,
   deleteModalTitle: string,
   isDeleteModalOpen: boolean,
-  lease: Lease,
-  tenantsData: Object,
+  litigants: Array<Object>,
 }
 
 class TenantsEdit extends Component<Props, State> {
   state = {
+    currentLandUseContract: {},
     deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.TENANT,
-    deleteModalTitle: DeleteModalTitles.TENANT,
+    deleteModalLabel: DeleteModalLabels.LITIGANT,
+    deleteModalTitle: DeleteModalTitles.LITIGANT,
     isDeleteModalOpen: false,
-    lease: {},
-    tenantsData: {},
+    litigants: [],
   }
 
   componentDidMount() {
@@ -135,12 +136,13 @@ class TenantsEdit extends Component<Props, State> {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if(props.currentLease !== state.lease) {
+    if(props.currentLandUseContract !== state.currentLandUseContract) {
       return {
-        lease: props.currentLease,
-        tenantsData: getContentTenantsFormData(props.currentLease),
+        currentLandUseContract: props.currentLandUseContract,
+        litigants: getContentLitigants(props.currentLandUseContract),
       };
     }
+
     return null;
   }
 
@@ -148,7 +150,7 @@ class TenantsEdit extends Component<Props, State> {
     const {change, contactModalSettings, receiveContactModalSettings, receiveFormValidFlags} = this.props;
     if(prevProps.valid !== this.props.valid) {
       receiveFormValidFlags({
-        [FormNames.TENANTS]: this.props.valid,
+        [FormNames.LITIGANTS]: this.props.valid,
       });
     }
 
@@ -175,7 +177,7 @@ class TenantsEdit extends Component<Props, State> {
     receiveContactModalSettings(null);
   }
 
-  handleSave = () => {
+  handleSaveContact = () => {
     const {
       contactFormValues,
       contactModalSettings,
@@ -204,7 +206,7 @@ class TenantsEdit extends Component<Props, State> {
     createContact(contact);
   }
 
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.TENANT, modalLabel: string = DeleteModalLabels.TENANT) => {
+  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.LITIGANT, modalLabel: string = DeleteModalLabels.LITIGANT) => {
     this.setState({
       deleteFunction: fn,
       deleteModalLabel: modalLabel,
@@ -230,7 +232,6 @@ class TenantsEdit extends Component<Props, State> {
   render () {
     const {
       contactModalSettings,
-      handleSubmit,
       isContactModalOpen,
       isFetchingContact,
     } = this.props;
@@ -239,17 +240,13 @@ class TenantsEdit extends Component<Props, State> {
       deleteModalLabel,
       deleteModalTitle,
       isDeleteModalOpen,
-      tenantsData,
+      litigants,
     } = this.state;
-    const tenants = get(tenantsData, 'tenants', []),
-      tenantsArchived = get(tenantsData, 'tenantsArchived', []);
 
     return (
       <div>
         {isFetchingContact &&
-          <LoaderWrapper className='overlay-wrapper'>
-            <Loader isLoading={isFetchingContact} />
-          </LoaderWrapper>
+          <LoaderWrapper className='overlay-wrapper'><Loader isLoading={isFetchingContact} /></LoaderWrapper>
         }
 
         <ConfirmationModal
@@ -266,30 +263,27 @@ class TenantsEdit extends Component<Props, State> {
           isOpen={isContactModalOpen}
           onCancel={this.handleCancel}
           onClose={this.handleClose}
-          onSave={this.handleSave}
+          onSave={this.handleSaveContact}
           onSaveAndAdd={this.handleSaveAndAdd}
           showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
           title={get(contactModalSettings, 'isNew') ? 'Uusi asiakas' : 'Muokkaa asiakasta'}
         />
-        <form onSubmit={handleSubmit}>
-          <h2>Vuokralaiset</h2>
-          <Divider />
-
+        <form>
           <FormSection>
             <FieldArray
-              component={renderTenants}
-              name="tenants.tenants"
+              component={renderLitigants}
+              litigants={litigants}
+              name="activeLitigants"
               onOpenDeleteModal={this.handleOpenDeleteModal}
               showAddButton={true}
-              tenants={tenants}
             />
             {/* Archived tenants */}
             <FieldArray
-              component={renderTenants}
-              name="tenants.tenantsArchived"
+              component={renderLitigants}
+              litigants={litigants}
+              name="archivedLitigants"
               onOpenDeleteModal={this.handleOpenDeleteModal}
               showAddButton={false}
-              tenants={tenantsArchived}
             />
           </FormSection>
         </form>
@@ -298,7 +292,7 @@ class TenantsEdit extends Component<Props, State> {
   }
 }
 
-const formName = FormNames.TENANTS;
+const formName = FormNames.LITIGANTS;
 
 export default flowRight(
   connect(
@@ -306,7 +300,7 @@ export default flowRight(
       return {
         contactModalSettings: getContactModalSettings(state),
         contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
-        currentLease: getCurrentLease(state),
+        currentLandUseContract: getCurrentLandUseContract(state),
         isContactFormValid: getIsContactFormValid(state),
         isContactModalOpen: getIsContactModalOpen(state),
         isFetchingContact: getIsFetchingContact(state),

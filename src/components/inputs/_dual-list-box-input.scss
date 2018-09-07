@@ -1,5 +1,13 @@
 .react-dual-listbox {
+  margin-bottom: rem-calc(15px);
+
   select {
     margin-bottom: 0;
+  }
+
+  .rdl-filter {
+    height: rem-calc(20px);
+    border-radius: 0;
+    font-size: rem-calc(14px);
   }
 }

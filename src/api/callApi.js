@@ -3,7 +3,9 @@
 import {call, put, select} from 'redux-saga/effects';
 import {receiveError} from './actions';
 
-import {getApiToken} from '../auth/selectors';
+import {getApiToken} from '$src/auth/selectors';
+import userManager from '$src/auth/util/user-manager';
+import {displayUIMessage} from '$util/helpers';
 
 function* callApi(request: Request): Generator<any, any, any> {
   const apiToken = yield select(getApiToken);
@@ -17,6 +19,12 @@ function* callApi(request: Request): Generator<any, any, any> {
 
   const response = yield call(fetch, request);
   const status = response.status;
+
+  if(status === 403) {
+    displayUIMessage({title: '', body: 'Sinulla ei ole oikeuksia järjestelmän käyttöön.'}, {type: 'error'});
+    userManager.removeUser();
+    sessionStorage.clear();
+  }
 
   if (status === 204) {
     return {response};

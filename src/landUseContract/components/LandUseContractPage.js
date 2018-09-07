@@ -23,6 +23,8 @@ import Divider from '$components/content/Divider';
 import EditableMap from '$src/areaNote/components/EditableMap';
 import Invoices from './sections/Invoices';
 import InvoicesEdit from './sections/InvoicesEdit';
+import Litigants from './sections/Litigants';
+import LitigantsEdit from './sections/LitigantsEdit';
 import PageContainer from '$components/content/PageContainer';
 import Tabs from '$components/tabs/Tabs';
 import TabContent from '$components/tabs/TabContent';
@@ -41,6 +43,7 @@ import {
 } from '$src/landUseContract/actions';
 import {FormNames} from '$src/landUseContract/enums';
 import {
+  addLitigantsDataToPayload,
   clearUnsavedChanges,
   getContentLandUseContractIdentifier,
   getContentBasicInformation,
@@ -48,6 +51,8 @@ import {
   getContentContracts,
   getContentDecisions,
   getContentInvoices,
+  getContentLitigants,
+  isLitigantArchived,
 } from '$src/landUseContract/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
@@ -94,7 +99,10 @@ type Props = {
   isInvoicesFormValid: boolean,
   isEditMode: boolean,
   isFormValidFlags: boolean,
+  isLitigantsFormDirty: boolean,
+  isLitigantsFormValid: boolean,
   isSaveClicked: boolean,
+  litigantsFormValues: Object,
   location: Object,
   params: Object,
   receiveFormValidFlags: Function,
@@ -218,6 +226,8 @@ class LandUseContractPage extends Component<Props, State> {
       isDecisionsFormDirty,
       isInvoicesFormDirty,
       isFormValidFlags,
+      isLitigantsFormDirty,
+      litigantsFormValues,
       params: {landUseContractId},
     } = this.props;
 
@@ -256,6 +266,13 @@ class LandUseContractPage extends Component<Props, State> {
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.INVOICES);
+    }
+
+    if(isLitigantsFormDirty) {
+      setSessionStorageItem(FormNames.LITIGANTS, litigantsFormValues);
+      isDirty = true;
+    } else {
+      removeSessionStorageItem(FormNames.LITIGANTS);
     }
 
     if(isDirty) {
@@ -304,6 +321,11 @@ class LandUseContractPage extends Component<Props, State> {
     const storedInvoicesFormValues = getSessionStorageItem(FormNames.INVOICES);
     if(storedInvoicesFormValues) {
       this.bulkChange(FormNames.INVOICES, storedInvoicesFormValues);
+    }
+
+    const storedLitigantsFormValues = getSessionStorageItem(FormNames.LITIGANTS);
+    if(storedLitigantsFormValues) {
+      this.bulkChange(FormNames.LITIGANTS, storedLitigantsFormValues);
     }
 
     const storedFormValidity = getSessionStorageItem('leaseValidity');
@@ -382,8 +404,13 @@ class LandUseContractPage extends Component<Props, State> {
 
   initializeForms = (landUseContract: LandUseContract) => {
     const {initialize} = this.props;
+    const litigants = getContentLitigants(landUseContract);
 
     initialize(FormNames.BASIC_INFORMATION, getContentBasicInformation(landUseContract));
+    initialize(FormNames.LITIGANTS, {
+      activeLitigants: litigants.filter((litigant) => !isLitigantArchived(litigant.litigant)),
+      archivedLitigants: litigants.filter((litigant) => isLitigantArchived(litigant.litigant)),
+    });
     initialize(FormNames.DECISIONS, {decisions: getContentDecisions(landUseContract)});
     initialize(FormNames.CONTRACTS, {contracts: getContentContracts(landUseContract)});
     initialize(FormNames.COMPENSATIONS, {compensations: getContentCompensations(landUseContract)});
@@ -407,6 +434,7 @@ class LandUseContractPage extends Component<Props, State> {
       isContractsFormValid,
       isDecisionsFormValid,
       isInvoicesFormValid,
+      isLitigantsFormValid,
     } = this.props;
 
     return (
@@ -414,7 +442,8 @@ class LandUseContractPage extends Component<Props, State> {
       isCompensationsFormValid &&
       isContractsFormValid &&
       isDecisionsFormValid &&
-      isInvoicesFormValid
+      isInvoicesFormValid &&
+      isLitigantsFormValid
     );
   }
 
@@ -425,6 +454,7 @@ class LandUseContractPage extends Component<Props, State> {
       isContractsFormDirty,
       isDecisionsFormDirty,
       isInvoicesFormDirty,
+      isLitigantsFormDirty,
     } = this.props;
 
     return (
@@ -432,7 +462,8 @@ class LandUseContractPage extends Component<Props, State> {
       isCompensationsFormDirty ||
       isContractsFormDirty ||
       isDecisionsFormDirty ||
-      isInvoicesFormDirty
+      isInvoicesFormDirty ||
+      isLitigantsFormDirty
     );
   }
 
@@ -450,6 +481,8 @@ class LandUseContractPage extends Component<Props, State> {
       isContractsFormDirty,
       isDecisionsFormDirty,
       isInvoicesFormDirty,
+      isLitigantsFormDirty,
+      litigantsFormValues,
     } = this.props;
 
     //TODO: Add helper functions to save land use contract to DB when API is ready
@@ -473,6 +506,10 @@ class LandUseContractPage extends Component<Props, State> {
 
     if(isInvoicesFormDirty) {
       payload = {...payload, ...invoicesFormValues};
+    }
+
+    if(isLitigantsFormDirty) {
+      payload = addLitigantsDataToPayload(payload, litigantsFormValues);
     }
 
     payload.identifier = currentLandUseContract.identifier;
@@ -501,6 +538,7 @@ class LandUseContractPage extends Component<Props, State> {
     destroy(FormNames.CONTRACTS);
     destroy(FormNames.COMPENSATIONS);
     destroy(FormNames.INVOICES);
+    destroy(FormNames.LITIGANTS);
   }
 
   render() {
@@ -518,6 +556,8 @@ class LandUseContractPage extends Component<Props, State> {
       isInvoicesFormDirty,
       isInvoicesFormValid,
       isEditMode,
+      isLitigantsFormDirty,
+      isLitigantsFormValid,
       isSaveClicked,
     } = this.props;
     const {isCancelLeaseModalOpen, isRestoreModalOpen} = this.state;
@@ -570,6 +610,7 @@ class LandUseContractPage extends Component<Props, State> {
           isEditMode={isEditMode}
           tabs={[
             {label: 'Perustiedot', isDirty: isBasicInformationFormDirty, hasError: isSaveClicked && !isBasicInformationFormValid},
+            {label: 'Osapuolet', isDirty: isLitigantsFormDirty, hasError: isSaveClicked && !isLitigantsFormValid},
             {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty), hasError: isSaveClicked && (!isDecisionsFormValid || !isContractsFormValid)},
             {label: 'Korvaukset ja laskutus', isDirty: isCompensationsFormDirty || isInvoicesFormDirty, hasError: isSaveClicked && (!isCompensationsFormValid || !isInvoicesFormValid)},
             {label: 'Kartta'},
@@ -582,6 +623,17 @@ class LandUseContractPage extends Component<Props, State> {
               {!isEditMode
                 ? <BasicInformation />
                 : <BasicInformationEdit />
+              }
+            </ContentContainer>
+          </TabPane>
+
+          <TabPane>
+            <ContentContainer>
+              <h2>Osapuolet</h2>
+              <Divider />
+              {!isEditMode
+                ? <Litigants />
+                : <LitigantsEdit />
               }
             </ContentContainer>
           </TabPane>
@@ -658,9 +710,12 @@ export default flowRight(
         isDecisionsFormValid: getIsFormValidById(state, FormNames.DECISIONS),
         isInvoicesFormDirty: isDirty(FormNames.INVOICES)(state),
         isInvoicesFormValid: getIsFormValidById(state, FormNames.INVOICES),
+        isLitigantsFormDirty: isDirty(FormNames.LITIGANTS)(state),
+        isLitigantsFormValid: getIsFormValidById(state, FormNames.LITIGANTS),
         isEditMode: getIsEditMode(state),
         isFormValidFlags: getIsFormValidFlags(state),
         isSaveClicked: getIsSaveClicked(state),
+        litigantsFormValues: getFormValues(FormNames.LITIGANTS)(state),
       };
     },
     {

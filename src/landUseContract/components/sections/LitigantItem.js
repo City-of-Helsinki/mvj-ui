@@ -14,18 +14,18 @@ import {getRouteById} from '$src/root/routes';
 
 type Props = {
   contact: ?Object,
-  tenant: Object,
+  litigant: Object,
 };
 
-const TenantItem = ({
+const LitigantItem = ({
   contact,
-  tenant,
+  litigant,
 }: Props) => {
   const getInvoiceManagementShare = () => {
-    if(!Number(get(tenant, 'share_numerator')) || !Number(get(tenant, 'share_denominator'))) {
-      return null;
+    if(!Number(get(litigant, 'share_numerator')) || !Number(get(litigant, 'share_denominator'))) {
+      return 0;
     }
-    return (Number(tenant.share_numerator)*100/Number(tenant.share_denominator));
+    return (Number(litigant.share_numerator)*100/Number(litigant.share_denominator));
   };
 
   if(!contact) {
@@ -38,7 +38,7 @@ const TenantItem = ({
       <FormWrapper>
         <FormWrapperLeft>
           <Row>
-            <Column small={12}>
+            <Column small={12} medium={6} large={8}>
               <label>Asiakas</label>
               {contact
                 ? <p><ExternalLink
@@ -54,7 +54,7 @@ const TenantItem = ({
           <Row>
             <Column small={12} medium={6} large={4}>
               <label>Osuus murtolukuna:</label>
-              <p>{get(tenant, 'share_numerator', '')} / {get(tenant, 'share_denominator', '')}</p>
+              <p>{get(litigant, 'share_numerator', '')} / {get(litigant, 'share_denominator', '')}</p>
             </Column>
             <Column small={12} medium={6} large={4}>
               <label>Laskun hallintaosuus</label>
@@ -64,26 +64,26 @@ const TenantItem = ({
               <Row>
                 <Column>
                   <label>Alkupvm</label>
-                  <p>{formatDate(get(tenant, 'tenant.start_date'))}</p>
+                  <p>{formatDate(get(litigant, 'litigant.start_date'))}</p>
                 </Column>
                 <Column>
                   <label>Loppupvm</label>
-                  <p>{formatDate(get(tenant, 'tenant.end_date'))}</p>
+                  <p>{formatDate(get(litigant, 'litigant.end_date'))}</p>
                 </Column>
               </Row>
             </Column>
           </Row>
         </FormWrapperRight>
       </FormWrapper>
-
-      <ContactTemplate contact={contact} />
-
+      <ContactTemplate
+        contact={contact}
+      />
       <FormWrapper>
         <FormWrapperLeft>
           <Row>
             <Column>
               <label>Viite</label>
-              <p>{tenant.reference || '-'}</p>
+              <p>{litigant.reference || '-'}</p>
             </Column>
           </Row>
         </FormWrapperLeft>
@@ -92,4 +92,4 @@ const TenantItem = ({
   );
 };
 
-export default TenantItem;
+export default LitigantItem;
