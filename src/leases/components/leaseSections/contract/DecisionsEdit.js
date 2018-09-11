@@ -6,8 +6,8 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
-import ConfirmationModal from '$components/modal/ConfirmationModal';
 import FormSection from '$components/form/FormSection';
 import DecisionItemEdit from './DecisionItemEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
@@ -20,46 +20,55 @@ import type {Lease} from '$src/leases/types';
 type DecisionsProps = {
   decisionsData: Array<Object>,
   fields: any,
-  onOpenDeleteModal: Function,
 }
 
 const renderDecisions = ({
   decisionsData,
   fields,
-  onOpenDeleteModal,
 }: DecisionsProps): Element<*> => {
-  const handleAdd = () => fields.push({});
-
-  const handleOpenDeleteModal = (index: number) => {
-    onOpenDeleteModal(
-      () => fields.remove(index),
-      DeleteModalTitles.DECISION,
-      DeleteModalLabels.DECISION,
-    );
+  const handleAdd = () => {
+    fields.push({});
   };
 
   return (
-    <div>
-      {fields && !!fields.length && fields.map((decision, index) =>
-        <DecisionItemEdit
-          key={index}
-          decisionsData={decisionsData}
-          index={index}
-          field={decision}
-          onOpenDeleteModal={onOpenDeleteModal}
-          onRemove={handleOpenDeleteModal}
-        />
-      )}
-      <Row>
-        <Column>
-          <AddButton
-            label='Lisää päätös'
-            onClick={handleAdd}
-            title='Lisää päätös'
-          />
-        </Column>
-      </Row>
-    </div>
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            {fields && !!fields.length && fields.map((decision, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.DECISION,
+                  deleteModalTitle: DeleteModalTitles.DECISION,
+                });
+              };
+
+              return <DecisionItemEdit
+                key={index}
+                decisionsData={decisionsData}
+                index={index}
+                field={decision}
+                onRemove={handleRemove}
+              />;
+            })}
+            <Row>
+              <Column>
+                <AddButton
+                  label='Lisää päätös'
+                  onClick={handleAdd}
+                  title='Lisää päätös'
+                />
+              </Column>
+            </Row>
+          </div>
+        );
+      }}
+    </AppConsumer>
+
   );
 };
 
@@ -72,20 +81,12 @@ type Props = {
 type State = {
   currentLease: ?Lease,
   decisionsData: Array<Object>,
-  deleteFunction: ?Function,
-  deleteModalLabel: string,
-  deleteModalTitle: string,
-  isDeleteModalOpen: boolean,
 }
 
 class DecisionsEdit extends Component<Props, State> {
   state = {
     currentLease: null,
     decisionsData: [],
-    deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.DECISION,
-    deleteModalTitle: DeleteModalTitles.DECISION,
-    isDeleteModalOpen: false,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -109,55 +110,18 @@ class DecisionsEdit extends Component<Props, State> {
     }
   }
 
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.DECISION, modalLabel: string = DeleteModalLabels.Decision) => {
-    this.setState({
-      deleteFunction: fn,
-      deleteModalLabel: modalLabel,
-      deleteModalTitle: modalTitle,
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleHideDeleteModal = () => {
-    this.setState({
-      isDeleteModalOpen: false,
-    });
-  }
-
-  handleDeleteClick = () => {
-    const {deleteFunction} = this.state;
-    if(deleteFunction) {
-      deleteFunction();
-    }
-    this.handleHideDeleteModal();
-  }
-
   render() {
     const {
       decisionsData,
-      deleteModalLabel,
-      deleteModalTitle,
-      isDeleteModalOpen,
     } = this.state;
 
     return (
       <form>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label={deleteModalLabel}
-          onCancel={this.handleHideDeleteModal}
-          onClose={this.handleHideDeleteModal}
-          onSave={this.handleDeleteClick}
-          title={deleteModalTitle}
-        />
-
         <FormSection>
           <FieldArray
             component={renderDecisions}
             decisionsData={decisionsData}
             name="decisions"
-            onOpenDeleteModal={this.handleOpenDeleteModal}
           />
         </FormSection>
       </form>

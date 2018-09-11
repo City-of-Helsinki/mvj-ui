@@ -29,7 +29,6 @@ type Props = {
   onKeyCodeRight: Function,
   onKeyCodeLeft: Function,
   onCreditedInvoiceClick: Function,
-  onOpenDeleteModal: Function,
   onResize: Function,
   onSave: Function,
   receiveIsEditClicked: Function,
@@ -158,7 +157,6 @@ class InvoiceModalEdit extends Component<Props, State> {
       minHeight,
       onClose,
       onCreditedInvoiceClick,
-      onOpenDeleteModal,
     } = this.props;
     const {isClosing, isOpening} = this.state;
 
@@ -190,7 +188,6 @@ class InvoiceModalEdit extends Component<Props, State> {
                   invoice={invoice}
                   initialValues={{...invoice}}
                   onCreditedInvoiceClick={onCreditedInvoiceClick}
-                  onOpenDeleteModal={onOpenDeleteModal}
                   setRefForFirstField={this.handleSetRefForInvoiceFormFirstField}
                 />
               ) : (

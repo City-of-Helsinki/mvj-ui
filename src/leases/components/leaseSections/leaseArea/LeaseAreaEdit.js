@@ -7,6 +7,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -33,7 +34,6 @@ type PlanUnitsProps = {
   fields: any,
   isSaveClicked: boolean,
   onCollapseToggle: Function,
-  onOpenDeleteModal: Function,
   title: string,
 }
 
@@ -46,21 +46,12 @@ const renderPlanUnits = ({
   fields: {name},
   isSaveClicked,
   onCollapseToggle,
-  onOpenDeleteModal,
   title,
 }: PlanUnitsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({
       addresses: [{}],
     });
-  };
-
-  const handleOpenDeleteModal = (index: number) => {
-    onOpenDeleteModal(
-      () => fields.remove(index),
-      DeleteModalTitles.PLAN_UNIT,
-      DeleteModalLabels.PLAN_UNIT,
-    );
   };
 
   const handleCollapseToggle = (val: boolean) => {
@@ -70,36 +61,52 @@ const renderPlanUnits = ({
   const planUnitErrors = get(errors, name);
 
   return (
-    <Collapse
-      className='collapse__secondary'
-      defaultOpen={collapseState !== undefined ? collapseState : true}
-      hasErrors={isSaveClicked && !isEmpty(planUnitErrors)}
-      headerTitle={<h4 className='collapse__header-title'>{title}</h4>}
-      onToggle={handleCollapseToggle}
-    >
-      <BoxItemContainer>
-        {fields.map((planunit, index) =>
-          <PlanUnitItemEdit
-            key={index}
-            attributes={attributes}
-            field={planunit}
-            index={index}
-            isSaveClicked={isSaveClicked}
-            onOpenDeleteModal={onOpenDeleteModal}
-            onRemove={handleOpenDeleteModal}
-          />
-        )}
-      </BoxItemContainer>
-      <Row>
-        <Column>
-          <AddButtonSecondary
-            label={buttonTitle}
-            onClick={handleAdd}
-            title={buttonTitle}
-          />
-        </Column>
-      </Row>
-    </Collapse>
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <Collapse
+            className='collapse__secondary'
+            defaultOpen={collapseState !== undefined ? collapseState : true}
+            hasErrors={isSaveClicked && !isEmpty(planUnitErrors)}
+            headerTitle={<h4 className='collapse__header-title'>{title}</h4>}
+            onToggle={handleCollapseToggle}
+          >
+            <BoxItemContainer>
+              {fields.map((planunit, index) => {
+                const handleRemove = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_DELETE_MODAL,
+                    deleteFunction: () => {
+                      fields.remove(index);
+                    },
+                    deleteModalLabel: DeleteModalLabels.PLAN_UNIT,
+                    deleteModalTitle: DeleteModalTitles.PLAN_UNIT,
+                  });
+                };
+
+                return <PlanUnitItemEdit
+                  key={index}
+                  attributes={attributes}
+                  field={planunit}
+                  isSaveClicked={isSaveClicked}
+                  onRemove={handleRemove}
+                />;
+              })}
+            </BoxItemContainer>
+            <Row>
+              <Column>
+                <AddButtonSecondary
+                  label={buttonTitle}
+                  onClick={handleAdd}
+                  title={buttonTitle}
+                />
+              </Column>
+            </Row>
+          </Collapse>
+        );
+      }}
+    </AppConsumer>
+
   );
 };
 
@@ -110,7 +117,6 @@ type PlotsProps = {
   fields: any,
   isSaveClicked: boolean,
   onCollapseToggle: Function,
-  onOpenDeleteModal: Function,
   plotsData: Array<Object>,
   title: string,
 }
@@ -123,7 +129,6 @@ const renderPlots = ({
   fields: {name},
   isSaveClicked,
   onCollapseToggle,
-  onOpenDeleteModal,
   plotsData,
   title,
 }: PlotsProps): Element<*> => {
@@ -133,50 +138,56 @@ const renderPlots = ({
     });
   };
 
-  const handleOpenDeleteModal = (index: number) => {
-    onOpenDeleteModal(
-      () => fields.remove(index),
-      DeleteModalTitles.PLOT,
-      DeleteModalLabels.PLOT,
-    );
-  };
-
   const handleCollapseToggle = (val: boolean) => onCollapseToggle(val);
 
   const plotErrors = get(errors, name);
 
   return (
-    <Collapse
-      className='collapse__secondary'
-      defaultOpen={collapseState !== undefined ? collapseState : true}
-      hasErrors={isSaveClicked && !isEmpty(plotErrors)}
-      headerTitle={<h4 className='collapse__header-title'>{title}</h4>}
-      onToggle={handleCollapseToggle}
-    >
-      <BoxItemContainer>
-        {fields.map((plot, index) => {
-          return (
-            <PlotItemEdit
-              key={index}
-              field={plot}
-              index={index}
-              onOpenDeleteModal={onOpenDeleteModal}
-              onRemove={handleOpenDeleteModal}
-              plotsData={plotsData}
-            />
-          );
-        })}
-      </BoxItemContainer>
-      <Row>
-        <Column>
-          <AddButtonSecondary
-            label={buttonTitle}
-            onClick={handleAdd}
-            title={buttonTitle}
-          />
-        </Column>
-      </Row>
-    </Collapse>
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <Collapse
+            className='collapse__secondary'
+            defaultOpen={collapseState !== undefined ? collapseState : true}
+            hasErrors={isSaveClicked && !isEmpty(plotErrors)}
+            headerTitle={<h4 className='collapse__header-title'>{title}</h4>}
+            onToggle={handleCollapseToggle}
+          >
+            <BoxItemContainer>
+              {fields.map((plot, index) => {
+                const handleDelete = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_DELETE_MODAL,
+                    deleteFunction: () => {
+                      fields.remove(index);
+                    },
+                    deleteModalLabel: DeleteModalLabels.PLOT,
+                    deleteModalTitle: DeleteModalTitles.PLOT,
+                  });
+                };
+
+                return <PlotItemEdit
+                  key={index}
+                  field={plot}
+                  index={index}
+                  onRemove={handleDelete}
+                  plotsData={plotsData}
+                />;
+              })}
+            </BoxItemContainer>
+            <Row>
+              <Column>
+                <AddButtonSecondary
+                  label={buttonTitle}
+                  onClick={handleAdd}
+                  title={buttonTitle}
+                />
+              </Column>
+            </Row>
+          </Collapse>
+        );
+      }}
+    </AppConsumer>
   );
 };
 
@@ -184,91 +195,99 @@ type AddressesProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const AddressItems = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: AddressesProps): Element<*> => {
+const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
-    <div>
-      <SubTitle>Osoite</SubTitle>
-      {fields && !!fields.length &&
-        <Row>
-          <Column small={6} large={4}>
-            <FormFieldLabel required>Osoite</FormFieldLabel>
-          </Column>
-          <Column small={3} large={2}>
-            <FormFieldLabel>Postinumero</FormFieldLabel>
-          </Column>
-          <Column small={3} large={2}>
-            <FormFieldLabel>Kaupunki</FormFieldLabel>
-          </Column>
-        </Row>
-      }
-      {fields && !!fields.length && fields.map((field, index) => {
-        const handleOpenDeleteModal = () => {
-          onOpenDeleteModal(
-            () => fields.remove(index),
-            DeleteModalTitles.ADDRESS,
-            DeleteModalLabels.ADDRESS,
-          );
-        };
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            <SubTitle>Osoite</SubTitle>
+            {fields && !!fields.length &&
+              <Row>
+                <Column small={6} large={4}>
+                  <FormFieldLabel required>Osoite</FormFieldLabel>
+                </Column>
+                <Column small={3} large={2}>
+                  <FormFieldLabel>Postinumero</FormFieldLabel>
+                </Column>
+                <Column small={3} large={2}>
+                  <FormFieldLabel>Kaupunki</FormFieldLabel>
+                </Column>
+              </Row>
+            }
+            {fields && !!fields.length && fields.map((field, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.ADDRESS,
+                  deleteModalTitle: DeleteModalTitles.ADDRESS,
+                });
+              };
 
-        return (
-          <Row key={index}>
-            <Column small={6} large={4}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.address')}
-                name={`${field}.address`}
-                overrideValues={{
-                  label: '',
-                }}
-              />
-            </Column>
-            <Column small={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.postal_code')}
-                name={`${field}.postal_code`}
-                overrideValues={{
-                  label: '',
-                }}
-              />
-            </Column>
-            <Column small={2} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.city')}
-                name={`${field}.city`}
-                overrideValues={{
-                  label: '',
-                }}
-              />
-            </Column>
-            <Column small={1}>
-              <RemoveButton
-                className='third-level'
-                onClick={handleOpenDeleteModal}
-                title="Poista osoite"
-              />
-            </Column>
-          </Row>
+              return (
+                <Row key={index}>
+                  <Column small={6} large={4}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.address')}
+                      name={`${field}.address`}
+                      overrideValues={{
+                        label: '',
+                      }}
+                    />
+                  </Column>
+                  <Column small={3} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.postal_code')}
+                      name={`${field}.postal_code`}
+                      overrideValues={{
+                        label: '',
+                      }}
+                    />
+                  </Column>
+                  <Column small={2} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.city')}
+                      name={`${field}.city`}
+                      overrideValues={{
+                        label: '',
+                      }}
+                    />
+                  </Column>
+                  <Column small={1}>
+                    <RemoveButton
+                      className='third-level'
+                      onClick={handleRemove}
+                      title="Poista osoite"
+                    />
+                  </Column>
+                </Row>
+              );
+            }
+
+            )}
+            <Row>
+              <Column>
+                <AddButtonThird
+                  label='Lisää osoite'
+                  onClick={handleAdd}
+                  title='Lisää osoite'
+                />
+              </Column>
+            </Row>
+          </div>
         );
-      }
-
-      )}
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää osoite'
-            onClick={handleAdd}
-            title='Lisää osoite'
-          />
-        </Column>
-      </Row>
-    </div>
+      }}
+    </AppConsumer>
   );
 };
 
@@ -278,7 +297,6 @@ type AreaItemProps = {
   errors: ?Object,
   field: string,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
   planUnitsContractCollapseState: boolean,
   planUnitsCurrentCollapseState: boolean,
   plotsContractCollapseState: boolean,
@@ -293,7 +311,6 @@ const LeaseAreaEdit = ({
   errors,
   field,
   isSaveClicked,
-  onOpenDeleteModal,
   planUnitsContractCollapseState,
   planUnitsCurrentCollapseState,
   plotsContractCollapseState,
@@ -409,7 +426,6 @@ const LeaseAreaEdit = ({
           component={AddressItems}
           isSaveClicked={isSaveClicked}
           name={`${field}.addresses`}
-          onOpenDeleteModal={onOpenDeleteModal}
         />
 
       </BoxContentWrapper>
@@ -423,7 +439,6 @@ const LeaseAreaEdit = ({
             isSaveClicked={isSaveClicked}
             name={`${field}.plots_contract`}
             onCollapseToggle={handlePlotsContractCollapseToggle}
-            onOpenDeleteModal={onOpenDeleteModal}
             plotsData={get(savedArea, 'plots_contract', [])}
             title='Kiinteistöt / määräalat sopimuksessa'
           />
@@ -437,7 +452,6 @@ const LeaseAreaEdit = ({
             isSaveClicked={isSaveClicked}
             name={`${field}.plots_current`}
             onCollapseToggle={handlePlotsCurrentCollapseToggle}
-            onOpenDeleteModal={onOpenDeleteModal}
             plotsData={get(savedArea, 'plots_current', [])}
             title='Kiinteistöt / määräalat nykyhetkellä'
           />
@@ -454,7 +468,6 @@ const LeaseAreaEdit = ({
             isSaveClicked={isSaveClicked}
             name={`${field}.plan_units_contract`}
             onCollapseToggle={handlePlanUnitContractCollapseToggle}
-            onOpenDeleteModal={onOpenDeleteModal}
             title='Kaavayksiköt sopimuksessa'
           />
         </Column>
@@ -468,7 +481,6 @@ const LeaseAreaEdit = ({
             isSaveClicked={isSaveClicked}
             name={`${field}.plan_units_current`}
             onCollapseToggle={handlePlanUnitCurrentCollapseToggle}
-            onOpenDeleteModal={onOpenDeleteModal}
             title='Kaavayksiköt nykyhetkellä'
           />
         </Column>

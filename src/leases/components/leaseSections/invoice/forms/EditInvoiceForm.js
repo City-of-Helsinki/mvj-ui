@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
@@ -33,78 +34,86 @@ type PaymentsProps = {
   attributes: InvoiceAttributes,
   fields: any,
   isEditClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const renderPayments = ({attributes, fields, isEditClicked, onOpenDeleteModal}: PaymentsProps): Element<*> => {
+const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
-    <div>
-      {!fields || !fields.length && <p>Ei maksuja</p>}
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            {!fields || !fields.length && <p>Ei maksuja</p>}
 
-      {fields && !!fields.length &&
-        <Row>
-          <Column small={6}>
-            <FormFieldLabel required={get(attributes, 'payments.child.children.paid_amount.required')}>Maksettu määrä</FormFieldLabel>
-          </Column>
-          <Column small={6}>
-            <FormFieldLabel required={get(attributes, 'payments.child.children.paid_date.required')}>Maksettu pvm</FormFieldLabel>
-          </Column>
-        </Row>
-      }
-      {fields && !!fields.length && fields.map((payment, index) => {
-        const handleOpenDeleteModal = () => {
-          onOpenDeleteModal(
-            () => fields.remove(index),
-            DeleteModalTitles.INVOICE_PAYMENT,
-            DeleteModalLabels.INVOICE_PAYMENT,
-          );
-        };
+            {fields && !!fields.length &&
+              <Row>
+                <Column small={6}>
+                  <FormFieldLabel required={get(attributes, 'payments.child.children.paid_amount.required')}>Maksettu määrä</FormFieldLabel>
+                </Column>
+                <Column small={6}>
+                  <FormFieldLabel required={get(attributes, 'payments.child.children.paid_date.required')}>Maksettu pvm</FormFieldLabel>
+                </Column>
+              </Row>
+            }
+            {fields && !!fields.length && fields.map((payment, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.INVOICE_PAYMENT,
+                  deleteModalTitle: DeleteModalTitles.INVOICE_PAYMENT,
+                });
+              };
 
-        return (
-          <Row key={index}>
-            <Column small={6}>
-              <FormField
-                disableTouched={isEditClicked}
-                fieldAttributes={get(attributes, 'payments.child.children.paid_amount')}
-                name={`${payment}.paid_amount`}
-                unit='€'
-                overrideValues={{
-                  label: '',
-                }}
-              />
-            </Column>
-            <Column small={4}>
-              <FormField
-                disableTouched={isEditClicked}
-                fieldAttributes={get(attributes, 'payments.child.children.paid_date')}
-                name={`${payment}.paid_date`}
-                overrideValues={{
-                  label: '',
-                }}
-              />
-            </Column>
-            <Column small={2}>
-              <RemoveButton
-                className='third-level'
-                onClick={handleOpenDeleteModal}
-                title="Poista maksu"
-              />
-            </Column>
-          </Row>
+              return (
+                <Row key={index}>
+                  <Column small={6}>
+                    <FormField
+                      disableTouched={isEditClicked}
+                      fieldAttributes={get(attributes, 'payments.child.children.paid_amount')}
+                      name={`${payment}.paid_amount`}
+                      unit='€'
+                      overrideValues={{
+                        label: '',
+                      }}
+                    />
+                  </Column>
+                  <Column small={4}>
+                    <FormField
+                      disableTouched={isEditClicked}
+                      fieldAttributes={get(attributes, 'payments.child.children.paid_date')}
+                      name={`${payment}.paid_date`}
+                      overrideValues={{
+                        label: '',
+                      }}
+                    />
+                  </Column>
+                  <Column small={2}>
+                    <RemoveButton
+                      className='third-level'
+                      onClick={handleRemove}
+                      title="Poista maksu"
+                    />
+                  </Column>
+                </Row>
+              );
+            })}
+            <Row>
+              <Column>
+                <AddButtonThird
+                  label='Lisää maksu'
+                  onClick={handleAdd}
+                  title='Lisää maksu'
+                />
+              </Column>
+            </Row>
+          </div>
         );
-      })}
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää maksu'
-            onClick={handleAdd}
-            title='Lisää maksu'
-          />
-        </Column>
-      </Row>
-    </div>
+      }}
+    </AppConsumer>
   );
 };
 
@@ -115,7 +124,6 @@ type Props = {
   isEditClicked: boolean,
   lease: Lease,
   onCreditedInvoiceClick: Function,
-  onOpenDeleteModal: Function,
   setRefForFirstField?: Function,
 }
 
@@ -126,7 +134,6 @@ const EditInvoiceForm = ({
   isEditClicked,
   lease,
   onCreditedInvoiceClick,
-  onOpenDeleteModal,
   setRefForFirstField,
 }: Props) => {
   const handleCreditedInvoiceClick = () => {
@@ -250,7 +257,6 @@ const EditInvoiceForm = ({
             component={renderPayments}
             isEditClicked={isEditClicked}
             name='payments'
-            onOpenDeleteModal={onOpenDeleteModal}
           />
         </Column>
         <Column medium={4}>
@@ -319,7 +325,6 @@ const EditInvoiceForm = ({
         component={InvoiceRowsEdit}
         name='rows'
         isEditClicked={isEditClicked}
-        onOpenDeleteModal={onOpenDeleteModal}
         tenantOptions={tenantOptions}
       />
     </form>

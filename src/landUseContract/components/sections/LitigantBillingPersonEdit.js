@@ -32,7 +32,6 @@ type Props = {
   contact: ?Object,
   errors: ?Object,
   field: string,
-  index: number,
   initializeContactForm: Function,
   isSaveClicked: boolean,
   litigant: Object,
@@ -50,7 +49,6 @@ const LitigantBillingPersonEdit = ({
   contact,
   errors,
   field,
-  index,
   initializeContactForm,
   isSaveClicked,
   litigant,
@@ -89,8 +87,6 @@ const LitigantBillingPersonEdit = ({
     showContactModal();
   };
 
-  const handleRemoveClick = () => onRemove(index);
-
   const handleCollapseToggle = (val: boolean) => {
     if(!billingPersonId) {return;}
 
@@ -116,7 +112,7 @@ const LitigantBillingPersonEdit = ({
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(litigantErrors)}
       headerTitle={<h4 className='collapse__header-title edit-row'>Laskunsaaja</h4>}
-      onRemove={handleRemoveClick}
+      onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>

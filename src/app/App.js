@@ -10,19 +10,21 @@ import get from 'lodash/get';
 import {Sizes} from '../foundation/enums';
 import {revealContext} from '../foundation/reveal';
 
-import {getRouteById} from '../root/routes';
-import {clearError} from '../api/actions';
-import {getError} from '../api/selectors';
-import {getLinkUrl, getPageTitle, getShowSearch} from '$components/topNavigation/selectors';
-import {getEpochTime} from '$util/helpers';
+import {ActionTypes, AppConsumer, AppProvider} from './AppContext';
 import ApiErrorModal from '../api/ApiErrorModal';
-import {clearApiToken, fetchApiToken} from '../auth/actions';
-import {getApiToken, getApiTokenExpires, getIsFetching, getLoggedInUser} from '../auth/selectors';
-import LoginPage from '../auth/components/LoginPage';
-import userManager from '../auth/util/user-manager';
+import ConfirmationModal from '$src/components/modal/ConfirmationModal';
 import Loader from '$components/loader/Loader';
+import LoginPage from '../auth/components/LoginPage';
 import SideMenu from '$components/sideMenu/SideMenu';
 import TopNavigation from '$components/topNavigation/TopNavigation';
+import userManager from '../auth/util/user-manager';
+import {getRouteById} from '../root/routes';
+import {clearError} from '../api/actions';
+import {clearApiToken, fetchApiToken} from '../auth/actions';
+import {getEpochTime} from '$util/helpers';
+import {getError} from '../api/selectors';
+import {getApiToken, getApiTokenExpires, getIsFetching, getLoggedInUser} from '../auth/selectors';
+import {getLinkUrl, getPageTitle, getShowSearch} from '$components/topNavigation/selectors';
 
 import type {ApiError} from '../api/types';
 import type {ApiToken} from '../auth/types';
@@ -168,43 +170,75 @@ class App extends Component<Props, State> {
     }
 
     return (
-      <div className={'app'}>
-        <ReduxToastr
-          newestOnTop={true}
-          position="top-right"
-          preventDuplicates={true}
-          progressBar={false}
-          timeOut={5000}
-          transitionIn="fadeIn"
-          transitionOut="fadeOut"
-          closeOnToastrClick={false}
-        />
+      <AppProvider>
+        <AppConsumer>
+          {({
+            deleteFunction,
+            deleteModalLabel,
+            deleteModalTitle,
+            dispatch,
+            isDeleteModalOpen,
+          }) => {
+            const handleDelete = () => {
+              deleteFunction();
+              handleHideDeleteModal();
+            };
 
-        <ApiErrorModal size={Sizes.LARGE}
-          data={apiError}
-          isOpen={Boolean(apiError)}
-          handleDismiss={this.handleDismissErrorModal}
-        />
+            const handleHideDeleteModal = () => {
+              dispatch({type: ActionTypes.HIDE_DELETE_MODAL});
+            };
 
-        <TopNavigation
-          isMenuOpen={displaySideMenu}
-          linkUrl={linkUrl}
-          onLogout={this.logOut}
-          pageTitle={pageTitle}
-          showSearch={showSearch}
-          toggleSideMenu={this.toggleSideMenu}
-          username={get(user, 'profile.name')}
-        />
-        <section className="app__content">
-          <SideMenu
-            isOpen={displaySideMenu}
-            onLinkClick={this.toggleSideMenu}
-          />
-          <div className='wrapper'>
-            {children}
-          </div>
-        </section>
-      </div>
+            return(
+              <div className={'app'}>
+                <ConfirmationModal
+                  confirmButtonLabel='Poista'
+                  isOpen={isDeleteModalOpen}
+                  label={deleteModalLabel}
+                  onCancel={handleHideDeleteModal}
+                  onClose={handleHideDeleteModal}
+                  onSave={handleDelete}
+                  title={deleteModalTitle}
+                />
+                <ReduxToastr
+                  newestOnTop={true}
+                  position="top-right"
+                  preventDuplicates={true}
+                  progressBar={false}
+                  timeOut={5000}
+                  transitionIn="fadeIn"
+                  transitionOut="fadeOut"
+                  closeOnToastrClick={false}
+                />
+
+                <ApiErrorModal size={Sizes.LARGE}
+                  data={apiError}
+                  isOpen={Boolean(apiError)}
+                  handleDismiss={this.handleDismissErrorModal}
+                />
+
+                <TopNavigation
+                  isMenuOpen={displaySideMenu}
+                  linkUrl={linkUrl}
+                  onLogout={this.logOut}
+                  pageTitle={pageTitle}
+                  showSearch={showSearch}
+                  toggleSideMenu={this.toggleSideMenu}
+                  username={get(user, 'profile.name')}
+                />
+                <section className="app__content">
+                  <SideMenu
+                    isOpen={displaySideMenu}
+                    onLinkClick={this.toggleSideMenu}
+                  />
+                  <div className='wrapper'>
+                    {children}
+                  </div>
+                </section>
+              </div>
+            );
+          }}
+        </AppConsumer>
+      </AppProvider>
     );
   }
 }

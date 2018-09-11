@@ -24,7 +24,7 @@ import {
   receiveIsSaveClicked,
   showEditMode,
 } from '$src/rentbasis/actions';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/rentbasis/enums';
+import {FormNames} from '$src/rentbasis/enums';
 import {
   getAttributes,
   getIsEditMode,
@@ -64,21 +64,13 @@ type Props = {
 }
 
 type State = {
-  deleteFunction: ?Function,
-  deleteModalLabel: string,
-  deleteModalTitle: string,
   isCancelModalOpen: boolean,
-  isDeleteModalOpen: boolean,
   isRestoreModalOpen: boolean,
 }
 
 class RentBasisPage extends Component<Props, State> {
   state = {
-    deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.DECISION,
-    deleteModalTitle: DeleteModalTitles.DECISION,
     isCancelModalOpen: false,
-    isDeleteModalOpen: false,
     isRestoreModalOpen: false,
   }
 
@@ -285,29 +277,6 @@ class RentBasisPage extends Component<Props, State> {
     this.startAutoSaveTimer();
   }
 
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.DECISION, modalLabel: string = DeleteModalLabels.DECISION) => {
-    this.setState({
-      deleteFunction: fn,
-      deleteModalLabel: modalLabel,
-      deleteModalTitle: modalTitle,
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleHideDeleteModal = () => {
-    this.setState({
-      isDeleteModalOpen: false,
-    });
-  }
-
-  handleDeleteClick = () => {
-    const {deleteFunction} = this.state;
-    if(deleteFunction) {
-      deleteFunction();
-    }
-    this.handleHideDeleteModal();
-  }
-
   render() {
     const {
       isEditMode,
@@ -317,7 +286,7 @@ class RentBasisPage extends Component<Props, State> {
       rentBasisData,
     } = this.props;
 
-    const {deleteModalLabel, deleteModalTitle, isCancelModalOpen, isDeleteModalOpen, isRestoreModalOpen} = this.state;
+    const {isCancelModalOpen, isRestoreModalOpen} = this.state;
 
     const rentBasis = getContentRentBasis(rentBasisData);
 
@@ -331,16 +300,6 @@ class RentBasisPage extends Component<Props, State> {
 
     return (
       <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label={deleteModalLabel}
-          onCancel={this.handleHideDeleteModal}
-          onClose={this.handleHideDeleteModal}
-          onSave={this.handleDeleteClick}
-          title={deleteModalTitle}
-        />
-
         <ConfirmationModal
           confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelModalOpen}
@@ -383,7 +342,7 @@ class RentBasisPage extends Component<Props, State> {
           onBack={this.handleBack}
         />
         {isEditMode
-          ? <RentBasisEdit onOpenDeleteModal={this.handleOpenDeleteModal} />
+          ? <RentBasisEdit />
           : <RentBasisReadonly rentBasis={rentBasis} />
         }
       </PageContainer>

@@ -1,6 +1,7 @@
 // @flow
 import type Moment from 'moment';
 import moment from 'moment';
+import isArray from 'lodash/isArray';
 
 const decimalPlaces = (n) => {
   let result= /^-?[0-9]+\.([0-9]+)$/.exec(n);
@@ -9,6 +10,9 @@ const decimalPlaces = (n) => {
 
 export const required = (value: any, error?: string) => {
   let val = value;
+  if(isArray(value)) {
+    return value.length ? undefined : (error ? error : 'Pakollinen kenttä');
+  }
   if(value === Object(value)) {
     val = value.value;
   }

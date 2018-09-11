@@ -6,6 +6,7 @@ import authSaga from '../auth/saga';
 import billingPeriodsSaga from '../billingPeriods/saga';
 import commentSaga from '../comments/saga';
 import contactSaga from '../contacts/saga';
+import debtCollectionSaga from '../debtCollection/saga';
 import decisionSaga from '../decision/saga';
 import districtSaga from '../district/saga';
 import infillDevelopmentSaga from '../infillDevelopment/saga';
@@ -27,6 +28,7 @@ export default () =>
       fork(billingPeriodsSaga),
       fork(commentSaga),
       fork(contactSaga),
+      fork(debtCollectionSaga),
       fork(decisionSaga),
       fork(districtSaga),
       fork(infillDevelopmentSaga),

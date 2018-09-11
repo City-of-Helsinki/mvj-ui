@@ -726,7 +726,6 @@ class LeasePage extends Component<Props, State> {
 
     const areFormsValid = this.validateForms();
 
-
     if(isFetching) {
       return (
         <PageContainer>
@@ -741,6 +740,7 @@ class LeasePage extends Component<Props, State> {
 
     return (
       <PageContainer>
+
         <ConfirmationModal
           confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelLeaseModalOpen}

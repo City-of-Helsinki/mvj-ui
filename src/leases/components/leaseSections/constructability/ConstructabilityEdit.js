@@ -6,13 +6,12 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
-import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ConstructabilityItemEdit from './ConstructabilityItemEdit';
 import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
 import SendEmail from './SendEmail';
 import {receiveFormValidFlags} from '$src/leases/actions';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {FormNames} from '$src/leases/enums';
 import {getContentConstructability} from '$src/leases/helpers';
 import {getUserOptions} from '$src/users/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
@@ -27,7 +26,6 @@ type AreaProps = {
   fields: any,
   isSaveClicked: boolean,
   locationOptions: Array<Object>,
-  onOpenDeleteModal: Function,
   typeOptions: Array<Object>,
 }
 
@@ -38,7 +36,6 @@ const renderAreas = ({
   fields,
   isSaveClicked,
   locationOptions,
-  onOpenDeleteModal,
   typeOptions,
 }: AreaProps): Element<*> => {
   return (
@@ -57,7 +54,6 @@ const renderAreas = ({
             field={area}
             isSaveClicked={isSaveClicked}
             locationOptions={locationOptions}
-            onOpenDeleteModal={onOpenDeleteModal}
             typeOptions={typeOptions}
           />
         );
@@ -78,10 +74,6 @@ type Props = {
 
 type State = {
   areas: Array<Object>,
-  deleteFunction: ?Function,
-  deleteModalLabel: string,
-  deleteModalTitle: string,
-  isDeleteModalOpen: boolean,
   locationOptions: Array<Object>,
   typeOptions: Array<Object>,
 }
@@ -89,10 +81,6 @@ type State = {
 class ConstructabilityEdit extends Component<Props, State> {
   state = {
     areas: [],
-    deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.CONSTRUCTABILITY,
-    deleteModalTitle: DeleteModalTitles.CONSTRUCTABILITY,
-    isDeleteModalOpen: false,
     locationOptions: [],
     typeOptions: [],
   }
@@ -130,29 +118,6 @@ class ConstructabilityEdit extends Component<Props, State> {
     return null;
   }
 
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.CONSTRUCTABILITY, modalLabel: string = DeleteModalLabels.CONSTRUCTABILITY) => {
-    this.setState({
-      deleteFunction: fn,
-      deleteModalLabel: modalLabel,
-      deleteModalTitle: modalTitle,
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleHideDeleteModal = () => {
-    this.setState({
-      isDeleteModalOpen: false,
-    });
-  }
-
-  handleDeleteClick = () => {
-    const {deleteFunction} = this.state;
-    if(deleteFunction) {
-      deleteFunction();
-    }
-    this.handleHideDeleteModal();
-  }
-
   render () {
     const {
       attributes,
@@ -162,25 +127,12 @@ class ConstructabilityEdit extends Component<Props, State> {
     } = this.props;
     const {
       areas,
-      deleteModalLabel,
-      deleteModalTitle,
-      isDeleteModalOpen,
       locationOptions,
       typeOptions,
     } = this.state;
 
     return (
       <form onSubmit={handleSubmit}>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label={deleteModalLabel}
-          onCancel={this.handleHideDeleteModal}
-          onClose={this.handleHideDeleteModal}
-          onSave={this.handleDeleteClick}
-          title={deleteModalTitle}
-        />
-
         <FormSection>
           <h2>Rakentamiskelpoisuus</h2>
           <Divider />
@@ -194,7 +146,6 @@ class ConstructabilityEdit extends Component<Props, State> {
             isSaveClicked={isSaveClicked}
             locationOptions={locationOptions}
             name="lease_areas"
-            onOpenDeleteModal={this.handleOpenDeleteModal}
             typeOptions={typeOptions}
           />
         </FormSection>

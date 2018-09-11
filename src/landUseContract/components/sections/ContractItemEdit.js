@@ -25,7 +25,6 @@ type Props = {
   contractId: number,
   errors: ?Object,
   field: string,
-  index: number,
   isSaveClicked: boolean,
   onRemove: Function,
   receiveCollapseStates: Function,
@@ -38,17 +37,12 @@ const ContractItemEdit = ({
   contractsData,
   contractId,
   errors,
-  index,
   field,
   isSaveClicked,
   onRemove,
   receiveCollapseStates,
   stateOptions,
 }: Props) => {
-  const handleRemove = () => {
-    onRemove(index);
-  };
-
   const handleCollapseChange = (val: boolean) => {
     if(!contractId) {return;}
 
@@ -79,7 +73,7 @@ const ContractItemEdit = ({
       defaultOpen={collapseState !== undefined ? collapseState : true}
       hasErrors={isSaveClicked && !isEmpty(contractErrors)}
       headerTitle={<h3 className='collapse__header-title'>{getCollapseTitle(savedContract)}</h3>}
-      onRemove={handleRemove}
+      onRemove={onRemove}
       onToggle={handleCollapseChange}
     >
       <BoxContentWrapper>

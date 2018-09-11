@@ -11,6 +11,7 @@ import type {
 type Props = {
   options: Array<Option>,
   selected: Array<any>,
+  onBlur: Function,
   onSelectedChanged?: (selected: Array<any>) => void,
   valueRenderer?: (
     selected: Array<any>,
@@ -28,6 +29,7 @@ type Props = {
 
 const MultiSelect = ({
   ItemRenderer,
+  onBlur,
   options,
   selected,
   selectAllLabel,
@@ -49,9 +51,12 @@ const MultiSelect = ({
     return isLoading ? '' : selectedLabels.join(', ');
   };
 
+  const handleBlur = () => onBlur(selected);
+
   const renderHeader = () => {
     const noneSelected = selected.length === 0;
     const allSelected = selected.length === options.length;
+    const multipleSelected = selected.length > 1;
 
     const customText = valueRenderer && valueRenderer(selected, options);
 
@@ -65,12 +70,19 @@ const MultiSelect = ({
       return <span>{customText}</span>;
     }
 
+    if(multipleSelected && !allSelected) {
+      return <span>
+        {`${selected.length} valittu`}
+      </span>;
+    }
+
     return <span>
       {allSelected
         ? 'Kaikki valittu'
         : getSelectedText()
       }
     </span>;
+
   };
 
   const handleSelectedChanged = (selected: Array<any>) => {
@@ -100,6 +112,7 @@ const MultiSelect = ({
         filterOptions,
       }}
       disabled={disabled}
+      onBlur={handleBlur}
     >
       {renderHeader()}
     </Dropdown>

@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
@@ -27,59 +28,68 @@ type PropertyIdentifiersProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: PropertyIdentifiersProps): Element<*> => {
+const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked}: PropertyIdentifiersProps): Element<*> => {
   const handleAdd = () => fields.push({});
   return (
-    <div>
-      <FormFieldLabel required={get(attributes, 'property_identifiers.child.children.identifier.required')}>Kiinteistötunnukset</FormFieldLabel>
-      {fields && !!fields.length && fields.map((field, index) => {
-        const handleOpenDeleteModal = () => {
-          onOpenDeleteModal(
-            () => fields.remove(index),
-            DeleteModalTitles.IDENTIFIER,
-            DeleteModalLabels.IDENTIFIER,
-          );
-        };
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            <FormFieldLabel required={get(attributes, 'property_identifiers.child.children.identifier.required')}>Kiinteistötunnukset</FormFieldLabel>
+            {fields && !!fields.length && fields.map((field, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.IDENTIFIER,
+                  deleteModalTitle: DeleteModalTitles.IDENTIFIER,
+                });
+              };
 
-        return (
-          <Row key={index}>
-            <Column>
-              <FieldAndRemoveButtonWrapper
-                field={
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'property_identifiers.child.children.identifier')}
-                    name={`${field}.identifier`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                }
-                removeButton={
-                  <RemoveButton
-                    className='third-level'
-                    onClick={handleOpenDeleteModal}
-                    title="Poista kiinteistötunnus"
-                  />
-                }
-              />
-            </Column>
-          </Row>
+              return (
+                <Row key={index}>
+                  <Column>
+                    <FieldAndRemoveButtonWrapper
+                      field={
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'property_identifiers.child.children.identifier')}
+                          name={`${field}.identifier`}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      }
+                      removeButton={
+                        <RemoveButton
+                          className='third-level'
+                          onClick={handleRemove}
+                          title="Poista kiinteistötunnus"
+                        />
+                      }
+                    />
+                  </Column>
+                </Row>
+              );
+            })}
+            <Row>
+              <Column>
+                <AddButtonThird
+                  label='Lisää kiinteistötunnus'
+                  onClick={handleAdd}
+                  title='Lisää kiinteistötunnus'
+                />
+              </Column>
+            </Row>
+          </div>
         );
-      })}
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää kiinteistötunnus'
-            onClick={handleAdd}
-            title='Lisää kiinteistötunnus'
-          />
-        </Column>
-      </Row>
-    </div>
+      }}
+    </AppConsumer>
+
   );
 };
 
@@ -87,105 +97,118 @@ type DecisionsProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const renderDecisions = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: DecisionsProps): Element<*> => {
-  const handleAdd = () => fields.push({});
-  return (
-    <div>
-      <SubTitle>Päätökset</SubTitle>
-      <Row>
-        <Column small={3} large={2}>
-          <FormFieldLabel required={get(attributes, 'decisions.child.children.decision_maker.required')}>Päättäjä</FormFieldLabel>
-        </Column>
-        <Column small={3} large={2}>
-          <FormFieldLabel required={get(attributes, 'decisions.child.children.decision_date.required')}>Pvm</FormFieldLabel>
-        </Column>
-        <Column small={3} large={2}>
-          <FormFieldLabel required={get(attributes, 'decisions.child.children.section.required')}>Pykälä</FormFieldLabel>
-        </Column>
-        <Column small={3} large={2}>
-          <FormFieldLabel required={get(attributes, 'decisions.child.children.reference_number.required')}>Hel diaarinumero</FormFieldLabel>
-        </Column>
-      </Row>
-      {fields && !!fields.length && fields.map((field, index) => {
-        const handleOpenDeleteModal = () => {
-          onOpenDeleteModal(
-            () => fields.remove(index),
-            DeleteModalTitles.DECISION,
-            DeleteModalLabels.DECISION,
-          );
-        };
+const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
 
+  return (
+    <AppConsumer>
+      {({dispatch}) => {
         return(
-          <Row key={index}>
-            <Column small={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'decisions.child.children.decision_maker')}
-                name={`${field}.decision_maker`}
-                overrideValues={{
-                  label: '',
-                }}
-              />
-            </Column>
-            <Column small={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
-                name={`${field}.decision_date`}
-                overrideValues={{
-                  label: '',
-                }}
-              />
-            </Column>
-            <Column small={3} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'decisions.child.children.section')}
-                name={`${field}.section`}
-                unit='§'
-                overrideValues={{
-                  label: '',
-                }}
-              />
-            </Column>
-            <Column small={3} large={2}>
-              <FieldAndRemoveButtonWrapper
-                field={
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'decisions.child.children.reference_number')}
-                    name={`${field}.reference_number`}
-                    validate={referenceNumber}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                }
-                removeButton={
-                  <RemoveButton
-                    className='third-level'
-                    onClick={handleOpenDeleteModal}
-                    title="Poista päätös"
-                  />
-                }
-              />
-            </Column>
-          </Row>
+          <div>
+            <SubTitle>Päätökset</SubTitle>
+            {fields && !!fields.length &&
+              <Row>
+                <Column small={3} large={2}>
+                  <FormFieldLabel required={get(attributes, 'decisions.child.children.decision_maker.required')}>Päättäjä</FormFieldLabel>
+                </Column>
+                <Column small={3} large={2}>
+                  <FormFieldLabel required={get(attributes, 'decisions.child.children.decision_date.required')}>Pvm</FormFieldLabel>
+                </Column>
+                <Column small={3} large={2}>
+                  <FormFieldLabel required={get(attributes, 'decisions.child.children.section.required')}>Pykälä</FormFieldLabel>
+                </Column>
+                <Column small={3} large={2}>
+                  <FormFieldLabel required={get(attributes, 'decisions.child.children.reference_number.required')}>Hel diaarinumero</FormFieldLabel>
+                </Column>
+              </Row>
+            }
+            {fields && !!fields.length && fields.map((field, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.DECISION,
+                  deleteModalTitle: DeleteModalTitles.DECISION,
+                });
+              };
+
+              return(
+                <Row key={index}>
+                  <Column small={3} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'decisions.child.children.decision_maker')}
+                      name={`${field}.decision_maker`}
+                      overrideValues={{
+                        label: '',
+                      }}
+                    />
+                  </Column>
+                  <Column small={3} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
+                      name={`${field}.decision_date`}
+                      overrideValues={{
+                        label: '',
+                      }}
+                    />
+                  </Column>
+                  <Column small={3} large={2}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, 'decisions.child.children.section')}
+                      name={`${field}.section`}
+                      unit='§'
+                      overrideValues={{
+                        label: '',
+                      }}
+                    />
+                  </Column>
+                  <Column small={3} large={2}>
+                    <FieldAndRemoveButtonWrapper
+                      field={
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'decisions.child.children.reference_number')}
+                          name={`${field}.reference_number`}
+                          validate={referenceNumber}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      }
+                      removeButton={
+                        <RemoveButton
+                          className='third-level'
+                          onClick={handleRemove}
+                          title="Poista päätös"
+                        />
+                      }
+                    />
+                  </Column>
+                </Row>
+              );
+            })}
+            <Row>
+              <Column>
+                <AddButtonThird
+                  label='Lisää päätös'
+                  onClick={handleAdd}
+                  title='Lisää päätös'
+                />
+              </Column>
+            </Row>
+          </div>
         );
-      })}
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää päätös'
-            onClick={handleAdd}
-            title='Lisää päätös'
-          />
-        </Column>
-      </Row>
-    </div>
+      }}
+    </AppConsumer>
   );
 };
 
@@ -193,89 +216,100 @@ type RentRatesProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const renderRentRates = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: RentRatesProps): Element<*> => {
-  const handleAdd = () => fields.push({});
+const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): Element<*> => {
+  const handleAdd = () => {
+    fields.push({});
+  };
+
   return (
-    <div>
-      <SubTitle>Hinnat</SubTitle>
-      {fields && !!fields.length &&
-        <div>
-          <Row>
-            <Column small={3} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.build_permission_type.required')}>Pääkäyttötarkoitus</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.amount.required')}>Euroa</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.area_unit.required')}>Yksikkö</FormFieldLabel></Column>
-          </Row>
-          {fields.map((field, index) => {
-            const handleOpenDeleteModal = () => {
-              onOpenDeleteModal(
-                () => fields.remove(index),
-                DeleteModalTitles.RENT_RATE,
-                DeleteModalLabels.RENT_RATE,
-              );
-            };
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            <SubTitle>Hinnat</SubTitle>
+            {fields && !!fields.length &&
+              <div>
+                <Row>
+                  <Column small={3} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.build_permission_type.required')}>Pääkäyttötarkoitus</FormFieldLabel></Column>
+                  <Column small={3} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.amount.required')}>Euroa</FormFieldLabel></Column>
+                  <Column small={3} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.area_unit.required')}>Yksikkö</FormFieldLabel></Column>
+                </Row>
+                {fields.map((field, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_DELETE_MODAL,
+                      deleteFunction: () => {
+                        fields.remove(index);
+                      },
+                      deleteModalLabel: DeleteModalLabels.RENT_RATE,
+                      deleteModalTitle: DeleteModalTitles.RENT_RATE,
+                    });
+                  };
 
-            return(
-              <Row key={index}>
-                <Column small={3} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'rent_rates.child.children.build_permission_type')}
-                    name={`${field}.build_permission_type`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={3} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'rent_rates.child.children.amount')}
-                    name={`${field}.amount`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={3} large={2}>
-                  <FieldAndRemoveButtonWrapper
-                    field={
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'rent_rates.child.children.area_unit')}
-                        name={`${field}.area_unit`}
-                        overrideValues={{
-                          label: '',
-                        }}
-                      />
-                    }
-                    removeButton={
-                      <RemoveButton
-                        className='third-level'
-                        onClick={handleOpenDeleteModal}
-                        title="Poista hinta"
-                      />
-                    }
-                  />
+                  return(
+                    <Row key={index}>
+                      <Column small={3} large={2}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'rent_rates.child.children.build_permission_type')}
+                          name={`${field}.build_permission_type`}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={3} large={2}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'rent_rates.child.children.amount')}
+                          name={`${field}.amount`}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={3} large={2}>
+                        <FieldAndRemoveButtonWrapper
+                          field={
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'rent_rates.child.children.area_unit')}
+                              name={`${field}.area_unit`}
+                              overrideValues={{
+                                label: '',
+                              }}
+                            />
+                          }
+                          removeButton={
+                            <RemoveButton
+                              className='third-level'
+                              onClick={handleRemove}
+                              title="Poista hinta"
+                            />
+                          }
+                        />
 
-                </Column>
-              </Row>
-            );
-          })}
-        </div>
-      }
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää hinta'
-            onClick={handleAdd}
-            title='Lisää hinta'
-          />
-        </Column>
-      </Row>
-    </div>
+                      </Column>
+                    </Row>
+                  );
+                })}
+              </div>
+            }
+            <Row>
+              <Column>
+                <AddButtonThird
+                  label='Lisää hinta'
+                  onClick={handleAdd}
+                  title='Lisää hinta'
+                />
+              </Column>
+            </Row>
+          </div>
+        );
+      }}
+    </AppConsumer>
   );
 };
 
@@ -286,7 +320,6 @@ type Props = {
   isFocusedOnMount?: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
   receiveFormValid: Function,
   valid: boolean,
 }
@@ -317,7 +350,7 @@ class RentBasisForm extends Component<Props> {
   }
 
   render() {
-    const {attributes, handleSubmit, isSaveClicked, onOpenDeleteModal} = this.props;
+    const {attributes, handleSubmit, isSaveClicked} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
@@ -362,7 +395,6 @@ class RentBasisForm extends Component<Props> {
                 component={renderPropertyIdentifiers}
                 name='property_identifiers'
                 isSaveClicked={isSaveClicked}
-                onOpenDeleteModal={onOpenDeleteModal}
               />
             </Column>
             <Column small={6} medium={4} large={2}>
@@ -428,7 +460,6 @@ class RentBasisForm extends Component<Props> {
                 component={renderDecisions}
                 name="decisions"
                 isSaveClicked={isSaveClicked}
-                onOpenDeleteModal={onOpenDeleteModal}
               />
             </Column>
           </Row>
@@ -439,7 +470,6 @@ class RentBasisForm extends Component<Props> {
                 component={renderRentRates}
                 name="rent_rates"
                 isSaveClicked={isSaveClicked}
-                onOpenDeleteModal={onOpenDeleteModal}
               />
             </Column>
           </Row>

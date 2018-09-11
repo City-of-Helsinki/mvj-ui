@@ -8,7 +8,7 @@ type Props = {
   className?: string,
   label: string,
   onClick: Function,
-  title: ?string,
+  title?: string,
 }
 
 const AddButtonThird = ({className, label, onClick, title}: Props) =>

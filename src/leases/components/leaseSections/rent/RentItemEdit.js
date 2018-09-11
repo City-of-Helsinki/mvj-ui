@@ -31,7 +31,6 @@ type Props = {
   index: number,
   indexAdjustedRentsCollapseState: boolean,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
   onRemove: Function,
   payableRentsCollapseState: boolean,
   receiveCollapseStates: Function,
@@ -51,7 +50,6 @@ const RentItemEdit = ({
   index,
   indexAdjustedRentsCollapseState,
   isSaveClicked,
-  onOpenDeleteModal,
   onRemove,
   payableRentsCollapseState,
   receiveCollapseStates,
@@ -164,7 +162,6 @@ const RentItemEdit = ({
           <BasicInfoEdit
             dueDatesType={dueDatesType}
             isSaveClicked={isSaveClicked}
-            onOpenDeleteModal={onOpenDeleteModal}
             rentType={rentType}
           />
         </BoxContentWrapper>
@@ -184,7 +181,6 @@ const RentItemEdit = ({
             component={ContractRentsEdit}
             isSaveClicked={isSaveClicked}
             name={`${field}.contract_rents`}
-            onOpenDeleteModal={onOpenDeleteModal}
             rentType={rentType}
           />
         </Collapse>
@@ -218,7 +214,6 @@ const RentItemEdit = ({
             component={RentAdjustmentsEdit}
             isSaveClicked={isSaveClicked}
             name={`${field}.rent_adjustments`}
-            onOpenDeleteModal={onOpenDeleteModal}
           />
         </Collapse>
       }

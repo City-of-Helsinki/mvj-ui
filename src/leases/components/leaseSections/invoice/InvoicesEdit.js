@@ -8,6 +8,7 @@ import CreateAndCreditInvoiceComponent from './CreateAndCreditInvoiceComponent';
 import Button from '$components/button/Button';
 import Collapse from '$components/collapse/Collapse';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
+import CreateCollectionLetter from './CreateCollectionLetter';
 import DebtCollection from './DebtCollection';
 import Divider from '$components/content/Divider';
 import InvoicesTableEdit from './InvoicesTableEdit';
@@ -16,7 +17,6 @@ import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {ViewModes} from '$src/enums';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getInvoiceToCredit} from '$src/invoices/selectors';
 import {getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
@@ -38,20 +38,12 @@ type Props = {
 }
 
 type State = {
-  deleteFunction: ?Function,
-  deleteModalLabel: string,
-  deleteModalTitle: string,
-  isDeleteModalOpen: boolean,
   isStartInvoicingModalOpen: boolean,
   isStopInvoicingModalOpen: boolean,
 }
 
 class InvoicesEdit extends Component<Props, State> {
   state = {
-    deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.INVOICE_ROW,
-    deleteModalTitle: DeleteModalTitles.INVOICE_ROW,
-    isDeleteModalOpen: false,
     isStartInvoicingModalOpen: false,
     isStopInvoicingModalOpen: false,
   }
@@ -144,29 +136,6 @@ class InvoicesEdit extends Component<Props, State> {
     });
   };
 
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.INVOICE_ROW, modalLabel: string = DeleteModalLabels.INVOICE_ROW) => {
-    this.setState({
-      deleteFunction: fn,
-      deleteModalLabel: modalLabel,
-      deleteModalTitle: modalTitle,
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleHideDeleteModal = () => {
-    this.setState({
-      isDeleteModalOpen: false,
-    });
-  }
-
-  handleDeleteClick = () => {
-    const {deleteFunction} = this.state;
-    if(deleteFunction) {
-      deleteFunction();
-    }
-    this.handleHideDeleteModal();
-  }
-
   render() {
     const {
       currentLease,
@@ -175,24 +144,12 @@ class InvoicesEdit extends Component<Props, State> {
       rentCalculatorCollapseState,
     } = this.props;
     const {
-      deleteModalLabel,
-      deleteModalTitle,
-      isDeleteModalOpen,
       isStartInvoicingModalOpen,
       isStopInvoicingModalOpen,
     } = this.state;
 
     return (
       <div>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label={deleteModalLabel}
-          onCancel={this.handleHideDeleteModal}
-          onClose={this.handleHideDeleteModal}
-          onSave={this.handleDeleteClick}
-          title={deleteModalTitle}
-        />
 
         <ConfirmationModal
           confirmButtonLabel='Käynnistä laskutus'
@@ -247,13 +204,11 @@ class InvoicesEdit extends Component<Props, State> {
           <InvoicesTableEdit
             invoiceToCredit={invoiceToCredit}
             onInvoiceToCreditChange={this.handleInvoiceToCreditChange}
-            onOpenDeleteModal={this.handleOpenDeleteModal}
           />
           <CreateAndCreditInvoiceComponent
             enableCreateInvoice={true}
             enableCreditInvoice={true}
             invoiceToCredit={invoiceToCredit}
-            onOpenDeleteModal={this.handleOpenDeleteModal}
           />
         </Collapse>
         <Collapse
@@ -264,7 +219,10 @@ class InvoicesEdit extends Component<Props, State> {
           <RentCalculator />
         </Collapse>
 
+        <h2>Perintä</h2>
+        <Divider />
         <DebtCollection />
+        <CreateCollectionLetter />
       </div>
     );
   }

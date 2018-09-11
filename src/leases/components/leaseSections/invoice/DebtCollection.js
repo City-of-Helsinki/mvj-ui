@@ -1,18 +1,14 @@
 // @flow
 import React from 'react';
 
-import Collapse from '$components/collapse/Collapse';
 import DebtCollectionForm from './forms/DebtCollectionForm';
+import GreenBox from '$components/content/GreenBox';
 
 const DebtCollection = () => {
   return(
-    <Collapse
-      defaultOpen={true}
-      headerTitle={<h3 className='collapse__header-title'>Perintä</h3>}
-    >
-      <DebtCollectionForm
-      />
-    </Collapse>
+    <GreenBox className='with-bottom-margin'>
+      <DebtCollectionForm/>
+    </GreenBox>
   );
 };
 

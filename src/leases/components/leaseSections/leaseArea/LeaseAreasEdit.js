@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import ArchiveAreaModal from './ArchiveAreaModal';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
@@ -48,7 +49,6 @@ type AreaItemProps = {
   isActive: boolean,
   leaseId: number,
   onArchiveCallback: Function,
-  onOpenDeleteModal: Function,
   onUnarchiveCallback: Function,
   showArchiveAreaModal: Function,
   showUnarchiveAreaModal: Function,
@@ -90,7 +90,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps, AreaItemState> {
     });
   }
 
-  handleRemove = (index: ?number) => {
+  removeArea = (index: ?number) => {
     const {fields} = this.props;
     fields.remove(index);
   }
@@ -150,7 +150,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps, AreaItemState> {
       areaToArchive: null,
       areaIndexToArchive: null,
     });
-    this.handleRemove(areaIndexToArchive);
+    this.removeArea(areaIndexToArchive);
     onArchiveCallback(areaToArchive);
   }
 
@@ -211,7 +211,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps, AreaItemState> {
       areaToUnarchive: null,
       areaIndexToUnarchive: null,
     });
-    this.handleRemove(areaIndexToUnarchive);
+    this.removeArea(areaIndexToUnarchive);
     onUnarchiveCallback(areaToUnarchive);
   }
 
@@ -223,55 +223,70 @@ class renderLeaseAreas extends PureComponent<AreaItemProps, AreaItemState> {
       isActive,
       isArchiveAreaModalOpen,
       isUnarchiveAreaModalOpen,
-      onOpenDeleteModal,
     } = this.props;
 
     return (
-      <div>
-        <ConfirmationModal
-          confirmButtonLabel='Poista arkistosta'
-          isOpen={isUnarchiveAreaModalOpen}
-          label='Haluatko varmasti poistaa kohteen arkistosta?'
-          onCancel={this.handleHideUnarchiveAreaModal}
-          onClose={this.handleHideUnarchiveAreaModal}
-          onSave={this.handleUnarchive}
-          title='Poista kohde arkistosta'
-        />
-
-        <ArchiveAreaModal
-          decisionOptions={decisionOptions}
-          isOpen={isArchiveAreaModalOpen}
-          onArchive={this.handleArchive}
-          onCancel={this.handleHideArchiveAreaModal}
-          onClose={this.handleHideArchiveAreaModal}
-        />
-        {!isActive && !!fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
-        {fields && !!fields.length && fields.map((area, index) =>
-          <LeaseAreaWithArchiveInfoEdit
-            key={index}
-            areasData={areasData}
-            decisionOptions={decisionOptions}
-            field={area}
-            index={index}
-            isActive={isActive}
-            onArchive={this.handleShowArchiveAreaModal}
-            onOpenDeleteModal={onOpenDeleteModal}
-            onRemove={this.handleRemove}
-            onUnarchive={this.handleShowUnarchiveAreaModal}
-          />
-        )}
-        {isActive &&
-          <Row>
-            <Column>
-              <AddButton
-                label='Lisää kohde'
-                onClick={this.handleAdd}
-                title='Lisää kohde'
+      <AppConsumer>
+        {({dispatch}) => {
+          return(
+            <div>
+              <ConfirmationModal
+                confirmButtonLabel='Poista arkistosta'
+                isOpen={isUnarchiveAreaModalOpen}
+                label='Haluatko varmasti poistaa kohteen arkistosta?'
+                onCancel={this.handleHideUnarchiveAreaModal}
+                onClose={this.handleHideUnarchiveAreaModal}
+                onSave={this.handleUnarchive}
+                title='Poista kohde arkistosta'
               />
-            </Column>
-          </Row>
-        }
-      </div>
+
+              <ArchiveAreaModal
+                decisionOptions={decisionOptions}
+                isOpen={isArchiveAreaModalOpen}
+                onArchive={this.handleArchive}
+                onCancel={this.handleHideArchiveAreaModal}
+                onClose={this.handleHideArchiveAreaModal}
+              />
+              {!isActive && !!fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+              {fields && !!fields.length && fields.map((area, index) => {
+                const handleRemove = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_DELETE_MODAL,
+                    deleteFunction: () => {
+                      fields.remove(index);
+                    },
+                    deleteModalLabel: DeleteModalLabels.LEASE_AREA,
+                    deleteModalTitle: DeleteModalTitles.LEASE_AREA,
+                  });
+                };
+
+                return <LeaseAreaWithArchiveInfoEdit
+                  key={index}
+                  areasData={areasData}
+                  decisionOptions={decisionOptions}
+                  field={area}
+                  index={index}
+                  isActive={isActive}
+                  onArchive={this.handleShowArchiveAreaModal}
+                  onRemove={handleRemove}
+                  onUnarchive={this.handleShowUnarchiveAreaModal}
+                />;
+              })}
+              {isActive &&
+                <Row>
+                  <Column>
+                    <AddButton
+                      label='Lisää kohde'
+                      onClick={this.handleAdd}
+                      title='Lisää kohde'
+                    />
+                  </Column>
+                </Row>
+              }
+            </div>
+          );
+        }}
+      </AppConsumer>
     );
   }
 }
@@ -303,10 +318,6 @@ type State = {
   archivedAreas: Array<Object>,
   currentLease: ?Lease,
   decisionOptions: Array<Object>,
-  deleteFunction: ?Function,
-  deleteModalLabel: string,
-  deleteModalTitle: string,
-  isDeleteModalOpen: boolean,
 }
 
 class LeaseAreasEdit extends PureComponent<Props, State> {
@@ -317,10 +328,6 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
     archivedAreas: [],
     currentLease: null,
     decisionOptions: [],
-    deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.LEASE_AREA,
-    deleteModalTitle: DeleteModalTitles.LEASE_AREA,
-    isDeleteModalOpen: false,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -365,29 +372,6 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
     change('lease_areas_active', newAreas);
   }
 
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.LEASE_AREA, modalLabel: string = DeleteModalLabels.LEASE_AREA) => {
-    this.setState({
-      deleteFunction: fn,
-      deleteModalLabel: modalLabel,
-      deleteModalTitle: modalTitle,
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleHideDeleteModal = () => {
-    this.setState({
-      isDeleteModalOpen: false,
-    });
-  }
-
-  handleDeleteClick = () => {
-    const {deleteFunction} = this.state;
-    if(deleteFunction) {
-      deleteFunction();
-    }
-    this.handleHideDeleteModal();
-  }
-
   render () {
     const {
       activeAreas,
@@ -395,9 +379,6 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
       areas,
       areasSum,
       decisionOptions,
-      deleteModalLabel,
-      deleteModalTitle,
-      isDeleteModalOpen,
     } = this.state;
     const {
       archiveLeaseArea,
@@ -416,15 +397,6 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
 
     return (
       <form>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label={deleteModalLabel}
-          onCancel={this.handleHideDeleteModal}
-          onClose={this.handleHideDeleteModal}
-          onSave={this.handleDeleteClick}
-          title={deleteModalTitle}
-        />
         {isArchiveFetching &&
           <LoaderWrapper className='overlay-wrapper'>
             <Loader isLoading={isArchiveFetching} />
@@ -448,9 +420,10 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
             leaseId={currentLease.id}
             name="lease_areas_active"
             onArchiveCallback={this.handleArchiveCallback}
-            onOpenDeleteModal={this.handleOpenDeleteModal}
             showArchiveAreaModal={showArchiveAreaModal}
           />
+
+          {/* Archived lease areas */}
           <FieldArray
             allAreas={areas}
             areasData={archivedAreas}
@@ -462,7 +435,6 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
             isActive={false}
             leaseId={currentLease.id}
             name="lease_areas_archived"
-            onOpenDeleteModal={this.handleOpenDeleteModal}
             onUnarchiveCallback={this.handleUnarchiveCallback}
             showUnarchiveAreaModal={showUnarchiveAreaModal}
             unarchiveLeaseArea={unarchiveLeaseArea}

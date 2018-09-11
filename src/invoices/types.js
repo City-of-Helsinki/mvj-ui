@@ -6,6 +6,7 @@ import type {LeaseId} from '$src/leases/types';
 export type InvoiceState = Object;
 export type Attributes = Object;
 export type Invoice = Object;
+export type InvoiceId = number;
 export type InvoiceList = Array<Object>;
 export type InvoiceListMap = Object;
 

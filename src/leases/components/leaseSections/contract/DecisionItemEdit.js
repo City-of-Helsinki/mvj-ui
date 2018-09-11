@@ -28,9 +28,7 @@ type Props = {
   decisionsData: Array<Object>,
   errors: ?Object,
   field: string,
-  index: number,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
 }
@@ -43,16 +41,10 @@ const DecisionItemEdit = ({
   decisionsData,
   errors,
   field,
-  index,
   isSaveClicked,
-  onOpenDeleteModal,
   onRemove,
   receiveCollapseStates,
 }: Props) => {
-  const handleRemove = () => {
-    onRemove(index);
-  };
-
   const handleDecisionCollapseToggle = (val: boolean) => {
     if(!decisionId) {return;}
 
@@ -90,7 +82,7 @@ const DecisionItemEdit = ({
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
       headerTitle={<h3 className='collapse__header-title'>{savedDecision ? (getLabelOfOption(decisionMakerOptions, get(savedDecision, 'decision_maker')) || '-') : '-'}</h3>}
-      onRemove={handleRemove}
+      onRemove={onRemove}
       onToggle={handleDecisionCollapseToggle}
     >
       <BoxContentWrapper>
@@ -169,7 +161,6 @@ const DecisionItemEdit = ({
         isSaveClicked={isSaveClicked}
         name={`${field}.conditions`}
         onCollapseToggle={handleConditionsCollapseToggle}
-        onOpenDeleteModal={onOpenDeleteModal}
       />
     </Collapse>
   );

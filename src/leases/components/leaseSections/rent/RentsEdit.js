@@ -8,9 +8,9 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import BasisOfRentsEdit from './BasisOfRentsEdit';
-import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import FormSectionComponent from '$components/form/FormSection';
@@ -26,14 +26,12 @@ import type {Lease} from '$src/leases/types';
 
 type RentsProps = {
   fields: any,
-  onOpenDeleteModal: Function,
   rents: Array<Object>,
   showAddButton: boolean,
 };
 
 const renderRents = ({
   fields,
-  onOpenDeleteModal,
   rents,
   showAddButton,
 }:RentsProps): Element<*> => {
@@ -41,41 +39,49 @@ const renderRents = ({
     fields.push({});
   };
 
-  const handleOpenDeleteModal = (index: number) => {
-    onOpenDeleteModal(
-      () => fields.remove(index),
-      DeleteModalTitles.RENT,
-      DeleteModalLabels.RENT,
-    );
-  };
-
   return (
-    <div>
-      {!showAddButton && !!fields && !!fields.length &&
-        <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
-      }
-      {fields && !!fields.length && fields.map((item, index) =>
-        <RentItemEdit
-          key={index}
-          field={item}
-          index={index}
-          onOpenDeleteModal={onOpenDeleteModal}
-          onRemove={handleOpenDeleteModal}
-          rents={rents}
-        />
-      )}
-      {showAddButton &&
-        <Row>
-          <Column>
-            <AddButton
-              label='Lisää vuokra'
-              onClick={handleAdd}
-              title='Lisää vuokra'
-            />
-          </Column>
-        </Row>
-      }
-    </div>
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            {!showAddButton && !!fields && !!fields.length &&
+              <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
+            }
+            {fields && !!fields.length && fields.map((item, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.RENT,
+                  deleteModalTitle: DeleteModalTitles.RENT,
+                });
+              };
+
+              return <RentItemEdit
+                key={index}
+                field={item}
+                index={index}
+                onRemove={handleRemove}
+                rents={rents}
+              />;
+            })}
+            {showAddButton &&
+              <Row>
+                <Column>
+                  <AddButton
+                    label='Lisää vuokra'
+                    onClick={handleAdd}
+                    title='Lisää vuokra'
+                  />
+                </Column>
+              </Row>
+            }
+          </div>
+        );
+      }}
+    </AppConsumer>
   );
 };
 
@@ -88,20 +94,12 @@ type Props = {
 }
 
 type State = {
-  deleteFunction: ?Function,
-  deleteModalLabel: string,
-  deleteModalTitle: string,
-  isDeleteModalOpen: boolean,
   lease: Lease,
   rentsData: Object,
 };
 
 class RentsEdit extends Component<Props, State> {
   state = {
-    deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.RENT,
-    deleteModalTitle: DeleteModalTitles.RENT,
-    isDeleteModalOpen: false,
     lease: {},
     rentsData: {},
   }
@@ -126,53 +124,14 @@ class RentsEdit extends Component<Props, State> {
     }
   }
 
-  handleHideDeleteModal = () => {
-    this.setState({
-      isDeleteModalOpen: false,
-    });
-  }
-
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.RENT, modalLabel: string = DeleteModalLabels.RENT) => {
-    this.setState({
-      deleteFunction: fn,
-      deleteModalLabel: modalLabel,
-      deleteModalTitle: modalTitle,
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleDeleteClick = () => {
-    const {deleteFunction} = this.state;
-    if(deleteFunction) {
-      deleteFunction();
-    }
-
-    this.handleHideDeleteModal();
-  }
-
   render() {
     const {isSaveClicked} = this.props;
-    const {
-      deleteModalLabel,
-      deleteModalTitle,
-      isDeleteModalOpen,
-      rentsData,
-    } = this.state;
+    const {rentsData} = this.state;
     const rents = get(rentsData, 'rents', []),
       rentsArchived = get(rentsData, 'rentsArchived', []);
 
     return (
       <form>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label={deleteModalLabel}
-          onCancel={this.handleHideDeleteModal}
-          onClose={this.handleHideDeleteModal}
-          onSave={this.handleDeleteClick}
-          title={deleteModalTitle}
-        />
-
         <FormSectionComponent>
           <h2>Vuokra</h2>
           <RightSubtitle
@@ -191,7 +150,6 @@ class RentsEdit extends Component<Props, State> {
           <FieldArray
             component={renderRents}
             name='rents.rents'
-            onOpenDeleteModal={this.handleOpenDeleteModal}
             rents={rents}
             showAddButton={true}
           />
@@ -200,11 +158,9 @@ class RentsEdit extends Component<Props, State> {
           <FieldArray
             component={renderRents}
             name='rents.rentsArchived'
-            onOpenDeleteModal={this.handleOpenDeleteModal}
             rents={rentsArchived}
             showAddButton={false}
           />
-
 
           <h2>Vuokranperusteet</h2>
           <Divider />
@@ -213,7 +169,6 @@ class RentsEdit extends Component<Props, State> {
               component={BasisOfRentsEdit}
               isSaveClicked={isSaveClicked}
               name="basis_of_rents"
-              onOpenDeleteModal={this.handleOpenDeleteModal}
             />
           </GreenBoxEdit>
 

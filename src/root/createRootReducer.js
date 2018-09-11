@@ -11,6 +11,7 @@ import authReducer from '../auth/reducer';
 import billingPeriodsReducer from '../billingPeriods/reducer';
 import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
+import debtCollectionReducer from '../debtCollection/reducer';
 import decisionsReducer from '../decision/reducer';
 import districtsReducer from '../district/reducer';
 import infillDevelopmentReducer from '$src/infillDevelopment/reducer';
@@ -35,6 +36,7 @@ export default (): Reducer<RootState> =>
     billingPeriods: billingPeriodsReducer,
     comment: commentsReducer,
     contacts: contactsReducer,
+    debtCollection: debtCollectionReducer,
     decision: decisionsReducer,
     district: districtsReducer,
     form: formReducer,

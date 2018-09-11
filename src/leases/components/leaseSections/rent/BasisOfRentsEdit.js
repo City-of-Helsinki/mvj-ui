@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import {change, formValueSelector} from 'redux-form';
 import get from 'lodash/get';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -23,7 +24,6 @@ type Props = {
   change: Function,
   fields: any,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
 class BasisOfRentsEdit extends Component<Props> {
@@ -80,141 +80,157 @@ class BasisOfRentsEdit extends Component<Props> {
     }
   }
 
-  render() {
-    const {attributes, fields, isSaveClicked, onOpenDeleteModal} = this.props;
-    return (
-      <div>
-        <BoxItemContainer>
-          {fields && !!fields.length && fields.map((item, index) => {
-            const handleOpenDeleteModal = () => {
-              onOpenDeleteModal(
-                () => fields.remove(index),
-                DeleteModalTitles.BASIS_OF_RENT,
-                DeleteModalLabels.BASIS_OF_RENT,
-              );
-            };
+  handleAdd = () => {
+    const {fields} = this.props;
+    fields.push({
+      index: 1935,
+    });
+  }
 
-            return (
-              <BoxItem
-                key={index}
-                className='no-border-on-first-child'>
-                <BoxContentWrapper>
-                  <RemoveButton
-                    className='position-topright'
-                    onClick={handleOpenDeleteModal}
-                    title="Poista vuokranperuste"
+  render() {
+    const {attributes, fields, isSaveClicked} = this.props;
+    return (
+      <AppConsumer>
+        {({dispatch}) => {
+          return(
+            <div>
+              <BoxItemContainer>
+                {fields && !!fields.length && fields.map((item, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_DELETE_MODAL,
+                      deleteFunction: () => {
+                        fields.remove(index);
+                      },
+                      deleteModalLabel: DeleteModalLabels.BASIS_OF_RENT,
+                      deleteModalTitle: DeleteModalTitles.BASIS_OF_RENT,
+                    });
+                  };
+
+                  return (
+                    <BoxItem
+                      key={index}
+                      className='no-border-on-first-child'>
+                      <BoxContentWrapper>
+                        <RemoveButton
+                          className='position-topright'
+                          onClick={handleRemove}
+                          title="Poista vuokranperuste"
+                        />
+                        <Row>
+                          <Column small={6} medium={4} large={2}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'basis_of_rents.child.children.intended_use')}
+                              name={`${item}.intended_use`}
+                              overrideValues={{
+                                label: 'Käyttötarkoitus',
+                              }}
+                            />
+                          </Column>
+                          <Column small={3} medium={2} large={1}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'basis_of_rents.child.children.floor_m2')}
+                              name={`${item}.floor_m2`}
+                              unit='k-m²'
+                              overrideValues={{
+                                label: 'Pinta-ala',
+                              }}
+                            />
+                          </Column>
+                          <Column small={3} medium={2} large={1}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'basis_of_rents.child.children.index')}
+                              name={`${item}.index`}
+                              overrideValues={{
+                                label: 'Indeksi',
+                              }}
+                            />
+                          </Column>
+                          <Column small={3} medium={2} large={2}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'basis_of_rents.child.children.amount_per_floor_m2_index_100')}
+                              name={`${item}.amount_per_floor_m2_index_100`}
+                              unit='€/k-m²'
+                              overrideValues={{
+                                label: 'Yksikköhinta (ind 100)',
+                              }}
+                            />
+                          </Column>
+                          <Column small={3} medium={2} large={1}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'basis_of_rents.child.children.percent')}
+                              name={`${item}.percent`}
+                              unit='%'
+                              overrideValues={{
+                                label: 'Prosenttia',
+                              }}
+                            />
+                          </Column>
+                        </Row>
+                        <Row>
+                          <Column small={3} medium={4} large={2}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'basis_of_rents.child.children.amount_per_floor_m2_index')}
+                              name={`${item}.amount_per_floor_m2_index`}
+                              disabled
+                              disableDirty
+                              unit='€/k-m²'
+                              overrideValues={{
+                                label: 'Yksikköhinta (ind)',
+                              }}
+                            />
+                          </Column>
+                          <Column small={6} medium={4} large={2}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'basis_of_rents.child.children.year_rent_index_100')}
+                              name={`${item}.year_rent_index_100`}
+                              disabled
+                              disableDirty
+                              unit='€/v'
+                              overrideValues={{
+                                label: 'Perusvuosivuokra (ind 100)',
+                              }}
+                            />
+                          </Column>
+                          <Column small={6} medium={4} large={2}>
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'basis_of_rents.child.children.year_rent_index')}
+                              name={`${item}.year_rent_index`}
+                              disabled
+                              disableDirty
+                              unit='€/v'
+                              overrideValues={{
+                                label: 'Alkuvuosivuokra (ind)',
+                              }}
+                            />
+                          </Column>
+                        </Row>
+                      </BoxContentWrapper>
+                    </BoxItem>
+                  );
+                })}
+              </BoxItemContainer>
+              <Row>
+                <Column>
+                  <AddButtonSecondary
+                    label='Lisää vuokranperuste'
+                    onClick={this.handleAdd}
+                    title='Lisää vuokranperuste'
                   />
-                  <Row>
-                    <Column small={6} medium={4} large={2}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'basis_of_rents.child.children.intended_use')}
-                        name={`${item}.intended_use`}
-                        overrideValues={{
-                          label: 'Käyttötarkoitus',
-                        }}
-                      />
-                    </Column>
-                    <Column small={3} medium={2} large={1}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'basis_of_rents.child.children.floor_m2')}
-                        name={`${item}.floor_m2`}
-                        unit='k-m²'
-                        overrideValues={{
-                          label: 'Pinta-ala',
-                        }}
-                      />
-                    </Column>
-                    <Column small={3} medium={2} large={1}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'basis_of_rents.child.children.index')}
-                        name={`${item}.index`}
-                        overrideValues={{
-                          label: 'Indeksi',
-                        }}
-                      />
-                    </Column>
-                    <Column small={3} medium={2} large={2}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'basis_of_rents.child.children.amount_per_floor_m2_index_100')}
-                        name={`${item}.amount_per_floor_m2_index_100`}
-                        unit='€/k-m²'
-                        overrideValues={{
-                          label: 'Yksikköhinta (ind 100)',
-                        }}
-                      />
-                    </Column>
-                    <Column small={3} medium={2} large={1}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'basis_of_rents.child.children.percent')}
-                        name={`${item}.percent`}
-                        unit='%'
-                        overrideValues={{
-                          label: 'Prosenttia',
-                        }}
-                      />
-                    </Column>
-                  </Row>
-                  <Row>
-                    <Column small={3} medium={4} large={2}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'basis_of_rents.child.children.amount_per_floor_m2_index')}
-                        name={`${item}.amount_per_floor_m2_index`}
-                        disabled
-                        disableDirty
-                        unit='€/k-m²'
-                        overrideValues={{
-                          label: 'Yksikköhinta (ind)',
-                        }}
-                      />
-                    </Column>
-                    <Column small={6} medium={4} large={2}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'basis_of_rents.child.children.year_rent_index_100')}
-                        name={`${item}.year_rent_index_100`}
-                        disabled
-                        disableDirty
-                        unit='€/v'
-                        overrideValues={{
-                          label: 'Perusvuosivuokra (ind 100)',
-                        }}
-                      />
-                    </Column>
-                    <Column small={6} medium={4} large={2}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'basis_of_rents.child.children.year_rent_index')}
-                        name={`${item}.year_rent_index`}
-                        disabled
-                        disableDirty
-                        unit='€/v'
-                        overrideValues={{
-                          label: 'Alkuvuosivuokra (ind)',
-                        }}
-                      />
-                    </Column>
-                  </Row>
-                </BoxContentWrapper>
-              </BoxItem>
-            );
-          })}
-        </BoxItemContainer>
-        <Row>
-          <Column>
-            <AddButtonSecondary
-              label='Lisää vuokranperuste'
-              onClick={() => fields.push({index: 1935})}
-              title='Lisää vuokranperuste'
-            />
-          </Column>
-        </Row>
-      </div>
+                </Column>
+              </Row>
+            </div>
+          );
+        }}
+      </AppConsumer>
     );
   }
 }

@@ -10,6 +10,7 @@ type Props = {
   contentProps: Object,
   isLoading?: boolean,
   disabled?: boolean,
+  onBlur: Function,
   shouldToggleOnHover?: boolean
 };
 
@@ -38,6 +39,12 @@ class Dropdown extends Component<Props, State> {
 
   handleDocumentClick = (event: Event) => {
     if (this.wrapper && !this.wrapper.contains(event.target)) {
+      const {onBlur} = this.props;
+      const {expanded} = this.state;
+
+      if(expanded) {
+        onBlur();
+      }
       this.setState({expanded: false});
     }
   }
@@ -75,7 +82,6 @@ class Dropdown extends Component<Props, State> {
 
   handleBlur = () => {
     const {hasFocus} = this.state;
-
     if (hasFocus) {
       this.setState({
         hasFocus: false,

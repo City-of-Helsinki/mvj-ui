@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddButtonThird from '$components/form/AddButtonThird';
 import FormField from '$components/form/FormField';
@@ -92,101 +93,109 @@ type FixedInitialYearRentsProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: FixedInitialYearRentsProps): Element<*> => {
+const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedInitialYearRentsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
 
   return (
-    <div>
-      <Row>
-        <Column><SubTitle>Kiinteät alkuvuosivuokrat</SubTitle></Column>
-      </Row>
-      {fields && !!fields.length &&
-        <Row>
-          <Column small={3} medium={3} large={2}><FormFieldLabel>Käyttötarkoitus</FormFieldLabel></Column>
-          <Column small={3} medium={3} large={2}><FormFieldLabel>Kiinteä alkuvuosivuokra</FormFieldLabel></Column>
-          <Column small={2} medium={2} large={1}><FormFieldLabel>Alkupvm</FormFieldLabel></Column>
-          <Column small={2} medium={2} large={1}><FormFieldLabel>Loppupvm</FormFieldLabel></Column>
-        </Row>
-      }
-      {fields && !!fields.length && fields.map((rent, index) => {
-        const handleOpenDeleteModal = () => {
-          onOpenDeleteModal(
-            () => fields.remove(index),
-            DeleteModalTitles.FIXED_INITIAL_YEAR_RENT,
-            DeleteModalLabels.FIXED_INITIAL_YEAR_RENT,
-          );
-        };
-
-        return (
-          <div key={index}>
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
             <Row>
-              <Column small={3} medium={3} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use')}
-                  name={`${rent}.intended_use`}
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column small={3} medium={3} large={2}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
-                  name={`${rent}.amount`}
-                  unit='€'
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column small={2} medium={2} large={1}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.start_date')}
-                  name={`${rent}.start_date`}
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
-              <Column small={2} medium={2} large={1}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}
-                  name={`${rent}.end_date`}
-                  overrideValues={{
-                    label: '',
-                  }}
-                />
-              </Column>
+              <Column><SubTitle>Kiinteät alkuvuosivuokrat</SubTitle></Column>
+            </Row>
+            {fields && !!fields.length &&
+              <Row>
+                <Column small={3} medium={3} large={2}><FormFieldLabel>Käyttötarkoitus</FormFieldLabel></Column>
+                <Column small={3} medium={3} large={2}><FormFieldLabel>Kiinteä alkuvuosivuokra</FormFieldLabel></Column>
+                <Column small={2} medium={2} large={1}><FormFieldLabel>Alkupvm</FormFieldLabel></Column>
+                <Column small={2} medium={2} large={1}><FormFieldLabel>Loppupvm</FormFieldLabel></Column>
+              </Row>
+            }
+            {fields && !!fields.length && fields.map((rent, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.FIXED_INITIAL_YEAR_RENT,
+                  deleteModalTitle: DeleteModalTitles.FIXED_INITIAL_YEAR_RENT,
+                });
+              };
+
+              return (
+                <div key={index}>
+                  <Row>
+                    <Column small={3} medium={3} large={2}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use')}
+                        name={`${rent}.intended_use`}
+                        overrideValues={{
+                          label: '',
+                        }}
+                      />
+                    </Column>
+                    <Column small={3} medium={3} large={2}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
+                        name={`${rent}.amount`}
+                        unit='€'
+                        overrideValues={{
+                          label: '',
+                        }}
+                      />
+                    </Column>
+                    <Column small={2} medium={2} large={1}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.start_date')}
+                        name={`${rent}.start_date`}
+                        overrideValues={{
+                          label: '',
+                        }}
+                      />
+                    </Column>
+                    <Column small={2} medium={2} large={1}>
+                      <FormField
+                        disableTouched={isSaveClicked}
+                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}
+                        name={`${rent}.end_date`}
+                        overrideValues={{
+                          label: '',
+                        }}
+                      />
+                    </Column>
+                    <Column>
+                      <RemoveButton
+                        className='third-level'
+                        onClick={handleRemove}
+                        title="Poista alennus/korotus"
+                      />
+                    </Column>
+                  </Row>
+                </div>
+              );
+            })}
+            <Row>
               <Column>
-                <RemoveButton
-                  className='third-level'
-                  onClick={handleOpenDeleteModal}
-                  title="Poista alennus/korotus"
+                <AddButtonThird
+                  label='Lisää kiinteä alkuvuosivuokra'
+                  onClick={handleAdd}
+                  title='Lisää kiinteä alkuvuosivuokra'
                 />
               </Column>
             </Row>
           </div>
         );
-      })}
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää kiinteä alkuvuosivuokra'
-            onClick={handleAdd}
-            title='Lisää kiinteä alkuvuosivuokra'
-          />
-        </Column>
-      </Row>
-    </div>
+      }}
+    </AppConsumer>
   );
 };
 
@@ -194,7 +203,6 @@ type Props = {
   attributes: Attributes,
   dueDatesType: ?string,
   isSaveClicked: boolean,
-  onOpenDeleteModal?: Function,
   rentType: ?string,
 }
 
@@ -222,10 +230,9 @@ type BasicInfoIndexProps = {
   dueDatesType: ?string,
   isIndex: boolean,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked, onOpenDeleteModal}: BasicInfoIndexProps) => {
+const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: BasicInfoIndexProps) => {
   return (
     <div>
       <Row>
@@ -403,7 +410,6 @@ const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked, onOpe
             component={renderFixedInitialYearRents}
             isSaveClicked={isSaveClicked}
             name="fixed_initial_year_rents"
-            onOpenDeleteModal={onOpenDeleteModal}
           />
         </Column>
       </Row>
@@ -623,7 +629,6 @@ const BasicInfoEdit = ({
   attributes,
   dueDatesType,
   isSaveClicked,
-  onOpenDeleteModal = () => console.error('onOpenDeleteModal function missing'),
   rentType,
 }: Props) => {
   return (
@@ -642,7 +647,6 @@ const BasicInfoEdit = ({
           dueDatesType={dueDatesType}
           isIndex={true}
           isSaveClicked={isSaveClicked}
-          onOpenDeleteModal={onOpenDeleteModal}
           rentType={rentType}
         />
       }
@@ -676,7 +680,6 @@ const BasicInfoEdit = ({
           dueDatesType={dueDatesType}
           isIndex={false}
           isSaveClicked={isSaveClicked}
-          onOpenDeleteModal={onOpenDeleteModal}
           rentType={rentType}
         />
       }

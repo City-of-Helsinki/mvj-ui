@@ -45,6 +45,7 @@
   display: block;
   width: 100%;
   padding: rem-calc(20px);
+  padding-bottom: rem-calc(120px);
 
   .button-wrapper {
     text-align: right;
@@ -299,8 +300,9 @@
     h3 {
       font-size: $font-regular;
       font-weight: $semibold;
-      color: $tram;
-      margin: 0 0 rem-calc(5px);
+      color: $black;
+      margin: 0 0 rem-calc(10px);
+      text-transform: uppercase;
     }
   }
 
