@@ -11,11 +11,12 @@ export const AreaLocation = {
 /**
  * Delete modal labels enumerable.
  *
- * @type {{ADDRESS: string, BASIS_OF_RENT: string, CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DEBT_COLLECTION_NOTE: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}
+ * @type {{ADDRESS: string, BASIS_OF_RENT: string, COLLECTION_LETTER: string,  CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DEBT_COLLECTION_NOTE: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}
  */
 export const DeleteModalLabels = {
   ADDRESS: 'Haluatko varmasti poistaa osoitteen?',
   BASIS_OF_RENT: 'Haluatko varmasti poistaa vuokranperusteen?',
+  COLLECTION_LETTER: 'Haluatko varmasti poistaa perintäkirjeen?',
   CONDITION: 'Haluatko varmasti poistaa ehdon?',
   CONSTRUCTABILITY: 'Haluatko varmasti poistaa huomautuksen?',
   CONTRACT: 'Haluatko varmasti poistaa sopimuksen?',
@@ -40,11 +41,12 @@ export const DeleteModalLabels = {
 /**
  * Delete modal titles enumerable.
  *
- * @type {{ADDRESS: string, BASIS_OF_RENT: string, CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DEBT_COLLECTION_NOTE: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}
+ * @type {{ADDRESS: string, BASIS_OF_RENT: string, COLLECTION_LETTER: string, CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DEBT_COLLECTION_NOTE: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}
  */
 export const DeleteModalTitles = {
   ADDRESS: 'Poista osoite',
   BASIS_OF_RENT: 'Poista vuokranperuste',
+  COLLECTION_LETTER: 'Poista perintäkirje',
   CONDITION: 'Poista ehto',
   CONSTRUCTABILITY: 'Poista huomautus',
   CONTRACT: 'Poista sopimus',

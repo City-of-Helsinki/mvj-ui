@@ -497,3 +497,20 @@ export const sortByStartDateDesc = (a, b) =>
 
 export const sortByDueDateDesc = (a, b) =>
   sortStringByKeyDesc(a, b, 'due_date');
+
+const getFileNameByContentDisposition = (contentDisposition) => {
+  const regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
+  const matches = regex.exec(contentDisposition);
+  let filename;
+
+  if (matches != null && matches[3]) {
+    filename = matches[3].replace(/['"]/g, '');
+  }
+
+  return filename ? decodeURI(filename) : null;
+};
+
+export const getFileNameFromResponse = (response) => {
+  const disposition = response.headers.get('content-disposition');
+  return getFileNameByContentDisposition(disposition);
+};

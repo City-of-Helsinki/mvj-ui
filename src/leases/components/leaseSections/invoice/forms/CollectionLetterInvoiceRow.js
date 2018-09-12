@@ -17,6 +17,7 @@ import {getCollectionCostsByInvoice, getIsFetchingCollectionCostsByInvoice} from
 type Props = {
   field: any,
   collectionCosts: ?Object,
+  disableDirty?: boolean,
   fetchCollectionCostsByInvoice: Function,
   invoice: ?number,
   invoiceOptions: Array<Object>,
@@ -45,6 +46,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
   render() {
     const {
       collectionCosts,
+      disableDirty,
       field,
       invoiceOptions,
       isFetching,
@@ -61,6 +63,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
       <Row>
         <Column small={4}>
           <FormField
+            disableDirty={disableDirty}
             fieldAttributes={{
               type: 'choice',
               required: true,
@@ -94,7 +97,6 @@ class CollectionLetterInvoiceRow extends Component<Props> {
               />
             }
           />
-
         </Column>
       </Row>
     );

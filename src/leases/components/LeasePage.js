@@ -35,6 +35,7 @@ import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
+import {fetchCollectionLetterTemplates} from '$src/collectionLetterTemplate/actions';
 import {fetchAttributes as fetchCommentAttributes, fetchCommentsByLease} from '$src/comments/actions';
 import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {fetchDecisionsByLease} from '$src/decision/actions';
@@ -93,6 +94,7 @@ type Props = {
   destroy: Function,
   fetchAreaNoteList: Function,
   fetchAttributes: Function,
+  fetchCollectionLetterTemplates: Function,
   fetchCommentAttributes: Function,
   fetchCommentsByLease: Function,
   fetchContactAttributes: Function,
@@ -169,6 +171,7 @@ class LeasePage extends Component<Props, State> {
       contactAttributes,
       fetchAreaNoteList,
       fetchAttributes,
+      fetchCollectionLetterTemplates,
       fetchCommentAttributes,
       fetchCommentsByLease,
       fetchContactAttributes,
@@ -209,6 +212,7 @@ class LeasePage extends Component<Props, State> {
       fetchInvoiceAttributes();
     }
 
+    fetchCollectionLetterTemplates();
     fetchSingleLease(leaseId);
     fetchCommentsByLease(leaseId);
     fetchDecisionsByLease(leaseId);
@@ -933,6 +937,7 @@ export default flowRight(
       destroy,
       fetchAreaNoteList,
       fetchAttributes,
+      fetchCollectionLetterTemplates,
       fetchCommentAttributes,
       fetchCommentsByLease,
       fetchContactAttributes,

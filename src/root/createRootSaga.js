@@ -4,6 +4,8 @@ import {all, fork} from 'redux-saga/effects';
 import areaNoteSaga from '../areaNote/saga';
 import authSaga from '../auth/saga';
 import billingPeriodsSaga from '../billingPeriods/saga';
+import collectionLetterReducer from '../collectionLetter/saga';
+import collectionLetterTemplateReducer from '../collectionLetterTemplate/saga';
 import commentSaga from '../comments/saga';
 import contactSaga from '../contacts/saga';
 import debtCollectionSaga from '../debtCollection/saga';
@@ -26,6 +28,8 @@ export default () =>
       fork(areaNoteSaga),
       fork(authSaga),
       fork(billingPeriodsSaga),
+      fork(collectionLetterReducer),
+      fork(collectionLetterTemplateReducer),
       fork(commentSaga),
       fork(contactSaga),
       fork(debtCollectionSaga),

@@ -9,6 +9,8 @@ import apiReducer from '../api/reducer';
 import areaNoteReducer from '../areaNote/reducer';
 import authReducer from '../auth/reducer';
 import billingPeriodsReducer from '../billingPeriods/reducer';
+import collectionLetterReducer from '../collectionLetter/reducer';
+import collectionLetterTemplateReducer from '../collectionLetterTemplate/reducer';
 import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
 import debtCollectionReducer from '../debtCollection/reducer';
@@ -34,6 +36,8 @@ export default (): Reducer<RootState> =>
     areaNote: areaNoteReducer,
     auth: authReducer,
     billingPeriods: billingPeriodsReducer,
+    collectionLetter: collectionLetterReducer,
+    collectionLetterTemplate: collectionLetterTemplateReducer,
     comment: commentsReducer,
     contacts: contactsReducer,
     debtCollection: debtCollectionReducer,
