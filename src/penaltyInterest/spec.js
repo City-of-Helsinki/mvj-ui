@@ -7,8 +7,8 @@ import {
 import penaltyInterestReducer from './reducer';
 
 const defaultState = {
-  penaltyInterestByInvoice: {},
-  isFetchingPenaltyInterestByInvoice: {},
+  byInvoice: {},
+  isFetchingByInvoice: {},
 };
 
 describe('PenaltyInterest', () => {
@@ -18,7 +18,7 @@ describe('PenaltyInterest', () => {
     describe('penaltyInterestReducer', () => {
       it('should update isFetchingPenaltyInterestByInvoice flag to true when fetching', () => {
         const invoice = 1;
-        const newState = {...defaultState, isFetchingPenaltyInterestByInvoice: {[invoice]: true}};
+        const newState = {...defaultState, isFetchingByInvoice: {[invoice]: true}};
 
         const state = penaltyInterestReducer({}, fetchPenaltyInterestByInvoice(invoice));
         expect(state).to.deep.equal(newState);
@@ -26,7 +26,7 @@ describe('PenaltyInterest', () => {
 
       it('should update isFetchingPenaltyInterestByInvoice flag to false by penaltyInterestNotFoundByInvoice', () => {
         const invoice = 1;
-        const newState = {...defaultState, isFetchingPenaltyInterestByInvoice: {[invoice]: false}};
+        const newState = {...defaultState, isFetchingByInvoice: {[invoice]: false}};
 
         let state = penaltyInterestReducer({}, penaltyInterestNotFoundByInvoice(invoice));
         penaltyInterestReducer(state, penaltyInterestNotFoundByInvoice(invoice));
@@ -38,8 +38,8 @@ describe('PenaltyInterest', () => {
         const invoice = 1;
         const dummyPayload = {invoiceId: invoice, penaltyInterest: {foo: 'bar'}};
         const newState = {...defaultState,
-          penaltyInterestByInvoice: {[dummyPayload.invoiceId]: dummyPayload.penaltyInterest},
-          isFetchingPenaltyInterestByInvoice: {[dummyPayload.invoiceId]: false},
+          byInvoice: {[dummyPayload.invoiceId]: dummyPayload.penaltyInterest},
+          isFetchingByInvoice: {[dummyPayload.invoiceId]: false},
         };
 
         const state = penaltyInterestReducer({}, receivePenaltyInterestByInvoice(dummyPayload));
