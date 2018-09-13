@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import debounce from 'lodash/debounce';
 import {saveAs} from 'file-saver/FileSaver';
+import classNames from 'classnames';
 
 import {displayUIMessage, getFileNameFromResponse} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
@@ -55,7 +56,7 @@ const FileDownloadLink = ({
     }
   };
 
-  return <a className={className} onClick={handleClick} onKeyDown={handleKeyDown} tabIndex={0}>{label}</a>;
+  return <a className={classNames('file__file-download-link', className)} onClick={handleClick} onKeyDown={handleKeyDown} tabIndex={0}>{label}</a>;
 };
 
 export default connect(
