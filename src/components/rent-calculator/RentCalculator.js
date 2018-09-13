@@ -104,27 +104,27 @@ class RentCalculator extends Component<Props> {
           <Row>
             <Column small={12} medium={6}>
               <div className='rent-calculator__rents-container'>
-                {isFetching
-                  ? <LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper>
-                  : (
-                    <div>
-                      {!rents || !rents.length && <p className='no-margin'>Ei vuokria</p>}
-                      {!!rents && !!rents.length &&
-                        <div>
-                          {rents.map((rent, index) => {
-                            return (
-                              <Rent
-                                key={index}
-                                rent={rent}
-                              />
-                            );
-                          })}
-                          <TotalRow rents={rents} />
-                        </div>
-                      }
-                    </div>
-                  )
+                {isFetching &&
+                  <LoaderWrapper className='relative-overlay-wrapper'>
+                    <Loader isLoading={isFetching} />
+                  </LoaderWrapper>
                 }
+                <div>
+                  {!isFetching && (!rents || !rents.length) && <p className='no-margin'>Ei vuokria</p>}
+                  {!!rents && !!rents.length &&
+                    <div>
+                      {rents.map((rent, index) => {
+                        return (
+                          <Rent
+                            key={index}
+                            rent={rent}
+                          />
+                        );
+                      })}
+                      <TotalRow rents={rents} />
+                    </div>
+                  }
+                </div>
               </div>
             </Column>
           </Row>

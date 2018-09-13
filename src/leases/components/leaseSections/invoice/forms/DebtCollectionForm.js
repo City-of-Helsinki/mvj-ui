@@ -10,130 +10,122 @@ import isEmpty from 'lodash/isEmpty';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import AddFileButton from '$components/form/AddFileButton';
-import DebtCollectionNote from './DebtCollectionNote';
+import NewCollectionNote from './NewCollectionNote';
 import ExternalLink from '$components/links/ExternalLink';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import ListItems from '$components/content/ListItems';
 import RemoveButton from '$components/form/RemoveButton';
+import ShowMore from '$components/showMore/ShowMore';
 import SubTitle from '$components/content/SubTitle';
-import {deleteCollectionLetterFile, uploadCollectionLetterFile} from '$src/collectionLetter/actions';
-import {ContactType} from '$src/contacts/enums';
+import {deleteCollectionCourtDecision, uploadCollectionCourtDecision} from '$src/collectionCourtDecision/actions';
+import {deleteCollectionLetter, uploadCollectionLetter} from '$src/collectionLetter/actions';
+import {createCollectionNote, deleteCollectionNote} from '$src/collectionNote/actions';
 import {DecisionTypes} from '$src/decision/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {formatDate, getLabelOfOption, getReferenceNumberLink, sortStringByKeyAsc} from '$util/helpers';
+import {getCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/selectors';
 import {getCollectionLettersByLease} from '$src/collectionLetter/selectors';
+import {getCollectionNotesByLease} from '$src/collectionNote/selectors';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
+import type {CollectionCourtDecisionId} from '$src/collectionCourtDecision/types';
 import type {CollectionLetterId} from '$src/collectionLetter/types';
 import type {Lease} from '$src/leases/types';
 
 type NotesProps = {
   fields: any,
+  onCreate: Function,
+  saveCallback: Function,
 }
 
 const renderNotes = ({
   fields,
+  onCreate,
+  saveCallback,
 }: NotesProps) => {
   const handleAdd = () => {
     fields.push({});
   };
 
   return(
-    <AppConsumer>
-      {({dispatch}) => {
+    <div>
+      {!!fields.length && fields.map((field, index) => {
+        const handleCancel = () => {
+          fields.remove(index);
+        };
+
+        const handleSave = (note: string) => {
+          onCreate(note);
+          saveCallback(() => {
+            fields.remove(index);
+          });
+        };
+
         return(
-          <div>
-            {!!fields.length &&
-              <Row>
-                <Column small={6}><FormFieldLabel required>Huomautus</FormFieldLabel></Column>
-                <Column small={3}><FormFieldLabel>Lisätty</FormFieldLabel></Column>
-                <Column small={3}><FormFieldLabel>Lisääjä</FormFieldLabel></Column>
-              </Row>
-            }
-            {!!fields.length && fields.map((field, index) => {
-              const handleRemove = () => {
-                dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
-                    fields.remove(index);
-                  },
-                  deleteModalLabel: DeleteModalLabels.DEBT_COLLECTION_NOTE,
-                  deleteModalTitle: DeleteModalTitles.DEBT_COLLECTION_NOTE,
-                });
-              };
-
-              return(
-                <DebtCollectionNote
-                  key={index}
-                  field={field}
-                  onRemove={handleRemove}
-                />
-              );
-            })}
-            <AddButtonThird
-              label='Lisää huomautus'
-              onClick={handleAdd}
-            />
-          </div>
+          <NewCollectionNote
+            key={index}
+            field={field}
+            onCancel={handleCancel}
+            onSave={handleSave}
+          />
         );
-      }}
-    </AppConsumer>
-
+      })}
+      {!!fields.length < 1 &&
+        <AddButtonThird
+          label='Lisää huomautus'
+          onClick={handleAdd}
+        />
+      }
+    </div>
   );
 };
 
 type Props = {
+  collectionCourtDecisions: Array<Object>,
   collectionLetters: Array<Object>,
+  collectionNotes: Array<Object>,
+  createCollectionNote: Function,
   currentLease: Lease,
   decisions: Array<Object>,
-  deleteCollectionLetterFile: Function,
+  deleteCollectionCourtDecision: Function,
+  deleteCollectionLetter: Function,
+  deleteCollectionNote: Function,
   handleSubmit: Function,
-  uploadCollectionLetterFile: Function,
+  uploadCollectionCourtDecision: Function,
+  uploadCollectionLetter: Function,
   valid: boolean,
 }
 
 type State = {
+  collectionCourtDecisions: Array<Object>,
   collectionLetters: Array<Object>,
+  collectionNotes: Array<Object>,
+  createCollectionNoteCallback: ?Function,
   debtCollectionDecisions: Array<Object>,
   decisions: Array<Object>,
   decisionOptions: Array<Object>,
+  sortedCollectionCourtDecisions: Array<Object>,
   sortedCollectionLetters: Array<Object>,
+  sortedCollectionNotes: Array<Object>,
 }
 
 class DebtCollectionForm extends Component<Props, State> {
   state = {
+    collectionCourtDecisions: [],
     collectionLetters: [],
+    collectionNotes: [],
+    createCollectionNoteCallback: null,
     debtCollectionDecisions: [],
     decisions: [],
     decisionOptions: [],
+    sortedCollectionCourtDecisions: [],
     sortedCollectionLetters: [],
-  }
-
-  handleCollectionLetterFileChange = (e) => {
-    const {
-      currentLease,
-      uploadCollectionLetterFile,
-    } = this.props;
-
-    uploadCollectionLetterFile({
-      data: {
-        lease: currentLease.id,
-      },
-      file: e.target.files[0],
-    });
-  }
-
-  handleDeleteCollectionLetterFile = (id: CollectionLetterId) => {
-    const {currentLease, deleteCollectionLetterFile} = this.props;
-    deleteCollectionLetterFile({
-      id: id,
-      lease: currentLease.id,
-    });
+    sortedCollectionNotes: [],
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -145,15 +137,103 @@ class DebtCollectionForm extends Component<Props, State> {
       newStates.debtCollectionDecisions = props.decisions.filter((decision) => decision.type === DecisionTypes.LAND_LEASE_DEMOLITION);
     }
 
+    if(props.collectionCourtDecisions && props.collectionCourtDecisions !== state.collectionCourtDecisions) {
+      newStates.collectionCourtDecisions = props.collectionCourtDecisions;
+      newStates.sortedCollectionCourtDecisions = props.collectionCourtDecisions.sort((a, b) => sortStringByKeyAsc(a, b, 'uploaded_at'));
+    }
+
     if(props.collectionLetters && props.collectionLetters !== state.collectionLetters) {
       newStates.collectionLetters = props.collectionLetters;
       newStates.sortedCollectionLetters = props.collectionLetters.sort((a, b) => sortStringByKeyAsc(a, b, 'uploaded_at'));
+    }
+
+    if(props.collectionNotes && props.collectionNotes !== state.collectionNotes) {
+      newStates.collectionNotes = props.collectionNotes;
+      newStates.sortedCollectionNotes = props.collectionNotes.sort((a, b) => sortStringByKeyAsc(a, b, 'modified_at'));
     }
 
     if(!isEmpty(newStates)) {
       return newStates;
     }
     return null;
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if(prevProps.collectionNotes !== this.props.collectionNotes) {
+      const {createCollectionNoteCallback} = this.state;
+      if(createCollectionNoteCallback) {
+        createCollectionNoteCallback();
+        this.setState({
+          createCollectionNoteCallback: null,
+        });
+      }
+    }
+  }
+
+  handleCollectionCourtDecisionFileChange = (e) => {
+    const {
+      currentLease,
+      uploadCollectionCourtDecision,
+    } = this.props;
+
+    uploadCollectionCourtDecision({
+      data: {
+        lease: currentLease.id,
+      },
+      file: e.target.files[0],
+    });
+  }
+
+  handleCollectionLetterFileChange = (e) => {
+    const {
+      currentLease,
+      uploadCollectionLetter,
+    } = this.props;
+
+    uploadCollectionLetter({
+      data: {
+        lease: currentLease.id,
+      },
+      file: e.target.files[0],
+    });
+  }
+
+  handleDeleteCollectionCourtDecision = (id: CollectionCourtDecisionId) => {
+    const {currentLease, deleteCollectionCourtDecision} = this.props;
+    deleteCollectionCourtDecision({
+      id: id,
+      lease: currentLease.id,
+    });
+  }
+
+  handleDeleteCollectionLetter = (id: CollectionLetterId) => {
+    const {currentLease, deleteCollectionLetter} = this.props;
+    deleteCollectionLetter({
+      id: id,
+      lease: currentLease.id,
+    });
+  }
+
+  handleCreateCollectionNote = (note: string) => {
+    const {currentLease, createCollectionNote} = this.props;
+    createCollectionNote({
+      lease: currentLease.id,
+      note: note,
+    });
+  }
+
+  handleDeleteCollectionNote = (id: CollectionLetterId) => {
+    const {currentLease, deleteCollectionNote} = this.props;
+    deleteCollectionNote({
+      id: id,
+      lease: currentLease.id,
+    });
+  }
+
+  setSaveCollectionNoteCallback = (fn: Function) => {
+    this.setState({
+      createCollectionNoteCallback: fn,
+    });
   }
 
   render() {
@@ -163,7 +243,9 @@ class DebtCollectionForm extends Component<Props, State> {
     const {
       debtCollectionDecisions,
       decisionOptions,
+      sortedCollectionCourtDecisions,
       sortedCollectionLetters,
+      sortedCollectionNotes,
     } = this.state;
 
     return(
@@ -186,7 +268,7 @@ class DebtCollectionForm extends Component<Props, State> {
                       dispatch({
                         type: ActionTypes.SHOW_DELETE_MODAL,
                         deleteFunction: () => {
-                          this.handleDeleteCollectionLetterFile(collectionLetter.id);
+                          this.handleDeleteCollectionLetter(collectionLetter.id);
                         },
                         deleteModalLabel: DeleteModalLabels.COLLECTION_LETTER,
                         deleteModalTitle: DeleteModalTitles.COLLECTION_LETTER,
@@ -197,7 +279,6 @@ class DebtCollectionForm extends Component<Props, State> {
                       <Row key={index}>
                         <Column small={6}>
                           <FileDownloadLink
-                            fileName={collectionLetter.filename}
                             fileUrl={collectionLetter.file}
                             label={collectionLetter.filename}
                           />
@@ -216,7 +297,6 @@ class DebtCollectionForm extends Component<Props, State> {
                               />
                             }
                           />
-
                         </Column>
                       </Row>
                     );
@@ -228,6 +308,56 @@ class DebtCollectionForm extends Component<Props, State> {
                   />
 
                   <SubTitle>Käräjäoikeuden päätökset</SubTitle>
+                  {sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length &&
+                    <Row>
+                      <Column small={6}><FormFieldLabel>Tiedosto</FormFieldLabel></Column>
+                      <Column small={3}><FormFieldLabel>Lisätty</FormFieldLabel></Column>
+                      <Column small={3}><FormFieldLabel>Lisääjä</FormFieldLabel></Column>
+                    </Row>
+                  }
+                  {sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length && sortedCollectionCourtDecisions.map((collectionCourtDecision, index) => {
+                    const handleRemove = () => {
+                      dispatch({
+                        type: ActionTypes.SHOW_DELETE_MODAL,
+                        deleteFunction: () => {
+                          this.handleDeleteCollectionCourtDecision(collectionCourtDecision.id);
+                        },
+                        deleteModalLabel: DeleteModalLabels.COLLECTION_COURT_DECISION,
+                        deleteModalTitle: DeleteModalTitles.COLLECTION_COURT_DECISION,
+                      });
+                    };
+
+                    return (
+                      <Row key={index}>
+                        <Column small={6}>
+                          <FileDownloadLink
+                            fileUrl={collectionCourtDecision.file}
+                            label={collectionCourtDecision.filename}
+                          />
+                        </Column>
+                        <Column small={3}>
+                          <p>{formatDate(collectionCourtDecision.uploaded_at) || '-'}</p>
+                        </Column>
+                        <Column small={3}>
+                          <FieldAndRemoveButtonWrapper
+                            field={<p style={{width: '100%'}}>{getUserFullName(collectionCourtDecision.uploader) || '-'}</p>}
+                            removeButton={
+                              <RemoveButton
+                                className='third-level'
+                                onClick={handleRemove}
+                                title='Poista käräjäoikeuden päätös'
+                              />
+                            }
+                          />
+                        </Column>
+                      </Row>
+                    );
+                  })}
+                  <AddFileButton
+                    label='Lisää käräjäoikeuden päätös'
+                    name={'collectionCourtDecisionFileButtonId'}
+                    onChange={this.handleCollectionCourtDecisionFileChange}
+                  />
 
                   <SubTitle>Vuokrauksen purkamispäätös</SubTitle>
                   {!debtCollectionDecisions.length && <p>Ei purkamispäätöksiä</p>}
@@ -246,9 +376,48 @@ class DebtCollectionForm extends Component<Props, State> {
                   }
 
                   <SubTitle>Huomautukset</SubTitle>
+                  {sortedCollectionNotes && !!sortedCollectionNotes.length &&
+                    <Row>
+                      <Column small={6}><FormFieldLabel required>Huomautus</FormFieldLabel></Column>
+                      <Column small={3}><FormFieldLabel>Lisätty</FormFieldLabel></Column>
+                      <Column small={3}><FormFieldLabel>Lisääjä</FormFieldLabel></Column>
+                    </Row>
+                  }
+                  {sortedCollectionNotes && !!sortedCollectionNotes.length && sortedCollectionNotes.map((note) => {
+                    const handleRemove = () => {
+                      dispatch({
+                        type: ActionTypes.SHOW_DELETE_MODAL,
+                        deleteFunction: () => {
+                          this.handleDeleteCollectionNote(note.id);
+                        },
+                        deleteModalLabel: DeleteModalLabels.COLLECTION_NOTE,
+                        deleteModalTitle: DeleteModalTitles.COLLECTION_NOTE,
+                      });
+                    };
+
+                    return(
+                      <Row key={note.id}>
+                        <Column small={6}><ShowMore text={note.note} /></Column>
+                        <Column small={3}><p>{formatDate(note.modified_at)}</p></Column>
+                        <Column small={3}>
+                          <FieldAndRemoveButtonWrapper
+                            field={<p style={{width: '100%'}}>{getUserFullName(note.user)}</p>}
+                            removeButton={
+                              <RemoveButton
+                                className='third-level'
+                                onClick={handleRemove}
+                                title='Poista huomautus'
+                              />
+                            }
+                          /></Column>
+                      </Row>
+                    );
+                  })}
                   <FieldArray
                     component={renderNotes}
                     name='notes'
+                    onCreate={this.handleCreateCollectionNote}
+                    saveCallback={this.setSaveCollectionNoteCallback}
                   />
                 </Column>
                 <Column small={12} large={6}></Column>
@@ -257,7 +426,6 @@ class DebtCollectionForm extends Component<Props, State> {
           );
         }}
       </AppConsumer>
-
     );
   }
 }
@@ -269,34 +437,23 @@ export default flowRight(
     (state) => {
       const currentLease = getCurrentLease(state);
       return {
+        collectionCourtDecisions: getCollectionCourtDecisionsByLease(state, currentLease.id),
         collectionLetters: getCollectionLettersByLease(state, currentLease.id),
+        collectionNotes: getCollectionNotesByLease(state, currentLease.id),
         currentLease: currentLease,
         decisions: getDecisionsByLease(state, currentLease.id),
       };
     },
     {
-      deleteCollectionLetterFile,
-      uploadCollectionLetterFile,
+      createCollectionNote,
+      deleteCollectionCourtDecision,
+      deleteCollectionLetter,
+      deleteCollectionNote,
+      uploadCollectionCourtDecision,
+      uploadCollectionLetter,
     }
   ),
   reduxForm({
     form: formName,
-    // TODO: Use mock data until the debt collection API is ready
-    initialValues: {
-      notes: [
-        {
-          id: 12,
-          date: '2018-05-09',
-          note: 'Lorem lorem lorem lorem ipsum',
-          user: {
-            id: 1,
-            first_name: 'Jori',
-            is_staff: false,
-            last_name: 'Lindell',
-            type: ContactType.PERSON,
-          },
-        },
-      ],
-    },
   }),
 )(DebtCollectionForm);

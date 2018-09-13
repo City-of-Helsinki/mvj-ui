@@ -22,12 +22,47 @@
     height: 40px
   }
 
+  &.small {
+    width: 14px;
+    height: 14px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    border: 2px solid #ccc;
+    border-right-color: #333;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    margin: -7px 0 0 -7px;
+    animation: loaderSpinner .7s infinite linear;
+    -webkit-animation: loaderSpinner .7s infinite linear;
+  }
+
   &__wrapper {
     position: relative;
     padding: 2rem;
 
+    &.invoice-row-wrapper {
+      position: absolute;
+      width: 14px;
+      padding: 0;
+
+      .loader {
+        margin-top: -8px;
+        margin-left: -20px;
+      }
+    }
     &.overlay-wrapper {
       position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      background-color: rgba(255, 255, 255, 0.45);
+      z-index: 5000;
+    }
+
+    &.relative-overlay-wrapper {
+      position: absolute;
       top: 0;
       right: 0;
       bottom: 0;

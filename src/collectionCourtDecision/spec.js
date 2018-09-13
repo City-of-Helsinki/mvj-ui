@@ -1,33 +1,33 @@
 import {expect} from 'chai';
 import {
-  fetchCollectionLettersByLease,
-  receiveCollectionLettersByLease,
+  fetchCollectionCourtDecisionsByLease,
+  receiveCollectionCourtDecisionsByLease,
   notFoundByLease,
 } from './actions';
-import collectionLetterReducer from './reducer';
+import collectionCourtDecisionReducer from './reducer';
 
 const defaultState = {
   byLease: {},
   isFetchingByLease: {},
 };
 
-describe('collectionLetter', () => {
+describe('collectionCourtDecision', () => {
 
   describe('Reducer', () => {
 
-    describe('collectionLetterReducer', () => {
-      it('should update isFetching flag to true when fetching collection letters', () => {
+    describe('collectionCourtDecisionReducer', () => {
+      it('should update isFetching flag to true when fetching collection court decisions', () => {
         const lease = 1;
         const newState = {...defaultState};
         newState.isFetchingByLease = {[lease]: true};
 
-        const state = collectionLetterReducer({}, fetchCollectionLettersByLease(lease));
+        const state = collectionCourtDecisionReducer({}, fetchCollectionCourtDecisionsByLease(lease));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update collection letter list', () => {
+      it('should update collection court decision list', () => {
         const lease = 1;
-        const dummyCollectionLetters = [
+        const dummyCollectionCourtDecisions = [
           {
             id: 1,
             label: 'Foo',
@@ -37,9 +37,9 @@ describe('collectionLetter', () => {
 
         const newState = {...defaultState};
         newState.isFetchingByLease = {[lease]: false};
-        newState.byLease = {[lease]: dummyCollectionLetters};
+        newState.byLease = {[lease]: dummyCollectionCourtDecisions};
 
-        const state = collectionLetterReducer({}, receiveCollectionLettersByLease({lease: lease, collectionLetters: dummyCollectionLetters}));
+        const state = collectionCourtDecisionReducer({}, receiveCollectionCourtDecisionsByLease({lease: lease, collectionCourtDecisions: dummyCollectionCourtDecisions}));
         expect(state).to.deep.equal(newState);
       });
 
@@ -48,7 +48,7 @@ describe('collectionLetter', () => {
         const newState = {...defaultState};
         newState.isFetchingByLease = {[lease]: false};
 
-        const state = collectionLetterReducer({}, notFoundByLease(lease));
+        const state = collectionCourtDecisionReducer({}, notFoundByLease(lease));
         expect(state).to.deep.equal(newState);
       });
     });

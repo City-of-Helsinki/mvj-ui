@@ -3,13 +3,13 @@ import {createAction} from 'redux-actions';
 import type {LeaseId} from '$src/leases/types';
 
 import type {
-  CollectionLetterFileData,
-  CollectionLetterDeleteData,
+  UploadCollectionLetterPayload,
+  DeleteCollectionLetterPayload,
   FetchCollectionLettersByLeaseAction,
   ReceiveCollectionLettersByLeaseAction,
   CollectionLettersNotFoundByLeaseAction,
-  UploadCollectionLetterFileAction,
-  DeleteCollectionLetterFileAction,
+  UploadCollectionLetterAction,
+  DeleteCollectionLetterAction,
 } from './types';
 
 export const fetchCollectionLettersByLease = (lease: LeaseId): FetchCollectionLettersByLeaseAction =>
@@ -21,8 +21,8 @@ export const receiveCollectionLettersByLease = (payload: Object): ReceiveCollect
 export const notFoundByLease = (lease: LeaseId): CollectionLettersNotFoundByLeaseAction =>
   createAction('mvj/collectionLetter/NOT_FOUND_BY_LEASE')(lease);
 
-export const uploadCollectionLetterFile = (payload: CollectionLetterFileData): UploadCollectionLetterFileAction =>
-  createAction('mvj/collectionLetter/UPLOAD_FILE')(payload);
+export const uploadCollectionLetter = (payload: UploadCollectionLetterPayload): UploadCollectionLetterAction =>
+  createAction('mvj/collectionLetter/UPLOAD')(payload);
 
-export const deleteCollectionLetterFile = (payload: CollectionLetterDeleteData): DeleteCollectionLetterFileAction =>
-  createAction('mvj/collectionLetter/DELETE_FILE')(payload);
+export const deleteCollectionLetter = (payload: DeleteCollectionLetterPayload): DeleteCollectionLetterAction =>
+  createAction('mvj/collectionLetter/DELETE')(payload);

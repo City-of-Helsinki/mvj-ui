@@ -2,6 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import debounce from 'lodash/debounce';
+import {saveAs} from 'file-saver/FileSaver';
 
 import Button from '$components/button/Button';
 import {displayUIMessage, getFileNameFromResponse} from '$util/helpers';
@@ -15,7 +16,7 @@ type Props = {
   url: string,
 }
 
-const DownloadDebtCollectionFileButton = ({
+const FileDownloadButton = ({
   apiToken,
   disabled,
   label,
@@ -41,17 +42,10 @@ const DownloadDebtCollectionFileButton = ({
           const blob = await response.blob();
           const filename = getFileNameFromResponse(response);
 
-          if (window.navigator.msSaveOrOpenBlob) { // for IE and Edge
-            window.navigator.msSaveBlob(blob, filename);
-          } else { // for modern browsers
-            const tempLink = document.createElement('a');
-            const fileURL = window.URL.createObjectURL(blob);
-            tempLink.href = fileURL;
-            tempLink.setAttribute('download', filename);
-            tempLink.click();
-          }
+          saveAs(blob, filename);
           break;
         default:
+          displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
           break;
       }
     } catch(e) {
@@ -78,4 +72,4 @@ export default connect(
       apiToken: getApiToken(state),
     };
   }
-)(DownloadDebtCollectionFileButton);
+)(FileDownloadButton);

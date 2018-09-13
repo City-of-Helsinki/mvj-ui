@@ -1,33 +1,33 @@
 import {expect} from 'chai';
 import {
-  fetchCollectionLettersByLease,
-  receiveCollectionLettersByLease,
+  fetchCollectionNotesByLease,
+  receiveCollectionNotesByLease,
   notFoundByLease,
 } from './actions';
-import collectionLetterReducer from './reducer';
+import collectionNoteReducer from './reducer';
 
 const defaultState = {
   byLease: {},
   isFetchingByLease: {},
 };
 
-describe('collectionLetter', () => {
+describe('collectionNote', () => {
 
   describe('Reducer', () => {
 
-    describe('collectionLetterReducer', () => {
-      it('should update isFetching flag to true when fetching collection letters', () => {
+    describe('collectionNoteReducer', () => {
+      it('should update isFetching flag to true when fetching collection notes', () => {
         const lease = 1;
         const newState = {...defaultState};
         newState.isFetchingByLease = {[lease]: true};
 
-        const state = collectionLetterReducer({}, fetchCollectionLettersByLease(lease));
+        const state = collectionNoteReducer({}, fetchCollectionNotesByLease(lease));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update collection letter list', () => {
+      it('should update collection note list', () => {
         const lease = 1;
-        const dummyCollectionLetters = [
+        const dummyCollectionNotes = [
           {
             id: 1,
             label: 'Foo',
@@ -37,9 +37,9 @@ describe('collectionLetter', () => {
 
         const newState = {...defaultState};
         newState.isFetchingByLease = {[lease]: false};
-        newState.byLease = {[lease]: dummyCollectionLetters};
+        newState.byLease = {[lease]: dummyCollectionNotes};
 
-        const state = collectionLetterReducer({}, receiveCollectionLettersByLease({lease: lease, collectionLetters: dummyCollectionLetters}));
+        const state = collectionNoteReducer({}, receiveCollectionNotesByLease({lease: lease, collectionNotes: dummyCollectionNotes}));
         expect(state).to.deep.equal(newState);
       });
 
@@ -48,7 +48,7 @@ describe('collectionLetter', () => {
         const newState = {...defaultState};
         newState.isFetchingByLease = {[lease]: false};
 
-        const state = collectionLetterReducer({}, notFoundByLease(lease));
+        const state = collectionNoteReducer({}, notFoundByLease(lease));
         expect(state).to.deep.equal(newState);
       });
     });

@@ -1,5 +1,5 @@
 // @flow
-import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
+import {all, call, fork, put, select, takeLatest} from 'redux-saga/effects';
 import {SubmissionError} from 'redux-form';
 
 import {receiveError} from '$src/api/actions';
@@ -11,9 +11,10 @@ import {
 import {displayUIMessage} from '../util/helpers';
 import {
   fetchCollectionLettersByLease,
-  uploadCollectionLetterFile,
-  deleteCollectionLetterFile,
+  uploadCollectionLetter,
+  deleteCollectionLetter,
 } from './requests';
+import {getCollectionLettersByLease} from './selectors';
 
 function* fetchCollectionLettersByLeaseSaga({payload: lease}): Generator<any, any, any> {
   try {
@@ -33,40 +34,44 @@ function* fetchCollectionLettersByLeaseSaga({payload: lease}): Generator<any, an
   }
 }
 
-function* uploadCollectionLetterFileSaga({payload}): Generator<any, any, any> {
+function* uploadCollectionLetterSaga({payload}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(uploadCollectionLetterFile, payload);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(uploadCollectionLetter, payload);
 
     switch (statusCode) {
       case 201:
-        displayUIMessage({title: '', body: 'Perintäkirje tallennettu'});
         yield put(fetchCollectionLettersByLeaseAction(payload.data.lease));
+        displayUIMessage({title: '', body: 'Perintäkirje tallennettu'});
         break;
       default:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
     }
   } catch (error) {
-    console.error('Failed to upload a file with error "%s"', error);
+    console.error('Failed to upload collection letter with error "%s"', error);
     yield put(receiveError(error));
   }
 }
 
-function* deleteCollectionLetterFileSaga({payload}): Generator<any, any, any> {
+function* deleteCollectionLetterSaga({payload}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(deleteCollectionLetterFile, payload.id);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(deleteCollectionLetter, payload.id);
 
     switch (statusCode) {
       case 204:
+        const currentLetters = yield select(getCollectionLettersByLease, payload.lease);
+        yield put(receiveCollectionLettersByLease({
+          lease: payload.lease,
+          collectionLetters: currentLetters.filter((letter) => letter.id !== payload.id)}
+        ));
         displayUIMessage({title: '', body: 'Perintäkirje poistettu'});
-        yield put(fetchCollectionLettersByLeaseAction(payload.lease));
         break;
       default:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
     }
   } catch (error) {
-    console.error('Failed to upload a file with error "%s"', error);
+    console.error('Failed to delete collection letter with error "%s"', error);
     yield put(receiveError(error));
   }
 }
@@ -75,8 +80,8 @@ export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
       yield takeLatest('mvj/collectionLetter/FETCH_BY_LEASE', fetchCollectionLettersByLeaseSaga);
-      yield takeLatest('mvj/collectionLetter/UPLOAD_FILE', uploadCollectionLetterFileSaga);
-      yield takeLatest('mvj/collectionLetter/DELETE_FILE', deleteCollectionLetterFileSaga);
+      yield takeLatest('mvj/collectionLetter/UPLOAD', uploadCollectionLetterSaga);
+      yield takeLatest('mvj/collectionLetter/DELETE', deleteCollectionLetterSaga);
     }),
   ]);
 }

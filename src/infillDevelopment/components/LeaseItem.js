@@ -312,7 +312,6 @@ class LeaseItem extends Component<Props, State> {
                 <Row key={index}>
                   <Column small={4} large={4}>
                     <FileDownloadLink
-                      fileName={file.filename}
                       fileUrl={file.file}
                       label={file.filename}
                     />

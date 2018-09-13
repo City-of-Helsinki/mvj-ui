@@ -9,12 +9,12 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import AddButtonThird from '$components/form/AddButtonThird';
+import CollectionLetterInvoiceRow from './CollectionLetterInvoiceRow';
 import CollectionLetterTotalRow from './CollectionLetterTotalRow';
 import Divider from '$components/content/Divider';
-import DownloadDebtCollectionFileButton from '$components/file/DownloadDebtCollectionFileButton';
+import FileDownloadButton from '$components/file/FileDownloadButton';
 import FormField from '$components/form/FormField';
 import FormFieldLabel from '$components/form/FormFieldLabel';
-import CollectionLetterInvoiceRow from './CollectionLetterInvoiceRow';
 import SubTitle from '$components/content/SubTitle';
 import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
@@ -29,12 +29,14 @@ import type {CollectionLetterTemplates} from '$src/collectionLetterTemplate/type
 import type {Lease} from '$src/leases/types';
 
 type InvoicesProps = {
+  collectionCharge: number,
   disableDirty?: boolean,
   fields: any,
   invoiceOptions: Array<Object>,
 }
 
 const renderInvoices = ({
+  collectionCharge,
   disableDirty = false,
   fields,
   invoiceOptions,
@@ -66,6 +68,7 @@ const renderInvoices = ({
         const handleRemove = () => fields.remove(index);
         return (
           <CollectionLetterInvoiceRow
+            collectionCharge={collectionCharge}
             disableDirty={disableDirty}
             key={index}
             field={invoice}
@@ -90,7 +93,7 @@ const renderInvoices = ({
           <Divider className='invoice-divider' />
         </Column>
       </Row>
-      <CollectionLetterTotalRow fields={fields} />
+      <CollectionLetterTotalRow collectionCharge={collectionCharge} fields={fields} />
     </div>
   );
 };
@@ -122,7 +125,7 @@ const getInvoiceOptions = (invoices: Array<Object>) => !isEmpty(invoices)
     .map((invoice) => {
       return {
         value: invoice.id,
-        label: `${formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}\t${formatDate(invoice.due_date)}`.trim(),
+        label: `${formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}\t${formatDate(invoice.due_date)} (${invoice.id})`.trim(),
       };
     })
   : [];
@@ -222,6 +225,7 @@ class CreateCollectionLetterForm extends Component<Props, State> {
             <SubTitle>Perintälaskelma</SubTitle>
             <FieldArray
               disableDirty
+              collectionCharge={collectionCharge}
               component={renderInvoices}
               invoiceOptions={invoiceOptions}
               name='invoice_ids'
@@ -229,7 +233,7 @@ class CreateCollectionLetterForm extends Component<Props, State> {
           </Column>
           <Column small={12}>
             <div style={{paddingTop: 5, paddingBottom: 10, float: 'right'}}>
-              <DownloadDebtCollectionFileButton
+              <FileDownloadButton
                 disabled={!valid}
                 label='Luo perintäkirje'
                 payload={{

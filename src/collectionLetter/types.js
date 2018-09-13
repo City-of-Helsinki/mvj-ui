@@ -7,13 +7,13 @@ export type CollectionLetterState = {
   isFetchingByLease: Object,
 };
 export type CollectionLetterId = number;
-export type CollectionLetterFileData = {
+export type UploadCollectionLetterPayload = {
   data: {
     lease: LeaseId,
   },
   file: Object,
 };
-export type CollectionLetterDeleteData = {
+export type DeleteCollectionLetterPayload = {
   id: CollectionLetterId,
   lease: LeaseId,
 };
@@ -21,5 +21,5 @@ export type CollectionLetterDeleteData = {
 export type FetchCollectionLettersByLeaseAction = Action<'mvj/collectionLetter/FETCH_BY_LEASE', LeaseId>;
 export type ReceiveCollectionLettersByLeaseAction = Action<'mvj/collectionLetter/RECEIVE_BY_LEASE', Object>;
 export type CollectionLettersNotFoundByLeaseAction = Action<'mvj/collectionLetter/NOT_FOUND_BY_LEASE', LeaseId>;
-export type UploadCollectionLetterFileAction = Action<'mvj/collectionLetter/UPLOAD_FILE', CollectionLetterFileData>;
-export type DeleteCollectionLetterFileAction = Action<'mvj/collectionLetter/DELETE_FILE', CollectionLetterDeleteData>;
+export type UploadCollectionLetterAction = Action<'mvj/collectionLetter/UPLOAD', UploadCollectionLetterPayload>;
+export type DeleteCollectionLetterAction = Action<'mvj/collectionLetter/DELETE', DeleteCollectionLetterPayload>;

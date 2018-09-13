@@ -5,47 +5,52 @@ import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import isEmpty from 'lodash/isEmpty';
 
-import {fetchCollectionCostsByInvoice} from '$src/debtCollection/actions';
 import {FormNames} from '$src/leases/enums';
-import {formatNumber} from '$util/helpers';
-import {getCollectionCostsByInvoice} from '$src/debtCollection/selectors';
+import {formatDecimalNumberForDb, formatNumber} from '$util/helpers';
+import {getPenaltyInterestByInvoice} from '$src/penaltyInterest/selectors';
 
 type Props = {
-  collectionCostsArray: Array<Object>,
+  collectionCharge: number,
   fields: any,
+  penaltyInterestArray: Array<Object>,
 }
 
 const CollectionLetterTotalRow = ({
-  collectionCostsArray,
+  collectionCharge,
+  penaltyInterestArray,
 }: Props) => {
-  const getTotalFeePayment = () => {
+  const getTotalOutstandingAmount = () => {
     let total = 0;
-    collectionCostsArray.forEach((collectionCost) => {
-      total += Number(collectionCost.fee_payment);
+    penaltyInterestArray.forEach((penaltyInterest) => {
+      total += penaltyInterest.outstanding_amount;
     });
     return total;
   };
 
-  const getTotalInterest = () => {
+  const getTotalInterestAmount = () => {
     let total = 0;
-    collectionCostsArray.forEach((collectionCost) => {
-      total += Number(collectionCost.interest);
+    penaltyInterestArray.forEach((penaltyInterest) => {
+      total += penaltyInterest.total_interest_amount;
     });
     return total;
   };
 
-  const getTotalCollectionFee = () => {
+  const getTotalCollectionCharge = () => {
     let total = 0;
-    collectionCostsArray.forEach((collectionCost) => {
-      total += Number(collectionCost.collection_fee);
-    });
+    const formatedCollectionCharge = formatDecimalNumberForDb(collectionCharge);
+
+    if(collectionCharge && !isNaN(formatedCollectionCharge)) {
+      penaltyInterestArray.forEach(() => {
+        total += formatedCollectionCharge;
+      });
+    }
     return total;
   };
 
-  const totalFeePayment = getTotalFeePayment(),
-    totalInterest = getTotalInterest(),
-    totalCollectionFee = getTotalCollectionFee(),
-    total = totalFeePayment + totalInterest + totalCollectionFee;
+  const totalOutstandingAmount = getTotalOutstandingAmount(),
+    totalInterestAmount = getTotalInterestAmount(),
+    totalCollectionCharge = getTotalCollectionCharge(),
+    total = totalOutstandingAmount + totalInterestAmount + totalCollectionCharge;
 
   return(
     <Row>
@@ -53,13 +58,13 @@ const CollectionLetterTotalRow = ({
         <p>Yhteensä</p>
       </Column>
       <Column small={2}>
-        <p>{`${formatNumber(totalFeePayment)} €`}</p>
+        <p>{`${formatNumber(totalOutstandingAmount)} €`}</p>
       </Column>
       <Column small={2}>
-        <p>{`${formatNumber(totalInterest)} €`}</p>
+        <p>{`${formatNumber(totalInterestAmount)} €`}</p>
       </Column>
       <Column small={2}>
-        <p>{`${formatNumber(totalCollectionFee)} €`}</p>
+        <p>{`${formatNumber(totalCollectionCharge)} €`}</p>
       </Column>
       <Column small={2}>
         <p><strong>{`${formatNumber(total)} €`}</strong></p>
@@ -73,20 +78,17 @@ const selector = formValueSelector(formName);
 
 export default connect(
   (state, props) => {
-    const collectionCostsArray = [];
+    const penaltyInterestArray = [];
     props.fields.forEach((field) => {
       const invoice = selector(state, field),
-        collectionCosts = getCollectionCostsByInvoice(state, invoice);
-      if(!isEmpty(collectionCosts)) {
-        collectionCostsArray.push(collectionCosts);
+        penaltyInterest = getPenaltyInterestByInvoice(state, invoice);
+      if(!isEmpty(penaltyInterest)) {
+        penaltyInterestArray.push(penaltyInterest);
       }
     });
 
     return {
-      collectionCostsArray: collectionCostsArray,
+      penaltyInterestArray: penaltyInterestArray,
     };
   },
-  {
-    fetchCollectionCostsByInvoice,
-  }
 )(CollectionLetterTotalRow);

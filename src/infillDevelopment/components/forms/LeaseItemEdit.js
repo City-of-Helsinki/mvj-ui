@@ -615,7 +615,6 @@ class LeaseItemEdit extends Component<Props, State> {
                             <Row key={index}>
                               <Column small={3} large={4}>
                                 <FileDownloadLink
-                                  fileName={file.filename}
                                   fileUrl={file.file}
                                   label={file.filename}
                                 />

@@ -8,57 +8,60 @@ import isEmpty from 'lodash/isEmpty';
 
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
+import Loader from '$src/components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RemoveButton from '$components/form/RemoveButton';
-import {fetchCollectionCostsByInvoice} from '$src/debtCollection/actions';
+import {fetchPenaltyInterestByInvoice} from '$src/penaltyInterest/actions';
 import {FormNames} from '$src/leases/enums';
-import {formatNumber} from '$util/helpers';
-import {getCollectionCostsByInvoice, getIsFetchingCollectionCostsByInvoice} from '$src/debtCollection/selectors';
+import {formatDecimalNumberForDb, formatNumber} from '$util/helpers';
+import {getIsFetchingByInvoice, getPenaltyInterestByInvoice} from '$src/penaltyInterest/selectors';
 
 type Props = {
   field: any,
-  collectionCosts: ?Object,
+  collectionCharge: number,
   disableDirty?: boolean,
-  fetchCollectionCostsByInvoice: Function,
+  fetchPenaltyInterestByInvoice: Function,
   invoice: ?number,
   invoiceOptions: Array<Object>,
   isFetching: boolean,
   onRemove: Function,
+  penaltyInterest: ?Object,
   selectedInvoices: Array<Object>,
   showDeleteButton: boolean,
 }
 
 class CollectionLetterInvoiceRow extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
-    if(prevProps.invoice !== this.props.invoice && isEmpty(this.props.collectionCosts)) {
-      const {fetchCollectionCostsByInvoice, invoice} = this.props;
-      fetchCollectionCostsByInvoice(invoice);
+    if(prevProps.invoice !== this.props.invoice && isEmpty(this.props.penaltyInterest)) {
+      const {fetchPenaltyInterestByInvoice, invoice} = this.props;
+      fetchPenaltyInterestByInvoice(invoice);
     }
   }
 
   getTotalAmount = () => {
-    const {collectionCosts} = this.props;
-    if(isEmpty(collectionCosts)) {
+    const {collectionCharge, penaltyInterest} = this.props;
+    if(!penaltyInterest || isEmpty(penaltyInterest)) {
       return 0;
     }
-    return Number(get(collectionCosts, 'fee_payment')) + Number(get(collectionCosts, 'interest')) + Number(get(collectionCosts, 'collection_fee'));
+    const formatedCollectionCharge = formatDecimalNumberForDb(collectionCharge);
+    return penaltyInterest.outstanding_amount + penaltyInterest.total_interest_amount + (!isNaN(formatedCollectionCharge) ? formatedCollectionCharge : 0);
   }
 
   render() {
     const {
-      collectionCosts,
+      collectionCharge,
       disableDirty,
       field,
       invoiceOptions,
       isFetching,
       onRemove,
+      penaltyInterest,
       selectedInvoices,
       showDeleteButton,
     } = this.props;
+    const formatedCollectionCharge = formatDecimalNumberForDb(collectionCharge),
+      filteredInvoiceOptions = invoiceOptions.filter((invoice) => selectedInvoices.indexOf(invoice.value) === -1);
 
-    if(isFetching) {
-      return <p>Ladataan</p>;
-    }
-    const filteredInvoiceOptions = invoiceOptions.filter((invoice) => selectedInvoices.indexOf(invoice.value) === -1);
     return(
       <Row>
         <Column small={4}>
@@ -76,18 +79,21 @@ class CollectionLetterInvoiceRow extends Component<Props> {
           />
         </Column>
         <Column small={2}>
-          <p>{!isEmpty(collectionCosts) ? `${formatNumber(get(collectionCosts, 'fee_payment'))} €` : '-'}</p>
+          <LoaderWrapper className='invoice-row-wrapper'><Loader isLoading={isFetching} className='small' /></LoaderWrapper>
+          {!isFetching &&
+            <p>{!isEmpty(penaltyInterest) ? `${formatNumber(get(penaltyInterest, 'outstanding_amount'))} €` : '-'}</p>
+          }
         </Column>
         <Column small={2}>
-          <p>{!isEmpty(collectionCosts) ? `${formatNumber(get(collectionCosts, 'interest'))} €` : '-'}</p>
+          <p>{!isEmpty(penaltyInterest) ? `${formatNumber(get(penaltyInterest, 'total_interest_amount'))} €` : '-'}</p>
         </Column>
         <Column small={2}>
-          <p>{!isEmpty(collectionCosts) ? `${formatNumber(get(collectionCosts, 'collection_fee'))} €` : '-'}</p>
+          <p>{!isEmpty(penaltyInterest) ? `${formatNumber((formatedCollectionCharge && !isNaN(formatedCollectionCharge)) ? formatedCollectionCharge : 0)} €` : '-'}</p>
         </Column>
         <Column small={2}>
           <FieldAndRemoveButtonWrapper
             field={
-              <p style={{width: '100%'}}>{!isEmpty(collectionCosts) ? `${formatNumber(this.getTotalAmount())} €` : '-'}</p>
+              <p style={{width: '100%'}}>{!isEmpty(penaltyInterest) ? `${formatNumber(this.getTotalAmount())} €` : '-'}</p>
             }
             removeButton={showDeleteButton &&
               <RemoveButton
@@ -118,13 +124,13 @@ export default connect(
     });
 
     return {
+      isFetching: getIsFetchingByInvoice(state, invoice),
       invoice: invoice,
-      collectionCosts: getCollectionCostsByInvoice(state, invoice),
-      isFetching: getIsFetchingCollectionCostsByInvoice(state, invoice),
+      penaltyInterest: getPenaltyInterestByInvoice(state, invoice),
       selectedInvoices: selectedInvoices,
     };
   },
   {
-    fetchCollectionCostsByInvoice,
+    fetchPenaltyInterestByInvoice,
   }
 )(CollectionLetterInvoiceRow);
