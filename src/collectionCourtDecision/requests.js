@@ -12,8 +12,8 @@ export const fetchCollectionCourtDecisionsByLease = (lease: LeaseId): Generator<
 
 export const uploadCollectionCourtDecision = (data: UploadCollectionCourtDecisionPayload): Generator<any, any, any> => {
   const formData = new FormData();
-  formData.set('file', data.file);
-  formData.set('data', JSON.stringify(data.data));
+  formData.append('file', data.file);
+  formData.append('data', JSON.stringify(data.data));
 
   const body = formData;
   return callUploadRequest(new Request(createUrl('collection_court_decision/'), {

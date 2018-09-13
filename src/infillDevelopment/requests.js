@@ -58,8 +58,8 @@ export const editInfillDevelopment = (infillDevelopment: InfillDevelopment): Gen
 
 export const uploadInfillDevelopmentFile = (data: InfillDevelopmentFileData): Generator<any, any, any> => {
   const formData = new FormData();
-  formData.set('file', data.file);
-  formData.set('data', JSON.stringify(data.data));
+  formData.append('file', data.file);
+  formData.append('data', JSON.stringify(data.data));
 
   const body = formData;
   return callUploadRequest(new Request(createUrl('infill_development_compensation_attachment/'), {

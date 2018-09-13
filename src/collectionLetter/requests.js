@@ -12,8 +12,8 @@ export const fetchCollectionLettersByLease = (lease: LeaseId): Generator<any, an
 
 export const uploadCollectionLetter = (data: UploadCollectionLetterPayload): Generator<any, any, any> => {
   const formData = new FormData();
-  formData.set('file', data.file);
-  formData.set('data', JSON.stringify(data.data));
+  formData.append('file', data.file);
+  formData.append('data', JSON.stringify(data.data));
 
   const body = formData;
   return callUploadRequest(new Request(createUrl('collection_letter/'), {
