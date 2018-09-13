@@ -12,21 +12,24 @@ type Props = {
   options: ?Array<any>,
 }
 
-const FieldTypeSelect = ({
+const FieldTypeMultiSelect = ({
   disabled,
   displayError,
   input,
-  input: {name, onChange, value},
+  input: {name, onBlur, onChange, value},
   isDirty,
   isLoading = false,
   options,
 }: Props) => {
+  const handleBlur = (selected: Array<string>) => onBlur(selected);
+
   return (
     <div className={classNames('form-field__multiselect', {'has-error': displayError}, {'is-dirty': isDirty})}>
       <MultiSelect
         {...input}
         id={name}
         options={options}
+        onBlur={handleBlur}
         onSelectedChanged={onChange}
         selected={value}
         disabled={disabled}
@@ -36,4 +39,4 @@ const FieldTypeSelect = ({
   );
 };
 
-export default FieldTypeSelect;
+export default FieldTypeMultiSelect;

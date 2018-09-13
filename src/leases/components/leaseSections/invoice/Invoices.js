@@ -7,6 +7,7 @@ import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import InvoicesTable from './InvoicesTable';
 import CreateAndCreditInvoiceComponent from './CreateAndCreditInvoiceComponent';
+import CreateCollectionLetter from './CreateCollectionLetter';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
@@ -111,7 +112,10 @@ class Invoices extends Component<Props> {
           <RentCalculator />
         </Collapse>
 
+        <h2>Perintä</h2>
+        <Divider />
         <DebtCollection />
+        <CreateCollectionLetter />
       </div>
     );
   }

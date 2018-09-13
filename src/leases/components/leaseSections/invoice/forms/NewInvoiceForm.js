@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Button from '$components/button/Button';
@@ -18,7 +19,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveIsCreateClicked} from '$src/invoices/actions';
-import {FormNames, RecipientOptions} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames, RecipientOptions} from '$src/leases/enums';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
 import {getAttributes as getInvoiceAttributes, getIsCreateClicked} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -31,79 +32,90 @@ type InvoiceRowsProps = {
   attributes: InvoiceAttributes,
   fields: any,
   isCreateClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const InvoiceRows = ({attributes, fields, isCreateClicked, onOpenDeleteModal}: InvoiceRowsProps): Element<*> => {
+const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
-    <div>
-      <SubTitle>Erittely</SubTitle>
-      {!!fields && !!fields.length &&
-        <div>
-          <Row>
-            <Column small={3} large={2}>
-              <FormFieldLabel  required={get(attributes, 'rows.child.children.receivable_type.required')}>Saamislaji</FormFieldLabel>
-            </Column>
-            <Column small={3} large={2}>
-              <FormFieldLabel required={get(attributes, 'rows.child.children.amount.required')}>Määrä</FormFieldLabel>
-            </Column>
-          </Row>
-          {fields.map((row, index) => {
-            const handleOpenDeleteModal = () => {
-              onOpenDeleteModal(
-                () => fields.remove(index),
-              );
-            };
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            <SubTitle>Erittely</SubTitle>
+            {!!fields && !!fields.length &&
+              <div>
+                <Row>
+                  <Column small={3} large={2}>
+                    <FormFieldLabel  required={get(attributes, 'rows.child.children.receivable_type.required')}>Saamislaji</FormFieldLabel>
+                  </Column>
+                  <Column small={3} large={2}>
+                    <FormFieldLabel required={get(attributes, 'rows.child.children.amount.required')}>Määrä</FormFieldLabel>
+                  </Column>
+                </Row>
+                {fields.map((row, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_DELETE_MODAL,
+                      deleteFunction: () => {
+                        fields.remove(index);
+                      },
+                      deleteModalLabel: DeleteModalLabels.INVOICE_ROW,
+                      deleteModalTitle: DeleteModalTitles.INVOICE_ROW,
+                    });
+                  };
 
-            return (
-              <Row key={index}>
-                <Column small={3} large={2}>
-                  <FormField
-                    disableTouched={isCreateClicked}
-                    fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
-                    name={`${row}.receivable_type`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={2} large={2}>
-                  <FormField
-                    disableTouched={isCreateClicked}
-                    fieldAttributes={get(attributes, 'rows.child.children.amount')}
-                    name={`${row}.amount`}
-                    unit='€'
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={1} large={2}>
-                  {fields.length > 1 &&
-                    <RemoveButton
-                      className='third-level'
-                      onClick={handleOpenDeleteModal}
-                      title="Poista rivi"
-                    />
-                  }
-                </Column>
-              </Row>
-            );
-          })}
-        </div>
-      }
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää rivi'
-            onClick={handleAdd}
-            title='Lisää rivi'
-          />
-        </Column>
-      </Row>
-    </div>
+                  return (
+                    <Row key={index}>
+                      <Column small={3} large={2}>
+                        <FormField
+                          disableTouched={isCreateClicked}
+                          fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
+                          name={`${row}.receivable_type`}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={2} large={2}>
+                        <FormField
+                          disableTouched={isCreateClicked}
+                          fieldAttributes={get(attributes, 'rows.child.children.amount')}
+                          name={`${row}.amount`}
+                          unit='€'
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={1} large={2}>
+                        {fields.length > 1 &&
+                          <RemoveButton
+                            className='third-level'
+                            onClick={handleRemove}
+                            title="Poista rivi"
+                          />
+                        }
+                      </Column>
+                    </Row>
+                  );
+                })}
+              </div>
+            }
+            <Row>
+              <Column>
+                <AddButtonThird
+                  label='Lisää rivi'
+                  onClick={handleAdd}
+                  title='Lisää rivi'
+                />
+              </Column>
+            </Row>
+          </div>
+        );
+      }}
+    </AppConsumer>
+
   );
 };
 
@@ -114,7 +126,6 @@ type Props = {
   isCreateClicked: boolean,
   lease: Lease,
   onClose: Function,
-  onOpenDeleteModal: Function,
   onSave: Function,
   receiveIsCreateClicked: Function,
   recipient: string,
@@ -129,7 +140,6 @@ const NewInvoiceForm = ({
   isCreateClicked,
   lease,
   onClose,
-  onOpenDeleteModal,
   onSave,
   receiveIsCreateClicked,
   recipient,
@@ -219,7 +229,6 @@ const NewInvoiceForm = ({
               component={InvoiceRows}
               isCreateClicked={isCreateClicked}
               name='rows'
-              onOpenDeleteModal={onOpenDeleteModal}
             />
             <Row>
               <Column>

@@ -7,6 +7,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
@@ -15,7 +16,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getFullAddress} from '$src/leases/helpers';
 import {formatNumber, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/leases/selectors';
@@ -71,73 +72,88 @@ type CommentProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const renderComments = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: CommentProps): Element<*> => {
+const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
-    <div>
-      <SubTitle>Huomautukset</SubTitle>
-      {fields && !!fields.length &&
-        <div>
-          <Row>
-            <Column small={6} medium={6} large={8}>
-              <FormFieldLabel required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text.required')}>Huomautus</FormFieldLabel>
-            </Column>
-            <Column small={4} medium={3} large={2}>
-              <FormFieldLabel required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number.required')}>AHJO diaarinumero</FormFieldLabel>
-            </Column>
-          </Row>
-          {fields.map((comment, index) => {
-            const handleOpenDeleteModal = () => onOpenDeleteModal(() => fields.remove(index));
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            <SubTitle>Huomautukset</SubTitle>
+            {fields && !!fields.length &&
+              <div>
+                <Row>
+                  <Column small={6} medium={6} large={8}>
+                    <FormFieldLabel required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text.required')}>Huomautus</FormFieldLabel>
+                  </Column>
+                  <Column small={4} medium={3} large={2}>
+                    <FormFieldLabel required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number.required')}>AHJO diaarinumero</FormFieldLabel>
+                  </Column>
+                </Row>
+                {fields.map((comment, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_DELETE_MODAL,
+                      deleteFunction: () => {
+                        fields.remove(index);
+                      },
+                      deleteModalLabel: DeleteModalLabels.CONSTRUCTABILITY,
+                      deleteModalTitle: DeleteModalTitles.CONSTRUCTABILITY,
+                    });
+                  };
 
-            return (
-              <Row key={index}>
-                <Column small={6} medium={6} large={8}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
-                    name={`${comment}.text`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={4} medium={3} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
-                    name={`${comment}.ahjo_reference_number`}
-                    validate={referenceNumber}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={2} medium={3} large={2}>
-                  <RemoveButton
-                    className='third-level'
-                    onClick={handleOpenDeleteModal}
-                    title="Poista huomautus"
-                  />
-                </Column>
-              </Row>
-            );
-          })}
-        </div>
-      }
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää huomautus'
-            onClick={handleAdd}
-            title='Lisää huomautus'
-          />
-        </Column>
-      </Row>
-    </div>
+                  return (
+                    <Row key={index}>
+                      <Column small={6} medium={6} large={8}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
+                          name={`${comment}.text`}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={4} medium={3} large={2}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
+                          name={`${comment}.ahjo_reference_number`}
+                          validate={referenceNumber}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={2} medium={3} large={2}>
+                        <RemoveButton
+                          className='third-level'
+                          onClick={handleRemove}
+                          title="Poista huomautus"
+                        />
+                      </Column>
+                    </Row>
+                  );
+                })}
+              </div>
+            }
+            <Row>
+              <Column>
+                <AddButtonThird
+                  label='Lisää huomautus'
+                  onClick={handleAdd}
+                  title='Lisää huomautus'
+                />
+              </Column>
+            </Row>
+          </div>
+        );
+      }}
+    </AppConsumer>
+
   );
 };
 
@@ -154,7 +170,6 @@ type Props = {
   field: string,
   isSaveClicked: boolean,
   locationOptions: Array<Object>,
-  onOpenDeleteModal: Function,
   otherCollapseState: boolean,
   pollutedLandCollapseState: boolean,
   pollutedLandConditionStateOptions: Array<Object>,
@@ -175,7 +190,6 @@ const ConstructabilityItemEdit = ({
   field,
   isSaveClicked,
   locationOptions,
-  onOpenDeleteModal,
   otherCollapseState,
   pollutedLandCollapseState,
   preconstructionCollapseState,
@@ -311,7 +325,6 @@ const ConstructabilityItemEdit = ({
           name={`${field}.descriptionsPreconstruction`}
           component={renderComments}
           isSaveClicked={isSaveClicked}
-          onOpenDeleteModal={onOpenDeleteModal}
         />
       </Collapse>
 
@@ -339,7 +352,6 @@ const ConstructabilityItemEdit = ({
           component={renderComments}
           isSaveClicked={isSaveClicked}
           name={`${field}.descriptionsDemolition`}
-          onOpenDeleteModal={onOpenDeleteModal}
         />
       </Collapse>
 
@@ -418,7 +430,6 @@ const ConstructabilityItemEdit = ({
           component={renderComments}
           isSaveClicked={isSaveClicked}
           name={`${field}.descriptionsPollutedLand`}
-          onOpenDeleteModal={onOpenDeleteModal}
         />
       </Collapse>
 
@@ -486,7 +497,6 @@ const ConstructabilityItemEdit = ({
           component={renderComments}
           isSaveClicked={isSaveClicked}
           name={`${field}.descriptionsReport`}
-          onOpenDeleteModal={onOpenDeleteModal}
         />
       </Collapse>
 
@@ -514,7 +524,6 @@ const ConstructabilityItemEdit = ({
           component={renderComments}
           isSaveClicked={isSaveClicked}
           name={`${field}.descriptionsOther`}
-          onOpenDeleteModal={onOpenDeleteModal}
         />
       </Collapse>
     </Collapse>

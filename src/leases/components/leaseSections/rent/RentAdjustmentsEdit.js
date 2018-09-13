@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -23,154 +24,164 @@ type Props = {
   fields: any,
   decisions: Array<Object>,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked, onOpenDeleteModal}: Props) => {
-  const handleAdd = () => fields.push({});
+const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Props) => {
+  const handleAdd = () => {
+    fields.push({});
+  };
 
   const decisionOptions = getDecisionOptions(decisions);
 
   return (
-    <div>
-      <BoxItemContainer>
-        {fields && !!fields.length && fields.map((discount, index) => {
-          const handleOpenDeleteModal = () => {
-            onOpenDeleteModal(
-              () => fields.remove(index),
-              DeleteModalTitles.RENT_ADJUSTMENT,
-              DeleteModalLabels.RENT_ADJUSTMENT,
-            );
-          };
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            <BoxItemContainer>
+              {fields && !!fields.length && fields.map((discount, index) => {
+                const handleRemove = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_DELETE_MODAL,
+                    deleteFunction: () => {
+                      fields.remove(index);
+                    },
+                    deleteModalLabel: DeleteModalLabels.RENT_ADJUSTMENT,
+                    deleteModalTitle: DeleteModalTitles.RENT_ADJUSTMENT,
+                  });
+                };
 
-          return (
-            <BoxItem className='no-border-on-first-child' key={index}>
-              <BoxContentWrapper>
-                <RemoveButton
-                  className='position-topright'
-                  onClick={handleOpenDeleteModal}
-                  title="Poista alennus/korotus"
+                return (
+                  <BoxItem className='no-border-on-first-child' key={index}>
+                    <BoxContentWrapper>
+                      <RemoveButton
+                        className='position-topright'
+                        onClick={handleRemove}
+                        title="Poista alennus/korotus"
+                      />
+                      <Row>
+                        <Column small={6} medium={4} large={2}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.type')}
+                            name={`${discount}.type`}
+                            overrideValues={{
+                              label: 'Tyyppi',
+                            }}
+                          />
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.intended_use')}
+                            name={`${discount}.intended_use`}
+                            overrideValues={{
+                              label: 'Käyttötarkoitus',
+                            }}
+                          />
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <Row>
+                            <Column small={6}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.start_date')}
+                                name={`${discount}.start_date`}
+                                overrideValues={{
+                                  label: 'Alkupvm',
+                                }}
+                              />
+                            </Column>
+                            <Column small={6}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.end_date')}
+                                name={`${discount}.end_date`}
+                                overrideValues={{
+                                  label: 'Loppupvm',
+                                }}
+                              />
+                            </Column>
+                          </Row>
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <FormFieldLabel>Kokonaismäärä</FormFieldLabel>
+                          <Row>
+                            <Column small={6}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.full_amount')}
+                                name={`${discount}.full_amount`}
+                                overrideValues={{
+                                  label: '',
+                                }}
+                              />
+                            </Column>
+                            <Column small={6}>
+                              <FormField
+                                disableTouched={isSaveClicked}
+                                fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.amount_type')}
+                                name={`${discount}.amount_type`}
+                                overrideValues={{
+                                  label: '',
+                                }}
+                              />
+                            </Column>
+                          </Row>
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.amount_left')}
+                            name={`${discount}.amount_left`}
+                            unit='€'
+                            overrideValues={{
+                              label: 'Jäljellä',
+                            }}
+                          />
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.decision')}
+                            name={`${discount}.decision`}
+                            overrideValues={{
+                              label: 'Päätös',
+                              options: decisionOptions,
+                            }}
+                          />
+                        </Column>
+                      </Row>
+                      <Row>
+                        <Column medium={12}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.note')}
+                            name={`${discount}.note`}
+                            overrideValues={{
+                              label: 'Huomautus',
+                            }}
+                          />
+                        </Column>
+                      </Row>
+                    </BoxContentWrapper>
+                  </BoxItem>
+                );
+              })}
+            </BoxItemContainer>
+            <Row>
+              <Column>
+                <AddButtonSecondary
+                  label='Lisää alennus/korotus'
+                  onClick={handleAdd}
+                  title='Lisää alennus/korotus'
                 />
-                <Row>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.type')}
-                      name={`${discount}.type`}
-                      overrideValues={{
-                        label: 'Tyyppi',
-                      }}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.intended_use')}
-                      name={`${discount}.intended_use`}
-                      overrideValues={{
-                        label: 'Käyttötarkoitus',
-                      }}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <Row>
-                      <Column small={6}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.start_date')}
-                          name={`${discount}.start_date`}
-                          overrideValues={{
-                            label: 'Alkupvm',
-                          }}
-                        />
-                      </Column>
-                      <Column small={6}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.end_date')}
-                          name={`${discount}.end_date`}
-                          overrideValues={{
-                            label: 'Loppupvm',
-                          }}
-                        />
-                      </Column>
-                    </Row>
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <FormFieldLabel>Kokonaismäärä</FormFieldLabel>
-                    <Row>
-                      <Column small={6}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.full_amount')}
-                          name={`${discount}.full_amount`}
-                          overrideValues={{
-                            label: '',
-                          }}
-                        />
-                      </Column>
-                      <Column small={6}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.amount_type')}
-                          name={`${discount}.amount_type`}
-                          overrideValues={{
-                            label: '',
-                          }}
-                        />
-                      </Column>
-                    </Row>
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.amount_left')}
-                      name={`${discount}.amount_left`}
-                      unit='€'
-                      overrideValues={{
-                        label: 'Jäljellä',
-                      }}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.decision')}
-                      name={`${discount}.decision`}
-                      overrideValues={{
-                        label: 'Päätös',
-                        options: decisionOptions,
-                      }}
-                    />
-                  </Column>
-                </Row>
-                <Row>
-                  <Column medium={12}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.note')}
-                      name={`${discount}.note`}
-                      overrideValues={{
-                        label: 'Huomautus',
-                      }}
-                    />
-                  </Column>
-                </Row>
-              </BoxContentWrapper>
-            </BoxItem>
-          );
-        })}
-      </BoxItemContainer>
-      <Row>
-        <Column>
-          <AddButtonSecondary
-            label='Lisää alennus/korotus'
-            onClick={handleAdd}
-            title='Lisää alennus/korotus'
-          />
-        </Column>
-      </Row>
-    </div>
+              </Column>
+            </Row>
+          </div>
+        );
+      }}
+    </AppConsumer>
   );
 };
 

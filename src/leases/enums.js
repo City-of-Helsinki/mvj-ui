@@ -11,16 +11,20 @@ export const AreaLocation = {
 /**
  * Delete modal labels enumerable.
  *
- * @type {{ADDRESS: string, BASIS_OF_RENT: string, CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}
+ * @type {{ADDRESS: string, BASIS_OF_RENT: string, COLLECTION_COURT_DECISION: string, COLLECTION_LETTER: string, COLLECTION_NOTE: string, CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DEBT_COLLECTION_NOTE: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}
  */
 export const DeleteModalLabels = {
   ADDRESS: 'Haluatko varmasti poistaa osoitteen?',
   BASIS_OF_RENT: 'Haluatko varmasti poistaa vuokranperusteen?',
+  COLLECTION_COURT_DECISION: 'Haluatko varmasti poistaa käräjäoikeuden päätöksen?',
+  COLLECTION_LETTER: 'Haluatko varmasti poistaa perintäkirjeen?',
+  COLLECTION_NOTE: 'Haluatko varmasti poistaa huomautuksen?',
   CONDITION: 'Haluatko varmasti poistaa ehdon?',
   CONSTRUCTABILITY: 'Haluatko varmasti poistaa huomautuksen?',
   CONTRACT: 'Haluatko varmasti poistaa sopimuksen?',
   CONTRACT_CHANGE: 'Haluatko varmasti poistaa sopimuksen muutoksen?',
   CONTRACT_RENT: 'Haluatko varmasti poistaa sopimusvuokran?',
+  DEBT_COLLECTION_NOTE: 'Haluatko varmasti poistaa huomautuksen?',
   DECISION: 'Haluatko varmasti poistaa päätöksen?',
   FIXED_INITIAL_YEAR_RENT: 'Haluatko varmasti poistaa kiinteän alkuvuosivuokran?',
   INSPECTION: 'Haluatko varmasti poistaa tarkastuksen?',
@@ -39,16 +43,20 @@ export const DeleteModalLabels = {
 /**
  * Delete modal titles enumerable.
  *
- * @type {{ADDRESS: string, BASIS_OF_RENT: string, CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}
+ * @type {{ADDRESS: string, BASIS_OF_RENT: string, COLLECTION_COURT_DECISION: string, COLLECTION_LETTER: string, COLLECTION_NOTE: string, CONDITION: string, CONSTRUCTABILITY: string, CONTRACT: string, CONTRACT_CHANGE: string, CONTRACT_RENT: string, DEBT_COLLECTION_NOTE: string, DECISION: string, FIXED_INITIAL_YEAR_RENT: string, INSPECTION: string, INVOICE_PAYMENT: string, INVOICE_ROW: string, LEASE_AREA: string, MORTGAGE_DOCUMENT: string, OTHER_TENANT: string, PLAN_UNIT: string, PLOT: string, RENT: string, RENT_ADJUSTMENT: string, TENANT: string}}
  */
 export const DeleteModalTitles = {
   ADDRESS: 'Poista osoite',
   BASIS_OF_RENT: 'Poista vuokranperuste',
+  COLLECTION_COURT_DECISION: 'Poista kärkäoikeuden päätös',
+  COLLECTION_LETTER: 'Poista perintäkirje',
+  COLLECTION_NOTE: 'Poista huomautus',
   CONDITION: 'Poista ehto',
   CONSTRUCTABILITY: 'Poista huomautus',
   CONTRACT: 'Poista sopimus',
   CONTRACT_CHANGE: 'Poista sopimuksen muutos',
   CONTRACT_RENT: 'Poista sopimusvuokra',
+  DEBT_COLLECTION_NOTE: 'Poista huomautus',
   DECISION: 'Poista päätös',
   FIXED_INITIAL_YEAR_RENT: 'Poista kiinteä alkuvuosivuokra',
   INSPECTION: 'Poista tarkastus',
@@ -177,12 +185,13 @@ export const TenantContactType = {
 /**
  * Lease form names enumerable.
  *
- * @type {{ARCHIVE_AREA: string, CONSTRUCTABILITY: string, CONTRACTS: string, CREATE_LEASE: string, DEBT_COLLECTION: string, DECISIONS: string, INSPECTION: string, INVOICE_EDIT: string, INVOICE_NEW: string, LEASE_AREAS: string, LEASE_INFO: string, REFUND: string, RENTS: string, SEARCH: string, SUMMARY: string, TENANTS: string}}
+ * @type {{ARCHIVE_AREA: string, CONSTRUCTABILITY: string, CONTRACTS: string, CREATE_COLLECTION_LETTER: string, CREATE_LEASE: string, DEBT_COLLECTION: string, DECISIONS: string, INSPECTION: string, INVOICE_EDIT: string, INVOICE_NEW: string, LEASE_AREAS: string, LEASE_INFO: string, REFUND: string, RENTS: string, SEARCH: string, SUMMARY: string, TENANTS: string}}
  */
 export const FormNames = {
   ARCHIVE_AREA: 'archive-area-form',
   CONSTRUCTABILITY: 'constructability-form',
   CONTRACTS: 'contracts-form',
+  CREATE_COLLECTION_LETTER: 'create-collection-letter-form',
   CREATE_LEASE: 'create-lease-form',
   DEBT_COLLECTION: 'debt-collection-form',
   DECISIONS: 'decisions-form',

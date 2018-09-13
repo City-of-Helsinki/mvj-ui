@@ -45,7 +45,6 @@ type Props = {
   invoiceToCredit: ?string,
   isFetching: boolean,
   onInvoiceToCreditChange: Function,
-  onOpenDeleteModal: Function,
   patchInvoice: Function,
   patchedInvoice: ?Invoice,
   refundBill: Function,
@@ -396,7 +395,6 @@ class InvoicesTableEdit extends Component<Props, State> {
       invoiceToCredit,
       isFetching,
       onInvoiceToCreditChange,
-      onOpenDeleteModal,
     } = this.props;
     const {
       columns,
@@ -440,7 +438,6 @@ class InvoicesTableEdit extends Component<Props, State> {
           onCreditedInvoiceClick={this.handleCreditedInvoiceClick}
           onKeyCodeRight={this.handleKeyCodeRight}
           onKeyCodeLeft={this.handleKeyCodeLeft}
-          onOpenDeleteModal={onOpenDeleteModal}
           onResize={this.handleModalHeightChange}
           onSave={this.editInvoice}
         />

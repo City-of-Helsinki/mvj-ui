@@ -162,7 +162,7 @@ const LeaseArea = ({
               {!area.plots_contract || !area.plots_contract.length &&
                 <p>Ei kiinteistöjä/määräaloja sopimuksessa</p>
               }
-              {area.plots_contract.map((item, index) =>
+              {area.plots_contract && !!area.plots_contract.length && area.plots_contract.map((item, index) =>
                 <PlotItem
                   key={index}
                   plot={item}
@@ -182,7 +182,7 @@ const LeaseArea = ({
               <p>Ei kiinteistöjä/määräaloja nykyhetkellä</p>
             }
             <BoxItemContainer>
-              {area.plots_current.map((item, index) =>
+              {area.plots_current && !!area.plots_current.length && area.plots_current.map((item, index) =>
                 <PlotItem
                   key={index}
                   plot={item}
@@ -205,7 +205,7 @@ const LeaseArea = ({
               {!area.plan_units_contract || !area.plan_units_contract.length &&
                 <p>Ei kaavayksiköitä sopimuksessa</p>
               }
-              {area.plan_units_contract.map((item, index) =>
+              {area.plan_units_contract && !!area.plan_units_contract.length && area.plan_units_contract.map((item, index) =>
                 <PlanUnitItem
                   key={index}
                   planUnit={item}
@@ -225,7 +225,7 @@ const LeaseArea = ({
               {!area.plan_units_current || !area.plan_units_current.length &&
                 <p>Ei kaavayksiköitä nykyhetkellä</p>
               }
-              {area.plan_units_current.map((item, index) =>
+              {area.plan_units_current && !!area.plan_units_current.length && area.plan_units_current.map((item, index) =>
                 <PlanUnitItem
                   key={index}
                   planUnit={item}

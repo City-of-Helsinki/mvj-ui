@@ -7,8 +7,8 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
-import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactModal from '$src/contacts/components/ContactModal';
 import FormSection from '$components/form/FormSection';
 import LitigantItemEdit from './LitigantItemEdit';
@@ -40,56 +40,64 @@ import type {LandUseContract} from '$src/landUseContract/types';
 type LitigantsProps = {
   fields: any,
   litigants: Array<Object>,
-  onOpenDeleteModal: Function,
   showAddButton: boolean,
 }
 
 const renderLitigants = ({
   fields,
   litigants,
-  onOpenDeleteModal,
   showAddButton,
 }: LitigantsProps): Element<*> => {
-  const handleAdd = () => fields.push({});
-
-  const handleOpenDeleteModal = (index: number) => {
-    onOpenDeleteModal(
-      () => fields.remove(index),
-      DeleteModalTitles.LITIGANT,
-      DeleteModalLabels.LITIGANT,
-    );
+  const handleAdd = () => {
+    fields.push({});
   };
 
   return (
-    <div>
-      {!showAddButton && fields && !!fields.length &&
-        <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
-      }
-      {fields && !!fields.length && fields.map((litigant, index) => {
-        return (
-          <LitigantItemEdit
-            key={index}
-            field={litigant}
-            index={index}
-            litigants={litigants}
-            onOpenDeleteModal={onOpenDeleteModal}
-            onRemove={handleOpenDeleteModal}
-          />
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            {!showAddButton && fields && !!fields.length &&
+              <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
+            }
+            {fields && !!fields.length && fields.map((litigant, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.LITIGANT,
+                  deleteModalTitle: DeleteModalTitles.LITIGANT,
+                });
+              };
+
+              return (
+                <LitigantItemEdit
+                  key={index}
+                  field={litigant}
+                  index={index}
+                  litigants={litigants}
+                  onRemove={handleRemove}
+                />
+              );
+            })}
+            {showAddButton &&
+              <Row>
+                <Column>
+                  <AddButton
+                    className='no-margin'
+                    label='Lisää osapuoli'
+                    onClick={handleAdd}
+                    title='Lisää osapuoli'
+                  />
+                </Column>
+              </Row>
+            }
+          </div>
         );
-      })}
-      {showAddButton &&
-        <Row>
-          <Column>
-            <AddButton
-              className='no-margin'
-              label='Lisää osapuoli'
-              onClick={handleAdd}
-              title='Lisää osapuoli'
-            />
-          </Column>
-        </Row>
-      }
-    </div>
+      }}
+    </AppConsumer>
   );
 };
 
@@ -113,20 +121,12 @@ type Props = {
 type State = {
   litigants: Array<Object>,
   currentLandUseContract: LandUseContract,
-  deleteFunction: ?Function,
-  deleteModalLabel: string,
-  deleteModalTitle: string,
-  isDeleteModalOpen: boolean,
   litigants: Array<Object>,
 }
 
 class TenantsEdit extends Component<Props, State> {
   state = {
     currentLandUseContract: {},
-    deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.LITIGANT,
-    deleteModalTitle: DeleteModalTitles.LITIGANT,
-    isDeleteModalOpen: false,
     litigants: [],
   }
 
@@ -206,29 +206,6 @@ class TenantsEdit extends Component<Props, State> {
     createContact(contact);
   }
 
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.LITIGANT, modalLabel: string = DeleteModalLabels.LITIGANT) => {
-    this.setState({
-      deleteFunction: fn,
-      deleteModalLabel: modalLabel,
-      deleteModalTitle: modalTitle,
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleHideDeleteModal = () => {
-    this.setState({
-      isDeleteModalOpen: false,
-    });
-  }
-
-  handleDeleteClick = () => {
-    const {deleteFunction} = this.state;
-    if(deleteFunction) {
-      deleteFunction();
-    }
-    this.handleHideDeleteModal();
-  }
-
   render () {
     const {
       contactModalSettings,
@@ -236,28 +213,13 @@ class TenantsEdit extends Component<Props, State> {
       isFetchingContact,
     } = this.props;
 
-    const {
-      deleteModalLabel,
-      deleteModalTitle,
-      isDeleteModalOpen,
-      litigants,
-    } = this.state;
+    const {litigants} = this.state;
 
     return (
       <div>
         {isFetchingContact &&
           <LoaderWrapper className='overlay-wrapper'><Loader isLoading={isFetchingContact} /></LoaderWrapper>
         }
-
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label={deleteModalLabel}
-          onCancel={this.handleHideDeleteModal}
-          onClose={this.handleHideDeleteModal}
-          onSave={this.handleDeleteClick}
-          title={deleteModalTitle}
-        />
 
         <ContactModal
           isOpen={isContactModalOpen}
@@ -274,7 +236,6 @@ class TenantsEdit extends Component<Props, State> {
               component={renderLitigants}
               litigants={litigants}
               name="activeLitigants"
-              onOpenDeleteModal={this.handleOpenDeleteModal}
               showAddButton={true}
             />
             {/* Archived tenants */}
@@ -282,7 +243,6 @@ class TenantsEdit extends Component<Props, State> {
               component={renderLitigants}
               litigants={litigants}
               name="archivedLitigants"
-              onOpenDeleteModal={this.handleOpenDeleteModal}
               showAddButton={false}
             />
           </FormSection>

@@ -8,6 +8,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import AddFileButton from '$components/form/AddFileButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -55,97 +56,105 @@ type DecisionsProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const renderDecisions = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: DecisionsProps): Element<*> => {
+const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
-    <div>
-      <SubTitle>Korvauksen päätökset</SubTitle>
-      {!!fields && !!fields.length &&
-        <div>
-          <Row>
-            <Column small={3} large={2}><FormFieldLabel>Päättäjä</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel>Pvm</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel>Pykälä</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel>Diaarunumero</FormFieldLabel></Column>
-          </Row>
-          {fields.map((field, index) => {
-            const handleOpenDeleteModal = () => {
-              onOpenDeleteModal(
-                () => fields.remove(index),
-                DeleteModalTitles.DECISION,
-                DeleteModalLabels.DECISION,
-              );
-            };
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            <SubTitle>Korvauksen päätökset</SubTitle>
+            {!!fields && !!fields.length &&
+              <div>
+                <Row>
+                  <Column small={3} large={2}><FormFieldLabel>Päättäjä</FormFieldLabel></Column>
+                  <Column small={3} large={2}><FormFieldLabel>Pvm</FormFieldLabel></Column>
+                  <Column small={3} large={2}><FormFieldLabel>Pykälä</FormFieldLabel></Column>
+                  <Column small={3} large={2}><FormFieldLabel>Diaarunumero</FormFieldLabel></Column>
+                </Row>
+                {fields.map((field, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_DELETE_MODAL,
+                      deleteFunction: () => {
+                        fields.remove(index);
+                      },
+                      deleteModalLabel: DeleteModalLabels.DECISION,
+                      deleteModalTitle: DeleteModalTitles.DECISION,
+                    });
+                  };
 
-            return (
-              <Row key={index}>
-                <Column small={3} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.decision_maker')}
-                    name={`${field}.decision_maker`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={3} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.decision_date')}
-                    name={`${field}.decision_date`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={3} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.section')}
-                    name={`${field}.section`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={3} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.reference_number')}
-                    name={`${field}.reference_number`}
-                    validate={referenceNumber}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={3} large={2}>
-                  <RemoveButton
-                    className='third-level'
-                    onClick={handleOpenDeleteModal}
-                    title="Poista päätös"
-                  />
-                </Column>
-              </Row>
-            );
-          })}
-        </div>
-      }
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää päätös'
-            onClick={handleAdd}
-            title='Lisää päätös'
-          />
-        </Column>
-      </Row>
-    </div>
+                  return (
+                    <Row key={index}>
+                      <Column small={3} large={2}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.decision_maker')}
+                          name={`${field}.decision_maker`}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={3} large={2}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.decision_date')}
+                          name={`${field}.decision_date`}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={3} large={2}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.section')}
+                          name={`${field}.section`}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={3} large={2}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.reference_number')}
+                          name={`${field}.reference_number`}
+                          validate={referenceNumber}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={3} large={2}>
+                        <RemoveButton
+                          className='third-level'
+                          onClick={handleRemove}
+                          title="Poista päätös"
+                        />
+                      </Column>
+                    </Row>
+                  );
+                })}
+              </div>
+            }
+            <Row>
+              <Column>
+                <AddButtonThird
+                  label='Lisää päätös'
+                  onClick={handleAdd}
+                  title='Lisää päätös'
+                />
+              </Column>
+            </Row>
+          </div>
+        );
+      }}
+    </AppConsumer>
   );
 };
 
@@ -153,87 +162,95 @@ type IntendedUsesProps = {
   attributes: Attributes,
   fields: any,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
 }
 
-const renderIntendedUses = ({attributes, fields, isSaveClicked, onOpenDeleteModal}: IntendedUsesProps): Element<*> => {
+const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
-    <div>
-      <SubTitle>Käyttötarkoitus</SubTitle>
-      {!!fields && !!fields.length &&
-        <div>
-          <Row>
-            <Column small={3} large={2}><FormFieldLabel>Käyttötarkoitus</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel>k-m²</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel>€/k-m²</FormFieldLabel></Column>
-          </Row>
-          {fields.map((field, index) => {
-            const handleOpenDeleteModal = () => {
-              onOpenDeleteModal(
-                () => fields.remove(index),
-                DeleteModalTitles.INTENDED_USE,
-                DeleteModalLabels.INTENDED_USE,
-              );
-            };
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            <SubTitle>Käyttötarkoitus</SubTitle>
+            {!!fields && !!fields.length &&
+              <div>
+                <Row>
+                  <Column small={3} large={2}><FormFieldLabel>Käyttötarkoitus</FormFieldLabel></Column>
+                  <Column small={3} large={2}><FormFieldLabel>k-m²</FormFieldLabel></Column>
+                  <Column small={3} large={2}><FormFieldLabel>€/k-m²</FormFieldLabel></Column>
+                </Row>
+                {fields.map((field, index) => {
+                  const handleRemove = () => {
+                    dispatch({
+                      type: ActionTypes.SHOW_DELETE_MODAL,
+                      deleteFunction: () => {
+                        fields.remove(index);
+                      },
+                      deleteModalLabel: DeleteModalLabels.INTENDED_USE,
+                      deleteModalTitle: DeleteModalTitles.INTENDED_USE,
+                    });
+                  };
 
-            return (
-              <Row key={index}>
-                <Column small={3} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.intended_use')}
-                    name={`${field}.intended_use`}
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={3} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.floor_m2')}
-                    name={`${field}.floor_m2`}
-                    unit='k-m²'
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={3} large={2}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.amount_per_floor_m2')}
-                    name={`${field}.amount_per_floor_m2`}
-                    unit='€/k-m²'
-                    overrideValues={{
-                      label: '',
-                    }}
-                  />
-                </Column>
-                <Column small={3} large={2}>
-                  <RemoveButton
-                    className='third-level'
-                    onClick={handleOpenDeleteModal}
-                    title="Poista käyttötarkoitus"
-                  />
-                </Column>
-              </Row>
-            );
-          })}
-        </div>
-      }
-      <Row>
-        <Column>
-          <AddButtonThird
-            label='Lisää käyttötarkoitus'
-            onClick={handleAdd}
-            title='Lisää käyttötarkoitus'
-          />
-        </Column>
-      </Row>
-    </div>
+                  return (
+                    <Row key={index}>
+                      <Column small={3} large={2}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.intended_use')}
+                          name={`${field}.intended_use`}
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={3} large={2}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.floor_m2')}
+                          name={`${field}.floor_m2`}
+                          unit='k-m²'
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={3} large={2}>
+                        <FormField
+                          disableTouched={isSaveClicked}
+                          fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.amount_per_floor_m2')}
+                          name={`${field}.amount_per_floor_m2`}
+                          unit='€/k-m²'
+                          overrideValues={{
+                            label: '',
+                          }}
+                        />
+                      </Column>
+                      <Column small={3} large={2}>
+                        <RemoveButton
+                          className='third-level'
+                          onClick={handleRemove}
+                          title="Poista käyttötarkoitus"
+                        />
+                      </Column>
+                    </Row>
+                  );
+                })}
+              </div>
+            }
+            <Row>
+              <Column>
+                <AddButtonThird
+                  label='Lisää käyttötarkoitus'
+                  onClick={handleAdd}
+                  title='Lisää käyttötarkoitus'
+                />
+              </Column>
+            </Row>
+          </div>
+        );
+      }}
+    </AppConsumer>
   );
 };
 
@@ -245,7 +262,6 @@ type Props = {
   deleteInfillDevelopmentFile: Function,
   fetchLeaseById: Function,
   field: string,
-  index: number,
   isFetching: boolean,
   isSaveClicked: boolean,
   lease: Lease,
@@ -254,7 +270,6 @@ type Props = {
   infillDevelopmentCompensationLeaseId: number,
   leaseFieldValue: Object,
   monetaryCompensation: ?number,
-  onOpenDeleteModal: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
   uploadInfillDevelopmentFile: Function,
@@ -363,11 +378,6 @@ class LeaseItemEdit extends Component<Props, State> {
     });
   }
 
-  handleRemove = () => {
-    const {index, onRemove} = this.props;
-    onRemove(index);
-  }
-
   handleCollapseToggle = (val: boolean) => {
     const {infillDevelopmentCompensationLeaseId, receiveCollapseStates} = this.props;
     if(!infillDevelopmentCompensationLeaseId){return;}
@@ -391,7 +401,7 @@ class LeaseItemEdit extends Component<Props, State> {
       isFetching,
       isSaveClicked,
       leaseId,
-      onOpenDeleteModal,
+      onRemove,
     } = this.props;
 
     const {
@@ -408,7 +418,7 @@ class LeaseItemEdit extends Component<Props, State> {
         className='collapse__secondary'
         defaultOpen={collapseState !== undefined ? collapseState : true}
         headerTitle={<h4 className='collapse__header-title'>{isFetching ? 'Ladataan...' : (identifier || '-')}</h4>}
-        onRemove={this.handleRemove}
+        onRemove={onRemove}
         onToggle={this.handleCollapseToggle}
       >
         <BoxContentWrapper>
@@ -483,7 +493,6 @@ class LeaseItemEdit extends Component<Props, State> {
             component={renderDecisions}
             isSaveClicked={isSaveClicked}
             name={`${field}.decisions`}
-            onOpenDeleteModal={onOpenDeleteModal}
           />
 
           <FieldArray
@@ -491,7 +500,6 @@ class LeaseItemEdit extends Component<Props, State> {
             component={renderIntendedUses}
             isSaveClicked={isSaveClicked}
             name={`${field}.intended_uses`}
-            onOpenDeleteModal={onOpenDeleteModal}
           />
 
           <Row>
@@ -573,63 +581,71 @@ class LeaseItemEdit extends Component<Props, State> {
             </Column>
           </Row>
           {!!infillDevelopmentCompensationLeaseId &&
-            <div>
-              <SubTitle>Liitetiedostot</SubTitle>
-              {!!attachments && !!attachments.length &&
-                <div>
-                  <Row>
-                    <Column small={3} large={4}>
-                      <FormFieldLabel>Nimi</FormFieldLabel>
-                    </Column>
-                    <Column small={3} large={2}>
-                      <FormFieldLabel>Pvm</FormFieldLabel>
-                    </Column>
-                    <Column small={3} large={2}>
-                      <FormFieldLabel>Lataaja</FormFieldLabel>
-                    </Column>
-                  </Row>
-                  {attachments.map((file, index) => {
-                    const handleOpenDeleteModal = () => {
-                      onOpenDeleteModal(
-                        () => this.handleDeleteInfillDevelopmentFile(file.id),
-                        DeleteModalTitles.ATTACHMENT,
-                        DeleteModalLabels.ATTACHMENT,
-                      );
-                    };
+            <AppConsumer>
+              {({dispatch}) => {
+                return(
+                  <div>
+                    <SubTitle>Liitetiedostot</SubTitle>
+                    {!!attachments && !!attachments.length &&
+                      <div>
+                        <Row>
+                          <Column small={3} large={4}>
+                            <FormFieldLabel>Nimi</FormFieldLabel>
+                          </Column>
+                          <Column small={3} large={2}>
+                            <FormFieldLabel>Pvm</FormFieldLabel>
+                          </Column>
+                          <Column small={3} large={2}>
+                            <FormFieldLabel>Lataaja</FormFieldLabel>
+                          </Column>
+                        </Row>
+                        {attachments.map((file, index) => {
+                          const handleRemove = () => {
+                            dispatch({
+                              type: ActionTypes.SHOW_DELETE_MODAL,
+                              deleteFunction: () => {
+                                this.handleDeleteInfillDevelopmentFile(file.id);
+                              },
+                              deleteModalLabel: DeleteModalLabels.ATTACHMENT,
+                              deleteModalTitle: DeleteModalTitles.ATTACHMENT,
+                            });
+                          };
 
-                    return (
-                      <Row key={index}>
-                        <Column small={3} large={4}>
-                          <FileDownloadLink
-                            fileName={file.filename}
-                            fileUrl={file.file}
-                            label={file.filename}
-                          />
-                        </Column>
-                        <Column small={3} large={2}>
-                          <p>{formatDate(file.uploaded_at) || '-'}</p>
-                        </Column>
-                        <Column small={3} large={2}>
-                          <p>{getUserFullName((file.uploader)) || '-'}</p>
-                        </Column>
-                        <Column small={3} large={2}>
-                          <RemoveButton
-                            className='third-level'
-                            onClick={handleOpenDeleteModal}
-                            title="Poista liitetiedosto"
-                          />
-                        </Column>
-                      </Row>
-                    );
-                  })}
-                </div>
-              }
-              <AddFileButton
-                label='Lisää tiedosto'
-                name={`${infillDevelopmentCompensationLeaseId}`}
-                onChange={this.handleFileChange}
-              />
-            </div>
+                          return (
+                            <Row key={index}>
+                              <Column small={3} large={4}>
+                                <FileDownloadLink
+                                  fileUrl={file.file}
+                                  label={file.filename}
+                                />
+                              </Column>
+                              <Column small={3} large={2}>
+                                <p>{formatDate(file.uploaded_at) || '-'}</p>
+                              </Column>
+                              <Column small={3} large={2}>
+                                <p>{getUserFullName((file.uploader)) || '-'}</p>
+                              </Column>
+                              <Column small={3} large={2}>
+                                <RemoveButton
+                                  className='third-level'
+                                  onClick={handleRemove}
+                                  title="Poista liitetiedosto"
+                                />
+                              </Column>
+                            </Row>
+                          );
+                        })}
+                      </div>
+                    }
+                    <AddFileButton
+                      label='Lisää tiedosto'
+                      name={`${infillDevelopmentCompensationLeaseId}`}
+                      onChange={this.handleFileChange}
+                    />
+                  </div>
+                );
+              }}
+            </AppConsumer>
           }
           <Row>
             <Column>

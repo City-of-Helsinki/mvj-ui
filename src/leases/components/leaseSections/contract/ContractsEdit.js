@@ -7,8 +7,8 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
-import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContractItemEdit from './ContractItemEdit';
 import FormSection from '$components/form/FormSection';
 import {receiveFormValidFlags} from '$src/leases/actions';
@@ -25,7 +25,6 @@ type ContractsProps = {
   contractsData: Array<Object>,
   decisionOptions: Array<Object>,
   fields: any,
-  onOpenDeleteModal: Function,
 }
 
 const renderContracts = ({
@@ -33,42 +32,53 @@ const renderContracts = ({
   contractsData,
   decisionOptions,
   fields,
-  onOpenDeleteModal,
 }: ContractsProps): Element<*> => {
-  const handleAdd = () => fields.push({});
-
-  const handleOpenDeleteModal = (index: number) => {
-    onOpenDeleteModal(
-      () => fields.remove(index),
-      DeleteModalTitles.CONTRACT,
-      DeleteModalLabels.CONTRACT,
-    );
+  const handleAdd = () => {
+    fields.push({});
   };
 
   return (
-    <div>
-      {fields && !!fields.length && fields.map((contract, index) =>
-        <ContractItemEdit
-          key={index}
-          attributes={attributes}
-          contractsData={contractsData}
-          decisionOptions={decisionOptions}
-          field={contract}
-          index={index}
-          onOpenDeleteModal={onOpenDeleteModal}
-          onRemove={handleOpenDeleteModal}
-        />
-      )}
-      <Row>
-        <Column>
-          <AddButton
-            label='Lisää sopimus'
-            onClick={handleAdd}
-            title='Lisää sopimus'
-          />
-        </Column>
-      </Row>
-    </div>
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            {fields && !!fields.length && fields.map((contract, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.CONTRACT,
+                  deleteModalTitle: DeleteModalTitles.CONTRACT,
+                });
+              };
+
+              return <ContractItemEdit
+                key={index}
+                attributes={attributes}
+                contractsData={contractsData}
+                decisionOptions={decisionOptions}
+                field={contract}
+                index={index}
+                onRemove={handleRemove}
+              />;
+            }
+
+            )}
+            <Row>
+              <Column>
+                <AddButton
+                  label='Lisää sopimus'
+                  onClick={handleAdd}
+                  title='Lisää sopimus'
+                />
+              </Column>
+            </Row>
+          </div>
+        );
+      }}
+    </AppConsumer>
   );
 };
 
@@ -84,10 +94,6 @@ type State = {
   contractsData: Array<Object>,
   currentLease: ?Lease,
   decisionOptions: Array<Object>,
-  deleteFunction: ?Function,
-  deleteModalLabel: string,
-  deleteModalTitle: string,
-  isDeleteModalOpen: boolean,
 }
 
 class ContractsEdit extends Component<Props, State> {
@@ -95,10 +101,6 @@ class ContractsEdit extends Component<Props, State> {
     currentLease: null,
     contractsData: [],
     decisionOptions: [],
-    deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.CONTRACT,
-    deleteModalTitle: DeleteModalTitles.CONTRACT,
-    isDeleteModalOpen: false,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -130,51 +132,15 @@ class ContractsEdit extends Component<Props, State> {
     }
   }
 
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.CONTRACT, modalLabel: string = DeleteModalLabels.CONTRACT) => {
-    this.setState({
-      deleteFunction: fn,
-      deleteModalLabel: modalLabel,
-      deleteModalTitle: modalTitle,
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleHideDeleteModal = () => {
-    this.setState({
-      isDeleteModalOpen: false,
-    });
-  }
-
-  handleDeleteClick = () => {
-    const {deleteFunction} = this.state;
-    if(deleteFunction) {
-      deleteFunction();
-    }
-    this.handleHideDeleteModal();
-  }
-
   render() {
     const {attributes} = this.props;
     const {
       contractsData,
       decisionOptions,
-      deleteModalLabel,
-      deleteModalTitle,
-      isDeleteModalOpen,
     } = this.state;
 
     return (
       <form>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label={deleteModalLabel}
-          onCancel={this.handleHideDeleteModal}
-          onClose={this.handleHideDeleteModal}
-          onSave={this.handleDeleteClick}
-          title={deleteModalTitle}
-        />
-
         <FormSection>
           <FieldArray
             attributes={attributes}
@@ -182,7 +148,6 @@ class ContractsEdit extends Component<Props, State> {
             contractsData={contractsData}
             decisionOptions={decisionOptions}
             name="contracts"
-            onOpenDeleteModal={this.handleOpenDeleteModal}
           />
         </FormSection>
       </form>

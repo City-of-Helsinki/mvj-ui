@@ -98,10 +98,6 @@ const OtherTenantItemEdit = ({
     showContactModal();
   };
 
-  const handleRemoveClick = () => {
-    onRemove(index);
-  };
-
   const handleCollapseToggle = (val: boolean) => {
     if(!tenantId) {return;}
 
@@ -128,7 +124,7 @@ const OtherTenantItemEdit = ({
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
       headerTitle={<h4 className='collapse__header-title edit-row'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>}
-      onRemove={handleRemoveClick}
+      onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>

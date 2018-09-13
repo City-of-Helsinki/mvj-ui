@@ -37,7 +37,6 @@ type Props = {
   invoiceToCredit: ?string,
   isCreateInvoicePanelOpen: boolean,
   isCreditInvoicePanelOpen: boolean,
-  onOpenDeleteModal: Function,
   receiveIsCreateClicked: Function,
   receiveIsCreateInvoicePanelOpen: Function,
   receiveIsCreditClicked: Function,
@@ -176,7 +175,6 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
       invoiceToCredit,
       isCreateInvoicePanelOpen,
       isCreditInvoicePanelOpen,
-      onOpenDeleteModal,
     } = this.props;
     const isInvoiceSet = this.isInvoiceSet();
 
@@ -217,7 +215,6 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
             {(isCreateInvoicePanelOpen && enableCreateInvoice) &&
               <NewInvoiceForm
                 onClose={this.handleCloseCreateInvoicePanel}
-                onOpenDeleteModal={onOpenDeleteModal}
                 onSave={this.handleCreateInvoice}
                 setRefForFirstField={this.handleSetRefForCreatePanelFirstField}
               />

@@ -7,6 +7,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -31,7 +32,6 @@ type DecisionConditionsProps = {
   fields: any,
   isSaveClicked: boolean,
   onCollapseToggle: Function,
-  onOpenDeleteModal: Function,
 }
 
 const renderDecisionConditions = ({
@@ -42,95 +42,105 @@ const renderDecisionConditions = ({
   fields: {name},
   isSaveClicked,
   onCollapseToggle,
-  onOpenDeleteModal,
 }: DecisionConditionsProps): Element<*> => {
-  const handleAdd = () => fields.push({});
+  const handleAdd = () => {
+    fields.push({});
+  };
 
   const decisionConditionsErrors = get(errors, name);
 
   return(
-    <Collapse
-      className='collapse__secondary'
-      defaultOpen={collapseState !== undefined ? collapseState : true}
-      hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)}
-      headerTitle={<h4 className='collapse__header-title'>Ehdot</h4>}
-      onToggle={onCollapseToggle}
-    >
-      <BoxItemContainer>
-        {fields && !!fields.length && fields.map((condition, index) => {
-          const handleOpenDeleteModal = () => {
-            onOpenDeleteModal(
-              () => fields.remove(index),
-              DeleteModalTitles.CONDITION,
-              DeleteModalLabels.CONDITION,
-            );
-          };
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <Collapse
+            className='collapse__secondary'
+            defaultOpen={collapseState !== undefined ? collapseState : true}
+            hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)}
+            headerTitle={<h4 className='collapse__header-title'>Ehdot</h4>}
+            onToggle={onCollapseToggle}
+          >
+            <BoxItemContainer>
+              {fields && !!fields.length && fields.map((condition, index) => {
+                const handleRemove = () => {
+                  dispatch({
+                    type: ActionTypes.SHOW_DELETE_MODAL,
+                    deleteFunction: () => {
+                      fields.remove(index);
+                    },
+                    deleteModalLabel: DeleteModalLabels.CONDITION,
+                    deleteModalTitle: DeleteModalTitles.CONDITION,
+                  });
+                };
 
-          return (
-            <BoxItem key={index}>
-              <BoxContentWrapper>
-                <RemoveButton
-                  className='position-topright'
-                  onClick={handleOpenDeleteModal}
-                  title="Poista ehto"
+                return (
+                  <BoxItem key={index}>
+                    <BoxContentWrapper>
+                      <RemoveButton
+                        className='position-topright'
+                        onClick={handleRemove}
+                        title="Poista ehto"
+                      />
+                      <Row>
+                        <Column small={6} medium={4} large={2}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.type')}
+                            name={`${condition}.type`}
+                            overrideValues={{
+                              label: 'Käyttötarkoitusehto',
+                            }}
+                          />
+                        </Column>
+                        <Column small={6} medium={4} large={2}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
+                            name={`${condition}.supervision_date`}
+                            overrideValues={{
+                              label: 'Valvontapvm',
+                            }}
+                          />
+                        </Column>
+                        <Column small={12} medium={4} large={2}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
+                            name={`${condition}.supervised_date`}
+                            overrideValues={{
+                              label: 'Valvottu pvm',
+                            }}
+                          />
+                        </Column>
+                        <Column small={12} medium={12} large={6}>
+                          <FormField
+                            disableTouched={isSaveClicked}
+                            fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.description')}
+                            name={`${condition}.description`}
+                            overrideValues={{
+                              label: 'Huomautus',
+                            }}
+                          />
+                        </Column>
+                      </Row>
+                    </BoxContentWrapper>
+                  </BoxItem>
+                );
+              })}
+            </BoxItemContainer>
+            <Row>
+              <Column>
+                <AddButtonSecondary
+                  label='Lisää ehto'
+                  onClick={handleAdd}
+                  title='Lisää ehto'
                 />
-                <Row>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.type')}
-                      name={`${condition}.type`}
-                      overrideValues={{
-                        label: 'Käyttötarkoitusehto',
-                      }}
-                    />
-                  </Column>
-                  <Column small={6} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervision_date')}
-                      name={`${condition}.supervision_date`}
-                      overrideValues={{
-                        label: 'Valvontapvm',
-                      }}
-                    />
-                  </Column>
-                  <Column small={12} medium={4} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.supervised_date')}
-                      name={`${condition}.supervised_date`}
-                      overrideValues={{
-                        label: 'Valvottu pvm',
-                      }}
-                    />
-                  </Column>
-                  <Column small={12} medium={12} large={6}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.description')}
-                      name={`${condition}.description`}
-                      overrideValues={{
-                        label: 'Huomautus',
-                      }}
-                    />
-                  </Column>
-                </Row>
-              </BoxContentWrapper>
-            </BoxItem>
-          );
-        })}
-      </BoxItemContainer>
-      <Row>
-        <Column>
-          <AddButtonSecondary
-            label='Lisää ehto'
-            onClick={handleAdd}
-            title='Lisää ehto'
-          />
-        </Column>
-      </Row>
-    </Collapse>
+              </Column>
+            </Row>
+          </Collapse>
+        );
+      }}
+    </AppConsumer>
   );
 };
 
@@ -144,7 +154,6 @@ type Props = {
   field: string,
   index: number,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
 };
@@ -159,7 +168,6 @@ const DecisionItemEdit = ({
   field,
   index,
   isSaveClicked,
-  onOpenDeleteModal,
   onRemove,
   receiveCollapseStates,
 }: Props) => {
@@ -272,7 +280,6 @@ const DecisionItemEdit = ({
         isSaveClicked={isSaveClicked}
         name={`${field}.conditions`}
         onCollapseToggle={handleConditionsCollapseToggle}
-        onOpenDeleteModal={onOpenDeleteModal}
       />
     </Collapse>
   );

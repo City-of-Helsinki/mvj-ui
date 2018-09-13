@@ -25,7 +25,7 @@ import {
   showEditMode,
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/infillDevelopment/enums';
+import {FormNames} from '$src/infillDevelopment/enums';
 import {
   clearUnsavedChanges,
   getContentInfillDevelopment,
@@ -72,21 +72,13 @@ type Props = {
 }
 
 type State = {
-  deleteFunction: ?Function,
-  deleteModalLabel: string,
-  deleteModalTitle: string,
   infillDevelopment: InfillDevelopment,
-  isDeleteModalOpen: boolean,
   isRestoreModalOpen: boolean,
 }
 
 class InfillDevelopmentPage extends Component<Props, State> {
   state = {
-    deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.LEASE,
-    deleteModalTitle: DeleteModalTitles.LEASE,
     infillDevelopment: {},
-    isDeleteModalOpen: false,
     isRestoreModalOpen: false,
   }
 
@@ -311,29 +303,6 @@ class InfillDevelopmentPage extends Component<Props, State> {
     destroy(FormNames.INFILL_DEVELOPMENT);
   }
 
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.LEASE, modalLabel: string = DeleteModalLabels.LEASE) => {
-    this.setState({
-      deleteFunction: fn,
-      deleteModalLabel: modalLabel,
-      deleteModalTitle: modalTitle,
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleHideDeleteModal = () => {
-    this.setState({
-      isDeleteModalOpen: false,
-    });
-  }
-
-  handleDeleteClick = () => {
-    const {deleteFunction} = this.state;
-    if(deleteFunction) {
-      deleteFunction();
-    }
-    this.handleHideDeleteModal();
-  }
-
   render() {
     const {
       isEditMode,
@@ -341,20 +310,10 @@ class InfillDevelopmentPage extends Component<Props, State> {
       isSaveClicked,
     } = this.props;
 
-    const {deleteModalLabel, deleteModalTitle, infillDevelopment, isDeleteModalOpen, isRestoreModalOpen} = this.state;
+    const {infillDevelopment, isRestoreModalOpen} = this.state;
 
     return (
       <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label={deleteModalLabel}
-          onCancel={this.handleHideDeleteModal}
-          onClose={this.handleHideDeleteModal}
-          onSave={this.handleDeleteClick}
-          title={deleteModalTitle}
-        />
-
         <ConfirmationModal
           confirmButtonLabel='Palauta muutokset'
           isOpen={isRestoreModalOpen}
@@ -386,7 +345,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
         />
         <ContentContainer>
           {isEditMode
-            ? <InfillDevelopmentForm infillDevelopment={infillDevelopment} onOpenDeleteModal={this.handleOpenDeleteModal}/>
+            ? <InfillDevelopmentForm infillDevelopment={infillDevelopment} />
             : <InfillDevelopmentTemplate infillDevelopment={infillDevelopment} />
           }
         </ContentContainer>

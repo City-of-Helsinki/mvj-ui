@@ -8,6 +8,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
@@ -31,48 +32,58 @@ import type {Attributes} from '$src/leases/types';
 
 type OtherTenantsProps = {
   fields: any,
-  onOpenDeleteModal: Function,
   tenant: Object,
 }
 
 const renderOtherTenants = ({
   fields,
-  onOpenDeleteModal,
   tenant,
 }: OtherTenantsProps): Element<*> => {
-  const handleAdd = () => fields.push({});
-
-  const handleOpenDeleteModal = (index: number) => {
-    onOpenDeleteModal(
-      () => fields.remove(index),
-      DeleteModalTitles.OTHER_TENANT,
-      DeleteModalLabels.OTHER_TENANT,
-    );
+  const handleAdd = () => {
+    fields.push({});
   };
 
   return (
-    <div>
-      {fields && !!fields.length && fields.map((field, index) => {
-        return (
-          <OtherTenantItemEdit
-            key={index}
-            field={field}
-            index={index}
-            onRemove={handleOpenDeleteModal}
-            tenant={tenant}
-          />
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            {fields && !!fields.length && fields.map((field, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.OTHER_TENANT,
+                  deleteModalTitle: DeleteModalTitles.OTHER_TENANT,
+                });
+              };
+
+              return (
+                <OtherTenantItemEdit
+                  key={index}
+                  field={field}
+                  index={index}
+                  onRemove={handleRemove}
+                  tenant={tenant}
+                />
+              );
+            })}
+            <Row>
+              <Column>
+                <AddButtonSecondary
+                  label='Lisää laskunsaaja tai yhteyshenkilö'
+                  onClick={handleAdd}
+                  title='Lisää laskunsaaja tai yhteyshenkilö'
+                />
+              </Column>
+            </Row>
+          </div>
         );
-      })}
-      <Row>
-        <Column>
-          <AddButtonSecondary
-            label='Lisää laskunsaaja tai yhteyshenkilö'
-            onClick={handleAdd}
-            title='Lisää laskunsaaja tai yhteyshenkilö'
-          />
-        </Column>
-      </Row>
-    </div>
+      }}
+    </AppConsumer>
+
   );
 };
 
@@ -82,10 +93,8 @@ type Props = {
   contact: ?Object,
   errors: ?Object,
   field: string,
-  index: number,
   initializeContactForm: Function,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
   receiveContactModalSettings: Function,
@@ -101,10 +110,8 @@ const TenantItemEdit = ({
   contact,
   errors,
   field,
-  index,
   initializeContactForm,
   isSaveClicked,
-  onOpenDeleteModal,
   onRemove,
   receiveCollapseStates,
   receiveContactModalSettings,
@@ -148,10 +155,6 @@ const TenantItemEdit = ({
     showContactModal();
   };
 
-  const handleRemoveClick = () => {
-    onRemove(index);
-  };
-
   const handleCollapseToggle = (val: boolean) => {
     if(!tenantId) {return;}
 
@@ -176,7 +179,7 @@ const TenantItemEdit = ({
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
       headerTitle={<h3 className='collapse__header-title'>{getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}</h3>}
-      onRemove={handleRemoveClick}
+      onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>
@@ -289,7 +292,6 @@ const TenantItemEdit = ({
       <FieldArray
         component={renderOtherTenants}
         name={`${field}.tenantcontact_set`}
-        onOpenDeleteModal={onOpenDeleteModal}
         tenant={savedTenant}
       />
     </Collapse>

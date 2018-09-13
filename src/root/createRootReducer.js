@@ -9,6 +9,10 @@ import apiReducer from '../api/reducer';
 import areaNoteReducer from '../areaNote/reducer';
 import authReducer from '../auth/reducer';
 import billingPeriodsReducer from '../billingPeriods/reducer';
+import collectionCourtDecisionReducer from '../collectionCourtDecision/reducer';
+import collectionLetterReducer from '../collectionLetter/reducer';
+import collectionLetterTemplateReducer from '../collectionLetterTemplate/reducer';
+import collectionNoteReducer from '../collectionNote/reducer';
 import commentsReducer from '../comments/reducer';
 import contactsReducer from '../contacts/reducer';
 import decisionsReducer from '../decision/reducer';
@@ -19,6 +23,7 @@ import invoiceSetReducer from '$src/invoiceSets/reducer';
 import landUseContractReducer from '$src/landUseContract/reducer';
 import leaseReducer from '../leases/reducer';
 import mapDataReducer from '../mapData/reducer';
+import penaltyInterestReducer from '../penaltyInterest/reducer';
 import rentBasisReducer from '../rentbasis/reducer';
 import rentForPeriodReducer from '../rentForPeriod/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
@@ -33,6 +38,10 @@ export default (): Reducer<RootState> =>
     areaNote: areaNoteReducer,
     auth: authReducer,
     billingPeriods: billingPeriodsReducer,
+    collectionCourtDecision: collectionCourtDecisionReducer,
+    collectionLetter: collectionLetterReducer,
+    collectionLetterTemplate: collectionLetterTemplateReducer,
+    collectionNote: collectionNoteReducer,
     comment: commentsReducer,
     contacts: contactsReducer,
     decision: decisionsReducer,
@@ -45,6 +54,7 @@ export default (): Reducer<RootState> =>
     lease: leaseReducer,
     mapData: mapDataReducer,
     oidc,
+    penaltyInterest: penaltyInterestReducer,
     rentBasis: rentBasisReducer,
     rentForPeriod: rentForPeriodReducer,
     routing: routerReducer,

@@ -16,7 +16,7 @@ import LeaseArea from './LeaseArea';
 import LeaseAreaEdit from './LeaseAreaEdit';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {FormNames} from '$src/leases/enums';
 import {formatDate} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
@@ -34,7 +34,6 @@ type Props = {
   isActive: boolean,
   isSaveClicked: boolean,
   onArchive: Function,
-  onOpenDeleteModal: Function,
   onRemove: Function,
   onUnarchive: Function,
   receiveCollapseStates: Function,
@@ -52,7 +51,6 @@ const LeaseAreaWithArchiveInfoEdit = ({
   isActive,
   isSaveClicked,
   onArchive,
-  onOpenDeleteModal,
   onRemove,
   onUnarchive,
   receiveCollapseStates,
@@ -61,17 +59,13 @@ const LeaseAreaWithArchiveInfoEdit = ({
 
   const savedArea = getAreaById(areaId);
 
-  const handleOpenDeleteModal = () => {
-    onOpenDeleteModal(
-      () => onRemove(index),
-      DeleteModalTitles.LEASE_AREA,
-      DeleteModalLabels.LEASE_AREA,
-    );
+  const handleArchive = () => {
+    onArchive(index, savedArea);
   };
 
-  const handleArchive = () => onArchive(index, savedArea);
-
-  const handleUnarchive = () => onUnarchive(index, savedArea);
+  const handleUnarchive = () => {
+    onUnarchive(index, savedArea);
+  };
 
   const handleAreaCollapseToggle = (val: boolean) => {
     if(!areaId) {return;}
@@ -89,16 +83,14 @@ const LeaseAreaWithArchiveInfoEdit = ({
 
   const areaErrors = get(errors, field);
 
-
   return (
-
     <Collapse
       className={classNames({'not-active': !isActive})}
       defaultOpen={areaCollapseState !== undefined ? areaCollapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(areaErrors)}
       headerTitle={<h3 className='collapse__header-title'>{savedArea ? (savedArea.identifier || '-') : '-'}</h3>}
       onArchive={(isActive && savedArea && savedArea.id) ? handleArchive : null}
-      onRemove={handleOpenDeleteModal}
+      onRemove={onRemove}
       onUnarchive={(!isActive && savedArea && savedArea.id) ? handleUnarchive : null}
       onToggle={handleAreaCollapseToggle}
     >
@@ -107,7 +99,6 @@ const LeaseAreaWithArchiveInfoEdit = ({
           areasData={areasData}
           field={field}
           index={index}
-          onOpenDeleteModal={onOpenDeleteModal}
           savedArea={savedArea}
         />
       }

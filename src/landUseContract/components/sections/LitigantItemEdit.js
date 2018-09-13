@@ -8,6 +8,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
@@ -33,49 +34,57 @@ import type {Attributes} from '$src/leases/types';
 type BillingPersonsProps = {
   fields: any,
   litigant: Object,
-  onOpenDeleteModal: Function,
 }
 
 const renderBillingPersons = ({
   fields,
   litigant,
-  onOpenDeleteModal,
 }: BillingPersonsProps): Element<*> => {
-  const handleAdd = () => fields.push({});
-
-  const handleOpenDeleteModal = (index: number) => {
-    onOpenDeleteModal(
-      () => fields.remove(index),
-      DeleteModalTitles.BILLING_PERSON,
-      DeleteModalLabels.BILLING_PERSON,
-    );
+  const handleAdd = () => {
+    fields.push({});
   };
 
   return (
-    <div>
-      {fields && !!fields.length && fields.map((field, index) => {
-        return (
-          <LitigantBillingPersonEdit
-            key={index}
-            field={field}
-            index={index}
-            litigant={litigant}
-            onRemove={handleOpenDeleteModal}
-          />
+    <AppConsumer>
+      {({dispatch}) => {
+        return(
+          <div>
+            {fields && !!fields.length && fields.map((field, index) => {
+              const handleRemove = () => {
+                dispatch({
+                  type: ActionTypes.SHOW_DELETE_MODAL,
+                  deleteFunction: () => {
+                    fields.remove(index);
+                  },
+                  deleteModalLabel: DeleteModalLabels.BILLING_PERSON,
+                  deleteModalTitle: DeleteModalTitles.BILLING_PERSON,
+                });
+              };
+              return (
+                <LitigantBillingPersonEdit
+                  key={index}
+                  field={field}
+                  litigant={litigant}
+                  onRemove={handleRemove}
+                />
+              );
+            })}
+            <Row>
+              <Column>
+                {!fields.length &&
+                  <AddButtonSecondary
+                    label='Lisää laskunsaaja'
+                    onClick={handleAdd}
+                    title='Lisää laskunsaaja'
+                  />
+                }
+              </Column>
+            </Row>
+          </div>
         );
-      })}
-      <Row>
-        <Column>
-          {!fields.length &&
-            <AddButtonSecondary
-              label='Lisää laskunsaaja'
-              onClick={handleAdd}
-              title='Lisää laskunsaaja'
-            />
-          }
-        </Column>
-      </Row>
-    </div>
+      }}
+    </AppConsumer>
+
   );
 };
 
@@ -85,12 +94,10 @@ type Props = {
   contact: ?Object,
   errors: ?Object,
   field: string,
-  index: number,
   initializeContactForm: Function,
   isSaveClicked: boolean,
   litigantId: number,
   litigants: Array<Object>,
-  onOpenDeleteModal: Function,
   onRemove: Function,
   receiveCollapseStates: Function,
   receiveContactModalSettings: Function,
@@ -104,12 +111,10 @@ const LitigantItemEdit = ({
   contact,
   errors,
   field,
-  index,
   initializeContactForm,
   isSaveClicked,
   litigantId,
   litigants,
-  onOpenDeleteModal,
   onRemove,
   receiveCollapseStates,
   receiveContactModalSettings,
@@ -145,10 +150,6 @@ const LitigantItemEdit = ({
     showContactModal();
   };
 
-  const handleRemoveClick = () => {
-    onRemove(index);
-  };
-
   const handleCollapseToggle = (val: boolean) => {
     if(!litigantId) {return;}
 
@@ -173,7 +174,7 @@ const LitigantItemEdit = ({
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(litigantErrors)}
       headerTitle={<h3 className='collapse__header-title'>{getContactFullName(get(savedLitigant, 'litigant.contact')) || '-'}</h3>}
-      onRemove={handleRemoveClick}
+      onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >
       <BoxContentWrapper>
@@ -287,7 +288,6 @@ const LitigantItemEdit = ({
         component={renderBillingPersons}
         litigant={savedLitigant}
         name={`${field}.litigantcontact_set`}
-        onOpenDeleteModal={onOpenDeleteModal}
       />
     </Collapse>
   );

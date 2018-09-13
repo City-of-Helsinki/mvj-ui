@@ -26,7 +26,6 @@ type Props = {
   infillDevelopment: InfillDevelopment,
   isFocusedOnMount?: boolean,
   isSaveClicked: boolean,
-  onOpenDeleteModal: Function,
   receiveFormValidFlags: Function,
   valid: boolean,
 };
@@ -61,7 +60,7 @@ class InfillDevelopmentForm extends Component<Props> {
   }
 
   render() {
-    const {attributes, infillDevelopment, isSaveClicked, onOpenDeleteModal} = this.props;
+    const {attributes, infillDevelopment, isSaveClicked} = this.props;
 
     return (
       <form>
@@ -150,7 +149,6 @@ class InfillDevelopmentForm extends Component<Props> {
             infillDevelopment={infillDevelopment}
             isSaveClicked={isSaveClicked}
             name={`infill_development_compensation_leases`}
-            onOpenDeleteModal={onOpenDeleteModal}
           />
         </GreenBox>
       </form>

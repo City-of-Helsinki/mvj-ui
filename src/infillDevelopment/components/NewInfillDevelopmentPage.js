@@ -22,7 +22,7 @@ import {
   receiveIsSaveClicked,
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/infillDevelopment/enums';
+import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentInfillDevelopmentForDb} from '$src/infillDevelopment/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFormValidById, getIsSaveClicked} from '$src/infillDevelopment/selectors';
@@ -46,20 +46,12 @@ type Props = {
 }
 
 type State = {
-  deleteFunction: ?Function,
-  deleteModalLabel: string,
-  deleteModalTitle: string,
   isCancelModalOpen: boolean,
-  isDeleteModalOpen: boolean,
 }
 
 class NewInfillDevelopmentPage extends Component<Props, State> {
   state = {
-    deleteFunction: null,
-    deleteModalLabel: DeleteModalLabels.LEASE,
-    deleteModalTitle: DeleteModalTitles.LEASE,
     isCancelModalOpen: false,
-    isDeleteModalOpen: false,
   }
 
   static contextTypes = {
@@ -148,45 +140,12 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
     }
   }
 
-  handleOpenDeleteModal = (fn: Function, modalTitle: string = DeleteModalTitles.LEASE, modalLabel: string = DeleteModalLabels.LEASE) => {
-    this.setState({
-      deleteFunction: fn,
-      deleteModalLabel: modalLabel,
-      deleteModalTitle: modalTitle,
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleHideDeleteModal = () => {
-    this.setState({
-      isDeleteModalOpen: false,
-    });
-  }
-
-  handleDeleteClick = () => {
-    const {deleteFunction} = this.state;
-    if(deleteFunction) {
-      deleteFunction();
-    }
-    this.handleHideDeleteModal();
-  }
-
   render() {
     const {attributes, isFormValid, isSaveClicked} = this.props;
-    const {deleteModalLabel, deleteModalTitle, isCancelModalOpen, isDeleteModalOpen} = this.state;
+    const {isCancelModalOpen} = this.state;
 
     return (
       <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label={deleteModalLabel}
-          onCancel={this.handleHideDeleteModal}
-          onClose={this.handleHideDeleteModal}
-          onSave={this.handleDeleteClick}
-          title={deleteModalTitle}
-        />
-
         <ConfirmationModal
           confirmButtonLabel='Hylkää muutokset'
           isOpen={isCancelModalOpen}
@@ -223,7 +182,6 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
           {!isEmpty(attributes) &&
             <InfillDevelopmentForm
               isFocusedOnMount
-              onOpenDeleteModal={this.handleOpenDeleteModal}
             />
           }
         </ContentContainer>

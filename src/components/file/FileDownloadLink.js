@@ -2,14 +2,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import debounce from 'lodash/debounce';
+import {saveAs} from 'file-saver/FileSaver';
 
-import {displayUIMessage} from '$util/helpers';
+import {displayUIMessage, getFileNameFromResponse} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
 
 type Props = {
   apiToken: string,
   className?: string,
-  fileName: string,
   fileUrl: string,
   label: string,
 }
@@ -17,42 +17,36 @@ type Props = {
 const FileDownloadLink = ({
   apiToken,
   className,
-  fileName,
   fileUrl,
   label,
 }: Props) => {
 
-  const handleClick =  debounce(() => {
+  const fetchFile = async() => {
     const request = new Request(fileUrl);
     if (apiToken) {
       request.headers.set('Authorization', `Bearer ${apiToken}`);
     }
 
-    return fetch(request)
-      .then((response) => {
-        switch(response.status) {
-          case 200:
-            return response.blob();
-          default:
-            break;
-        }
-      })
-      .then((blob) => {
-        if (window.navigator.msSaveOrOpenBlob) { // for IE and Edge
-          window.navigator.msSaveBlob(blob, fileName);
-        } else { // for modern browsers
-          const tempLink = document.createElement('a');
-          const fileURL = window.URL.createObjectURL(blob);
-          tempLink.href = fileURL;
-          tempLink.setAttribute('download', fileName);
-          tempLink.click();
-        }
-      })
-      .catch((e) => {
-        console.error('Error when downloading file: ', e);
-        displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
-      });
-  }, 1000, {leading: true});
+    try {
+      const response = await fetch(request);
+      switch(response.status) {
+        case 200:
+          const blob = await response.blob();
+          const filename = getFileNameFromResponse(response);
+
+          saveAs(blob, filename);
+          break;
+        default:
+          displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
+          break;
+      }
+    } catch(e) {
+      console.error(`Failed to download file with error ${e}`);
+      displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
+    }
+  };
+
+  const handleClick = debounce(fetchFile, 1000, {leading: true});
 
   const handleKeyDown = (e: any) => {
     if(e.keyCode === 13) {

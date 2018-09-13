@@ -161,4 +161,15 @@
       }
     }
   }
+
+  &__new-collection-note{
+    &_button-wrapper {
+      padding: rem-calc(0 0 10px);
+      text-align: right;
+
+      .mvj-button:last-child {
+        margin-right: 0;
+      }
+    }
+  }
 }
