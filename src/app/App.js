@@ -162,9 +162,7 @@ class App extends Component<Props, State> {
           <LoginPage buttonDisabled={Boolean(isApiTokenFetching)}/>
           <Loader isLoading={Boolean(isApiTokenFetching)} />
 
-          {location.pathname === getRouteById('callback') &&
-            children
-          }
+          {location.pathname === getRouteById('callback') && children}
         </div>
       );
     }
