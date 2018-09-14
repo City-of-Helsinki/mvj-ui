@@ -37,7 +37,6 @@ const LeaseHistoryItem = ({
     <AppConsumer>
       {({dispatch}) => {
         const handleDelete = () => {
-          console.log(id);
           dispatch({
             type: ActionTypes.SHOW_DELETE_MODAL,
             deleteFunction: () => {
