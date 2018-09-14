@@ -7,7 +7,7 @@ import type {CollectionCourtDecisionId, UploadCollectionCourtDecisionPayload} fr
 import type {LeaseId} from '$src/leases/types';
 
 export const fetchCollectionCourtDecisionsByLease = (lease: LeaseId): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`collection_court_decision/?lease=${lease}&limit=10000/`)));
+  return callApi(new Request(createUrl(`collection_court_decision/?lease=${lease}&limit=10000`)));
 };
 
 export const uploadCollectionCourtDecision = (data: UploadCollectionCourtDecisionPayload): Generator<any, any, any> => {

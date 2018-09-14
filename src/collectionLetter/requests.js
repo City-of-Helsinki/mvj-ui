@@ -7,7 +7,7 @@ import type {CollectionLetterId, UploadCollectionLetterPayload} from './types';
 import type {LeaseId} from '$src/leases/types';
 
 export const fetchCollectionLettersByLease = (lease: LeaseId): Generator<any, any, any> => {
-  return callApi(new Request(createUrl(`collection_letter/?lease=${lease}&limit=10000/`)));
+  return callApi(new Request(createUrl(`collection_letter/?lease=${lease}&limit=10000`)));
 };
 
 export const uploadCollectionLetter = (data: UploadCollectionLetterPayload): Generator<any, any, any> => {

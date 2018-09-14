@@ -1,29 +1,10 @@
 // @flow
-import {call, put, select} from 'redux-saga/effects';
 import callApi from '../api/callApi';
 import createUrl from '../api/createUrl';
 
-import {getApiToken} from '$src/auth/selectors';
-import {receiveError} from '$src/api/actions';
+import callUploadRequest from '$src/api/callUploadRequest';
 
 import type {InfillDevelopment, InfillDevelopmentId, InfillDevelopmentFileData} from './types';
-
-function* callUploadRequest(request: Request): Generator<any, any, any> {
-  const apiToken = yield select(getApiToken);
-  if (apiToken) {
-    request.headers.set('Authorization', `Bearer ${apiToken}`);
-  }
-
-  const response = yield call(fetch, request);
-  const status = response.status;
-  const bodyAsJson = yield call([response, response.json]);
-
-  if (status === 500) {
-    yield put(receiveError(bodyAsJson));
-  }
-
-  return {response, bodyAsJson};
-}
 
 export const fetchAttributes = (): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`infill_development_compensation/`), {method: 'OPTIONS'}));
