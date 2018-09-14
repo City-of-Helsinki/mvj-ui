@@ -1,10 +1,13 @@
 // @flow
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import {Link} from 'react-router';
 import classnames from 'classnames';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {getRouteById} from '$src/root/routes';
+import {hasAnyPageDirtyForms} from '$src/helpers';
 
 type Props = {
   isOpen: boolean,
@@ -24,6 +27,10 @@ class SideMenu extends Component<Props, State> {
     isClosing: false,
     isOpening: false,
   }
+
+  static contextTypes = {
+    router: PropTypes.object,
+  };
 
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen) {
@@ -73,21 +80,49 @@ class SideMenu extends Component<Props, State> {
   }
 
   render() {
-    const {isOpen, onLinkClick} = this.props;
+    const {isOpen} = this.props;
     const {isClosing, isOpening} = this.state;
     const width =  this.getSideMenuWidth();
 
     return(
-      <div ref={this.setComponentRef} className={classnames('side-menu', {'is-menu-open': isOpen})} style={{width: width}}>
-        <ul hidden={!isOpen && !isClosing && !isOpening}>
-          <li onClick={onLinkClick}><Link ref={this.setLinkRef} to={getRouteById('leases')}>Vuokraukset</Link></li>
-          <li onClick={onLinkClick}><Link to={getRouteById('contacts')}>Asiakkaat</Link></li>
-          <li onClick={onLinkClick}><Link to={getRouteById('landUseContract')}>Maankäyttösopimukset</Link></li>
-          <li onClick={onLinkClick}><Link to={getRouteById('areaNotes')}>Muistettavat ehdot</Link></li>
-          <li onClick={onLinkClick}><Link to={getRouteById('infillDevelopment')}>Täydennysrakentamiskorvaukset</Link></li>
-          <li onClick={onLinkClick}><Link to={getRouteById('rentBasis')}>Vuokrausperusteet</Link></li>
-        </ul>
-      </div>
+      <AppConsumer>
+        {({dispatch}) => {
+          const handleClick = (e: any) => {
+            const {onLinkClick} = this.props,
+              hasDirtyPages = hasAnyPageDirtyForms();
+
+            if(hasDirtyPages) {
+              const target = e.target;
+
+              e.preventDefault();
+
+              dispatch({
+                type: ActionTypes.SHOW_CANCEL_CHANGES_MODAL,
+                cancelChangesFunction: () => {
+                  const {router} = this.context;
+                  router.push(target.href);
+                  onLinkClick();
+                },
+              });
+            } else {
+              onLinkClick();
+            }
+          };
+
+          return(
+            <div ref={this.setComponentRef} className={classnames('side-menu', {'is-menu-open': isOpen})} style={{width: width}}>
+              <ul hidden={!isOpen && !isClosing && !isOpening}>
+                <li><Link ref={this.setLinkRef} onClick={handleClick} to={getRouteById('leases')}>Vuokraukset</Link></li>
+                <li><Link onClick={handleClick} to={getRouteById('contacts')}>Asiakkaat</Link></li>
+                <li><Link onClick={handleClick} to={getRouteById('landUseContract')}>Maankäyttösopimukset</Link></li>
+                <li><Link onClick={handleClick} to={getRouteById('areaNotes')}>Muistettavat ehdot</Link></li>
+                <li><Link onClick={handleClick} to={getRouteById('infillDevelopment')}>Täydennysrakentamiskorvaukset</Link></li>
+                <li><Link onClick={handleClick} to={getRouteById('rentBasis')}>Vuokrausperusteet</Link></li>
+              </ul>
+            </div>
+          );
+        }}
+      </AppConsumer>
     );
   }
 }

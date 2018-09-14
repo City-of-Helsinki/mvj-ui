@@ -35,11 +35,6 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/leases/SHOW_EDIT': () => true,
 }, false);
 
-const isDeleteRelatedLeaseModalOpenReducer: Reducer<boolean> = handleActions({
-  'mvj/leases/HIDE_RELATED_LEASE_MODAL': () => false,
-  'mvj/leases/SHOW_RELATED_LEASE_MODAL': () => true,
-}, false);
-
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/CREATE': () => true,
   'mvj/leases/PATCH': () => true,
@@ -162,7 +157,6 @@ export default combineReducers({
   isArchiveAreaModalOpen: isArchiveAreaModalOpenReducer,
   isArchiveFetching: isArchiveFetchingReducer,
   isFormValidById: isFormValidByIdReducer,
-  isDeleteRelatedLeaseModalOpen: isDeleteRelatedLeaseModalOpenReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
   isFetchingById: isFetchingByIdReducer,

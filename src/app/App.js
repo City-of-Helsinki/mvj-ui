@@ -171,12 +171,23 @@ class App extends Component<Props, State> {
       <AppProvider>
         <AppConsumer>
           {({
+            cancelChangesFunction,
+            isCancelChangesModalOpen,
             deleteFunction,
             deleteModalLabel,
             deleteModalTitle,
             dispatch,
             isDeleteModalOpen,
           }) => {
+            const handleCancelChanges = () => {
+              cancelChangesFunction();
+              handleHideCancelChangesModal();
+            };
+
+            const handleHideCancelChangesModal = () => {
+              dispatch({type: ActionTypes.HIDE_CANCEL_CHANGES_MODAL});
+            };
+
             const handleDelete = () => {
               deleteFunction();
               handleHideDeleteModal();
@@ -188,6 +199,15 @@ class App extends Component<Props, State> {
 
             return(
               <div className={'app'}>
+                <ConfirmationModal
+                  confirmButtonLabel='Hylkää muutokset'
+                  isOpen={isCancelChangesModalOpen}
+                  label={<span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti hylätä muutokset?</span>}
+                  onCancel={handleHideCancelChangesModal}
+                  onClose={handleHideCancelChangesModal}
+                  onSave={handleCancelChanges}
+                  title='Hylkää muutokset'
+                />
                 <ConfirmationModal
                   confirmButtonLabel='Poista'
                   isOpen={isDeleteModalOpen}

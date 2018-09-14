@@ -6,14 +6,19 @@ import {getFormValues, isDirty} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import PageContainer from '$components/content/PageContainer';
 import RentBasisForm from './forms/RentBasisForm';
-import {createRentBasis, fetchAttributes, receiveIsSaveClicked} from '$src/rentbasis/actions';
+import {
+  createRentBasis,
+  fetchAttributes,
+  hideEditMode,
+  receiveIsSaveClicked,
+  showEditMode,
+} from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/rentbasis/enums';
 import {getRouteById} from '$src/root/routes';
@@ -27,29 +32,29 @@ type Props = {
   createRentBasis: Function,
   editedRentBasis: ?Object,
   fetchAttributes: Function,
+  hideEditMode: Function,
   isFormDirty: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
+  showEditMode: Function,
 }
 
-type State = {
-  isCancelModalOpen: boolean,
-}
-
-class NewRentBasisPage extends Component<Props, State> {
-  state = {
-    isCancelModalOpen: false,
-  }
-
+class NewRentBasisPage extends Component<Props> {
   static contextTypes = {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
-    const {attributes, fetchAttributes, receiveIsSaveClicked, receiveTopNavigationSettings} = this.props;
+  componentDidMount() {
+    const {
+      attributes,
+      fetchAttributes,
+      receiveIsSaveClicked,
+      receiveTopNavigationSettings,
+      showEditMode,
+    } = this.props;
 
     receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
@@ -60,13 +65,15 @@ class NewRentBasisPage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
-  }
 
-  componentDidMount() {
+    showEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
   componentWillUnmount() {
+    const {hideEditMode} = this.props;
+
+    hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
   }
 
@@ -89,25 +96,7 @@ class NewRentBasisPage extends Component<Props, State> {
     });
   }
 
-  handleCancelModalCancelClick = () => {
-    this.setState({isCancelModalOpen: false});
-  }
-
-  handleCancelModalCloseClick = () => {
-    this.setState({isCancelModalOpen: false});
-  }
-
-  handleCancelClick = () => {
-    const {isFormDirty} = this.props;
-
-    if(isFormDirty) {
-      this.setState({isCancelModalOpen: true});
-    } else {
-      this.handleCancel();
-    }
-  }
-
-  handleCancel = () => {
+  cancelChanges = () => {
     const {router} = this.context;
 
     return router.push({
@@ -115,7 +104,7 @@ class NewRentBasisPage extends Component<Props, State> {
     });
   }
 
-  handleSave = () => {
+  saveChanges = () => {
     const {createRentBasis, editedRentBasis, isFormValid, receiveIsSaveClicked} = this.props;
 
     receiveIsSaveClicked(true);
@@ -126,28 +115,17 @@ class NewRentBasisPage extends Component<Props, State> {
 
   render() {
     const {isFormValid, isSaveClicked} = this.props;
-    const {isCancelModalOpen} = this.state;
 
     return (
       <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Hylkää muutokset'
-          isOpen={isCancelModalOpen}
-          label='Haluatko varmasti hylätä muutokset?'
-          onCancel={this.handleCancelModalCancelClick}
-          onClose={this.handleCancelModalCloseClick}
-          onSave={this.handleCancel}
-          title='Hylkää muutokset'
-        />
-
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={isSaveClicked && !isFormValid}
-              onCancelClick={this.handleCancelClick}
-              onSaveClick={this.handleSave}
+              onCancel={this.cancelChanges}
+              onSave={this.saveChanges}
               showCommentButton={false}
               showCopyButton={true}
             />
@@ -181,8 +159,10 @@ export default flowRight(
     {
       createRentBasis,
       fetchAttributes,
+      hideEditMode,
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
+      showEditMode,
     },
   ),
 )(NewRentBasisPage);

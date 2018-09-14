@@ -72,13 +72,15 @@ type Props = {
 }
 
 type State = {
-  infillDevelopment: InfillDevelopment,
+  currentInfillDevelopment: InfillDevelopment,
+  formatedInfillDevelopment: Object,
   isRestoreModalOpen: boolean,
 }
 
 class InfillDevelopmentPage extends Component<Props, State> {
   state = {
-    infillDevelopment: {},
+    formatedInfillDevelopment: {},
+    currentInfillDevelopment: {},
     isRestoreModalOpen: false,
   }
 
@@ -93,6 +95,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
       attributes,
       fetchInfillDevelopmentAttributes,
       fetchSingleInfillDevelopment,
+      hideEditMode,
       params: {infillDevelopmentId},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
@@ -111,7 +114,18 @@ class InfillDevelopmentPage extends Component<Props, State> {
     fetchSingleInfillDevelopment(infillDevelopmentId);
     receiveIsSaveClicked(false);
 
+    hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    if(props.currentInfillDevelopment !== state.currentInfillDevelopment) {
+      return {
+        currentInfillDevelopment: props.currentInfillDevelopment,
+        formatedInfillDevelopment: getContentInfillDevelopment(props.currentInfillDevelopment),
+      };
+    }
+    return null;
   }
 
   componentDidUpdate(prevProps) {
@@ -123,10 +137,6 @@ class InfillDevelopmentPage extends Component<Props, State> {
           isRestoreModalOpen: true,
         });
       }
-    }
-
-    if(prevProps.currentInfillDevelopment !== this.props.currentInfillDevelopment) {
-      this.updateInfillDevelopment();
     }
 
     // Stop autosave timer and clear form data from session storage after saving/cancelling changes
@@ -142,21 +152,14 @@ class InfillDevelopmentPage extends Component<Props, State> {
       params: {infillDevelopmentId},
       router: {location: {pathname}},
     } = this.props;
-    hideEditMode();
 
     if(pathname !== `${getRouteById('infillDevelopment')}/${infillDevelopmentId}`) {
       clearUnsavedChanges();
     }
     this.stopAutoSaveTimer();
 
+    hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
-  }
-
-  updateInfillDevelopment = () => {
-    const {currentInfillDevelopment} = this.props;
-    this.setState({
-      infillDevelopment: getContentInfillDevelopment(currentInfillDevelopment),
-    });
   }
 
   handleLeavePage = (e) => {
@@ -236,8 +239,8 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {router: {location: {query}}} = this.props;
 
     const infillDevelopment = {...currentInfillDevelopment};
-    infillDevelopment.id = undefined;
 
+    infillDevelopment.id = undefined;
     receiveFormInitialValues(getContentInfillDevelopmentCopy(infillDevelopment));
     hideEditMode();
     clearUnsavedChanges();
@@ -248,7 +251,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     });
   }
 
-  handleControlButtonBarBack = () => {
+  handleBack = () => {
     const {router} = this.context;
     const {router: {location: {query}}} = this.props;
 
@@ -258,12 +261,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     });
   }
 
-  handleControlButtonCancel = () => {
-    const {hideEditMode} = this.props;
-    hideEditMode();
-  }
-
-  handleControlButtonEdit = () => {
+  handleShowEditMode = () => {
     const {
       clearFormValidFlags,
       currentInfillDevelopment,
@@ -280,21 +278,22 @@ class InfillDevelopmentPage extends Component<Props, State> {
     this.startAutoSaveTimer();
   }
 
-  handleControlButtonSave = () => {
+  cancelChanges = () => {
+    const {hideEditMode} = this.props;
+    hideEditMode();
+  }
+
+  saveChanges = () => {
     const {isFormValid, receiveIsSaveClicked} = this.props;
     receiveIsSaveClicked(true);
 
     if(isFormValid) {
-      this.saveInfillDevelopment();
+      const {currentInfillDevelopment, infillDevelopmentFormValues, editInfillDevelopment} = this.props;
+
+      const editedInfillDevelopment = getContentInfillDevelopmentForDb(infillDevelopmentFormValues);
+      editedInfillDevelopment.id = currentInfillDevelopment.id;
+      editInfillDevelopment(editedInfillDevelopment);
     }
-  }
-
-  saveInfillDevelopment = () => {
-    const {currentInfillDevelopment, infillDevelopmentFormValues, editInfillDevelopment} = this.props;
-
-    const editedInfillDevelopment = getContentInfillDevelopmentForDb(infillDevelopmentFormValues);
-    editedInfillDevelopment.id = currentInfillDevelopment.id;
-    editInfillDevelopment(editedInfillDevelopment);
   }
 
   destroyAllForms = () => {
@@ -310,7 +309,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
       isSaveClicked,
     } = this.props;
 
-    const {infillDevelopment, isRestoreModalOpen} = this.state;
+    const {formatedInfillDevelopment, isRestoreModalOpen} = this.state;
 
     return (
       <PageContainer>
@@ -332,21 +331,21 @@ class InfillDevelopmentPage extends Component<Props, State> {
               isEditDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={isSaveClicked && !isFormValid}
-              onCancelClick={this.handleControlButtonCancel}
-              onCopyClick={this.copyInfillDevelopment}
-              onEditClick={this.handleControlButtonEdit}
-              onSaveClick={this.handleControlButtonSave}
+              onCancel={this.cancelChanges}
+              onCopy={this.copyInfillDevelopment}
+              onEdit={this.handleShowEditMode}
+              onSave={this.saveChanges}
               showCommentButton={false}
               showCopyButton={true}
             />
           }
-          infoComponent={<h1>{infillDevelopment.name}</h1>}
-          onBack={this.handleControlButtonBarBack}
+          infoComponent={<h1>{formatedInfillDevelopment.name}</h1>}
+          onBack={this.handleBack}
         />
         <ContentContainer>
           {isEditMode
-            ? <InfillDevelopmentForm infillDevelopment={infillDevelopment} />
-            : <InfillDevelopmentTemplate infillDevelopment={infillDevelopment} />
+            ? <InfillDevelopmentForm infillDevelopment={formatedInfillDevelopment} />
+            : <InfillDevelopmentTemplate infillDevelopment={formatedInfillDevelopment} />
           }
         </ContentContainer>
       </PageContainer>

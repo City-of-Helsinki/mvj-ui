@@ -114,14 +114,12 @@ type Props = {
 
 type State = {
   activeTab: number,
-  isCancelLeaseModalOpen: boolean,
   isRestoreModalOpen: boolean,
 }
 
 class LandUseContractPage extends Component<Props, State> {
   state = {
     activeTab: 0,
-    isCancelLeaseModalOpen: false,
     isRestoreModalOpen: false,
   }
 
@@ -139,6 +137,7 @@ class LandUseContractPage extends Component<Props, State> {
       fetchContactAttributes,
       fetchLandUseContractAttributes,
       fetchSingleLandUseContract,
+      hideEditMode,
       location,
       params: {landUseContractId},
       receiveIsSaveClicked,
@@ -167,6 +166,8 @@ class LandUseContractPage extends Component<Props, State> {
 
     clearFormValidFlags();
     receiveIsSaveClicked(false);
+    hideEditMode();
+    window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
   componentDidUpdate(prevProps) {
@@ -195,11 +196,11 @@ class LandUseContractPage extends Component<Props, State> {
       router: {location: {pathname}},
     } = this.props;
 
-    hideEditMode();
-
     if(pathname !== `${getRouteById('landUseContract')}/${landUseContractId}`) {
       clearUnsavedChanges();
     }
+    hideEditMode();
+    window.removeEventListener('beforeunload', this.handleLeavePage);
   }
 
   startAutoSaveTimer = () => {
@@ -211,6 +212,16 @@ class LandUseContractPage extends Component<Props, State> {
 
   stopAutoSaveTimer = () => {
     clearInterval(this.timerAutoSave);
+  }
+
+  handleLeavePage = (e) => {
+    const {isEditMode} = this.props;
+
+    if(this.isAnyFormDirty() && isEditMode) {
+      const confirmationMessage = '';
+      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+      return confirmationMessage;              // Gecko, WebKit, Chrome <34
+    }
   }
 
   saveUnsavedChanges = () => {
@@ -361,7 +372,7 @@ class LandUseContractPage extends Component<Props, State> {
     });
   }
 
-  handleControlButtonBarBack = () => {
+  handleBack = () => {
     const {router} = this.context;
     const {router: {location: {query}}} = this.props;
 
@@ -371,31 +382,12 @@ class LandUseContractPage extends Component<Props, State> {
     });
   }
 
-  handleControlButtonCancel = () => {
-    const isDirty = this.isAnyFormDirty();
-    if(isDirty) {
-      this.showModal('CancelLease');
-    } else {
-      this.cancel();
-    }
-  }
-
-  handleHideCancelConfirmation = () => {
-    this.hideModal('CancelLease');
-  }
-
-  cancel = () => {
-    const {hideEditMode} = this.props;
-
-    this.hideModal('CancelLease');
-    hideEditMode();
-  }
-
-  handleControlButtonEdit = () => {
+  handleShowEditMode = () => {
     const {clearFormValidFlags, currentLandUseContract, receiveIsSaveClicked, showEditMode} = this.props;
 
     receiveIsSaveClicked(false);
     clearFormValidFlags();
+
     showEditMode();
     this.destroyAllForms();
     this.initializeForms(currentLandUseContract);
@@ -417,13 +409,65 @@ class LandUseContractPage extends Component<Props, State> {
     initialize(FormNames.INVOICES, {invoices: getContentInvoices(landUseContract)});
   }
 
-  handleControlButtonSave = () => {
+  cancelChanges = () => {
+    const {hideEditMode} = this.props;
+
+    this.hideModal('CancelLease');
+    hideEditMode();
+  }
+
+  saveChanges = () => {
     const {receiveIsSaveClicked} = this.props;
     receiveIsSaveClicked(true);
 
     const areFormsValid = this.getAreFormsValid();
     if(areFormsValid) {
-      this.save();
+      const {
+        basicInformationFormValues,
+        compensationsFormValues,
+        contractsFormValues,
+        currentLandUseContract,
+        decisionsFormValues,
+        editLandUseContract,
+        invoicesFormValues,
+        isBasicInformationFormDirty,
+        isCompensationsFormDirty,
+        isContractsFormDirty,
+        isDecisionsFormDirty,
+        isInvoicesFormDirty,
+        isLitigantsFormDirty,
+        litigantsFormValues,
+      } = this.props;
+
+      //TODO: Add helper functions to save land use contract to DB when API is ready
+      let payload: Object = {...currentLandUseContract};
+
+      if(isBasicInformationFormDirty) {
+        payload = {...payload, ...basicInformationFormValues};
+      }
+
+      if(isDecisionsFormDirty) {
+        payload = {...payload, ...decisionsFormValues};
+      }
+
+      if(isContractsFormDirty) {
+        payload = {...payload, ...contractsFormValues};
+      }
+
+      if(isCompensationsFormDirty) {
+        payload = {...payload, ...compensationsFormValues};
+      }
+
+      if(isInvoicesFormDirty) {
+        payload = {...payload, ...invoicesFormValues};
+      }
+
+      if(isLitigantsFormDirty) {
+        payload = addLitigantsDataToPayload(payload, litigantsFormValues);
+      }
+
+      payload.identifier = currentLandUseContract.identifier;
+      editLandUseContract(payload);
     }
   }
 
@@ -465,55 +509,6 @@ class LandUseContractPage extends Component<Props, State> {
       isInvoicesFormDirty ||
       isLitigantsFormDirty
     );
-  }
-
-  save = () => {
-    const {
-      basicInformationFormValues,
-      compensationsFormValues,
-      contractsFormValues,
-      currentLandUseContract,
-      decisionsFormValues,
-      editLandUseContract,
-      invoicesFormValues,
-      isBasicInformationFormDirty,
-      isCompensationsFormDirty,
-      isContractsFormDirty,
-      isDecisionsFormDirty,
-      isInvoicesFormDirty,
-      isLitigantsFormDirty,
-      litigantsFormValues,
-    } = this.props;
-
-    //TODO: Add helper functions to save land use contract to DB when API is ready
-    let payload: Object = {...currentLandUseContract};
-
-    if(isBasicInformationFormDirty) {
-      payload = {...payload, ...basicInformationFormValues};
-    }
-
-    if(isDecisionsFormDirty) {
-      payload = {...payload, ...decisionsFormValues};
-    }
-
-    if(isContractsFormDirty) {
-      payload = {...payload, ...contractsFormValues};
-    }
-
-    if(isCompensationsFormDirty) {
-      payload = {...payload, ...compensationsFormValues};
-    }
-
-    if(isInvoicesFormDirty) {
-      payload = {...payload, ...invoicesFormValues};
-    }
-
-    if(isLitigantsFormDirty) {
-      payload = addLitigantsDataToPayload(payload, litigantsFormValues);
-    }
-
-    payload.identifier = currentLandUseContract.identifier;
-    editLandUseContract(payload);
   }
 
   hideModal = (modalName: string) => {
@@ -560,22 +555,12 @@ class LandUseContractPage extends Component<Props, State> {
       isLitigantsFormValid,
       isSaveClicked,
     } = this.props;
-    const {isCancelLeaseModalOpen, isRestoreModalOpen} = this.state;
+    const {isRestoreModalOpen} = this.state;
     const identifier = getContentLandUseContractIdentifier(currentLandUseContract);
     const areFormsValid = this.getAreFormsValid();
 
     return (
       <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Hylkää muutokset'
-          isOpen={isCancelLeaseModalOpen}
-          label='Haluatko varmasti hylätä muutokset?'
-          onCancel={this.handleHideCancelConfirmation}
-          onClose={this.handleHideCancelConfirmation}
-          onSave={this.cancel}
-          title='Hylkää muutokset'
-        />
-
         <ConfirmationModal
           confirmButtonLabel='Palauta muutokset'
           isOpen={isRestoreModalOpen}
@@ -594,15 +579,15 @@ class LandUseContractPage extends Component<Props, State> {
               isEditDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={isSaveClicked && !areFormsValid}
-              onCancelClick={this.handleControlButtonCancel}
-              onEditClick={this.handleControlButtonEdit}
-              onSaveClick={this.handleControlButtonSave}
+              onCancel={this.cancelChanges}
+              onEdit={this.handleShowEditMode}
+              onSave={this.saveChanges}
               showCommentButton={false}
               showCopyButton={false}
             />
           }
           infoComponent={<h1>{identifier}</h1>}
-          onBack={this.handleControlButtonBarBack}
+          onBack={this.handleBack}
         />
 
         <Tabs

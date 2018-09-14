@@ -22,8 +22,6 @@ import {
   showUnarchiveAreaModal,
   receiveFormValidFlags,
   clearFormValidFlags,
-  showDeleteRelatedLeaseModal,
-  hideDeleteRelatedLeaseModal,
   receiveIsSaveClicked,
   receiveCollapseStates,
 } from './actions';
@@ -36,7 +34,6 @@ const stateTemplate = {
   current: {},
   isArchiveAreaModalOpen: false,
   isArchiveFetching: false,
-  isDeleteRelatedLeaseModalOpen: false,
   isEditMode: false,
   isFetching: false,
   isFetchingAttributes: false,
@@ -280,22 +277,6 @@ describe('Leases', () => {
         newState.isFetchingById = {[leaseId]: false};
 
         const state = leasesReducer({}, receiveLeaseById({leaseId: leaseId, lease: dummyLease}));
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isDeleteRelatedLeaseModalOpen to true', () => {
-        const newState = {...stateTemplate};
-        newState.isDeleteRelatedLeaseModalOpen = true;
-
-        const state = leasesReducer({}, showDeleteRelatedLeaseModal());
-        expect(state).to.deep.equal(newState);
-      });
-
-      it('should update isDeleteRelatedLeaseModalOpen to false', () => {
-        const newState = {...stateTemplate};
-        newState.isDeleteRelatedLeaseModalOpen = false;
-
-        const state = leasesReducer({}, hideDeleteRelatedLeaseModal());
         expect(state).to.deep.equal(newState);
       });
 

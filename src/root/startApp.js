@@ -6,8 +6,9 @@ import configureStore from './configureStore';
 import renderApp from './renderApp';
 import Root from './Root';
 
+export const store = configureStore();
 export default () => {
-  const store = configureStore();
+
   const history = syncHistoryWithStore(browserHistory, store);
 
   const rootProps = {

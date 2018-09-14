@@ -2,10 +2,12 @@
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
+import {isDirty} from 'redux-form';
 
 import {FormNames, LitigantContactType} from './enums';
 import {getContentUser} from '$src/leases/helpers';
 import {fixedLengthNumber, sortStringByKeyDesc} from '$util/helpers';
+import {getIsEditMode} from '$src/landUseContract/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
@@ -248,6 +250,17 @@ export const isLitigantArchived = (litigant: ?Object) => {
   }
 
   return false;
+};
+
+export const isAnyLandUseContractFormDirty = (state: any) => {
+  const isEditMode = getIsEditMode(state);
+
+  return isEditMode && (
+    isDirty(FormNames.BASIC_INFORMATION)(state) ||
+    isDirty(FormNames.COMPENSATIONS)(state) ||
+    isDirty(FormNames.CONTRACTS)(state) ||
+    isDirty(FormNames.DECISIONS)(state) ||
+    isDirty(FormNames.INVOICES)(state));
 };
 
 export const clearUnsavedChanges = () => {

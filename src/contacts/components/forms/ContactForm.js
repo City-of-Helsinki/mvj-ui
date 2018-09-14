@@ -328,7 +328,7 @@ export default flowRight(
   ),
   reduxForm({
     destroyOnUnmount: false,
-    form: formName,
     enableReinitialize: true,
+    form: formName,
   }),
 )(ContactForm);
