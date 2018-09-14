@@ -7,7 +7,7 @@ import Modal from './Modal';
 type Props = {
   confirmButtonLabel?: string,
   isOpen: boolean,
-  label: string,
+  label: any,
   onCancel: Function,
   onClose: Function,
   onSave: Function,

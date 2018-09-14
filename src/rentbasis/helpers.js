@@ -1,7 +1,9 @@
 // @flow
 import get from 'lodash/get';
+import {isDirty} from 'redux-form';
 
 import {FormNames} from './enums';
+import {getIsEditMode} from '$src/rentbasis/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
 const getContentRentRates = (rentBasis: Object) => {
@@ -111,6 +113,12 @@ export const getContentCopiedRentBasis = (content: Object) => {
     property_identifiers: getContentCopiedPropertyIdentifiers(content),
     decisions: getContentCopiedDecisions(content),
   };
+};
+
+export const isRentBasisFormDirty = (state: any) => {
+  const isEditMode = getIsEditMode(state);
+
+  return isEditMode && isDirty(FormNames.RENT_BASIS)(state);
 };
 
 export const clearUnsavedChanges = () => {

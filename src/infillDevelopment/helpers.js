@@ -1,9 +1,11 @@
 // @flow
 import get from 'lodash/get';
+import {isDirty} from 'redux-form';
 
 import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentLeaseIdentifier, getContentLeaseOption, getContentUser} from '$src/leases/helpers';
 import {formatDecimalNumberForDb} from '$util/helpers';
+import {getIsEditMode} from '$src/infillDevelopment/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
 export const getContentAttachments = (lease: Object) => {
@@ -199,6 +201,12 @@ export const getContentInfillDevelopmentList = (content: Object) => {
       state: get(item, 'state'),
     };
   });
+};
+
+export const isInfillDevelopmentFormDirty = (state: any) => {
+  const isEditMode = getIsEditMode(state);
+
+  return isEditMode && isDirty(FormNames.INFILL_DEVELOPMENT)(state);
 };
 
 export const clearUnsavedChanges = () => {

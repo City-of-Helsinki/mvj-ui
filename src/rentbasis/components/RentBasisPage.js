@@ -80,7 +80,7 @@ class RentBasisPage extends Component<Props, State> {
 
   timerAutoSave: any
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       attributes,
       fetchAttributes,
@@ -98,16 +98,13 @@ class RentBasisPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    hideEditMode();
-
     fetchSingleRentBasis(rentBasisId);
 
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
-  }
 
-  componentDidMount() {
+    hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
@@ -222,14 +219,13 @@ class RentBasisPage extends Component<Props, State> {
     });
   }
 
-  editRentBasis = () => {
+  saveChanges = () => {
     const {editRentBasis, editedRentBasis, isFormValid, receiveIsSaveClicked} = this.props;
 
     receiveIsSaveClicked(true);
     if(isFormValid) {
       editRentBasis(editedRentBasis);
     }
-
   }
 
   handleBack = () => {
@@ -242,25 +238,7 @@ class RentBasisPage extends Component<Props, State> {
     });
   }
 
-  handelCanceModalCancelClick = () => {
-    this.setState({isCancelModalOpen: false});
-  }
-
-  handelCanceModalCloseClick = () => {
-    this.setState({isCancelModalOpen: false});
-  }
-
-  handleCancelClick = () => {
-    const {hideEditMode, isFormDirty} = this.props;
-
-    if(isFormDirty) {
-      this.setState({isCancelModalOpen: true});
-    } else {
-      hideEditMode();
-    }
-  }
-
-  handleCancel = () => {
+  cancelChanges = () => {
     const {hideEditMode} = this.props;
 
     this.setState({isCancelModalOpen: false});
@@ -286,7 +264,7 @@ class RentBasisPage extends Component<Props, State> {
       rentBasisData,
     } = this.props;
 
-    const {isCancelModalOpen, isRestoreModalOpen} = this.state;
+    const {isRestoreModalOpen} = this.state;
 
     const rentBasis = getContentRentBasis(rentBasisData);
 
@@ -300,16 +278,6 @@ class RentBasisPage extends Component<Props, State> {
 
     return (
       <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Hylkää muutokset'
-          isOpen={isCancelModalOpen}
-          label='Haluatko varmasti hylätä muutokset?'
-          onCancel={this.handelCanceModalCancelClick}
-          onClose={this.handelCanceModalCloseClick}
-          onSave={this.handleCancel}
-          title='Hylkää muutokset'
-        />
-
         <ConfirmationModal
           confirmButtonLabel='Palauta muutokset'
           isOpen={isRestoreModalOpen}
@@ -326,10 +294,10 @@ class RentBasisPage extends Component<Props, State> {
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={isSaveClicked && !isFormValid}
-              onCancelClick={this.handleCancelClick}
-              onCopyClick={this.copyRentBasis}
-              onEditClick={this.showEditMode}
-              onSaveClick={this.editRentBasis}
+              onCancel={this.cancelChanges}
+              onCopy={this.copyRentBasis}
+              onEdit={this.showEditMode}
+              onSave={this.saveChanges}
               showCommentButton={false}
               showCopyButton={true}
             />

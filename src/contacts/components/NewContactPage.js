@@ -7,7 +7,6 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContactForm from './forms/ContactForm';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
@@ -16,11 +15,17 @@ import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
-import {createContact, fetchAttributes, receiveIsSaveClicked} from '../actions';
+import {
+  createContact,
+  fetchAttributes,
+  hideEditMode,
+  receiveIsSaveClicked,
+  showEditMode,
+} from '$src/contacts/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '../enums';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getIsContactFormValid, getIsSaveClicked} from '../selectors';
+import {getAttributes, getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
 
 import type {RootState} from '$src/root/types';
 import type {Attributes, Contact} from '../types';
@@ -30,29 +35,23 @@ type Props = {
   contactFormValues: Contact,
   createContact: Function,
   fetchAttributes: Function,
+  hideEditMode: Function,
   isContactFormDirty: boolean,
   isContactFormValid: boolean,
   isSaveClicked: boolean,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
+  showEditMode: Function,
 }
 
-type State = {
-  isCancelModalOpen: boolean,
-}
-
-class NewContactPage extends Component<Props, State> {
-  state = {
-    isCancelModalOpen: false,
-  }
-
+class NewContactPage extends Component<Props> {
   static contextTypes = {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
-    const {attributes, fetchAttributes, receiveIsSaveClicked, receiveTopNavigationSettings} = this.props;
+  componentDidMount() {
+    const {attributes, fetchAttributes, receiveIsSaveClicked, receiveTopNavigationSettings, showEditMode} = this.props;
 
     receiveIsSaveClicked(false);
     receiveTopNavigationSettings({
@@ -64,18 +63,21 @@ class NewContactPage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
-  }
 
-  componentDidMount() {
+    showEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
   componentWillUnmount() {
+    const {hideEditMode} = this.props;
+
+    hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
   }
 
   handleLeavePage = (e) => {
     const {isContactFormDirty} = this.props;
+
     if(isContactFormDirty) {
       const confirmationMessage = '';
       e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
@@ -93,45 +95,35 @@ class NewContactPage extends Component<Props, State> {
     });
   }
 
-  handleCancel = () => {
+  cancelChanges = () => {
     const {router} = this.context;
     return router.push({
       pathname: getRouteById('contacts'),
     });
   }
 
-  handleSave = () => {
+  saveChanges = () => {
     const {contactFormValues, createContact, isSaveClicked, receiveIsSaveClicked} = this.props;
     receiveIsSaveClicked(true);
+
     if(isSaveClicked) {
       createContact(contactFormValues);
     }
   }
 
   render() {
-    const {attributes, isContactFormDirty, isContactFormValid, isSaveClicked} = this.props;
-    const {isCancelModalOpen} = this.state;
+    const {attributes, isContactFormValid, isSaveClicked} = this.props;
 
     return (
       <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Hylkää muutokset'
-          isOpen={isCancelModalOpen}
-          label='Haluatko varmasti hylätä muutokset?'
-          onCancel={() => this.setState({isCancelModalOpen: false})}
-          onClose={() => this.setState({isCancelModalOpen: false})}
-          onSave={this.handleCancel}
-          title='Hylkää muutokset'
-        />
-
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={isSaveClicked && !isContactFormValid}
-              onCancelClick={isContactFormDirty ? () => this.setState({isCancelModalOpen: true}) : this.handleCancel}
-              onSaveClick={this.handleSave}
+              onCancel={this.cancelChanges}
+              onSave={this.saveChanges}
               showCommentButton={false}
               showCopyButton={true}
             />
@@ -174,8 +166,10 @@ export default flowRight(
     {
       createContact,
       fetchAttributes,
+      hideEditMode,
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
+      showEditMode,
     },
   ),
 )(NewContactPage);

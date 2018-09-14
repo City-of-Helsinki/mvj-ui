@@ -29,8 +29,6 @@ import type {
   CreateRelatedLeaseAction,
   DeleteRelatedLeasePayload,
   DeleteRelatedLeaseAction,
-  HideDeleteRelatedLeaseModalAction,
-  ShowDeleteRelatedLeaseModalAction,
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
   ReceiveIsSaveClickedAction,
@@ -102,12 +100,6 @@ export const createReleatedLease = (payload: CreateRelatedLeasePayload): CreateR
 
 export const deleteReleatedLease = (payload: DeleteRelatedLeasePayload): DeleteRelatedLeaseAction =>
   createAction('mvj/leases/DELETE_RELATED_LEASE')(payload);
-
-export const hideDeleteRelatedLeaseModal = (): HideDeleteRelatedLeaseModalAction =>
-  createAction('mvj/leases/HIDE_RELATED_LEASE_MODAL')();
-
-export const showDeleteRelatedLeaseModal = (): ShowDeleteRelatedLeaseModalAction =>
-  createAction('mvj/leases/SHOW_RELATED_LEASE_MODAL')();
 
 export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsAction =>
   createAction('mvj/leases/RECEIVE_FORM_VALID_FLAGS')(valid);

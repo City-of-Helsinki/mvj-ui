@@ -64,13 +64,11 @@ type Props = {
 }
 
 type State = {
-  isCancelModalOpen: boolean,
   isRestoreModalOpen: boolean,
 }
 
 class ContactPage extends Component<Props, State> {
   state = {
-    isCancelModalOpen: false,
     isRestoreModalOpen: false,
   }
 
@@ -80,11 +78,12 @@ class ContactPage extends Component<Props, State> {
 
   timerAutoSave: any
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       attributes,
       fetchAttributes,
       fetchSingleContact,
+      hideEditMode,
       params: {contactId},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
@@ -102,9 +101,8 @@ class ContactPage extends Component<Props, State> {
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
-  }
 
-  componentDidMount() {
+    hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
@@ -130,22 +128,13 @@ class ContactPage extends Component<Props, State> {
       router: {location: {pathname}},
     } = this.props;
 
-    hideEditMode();
     if(pathname !== `${getRouteById('contacts')}/${contactId}`) {
       clearUnsavedChanges();
     }
     this.stopAutoSaveTimer();
 
+    hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
-  }
-
-  handleLeavePage = (e) => {
-    const {isEditMode, isContactFormDirty} = this.props;
-    if(isContactFormDirty && isEditMode) {
-      const confirmationMessage = '';
-      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
-      return confirmationMessage;              // Gecko, WebKit, Chrome <34
-    }
   }
 
   startAutoSaveTimer = () => {
@@ -157,6 +146,16 @@ class ContactPage extends Component<Props, State> {
 
   stopAutoSaveTimer = () => {
     clearInterval(this.timerAutoSave);
+  }
+
+  handleLeavePage = (e) => {
+    const {isEditMode, isContactFormDirty} = this.props;
+
+    if(isContactFormDirty && isEditMode) {
+      const confirmationMessage = '';
+      e.returnValue = confirmationMessage;     // Gecko, Trident, Chrome 34+
+      return confirmationMessage;              // Gecko, WebKit, Chrome <34
+    }
   }
 
   saveUnsavedChanges = () => {
@@ -221,15 +220,6 @@ class ContactPage extends Component<Props, State> {
     });
   }
 
-  saveContact = () => {
-    const {contactFormValues, editContact, isSaveClicked, receiveIsSaveClicked} = this.props;
-
-    receiveIsSaveClicked(true);
-    if(isSaveClicked) {
-      editContact(contactFormValues);
-    }
-  }
-
   hideEditMode = () => {
     const {hideEditMode} = this.props;
     hideEditMode();
@@ -245,25 +235,20 @@ class ContactPage extends Component<Props, State> {
     });
   }
 
-  handleCancelModalClose = () => {
-    this.setState({isCancelModalOpen: false});
-  }
-
-  handleCancelClick = () => {
-    const {isContactFormDirty} = this.props;
-
-    if(isContactFormDirty) {
-      this.setState({isCancelModalOpen: true});
-    } else {
-      this.hideEditMode();
-    }
-  }
-
-  handleCancel = () => {
+  cancelChanges = () => {
     const {hideEditMode} = this.props;
 
-    this.setState({isCancelModalOpen: false});
     hideEditMode();
+  }
+
+  saveChanges = () => {
+    const {contactFormValues, editContact, isSaveClicked, receiveIsSaveClicked} = this.props;
+
+    receiveIsSaveClicked(true);
+
+    if(isSaveClicked) {
+      editContact(contactFormValues);
+    }
   }
 
   showEditMode = () => {
@@ -282,7 +267,7 @@ class ContactPage extends Component<Props, State> {
 
   render() {
     const {contact, isContactFormValid, isEditMode, isFetching, isSaveClicked} = this.props;
-    const {isCancelModalOpen, isRestoreModalOpen} = this.state;
+    const {isRestoreModalOpen} = this.state;
 
     const nameInfo = getContactFullName(contact);
 
@@ -296,16 +281,6 @@ class ContactPage extends Component<Props, State> {
 
     return (
       <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Hylkää muutokset'
-          isOpen={isCancelModalOpen}
-          label='Haluatko varmasti hylätä muutokset?'
-          onCancel={this.handleCancelModalClose}
-          onClose={this.handleCancelModalClose}
-          onSave={this.handleCancel}
-          title='Hylkää muutokset'
-        />
-
         <ConfirmationModal
           confirmButtonLabel='Palauta muutokset'
           isOpen={isRestoreModalOpen}
@@ -322,10 +297,10 @@ class ContactPage extends Component<Props, State> {
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={isSaveClicked && !isContactFormValid}
-              onCancelClick={this.handleCancelClick}
-              onCopyClick={this.copyContact}
-              onEditClick={this.showEditMode}
-              onSaveClick={this.saveContact}
+              onCancel={this.cancelChanges}
+              onCopy={this.copyContact}
+              onEdit={this.showEditMode}
+              onSave={this.saveChanges}
               showCommentButton={false}
               showCopyButton={true}
             />

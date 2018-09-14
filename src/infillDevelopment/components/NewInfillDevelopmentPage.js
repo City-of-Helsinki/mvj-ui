@@ -7,7 +7,6 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
-import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
@@ -19,7 +18,9 @@ import {
   clearFormValidFlags,
   createInfillDevelopment,
   fetchInfillDevelopmentAttributes,
+  hideEditMode,
   receiveIsSaveClicked,
+  showEditMode,
 } from '$src/infillDevelopment/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
@@ -37,23 +38,17 @@ type Props = {
   fetchAttributes: Function,
   fetchInfillDevelopmentAttributes: Function,
   formValues: Object,
+  hideEditMode: Function,
   isFormDirty: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
   router: Object,
+  showEditMode: Function,
 }
 
-type State = {
-  isCancelModalOpen: boolean,
-}
-
-class NewInfillDevelopmentPage extends Component<Props, State> {
-  state = {
-    isCancelModalOpen: false,
-  }
-
+class NewInfillDevelopmentPage extends Component<Props> {
   static contextTypes = {
     router: PropTypes.object,
   };
@@ -65,6 +60,7 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
       fetchInfillDevelopmentAttributes,
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
+      showEditMode,
     } = this.props;
 
     receiveTopNavigationSettings({
@@ -80,10 +76,14 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
     receiveIsSaveClicked(false);
     clearFormValidFlags();
 
+    showEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
   componentWillUnmount() {
+    const {hideEditMode} = this.props;
+
+    hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
   }
 
@@ -107,31 +107,14 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
     });
   }
 
-  handleConfirmationModalCancel = () => {
-    this.setState({
-      isCancelModalOpen: false,
-    });
-  }
-
-  handleControlButtonCancel = () => {
-    const {isFormDirty} = this.props;
-    if(isFormDirty) {
-      this.setState({
-        isCancelModalOpen: true,
-      });
-    } else {
-      this.handleCancel();
-    }
-  }
-
-  handleCancel = () => {
+  cancelChanges = () => {
     const {router} = this.context;
     return router.push({
       pathname: getRouteById('infillDevelopment'),
     });
   }
 
-  handleSave = () => {
+  saveChanges = () => {
     const {formValues, createInfillDevelopment, isFormValid, receiveIsSaveClicked} = this.props;
 
     receiveIsSaveClicked(true);
@@ -142,28 +125,17 @@ class NewInfillDevelopmentPage extends Component<Props, State> {
 
   render() {
     const {attributes, isFormValid, isSaveClicked} = this.props;
-    const {isCancelModalOpen} = this.state;
 
     return (
       <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Hylkää muutokset'
-          isOpen={isCancelModalOpen}
-          label='Haluatko varmasti hylätä muutokset?'
-          onCancel={this.handleConfirmationModalCancel}
-          onClose={this.handleConfirmationModalCancel}
-          onSave={this.handleCancel}
-          title='Hylkää muutokset'
-        />
-
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
               isCopyDisabled={true}
               isEditMode={true}
               isSaveDisabled={isSaveClicked && !isFormValid}
-              onCancelClick={this.handleControlButtonCancel}
-              onSaveClick={this.handleSave}
+              onCancel={this.cancelChanges}
+              onSave={this.saveChanges}
               showCommentButton={false}
               showCopyButton={true}
             />
@@ -207,8 +179,10 @@ export default flowRight(
       clearFormValidFlags,
       createInfillDevelopment,
       fetchInfillDevelopmentAttributes,
+      hideEditMode,
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
+      showEditMode,
     },
   ),
 )(NewInfillDevelopmentPage);

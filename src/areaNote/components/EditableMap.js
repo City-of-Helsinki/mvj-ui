@@ -7,7 +7,6 @@ import {EditControl} from 'react-leaflet-draw';
 import 'leaflet-measure-path';
 import isEmpty from 'lodash/isEmpty';
 
-import ConfirmationModal from '$components/modal/ConfirmationModal';
 import MapContainer from './MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
 import {createAreaNote, deleteAreaNote, editAreaNote, hideEditMode} from '$src/areaNote/actions';
@@ -36,7 +35,6 @@ type Props = {
 
 type State = {
   id: number,
-  isDeleteModalOpen: boolean,
   isNew: boolean,
   isValid: boolean,
 }
@@ -102,12 +100,12 @@ class EditableMap extends Component<Props, State> {
     });
   }
 
-  handleCancel = () => {
+  cancelChanges = () => {
     const {hideEditMode} = this.props;
     hideEditMode();
   }
 
-  handleSave = (note: string) => {
+  saveChanges = (note: string) => {
     const {createAreaNote, editAreaNote} = this.props;
     const {id, isNew} = this.state;
 
@@ -125,38 +123,19 @@ class EditableMap extends Component<Props, State> {
     }
   }
 
-  handleDeleteModalOpen = () => {
-    this.setState({
-      isDeleteModalOpen: true,
-    });
-  }
-
-  handleDelete = () => {
+  deleteAreaNote = () => {
     const {deleteAreaNote} = this.props;
     const {id} = this.state;
 
     deleteAreaNote(id);
-    this.setState({
-      isDeleteModalOpen: false,
-    });
   }
 
   render() {
     const {allowEditing, isEditMode} = this.props;
-    const {isDeleteModalOpen, isNew, isValid} = this.state;
+    const {isNew, isValid} = this.state;
 
     return (
       <div className='map'>
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteModalOpen}
-          label='Haluatko varmasti poistaa muistettavan ehdon?'
-          onCancel={() => this.setState({isDeleteModalOpen: false})}
-          onClose={() => this.setState({isDeleteModalOpen: false})}
-          onSave={this.handleDelete}
-          title='Poista muistettava ehto'
-        />
-
         <MapContainer
           allowEditing={allowEditing}
           center={defaultCoordinates}
@@ -213,9 +192,9 @@ class EditableMap extends Component<Props, State> {
             ref={(input) => this.saveConditionPanel = input}
             disableDelete={isNew}
             disableSave={!isValid}
-            onCancel={this.handleCancel}
-            onDelete={this.handleDeleteModalOpen}
-            onSave={this.handleSave}
+            onCancel={this.cancelChanges}
+            onDelete={this.deleteAreaNote}
+            onSave={this.saveChanges}
             show={isEditMode}
             title={isEditMode ? 'Muokkaa muistettavaa ehtoa' : 'Luo muistettava ehto'}
           />

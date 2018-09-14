@@ -3,8 +3,10 @@ import React, {Component} from 'react';
 import classNames from 'classnames';
 import {Row, Column} from 'react-foundation';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import Button from '$components/button/Button';
 import TextAreaInput from '$components/inputs/TextAreaInput';
+import {DeleteModalLabels, DeleteModalTitles} from '$src/areaNote/enums';
 
 type Props = {
   disableDelete: boolean,
@@ -58,49 +60,67 @@ class SaveConditionPanel extends Component<Props, State> {
     const {note} = this.state;
 
     return (
-      <div className={classNames('save-condition-panel', {'is-panel-open': show})}>
-        <div className='save-condition-panel__container'>
-          <h2>{title}</h2>
-          <Row>
-            <Column>
-              <TextAreaInput
-                className="no-margin"
-                onChange={this.handleFieldChange}
-                placeholder='Kirjoita huomautus'
-                rows={4}
-                setRefForField={this.setFirstFieldRef}
-                value={note}
-              />
-            </Column>
-          </Row>
-          <div className='save-condition-panel__buttons-wrapper'>
-            <Row>
-              <Column>
-                <Button
-                  className='button-red'
-                  disabled={disableDelete}
-                  label='Poista'
-                  onClick={onDelete}
-                  title='Poista muistettava ehto'
-                />
-                <Button
-                  className='button-red'
-                  label='Peruuta'
-                  onClick={onCancel}
-                  title='Peruuta'
-                />
-                <Button
-                  className='button-green'
-                  disabled={disableSave}
-                  label='Tallenna'
-                  onClick={this.handleSave}
-                  title='Tallenna muistettava ehto'
-                />
-              </Column>
-            </Row>
-          </div>
-        </div>
-      </div>
+      <AppConsumer>
+        {({dispatch}) => {
+          const handleDelete = () => {
+
+            dispatch({
+              type: ActionTypes.SHOW_DELETE_MODAL,
+              deleteFunction: () => {
+                onDelete();
+              },
+              deleteModalLabel: DeleteModalLabels.AREA_NOTE,
+              deleteModalTitle: DeleteModalTitles.AREA_NOTE,
+            });
+          };
+
+          return(
+            <div className={classNames('save-condition-panel', {'is-panel-open': show})}>
+              <div className='save-condition-panel__container'>
+                <h2>{title}</h2>
+                <Row>
+                  <Column>
+                    <TextAreaInput
+                      className="no-margin"
+                      onChange={this.handleFieldChange}
+                      placeholder='Kirjoita huomautus'
+                      rows={4}
+                      setRefForField={this.setFirstFieldRef}
+                      value={note}
+                    />
+                  </Column>
+                </Row>
+                <div className='save-condition-panel__buttons-wrapper'>
+                  <Row>
+                    <Column>
+                      <Button
+                        className='button-red'
+                        disabled={disableDelete}
+                        label='Poista'
+                        onClick={handleDelete}
+                        title='Poista muistettava ehto'
+                      />
+                      <Button
+                        className='button-red'
+                        label='Peruuta'
+                        onClick={onCancel}
+                        title='Peruuta'
+                      />
+                      <Button
+                        className='button-green'
+                        disabled={disableSave}
+                        label='Tallenna'
+                        onClick={this.handleSave}
+                        title='Tallenna muistettava ehto'
+                      />
+                    </Column>
+                  </Row>
+                </div>
+              </div>
+            </div>
+          );
+        }}
+      </AppConsumer>
     );
   }
 }

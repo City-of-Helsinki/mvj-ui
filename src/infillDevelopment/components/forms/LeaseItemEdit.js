@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {change, FieldArray, formValueSelector} from 'redux-form';
+import {FieldArray, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import isEmpty from 'lodash/isEmpty';
 import flowRight from 'lodash/flowRight';
@@ -256,7 +256,6 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
 
 type Props = {
   attributes: Attributes,
-  change: Function,
   collapseState: boolean,
   compensationInvestment: ?number,
   deleteInfillDevelopmentFile: Function,
@@ -302,8 +301,6 @@ class LeaseItemEdit extends Component<Props, State> {
     } else {
       this.updateLeaseContentStates();
     }
-
-    this.updateTotalCompensation();
   }
 
   componentDidUpdate(prevProps) {
@@ -314,11 +311,6 @@ class LeaseItemEdit extends Component<Props, State> {
       } else {
         this.updateLeaseContentStates();
       }
-    }
-
-    if(prevProps.compensationInvestment !== this.props.compensationInvestment ||
-      prevProps.monetaryCompensation !== this.props.monetaryCompensation) {
-      this.updateTotalCompensation();
     }
 
     if(prevProps.lease !== this.props.lease) {
@@ -349,9 +341,13 @@ class LeaseItemEdit extends Component<Props, State> {
     });
   }
 
-  updateTotalCompensation = () => {
-    const {compensationInvestment, change, field, monetaryCompensation} = this.props;
-    change(FormNames.INFILL_DEVELOPMENT, `${field}.compensation_total`, formatNumber(formatDecimalNumberForDb(monetaryCompensation) + formatDecimalNumberForDb(compensationInvestment)));
+  getTotalCompensation = () => {
+    const {compensationInvestment, monetaryCompensation} = this.props;
+    const formatedCompensationInvestment = formatDecimalNumberForDb(compensationInvestment);
+    const formatedMonetaryCompensation = formatDecimalNumberForDb(monetaryCompensation);
+
+    return  ((formatedCompensationInvestment && !isNaN(formatedCompensationInvestment)) ? formatedCompensationInvestment : 0)
+      + ((formatedMonetaryCompensation  && !isNaN(formatedMonetaryCompensation)) ? formatedMonetaryCompensation : 0);
   }
 
   handleFileChange = (e) => {
@@ -412,6 +408,7 @@ class LeaseItemEdit extends Component<Props, State> {
     } = this.state;
 
     const attachments = get(infillDevelopment, `${field}.attachments`, []);
+    const totalCompensation = this.getTotalCompensation();
 
     return (
       <Collapse
@@ -520,17 +517,8 @@ class LeaseItemEdit extends Component<Props, State> {
               />
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disabled
-                disableDirty
-                disableTouched={isSaveClicked}
-                fieldAttributes={{}}
-                name={`${field}.compensation_total`}
-                unit='€'
-                overrideValues={{
-                  label: 'Korvaus yhteensä',
-                }}
-              />
+              <FormFieldLabel>Korvaus yhteensä</FormFieldLabel>
+              <p>{`${formatNumber(totalCompensation)} €`}</p>
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
@@ -685,7 +673,6 @@ export default flowRight(
       };
     },
     {
-      change,
       deleteInfillDevelopmentFile,
       fetchLeaseById,
       receiveCollapseStates,

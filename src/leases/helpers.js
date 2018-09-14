@@ -3,6 +3,8 @@ import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
+import {isDirty} from 'redux-form';
+import {getIsEditMode} from './selectors';
 
 import {
   ConstructabilityType,
@@ -1189,6 +1191,21 @@ export const isTenantArchived = (tenant: ?Object) => {
   }
 
   return false;
+};
+
+export const isAnyLeaseFormDirty = (state: any) => {
+  const isEditMode = getIsEditMode(state);
+
+  return isEditMode && (
+    isDirty(FormNames.CONSTRUCTABILITY)(state) ||
+    isDirty(FormNames.CONTRACTS)(state) ||
+    isDirty(FormNames.DECISIONS)(state) ||
+    isDirty(FormNames.INSPECTIONS)(state) ||
+    isDirty(FormNames.LEASE_AREAS)(state) ||
+    isDirty(FormNames.LEASE_INFO)(state) ||
+    isDirty(FormNames.RESTS)(state) ||
+    isDirty(FormNames.SUMMARY)(state) ||
+    isDirty(FormNames.TENANTS)(state));
 };
 
 export const clearUnsavedChanges = () => {

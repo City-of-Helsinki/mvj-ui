@@ -8,7 +8,6 @@ import {
   fetchSingleLease as fetchSingleLeaseAction,
   hideArchiveAreaModal,
   hideEditMode,
-  hideDeleteRelatedLeaseModal,
   hideUnarchiveAreaModal,
   notFound,
   notFoundById,
@@ -344,8 +343,6 @@ function* deleteReleatedLeaseSaga({payload}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 204:
-        yield put(hideDeleteRelatedLeaseModal());
-
         const {response: {status}, bodyAsJson} = yield call(fetchSingleLease, payload.leaseId);
 
         switch (status) {

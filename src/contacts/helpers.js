@@ -1,7 +1,9 @@
 // @flow
 import get from 'lodash/get';
+import {isDirty} from 'redux-form';
 
 import {ContactType, FormNames} from './enums';
+import {getIsEditMode} from '$src/contacts/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
 export const getContactFullName = (contact: ?Object) => {
@@ -37,6 +39,12 @@ export const getContentContact = (contact: Object) => {
     partner_code: get(contact, 'partner_code'),
     is_lessor: get(contact, 'is_lessor'),
   };
+};
+
+export const isContactFormDirty = (state: any) => {
+  const isEditMode = getIsEditMode(state);
+
+  return isEditMode && isDirty(FormNames.CONTACT)(state);
 };
 
 export const clearUnsavedChanges = () => {

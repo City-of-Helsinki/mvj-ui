@@ -14,9 +14,6 @@ import type {
 export const getIsArchiveAreaModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isArchiveAreaModalOpen;
 
-export const getIsDeleteRelatedLeaseModalOpen: Selector<boolean, void> = (state: LeaseState): boolean =>
-  state.lease.isDeleteRelatedLeaseModalOpen;
-
 export const getIsEditMode: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isEditMode;
 

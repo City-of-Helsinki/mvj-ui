@@ -145,7 +145,6 @@ type Props = {
 
 type State = {
   activeTab: number,
-  isCancelLeaseModalOpen: boolean,
   isCommentPanelOpen: boolean,
   isRestoreModalOpen: boolean,
 };
@@ -153,7 +152,6 @@ type State = {
 class LeasePage extends Component<Props, State> {
   state = {
     activeTab: 0,
-    isCancelLeaseModalOpen: false,
     isCommentPanelOpen: false,
     isRestoreModalOpen: false,
   }
@@ -164,7 +162,7 @@ class LeasePage extends Component<Props, State> {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       attributes,
       commentAttributes,
@@ -180,6 +178,7 @@ class LeasePage extends Component<Props, State> {
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
       fetchSingleLease,
+      hideEditMode,
       invoiceAttributes,
       location,
       params: {leaseId},
@@ -219,6 +218,9 @@ class LeasePage extends Component<Props, State> {
     fetchInvoicesByLease(leaseId);
     fetchInvoiceSetsByLease(leaseId);
     fetchAreaNoteList();
+
+    hideEditMode();
+    window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
   componentDidUpdate(prevProps) {
@@ -242,10 +244,6 @@ class LeasePage extends Component<Props, State> {
     }
   }
 
-  componentDidMount() {
-    window.addEventListener('beforeunload', this.handleLeavePage);
-  }
-
   componentWillUnmount() {
     const {
       destroy,
@@ -254,14 +252,26 @@ class LeasePage extends Component<Props, State> {
       router: {location: {pathname}},
     } = this.props;
 
-    hideEditMode();
+
     if(pathname !== `${getRouteById('leases')}/${leaseId}`) {
       clearUnsavedChanges();
     }
     this.stopAutoSaveTimer();
 
-    window.removeEventListener('beforeunload', this.handleLeavePage);
     destroy(ComponentFormNames.RENT_CALCULATOR);
+    hideEditMode();
+    window.removeEventListener('beforeunload', this.handleLeavePage);
+  }
+
+  startAutoSaveTimer = () => {
+    this.timerAutoSave = setInterval(
+      () => this.saveUnsavedChanges(),
+      5000
+    );
+  }
+
+  stopAutoSaveTimer = () => {
+    clearInterval(this.timerAutoSave);
   }
 
   handleLeavePage = (e) => {
@@ -404,7 +414,6 @@ class LeasePage extends Component<Props, State> {
       receiveFormValidFlags(storedFormValidity);
     }
 
-
     this.startAutoSaveTimer();
     this.hideModal('Restore');
   }
@@ -415,23 +424,6 @@ class LeasePage extends Component<Props, State> {
     fields.forEach(field => {
       change(formName, field, obj[field]);
     });
-  }
-
-  cancel = () => {
-    const {hideEditMode} = this.props;
-    this.hideModal('CancelLease');
-    hideEditMode();
-  }
-
-  startAutoSaveTimer = () => {
-    this.timerAutoSave = setInterval(
-      () => this.saveUnsavedChanges(),
-      5000
-    );
-  }
-
-  stopAutoSaveTimer = () => {
-    clearInterval(this.timerAutoSave);
   }
 
   saveUnsavedChanges = () => {
@@ -532,71 +524,72 @@ class LeasePage extends Component<Props, State> {
     }
   };
 
-  handleSaveClick = () => {
+  cancelChanges = () => {
+    const {hideEditMode} = this.props;
+    hideEditMode();
+  }
+
+  saveChanges = () => {
     const {receiveIsSaveClicked} = this.props;
     receiveIsSaveClicked(true);
 
     const areFormsValid = this.validateForms();
     if(areFormsValid) {
-      this.save();
-    }
-  }
+      const {
+        areasFormValues,
+        constructabilityFormValues,
+        contractsFormValues,
+        currentLease,
+        decisionsFormValues,
+        inspectionsFormValues,
+        leaseInfoFormValues,
+        patchLease,
+        rentsFormValues,
+        summaryFormValues,
+        tenantsFormValues,
+        isConstructabilityFormDirty,
+        isContractsFormDirty,
+        isDecisionsFormDirty,
+        isInspectionsFormDirty,
+        isLeaseAreasFormDirty,
+        isLeaseInfoFormDirty,
+        isRentsFormDirty,
+        isSummaryFormDirty,
+        isTenantsFormDirty,
+      } = this.props;
 
-  save = () => {
-    const {
-      areasFormValues,
-      constructabilityFormValues,
-      contractsFormValues,
-      currentLease,
-      decisionsFormValues,
-      inspectionsFormValues,
-      leaseInfoFormValues,
-      patchLease,
-      rentsFormValues,
-      summaryFormValues,
-      tenantsFormValues,
-      isConstructabilityFormDirty,
-      isContractsFormDirty,
-      isDecisionsFormDirty,
-      isInspectionsFormDirty,
-      isLeaseAreasFormDirty,
-      isLeaseInfoFormDirty,
-      isRentsFormDirty,
-      isSummaryFormDirty,
-      isTenantsFormDirty,
-    } = this.props;
+      let payload: Object = {id: currentLease.id};
 
-    let payload: Object = {id: currentLease.id};
+      if(isConstructabilityFormDirty) {
+        payload = contentHelpers.addConstructabilityFormValues(payload, constructabilityFormValues);
+      }
+      if(isContractsFormDirty) {
+        payload = contentHelpers.addContractsFormValues(payload, contractsFormValues);
+      }
+      if(isDecisionsFormDirty) {
+        payload = contentHelpers.addDecisionsFormValues(payload, decisionsFormValues);
+      }
+      if(isInspectionsFormDirty) {
+        payload = contentHelpers.addInspectionsFormValues(payload, inspectionsFormValues);
+      }
+      if(isLeaseAreasFormDirty) {
+        payload = contentHelpers.addAreasFormValues(payload, areasFormValues);
+      }
+      if(isLeaseInfoFormDirty) {
+        payload = contentHelpers.addLeaseInfoFormValues(payload, leaseInfoFormValues);
+      }
+      if(isRentsFormDirty) {
+        payload = contentHelpers.addRentsFormValues(payload, rentsFormValues);
+      }
+      if(isSummaryFormDirty) {
+        payload = contentHelpers.addSummaryFormValues(payload, summaryFormValues);
+      }
+      if(isTenantsFormDirty) {
+        payload = contentHelpers.addTenantsFormValues(payload, tenantsFormValues);
+      }
 
-    if(isConstructabilityFormDirty) {
-      payload = contentHelpers.addConstructabilityFormValues(payload, constructabilityFormValues);
+      patchLease(payload);
     }
-    if(isContractsFormDirty) {
-      payload = contentHelpers.addContractsFormValues(payload, contractsFormValues);
-    }
-    if(isDecisionsFormDirty) {
-      payload = contentHelpers.addDecisionsFormValues(payload, decisionsFormValues);
-    }
-    if(isInspectionsFormDirty) {
-      payload = contentHelpers.addInspectionsFormValues(payload, inspectionsFormValues);
-    }
-    if(isLeaseAreasFormDirty) {
-      payload = contentHelpers.addAreasFormValues(payload, areasFormValues);
-    }
-    if(isLeaseInfoFormDirty) {
-      payload = contentHelpers.addLeaseInfoFormValues(payload, leaseInfoFormValues);
-    }
-    if(isRentsFormDirty) {
-      payload = contentHelpers.addRentsFormValues(payload, rentsFormValues);
-    }
-    if(isSummaryFormDirty) {
-      payload = contentHelpers.addSummaryFormValues(payload, summaryFormValues);
-    }
-    if(isTenantsFormDirty) {
-      payload = contentHelpers.addTenantsFormValues(payload, tenantsFormValues);
-    }
-
-    patchLease(payload);
   }
 
   validateForms = () => {
@@ -651,19 +644,6 @@ class LeasePage extends Component<Props, State> {
     });
   };
 
-  handleCancel = () => {
-    const isDirty = this.isAnyFormDirty();
-    if(isDirty) {
-      this.showModal('CancelLease');
-    } else {
-      this.cancel();
-    }
-  }
-
-  handleHideCancelConfirmation = () => {
-    this.hideModal('CancelLease');
-  }
-
   toggleCommentPanel = () => {
     const {isCommentPanelOpen} = this.state;
     this.setState({isCommentPanelOpen: !isCommentPanelOpen});
@@ -698,7 +678,6 @@ class LeasePage extends Component<Props, State> {
   render() {
     const {
       activeTab,
-      isCancelLeaseModalOpen,
       isCommentPanelOpen,
       isRestoreModalOpen,
     } = this.state;
@@ -744,17 +723,6 @@ class LeasePage extends Component<Props, State> {
 
     return (
       <PageContainer>
-
-        <ConfirmationModal
-          confirmButtonLabel='Hylkää muutokset'
-          isOpen={isCancelLeaseModalOpen}
-          label='Haluatko varmasti hylätä muutokset?'
-          onCancel={this.handleHideCancelConfirmation}
-          onClose={this.handleHideCancelConfirmation}
-          onSave={this.cancel}
-          title='Hylkää muutokset'
-        />
-
         <ConfirmationModal
           confirmButtonLabel='Palauta muutokset'
           isOpen={isRestoreModalOpen}
@@ -778,10 +746,10 @@ class LeasePage extends Component<Props, State> {
               isEditDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={isSaveClicked && (!areFormsValid || activeTab === 6)}
-              onCancelClick={this.handleCancel}
-              onCommentClick={this.toggleCommentPanel}
-              onEditClick={this.openEditMode}
-              onSaveClick={this.handleSaveClick}
+              onCancel={this.cancelChanges}
+              onComment={this.toggleCommentPanel}
+              onEdit={this.openEditMode}
+              onSave={this.saveChanges}
             />
           }
           infoComponent={isEditMode

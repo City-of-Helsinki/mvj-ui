@@ -4,14 +4,13 @@ import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 
-import ConfirmationModal from '$components/modal/ConfirmationModal';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import LeaseSelectInput from '$components/inputs/LeaseSelectInput';
 import RelatedLeasesItem from './RelatedLeasesItem';
-import {createReleatedLease, deleteReleatedLease, hideDeleteRelatedLeaseModal, showDeleteRelatedLeaseModal} from '$src/leases/actions';
+import {createReleatedLease, deleteReleatedLease} from '$src/leases/actions';
 import {getContentRelatedLeasesFrom, getContentRelatedLeasesTo} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$src/util/helpers';
-import {getAttributes, getCurrentLease, getIsDeleteRelatedLeaseModalOpen} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
 
@@ -30,7 +29,6 @@ type State = {
   relatedLeasesAll: Array<Object>,
   relatedLeasesFrom: Array<Object>,
   relatedLeasesTo: Array<Object>,
-  selectedLease: number,
   stateOptions: Array<Object>,
 }
 
@@ -40,7 +38,6 @@ class RelatedLeasesEdit extends Component<Props, State> {
     relatedLeasesAll: [],
     relatedLeasesFrom: [],
     relatedLeasesTo: [],
-    selectedLease: -1,
     stateOptions: [],
   }
 
@@ -90,22 +87,6 @@ class RelatedLeasesEdit extends Component<Props, State> {
     });
   }
 
-  handleRelatedLeaseItemDelete = (id: number) => {
-    const {showDeleteRelatedLeaseModal} = this.props;
-    showDeleteRelatedLeaseModal();
-    this.setState({
-      selectedLease: id,
-    });
-  }
-
-  handleCancelDelete = () => {
-    const {hideDeleteRelatedLeaseModal} = this.props;
-    hideDeleteRelatedLeaseModal();
-    this.setState({
-      selectedLease: -1,
-    });
-  }
-
   handleCreate = (toLease: Object) => {
     const {createReleatedLease, currentLease} = this.props;
     this.setState({
@@ -117,14 +98,14 @@ class RelatedLeasesEdit extends Component<Props, State> {
     });
   }
 
-  handleDelete = () => {
+  handleDelete = (id: number) => {
     const {currentLease, deleteReleatedLease} = this.props;
-    const {selectedLease} = this.state;
-    deleteReleatedLease({id: selectedLease, leaseId: currentLease.id});
+
+    deleteReleatedLease({id: id, leaseId: currentLease.id});
   }
 
   render() {
-    const {currentLease, isDeleteRelatedLeaseModalOpen} = this.props;
+    const {currentLease} = this.props;
     const {
       newLease,
       relatedLeasesAll,
@@ -135,16 +116,6 @@ class RelatedLeasesEdit extends Component<Props, State> {
 
     return (
       <div className="summary__related-leases">
-        <ConfirmationModal
-          confirmButtonLabel='Poista'
-          isOpen={isDeleteRelatedLeaseModalOpen}
-          label='Haluatko varmasti poistaa vuokratunnusten välisen liitoksen?'
-          onCancel={this.handleCancelDelete}
-          onClose={this.handleCancelDelete}
-          onSave={this.handleDelete}
-          title='Poista liitos'
-        />
-
         <h3>Historia</h3>
         <div className="summary__related-leases_input-wrapper">
           <FormFieldLabel>Liitä vuokratunnukseen</FormFieldLabel>
@@ -169,7 +140,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
                 allowDelete
                 id={lease.id}
                 indented
-                onDelete={this.handleRelatedLeaseItemDelete}
+                onDelete={this.handleDelete}
                 lease={lease.lease}
                 stateOptions={stateOptions}
               />
@@ -189,7 +160,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
                 active={false}
                 allowDelete
                 id={lease.id}
-                onDelete={this.handleRelatedLeaseItemDelete}
+                onDelete={this.handleDelete}
                 lease={lease.lease}
                 stateOptions={stateOptions}
               />
@@ -206,13 +177,10 @@ export default connect(
     return {
       attributes: getAttributes(state),
       currentLease: getCurrentLease(state),
-      isDeleteRelatedLeaseModalOpen: getIsDeleteRelatedLeaseModalOpen(state),
     };
   },
   {
     createReleatedLease,
     deleteReleatedLease,
-    hideDeleteRelatedLeaseModal,
-    showDeleteRelatedLeaseModal,
   }
 )(RelatedLeasesEdit);
