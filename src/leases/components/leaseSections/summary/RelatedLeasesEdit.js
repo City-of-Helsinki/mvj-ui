@@ -134,7 +134,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
     } = this.state;
 
     return (
-      <div className="related-leases__component">
+      <div className="summary__related-leases">
         <ConfirmationModal
           confirmButtonLabel='Poista'
           isOpen={isDeleteRelatedLeaseModalOpen}
@@ -146,7 +146,7 @@ class RelatedLeasesEdit extends Component<Props, State> {
         />
 
         <h3>Historia</h3>
-        <div className="related-leases__input-wrapper">
+        <div className="summary__related-leases_input-wrapper">
           <FormFieldLabel>Liitä vuokratunnukseen</FormFieldLabel>
           <Row>
             <Column>
@@ -159,8 +159,8 @@ class RelatedLeasesEdit extends Component<Props, State> {
             </Column>
           </Row>
         </div>
-        <div className="related-leases__items">
-          <div className="related-leases__items_border-left" />
+        <div className="summary__related-leases_items">
+          <div className="summary__related-leases_items_border-left" />
           {!!relatedLeasesTo && !!relatedLeasesTo.length && relatedLeasesTo.map((lease, index) => {
             return (
               <RelatedLeasesItem

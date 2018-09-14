@@ -120,8 +120,8 @@ class SummaryEdit extends Component<Props, State> {
       <form onSubmit={handleSubmit}>
         <h2>Yhteenveto</h2>
         <Divider />
-        <Row>
-          <Column medium={9}>
+        <Row className='summary__content-wrapper'>
+          <Column small={12} medium={8} large={9}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
@@ -345,7 +345,7 @@ class SummaryEdit extends Component<Props, State> {
               </Row>
             </Collapse>
           </Column>
-          <Column medium={3}>
+          <Column small={12} medium={4} large={3}>
             <RelatedLeasesEdit />
           </Column>
         </Row>

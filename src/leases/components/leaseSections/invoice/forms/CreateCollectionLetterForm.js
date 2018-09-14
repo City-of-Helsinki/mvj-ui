@@ -175,9 +175,9 @@ class CreateCollectionLetterForm extends Component<Props, State> {
     return(
       <form>
         <Row>
-          <Column small={12} medium={6}>
+          <Column small={12} large={6}>
             <Row>
-              <Column small={12} medium={4} large={4}>
+              <Column small={12} medium={4}>
                 <FormField
                   disableDirty
                   fieldAttributes={{
@@ -191,7 +191,7 @@ class CreateCollectionLetterForm extends Component<Props, State> {
                   }}
                 />
               </Column>
-              <Column small={12} medium={4} large={4}>
+              <Column small={12} medium={4}>
                 <FormField
                   disableDirty
                   fieldAttributes={{
@@ -205,7 +205,7 @@ class CreateCollectionLetterForm extends Component<Props, State> {
                   }}
                 />
               </Column>
-              <Column small={12} medium={4} large={4}>
+              <Column small={12} medium={4}>
                 <FormField
                   disableDirty
                   fieldAttributes={{

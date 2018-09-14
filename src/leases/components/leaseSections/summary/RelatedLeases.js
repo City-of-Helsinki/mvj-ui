@@ -69,10 +69,10 @@ class RelatedLeases extends Component<Props, State> {
       stateOptions,
     } = this.state;
     return (
-      <div className="related-leases__component">
+      <div className="summary__related-leases">
         <h3>Historia</h3>
-        <div className="related-leases__items">
-          <div className="related-leases__items_border-left" />
+        <div className="summary__related-leases_items">
+          <div className="summary__related-leases_items_border-left" />
           {!!relatedLeasesTo && !!relatedLeasesTo.length && relatedLeasesTo.map((lease, index) => {
             return (
               <RelatedLeasesItem

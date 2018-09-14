@@ -85,13 +85,13 @@ class RentCalculator extends Component<Props> {
     return (
       <div className='rent-calculator'>
         <Row>
-          <Column small={12} medium={6}>
+          <Column small={12} large={6}>
             <RentCalculatorForm />
           </Column>
-          <Column small={12} medium={6}>
+          <Column small={12} large={6}>
             <div className='rent-calculator__button-wrapper'>
               <Button
-                className='button-green'
+                className='button-green no-margin'
                 disabled={!isValid}
                 label='Laske'
                 onClick={this.handleCalculate}
@@ -102,7 +102,7 @@ class RentCalculator extends Component<Props> {
         </Row>
         {(!isEmpty(rentForPeriod) || isFetching) &&
           <Row>
-            <Column small={12} medium={6}>
+            <Column small={12} large={6}>
               <div className='rent-calculator__rents-container'>
                 {isFetching &&
                   <LoaderWrapper className='relative-overlay-wrapper'>

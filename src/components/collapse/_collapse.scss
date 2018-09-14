@@ -104,8 +104,8 @@
     }
 
     &-title {
-      max-width: calc(100%);
-      white-space: nowrap;
+      max-width: 100%;
+      white-space: normal;
       overflow: hidden;
       text-overflow: ellipsis;
     }

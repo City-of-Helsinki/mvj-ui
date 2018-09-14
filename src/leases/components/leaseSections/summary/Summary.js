@@ -153,8 +153,8 @@ class Summary extends Component<Props, State> {
           }
         />
         <Divider />
-        <Row>
-          <Column medium={9}>
+        <Row className='summary__content-wrapper'>
+          <Column small={12} medium={8} large={9}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
@@ -282,7 +282,7 @@ class Summary extends Component<Props, State> {
               </Row>
             </Collapse>
           </Column>
-          <Column medium={3}>
+          <Column small={12} medium={4} large={3}>
             <RelatedLeases />
           </Column>
         </Row>

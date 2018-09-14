@@ -36,18 +36,18 @@ const LeaseHistoryItem = ({
   };
 
   return (
-    <div className={classNames('related-leases__item', {'active': active}, {'indented': indented})}>
-      <div className="related-leases__item_wrapper">
-        <div className="related-leases__item_left-border-overlay" />
-        <div className="related-leases__item_connection-line" />
-        <div className={classNames('related-leases__item_badge')}></div>
+    <div className={classNames('related-leases-item', {'active': active}, {'indented': indented})}>
+      <div className="related-leases-item_wrapper">
+        <div className="left-border-overlay" />
+        <div className="connection-line" />
+        <div className={classNames('related-leases-item_badge')}></div>
         {!!active &&
-          <div className={classNames('related-leases__item_info')}>
+          <div className={classNames('related-leases-item_info')}>
             <p className="identifier">{identifier}</p>
           </div>
         }
         {!active &&
-          <div className={classNames('related-leases__item_info')}>
+          <div className={classNames('related-leases-item_info')}>
             <p className="identifier">
               <ExternalLink
                 href={`${getRouteById('leases')}/${lease.id}`}
@@ -58,7 +58,7 @@ const LeaseHistoryItem = ({
             <p className="type">{getLabelOfOption(stateOptions, lease.state) || '-'}</p>
             {allowDelete &&
               <RemoveButton
-                className='related-leases__item_remove-button'
+                className='related-leases-item_remove-button'
                 onClick={handleDelete}
                 title='Poista'
               />
