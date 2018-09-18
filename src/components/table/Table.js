@@ -9,6 +9,7 @@ import SortableTableHeader from './SortableTableHeader';
 import {sortStringByKeyAsc, sortStringByKeyDesc} from '$util/helpers';
 
 type Props = {
+  caption?: string,
   className?: string,
   data: Array<any>,
   dataKeys: Array<any>,
@@ -184,6 +185,7 @@ class Table extends Component<Props, State> {
 
   render() {
     const {
+      caption,
       className,
       data,
       dataKeys,
@@ -220,6 +222,7 @@ class Table extends Component<Props, State> {
               {'clickable-row': !!onRowClick}
             )}
           >
+            {caption && <caption>{caption}</caption>}
             {displayHeaders &&
               <SortableTableHeader
                 dataKeys={dataKeys}

@@ -5,7 +5,9 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import BoxItem from '$components/content/BoxItem';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {getAttributes} from '$src/leases/selectors';
@@ -34,12 +36,16 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
     <BoxItem className='no-border-on-last-child'>
       <Row>
         <Column small={12} medium={6} large={6}>
-          <FormFieldLabel>Tunnus</FormFieldLabel>
-          <p>{planUnit.identifier || '-'}</p>
+          <FormTitleAndText
+            title='Tunnus'
+            text={planUnit.identifier || '-'}
+          />
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Määritelmä</FormFieldLabel>
-          <p>{getLabelOfOption(typeOptions, planUnit.type) || '-'}</p>
+          <FormTitleAndText
+            title='Määritelmä'
+            text={getLabelOfOption(typeOptions, planUnit.type) || '-'}
+          />
         </Column>
       </Row>
       <SubTitle>Osoite</SubTitle>
@@ -48,13 +54,13 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
         <div>
           <Row>
             <Column small={6} large={6}>
-              <FormFieldLabel>Osoite</FormFieldLabel>
+              <FormTextTitle title='Osoite' />
             </Column>
             <Column small={3} large={3}>
-              <FormFieldLabel>Postinumero</FormFieldLabel>
+              <FormTextTitle title='Postinumero' />
             </Column>
             <Column small={3} large={3}>
-              <FormFieldLabel>Kaupunki</FormFieldLabel>
+              <FormTextTitle title='Kaupunki' />
             </Column>
           </Row>
           <ListItems>
@@ -62,13 +68,13 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
               return (
                 <Row key={address.id}>
                   <Column small={6} large={6}>
-                    <p className='no-margin'>{address.address || '-'}</p>
+                    <ListItem>{address.address || '-'}</ListItem>
                   </Column>
                   <Column small={3} large={3}>
-                    <p className='no-margin'>{address.postal_code || '-'}</p>
+                    <ListItem>{address.postal_code || '-'}</ListItem>
                   </Column>
                   <Column small={3} large={3}>
-                    <p className='no-margin'>{address.city || '-'}</p>
+                    <ListItem>{address.city || '-'}</ListItem>
                   </Column>
                 </Row>
               );
@@ -78,56 +84,78 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
       }
       <Row>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Kokonaisala</FormFieldLabel>
-          <p>{planUnit.area ? `${formatNumber(planUnit.area)} m²` : '-'}</p>
+          <FormTitleAndText
+            title='Kokonaisala'
+            text={planUnit.area ? `${formatNumber(planUnit.area)} m²` : '-'}
+          />
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Leikkausala</FormFieldLabel>
-          <p>{planUnit.section_area ? `${formatNumber(planUnit.section_area)} m²` : '-'}</p>
+          <FormTitleAndText
+            title='Leikkausala'
+            text={planUnit.section_area ? `${formatNumber(planUnit.section_area)} m²` : '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Asemakaava</FormFieldLabel>
-          <p>{planUnit.detailed_plan_identifier}</p>
+          <FormTitleAndText
+            title='Asemakaava'
+            text={planUnit.detailed_plan_identifier}
+          />
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Asemakaavan viimeisin käsittelypvm</FormFieldLabel>
-          <p>{formatDate(planUnit.detailed_plan_latest_processing_date) || '-'}</p>
+          <FormTitleAndText
+            title='Asemakaavan viimeisin käsittelypvm'
+            text={formatDate(planUnit.detailed_plan_latest_processing_date) || '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column>
-          <FormFieldLabel>Asemakaavan viimeisin käsittelypvm huomautus</FormFieldLabel>
-          <p>{planUnit.detailed_plan_latest_processing_date_note || '-'}</p>
+          <FormTitleAndText
+            title='Asemakaavan viimeisin käsittelypvm huomautus'
+            text={planUnit.detailed_plan_latest_processing_date_note || '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Tonttijaon tunnus</FormFieldLabel>
-          <p>{planUnit.plot_division_identifier || '-'}</p>
+          <FormTitleAndText
+            title='Tonttijaon tunnus'
+            text={planUnit.plot_division_identifier || '-'}
+          />
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Tonttijaon olotila</FormFieldLabel>
-          <p>{getLabelOfOption(plotDivisionStateOptions, planUnit.plot_division_state) || '-'}</p>
+          <FormTitleAndText
+            title='Tonttijaon olotila'
+            text={getLabelOfOption(plotDivisionStateOptions, planUnit.plot_division_state) || '-'}
+          />
         </Column>
         <Column small={12} medium={12} large={6}>
-          <FormFieldLabel>Tonttijaon hyväksymispvm</FormFieldLabel>
-          <p>{formatDate(planUnit.plot_division_date_of_approval) || '-'}</p>
+          <FormTitleAndText
+            title='Tonttijaon hyväksymispvm'
+            text={formatDate(planUnit.plot_division_date_of_approval) || '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Kaavayksikön laji</FormFieldLabel>
-          <p>{getLabelOfOption(planUnitTypeOptions, planUnit.plan_unit_type) || '-'}</p>
+          <FormTitleAndText
+            title='Kaavayksikön laji'
+            text={getLabelOfOption(planUnitTypeOptions, planUnit.plan_unit_type) || '-'}
+          />
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Kaavayksikön olotila</FormFieldLabel>
-          <p>{getLabelOfOption(planUnitStateOptions, planUnit.plan_unit_state) || '-'}</p>
+          <FormTitleAndText
+            title='Kaavayksikön olotila'
+            text={getLabelOfOption(planUnitStateOptions, planUnit.plan_unit_state) || '-'}
+          />
         </Column>
         <Column small={12} medium={12} large={6}>
-          <FormFieldLabel>Kaavayksikön käyttötarkoitus</FormFieldLabel>
-          <p>{getLabelOfOption(planUnitIntendedUseOptions, planUnit.plan_unit_intended_use) || '-'}</p>
+          <FormTitleAndText
+            title='Kaavayksikön käyttötarkoitus'
+            text={getLabelOfOption(planUnitIntendedUseOptions, planUnit.plan_unit_intended_use) || '-'}
+          />
         </Column>
       </Row>
     </BoxItem>

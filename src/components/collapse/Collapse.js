@@ -166,19 +166,16 @@ class Collapse extends PureComponent<Props, State> {
               {onArchive &&
                 <ArchiveButton
                   onClick={onArchive}
-                  title='Arkistoi'
                 />
               }
               {onUnarchive &&
                 <UnarchiveButton
                   onClick={onUnarchive}
-                  title='Poista arkistosta'
                 />
               }
               {onRemove &&
                 <RemoveButton
                   onClick={onRemove}
-                  title='Poista'
                 />
               }
             </div>

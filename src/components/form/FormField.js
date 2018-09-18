@@ -17,6 +17,8 @@ import FieldTypeSelect from './FieldTypeSelect';
 import FieldTypeSwitch from './FieldTypeSwitch';
 import FieldTypeTextArea from './FieldTypeTextArea';
 import FieldTypeUserSelect from './FieldTypeUserSelect';
+import FormFieldLabel from './FormFieldLabel';
+import FormTextTitle from './FormTextTitle';
 import {getFieldOptions} from '$util/helpers';
 import {genericNormalizer} from './normalizers';
 import {genericValidator} from '../form/validations';
@@ -68,6 +70,7 @@ type InputProps = {
   ErrorComponent: Function | Object,
   fieldType: string,
   input: Object,
+  invisibleLabel: boolean,
   isLoading: boolean,
   label: ?string,
   meta: Object,
@@ -90,6 +93,7 @@ const FormFieldInput = ({
   ErrorComponent,
   fieldType,
   input,
+  invisibleLabel,
   isLoading,
   label,
   meta,
@@ -108,9 +112,10 @@ const FormFieldInput = ({
 
   return (
     <div className={classNames('form-field', className)}>
-      {label && <label className="form-field__label" htmlFor={input.name} title={label || ''}>{label}{required &&<i className='required'> *</i>}</label>}
+      {label && fieldType === 'boolean' && <FormTextTitle required={required} title={label} />}
+      {label && fieldType !== 'boolean' && <FormFieldLabel className={invisibleLabel ? 'invisible' : ''} htmlFor={input.name} required={required}>{label}</FormFieldLabel>}
       <div className={classNames('form-field__component', {'has-unit': unit})}>
-        {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, input, isDirty, isLoading, optionLabel, placeholder, options, rows, setRefForField, type})}
+        {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, input, isDirty, isLoading, label, optionLabel, placeholder, options, rows, setRefForField, type})}
         {unit && <span className='form-field__unit'>{unit}</span>}
       </div>
       {displayError && <ErrorComponent {...meta}/>}
@@ -127,6 +132,7 @@ type Props = {
   disableTouched?: boolean,
   ErrorComponent?: any,
   fieldAttributes: Object,
+  invisibleLabel?: boolean,
   isLoading?: boolean,
   name: string,
   optionLabel?: string,
@@ -160,6 +166,7 @@ class FormField extends PureComponent<Props, State> {
     disableDirty: false,
     disableTouched: false,
     fieldAttributes: null,
+    invisibleLabel: false,
     isLoading: false,
   };
 
@@ -201,6 +208,7 @@ class FormField extends PureComponent<Props, State> {
       disableDirty,
       disableTouched,
       ErrorComponent = ErrorBlock,
+      invisibleLabel,
       isLoading,
       name,
       optionLabel,
@@ -228,6 +236,7 @@ class FormField extends PureComponent<Props, State> {
         disableTouched={disableTouched}
         ErrorComponent={ErrorComponent}
         fieldType={fieldType}
+        invisibleLabel={invisibleLabel}
         isLoading={isLoading}
         label={label}
         name={name}

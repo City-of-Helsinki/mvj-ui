@@ -16,7 +16,7 @@ import ContactTemplate from '$src/contacts/components/templates/ContactTemplate'
 import EditButton from '$components/form/EditButton';
 import OtherTenantItemEdit from './OtherTenantItemEdit';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
@@ -75,7 +75,6 @@ const renderOtherTenants = ({
                 <AddButtonSecondary
                   label='Lisää laskunsaaja tai yhteyshenkilö'
                   onClick={handleAdd}
-                  title='Lisää laskunsaaja tai yhteyshenkilö'
                 />
               </Column>
             </Row>
@@ -211,16 +210,14 @@ const TenantItemEdit = ({
           <FormWrapperRight>
             <Row>
               <Column small={12} medium={6} large={4}>
-                <FormFieldLabel required>Osuus murtolukuna</FormFieldLabel>
+                <FormTextTitle required title='Osuus murtolukuna' />
                 <Row>
                   <Column>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'tenants.child.children.share_numerator')}
+                      invisibleLabel
                       name={`${field}.share_numerator`}
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                   <Column>
@@ -228,10 +225,8 @@ const TenantItemEdit = ({
                       disableTouched={isSaveClicked}
                       className='with-slash'
                       fieldAttributes={get(attributes, 'tenants.child.children.share_denominator')}
+                      invisibleLabel
                       name={`${field}.share_denominator`}
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                 </Row>
@@ -265,7 +260,7 @@ const TenantItemEdit = ({
             <EditButton
               className='position-topright'
               onClick={handleEditClick}
-              title='Muokkaa'
+              title='Muokkaa asiakasta'
             />
           }
           <ContactTemplate contact={contact} />

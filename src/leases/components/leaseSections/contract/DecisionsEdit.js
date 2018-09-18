@@ -60,7 +60,6 @@ const renderDecisions = ({
                 <AddButton
                   label='Lisää päätös'
                   onClick={handleAdd}
-                  title='Lisää päätös'
                 />
               </Column>
             </Row>

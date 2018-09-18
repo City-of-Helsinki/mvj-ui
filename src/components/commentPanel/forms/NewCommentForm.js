@@ -58,7 +58,6 @@ const NewCommentForm = ({
           disabled={!valid}
           label='Kommentoi'
           onClick={handleAddComment}
-          title='Kommentoi'
         />
       </FormSection>
     </form>

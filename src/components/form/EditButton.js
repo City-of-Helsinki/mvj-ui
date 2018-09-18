@@ -18,7 +18,8 @@ const EditButton = ({className, disabled, onClick, title, type = 'button'}: Prop
     disabled={disabled}
     type={type}
     title={title}
-    onClick={onClick}>
+    onClick={onClick}
+  >
     <EditIcon className='icon-medium'/>
   </button>;
 

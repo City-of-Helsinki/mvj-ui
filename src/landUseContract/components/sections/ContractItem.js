@@ -5,7 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
 import ExternalLink from '$components/links/ExternalLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
@@ -44,34 +44,46 @@ const ContractItem = ({
     >
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Sopimuksen vaihe</FormFieldLabel>
-          <p>{getLabelOfOption(stateOptions, contract.state) || '-'}</p>
+          <FormTitleAndText
+            title='Sopimuksen vaihe'
+            text={getLabelOfOption(stateOptions, contract.state) || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Päätöspvm</FormFieldLabel>
-          <p>{formatDate(contract.decision_date) || '-'}</p>
+          <FormTitleAndText
+            title='Päätöspvm'
+            text={formatDate(contract.decision_date) || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Allekirjoituspvm</FormFieldLabel>
-          <p>{formatDate(contract.sign_date) || '-'}</p>
+          <FormTitleAndText
+            title='Allekirjoituspvm'
+            text={formatDate(contract.sign_date) || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>ED sopimusnumero</FormFieldLabel>
-          <p>{contract.ed_contract_number || '-'}</p>
+          <FormTitleAndText
+            title='ED sopimusnumero'
+            text={contract.ed_contract_number || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Diaarinumero</FormFieldLabel>
-          {contract.reference_number
-            ? <ExternalLink
-              href={getReferenceNumberLink(contract.reference_number)}
-              label={contract.reference_number}
-            />
-            : <p>-</p>
-          }
+          <FormTitleAndText
+            title='Diaarinumero'
+            text={contract.reference_number
+              ? <ExternalLink
+                href={getReferenceNumberLink(contract.reference_number)}
+                text={contract.reference_number}
+              />
+              : '-'
+            }
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Aluejärjestelyt</FormFieldLabel>
-          <p>{contract.area_arrengements ? 'Kyllä' : 'Ei'}</p>
+          <FormTitleAndText
+            title='Aluejärjestelyt'
+            text={contract.area_arrengements ? 'Kyllä' : 'Ei'}
+          />
         </Column>
       </Row>
     </Collapse>

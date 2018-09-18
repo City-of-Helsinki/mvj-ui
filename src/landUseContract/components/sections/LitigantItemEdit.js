@@ -15,7 +15,7 @@ import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
@@ -75,7 +75,6 @@ const renderBillingPersons = ({
                   <AddButtonSecondary
                     label='Lisää laskunsaaja'
                     onClick={handleAdd}
-                    title='Lisää laskunsaaja'
                   />
                 }
               </Column>
@@ -206,16 +205,14 @@ const LitigantItemEdit = ({
           <FormWrapperRight>
             <Row>
               <Column small={12} medium={6} large={4}>
-                <FormFieldLabel required>Osuus murtolukuna</FormFieldLabel>
+                <FormTextTitle required title='Osuus murtolukuna' />
                 <Row>
                   <Column>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'litigants.child.children.share_numerator')}
+                      invisibleLabel
                       name={`${field}.share_numerator`}
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                   <Column>
@@ -223,10 +220,8 @@ const LitigantItemEdit = ({
                       disableTouched={isSaveClicked}
                       className='with-slash'
                       fieldAttributes={get(attributes, 'litigants.child.children.share_denominator')}
+                      invisibleLabel
                       name={`${field}.share_denominator`}
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                 </Row>
@@ -260,7 +255,7 @@ const LitigantItemEdit = ({
             <EditButton
               className='position-topright'
               onClick={handleEditClick}
-              title='Muokkaa'
+              title='Muokkaa asiakasta'
             />
           }
           <ContactTemplate contact={contact} />

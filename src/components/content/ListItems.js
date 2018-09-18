@@ -8,6 +8,6 @@ type Props = {
 }
 
 const ListItems = ({children, className}: Props) =>
-  <div className={classNames('list-items', className)}>{children}</div>;
+  <div className={classNames('content__list-items', className)}>{children}</div>;
 
 export default ListItems;

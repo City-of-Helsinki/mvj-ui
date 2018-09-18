@@ -10,6 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 import isNumber from 'lodash/isNumber';
 
 import Button from '$components/button/Button';
+import ListItem from '$components/content/ListItem';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
@@ -218,7 +219,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
               className='no-margin'
               label='Luo täydennysrakentamiskorvaus'
               onClick={this.handleCreateButtonClick}
-              title='Luo täydennysrakentamiskorvaus'
             />
           }
           searchComponent={
@@ -247,7 +247,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
               dataKeys={[
                 {key: 'name', label: 'Hankkeen nimi'},
                 {key: 'detailed_plan_identifier', label: 'Asemakaavan nro'},
-                {key: 'leaseIdentifiers', label: 'Vuokratunnus', renderer: (val) => val.length ? val.map((item, index) => <p key={index}>{item}</p>) : '-'},
+                {key: 'leaseIdentifiers', label: 'Vuokratunnus', renderer: (val) => val.length ? val.map((item, index) => <ListItem key={index}>{item}</ListItem>) : '-'},
                 {key: 'state', label: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
               ]}
               onRowClick={this.handleRowClick}

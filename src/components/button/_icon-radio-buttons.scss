@@ -1,6 +1,10 @@
 .icon-radio-buttons {
   display:inline-block;
 
+  legend {
+    visibility: hidden;
+    position: absolute;
+  }
   .option {
     display: inline-block;
     margin-bottom: rem-calc(5px);

@@ -5,6 +5,9 @@ import {Row, Column} from 'react-foundation';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import {getDecisionById, getDecisionOptions} from '$src/decision/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
@@ -38,7 +41,9 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
 
   return (
     <BoxItemContainer>
-      {(!rentAdjustments || !rentAdjustments.length) && <p>Ei alennuksia tai korotuksia</p>}
+      {(!rentAdjustments || !rentAdjustments.length) &&
+        <FormText>Ei alennuksia tai korotuksia</FormText>
+      }
       {rentAdjustments && !!rentAdjustments.length &&
         rentAdjustments.map((adjustment, index) => {
           const decision = getDecisionById(decisions, adjustment.decision);
@@ -47,48 +52,62 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
             <BoxItem  className='no-border-on-first-child' key={index}>
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <label>Tyyppi</label>
-                  <p>{getLabelOfOption(typeOptions, adjustment.type) || '-'}</p>
+                  <FormTitleAndText
+                    title='Tyyppi'
+                    text={getLabelOfOption(typeOptions, adjustment.type) || '-'}
+                  />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <label>Käyttötarkoitus</label>
-                  <p>{getLabelOfOption(intendedUseOptions, adjustment.intended_use) || '-'}</p>
+                  <FormTitleAndText
+                    title='Käyttötarkoitus'
+                    text={getLabelOfOption(intendedUseOptions, adjustment.intended_use) || '-'}
+                  />
                 </Column>
                 <Column small={6} medium={4} large={2}>
                   <Row>
                     <Column small={6}>
-                      <label>Alkupvm</label>
-                      <p>{formatDate(adjustment.start_date) || '-'}</p>
+                      <FormTitleAndText
+                        title='Alkupvm'
+                        text={formatDate(adjustment.start_date) || '-'}
+                      />
                     </Column>
                     <Column small={6}>
-                      <label>Loppupvm</label>
-                      <p>{formatDate(adjustment.end_date) || '-'}</p>
+                      <FormTitleAndText
+                        title='Loppupvm'
+                        text={formatDate(adjustment.end_date) || '-'}
+                      />
                     </Column>
                   </Row>
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <label>Kokonaismäärä</label>
-                  <p>{getFullAmount(adjustment) || '-'}</p>
+                  <FormTitleAndText
+                    title='Kokonaismäärä'
+                    text={getFullAmount(adjustment) || '-'}
+                  />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <label>Jäljellä</label>
-                  <p>{adjustment.amount_left ? `${formatNumber(adjustment.amount_left)} €` : '-'}</p>
+                  <FormTitleAndText
+                    title='Jäljellä'
+                    text={adjustment.amount_left ? `${formatNumber(adjustment.amount_left)} €` : '-'}
+                  />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <label>Päätös</label>
+                  <FormTextTitle title='Päätös' />
                   {decision
-                    ? <div>{decision.reference_number
+                    ? <FormText>{decision.reference_number
                       ? <a href={getReferenceNumberLink(decision.reference_number)} target='_blank'>{getLabelOfOption(decisionOptions, adjustment.decision)}</a>
-                      : <p>{getLabelOfOption(decisionOptions, adjustment.decision)}</p>
-                    }</div>
-                    : <p>-</p>
+                      : getLabelOfOption(decisionOptions, adjustment.decision)
+                    }</FormText>
+                    : <FormText>-</FormText>
                   }
                 </Column>
               </Row>
               <Row>
                 <Column>
-                  <label>Huomautus</label>
-                  <p>{adjustment.note || '-'}</p>
+                  <FormTitleAndText
+                    title='Huomautus'
+                    text={adjustment.note || '-'}
+                  />
                 </Column>
               </Row>
             </BoxItem>

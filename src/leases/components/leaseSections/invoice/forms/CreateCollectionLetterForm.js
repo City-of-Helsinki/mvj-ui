@@ -14,7 +14,7 @@ import CollectionLetterTotalRow from './CollectionLetterTotalRow';
 import Divider from '$components/content/Divider';
 import FileDownloadButton from '$components/file/FileDownloadButton';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import SubTitle from '$components/content/SubTitle';
 import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
@@ -48,19 +48,19 @@ const renderInvoices = ({
       {!!fields && !!fields.length &&
         <Row>
           <Column small={4}>
-            <FormFieldLabel required>Perittävä lasku</FormFieldLabel>
+            <FormTextTitle required title='Perittävä lasku' />
           </Column>
           <Column small={2}>
-            <FormFieldLabel>Perittävä maksuerä</FormFieldLabel>
+            <FormTextTitle title='Perittävä maksuerä' />
           </Column>
           <Column small={2}>
-            <FormFieldLabel>Korko</FormFieldLabel>
+            <FormTextTitle title='Korko' />
           </Column>
           <Column small={2}>
-            <FormFieldLabel>Perimispalkkio</FormFieldLabel>
+            <FormTextTitle title='Perimispalkkio' />
           </Column>
           <Column small={2}>
-            <FormFieldLabel>Yhteensä</FormFieldLabel>
+            <FormTextTitle title='Yhteensä' />
           </Column>
         </Row>
       }
@@ -84,7 +84,6 @@ const renderInvoices = ({
           <AddButtonThird
             label='Lisää lasku'
             onClick={handleAdd}
-            title='Lisää lasku'
           />
         </Column>
       </Row>

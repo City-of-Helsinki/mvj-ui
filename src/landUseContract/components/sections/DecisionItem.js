@@ -6,7 +6,7 @@ import {Row, Column} from 'react-foundation';
 import Collapse from '$components/collapse/Collapse';
 import DecisionConditions from './DecisionConditions';
 import ExternalLink from '$components/links/ExternalLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
@@ -50,30 +50,40 @@ const DecisionItem = ({
     >
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Päättäjä</FormFieldLabel>
-          <p>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</p>
+          <FormTitleAndText
+            title='Päättäjä'
+            text={getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Päätöspvm</FormFieldLabel>
-          <p>{formatDate(decision.decision_date) || '-'}</p>
+          <FormTitleAndText
+            title='Päätöspvm'
+            text={formatDate(decision.decision_date) || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Pykälä</FormFieldLabel>
-          <p>{decision.section ? `${decision.section} §` : '-'}</p>
+          <FormTitleAndText
+            title='Pykälä'
+            text={decision.section ? `${decision.section} §` : '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Päätöksen tyyppi</FormFieldLabel>
-          <p>{getLabelOfOption(typeOptions, decision.type) || '-'}</p>
+          <FormTitleAndText
+            title='Päätöksen tyyppi'
+            text={getLabelOfOption(typeOptions, decision.type) || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Diaarinumero</FormFieldLabel>
-          {decision.reference_number
-            ? <ExternalLink
-              href={getReferenceNumberLink(decision.reference_number)}
-              label={decision.reference_number}
-            />
-            : <p>-</p>
-          }
+          <FormTitleAndText
+            title='Diaarinumero'
+            text={decision.reference_number
+              ? <ExternalLink
+                href={getReferenceNumberLink(decision.reference_number)}
+                text={decision.reference_number}
+              />
+              : '-'
+            }
+          />
         </Column>
       </Row>
 

@@ -69,7 +69,6 @@ const renderContracts = ({attributes, contractsData, errors, fields, isSaveClick
                 <AddButton
                   label='Lisää sopimus'
                   onClick={handleAdd}
-                  title='Lisää sopimus'
                 />
               </Column>
             </Row>

@@ -37,51 +37,15 @@ import type {Lease} from '$src/leases/types';
 
 type AreaItemProps = {
   allAreas: Array<Object>,
-  archiveLeaseArea: Function,
   areasData: Array<Object>,
   decisionOptions: Array<Object>,
   fields: any,
-  hideArchiveAreaModal: Function,
-  hideUnarchiveAreaModal: Function,
-  initialize: Function,
-  isArchiveAreaModalOpen: boolean,
-  isUnarchiveAreaModalOpen: boolean,
   isActive: boolean,
-  leaseId: number,
-  onArchiveCallback: Function,
-  onUnarchiveCallback: Function,
-  showArchiveAreaModal: Function,
-  showUnarchiveAreaModal: Function,
-  unarchiveLeaseArea: Function,
+  onArchive: Function,
+  onUnarchive: Function,
 }
 
-type AreaItemState = {
-  areaToArchive: ?Object,
-  areaIndexToArchive: ?number,
-  areaToUnarchive: ?Object,
-  areaIndexToUnarchive: ?number,
-}
-
-class renderLeaseAreas extends PureComponent<AreaItemProps, AreaItemState> {
-  state = {
-    areaToArchive: null,
-    areaIndexToArchive: null,
-    areaToUnarchive: null,
-    areaIndexToUnarchive: null,
-  }
-
-  componentDidUpdate(prevProps: AreaItemProps) {
-    if(!this.props.isActive &&
-      (prevProps.isUnarchiveAreaModalOpen && !this.props.isUnarchiveAreaModalOpen) &&
-      this.state.areaToUnarchive) {
-      this.handleUnarchiveCallback();
-    } else if(this.props.isActive &&
-      (prevProps.isArchiveAreaModalOpen && !this.props.isArchiveAreaModalOpen) &&
-      this.state.areaToArchive) {
-      this.handleArchiveCallback();
-    }
-  }
-
+class renderLeaseAreas extends PureComponent<AreaItemProps> {
   handleAdd = () => {
     const {fields} = this.props;
     fields.push({
@@ -95,159 +59,21 @@ class renderLeaseAreas extends PureComponent<AreaItemProps, AreaItemState> {
     fields.remove(index);
   }
 
-  handleShowArchiveAreaModal = (index: number, area: Object) => {
-    const {initialize, showArchiveAreaModal} = this.props;
-
-    this.setState({
-      areaToArchive: area,
-      areaIndexToArchive: index,
-    });
-    initialize(FormNames.ARCHIVE_AREA, {});
-    showArchiveAreaModal();
-  }
-
-  handleHideArchiveAreaModal = () => {
-    const {hideArchiveAreaModal} = this.props;
-
-    this.setState({
-      areaToArchive: null,
-    });
-    hideArchiveAreaModal();
-  }
-
-  handleArchive = (data: Object) => {
-    const {allAreas, leaseId, archiveLeaseArea} = this.props;
-    const {areaToArchive} = this.state;
-
-    const editedAreas = allAreas.map((area) => {
-      if(area.id === get(areaToArchive, 'id')) {
-        return {
-          ...areaToArchive,
-          ...data,
-        };
-      }
-      return area;
-    });
-
-    this.setState({
-      areaToArchive: {
-        ...areaToArchive,
-        ...data,
-      },
-    });
-
-    archiveLeaseArea({
-      id: leaseId,
-      lease_areas: editedAreas,
-    });
-  }
-
-  handleArchiveCallback = () => {
-    const {onArchiveCallback} = this.props;
-    const {areaToArchive, areaIndexToArchive} = this.state;
-
-    this.setState({
-      areaToArchive: null,
-      areaIndexToArchive: null,
-    });
-    this.removeArea(areaIndexToArchive);
-    onArchiveCallback(areaToArchive);
-  }
-
-  handleShowUnarchiveAreaModal = (index: number, area: Object) => {
-    const {showUnarchiveAreaModal} = this.props;
-
-    this.setState({
-      areaToUnarchive: area,
-      areaIndexToUnarchive: index,
-    });
-    showUnarchiveAreaModal();
-  }
-
-  handleHideUnarchiveAreaModal = () => {
-    const {hideUnarchiveAreaModal} = this.props;
-
-    this.setState({
-      areaToUnarchive: null,
-      areaIndexToUnarchive: null,
-    });
-    hideUnarchiveAreaModal();
-  }
-
-  handleUnarchive = () => {
-    const {allAreas, leaseId, unarchiveLeaseArea} = this.props;
-    const {areaToUnarchive} = this.state;
-    const editedAreas = allAreas.map((area) => {
-      if(area.id === get(areaToUnarchive, 'id')) {
-        return {
-          ...areaToUnarchive,
-          archived_at: null,
-          archived_note: null,
-          archived_decision: null,
-        };
-      }
-      return area;
-    });
-
-    unarchiveLeaseArea({
-      id: leaseId,
-      lease_areas: editedAreas,
-    });
-    this.setState({
-      areaToUnarchive: {
-        ...areaToUnarchive,
-        archived_at: null,
-        archived_note: null,
-        archived_decision: null,
-      },
-    });
-  }
-
-  handleUnarchiveCallback = () => {
-    const {onUnarchiveCallback} = this.props;
-    const {areaToUnarchive, areaIndexToUnarchive} = this.state;
-
-    this.setState({
-      areaToUnarchive: null,
-      areaIndexToUnarchive: null,
-    });
-    this.removeArea(areaIndexToUnarchive);
-    onUnarchiveCallback(areaToUnarchive);
-  }
-
   render() {
     const {
       areasData,
       decisionOptions,
       fields,
       isActive,
-      isArchiveAreaModalOpen,
-      isUnarchiveAreaModalOpen,
+      onArchive,
+      onUnarchive,
     } = this.props;
 
     return (
       <AppConsumer>
         {({dispatch}) => {
           return(
-            <div>
-              <ConfirmationModal
-                confirmButtonLabel='Poista arkistosta'
-                isOpen={isUnarchiveAreaModalOpen}
-                label='Haluatko varmasti poistaa kohteen arkistosta?'
-                onCancel={this.handleHideUnarchiveAreaModal}
-                onClose={this.handleHideUnarchiveAreaModal}
-                onSave={this.handleUnarchive}
-                title='Poista kohde arkistosta'
-              />
-
-              <ArchiveAreaModal
-                decisionOptions={decisionOptions}
-                isOpen={isArchiveAreaModalOpen}
-                onArchive={this.handleArchive}
-                onCancel={this.handleHideArchiveAreaModal}
-                onClose={this.handleHideArchiveAreaModal}
-              />
-              {!isActive && !!fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+            <div>{!isActive && !!fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
               {fields && !!fields.length && fields.map((area, index) => {
                 const handleRemove = () => {
                   dispatch({
@@ -267,9 +93,9 @@ class renderLeaseAreas extends PureComponent<AreaItemProps, AreaItemState> {
                   field={area}
                   index={index}
                   isActive={isActive}
-                  onArchive={this.handleShowArchiveAreaModal}
+                  onArchive={onArchive}
                   onRemove={handleRemove}
-                  onUnarchive={this.handleShowUnarchiveAreaModal}
+                  onUnarchive={onUnarchive}
                 />;
               })}
               {isActive &&
@@ -278,7 +104,6 @@ class renderLeaseAreas extends PureComponent<AreaItemProps, AreaItemState> {
                     <AddButton
                       label='Lisää kohde'
                       onClick={this.handleAdd}
-                      title='Lisää kohde'
                     />
                   </Column>
                 </Row>
@@ -312,19 +137,30 @@ type Props = {
 }
 
 type State = {
+  activeAreas: Array<Object>,
   areas: Array<Object>,
   areasSum: ?number,
-  activeAreas: Array<Object>,
+  areaToArchive: ?Object,
+  areaIndexToArchive: ?number,
+  areaToUnarchive: ?Object,
+  areaIndexToUnarchive: ?number,
   archivedAreas: Array<Object>,
   currentLease: ?Lease,
   decisionOptions: Array<Object>,
 }
 
 class LeaseAreasEdit extends PureComponent<Props, State> {
+  archivedLeasesComponent: any
+  activeLeasesComponent: any
+
   state = {
+    activeAreas: [],
     areas: [],
     areasSum: null,
-    activeAreas: [],
+    areaToArchive: null,
+    areaIndexToArchive: null,
+    areaToUnarchive: null,
+    areaIndexToUnarchive: null,
     archivedAreas: [],
     currentLease: null,
     decisionOptions: [],
@@ -356,16 +192,156 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
         [FormNames.LEASE_AREAS]: this.props.valid,
       });
     }
+
+    if((prevProps.isUnarchiveAreaModalOpen && !this.props.isUnarchiveAreaModalOpen) &&
+      this.state.areaToUnarchive) {
+      this.handleUnarchiveCallback();
+    }
+
+    if((prevProps.isArchiveAreaModalOpen && !this.props.isArchiveAreaModalOpen) &&
+      this.state.areaToArchive) {
+      this.handleArchiveCallback();
+    }
   }
 
-  handleArchiveCallback = (arcivedArea: any) => {
+  setActiveLeasesRef = (ref: any) => {
+    this.activeLeasesComponent = ref;
+  }
+
+  setArchivedLeasesRef = (ref: any) => {
+    this.archivedLeasesComponent = ref;
+  }
+
+  handleShowArchiveAreaModal = (index: number, area: Object) => {
+    const {initialize, showArchiveAreaModal} = this.props;
+
+    this.setState({
+      areaToArchive: area,
+      areaIndexToArchive: index,
+    });
+
+    initialize(FormNames.ARCHIVE_AREA, {});
+    showArchiveAreaModal();
+  }
+
+  handleHideArchiveAreaModal = () => {
+    const {hideArchiveAreaModal} = this.props;
+
+    this.setState({
+      areaIndexToArchive: null,
+      areaToArchive: null,
+    });
+    hideArchiveAreaModal();
+  }
+
+  handleArchive = (data: Object) => {
+    const {archiveLeaseArea, currentLease} = this.props;
+    const {areas, areaToArchive} = this.state;
+
+    const editedAreas = areas.map((area) => {
+      if(area.id === get(areaToArchive, 'id')) {
+        return {
+          ...areaToArchive,
+          ...data,
+        };
+      }
+      return area;
+    });
+
+    this.setState({
+      areaToArchive: {
+        ...areaToArchive,
+        ...data,
+      },
+    });
+
+    archiveLeaseArea({
+      id: currentLease.id,
+      lease_areas: editedAreas,
+    });
+  }
+
+  handleArchiveCallback = () => {
+    const {areaToArchive, areaIndexToArchive} = this.state;
+
+    this.setState({
+      areaToArchive: null,
+      areaIndexToArchive: null,
+    });
+    this.activeLeasesComponent.getRenderedComponent().removeArea(areaIndexToArchive);
+
+    this.changeArchivedAreasValues(areaToArchive);
+  }
+
+  changeArchivedAreasValues = (arcivedArea: any) => {
     const {change, editedArchivedAreas} = this.props,
       newAreas = [...editedArchivedAreas, arcivedArea];
 
     change('lease_areas_archived', newAreas);
   }
 
-  handleUnarchiveCallback = (unarcivedArea: any) => {
+  handleShowUnarchiveAreaModal = (index: number, area: Object) => {
+    const {showUnarchiveAreaModal} = this.props;
+
+    this.setState({
+      areaToUnarchive: area,
+      areaIndexToUnarchive: index,
+    });
+    showUnarchiveAreaModal();
+  }
+
+  handleHideUnarchiveAreaModal = () => {
+    const {hideUnarchiveAreaModal} = this.props;
+
+    this.setState({
+      areaToUnarchive: null,
+      areaIndexToUnarchive: null,
+    });
+    hideUnarchiveAreaModal();
+  }
+
+  handleUnarchive = () => {
+    const {currentLease, unarchiveLeaseArea} = this.props;
+    const {areas, areaToUnarchive} = this.state;
+    const editedAreas = areas.map((area) => {
+      if(area.id === get(areaToUnarchive, 'id')) {
+        return {
+          ...areaToUnarchive,
+          archived_at: null,
+          archived_note: null,
+          archived_decision: null,
+        };
+      }
+      return area;
+    });
+
+    unarchiveLeaseArea({
+      id: currentLease.id,
+      lease_areas: editedAreas,
+    });
+    this.setState({
+      areaToUnarchive: {
+        ...areaToUnarchive,
+        archived_at: null,
+        archived_note: null,
+        archived_decision: null,
+      },
+    });
+  }
+
+  handleUnarchiveCallback = () => {
+    const {areaToUnarchive, areaIndexToUnarchive} = this.state;
+
+    this.setState({
+      areaToUnarchive: null,
+      areaIndexToUnarchive: null,
+    });
+
+    this.archivedLeasesComponent.getRenderedComponent().removeArea(areaIndexToUnarchive);
+    this.changeActiveAreasValues(areaToUnarchive);
+  }
+
+  changeActiveAreasValues = (unarcivedArea: any) => {
     const {change, editedActiveAreas} = this.props,
       newAreas = [...editedActiveAreas, unarcivedArea];
 
@@ -376,22 +352,14 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
     const {
       activeAreas,
       archivedAreas,
-      areas,
       areasSum,
       decisionOptions,
     } = this.state;
     const {
       archiveLeaseArea,
-      currentLease,
-      hideArchiveAreaModal,
-      hideUnarchiveAreaModal,
-      initialize,
       isArchiveAreaModalOpen,
       isArchiveFetching,
       isUnarchiveAreaModalOpen,
-      showArchiveAreaModal,
-      showUnarchiveAreaModal,
-      unarchiveLeaseArea,
     } = this.props;
 
 
@@ -402,42 +370,54 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
             <Loader isLoading={isArchiveFetching} />
           </LoaderWrapper>
         }
+
+        <ArchiveAreaModal
+          decisionOptions={decisionOptions}
+          isOpen={isArchiveAreaModalOpen}
+          onArchive={this.handleArchive}
+          onCancel={this.handleHideArchiveAreaModal}
+          onClose={this.handleHideArchiveAreaModal}
+        />
+
+        <ConfirmationModal
+          confirmButtonLabel='Poista arkistosta'
+          isOpen={isUnarchiveAreaModalOpen}
+          label='Haluatko varmasti poistaa kohteen arkistosta?'
+          onCancel={this.handleHideUnarchiveAreaModal}
+          onClose={this.handleHideUnarchiveAreaModal}
+          onSave={this.handleUnarchive}
+          title='Poista kohde arkistosta'
+        />
+
         <h2>Vuokra-alue</h2>
         <RightSubtitle text={<span>{formatNumber(areasSum) || '-'} m<sup>2</sup></span>}/>
         <Divider />
 
         <FormSection>
           <FieldArray
-            allAreas={areas}
             archiveLeaseArea={archiveLeaseArea}
             areasData={activeAreas}
             component={renderLeaseAreas}
             decisionOptions={decisionOptions}
-            hideArchiveAreaModal={hideArchiveAreaModal}
-            initialize={initialize}
-            isArchiveAreaModalOpen={isArchiveAreaModalOpen}
+            ref={this.setActiveLeasesRef}
             isActive={true}
-            leaseId={currentLease.id}
             name="lease_areas_active"
-            onArchiveCallback={this.handleArchiveCallback}
-            showArchiveAreaModal={showArchiveAreaModal}
+            onArchive={this.handleShowArchiveAreaModal}
+            withRef={true}
           />
 
           {/* Archived lease areas */}
           <FieldArray
-            allAreas={areas}
             areasData={archivedAreas}
             component={renderLeaseAreas}
             decisionOptions={decisionOptions}
-            hideArchiveAreaModal={hideArchiveAreaModal}
-            hideUnarchiveAreaModal={hideUnarchiveAreaModal}
-            isUnarchiveAreaModalOpen={isUnarchiveAreaModalOpen}
+            ref={this.setArchivedLeasesRef}
             isActive={false}
-            leaseId={currentLease.id}
             name="lease_areas_archived"
+            onArchive={this.handleShowArchiveAreaModal}
+            onUnarchive={this.handleShowUnarchiveAreaModal}
             onUnarchiveCallback={this.handleUnarchiveCallback}
-            showUnarchiveAreaModal={showUnarchiveAreaModal}
-            unarchiveLeaseArea={unarchiveLeaseArea}
+            withRef={true}
           />
         </FormSection>
       </form>

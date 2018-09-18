@@ -166,13 +166,11 @@ class CreateLeaseForm extends Component<Props> {
               disabled={!valid}
               label='Luo tunnus'
               onClick={this.handleCreate}
-              title='Luo tunnus'
             />
             <Button
               className='button-red pull-right'
               label='Peruuta'
               onClick={onClose}
-              title='Peruuta'
             />
           </Column>
         </Row>

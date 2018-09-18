@@ -63,7 +63,7 @@ const LeaseHistoryItem = ({
                   <p className="identifier">
                     <ExternalLink
                       href={`${getRouteById('leases')}/${lease.id}`}
-                      label={identifier || ''}
+                      text={identifier || ''}
                     />
                   </p>
                   <p>{formatDate(lease.start_date)} - {formatDate(lease.end_date)}</p>
@@ -72,7 +72,7 @@ const LeaseHistoryItem = ({
                     <RemoveButton
                       className='related-leases-item_remove-button'
                       onClick={handleDelete}
-                      title='Poista'
+                      title='Poista liitos'
                     />
                   }
                 </div>

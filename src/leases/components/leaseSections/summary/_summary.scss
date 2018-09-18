@@ -147,15 +147,21 @@
   }
 
   &__status-indicator {
-    &_neutral {
+    font-size: rem-calc(14px);
+    line-height: rem-calc(16px);
+    font-weight: normal;
+    margin-bottom: 0;
+    max-width: 100%;
+
+    &.neutral {
       color: $neutral-color !important;
     }
 
-    &_alert {
+    &.alert {
       color: $brick !important;
     }
 
-    &_success {
+    &.success {
       color: $tram !important;
     }
   }

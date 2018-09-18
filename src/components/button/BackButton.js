@@ -7,7 +7,7 @@ import IconButton from './IconButton';
 type Props = {
   className?: string,
   onClick: Function,
-  title: string,
+  title?: string,
   type?: string,
 }
 

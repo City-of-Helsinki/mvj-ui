@@ -9,7 +9,7 @@ type Props = {
   disabled?: boolean,
   label: string,
   onClick: Function,
-  title: ?string,
+  title?: string,
 }
 
 const AddButton = ({className, disabled = false, label, onClick, title}: Props) =>
@@ -17,7 +17,7 @@ const AddButton = ({className, disabled = false, label, onClick, title}: Props) 
     className={classNames('form__add-button', className)}
     disabled={disabled}
     onClick={onClick}
-    title={title || label}
+    title={title}
     type='button'
   >
     <AddIcon />

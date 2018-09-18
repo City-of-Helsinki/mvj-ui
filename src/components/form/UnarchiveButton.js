@@ -8,7 +8,7 @@ type Props = {
   className?: string,
   disabled?: boolean,
   onClick: Function,
-  title: string,
+  title?: string,
   type?: string,
 }
 

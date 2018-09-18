@@ -14,7 +14,9 @@ import NewCollectionNote from './NewCollectionNote';
 import ExternalLink from '$components/links/ExternalLink';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FileDownloadLink from '$components/file/FileDownloadLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import RemoveButton from '$components/form/RemoveButton';
 import ShowMore from '$components/showMore/ShowMore';
@@ -258,9 +260,9 @@ class DebtCollectionForm extends Component<Props, State> {
                   <SubTitle>Perintäkirjeet</SubTitle>
                   {sortedCollectionLetters && !!sortedCollectionLetters.length &&
                     <Row>
-                      <Column small={6}><FormFieldLabel>Tiedosto</FormFieldLabel></Column>
-                      <Column small={3}><FormFieldLabel>Lisätty</FormFieldLabel></Column>
-                      <Column small={3}><FormFieldLabel>Lisääjä</FormFieldLabel></Column>
+                      <Column small={6}><FormTextTitle title='Tiedosto' /></Column>
+                      <Column small={3}><FormTextTitle title='Lisätty' /></Column>
+                      <Column small={3}><FormTextTitle title='Lisääjä' /></Column>
                     </Row>
                   }
                   {sortedCollectionLetters && !!sortedCollectionLetters.length && sortedCollectionLetters.map((collectionLetter, index) => {
@@ -284,11 +286,11 @@ class DebtCollectionForm extends Component<Props, State> {
                           />
                         </Column>
                         <Column small={3}>
-                          <p>{formatDate(collectionLetter.uploaded_at) || '-'}</p>
+                          <FormText>{formatDate(collectionLetter.uploaded_at) || '-'}</FormText>
                         </Column>
                         <Column small={3}>
                           <FieldAndRemoveButtonWrapper
-                            field={<p style={{width: '100%'}}>{getUserFullName(collectionLetter.uploader) || '-'}</p>}
+                            field={<FormText className='full-width'>{getUserFullName(collectionLetter.uploader) || '-'}</FormText>}
                             removeButton={
                               <RemoveButton
                                 className='third-level'
@@ -310,9 +312,9 @@ class DebtCollectionForm extends Component<Props, State> {
                   <SubTitle>Käräjäoikeuden päätökset</SubTitle>
                   {sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length &&
                     <Row>
-                      <Column small={6}><FormFieldLabel>Tiedosto</FormFieldLabel></Column>
-                      <Column small={3}><FormFieldLabel>Lisätty</FormFieldLabel></Column>
-                      <Column small={3}><FormFieldLabel>Lisääjä</FormFieldLabel></Column>
+                      <Column small={6}><FormTextTitle title='Tiedosto' /></Column>
+                      <Column small={3}><FormTextTitle title='Lisätty' /></Column>
+                      <Column small={3}><FormTextTitle title='Lisääjä' /></Column>
                     </Row>
                   }
                   {sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length && sortedCollectionCourtDecisions.map((collectionCourtDecision, index) => {
@@ -336,11 +338,11 @@ class DebtCollectionForm extends Component<Props, State> {
                           />
                         </Column>
                         <Column small={3}>
-                          <p>{formatDate(collectionCourtDecision.uploaded_at) || '-'}</p>
+                          <FormText>{formatDate(collectionCourtDecision.uploaded_at) || '-'}</FormText>
                         </Column>
                         <Column small={3}>
                           <FieldAndRemoveButtonWrapper
-                            field={<p style={{width: '100%'}}>{getUserFullName(collectionCourtDecision.uploader) || '-'}</p>}
+                            field={<FormText className='full-width'>{getUserFullName(collectionCourtDecision.uploader) || '-'}</FormText>}
                             removeButton={
                               <RemoveButton
                                 className='third-level'
@@ -360,17 +362,20 @@ class DebtCollectionForm extends Component<Props, State> {
                   />
 
                   <SubTitle>Vuokrauksen purkamispäätös</SubTitle>
-                  {!debtCollectionDecisions.length && <p>Ei purkamispäätöksiä</p>}
+                  {!debtCollectionDecisions.length &&
+                    <FormText>Ei purkamispäätöksiä</FormText>
+                  }
                   {!!debtCollectionDecisions.length &&
                     <ListItems>
                       {debtCollectionDecisions.map((decision, index) =>
                         decision.reference_number
-                          ? <p key={index} className='no-margin'><ExternalLink
-                            className='no-margin'
-                            href={getReferenceNumberLink(decision.reference_number)}
-                            label={decision.reference_number}
-                          /></p>
-                          : <p key={index} className='no-margin'>{getLabelOfOption(decisionOptions, decision.id)}</p>
+                          ? <ListItem key={index}>
+                            <ExternalLink
+                              className='no-margin'
+                              href={getReferenceNumberLink(decision.reference_number)}
+                              text={decision.reference_number}
+                            /></ListItem>
+                          : <ListItem key={index}>{getLabelOfOption(decisionOptions, decision.id)}</ListItem>
                       )}
                     </ListItems>
                   }
@@ -378,9 +383,9 @@ class DebtCollectionForm extends Component<Props, State> {
                   <SubTitle>Huomautukset</SubTitle>
                   {sortedCollectionNotes && !!sortedCollectionNotes.length &&
                     <Row>
-                      <Column small={6}><FormFieldLabel required>Huomautus</FormFieldLabel></Column>
-                      <Column small={3}><FormFieldLabel>Lisätty</FormFieldLabel></Column>
-                      <Column small={3}><FormFieldLabel>Lisääjä</FormFieldLabel></Column>
+                      <Column small={6}><FormTextTitle required title='Huomautus' /></Column>
+                      <Column small={3}><FormTextTitle title='Lisätty' /></Column>
+                      <Column small={3}><FormTextTitle title='Lisääjä' /></Column>
                     </Row>
                   }
                   {sortedCollectionNotes && !!sortedCollectionNotes.length && sortedCollectionNotes.map((note) => {
@@ -398,10 +403,10 @@ class DebtCollectionForm extends Component<Props, State> {
                     return(
                       <Row key={note.id}>
                         <Column small={6}><ShowMore text={note.note} /></Column>
-                        <Column small={3}><p>{formatDate(note.modified_at)}</p></Column>
+                        <Column small={3}><FormText>{formatDate(note.modified_at)}</FormText></Column>
                         <Column small={3}>
                           <FieldAndRemoveButtonWrapper
-                            field={<p style={{width: '100%'}}>{getUserFullName(note.user)}</p>}
+                            field={<FormText className='full-width'>{getUserFullName(note.user)}</FormText>}
                             removeButton={
                               <RemoveButton
                                 className='third-level'

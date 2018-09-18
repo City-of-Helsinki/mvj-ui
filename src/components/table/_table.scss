@@ -4,6 +4,12 @@
 
   border-spacing: 0;
 
+  caption {
+    visibility: hidden;
+    position: absolute;
+  }
+
+
   thead {
     border: none;
   }
@@ -39,6 +45,7 @@
     font-size: rem-calc(14px);
 	  text-align: left;
 	  color: $black;
+    vertical-align: top;
   }
 
   tfoot {
@@ -170,7 +177,7 @@
       thead {
         border: none;
 
-        th {
+        td, th {
           height: 0;
           line-height: 0;
           padding: 0 0.5rem;

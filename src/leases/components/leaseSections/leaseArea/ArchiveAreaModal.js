@@ -8,6 +8,7 @@ import get from 'lodash/get';
 
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import Modal from '$components/modal/Modal';
 import {FormNames} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
@@ -72,7 +73,8 @@ class ArchiveAreaModal extends Component<Props> {
           isOpen={isOpen}
           onClose={onClose}
         >
-          <p>Haluatko varmasti arkistoida kohteen?</p>
+          <FormText>Haluatko varmasti arkistoida kohteen?</FormText>
+
           <Row>
             <Column>
               <FormField
@@ -102,14 +104,12 @@ class ArchiveAreaModal extends Component<Props> {
               className='button-red'
               label='Peruuta'
               onClick={onCancel}
-              title='Peruuta'
             />
             <Button
               className='button-green'
               disabled={!valid}
               label='Arkistoi'
               onClick={this.handleArchive}
-              title='Arkistoi'
             />
           </div>
         </Modal>

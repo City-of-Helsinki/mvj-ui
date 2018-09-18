@@ -10,7 +10,7 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddButtonThird from '$components/form/AddButtonThird';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {DeleteModalLabels, DeleteModalTitles, RentTypes, RentDueDateTypes} from '$src/leases/enums';
@@ -33,7 +33,7 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
     <div>
       <Row>
         <Column>
-          <FormFieldLabel>Eräpäivät</FormFieldLabel>
+          <FormTextTitle title='Eräpäivät' />
         </Column>
       </Row>
       {fields && !!fields.length && fields.map((due_date, index) => {
@@ -49,20 +49,16 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.day')}
+                    invisibleLabel
                     name={`${due_date}.day`}
-                    overrideValues={{
-                      label: '',
-                    }}
                   />
                 </Column>
                 <Column small={6}>
                   <FormField
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.month')}
+                    invisibleLabel
                     name={`${due_date}.month`}
-                    overrideValues={{
-                      label: '',
-                    }}
                   />
                 </Column>
               </Row>
@@ -81,7 +77,6 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
           <AddButtonSecondary
             label='Lisää eräpäivä'
             onClick={handleAdd}
-            title='Lisää eräpäivä'
           />
         </Column>
       </Row>
@@ -106,14 +101,24 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
         return(
           <div>
             <Row>
-              <Column><SubTitle>Kiinteät alkuvuosivuokrat</SubTitle></Column>
+              <Column>
+                <SubTitle>Kiinteät alkuvuosivuokrat</SubTitle>
+              </Column>
             </Row>
             {fields && !!fields.length &&
               <Row>
-                <Column small={3} medium={3} large={2}><FormFieldLabel>Käyttötarkoitus</FormFieldLabel></Column>
-                <Column small={3} medium={3} large={2}><FormFieldLabel>Kiinteä alkuvuosivuokra</FormFieldLabel></Column>
-                <Column small={2} medium={2} large={1}><FormFieldLabel>Alkupvm</FormFieldLabel></Column>
-                <Column small={2} medium={2} large={1}><FormFieldLabel>Loppupvm</FormFieldLabel></Column>
+                <Column small={3} medium={3} large={2}>
+                  <FormTextTitle title='Käyttötarkoitus' />
+                </Column>
+                <Column small={3} medium={3} large={2}>
+                  <FormTextTitle title='Kiinteä alkuvuosivuokra' />
+                </Column>
+                <Column small={2} medium={2} large={1}>
+                  <FormTextTitle title='Alkupvm' />
+                </Column>
+                <Column small={2} medium={2} large={1}>
+                  <FormTextTitle title='Loppupvm' />
+                </Column>
               </Row>
             }
             {fields && !!fields.length && fields.map((rent, index) => {
@@ -135,41 +140,33 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
                       <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use')}
+                        invisibleLabel
                         name={`${rent}.intended_use`}
-                        overrideValues={{
-                          label: '',
-                        }}
                       />
                     </Column>
                     <Column small={3} medium={3} large={2}>
                       <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
+                        invisibleLabel
                         name={`${rent}.amount`}
                         unit='€'
-                        overrideValues={{
-                          label: '',
-                        }}
                       />
                     </Column>
                     <Column small={2} medium={2} large={1}>
                       <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.start_date')}
+                        invisibleLabel
                         name={`${rent}.start_date`}
-                        overrideValues={{
-                          label: '',
-                        }}
                       />
                     </Column>
                     <Column small={2} medium={2} large={1}>
                       <FormField
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}
+                        invisibleLabel
                         name={`${rent}.end_date`}
-                        overrideValues={{
-                          label: '',
-                        }}
                       />
                     </Column>
                     <Column>
@@ -188,7 +185,6 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
                 <AddButtonThird
                   label='Lisää kiinteä alkuvuosivuokra'
                   onClick={handleAdd}
-                  title='Lisää kiinteä alkuvuosivuokra'
                 />
               </Column>
             </Row>

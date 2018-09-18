@@ -7,18 +7,18 @@ import ExternalLinkIcon from '$components/icons/ExternalLinkIcon';
 type Props = {
   className?: string,
   href: string,
-  label: string,
   openInNewTab?: boolean,
+  text: string,
 }
 
 const ExternalLink = ({
   className,
   href,
-  label,
   openInNewTab = true,
+  text,
 }: Props) =>
   <a className={classNames('links__external-link', className)} target={openInNewTab ? '_blank' : '_self'} href={href}>
-    <span>{label}</span>
+    <span>{text}</span>
     <ExternalLinkIcon />
   </a>;
 

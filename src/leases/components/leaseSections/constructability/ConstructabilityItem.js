@@ -9,7 +9,9 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import ExternalLink from '$components/links/ExternalLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTitleAndText from '$components/form/FormTitleAndText';
+import ListItem from '$components/content/ListItem';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
@@ -37,8 +39,8 @@ const Comments = ({
               key={comment.id}>
               <Row>
                 <Column small={12}>
-                  <p className='no-margin'>{comment.text || ''}</p>
-                  <p>
+                  <ListItem>{comment.text || ''}</ListItem>
+                  <FormText>
                     <strong>{getUserFullName(comment.user)}</strong>
                     {comment.modified_at && `, ${formatDate(comment.modified_at)}`}
                     {comment.ahjo_reference_number &&
@@ -46,18 +48,18 @@ const Comments = ({
                         <ExternalLink
                           className='no-margin'
                           href={getReferenceNumberLink(comment.ahjo_reference_number)}
-                          label={comment.ahjo_reference_number}
+                          text={comment.ahjo_reference_number}
                         />
                       </span>
                     }
-                  </p>
+                  </FormText>
                 </Column>
               </Row>
             </BoxItem>
           )}
         </BoxItemContainer>
       ) : (
-        <p><em>Ei huomautuksia.</em></p>
+        <FormText><em>Ei huomautuksia.</em></FormText>
       )
     }
   </div>;
@@ -229,9 +231,7 @@ const ConstructabilityItem = ({
         onToggle={handlePreconstructionCollapseToggle}
         showTitleOnOpen={true}
       >
-        <Comments
-          comments={area.descriptionsPreconstruction}
-        />
+        <Comments comments={area.descriptionsPreconstruction} />
       </Collapse>
 
       <Collapse
@@ -251,9 +251,7 @@ const ConstructabilityItem = ({
         onToggle={handleDemolitionCollapseToggle}
         showTitleOnOpen={true}
       >
-        <Comments
-          comments={area.descriptionsDemolition}
-        />
+        <Comments comments={area.descriptionsDemolition} />
       </Collapse>
 
       <Collapse
@@ -276,30 +274,38 @@ const ConstructabilityItem = ({
         <div>
           <Row>
             <Column small={6} medium={3} large={2}>
-              <FormFieldLabel>Vuokraehdot</FormFieldLabel>
-              <p>{getLabelOfOption(pollutedLandConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}</p>
+              <FormTitleAndText
+                title='Vuokraehdot'
+                text={getLabelOfOption(pollutedLandConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}
+              />
             </Column>
             <Column small={6} medium={3} large={2}>
-              <FormFieldLabel>Vuokraehdot pvm</FormFieldLabel>
-              <p>{formatDate(area.polluted_land_rent_condition_date) || '–'}</p>
+              <FormTitleAndText
+                title='Vuokraehdot pvm'
+                text={formatDate(area.polluted_land_rent_condition_date) || '–'}
+              />
             </Column>
             <Column small={6} medium={3} large={2}>
-              <FormFieldLabel>PIMA valmistelija</FormFieldLabel>
-              <p>{getUserFullName(area.polluted_land_planner) || '–'}</p>
+              <FormTitleAndText
+                title='PIMA valmistelija'
+                text={getUserFullName(area.polluted_land_planner) || '–'}
+              />
             </Column>
             <Column small={6} medium={3} large={2}>
-              <FormFieldLabel>ProjectWise numero</FormFieldLabel>
-              <p>{area.polluted_land_projectwise_number || '-'}</p>
+              <FormTitleAndText
+                title='ProjectWise numero'
+                text={area.polluted_land_projectwise_number || '-'}
+              />
             </Column>
             <Column small={6} medium={3} large={2}>
-              <FormFieldLabel>Matti raportti</FormFieldLabel>
-              <p>{area.polluted_land_matti_report_number || '-'}</p>
+              <FormTitleAndText
+                title='Matti raportti'
+                text={area.polluted_land_matti_report_number || '-'}
+              />
             </Column>
           </Row>
         </div>
-        <Comments
-          comments={area.descriptionsPollutedLand}
-        />
+        <Comments comments={area.descriptionsPollutedLand} />
       </Collapse>
 
       <Collapse
@@ -322,26 +328,32 @@ const ConstructabilityItem = ({
         <div>
           <Row>
             <Column small={6} medium={3} large={2}>
-              <FormFieldLabel>Selvitys</FormFieldLabel>
-              <p>{getLabelOfOption(constructabilityReportStateOptions, area.constructability_report_investigation_state) || '-'}</p>
+              <FormTitleAndText
+                title='Selvitys'
+                text={getLabelOfOption(constructabilityReportStateOptions, area.constructability_report_investigation_state) || '-'}
+              />
             </Column>
             <Column small={6} medium={3} large={2}>
-              <FormFieldLabel>Allekirjoituspvm</FormFieldLabel>
-              <p>{formatDate(area.constructability_report_signing_date) || '–'}</p>
+              <FormTitleAndText
+                title='Allekirjoituspvm'
+                text={formatDate(area.constructability_report_signing_date) || '–'}
+              />
             </Column>
             <Column small={6} medium={3} large={2}>
-              <FormFieldLabel>Allekirjoittaja</FormFieldLabel>
-              <p>{area.constructability_report_signer || '-'}</p>
+              <FormTitleAndText
+                title='Allekirjoittaja'
+                text={area.constructability_report_signer || '-'}
+              />
             </Column>
             <Column small={6} medium={3} large={2}>
-              <FormFieldLabel>Geoteknisen palvelun tiedosto</FormFieldLabel>
-              <p>{area.constructability_report_geotechnical_number || '-'}</p>
+              <FormTitleAndText
+                title='Geoteknisen palvelun tiedosto'
+                text={area.constructability_report_geotechnical_number || '-'}
+              />
             </Column>
           </Row>
         </div>
-        <Comments
-          comments={area.descriptionsReport}
-        />
+        <Comments comments={area.descriptionsReport} />
       </Collapse>
 
       <Collapse
@@ -361,9 +373,7 @@ const ConstructabilityItem = ({
         onToggle={handleOtherCollapseToggle}
         showTitleOnOpen={true}
       >
-        <Comments
-          comments={area.descriptionsOther}
-        />
+        <Comments comments={area.descriptionsOther} />
       </Collapse>
     </Collapse>
   );

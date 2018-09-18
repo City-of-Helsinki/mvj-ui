@@ -1,6 +1,11 @@
 .styled-checkbox-buttons {
   display:inline-block;
 
+  legend {
+    visibility: hidden;
+    position: absolute;
+  }
+
   .label {
     padding: 0;
     margin: 0 rem-calc(5px) rem-calc(5px);

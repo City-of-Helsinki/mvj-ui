@@ -28,15 +28,15 @@ type State = {
 
 const validate = values => {
   const errors = {};
-  if (!values.start_date) {
-    errors.start_date = 'Alkupäivämäärä on pakollinen';
+  if (!values.billing_start_date) {
+    errors.billing_start_date = 'Alkupäivämäärä on pakollinen';
   }
-  if (!values.end_date) {
-    errors.end_date = 'Loppupäivämäärä on pakollinen';
-  } else if(new Date(values.start_date).getFullYear() !== new Date(values.end_date).getFullYear()) {
-    errors.end_date = 'Alku- ja loppupäivämäärän tulee olla samana vuonna';
-  } else if(!moment(values.end_date).isAfter(moment(values.start_date), 'day')) {
-    errors.end_date = 'Loppupäivämäärän tulee olla alkupäivämäärän jälkeen';
+  if (!values.billing_end_date) {
+    errors.billing_end_date = 'Loppupäivämäärä on pakollinen';
+  } else if(new Date(values.billing_start_date).getFullYear() !== new Date(values.billing_end_date).getFullYear()) {
+    errors.billing_end_date = 'Alku- ja loppupäivämäärän tulee olla samana vuonna';
+  } else if(!moment(values.billing_end_date).isAfter(moment(values.billing_start_date), 'day')) {
+    errors.billing_end_date = 'Loppupäivämäärän tulee olla alkupäivämäärän jälkeen';
   }
   return errors;
 };
@@ -95,8 +95,8 @@ class RentCalculatorForm extends Component<Props, State> {
     });
     if(selected) {
       change('billing_period', selected.value);
-      change('start_date', selected.startDate);
-      change('end_date', selected.endDate);
+      change('billing_start_date', selected.startDate);
+      change('billing_end_date', selected.endDate);
     }
   }
 
@@ -105,8 +105,8 @@ class RentCalculatorForm extends Component<Props, State> {
     const {billingPeriod, change} = this.props;
     const selected = billingPeriodOptions.find((item) => item.value === billingPeriod);
     if(selected) {
-      change('start_date', selected.startDate);
-      change('end_date', selected.endDate);
+      change('billing_start_date', selected.startDate);
+      change('billing_end_date', selected.endDate);
     }
   }
 
@@ -135,7 +135,7 @@ class RentCalculatorForm extends Component<Props, State> {
               fieldAttributes={{
                 type: 'date',
               }}
-              name='start_date'
+              name='billing_start_date'
               disableDirty
               overrideValues={{
                 label: 'Alkupvm',
@@ -147,7 +147,7 @@ class RentCalculatorForm extends Component<Props, State> {
               fieldAttributes={{
                 type: 'date',
               }}
-              name='end_date'
+              name='billing_end_date'
               disableDirty
               overrideValues={{
                 label: 'Loppupvm',

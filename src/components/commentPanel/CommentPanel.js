@@ -1,7 +1,7 @@
 //@flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {destroy, initialize} from 'redux-form';
+import {initialize} from 'redux-form';
 import classNames from 'classnames';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
@@ -24,7 +24,6 @@ type Props = {
   commentList: CommentList,
   createComment: Function,
   currentLease: Lease,
-  destroy: Function,
   initialize: Function,
   isOpen: boolean,
   onClose: Function,
@@ -159,8 +158,7 @@ class CommentPanel extends PureComponent<Props, State> {
   }
 
   initializeNewCommentForm = () => {
-    const {destroy, initialize} = this.props;
-    destroy('new-comment-form');
+    const {initialize} = this.props;
     initialize('new-comment-form', {text: '', topic: ''});
   }
 
@@ -209,6 +207,7 @@ class CommentPanel extends PureComponent<Props, State> {
               <div className='filters'>
                 <StyledCheckboxButtons
                   checkboxName='checkbox-buttons-document-type'
+                  legend='Suodata kommentteja'
                   onChange={this.handleFilterChange}
                   options={topicFilterOptions}
                   selectAllButton
@@ -264,7 +263,6 @@ export default flowRight(
     },
     {
       createComment,
-      destroy,
       initialize,
     },
   ),

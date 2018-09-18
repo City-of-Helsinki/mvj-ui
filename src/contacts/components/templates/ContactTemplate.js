@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
@@ -28,56 +29,76 @@ const ContactTemplate = ({contact, attributes}: Props) => {
       <FormWrapperLeft>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <label>Asiakastyyppi</label>
-            <p>{getLabelOfOption(typeOptions, contact.type) || '-'}</p>
+            <FormTitleAndText
+              title='Asiakastyyppi'
+              text={getLabelOfOption(typeOptions, contact.type) || '-'}
+            />
           </Column>
           {contact.type === ContactType.PERSON &&
             <Column small={12} medium={6} large={4}>
-              <label>Sukunimi</label>
-              <p>{contact.last_name || '-'}</p>
+              <FormTitleAndText
+                title='Sukunimi'
+                text={contact.last_name || '-'}
+              />
             </Column>
           }
           {contact.type === ContactType.PERSON &&
             <Column small={12} medium={6} large={4}>
-              <label>Etunimi</label>
-              <p>{contact.first_name || '-'}</p>
+              <FormTitleAndText
+                title='Etunimi'
+                text={contact.first_name || '-'}
+              />
             </Column>
           }
           {contact.type && contact.type !== ContactType.PERSON &&
             <Column small={12} medium={6} large={8}>
-              <label>Yrityksen nimi</label>
-              <p>{contact.name || '-'}</p>
+              <FormTitleAndText
+                title='Yrityksen nimi'
+                text={contact.name || '-'}
+              />
             </Column>
           }
         </Row>
         <Row>
           <Column>
-            <label>Katuosoite</label>
-            <p>{contact.address || '-'}</p>
+            <FormTitleAndText
+              title='Katuosoite'
+              text={contact.address || '-'}
+            />
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={4} large={4}>
-            <label>Postinumero</label>
-            <p>{contact.postal_code || '-'}</p>
+            <FormTitleAndText
+              title='Postinumero'
+              text={contact.postal_code || '-'}
+            />
           </Column>
           <Column small={12} medium={4} large={4}>
-            <label>Postitoimipaikka</label>
-            <p>{contact.city || '-'}</p>
+            <FormTitleAndText
+              title='Postitoimipaikka'
+              text={contact.city || '-'}
+            />
           </Column>
           <Column small={12} medium={4} large={4}>
-            <label>Maa</label>
-            <p>{contact.country || '-'}</p>
+            <FormTitleAndText
+              title='Maa'
+              text={contact.country || '-'}
+            />
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <label>Puhelinnumero</label>
-            <p>{contact.phone || '-'}</p>
+            <FormTitleAndText
+              title='Puhelinnumero'
+              text={contact.phone || '-'}
+            />
           </Column>
           <Column small={12} medium={6} large={8}>
-            <label>Sähköposti</label>
-            <p>{contact.email || '-'}</p>
+            <FormTitleAndText
+              title='Sähköposti'
+              text={contact.email || '-'}
+            />
           </Column>
         </Row>
       </FormWrapperLeft>
@@ -85,58 +106,77 @@ const ContactTemplate = ({contact, attributes}: Props) => {
         <Row>
           {contact.type === ContactType.PERSON &&
             <Column small={12} medium={6} large={4}>
-              <label>Henkilötunnus</label>
-              <p>{contact.national_identification_number || '-'}</p>
+              <FormTitleAndText
+                title='Henkilötunnus'
+                text={contact.national_identification_number || '-'}
+              />
             </Column>
           }
-
           {contact.type && contact.type !== ContactType.PERSON &&
             <Column small={12} medium={6} large={4}>
-              <label>Y-tunnus</label>
-              <p>{contact.business_id || '-'}</p>
+              <FormTitleAndText
+                title='Y-tunnus'
+                text={contact.business_id || '-'}
+              />
             </Column>
           }
           <Column small={12} medium={6} large={4}>
-            <label>Kieli</label>
-            <p>{getLabelOfOption(languageOptions, contact.language) || '-'}</p>
+            <FormTitleAndText
+              title='Kieli'
+              text={getLabelOfOption(languageOptions, contact.language) || '-'}
+            />
           </Column>
           <Column small={12} medium={6} large={4}>
-            <label>SAP asiakasnumero</label>
-            <p>{contact.sap_customer_number || '-'}</p>
+            <FormTitleAndText
+              title='SAP asiakasnumero'
+              text={contact.sap_customer_number || '-'}
+            />
           </Column>
         </Row>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <label>Kumppanikoodi</label>
-            <p>{contact.partner_code || '-'}</p>
+            <FormTitleAndText
+              title='Kumppanikoodi'
+              text={contact.partner_code || '-'}
+            />
           </Column>
           <Column small={12} medium={6} large={4}>
-            <label>Ovt-tunnus</label>
-            <p>{contact.electronic_billing_address || '-'}</p>
+            <FormTitleAndText
+              title='Ovt-tunnus'
+              text={contact.electronic_billing_address || '-'}
+            />
           </Column>
           <Column small={12} medium={6} large={4}>
-            <label>Asiakasnumero</label>
-            <p>{contact.customer_number || '-'}</p>
+            <FormTitleAndText
+              title='Asiakasnumero'
+              text={contact.customer_number || '-'}
+            />
           </Column>
-
         </Row>
         <Row>
           <Column small={12} medium={6} large={4}>
-            <label>Turvakielto</label>
-            {contact.address_protection
-              ? <p className='alert'><i/><span>Turvakielto</span></p>
-              : <p>Ei turvakieltoa</p>
-            }
+            <FormTitleAndText
+              title='Turvakielto'
+              text={contact.address_protection
+                ? <span><i/><span>Turvakielto</span></span>
+                : 'Ei turvakieltoa'
+              }
+              textClassName={contact.address_protection ? 'alert' : ''}
+            />
           </Column>
           <Column small={12} medium={6} large={4}>
-            <label>Vuokranantaja</label>
-            <p>{contact.is_lessor ? 'Kyllä' : 'Ei'}</p>
+            <FormTitleAndText
+              title='Vuokranantaja'
+              text={contact.is_lessor ? 'Kyllä' : 'Ei'}
+            />
           </Column>
         </Row>
         <Row>
           <Column>
-            <label>Huomautus</label>
-            <p>{contact.note || '-'}</p>
+            <FormTitleAndText
+              title='Huomautus'
+              text={contact.note || '-'}
+            />
           </Column>
         </Row>
       </FormWrapperRight>

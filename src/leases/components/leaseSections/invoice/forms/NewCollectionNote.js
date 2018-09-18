@@ -36,10 +36,8 @@ const NewCollectionNote = ({
               required: true,
               label: 'Huomautus',
             }}
+            invisibleLabel={true}
             name={`${field}.note`}
-            overrideValues={{
-              label: '',
-            }}
           />
         </Column>
       </Row>
@@ -48,14 +46,12 @@ const NewCollectionNote = ({
           className='button-red'
           label='Peruuta'
           onClick={onCancel}
-          title='Peruuta'
         />
         <Button
           className='button-green'
           disabled={!note}
           label='Tallenna'
           onClick={handleSave}
-          title='Tallenna'
         />
       </div>
     </div>

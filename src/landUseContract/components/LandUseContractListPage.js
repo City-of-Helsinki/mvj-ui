@@ -10,6 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import Button from '$components/button/Button';
 import CreateLandUseContractModal from './createLandUseContract/CreateLandUseContractModal';
+import ListItem from '$components/content/ListItem';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
@@ -230,7 +231,6 @@ class LandUseContractListPage extends Component<Props, State> {
               className='no-margin'
               label='Luo maankäyttösopimus'
               onClick={this.handleCreateButtonClick}
-              title='Luo maankäyttösopimus'
             />
           }
           searchComponent={
@@ -260,7 +260,7 @@ class LandUseContractListPage extends Component<Props, State> {
               data={filteredLandUseContracts}
               dataKeys={[
                 {key: 'identifier', label: 'MA-tunnus'},
-                {key: 'litigants', label: 'Osapuoli', renderer: (val) => val.map((litigant, index) => <p key={index} className='no-margin'>{litigant}</p>)},
+                {key: 'litigants', label: 'Osapuoli', renderer: (val) => val.map((litigant, index) => <ListItem key={index}>{litigant}</ListItem>)},
                 {key: 'plan_number', label: 'Asemakaavan numero'},
                 {key: 'area', label: 'Kohde'},
                 {key: 'project_area', label: 'Hankealue'},

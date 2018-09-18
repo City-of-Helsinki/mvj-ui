@@ -48,12 +48,13 @@ class Search extends Component<Props> {
         <Row>
           <Column large={12}>
             <FormField
+              disableDirty
               fieldAttributes={{}}
+              invisibleLabel
               name='search'
               placeholder='Hae hakusanalla'
-              disableDirty
               overrideValues={{
-                label: '',
+                label: 'Hae hakusanalla',
               }}
             />
           </Column>

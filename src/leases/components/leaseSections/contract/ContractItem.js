@@ -7,7 +7,9 @@ import get from 'lodash/get';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import KtjLink from '$components/ktj/KtjLink';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
@@ -90,43 +92,55 @@ const ContractItem = ({
     >
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Sopimuksen tyyppi</FormFieldLabel>
-          <p>{getLabelOfOption(typeOptions, contract.type) || '-'}</p>
+          <FormTitleAndText
+            title='Sopimuksen tyyppi'
+            text={getLabelOfOption(typeOptions, contract.type) || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Sopimusnumero</FormFieldLabel>
-          <p>{contract.contract_number || '-'}</p>
+          <FormTitleAndText
+            title='Sopimusnumero'
+            text={contract.contract_number || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Allekirjoituspvm</FormFieldLabel>
-          <p>{formatDate(contract.signing_date) || '–'}</p>
+          <FormTitleAndText
+            title='Allekirjoituspvm'
+            text={formatDate(contract.signing_date) || '–'}
+          />
         </Column>
         <Column small={6} medium={12} large={6}>
-          <FormFieldLabel>Allekirjoituksen huomautus</FormFieldLabel>
-          <p>{contract.signing_note || '–'}</p>
+          <FormTitleAndText
+            title='Allekirjoituksen huomautus'
+            text={contract.signing_note || '–'}
+          />
         </Column>
       </Row>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Järjestelypäätös</FormFieldLabel>
-          <p>{contract.is_readjustment_decision ? 'Kyllä' : 'Ei'}</p>
+          <FormTitleAndText
+            title='Järjestelypäätös'
+            text={contract.is_readjustment_decision ? 'Kyllä' : 'Ei'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Laitostunnus</FormFieldLabel>
-          <p>{contract.institution_identifier  || '–'}</p>
+          <FormTitleAndText
+            title='Laitostunnus'
+            text={contract.institution_identifier  || '–'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Päätös</FormFieldLabel>
+          <FormTextTitle title='Päätös' />
           {decision
-            ? <div>{decision.reference_number
+            ? <FormText>{decision.reference_number
               ? <a href={getReferenceNumberLink(decision.reference_number)} target='_blank'>{getLabelOfOption(decisionOptions, contract.decision)}</a>
-              : <p>{getLabelOfOption(decisionOptions, contract.decision)}</p>
-            }</div>
-            : <p>-</p>
+              : getLabelOfOption(decisionOptions, contract.decision)
+            }</FormText>
+            : <FormText>-</FormText>
           }
         </Column>
         <Column small={6} medium={12} large={6}>
-          <FormFieldLabel>KTJ dokumentti</FormFieldLabel>
+          <FormTextTitle title='KTJ dokumentti' />
           {contract.institution_identifier
             ? <KtjLink
               fileKey='vuokraoikeustodistus'
@@ -135,26 +149,34 @@ const ContractItem = ({
               idKey='kohdetunnus'
               label='Vuokraoikeustodistus'
             />
-            : <p>-</p>
+            : <FormText>-</FormText>
           }
         </Column>
       </Row>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Vuokravakuusnumero</FormFieldLabel>
-          <p>{contract.collateral_number  || '–'}</p>
+          <FormTitleAndText
+            title='Vuokravakuusnumero'
+            text={contract.collateral_number  || '–'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Vuokravakuus alkupvm</FormFieldLabel>
-          <p>{formatDate(contract.collateral_start_date) || '-'}</p>
+          <FormTitleAndText
+            title='Vuokravakuus alkupvm'
+            text={formatDate(contract.collateral_start_date) || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Vuokravakuus loppupvm</FormFieldLabel>
-          <p>{formatDate(contract.collateral_end_date) || '-'}</p>
+          <FormTitleAndText
+            title='Vuokravakuus loppupvm'
+            text={formatDate(contract.collateral_end_date) || '-'}
+          />
         </Column>
         <Column small={6} medium={12} large={6}>
-          <FormFieldLabel>Vuokravakuuden huomautus</FormFieldLabel>
-          <p>{contract.collateral_note  || '–'}</p>
+          <FormTitleAndText
+            title='Vuokravakuuden huomautus'
+            text={contract.collateral_note  || '–'}
+          />
         </Column>
       </Row>
       <Row>
@@ -163,31 +185,31 @@ const ContractItem = ({
         </Column>
       </Row>
       {(!contract.mortgage_documents || !contract.mortgage_documents.length )&&
-        <p>Ei panttikirjoja</p>
+        <FormText>Ei panttikirjoja</FormText>
       }
       {contract.mortgage_documents && !!contract.mortgage_documents.length &&
         <div>
           <Row>
             <Column small={4} medium={4} large={2}>
-              <FormFieldLabel>Panttikirjan numero</FormFieldLabel>
+              <FormTextTitle title='Panttikirjan numero' />
             </Column>
             <Column small={4} medium={4} large={2}>
-              <FormFieldLabel>Panttikirjan pvm</FormFieldLabel>
+              <FormTextTitle title='Panttikirjan pvm' />
             </Column>
             <Column small={4} medium={4} large={2}>
-              <FormFieldLabel>Huomautus</FormFieldLabel>
+              <FormTextTitle title='Huomautus' />
             </Column>
           </Row>
           {contract.mortgage_documents.map((doc) =>
             <Row key={doc.id}>
               <Column small={4} medium={4} large={2}>
-                <p>{doc.number || '–'}</p>
+                <FormText>{doc.number || '–'}</FormText>
               </Column>
               <Column small={4} medium={4} large={2}>
-                <p>{formatDate(doc.date) || '–'}</p>
+                <FormText>{formatDate(doc.date) || '–'}</FormText>
               </Column>
               <Column small={4} medium={4} large={2}>
-                <p>{doc.note || '–'}</p>
+                <FormText>{doc.note || '–'}</FormText>
               </Column>
             </Row>
           )}
@@ -201,7 +223,7 @@ const ContractItem = ({
         onToggle={handleContractChangesCollapseToggle}
       >
         {!contract.contract_changes || !contract.contract_changes.length &&
-          <p>Ei sopimuksen muutoksia</p>
+          <FormText>Ei sopimuksen muutoksia</FormText>
         }
         {contract.contract_changes && !!contract.contract_changes.length &&
           <BoxItemContainer>
@@ -213,40 +235,52 @@ const ContractItem = ({
                   className='no-border-on-last-child'>
                   <Row>
                     <Column small={6} medium={4} large={2}>
-                      <FormFieldLabel>Allekirjoituspvm</FormFieldLabel>
-                      <p>{formatDate(change.signing_date) || '–'}</p>
+                      <FormTitleAndText
+                        title='Allekirjoituspvm'
+                        text={formatDate(change.signing_date) || '–'}
+                      />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <FormFieldLabel>Allekirjoitettava mennessä</FormFieldLabel>
-                      <p>{formatDate(change.sign_by_date) || '–'}</p>
+                      <FormTitleAndText
+                        title='Allekirjoitettava mennessä'
+                        text={formatDate(change.sign_by_date) || '–'}
+                      />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <FormFieldLabel>1. kutsu lähetetty</FormFieldLabel>
-                      <p>{formatDate(change.first_call_sent) || '–'}</p>
+                      <FormTitleAndText
+                        title='1. kutsu lähetetty'
+                        text={formatDate(change.first_call_sent) || '–'}
+                      />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <FormFieldLabel>2. kutsu lähetetty</FormFieldLabel>
-                      <p>{formatDate(change.second_call_sent) || '–'}</p>
+                      <FormTitleAndText
+                        title='2. kutsu lähetetty'
+                        text={formatDate(change.second_call_sent) || '–'}
+                      />
                     </Column>
                     <Column small={6} medium={4} large={2}>
-                      <FormFieldLabel>3. kutsu lähetetty</FormFieldLabel>
-                      <p>{formatDate(change.third_call_sent) || '–'}</p>
+                      <FormTitleAndText
+                        title='3. kutsu lähetetty'
+                        text={formatDate(change.third_call_sent) || '–'}
+                      />
                     </Column>
                   </Row>
                   <Row>
                     <Column small={6} medium={4} large={2}>
-                      <FormFieldLabel>Päätös</FormFieldLabel>
+                      <FormTextTitle title='Päätös' />
                       {decision
-                        ? <div>{decision.reference_number
+                        ? <FormText>{decision.reference_number
                           ? <a href={getReferenceNumberLink(decision.reference_number)} target='_blank'>{getLabelOfOption(decisionOptions, change.decision)}</a>
-                          : <p>{getLabelOfOption(decisionOptions, change.decision)}</p>
-                        }</div>
-                        : <p>-</p>
+                          : getLabelOfOption(decisionOptions, change.decision)
+                        }</FormText>
+                        : <FormText>-</FormText>
                       }
                     </Column>
                     <Column small={6} medium={8} large={10}>
-                      <FormFieldLabel>Huomautus</FormFieldLabel>
-                      <p>{change.description  || '–'}</p>
+                      <FormTitleAndText
+                        title='Huomautus'
+                        text={change.description  || '–'}
+                      />
                     </Column>
                   </Row>
                 </BoxItem>

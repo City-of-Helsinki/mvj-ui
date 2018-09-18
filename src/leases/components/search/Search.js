@@ -71,7 +71,7 @@ class Search extends Component<Props, State> {
         fetchDistrictsByMunicipality(this.props.municipality);
       }
       if(this.props.anyTouched) {
-        clearFields(false, false, 'district');
+        clearFields(false, false, 'search_district');
       }
     }
 
@@ -172,10 +172,11 @@ class Search extends Component<Props, State> {
                   autoBlur
                   disableDirty
                   fieldAttributes={{}}
+                  invisibleLabel
                   name='identifier'
                   placeholder='Hae hakusanalla'
                   overrideValues={{
-                    label: '',
+                    label: 'Hae hakusanalla',
                   }}
                 />
               </Column>
@@ -187,7 +188,7 @@ class Search extends Component<Props, State> {
             <Row>
               <Column small={12} medium={6}>
                 <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label'>Vuokralainen</label>
+                  <label className='lease-search__label' htmlFor='tenant'>Vuokralainen</label>
                   <div className='lease-search__input-wrapper'>
                     <FormField
                       autoBlur
@@ -206,9 +207,10 @@ class Search extends Component<Props, State> {
                   autoBlur
                   disableDirty
                   fieldAttributes={{}}
+                  invisibleLabel
                   name='only_past_tentants'
                   overrideValues={{
-                    label: '',
+                    label: 'Vain entiset asiakkaat',
                     fieldType: 'checkbox',
                     options: [
                       {value: true, label: 'Vain entiset asiakkaat'},
@@ -218,7 +220,7 @@ class Search extends Component<Props, State> {
               </Column>
               <Column small={12} medium={3}>
                 <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label'>Rooli</label>
+                  <label className='lease-search__label' htmlFor='tenant_role'>Rooli</label>
                   <div className='lease-search__input-wrapper'>
                     <FormField
                       autoBlur
@@ -239,7 +241,7 @@ class Search extends Component<Props, State> {
             <Row>
               <Column small={12} medium={6}>
                 <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label'>Vuokraus</label>
+                  <label className='lease-search__label' htmlFor='search_type'>Vuokraus</label>
                   <div className='lease-search__input-wrapper'>
                     <Row>
                       <Column>
@@ -247,7 +249,7 @@ class Search extends Component<Props, State> {
                           autoBlur
                           disableDirty
                           fieldAttributes={{}}
-                          name='type'
+                          name='search_type'
                           overrideValues={{
                             label: '',
                             fieldType: 'choice',
@@ -260,9 +262,10 @@ class Search extends Component<Props, State> {
                           autoBlur
                           disableDirty
                           fieldAttributes={{}}
-                          name='municipality'
+                          invisibleLabel
+                          name='search_municipality'
                           overrideValues={{
-                            label: '',
+                            label: 'Kunta',
                             fieldType: 'choice',
                             options: municipalityOptions,
                           }}
@@ -274,9 +277,10 @@ class Search extends Component<Props, State> {
                           disableDirty
                           disableRequired
                           fieldAttributes={{}}
-                          name='district'
+                          invisibleLabel
+                          name='search_district'
                           overrideValues={{
-                            label: '',
+                            label: 'Kaupunginosa',
                             fieldType: 'choice',
                             options: districtOptions,
                           }}
@@ -287,9 +291,10 @@ class Search extends Component<Props, State> {
                           autoBlur
                           disableDirty
                           fieldAttributes={{}}
+                          invisibleLabel
                           name='sequence'
                           overrideValues={{
-                            label: '',
+                            label: 'Juokseva numero',
                           }}
                         />
                       </Column>
@@ -304,9 +309,10 @@ class Search extends Component<Props, State> {
                       autoBlur
                       disableDirty
                       fieldAttributes={{}}
+                      invisibleLabel
                       name='on_going'
                       overrideValues={{
-                        label: '',
+                        label: 'Voimassa',
                         fieldType: 'checkbox',
                         options: [
                           {value: true, label: 'Voimassa'},
@@ -319,9 +325,10 @@ class Search extends Component<Props, State> {
                       autoBlur
                       disableDirty
                       fieldAttributes={{}}
+                      invisibleLabel
                       name='expired'
                       overrideValues={{
-                        label: '',
+                        label: 'Päättyneet',
                         fieldType: 'checkbox',
                         options: [
                           {value: true, label: 'Päättyneet'},
@@ -334,14 +341,14 @@ class Search extends Component<Props, State> {
               </Column>
               <Column small={12} medium={3}>
                 <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label'>Tyyppi</label>
+                  <label className='lease-search__label' htmlFor='search_state'>Tyyppi</label>
                   <div className='lease-search__input-wrapper'>
                     <FormField
                       autoBlur
                       disableDirty
                       fieldAttributes={{}}
                       isLoading={isFetchingAttributes}
-                      name='state'
+                      name='search_state'
                       overrideValues={{
                         label: '',
                         fieldType: 'multiselect',
@@ -356,7 +363,7 @@ class Search extends Component<Props, State> {
             <Row>
               <Column small={12} medium={6}>
                 <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label'>Kiinteistö</label>
+                  <label className='lease-search__label' htmlFor='property_identifier'>Kiinteistö</label>
                   <div className='lease-search__input-wrapper'>
                     <FormField
                       autoBlur
@@ -372,7 +379,7 @@ class Search extends Component<Props, State> {
               </Column>
               <Column small={12} medium={6}>
                 <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label'>Osoite</label>
+                  <label className='lease-search__label' htmlFor='address'>Osoite</label>
                   <div className='lease-search__input-wrapper'>
                     <FormField
                       autoBlur
@@ -405,7 +412,7 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     state => {
-      const municipality = selector(state, 'municipality');
+      const municipality = selector(state, 'search_municipality');
 
       return {
         attributes: getAttributes(state),

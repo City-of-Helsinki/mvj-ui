@@ -17,6 +17,7 @@ type Props = {
     selected: Array<any>,
     options: Array<Option>
   ) => string,
+  id: string,
   ItemRenderer?: Function,
   selectAllLabel?: string,
   isLoading?: boolean,
@@ -28,6 +29,7 @@ type Props = {
 };
 
 const MultiSelect = ({
+  id,
   ItemRenderer,
   onBlur,
   options,
@@ -96,6 +98,7 @@ const MultiSelect = ({
   };
 
   return <div className="multi-select">
+    <input id={id} hidden/>
     <Dropdown
       isLoading={isLoading}
       contentComponent={SelectPanel}

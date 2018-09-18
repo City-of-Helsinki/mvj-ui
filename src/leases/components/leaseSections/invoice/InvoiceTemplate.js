@@ -6,7 +6,10 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import Divider from '$components/content/Divider';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {InvoiceType} from '$src/invoices/enums';
@@ -60,88 +63,104 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
     <div>
       <Row>
         <Column medium={4}>
-          <FormFieldLabel>Laskunsaaja</FormFieldLabel>
-          <p>{getContactFullName(invoice.recipientFull) || '-'}</p>
+          <FormTitleAndText
+            title='Laskunsaaja'
+            text={getContactFullName(invoice.recipientFull) || '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Lähetetty SAP:iin</FormFieldLabel>
-          <p>{formatDate(invoice.sent_to_sap_at) || '-'}</p>
+          <FormTitleAndText
+            title='Lähetetty SAP:iin'
+            text={formatDate(invoice.sent_to_sap_at) || '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>SAP numero</FormFieldLabel>
-          <p>{invoice.sap_id || '-'}</p>
-        </Column>
-      </Row>
-      <Row>
-        <Column medium={4}>
-          <FormFieldLabel>Eräpäivä</FormFieldLabel>
-          <p>{formatDate(invoice.due_date) || '-'}</p>
-        </Column>
-        <Column medium={4}>
-          <FormFieldLabel>Laskutuspvm</FormFieldLabel>
-          <p>{formatDate(invoice.invoicing_date) || '-'}</p>
+          <FormTitleAndText
+            title='SAP numero'
+            text={invoice.sap_id || '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column medium={4}>
-          <FormFieldLabel>Laskun tila</FormFieldLabel>
-          <p>{getLabelOfOption(stateOptions, invoice.state) || '-'}</p>
+          <FormTitleAndText
+            title='Eräpäivä'
+            text={formatDate(invoice.due_date) || '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Laskutuskausi</FormFieldLabel>
-          <p>{formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}</p>
-        </Column>
-        <Column medium={4}>
-          <FormFieldLabel>Lykkäyspvm</FormFieldLabel>
-          <p>{formatDate(invoice.postpone_date) || '-'}</p>
+          <FormTitleAndText
+            title='Laskutuspvm'
+            text={formatDate(invoice.invoicing_date) || '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column medium={4}>
-          <FormFieldLabel>Laskun pääoma</FormFieldLabel>
-          <p>
-            {invoice.total_amount
+          <FormTitleAndText
+            title='Laskun tila'
+            text={getLabelOfOption(stateOptions, invoice.state) || '-'}
+          />
+        </Column>
+        <Column medium={4}>
+          <FormTitleAndText
+            title='Laskutuskausi'
+            text={formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}
+          />
+        </Column>
+        <Column medium={4}>
+          <FormTitleAndText
+            title='Lykkäyspvm'
+            text={formatDate(invoice.postpone_date) || '-'}
+          />
+        </Column>
+      </Row>
+      <Row>
+        <Column medium={4}>
+          <FormTitleAndText
+            title='Laskun pääoma'
+            text={invoice.total_amount
               ? `${formatNumber(invoice.total_amount)} €`
-              : '-'
-            }
-          </p>
+              : '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Laskun osuus</FormFieldLabel>
-          <p>{`${formatNumber(invoice.totalShare * 100)} %`}</p>
+          <FormTitleAndText
+            title='Laskun osuus'
+            text={`${formatNumber(invoice.totalShare * 100)} %`}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Laskutettu määrä</FormFieldLabel>
-          <p>
-            {invoice.billed_amount
+          <FormTitleAndText
+            title='Laskutettu määrä'
+            text={invoice.billed_amount
               ? `${formatNumber(invoice.billed_amount)} €`
-              : '-'
-            }
-          </p>
+              : '-'}
+          />
         </Column>
       </Row>
       <SubTitle>Maksut</SubTitle>
       <Row>
         <Column small={12} medium={8}>
-          {!payments.length && <p>Ei maksuja</p>}
+          {!payments.length && <FormText>Ei maksuja</FormText>}
           {!!payments.length &&
             <ListItems>
               <Row>
                 <Column small={6}>
-                  <FormFieldLabel>Maksettu määrä</FormFieldLabel>
+                  <FormTextTitle title='Maksettu määrä' />
                 </Column>
                 <Column small={6}>
-                  <FormFieldLabel>Maksettu pvm</FormFieldLabel>
+                  <FormTextTitle title='Maksettu pvm' />
                 </Column>
               </Row>
               {payments.map((payment) => {
                 return (
                   <Row key={payment.id}>
                     <Column small={6}>
-                      <p className='no-margin'>{payment.paid_amount ? `${formatNumber(payment.paid_amount)} €` : '-'}</p>
+                      <ListItem>{payment.paid_amount ? `${formatNumber(payment.paid_amount)} €` : '-'}</ListItem>
                     </Column>
                     <Column small={6}>
-                      <p className='no-margin'>{formatDate(payment.paid_date) || '-'}</p>
+                      <ListItem>{formatDate(payment.paid_date) || '-'}</ListItem>
                     </Column>
                   </Row>
                 );
@@ -150,80 +169,89 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
           }
         </Column>
         <Column small={6} medium={4}>
-          <FormFieldLabel>Maksamaton määrä</FormFieldLabel>
-          <p>
-            {invoice.outstanding_amount
+          <FormTitleAndText
+            title='Maksamaton määrä'
+            text={invoice.outstanding_amount
               ? `${formatNumber(invoice.outstanding_amount)} €`
-              : '-'
-            }
-          </p>
+              : '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column medium={4}>
-          <FormFieldLabel>Maksukehotuspvm</FormFieldLabel>
-          <p>{formatDate(invoice.payment_notification_date) || '-'}</p>
+          <FormTitleAndText
+            title='Maksukehotuspvm'
+            text={formatDate(invoice.payment_notification_date) || '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Perintäkulu</FormFieldLabel>
-          <p>
-            {invoice.collection_charge
+          <FormTitleAndText
+            title='Perintäkulu'
+            text={invoice.collection_charge
               ? `${formatNumber(invoice.collection_charge)} €`
-              : '-'
-            }
-          </p>
+              : '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Maksukehotus luettelo</FormFieldLabel>
-          <p>{formatDate(invoice.payment_notification_catalog_date) || '-'}</p>
+          <FormTitleAndText
+            title='Maksukehotus luettelo'
+            text={formatDate(invoice.payment_notification_catalog_date) || '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column medium={4}>
-          <FormFieldLabel>E vai paperilasku</FormFieldLabel>
-          <p>{getLabelOfOption(deliveryMethodOptions, invoice.delivery_method) || '-'}</p>
+          <FormTitleAndText
+            title='E vai paperilasku'
+            text={getLabelOfOption(deliveryMethodOptions, invoice.delivery_method) || '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Laskun tyyppi</FormFieldLabel>
-          <p>{getLabelOfOption(typeOptions, invoice.type) || '-'}</p>
+          <FormTitleAndText
+            title='Laskun tyyppi'
+            text={getLabelOfOption(typeOptions, invoice.type) || '-'}
+          />
         </Column>
         {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
           <Column medium={4}>
-            <FormFieldLabel>Hyvitetty lasku</FormFieldLabel>
-            <p>{invoice.credited_invoice
-              ? <a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{invoice.credited_invoice}</a>
-              : '-'
-            }</p>
+            <FormTitleAndText
+              title='Hyvitetty lasku'
+              text={invoice.credited_invoice
+                ? <a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{invoice.credited_invoice}</a>
+                : '-'}
+            />
           </Column>
         }
       </Row>
       <Row>
         <Column medium={12}>
-          <FormFieldLabel>Tiedote</FormFieldLabel>
-          <p>{invoice.notes || '-'}</p>
+          <FormTitleAndText
+            title='Tiedote'
+            text={invoice.notes || '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column medium={12}>
-          <FormFieldLabel>Erittely</FormFieldLabel>
-          {!rows.length && <p>-</p>}
+          <SubTitle>Erittely</SubTitle>
+          {!rows.length && <FormText>-</FormText>}
           {!!rows.length &&
             <div>
               {rows.map((row) => {
                 const contact = get(getContentTenantItem(row.tenantFull), 'contact');
                 return (
                   <Row key={row.id}>
-                    <Column small={4}><p>{getContactFullName(contact) || '-'}</p></Column>
-                    <Column small={2}><p>{getLabelOfOption(receivableTypeOptions, row.receivable_type) || '-'}</p></Column>
-                    <Column small={4}><p>{row.description || '-'}</p></Column>
-                    <Column small={2}><p className='invoice__rows_amount'>{row.amount ? `${formatNumber(row.amount)} €` : '-'}</p></Column>
+                    <Column small={4}><FormText>{getContactFullName(contact) || '-'}</FormText></Column>
+                    <Column small={2}><FormText>{getLabelOfOption(receivableTypeOptions, row.receivable_type) || '-'}</FormText></Column>
+                    <Column small={4}><FormText>{row.description || '-'}</FormText></Column>
+                    <Column small={2}><FormText className='invoice__rows_amount'>{row.amount ? `${formatNumber(row.amount)} €` : '-'}</FormText></Column>
                   </Row>
                 );
               })}
               <Divider className='invoice-divider' />
               <Row>
-                <Column small={10}><p><strong>Yhteensä</strong></p></Column>
-                <Column small={2}><p className='invoice__rows_amount'><strong>{`${formatNumber(sum)} €`}</strong></p></Column>
+                <Column small={10}><FormText><strong>Yhteensä</strong></FormText></Column>
+                <Column small={2}><FormText className='invoice__rows_amount'><strong>{`${formatNumber(sum)} €`}</strong></FormText></Column>
               </Row>
             </div>
           }

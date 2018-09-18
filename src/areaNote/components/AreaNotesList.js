@@ -102,7 +102,6 @@ class AreaNotesList extends Component<Props> {
               disabled={isEditMode}
               label='Luo muistettava ehto'
               onClick={this.handleCreateButtonClick}
-              title='Luo muistettava ehto'
             />
           }
           searchComponent={

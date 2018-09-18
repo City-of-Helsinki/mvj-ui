@@ -4,6 +4,7 @@ import forEach from 'lodash/forEach';
 
 type Props = {
   checkboxName: string,
+  legend?: string,
   onChange: Function,
   options: Array<Object>,
   selectAllButton?: boolean,
@@ -58,11 +59,14 @@ class StyledCheckboxButtons extends Component<Props> {
   }
 
   render () {
-    const {checkboxName, options, selectAllButton, selectAllButtonLabel = 'Kaikki', value} = this.props;
+    const {checkboxName, legend, options, selectAllButton, selectAllButtonLabel = 'Kaikki', value} = this.props;
     const areAllSelected = this.areAllOptionsSelected();
 
     return (
-      <div className='styled-checkbox-buttons'>
+      <fieldset
+        className='styled-checkbox-buttons'
+      >
+        {legend && <legend>{legend}</legend>}
         {selectAllButton &&
           <label
             aria-label='Valitse kaikki'
@@ -123,7 +127,7 @@ class StyledCheckboxButtons extends Component<Props> {
             </label>
           );
         })}
-      </div>
+      </fieldset>
     );
   }
 }

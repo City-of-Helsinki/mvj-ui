@@ -4,7 +4,7 @@ import {Row, Column} from 'react-foundation';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import AddButton from '$components/form/AddButton';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import LeaseItemEdit from './LeaseItemEdit';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/infillDevelopment/enums';
 
@@ -50,10 +50,9 @@ const LeaseItemsEdit = ({fields, infillDevelopment, isSaveClicked}: Props): Elem
             })}
             <Row>
               <Column>
-                <AddButton
+                <AddButtonSecondary
                   label='Lisää vuokraus'
                   onClick={handleAdd}
-                  title='Lisää vuokraus'
                 />
               </Column>
             </Row>

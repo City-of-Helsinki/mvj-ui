@@ -119,8 +119,10 @@
       max-width: 100%;
       white-space: nowrap;
       text-overflow: ellipsis;
+      margin: 0;
 
-      label {
+      span {
+        color: $dark-gray;
         display: inline-block;
         padding-right: rem-calc(7.5px);
       }

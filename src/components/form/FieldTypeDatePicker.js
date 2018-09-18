@@ -16,7 +16,7 @@ type Props = {
 const FieldTypeDatePicker = ({
   disabled = false,
   displayError = false,
-  input: {onBlur, onChange, value},
+  input: {name, onBlur, onChange, value},
   isDirty = false,
   placeholder,
   setRefForField,
@@ -64,6 +64,7 @@ const FieldTypeDatePicker = ({
     <div className={classNames('form-field__datepicker', {'has-error': displayError}, {'is-dirty': isDirty})}>
       <DatePicker
         disabled={disabled}
+        id={name}
         locale='fi'
         placeholder={placeholder}
         onBlur={handleBlur}

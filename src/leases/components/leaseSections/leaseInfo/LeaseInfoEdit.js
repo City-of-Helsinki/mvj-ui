@@ -7,7 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
 import {getContentLeaseInfo, getContentLeaseStatus} from '$src/leases/helpers';
@@ -65,8 +65,8 @@ class LeaseInfoEdit extends Component<Props, State> {
       <form className='lease-info'>
         <Row>
           <Column>
-            <FormFieldLabel>Vuokratunnus</FormFieldLabel>
-            <h1 className='lease-info-edit__number'>{leaseInfo.identifier || '-'}</h1>
+            <FormTextTitle title='Vuokratunnus' />
+            <h1 className='lease-info__identifier'>{leaseInfo.identifier || '-'}</h1>
           </Column>
           <Column>
             <FormField
@@ -102,8 +102,8 @@ class LeaseInfoEdit extends Component<Props, State> {
             />
           </Column>
           <Column>
-            <FormFieldLabel>Olotila</FormFieldLabel>
-            <p>{leaseStatus || '-'}</p>
+            <FormTextTitle title='Olotila' />
+            <p className='lease-info__text'>{leaseStatus || '-'}</p>
           </Column>
         </Row>
       </form>

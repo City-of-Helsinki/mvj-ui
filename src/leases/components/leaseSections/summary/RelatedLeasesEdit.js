@@ -118,11 +118,12 @@ class RelatedLeasesEdit extends Component<Props, State> {
       <div className="summary__related-leases">
         <h3>Historia</h3>
         <div className="summary__related-leases_input-wrapper">
-          <FormFieldLabel>Liitä vuokratunnukseen</FormFieldLabel>
+          <FormFieldLabel htmlFor='related-lease'>Liitä vuokratunnukseen</FormFieldLabel>
           <Row>
             <Column>
               <LeaseSelectInput
                 disabled={!!newLease}
+                name='related-lease'
                 onChange={this.handleCreate}
                 relatedLeases={relatedLeasesAll}
                 value={newLease}

@@ -3,7 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import {getContentLeaseInfo, getContentLeaseStatus} from '$src/leases/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -27,24 +27,24 @@ const LeaseInfo = ({attributes, currentLease}: Props) => {
     <div className='lease-info'>
       <Row>
         <Column>
-          <FormFieldLabel>Vuokratunnus</FormFieldLabel>
-          <h1 className='lease-info-edit__number'>{leaseInfo.identifier || '-'}</h1>
+          <FormTextTitle title='Vuokratunnus' />
+          <h1 className='lease-info__identifier'>{leaseInfo.identifier || '-'}</h1>
         </Column>
         <Column>
-          <FormFieldLabel>Tyyppi</FormFieldLabel>
-          <p>{getLabelOfOption(stateOptions, leaseInfo.state) || '-'}</p>
+          <FormTextTitle title='Tyyppi' />
+          <p className='lease-info__text'>{getLabelOfOption(stateOptions, leaseInfo.state) || '-'}</p>
         </Column>
         <Column>
-          <FormFieldLabel className='mvj-form-field-label'>Alkupvm</FormFieldLabel>
-          <p>{formatDate(leaseInfo.start_date) || '-'}</p>
+          <FormTextTitle title='Alkupvm' />
+          <p className='lease-info__text'>{formatDate(leaseInfo.start_date) || '-'}</p>
         </Column>
         <Column>
-          <FormFieldLabel>Loppupvm</FormFieldLabel>
-          <p>{formatDate(leaseInfo.end_date) || '-'}</p>
+          <FormTextTitle title='Loppupvm' />
+          <p className='lease-info__text'>{formatDate(leaseInfo.end_date) || '-'}</p>
         </Column>
         <Column>
-          <FormFieldLabel>Olotila</FormFieldLabel>
-          <p>{getContentLeaseStatus(currentLease) || '-'}</p>
+          <FormTextTitle title='Olotila' />
+          <p className='lease-info__text'>{getContentLeaseStatus(currentLease) || '-'}</p>
         </Column>
       </Row>
     </div>

@@ -2,13 +2,14 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import classNames from 'classnames';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import ExternalLink from '$components/links/ExternalLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
@@ -80,36 +81,46 @@ const DecisionItem = ({
     >
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Päättäjä</FormFieldLabel>
-          <p>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '–'}</p>
+          <FormTitleAndText
+            title='Päättäjä'
+            text={getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '–'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Päätöspvm</FormFieldLabel>
-          <p>{formatDate(decision.decision_date) || '–'}</p>
+          <FormTitleAndText
+            title='Päätöspvm'
+            text={formatDate(decision.decision_date) || '–'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Pykälä</FormFieldLabel>
-          <p>{decision.section ? `${decision.section} §` : '–'}</p>
+          <FormTitleAndText
+            title='Pykälä'
+            text={decision.section ? `${decision.section} §` : '–'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Päätöksen tyyppi</FormFieldLabel>
-          <p>{getLabelOfOption(typeOptions, decision.type) || '–'}</p>
+          <FormTitleAndText
+            title='Päätöksen tyyppi'
+            text={getLabelOfOption(typeOptions, decision.type) || '–'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Diaarinumero</FormFieldLabel>
+          <FormTextTitle title='Diaarinumero' />
           {decision.reference_number
             ? <ExternalLink
               href={getReferenceNumberLink(decision.reference_number)}
-              label={decision.reference_number}
+              text={decision.reference_number}
             />
-            : <p>-</p>
+            : <FormText>-</FormText>
           }
         </Column>
       </Row>
       <Row>
         <Column small={12}>
-          <FormFieldLabel>Huomautus</FormFieldLabel>
-          <p>{decision.description || '–'}</p>
+          <FormTitleAndText
+            title='Huomautus'
+            text={decision.description || '–'}
+          />
         </Column>
       </Row>
 
@@ -119,33 +130,39 @@ const DecisionItem = ({
         headerTitle={<h4 className='collapse__header-title'>Ehdot</h4>}
         onToggle={handleConditionsCollapseToggle}
       >
-        {!decision.conditions || !decision.conditions.length && <p>Ei ehtoja</p>}
+        {!decision.conditions || !decision.conditions.length &&
+          <FormText>Ei ehtoja</FormText>
+        }
         {decision.conditions && !!decision.conditions.length &&
           <BoxItemContainer>
             {decision.conditions.map((condition, index) =>
               <BoxItem key={index} className='no-border-on-last-child'>
                 <Row>
                   <Column small={6} medium={4} large={2}>
-                    <FormFieldLabel>Käyttötarkoitusehto</FormFieldLabel>
-                    <p>{getLabelOfOption(conditionTypeOptions, condition.type) || '–'}</p>
+                    <FormTitleAndText
+                      title='Ehtotyyppi'
+                      text={getLabelOfOption(conditionTypeOptions, condition.type) || '–'}
+                    />
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <FormFieldLabel>Valvontapvm</FormFieldLabel>
-                    {condition.supervision_date
-                      ? <p className={classNames({'alert': condition.supervision_date && !condition.supervised_date})}><i/>{formatDate(condition.supervision_date)}</p>
-                      : <p>–</p>
-                    }
+                    <FormTitleAndText
+                      title='Valvontapvm'
+                      text={condition.supervision_date ? <span><i/>{formatDate(condition.supervision_date)}</span> : '-'}
+                      textClassName={condition.supervision_date && !condition.supervised_date ? 'alert' : ''}
+                    />
                   </Column>
                   <Column small={6} medium={4} large={2}>
-                    <FormFieldLabel>Valvottu pvm</FormFieldLabel>
-                    {condition.supervised_date
-                      ? <p className={classNames({'success': condition.supervised_date})}><i/>{formatDate(condition.supervised_date)}</p>
-                      : <p>–</p>
-                    }
+                    <FormTitleAndText
+                      title='Valvottu pvm'
+                      text={condition.supervised_date ? <span><i/>{formatDate(condition.supervised_date)}</span> : ''}
+                      textClassName={condition.supervised_date ? 'success' : ''}
+                    />
                   </Column>
                   <Column small={12} medium={12} large={6}>
-                    <FormFieldLabel>Huomautus</FormFieldLabel>
-                    <p>{condition.description || '–'}</p>
+                    <FormTitleAndText
+                      title='Huomautus'
+                      text={condition.description || '–'}
+                    />
                   </Column>
                 </Row>
               </BoxItem>

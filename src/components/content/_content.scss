@@ -17,6 +17,19 @@
     }
   }
 
+  &__list-item {
+    font-size: rem-calc(14px);
+    line-height: rem-calc(16px);
+    font-weight: normal;
+    color: $black;
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+
+  &__list-items {
+    margin-bottom: rem-calc(10px);
+  }
+
   &__truncated-text {
     display: block;
     overflow: hidden;
@@ -94,15 +107,6 @@
     margin: 0;
   }
 
-  p {
-    font-size: rem-calc(14px);
-    line-height: rem-calc(16px);
-    font-weight: normal;
-    color: $black;
-    margin-bottom: 0;
-    max-width: 100%;
-  }
-
   label.mvj-form-field-label {
     font-size: rem-calc(13px);
     line-height: rem-calc(15px);
@@ -156,19 +160,6 @@
     margin-top: 0;
   }
 
-  p {
-    font-size: rem-calc(14px);
-    line-height: rem-calc(16px);
-    font-weight: normal;
-    color: $black;
-    margin-bottom: rem-calc(10px);
-    max-width: 100%;
-  }
-
-  p.no-margin {
-    margin: 0;
-  }
-
   p.sub-title {
     font-size: $font-regular;
     line-height: normal;
@@ -205,14 +196,6 @@
     &__button-component {
       display: inline-block;
       margin-right: 10px;
-    }
-  }
-
-  .list-items {
-    margin-bottom: rem-calc(10px);
-
-    &.list-items-edit {
-      margin-bottom: rem-calc(10px);
     }
   }
 

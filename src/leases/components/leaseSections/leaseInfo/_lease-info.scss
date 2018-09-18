@@ -2,38 +2,20 @@
   width: 100%;
   max-width: rem-calc(800px);
 
-  label.form-field__label {
-    margin-bottom: rem-calc(2px);
-  }
-
-  &__identifier-wrapper {
-    padding-right: rem-calc(20px);
-  }
-
-  h1.lease-info__number {
-    padding: 0;
+  &__identifier {
+    font-family: $font-family-source;
+    font-size: rem-calc(22px);
+    font-weight: $semibold;
+    line-height: rem-calc(24px);
+    color: $black;
     margin: 0;
+    margin-right: rem-calc(20px);
   }
 
-  p {
-    margin-bottom: 0;
+  &__text {
     font-size: rem-calc(16px);
     line-height: rem-calc(18px);
     font-weight: $semibold;
-  }
-}
-
-.lease-info-edit {
-  width: 100%;
-  max-width: rem-calc(800px);
-
-  label.form-field__label {
-    margin-bottom: rem-calc(2px);
-  }
-
-  &__number {
-    line-height: rem-calc(24px);
-    margin-right: rem-calc(20px);
-    padding-top: 0 !important;
+    margin-bottom: 0;
   }
 }

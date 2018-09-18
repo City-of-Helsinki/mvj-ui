@@ -55,13 +55,11 @@ class ConfirmationModal extends Component<Props> {
               innerRef={this.setCancelButtonRef}
               label='Peruuta'
               onClick={onCancel}
-              title='Peruuta'
             />
             <Button
               className='button-green'
               label={confirmButtonLabel}
               onClick={onSave}
-              title={confirmButtonLabel}
             />
           </div>
         </Modal>

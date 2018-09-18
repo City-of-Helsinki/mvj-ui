@@ -8,6 +8,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import Loader from '$src/components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RemoveButton from '$components/form/RemoveButton';
@@ -70,8 +71,9 @@ class CollectionLetterInvoiceRow extends Component<Props> {
             fieldAttributes={{
               type: 'choice',
               required: true,
-              label: '',
+              label: 'Perittävä lasku',
             }}
+            invisibleLabel={true}
             name={field}
             overrideValues={{
               options: filteredInvoiceOptions,
@@ -81,19 +83,19 @@ class CollectionLetterInvoiceRow extends Component<Props> {
         <Column small={2}>
           <LoaderWrapper className='invoice-row-wrapper'><Loader isLoading={isFetching} className='small' /></LoaderWrapper>
           {!isFetching &&
-            <p>{!isEmpty(penaltyInterest) ? `${formatNumber(get(penaltyInterest, 'outstanding_amount'))} €` : '-'}</p>
+            <FormText>{!isEmpty(penaltyInterest) ? `${formatNumber(get(penaltyInterest, 'outstanding_amount'))} €` : '-'}</FormText>
           }
         </Column>
         <Column small={2}>
-          <p>{!isEmpty(penaltyInterest) ? `${formatNumber(get(penaltyInterest, 'total_interest_amount'))} €` : '-'}</p>
+          <FormText>{!isEmpty(penaltyInterest) ? `${formatNumber(get(penaltyInterest, 'total_interest_amount'))} €` : '-'}</FormText>
         </Column>
         <Column small={2}>
-          <p>{!isEmpty(penaltyInterest) ? `${formatNumber((formatedCollectionCharge && !isNaN(formatedCollectionCharge)) ? formatedCollectionCharge : 0)} €` : '-'}</p>
+          <FormText>{!isEmpty(penaltyInterest) ? `${formatNumber((formatedCollectionCharge && !isNaN(formatedCollectionCharge)) ? formatedCollectionCharge : 0)} €` : '-'}</FormText>
         </Column>
         <Column small={2}>
           <FieldAndRemoveButtonWrapper
             field={
-              <p style={{width: '100%'}}>{!isEmpty(penaltyInterest) ? `${formatNumber(this.getTotalAmount())} €` : '-'}</p>
+              <FormText className='full-width'>{!isEmpty(penaltyInterest) ? `${formatNumber(this.getTotalAmount())} €` : '-'}</FormText>
             }
             removeButton={showDeleteButton &&
               <RemoveButton

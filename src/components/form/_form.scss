@@ -47,6 +47,11 @@
     white-space: nowrap;
     position: relative;
 
+    &.invisible {
+      position: absolute;
+      visibility: hidden;
+    }
+
     .required {
       color: $brick;
       font-size: 18px;
@@ -64,6 +69,11 @@
   }
 
   &__boolean, &__checkbox {
+    legend {
+      visibility: hidden;
+      position: absolute;
+    }
+
     .option-label {
       color: $black;
       display: inline-block;
@@ -483,6 +493,48 @@
 }
 
 .form {
+  &__text {
+    font-size: rem-calc(14px);
+    line-height: rem-calc(16px);
+    font-weight: normal;
+    color: $black;
+    margin-bottom: rem-calc(10px);
+    max-width: 100%;
+
+    label {
+      font-size: rem-calc(14px);
+      line-height: rem-calc(16px);
+      font-weight: normal;
+      color: $black;
+    }
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    &.full-width {
+      width: 100%;
+    }
+  }
+
+  &__text-title {
+    overflow: visible;
+    max-width: 100%;
+    font-size: rem-calc(13px);
+    line-height: rem-calc(15px);
+    color: $dark-gray;
+    white-space: nowrap;
+    position: relative;
+    margin-bottom: 0;
+
+    .required {
+      color: $brick;
+      font-size: 18px;
+      font-weight: $semibold;
+      position: absolute;
+    }
+  }
+
   &__add-button {
     font-family: $font-family-source;
     font-size: rem-calc(16px) !important;
@@ -492,6 +544,7 @@
     margin: 0;
     cursor: pointer;
     display: block;
+    text-align: left;
 
     .icons {
       margin-right: rem-calc(5px);

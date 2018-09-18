@@ -179,13 +179,11 @@ class InvoicesEdit extends Component<Props, State> {
                 className='button-red'
                 label='Keskeytä laskutus'
                 onClick={this.handleStopInvoicingButtonClick}
-                title='Keskeytä laskutus'
               />
               : <Button
                 className='button-green'
                 label='Käynnistä laskutus'
                 onClick={this.handleStartInvoicingButtonClick}
-                title='Käynnistä laskutus'
               />
           }
           className='invoicing-status'

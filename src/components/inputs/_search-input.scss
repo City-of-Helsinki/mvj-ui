@@ -30,4 +30,9 @@
       cursor: pointer;
     }
   }
+
+  &__label {
+    position: absolute;
+    visibility: hidden;
+  }
 }
