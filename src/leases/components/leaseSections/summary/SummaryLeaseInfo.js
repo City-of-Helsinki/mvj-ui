@@ -6,7 +6,9 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 
 import ExternalLink from '$components/links/ExternalLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {ConstructabilityStatus} from '$src/leases/enums';
@@ -26,10 +28,9 @@ type StatusIndicatorProps = {
 const StatusIndicator = ({researchState, stateOptions}: StatusIndicatorProps) =>
   <p
     className={classNames(
-      'no-margin',
-      {'summary__status-indicator_neutral': !researchState || researchState === ConstructabilityStatus.UNVERIFIED},
-      {'summary__status-indicator_alert': researchState === ConstructabilityStatus.REQUIRES_MEASURES},
-      {'summary__status-indicator_success': researchState === ConstructabilityStatus.COMPLETE}
+      {'summary__status-indicator neutral': !researchState || researchState === ConstructabilityStatus.UNVERIFIED},
+      {'summary__status-indicator alert': researchState === ConstructabilityStatus.REQUIRES_MEASURES},
+      {'summary__status-indicator success': researchState === ConstructabilityStatus.COMPLETE}
     )}
   >
     {getLabelOfOption(stateOptions, researchState || ConstructabilityStatus.UNVERIFIED)}
@@ -50,15 +51,15 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
   return (
     <div>
       <SubTitle>Vuokralaiset</SubTitle>
-      {!tenants.length && <p>Ei vuokralaisia</p>}
+      {!tenants.length && <FormText>Ei vuokralaisia</FormText>}
       {!!tenants.length &&
         <div>
           <Row>
             <Column small={6} large={4}>
-              <FormFieldLabel>Vuokralainen</FormFieldLabel>
+              <FormTextTitle title='Vuokralainen' />
             </Column>
             <Column small={6} large={4}>
-              <FormFieldLabel>Osuus</FormFieldLabel>
+              <FormTextTitle title='Osuus' />
             </Column>
           </Row>
           <ListItems>
@@ -66,13 +67,13 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
               return (
                 <Row key={index}>
                   <Column small={6} large={4}>
-                    <p className='no-margin'>
+                    <ListItem>
                       <ExternalLink
                         className='no-margin'
                         href={`${getRouteById('contacts')}/${get(contact, 'tenant.contact.id')}`}
-                        label={getContactFullName(get(contact, 'tenant.contact')) || '-'}
+                        text={getContactFullName(get(contact, 'tenant.contact')) || '-'}
                       />
-                    </p>
+                    </ListItem>
                   </Column>
                   <Column small={6} large={4}><p className='no-margin'>{contact.share_numerator} / {contact.share_denominator}</p></Column>
                 </Row>
@@ -82,15 +83,15 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
         </div>
       }
       <SubTitle>Vuokrakohteet</SubTitle>
-      {!leaseAreas.length && <p>Ei vuokrakohteita</p>}
+      {!leaseAreas.length && <FormText>Ei vuokrakohteita</FormText>}
       {!!leaseAreas.length &&
         <div>
           <Row>
             <Column small={6} large={4}>
-              <FormFieldLabel>Kohteen tunnus</FormFieldLabel>
+              <FormTextTitle title='Kohteen tunnus' />
             </Column>
             <Column small={6} large={4}>
-              <FormFieldLabel>Kohteen osoite</FormFieldLabel>
+              <FormTextTitle title='Kohteen osoite' />
             </Column>
           </Row>
           {leaseAreas.map((area, index) => {
@@ -98,14 +99,14 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
               <ListItems key={index}>
                 <Row>
                   <Column small={6} large={4}>
-                    <p className='no-margin'>{area.identifier || '-'}</p>
+                    <ListItem>{area.identifier || '-'}</ListItem>
                   </Column>
                   <Column small={6} large={4}>
-                    {!area.addresses || !area.addresses.length && <p className='no-margin'>-</p>}
+                    {!area.addresses || !area.addresses.length && <ListItem>-</ListItem>}
 
                     {!!area.addresses && !!area.addresses.length &&
                       area.addresses.map((address, index) => {
-                        return <p key={index} className='no-margin'>{getFullAddress(address)}</p>;
+                        return <ListItem key={index}>{getFullAddress(address)}</ListItem>;
                       })
                     }
                   </Column>
@@ -116,17 +117,17 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
         </div>
       }
       <SubTitle>Rakentamiskelpoisuus</SubTitle>
-      {!constructabilityAreas.length && <p>Ei vuokrakohteita</p>}
+      {!constructabilityAreas.length && <FormText>Ei vuokrakohteita</FormText>}
       {!!constructabilityAreas.length &&
         constructabilityAreas.map((area, index) => {
           return (
             <ListItems key={index}>
               <Row>
-                <Column><p className='no-margin'><strong>{area.identifier || '-'}</strong></p></Column>
+                <Column><ListItem><strong>{area.identifier || '-'}</strong></ListItem></Column>
               </Row>
               <Row>
                 <Column small={6} large={4}>
-                  <p className='no-margin'>Esirakentaminen, johtosiirrot, kunnallistekniikka</p>
+                  <ListItem>Esirakentaminen, johtosiirrot, kunnallistekniikka</ListItem>
                 </Column>
                 <Column small={6} large={4}>
                   <StatusIndicator
@@ -137,7 +138,7 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
               </Row>
               <Row>
                 <Column small={6} large={4}>
-                  <p className='no-margin'>Purku</p>
+                  <ListItem>Purku</ListItem>
                 </Column>
                 <Column small={6} large={4}>
                   <StatusIndicator
@@ -148,7 +149,7 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
               </Row>
               <Row>
                 <Column small={6} large={4}>
-                  <p className='no-margin'>Pima ja jäte</p>
+                  <ListItem>Pima ja jäte</ListItem>
                 </Column>
                 <Column small={6} large={4}>
                   <StatusIndicator
@@ -159,7 +160,7 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
               </Row>
               <Row>
                 <Column small={6} large={4}>
-                  <p className='no-margin'>Rakennettavuusselvitys</p>
+                  <ListItem>Rakennettavuusselvitys</ListItem>
                 </Column>
                 <Column small={6} large={4}>
                   <StatusIndicator
@@ -170,7 +171,7 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
               </Row>
               <Row>
                 <Column small={6} large={4}>
-                  <p className='no-margin'>Muut</p>
+                  <ListItem>Muut</ListItem>
                 </Column>
                 <Column small={6} large={4}>
                   <StatusIndicator

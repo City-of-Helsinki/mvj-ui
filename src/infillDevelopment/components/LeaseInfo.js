@@ -4,7 +4,9 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import ExternalLink from '$components/links/ExternalLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import ListItem from '../../components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import {getRouteById} from '$src/root/routes';
 import {getContactFullName} from '$src/contacts/helpers';
@@ -29,47 +31,47 @@ const LeaseInfo = ({
   <div>
     <Row>
       <Column small={6} medium={4} large={2}>
-        <FormFieldLabel>Vuokratunnus</FormFieldLabel>
+        <FormTextTitle title='Vuokratunnus' />
         <ExternalLink
           href={`${getRouteById('leases')}/${leaseId}`}
-          label={identifier || '-'}
+          text={identifier || '-'}
         />
       </Column>
       <Column small={6} medium={4} large={2}>
-        <FormFieldLabel>Vuokralainen</FormFieldLabel>
-        {!tenants.length && <p>-</p>}
+        <FormTextTitle title='Vuokralainen' />
+        {!tenants.length && <FormText>-</FormText>}
         {!!tenants.length &&
           <ListItems>
             {tenants.map((tenant) =>
-              <p key={tenant.id} className='no-margin'>
+              <ListItem key={tenant.id}>
                 <ExternalLink
                   className='no-margin'
                   href={`${getRouteById('contacts')}/${get(tenant, 'tenant.contact.id')}`}
-                  label={getContactFullName(get(tenant, 'tenant.contact'))}
+                  text={getContactFullName(get(tenant, 'tenant.contact'))}
                 />
-              </p>
+              </ListItem>
             )}
           </ListItems>
         }
       </Column>
       <Column small={6} medium={4} large={2}>
-        <FormFieldLabel>Kiinteistö</FormFieldLabel>
-        {!plots.length && <p>-</p>}
+        <FormTextTitle title='Kiinteistö' />
+        {!plots.length && <FormText>-</FormText>}
         {!!plots.length &&
           <ListItems>
             {plots.map((plot, index) =>
-              <p key={index} className='no-margin'>{plot.identifier || '-'}</p>
+              <ListItem key={index}>{plot.identifier || '-'}</ListItem>
             )}
           </ListItems>
         }
       </Column>
       <Column small={6} medium={4} large={2}>
-        <FormFieldLabel>Kaavayksikkö</FormFieldLabel>
-        {!planUnits.length && <p>-</p>}
+        <FormTextTitle title='Kaavayksikkö' />
+        {!planUnits.length && <FormText>-</FormText>}
         {!!planUnits.length &&
           <ListItems>
             {planUnits.map((planUnit, index) =>
-              <p key={index} className='no-margin'>{planUnit.identifier || '-'}</p>
+              <ListItem key={index}>{planUnit.identifier || '-'}</ListItem>
             )}
           </ListItems>
         }
@@ -77,7 +79,7 @@ const LeaseInfo = ({
       <Column small={6} medium={4} large={2}>
         <ExternalLink
           href={`${getRouteById('leases')}/${leaseId}?tab=7`}
-          label='Karttalinkki'
+          text='Karttalinkki'
         />
       </Column>
     </Row>

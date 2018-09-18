@@ -11,7 +11,7 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
@@ -87,10 +87,16 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
               <div>
                 <Row>
                   <Column small={6} medium={6} large={8}>
-                    <FormFieldLabel required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text.required')}>Huomautus</FormFieldLabel>
+                    <FormTextTitle
+                      required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text.required')}
+                      title='Huomautus'
+                    />
                   </Column>
                   <Column small={4} medium={3} large={2}>
-                    <FormFieldLabel required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number.required')}>AHJO diaarinumero</FormFieldLabel>
+                    <FormTextTitle
+                      required={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number.required')}
+                      title='AHJO diaarinumero'
+                    />
                   </Column>
                 </Row>
                 {fields.map((comment, index) => {
@@ -111,21 +117,17 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.text')}
+                          invisibleLabel
                           name={`${comment}.text`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={4} medium={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'lease_areas.child.children.constructability_descriptions.child.children.ahjo_reference_number')}
+                          invisibleLabel
                           name={`${comment}.ahjo_reference_number`}
                           validate={referenceNumber}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={2} medium={3} large={2}>
@@ -145,7 +147,6 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
                 <AddButtonThird
                   label='Lisää huomautus'
                   onClick={handleAdd}
-                  title='Lisää huomautus'
                 />
               </Column>
             </Row>

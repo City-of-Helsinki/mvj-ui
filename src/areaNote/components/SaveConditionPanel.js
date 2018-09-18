@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import Button from '$components/button/Button';
+import FormFieldLabel from '$components/form/FormFieldLabel';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/areaNote/enums';
 
@@ -80,8 +81,10 @@ class SaveConditionPanel extends Component<Props, State> {
                 <h2>{title}</h2>
                 <Row>
                   <Column>
+                    <FormFieldLabel className='invisible' htmlFor='area-note__comment'>Kirjoita huomautus</FormFieldLabel>
                     <TextAreaInput
                       className="no-margin"
+                      id='area-note__comment'
                       onChange={this.handleFieldChange}
                       placeholder='Kirjoita huomautus'
                       rows={4}
@@ -98,20 +101,17 @@ class SaveConditionPanel extends Component<Props, State> {
                         disabled={disableDelete}
                         label='Poista'
                         onClick={handleDelete}
-                        title='Poista muistettava ehto'
                       />
                       <Button
                         className='button-red'
                         label='Peruuta'
                         onClick={onCancel}
-                        title='Peruuta'
                       />
                       <Button
                         className='button-green'
                         disabled={disableSave}
                         label='Tallenna'
                         onClick={this.handleSave}
-                        title='Tallenna muistettava ehto'
                       />
                     </Column>
                   </Row>

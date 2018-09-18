@@ -15,6 +15,7 @@ type Props = {
   apiToken: string,
   creatable?: boolean,
   disabled?: boolean,
+  name: string,
   onChange: Function,
   placeholder?: string,
   relatedLeases: Array<Object>,
@@ -72,7 +73,7 @@ class LeaseSelectInput extends Component<Props> {
   handleFilterOptions = (options: Array<Object>) => options;
 
   render() {
-    const {creatable, disabled, placeholder, value} = this.props;
+    const {creatable, disabled, name, placeholder, value} = this.props;
     const AsyncComponent = creatable
       ? Select.AsyncCreatable
       : Select.Async;
@@ -86,6 +87,7 @@ class LeaseSelectInput extends Component<Props> {
         clearable={false}
         disabled={disabled}
         filterOptions={this.handleFilterOptions}
+        id={name}
         loadingPlaceholder='Ladataan...'
         loadOptions={this.getLeases}
         multi={false}

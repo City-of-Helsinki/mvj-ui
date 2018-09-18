@@ -11,7 +11,8 @@ import type {Element} from 'react';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import LeaseArea from './LeaseArea';
 import LeaseAreaEdit from './LeaseAreaEdit';
 import {receiveCollapseStates} from '$src/leases/actions';
@@ -112,8 +113,8 @@ const LeaseAreaWithArchiveInfoEdit = ({
       {!isActive &&
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Arkistoitu</FormFieldLabel>
-            <p>{formatDate(get(savedArea, 'archived_at')) || '-'}</p>
+            <FormTextTitle title='Arkistoitu' />
+            <FormText>{formatDate(get(savedArea, 'archived_at')) || '-'}</FormText>
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormField

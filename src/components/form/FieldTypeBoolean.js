@@ -8,6 +8,7 @@ type Props = {
   displayError: boolean,
   input: Object,
   isDirty: boolean,
+  label?: string,
 }
 
 const FieldTypeBoolean = ({
@@ -17,6 +18,7 @@ const FieldTypeBoolean = ({
   input,
   input: {name, onBlur, onChange, value},
   isDirty = false,
+  label,
 
 }: Props) => {
   const options = [
@@ -42,6 +44,7 @@ const FieldTypeBoolean = ({
       }
       disabled={disabled}
     >
+      {label && <legend>{label}</legend>}
       {options && options.map((option, index) => {
         const {value: optionValue, label: optionLabel} = option;
         return (

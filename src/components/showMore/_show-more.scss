@@ -9,10 +9,12 @@
 
   p {
     margin: 0;
+    font-size: rem-calc(14px);
+    line-height: rem-calc(16px);
   }
 
   &__read-more {
-    font-size: $font-small;
+    font-size: rem-calc(13px);
     color: $tram;
     margin-top: 0;
     display: inline-block;

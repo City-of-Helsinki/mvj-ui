@@ -49,16 +49,16 @@ const Tenant = ({
       header={
         <div>
           <Column>
-            <span className={'collapse__header-subtitle'}>
-              <label>Osuus murtolukuna:</label>
+            <p className={'collapse__header-subtitle'}>
+              <span>Osuus murtolukuna:</span>
               {get(tenant, 'share_numerator', '')} / {get(tenant, 'share_denominator', '')}
-            </span>
+            </p>
           </Column>
           <Column>
-            <span className={'collapse__header-subtitle'}>
-              <label>Välillä:</label>
+            <p className={'collapse__header-subtitle'}>
+              <span>Välillä:</span>
               {formatDateRange(get(tenant, 'tenant.start_date'), get(tenant, 'tenant.end_date')) || '-'}
-            </span>
+            </p>
           </Column>
         </div>
       }

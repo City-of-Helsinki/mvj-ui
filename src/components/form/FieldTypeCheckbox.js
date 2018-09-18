@@ -7,6 +7,7 @@ type Props = {
   displayError: boolean,
   input: Object,
   isDirty: boolean,
+  label: string,
   options: Array<Object>,
 }
 
@@ -16,6 +17,7 @@ const FieldTypeCheckbox = ({
   input,
   input: {name, onBlur, value},
   isDirty = false,
+  label,
   options,
 
 }: Props) => {
@@ -46,6 +48,7 @@ const FieldTypeCheckbox = ({
       }
       disabled={disabled}
     >
+      {label && <legend>{label}</legend>}
       {options && options.map((option, index) => {
         const {value: optionValue, label: optionLabel} = option;
         return (

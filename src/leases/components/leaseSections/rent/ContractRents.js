@@ -72,6 +72,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
 
   return (
     <Table
+      caption='Sopimusvuokrat'
       className='invoice__contract-rent-table'
       data={contractRents}
       dataKeys={dataKeys}

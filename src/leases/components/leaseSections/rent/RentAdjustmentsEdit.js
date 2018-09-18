@@ -10,7 +10,7 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getDecisionOptions} from '$src/decision/helpers';
@@ -105,26 +105,22 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Pro
                           </Row>
                         </Column>
                         <Column small={6} medium={4} large={2}>
-                          <FormFieldLabel>Kokonaismäärä</FormFieldLabel>
+                          <FormTextTitle title='Kokonaismäärä' />
                           <Row>
                             <Column small={6}>
                               <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.full_amount')}
+                                invisibleLabel
                                 name={`${discount}.full_amount`}
-                                overrideValues={{
-                                  label: '',
-                                }}
                               />
                             </Column>
                             <Column small={6}>
                               <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={get(attributes, 'rents.child.children.rent_adjustments.child.children.amount_type')}
+                                invisibleLabel
                                 name={`${discount}.amount_type`}
-                                overrideValues={{
-                                  label: '',
-                                }}
                               />
                             </Column>
                           </Row>
@@ -174,7 +170,6 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Pro
                 <AddButtonSecondary
                   label='Lisää alennus/korotus'
                   onClick={handleAdd}
-                  title='Lisää alennus/korotus'
                 />
               </Column>
             </Row>

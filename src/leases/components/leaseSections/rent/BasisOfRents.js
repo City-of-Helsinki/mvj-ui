@@ -30,6 +30,7 @@ const BasisOfRents = ({attributes, currentLease}: Props) => {
   return (
     <div>
       <Table
+        caption='Vuokranperusteet'
         data={basisOfRents}
         dataKeys={[
           {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val) || '-', ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},

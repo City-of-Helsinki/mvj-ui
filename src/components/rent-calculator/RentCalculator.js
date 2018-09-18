@@ -95,7 +95,6 @@ class RentCalculator extends Component<Props> {
                 disabled={!isValid}
                 label='Laske'
                 onClick={this.handleCalculate}
-                title='Laske'
               />
             </div>
           </Column>

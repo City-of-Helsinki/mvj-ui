@@ -7,7 +7,7 @@ import get from 'lodash/get';
 
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import LeaseArea from './LeaseArea';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
@@ -61,47 +61,52 @@ const LeaseAreaWithArchiveInfo = ({
       header={
         <div>
           <Column>
-            <span className='collapse__header-subtitle'>
+            <p className='collapse__header-subtitle'>
               {getLabelOfOption(typeOptions, area.type) || '-'}
-            </span>
+            </p>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
+            <p className='collapse__header-subtitle'>
               {getFullAddress(get(area, 'addresses[0]')) || '-'}
-            </span>
+            </p>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
+            <p className='collapse__header-subtitle'>
               {formatNumber(area.area) || '-'} m<sup>2</sup>
-            </span>
+            </p>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
+            <p className='collapse__header-subtitle'>
               {getLabelOfOption(locationOptions, area.location) || '-'}
-            </span>
+            </p>
           </Column>
         </div>
       }
       headerTitle={<h3 className='collapse__header-title'>{area.identifier || '-'}</h3>}
       onToggle={handleAreaCollapseToggle}
     >
-      <LeaseArea
-        area={area}
-      />
+      <LeaseArea area={area} />
+
       {!isActive && <Divider className='lease-area-divider'/>}
       {!isActive &&
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Arkistoitu</FormFieldLabel>
-            <p>{formatDate(area.archived_at) || '-'}</p>
+            <FormTitleAndText
+              title='Arkistoitu'
+              text={formatDate(area.archived_at) || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Päätös</FormFieldLabel>
-            <p>{getLabelOfOption(decisionOptions, area.archived_decision) || '-'}</p>
+            <FormTitleAndText
+              title='Päätös'
+              text={getLabelOfOption(decisionOptions, area.archived_decision) || '-'}
+            />
           </Column>
           <Column small={12} medium={4} large={8}>
-            <FormFieldLabel>Huomautus</FormFieldLabel>
-            <p>{area.archived_note || '-'}</p>
+            <FormTitleAndText
+              title='Huomautus'
+              text={area.archived_note || '-'}
+            />
           </Column>
         </Row>
       }

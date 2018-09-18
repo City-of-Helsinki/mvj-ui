@@ -11,7 +11,7 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
 import RemoveButton from '../../../components/form/RemoveButton';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
@@ -41,10 +41,10 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
             {fields && !!fields.length &&
               <div>
                 <Row>
-                  <Column small={3} large={2}><FormFieldLabel>Määrä</FormFieldLabel></Column>
-                  <Column small={3} large={2}><FormFieldLabel>Eräpäivä</FormFieldLabel></Column>
-                  <Column small={2} large={2}><FormFieldLabel>Lähetetty pvm</FormFieldLabel></Column>
-                  <Column small={2} large={2}><FormFieldLabel>Maksettu pvm</FormFieldLabel></Column>
+                  <Column small={3} large={2}><FormTextTitle title='Määrä' /></Column>
+                  <Column small={3} large={2}><FormTextTitle title='Eräpäivä' /></Column>
+                  <Column small={3} large={2}><FormTextTitle title='Lähetetty pvm' /></Column>
+                  <Column small={3} large={2}><FormTextTitle title='Maksettu pvm' /></Column>
                 </Row>
                 {fields.map((invoice, index) => {
                   const handleRemove = () => {
@@ -64,41 +64,33 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'invoices.child.children.amount')}
+                          invisibleLabel
                           name={`${invoice}.amount`}
                           unit='€'
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'invoices.child.children.due_date')}
+                          invisibleLabel
                           name={`${invoice}.due_date`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={2} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'invoices.child.children.sent_date')}
+                          invisibleLabel
                           name={`${invoice}.sent_date`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={2} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'invoices.child.children.paid_date')}
+                          invisibleLabel
                           name={`${invoice}.paid_date`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column>
@@ -119,7 +111,6 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
                 <AddButtonThird
                   label='Lisää lasku'
                   onClick={handleAdd}
-                  title='Lisää lasku'
                 />
               </Column>
             </Row>

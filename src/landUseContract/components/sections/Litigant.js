@@ -49,16 +49,16 @@ const Litigant = ({
       header={
         <div>
           <Column>
-            <span className={'collapse__header-subtitle'}>
-              <label>Osuus murtolukuna:</label>
+            <p className={'collapse__header-subtitle'}>
+              <span>Osuus murtolukuna:</span>
               {get(litigant, 'share_numerator', '')} / {get(litigant, 'share_denominator', '')}
-            </span>
+            </p>
           </Column>
           <Column>
-            <span className={'collapse__header-subtitle'}>
-              <label>Välillä:</label>
+            <p className={'collapse__header-subtitle'}>
+              <span>Välillä:</span>
               {formatDateRange(get(litigant, 'litigant.start_date'), get(litigant, 'litigant.end_date')) || '-'}
-            </span>
+            </p>
           </Column>
         </div>
       }

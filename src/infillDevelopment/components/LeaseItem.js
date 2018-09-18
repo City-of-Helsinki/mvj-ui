@@ -7,9 +7,13 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import Collapse from '$src/components/collapse/Collapse';
+import ExternalLink from '$components/links/ExternalLink';
 import FileDownloadLink from '$components/file/FileDownloadLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import LeaseInfo from './LeaseInfo';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
@@ -69,7 +73,7 @@ class LeaseItem extends Component<Props, State> {
     tenants: [],
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       attributes,
       fetchLeaseById,
@@ -141,10 +145,6 @@ class LeaseItem extends Component<Props, State> {
     });
   }
 
-  handleMapLink = () => {
-    alert('TODO: open map link');
-  }
-
   getTotalCompensation = (lease: Object) => {
     const monetaryCompensation = Number(get(lease, 'monetary_compensation_amount')),
       compensationInvestment = Number(get(lease, 'compensation_investment_amount'));
@@ -190,38 +190,35 @@ class LeaseItem extends Component<Props, State> {
         }
 
         <SubTitle>Korvauksen päätös</SubTitle>
-        {!decisions.length && <p>Ei päätöksiä</p>}
+        {!decisions.length && <FormText>Ei päätöksiä</FormText>}
         {!!decisions.length &&
           <ListItems>
             <Row>
-              <Column small={3} large={2}><FormFieldLabel>Päättäjä</FormFieldLabel></Column>
-              <Column small={3} large={2}><FormFieldLabel>Pvm</FormFieldLabel></Column>
-              <Column small={3} large={2}><FormFieldLabel>Pykälä</FormFieldLabel></Column>
-              <Column small={3} large={2}><FormFieldLabel>Diaarinumero</FormFieldLabel></Column>
+              <Column small={3} large={2}><FormTextTitle title='Päättäjä' /></Column>
+              <Column small={3} large={2}><FormTextTitle title='Pvm' /></Column>
+              <Column small={3} large={2}><FormTextTitle title='Pykälä' /></Column>
+              <Column small={3} large={2}><FormTextTitle title='Diaarinumero' /></Column>
             </Row>
             {decisions.map((decision, index) =>
               <Row key={index}>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</p>
+                  <ListItem>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</ListItem>
                 </Column>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{formatDate(decision.decision_date) || '-'}</p>
+                  <ListItem>{formatDate(decision.decision_date) || '-'}</ListItem>
                 </Column>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{decision.section ? `${decision.section} §` : '-'}</p>
+                  <ListItem>{decision.section ? `${decision.section} §` : '-'}</ListItem>
                 </Column>
                 <Column small={3} large={2}>
                   {decision.reference_number
-                    ? <p className='no-margin'>
-                      <a
-                        className='no-margin'
-                        target='_blank'
+                    ? <ListItem>
+                      <ExternalLink
                         href={getReferenceNumberLink(decision.reference_number)}
-                      >
-                        {decision.reference_number}
-                      </a>
-                    </p>
-                    : <p className='no-margin'>-</p>
+                        text={decision.reference_number}
+                      />
+                    </ListItem>
+                    : <ListItem>-</ListItem>
                   }
                 </Column>
               </Row>
@@ -229,24 +226,24 @@ class LeaseItem extends Component<Props, State> {
           </ListItems>
         }
         <SubTitle>Käyttötarkoitus</SubTitle>
-        {!intendedUses.length && <p>Ei käyttötarkoituksia</p>}
+        {!intendedUses.length && <FormText>Ei käyttötarkoituksia</FormText>}
         {!!intendedUses.length &&
           <ListItems>
             <Row>
-              <Column small={3} large={2}><FormFieldLabel>Käyttötarkoitus</FormFieldLabel></Column>
-              <Column small={3} large={2}><FormFieldLabel>k-m2</FormFieldLabel></Column>
-              <Column small={3} large={2}><FormFieldLabel>e / k-m2</FormFieldLabel></Column>
+              <Column small={3} large={2}><FormTextTitle title='Käyttötarkoitus' /></Column>
+              <Column small={3} large={2}><FormTextTitle title='k-m2' /></Column>
+              <Column small={3} large={2}><FormTextTitle title='€ / k-m2' /></Column>
             </Row>
             {intendedUses.map((intendedUse, index) =>
               <Row key={index}>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{getLabelOfOption(intendedUseOptions, intendedUse.intended_use) || '-'}</p>
+                  <ListItem>{getLabelOfOption(intendedUseOptions, intendedUse.intended_use) || '-'}</ListItem>
                 </Column>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{intendedUse.floor_m2 ? `${formatNumber(intendedUse. floor_m2)} k-m²` : '-'}</p>
+                  <ListItem>{intendedUse.floor_m2 ? `${formatNumber(intendedUse. floor_m2)} k-m²` : '-'}</ListItem>
                 </Column>
                 <Column small={3} large={2}>
-                  <p className='no-margin'>{intendedUse.amount_per_floor_m2 ? `${formatNumber(intendedUse.amount_per_floor_m2)} €/k-m²` : '-'}</p>
+                  <ListItem>{intendedUse.amount_per_floor_m2 ? `${formatNumber(intendedUse.amount_per_floor_m2)} €/k-m²` : '-'}</ListItem>
                 </Column>
               </Row>
             )}
@@ -255,56 +252,74 @@ class LeaseItem extends Component<Props, State> {
 
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Rahakorvaus</FormFieldLabel>
-            <p>{leaseData.monetary_compensation_amount ? `${formatNumber(leaseData.monetary_compensation_amount)} €` : '-'}</p>
+            <FormTitleAndText
+              title='Rahakorvaus'
+              text={leaseData.monetary_compensation_amount ? `${formatNumber(leaseData.monetary_compensation_amount)} €` : '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Korvausinvestoinnit</FormFieldLabel>
-            <p>{leaseData.compensation_investment_amount ? `${formatNumber(leaseData.compensation_investment_amount)} €` : '-'}</p>
+            <FormTitleAndText
+              title='Korvausinvestoinnit'
+              text={leaseData.compensation_investment_amount ? `${formatNumber(leaseData.compensation_investment_amount)} €` : '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Korvaus yhteensä</FormFieldLabel>
-            <p>{formatNumber(totalCompensation)} €</p>
+            <FormTitleAndText
+              title='Korvaus yhteensä'
+              text={`${formatNumber(totalCompensation)} €`}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Arvonnousu</FormFieldLabel>
-            <p>{leaseData.increase_in_value ? `${formatNumber(leaseData.increase_in_value)} €` : '-'}</p>
+            <FormTitleAndText
+              title='Arvonnousu'
+              text={leaseData.increase_in_value ? `${formatNumber(leaseData.increase_in_value)} €` : '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Osuus arvonnoususta</FormFieldLabel>
-            <p>{leaseData.part_of_the_increase_in_value ? `${formatNumber(leaseData.part_of_the_increase_in_value)} €` : '-'}</p>
+            <FormTitleAndText
+              title='Osuus arvonnoususta'
+              text={leaseData.part_of_the_increase_in_value ? `${formatNumber(leaseData.part_of_the_increase_in_value)} €` : '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Vuokranalennus</FormFieldLabel>
-            <p>{leaseData.discount_in_rent ? `${formatNumber(leaseData.discount_in_rent)} €` : '-'}</p>
+            <FormTitleAndText
+              title='Vuokranalennus'
+              text={leaseData.discount_in_rent ? `${formatNumber(leaseData.discount_in_rent)} €` : '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Arvioitu maksuvuosi</FormFieldLabel>
-            <p>{leaseData.year || '-'}</p>
+            <FormTitleAndText
+              title='Arvioitu maksuvuosi'
+              text={leaseData.year || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Maksu lähetetty SAP</FormFieldLabel>
-            <p>{formatDate(leaseData.sent_to_sap_date) || '-'}</p>
+            <FormTitleAndText
+              title='Maksu lähetetty SAP'
+              text={formatDate(leaseData.sent_to_sap_date) || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Maksettu</FormFieldLabel>
-            <p>{formatDate(leaseData.paid_date) || '-'}</p>
+            <FormTitleAndText
+              title='Maksettu'
+              text={formatDate(leaseData.paid_date) || '-'}
+            />
           </Column>
         </Row>
 
         <SubTitle>Liitetiedostot</SubTitle>
-        {!attachments.length && <p>Ei liitetiedostoja</p>}
+        {!attachments.length && <FormText>Ei liitetiedostoja</FormText>}
         {!!attachments.length &&
           <div>
             <Row>
               <Column small={4} large={4}>
-                <FormFieldLabel>Nimi</FormFieldLabel>
+                <FormTextTitle title='Nimi' />
               </Column>
               <Column small={4} large={2}>
-                <FormFieldLabel>Pvm</FormFieldLabel>
+                <FormTextTitle title='Pvm' />
               </Column>
               <Column small={4} large={2}>
-                <FormFieldLabel>Lataaja</FormFieldLabel>
+                <FormTextTitle title='Lataaja' />
               </Column>
             </Row>
             {attachments.map((file, index) => {
@@ -317,10 +332,10 @@ class LeaseItem extends Component<Props, State> {
                     />
                   </Column>
                   <Column small={4} large={2}>
-                    <p>{formatDate(file.uploaded_at) || '-'}</p>
+                    <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
                   </Column>
                   <Column small={4} large={2}>
-                    <p>{getUserFullName((file.uploader)) || '-'}</p>
+                    <FormText>{getUserFullName((file.uploader)) || '-'}</FormText>
                   </Column>
                 </Row>
               );
@@ -329,8 +344,10 @@ class LeaseItem extends Component<Props, State> {
         }
         <Row>
           <Column>
-            <FormFieldLabel>Huomautus</FormFieldLabel>
-            <p>{leaseData.note || '-'}</p>
+            <FormTitleAndText
+              title='Huomautus'
+              text={leaseData.note || '-'}
+            />
           </Column>
         </Row>
       </Collapse>

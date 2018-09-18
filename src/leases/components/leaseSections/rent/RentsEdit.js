@@ -73,7 +73,6 @@ const renderRents = ({
                   <AddButton
                     label='Lisää vuokra'
                     onClick={handleAdd}
-                    title='Lisää vuokra'
                   />
                 </Column>
               </Row>

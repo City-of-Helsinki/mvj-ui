@@ -4,7 +4,8 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import Button from '$components/button/Button';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
+import ListItem from '$components/content/ListItem';
 import SendEmailModal from './SendEmailModal';
 import {formatDateObj} from '$util/helpers';
 import mockData from './mock-data.json';
@@ -76,7 +77,6 @@ class SendEmail extends Component<{}, State> {
               label='Lähetä sähköposti'
               onClick={() => this.setState({isOpen: true})}
               style={{marginBottom: 15}}
-              title='Lähetä sähköposti'
             />
           </Column>
           <Column small={12} medium={8} large={9}>
@@ -85,26 +85,26 @@ class SendEmail extends Component<{}, State> {
               <div className='constructability__send-email_sent-emails'>
                 <Row>
                   <Column small={4} medium={3} large={2}>
-                    <FormFieldLabel>Lähetetty</FormFieldLabel>
+                    <FormTextTitle title='Lähetetty' />
                   </Column>
                   <Column small={4} medium={3} large={2}>
-                    <FormFieldLabel>Lähettäjä</FormFieldLabel>
+                    <FormTextTitle title='Lähettäjä' />
                   </Column>
                   <Column small={4} medium={6} large={8}>
-                    <FormFieldLabel>Vastaanottajat</FormFieldLabel>
+                    <FormTextTitle title='Vastaanottajat' />
                   </Column>
                 </Row>
                 {emails.map((email, index) => {
                   return (
                     <Row key={index}>
                       <Column small={4} medium={3} large={2}>
-                        <p className='no-margin'>{formatDateObj(email.time) || '-'}</p>
+                        <ListItem>{formatDateObj(email.time) || '-'}</ListItem>
                       </Column>
                       <Column small={4} medium={3} large={2}>
-                        <p className='no-margin'>{getSenderString(email.sender) || '-'}</p>
+                        <ListItem>{getSenderString(email.sender) || '-'}</ListItem>
                       </Column>
                       <Column small={4} medium={6} large={8}>
-                        <p className='no-margin'>{getRecipientsString(email.recipients) || '-'}</p>
+                        <ListItem>{getRecipientsString(email.recipients) || '-'}</ListItem>
                       </Column>
                     </Row>
                   );

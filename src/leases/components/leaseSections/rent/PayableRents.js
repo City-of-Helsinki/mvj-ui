@@ -16,6 +16,7 @@ type Props = {
 const PayableRents = ({payableRents}: Props) => {
   return (
     <Table
+      caption='Perittävät vuokrat'
       data={payableRents}
       dataKeys={[
         {key: 'amount', label: 'Indeksitarkastettu vuokra', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},

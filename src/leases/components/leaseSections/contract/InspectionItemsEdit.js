@@ -105,7 +105,6 @@ const InspectionItemsEdit = ({
                 <AddButtonSecondary
                   label='Lisää tarkastus'
                   onClick={handleAdd}
-                  title='Lisää tarkastus'
                 />
               </Column>
             </Row>

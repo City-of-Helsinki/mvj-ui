@@ -188,7 +188,6 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
                 disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
                 label='Hyvitä'
                 onClick={this.handleOpenCreditInvoicePanelButtonClick}
-                title='Hyvitä'
               />
             }
             {enableCreateInvoice &&
@@ -197,7 +196,6 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
                 disabled={isCreateInvoicePanelOpen}
                 label='+ Luo lasku'
                 onClick={this.handleOpenCreateInvoicePanelButtonClick}
-                title='Luo lasku'
               />
             }
           </div>

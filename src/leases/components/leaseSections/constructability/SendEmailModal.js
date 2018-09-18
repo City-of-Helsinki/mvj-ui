@@ -5,6 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import Button from '$components/button/Button';
 import DualListBoxInput from '$components/inputs/DualListBoxInput';
+import FormText from '$components/form/FormText';
 import Modal from '$components/modal/Modal';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {fetchUsers} from '$src/users/actions';
@@ -102,7 +103,7 @@ class SendEmailModal extends Component<Props, State> {
         isOpen={isOpen}
         onClose={onClose}
       >
-        <p>Valitse sähköpostin vastaanottajat</p>
+        <FormText>Valitse sähköpostin vastaanottajat</FormText>
         <DualListBoxInput
           filterPlaceholder='Hae vastaanottajia...'
           onChange={this.handleChangeUserList}
@@ -111,9 +112,10 @@ class SendEmailModal extends Component<Props, State> {
           setAvailabelReference={this.handleSetAvailableReference}
         />
 
-        <p>Sähköpostiin liittyvä kommentti</p>
+        <FormText><label htmlFor='send-email_comment'> Sähköpostiin liittyvä kommentti</label></FormText>
         <TextAreaInput
           className="no-margin"
+          id='send-email_comment'
           onChange={this.handleChangeNote}
           placeholder=''
           rows={4}
@@ -124,14 +126,12 @@ class SendEmailModal extends Component<Props, State> {
             className='button-red'
             label='Peruuta'
             onClick={onCancel}
-            title='Peruuta'
           />
           <Button
             className='button-green'
             disabled={!selectedUsers.length}
             label='Lähetä'
             onClick={onSend}
-            title='Lähetä sähköposti'
           />
         </div>
       </Modal>

@@ -8,7 +8,7 @@ type Props = {
   className?: string,
   onClick: Function,
   setReference?: Function,
-  title: string,
+  title?: string,
   type?: string,
 }
 

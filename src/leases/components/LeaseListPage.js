@@ -247,7 +247,6 @@ class LeaseListPage extends Component<Props, State> {
               className='no-margin full-width'
               label='Luo vuokratunnus'
               onClick={this.showCreateLeaseModal}
-              title='Luo vuokratunnus'
             />
           }
           searchComponent={

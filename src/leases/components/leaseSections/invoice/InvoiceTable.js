@@ -57,9 +57,11 @@ const TableBodyGroup = ({
     <tbody>
       <tr>
         <td>
+          <label className='form-field__label invisible' htmlFor={`invoiceset_${row.data.id}`}>Laskuryhmä {row.data.id}</label>
           <input type="radio" value={`invoiceset_${row.data.id}`}
             checked={invoiceToCredit === `invoiceset_${row.data.id}`}
             disabled={isDisabled}
+            id={`invoiceset_${row.data.id}`}
             onChange={handleOptionChange}
           />
         </td>
@@ -150,9 +152,11 @@ const TableBodyRow = ({
       tabIndex={0}
     >
       <td colSpan={hasGroup ? 2 : 1}>
+        <label className='form-field__label invisible' htmlFor={`invoice_${row.data.id}`}>Lasku {row.data.id}</label>
         <input type="radio" value={`invoice_${row.data.id}`}
           checked={invoiceToCredit === `invoice_${row.data.id}`}
           disabled={row.data.type === InvoiceType.CREDIT_NOTE|| !get(row, 'data.rows', []).length}
+          id={`invoice_${row.data.id}`}
           onChange={handleOptionChange}
         />
       </td>

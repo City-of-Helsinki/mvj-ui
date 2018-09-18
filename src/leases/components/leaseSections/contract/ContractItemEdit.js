@@ -15,7 +15,7 @@ import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/leases/actions';
@@ -175,7 +175,6 @@ const renderContractChanges = ({
                 <AddButtonSecondary
                   label='Lisää sopimuksen muutos'
                   onClick={handleAdd}
-                  title='Lisää sopimuksen muutos'
                 />
               </Column>
             </Row>
@@ -205,13 +204,13 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
               <div>
                 <Row>
                   <Column small={4} medium={4} large={2}>
-                    <FormFieldLabel>Panttikirjan numero</FormFieldLabel>
+                    <FormTextTitle title='Panttikirjan numero' />
                   </Column>
                   <Column small={4} medium={4} large={2}>
-                    <FormFieldLabel>Panttikirjan pvm</FormFieldLabel>
+                    <FormTextTitle title='Panttikirjan pvm' />
                   </Column>
                   <Column small={4} medium={4} large={2}>
-                    <FormFieldLabel>Huomautus</FormFieldLabel>
+                    <FormTextTitle title='Huomautus' />
                   </Column>
                 </Row>
                 {fields.map((doc, index) => {
@@ -232,30 +231,24 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.number')}
+                          invisibleLabel
                           name={`${doc}.number`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={4} medium={4} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.date')}
+                          invisibleLabel
                           name={`${doc}.date`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} medium={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'contracts.child.children.mortgage_documents.child.children.note')}
+                          invisibleLabel
                           name={`${doc}.note`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column>
@@ -275,7 +268,6 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
                 <AddButtonThird
                   label='Lisää panttikirja'
                   onClick={handleAdd}
-                  title='Lisää panttikirja'
                 />
               </Column>
             </Row>
@@ -435,7 +427,7 @@ const ContractItemEdit = ({
             />
           </Column>
           <Column small={6} medium={12} large={6}>
-            <FormFieldLabel>KTJ dokumentti</FormFieldLabel>
+            <FormTextTitle title='KTJ dokumentti' />
             {get(savedContract, 'institution_identifier')
               ? <KtjLink
                 fileKey='vuokraoikeustodistus'

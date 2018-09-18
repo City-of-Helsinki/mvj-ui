@@ -5,8 +5,11 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import BoxItem from '$components/content/BoxItem';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import KtjLink from '$components/ktj/KtjLink';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {PlotType} from '$src/leases/enums';
@@ -29,27 +32,31 @@ const PlotItem = ({attributes, plot}: Props) => {
     <BoxItem className='no-border-on-last-child'>
       <Row>
         <Column small={12} medium={6} large={6}>
-          <FormFieldLabel>Tunnus</FormFieldLabel>
-          <p><strong>{plot.identifier || '-'}</strong></p>
+          <FormTitleAndText
+            title='Tunnus'
+            text={<strong>{plot.identifier || '-'}</strong>}
+          />
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Määritelmä</FormFieldLabel>
-          <p>{getLabelOfOption(typeOptions, plot.type) || '-'}</p>
+          <FormTitleAndText
+            title='Määritelmä'
+            text={getLabelOfOption(typeOptions, plot.type) || '-'}
+          />
         </Column>
       </Row>
       <SubTitle>Osoite</SubTitle>
-      {!addresses || !addresses.length && <p>Ei osoitteita</p>}
+      {!addresses || !addresses.length && <FormText>Ei osoitteita</FormText>}
       {!!addresses.length &&
         <div>
           <Row>
             <Column small={6} large={6}>
-              <FormFieldLabel>Osoite</FormFieldLabel>
+              <FormTextTitle title='Osoite' />
             </Column>
             <Column small={3} large={3}>
-              <FormFieldLabel>Postinumero</FormFieldLabel>
+              <FormTextTitle title='Postinumero' />
             </Column>
             <Column small={3} large={3}>
-              <FormFieldLabel>Kaupunki</FormFieldLabel>
+              <FormTextTitle title='Kaupunki' />
             </Column>
           </Row>
           <ListItems>
@@ -57,13 +64,13 @@ const PlotItem = ({attributes, plot}: Props) => {
               return (
                 <Row key={address.id}>
                   <Column small={6} large={6}>
-                    <p className='no-margin'>{address.address || '-'}</p>
+                    <ListItem>{address.address || '-'}</ListItem>
                   </Column>
                   <Column small={3} large={3}>
-                    <p className='no-margin'>{address.postal_code || '-'}</p>
+                    <ListItem>{address.postal_code || '-'}</ListItem>
                   </Column>
                   <Column small={3} large={3}>
-                    <p className='no-margin'>{address.city || '-'}</p>
+                    <ListItem>{address.city || '-'}</ListItem>
                   </Column>
                 </Row>
               );
@@ -73,20 +80,28 @@ const PlotItem = ({attributes, plot}: Props) => {
       }
       <Row>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Kokonaisala</FormFieldLabel>
-          <p>{plot.area ? `${formatNumber(plot.area)} m²` : '-'}</p>
+          <FormTitleAndText
+            title='Kokonaisala'
+            text={plot.area ? `${formatNumber(plot.area)} m²` : '-'}
+          />
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Leikkausala</FormFieldLabel>
-          <p>{plot.section_area ? `${formatNumber(plot.section_area)} m²` : '-'}</p>
+          <FormTitleAndText
+            title='Leikkausala'
+            text={plot.section_area ? `${formatNumber(plot.section_area)} m²` : '-'}
+          />
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Rekisteröintipvm</FormFieldLabel>
-          <p>{formatDate(plot.registration_date) || '-'}</p>
+          <FormTitleAndText
+            title='Rekisteröintipvm'
+            text={formatDate(plot.registration_date) || '-'}
+          />
         </Column>
         <Column small={12} medium={6} large={3}>
-          <FormFieldLabel>Kumoamispvm</FormFieldLabel>
-          <p>{formatDate(plot.repeal_date) || '-'}</p>
+          <FormTitleAndText
+            title='Kumoamispvm'
+            text={formatDate(plot.repeal_date) || '-'}
+          />
         </Column>
       </Row>
       <SubTitle>Ktj-dokumentit</SubTitle>

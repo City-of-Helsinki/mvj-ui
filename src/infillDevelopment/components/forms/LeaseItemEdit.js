@@ -16,7 +16,10 @@ import Collapse from '$src/components/collapse/Collapse';
 import ExternalLink from '$components/links/ExternalLink';
 import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
@@ -70,10 +73,10 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
             {!!fields && !!fields.length &&
               <div>
                 <Row>
-                  <Column small={3} large={2}><FormFieldLabel>Päättäjä</FormFieldLabel></Column>
-                  <Column small={3} large={2}><FormFieldLabel>Pvm</FormFieldLabel></Column>
-                  <Column small={3} large={2}><FormFieldLabel>Pykälä</FormFieldLabel></Column>
-                  <Column small={3} large={2}><FormFieldLabel>Diaarunumero</FormFieldLabel></Column>
+                  <Column small={3} large={2}><FormTextTitle title='Päättäjä' /></Column>
+                  <Column small={3} large={2}><FormTextTitle title='Pvm' /></Column>
+                  <Column small={3} large={2}><FormTextTitle title='Pykälä' /></Column>
+                  <Column small={3} large={2}><FormTextTitle title='Diaarinumero' /></Column>
                 </Row>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
@@ -93,41 +96,33 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.decision_maker')}
+                          invisibleLabel
                           name={`${field}.decision_maker`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.decision_date')}
+                          invisibleLabel
                           name={`${field}.decision_date`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.section')}
+                          invisibleLabel
                           name={`${field}.section`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.decisions.child.children.reference_number')}
+                          invisibleLabel
                           name={`${field}.reference_number`}
                           validate={referenceNumber}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} large={2}>
@@ -147,7 +142,6 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                 <AddButtonThird
                   label='Lisää päätös'
                   onClick={handleAdd}
-                  title='Lisää päätös'
                 />
               </Column>
             </Row>
@@ -176,9 +170,9 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
             {!!fields && !!fields.length &&
               <div>
                 <Row>
-                  <Column small={3} large={2}><FormFieldLabel>Käyttötarkoitus</FormFieldLabel></Column>
-                  <Column small={3} large={2}><FormFieldLabel>k-m²</FormFieldLabel></Column>
-                  <Column small={3} large={2}><FormFieldLabel>€/k-m²</FormFieldLabel></Column>
+                  <Column small={3} large={2}><FormTextTitle title='Käyttötarkoitu' /></Column>
+                  <Column small={3} large={2}><FormTextTitle title='k-m²' /></Column>
+                  <Column small={3} large={2}><FormTextTitle title='€/k-m²' /></Column>
                 </Row>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
@@ -198,32 +192,26 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.intended_use')}
+                          invisibleLabel
                           name={`${field}.intended_use`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.floor_m2')}
+                          invisibleLabel
                           name={`${field}.floor_m2`}
                           unit='k-m²'
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.intended_uses.child.children.amount_per_floor_m2')}
+                          invisibleLabel
                           name={`${field}.amount_per_floor_m2`}
                           unit='€/k-m²'
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} large={2}>
@@ -243,7 +231,6 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
                 <AddButtonThird
                   label='Lisää käyttötarkoitus'
                   onClick={handleAdd}
-                  title='Lisää käyttötarkoitus'
                 />
               </Column>
             </Row>
@@ -432,54 +419,54 @@ class LeaseItemEdit extends Component<Props, State> {
               />
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormFieldLabel>Vuokralainen</FormFieldLabel>
-              {isFetching && <p>Ladataan...</p>}
-              {!isFetching && !tenants.length && <p>-</p>}
+              <FormTextTitle title='Vuokralainen' />
+              {isFetching && <FormText>Ladataan...</FormText>}
+              {!isFetching && !tenants.length && <FormText>-</FormText>}
               {!isFetching && !!tenants.length &&
                 <ListItems>
                   {tenants.map((tenant) =>
-                    <p key={tenant.id} className='no-margin'>
+                    <ListItem key={tenant.id}>
                       <ExternalLink
                         className='no-margin'
                         href={`${getRouteById('contacts')}/${get(tenant, 'tenant.contact.id')}`}
-                        label={getContactFullName(get(tenant, 'tenant.contact'))}
+                        text={getContactFullName(get(tenant, 'tenant.contact'))}
                       />
-                    </p>
+                    </ListItem>
                   )}
                 </ListItems>
               }
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormFieldLabel>Kiinteistö</FormFieldLabel>
-              {isFetching && <p>Ladataan...</p>}
-              {!isFetching && !plots.length && <p>-</p>}
+              <FormTextTitle title='Kiinteistö' />
+              {isFetching && <FormText>Ladataan...</FormText>}
+              {!isFetching && !plots.length && <FormText>-</FormText>}
               {!isFetching && !!plots.length &&
                 <ListItems>
                   {plots.map((plot, index) =>
-                    <p key={index} className='no-margin'>{plot.identifier || '-'}</p>
+                    <ListItem key={index}>{plot.identifier || '-'}</ListItem>
                   )}
                 </ListItems>
               }
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormFieldLabel>Kaavayksikkö</FormFieldLabel>
-              {isFetching && <p>Ladataan...</p>}
-              {!isFetching && !planUnits.length && <p>-</p>}
+              <FormTextTitle title='Kaavayksikkö' />
+              {isFetching && <FormText>Ladataan...</FormText>}
+              {!isFetching && !planUnits.length && <FormText>-</FormText>}
               {!isFetching && !!planUnits.length &&
                 <ListItems>
                   {planUnits.map((planUnit, index) =>
-                    <p key={index} className='no-margin'>{planUnit.identifier || '-'}</p>
+                    <ListItem key={index}>{planUnit.identifier || '-'}</ListItem>
                   )}
                 </ListItems>
               }
             </Column>
             <Column small={6} medium={4} large={2}>
-              {isFetching && <p>Ladataan...</p>}
-              {!isFetching && !leaseId && <p>-</p>}
+              {isFetching && <FormText>Ladataan...</FormText>}
+              {!isFetching && !leaseId && <FormText>-</FormText>}
               {!isFetching && leaseId &&
                 <ExternalLink
                   href={`${getRouteById('leases')}/${leaseId}?tab=7`}
-                  label='Karttalinkki'
+                  text='Karttalinkki'
                 />
               }
             </Column>
@@ -517,8 +504,10 @@ class LeaseItemEdit extends Component<Props, State> {
               />
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormFieldLabel>Korvaus yhteensä</FormFieldLabel>
-              <p>{`${formatNumber(totalCompensation)} €`}</p>
+              <FormTitleAndText
+                title='Korvaus yhteensä'
+                text={`${formatNumber(totalCompensation)} €`}
+              />
             </Column>
             <Column small={6} medium={4} large={2}>
               <FormField
@@ -578,13 +567,13 @@ class LeaseItemEdit extends Component<Props, State> {
                       <div>
                         <Row>
                           <Column small={3} large={4}>
-                            <FormFieldLabel>Nimi</FormFieldLabel>
+                            <FormTextTitle title='Nimi' />
                           </Column>
                           <Column small={3} large={2}>
-                            <FormFieldLabel>Pvm</FormFieldLabel>
+                            <FormTextTitle title='Pvm' />
                           </Column>
                           <Column small={3} large={2}>
-                            <FormFieldLabel>Lataaja</FormFieldLabel>
+                            <FormTextTitle title='Lataaja' />
                           </Column>
                         </Row>
                         {attachments.map((file, index) => {
@@ -608,10 +597,10 @@ class LeaseItemEdit extends Component<Props, State> {
                                 />
                               </Column>
                               <Column small={3} large={2}>
-                                <p>{formatDate(file.uploaded_at) || '-'}</p>
+                                <FormText>{formatDate(file.uploaded_at) || '-'}</FormText>
                               </Column>
                               <Column small={3} large={2}>
-                                <p>{getUserFullName((file.uploader)) || '-'}</p>
+                                <FormText>{getUserFullName((file.uploader)) || '-'}</FormText>
                               </Column>
                               <Column small={3} large={2}>
                                 <RemoveButton

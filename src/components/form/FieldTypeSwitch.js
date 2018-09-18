@@ -7,7 +7,7 @@ type Props = {
   displayError: boolean,
   input: Object,
   isDirty: boolean,
-  optionLabel?: string,
+  optionLabel: string,
 }
 
 const FieldTypeSwitch = ({
@@ -30,12 +30,16 @@ const FieldTypeSwitch = ({
 
   return (
     <div className={classNames(`form-field__switch`, {'has-error': displayError}, {'is-dirty': isDirty})}>
-      {optionLabel && <label className={classNames('switch-option-label', {'label-off': !value})}>{optionLabel}</label>}
+      <label
+        className={classNames('switch-option-label', {'label-off': !value})}
+        htmlFor={name}
+      >{optionLabel}</label>
       <div className="switch">
         <input
           type="checkbox"
           checked={value}
           disabled={disabled}
+          id={name}
           name={name}
           onChange={handleChange}
           value={value}

@@ -40,6 +40,7 @@ class TableControllers extends Component<Props> {
           <div className='button-selector-wrapper'>
             <StyledCheckboxButtons
               checkboxName='checkbox-buttons-document-type'
+              legend='Suodata'
               onChange={(value) => onButtonSelectorChange(value)}
               options={buttonSelectorOptions}
               selectAllButton
@@ -51,6 +52,7 @@ class TableControllers extends Component<Props> {
         {iconSelectorOptions && !!iconSelectorOptions.length &&
           <div className='icon-selector-wrapper'>
             <IconRadioButtons
+              legend={'Kartta/taulukko'}
               onChange={(value) => onIconSelectorChange(value)}
               options={iconSelectorOptions}
               radioName='radio-buttons-selector-type'

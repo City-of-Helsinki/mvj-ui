@@ -219,7 +219,6 @@ class RentBasisListPage extends Component<Props, State> {
               className='no-margin'
               label='Luo vuokrausperuste'
               onClick={() => this.handleCreateButtonClick()}
-              title='Luo vuokrausperuste'
             />
           }
           searchComponent={

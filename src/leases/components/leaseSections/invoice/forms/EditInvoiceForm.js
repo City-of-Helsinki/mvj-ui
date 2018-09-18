@@ -10,7 +10,8 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
@@ -49,10 +50,16 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
             {fields && !!fields.length &&
               <Row>
                 <Column small={6}>
-                  <FormFieldLabel required={get(attributes, 'payments.child.children.paid_amount.required')}>Maksettu määrä</FormFieldLabel>
+                  <FormTextTitle
+                    required={get(attributes, 'payments.child.children.paid_amount.required')}
+                    title='Maksettu määrä'
+                  />
                 </Column>
                 <Column small={6}>
-                  <FormFieldLabel required={get(attributes, 'payments.child.children.paid_date.required')}>Maksettu pvm</FormFieldLabel>
+                  <FormTextTitle
+                    required={get(attributes, 'payments.child.children.paid_date.required')}
+                    title='Maksettu pvm'
+                  />
                 </Column>
               </Row>
             }
@@ -74,21 +81,17 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
                     <FormField
                       disableTouched={isEditClicked}
                       fieldAttributes={get(attributes, 'payments.child.children.paid_amount')}
+                      invisibleLabel
                       name={`${payment}.paid_amount`}
                       unit='€'
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                   <Column small={4}>
                     <FormField
                       disableTouched={isEditClicked}
                       fieldAttributes={get(attributes, 'payments.child.children.paid_date')}
+                      invisibleLabel
                       name={`${payment}.paid_date`}
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                   <Column small={2}>
@@ -106,7 +109,6 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
                 <AddButtonThird
                   label='Lisää maksu'
                   onClick={handleAdd}
-                  title='Lisää maksu'
                 />
               </Column>
             </Row>
@@ -155,16 +157,22 @@ const EditInvoiceForm = ({
     <form onSubmit={handleSubmit}>
       <Row>
         <Column medium={4}>
-          <FormFieldLabel>Laskunsaaja</FormFieldLabel>
-          <p>{getContactFullName(invoice.recipientFull) || '-'}</p>
+          <FormTitleAndText
+            title='Laskunsaaja'
+            text={getContactFullName(invoice.recipientFull) || '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Lähetetty SAP:iin</FormFieldLabel>
-          <p>{formatDate(invoice.sent_to_sap_at) || '-'}</p>
+          <FormTitleAndText
+            title='Lähetetty SAP:iin'
+            text={formatDate(invoice.sent_to_sap_at) || '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>SAP numero</FormFieldLabel>
-          <p>{invoice.sap_id || '-'}</p>
+          <FormTitleAndText
+            title='SAP numero'
+            text={invoice.sap_id || '-'}
+          />
         </Column>
       </Row>
       <Row>
@@ -180,19 +188,23 @@ const EditInvoiceForm = ({
           />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Laskutuspvm</FormFieldLabel>
-          <p>{formatDate(invoice.invoicing_date) || '-'}</p>
+          <FormTitleAndText
+            title='Laskutuspvm'
+            text={formatDate(invoice.invoicing_date) || '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column medium={4}>
-          <FormFieldLabel>Laskun tila</FormFieldLabel>
-          <p>{getLabelOfOption(stateOptions, invoice.state) || '-'}</p>
+          <FormTitleAndText
+            title='Laskun tila'
+            text={getLabelOfOption(stateOptions, invoice.state) || '-'}
+          />
         </Column>
         <Column medium={4}>
           <Row>
             <Column>
-              <FormFieldLabel required>Laskutuskausi</FormFieldLabel>
+              <FormTextTitle required title='Laskutuskausi' />
             </Column>
           </Row>
           <Row>
@@ -200,27 +212,25 @@ const EditInvoiceForm = ({
               <FormField
                 disableTouched={isEditClicked}
                 fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
+                invisibleLabel
                 name='billing_period_start_date'
-                overrideValues={{
-                  label: '',
-                }}
               />
             </Column>
             <Column medium={6}>
               <FormField
                 disableTouched={isEditClicked}
                 fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
+                invisibleLabel
                 name='billing_period_end_date'
-                overrideValues={{
-                  label: '',
-                }}
               />
             </Column>
           </Row>
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Lykkäyspvm</FormFieldLabel>
-          <p>{formatDate(invoice.postpone_date) || '-'}</p>
+          <FormTitleAndText
+            title='Lykkäyspvm'
+            text={formatDate(invoice.postpone_date) || '-'}
+          />
         </Column>
       </Row>
       <Row>
@@ -236,19 +246,21 @@ const EditInvoiceForm = ({
           />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Laskun osuus</FormFieldLabel>
-          <p>{`${formatNumber(invoice.totalShare * 100)} %`}</p>
+          <FormTitleAndText
+            title='Laskun osuus'
+            text={`${formatNumber(invoice.totalShare * 100)} %`}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Laskutettu määrä</FormFieldLabel>
-          <p>
-            {invoice.billed_amount
+          <FormTitleAndText
+            title='Laskutettu määrä'
+            text={invoice.billed_amount
               ? `${formatNumber(invoice.billed_amount)} €`
-              : '-'
-            }
-          </p>
+              : '-'}
+          />
         </Column>
       </Row>
+
       <SubTitle>Maksut</SubTitle>
       <Row>
         <Column small={12} medium={8}>
@@ -260,50 +272,58 @@ const EditInvoiceForm = ({
           />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Maksamaton määrä</FormFieldLabel>
-          <p>
-            {invoice.outstanding_amount
+          <FormTitleAndText
+            title='Maksamaton määrä'
+            text={invoice.outstanding_amount
               ? `${formatNumber(invoice.outstanding_amount)} €`
-              : '-'
-            }
-          </p>
+              : '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column medium={4}>
-          <FormFieldLabel>Maksukehotuspvm</FormFieldLabel>
-          <p>{formatDate(invoice.payment_notification_date) || '-'}</p>
+          <FormTitleAndText
+            title='Maksukehotuspvm'
+            text={formatDate(invoice.payment_notification_date) || '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Perintäkulu</FormFieldLabel>
-          <p>
-            {invoice.collection_charge
+          <FormTitleAndText
+            title='Perintäkulu'
+            text={invoice.collection_charge
               ? `${formatNumber(invoice.collection_charge)} €`
-              : '-'
-            }
-          </p>
+              : '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Maksukehotus luettelo</FormFieldLabel>
-          <p>{formatDate(invoice.payment_notification_catalog_date) || '-'}</p>
+          <FormTitleAndText
+            title='Maksukehotus luettelo'
+            text={formatDate(invoice.payment_notification_catalog_date) || '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column medium={4}>
-          <FormFieldLabel>E vai paperilasku</FormFieldLabel>
-          <p>{getLabelOfOption(deliveryMethodOptions, invoice.delivery_method) || '-'}</p>
+          <FormTitleAndText
+            title='E vai paperilasku'
+            text={getLabelOfOption(deliveryMethodOptions, invoice.delivery_method) || '-'}
+          />
         </Column>
         <Column medium={4}>
-          <FormFieldLabel>Laskun tyyppi</FormFieldLabel>
-          <p>{getLabelOfOption(typeOptions, invoice.type) || '-'}</p>
+          <FormTitleAndText
+            title='Laskun tyyppi'
+            text={getLabelOfOption(typeOptions, invoice.type) || '-'}
+          />
         </Column>
         {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
           <Column medium={4}>
-            <FormFieldLabel>Hyvitetty lasku</FormFieldLabel>
-            <p>{invoice.credited_invoice
-              ? <a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{invoice.credited_invoice}</a>
-              : '-'
-            }</p>
+            <FormTitleAndText
+              title='Hyvitetty lasku'
+              text={invoice.credited_invoice
+                ? <a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{invoice.credited_invoice}</a>
+                : '-'
+              }
+            />
           </Column>
         }
       </Row>

@@ -6,8 +6,11 @@ import get from 'lodash/get';
 
 import ContentContainer from '$components/content/ContentContainer';
 import ExternalLink from '$components/links/ExternalLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import GreenBox from '$components/content/GreenBox';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
@@ -35,57 +38,72 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
       <GreenBox>
         <Row>
           <Column small={6} medium={4} large={3}>
-            <label>Tonttityyppi</label>
-            <p>{getLabelOfOption(plotTypeOptions, rentBasis.plot_type) || '-'}</p>
+            <FormTitleAndText
+              title='Tonttityyppi'
+              text={getLabelOfOption(plotTypeOptions, rentBasis.plot_type) || '-'}
+            />
           </Column>
           <Column small={6} medium={8} large={4}>
             <Row>
               <Column small={6}>
-                <label>Alkupvm</label>
-                <p>{formatDate(rentBasis.start_date) || '-'}</p>
+                <FormTitleAndText
+                  title='Alkupvm'
+                  text={formatDate(rentBasis.start_date) || '-'}
+                />
               </Column>
               <Column small={6}>
-                <label>Loppupvm</label>
-                <p>{formatDate(rentBasis.end_date) || '-'}</p>
+                <FormTitleAndText
+                  title='Loppupvm'
+                  text={formatDate(rentBasis.end_date) || '-'}
+                />
               </Column>
             </Row>
-
           </Column>
         </Row>
         <Row>
           <Column small={6} medium={4} large={3}>
-            <label>Kiinteistötunnukset</label>
+            <FormTextTitle title='Kiinteistötunnukset' />
             {rentBasis.property_identifiers && !!rentBasis.property_identifiers.length
               ? (
                 <ListItems>
                   {rentBasis.property_identifiers.map((item, index) => {
-                    return(<p key={index} className='no-margin'>{item.identifier}</p>);
+                    return(<ListItem key={index}>{item.identifier}</ListItem>);
                   })}
                 </ListItems>
-              ) : <p>-</p>
+              ) : <FormText>-</FormText>
             }
           </Column>
           <Column small={6} medium={4} large={2}>
-            <label>Asemakaava</label>
-            <p>{rentBasis.detailed_plan_identifier || '-'}</p>
+            <FormTitleAndText
+              title='Asemakaava'
+              text={rentBasis.detailed_plan_identifier || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <label>Hallintamuoto</label>
-            <p>{getLabelOfOption(managementOptions, rentBasis.management) || '-'}</p>
+            <FormTitleAndText
+              title='Hallintamuoto'
+              text={getLabelOfOption(managementOptions, rentBasis.management) || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <label>Hallintamuoto</label>
-            <p>{getLabelOfOption(financingOptions, rentBasis.financing) || '-'}</p>
+            <FormTitleAndText
+              title='Rahoitusmuoto'
+              text={getLabelOfOption(financingOptions, rentBasis.financing) || '-'}
+            />
           </Column>
         </Row>
         <Row>
           <Column small={6} medium={4} large={3}>
-            <label>Vuokraoikeus päättyy</label>
-            <p>{formatDate(rentBasis.lease_rights_end_date) || '-'}</p>
+            <FormTitleAndText
+              title='Vuokraoikeus päättyy'
+              text={formatDate(rentBasis.lease_rights_end_date) || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <label>Indeksi</label>
-            <p>{getLabelOfOption(indexOptions, rentBasis.index) || '-'}</p>
+            <FormTitleAndText
+              title='Indeksi'
+              text={getLabelOfOption(indexOptions, rentBasis.index) || '-'}
+            />
           </Column>
         </Row>
         <Row>
@@ -96,44 +114,44 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
                 <ListItems>
                   <Row>
                     <Column small={3} large={2}>
-                      <FormFieldLabel>Päättäjä</FormFieldLabel>
+                      <FormTextTitle title='Päättäjä' />
                     </Column>
                     <Column small={3} large={1}>
-                      <FormFieldLabel>Pvm</FormFieldLabel>
+                      <FormTextTitle title='Pvm' />
                     </Column>
                     <Column small={3} large={2}>
-                      <FormFieldLabel>Pykälä</FormFieldLabel>
+                      <FormTextTitle title='Pykälä' />
                     </Column>
                     <Column small={3} large={2}>
-                      <FormFieldLabel>Hel diaarinumero</FormFieldLabel>
+                      <FormTextTitle title='Hel diaarinumero' />
                     </Column>
                   </Row>
                   {decisions.map((decision) =>
                     <Row key={decision.id}>
                       <Column small={3} large={2}>
-                        <p className='no-margin'>{getLabelOfOption(decisionsMakerOptions, decision.decision_maker) || '-'}</p>
+                        <ListItem>{getLabelOfOption(decisionsMakerOptions, decision.decision_maker) || '-'}</ListItem>
                       </Column>
                       <Column small={3} large={1}>
-                        <p className='no-margin'>{formatDate(decision.decision_date) || '-'}</p>
+                        <ListItem>{formatDate(decision.decision_date) || '-'}</ListItem>
                       </Column>
                       <Column small={3} large={2}>
-                        <p className='no-margin'>{decision.section ? `${decision.section} §` : '-'}</p>
+                        <ListItem>{decision.section ? `${decision.section} §` : '-'}</ListItem>
                       </Column>
                       <Column small={3} large={2}>
                         {decision.reference_number
-                          ? <p className='no-margin'>
+                          ? <ListItem>
                             <ExternalLink
                               href={getReferenceNumberLink(decision.reference_number)}
-                              label={decision.reference_number}
+                              text={decision.reference_number}
                             />
-                          </p>
-                          : <p className='no-margin'>-</p>
+                          </ListItem>
+                          : <ListItem>-</ListItem>
                         }
                       </Column>
                     </Row>
                   )}
                 </ListItems>
-              ) : <p>Ei päätöksiä</p>
+              ) : <FormText>Ei päätöksiä</FormText>
             }
           </Column>
         </Row>
@@ -144,34 +162,42 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
               ? (
                 <ListItems>
                   <Row>
-                    <Column small={6} medium={4} large={2}><label>Rakennusoikeustyyppi</label></Column>
-                    <Column small={3} medium={4} large={1}><label>Euroa</label></Column>
-                    <Column small={3} medium={4} large={1}><label>Yksikkö</label></Column>
+                    <Column small={6} medium={4} large={2}>
+                      <FormTextTitle title='Rakennusoikeustyyppi' />
+                    </Column>
+                    <Column small={3} medium={4} large={1}>
+                      <FormTextTitle title='Euroa' />
+                    </Column>
+                    <Column small={3} medium={4} large={1}>
+                      <FormTextTitle title='Yksikkö' />
+                    </Column>
                   </Row>
                   {rentBasis.rent_rates.map((price, index) => {
                     return(
                       <Row key={index}>
                         <Column small={6} medium={4} large={2}>
-                          <p className='no-margin'>{getLabelOfOption(buildPermissionTypeOptions, price.build_permission_type) || '-'}</p>
+                          <ListItem>{getLabelOfOption(buildPermissionTypeOptions, price.build_permission_type) || '-'}</ListItem>
                         </Column>
                         <Column small={3} medium={4} large={1}>
-                          <p className='no-margin'>{formatNumber(price.amount) || '-'}</p>
+                          <ListItem>{formatNumber(price.amount) || '-'}</ListItem>
                         </Column>
                         <Column small={3} medium={4} large={1}>
-                          <p className='no-margin'>{getLabelOfOption(areaUnitOptions, price.area_unit) || '-'}</p>
+                          <ListItem>{getLabelOfOption(areaUnitOptions, price.area_unit) || '-'}</ListItem>
                         </Column>
                       </Row>
                     );
                   })}
                 </ListItems>
-              ) : <p>-</p>
+              ) : <FormText>-</FormText>
             }
           </Column>
         </Row>
         <Row>
           <Column>
-            <label>Huomautus</label>
-            <p>{rentBasis.note || '-'}</p>
+            <FormTitleAndText
+              title='Huomautus'
+              text={rentBasis.note || '-'}
+            />
           </Column>
         </Row>
       </GreenBox>

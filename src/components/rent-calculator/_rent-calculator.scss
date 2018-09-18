@@ -2,7 +2,10 @@
   &__button-wrapper {
     padding-top: rem-calc(5px);
     padding-bottom: rem-calc(10px);
-    text-align: right;
+
+    @include breakpoint(medium down) {
+      text-align: right;
+    }
   }
 
   &__rents-container {

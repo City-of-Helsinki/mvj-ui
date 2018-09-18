@@ -5,6 +5,7 @@ import get from 'lodash/get';
 
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import ExternalLink from '$components/links/ExternalLink';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
@@ -39,51 +40,61 @@ const LitigantItem = ({
         <FormWrapperLeft>
           <Row>
             <Column small={12} medium={6} large={8}>
-              <label>Asiakas</label>
-              {contact
-                ? <p><ExternalLink
-                  href={`${getRouteById('contacts')}/${contact.id}`}
-                  label={getContactFullName(contact)}
-                /></p>
-                : <p>-</p>
-              }
+              <FormTitleAndText
+                title='Asiakas'
+                text={contact
+                  ? <ExternalLink
+                    href={`${getRouteById('contacts')}/${contact.id}`}
+                    text={getContactFullName(contact)}
+                  />
+                  : '-'
+                }
+              />
             </Column>
           </Row>
         </FormWrapperLeft>
         <FormWrapperRight>
           <Row>
             <Column small={12} medium={6} large={4}>
-              <label>Osuus murtolukuna:</label>
-              <p>{get(litigant, 'share_numerator', '')} / {get(litigant, 'share_denominator', '')}</p>
+              <FormTitleAndText
+                title='Osuus murtolukuna'
+                text={`${get(litigant, 'share_numerator', '')} / ${get(litigant, 'share_denominator', '')}`}
+              />
             </Column>
             <Column small={12} medium={6} large={4}>
-              <label>Laskun hallintaosuus</label>
-              <p>{share ? `${formatNumber(share)} %` : '-'}</p>
+              <FormTitleAndText
+                title='Laskun hallintaosuus'
+                text={share ? `${formatNumber(share)} %` : '-'}
+              />
             </Column>
             <Column small={12} medium={6} large={4}>
               <Row>
                 <Column>
-                  <label>Alkupvm</label>
-                  <p>{formatDate(get(litigant, 'litigant.start_date'))}</p>
+                  <FormTitleAndText
+                    title='Alkupvm'
+                    text={formatDate(get(litigant, 'litigant.start_date'))}
+                  />
                 </Column>
                 <Column>
-                  <label>Loppupvm</label>
-                  <p>{formatDate(get(litigant, 'litigant.end_date'))}</p>
+                  <FormTitleAndText
+                    title='Loppupvm'
+                    text={formatDate(get(litigant, 'litigant.end_date'))}
+                  />
                 </Column>
               </Row>
             </Column>
           </Row>
         </FormWrapperRight>
       </FormWrapper>
-      <ContactTemplate
-        contact={contact}
-      />
+      <ContactTemplate contact={contact} />
       <FormWrapper>
         <FormWrapperLeft>
           <Row>
             <Column>
-              <label>Viite</label>
-              <p>{litigant.reference || '-'}</p>
+              <FormTitleAndText
+                title='Viite'
+                text={litigant.reference || '-'}
+              />
             </Column>
           </Row>
         </FormWrapperLeft>

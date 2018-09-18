@@ -7,12 +7,15 @@ import isEmpty from 'lodash/isEmpty';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import RelatedLeases from './RelatedLeases';
 import RightSubtitle from '$components/content/RightSubtitle';
 import ShowMore from '$components/showMore/ShowMore';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
@@ -162,65 +165,81 @@ class Summary extends Component<Props, State> {
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Vuokranantaja</FormFieldLabel>
-                  <p>{getContactFullName(summary.lessor) || '-'}</p>
+                  <FormTitleAndText
+                    title='Vuokranantaja'
+                    text={getContactFullName(summary.lessor) || '-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Valmistelija</FormFieldLabel>
-                  <p>{getUserFullName(summary.preparer) || '-'}</p>
+                  <FormTitleAndText
+                    title='Valmistelija'
+                    text={getUserFullName(summary.preparer) || '-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Julkisuusluokka</FormFieldLabel>
-                  <p>{getLabelOfOption(classificationOptions, summary.classification) || '-'}</p>
+                  <FormTitleAndText
+                    title='Julkisuusluokka'
+                    text={getLabelOfOption(classificationOptions, summary.classification) || '-'}
+                  />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Vuokrauksen käyttötarkoitus</FormFieldLabel>
-                  <p>{getLabelOfOption(intendedUseOptions, summary.intended_use) || '-'}</p>
+                  <FormTitleAndText
+                    title='Vuokrauksen käyttötarkoitus'
+                    text={getLabelOfOption(intendedUseOptions, summary.intended_use) || '-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <FormFieldLabel>Käyttötarkoituksen huomautus</FormFieldLabel>
+                  <FormTextTitle title='Käyttötarkoituksen huomautus' />
                   <ShowMore text={summary.intended_use_note || '-'} />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Rahoitusmuoto</FormFieldLabel>
-                  <p>{getLabelOfOption(financingOptions, summary.financing) || '-'}</p>
+                  <FormTitleAndText
+                    title='Rahoitusmuoto'
+                    text={getLabelOfOption(financingOptions, summary.financing) || '-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Hallintamuoto</FormFieldLabel>
-                  <p>{getLabelOfOption(managementOptions, summary.management) || '-'}</p>
+                  <FormTitleAndText
+                    title='Hallintamuoto'
+                    text={getLabelOfOption(managementOptions, summary.management) || '-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Siirto-oikeus</FormFieldLabel>
-                  <p>{summary.transferable ? 'Kyllä' : 'Ei'}</p>
+                  <FormTitleAndText
+                    title='Siirto-oikeus'
+                    text={summary.transferable ? 'Kyllä' : 'Ei'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Hitas</FormFieldLabel>
-                  <p>{getLabelOfOption(hitasOptions, summary.hitas) || '-'}</p>
+                  <FormTitleAndText
+                    title='Hitas'
+                    text={getLabelOfOption(hitasOptions, summary.hitas) || '-'}
+                  />
                 </Column>
                 {/* TODO: Get vuokrausperuste and täydennysrakentaminen via API */}
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Vuokrausperuste</FormFieldLabel>
-                  <p>-</p>
+                  <FormTitleAndText
+                    title='Vuokrausperuste'
+                    text={'-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Täydennysrakentamiskorvaus</FormFieldLabel>
-                  {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length &&
-                    <p>-</p>
-                  }
-                  {infillDevelopmentCompensations && !!infillDevelopmentCompensations.length &&
-                    <ListItems>
+                  <FormTextTitle title='Täydennysrakentamiskorvaus' />
+                  {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length
+                    ? <FormText>-</FormText>
+                    : <ListItems>
                       {infillDevelopmentCompensations.map((item) =>
-                        <p className='no-margin' key={item.id}>
+                        <ListItem key={item.id}>
                           <ExternalLink
                             className='no-margin'
                             href={`${getRouteById('infillDevelopment')}/${item.id}`}
-                            label={item.name || item.id}
+                            text={item.name || item.id}
                           />
-                        </p>
+                        </ListItem>
                       )}
                     </ListItems>
                   }
@@ -228,27 +247,31 @@ class Summary extends Component<Props, State> {
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Irtisanomisaika</FormFieldLabel>
-                  <p>{getLabelOfOption(noticePeriodOptions, summary.notice_period) || '-'}</p>
+                  <FormTitleAndText
+                    title='Irtisanomisaika'
+                    text={getLabelOfOption(noticePeriodOptions, summary.notice_period) || '-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <FormFieldLabel>Irtisanomisajan huomautus</FormFieldLabel>
+                  <FormTextTitle title='Irtisanomisajan huomautus' />
                   <ShowMore text={summary.notice_note || '-'} />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Diaarinumero</FormFieldLabel>
-                  {summary.reference_number
-                    ? <ExternalLink
-                      href={getReferenceNumberLink(summary.reference_number)}
-                      label={summary.reference_number}
-                    />
-                    : <p>-</p>
-                  }
+                  <FormTitleAndText
+                    title='Diaarinumero'
+                    text={summary.reference_number
+                      ? <ExternalLink
+                        href={getReferenceNumberLink(summary.reference_number)}
+                        text={summary.reference_number} />
+                      : '-'
+                    }
+                    textClassName={summary.reference_number ? 'no-margin' : ''}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <FormFieldLabel>Huomautus</FormFieldLabel>
+                  <FormTextTitle title='Huomautus' />
                   <ShowMore text={summary.note || '-'} />
                 </Column>
               </Row>
@@ -262,22 +285,30 @@ class Summary extends Component<Props, State> {
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Erityisasunnot</FormFieldLabel>
-                  <p>{getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}</p>
+                  <FormTitleAndText
+                    title='Erityisasunnot'
+                    text={getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Tilastollinen pääkäyttötarkoitus</FormFieldLabel>
-                  <p>{getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}</p>
+                  <FormTitleAndText
+                    title='Tilastollinen pääkäyttötarkoitus'
+                    text={getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}
+                  />
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Sääntely</FormFieldLabel>
-                  <p>{summary.regulated ? 'Kyllä' : 'Ei'}</p>
+                  <FormTitleAndText
+                    title='Sääntely'
+                    text={summary.regulated ? 'Kyllä' : 'Ei'}
+                  />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Sääntelymuoto</FormFieldLabel>
-                  <p>{getLabelOfOption(regulationOptions, summary.regulation) || '-'}</p>
+                  <FormTitleAndText
+                    title='Sääntelymuoto'
+                    text={getLabelOfOption(regulationOptions, summary.regulation) || '-'}
+                  />
                 </Column>
               </Row>
             </Collapse>

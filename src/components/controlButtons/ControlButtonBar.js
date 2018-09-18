@@ -36,7 +36,6 @@ const ControlButtonBar = ({buttonComponent, infoComponent, onBack}: Props) =>
             <div className='back-button-wrapper'>
               <BackButton
                 onClick={handleBack}
-                title='Takaisin'
               />
             </div>
           }

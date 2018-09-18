@@ -5,8 +5,11 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import Divider from '$components/content/Divider';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import GreenBox from '$components/content/GreenBox';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
@@ -40,51 +43,51 @@ const Compensations = ({currentLandUseContract}: Props) => {
           <WhiteBox>
             <Row>
               <Column small={6} medium={3} large={4}>
-                <FormFieldLabel>Maankäyttökorvaus</FormFieldLabel>
+                <FormTextTitle title='Maankäyttökorvaus' />
               </Column>
               <Column small={6} medium={3} large={4}>
-                <FormFieldLabel>Korvauksen määrä</FormFieldLabel>
-              </Column>
-            </Row>
-            <Row>
-              <Column small={6} medium={3} large={4}>
-                <p>Rahakorvaus</p>
-              </Column>
-              <Column small={6} medium={3} large={4}>
-                <p>{compensations.cash_compensation ? `${formatNumber(compensations.cash_compensation)} €` : '-'}</p>
+                <FormTextTitle title='Korvauksen määrä' />
               </Column>
             </Row>
             <Row>
               <Column small={6} medium={3} large={4}>
-                <p>Maakorvaus</p>
+                <FormText>Rahakorvaus</FormText>
               </Column>
               <Column small={6} medium={3} large={4}>
-                <p>{compensations.land_compensation ? `${formatNumber(compensations.land_compensation)} €` : '-'}</p>
-              </Column>
-            </Row>
-            <Row>
-              <Column small={6} medium={3} large={4}>
-                <p>Muu</p>
-              </Column>
-              <Column small={6} medium={3} large={4}>
-                <p>{compensations.other_compensation ? `${formatNumber(compensations.other_compensation)} €` : '-'}</p>
+                <FormText>{compensations.cash_compensation ? `${formatNumber(compensations.cash_compensation)} €` : '-'}</FormText>
               </Column>
             </Row>
             <Row>
               <Column small={6} medium={3} large={4}>
-                <p className='no-margin'>1. maksuerän korotus</p>
+                <FormText>Maakorvaus</FormText>
               </Column>
               <Column small={6} medium={3} large={4}>
-                <p className='no-margin'>{compensations.first_installment_increase ? `${formatNumber(compensations.first_installment_increase)} €` : '-'}</p>
+                <FormText>{compensations.land_compensation ? `${formatNumber(compensations.land_compensation)} €` : '-'}</FormText>
+              </Column>
+            </Row>
+            <Row>
+              <Column small={6} medium={3} large={4}>
+                <FormText>Muu</FormText>
+              </Column>
+              <Column small={6} medium={3} large={4}>
+                <FormText>{compensations.other_compensation ? `${formatNumber(compensations.other_compensation)} €` : '-'}</FormText>
+              </Column>
+            </Row>
+            <Row>
+              <Column small={6} medium={3} large={4}>
+                <FormText className='no-margin'>1. maksuerän korotus</FormText>
+              </Column>
+              <Column small={6} medium={3} large={4}>
+                <FormText className='no-margin'>{compensations.first_installment_increase ? `${formatNumber(compensations.first_installment_increase)} €` : '-'}</FormText>
               </Column>
             </Row>
             <Divider />
             <Row>
               <Column small={6} medium={3} large={4}>
-                <p>Yhteensä</p>
+                <FormText>Yhteensä</FormText>
               </Column>
               <Column small={6} medium={3} large={4}>
-                <p>{`${formatNumber(total)} €`}</p>
+                <FormText>{`${formatNumber(total)} €`}</FormText>
               </Column>
             </Row>
           </WhiteBox>
@@ -92,40 +95,52 @@ const Compensations = ({currentLandUseContract}: Props) => {
       </Row>
       <Row>
         <Column small={6} medium={3} large={2}>
-          <FormFieldLabel>Ilmaisluovutusala</FormFieldLabel>
-          <p>{compensations.free_delivery_area ? `${formatNumber(compensations.free_delivery_area)} m²` : '-'}</p>
+          <FormTitleAndText
+            title='Ilmaisluovutusala'
+            text={compensations.free_delivery_area ? `${formatNumber(compensations.free_delivery_area)} m²` : '-'}
+          />
         </Column>
         <Column small={6} medium={3} large={2}>
-          <FormFieldLabel>Ilmaisluovutusarvo</FormFieldLabel>
-          <p>{compensations.free_delivery_amount ? `${formatNumber(compensations.free_delivery_amount)} €` : '-'}</p>
+          <FormTitleAndText
+            title='Ilmaisluovutusarvo'
+            text={compensations.free_delivery_amount ? `${formatNumber(compensations.free_delivery_amount)} €` : '-'}
+          />
         </Column>
         <Column small={6} medium={3} large={2}>
-          <FormFieldLabel>Lisäkerrosala asunto</FormFieldLabel>
-          <p>{compensations.additional_floor_area_apartment ? `${formatNumber(compensations.additional_floor_area_apartment)} k-m²` : '-'}</p>
+          <FormTitleAndText
+            title='Lisäkerrosala asunto'
+            text={compensations.additional_floor_area_apartment ? `${formatNumber(compensations.additional_floor_area_apartment)} k-m²` : '-'}
+          />
         </Column>
         <Column small={6} medium={3} large={2}>
-          <FormFieldLabel>Lisäkerrosala yritys</FormFieldLabel>
-          <p>{compensations.additional_floor_area_company ? `${formatNumber(compensations.additional_floor_area_company)} k-m²` : '-'}</p>
+          <FormTitleAndText
+            title='Lisäkerrosala yritys'
+            text={compensations.additional_floor_area_company ? `${formatNumber(compensations.additional_floor_area_company)} k-m²` : '-'}
+          />
         </Column>
       </Row>
 
       <SubTitle>Korvauksen maksaminen</SubTitle>
-      {!invoices.length && <p>Ei laskuja</p>}
+      {!invoices.length && <FormText>Ei laskuja</FormText>}
       {!!invoices.length &&
         <div>
           <Row>
-            <Column small={3} large={2}><FormFieldLabel>Määrä</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel>Eräpäivä</FormFieldLabel></Column>
+            <Column small={3} large={2}>
+              <FormTextTitle title='Määrä' />
+            </Column>
+            <Column small={3} large={2}>
+              <FormTextTitle title='Eräpäivä' />
+            </Column>
           </Row>
           <ListItems>
             {invoices.map((invoice, index) => {
               return (
                 <Row key={index}>
                   <Column small={3} large={2}>
-                    <p className='no-margin'>{invoice.amount ? `${formatNumber(invoice.amount)} €` : '-'}</p>
+                    <ListItem>{invoice.amount ? `${formatNumber(invoice.amount)} €` : '-'}</ListItem>
                   </Column>
                   <Column small={3} large={2}>
-                    <p className='no-margin'>{formatDate(invoice.due_date) || '-'}</p>
+                    <ListItem>{formatDate(invoice.due_date) || '-'}</ListItem>
                   </Column>
                 </Row>
               );

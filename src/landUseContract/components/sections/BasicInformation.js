@@ -6,7 +6,10 @@ import {Row, Column} from 'react-foundation';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
@@ -58,71 +61,91 @@ const BasicInformation = ({
       >
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Kohteet</FormFieldLabel>
+            <FormTextTitle title='Kohteet' />
             {!!basicInformation.areas && !!basicInformation.areas.length
               ? <ListItems>
-                {basicInformation.areas.map((area, index) => <p key={index} className='no-margin'>{area.area || '-'}</p>)}
+                {basicInformation.areas.map((area, index) =>
+                  <ListItem key={index}>{area.area || '-'}</ListItem>
+                )}
               </ListItems>
-              : <p>-</p>
+              : <FormText>-</FormText>
             }
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Hankealue</FormFieldLabel>
-            <p>{basicInformation.project_area || '-'}</p>
+            <FormTitleAndText
+              title='Hankealue'
+              text={basicInformation.project_area || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Valmistelijat</FormFieldLabel>
+            <FormTextTitle title='Valmistelijat' />
             <ListItems>
-              <p className='no-margin'>{getUserFullName(basicInformation.preparer) || '-'}</p>
-              <p className='no-margin'>{getUserFullName(basicInformation.preparer2) || '-'}</p>
+              <ListItem>{getUserFullName(basicInformation.preparer) || '-'}</ListItem>
+              <ListItem>{getUserFullName(basicInformation.preparer2) || '-'}</ListItem>
             </ListItems>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Maankäyttösopimus</FormFieldLabel>
-            <p>{getLabelOfOption(landUseContractTypeOptions, basicInformation.land_use_contract_type) || '-'}</p>
+            <FormTitleAndText
+              title='Maankäyttösopimus'
+              text={getLabelOfOption(landUseContractTypeOptions, basicInformation.land_use_contract_type) || '-'}
+            />
           </Column>
         </Row>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Arvioitu toteutumisvuosi</FormFieldLabel>
-            <p>{basicInformation.estimated_completion_year || '-'}</p>
+            <FormTitleAndText
+              title='Arvioitu toteutumisvuosi'
+              text={basicInformation.estimated_completion_year || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Arvioitu esittelyvuosi</FormFieldLabel>
-            <p>{basicInformation.estimated_introduction_year || '-'}</p>
+            <FormTitleAndText
+              title='Arvioitu esittelyvuosi'
+              text={basicInformation.estimated_introduction_year || '-'}
+            />
           </Column>
         </Row>
 
         <SubTitle>Liitetiedostot</SubTitle>
-        <p>Ei liitetiedostoja</p>
+        <FormText>Ei liitetiedostoja</FormText>
 
         <SubTitle>Asemakaavatiedot</SubTitle>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Asemakaavan diaarinumero</FormFieldLabel>
-            {basicInformation.plan_reference_number
-              ? <ExternalLink
-                href={getReferenceNumberLink(basicInformation.plan_reference_number)}
-                label={basicInformation.plan_reference_number}
-              />
-              : <p>-</p>
-            }
+            <FormTitleAndText
+              title='Asemakaavan diaarinumero'
+              text={basicInformation.plan_reference_number
+                ? <ExternalLink
+                  href={getReferenceNumberLink(basicInformation.plan_reference_number)}
+                  text={basicInformation.plan_reference_number}
+                />
+                : '-'
+              }
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Asemakaavan numero</FormFieldLabel>
-            <p>{basicInformation.plan_number || '-'}</p>
+            <FormTitleAndText
+              title='Asemakaavan numero'
+              text={basicInformation.plan_number || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Asemakaavan käsittelyvaihe</FormFieldLabel>
-            <p>{getLabelOfOption(stateOptions, basicInformation.state) || '-'}</p>
+            <FormTitleAndText
+              title='Asemakaavan käsittelyvaihe'
+              text={getLabelOfOption(stateOptions, basicInformation.state) || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Asemakaavan hyväksyjä</FormFieldLabel>
-            <p>{getLabelOfOption(planAcceptorOptions, basicInformation.plan_acceptor) || '-'}</p>
+            <FormTitleAndText
+              title='Asemakaavan hyväksyjä'
+              text={getLabelOfOption(planAcceptorOptions, basicInformation.plan_acceptor) || '-'}
+            />
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormFieldLabel>Asemakaavan lainvoimaisuuspvm</FormFieldLabel>
-            <p>{formatDate(basicInformation.plan_lawfulness_date) || '-'}</p>
+            <FormTitleAndText
+              title='Asemakaavan lainvoimaisuuspvm'
+              text={formatDate(basicInformation.plan_lawfulness_date) || '-'}
+            />
           </Column>
         </Row>
       </Collapse>

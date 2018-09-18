@@ -89,7 +89,6 @@ const renderLitigants = ({
                     className='no-margin'
                     label='Lisää osapuoli'
                     onClick={handleAdd}
-                    title='Lisää osapuoli'
                   />
                 </Column>
               </Row>

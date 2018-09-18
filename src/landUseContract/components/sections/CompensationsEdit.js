@@ -11,7 +11,8 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
@@ -42,8 +43,12 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
             {fields && !!fields.length &&
               <div>
                 <Row>
-                  <Column small={4} medium={3} large={2}><FormFieldLabel>Määrä</FormFieldLabel></Column>
-                  <Column small={4} medium={3} large={2}><FormFieldLabel>Eräpäivä</FormFieldLabel></Column>
+                  <Column small={4} medium={3} large={2}>
+                    <FormTextTitle title='Määrä' />
+                  </Column>
+                  <Column small={4} medium={3} large={2}>
+                    <FormTextTitle title='Eräpäivä' />
+                  </Column>
                 </Row>
                 {fields.map((invoice, index) => {
                   const handleRemove = () => {
@@ -63,20 +68,16 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'compensations.child.children.invoices.child.children.amount')}
+                          invisibleLabel
                           name={`${invoice}.amount`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={4} medium={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'compensations.child.children.invoices.child.children.due_date')}
+                          invisibleLabel
                           name={`${invoice}.due_date`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={4} medium={3} large={2}>
@@ -96,7 +97,6 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
                 <AddButtonThird
                   label='Lisää korvaus'
                   onClick={handleAdd}
-                  title='Lisää korvaus'
                 />
               </Column>
             </Row>
@@ -149,83 +149,75 @@ class CompensationsEdit extends Component<Props> {
               <WhiteBox>
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <FormFieldLabel>Maankäyttökorvaus</FormFieldLabel>
+                    <FormTextTitle title='Maankäyttökorvaus' />
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <FormFieldLabel>Korvauksen määrä</FormFieldLabel>
+                    <FormTextTitle title='Korvauksen määrä' />
                   </Column>
                 </Row>
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <p>Rahakorvaus</p>
+                    <FormText>Rahakorvaus</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'compensations.child.children.cash_compensation')}
+                      invisibleLabel
                       name='compensations.cash_compensation'
                       unit='€'
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                 </Row>
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <p>Maakorvaus</p>
+                    <FormText>Maakorvaus</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'compensations.child.children.land_compensation')}
+                      invisibleLabel
                       name='compensations.land_compensation'
                       unit='€'
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                 </Row>
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <p>Muu</p>
+                    <FormText>Muu</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'compensations.child.children.other_compensation')}
+                      invisibleLabel
                       name='compensations.other_compensation'
                       unit='€'
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                 </Row>
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <p className='no-margin'>1. maksuerän korotus</p>
+                    <FormText className='no-margin'>1. maksuerän korotus</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'compensations.child.children.first_installment_increase')}
+                      invisibleLabel
                       name='compensations.first_installment_increase'
                       unit='€'
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                 </Row>
                 <Divider />
                 <Row>
                   <Column small={6} medium={3} large={4}>
-                    <p>Yhteensä</p>
+                    <FormText>Yhteensä</FormText>
                   </Column>
                   <Column small={6} medium={3} large={4}>
-                    <p>{`${formatNumber(total)} €`}</p>
+                    <FormText>{`${formatNumber(total)} €`}</FormText>
                   </Column>
                 </Row>
               </WhiteBox>

@@ -86,7 +86,6 @@ const renderTenants = ({
                     className='no-margin'
                     label='Lisää vuokralainen'
                     onClick={handleAdd}
-                    title='Lisää vuokralainen'
                   />
                 </Column>
               </Row>

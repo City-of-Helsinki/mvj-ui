@@ -223,7 +223,6 @@ class BasisOfRentsEdit extends Component<Props> {
                   <AddButtonSecondary
                     label='Lisää vuokranperuste'
                     onClick={this.handleAdd}
-                    title='Lisää vuokranperuste'
                   />
                 </Column>
               </Row>

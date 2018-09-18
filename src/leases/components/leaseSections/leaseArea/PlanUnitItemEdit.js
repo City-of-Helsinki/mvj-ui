@@ -11,7 +11,7 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
@@ -38,13 +38,13 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
             {fields && !!fields.length &&
               <Row>
                 <Column small={6} large={6}>
-                  <FormFieldLabel required>Osoite</FormFieldLabel>
+                  <FormTextTitle required title='Osoite' />
                 </Column>
                 <Column small={3} large={3}>
-                  <FormFieldLabel>Postinumero</FormFieldLabel>
+                  <FormTextTitle title='Postinumero' />
                 </Column>
                 <Column small={3} large={3}>
-                  <FormFieldLabel>Kaupunki</FormFieldLabel>
+                  <FormTextTitle title='Kaupunki' />
                 </Column>
               </Row>
             }
@@ -66,20 +66,16 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.addresses.child.children.address')}
+                      invisibleLabel
                       name={`${field}.address`}
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                   <Column small={3} large={3}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.addresses.child.children.postal_code')}
+                      invisibleLabel
                       name={`${field}.postal_code`}
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                   <Column small={3} large={3}>
@@ -88,10 +84,8 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.addresses.child.children.city')}
+                          invisibleLabel
                           name={`${field}.city`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       }
                       removeButton={
@@ -111,7 +105,6 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
                 <AddButtonThird
                   label='Lisää osoite'
                   onClick={handleAdd}
-                  title='Lisää osoite'
                 />
               </Column>
             </Row>
@@ -294,7 +287,6 @@ const PlanUnitItemEdit = ({
               }}
             />
           </Column>
-          <Column small={12} medium={6} large={3}></Column>
         </Row>
       </BoxContentWrapper>
     </BoxItem>

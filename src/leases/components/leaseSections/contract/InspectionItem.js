@@ -1,9 +1,8 @@
 // @flow
 import React from 'react';
 import {Row, Column} from 'react-foundation';
-import classNames from 'classnames';
 
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import {formatDate} from '$util/helpers';
 
 type Props = {
@@ -15,34 +14,30 @@ const InspectionItem = ({inspection}: Props) => {
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Tarkastaja</FormFieldLabel>
-          <p>{inspection.inspector || '–'}</p>
+          <FormTitleAndText
+            title='Tarkastaja'
+            text={inspection.inspector || '–'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Valvontapvm</FormFieldLabel>
-          {inspection.supervision_date
-            ? (
-              <p className={classNames({'alert': inspection.supervision_date && !inspection.supervised_date})}>
-                <i/>
-                {formatDate(inspection.supervision_date)}
-              </p>
-            ) : <p>–</p>
-          }
+          <FormTitleAndText
+            title='Valvontapvm'
+            text={inspection.supervision_date ? <span><i/>{formatDate(inspection.supervision_date)}</span> : '-'}
+            textClassName={(inspection.supervision_date && !inspection.supervised_date) ? 'alert' : ''}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Valvottu pvm</FormFieldLabel>
-          {inspection.supervised_date
-            ? (
-              <p className={classNames({'success': inspection.supervised_date})}>
-                <i/>
-                {formatDate(inspection.supervised_date)}
-              </p>
-            ) : <p>–</p>
-          }
+          <FormTitleAndText
+            title='Valvottu pvm'
+            text={inspection.supervised_date ? <span><i/>{formatDate(inspection.supervised_date)}</span> : '-'}
+            textClassName={inspection.supervised_date ? 'success' : ''}
+          />
         </Column>
         <Column small={6} medium={12} large={6}>
-          <FormFieldLabel>Huomautus</FormFieldLabel>
-          <p>{inspection.description || '–'}</p>
+          <FormTitleAndText
+            title='Huomautus'
+            text={inspection.description || '–'}
+          />
         </Column>
       </Row>
     </div>

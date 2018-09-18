@@ -15,7 +15,7 @@ const AddButtonThird = ({className, label, onClick, title}: Props) =>
   <button
     className={classNames('form__add-button third-level', className)}
     onClick={onClick}
-    title={title || label}
+    title={title}
     type='button'
   >
     <AddIcon />

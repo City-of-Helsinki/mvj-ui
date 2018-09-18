@@ -203,7 +203,6 @@ class ContactListPage extends Component<Props, State> {
               className='no-margin'
               label='Luo asiakas'
               onClick={() => this.handleCreateButtonClick()}
-              title='Luo asiakas'
             />
           }
           searchComponent={

@@ -6,7 +6,10 @@ import get from 'lodash/get';
 
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTitleAndText from '$components/form/FormTitleAndText';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import PlanUnitItem from './PlanUnitItem';
 import PlotItem from './PlotItem';
@@ -98,20 +101,28 @@ const LeaseArea = ({
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Tunnus</FormFieldLabel>
-          <p>{area.identifier || '-'}</p>
+          <FormTitleAndText
+            title='Tunnus'
+            text={area.identifier || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Määritelmä</FormFieldLabel>
-          <p>{getLabelOfOption(typeOptions, area.type) || '-'}</p>
+          <FormTitleAndText
+            title='Määritelmä'
+            text={getLabelOfOption(typeOptions, area.type) || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Pinta-ala</FormFieldLabel>
-          <p>{area.area ? `${formatNumber(area.area)} m²` : '-'}</p>
+          <FormTitleAndText
+            title='Pinta-ala'
+            text={area.area ? `${formatNumber(area.area)} m²` : '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Sijainti</FormFieldLabel>
-          <p>{getLabelOfOption(locationOptions, area.location) || '-'}</p>
+          <FormTitleAndText
+            title='Sijainti'
+            text={getLabelOfOption(locationOptions, area.location) || '-'}
+          />
         </Column>
       </Row>
 
@@ -121,13 +132,13 @@ const LeaseArea = ({
         <div>
           <Row>
             <Column small={6} large={4}>
-              <FormFieldLabel>Osoite</FormFieldLabel>
+              <FormTextTitle title='Osoite' />
             </Column>
             <Column small={3} large={2}>
-              <FormFieldLabel>Postinumero</FormFieldLabel>
+              <FormTextTitle title='Postinumero' />
             </Column>
             <Column small={3} large={2}>
-              <FormFieldLabel>Kaupunki</FormFieldLabel>
+              <FormTextTitle title='Kaupunki' />
             </Column>
           </Row>
           <ListItems>
@@ -135,13 +146,13 @@ const LeaseArea = ({
               return (
                 <Row key={address.id}>
                   <Column small={6} large={4}>
-                    <p className='no-margin'>{address.address || '-'}</p>
+                    <ListItem>{address.address || '-'}</ListItem>
                   </Column>
                   <Column small={3} large={2}>
-                    <p className='no-margin'>{address.postal_code || '-'}</p>
+                    <ListItem>{address.postal_code || '-'}</ListItem>
                   </Column>
                   <Column small={3} large={2}>
-                    <p className='no-margin'>{address.city || '-'}</p>
+                    <ListItem>{address.city || '-'}</ListItem>
                   </Column>
                 </Row>
               );
@@ -160,7 +171,7 @@ const LeaseArea = ({
           >
             <BoxItemContainer>
               {!area.plots_contract || !area.plots_contract.length &&
-                <p>Ei kiinteistöjä/määräaloja sopimuksessa</p>
+                <FormText>Ei kiinteistöjä/määräaloja sopimuksessa</FormText>
               }
               {area.plots_contract && !!area.plots_contract.length && area.plots_contract.map((item, index) =>
                 <PlotItem
@@ -179,7 +190,7 @@ const LeaseArea = ({
             onToggle={handlePlotsCurrentCollapseToggle}
           >
             {!area.plots_current || !area.plots_current.length &&
-              <p>Ei kiinteistöjä/määräaloja nykyhetkellä</p>
+              <FormText>Ei kiinteistöjä/määräaloja nykyhetkellä</FormText>
             }
             <BoxItemContainer>
               {area.plots_current && !!area.plots_current.length && area.plots_current.map((item, index) =>
@@ -203,7 +214,7 @@ const LeaseArea = ({
           >
             <BoxItemContainer>
               {!area.plan_units_contract || !area.plan_units_contract.length &&
-                <p>Ei kaavayksiköitä sopimuksessa</p>
+                <FormText>Ei kaavayksiköitä sopimuksessa</FormText>
               }
               {area.plan_units_contract && !!area.plan_units_contract.length && area.plan_units_contract.map((item, index) =>
                 <PlanUnitItem
@@ -223,7 +234,7 @@ const LeaseArea = ({
           >
             <BoxItemContainer>
               {!area.plan_units_current || !area.plan_units_current.length &&
-                <p>Ei kaavayksiköitä nykyhetkellä</p>
+                <FormText>Ei kaavayksiköitä nykyhetkellä</FormText>
               }
               {area.plan_units_current && !!area.plan_units_current.length && area.plan_units_current.map((item, index) =>
                 <PlanUnitItem

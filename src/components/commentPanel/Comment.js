@@ -67,7 +67,7 @@ class Comment extends PureComponent<Props, State> {
             <EditButton
               className='position-topright'
               onClick={this.handleEditButtonClick}
-              title='Muokkaa'
+              title='Muokkaa kommenttia'
             />
             <div className='comment__content-wrapper'>
               <p className='comment__info'>
@@ -88,6 +88,7 @@ class Comment extends PureComponent<Props, State> {
                 <Column>
                   <TextAreaInput
                     onChange={this.handleTextFieldChange}
+                    id={`comment_${comment.id}`}
                     placeholder='Kommentti'
                     rows={3}
                     value={editedText}
@@ -101,14 +102,12 @@ class Comment extends PureComponent<Props, State> {
                       className='button-red'
                       label='Kumoa'
                       onClick={this.handleCancelButtonClick}
-                      title='Kumoa'
                     />
                     <Button
                       className='button-green'
                       disabled={!editedText}
                       label='Tallenna'
                       onClick={this.handleSaveButtonClick}
-                      title='Tallenna'
                     />
                   </div>
                 </Column>

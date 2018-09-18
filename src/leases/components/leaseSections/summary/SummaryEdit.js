@@ -11,7 +11,11 @@ import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
+import ListItem from '$components/content/ListItem';
+import ListItems from '$components/content/ListItems';
 import RelatedLeasesEdit from './RelatedLeasesEdit';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
@@ -227,23 +231,29 @@ class SummaryEdit extends Component<Props, State> {
                 </Column>
                 {/* TODO: Allow to edit vuokrausperuste and täydennysrakentaminen */}
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Vuokrausperuste</FormFieldLabel>
-                  <p>-</p>
+                  <FormTitleAndText
+                    title='Vuokrausperuste'
+                    text='-'
+                  />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormFieldLabel>Täydennysrakentamiskorvaus</FormFieldLabel>
+                  <FormTextTitle title='Täydennysrakentamiskorvaus' />
                   {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length &&
-                    <p>-</p>
+                    <FormText>-</FormText>
                   }
-                  {infillDevelopmentCompensations && !!infillDevelopmentCompensations.length && infillDevelopmentCompensations.map((item) =>
-                    <p className='no-margin' key={item.id}>
-                      <ExternalLink
-                        className='no-margin'
-                        href={`${getRouteById('infillDevelopment')}/${item.id}`}
-                        label={item.name || item.id}
-                      />
-                    </p>
-                  )}
+                  {infillDevelopmentCompensations && !!infillDevelopmentCompensations.length &&
+                    <ListItems>
+                      {infillDevelopmentCompensations.map((item) =>
+                        <ListItem key={item.id}>
+                          <ExternalLink
+                            className='no-margin'
+                            href={`${getRouteById('infillDevelopment')}/${item.id}`}
+                            text={item.name || item.id}
+                          />
+                        </ListItem>
+                      )}
+                    </ListItems>
+                  }
                 </Column>
               </Row>
               <Row>

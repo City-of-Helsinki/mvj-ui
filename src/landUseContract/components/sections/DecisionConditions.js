@@ -2,12 +2,11 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
-import classNames from 'classnames';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
@@ -59,26 +58,36 @@ const DecisionConditions = ({
             <BoxItem key={index} className='no-border-on-last-child'>
               <Row>
                 <Column small={6} medium={4} large={2}>
-                  <FormFieldLabel>Käyttötarkoitusehto</FormFieldLabel>
-                  <p>{getLabelOfOption(typeOptions, condition.type) || '–'}</p>
+                  <FormTitleAndText
+                    title='Ehtotyyppi'
+                    text={getLabelOfOption(typeOptions, condition.type) || '–'}
+                  />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <FormFieldLabel>Valvontapvm</FormFieldLabel>
-                  {condition.supervision_date
-                    ? <p className={classNames({'alert': condition.supervision_date && !condition.supervised_date})}><i/>{formatDate(condition.supervision_date)}</p>
-                    : <p>–</p>
-                  }
+                  <FormTitleAndText
+                    title='Valvontapvm'
+                    text={condition.supervision_date
+                      ? <span><i/>{formatDate(condition.supervision_date)}</span>
+                      : '–'
+                    }
+                    textClassName={(condition.supervision_date && !condition.supervised_date) ? 'alert' : ''}
+                  />
                 </Column>
                 <Column small={6} medium={4} large={2}>
-                  <FormFieldLabel>Valvottu pvm</FormFieldLabel>
-                  {condition.supervised_date
-                    ? <p className={classNames({'success': condition.supervised_date})}><i/>{formatDate(condition.supervised_date)}</p>
-                    : <p>–</p>
-                  }
+                  <FormTitleAndText
+                    title='Valvottu pvm'
+                    text={condition.supervised_date
+                      ? <span><i/>{formatDate(condition.supervised_date)}</span>
+                      : '–'
+                    }
+                    textClassName={condition.supervised_date ? 'success' : ''}
+                  />
                 </Column>
                 <Column small={12} medium={12} large={6}>
-                  <FormFieldLabel>Huomautus</FormFieldLabel>
-                  <p>{condition.description || '–'}</p>
+                  <FormTitleAndText
+                    title='Huomautus'
+                    text={condition.description || '–'}
+                  />
                 </Column>
               </Row>
             </BoxItem>

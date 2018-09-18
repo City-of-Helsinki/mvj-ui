@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import Divider from '$components/content/Divider';
+import FormText from '$components/form/FormText';
 import LeaseAreaWithArchiceInfo from './LeaseAreaWithArchiceInfo';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {getDecisionOptions} from '$src/decision/helpers';
@@ -28,12 +29,10 @@ const LeaseAreas = ({currentLease, decisions}: Props) => {
   return (
     <div>
       <h2>Vuokra-alue</h2>
-      <RightSubtitle
-        text={<span>{formatNumber(areasSum) || '-'} m<sup>2</sup></span>}
-      />
+      <RightSubtitle text={<span>{formatNumber(areasSum) || '-'} m<sup>2</sup></span>} />
       <Divider />
 
-      {!activeAreas || !activeAreas.length && <p className='no-margin'>Ei vuokra-alueita</p>}
+      {!activeAreas || !activeAreas.length && <FormText>Ei vuokra-alueita</FormText>}
       {activeAreas && !!activeAreas.length && activeAreas.map((area, index) =>
         <LeaseAreaWithArchiceInfo
           key={index}
@@ -43,7 +42,9 @@ const LeaseAreas = ({currentLease, decisions}: Props) => {
         />
       )}
 
-      {archivedAreas && !!archivedAreas.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+      {archivedAreas && !!archivedAreas.length &&
+        <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
+      }
       {archivedAreas && !!archivedAreas.length && archivedAreas.map((area, index) =>
         <LeaseAreaWithArchiceInfo
           key={index}

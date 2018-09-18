@@ -13,7 +13,8 @@ import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/landUseContract/actions';
@@ -40,7 +41,7 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
       {({dispatch}) => {
         return(
           <div>
-            <FormFieldLabel>Kohteet</FormFieldLabel>
+            <FormTextTitle title='Kohteet' />
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
                 dispatch({
@@ -61,9 +62,10 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'areas.child.children.area')}
+                          invisibleLabel
                           name={`${field}.area`}
                           overrideValues={{
-                            label: '',
+                            label: 'Kohde',
                           }}
                         />
                       }
@@ -84,7 +86,6 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
                 <AddButtonThird
                   label='Lisää kohde'
                   onClick={handleAdd}
-                  title='Lisää kohde'
                 />
               </Column>
             </Row>
@@ -164,22 +165,25 @@ class BasicInformationEdit extends Component<Props> {
               />
             </Column>
             <Column small={6} medium={4} large={2}>
+              <FormTextTitle title='Valmistelijat' />
               <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'preparer')}
+                invisibleLabel
                 name='preparer'
                 overrideValues={{
                   fieldType: 'user',
-                  label: 'Valmistelijat',
+                  label: 'Valmistelija 1',
                 }}
               />
               <FormField
                 disableTouched={isSaveClicked}
                 fieldAttributes={get(attributes, 'preparer')}
+                invisibleLabel
                 name='preparer2'
                 overrideValues={{
                   fieldType: 'user',
-                  label: '',
+                  label: 'Valmistelija 2',
                 }}
               />
             </Column>
@@ -218,7 +222,7 @@ class BasicInformationEdit extends Component<Props> {
           </Row>
 
           <SubTitle>Liitetiedostot</SubTitle>
-          <p>Ei liitetiedostoja</p>
+          <FormText>Ei liitetiedostoja</FormText>
 
           <SubTitle>Asemakaavatiedot</SubTitle>
           <Row>

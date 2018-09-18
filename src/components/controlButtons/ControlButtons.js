@@ -91,14 +91,12 @@ const ControlButtons = ({
                     disabled={isCancelDisabled}
                     label='Hylkää muutokset'
                     onClick={handleCancel}
-                    title='Hylkää muutokset'
                   />
                   {showCopyButton &&
                     <Button
                       disabled={isCopyDisabled}
                       label='Kopioi'
                       onClick={handleCopy}
-                      title='Kopioi'
                     />
                   }
                   <Button
@@ -106,7 +104,6 @@ const ControlButtons = ({
                     disabled={isSaveDisabled}
                     label='Tallenna'
                     onClick={onSave}
-                    title='Tallenna'
                   />
                 </div>
               ) : (
@@ -115,7 +112,6 @@ const ControlButtons = ({
                     disabled={isEditDisabled}
                     label='Muokkaa'
                     onClick={onEdit}
-                    title='Muokkaa'
                   />
                 </div>
               )

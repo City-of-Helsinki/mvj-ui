@@ -69,7 +69,7 @@ class FieldTypeContactSelect extends Component<Props> {
       disabled,
       displayError,
       input,
-      input: {value},
+      input: {name, value},
       isDirty,
       placeholder,
     } = this.props;
@@ -92,6 +92,7 @@ class FieldTypeContactSelect extends Component<Props> {
         clearable={false}
         disabled={disabled}
         filterOptions={this.handleFilterOptions}
+        id={name}
         loadingPlaceholder='Ladataan...'
         loadOptions={this.getContacts}
         multi={false}

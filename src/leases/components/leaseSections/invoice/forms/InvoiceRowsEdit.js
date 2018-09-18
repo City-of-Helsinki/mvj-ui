@@ -7,7 +7,7 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
@@ -36,13 +36,22 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
               <div>
                 <Row>
                   <Column small={3} large={3}>
-                    <FormFieldLabel required={get(attributes, 'rows.child.children.tenant.required')}>Vuokralainen</FormFieldLabel>
+                    <FormTextTitle
+                      required={get(attributes, 'rows.child.children.tenant.required')}
+                      title='Vuokralainen'
+                    />
                   </Column>
                   <Column small={3} large={3}>
-                    <FormFieldLabel  required={get(attributes, 'rows.child.children.receivable_type.required')}>Saamislaji</FormFieldLabel>
+                    <FormTextTitle
+                      required={get(attributes, 'rows.child.children.receivable_type.required')}
+                      title='Saamislaji'
+                    />
                   </Column>
                   <Column small={3} large={3}>
-                    <FormFieldLabel required={get(attributes, 'rows.child.children.amount.required')}>Määrä</FormFieldLabel>
+                    <FormTextTitle
+                      required={get(attributes, 'rows.child.children.amount.required')}
+                      title='Määrä'
+                    />
                   </Column>
                 </Row>
                 {fields.map((row, index) => {
@@ -63,9 +72,9 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
                         <FormField
                           disableTouched={isEditClicked}
                           fieldAttributes={get(attributes, 'rows.child.children.tenant')}
+                          invisibleLabel
                           name={`${row}.tenant`}
                           overrideValues={{
-                            label: '',
                             options: tenantOptions,
                           }}
                         />
@@ -74,21 +83,17 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
                         <FormField
                           disableTouched={isEditClicked}
                           fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
+                          invisibleLabel
                           name={`${row}.receivable_type`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={2} large={3}>
                         <FormField
                           disableTouched={isEditClicked}
                           fieldAttributes={get(attributes, 'rows.child.children.amount')}
+                          invisibleLabel
                           name={`${row}.amount`}
                           unit='€'
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={1} large={2}>
@@ -110,7 +115,6 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
                 <AddButtonThird
                   label='Lisää rivi'
                   onClick={handleAdd}
-                  title='Lisää rivi'
                 />
               </Column>
             </Row>

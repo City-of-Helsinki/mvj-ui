@@ -1,6 +1,8 @@
 // @flow
 import React from 'react';
 
+import FormTextTitle from '$components/form/FormTextTitle';
+
 type Props = {
   identifier: ?string,
 }
@@ -12,7 +14,7 @@ const RentBasisInfo = ({identifier}: Props) => {
 
   return (
     <div className='rent-basis-page_info'>
-      <label className='mvj-form-field-label'>Vuokrausperustetunnus</label>
+      <FormTextTitle title='Vuokrausperustetunnus' />
       <h1 className='rent-basis-page__info_identifier'>{identifier}</h1>
     </div>
   );

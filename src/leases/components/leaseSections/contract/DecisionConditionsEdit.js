@@ -78,7 +78,7 @@ const DecisionConditionsEdit = ({
                           fieldAttributes={get(attributes, 'decisions.child.children.conditions.child.children.type')}
                           name={`${condition}.type`}
                           overrideValues={{
-                            label: 'Käyttötarkoitusehto',
+                            label: 'Ehtotyyppi',
                           }}
                         />
                       </Column>
@@ -122,7 +122,6 @@ const DecisionConditionsEdit = ({
                 <AddButtonSecondary
                   label='Lisää ehto'
                   onClick={handleAdd}
-                  title='Lisää ehto'
                 />
               </Column>
             </Row>

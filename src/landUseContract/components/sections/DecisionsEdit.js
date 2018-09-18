@@ -65,7 +65,6 @@ const renderDecisions = ({attributes, decisionsData, errors, fields, isSaveClick
                 <AddButton
                   label='Lisää päätös'
                   onClick={handleAdd}
-                  title='Lisää päätös'
                 />
               </Column>
             </Row>

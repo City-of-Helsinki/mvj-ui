@@ -59,7 +59,6 @@ const CreditInvoiceForm = ({
             <CloseButton
               className="position-topright"
               onClick={onClose}
-              title="Sulje"
             />
             <Row>
               <Column small={6} medium={4} large={2}>
@@ -129,14 +128,12 @@ const CreditInvoiceForm = ({
                     className='button-red'
                     label='Peruuta'
                     onClick={onClose}
-                    title='Peruuta'
                   />
                   <Button
                     className='button-green'
                     disabled={isCreditClicked && !valid}
                     label='Tallenna'
                     onClick={handleSave}
-                    title='Tallenna'
                   />
                 </div>
               </Column>

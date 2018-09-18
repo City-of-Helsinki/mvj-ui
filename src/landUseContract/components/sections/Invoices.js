@@ -3,8 +3,9 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
+import ListItem from '$components/content/ListItem';
 import ListItems from '$components/content/ListItems';
 import {getContentInvoices} from '$src/landUseContract/helpers';
 import {formatDate, formatNumber} from '$util/helpers';
@@ -24,26 +25,26 @@ const Invoices = ({currentLandUseContract}: Props) => {
       {!!invoices.length &&
         <div>
           <Row>
-            <Column small={3} large={2}><FormFieldLabel>Määrä</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel>Eräpäivä</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel>Lähetetty pvm</FormFieldLabel></Column>
-            <Column small={3} large={2}><FormFieldLabel>Maksettu pvm</FormFieldLabel></Column>
+            <Column small={3} large={2}><FormTextTitle title='Määrä' /></Column>
+            <Column small={3} large={2}><FormTextTitle title='Eräpäivä' /></Column>
+            <Column small={3} large={2}><FormTextTitle title='Lähetetty pvm' /></Column>
+            <Column small={3} large={2}><FormTextTitle title='Maksettu pvm' /></Column>
           </Row>
           <ListItems>
             {invoices.map((invoice, index) => {
               return (
                 <Row key={index}>
                   <Column small={3} large={2}>
-                    <p className='no-margin'>{invoice.amount ? `${formatNumber(invoice.amount)} €` : '-'}</p>
+                    <ListItem>{invoice.amount ? `${formatNumber(invoice.amount)} €` : '-'}</ListItem>
                   </Column>
                   <Column small={3} large={2}>
-                    <p className='no-margin'>{formatDate(invoice.due_date) || '-'}</p>
+                    <ListItem>{formatDate(invoice.due_date) || '-'}</ListItem>
                   </Column>
                   <Column small={3} large={2}>
-                    <p className='no-margin'>{formatDate(invoice.sent_date) || '-'}</p>
+                    <ListItem>{formatDate(invoice.sent_date) || '-'}</ListItem>
                   </Column>
                   <Column small={3} large={2}>
-                    <p className='no-margin'>{formatDate(invoice.paid_date) || '-'}</p>
+                    <ListItem>{formatDate(invoice.paid_date) || '-'}</ListItem>
                   </Column>
                 </Row>
               );

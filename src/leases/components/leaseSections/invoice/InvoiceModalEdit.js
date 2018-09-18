@@ -177,7 +177,6 @@ class InvoiceModalEdit extends Component<Props, State> {
             <CloseButton
               className='position-topright'
               onClick={onClose}
-              title='Sulje'
             />
           </div>
 
@@ -204,7 +203,6 @@ class InvoiceModalEdit extends Component<Props, State> {
                 className="button-red"
                 label='Peruuta'
                 onClick={onClose}
-                title='Peruuta'
               />
             }
             {(!invoice || !invoice.sap_id) &&
@@ -213,7 +211,6 @@ class InvoiceModalEdit extends Component<Props, State> {
                 disabled={isEditClicked && !isValid}
                 label='Tallenna'
                 onClick={this.handleSave}
-                title='Tallenna'
               />
             }
           </div>

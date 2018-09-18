@@ -13,7 +13,7 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
@@ -47,10 +47,16 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
               <div>
                 <Row>
                   <Column small={3} large={2}>
-                    <FormFieldLabel  required={get(attributes, 'rows.child.children.receivable_type.required')}>Saamislaji</FormFieldLabel>
+                    <FormTextTitle
+                      required={get(attributes, 'rows.child.children.receivable_type.required')}
+                      title='Saamislaji'
+                    />
                   </Column>
                   <Column small={3} large={2}>
-                    <FormFieldLabel required={get(attributes, 'rows.child.children.amount.required')}>Määrä</FormFieldLabel>
+                    <FormTextTitle
+                      required={get(attributes, 'rows.child.children.amount.required')}
+                      title='Määrä'
+                    />
                   </Column>
                 </Row>
                 {fields.map((row, index) => {
@@ -71,9 +77,10 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                         <FormField
                           disableTouched={isCreateClicked}
                           fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
+                          invisibleLabel={true}
                           name={`${row}.receivable_type`}
                           overrideValues={{
-                            label: '',
+                            label: 'Saamislaji',
                           }}
                         />
                       </Column>
@@ -81,10 +88,11 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                         <FormField
                           disableTouched={isCreateClicked}
                           fieldAttributes={get(attributes, 'rows.child.children.amount')}
+                          invisibleLabel={true}
                           name={`${row}.amount`}
                           unit='€'
                           overrideValues={{
-                            label: '',
+                            label: 'Määrä',
                           }}
                         />
                       </Column>
@@ -107,7 +115,6 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                 <AddButtonThird
                   label='Lisää rivi'
                   onClick={handleAdd}
-                  title='Lisää rivi'
                 />
               </Column>
             </Row>
@@ -168,7 +175,6 @@ const NewInvoiceForm = ({
             <CloseButton
               className="position-topright"
               onClick={onClose}
-              title="Poista lasku"
             />
             <Row>
               <Column small={6} medium={4} large={2}>
@@ -237,14 +243,12 @@ const NewInvoiceForm = ({
                     className='button-red'
                     label='Peruuta'
                     onClick={onClose}
-                    title='Peruuta'
                   />
                   <Button
                     className='button-green'
                     disabled={isCreateClicked && !valid}
                     label='Tallenna'
                     onClick={handleSave}
-                    title='Tallenna'
                   />
                 </div>
               </Column>

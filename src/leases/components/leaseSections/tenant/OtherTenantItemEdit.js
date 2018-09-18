@@ -195,7 +195,7 @@ const OtherTenantItemEdit = ({
             <EditButton
               className='position-topright'
               onClick={handleEditClick}
-              title='Muokkaa'
+              title='Muokkaa asiakasta'
             />
           }
           <ContactTemplate contact={contact} />

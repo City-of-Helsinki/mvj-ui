@@ -101,7 +101,7 @@ const SortableTableHeader = ({
   return (
     <thead>
       <tr>
-        {emptyFirstColumn && <th className='empty-cell'></th>}
+        {emptyFirstColumn && <td className='empty-cell'></td>}
         {dataKeys.map((column, index) => {
           const sorting = sortings[index];
           return (

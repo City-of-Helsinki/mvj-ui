@@ -5,7 +5,8 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import ExternalLink from '$components/links/ExternalLink';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormText from '$components/form/FormText';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import GreenBox from '$components/content/GreenBox';
 import LeaseItem from './LeaseItem';
 import Loader from '$components/loader/Loader';
@@ -37,46 +38,58 @@ const InfillDevelopmentTemplate = ({attributes, infillDevelopment, isFetching}: 
     <GreenBox>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Hankkeen nimi</FormFieldLabel>
-          <p>{infillDevelopment.name || '-'}</p>
+          <FormTitleAndText
+            title='Hankkeen nimi'
+            text={infillDevelopment.name || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Asemakaavan nro.</FormFieldLabel>
-          <p>{infillDevelopment.detailed_plan_identifier || '-'}</p>
+          <FormTitleAndText
+            title='Asemakaavan nro.'
+            text={infillDevelopment.detailed_plan_identifier || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Diaarinumero</FormFieldLabel>
-          {infillDevelopment.reference_number
-            ? <p className='no-margin'>
-              <ExternalLink
+          <FormTitleAndText
+            title='Diaarinumero'
+            text={infillDevelopment.reference_number
+              ? <ExternalLink
                 href={getReferenceNumberLink(infillDevelopment.reference_number)}
-                label={infillDevelopment.reference_number}
+                text={infillDevelopment.reference_number}
               />
-            </p>
-            : <p className='no-margin'>-</p>
-          }
+              : '-'
+            }
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Neuvotteluvaihe</FormFieldLabel>
-          <p>{getLabelOfOption(stateOptions, infillDevelopment.state) || '-'}</p>
+          <FormTitleAndText
+            title='Neuvotteluvaihe'
+            text={getLabelOfOption(stateOptions, infillDevelopment.state) || '-'}
+          />
         </Column>
       </Row>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Vastuuhenkilö</FormFieldLabel>
-          <p>{getUserFullName(infillDevelopment.user) || '-'}</p>
+          <FormTitleAndText
+            title='Vastuuhenkilö'
+            text={getUserFullName(infillDevelopment.user) || '-'}
+          />
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormFieldLabel>Vuokrasopimuksen muutos pvm</FormFieldLabel>
-          <p>{formatDate(infillDevelopment.lease_contract_change_date) || '-'}</p>
+          <FormTitleAndText
+            title='Vuokrasopimuksen muutos pvm'
+            text={formatDate(infillDevelopment.lease_contract_change_date) || '-'}
+          />
         </Column>
         <Column small={12} medium={4} large={8}>
-          <FormFieldLabel>Huomautus</FormFieldLabel>
-          <p>{infillDevelopment.note || '-'}</p>
+          <FormTitleAndText
+            title='Huomautus'
+            text={infillDevelopment.note || '-'}
+          />
         </Column>
       </Row>
       <SubTitle>Vuokraukset</SubTitle>
-      {!leases.length && <p>Ei vuokrauksia</p>}
+      {!leases.length && <FormText>Ei vuokrauksia</FormText>}
       {!!leases.length &&
         <div style={{marginBottom: 10}}>
           {leases.map((lease) =>

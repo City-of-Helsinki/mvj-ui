@@ -28,6 +28,7 @@ const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
 
   return (
     <Table
+      caption='Indeksitarkastetut vuokrat'
       data={indexAdjustedRents}
       dataKeys={[
         {key: 'amount', label: 'Indeksitarkastettu vuokra', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},

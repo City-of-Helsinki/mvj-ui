@@ -8,7 +8,7 @@ type Props = {
   className?: string,
   disabled?: boolean,
   onClick: Function,
-  title: string,
+  title?: string,
   type?: string,
 }
 
@@ -18,7 +18,8 @@ const RemoveButton = ({className, disabled, onClick, title, type = 'button'}: Pr
     disabled={disabled}
     type={type}
     title={title}
-    onClick={onClick}>
+    onClick={onClick}
+  >
     <TrashIcon className='icon-medium'/>
   </button>;
 

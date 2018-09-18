@@ -5,6 +5,7 @@ import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import isEmpty from 'lodash/isEmpty';
 
+import FormText from '$components/form/FormText';
 import {FormNames} from '$src/leases/enums';
 import {formatDecimalNumberForDb, formatNumber} from '$util/helpers';
 import {getPenaltyInterestByInvoice} from '$src/penaltyInterest/selectors';
@@ -55,19 +56,19 @@ const CollectionLetterTotalRow = ({
   return(
     <Row>
       <Column small={4}>
-        <p>Yhteensä</p>
+        <FormText>Yhteensä</FormText>
       </Column>
       <Column small={2}>
-        <p>{`${formatNumber(totalOutstandingAmount)} €`}</p>
+        <FormText>{`${formatNumber(totalOutstandingAmount)} €`}</FormText>
       </Column>
       <Column small={2}>
-        <p>{`${formatNumber(totalInterestAmount)} €`}</p>
+        <FormText>{`${formatNumber(totalInterestAmount)} €`}</FormText>
       </Column>
       <Column small={2}>
-        <p>{`${formatNumber(totalCollectionCharge)} €`}</p>
+        <FormText>{`${formatNumber(totalCollectionCharge)} €`}</FormText>
       </Column>
       <Column small={2}>
-        <p><strong>{`${formatNumber(total)} €`}</strong></p>
+        <FormText><strong>{`${formatNumber(total)} €`}</strong></FormText>
       </Column>
     </Row>
   );

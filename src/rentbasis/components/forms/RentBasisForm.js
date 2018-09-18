@@ -11,7 +11,7 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
@@ -37,7 +37,10 @@ const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked}: Property
       {({dispatch}) => {
         return(
           <div>
-            <FormFieldLabel required={get(attributes, 'property_identifiers.child.children.identifier.required')}>Kiinteistötunnukset</FormFieldLabel>
+            <FormTextTitle
+              required={get(attributes, 'property_identifiers.child.children.identifier.required')}
+              title='Kiinteistötunnukset'
+            />
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
                 dispatch({
@@ -58,10 +61,8 @@ const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked}: Property
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'property_identifiers.child.children.identifier')}
+                          invisibleLabel
                           name={`${field}.identifier`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       }
                       removeButton={
@@ -81,7 +82,6 @@ const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked}: Property
                 <AddButtonThird
                   label='Lisää kiinteistötunnus'
                   onClick={handleAdd}
-                  title='Lisää kiinteistötunnus'
                 />
               </Column>
             </Row>
@@ -113,16 +113,28 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
             {fields && !!fields.length &&
               <Row>
                 <Column small={3} large={2}>
-                  <FormFieldLabel required={get(attributes, 'decisions.child.children.decision_maker.required')}>Päättäjä</FormFieldLabel>
+                  <FormTextTitle
+                    required={get(attributes, 'decisions.child.children.decision_maker.required')}
+                    title='Päättäjä'
+                  />
                 </Column>
                 <Column small={3} large={2}>
-                  <FormFieldLabel required={get(attributes, 'decisions.child.children.decision_date.required')}>Pvm</FormFieldLabel>
+                  <FormTextTitle
+                    required={get(attributes, 'decisions.child.children.decision_date.required')}
+                    title='Pvm'
+                  />
                 </Column>
                 <Column small={3} large={2}>
-                  <FormFieldLabel required={get(attributes, 'decisions.child.children.section.required')}>Pykälä</FormFieldLabel>
+                  <FormTextTitle
+                    required={get(attributes, 'decisions.child.children.section.required')}
+                    title='Pykälä'
+                  />
                 </Column>
                 <Column small={3} large={2}>
-                  <FormFieldLabel required={get(attributes, 'decisions.child.children.reference_number.required')}>Hel diaarinumero</FormFieldLabel>
+                  <FormTextTitle
+                    required={get(attributes, 'decisions.child.children.reference_number.required')}
+                    title='Hel diaarinumero'
+                  />
                 </Column>
               </Row>
             }
@@ -144,31 +156,25 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'decisions.child.children.decision_maker')}
+                      invisibleLabel
                       name={`${field}.decision_maker`}
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                   <Column small={3} large={2}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'decisions.child.children.decision_date')}
+                      invisibleLabel
                       name={`${field}.decision_date`}
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                   <Column small={3} large={2}>
                     <FormField
                       disableTouched={isSaveClicked}
                       fieldAttributes={get(attributes, 'decisions.child.children.section')}
+                      invisibleLabel
                       name={`${field}.section`}
                       unit='§'
-                      overrideValues={{
-                        label: '',
-                      }}
                     />
                   </Column>
                   <Column small={3} large={2}>
@@ -177,11 +183,9 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'decisions.child.children.reference_number')}
+                          invisibleLabel
                           name={`${field}.reference_number`}
                           validate={referenceNumber}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       }
                       removeButton={
@@ -201,7 +205,6 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                 <AddButtonThird
                   label='Lisää päätös'
                   onClick={handleAdd}
-                  title='Lisää päätös'
                 />
               </Column>
             </Row>
@@ -232,9 +235,24 @@ const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): E
             {fields && !!fields.length &&
               <div>
                 <Row>
-                  <Column small={3} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.build_permission_type.required')}>Pääkäyttötarkoitus</FormFieldLabel></Column>
-                  <Column small={3} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.amount.required')}>Euroa</FormFieldLabel></Column>
-                  <Column small={3} large={2}><FormFieldLabel required={get(attributes, 'rent_rates.child.children.area_unit.required')}>Yksikkö</FormFieldLabel></Column>
+                  <Column small={3} large={2}>
+                    <FormTextTitle
+                      required={get(attributes, 'rent_rates.child.children.build_permission_type.required')}
+                      title='Pääkäyttötarkoitus'
+                    />
+                  </Column>
+                  <Column small={3} large={2}>
+                    <FormTextTitle
+                      required={get(attributes, 'rent_rates.child.children.amount.required')}
+                      title='Euroa'
+                    />
+                  </Column>
+                  <Column small={3} large={2}>
+                    <FormTextTitle
+                      required={get(attributes, 'rent_rates.child.children.area_unit.required')}
+                      title='Yksikkö'
+                    />
+                  </Column>
                 </Row>
                 {fields.map((field, index) => {
                   const handleRemove = () => {
@@ -254,20 +272,16 @@ const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): E
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rent_rates.child.children.build_permission_type')}
+                          invisibleLabel
                           name={`${field}.build_permission_type`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rent_rates.child.children.amount')}
+                          invisibleLabel
                           name={`${field}.amount`}
-                          overrideValues={{
-                            label: '',
-                          }}
                         />
                       </Column>
                       <Column small={3} large={2}>
@@ -276,10 +290,8 @@ const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): E
                             <FormField
                               disableTouched={isSaveClicked}
                               fieldAttributes={get(attributes, 'rent_rates.child.children.area_unit')}
+                              invisibleLabel
                               name={`${field}.area_unit`}
-                              overrideValues={{
-                                label: '',
-                              }}
                             />
                           }
                           removeButton={
@@ -290,7 +302,6 @@ const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): E
                             />
                           }
                         />
-
                       </Column>
                     </Row>
                   );
@@ -302,7 +313,6 @@ const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): E
                 <AddButtonThird
                   label='Lisää hinta'
                   onClick={handleAdd}
-                  title='Lisää hinta'
                 />
               </Column>
             </Row>

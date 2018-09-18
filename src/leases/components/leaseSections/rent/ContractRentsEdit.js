@@ -10,7 +10,7 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
-import FormFieldLabel from '$components/form/FormFieldLabel';
+import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import {DeleteModalLabels, DeleteModalTitles, RentTypes} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
@@ -57,27 +57,23 @@ const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props)
                       />
                       <Row>
                         <Column small={6} medium={4} large={2}>
-                          <FormFieldLabel>Sopimusvuokra</FormFieldLabel>
+                          <FormTextTitle title='Sopimusvuokra' />
                           <Row>
                             <Column small={6}>
                               <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.amount')}
+                                invisibleLabel
                                 name={`${rent}.amount`}
                                 unit='€'
-                                overrideValues={{
-                                  label: '',
-                                }}
                               />
                             </Column>
                             <Column small={6}>
                               <FormField
                                 disableTouched={isSaveClicked}
                                 fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.period')}
+                                invisibleLabel
                                 name={`${rent}.period`}
-                                overrideValues={{
-                                  label: '',
-                                }}
                               />
                             </Column>
                           </Row>
@@ -95,27 +91,23 @@ const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props)
                         {(rentType === RentTypes.INDEX ||
                           rentType === RentTypes.MANUAL) &&
                           <Column small={6} medium={4} large={2}>
-                            <FormFieldLabel>Vuokranlaskennan perusteena oleva vuokra</FormFieldLabel>
+                            <FormTextTitle title='Vuokranlaskennan perusteena oleva vuokra' />
                             <Row>
                               <Column small={6}>
                                 <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.base_amount')}
+                                  invisibleLabel
                                   name={`${rent}.base_amount`}
                                   unit='€'
-                                  overrideValues={{
-                                    label: '',
-                                  }}
                                 />
                               </Column>
                               <Column small={6}>
                                 <FormField
                                   disableTouched={isSaveClicked}
                                   fieldAttributes={get(attributes, 'rents.child.children.contract_rents.child.children.base_amount_period')}
+                                  invisibleLabel
                                   name={`${rent}.base_amount_period`}
-                                  overrideValues={{
-                                    label: '',
-                                  }}
                                 />
                               </Column>
                             </Row>
@@ -170,7 +162,6 @@ const ContractRentsEdit = ({attributes, fields, isSaveClicked, rentType}: Props)
                 <AddButtonSecondary
                   label='Lisää sopimusvuokra'
                   onClick={handleAdd}
-                  title='Lisää sopimusvuokra'
                 />
               </Column>
             </Row>
