@@ -10,6 +10,7 @@ import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
+import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
@@ -77,7 +78,7 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
                           name={`${invoice}.due_date`}
                         />
                       </Column>
-                      <Column small={2} large={2}>
+                      <Column small={3} large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'invoices.child.children.sent_date')}
@@ -85,19 +86,23 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
                           name={`${invoice}.sent_date`}
                         />
                       </Column>
-                      <Column small={2} large={2}>
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'invoices.child.children.paid_date')}
-                          invisibleLabel
-                          name={`${invoice}.paid_date`}
-                        />
-                      </Column>
-                      <Column>
-                        <RemoveButton
-                          className='third-level'
-                          onClick={handleRemove}
-                          title="Poista sopimus"
+                      <Column small={3} large={2}>
+                        <FieldAndRemoveButtonWrapper
+                          field={
+                            <FormField
+                              disableTouched={isSaveClicked}
+                              fieldAttributes={get(attributes, 'invoices.child.children.paid_date')}
+                              invisibleLabel
+                              name={`${invoice}.paid_date`}
+                            />
+                          }
+                          removeButton={
+                            <RemoveButton
+                              className='third-level'
+                              onClick={handleRemove}
+                              title="Poista sopimus"
+                            />
+                          }
                         />
                       </Column>
                     </Row>
