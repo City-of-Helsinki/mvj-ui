@@ -5,6 +5,7 @@
  * @type {{RENT_CALCULATOR: string,}}
  */
 export const FormNames = {
+  INVOICE_SIMULATOR: 'invoice-simulator-form',
   RENT_CALCULATOR: 'rent-calculator-form',
 };
 

@@ -19,6 +19,7 @@ import landUseContractSaga from '../landUseContract/saga';
 import leaseSaga from '../leases/saga';
 import mapDataSaga from '../mapData/saga';
 import penaltyInterestSaga from '../penaltyInterest/saga';
+import previewInvoicesSaga from '../previewInvoices/saga';
 import rentBasisSaga from '../rentbasis/saga';
 import rentForPeriodSaga from '../rentForPeriod/saga';
 import userSaga from '../users/saga';
@@ -45,6 +46,7 @@ export default () =>
       fork(leaseSaga),
       fork(mapDataSaga),
       fork(penaltyInterestSaga),
+      fork(previewInvoicesSaga),
       fork(rentBasisSaga),
       fork(rentForPeriodSaga),
       fork(userSaga),

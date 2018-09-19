@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import DebtCollection from './DebtCollection';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
+import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
 import InvoicesTable from './InvoicesTable';
 import CreateAndCreditInvoiceComponent from './CreateAndCreditInvoiceComponent';
 import CreateCollectionLetter from './CreateCollectionLetter';
@@ -23,6 +24,7 @@ type Props = {
   invoicesCollapseState: boolean,
   invoiceToCredit: ?string,
   isInvoicingEnabled: boolean,
+  previewInvoicesCollapseState: boolean,
   receiveCollapseStates: Function,
   receiveIsCreateInvoicePanelOpen: Function,
   receiveIsCreditInvoicePanelOpen: Function,
@@ -64,6 +66,18 @@ class Invoices extends Component<Props> {
     });
   };
 
+  handlePreviewInvoicesCollapseToggle = (val: boolean) => {
+    const {receiveCollapseStates} = this.props;
+
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        invoices: {
+          preview_invoices: val,
+        },
+      },
+    });
+  };
+
   handleInvoiceToCreditChange = (val: string) => {
     const {receiveInvoiceToCredit} = this.props;
     receiveInvoiceToCredit(val);
@@ -74,6 +88,7 @@ class Invoices extends Component<Props> {
       invoicesCollapseState,
       invoiceToCredit,
       isInvoicingEnabled,
+      previewInvoicesCollapseState,
       rentCalculatorCollapseState,
     } = this.props;
 
@@ -111,6 +126,13 @@ class Invoices extends Component<Props> {
         >
           <RentCalculator />
         </Collapse>
+        <Collapse
+          defaultOpen={previewInvoicesCollapseState !== undefined ? previewInvoicesCollapseState : true}
+          headerTitle={<h3 className='collapse__header-title'>Laskujen esikatselu</h3>}
+          onToggle={this.handlePreviewInvoicesCollapseToggle}
+        >
+          <InvoiceSimulator />
+        </Collapse>
 
         <h2>Perintä</h2>
         <Divider />
@@ -129,6 +151,7 @@ export default connect(
       invoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.invoices`),
       invoiceToCredit: getInvoiceToCredit(state),
       isInvoicingEnabled: currentLease ? currentLease.is_invoicing_enabled : null,
+      previewInvoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.preview_invoices`),
       rentCalculatorCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.rent_calculator`),
     };
   },

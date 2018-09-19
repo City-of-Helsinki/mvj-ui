@@ -51,6 +51,7 @@ import {
   receiveIsSaveClicked,
   showEditMode,
 } from '$src/leases/actions';
+import {clearPreviewInvoices} from '$src/previewInvoices/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/leases/enums';
 import {FormNames as ComponentFormNames} from '$components/enums';
@@ -84,6 +85,7 @@ type Props = {
   attributes: Attributes,
   change: Function,
   clearFormValidFlags: Function,
+  clearPreviewInvoices: Function,
   commentAttributes: CommentAttributes,
   comments: CommentList,
   contactAttributes: ContactAttributes,
@@ -246,6 +248,7 @@ class LeasePage extends Component<Props, State> {
 
   componentWillUnmount() {
     const {
+      clearPreviewInvoices,
       destroy,
       hideEditMode,
       params: {leaseId},
@@ -258,6 +261,8 @@ class LeasePage extends Component<Props, State> {
     }
     this.stopAutoSaveTimer();
 
+    clearPreviewInvoices();
+    destroy(ComponentFormNames.INVOICE_SIMULATOR);
     destroy(ComponentFormNames.RENT_CALCULATOR);
     hideEditMode();
     window.removeEventListener('beforeunload', this.handleLeavePage);
@@ -902,6 +907,7 @@ export default flowRight(
     {
       change,
       clearFormValidFlags,
+      clearPreviewInvoices,
       destroy,
       fetchAreaNoteList,
       fetchAttributes,

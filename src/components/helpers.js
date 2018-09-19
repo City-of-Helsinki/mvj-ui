@@ -5,9 +5,11 @@ import {
   RentSubItemSubjectType,
   RentSubItemType,
 } from './enums';
+import {TenantContactType} from '$src/leases/enums';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
 import type {Attributes} from '$src/leases/types';
+import type {BillingPeriod, BillingPeriodInvoice, PreviewInvoices} from '$src/previewInvoices/types';
 
 export const getRentsTotalAmount = (rents: Array<Object>) => {
   let amount = 0;
@@ -83,4 +85,53 @@ export const getRentSubItemDescription = (subItem: Object, attributes: Attribute
     default:
       return '-';
   }
+};
+
+const getContentBillingPeriodInvoiceRowTenant = (row: Object) => {
+  const tenant = get(row, 'tenant.tenantcontact_set').find((tenant) => tenant.type === TenantContactType.TENANT);
+  return {
+    contact: tenant ? tenant.contact : null,
+    shareDenominator: row.tenant.share_denominator,
+    shareNumerator: row.tenant.share_numerator,
+  };
+};
+
+const getContentBillingPeriodInvoiceRows = (invoice: BillingPeriodInvoice) => {
+  return get(invoice, 'rows', []).map((row) => {
+    return {
+      amount: row.amount,
+      description: row.description,
+      receivableType: row.receivable_type,
+      tenant: getContentBillingPeriodInvoiceRowTenant(row),
+    };
+  });
+};
+
+const getContentBillingPeriodInvoice = (invoice: BillingPeriodInvoice) => {
+  return {
+    billedAmount: invoice.billed_amount,
+    dueDate: invoice.due_date,
+    endDate: invoice.billing_period_end_date,
+    recipient: invoice.recipient,
+    rows: getContentBillingPeriodInvoiceRows(invoice),
+    startDate: invoice.billing_period_start_date,
+    type: invoice.type,
+  };
+};
+
+const getContentBillingPeriod = (billingPeriods: BillingPeriod) => {
+  return {
+    endDate: get(billingPeriods, '[0].billing_period_end_date'),
+    explanations: get(billingPeriods, '[0].explanations'),
+    invoices: billingPeriods.map((billingPeriod) => getContentBillingPeriodInvoice(billingPeriod)),
+    startDate: get(billingPeriods, '[0].billing_period_start_date'),
+    totalAmount: get(billingPeriods, '[0].total_amount'),
+  };
+};
+
+export const getContentPreviewInvoiceBillingPeriods = (invoices: PreviewInvoices) => {
+  if(!invoices) {
+    return null;
+  }
+  return invoices.map((invoice) => getContentBillingPeriod(invoice));
 };

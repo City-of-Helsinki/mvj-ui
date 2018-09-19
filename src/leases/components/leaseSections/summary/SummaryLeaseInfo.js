@@ -75,7 +75,7 @@ const SummaryLeaseInfo = ({attributes, currentLease}: Props) => {
                       />
                     </ListItem>
                   </Column>
-                  <Column small={6} large={4}><p className='no-margin'>{contact.share_numerator} / {contact.share_denominator}</p></Column>
+                  <Column small={6} large={4}><ListItem>{contact.share_numerator} / {contact.share_denominator}</ListItem></Column>
                 </Row>
               );
             })}

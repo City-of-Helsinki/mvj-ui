@@ -11,6 +11,7 @@ import ConfirmationModal from '$components/modal/ConfirmationModal';
 import CreateCollectionLetter from './CreateCollectionLetter';
 import DebtCollection from './DebtCollection';
 import Divider from '$components/content/Divider';
+import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
 import InvoicesTableEdit from './InvoicesTableEdit';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
@@ -28,6 +29,7 @@ type Props = {
   invoiceToCredit: ?string,
   isInvoicingEnabled: boolean,
   params: Object,
+  previewInvoicesCollapseState: boolean,
   receiveCollapseStates: Function,
   receiveInvoiceToCredit: Function,
   receiveIsCreateInvoicePanelOpen: Function,
@@ -136,11 +138,24 @@ class InvoicesEdit extends Component<Props, State> {
     });
   };
 
+  handlePreviewInvoicesCollapseToggle = (val: boolean) => {
+    const {receiveCollapseStates} = this.props;
+
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        invoices: {
+          preview_invoices: val,
+        },
+      },
+    });
+  };
+
   render() {
     const {
       currentLease,
       invoicesCollapseState,
       invoiceToCredit,
+      previewInvoicesCollapseState,
       rentCalculatorCollapseState,
     } = this.props;
     const {
@@ -150,7 +165,6 @@ class InvoicesEdit extends Component<Props, State> {
 
     return (
       <div>
-
         <ConfirmationModal
           confirmButtonLabel='Käynnistä laskutus'
           isOpen={isStartInvoicingModalOpen}
@@ -177,13 +191,13 @@ class InvoicesEdit extends Component<Props, State> {
             currentLease.is_invoicing_enabled
               ? <Button
                 className='button-red'
-                label='Keskeytä laskutus'
                 onClick={this.handleStopInvoicingButtonClick}
+                text='Keskeytä laskutus'
               />
               : <Button
                 className='button-green'
-                label='Käynnistä laskutus'
                 onClick={this.handleStartInvoicingButtonClick}
+                text='Käynnistä laskutus'
               />
           }
           className='invoicing-status'
@@ -217,6 +231,14 @@ class InvoicesEdit extends Component<Props, State> {
           <RentCalculator />
         </Collapse>
 
+        <Collapse
+          defaultOpen={previewInvoicesCollapseState !== undefined ? previewInvoicesCollapseState : true}
+          headerTitle={<h3 className='collapse__header-title'>Laskujen esikatselu</h3>}
+          onToggle={this.handlePreviewInvoicesCollapseToggle}
+        >
+          <InvoiceSimulator />
+        </Collapse>
+
         <h2>Perintä</h2>
         <Divider />
         <DebtCollection />
@@ -234,6 +256,7 @@ export default flowRight(
         currentLease: getCurrentLease(state),
         invoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.invoices.invoices`),
         invoiceToCredit: getInvoiceToCredit(state),
+        previewInvoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.preview_invoices`),
         rentCalculatorCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.invoices.rent_calculator`),
       };
     },

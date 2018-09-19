@@ -44,14 +44,14 @@ const NewCollectionNote = ({
       <div className='invoice__new-collection-note_button-wrapper'>
         <Button
           className='button-red'
-          label='Peruuta'
           onClick={onCancel}
+          text='Peruuta'
         />
         <Button
           className='button-green'
           disabled={!note}
-          label='Tallenna'
           onClick={handleSave}
+          text='Tallenna'
         />
       </div>
     </div>

@@ -126,14 +126,14 @@ const CreditInvoiceForm = ({
                 <div className='button-wrapper'>
                   <Button
                     className='button-red'
-                    label='Peruuta'
                     onClick={onClose}
+                    text='Peruuta'
                   />
                   <Button
                     className='button-green'
                     disabled={isCreditClicked && !valid}
-                    label='Tallenna'
                     onClick={handleSave}
+                    text='Tallenna'
                   />
                 </div>
               </Column>

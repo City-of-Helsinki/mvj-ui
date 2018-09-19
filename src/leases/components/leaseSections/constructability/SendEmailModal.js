@@ -124,14 +124,14 @@ class SendEmailModal extends Component<Props, State> {
         <div className='constructability__send-email-modal_footer'>
           <Button
             className='button-red'
-            label='Peruuta'
             onClick={onCancel}
+            text='Peruuta'
           />
           <Button
             className='button-green'
             disabled={!selectedUsers.length}
-            label='Lähetä'
             onClick={onSend}
+            text='Lähetä'
           />
         </div>
       </Modal>

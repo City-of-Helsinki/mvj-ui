@@ -201,13 +201,13 @@ class ContactListPage extends Component<Props, State> {
           buttonComponent={
             <Button
               className='no-margin'
-              label='Luo asiakas'
-              onClick={() => this.handleCreateButtonClick()}
+              onClick={this.handleCreateButtonClick}
+              text='Luo asiakas'
             />
           }
           searchComponent={
             <Search
-              onSearch={(query) => this.handleSearchChange(query)}
+              onSearch={this.handleSearchChange}
             />
           }
         />
@@ -235,7 +235,7 @@ class ContactListPage extends Component<Props, State> {
             <Pagination
               activePage={activePage}
               maxPage={maxPage}
-              onPageClick={(page) => this.handlePageClick(page)}
+              onPageClick={this.handlePageClick}
             />
           </div>
         }

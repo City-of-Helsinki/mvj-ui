@@ -286,6 +286,26 @@
         overflow: hidden !important;
       }
     }
+
+    .collapse__third {
+      .collapse__header {
+        .arrow-icon {
+          @include transform(translateY(-50%) rotate(0) !important);
+        }
+      }
+
+      .collapse__content {
+        overflow: hidden !important;
+      }
+
+      &.open {
+        .collapse__header {
+          .arrow-icon {
+            @include transform(translateY(-50%) rotate(90deg) !important);
+          }
+        }
+      }
+    }
   }
 }
 
@@ -294,6 +314,10 @@
 }
 
 .collapse .collapse.collapse__secondary:last-of-type {
+  margin-bottom: rem-calc(10px);
+}
+
+.collapse .collapse.collapse__third:last-of-type {
   margin-bottom: rem-calc(10px);
 }
 

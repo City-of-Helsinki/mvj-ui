@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 import get from 'lodash/get';
 
+import FormText from '$components/form/FormText';
 import SubItem from './SubItem';
 import {RentExplanationSubjectType} from '../enums';
 import {formatDateRange, formatNumber} from '$util/helpers';
@@ -29,25 +30,26 @@ const Explanation = ({attributes, explanation}: Props) => {
     <div className='rent-calculator__explanation'>
       <Row>
         <Column small={6}>
-          <p className={classNames({'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>
+          <FormText className={classNames({'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>
             {description || '-'}
-          </p>
+          </FormText>
         </Column>
         <Column small={4}>
           <div className='rent-calculator__explanation_dates'>
             {!!dates && !!dates.length &&
               dates.map((date, index) => {
-                return <p
+                return <FormText
                   key={index}
-                  className={classNames({'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>{formatDateRange(date.start_date, date.end_date)}</p>;
+                  className={classNames({'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>{formatDateRange(date.start_date, date.end_date)}
+                </FormText>;
               })
             }
           </div>
         </Column>
         <Column small={2}>
-          <p className={classNames('rent-calculator__explanation_amount', {'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>
+          <FormText className={classNames('rent-calculator__explanation_amount', {'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>
             {`${formatNumber(amount)} €`}
-          </p>
+          </FormText>
         </Column>
       </Row>
       {!!subItems && !!subItems.length &&

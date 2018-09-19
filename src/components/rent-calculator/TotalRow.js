@@ -2,6 +2,7 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
+import FormText from '$components/form/FormText';
 import {formatNumber} from '$util/helpers';
 import {getRentsTotalAmount} from '../helpers';
 
@@ -19,8 +20,8 @@ const TotalRow = ({rents}: Props) => {
     <div className='rent-calculator__rent'>
       <div className='rent-calculator__divider' />
       <Row>
-        <Column small={10}><p className='no-margin'><strong>Yhteensä</strong></p></Column>
-        <Column small={2}><p className='no-margin rent-calculator__rent_amount'><strong>{`${formatNumber(amount)} €`}</strong></p></Column>
+        <Column small={10}><FormText className='no-margin'><strong>Yhteensä</strong></FormText></Column>
+        <Column small={2}><FormText className='no-margin rent-calculator__rent_amount'><strong>{`${formatNumber(amount)} €`}</strong></FormText></Column>
       </Row>
     </div>
   );

@@ -186,16 +186,16 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
               <Button
                 className='button-green no-margin'
                 disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
-                label='Hyvitä'
                 onClick={this.handleOpenCreditInvoicePanelButtonClick}
+                text='Hyvitä'
               />
             }
             {enableCreateInvoice &&
               <Button
                 className='button-green'
                 disabled={isCreateInvoicePanelOpen}
-                label='+ Luo lasku'
                 onClick={this.handleOpenCreateInvoicePanelButtonClick}
+                text='+ Luo lasku'
               />
             }
           </div>

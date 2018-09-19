@@ -508,6 +508,10 @@
       color: $black;
     }
 
+    &.align-right {
+      text-align: right;
+    }
+
     &.no-margin {
       margin: 0;
     }

@@ -60,8 +60,8 @@ const FileDownloadButton = ({
     <Button
       className='button-green no-margin'
       disabled={disabled}
-      label={label}
       onClick={handleClick}
+      text={label}
     />
   );
 };

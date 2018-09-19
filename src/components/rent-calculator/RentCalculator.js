@@ -93,8 +93,8 @@ class RentCalculator extends Component<Props> {
               <Button
                 className='button-green no-margin'
                 disabled={!isValid}
-                label='Laske'
                 onClick={this.handleCalculate}
+                text='Laske'
               />
             </div>
           </Column>
@@ -144,11 +144,11 @@ export default flowRight(
 
       return {
         currentLease: getCurrentLease(state),
-        endDate: selector(state, 'end_date'),
+        endDate: selector(state, 'billing_end_date'),
         isFetching: getIsFetching(state),
         isValid: isValid(formName)(state),
         rentForPeriod: getRentForPeriodByLease(state, leaseId),
-        startDate: selector(state, 'start_date'),
+        startDate: selector(state, 'billing_start_date'),
       };
     },
     {

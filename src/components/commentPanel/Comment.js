@@ -100,14 +100,14 @@ class Comment extends PureComponent<Props, State> {
                   <div className='comment__button-wrapper'>
                     <Button
                       className='button-red'
-                      label='Kumoa'
                       onClick={this.handleCancelButtonClick}
+                      text='Kumoa'
                     />
                     <Button
                       className='button-green'
                       disabled={!editedText}
-                      label='Tallenna'
                       onClick={this.handleSaveButtonClick}
+                      text='Tallenna'
                     />
                   </div>
                 </Column>

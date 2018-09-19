@@ -106,13 +106,13 @@ class CreateLandUseContractForm extends Component<Props> {
             <Button
               className='button-green pull-right no-margin'
               disabled={!valid}
-              label='Luo tunnus'
               onClick={this.handleCreate}
+              text='Luo tunnus'
             />
             <Button
               className='button-red pull-right'
-              label='Peruuta'
               onClick={onClose}
+              text='Peruuta'
             />
           </Column>
         </Row>

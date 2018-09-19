@@ -201,16 +201,16 @@ class InvoiceModalEdit extends Component<Props, State> {
             {(!invoice || !invoice.sap_id) &&
               <Button
                 className="button-red"
-                label='Peruuta'
                 onClick={onClose}
+                text='Peruuta'
               />
             }
             {(!invoice || !invoice.sap_id) &&
               <Button
                 className="button-green"
                 disabled={isEditClicked && !isValid}
-                label='Tallenna'
                 onClick={this.handleSave}
+                text='Tallenna'
               />
             }
           </div>

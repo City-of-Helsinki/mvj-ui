@@ -52,21 +52,21 @@ const ContactModal = ({
           <div className='button-wrapper'>
             <Button
               className='button-red'
-              label='Peruuta'
               onClick={onCancel}
+              text='Peruuta'
             />
             <Button
               className='button-green'
               disabled={isSaveClicked && !isContactFormValid}
-              label='Tallenna'
               onClick={onSave}
+              text='Tallenna'
             />
             {showSaveAndAdd &&
               <Button
                 className='button-green'
                 disabled={isSaveClicked && !isContactFormValid}
-                label='Tallenna ja Lisää'
                 onClick={onSaveAndAdd}
+                text='Tallenna ja Lisää'
               />
             }
           </div>
