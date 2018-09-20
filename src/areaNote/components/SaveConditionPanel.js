@@ -99,19 +99,19 @@ class SaveConditionPanel extends Component<Props, State> {
                       <Button
                         className='button-red'
                         disabled={disableDelete}
-                        label='Poista'
                         onClick={handleDelete}
+                        text='Poista'
                       />
                       <Button
                         className='button-red'
-                        label='Peruuta'
                         onClick={onCancel}
+                        text='Peruuta'
                       />
                       <Button
                         className='button-green'
                         disabled={disableSave}
-                        label='Tallenna'
                         onClick={this.handleSave}
+                        text='Tallenna'
                       />
                     </Column>
                   </Row>

@@ -56,8 +56,8 @@ const NewCommentForm = ({
         <Button
           className={'button-green no-margin'}
           disabled={!valid}
-          label='Kommentoi'
           onClick={handleAddComment}
+          text='Kommentoi'
         />
       </FormSection>
     </form>

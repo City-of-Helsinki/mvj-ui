@@ -52,6 +52,18 @@ class SendEmail extends Component<{}, State> {
     isOpen: false,
   }
 
+  handleShowModal = () => {
+    this.setState({
+      isOpen: true,
+    });
+  }
+
+  handleHideModal = () => {
+    this.setState({
+      isOpen: false,
+    });
+  }
+
   handleOnSend = (recipients: Array<string>) => {
     console.log(recipients);
     this.setState({isOpen: false});
@@ -65,18 +77,18 @@ class SendEmail extends Component<{}, State> {
       <div>
         <SendEmailModal
           isOpen={isOpen}
-          onCancel={() => this.setState({isOpen: false})}
-          onClose={() => this.setState({isOpen: false})}
-          onSend={(recipients) => this.handleOnSend(recipients)}
+          onCancel={this.handleHideModal}
+          onClose={this.handleHideModal}
+          onSend={this.handleOnSend}
         />
 
         <Row>
           <Column small={12} medium={4} large={3}>
             <Button
               className='button-green no-margin'
-              label='Lähetä sähköposti'
-              onClick={() => this.setState({isOpen: true})}
+              onClick={this.handleShowModal}
               style={{marginBottom: 15}}
+              text='Lähetä sähköposti'
             />
           </Column>
           <Column small={12} medium={8} large={9}>

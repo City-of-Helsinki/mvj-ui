@@ -5,11 +5,13 @@ import classNames from 'classnames';
 type Props = {
   children?: any,
   className?: string,
+  style?: Object,
 }
 
 const FormText = ({
   children,
   className,
-}: Props) => <p  className={classNames('form__text', className)}>{children}</p>;
+  style,
+}: Props) => <p  className={classNames('form__text', className)} style={style}>{children}</p>;
 
 export default FormText;

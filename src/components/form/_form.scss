@@ -508,12 +508,20 @@
       color: $black;
     }
 
-    &.no-margin {
-      margin: 0;
+    &.align-right {
+      text-align: right;
     }
 
     &.full-width {
       width: 100%;
+    }
+
+    &.no-margin {
+      margin: 0;
+    }
+
+    &.semibold {
+      font-weight: $semibold;
     }
   }
 

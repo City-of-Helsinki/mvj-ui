@@ -217,8 +217,8 @@ class InfillDevelopmentListPage extends Component<Props, State> {
           buttonComponent={
             <Button
               className='no-margin'
-              label='Luo täydennysrakentamiskorvaus'
               onClick={this.handleCreateButtonClick}
+              text='Luo täydennysrakentamiskorvaus'
             />
           }
           searchComponent={

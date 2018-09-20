@@ -24,6 +24,7 @@ import landUseContractReducer from '$src/landUseContract/reducer';
 import leaseReducer from '../leases/reducer';
 import mapDataReducer from '../mapData/reducer';
 import penaltyInterestReducer from '../penaltyInterest/reducer';
+import previewInvoicesReducer from '../previewInvoices/reducer';
 import rentBasisReducer from '../rentbasis/reducer';
 import rentForPeriodReducer from '../rentForPeriod/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
@@ -55,6 +56,7 @@ export default (): Reducer<RootState> =>
     mapData: mapDataReducer,
     oidc,
     penaltyInterest: penaltyInterestReducer,
+    previewInvoices: previewInvoicesReducer,
     rentBasis: rentBasisReducer,
     rentForPeriod: rentForPeriodReducer,
     routing: routerReducer,

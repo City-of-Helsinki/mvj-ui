@@ -102,14 +102,15 @@ class ArchiveAreaModal extends Component<Props> {
           <div className='confirmation-modal__footer'>
             <Button
               className='button-red'
-              label='Peruuta'
               onClick={onCancel}
+              text='Peruuta'
             />
             <Button
               className='button-green'
               disabled={!valid}
-              label='Arkistoi'
+
               onClick={this.handleArchive}
+              text='Arkistoi'
             />
           </div>
         </Modal>

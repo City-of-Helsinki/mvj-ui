@@ -251,7 +251,7 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
               <Divider className='invoice-divider' />
               <Row>
                 <Column small={10}><FormText><strong>Yhteensä</strong></FormText></Column>
-                <Column small={2}><FormText className='invoice__rows_amount'><strong>{`${formatNumber(sum)} €`}</strong></FormText></Column>
+                <Column small={2}><FormText className='align-right'><strong>{`${formatNumber(sum)} €`}</strong></FormText></Column>
               </Row>
             </div>
           }

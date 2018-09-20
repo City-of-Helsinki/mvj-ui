@@ -6,6 +6,7 @@ import type {CollectionCourtDecisionState} from '$src/collectionCourtDecision/ty
 import type {CollectionLetterState} from '$src/collectionLetter/types';
 import type {CollectionNoteState} from '../collectionNote/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
+import type {PreviewInvoicesState} from '$src/previewInvoices/types';
 import type {UserState} from '../role/types';
 
 export type RootState = {
@@ -15,5 +16,6 @@ export type RootState = {
   collectionLetter: CollectionLetterState,
   collectionNote: CollectionNoteState,
   penaltyInterest: PenaltyInterestState,
+  previewInvoices: PreviewInvoicesState,
   user: UserState,
 };

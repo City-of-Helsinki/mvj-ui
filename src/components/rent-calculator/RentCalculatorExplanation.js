@@ -5,7 +5,8 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 import get from 'lodash/get';
 
-import SubItem from './SubItem';
+import FormText from '$components/form/FormText';
+import RentCalculatorSubItem from './RentCalculatorSubItem';
 import {RentExplanationSubjectType} from '../enums';
 import {formatDateRange, formatNumber} from '$util/helpers';
 import {getRentExplanationAmount, getRentExplanationDescription} from '../helpers';
@@ -18,7 +19,7 @@ type Props = {
   explanation: Object,
 }
 
-const Explanation = ({attributes, explanation}: Props) => {
+const RentCalculatorExplanation = ({attributes, explanation}: Props) => {
   const description = getRentExplanationDescription(explanation, attributes);
   const dates = get(explanation, 'date_ranges');
   const amount = getRentExplanationAmount(explanation);
@@ -26,33 +27,35 @@ const Explanation = ({attributes, explanation}: Props) => {
   const subjectType = get(explanation, 'subject.subject_type');
 
   return (
-    <div className='rent-calculator__explanation'>
+    <div>
       <Row>
         <Column small={6}>
-          <p className={classNames({'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>
+          <FormText
+            className={classNames({'semibold': subjectType === RentExplanationSubjectType.RENT})}>
             {description || '-'}
-          </p>
+          </FormText>
         </Column>
         <Column small={4}>
           <div className='rent-calculator__explanation_dates'>
             {!!dates && !!dates.length &&
               dates.map((date, index) => {
-                return <p
+                return <FormText
                   key={index}
-                  className={classNames({'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>{formatDateRange(date.start_date, date.end_date)}</p>;
+                  className={classNames({'semibold': subjectType === RentExplanationSubjectType.RENT})}>{formatDateRange(date.start_date, date.end_date)}
+                </FormText>;
               })
             }
           </div>
         </Column>
         <Column small={2}>
-          <p className={classNames('rent-calculator__explanation_amount', {'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>
+          <FormText className={classNames('rent-calculator__explanation_amount', {'semibold': subjectType === RentExplanationSubjectType.RENT})}>
             {`${formatNumber(amount)} €`}
-          </p>
+          </FormText>
         </Column>
       </Row>
       {!!subItems && !!subItems.length &&
         subItems.map((item, index) => {
-          return <SubItem key={index} subItem={item} />;
+          return <RentCalculatorSubItem key={index} subItem={item} />;
         })
       }
     </div>
@@ -65,4 +68,4 @@ export default connect(
       attributes: getAttributes(state),
     };
   }
-)(Explanation);
+)(RentCalculatorExplanation);

@@ -100,8 +100,8 @@ class AreaNotesList extends Component<Props> {
             <Button
               className='no-margin'
               disabled={isEditMode}
-              label='Luo muistettava ehto'
               onClick={this.handleCreateButtonClick}
+              text='Luo muistettava ehto'
             />
           }
           searchComponent={

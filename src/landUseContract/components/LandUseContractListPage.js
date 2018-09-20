@@ -229,8 +229,8 @@ class LandUseContractListPage extends Component<Props, State> {
           buttonComponent={
             <Button
               className='no-margin'
-              label='Luo maankäyttösopimus'
               onClick={this.handleCreateButtonClick}
+              text='Luo maankäyttösopimus'
             />
           }
           searchComponent={
