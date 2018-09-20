@@ -19,6 +19,5 @@ export const receivePreviewInvoices = (previewInvoices: PreviewInvoices): Receiv
 export const clearPreviewInvoices = (): ClearPreviewInvoicesAction =>
   createAction('mvj/previewInvoices/CLEAR')();
 
-
 export const notFound = (): PreviewInvoicesNotFoundAction =>
   createAction('mvj/previewInvoices/NOT_FOUND')();

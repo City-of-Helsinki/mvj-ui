@@ -5,7 +5,6 @@ import {change, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import moment from 'moment';
 import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
 
 import FormField from '$components/form/FormField';
 import {FormNames} from '$components/enums';
@@ -19,11 +18,13 @@ type Props = {
   billingPeriods: BillingPeriodList,
   billingPeriod: ?number,
   change: Function,
+  onSubmit: Function,
   valid: boolean,
 }
 
 type State = {
   billingPeriodOptions: Array<Object>,
+  billingPeriods: BillingPeriodList,
 }
 
 const validate = values => {
@@ -31,6 +32,7 @@ const validate = values => {
   if (!values.billing_start_date) {
     errors.billing_start_date = 'Alkupäivämäärä on pakollinen';
   }
+
   if (!values.billing_end_date) {
     errors.billing_end_date = 'Loppupäivämäärä on pakollinen';
   } else if(new Date(values.billing_start_date).getFullYear() !== new Date(values.billing_end_date).getFullYear()) {
@@ -41,58 +43,61 @@ const validate = values => {
   return errors;
 };
 
+const getBillingPeriodsOptions = (billingPeriods: BillingPeriodList) => {
+  if(!billingPeriods || !billingPeriods.length) {
+    return [];
+  }
+
+  return billingPeriods.map((item, index) => {
+    return {
+      value: index,
+      label: formatDateRange(item[0], item[1]),
+      startDate: item[0],
+      endDate: item[1],
+    };
+  });
+};
+
 class RentCalculatorForm extends Component<Props, State> {
   state = {
     billingPeriodOptions: [],
+    billingPeriods: [],
   }
 
-  componentWillMount() {
-    if(!isEmpty(this.props.billingPeriods)) {
-      this.updateBillingPeriodOptions();
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.billingPeriods !== state.billingPeriods) {
+      newState.billingPeriods = props.billingPeriods;
+      newState.billingPeriodOptions = getBillingPeriodsOptions(props.billingPeriods);
     }
+
+    return newState;
   }
 
-  componentDidUpdate(prevProps) {
-    if(prevProps.billingPeriods !== this.props.billingPeriods) {
-      this.updateBillingPeriodOptions();
-    }
-
+  componentDidUpdate(prevProps: Props, prevState: State) {
     if(prevProps.billingPeriod !== this.props.billingPeriod) {
       this.updateDates();
+    }
+
+    if(prevState.billingPeriodOptions !== this.state.billingPeriodOptions) {
+      this.autoselectBillingPeriods(this.state.billingPeriodOptions);
     }
   }
 
   updateBillingPeriodOptions = () => {
-    const {billingPeriods} = this.props;
-    const billingPeriodOptions = this.getBillingPeriodsOptions(billingPeriods);
-    this.setState({
-      billingPeriodOptions: billingPeriodOptions,
-    });
+    const {billingPeriodOptions} = this.state;
 
     this.autoselectBillingPeriods(billingPeriodOptions);
   }
 
-  getBillingPeriodsOptions = (billingPeriods: BillingPeriodList) => {
-    if(!billingPeriods || !billingPeriods.length) {
-      return [];
-    }
-
-    return billingPeriods.map((item, index) => {
-      return {
-        value: index,
-        label: formatDateRange(item[0], item[1]),
-        startDate: item[0],
-        endDate: item[1],
-      };
-    });
-  };
-
   autoselectBillingPeriods = (billingPeriodOptions: Array<Object>) => {
-    const {change} = this.props;
-    const now = new Date();
-    const selected =  billingPeriodOptions.find((item) => {
-      return new Date(item.startDate) <= now && new Date(item.endDate) >= now;
-    });
+    const {change} = this.props,
+      now = new Date(),
+      selected =  billingPeriodOptions.find((item) => {
+        return new Date(item.startDate) <= now && new Date(item.endDate) >= now;
+      });
+
     if(selected) {
       change('billing_period', selected.value);
       change('billing_start_date', selected.startDate);
@@ -101,20 +106,28 @@ class RentCalculatorForm extends Component<Props, State> {
   }
 
   updateDates = () => {
-    const {billingPeriodOptions} = this.state;
-    const {billingPeriod, change} = this.props;
-    const selected = billingPeriodOptions.find((item) => item.value === billingPeriod);
+    const {billingPeriodOptions} = this.state,
+      {billingPeriod, change} = this.props,
+      selected = billingPeriodOptions.find((item) => item.value === billingPeriod);
+
     if(selected) {
       change('billing_start_date', selected.startDate);
       change('billing_end_date', selected.endDate);
     }
   }
 
+  handleSubmit = (e: any) => {
+    const {onSubmit} = this.props;
+
+    onSubmit();
+    e.preventDefault();
+  }
+
   render() {
     const {billingPeriodOptions} = this.state;
 
     return (
-      <form>
+      <form onSubmit={this.handleSubmit}>
         <Row>
           <Column small={6}>
             <FormField
@@ -167,6 +180,7 @@ export default flowRight(
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
+
       return {
         billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
         billingPeriod: selector(state, 'billing_period'),

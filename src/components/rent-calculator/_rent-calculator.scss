@@ -10,7 +10,7 @@
 
   &__rents-container {
     position: relative;
-    padding: rem-calc(15px);
+    padding: rem-calc(15px 15px 5px);
     background-color: #f9fcfb;
     margin-top: rem-calc(5px);
     margin-bottom: rem-calc(10px);
@@ -35,20 +35,6 @@
       white-space: nowrap;
       overflow: visible !important;
     }
-
-    &_dates {
-      p {
-        margin-bottom: 0;
-      }
-
-      p:last-child {
-        margin-bottom: rem-calc(10px);
-      }
-    }
-
-    &_type-rent {
-      font-weight: $semibold !important;
-    }
   }
 
   &__sub-item{
@@ -57,24 +43,5 @@
       white-space: nowrap;
       overflow: visible !important;
     }
-
-    &_description {
-      padding-left: rem-calc(15px);
-    }
-
-    &_dates {
-      p {
-        margin-bottom: 0;
-      }
-
-      p:last-child {
-        margin-bottom: rem-calc(10px);
-      }
-    }
-  }
-
-  &__divider {
-    border-top: 1px dashed $tram;
-    margin-bottom: rem-calc(10px);
   }
 }

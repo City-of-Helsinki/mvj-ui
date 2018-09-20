@@ -1,7 +1,5 @@
 // @flow
-
-import {call, put, select} from 'redux-saga/effects';
-import {receiveError} from './actions';
+import {call, select} from 'redux-saga/effects';
 
 import {getApiToken} from '$src/auth/selectors';
 import userManager from '$src/auth/util/user-manager';
@@ -20,21 +18,19 @@ function* callApi(request: Request): Generator<any, any, any> {
   const response = yield call(fetch, request);
   const status = response.status;
 
-  if(status === 403) {
-    displayUIMessage({title: '', body: 'Sinulla ei ole oikeuksia järjestelmän käyttöön.'}, {type: 'error'});
-    userManager.removeUser();
-    sessionStorage.clear();
-  }
-
-  if (status === 204) {
-    return {response};
+  switch(status) {
+    case 204:
+      return {response};
+    case 403:
+      displayUIMessage({title: '', body: 'Sinulla ei ole oikeuksia järjestelmän käyttöön.'}, {type: 'error'});
+      userManager.removeUser();
+      sessionStorage.clear();
+      return {response};
+    case 500:
+      return {response, bodyAsJson: {exception: response.status, message: response.statusText}};
   }
 
   const bodyAsJson = yield call([response, response.json]);
-  if (status === 500) {
-    yield put(receiveError(bodyAsJson));
-  }
-
   return {response, bodyAsJson};
 }
 

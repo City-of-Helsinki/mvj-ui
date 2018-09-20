@@ -17,38 +17,40 @@ type Props = {
   subItem: Object,
 }
 
-const SubItem = ({attributes, level = 1, subItem}: Props) => {
+const RentCalculatorSubItem = ({attributes, level = 1, subItem}: Props) => {
   const description = getRentSubItemDescription(subItem, attributes);
   const dates = get(subItem, 'date_ranges');
   const amount = getRentSubItemAmount(subItem);
   const subItems = get(subItem, 'sub_items', []);
 
   return (
-    <div className='rent-calculator__sub-item'>
+    <div>
       <Row>
         <Column small={6}>
-          <FormText className='rent-calculator__sub-item_description'
-            style={{paddingLeft: (level * 15)}}
-          >
+          <FormText style={{paddingLeft: (level * 15)}}>
             {description || '-'}
           </FormText>
         </Column>
         <Column small={4}>
-          <div className='rent-calculator__sub-item_dates'>
+          <div>
             {!!dates && !!dates.length &&
-              dates.map((date, index) => {
-                return <FormText key={index}>{formatDateRange(date.start_date, date.end_date)}</FormText>;
-              })
+              dates.map((date, index) =>
+                <FormText key={index}>
+                  {formatDateRange(date.start_date, date.end_date)}
+                </FormText>
+              )
             }
           </div>
         </Column>
         <Column small={2}>
-          <FormText className='rent-calculator__sub-item_amount'>{amount !== null ? `${formatNumber(amount)} €` : '-'}</FormText>
+          <FormText className='rent-calculator__sub-item_amount'>
+            {amount !== null ? `${formatNumber(amount)} €` : '-'}
+          </FormText>
         </Column>
       </Row>
       {!!subItems.length && subItems.map((item, index) => {
         return (
-          <SubItem
+          <RentCalculatorSubItem
             key={index}
             attributes={attributes}
             level={level + 1}
@@ -66,4 +68,4 @@ export default connect(
       attributes: getAttributes(state),
     };
   }
-)(SubItem);
+)(RentCalculatorSubItem);

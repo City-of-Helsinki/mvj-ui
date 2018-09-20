@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 import flowRight from 'lodash/flowRight';
 import React from 'react';
 import {Button} from 'react-foundation';
@@ -35,7 +34,7 @@ const ApiErrorList = ({errors}) => {
   );
 }
 
-const ApiErrorStackTrace = ({trace}) => (
+const ApiErrorStackTrace = ({trace}) =>
   <div className="api-error-modal__trace">
     <h5 className="api-error-modal__trace-heading">Trace</h5>
     <ol className="api-error-modal__trace-nav">
@@ -51,18 +50,17 @@ const ApiErrorStackTrace = ({trace}) => (
         </li>
       ))}
     </ol>
-  </div>
-);
+  </div>;
 
-const ApiErrorContent = ({data}) => (
-  <div className="api-error-modal__content">
+const ApiErrorContent = ({data}) => {
+  return <div className="api-error-modal__content">
     <h2 className="api-error-modal__title">Server error <small>{data.exception}</small></h2>
     <div className="api-error-modal__message">{data.message}</div>
     <div className="api-error-modal__source">{data.source}</div>
     {data.errors ? <ApiErrorList errors={data.errors}/> : null}
     {data.trace ? <ApiErrorStackTrace trace={data.trace}/> : null}
-  </div>
-);
+  </div>;
+};
 
 export default flowRight(
   reveal({name: 'apiError'}),

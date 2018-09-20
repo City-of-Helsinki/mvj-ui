@@ -2,11 +2,11 @@
 import {all, call, fork, put, takeEvery} from 'redux-saga/effects';
 
 import {
+  notFound,
   receivePreviewInvoices,
 } from './actions';
 import {receiveError} from '$src/api/actions';
 import {fetchPreviewInvoices} from './requests';
-
 
 function* fetchPreviewInvoicesSaga({payload}): Generator<any, any, any> {
   try {
@@ -17,10 +17,13 @@ function* fetchPreviewInvoicesSaga({payload}): Generator<any, any, any> {
         yield put(receivePreviewInvoices(bodyAsJson));
         break;
       default:
+        yield put(receiveError({...bodyAsJson}));
+        yield put(notFound());
         break;
     }
   } catch (error) {
     console.error('Failed to fetch collection letters by lease with error "%s"', error);
+    yield put(notFound());
     yield put(receiveError(error));
   }
 }

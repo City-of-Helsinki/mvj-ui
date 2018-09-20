@@ -9,11 +9,11 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import Button from '$components/button/Button';
-import Loader from '../loader/Loader';
-import LoaderWrapper from '../loader/LoaderWrapper';
-import Rent from './Rent';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RentCalculatorForm from './RentCalculatorForm';
-import TotalRow from './TotalRow';
+import RentCalculatorRent from './RentCalculatorRent';
+import RentCalculatorTotalRow from './RentCalculatorTotalRow';
 import {fetchBillingPeriodsByLease} from '$src/billingPeriods/actions';
 import {fetchRentForPeriodByLease} from '$src/rentForPeriod/actions';
 import {FormNames} from '$components/enums';
@@ -58,7 +58,7 @@ class RentCalculator extends Component<Props> {
     });
   }
 
-  handleCalculate = () => {
+  handleCreateRentsForPeriod = () => {
     const {
       endDate,
       fetchRentForPeriodByLease,
@@ -86,14 +86,14 @@ class RentCalculator extends Component<Props> {
       <div className='rent-calculator'>
         <Row>
           <Column small={12} large={6}>
-            <RentCalculatorForm />
+            <RentCalculatorForm onSubmit={this.handleCreateRentsForPeriod}/>
           </Column>
           <Column small={12} large={6}>
             <div className='rent-calculator__button-wrapper'>
               <Button
                 className='button-green no-margin'
                 disabled={!isValid}
-                onClick={this.handleCalculate}
+                onClick={this.handleCreateRentsForPeriod}
                 text='Laske'
               />
             </div>
@@ -114,13 +114,13 @@ class RentCalculator extends Component<Props> {
                     <div>
                       {rents.map((rent, index) => {
                         return (
-                          <Rent
+                          <RentCalculatorRent
                             key={index}
                             rent={rent}
                           />
                         );
                       })}
-                      <TotalRow rents={rents} />
+                      <RentCalculatorTotalRow rents={rents} />
                     </div>
                   }
                 </div>

@@ -12,7 +12,6 @@ import {getBillingPeriodsByLease} from '$src/billingPeriods/selectors';
 import {integer} from '$components/form/validations';
 
 type Props = {
-  handleSubmit: Function,
   onSubmit: Function,
 };
 
@@ -25,10 +24,16 @@ const validate = values => {
 };
 
 class InvoiceSimulatorForm extends Component<Props> {
+  handleSubmit = (e: any) => {
+    const {onSubmit} = this.props;
+
+    onSubmit();
+    e.preventDefault();
+  }
+
   render() {
-    const {handleSubmit, onSubmit} = this.props;
     return (
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={this.handleSubmit}>
         <Row>
           <Column small={12}>
             <FormField

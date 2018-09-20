@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 
 import FormText from '$components/form/FormText';
-import SubItem from './SubItem';
+import RentCalculatorSubItem from './RentCalculatorSubItem';
 import {RentExplanationSubjectType} from '../enums';
 import {formatDateRange, formatNumber} from '$util/helpers';
 import {getRentExplanationAmount, getRentExplanationDescription} from '../helpers';
@@ -19,7 +19,7 @@ type Props = {
   explanation: Object,
 }
 
-const Explanation = ({attributes, explanation}: Props) => {
+const RentCalculatorExplanation = ({attributes, explanation}: Props) => {
   const description = getRentExplanationDescription(explanation, attributes);
   const dates = get(explanation, 'date_ranges');
   const amount = getRentExplanationAmount(explanation);
@@ -27,10 +27,11 @@ const Explanation = ({attributes, explanation}: Props) => {
   const subjectType = get(explanation, 'subject.subject_type');
 
   return (
-    <div className='rent-calculator__explanation'>
+    <div>
       <Row>
         <Column small={6}>
-          <FormText className={classNames({'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>
+          <FormText
+            className={classNames({'semibold': subjectType === RentExplanationSubjectType.RENT})}>
             {description || '-'}
           </FormText>
         </Column>
@@ -40,21 +41,21 @@ const Explanation = ({attributes, explanation}: Props) => {
               dates.map((date, index) => {
                 return <FormText
                   key={index}
-                  className={classNames({'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>{formatDateRange(date.start_date, date.end_date)}
+                  className={classNames({'semibold': subjectType === RentExplanationSubjectType.RENT})}>{formatDateRange(date.start_date, date.end_date)}
                 </FormText>;
               })
             }
           </div>
         </Column>
         <Column small={2}>
-          <FormText className={classNames('rent-calculator__explanation_amount', {'rent-calculator__explanation_type-rent': subjectType === RentExplanationSubjectType.RENT})}>
+          <FormText className={classNames('rent-calculator__explanation_amount', {'semibold': subjectType === RentExplanationSubjectType.RENT})}>
             {`${formatNumber(amount)} €`}
           </FormText>
         </Column>
       </Row>
       {!!subItems && !!subItems.length &&
         subItems.map((item, index) => {
-          return <SubItem key={index} subItem={item} />;
+          return <RentCalculatorSubItem key={index} subItem={item} />;
         })
       }
     </div>
@@ -67,4 +68,4 @@ export default connect(
       attributes: getAttributes(state),
     };
   }
-)(Explanation);
+)(RentCalculatorExplanation);

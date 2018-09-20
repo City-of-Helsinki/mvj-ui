@@ -3,7 +3,7 @@ import React from 'react';
 import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
-import Explanation from '$components/rent-calculator/Explanation';
+import RentCalculatorExplanation from '$components/rent-calculator/RentCalculatorExplanation';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceSimulatorInvoice from './InvoiceSimulatorInvoice';
 import SubTitle from '$components/content/SubTitle';
@@ -67,7 +67,7 @@ const InvoiceSimulatorBillingPeriod = ({
             explanations.map((explanation, index) => {
               return <div key={index}>
                 {explanation.items.map((item, index) => {
-                  return <Explanation
+                  return <RentCalculatorExplanation
                     key={index}
                     explanation={item}
                   />;
