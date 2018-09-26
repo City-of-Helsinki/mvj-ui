@@ -53,3 +53,13 @@ export const RentSubItemType = {
   DISCOUNT: 'discount',
   INCREASE: 'increase',
 };
+
+/**
+ * Table sort order enumerable.
+ *
+ * @type {{ASCENDING: string, DESCENDING: string,}}
+ */
+export const TableSortOrder = {
+  ASCENDING: 'asc',
+  DESCENDING: 'desc',
+};

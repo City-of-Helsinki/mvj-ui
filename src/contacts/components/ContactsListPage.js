@@ -15,7 +15,7 @@ import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
-import Table from '$components/table/Table';
+import SortableTable from '$components/table/SortableTable';
 import TableControllers from '$components/table/TableControllers';
 import {
   fetchContacts,
@@ -220,16 +220,16 @@ class ContactListPage extends Component<Props, State> {
         }
         {!isFetching &&
           <div>
-            <Table
-              data={contacts}
-              dataKeys={[
-                {key: 'type', label: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)},
-                {key: 'first_name', label: 'Etunimi'},
-                {key: 'last_name', label: 'Sukunimi'},
-                {key: 'national_identification_number', label: 'Henkilötunnus'},
-                {key: 'name', label: 'Yrityksen nimi'},
-                {key: 'business_id', label: 'Y-tunnus'},
+            <SortableTable
+              columns={[
+                {key: 'type', text: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)},
+                {key: 'first_name', text: 'Etunimi'},
+                {key: 'last_name', text: 'Sukunimi'},
+                {key: 'national_identification_number', text: 'Henkilötunnus'},
+                {key: 'name', text: 'Yrityksen nimi'},
+                {key: 'business_id', text: 'Y-tunnus'},
               ]}
+              data={contacts}
               onRowClick={this.handleRowClick}
             />
             <Pagination

@@ -2,7 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
-import Table from '$components/table/Table';
+import SortableTable from '$components/table/SortableTable';
 import {RentTypes} from '$src/leases/enums';
 import {
   formatDate,
@@ -48,37 +48,34 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
     return `${formatNumber(rent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, rent.base_amount_period)}`;
   };
 
-  const getDataKeys = () => {
+  const getColumns = () => {
     if(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) {
       return [
-        {key: 'amount', label: 'Sopimusvuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
-        {key: 'base_amount', label: 'Vuokranlaskennan perusteena oleva vuokra', renderer: (val, item) => getBaseAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'base_year_rent ', label: 'Uusi perusvuosivuokra', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
-        {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
+        {key: 'amount', text: 'Sopimusvuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'intended_use', text: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
+        {key: 'base_amount', text: 'Vuokranlaskennan perusteena oleva vuokra', renderer: (val, item) => getBaseAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'base_year_rent ', text: 'Uusi perusvuosivuokra', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
+        {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
       ];
     } else {
       return [
-        {key: 'amount', label: 'Sopimusvuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'intended_use', label: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
-        {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
-        {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
+        {key: 'amount', text: 'Sopimusvuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'intended_use', text: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
+        {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
+        {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
       ];
     }
   };
 
-  const dataKeys = getDataKeys();
+  const columns = getColumns();
 
   return (
-    <Table
-      caption='Sopimusvuokrat'
-      className='invoice__contract-rent-table'
+    <SortableTable
+      columns={columns}
       data={contractRents}
-      dataKeys={dataKeys}
-      secondaryTable
-      sortable
-      tableFixedLayout
+      fixedHeader={true}
+      sortable={true}
     />
   );
 };

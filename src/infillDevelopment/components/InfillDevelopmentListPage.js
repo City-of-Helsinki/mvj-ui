@@ -17,7 +17,7 @@ import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
-import Table from '$components/table/Table';
+import SortableTable from '$components/table/SortableTable';
 import TableControllers from '$components/table/TableControllers';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchInfillDevelopmentAttributes, fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
@@ -242,14 +242,14 @@ class InfillDevelopmentListPage extends Component<Props, State> {
         }
         {!isFetching &&
           <div>
-            <Table
-              data={filteredInfillDevelopments}
-              dataKeys={[
-                {key: 'name', label: 'Hankkeen nimi'},
-                {key: 'detailed_plan_identifier', label: 'Asemakaavan nro'},
-                {key: 'leaseIdentifiers', label: 'Vuokratunnus', renderer: (val) => val.length ? val.map((item, index) => <ListItem key={index}>{item}</ListItem>) : '-'},
-                {key: 'state', label: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
+            <SortableTable
+              columns={[
+                {key: 'name', text: 'Hankkeen nimi'},
+                {key: 'detailed_plan_identifier', text: 'Asemakaavan nro'},
+                {key: 'leaseIdentifiers', text: 'Vuokratunnus', renderer: (val) => val.length ? val.map((item, index) => <ListItem key={index}>{item}</ListItem>) : '-'},
+                {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
               ]}
+              data={filteredInfillDevelopments}
               onRowClick={this.handleRowClick}
             />
             <Pagination

@@ -1,3 +1,41 @@
+.invoice-panel {
+  position: absolute;
+  width: 607.5px;
+  max-width: 100%;
+  height: auto;
+  top: 0;
+  right: -607.5px;
+  z-index: 2;
+  border: none;
+  overflow: hidden;
+  border-left: rem-calc(15px) solid $tram-lighter-solid;
+
+  @include transition(0.5s, right, ease-in-out);
+
+  &.is-open {
+    right: 0;
+    @include transition(0.5s, right, ease-in-out);
+  }
+
+  &__container {
+    padding: rem-calc(15px);
+    background-color: $white;
+    height: 100%;
+  }
+
+  &__header {
+    position: relative;
+
+    h1 {
+      font-family: $font-family-source;
+	    font-size: $font-large;
+      font-weight: $semibold;
+      margin: 0 0 rem-calc(20px) !important;
+      color: $black;
+    }
+  }
+}
+
 .invoice-modal {
   position: absolute;
   width: 607.5px;

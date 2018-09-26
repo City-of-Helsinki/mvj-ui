@@ -35,14 +35,14 @@ const getRowsSum = (rows: Array<Object>) => {
 };
 
 type Props = {
-  invoice: Object,
+  invoice: ?Object,
   invoiceAttributes: InvoiceAttributes,
   onCreditedInvoiceClick: Function,
 }
 
 const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: Props) => {
   const handleCreditedInvoiceClick = () => {
-    onCreditedInvoiceClick(invoice.credited_invoice);
+    onCreditedInvoiceClick(invoice ? invoice.credited_invoice : 0);
   };
 
   const handleCreditedInvoiceKeyDown = (e: any) => {
@@ -65,19 +65,19 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
         <Column medium={4}>
           <FormTitleAndText
             title='Laskunsaaja'
-            text={getContactFullName(invoice.recipientFull) || '-'}
+            text={(invoice && getContactFullName(invoice.recipientFull)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Lähetetty SAP:iin'
-            text={formatDate(invoice.sent_to_sap_at) || '-'}
+            text={(invoice && formatDate(invoice.sent_to_sap_at)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='SAP numero'
-            text={invoice.sap_id || '-'}
+            text={(invoice && invoice.sap_id) || '-'}
           />
         </Column>
       </Row>
@@ -85,13 +85,13 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
         <Column medium={4}>
           <FormTitleAndText
             title='Eräpäivä'
-            text={formatDate(invoice.due_date) || '-'}
+            text={(invoice && formatDate(invoice.due_date)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Laskutuspvm'
-            text={formatDate(invoice.invoicing_date) || '-'}
+            text={(invoice && formatDate(invoice.invoicing_date)) || '-'}
           />
         </Column>
       </Row>
@@ -99,19 +99,19 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
         <Column medium={4}>
           <FormTitleAndText
             title='Laskun tila'
-            text={getLabelOfOption(stateOptions, invoice.state) || '-'}
+            text={(invoice && getLabelOfOption(stateOptions, invoice.state)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Laskutuskausi'
-            text={formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)}
+            text={(invoice && formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Lykkäyspvm'
-            text={formatDate(invoice.postpone_date) || '-'}
+            text={(invoice && formatDate(invoice.postpone_date)) || '-'}
           />
         </Column>
       </Row>
@@ -119,7 +119,7 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
         <Column medium={4}>
           <FormTitleAndText
             title='Laskun pääoma'
-            text={invoice.total_amount
+            text={invoice && invoice.total_amount
               ? `${formatNumber(invoice.total_amount)} €`
               : '-'}
           />
@@ -127,13 +127,13 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
         <Column medium={4}>
           <FormTitleAndText
             title='Laskun osuus'
-            text={`${formatNumber(invoice.totalShare * 100)} %`}
+            text={`${formatNumber((invoice ? invoice.totalShare : 0) * 100)} %`}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Laskutettu määrä'
-            text={invoice.billed_amount
+            text={invoice && invoice.billed_amount
               ? `${formatNumber(invoice.billed_amount)} €`
               : '-'}
           />
@@ -171,7 +171,7 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
         <Column small={6} medium={4}>
           <FormTitleAndText
             title='Maksamaton määrä'
-            text={invoice.outstanding_amount
+            text={invoice && invoice.outstanding_amount
               ? `${formatNumber(invoice.outstanding_amount)} €`
               : '-'}
           />
@@ -181,13 +181,13 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
         <Column medium={4}>
           <FormTitleAndText
             title='Maksukehotuspvm'
-            text={formatDate(invoice.payment_notification_date) || '-'}
+            text={(invoice && formatDate(invoice.payment_notification_date)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Perintäkulu'
-            text={invoice.collection_charge
+            text={invoice && invoice.collection_charge
               ? `${formatNumber(invoice.collection_charge)} €`
               : '-'}
           />
@@ -195,7 +195,7 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
         <Column medium={4}>
           <FormTitleAndText
             title='Maksukehotus luettelo'
-            text={formatDate(invoice.payment_notification_catalog_date) || '-'}
+            text={(invoice && formatDate(invoice.payment_notification_catalog_date)) || '-'}
           />
         </Column>
       </Row>
@@ -203,20 +203,20 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
         <Column medium={4}>
           <FormTitleAndText
             title='E vai paperilasku'
-            text={getLabelOfOption(deliveryMethodOptions, invoice.delivery_method) || '-'}
+            text={(invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Laskun tyyppi'
-            text={getLabelOfOption(typeOptions, invoice.type) || '-'}
+            text={(invoice && getLabelOfOption(typeOptions, invoice.type)) || '-'}
           />
         </Column>
         {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&
           <Column medium={4}>
             <FormTitleAndText
               title='Hyvitetty lasku'
-              text={invoice.credited_invoice
+              text={invoice && invoice.credited_invoice
                 ? <a className='no-margin' onKeyDown={handleCreditedInvoiceKeyDown} onClick={handleCreditedInvoiceClick} tabIndex={0}>{invoice.credited_invoice}</a>
                 : '-'}
             />
@@ -227,7 +227,7 @@ const InvoiceTemplate = ({invoice, invoiceAttributes, onCreditedInvoiceClick}: P
         <Column medium={12}>
           <FormTitleAndText
             title='Tiedote'
-            text={invoice.notes || '-'}
+            text={(invoice && invoice.notes) || '-'}
           />
         </Column>
       </Row>

@@ -6,11 +6,12 @@ import DebtCollection from './DebtCollection';
 import Collapse from '$components/collapse/Collapse';
 import Divider from '$components/content/Divider';
 import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
-import InvoicesTable from './InvoicesTable';
+// import InvoicesTable from './InvoicesTable';
 import CreateAndCreditInvoiceComponent from './CreateAndCreditInvoiceComponent';
 import CreateCollectionLetter from './CreateCollectionLetter';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
+import TestTable from './TestTable';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
@@ -108,16 +109,20 @@ class Invoices extends Component<Props> {
           headerTitle={<h3 className='collapse__header-title'>Laskut</h3>}
           onToggle={this.handleInvoicesCollapseToggle}
         >
-          <InvoicesTable
+          {/* <InvoicesTable
             invoiceToCredit={invoiceToCredit}
             onInvoiceToCreditChange={this.handleInvoiceToCreditChange}
-          />
+          /> */}
 
           <CreateAndCreditInvoiceComponent
             enableCreateInvoice={false}
             enableCreditInvoice={true}
             invoiceToCredit={invoiceToCredit}
           />
+
+          <TestTable />
+
+
         </Collapse>
         <Collapse
           defaultOpen={rentCalculatorCollapseState !== undefined ? rentCalculatorCollapseState : true}
