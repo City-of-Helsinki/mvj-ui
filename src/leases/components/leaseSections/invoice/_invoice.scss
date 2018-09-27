@@ -70,6 +70,10 @@
     z-index: 3;
     overflow: hidden;
 
+    .fixed-table-container {
+      border: none;
+    }
+
     &_loader-wrapper {
       position: absolute;
       top: 0;

@@ -10,6 +10,7 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
@@ -45,7 +46,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
       {({dispatch}) => {
         return(
           <div>
-            {!fields || !fields.length && <p>Ei maksuja</p>}
+            {!fields || !fields.length && <FormText>Ei maksuja</FormText>}
 
             {fields && !!fields.length &&
               <Row>
@@ -121,7 +122,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
 
 type Props = {
   handleSubmit: Function,
-  invoice: Object,
+  invoice: ?Object,
   invoiceAttributes: InvoiceAttributes,
   isEditClicked: boolean,
   lease: Lease,
@@ -139,7 +140,9 @@ const EditInvoiceForm = ({
   setRefForFirstField,
 }: Props) => {
   const handleCreditedInvoiceClick = () => {
-    onCreditedInvoiceClick(invoice.credited_invoice);
+    if(invoice) {
+      onCreditedInvoiceClick(invoice.credited_invoice);
+    }
   };
 
   const handleCreditedInvoiceKeyDown = (e: any) => {
@@ -159,19 +162,19 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <FormTitleAndText
             title='Laskunsaaja'
-            text={getContactFullName(invoice.recipientFull) || '-'}
+            text={(invoice && getContactFullName(invoice.recipientFull)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Lähetetty SAP:iin'
-            text={formatDate(invoice.sent_to_sap_at) || '-'}
+            text={(invoice && formatDate(invoice.sent_to_sap_at)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='SAP numero'
-            text={invoice.sap_id || '-'}
+            text={(invoice && invoice.sap_id) || '-'}
           />
         </Column>
       </Row>
@@ -190,7 +193,7 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <FormTitleAndText
             title='Laskutuspvm'
-            text={formatDate(invoice.invoicing_date) || '-'}
+            text={(invoice && formatDate(invoice.invoicing_date)) || '-'}
           />
         </Column>
       </Row>
@@ -198,7 +201,7 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <FormTitleAndText
             title='Laskun tila'
-            text={getLabelOfOption(stateOptions, invoice.state) || '-'}
+            text={(invoice && getLabelOfOption(stateOptions, invoice.state)) || '-'}
           />
         </Column>
         <Column medium={4}>
@@ -229,7 +232,7 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <FormTitleAndText
             title='Lykkäyspvm'
-            text={formatDate(invoice.postpone_date) || '-'}
+            text={(invoice && formatDate(invoice.postpone_date)) || '-'}
           />
         </Column>
       </Row>
@@ -248,13 +251,13 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <FormTitleAndText
             title='Laskun osuus'
-            text={`${formatNumber(invoice.totalShare * 100)} %`}
+            text={`${formatNumber((invoice ? invoice.totalShare : 0) * 100)} %`}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Laskutettu määrä'
-            text={invoice.billed_amount
+            text={(invoice && invoice.billed_amount)
               ? `${formatNumber(invoice.billed_amount)} €`
               : '-'}
           />
@@ -274,7 +277,7 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <FormTitleAndText
             title='Maksamaton määrä'
-            text={invoice.outstanding_amount
+            text={(invoice && invoice.outstanding_amount)
               ? `${formatNumber(invoice.outstanding_amount)} €`
               : '-'}
           />
@@ -284,13 +287,13 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <FormTitleAndText
             title='Maksukehotuspvm'
-            text={formatDate(invoice.payment_notification_date) || '-'}
+            text={(invoice && formatDate(invoice.payment_notification_date)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Perintäkulu'
-            text={invoice.collection_charge
+            text={(invoice && invoice.collection_charge)
               ? `${formatNumber(invoice.collection_charge)} €`
               : '-'}
           />
@@ -298,7 +301,7 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <FormTitleAndText
             title='Maksukehotus luettelo'
-            text={formatDate(invoice.payment_notification_catalog_date) || '-'}
+            text={(invoice && formatDate(invoice.payment_notification_catalog_date)) || '-'}
           />
         </Column>
       </Row>
@@ -306,13 +309,13 @@ const EditInvoiceForm = ({
         <Column medium={4}>
           <FormTitleAndText
             title='E vai paperilasku'
-            text={getLabelOfOption(deliveryMethodOptions, invoice.delivery_method) || '-'}
+            text={(invoice && getLabelOfOption(deliveryMethodOptions, invoice.delivery_method)) || '-'}
           />
         </Column>
         <Column medium={4}>
           <FormTitleAndText
             title='Laskun tyyppi'
-            text={getLabelOfOption(typeOptions, invoice.type) || '-'}
+            text={(invoice && getLabelOfOption(typeOptions, invoice.type)) || '-'}
           />
         </Column>
         {invoice && invoice.type === InvoiceType.CREDIT_NOTE &&

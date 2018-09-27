@@ -3,9 +3,12 @@ import React, {PureComponent} from 'react';
 import classNames from 'classnames';
 import get from 'lodash/get';
 
+import type {Column} from './SortableTable';
+
 type Props = {
   className?: string,
-  columns: Array<any>,
+  columns: Array<Column>,
+  columnStyles?: Array<Object>,
   disabled?: boolean,
   groupRow: boolean,
   isClicked: boolean,

@@ -18,7 +18,6 @@ import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
 import EditableMap from '$src/areaNote/components/EditableMap';
 import Invoices from './leaseSections/invoice/Invoices';
-import InvoicesEdit from './leaseSections/invoice/InvoicesEdit';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
@@ -837,10 +836,7 @@ class LeasePage extends Component<Props, State> {
 
           <TabPane className="lease-page__tab-content">
             <ContentContainer>
-              {isEditMode
-                ? <InvoicesEdit />
-                : <Invoices />
-              }
+              <Invoices />
             </ContentContainer>
           </TabPane>
 

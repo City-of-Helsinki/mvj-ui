@@ -20,9 +20,15 @@ type State = {
 };
 
 class Dropdown extends Component<Props, State> {
+  wrapper: ?Object
+
   state = {
     expanded: false,
     hasFocus: false,
+  }
+
+  setWrapperRef = (el: ?Object) => {
+    this.wrapper = el;
   }
 
   componentWillUpdate() {
@@ -34,8 +40,6 @@ class Dropdown extends Component<Props, State> {
     document.removeEventListener('touchstart', this.handleDocumentClick);
     document.removeEventListener('mousedown', this.handleDocumentClick);
   }
-
-  wrapper: ?Object
 
   handleDocumentClick = (event: Event) => {
     if (this.wrapper && !this.wrapper.contains(event.target)) {
@@ -135,13 +139,13 @@ class Dropdown extends Component<Props, State> {
     const {children, isLoading, disabled} = this.props;
 
     return <div
+      ref={this.setWrapperRef}
       className="multi-select__dropdown"
       tabIndex={0}
       role="combobox"
       aria-expanded={expanded}
       aria-readonly="false"
       aria-disabled={disabled}
-      ref={ref => this.wrapper = ref}
       onKeyDown={this.handleKeyDown}
       onFocus={this.handleFocus}
       onBlur={this.handleBlur}

@@ -5,16 +5,14 @@ import ReactResizeDetector from 'react-resize-detector';
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
 
+import SortableTableHeader from './SortableTableHeader';
+import SortableTableGroup from './SortableTableGroup';
 import SortableTableRow from './SortableTableRow';
 import {SortIconBoth, SortIconDesc, SortIconAsc} from '$components/table/Icons';
 import {sortStringByKeyAsc, sortStringByKeyDesc} from '$util/helpers';
 import {TableSortOrder} from '$components/enums';
 
-const TableGroup = (props: Object) =>
-  props.children.length ? props.children : null;
-
-
-type Column = {
+export type Column = {
   dataClassName?: string,
   defaultSortOrder?: string,
   grouping?: {
@@ -37,7 +35,7 @@ type Props = {
   defaultSortKey?: string,
   defaultSortOrder?: string,
   fixedHeader?: boolean,
-  maxHeight?: number,
+  maxHeight?: ?number,
   noDataText?: string,
   onDataUpdate?: Function,
   onRowClick?: Function,
@@ -57,7 +55,6 @@ type State = {
   sortedData: Array<Object>,
   sortKey: ?string,
   sortOrder: ?string,
-  theadStyle: Object,
 }
 
 const groupData = (data: Array<Object>, column: Column) => {
@@ -146,7 +143,8 @@ const sortData = (data: Array<Props>, columns: Array<Object>, sortKey: ?string, 
 };
 
 class SortableTable extends Component<Props, State> {
-  component: any
+  container: any
+  scrollBodyTable: any
   scrollBodyWrapper: any
   scrollHeaderWrapper: any
   thead: any
@@ -166,6 +164,26 @@ class SortableTable extends Component<Props, State> {
     noDataText: 'Ei tuloksia',
     showRadioButton: false,
     sortable: false,
+  }
+
+  setContainerRef = (el: any) => {
+    this.container = el;
+  }
+
+  setScrollBodyTableRef = (el: any) => {
+    this.scrollBodyTable = el;
+  }
+
+  setScrollBodyWrapperRef = (el: any) => {
+    this.scrollBodyWrapper = el;
+  }
+
+  setScrollHeaderWrapperRef = (el: any) => {
+    this.scrollHeaderWrapper = el;
+  }
+
+  setTheadRef = (el: any) => {
+    this.thead = el;
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -234,13 +252,13 @@ class SortableTable extends Component<Props, State> {
 
   setTableScrollHeaderColumnStyles = () => {
     const ths = [].slice.call(this.thead.querySelectorAll('th'));
-    const scrollHeaderColumnStyles = ths.map(function(th) {
-      var rect = th.getBoundingClientRect();
+    const scrollHeaderColumnStyles = ths.map((th) => {
+      const rect = th.getBoundingClientRect();
       return {
         width: rect.width,
       };
     });
-    var scrollHeaderWidth = scrollHeaderColumnStyles.reduce((sum, cur) => {
+    const scrollHeaderWidth = scrollHeaderColumnStyles.reduce((sum, cur) => {
       return sum + cur.width;
     }, 0);
 
@@ -342,12 +360,21 @@ class SortableTable extends Component<Props, State> {
     return rows;
   }
 
+  calculateMaxHeight = () => {
+    const {fixedHeader, maxHeight} = this.props;
+
+    if(!maxHeight || !fixedHeader || !this.scrollHeaderWrapper) {
+      return maxHeight;
+    }
+    const {clientHeight: headerHeight} = this.scrollHeaderWrapper;
+    return maxHeight - headerHeight;
+  }
+
   render() {
     const {
       clickedRow,
       columns,
       fixedHeader,
-      maxHeight,
       noDataText,
       onRowClick,
       radioButtonDisabledFunction,
@@ -359,11 +386,14 @@ class SortableTable extends Component<Props, State> {
       scrollHeaderColumnStyles,
       scrollHeaderWidth,
       sortedData,
-      theadStyle,
+      sortKey,
+      sortOrder,
     } = this.state;
+    const fixedMaxHeight = this.calculateMaxHeight();
 
     return (
       <div
+        ref={this.setContainerRef}
         className={classNames('sortable-table__container', {'fixed-table-container': fixedHeader})}
       >
         {fixedHeader &&
@@ -373,103 +403,57 @@ class SortableTable extends Component<Props, State> {
           />
         }
         {fixedHeader &&
-          <div ref={(ref) => this.scrollHeaderWrapper = ref} className={'scroll-head-wrapper'}>
-            <table className={classNames({'sortable-table': sortable}, {'scroll-head-table': fixedHeader})} style={{width: scrollHeaderWidth}}>
-              <thead>
-                <tr>
-                  {!!scrollHeaderColumnStyles.length && scrollHeaderColumnStyles.map((styles, index) => {
-                    if(showRadioButton && index === 0) {
-                      return <th key={index} style={{width: styles.width}}></th>;
-                    }
-
-                    const column = columns[showRadioButton ? index - 1 : index];
-                    const isSortable = (sortable && column.sortable !== false) ? true : false;
-                    const sortIcon = this.getSortIcon(column, isSortable);
-
-                    const handleClick = () => {
-                      if(isSortable) {
-                        this.onSortingChange(column);
-                      }
-                    };
-
-                    const handleKeyDown = (e: any) => {
-                      if(e.keyCode === 13) {
-                        e.preventDefault();
-                        handleClick();
-                      }
-                    };
-
-                    return(
-                      <th key={index} className={classNames({'sortable': isSortable})} style={{width: styles.width}} onClick={handleClick}>
-                        <div onKeyDown={handleKeyDown} tabIndex={(isSortable && fixedHeader) ? 0 : undefined}>
-                          {column.text}
-                          {isSortable && sortIcon}
-                        </div>
-                      </th>
-                    );
-                  })}
-                </tr>
-              </thead>
+          <div ref={this.setScrollHeaderWrapperRef} className={'scroll-head-wrapper'}>
+            <table
+              className={classNames(
+                {'sortable-table': sortable},
+                {'scroll-head-table': fixedHeader}
+              )}
+              style={{width: scrollHeaderWidth}}
+            >
+              <SortableTableHeader
+                getRef={this.setTheadRef}
+                columns={columns}
+                columnStyles={scrollHeaderColumnStyles}
+                onColumnClick={this.onSortingChange}
+                showRadioButton={showRadioButton}
+                sortable={sortable}
+                sortKey={sortKey}
+                sortOrder={sortOrder}
+              />
             </table>
           </div>
         }
 
         <div
           className={'scroll-body-wrapper'}
-          ref={(ref) => this.scrollBodyWrapper = ref}
-          style={{maxHeight: maxHeight}}
+          ref={this.setScrollBodyWrapperRef}
+          style={{maxHeight: fixedMaxHeight}}
         >
           <table
             className={classNames(
               {'clickable-row': !!onRowClick},
               {'sortable-table': sortable},
               {'scroll-body-table': fixedHeader}
-            )}>
-            <thead ref={(ref) => this.thead = ref} style={theadStyle}>
-              <tr>
-                {showRadioButton &&
-                  <th></th>
-                }
-                {columns.map((column) => {
-                  const isSortable = (sortable && column.sortable !== false) ? true : false;
-                  const sortIcon = this.getSortIcon(column, isSortable);
-
-                  const handleClick = () => {
-                    if(isSortable) {
-                      this.onSortingChange(column);
-                    }
-                  };
-
-                  const handleKeyDown = (e: any) => {
-                    if(e.keyCode === 13) {
-                      e.preventDefault();
-                      handleClick();
-                    }
-                  };
-
-                  return(
-                    <th key={column.key} className={classNames({'sortable': isSortable})} style={{minWidth: column.minWidth}} onClick={handleClick}>
-                      <div onKeyDown={handleKeyDown} tabIndex={(isSortable && !fixedHeader) ? 0 : undefined}>
-                        {column.text}
-                        {isSortable && sortIcon}
-                      </div>
-                    </th>
-                  );
-                })}
-              </tr>
-            </thead>
+            )}
+            ref={this.setScrollBodyTableRef}
+          >
+            <SortableTableHeader
+              getRef={this.setTheadRef}
+              columns={columns}
+              fixedHeader={fixedHeader}
+              onColumnClick={this.onSortingChange}
+              showRadioButton={showRadioButton}
+              sortable={sortable}
+              sortKey={sortKey}
+              sortOrder={sortOrder}
+            />
             <tbody>
-              {(!sortedData.length) &&
-                <tr className='no-data-row'>
-                  <td colSpan={columns.length}>{noDataText}</td>
-                </tr>
+              {!sortedData.length &&
+                <tr className='no-data-row'><td colSpan={columns.length}>{noDataText}</td></tr>
               }
 
               {!!sortedData.length && sortedData.map((row, index) => {
-                const handleRadioClick = () => {
-                  this.handleSelectRow(row);
-                };
-
                 const isRadioButtonDisabled = () => {
                   if(radioButtonDisabledFunction) {
                     return radioButtonDisabledFunction(row);
@@ -478,62 +462,30 @@ class SortableTable extends Component<Props, State> {
                   return false;
                 };
 
-                const isRadioDisabled = isRadioButtonDisabled();
+                const isRadioDisabled = isRadioButtonDisabled(),
+                  isRowClicked = Boolean(clickedRow && !clickedRow.tableGroupName && (clickedRow.id === row.id)),
+                  isRowSelected = Boolean(selectedRow && !selectedRow.tableGroupName && (selectedRow.id === row.id));
 
                 return row.isTableGroup
-                  ? <TableGroup key={index}>
-                    <tr key={index} className='group-row'>
-                      {showRadioButton &&
-                        <td>
-                          <label className='form-field__label invisible' htmlFor={`group_${row.id}`}>Ryhmä {row.id}</label>
-                          <input type='radio'
-                            checked={selectedRow === row}
-                            disabled={isRadioDisabled}
-                            id={`group_${row.id}`}
-                            name={`group_${row.id}`}
-                            onClick={handleRadioClick}
-                          />
-                        </td>
-                      }
-                      {columns.map(({dataClassName, grouping, key, renderer}, columnIndex) => {
-                        const show = grouping ? grouping.columnKeys.indexOf(key) : -1;
-                        return show !== -1
-                          ? <td key={columnIndex} className={dataClassName}>
-                            {renderer
-                              ? renderer(get(row, key), row)
-                              : get(row, key) || ' - '
-                            }
-                          </td>
-                          : <td key={columnIndex}></td>;
-                      })}
-                    </tr>
-                    {row.tableRows.map((row, rowIndex) => {
-                      const isRadioDisabled = isRadioButtonDisabled();
-
-                      return <SortableTableRow
-                        key={rowIndex}
-                        className='group-item-row'
-                        clickedRow={clickedRow}
-                        columns={columns}
-                        disabled={isRadioDisabled}
-                        groupRow={true}
-                        isClicked={clickedRow === row}
-                        isSelected={selectedRow === row}
-                        onRowClick={onRowClick}
-                        onSelectRow={this.handleSelectRow}
-                        row={row}
-                        showRadioButton={showRadioButton || false}
-                      />;
-                    })}
-                  </TableGroup>
-                  : <SortableTableRow
+                  ? <SortableTableGroup
                     key={index}
                     clickedRow={clickedRow}
                     columns={columns}
                     disabled={isRadioDisabled}
+                    onRowClick={onRowClick}
+                    onSelectRow={this.handleSelectRow}
+                    radioButtonDisabledFunction={radioButtonDisabledFunction}
+                    row={row}
+                    selectedRow={selectedRow}
+                    showRadioButton={showRadioButton}
+                  />
+                  : <SortableTableRow
+                    key={index}
+                    columns={columns}
+                    disabled={isRadioDisabled}
                     groupRow={false}
-                    isClicked={clickedRow === row}
-                    isSelected={selectedRow === row}
+                    isClicked={isRowClicked}
+                    isSelected={isRowSelected}
                     onRowClick={onRowClick}
                     onSelectRow={this.handleSelectRow}
                     row={row}

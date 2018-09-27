@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
 import {getFormValues, isValid} from 'redux-form';
@@ -8,6 +8,7 @@ import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import EditInvoiceForm from './forms/EditInvoiceForm';
 import InvoiceTemplate from './InvoiceTemplate';
+import ReactResizeDetector from 'react-resize-detector';
 import {receiveIsEditClicked} from '$src/invoices/actions';
 import {KeyCodes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
@@ -23,7 +24,9 @@ type Props = {
   onClose: Function,
   onCreditedInvoiceClick: Function,
   onKeyDown?: Function,
+  onResize: Function,
   receiveIsEditClicked: Function,
+  onSave: Function,
   valid: boolean,
 }
 
@@ -32,24 +35,33 @@ type State = {
   isOpening: boolean,
 }
 
-class InvoicePanel extends Component<Props, State> {
+class InvoicePanel extends PureComponent<Props, State> {
   closeButton: any
+  component: any
+  container: any
   invoiceFormFirstField: any
-  panel: any
 
   state = {
     isClosing: false,
     isOpening: false,
   }
 
+  setComponentRef = (el: any) => {
+    this.component = el;
+  }
+
+  setContainerRef = (el: any) => {
+    this.container = el;
+  }
+
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown);
-    this.panel.addEventListener('transitionend', this.transitionEnds);
+    this.component.addEventListener('transitionend', this.transitionEnds);
   }
 
   componentWillUnmount() {
     document.removeEventListener('keydown', this.handleKeyDown);
-    this.panel.removeEventListener('transitionend', this.transitionEnds);
+    this.component.removeEventListener('transitionend', this.transitionEnds);
   }
 
   handleKeyDown = (e: any) => {
@@ -79,13 +91,24 @@ class InvoicePanel extends Component<Props, State> {
     }
   }
 
-  transitionEnds = () => {
-    this.setState({
-      isClosing: false,
-      isOpening: false,
-    });
+  transitionEnds = (e: any) => {
+    if(e.propertyName === 'right') {
+      this.setState({
+        isClosing: false,
+        isOpening: false,
+      });
+      this.setFocusOnPanel();
+    }
   }
 
+  setFocusOnPanel = () => {
+    const {isEditMode} = this.props;
+    if(isEditMode) {
+      this.setFocusOnInvoiceForm();
+    } else {
+      this.setFocusOnCloseButton();
+    }
+  }
   setCloseButtonReference = (element: any) => {
     this.closeButton = element;
   }
@@ -106,8 +129,14 @@ class InvoicePanel extends Component<Props, State> {
     }
   }
 
+  handleResize = () => {
+    const {onResize} = this.props;
+    onResize();
+  }
+
   handleSave = () => {
-    console.log('save');
+    const {editedInvoice, onSave} = this.props;
+    onSave(editedInvoice);
   }
 
   render() {
@@ -126,13 +155,20 @@ class InvoicePanel extends Component<Props, State> {
     return(
       <div
         className={classNames('invoice-panel', {'is-open': isOpen})}
-        ref={(ref) => this.panel = ref}
+        style={{minHeight: minHeight}}
+        ref={this.setComponentRef}
       >
         <div
+          ref={this.setContainerRef}
           className="invoice-panel__container"
-          style={{minHeight: minHeight}}
           hidden={!isOpen && !isClosing && !isOpening}
         >
+          <ReactResizeDetector
+            handleHeight
+            onResize={this.handleResize}
+            refreshMode='debounce'
+            refreshRate={1}
+          />
           <div className='invoice-panel__header'>
             <h1>Laskun tiedot</h1>
             <CloseButton
@@ -143,7 +179,7 @@ class InvoicePanel extends Component<Props, State> {
             />
           </div>
 
-          <div className="invoice-modal__body">
+          <div className={classNames('invoice-panel__body', {'with-footer': (isEditMode  && invoice && !invoice.sap_id)})}>
             {isEditMode && (!invoice || !invoice.sap_id)
               ? <EditInvoiceForm
                 invoice={invoice}
@@ -159,8 +195,8 @@ class InvoicePanel extends Component<Props, State> {
             }
             {isEditMode}
           </div>
-          {isEditMode  && (!invoice || !invoice.sap_id) &&
-            <div className='invoice-modal__footer'>
+          {isEditMode  && (invoice && !invoice.sap_id) &&
+            <div className='invoice-panel__footer'>
               {(!invoice || !invoice.sap_id) &&
                 <Button
                   className="button-red"
@@ -178,7 +214,6 @@ class InvoicePanel extends Component<Props, State> {
               }
             </div>
           }
-
         </div>
       </div>
     );

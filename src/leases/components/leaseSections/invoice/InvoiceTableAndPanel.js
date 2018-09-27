@@ -1,16 +1,25 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {initialize} from 'redux-form';
+import ReactResizeDetector from 'react-resize-detector';
 import scrollToComponent from 'react-scroll-to-component';
 
 import InvoicePanel from './InvoicePanel';
 import SortableTable from '$components/table/SortableTable';
 import TruncatedText from '$components/content/TruncatedText';
+import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
 import {KeyCodes} from '$src/enums';
 import {InvoiceType} from '$src/invoices/enums';
+import {FormNames} from '$src/leases/enums';
 import {TableSortOrder} from '$components/enums';
 import {getContactFullName} from '$src/contacts/helpers';
-import {formatReceivableTypesString, getContentInvoices} from '$src/invoices/helpers';
+import {
+  formatEditedInvoiceForDb,
+  formatReceivableTypesString,
+  getContentInvoices,
+  getContentIncoiveItem,
+} from '$src/invoices/helpers';
 import {
   formatDate,
   formatDateRange,
@@ -26,21 +35,32 @@ import {getCurrentLease, getIsEditMode} from '$src/leases/selectors';
 import {
   getAttributes as getInvoiceAttributes,
   getInvoicesByLease,
+  getPatchedInvoice,
 } from '$src/invoices/selectors';
 import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors';
 
 import type {
   Attributes as InvoiceAttributes,
+  Invoice,
   InvoiceList,
 } from '$src/invoices/types';
 
-const MODAL_WIDTH = 607.5;
+const TABLE_MAX_HEIGHT = 521;
+const TABLE_MAX_HEIGHT_EDIT = 521;
+const PANEL_WIDTH = 607.5;
 
 type Props = {
+  clearPatchedInvoice: Function,
+  destroy: Function,
+  initialize: Function,
   invoices: InvoiceList,
   invoiceAttributes: InvoiceAttributes,
+  invoiceToCredit: ?Object,
   invoiceSets: Array<Object>,
   isEditMode: boolean,
+  onInvoiceToCreditChange: Function,
+  patchInvoice: Function,
+  patchedInvoice: ?Invoice,
 }
 
 type State = {
@@ -50,10 +70,10 @@ type State = {
   invoiceAttributes: InvoiceAttributes,
   invoiceSets: Array<Object>,
   invoiceSetOptions: Array<Object>,
-  openedInvoice: ?Object,
+  openedInvoice: ?Invoice,
   receivableTypeOptions: Array<Object>,
-  selectedRow: ?Object,
   stateOptions: Array<Object>,
+  tableHeight: ?number,
   tableWidth: ?number,
   typeOptions: Array<Object>,
 }
@@ -66,9 +86,9 @@ const getInvoiceSetOptions = (invoiceSets) =>
     };
   }) : [];
 
-class TestTable extends Component<Props, State> {
+class InvoiceTableAndPanel extends Component<Props, State> {
   container: any
-  modal: any
+  panel: any
   table: any
 
   state = {
@@ -80,10 +100,22 @@ class TestTable extends Component<Props, State> {
     invoiceSetOptions: [],
     openedInvoice: null,
     receivableTypeOptions: [],
-    selectedRow: null,
     stateOptions: [],
+    tableHeight: null,
     tableWidth: null,
     typeOptions: [],
+  }
+
+  setContainerRef = (el: any) => {
+    this.container = el;
+  }
+
+  setPanelRef = (el: any) => {
+    this.panel = el;
+  }
+
+  setTableRef = (el: any) => {
+    this.table = el;
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -108,7 +140,12 @@ class TestTable extends Component<Props, State> {
   }
 
   componentDidMount() {
+    const {clearPatchedInvoice} = this.props;
+
+    clearPatchedInvoice();
+    this.calculateTableHeight();
     this.calculateTableWidth();
+
     this.setState({
       columns: this.getColumns(),
     });
@@ -123,13 +160,25 @@ class TestTable extends Component<Props, State> {
     }
     if(prevState.openedInvoice !== this.state.openedInvoice) {
       this.scrollToOpenedRow();
+      this.calculateTableHeight();
       this.calculateTableWidth();
+    }
+
+    if(this.props.patchedInvoice) {
+      const {clearPatchedInvoice, patchedInvoice} = this.props;
+      this.initilizeEditInvoiceForm(getContentIncoiveItem(patchedInvoice));
+      clearPatchedInvoice();
     }
   }
 
-  scrolToModal = () => {
+  handleResize = () => {
+    this.calculateTableHeight();
+    this.calculateTableWidth();
+  }
+
+  scrolToPanel = () => {
     setTimeout(() => {
-      scrollToComponent(this.modal, {
+      scrollToComponent(this.panel, {
         offset: -130,
         align: 'top',
         duration: 450,
@@ -146,16 +195,43 @@ class TestTable extends Component<Props, State> {
     }
   }
 
+  calculateTableHeight = () => {
+    if(!this.table || !this.panel) {
+      return;
+    }
+
+    const {isEditMode} = this.props,
+      {openedInvoice} = this.state,
+      {clientHeight: tableHeaderHeight} = this.table.scrollHeaderWrapper,
+      {scrollHeight: panelHeight} = this.panel.wrappedInstance.container,
+      tableMaxHeight = isEditMode ? TABLE_MAX_HEIGHT_EDIT : TABLE_MAX_HEIGHT,
+      borderHeight = 2;
+    let {scrollHeight: tableHeight} = this.table.scrollBodyTable;
+
+    if(openedInvoice) {
+      tableHeight = panelHeight > tableMaxHeight ? panelHeight : tableMaxHeight;
+    } else {
+      tableHeight += tableHeaderHeight;
+      if((tableHeight + borderHeight) > tableMaxHeight) {
+        tableHeight = tableMaxHeight - borderHeight;
+      }
+    }
+
+    this.setState({
+      tableHeight: tableHeight,
+    });
+  }
+
   calculateTableWidth = () => {
     let {clientWidth} = this.container;
     const {openedInvoice} = this.state;
 
     if(openedInvoice) {
-      if(clientWidth - MODAL_WIDTH <= 0) {
+      if(clientWidth - PANEL_WIDTH <= 0) {
         clientWidth = 0;
       }
       else {
-        clientWidth = clientWidth - MODAL_WIDTH;
+        clientWidth = clientWidth - PANEL_WIDTH;
       }
     }
     this.setState({
@@ -164,6 +240,7 @@ class TestTable extends Component<Props, State> {
   }
 
   handleDataUpdate = () => {
+    this.calculateTableHeight();
     this.scrollToOpenedRow();
   }
 
@@ -198,12 +275,22 @@ class TestTable extends Component<Props, State> {
     this.setState({
       openedInvoice: invoice,
     });
+    this.initilizeEditInvoiceForm(invoice);
   }
 
   openPreviousInvoice = (invoice: Object) => {
     this.setState({
       openedInvoice: invoice,
     });
+
+    this.initilizeEditInvoiceForm(invoice);
+  }
+
+  initilizeEditInvoiceForm = (invoice: Object) => {
+    const {initialize} = this.props;
+    const formName = FormNames.INVOICE_EDIT;
+
+    initialize(formName, invoice);
   }
 
   sortByRecipientNameAsc = (a, b) => {
@@ -392,19 +479,24 @@ class TestTable extends Component<Props, State> {
     this.setState({
       openedInvoice: row,
     });
-    this.scrolToModal();
+
+    this.scrolToPanel();
+    this.initilizeEditInvoiceForm(row);
   }
 
   handleSelectRow = (row: Object) => {
-    this.setState({
-      selectedRow: row,
-    });
+    const {onInvoiceToCreditChange} = this.props;
+    onInvoiceToCreditChange(row);
   }
 
-  handleInvoiceModalClose = () => {
+  handleInvoicePanelClose = () => {
     this.setState({
       openedInvoice: null,
     });
+  }
+
+  handlePanelResize = () => {
+    this.calculateTableHeight();
   }
 
   handleOnCreditedInvoiceClick = (invoiceId: number) => {
@@ -416,51 +508,63 @@ class TestTable extends Component<Props, State> {
         openedInvoice: selectedInvoice,
       });
     }
-    console.log('invoice to credit', invoiceId);
+  }
+
+  editInvoice = (invoice: Object) => {
+    const {patchInvoice} = this.props;
+    patchInvoice(formatEditedInvoiceForDb(invoice));
   }
 
   render() {
-    const {isEditMode} = this.props;
-    const {columns, formatedInvoices, openedInvoice, selectedRow, tableWidth} = this.state;
+    const {invoiceToCredit, isEditMode} = this.props;
+    const {columns, formatedInvoices, openedInvoice, tableHeight, tableWidth} = this.state;
 
     return(
       <div className='invoice__invoice-table'
-        ref={(ref) => this.container = ref}
+        ref={this.setContainerRef}
       >
+        <ReactResizeDetector
+          handleWidth
+          onResize={this.handleResize}
+          refreshMode='debounce'
+          refreshRate={400}
+        />
         <div
           className='invoice__invoice-table_wrapper'
           style={{maxWidth: tableWidth || null}}
         >
           <SortableTable
-            ref={(ref) => this.table = ref}
+            ref={this.setTableRef}
             clickedRow={openedInvoice}
             columns={columns}
             data={formatedInvoices}
             defaultSortKey='due_date'
             defaultSortOrder={TableSortOrder.DESCENDING}
             fixedHeader={true}
-            maxHeight={500}
+            maxHeight={tableHeight}
             onDataUpdate={this.handleDataUpdate}
             onRowClick={this.handleRowClick}
             onSelectNext={this.openNextInvoice}
             onSelectPrevious={this.openPreviousInvoice}
             onSelectRow={this.handleSelectRow}
             radioButtonDisabledFunction={this.isTableRadioButtonDisabled}
-            selectedRow={selectedRow}
+            selectedRow={invoiceToCredit}
             showRadioButton={true}
             sortable={true}
           />
         </div>
 
         <InvoicePanel
-          ref={(ref) => this.modal = ref}
+          ref={this.setPanelRef}
           invoice={openedInvoice}
           isOpen={!!openedInvoice}
-          minHeight={500 + 33}
+          minHeight={tableHeight}
           isEditMode={isEditMode}
-          onClose={this.handleInvoiceModalClose}
+          onClose={this.handleInvoicePanelClose}
           onCreditedInvoiceClick={this.handleOnCreditedInvoiceClick}
           onKeyDown={this.handleKeyDown}
+          onResize={this.handlePanelResize}
+          onSave={this.editInvoice}
         />
       </div>
     );
@@ -477,6 +581,12 @@ export default connect(
       invoiceAttributes: getInvoiceAttributes(state),
       invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
       isEditMode: getIsEditMode(state),
+      patchedInvoice: getPatchedInvoice(state),
     };
+  },
+  {
+    clearPatchedInvoice,
+    initialize,
+    patchInvoice,
   }
-)(TestTable);
+)(InvoiceTableAndPanel);
