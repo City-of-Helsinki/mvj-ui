@@ -15,7 +15,7 @@ import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
-import Table from '$components/table/Table';
+import SortableTable from '$components/table/SortableTable';
 import TableControllers from '$components/table/TableControllers';
 
 import {fetchAttributes, fetchRentBasisList, initializeRentBasis} from '$src/rentbasis/actions';
@@ -234,14 +234,14 @@ class RentBasisListPage extends Component<Props, State> {
         {isFetching && <Row><Column><LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper></Column></Row>}
         {!isFetching &&
           <div>
-            <Table
-              data={rentBasisList}
-              dataKeys={[
-                {key: 'property_identifier', label: 'Kiinteistötunnus'},
-                {key: 'build_permission_type', label: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(buildPermissionTypeOptions, val) : '-'},
-                {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val) || '-'},
-                {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val) || '-'},
+            <SortableTable
+              columns={[
+                {key: 'property_identifier', text: 'Kiinteistötunnus'},
+                {key: 'build_permission_type', text: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(buildPermissionTypeOptions, val) : '-'},
+                {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val) || '-'},
+                {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val) || '-'},
               ]}
+              data={rentBasisList}
               onRowClick={this.handleRowClick}
             />
             <Pagination

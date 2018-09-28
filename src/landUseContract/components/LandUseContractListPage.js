@@ -17,7 +17,7 @@ import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
-import Table from '$components/table/Table';
+import SortableTable from '$components/table/SortableTable';
 import TableControllers from '$components/table/TableControllers';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLandUseContract, fetchLandUseContractAttributes, fetchLandUseContractList} from '$src/landUseContract/actions';
@@ -256,16 +256,16 @@ class LandUseContractListPage extends Component<Props, State> {
               onButtonSelectorChange={this.handleSelectedStatesChange}
               title={`Viimeksi muokattuja`}
             />
-            <Table
-              data={filteredLandUseContracts}
-              dataKeys={[
-                {key: 'identifier', label: 'MA-tunnus'},
-                {key: 'litigants', label: 'Osapuoli', renderer: (val) => val.map((litigant, index) => <ListItem key={index}>{litigant}</ListItem>)},
-                {key: 'plan_number', label: 'Asemakaavan numero'},
-                {key: 'area', label: 'Kohde'},
-                {key: 'project_area', label: 'Hankealue'},
-                {key: 'state', label: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
+            <SortableTable
+              columns={[
+                {key: 'identifier', text: 'MA-tunnus'},
+                {key: 'litigants', text: 'Osapuoli', renderer: (val) => val.map((litigant, index) => <ListItem key={index}>{litigant}</ListItem>)},
+                {key: 'plan_number', text: 'Asemakaavan numero'},
+                {key: 'area', text: 'Kohde'},
+                {key: 'project_area', text: 'Hankealue'},
+                {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
               ]}
+              data={filteredLandUseContracts}
               onRowClick={this.handleRowClick}
             />
             <Pagination

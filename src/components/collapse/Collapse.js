@@ -49,6 +49,14 @@ class Collapse extends PureComponent<Props, State> {
     isOpen: this.props.defaultOpen,
   };
 
+  setComponentRef = (el: ?Object) => {
+    this.component = el;
+  }
+
+  setContentRef = (el: ?Object) => {
+    this.content = el;
+  }
+
   componentDidMount() {
     this.component.addEventListener('transitionend', this.transitionEnds);
     this._isMounted = true;
@@ -134,7 +142,7 @@ class Collapse extends PureComponent<Props, State> {
 
     return (
       <div
-        ref={(ref) => this.component = ref}
+        ref={this.setComponentRef}
         className={classNames(
           'collapse',
           className,
@@ -185,7 +193,7 @@ class Collapse extends PureComponent<Props, State> {
           className={classNames('collapse__content')}
           style={{maxHeight: contentHeight}}>
           <div
-            ref={(ref) => this.content = ref}
+            ref={this.setContentRef}
             className="collapse__content-wrapper"
             hidden={!isOpen && !isCollapsing && !isExpanding}
           >

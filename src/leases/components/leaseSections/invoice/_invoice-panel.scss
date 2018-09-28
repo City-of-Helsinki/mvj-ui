@@ -1,4 +1,5 @@
-.invoice-modal {
+.invoice-panel {
+  background-color: $white;
   position: absolute;
   width: 607.5px;
   max-width: 100%;
@@ -12,15 +13,15 @@
 
   @include transition(0.5s, right, ease-in-out);
 
+  &.is-open {
+    right: 0;
+    @include transition(0.5s, right, ease-in-out);
+  }
+
   &__container {
     padding: rem-calc(15px);
     background-color: $white;
     height: 100%;
-  }
-
-  &.is-open {
-    right: 0;
-    @include transition(0.5s, right, ease-in-out);
   }
 
   &__header {

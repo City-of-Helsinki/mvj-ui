@@ -1,121 +1,96 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
-import kebabCase from 'lodash/kebabCase';
+import classNames from 'classnames';
 
-import {SortIconBoth, SortIconDesc, SortIconAsc} from './Icons';
+import {SortIconBoth, SortIconDesc, SortIconAsc} from '$components/table/Icons';
+import {TableSortOrder} from '$components/enums';
 
-const SortingType = PropTypes.oneOf(['desc', 'asc', 'both']);
-
-type ItemProps = {
-  dataKey: string,
-  fixedHeader?: boolean,
-  headerProps: Object,
-  index: number,
-  label: string,
-  onClick: Function,
-  sortable?: boolean,
-  sorting: SortingType,
-}
-
-const SortableTableHeaderItem = ({
-  dataKey,
-  headerProps = {},
-  index,
-  label,
-  onClick,
-  sortable = true,
-  sorting,
-}: ItemProps) => {
-  const getSortIcon = () => {
-    let sortIcon;
-    if (sortable) {
-      sortIcon = <SortIconBoth />;
-      if (sorting == 'desc') {
-        sortIcon = <SortIconDesc />;
-      } else if (sorting === 'asc') {
-        sortIcon = <SortIconAsc />;
-      }
-    }
-    return sortIcon;
-  };
-
-  const handleOnClick = () => {
-    if (sortable)
-      onClick(index);
-  };
-
-  const handleKeyDown = (e: any) => {
-    if(e.keyCode === 13) {
-      e.preventDefault();
-      handleOnClick();
-    }
-  };
-
-
-  const sortIcon = getSortIcon();
-
-  return (
-    <th
-      className={classnames({'table__sortable_header-link': sortable}, kebabCase(dataKey))}
-      onClick={handleOnClick}
-
-      {...headerProps} >
-      <div aria-label={label} onKeyDown={handleKeyDown} tabIndex={sortable ? 0 : undefined}>
-        {label}
-        {sortIcon}
-      </div>
-    </th>
-  );
-};
+import type {Column} from './SortableTable';
 
 type Props = {
-  dataKeys: Array<Object>,
-  emptyFirstColumn?: boolean,
+  columns: Array<Column>,
+  columnStyles?: Array<Object>,
   fixedHeader?: boolean,
-  onStateChange: Function,
+  getRef?: Function,
+  onColumnClick?: Function,
+  showRadioButton?: boolean,
   sortable?: boolean,
-  sortings: Array<string>,
+  sortKey: ?string,
+  sortOrder: ?string,
 }
 
 const SortableTableHeader = ({
-  dataKeys,
-  emptyFirstColumn,
+  columns,
+  columnStyles,
   fixedHeader,
-  onStateChange,
-  sortable = false,
-  sortings,
+  getRef,
+  onColumnClick,
+  showRadioButton,
+  sortable,
+  sortKey,
+  sortOrder,
 }: Props) => {
-
-  const handleOnClick = (index) => {
-    if(sortable) {
-      onStateChange(index);
+  const setTheadRef = (el: any) => {
+    if(getRef) {
+      getRef(el);
     }
   };
 
-  if(!dataKeys) {
-    return null;
-  }
+  const getSortIcon = (column: Column, isSortable: boolean) => {
+    if (isSortable && sortKey !== column.key) {
+      return <SortIconBoth />;
+    }
+    if (isSortable &&  sortKey === column.key) {
+      switch (sortOrder) {
+        case TableSortOrder.ASCENDING:
+          return <SortIconAsc />;
+        case TableSortOrder.DESCENDING:
+          return <SortIconDesc />;
+      }
+    }
 
-  return (
-    <thead>
+    return null;
+  };
+
+  return(
+    <thead ref={setTheadRef}>
       <tr>
-        {emptyFirstColumn && <td className='empty-cell'></td>}
-        {dataKeys.map((column, index) => {
-          const sorting = sortings[index];
-          return (
-            <SortableTableHeaderItem
-              key={index}
-              index={index}
-              dataKey={column.key}
-              fixedHeader={fixedHeader}
-              label={column.label}
-              onClick={handleOnClick}
-              sortable={sortable && column.sortable}
-              sorting={sorting}
-              headerProps={column.headerProps}
-            />
+        {showRadioButton && <th></th>}
+        {columns.map((column, index) => {
+          const handleColumnClick = () => {
+            if(isSortable && onColumnClick) {
+              onColumnClick(column);
+            }
+          };
+
+          const handleKeyDown = (e: any) => {
+            if(e.keyCode === 13) {
+              e.preventDefault();
+              handleColumnClick();
+            }
+          };
+
+          const isSortable = (sortable && column.sortable !== false) ? true : false,
+            sortIcon = getSortIcon(column, isSortable),
+            columnStyle = columnStyles && (columnStyles.length > (index + (showRadioButton ? 1 : 0)))
+              ? columnStyles[index + (showRadioButton ? 1 : 0)]
+              : {};
+
+          return(
+            <th
+              key={column.key}
+              className={classNames({'sortable': isSortable})}
+              style={{...columnStyle, minWidth: column.minWidth}}
+              onClick={handleColumnClick}
+            >
+              <div
+                onKeyDown={handleKeyDown}
+                tabIndex={(isSortable && !fixedHeader) ? 0 : undefined}
+              >
+                {column.text}
+                {isSortable && sortIcon}
+              </div>
+            </th>
           );
         })}
       </tr>

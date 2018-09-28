@@ -13,7 +13,7 @@ type Props = {
 }
 
 const CloseButton = ({className, onClick, setReference, title, type = 'button'}: Props) => {
-  const handleSetReference = (element: any) => {
+  const handleSetReference = (element: ?Object) => {
     if(element && setReference) {
       setReference(element);
     }

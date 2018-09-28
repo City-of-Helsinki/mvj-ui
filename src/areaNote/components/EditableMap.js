@@ -40,6 +40,9 @@ type State = {
 }
 
 class EditableMap extends Component<Props, State> {
+  featureGroup: ?Object
+  saveConditionPanel: ?Object
+
   state = {
     id: -1,
     isDeleteModalOpen: false,
@@ -47,8 +50,13 @@ class EditableMap extends Component<Props, State> {
     isValid: false,
   }
 
-  saveConditionPanel: any
-  featureGroup: any
+  setFeatureGroupRef = (el: ?Object) => {
+    this.featureGroup = el;
+  }
+
+  setSaveConditionPanelRef = (el: ?Object) => {
+    this.saveConditionPanel = el;
+  }
 
   componentDidUpdate(prevProps) {
     if(this.props.isEditMode && !prevProps.isEditMode) {
@@ -142,7 +150,7 @@ class EditableMap extends Component<Props, State> {
           zoom={defaultZoom}
         >
           <FeatureGroup
-            ref={(input) => {this.featureGroup = input;}}
+            ref={this.setFeatureGroupRef}
           >
             {isEditMode &&
               <EditControl
@@ -189,7 +197,7 @@ class EditableMap extends Component<Props, State> {
             }
           </FeatureGroup>
           <SaveConditionPanel
-            ref={(input) => this.saveConditionPanel = input}
+            ref={this.setSaveConditionPanelRef}
             disableDelete={isNew}
             disableSave={!isValid}
             onCancel={this.cancelChanges}

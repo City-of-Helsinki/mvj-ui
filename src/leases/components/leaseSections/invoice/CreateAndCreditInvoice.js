@@ -34,7 +34,7 @@ type Props = {
   currentLease: Lease,
   enableCreateInvoice: boolean,
   enableCreditInvoice: boolean,
-  invoiceToCredit: ?string,
+  invoiceToCredit: ?Object,
   isCreateInvoicePanelOpen: boolean,
   isCreditInvoicePanelOpen: boolean,
   receiveIsCreateClicked: Function,
@@ -44,11 +44,19 @@ type Props = {
   ref?: Function,
 }
 
-class CreateAndCreditInvoiceComponent extends Component <Props> {
+class CreateAndCreditInvoice extends Component <Props> {
   creditPanel: any
   creditPanelFirstField: any
   createPanel: any
   createPanelFirstField: any
+
+  setCreatePanelRef = (el: any) => {
+    this.createPanel = el;
+  }
+
+  setCreditPanelRef = (el: any) => {
+    this.creditPanel = el;
+  }
 
   handleOpenCreateInvoicePanelButtonClick = () => {
     const {receiveIsCreateClicked, receiveIsCreateInvoicePanelOpen} = this.props;
@@ -138,34 +146,33 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
     receiveIsCreditInvoicePanelOpen(false);
   }
 
-  handleCreditInvoice = (invoice: Object) => {
+  handleCreditInvoice = (creditInvoiceData: Object) => {
     const {currentLease, invoiceToCredit} = this.props,
-      parts = invoiceToCredit ? invoiceToCredit.split('_') : [];
+      isInvoiceSet = this.isInvoiceSet();
 
-    if(parts[0] === 'invoice') {
-      const {creditInvoice} = this.props;
-
-      creditInvoice({
-        creditData: formatCreditInvoiceForDb(invoice),
-        invoiceId: parts[1],
-        lease: currentLease.id,
-      });
-    } else {
+    if(isInvoiceSet) {
       const {creditInvoiceSet} = this.props;
 
       creditInvoiceSet({
-        creditData: formatCreditInvoiceForDb(invoice),
-        invoiceSetId: parts[1],
+        creditData: formatCreditInvoiceForDb(creditInvoiceData),
+        invoiceSetId: invoiceToCredit && invoiceToCredit.id,
+        lease: currentLease.id,
+      });
+    } else {
+      const {creditInvoice} = this.props;
+
+      creditInvoice({
+        creditData: formatCreditInvoiceForDb(creditInvoiceData),
+        invoiceId: invoiceToCredit && invoiceToCredit.id,
         lease: currentLease.id,
       });
     }
   }
 
   isInvoiceSet = () => {
-    const {invoiceToCredit} = this.props,
-      parts = invoiceToCredit ? invoiceToCredit.split('_') : [];
+    const {invoiceToCredit} = this.props;
 
-    return parts.length ? parts[0] === 'invoiceset' : false;
+    return (invoiceToCredit && invoiceToCredit.tableGroupName) ? true : false;
   }
 
   render() {
@@ -199,7 +206,7 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
               />
             }
           </div>
-          <div ref={(ref) => this.creditPanel = ref}>
+          <div ref={this.setCreditPanelRef}>
             {(isCreditInvoicePanelOpen && enableCreditInvoice) &&
               <CreditInvoiceForm
                 isInvoiceSet={isInvoiceSet}
@@ -209,7 +216,7 @@ class CreateAndCreditInvoiceComponent extends Component <Props> {
               />
             }
           </div>
-          <div ref={(ref) => this.createPanel = ref}>
+          <div ref={this.setCreatePanelRef}>
             {(isCreateInvoicePanelOpen && enableCreateInvoice) &&
               <NewInvoiceForm
                 onClose={this.handleCloseCreateInvoicePanel}
@@ -242,4 +249,4 @@ export default connect(
     receiveIsCreditClicked,
     receiveIsCreditInvoicePanelOpen,
   },
-)(CreateAndCreditInvoiceComponent);
+)(CreateAndCreditInvoice);

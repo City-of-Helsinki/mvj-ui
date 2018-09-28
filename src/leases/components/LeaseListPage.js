@@ -18,7 +18,7 @@ import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import SearchWrapper from '$components/search/SearchWrapper';
 import Search from './search/Search';
-import Table from '$components/table/Table';
+import SortableTable from '$components/table/SortableTable';
 import TableControllers from '$components/table/TableControllers';
 import TableIcon from '$components/icons/TableIcon';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
@@ -277,18 +277,18 @@ class LeaseListPage extends Component<Props, State> {
           <div>
             {visualizationType === 'table' && (
               <div>
-                <Table
-                  data={filteredLeases}
-                  dataKeys={[
-                    {key: 'identifier', label: 'Vuokratunnus'},
-                    {key: 'real_property_unit', label: 'Vuokrakohde'},
-                    {key: 'address', label: 'Osoite'},
-                    {key: 'tenant', label: 'Vuokralainen'},
-                    {key: 'lessor', label: 'Vuokranantaja'},
-                    {key: 'state', label: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
-                    {key: 'start_date', label: 'Alkupvm', renderer: (val) => formatDate(val)},
-                    {key: 'end_date', label: 'Loppupvm', renderer: (val) => formatDate(val)},
+                <SortableTable
+                  columns={[
+                    {key: 'identifier', text: 'Vuokratunnus'},
+                    {key: 'real_property_unit', text: 'Vuokrakohde'},
+                    {key: 'address', text: 'Osoite'},
+                    {key: 'tenant', text: 'Vuokralainen'},
+                    {key: 'lessor', text: 'Vuokranantaja'},
+                    {key: 'state', text: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
+                    {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val)},
+                    {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
                   ]}
+                  data={filteredLeases}
                   onRowClick={this.handleRowClick}
                 />
                 <Pagination
