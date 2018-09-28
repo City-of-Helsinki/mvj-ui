@@ -92,12 +92,17 @@ class InvoicePanel extends PureComponent<Props, State> {
   }
 
   transitionEnds = (e: any) => {
-    if(e.propertyName === 'right') {
+    if(e.srcElement === this.component) {
+      const {isOpen} = this.props;
+
+      if(isOpen) {
+        this.setFocusOnPanel();
+      }
+
       this.setState({
         isClosing: false,
         isOpening: false,
       });
-      this.setFocusOnPanel();
     }
   }
 
@@ -109,6 +114,7 @@ class InvoicePanel extends PureComponent<Props, State> {
       this.setFocusOnCloseButton();
     }
   }
+
   setCloseButtonReference = (element: any) => {
     this.closeButton = element;
   }

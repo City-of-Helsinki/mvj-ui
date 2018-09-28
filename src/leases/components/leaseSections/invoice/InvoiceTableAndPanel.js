@@ -7,7 +7,6 @@ import scrollToComponent from 'react-scroll-to-component';
 
 import InvoicePanel from './InvoicePanel';
 import SortableTable from '$components/table/SortableTable';
-import TruncatedText from '$components/content/TruncatedText';
 import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
 import {KeyCodes} from '$src/enums';
 import {InvoiceType} from '$src/invoices/enums';
@@ -190,8 +189,24 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     if(this.table){
       const selectedRows = this.table.scrollBodyWrapper.getElementsByClassName('selected');
       if(selectedRows.length) {
-        selectedRows[0].scrollIntoViewIfNeeded();
+        if(selectedRows[0].scrollIntoViewIfNeeded) {
+          selectedRows[0].scrollIntoViewIfNeeded();
+        } else {
+          this.scrollIntoViewIfNeeded(selectedRows[0]);
+        }
       }
+    }
+  }
+
+  scrollIntoViewIfNeeded = (element: any) => {
+    const parent = element.parentNode.parentNode.parentNode,
+      parentComputedStyle = window.getComputedStyle(parent, null),
+      parentBorderTopWidth = parseInt(parentComputedStyle.getPropertyValue('border-top-width')),
+      overTop = element.offsetTop - parent.offsetTop < parent.scrollTop,
+      overBottom = (element.offsetTop - parent.offsetTop + element.clientHeight - parentBorderTopWidth) > (parent.scrollTop + parent.clientHeight);
+
+    if ((overTop || overBottom)) {
+      parent.scrollTop = element.offsetTop - parent.offsetTop - parent.clientHeight / 2 - parentBorderTopWidth + element.clientHeight / 2;
     }
   }
 
@@ -425,7 +440,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
         key: 'receivableTypes',
         ascSortFunction: this.sortByReceivableTypesAsc,
         descSortFunction: this.sortByReceivableTypesDesc,
-        renderer: (val) => <TruncatedText text={formatReceivableTypesString(receivableTypeOptions, val) || '-'} />,
+        renderer: (val) => formatReceivableTypesString(receivableTypeOptions, val) || '-',
         text: 'Saamislaji',
       },
       {

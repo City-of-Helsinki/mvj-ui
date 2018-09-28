@@ -94,174 +94,184 @@
   }
 }
 
-.sortable-table__container {
-  max-width: 100%;
-  overflow: hidden;
+.sortable-table {
+  &__container {
+    max-width: 100%;
+    overflow: hidden;
 
-  table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
-    margin-bottom: rem-calc(10px);
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
+      margin-bottom: rem-calc(10px);
 
-    thead td, thead th {
-      background-color: $engel;
-      font-size: rem-calc(14px);
-  	  font-weight: $semibold;
-      white-space: nowrap;
-      text-align: left;
-  	  color: $black;
-      padding: 0;
-      border: none;
-
-      div {
-        padding: rem-calc(5px 8px);
-        display: flex;
-        align-items: center;
-
-        @include focus();
-
-        &:focus {
-          outline-offset: -2px;
-        }
-      }
-    }
-
-    tbody tr {
-      td {
-        background-color: $white;
-        border-bottom: 1px solid $light-gray;
-        padding: rem-calc(5px 8px);
-        font-size: rem-calc(14px);
-        text-align: left;
-        color: $black;
-        vertical-align: top;
-
-        &.no-wrap {
-          white-space: nowrap;
-        }
-      }
-
-      &.no-data-row {
-        td {
-          background-color: $lightest-gray;
-          text-align: center;
-        }
-      }
-    }
-
-    &.sortable-table {
       thead td, thead th {
-        background-color: $white;
-        font-size: rem-calc(13px);
+        background-color: $engel;
+        font-size: rem-calc(14px);
+    	  font-weight: $semibold;
+        white-space: nowrap;
+        text-align: left;
+    	  color: $black;
+        padding: 0;
+        border: none;
 
-        &.sortable {
-          cursor: pointer;
+        .sortable-table-sort-icon {
+          fill: $black;
+          margin-left: 5px;
+          height: 14px;
+          width: 14px;
+          min-width: 14px
         }
-      }
 
-      tbody tr {
-        &.group-row {
-          td {
-            border-top: 2px solid $medium-gray;
-          }
-          &:first-child {
-            td {
-              border-top: none;
-            }
-          }
-        }
-        &.group-item-row {
-          td {
-            background-color: $light-gray;
-          }
-        }
-      }
-    }
+        div {
+          padding: rem-calc(5px 8px);
+          display: flex;
+          align-items: center;
 
-    &.clickable-row {
-      tbody {
-        tr {
           @include focus();
 
           &:focus {
             outline-offset: -2px;
           }
+        }
+      }
 
-          &:hover {
-            outline: none;
+      tbody tr {
+        td {
+          background-color: $white;
+          border-bottom: 1px solid $light-gray;
+          padding: rem-calc(5px 8px);
+          font-size: rem-calc(14px);
+          text-align: left;
+          color: $black;
+          vertical-align: top;
 
-            > td {
-              cursor: pointer;
-              background-color: #D9EFE4;
-            }
+          &.no-wrap {
+            white-space: nowrap;
           }
+        }
 
-          &.selected > td {
-            background-color: #D9EFE4 !important;
+        &.no-data-row {
+          td {
+            background-color: $lightest-gray;
+            text-align: center;
           }
         }
       }
-    }
-  }
 
-  .scroll-body-wrapper {
-    overflow: auto;
-  }
+      &.sortable-table {
+        thead td, thead th {
+          background-color: $white;
+          font-size: rem-calc(13px);
 
-  &.fixed-table-container {
-    position: relative;
-    border: 1px solid #d7d5d5;
-    margin-bottom: rem-calc(10px);
+          &.sortable {
+            cursor: pointer;
+          }
+        }
 
-    .scroll-head-wrapper {
-      overflow: hidden;
-    }
-
-    .scroll-head-table {
-      margin-bottom: 0;
-    }
-
-    .scroll-head-table {
-      margin-bottom: 0;
-
-      thead {
-        border-bottom: 1px solid $medium-gray;
-        z-index: 10;
+        tbody tr {
+          &.group-row {
+            td {
+              border-top: 2px solid $medium-gray;
+            }
+            &:first-child {
+              td {
+                border-top: none;
+              }
+            }
+          }
+          &.group-item-row {
+            td {
+              background-color: $light-gray;
+            }
+          }
+        }
       }
 
-      thead th {
-        background-color: $white;
-        font-size: rem-calc(13px);
+      &.clickable-row {
+        tbody {
+          tr {
+            @include focus();
 
-        @include focus();
+            &:focus {
+              outline-offset: -2px;
+            }
 
-        &:focus {
-          outline-offset: -2px;
+            &:hover {
+              outline: none;
+
+              > td {
+                cursor: pointer;
+                background-color: #D9EFE4;
+              }
+            }
+
+            &.selected > td {
+              background-color: #D9EFE4 !important;
+            }
+          }
         }
       }
     }
 
     .scroll-body-wrapper {
-      max-height: rem-calc(170px);
       overflow: auto;
-      background-color: $white;
     }
 
-    .scroll-body-table {
-      margin-bottom: 0;
+    &.fixed-table-container {
+      position: relative;
+      border: 1px solid #d7d5d5;
+      margin-bottom: rem-calc(10px);
 
-      thead tr {
-        height: 0px;
+      .scroll-head-wrapper {
+        overflow: hidden;
+      }
 
-        th {
+      .scroll-head-table {
+        margin-bottom: 0;
+      }
+
+      .scroll-head-table {
+        margin-bottom: 0;
+
+        thead {
+          border-bottom: 1px solid $medium-gray;
+          z-index: 10;
+        }
+
+        thead th {
+          background-color: $white;
+          font-size: rem-calc(13px);
+
+          @include focus();
+
+          &:focus {
+            outline-offset: -2px;
+          }
+        }
+      }
+
+      .scroll-body-wrapper {
+        max-height: rem-calc(170px);
+        overflow: auto;
+        background-color: $white;
+      }
+
+      .scroll-body-table {
+        margin-bottom: 0;
+
+        thead tr {
           height: 0px;
 
-          div {
+          th {
             height: 0px;
-            padding-top: 0;
-            padding-bottom: 0;
-            overflow: hidden;
+
+            div {
+              height: 0px;
+              padding-top: 0;
+              padding-bottom: 0;
+              overflow: hidden;
+            }
           }
         }
       }

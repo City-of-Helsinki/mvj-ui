@@ -42,7 +42,6 @@ type State = {
   isStopInvoicingModalOpen: boolean,
 }
 
-
 class Invoices extends Component<Props, State> {
   creditPanel: any
 
@@ -50,7 +49,6 @@ class Invoices extends Component<Props, State> {
     isStartInvoicingModalOpen: false,
     isStopInvoicingModalOpen: false,
   }
-
 
   componentDidMount = () => {
     const {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} = this.props;
@@ -157,7 +155,6 @@ class Invoices extends Component<Props, State> {
       isStartInvoicingModalOpen,
       isStopInvoicingModalOpen,
     } = this.state;
-
 
     return (
       <div>

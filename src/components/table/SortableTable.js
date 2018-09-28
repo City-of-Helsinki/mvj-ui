@@ -8,7 +8,6 @@ import get from 'lodash/get';
 import SortableTableHeader from './SortableTableHeader';
 import SortableTableGroup from './SortableTableGroup';
 import SortableTableRow from './SortableTableRow';
-import {SortIconBoth, SortIconDesc, SortIconAsc} from '$components/table/Icons';
 import {sortStringByKeyAsc, sortStringByKeyDesc} from '$util/helpers';
 import {TableSortOrder} from '$components/enums';
 
@@ -262,9 +261,15 @@ class SortableTable extends Component<Props, State> {
       return sum + cur.width;
     }, 0);
 
+    const scrollBarWidth = this.scrollBodyWrapper.offsetWidth - this.scrollBodyWrapper.clientWidth;
+    if(scrollBarWidth) {
+      const index = scrollHeaderColumnStyles.length - 1;
+      scrollHeaderColumnStyles[index].width = scrollHeaderColumnStyles[index].width + scrollBarWidth;
+    }
+
     this.setState({
       scrollHeaderColumnStyles: scrollHeaderColumnStyles,
-      scrollHeaderWidth: scrollHeaderWidth,
+      scrollHeaderWidth: scrollHeaderWidth + scrollBarWidth,
     });
   }
 
@@ -290,24 +295,6 @@ class SortableTable extends Component<Props, State> {
       sortOrder: newSortOrder,
     });
   }
-
-  getSortIcon = (column: Column, isSortable: boolean) => {
-    const {sortKey, sortOrder} = this.state;
-
-    if (isSortable && sortKey !== column.key) {
-      return <SortIconBoth />;
-    }
-    if (isSortable &&  sortKey === column.key) {
-      switch (sortOrder) {
-        case TableSortOrder.ASCENDING:
-          return <SortIconAsc />;
-        case TableSortOrder.DESCENDING:
-          return <SortIconDesc />;
-      }
-    }
-
-    return null;
-  };
 
   handleSelectRow = (row: Object) => {
     const {onSelectRow} = this.props;
