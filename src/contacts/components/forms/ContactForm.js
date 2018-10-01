@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {formValueSelector, reduxForm} from 'redux-form';
+import {change, formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
@@ -21,10 +21,12 @@ import type {RootState} from '$src/root/types';
 
 type Props = {
   attributes: Attributes,
+  change: Function,
   initialValues: Object,
   isContactFormValid: boolean,
   isFocusedOnMount?: boolean,
   isSaveClicked: boolean,
+  language?: string,
   receiveContactFormValid: Function,
   type: ?string,
   valid: boolean,
@@ -56,8 +58,15 @@ class ContactForm extends Component<Props> {
     }
   }
 
+  handleAddressChange = (details: Object) => {
+    const {change} = this.props;
+
+    change('postal_code', details.postalCode);
+    change('city', details.city);
+  };
+
   render() {
-    const {attributes, isSaveClicked, type} = this.props;
+    const {attributes, isSaveClicked, language, type} = this.props;
     if (isEmpty(attributes)) {
       return null;
     }
@@ -122,7 +131,10 @@ class ContactForm extends Component<Props> {
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'address')}
                     name='address'
+                    language={language === 'sv' ? 'sv' : 'fi'}
+                    valueSelectedCallback={this.handleAddressChange}
                     overrideValues={{
+                      fieldType: 'address',
                       label: 'Katuosoite',
                     }}
                   />
@@ -315,6 +327,7 @@ const mapStateToProps = (state: RootState) => {
     isContactFormValid: getIsContactFormValid(state),
     initialValues: getInitialContactFormValues(state),
     isSaveClicked: getIsSaveClicked(state),
+    language: selector(state, 'language'),
     type: selector(state, 'type'),
   };
 };
@@ -323,6 +336,7 @@ export default flowRight(
   connect(
     mapStateToProps,
     {
+      change,
       receiveContactFormValid,
     },
   ),

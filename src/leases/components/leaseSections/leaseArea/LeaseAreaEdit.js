@@ -2,7 +2,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {FieldArray, formValueSelector} from 'redux-form';
+import {change, FieldArray, formValueSelector} from 'redux-form';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
@@ -189,13 +189,75 @@ const renderPlots = ({
   );
 };
 
+type AddressProps = {
+  attributes: Attributes,
+  change: Function,
+  field: string,
+  isSaveClicked: boolean,
+  onRemove: Function,
+}
+
+const Address = ({
+  attributes,
+  change,
+  field,
+  isSaveClicked,
+  onRemove,
+}: AddressProps) => {
+  const handleAddressChange = (details: Object) => {
+    change(formName, `${field}.postal_code`, details.postalCode);
+    change(formName, `${field}.city`, details.city);
+  };
+
+  return(
+    <Row>
+      <Column small={6} large={4}>
+        <FormField
+          disableTouched={isSaveClicked}
+          fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.address')}
+          invisibleLabel
+          name={`${field}.address`}
+          valueSelectedCallback={handleAddressChange}
+          overrideValues={{
+            fieldType: 'address',
+          }}
+        />
+      </Column>
+      <Column small={3} large={2}>
+        <FormField
+          disableTouched={isSaveClicked}
+          fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.postal_code')}
+          invisibleLabel
+          name={`${field}.postal_code`}
+        />
+      </Column>
+      <Column small={2} large={2}>
+        <FormField
+          disableTouched={isSaveClicked}
+          fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.city')}
+          invisibleLabel
+          name={`${field}.city`}
+        />
+      </Column>
+      <Column small={1}>
+        <RemoveButton
+          className='third-level'
+          onClick={onRemove}
+          title="Poista osoite"
+        />
+      </Column>
+    </Row>
+  );
+};
+
 type AddressesProps = {
   attributes: Attributes,
+  change: Function,
   fields: any,
   isSaveClicked: boolean,
 }
 
-const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Element<*> => {
+const AddressItems = ({attributes, change, fields, isSaveClicked}: AddressesProps): Element<*> => {
   const handleAdd = () => fields.push({});
 
   return (
@@ -230,39 +292,14 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
               };
 
               return (
-                <Row key={index}>
-                  <Column small={6} large={4}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.address')}
-                      invisibleLabel
-                      name={`${field}.address`}
-                    />
-                  </Column>
-                  <Column small={3} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.postal_code')}
-                      invisibleLabel
-                      name={`${field}.postal_code`}
-                    />
-                  </Column>
-                  <Column small={2} large={2}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.addresses.child.children.city')}
-                      invisibleLabel
-                      name={`${field}.city`}
-                    />
-                  </Column>
-                  <Column small={1}>
-                    <RemoveButton
-                      className='third-level'
-                      onClick={handleRemove}
-                      title="Poista osoite"
-                    />
-                  </Column>
-                </Row>
+                <Address
+                  key={index}
+                  attributes={attributes}
+                  change={change}
+                  field={field}
+                  isSaveClicked={isSaveClicked}
+                  onRemove={handleRemove}
+                />
               );
             }
 
@@ -285,6 +322,7 @@ const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Elem
 type AreaItemProps = {
   areaId: number,
   attributes: Attributes,
+  change: Function,
   errors: ?Object,
   field: string,
   isSaveClicked: boolean,
@@ -299,6 +337,7 @@ type AreaItemProps = {
 const LeaseAreaEdit = ({
   areaId,
   attributes,
+  change,
   errors,
   field,
   isSaveClicked,
@@ -414,6 +453,7 @@ const LeaseAreaEdit = ({
 
         <FieldArray
           attributes={attributes}
+          change={change}
           component={AddressItems}
           isSaveClicked={isSaveClicked}
           name={`${field}.addresses`}
@@ -500,6 +540,7 @@ export default connect(
     };
   },
   {
+    change,
     receiveCollapseStates,
   }
 )(LeaseAreaEdit);

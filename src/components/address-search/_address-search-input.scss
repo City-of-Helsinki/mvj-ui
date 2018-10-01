@@ -1,0 +1,64 @@
+.address-search-input {
+  position: relative;
+
+  input {
+    padding: 0 rem-calc(5px);
+    font-size: rem-calc(14px);
+    height: rem-calc(20px);
+    width: 100%;
+    margin: 0;
+  }
+
+  &__dropdown {
+    position: absolute;
+    background-color: $white;
+    box-shadow: 0 1px 0 1px $tram;
+    border: 1px solid $tram;
+    border-top: none;
+    border-bottom: none;
+    z-index: 500;
+    top: 20px;
+    left: 0;
+    min-width: 100%;
+    display: none;
+
+    ul {
+      list-style: none;
+      margin: 0;
+      max-height: rem-calc(178px);
+      overflow: auto;
+    }
+
+    &.open {
+      display: block;
+    }
+    .no-result-item {
+      padding: 0 rem-calc(5px);
+      font-size: rem-calc(14px);
+      background-color: $lightest-gray;
+    }
+
+    .list-item {
+      padding: 0 rem-calc(5px);
+      font-size: rem-calc(14px);
+      color: $black;
+      cursor: pointer;
+
+      &.is-focused {
+        background-color: $engel-lightest-opaque !important;
+      }
+
+      &:hover {
+        background-color: $engel-lightest-opaque !important;
+      }
+    }
+  }
+
+  &.open {
+    input {
+      outline: none !important;
+      border: 1px solid $tram;
+      box-shadow: 0px 0px 0px 1px $tram;
+    }
+  }
+}

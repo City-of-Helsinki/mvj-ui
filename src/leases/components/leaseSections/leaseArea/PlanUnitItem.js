@@ -2,14 +2,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 
 import BoxItem from '$components/content/BoxItem';
-import FormTextTitle from '$components/form/FormTextTitle';
 import FormTitleAndText from '$components/form/FormTitleAndText';
-import ListItem from '$components/content/ListItem';
-import ListItems from '$components/content/ListItems';
-import SubTitle from '$components/content/SubTitle';
 import {getAttributes} from '$src/leases/selectors';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import type {Attributes} from '$src/leases/types';
@@ -20,8 +15,6 @@ type Props = {
 }
 
 const PlanUnitItem = ({attributes, planUnit}: Props) => {
-  const typeOptions = getAttributeFieldOptions(attributes,
-    'lease_areas.child.children.plan_units.child.children.type');
   const plotDivisionStateOptions = getAttributeFieldOptions(attributes,
     'lease_areas.child.children.plan_units.child.children.plot_division_state');
   const planUnitTypeOptions = getAttributeFieldOptions(attributes,
@@ -30,7 +23,6 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
     'lease_areas.child.children.plan_units.child.children.plan_unit_state');
   const planUnitIntendedUseOptions = getAttributeFieldOptions(attributes,
     'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use');
-  const addresses = get(planUnit, 'addresses', []);
 
   return (
     <BoxItem className='no-border-on-last-child'>
@@ -41,47 +33,8 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
             text={planUnit.identifier || '-'}
           />
         </Column>
-        <Column small={12} medium={6} large={3}>
-          <FormTitleAndText
-            title='Määritelmä'
-            text={getLabelOfOption(typeOptions, planUnit.type) || '-'}
-          />
-        </Column>
       </Row>
-      <SubTitle>Osoite</SubTitle>
-      {!addresses || !addresses.length && <p>Ei osoitteita</p>}
-      {!!addresses.length &&
-        <div>
-          <Row>
-            <Column small={6} large={6}>
-              <FormTextTitle title='Osoite' />
-            </Column>
-            <Column small={3} large={3}>
-              <FormTextTitle title='Postinumero' />
-            </Column>
-            <Column small={3} large={3}>
-              <FormTextTitle title='Kaupunki' />
-            </Column>
-          </Row>
-          <ListItems>
-            {addresses.map((address) => {
-              return (
-                <Row key={address.id}>
-                  <Column small={6} large={6}>
-                    <ListItem>{address.address || '-'}</ListItem>
-                  </Column>
-                  <Column small={3} large={3}>
-                    <ListItem>{address.postal_code || '-'}</ListItem>
-                  </Column>
-                  <Column small={3} large={3}>
-                    <ListItem>{address.city || '-'}</ListItem>
-                  </Column>
-                </Row>
-              );
-            })}
-          </ListItems>
-        </div>
-      }
+
       <Row>
         <Column small={12} medium={6} large={3}>
           <FormTitleAndText

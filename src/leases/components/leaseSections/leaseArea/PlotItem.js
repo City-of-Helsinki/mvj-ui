@@ -2,15 +2,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 
 import BoxItem from '$components/content/BoxItem';
-import FormText from '$components/form/FormText';
-import FormTextTitle from '$components/form/FormTextTitle';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import KtjLink from '$components/ktj/KtjLink';
-import ListItem from '$components/content/ListItem';
-import ListItems from '$components/content/ListItems';
 import SubTitle from '$components/content/SubTitle';
 import {PlotType} from '$src/leases/enums';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
@@ -26,7 +21,6 @@ type Props = {
 const PlotItem = ({attributes, plot}: Props) => {
   const typeOptions = getAttributeFieldOptions(attributes,
     'lease_areas.child.children.plots.child.children.type');
-  const addresses = get(plot, 'addresses', []);
 
   return (
     <BoxItem className='no-border-on-last-child'>
@@ -44,40 +38,7 @@ const PlotItem = ({attributes, plot}: Props) => {
           />
         </Column>
       </Row>
-      <SubTitle>Osoite</SubTitle>
-      {!addresses || !addresses.length && <FormText>Ei osoitteita</FormText>}
-      {!!addresses.length &&
-        <div>
-          <Row>
-            <Column small={6} large={6}>
-              <FormTextTitle title='Osoite' />
-            </Column>
-            <Column small={3} large={3}>
-              <FormTextTitle title='Postinumero' />
-            </Column>
-            <Column small={3} large={3}>
-              <FormTextTitle title='Kaupunki' />
-            </Column>
-          </Row>
-          <ListItems>
-            {addresses.map((address) => {
-              return (
-                <Row key={address.id}>
-                  <Column small={6} large={6}>
-                    <ListItem>{address.address || '-'}</ListItem>
-                  </Column>
-                  <Column small={3} large={3}>
-                    <ListItem>{address.postal_code || '-'}</ListItem>
-                  </Column>
-                  <Column small={3} large={3}>
-                    <ListItem>{address.city || '-'}</ListItem>
-                  </Column>
-                </Row>
-              );
-            })}
-          </ListItems>
-        </div>
-      }
+
       <Row>
         <Column small={12} medium={6} large={3}>
           <FormTitleAndText

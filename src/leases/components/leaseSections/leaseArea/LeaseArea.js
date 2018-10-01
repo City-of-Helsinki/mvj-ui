@@ -127,7 +127,7 @@ const LeaseArea = ({
       </Row>
 
       <SubTitle>Osoite</SubTitle>
-      {!addresses || !addresses.length && <p>Ei osoitteita</p>}
+      {!addresses || !addresses.length && <FormText>Ei osoitteita</FormText>}
       {!!addresses.length &&
         <div>
           <Row>

@@ -100,6 +100,24 @@
     }
   }
 
+  &__address {
+    &.is-dirty {
+      input {
+        background-color: $is-dirty-color;
+      }
+    }
+
+    &.has-error {
+      input {
+        border: 1px solid $brick !important;
+
+        &:focus {
+          box-shadow: 0 0 0 1px $brick;
+        }
+      }
+    }
+  }
+
   &__input {
     font-family: $font-family-source;
     padding: 0 rem-calc(5px);
