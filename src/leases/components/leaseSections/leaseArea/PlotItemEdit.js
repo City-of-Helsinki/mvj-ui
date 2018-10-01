@@ -1,122 +1,20 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, formValueSelector} from 'redux-form';
+import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
-import type {Element} from 'react';
 
-import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
-import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
-import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {DeleteModalLabels, DeleteModalTitles, FormNames, PlotType} from '$src/leases/enums';
+import {FormNames, PlotType} from '$src/leases/enums';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
-
-type AddressesProps = {
-  attributes: Attributes,
-  fields: any,
-  isSaveClicked: boolean,
-}
-
-const AddressItems = ({attributes, fields, isSaveClicked}: AddressesProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
-
-  return (
-    <AppConsumer>
-      {({dispatch}) => {
-        return(
-          <div>
-            <SubTitle>Osoite</SubTitle>
-            {fields && !!fields.length &&
-              <Row>
-                <Column small={6} large={6}>
-                  <FormTextTitle required title='Osoite' />
-                </Column>
-                <Column small={3} large={3}>
-                  <FormTextTitle title='Postinumero' />
-                </Column>
-                <Column small={3} large={3}>
-                  <FormTextTitle title='Kaupunki' />
-                </Column>
-              </Row>
-            }
-            {fields && !!fields.length && fields.map((field, index) => {
-              const handleRemove = () => {
-                dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
-                    fields.remove(index);
-                  },
-                  deleteModalLabel: DeleteModalLabels.ADDRESS,
-                  deleteModalTitle: DeleteModalTitles.ADDRESS,
-                });
-              };
-
-              return (
-                <Row key={index}>
-                  <Column small={6} large={6}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.addresses.child.children.address')}
-                      invisibleLabel
-                      name={`${field}.address`}
-                    />
-                  </Column>
-                  <Column small={3} large={3}>
-                    <FormField
-                      disableTouched={isSaveClicked}
-                      fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.addresses.child.children.postal_code')}
-                      invisibleLabel
-                      name={`${field}.postal_code`}
-                    />
-                  </Column>
-                  <Column small={3} large={3}>
-                    <FieldAndRemoveButtonWrapper
-                      field={
-                        <FormField
-                          disableTouched={isSaveClicked}
-                          fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.addresses.child.children.city')}
-                          invisibleLabel
-                          name={`${field}.city`}
-                        />
-                      }
-                      removeButton={
-                        <RemoveButton
-                          className='third-level'
-                          onClick={handleRemove}
-                          title="Poista osoite"
-                        />
-                      }
-                    />
-                  </Column>
-                </Row>
-              );
-            })}
-            <Row>
-              <Column>
-                <AddButtonThird
-                  label='Lisää osoite'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
-          </div>
-        );
-      }}
-    </AppConsumer>
-  );
-};
 
 type Props = {
   attributes: Attributes,
@@ -170,12 +68,6 @@ const PlotItemsEdit = ({
           </Column>
         </Row>
 
-        <FieldArray
-          attributes={attributes}
-          component={AddressItems}
-          isSaveClicked={isSaveClicked}
-          name={`${field}.addresses`}
-        />
         <Row>
           <Column small={12} medium={6} large={3}>
             <FormField

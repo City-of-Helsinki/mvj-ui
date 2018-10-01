@@ -33,7 +33,7 @@ const InvoiceSimulatorBillingPeriod = ({
   return(
     <Collapse
       className='collapse__secondary'
-      defaultOpen={true}
+      defaultOpen={false}
       header={
         <div>
           <Column>

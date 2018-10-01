@@ -86,6 +86,8 @@
     &_wrapper {
       width: 100%;
       z-index: 1;
+      background-color: $white;
+
       @include transition(0.5s, max-width, ease-in-out);
     }
 

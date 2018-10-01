@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 
 import ErrorBlock from './ErrorBlock';
+import FieldTypeAddress from './FieldTypeAddress';
 import FieldTypeBasic from './FieldTypeBasic';
 import FieldTypeBoolean from './FieldTypeBoolean';
 import FieldTypeCheckbox from './FieldTypeCheckbox';
@@ -24,6 +25,7 @@ import {genericNormalizer} from './normalizers';
 import {genericValidator} from '../form/validations';
 
 const FieldTypes = {
+  'address': FieldTypeAddress,
   'boolean': FieldTypeBoolean,
   'choice': FieldTypeSelect,
   'checkbox': FieldTypeCheckbox,
@@ -73,6 +75,7 @@ type InputProps = {
   invisibleLabel: boolean,
   isLoading: boolean,
   label: ?string,
+  language?: string,
   meta: Object,
   optionLabel?: string,
   options: ?Array<Object>,
@@ -80,6 +83,7 @@ type InputProps = {
   required: boolean,
   rows?: number,
   setRefForField?: Function,
+  valueSelectedCallback?: Function,
   unit?: string,
 }
 
@@ -96,6 +100,7 @@ const FormFieldInput = ({
   invisibleLabel,
   isLoading,
   label,
+  language,
   meta,
   optionLabel,
   options,
@@ -103,6 +108,7 @@ const FormFieldInput = ({
   required,
   rows,
   setRefForField,
+  valueSelectedCallback,
   unit,
 }: InputProps) => {
   const displayError = meta.error && (disableTouched || meta.touched);
@@ -115,7 +121,7 @@ const FormFieldInput = ({
       {label && fieldType === 'boolean' && <FormTextTitle required={required} title={label} />}
       {label && fieldType !== 'boolean' && <FormFieldLabel className={invisibleLabel ? 'invisible' : ''} htmlFor={input.name} required={required}>{label}</FormFieldLabel>}
       <div className={classNames('form-field__component', {'has-unit': unit})}>
-        {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, input, isDirty, isLoading, label, optionLabel, placeholder, options, rows, setRefForField, type})}
+        {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, input, isDirty, isLoading, label, language, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
         {unit && <span className='form-field__unit'>{unit}</span>}
       </div>
       {displayError && <ErrorComponent {...meta}/>}
@@ -134,6 +140,7 @@ type Props = {
   fieldAttributes: Object,
   invisibleLabel?: boolean,
   isLoading?: boolean,
+  language?: string,
   name: string,
   optionLabel?: string,
   overrideValues?: Object,
@@ -141,6 +148,7 @@ type Props = {
   rows?: number,
   setRefForField?: Function,
   validate?: Function,
+  valueSelectedCallback?: Function,
   unit?: string,
 }
 
@@ -210,12 +218,14 @@ class FormField extends PureComponent<Props, State> {
       ErrorComponent = ErrorBlock,
       invisibleLabel,
       isLoading,
+      language,
       name,
       optionLabel,
       overrideValues,
       placeholder,
       rows,
       setRefForField,
+      valueSelectedCallback,
       unit,
     } = this.props;
     const {
@@ -239,6 +249,7 @@ class FormField extends PureComponent<Props, State> {
         invisibleLabel={invisibleLabel}
         isLoading={isLoading}
         label={label}
+        language={language}
         name={name}
         normalize={this.handleGenericNormalize}
         optionLabel={optionLabel}
@@ -251,6 +262,7 @@ class FormField extends PureComponent<Props, State> {
           this.handleGenericValidate,
           this.handleValidate,
         ]}
+        valueSelectedCallback={valueSelectedCallback}
         unit={unit}
         {...overrideValues}
       />
