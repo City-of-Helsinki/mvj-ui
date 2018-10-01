@@ -396,6 +396,11 @@ class AddressSearchInput extends Component<Props, State> {
     return `${this.getStreetText(address.street)} ${numberText}`;
   };
 
+  getFullAddressText = (address: Address) => {
+    const numberText = `${address.number}${address.letter || ''}${address.number_end ? ` - ${address.number_end}` : ''}`;
+    return `${this.getStreetText(address.street)} ${numberText}, ${capitalize(address.street.municipality)}`;
+  };
+
   handleAddressItemClick = (address: Address) => {
     const {onChange} = this.props,
       newValue = `${this.getAddressText(address)}`;
@@ -485,7 +490,7 @@ class AddressSearchInput extends Component<Props, State> {
                 this.handleAddressItemClick(address);
               };
 
-              const text = this.getAddressText(address);
+              const text = this.getFullAddressText(address);
 
               return(
                 <li key={index} onClick={handleClick} className={classNames('list-item', {'is-focused': focusedValue === address})}>{text}</li>
