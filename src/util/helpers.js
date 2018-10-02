@@ -269,8 +269,10 @@ export const formatDecimalNumber = (x) => {
 
 export const formatNumber = (x) => {
   if(x === null || x === undefined || !isNumber(Number(x))) {
+    console.log('null', x);
     return null;
   }
+
   return formatNumberWithThousandSeparator(formatDecimalNumber(x));
 };
 
@@ -375,6 +377,65 @@ export const getLabelOfOption = (options: Array<Object>, value: string) => {
  * @param area
  */
 export const getAreaCoordinates = (area) => area && get(area, 'mpoly.coordinates.0.0').map(arr => [arr[1], arr[0]]);
+
+export const getCoordinatesOfGeometry = (geometry: any) => {
+  if(!geometry) {
+    return [];
+  }
+
+  const getSingleArrayOfCoordinates = (items) => {
+    let tempCoords = [];
+    if(isArray(items) && !isArray(items[0])) {
+      tempCoords.push([items[0], items[1]]);
+    } else {
+      items.forEach((item) => {
+        tempCoords = [...tempCoords, ...getSingleArrayOfCoordinates(item)];
+      });
+    }
+
+    return tempCoords;
+  };
+
+  return getSingleArrayOfCoordinates(geometry.coordinates);
+};
+
+export const getCoordinatesCenter = (coordinates: Array<any>) => {
+  const lats = [],
+    lons = [];
+
+  coordinates.forEach((coordinate) => {
+    lats.push(coordinate[0]);
+    lons.push(coordinate[1]);
+  });
+
+  const minLat = Math.min(...lats),
+    maxLat = Math.max(...lats),
+    minLon = Math.min(...lons),
+    maxLon = Math.max(...lons),
+    lat = maxLat - ((maxLat - minLat) / 2),
+    lng = maxLon - ((maxLon - minLon) / 2);
+
+  return [lng, lat];
+};
+
+export const getCoordinatesBounds = (coordinates: Array<any>) => {
+  const lats = [],
+    lons = [];
+
+  coordinates.forEach((coordinate) => {
+    lats.push(coordinate[0]);
+    lons.push(coordinate[1]);
+  });
+
+  const minLat = Math.min(...lats),
+    maxLat = Math.max(...lats),
+    minLon = Math.min(...lons),
+    maxLon = Math.max(...lons),
+    maxBoundsSouthWest = new L.LatLng(minLon, minLat),
+    maxBoundsNorthEast = new L.LatLng(maxLon, maxLat);
+
+  return new L.LatLngBounds(maxBoundsSouthWest, maxBoundsNorthEast);
+};
 
 export const getCircleCenter = (c) => [c[1], c[0]];
 

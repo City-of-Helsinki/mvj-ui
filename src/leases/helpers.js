@@ -18,6 +18,7 @@ import {getUserFullName} from '$src/users/helpers';
 import {
   fixedLengthNumber,
   formatDecimalNumberForDb,
+  getCoordinatesOfGeometry,
   sortByStartDateDesc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
@@ -25,6 +26,9 @@ import {
 import {removeSessionStorageItem} from '$util/storage';
 
 import type {Lease} from './types';
+import type {AreasGeoJson} from '$src/leases/components/leaseSections/map/AreasLayer';
+import type {PlanUnitGeoJson} from '$src/leases/components/leaseSections/map/PlanUnitsLayer';
+import type {PlotsGeoJson} from '$src/leases/components/leaseSections/map/PlotsLayer';
 
 export const getContentLeaseIdentifier = (item:Object) => {
   if(isEmpty(item)) {return null;}
@@ -674,6 +678,134 @@ export const getInvoiceTenantOptions = (lease: Object) =>{
   });
 };
 
+// Helper functions to get lease map content
+export const getContentAreasGeoJson = (lease: Lease): AreasGeoJson => {
+  let areas = get(lease, 'lease_areas', []).filter((area) => !area.archived_at);
+
+  const features = areas.map((area) => {
+    return {
+      type: 'Feature',
+      geometry: area.geometry,
+      properties: {
+        id: area.id,
+        area: area.area,
+        identifier: area.identifier,
+        location: area.location,
+        type: area.type,
+      },
+    };
+  });
+
+  return {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:EPSG::3879',
+      },
+    },
+    features: features,
+  };
+};
+
+export const getContentPlotsGeoJson = (lease: Lease): PlotsGeoJson => {
+  let plots = [];
+  get(lease, 'lease_areas', [])
+    .filter((area) => !area.archived_at)
+    .forEach((area) => {
+      plots = [...plots, ...get(area, 'plots', [])];
+    });
+
+  const features = plots.map((plot) => {
+    return {
+      type: 'Feature',
+      geometry: plot.geometry,
+      properties: {
+        id: plot.id,
+        area: plot.area,
+        identifier: plot.identifier,
+        registration_date: plot.registration_date,
+        repeal_date: plot.repeal_date,
+        section_area: plot.section_area,
+        type: plot.type,
+      },
+    };
+  });
+
+  return {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:EPSG::3879',
+      },
+    },
+    features: features,
+  };
+};
+
+export const getContentPlanUnitsGeoJson = (lease: Lease): PlanUnitGeoJson => {
+  let planUnits = [];
+  get(lease, 'lease_areas', [])
+    .filter((area) => !area.archived_at)
+    .forEach((area) => {
+      planUnits = [...planUnits, ...get(area, 'plan_units', [])];
+    });
+
+  const features = planUnits.map((planUnit) => {
+    return {
+      type: 'Feature',
+      geometry: planUnit.geometry,
+      properties: {
+        id: planUnit.id,
+        identifier: planUnit.identifier,
+        area: planUnit.area,
+        section_area: planUnit.section_area,
+        detailed_plan_identifier: planUnit.detailed_plan_identifier,
+        detailed_plan_latest_processing_date: planUnit.detailed_plan_latest_processing_date,
+        detailed_plan_latest_processing_date_note: planUnit.detailed_plan_latest_processing_date_note,
+        plot_division_identifier: planUnit.plot_division_identifier,
+        plot_division_date_of_approval: planUnit.plot_division_date_of_approval,
+        plot_division_state: planUnit.plot_division_state,
+        plan_unit_type: planUnit.plan_unit_type,
+        plan_unit_state: planUnit.plan_unit_state,
+        plan_unit_intended_use: planUnit.plan_unit_intended_use,
+      },
+    };
+  });
+
+  return {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:EPSG::3879',
+      },
+    },
+    features: features,
+  };
+};
+
+export const getLeaseCoordinates = (lease: Lease) => {
+  const areas = get(lease, 'lease_areas', []).filter((area) => !area.archived_at);
+  let coordinates = [];
+  areas.forEach((area) => {
+    coordinates = [...coordinates, ...getCoordinatesOfGeometry(area.geometry)];
+
+    const plots = get(area, 'plots', []);
+    plots.forEach((plot) => {
+      coordinates = [...coordinates, ...getCoordinatesOfGeometry(plot.geometry)];
+    });
+
+    const planUnits = get(area, 'plan_units', []);
+    planUnits.forEach((planUnit) => {
+      coordinates = [...coordinates, ...getCoordinatesOfGeometry(planUnit.geometry)];
+    });
+  });
+  return coordinates;
+};
+
+// Helper functions to add content to patch payload
 export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {
   return {
     ...payload,

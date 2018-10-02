@@ -115,7 +115,7 @@ const LeaseArea = ({
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
             title='Pinta-ala'
-            text={area.area ? `${formatNumber(area.area)} m²` : '-'}
+            text={(area.area || area.area === 0) ? `${formatNumber(area.area)} m²` : '-'}
           />
         </Column>
         <Column small={6} medium={4} large={2}>

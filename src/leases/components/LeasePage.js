@@ -16,7 +16,6 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
-import EditableMap from '$src/areaNote/components/EditableMap';
 import Invoices from './leaseSections/invoice/Invoices';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
@@ -26,6 +25,7 @@ import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
 import Rents from './leaseSections/rent/Rents';
 import RentsEdit from './leaseSections/rent/RentsEdit';
+import SingleLeaseMap from './leaseSections/map/SingleLeaseMap';
 import Summary from './leaseSections/summary/Summary';
 import SummaryEdit from './leaseSections/summary/SummaryEdit';
 import Tabs from '$components/tabs/Tabs';
@@ -57,7 +57,6 @@ import {FormNames as ComponentFormNames} from '$components/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
@@ -76,10 +75,8 @@ import type {Attributes as CommentAttributes, CommentList} from '$src/comments/t
 import type {Attributes as ContactAttributes} from '$src/contacts/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 import type {Attributes, Lease} from '$src/leases/types';
-import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
-  areaNotes: AreaNoteList,
   areasFormValues: Object,
   attributes: Attributes,
   change: Function,
@@ -687,7 +684,6 @@ class LeasePage extends Component<Props, State> {
     } = this.state;
 
     const {
-      areaNotes,
       comments,
       currentLease,
       isEditMode,
@@ -842,10 +838,7 @@ class LeasePage extends Component<Props, State> {
 
           <TabPane>
             <ContentContainer>
-              <EditableMap
-                areaNotes={areaNotes}
-                showEditTools={false}
-              />
+              <SingleLeaseMap />
             </ContentContainer>
           </TabPane>
         </TabContent>
@@ -860,7 +853,6 @@ export default flowRight(
     (state) => {
       const currentLease = getCurrentLease(state);
       return {
-        areaNotes: getAreaNoteList(state),
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
         attributes: getAttributes(state),
         commentAttributes: getCommentAttributes(state),
