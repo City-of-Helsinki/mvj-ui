@@ -51,7 +51,6 @@ class AreaNotesLayer extends Component<Props, State> {
       layer.setStyle({
         fillOpacity: 0.7,
       });
-      layer.openPopup();
     }
   }
 

@@ -269,7 +269,6 @@ export const formatDecimalNumber = (x) => {
 
 export const formatNumber = (x) => {
   if(x === null || x === undefined || !isNumber(Number(x))) {
-    console.log('null', x);
     return null;
   }
 

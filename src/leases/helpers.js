@@ -242,6 +242,7 @@ export const getContentPlots = (plots: Array<Object>, inContract: boolean): Arra
     return {
       id: get(plot, 'id'),
       identifier: get(plot, 'identifier'),
+      geometry: get(plot, 'geometry'),
       area: get(plot, 'area'),
       section_area: get(plot, 'section_area'),
       postal_code: get(plot, 'postal_code'),
@@ -261,6 +262,7 @@ export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolea
     return {
       id: get(planunit, 'id'),
       identifier: get(planunit, 'identifier'),
+      geometry: get(planunit, 'geometry'),
       area: get(planunit, 'area'),
       section_area: get(planunit, 'section_area'),
       postal_code: get(planunit, 'postal_code'),
@@ -283,6 +285,7 @@ export const getContentLeaseAreaItem = (area: Object) => {
   return {
     id: get(area, 'id'),
     identifier: get(area, 'identifier'),
+    geometry: get(area, 'geometry'),
     area: get(area, 'area'),
     section_area: get(area, 'section_area'),
     addresses: getContentAddresses(get(area, 'addresses')),

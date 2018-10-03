@@ -85,7 +85,7 @@ const LeaseAreaWithArchiveInfo = ({
       headerTitle={<h3 className='collapse__header-title'>{area.identifier || '-'}</h3>}
       onToggle={handleAreaCollapseToggle}
     >
-      <LeaseArea area={area} />
+      <LeaseArea area={area} isActive={isActive}/>
 
       {!isActive && <Divider className='lease-area-divider'/>}
       {!isActive &&

@@ -28,6 +28,7 @@ export type PlanUnitsGeoJson = {
 
 type Props = {
   color: string,
+  defaultPlanUnit?: number,
   planUnitsGeoJson: PlanUnitsGeoJson,
   planUnitIntendedUseOptions: Array<Object>,
   planUnitStateOptions: Array<Object>,
@@ -37,6 +38,7 @@ type Props = {
 
 const PlanUnitsLayer = ({
   color,
+  defaultPlanUnit,
   planUnitsGeoJson,
   planUnitIntendedUseOptions,
   planUnitStateOptions,
@@ -48,7 +50,6 @@ const PlanUnitsLayer = ({
     layer.setStyle({
       fillOpacity: 0.7,
     });
-    layer.openPopup();
   };
 
   const onMouseOut = (e) => {
@@ -93,6 +94,15 @@ const PlanUnitsLayer = ({
             <p><strong>Kaavayksikön olotila:</strong> ${getLabelOfOption(planUnitStateOptions, plan_unit_state) || '-'}</p>
             <p><strong>Kaavayksikön käyttötarkoitus:</strong> ${getLabelOfOption(planUnitIntendedUseOptions, plan_unit_intended_use) || '-'}</p>`;
           layer.bindPopup(popupContent);
+
+          if(id === defaultPlanUnit) {
+            layer.setStyle({
+              fillOpacity: 0.7,
+            });
+            setTimeout(() => {
+              layer.openPopup();
+            }, 100);
+          }
         }
 
         layer.on({

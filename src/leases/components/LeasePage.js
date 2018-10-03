@@ -221,8 +221,19 @@ class LeasePage extends Component<Props, State> {
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps:Props, prevState: State) {
     const {params: {leaseId}} = this.props;
+
+    if (prevProps.location !== this.props.location) {
+      this.setState({activeTab: this.props.location.query.tab});
+    }
+
+    if(prevState.activeTab !== this.state.activeTab) {
+      const body = document.getElementsByTagName('body');
+      if(body.length) {
+        body[0].scrollTop = 0;
+      }
+    }
 
     if(!isEmpty(prevProps.currentLease) && (prevProps.currentLease !== this.props.currentLease)) {
       const {fetchDecisionsByLease} = this.props;
@@ -623,7 +634,12 @@ class LeasePage extends Component<Props, State> {
     const {router} = this.context;
     const {router: {location: {query}}} = this.props;
 
+    // Remove page specific url parameters when moving to lease list page
     query.tab = undefined;
+    query.lease_area = undefined;
+    query.plan_unit = undefined;
+    query.plot = undefined;
+
     return router.push({
       pathname: `${getRouteById('leases')}`,
       query,

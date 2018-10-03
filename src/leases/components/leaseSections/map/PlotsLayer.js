@@ -35,18 +35,23 @@ export type PlotsGeoJson = {
 
 type Props = {
   color: string,
+  defaultPlot?: number,
   plotsGeoJson: PlotsGeoJson,
   typeOptions: Array<Object>,
 
 }
 
-const PlotsLayer = ({color, plotsGeoJson, typeOptions}: Props) => {
+const PlotsLayer = ({
+  color,
+  defaultPlot,
+  plotsGeoJson,
+  typeOptions,
+}: Props) => {
   const onMouseOver = (e) => {
     const layer = e.target;
     layer.setStyle({
       fillOpacity: 0.7,
     });
-    layer.openPopup();
   };
 
   const onMouseOut = (e) => {
@@ -70,6 +75,15 @@ const PlotsLayer = ({color, plotsGeoJson, typeOptions}: Props) => {
             <p><strong>Rekisteröintipvm:</strong> ${formatDate(registration_date) || '-'}</p>
             <p><strong>Kumoamispvm:</strong> ${formatDate(repeal_date) || '-'}</p>`;
           layer.bindPopup(popupContent);
+
+          if(id === defaultPlot) {
+            layer.setStyle({
+              fillOpacity: 0.7,
+            });
+            setTimeout(() => {
+              layer.openPopup();
+            }, 100);
+          }
         }
 
         layer.on({

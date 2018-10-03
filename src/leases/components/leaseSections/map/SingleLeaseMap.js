@@ -1,6 +1,8 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {withRouter} from 'react-router';
+import flowRight from 'lodash/flowRight';
 
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import AreasLayer from './AreasLayer';
@@ -23,6 +25,7 @@ import type {PlotsGeoJson} from './PlotsLayer';
 type Props = {
   attributes: Attributes,
   currentLease: Lease,
+  router: Object,
 }
 
 type State = {
@@ -104,6 +107,7 @@ class SingleLeaseMap extends Component<Props, State> {
   }
 
   render() {
+    const {router: {location: {query}}} = this.props;
     const {
       areasGeoJson,
       areaLocationOptions,
@@ -126,20 +130,10 @@ class SingleLeaseMap extends Component<Props, State> {
         overlayLayers={[
           {
             checked: true,
-            component: <AreasLayer
-              key='areas'
-              color='#00F'
-              areasGeoJson={areasGeoJson}
-              locationOptions={areaLocationOptions}
-              typeOptions={areaTypeOptions}
-            />,
-            name: 'Vuokrakohteet',
-          },
-          {
-            checked: true,
             component: <PlanUnitsLayer
               key='plan_units'
               color='#0F0'
+              defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
               planUnitsGeoJson={planUnitsGeoJson}
               planUnitIntendedUseOptions={planUnitIntendedUseOptions}
               planUnitStateOptions={planUnitStateOptions}
@@ -153,9 +147,22 @@ class SingleLeaseMap extends Component<Props, State> {
             component: <PlotsLayer
               key='plots'
               color='#F00'
+              defaultPlot={query.plot ? Number(query.plot) : undefined}
               plotsGeoJson={plotsGeoJson}
               typeOptions={plotTypeOptions}/>,
             name: 'Kiinteistöt/määräalat',
+          },
+          {
+            checked: true,
+            component: <AreasLayer
+              key='areas'
+              areasGeoJson={areasGeoJson}
+              color='#00F'
+              defaultArea={query.lease_area ? Number(query.lease_area) : undefined}
+              locationOptions={areaLocationOptions}
+              typeOptions={areaTypeOptions}
+            />,
+            name: 'Vuokrakohteet',
           },
         ]}
         showEditTools={false}
@@ -164,11 +171,14 @@ class SingleLeaseMap extends Component<Props, State> {
   }
 }
 
-export default connect(
-  (state) => {
-    return {
-      attributes: getAttributes(state),
-      currentLease: getCurrentLease(state),
-    };
-  }
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      return {
+        attributes: getAttributes(state),
+        currentLease: getCurrentLease(state),
+      };
+    }
+  ),
 )(SingleLeaseMap);

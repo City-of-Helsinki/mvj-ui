@@ -2,7 +2,7 @@
 import React from 'react';
 import {GeoJSON} from 'react-leaflet';
 
-import {getLabelOfOption} from '$util/helpers';
+import {formatNumber, getLabelOfOption} from '$util/helpers';
 
 type Coordinate = Array<number>;
 
@@ -27,15 +27,17 @@ export type AreasGeoJson = {
 }
 
 type Props = {
-  color: string,
   areasGeoJson: AreasGeoJson,
+  color: string,
+  defaultArea?:  number,
   locationOptions: Array<Object>,
   typeOptions: Array<Object>,
 }
 
 const AreasLayer = ({
-  color,
   areasGeoJson,
+  color,
+  defaultArea,
   locationOptions,
   typeOptions,
 }: Props) => {
@@ -44,7 +46,6 @@ const AreasLayer = ({
     layer.setStyle({
       fillOpacity: 0.7,
     });
-    layer.openPopup();
   };
 
   const onMouseOut = (e) => {
@@ -66,13 +67,23 @@ const AreasLayer = ({
             location,
             type,
           } = feature.properties;
+
           const popupContent = `<p class='title'><strong>Vuokrakohde</strong></p>
             <p><strong>Id:</strong> ${id}</p>
             <p><strong>Tunnus:</strong> ${identifier}</p>
             <p><strong>Määritelmä:</strong> ${getLabelOfOption(typeOptions, type) || '-'}</p>
-            <p><strong>Pinta-ala:</strong> ${area}</p>
+            <p><strong>Kokonaisala:</strong> ${(area || area === 0) ? `${formatNumber(area)} m²` : ''}</p>
             <p><strong>Sijainti:</strong> ${getLabelOfOption(locationOptions, location) || '-'}</p>`;
           layer.bindPopup(popupContent);
+
+          if(id === defaultArea) {
+            layer.setStyle({
+              fillOpacity: 0.7,
+            });
+            setTimeout(() => {
+              layer.openPopup();
+            }, 100);
+          }
         }
 
         layer.on({
