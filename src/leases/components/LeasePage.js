@@ -788,7 +788,7 @@ class LeasePage extends Component<Props, State> {
             {label: 'Laskutus'},
             {label: 'Kartta'},
           ]}
-          onTabClick={(id) => this.handleTabClick(id)}
+          onTabClick={this.handleTabClick}
         />
 
         <TabContent active={activeTab}>

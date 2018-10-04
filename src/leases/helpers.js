@@ -26,12 +26,14 @@ import {
 import {removeSessionStorageItem} from '$util/storage';
 
 import type {Lease} from './types';
-import type {AreasGeoJson} from '$src/leases/components/leaseSections/map/AreasLayer';
-import type {PlanUnitGeoJson} from '$src/leases/components/leaseSections/map/PlanUnitsLayer';
-import type {PlotsGeoJson} from '$src/leases/components/leaseSections/map/PlotsLayer';
+import type {AreasFeature, AreasGeoJson} from '$src/leases/components/leaseSections/map/AreasLayer';
+import type {PlanUnitsFeature, PlanUnitsGeoJson} from '$src/leases/components/leaseSections/map/PlanUnitsLayer';
+import type {PlotsFeature, PlotsGeoJson} from '$src/leases/components/leaseSections/map/PlotsLayer';
 
 export const getContentLeaseIdentifier = (item:Object) => {
-  if(isEmpty(item)) {return null;}
+  if(isEmpty(item)) {
+    return null;
+  }
 
   return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
 };
@@ -682,15 +684,14 @@ export const getInvoiceTenantOptions = (lease: Object) =>{
 };
 
 // Helper functions to get lease map content
-export const getContentAreasGeoJson = (lease: Lease): AreasGeoJson => {
-  let areas = get(lease, 'lease_areas', []).filter((area) => !area.archived_at);
-
-  const features = areas.map((area) => {
+export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<AreasFeature>  => {
+  return areas.map((area) => {
     return {
       type: 'Feature',
       geometry: area.geometry,
       properties: {
         id: area.id,
+        feature_type: 'area',
         area: area.area,
         identifier: area.identifier,
         location: area.location,
@@ -698,6 +699,12 @@ export const getContentAreasGeoJson = (lease: Lease): AreasGeoJson => {
       },
     };
   });
+};
+
+export const getContentAreasGeoJson = (lease: Lease): AreasGeoJson => {
+  const areas = get(lease, 'lease_areas', []).filter((area) => !area.archived_at);
+
+  const features = getContentLeaseAreasFeatures(areas);
 
   return {
     type: 'FeatureCollection',
@@ -711,20 +718,14 @@ export const getContentAreasGeoJson = (lease: Lease): AreasGeoJson => {
   };
 };
 
-export const getContentPlotsGeoJson = (lease: Lease): PlotsGeoJson => {
-  let plots = [];
-  get(lease, 'lease_areas', [])
-    .filter((area) => !area.archived_at)
-    .forEach((area) => {
-      plots = [...plots, ...get(area, 'plots', [])];
-    });
-
-  const features = plots.map((plot) => {
+export const getContentLeasePlotsFeatures = (plots: Array<Object>): PlotsFeature => {
+  return plots.map((plot) => {
     return {
       type: 'Feature',
       geometry: plot.geometry,
       properties: {
         id: plot.id,
+        feature_type: 'plot',
         area: plot.area,
         identifier: plot.identifier,
         registration_date: plot.registration_date,
@@ -734,6 +735,17 @@ export const getContentPlotsGeoJson = (lease: Lease): PlotsGeoJson => {
       },
     };
   });
+};
+
+export const getContentPlotsGeoJson = (lease: Lease): PlotsGeoJson => {
+  const plots = [];
+  get(lease, 'lease_areas', [])
+    .filter((area) => !area.archived_at)
+    .forEach((area) => {
+      plots.push(...get(area, 'plots', []));
+    });
+
+  const features = getContentLeasePlotsFeatures(plots);
 
   return {
     type: 'FeatureCollection',
@@ -747,20 +759,14 @@ export const getContentPlotsGeoJson = (lease: Lease): PlotsGeoJson => {
   };
 };
 
-export const getContentPlanUnitsGeoJson = (lease: Lease): PlanUnitGeoJson => {
-  let planUnits = [];
-  get(lease, 'lease_areas', [])
-    .filter((area) => !area.archived_at)
-    .forEach((area) => {
-      planUnits = [...planUnits, ...get(area, 'plan_units', [])];
-    });
-
-  const features = planUnits.map((planUnit) => {
+export const getContentPlanUnitFeatures = (planUnits: Array<Object>): PlanUnitsFeature => {
+  return planUnits.map((planUnit) => {
     return {
       type: 'Feature',
       geometry: planUnit.geometry,
       properties: {
         id: planUnit.id,
+        feature_type: 'plan_unit',
         identifier: planUnit.identifier,
         area: planUnit.area,
         section_area: planUnit.section_area,
@@ -776,6 +782,17 @@ export const getContentPlanUnitsGeoJson = (lease: Lease): PlanUnitGeoJson => {
       },
     };
   });
+};
+
+export const getContentPlanUnitsGeoJson = (lease: Lease): PlanUnitsGeoJson => {
+  const planUnits = [];
+  get(lease, 'lease_areas', [])
+    .filter((area) => !area.archived_at)
+    .forEach((area) => {
+      planUnits.push(...get(area, 'plan_units', []));
+    });
+
+  const features = getContentPlanUnitFeatures(planUnits);
 
   return {
     type: 'FeatureCollection',

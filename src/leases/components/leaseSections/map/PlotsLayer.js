@@ -78,7 +78,7 @@ const PlotsLayer = ({
 
           if(id === defaultPlot) {
             layer.setStyle({
-              fillOpacity: 0.7,
+              fillOpacity: 0.9,
             });
             setTimeout(() => {
               layer.openPopup();

@@ -414,12 +414,13 @@ const LeaseAreaEdit = ({
   const getMapLinkUrl = () => {
     const {location: {pathname, query}} = router;
 
-    delete query.plan_unit;
-    delete query.plot;
-    query.lease_area =areaId,
-    query.tab = 7;
+    const tempQuery = {...query};
+    delete tempQuery.plan_unit;
+    delete tempQuery.plot;
+    tempQuery.lease_area = areaId,
+    tempQuery.tab = 7;
 
-    return `${pathname}${getSearchQuery(query)}`;
+    return `${pathname}${getSearchQuery(tempQuery)}`;
   };
   const mapLinkUrl = getMapLinkUrl();
 

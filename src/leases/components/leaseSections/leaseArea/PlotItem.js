@@ -33,13 +33,15 @@ const PlotItem = ({attributes, isAreaActive, plot, router}: Props) => {
   const getMapLinkUrl = () => {
     const {location: {pathname, query}} = router;
 
-    delete query.lease_area;
-    delete query.plan_unit;
-    query.plot = plot.id,
-    query.tab = 7;
+    const tempQuery = {...query};
+    delete tempQuery.lease_area;
+    delete tempQuery.plan_unit;
+    tempQuery.plot = plot.id,
+    tempQuery.tab = 7;
 
-    return `${pathname}${getSearchQuery(query)}`;
+    return `${pathname}${getSearchQuery(tempQuery)}`;
   };
+
   const mapLinkUrl = getMapLinkUrl();
 
   const typeOptions = getAttributeFieldOptions(attributes,
@@ -102,6 +104,7 @@ const PlotItem = ({attributes, isAreaActive, plot, router}: Props) => {
                 identifier={plot.identifier}
                 idKey='kiinteistotunnus'
                 label='Kiinteistörekisteriote'
+                prefix='ktjkii'
               />
             </Column>
           }
@@ -113,6 +116,7 @@ const PlotItem = ({attributes, isAreaActive, plot, router}: Props) => {
                 identifier={plot.identifier}
                 idKey='maaraalatunnus'
                 label='Kiinteistörekisteriote'
+                prefix='ktjkii'
               />
             </Column>
           }

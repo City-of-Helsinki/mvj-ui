@@ -12,8 +12,13 @@ import ContentContainer from '$components/content/ContentContainer';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
 import InfillDevelopmentForm from './forms/InfillDevelopmentForm';
-import InfillDevelopmentTemplate from './InfillDevelopmentTemplate';
+import InfillDevelopmentTemplate from './sections/basicInfo/InfillDevelopmentTemplate';
 import PageContainer from '$components/content/PageContainer';
+import SingleInfillDevelopmentMap from './sections/map/SingleInfillDevelopmentMap';
+import Tabs from '$components/tabs/Tabs';
+import TabContent from '$components/tabs/TabContent';
+import TabPane from '$components/tabs/TabPane';
+import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {
   clearFormValidFlags,
   editInfillDevelopment,
@@ -24,6 +29,7 @@ import {
   receiveIsSaveClicked,
   showEditMode,
 } from '$src/infillDevelopment/actions';
+import {fetchAttributes as fetchLeaseAttributes} from '$src/leases/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {
@@ -40,6 +46,7 @@ import {
   getIsFormValidById,
   getIsSaveClicked,
 } from '$src/infillDevelopment/selectors';
+import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 import {
   getSessionStorageItem,
   removeSessionStorageItem,
@@ -47,6 +54,7 @@ import {
 } from '$util/storage';
 
 import type {Attributes, InfillDevelopment} from '$src/infillDevelopment/types';
+import type {Attributes as LeaseAttributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
@@ -55,7 +63,9 @@ type Props = {
   currentInfillDevelopment: InfillDevelopment,
   destroy: Function,
   editInfillDevelopment: Function,
+  fetchAreaNoteList: Function,
   fetchInfillDevelopmentAttributes: Function,
+  fetchLeaseAttributes: Function,
   fetchSingleInfillDevelopment: Function,
   hideEditMode: Function,
   infillDevelopmentFormValues: Object,
@@ -63,6 +73,8 @@ type Props = {
   isFormValid: boolean,
   isInfillDevelopmentFormDirty: boolean,
   isSaveClicked: boolean,
+  leaseAttributes: LeaseAttributes,
+  location: Object,
   params: Object,
   receiveFormInitialValues: Function,
   receiveIsSaveClicked: Function,
@@ -72,6 +84,7 @@ type Props = {
 }
 
 type State = {
+  activeTab: number,
   currentInfillDevelopment: InfillDevelopment,
   formatedInfillDevelopment: Object,
   isRestoreModalOpen: boolean,
@@ -79,6 +92,7 @@ type State = {
 
 class InfillDevelopmentPage extends Component<Props, State> {
   state = {
+    activeTab: 0,
     formatedInfillDevelopment: {},
     currentInfillDevelopment: {},
     isRestoreModalOpen: false,
@@ -93,9 +107,13 @@ class InfillDevelopmentPage extends Component<Props, State> {
   componentDidMount() {
     const {
       attributes,
+      fetchAreaNoteList,
       fetchInfillDevelopmentAttributes,
+      fetchLeaseAttributes,
       fetchSingleInfillDevelopment,
       hideEditMode,
+      leaseAttributes,
+      location,
       params: {infillDevelopmentId},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
@@ -107,12 +125,25 @@ class InfillDevelopmentPage extends Component<Props, State> {
       showSearch: false,
     });
 
+
+    if (location.query.tab) {
+      this.setState({
+        activeTab: location.query.tab,
+      });
+    }
+
     if(isEmpty(attributes)) {
       fetchInfillDevelopmentAttributes();
     }
 
+    if(isEmpty(leaseAttributes)) {
+      fetchLeaseAttributes();
+    }
+
     fetchSingleInfillDevelopment(infillDevelopmentId);
     receiveIsSaveClicked(false);
+
+    fetchAreaNoteList();
 
     hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
@@ -143,6 +174,12 @@ class InfillDevelopmentPage extends Component<Props, State> {
     if(prevProps.isEditMode && !this.props.isEditMode) {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
+    }
+
+    if (prevProps.location !== this.props.location) {
+      this.setState({
+        activeTab: this.props.location.query.tab,
+      });
     }
   }
 
@@ -255,6 +292,9 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {router} = this.context;
     const {router: {location: {query}}} = this.props;
 
+    delete query.lease;
+    delete query.tab;
+
     return router.push({
       pathname: `${getRouteById('infillDevelopment')}`,
       query,
@@ -302,12 +342,28 @@ class InfillDevelopmentPage extends Component<Props, State> {
     destroy(FormNames.INFILL_DEVELOPMENT);
   }
 
+  handleTabClick = (tabId) => {
+    const {router} = this.context;
+    const {location} = this.props;
+    const {router: {location: {query}}} = this.props;
+
+    this.setState({activeTab: tabId}, () => {
+      query.tab = tabId;
+      return router.push({
+        ...location,
+        query,
+      });
+    });
+  };
+
   render() {
     const {
       isEditMode,
       isFormValid,
+      isInfillDevelopmentFormDirty,
       isSaveClicked,
     } = this.props;
+    const {activeTab} = this.state;
 
     const {formatedInfillDevelopment, isRestoreModalOpen} = this.state;
 
@@ -342,12 +398,34 @@ class InfillDevelopmentPage extends Component<Props, State> {
           infoComponent={<h1>{formatedInfillDevelopment.name}</h1>}
           onBack={this.handleBack}
         />
-        <ContentContainer>
-          {isEditMode
-            ? <InfillDevelopmentForm infillDevelopment={formatedInfillDevelopment} />
-            : <InfillDevelopmentTemplate infillDevelopment={formatedInfillDevelopment} />
-          }
-        </ContentContainer>
+        <Tabs
+          active={activeTab}
+          isEditMode={isEditMode}
+          tabs={[
+            {label: 'Perustiedot', isDirty: isInfillDevelopmentFormDirty, hasError: isSaveClicked && !isFormValid},
+            {label: 'Kartta'},
+          ]}
+          onTabClick={this.handleTabClick}
+        />
+        <TabContent active={activeTab}>
+          <TabPane>
+            <ContentContainer>
+              {isEditMode
+                ? <InfillDevelopmentForm
+                  infillDevelopment={formatedInfillDevelopment}
+                />
+                : <InfillDevelopmentTemplate
+                  infillDevelopment={formatedInfillDevelopment}
+                />
+              }
+            </ContentContainer>
+          </TabPane>
+          <TabPane>
+            <ContentContainer>
+              <SingleInfillDevelopmentMap />
+            </ContentContainer>
+          </TabPane>
+        </TabContent>
       </PageContainer>
     );
   }
@@ -364,6 +442,7 @@ export default flowRight(
         isFormValid: getIsFormValidById(state, FormNames.INFILL_DEVELOPMENT),
         isInfillDevelopmentFormDirty: isDirty(FormNames.INFILL_DEVELOPMENT)(state),
         isSaveClicked: getIsSaveClicked(state),
+        leaseAttributes: getLeaseAttributes(state),
       };
     },
     {
@@ -371,7 +450,9 @@ export default flowRight(
       clearFormValidFlags,
       destroy,
       editInfillDevelopment,
+      fetchAreaNoteList,
       fetchInfillDevelopmentAttributes,
+      fetchLeaseAttributes,
       fetchSingleInfillDevelopment,
       hideEditMode,
       receiveFormInitialValues,

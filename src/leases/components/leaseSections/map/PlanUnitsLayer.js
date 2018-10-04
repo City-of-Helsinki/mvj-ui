@@ -97,7 +97,7 @@ const PlanUnitsLayer = ({
 
           if(id === defaultPlanUnit) {
             layer.setStyle({
-              fillOpacity: 0.7,
+              fillOpacity: 0.9,
             });
             setTimeout(() => {
               layer.openPopup();

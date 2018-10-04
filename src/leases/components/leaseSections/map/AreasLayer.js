@@ -6,7 +6,7 @@ import {formatNumber, getLabelOfOption} from '$util/helpers';
 
 type Coordinate = Array<number>;
 
-type AreasFeature = {
+export type AreasFeature = {
   geometry: {
     coordinates: Array<Coordinate>,
     type: string,
@@ -78,7 +78,7 @@ const AreasLayer = ({
 
           if(id === defaultArea) {
             layer.setStyle({
-              fillOpacity: 0.7,
+              fillOpacity: 0.9,
             });
             setTimeout(() => {
               layer.openPopup();

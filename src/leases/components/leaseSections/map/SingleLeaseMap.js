@@ -6,6 +6,7 @@ import flowRight from 'lodash/flowRight';
 
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import AreasLayer from './AreasLayer';
+import Divider from '$components/content/Divider';
 import PlanUnitsLayer from './PlanUnitsLayer';
 import PlotsLayer from './PlotsLayer';
 import {
@@ -78,8 +79,8 @@ class SingleLeaseMap extends Component<Props, State> {
     if(props.currentLease !== state.currentLease) {
       const coordinates = getLeaseCoordinates(props.currentLease);
 
-      newState.bounds = coordinates.length ? getCoordinatesBounds(coordinates) : null;
-      newState.center = coordinates.length ? getCoordinatesCenter(coordinates) : null;
+      newState.bounds = coordinates.length ? getCoordinatesBounds(coordinates) : undefined;
+      newState.center = coordinates.length ? getCoordinatesCenter(coordinates) : undefined;
       newState.currentLease = props.currentLease;
       newState.areasGeoJson = getContentAreasGeoJson(props.currentLease);
       newState.planUnitsGeoJson = getContentPlanUnitsGeoJson(props.currentLease);
@@ -124,49 +125,54 @@ class SingleLeaseMap extends Component<Props, State> {
     } = this.state;
 
     return(
-      <AreaNotesEditMap
-        bounds={bounds}
-        center={center}
-        overlayLayers={[
-          {
-            checked: true,
-            component: <PlanUnitsLayer
-              key='plan_units'
-              color='#0F0'
-              defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
-              planUnitsGeoJson={planUnitsGeoJson}
-              planUnitIntendedUseOptions={planUnitIntendedUseOptions}
-              planUnitStateOptions={planUnitStateOptions}
-              planUnitTypeOptions={planUnitTypeOptions}
-              plotDivisionStateOptions={plotDivisionStateOptions}
-            />,
-            name: 'Kaavayksiköt',
-          },
-          {
-            checked: true,
-            component: <PlotsLayer
-              key='plots'
-              color='#F00'
-              defaultPlot={query.plot ? Number(query.plot) : undefined}
-              plotsGeoJson={plotsGeoJson}
-              typeOptions={plotTypeOptions}/>,
-            name: 'Kiinteistöt/määräalat',
-          },
-          {
-            checked: true,
-            component: <AreasLayer
-              key='areas'
-              areasGeoJson={areasGeoJson}
-              color='#00F'
-              defaultArea={query.lease_area ? Number(query.lease_area) : undefined}
-              locationOptions={areaLocationOptions}
-              typeOptions={areaTypeOptions}
-            />,
-            name: 'Vuokrakohteet',
-          },
-        ]}
-        showEditTools={false}
-      />
+      <div>
+        <h2>Kartta</h2>
+        <Divider />
+
+        <AreaNotesEditMap
+          bounds={bounds}
+          center={center}
+          overlayLayers={[
+            {
+              checked: true,
+              component: <PlanUnitsLayer
+                key='plan_units'
+                color='#0F0'
+                defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
+                planUnitsGeoJson={planUnitsGeoJson}
+                planUnitIntendedUseOptions={planUnitIntendedUseOptions}
+                planUnitStateOptions={planUnitStateOptions}
+                planUnitTypeOptions={planUnitTypeOptions}
+                plotDivisionStateOptions={plotDivisionStateOptions}
+              />,
+              name: 'Kaavayksiköt',
+            },
+            {
+              checked: true,
+              component: <PlotsLayer
+                key='plots'
+                color='#F00'
+                defaultPlot={query.plot ? Number(query.plot) : undefined}
+                plotsGeoJson={plotsGeoJson}
+                typeOptions={plotTypeOptions}/>,
+              name: 'Kiinteistöt/määräalat',
+            },
+            {
+              checked: true,
+              component: <AreasLayer
+                key='areas'
+                areasGeoJson={areasGeoJson}
+                color='#00F'
+                defaultArea={query.lease_area ? Number(query.lease_area) : undefined}
+                locationOptions={areaLocationOptions}
+                typeOptions={areaTypeOptions}
+              />,
+              name: 'Vuokrakohteet',
+            },
+          ]}
+          showEditTools={false}
+        />
+      </div>
     );
   }
 }

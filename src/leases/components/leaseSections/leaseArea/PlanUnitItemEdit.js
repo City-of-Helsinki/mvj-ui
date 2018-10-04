@@ -39,12 +39,13 @@ const PlanUnitItemEdit = ({
   const getMapLinkUrl = () => {
     const {location: {pathname, query}} = router;
 
-    delete query.lease_area;
-    delete query.plot;
-    query.plan_unit = id,
-    query.tab = 7;
+    const tempQuery = {...query};
+    delete tempQuery.lease_area;
+    delete tempQuery.plot;
+    tempQuery.plan_unit = id,
+    tempQuery.tab = 7;
 
-    return `${pathname}${getSearchQuery(query)}`;
+    return `${pathname}${getSearchQuery(tempQuery)}`;
   };
   const mapLinkUrl = getMapLinkUrl();
 

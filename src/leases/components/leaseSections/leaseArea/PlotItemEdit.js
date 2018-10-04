@@ -44,12 +44,13 @@ const PlotItemsEdit = ({
   const getMapLinkUrl = () => {
     const {location: {pathname, query}} = router;
 
-    delete query.lease_area;
-    delete query.plan_unit;
-    query.plot = plotId,
-    query.tab = 7;
+    const tempQuery = {...query};
+    delete tempQuery.lease_area;
+    delete tempQuery.plan_unit;
+    tempQuery.plot = plotId,
+    tempQuery.tab = 7;
 
-    return `${pathname}${getSearchQuery(query)}`;
+    return `${pathname}${getSearchQuery(tempQuery)}`;
   };
 
   const mapLinkUrl = getMapLinkUrl();
@@ -149,6 +150,7 @@ const PlotItemsEdit = ({
                   identifier={get(savedPlot, 'identifier')}
                   idKey='kiinteistotunnus'
                   label='Kiinteistörekisteriote'
+                  prefix='ktjkii'
                 />
               </Column>
             }
@@ -160,6 +162,7 @@ const PlotItemsEdit = ({
                   identifier={get(savedPlot, 'identifier')}
                   idKey='maaraalatunnus'
                   label='Kiinteistörekisteriote'
+                  prefix='ktjkii'
                 />
               </Column>
             }

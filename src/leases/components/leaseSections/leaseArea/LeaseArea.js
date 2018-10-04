@@ -100,13 +100,13 @@ const LeaseArea = ({
 
   const getMapLinkUrl = () => {
     const {location: {pathname, query}} = router;
+    const tempQuery = {...query};
+    delete tempQuery.plan_unit;
+    delete tempQuery.plot;
+    tempQuery.lease_area = area.id,
+    tempQuery.tab = 7;
 
-    delete query.plan_unit;
-    delete query.plot;
-    query.lease_area = area.id,
-    query.tab = 7;
-
-    return `${pathname}${getSearchQuery(query)}`;
+    return `${pathname}${getSearchQuery(tempQuery)}`;
   };
 
   const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
