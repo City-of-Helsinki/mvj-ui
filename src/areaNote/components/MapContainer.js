@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import L from 'leaflet';
 import {
-  GeoJSON,
   LayersControl,
   LayerGroup,
   Map,
@@ -24,8 +23,6 @@ import ZoomBox from '$components/map/ZoomBox';
 import {fetchMapDataByType} from '$src/mapData/actions';
 import {initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 import {minZoom, maxZoom} from '$src/constants';
-import {getCoordsToLatLng} from '$util/helpers';
-import {getMapDataByType} from '$src/mapData/selectors';
 import {getAreaNoteList, getIsEditMode} from '$src/areaNote/selectors';
 
 const bounds = L.bounds([25440000, 6630000], [25571072, 6761072]);
@@ -39,12 +36,12 @@ const CRS = new L.Proj.CRS(
 type Props = {
   allowEditing?: boolean,
   areaNotes?: Array<Object>,
+  bounds?: Object,
   center: Object,
   children: Object,
-  fetchMapDataByType: Function,
   initializeAreaNote: Function,
   isEditMode: boolean,
-  plansUnderground: ?Array<Object>,
+  overlayLayers?: Array<Object>,
   showEditMode: Function,
   zoom: Number,
   areas: Array<any>,
@@ -54,12 +51,6 @@ class MapContainer extends Component<Props> {
   static contextTypes = {
     router: PropTypes.object,
   };
-
-  componentWillMount() {
-    const {fetchMapDataByType} = this.props;
-
-    fetchMapDataByType('avoindata:Kaavahakemisto_alue_maanalainenkaava_voimassa');
-  }
 
   onMouseOver = (e) => {
     const {isEditMode} = this.props;
@@ -86,11 +77,13 @@ class MapContainer extends Component<Props> {
   }
 
   render() {
-    const {allowEditing, areaNotes, center, children, plansUnderground, zoom} = this.props;
+    const {allowEditing, areaNotes, bounds, center, children, overlayLayers, zoom} = this.props;
 
     return (
       <Map
-        center={center}
+        center={center ? center : undefined}
+        bounds={bounds ? bounds : undefined}
+        boundsOptions={{padding: [20, 20]}}
         minZoom={minZoom}
         maxZoom={maxZoom}
         zoom={zoom}
@@ -122,38 +115,13 @@ class MapContainer extends Component<Props> {
               transparent={true}
             />
           </BaseLayer>
-
-          <Overlay name="Asemakaava - maanalainen">
-            <LayerGroup>
-              {!isEmpty(plansUnderground) &&
-                <GeoJSON
-                  data={plansUnderground}
-                  coordsToLatLng={getCoordsToLatLng(plansUnderground)}
-                  onEachFeature={(feature, layer) => {
-                    if (feature.properties) {
-                      const popupContent = `<p>
-                        <strong>Asemakaava: ${feature.properties.kaavatunnus}</strong><br/>
-                        Tyyppi: ${feature.properties.tyyppi}<br/>
-                        Luokka: ${feature.properties.luokka}<br/>
-                        Korkeusjärjestelmä: ${feature.properties.korkeusjarjestelma}<br/>
-                        Hyväksymispäivämäärä: ${feature.properties.hyvaksymispvm}
-                      </p>`;
-                      layer.bindPopup(popupContent);
-                    }
-
-                    layer.on({
-                      mouseover: this.onMouseOver,
-                      mouseout: this.onMouseOut,
-                    });
-                  }}
-                  style={{
-                    color: '#008b02',
-                  }}
-                />
-              }
-            </LayerGroup>
-          </Overlay>
-
+          {!!overlayLayers && overlayLayers.length && overlayLayers.map((layer, index) =>
+            <Overlay checked={layer.checked} name={layer.name} key={index}>
+              <LayerGroup>
+                {layer.component}
+              </LayerGroup>
+            </Overlay>
+          )}
           <Overlay checked name="Muistettavat ehdot">
             <LayerGroup>
               {!isEmpty(areaNotes) && <AreaNotesLayer allowEditing={allowEditing}/>}
@@ -188,7 +156,6 @@ export default flowRight(
       return {
         areaNotes: getAreaNoteList(state),
         isEditMode: getIsEditMode(state),
-        plansUnderground: getMapDataByType(state, 'avoindata:Kaavahakemisto_alue_maanalainenkaava_voimassa'),
       };
     },
     {

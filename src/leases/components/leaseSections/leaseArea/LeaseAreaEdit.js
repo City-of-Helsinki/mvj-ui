@@ -3,6 +3,8 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {change, FieldArray, formValueSelector} from 'redux-form';
+import {Link, withRouter} from 'react-router';
+import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
@@ -22,6 +24,7 @@ import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {getSearchQuery} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -325,12 +328,14 @@ type AreaItemProps = {
   change: Function,
   errors: ?Object,
   field: string,
+  geometry: ?Object,
   isSaveClicked: boolean,
   planUnitsContractCollapseState: boolean,
   planUnitsCurrentCollapseState: boolean,
   plotsContractCollapseState: boolean,
   plotsCurrentCollapseState: boolean,
   receiveCollapseStates: Function,
+  router: Object,
   savedArea: Object,
 }
 
@@ -340,12 +345,14 @@ const LeaseAreaEdit = ({
   change,
   errors,
   field,
+  geometry,
   isSaveClicked,
   planUnitsContractCollapseState,
   planUnitsCurrentCollapseState,
   plotsContractCollapseState,
   plotsCurrentCollapseState,
   receiveCollapseStates,
+  router,
   savedArea,
 }: AreaItemProps): Element<*> => {
   const handlePlanUnitContractCollapseToggle = (val: boolean) => {
@@ -404,6 +411,19 @@ const LeaseAreaEdit = ({
     });
   };
 
+  const getMapLinkUrl = () => {
+    const {location: {pathname, query}} = router;
+
+    const tempQuery = {...query};
+    delete tempQuery.plan_unit;
+    delete tempQuery.plot;
+    tempQuery.lease_area = areaId,
+    tempQuery.tab = 7;
+
+    return `${pathname}${getSearchQuery(tempQuery)}`;
+  };
+  const mapLinkUrl = getMapLinkUrl();
+
   return (
     <div>
       <BoxContentWrapper>
@@ -448,6 +468,9 @@ const LeaseAreaEdit = ({
                 label: 'Sijainti',
               }}
             />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            {!isEmpty(geometry) && <Link to={mapLinkUrl}>Karttalinkki</Link>}
           </Column>
         </Row>
 
@@ -524,23 +547,27 @@ const LeaseAreaEdit = ({
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
 
-export default connect(
-  (state, props) => {
-    const id = selector(state, `${props.field}.id`);
+export default flowRight(
+  withRouter,
+  connect(
+    (state, props) => {
+      const id = selector(state, `${props.field}.id`);
 
-    return {
-      areaId: id,
-      attributes: getAttributes(state),
-      errors: getErrorsByFormName(state, formName),
-      isSaveClicked: getIsSaveClicked(state),
-      planUnitsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plan_units_contract`),
-      planUnitsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plan_units_current`),
-      plotsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plots_contract`),
-      plotsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plots_current`),
-    };
-  },
-  {
-    change,
-    receiveCollapseStates,
-  }
+      return {
+        areaId: id,
+        attributes: getAttributes(state),
+        errors: getErrorsByFormName(state, formName),
+        geometry: selector(state, `${props.field}.geometry`),
+        isSaveClicked: getIsSaveClicked(state),
+        planUnitsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plan_units_contract`),
+        planUnitsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plan_units_current`),
+        plotsContractCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plots_contract`),
+        plotsCurrentCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.LEASE_AREAS}.${id}.plots_current`),
+      };
+    },
+    {
+      change,
+      receiveCollapseStates,
+    }
+  ),
 )(LeaseAreaEdit);

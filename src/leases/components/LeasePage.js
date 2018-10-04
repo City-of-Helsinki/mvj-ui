@@ -16,7 +16,6 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
-import EditableMap from '$src/areaNote/components/EditableMap';
 import Invoices from './leaseSections/invoice/Invoices';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
@@ -26,6 +25,7 @@ import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
 import Rents from './leaseSections/rent/Rents';
 import RentsEdit from './leaseSections/rent/RentsEdit';
+import SingleLeaseMap from './leaseSections/map/SingleLeaseMap';
 import Summary from './leaseSections/summary/Summary';
 import SummaryEdit from './leaseSections/summary/SummaryEdit';
 import Tabs from '$components/tabs/Tabs';
@@ -56,8 +56,8 @@ import {FormNames} from '$src/leases/enums';
 import {FormNames as ComponentFormNames} from '$components/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
+import {scrollToTopPage} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
@@ -76,10 +76,8 @@ import type {Attributes as CommentAttributes, CommentList} from '$src/comments/t
 import type {Attributes as ContactAttributes} from '$src/contacts/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 import type {Attributes, Lease} from '$src/leases/types';
-import type {AreaNoteList} from '$src/areaNote/types';
 
 type Props = {
-  areaNotes: AreaNoteList,
   areasFormValues: Object,
   attributes: Attributes,
   change: Function,
@@ -224,8 +222,16 @@ class LeasePage extends Component<Props, State> {
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps:Props, prevState: State) {
     const {params: {leaseId}} = this.props;
+
+    if (prevProps.location !== this.props.location) {
+      this.setState({activeTab: this.props.location.query.tab});
+    }
+
+    if(prevState.activeTab !== this.state.activeTab) {
+      scrollToTopPage();
+    }
 
     if(!isEmpty(prevProps.currentLease) && (prevProps.currentLease !== this.props.currentLease)) {
       const {fetchDecisionsByLease} = this.props;
@@ -626,7 +632,12 @@ class LeasePage extends Component<Props, State> {
     const {router} = this.context;
     const {router: {location: {query}}} = this.props;
 
+    // Remove page specific url parameters when moving to lease list page
     query.tab = undefined;
+    query.lease_area = undefined;
+    query.plan_unit = undefined;
+    query.plot = undefined;
+
     return router.push({
       pathname: `${getRouteById('leases')}`,
       query,
@@ -687,7 +698,6 @@ class LeasePage extends Component<Props, State> {
     } = this.state;
 
     const {
-      areaNotes,
       comments,
       currentLease,
       isEditMode,
@@ -776,7 +786,7 @@ class LeasePage extends Component<Props, State> {
             {label: 'Laskutus'},
             {label: 'Kartta'},
           ]}
-          onTabClick={(id) => this.handleTabClick(id)}
+          onTabClick={this.handleTabClick}
         />
 
         <TabContent active={activeTab}>
@@ -842,10 +852,7 @@ class LeasePage extends Component<Props, State> {
 
           <TabPane>
             <ContentContainer>
-              <EditableMap
-                areaNotes={areaNotes}
-                showEditTools={false}
-              />
+              <SingleLeaseMap />
             </ContentContainer>
           </TabPane>
         </TabContent>
@@ -860,7 +867,6 @@ export default flowRight(
     (state) => {
       const currentLease = getCurrentLease(state);
       return {
-        areaNotes: getAreaNoteList(state),
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
         attributes: getAttributes(state),
         commentAttributes: getCommentAttributes(state),

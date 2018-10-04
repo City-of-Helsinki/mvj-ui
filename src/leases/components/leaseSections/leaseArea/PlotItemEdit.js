@@ -3,7 +3,10 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
+import {Link, withRouter} from 'react-router';
+import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -12,6 +15,7 @@ import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {FormNames, PlotType} from '$src/leases/enums';
+import {getSearchQuery} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -19,20 +23,38 @@ import type {Attributes} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   field: string,
+  geometry: ?Object,
   isSaveClicked: boolean,
   onRemove: Function,
   plotsData: Array<Object>,
   plotId: number,
+  router: Object,
 }
 
 const PlotItemsEdit = ({
   attributes,
   field,
+  geometry,
   isSaveClicked,
   onRemove,
   plotsData,
   plotId,
+  router,
 }: Props) => {
+  const getMapLinkUrl = () => {
+    const {location: {pathname, query}} = router;
+
+    const tempQuery = {...query};
+    delete tempQuery.lease_area;
+    delete tempQuery.plan_unit;
+    tempQuery.plot = plotId,
+    tempQuery.tab = 7;
+
+    return `${pathname}${getSearchQuery(tempQuery)}`;
+  };
+
+  const mapLinkUrl = getMapLinkUrl();
+
   const getPlotById = (id: number) => id ? plotsData.find((plot) => plot.id === id) : {};
 
   const savedPlot = getPlotById(plotId);
@@ -65,6 +87,9 @@ const PlotItemsEdit = ({
                 label: 'Määritelmä',
               }}
             />
+          </Column>
+          <Column small={12} medium={3} large={3}>
+            {!isEmpty(geometry) && <Link to={mapLinkUrl}>Karttalinkki</Link>}
           </Column>
         </Row>
 
@@ -125,6 +150,7 @@ const PlotItemsEdit = ({
                   identifier={get(savedPlot, 'identifier')}
                   idKey='kiinteistotunnus'
                   label='Kiinteistörekisteriote'
+                  prefix='ktjkii'
                 />
               </Column>
             }
@@ -136,6 +162,7 @@ const PlotItemsEdit = ({
                   identifier={get(savedPlot, 'identifier')}
                   idKey='maaraalatunnus'
                   label='Kiinteistörekisteriote'
+                  prefix='ktjkii'
                 />
               </Column>
             }
@@ -167,14 +194,18 @@ const PlotItemsEdit = ({
 const formName = FormNames.LEASE_AREAS;
 const selector = formValueSelector(formName);
 
-export default connect(
-  (state, props) => {
-    const id = selector(state, `${props.field}.id`);
+export default flowRight(
+  withRouter,
+  connect(
+    (state, props) => {
+      const id = selector(state, `${props.field}.id`);
 
-    return {
-      attributes: getAttributes(state),
-      isSaveClicked: getIsSaveClicked(state),
-      plotId: id,
-    };
-  }
+      return {
+        attributes: getAttributes(state),
+        geometry: selector(state, `${props.field}.geometry`),
+        isSaveClicked: getIsSaveClicked(state),
+        plotId: id,
+      };
+    }
+  ),
 )(PlotItemsEdit);

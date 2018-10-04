@@ -23,6 +23,9 @@ export const getIsFetching: Selector<boolean, void> = (state: LeaseState): boole
 export const getIsArchiveFetching: Selector<boolean, void> = (state: LeaseState): boolean =>
   state.lease.isArchiveFetching;
 
+export const getIsFetchingAllLeases: Selector<boolean, void> = (state: LeaseState): boolean =>
+  state.lease.isFetchingById;
+
 export const getIsFetchingById: Selector<boolean, LeaseId> = (state: LeaseState, id: LeaseId): boolean =>
   state.lease.isFetchingById[id];
 
@@ -49,6 +52,9 @@ export const getLeasesList: Selector<LeaseList, void> = (state: LeaseState): Lea
 
 export const getCurrentLease: Selector<Lease, void> = (state: LeaseState): Lease =>
   state.lease.current;
+
+export const getAllLeases: Selector<Lease, void> = (state: LeaseState): Lease =>
+  state.lease.byId;
 
 export const getLeaseById: Selector<Lease, LeaseId> = (state: LeaseState, id: LeaseId): Lease =>
   state.lease.byId[id];

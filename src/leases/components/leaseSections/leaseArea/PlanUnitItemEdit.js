@@ -1,28 +1,54 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import {Link, withRouter} from 'react-router';
+import {formValueSelector} from 'redux-form';
+import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
+import {FormNames} from '$src/leases/enums';
+import {getSearchQuery} from '$util/helpers';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   field: string,
+  geometry: ?Object,
+  id: number,
   isSaveClicked: boolean,
   onRemove: Function,
+  router: Object,
 }
 
 const PlanUnitItemEdit = ({
   attributes,
   field,
+  geometry,
+  id,
   isSaveClicked,
   onRemove,
+  router,
 }: Props) => {
+  const getMapLinkUrl = () => {
+    const {location: {pathname, query}} = router;
+
+    const tempQuery = {...query};
+    delete tempQuery.lease_area;
+    delete tempQuery.plot;
+    tempQuery.plan_unit = id,
+    tempQuery.tab = 7;
+
+    return `${pathname}${getSearchQuery(tempQuery)}`;
+  };
+  const mapLinkUrl = getMapLinkUrl();
+
   return (
     <BoxItem>
       <BoxContentWrapper>
@@ -41,6 +67,9 @@ const PlanUnitItemEdit = ({
                 label: 'Tunnus',
               }}
             />
+          </Column>
+          <Column small={12} medium={3} large={3}>
+            {!isEmpty(geometry) && <Link to={mapLinkUrl}>Karttalinkki</Link>}
           </Column>
         </Row>
 
@@ -171,4 +200,17 @@ const PlanUnitItemEdit = ({
   );
 };
 
-export default PlanUnitItemEdit;
+const formName = FormNames.LEASE_AREAS;
+const selector = formValueSelector(formName);
+
+export default flowRight(
+  withRouter,
+  connect(
+    (state, props) => {
+      return {
+        geometry: selector(state, `${props.field}.geometry`),
+        id: selector(state, `${props.field}.id`),
+      };
+    }
+  ),
+)(PlanUnitItemEdit);

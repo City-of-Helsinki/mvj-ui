@@ -23,6 +23,8 @@ const SHAPE_ERROR_COLOR = '#bd2719';
 
 type Props = {
   allowEditing?: boolean,
+  bounds?: Object,
+  center?: Array<number>,
   createAreaNote: Function,
   deleteAreaNote: Function,
   editAreaNote: Function,
@@ -30,6 +32,7 @@ type Props = {
   initialValues: Object,
   isEditMode: boolean;
   onHideEdit?: Function,
+  overlayLayers?: Array<Object>,
   showEditTools: boolean,
 }
 
@@ -39,7 +42,7 @@ type State = {
   isValid: boolean,
 }
 
-class EditableMap extends Component<Props, State> {
+class AreaNotesEditMap extends Component<Props, State> {
   featureGroup: ?Object
   saveConditionPanel: ?Object
 
@@ -139,14 +142,16 @@ class EditableMap extends Component<Props, State> {
   }
 
   render() {
-    const {allowEditing, isEditMode} = this.props;
+    const {allowEditing, bounds, center, isEditMode, overlayLayers} = this.props;
     const {isNew, isValid} = this.state;
 
     return (
       <div className='map'>
         <MapContainer
           allowEditing={allowEditing}
-          center={defaultCoordinates}
+          bounds={bounds}
+          center={(center && center.length > 1) ? center : defaultCoordinates}
+          overlayLayers={overlayLayers}
           zoom={defaultZoom}
         >
           <FeatureGroup
@@ -163,17 +168,6 @@ class EditableMap extends Component<Props, State> {
                   circle: false,
                   marker: false,
                   polyline: false,
-                  // polyline: {
-                  //   allowIntersection: false,
-                  //   drawError: {
-                  //     color: SHAPE_ERROR_COLOR,
-                  //     timeout: 1000,
-                  //   },
-                  //   shapeOptions: {
-                  //     color: SHAPE_COLOR,
-                  //     fillOpacity: SHAPE_FILL_OPACITY,
-                  //   },
-                  // },
                   polygon: {
                     allowIntersection: false,
                     showArea: true,
@@ -203,6 +197,7 @@ class EditableMap extends Component<Props, State> {
             onCancel={this.cancelChanges}
             onDelete={this.deleteAreaNote}
             onSave={this.saveChanges}
+            overlayLayers={overlayLayers}
             show={isEditMode}
             title={isEditMode ? 'Muokkaa muistettavaa ehtoa' : 'Luo muistettava ehto'}
           />
@@ -225,4 +220,4 @@ export default connect(
     editAreaNote,
     hideEditMode,
   }
-)(EditableMap);
+)(AreaNotesEditMap);

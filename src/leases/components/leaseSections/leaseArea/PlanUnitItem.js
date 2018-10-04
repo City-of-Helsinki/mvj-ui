@@ -1,20 +1,44 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
+import {Link, withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
+import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import BoxItem from '$components/content/BoxItem';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {getAttributes} from '$src/leases/selectors';
-import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  isAreaActive: boolean,
   planUnit: Object,
+  router: Object,
 }
 
-const PlanUnitItem = ({attributes, planUnit}: Props) => {
+const PlanUnitItem = ({
+  attributes,
+  isAreaActive,
+  planUnit,
+  router,
+}: Props) => {
+  const getMapLinkUrl = () => {
+    const {location: {pathname, query}} = router;
+
+    const tempQuery = {...query};
+    delete tempQuery.lease_area;
+    delete tempQuery.plot;
+    tempQuery.plan_unit = planUnit.id,
+    tempQuery.tab = 7;
+
+    return `${pathname}${getSearchQuery(tempQuery)}`;
+  };
+
+  const mapLinkUrl = getMapLinkUrl();
+
   const plotDivisionStateOptions = getAttributeFieldOptions(attributes,
     'lease_areas.child.children.plan_units.child.children.plot_division_state');
   const planUnitTypeOptions = getAttributeFieldOptions(attributes,
@@ -27,11 +51,14 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
   return (
     <BoxItem className='no-border-on-last-child'>
       <Row>
-        <Column small={12} medium={6} large={6}>
+        <Column small={12} medium={9} large={9}>
           <FormTitleAndText
             title='Tunnus'
             text={planUnit.identifier || '-'}
           />
+        </Column>
+        <Column small={12} medium={3} large={3}>
+          {(isAreaActive && !isEmpty(planUnit.geometry)) && <Link to={mapLinkUrl}>Karttalinkki</Link>}
         </Column>
       </Row>
 
@@ -115,10 +142,13 @@ const PlanUnitItem = ({attributes, planUnit}: Props) => {
   );
 };
 
-export default connect(
-  (state) => {
-    return {
-      attributes: getAttributes(state),
-    };
-  }
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      return {
+        attributes: getAttributes(state),
+      };
+    }
+  ),
 )(PlanUnitItem);

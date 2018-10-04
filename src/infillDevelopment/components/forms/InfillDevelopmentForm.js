@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import GreenBox from '$components/content/GreenBox';
 import LeaseItemsEdit from './LeaseItemsEdit';
@@ -64,6 +65,9 @@ class InfillDevelopmentForm extends Component<Props> {
 
     return (
       <form>
+        <h2>Perustiedot</h2>
+        <Divider />
+
         <GreenBox>
           <Row>
             <Column small={6} medium={4} large={2}>

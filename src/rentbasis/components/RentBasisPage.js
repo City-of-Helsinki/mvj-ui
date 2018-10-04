@@ -12,9 +12,14 @@ import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
 import Loader from '$components/loader/Loader';
 import PageContainer from '$components/content/PageContainer';
-import RentBasisEdit from './RentBasisEdit';
+import RentBasisEdit from './sections/basicInfo/RentBasisEdit';
 import RentBasisInfo from './RentBasisInfo';
-import RentBasisReadonly from './RentBasisReadonly';
+import RentBasisReadonly from './sections/basicInfo/RentBasisReadonly';
+import SingleRentBasisMap from './sections/map/SingleRentBasisMap';
+import Tabs from '$components/tabs/Tabs';
+import TabContent from '$components/tabs/TabContent';
+import TabPane from '$components/tabs/TabPane';
+import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {
   editRentBasis,
   fetchAttributes,
@@ -24,7 +29,16 @@ import {
   receiveIsSaveClicked,
   showEditMode,
 } from '$src/rentbasis/actions';
+import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {scrollToTopPage} from '$util/helpers';
 import {FormNames} from '$src/rentbasis/enums';
+import {
+  clearUnsavedChanges,
+  getContentCopiedRentBasis,
+  getContentRentBasis,
+} from '$src/rentbasis/helpers';
+import {getRouteById} from '$src/root/routes';
+import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
   getAttributes,
   getIsEditMode,
@@ -33,19 +47,19 @@ import {
   getIsSaveClicked,
   getRentBasis,
 } from '$src/rentbasis/selectors';
-import {clearUnsavedChanges, getContentCopiedRentBasis, getContentRentBasis} from '$src/rentbasis/helpers';
-import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {getRouteById} from '$src/root/routes';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
+import type {AreaNoteList} from '$src/areaNote/types';
 import type {Attributes, RentBasis} from '$src/rentbasis/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
+  areaNotes: AreaNoteList,
   attributes: Attributes,
   change: Function,
   editedRentBasis: Object,
   editRentBasis: Function,
+  fetchAreaNoteList: Function,
   fetchAttributes: Function,
   fetchSingleRentBasis: Function,
   hideEditMode: Function,
@@ -55,6 +69,7 @@ type Props = {
   isFormDirty: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
+  location: Object,
   params: Object,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
@@ -64,12 +79,14 @@ type Props = {
 }
 
 type State = {
+  activeTab: number,
   isCancelModalOpen: boolean,
   isRestoreModalOpen: boolean,
 }
 
 class RentBasisPage extends Component<Props, State> {
   state = {
+    activeTab: 0,
     isCancelModalOpen: false,
     isRestoreModalOpen: false,
   }
@@ -82,10 +99,13 @@ class RentBasisPage extends Component<Props, State> {
 
   componentDidMount() {
     const {
+      areaNotes,
       attributes,
+      fetchAreaNoteList,
       fetchAttributes,
       fetchSingleRentBasis,
       hideEditMode,
+      location,
       params: {rentBasisId},
       receiveIsSaveClicked,
       receiveTopNavigationSettings,
@@ -98,17 +118,27 @@ class RentBasisPage extends Component<Props, State> {
       showSearch: false,
     });
 
+    if (location.query.tab) {
+      this.setState({
+        activeTab: location.query.tab,
+      });
+    }
+
     fetchSingleRentBasis(rentBasisId);
 
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
 
+    if(isEmpty(areaNotes)) {
+      fetchAreaNoteList();
+    }
+
     hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const {params: {rentBasisId}} = this.props;
 
     if(isEmpty(prevProps.rentBasisData) && !isEmpty(this.props.rentBasisData)) {
@@ -121,6 +151,16 @@ class RentBasisPage extends Component<Props, State> {
     if(prevProps.isEditMode && !this.props.isEditMode) {
       this.stopAutoSaveTimer();
       clearUnsavedChanges();
+    }
+
+    if (prevProps.location !== this.props.location) {
+      this.setState({
+        activeTab: this.props.location.query.tab,
+      });
+    }
+
+    if(prevState.activeTab !== this.state.activeTab) {
+      scrollToTopPage();
     }
   }
 
@@ -255,16 +295,30 @@ class RentBasisPage extends Component<Props, State> {
     this.startAutoSaveTimer();
   }
 
+  handleTabClick = (tabId) => {
+    const {router} = this.context;
+    const {location} = this.props;
+    const {router: {location: {query}}} = this.props;
+
+    this.setState({activeTab: tabId}, () => {
+      query.tab = tabId;
+      return router.push({
+        ...location,
+        query,
+      });
+    });
+  };
+
   render() {
     const {
       isEditMode,
       isFetching,
+      isFormDirty,
       isFormValid,
       isSaveClicked,
       rentBasisData,
     } = this.props;
-
-    const {isRestoreModalOpen} = this.state;
+    const {activeTab, isRestoreModalOpen} = this.state;
 
     const rentBasis = getContentRentBasis(rentBasisData);
 
@@ -309,10 +363,26 @@ class RentBasisPage extends Component<Props, State> {
           }
           onBack={this.handleBack}
         />
-        {isEditMode
-          ? <RentBasisEdit />
-          : <RentBasisReadonly rentBasis={rentBasis} />
-        }
+        <Tabs
+          active={activeTab}
+          isEditMode={isEditMode}
+          tabs={[
+            {label: 'Perustiedot', isDirty: isFormDirty, hasError: isSaveClicked && !isFormValid},
+            {label: 'Kartta'},
+          ]}
+          onTabClick={this.handleTabClick}
+        />
+        <TabContent active={activeTab}>
+          <TabPane>
+            {isEditMode
+              ? <RentBasisEdit />
+              : <RentBasisReadonly rentBasis={rentBasis} />
+            }
+          </TabPane>
+          <TabPane>
+            <SingleRentBasisMap />
+          </TabPane>
+        </TabContent>
       </PageContainer>
     );
   }
@@ -320,6 +390,7 @@ class RentBasisPage extends Component<Props, State> {
 
 const mapStateToProps = (state: RootState) => {
   return {
+    areaNotes: getAreaNoteList(state),
     attributes: getAttributes(state),
     editedRentBasis: getFormValues(FormNames.RENT_BASIS)(state),
     isEditMode: getIsEditMode(state),
@@ -338,6 +409,7 @@ export default flowRight(
     {
       change,
       editRentBasis,
+      fetchAreaNoteList,
       fetchAttributes,
       fetchSingleRentBasis,
       hideEditMode,

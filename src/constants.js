@@ -76,3 +76,23 @@ export const minZoom = 2;
  * @type {number}
  */
 export const maxZoom = 12;
+
+/**
+ * Map color palette
+ */
+export const mapColors = [
+  '#388E3C',
+  '#FF9800',
+  '#1976D2',
+  '#D32F2F',
+  '#E040FB',
+  '#FF4081',
+  '#512DA8',
+  '#536DFE',
+  '#F57C00',
+  '#E64A19',
+  '#8BC34A',
+  '#689F38',
+  '#FFC107',
+  '#CDDC39',
+];

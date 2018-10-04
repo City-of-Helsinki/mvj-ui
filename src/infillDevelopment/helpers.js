@@ -7,6 +7,7 @@ import {getContentLeaseIdentifier, getContentLeaseOption, getContentUser} from '
 import {formatDecimalNumberForDb} from '$util/helpers';
 import {getIsEditMode} from '$src/infillDevelopment/selectors';
 import {removeSessionStorageItem} from '$util/storage';
+import {getContentLeaseAreasFeatures, getContentPlanUnitFeatures, getContentLeasePlotsFeatures} from '$src/leases/helpers';
 
 export const getContentAttachments = (lease: Object) => {
   const items = get(lease, 'attachments', []);
@@ -201,6 +202,40 @@ export const getContentInfillDevelopmentList = (content: Object) => {
       state: get(item, 'state'),
     };
   });
+};
+
+// Functions to get infill development compensation lease areas GeoJSON
+export const getContentInfillDevelopmentLeaseGeoJson = (lease: Object) => {
+  const features = [];
+
+  const areas = get(lease, 'lease_areas', []).filter((area) => !area.archived_at);
+  const areasFeatures = getContentLeaseAreasFeatures(areas);
+  features.push(...areasFeatures);
+
+  const plots = [];
+  areas.forEach((area) => {
+    plots.push(...get(area, 'plots', []));
+  });
+  const plotFeatures = getContentLeasePlotsFeatures(plots);
+  features.push(...plotFeatures);
+
+  const planUnits = [];
+  areas.forEach((area) => {
+    planUnits.push(...get(area, 'plan_units', []));
+  });
+  const planUnitFeatures = getContentPlanUnitFeatures(planUnits);
+  features.push(...planUnitFeatures);
+
+  return {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:EPSG::3879',
+      },
+    },
+    features: features,
+  };
 };
 
 export const isInfillDevelopmentFormDirty = (state: any) => {

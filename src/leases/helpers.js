@@ -18,6 +18,7 @@ import {getUserFullName} from '$src/users/helpers';
 import {
   fixedLengthNumber,
   formatDecimalNumberForDb,
+  getCoordinatesOfGeometry,
   sortByStartDateDesc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
@@ -25,9 +26,14 @@ import {
 import {removeSessionStorageItem} from '$util/storage';
 
 import type {Lease} from './types';
+import type {AreasFeature, AreasGeoJson} from '$src/leases/components/leaseSections/map/AreasLayer';
+import type {PlanUnitsFeature, PlanUnitsGeoJson} from '$src/leases/components/leaseSections/map/PlanUnitsLayer';
+import type {PlotsFeature, PlotsGeoJson} from '$src/leases/components/leaseSections/map/PlotsLayer';
 
 export const getContentLeaseIdentifier = (item:Object) => {
-  if(isEmpty(item)) {return null;}
+  if(isEmpty(item)) {
+    return null;
+  }
 
   return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
 };
@@ -238,6 +244,7 @@ export const getContentPlots = (plots: Array<Object>, inContract: boolean): Arra
     return {
       id: get(plot, 'id'),
       identifier: get(plot, 'identifier'),
+      geometry: get(plot, 'geometry'),
       area: get(plot, 'area'),
       section_area: get(plot, 'section_area'),
       postal_code: get(plot, 'postal_code'),
@@ -257,6 +264,7 @@ export const getContentPlanUnits = (planunits: Array<Object>, inContract: boolea
     return {
       id: get(planunit, 'id'),
       identifier: get(planunit, 'identifier'),
+      geometry: get(planunit, 'geometry'),
       area: get(planunit, 'area'),
       section_area: get(planunit, 'section_area'),
       postal_code: get(planunit, 'postal_code'),
@@ -279,6 +287,7 @@ export const getContentLeaseAreaItem = (area: Object) => {
   return {
     id: get(area, 'id'),
     identifier: get(area, 'identifier'),
+    geometry: get(area, 'geometry'),
     area: get(area, 'area'),
     section_area: get(area, 'section_area'),
     addresses: getContentAddresses(get(area, 'addresses')),
@@ -674,6 +683,149 @@ export const getInvoiceTenantOptions = (lease: Object) =>{
   });
 };
 
+// Helper functions to get lease map content
+export const getContentLeaseAreasFeatures = (areas: Array<Object>): Array<AreasFeature>  => {
+  return areas.map((area) => {
+    return {
+      type: 'Feature',
+      geometry: area.geometry,
+      properties: {
+        id: area.id,
+        feature_type: 'area',
+        area: area.area,
+        identifier: area.identifier,
+        location: area.location,
+        type: area.type,
+      },
+    };
+  });
+};
+
+export const getContentAreasGeoJson = (lease: Lease): AreasGeoJson => {
+  const areas = get(lease, 'lease_areas', []).filter((area) => !area.archived_at);
+
+  const features = getContentLeaseAreasFeatures(areas);
+
+  return {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:EPSG::3879',
+      },
+    },
+    features: features,
+  };
+};
+
+export const getContentLeasePlotsFeatures = (plots: Array<Object>): PlotsFeature => {
+  return plots.map((plot) => {
+    return {
+      type: 'Feature',
+      geometry: plot.geometry,
+      properties: {
+        id: plot.id,
+        feature_type: 'plot',
+        area: plot.area,
+        identifier: plot.identifier,
+        registration_date: plot.registration_date,
+        repeal_date: plot.repeal_date,
+        section_area: plot.section_area,
+        type: plot.type,
+      },
+    };
+  });
+};
+
+export const getContentPlotsGeoJson = (lease: Lease): PlotsGeoJson => {
+  const plots = [];
+  get(lease, 'lease_areas', [])
+    .filter((area) => !area.archived_at)
+    .forEach((area) => {
+      plots.push(...get(area, 'plots', []));
+    });
+
+  const features = getContentLeasePlotsFeatures(plots);
+
+  return {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:EPSG::3879',
+      },
+    },
+    features: features,
+  };
+};
+
+export const getContentPlanUnitFeatures = (planUnits: Array<Object>): PlanUnitsFeature => {
+  return planUnits.map((planUnit) => {
+    return {
+      type: 'Feature',
+      geometry: planUnit.geometry,
+      properties: {
+        id: planUnit.id,
+        feature_type: 'plan_unit',
+        identifier: planUnit.identifier,
+        area: planUnit.area,
+        section_area: planUnit.section_area,
+        detailed_plan_identifier: planUnit.detailed_plan_identifier,
+        detailed_plan_latest_processing_date: planUnit.detailed_plan_latest_processing_date,
+        detailed_plan_latest_processing_date_note: planUnit.detailed_plan_latest_processing_date_note,
+        plot_division_identifier: planUnit.plot_division_identifier,
+        plot_division_date_of_approval: planUnit.plot_division_date_of_approval,
+        plot_division_state: planUnit.plot_division_state,
+        plan_unit_type: planUnit.plan_unit_type,
+        plan_unit_state: planUnit.plan_unit_state,
+        plan_unit_intended_use: planUnit.plan_unit_intended_use,
+      },
+    };
+  });
+};
+
+export const getContentPlanUnitsGeoJson = (lease: Lease): PlanUnitsGeoJson => {
+  const planUnits = [];
+  get(lease, 'lease_areas', [])
+    .filter((area) => !area.archived_at)
+    .forEach((area) => {
+      planUnits.push(...get(area, 'plan_units', []));
+    });
+
+  const features = getContentPlanUnitFeatures(planUnits);
+
+  return {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:EPSG::3879',
+      },
+    },
+    features: features,
+  };
+};
+
+export const getLeaseCoordinates = (lease: Lease) => {
+  const areas = get(lease, 'lease_areas', []).filter((area) => !area.archived_at);
+  let coordinates = [];
+  areas.forEach((area) => {
+    coordinates = [...coordinates, ...getCoordinatesOfGeometry(area.geometry)];
+
+    const plots = get(area, 'plots', []);
+    plots.forEach((plot) => {
+      coordinates = [...coordinates, ...getCoordinatesOfGeometry(plot.geometry)];
+    });
+
+    const planUnits = get(area, 'plan_units', []);
+    planUnits.forEach((planUnit) => {
+      coordinates = [...coordinates, ...getCoordinatesOfGeometry(planUnit.geometry)];
+    });
+  });
+  return coordinates;
+};
+
+// Helper functions to add content to patch payload
 export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {
   return {
     ...payload,

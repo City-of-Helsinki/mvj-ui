@@ -144,7 +144,7 @@ class App extends Component<Props, State> {
         <div className={'app'}>
           <ReduxToastr
             newestOnTop={true}
-            position="top-right"
+            position="bottom-right"
             preventDuplicates={true}
             progressBar={false}
             timeOut={5000}
@@ -219,7 +219,7 @@ class App extends Component<Props, State> {
                 />
                 <ReduxToastr
                   newestOnTop={true}
-                  position="top-right"
+                  position="bottom-right"
                   preventDuplicates={true}
                   progressBar={false}
                   timeOut={5000}

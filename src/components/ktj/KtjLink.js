@@ -14,6 +14,7 @@ type Props = {
   idKey?: string,
   label: string,
   langCode?: string,
+  prefix: 'ktjkii' | 'ktjkir',
 }
 
 const KtjLink = ({
@@ -24,11 +25,12 @@ const KtjLink = ({
   idKey = 'kohdetunnus',
   label,
   langCode = 'fi',
+  prefix = 'ktjkir',
 }: Props) => {
 
   const handleClick =  debounce(() => {
     const apiUrlWithOutVersionSuffix = getApiUrlWithOutVersionSuffix();
-    const request = new Request(`${apiUrlWithOutVersionSuffix}/ktjkir/tuloste/${fileKey}/pdf?${idKey}=${identifier}&lang=${langCode}`);
+    const request = new Request(`${apiUrlWithOutVersionSuffix}/${prefix}/tuloste/${fileKey}/pdf?${idKey}=${identifier}&lang=${langCode}`);
     if (apiToken) {
       request.headers.set('Authorization', `Bearer ${apiToken}`);
     }

@@ -20,7 +20,7 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import Decisions from './sections/Decisions';
 import DecisionsEdit from './sections/DecisionsEdit';
 import Divider from '$components/content/Divider';
-import EditableMap from '$src/areaNote/components/EditableMap';
+import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import Invoices from './sections/Invoices';
 import InvoicesEdit from './sections/InvoicesEdit';
 import Litigants from './sections/Litigants';
@@ -661,7 +661,7 @@ class LandUseContractPage extends Component<Props, State> {
 
           <TabPane>
             <ContentContainer>
-              <EditableMap
+              <AreaNotesEditMap
                 showEditTools={false}
               />
             </ContentContainer>

@@ -1,24 +1,49 @@
 // @flow
 import React from 'react';
 import {connect} from 'react-redux';
+import {Link, withRouter} from 'react-router';
 import {Row, Column} from 'react-foundation';
+import flowRight from 'lodash/flowRight';
+import isEmpty from 'lodash/isEmpty';
 
 import BoxItem from '$components/content/BoxItem';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import KtjLink from '$components/ktj/KtjLink';
 import SubTitle from '$components/content/SubTitle';
 import {PlotType} from '$src/leases/enums';
-import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {
+  formatDate,
+  formatNumber,
+  getAttributeFieldOptions,
+  getLabelOfOption,
+  getSearchQuery,
+} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  isAreaActive: boolean,
   plot: Object,
+  router: Object,
 }
 
-const PlotItem = ({attributes, plot}: Props) => {
+const PlotItem = ({attributes, isAreaActive, plot, router}: Props) => {
+  const getMapLinkUrl = () => {
+    const {location: {pathname, query}} = router;
+
+    const tempQuery = {...query};
+    delete tempQuery.lease_area;
+    delete tempQuery.plan_unit;
+    tempQuery.plot = plot.id,
+    tempQuery.tab = 7;
+
+    return `${pathname}${getSearchQuery(tempQuery)}`;
+  };
+
+  const mapLinkUrl = getMapLinkUrl();
+
   const typeOptions = getAttributeFieldOptions(attributes,
     'lease_areas.child.children.plots.child.children.type');
 
@@ -31,11 +56,14 @@ const PlotItem = ({attributes, plot}: Props) => {
             text={<strong>{plot.identifier || '-'}</strong>}
           />
         </Column>
-        <Column small={12} medium={6} large={3}>
+        <Column small={12} medium={3} large={3}>
           <FormTitleAndText
             title='Määritelmä'
             text={getLabelOfOption(typeOptions, plot.type) || '-'}
           />
+        </Column>
+        <Column small={12} medium={3} large={3}>
+          {(isAreaActive && !isEmpty(plot.geometry)) && <Link to={mapLinkUrl}>Karttalinkki</Link>}
         </Column>
       </Row>
 
@@ -76,6 +104,7 @@ const PlotItem = ({attributes, plot}: Props) => {
                 identifier={plot.identifier}
                 idKey='kiinteistotunnus'
                 label='Kiinteistörekisteriote'
+                prefix='ktjkii'
               />
             </Column>
           }
@@ -87,6 +116,7 @@ const PlotItem = ({attributes, plot}: Props) => {
                 identifier={plot.identifier}
                 idKey='maaraalatunnus'
                 label='Kiinteistörekisteriote'
+                prefix='ktjkii'
               />
             </Column>
           }
@@ -114,10 +144,13 @@ const PlotItem = ({attributes, plot}: Props) => {
   );
 };
 
-export default connect(
-  (state) => {
-    return {
-      attributes: getAttributes(state),
-    };
-  }
+export default flowRight(
+  withRouter,
+  connect(
+    (state) => {
+      return {
+        attributes: getAttributes(state),
+      };
+    }
+  ),
 )(PlotItem);

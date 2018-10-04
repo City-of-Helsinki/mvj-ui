@@ -6,7 +6,7 @@ import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
 import Button from '$components/button/Button';
-import EditableMap from '$src/areaNote/components/EditableMap';
+import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
@@ -110,7 +110,7 @@ class AreaNotesList extends Component<Props> {
             />
           }
         />
-        <EditableMap allowEditing/>
+        <AreaNotesEditMap allowEditing/>
       </PageContainer>
     );
   }

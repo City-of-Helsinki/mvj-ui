@@ -10,7 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import Button from '$components/button/Button';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
-import EditableMap from '$src/areaNote/components/EditableMap';
+import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import MapIcon from '$components/icons/MapIcon';
@@ -299,7 +299,7 @@ class LeaseListPage extends Component<Props, State> {
               </div>
             )}
             {visualizationType === 'map' && (
-              <EditableMap
+              <AreaNotesEditMap
                 areaNotes={areaNotes}
                 showEditTools={false}
               />
