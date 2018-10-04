@@ -114,7 +114,6 @@ const InfillDevelopmentTemplate = ({attributes, infillDevelopment, isFetching}: 
         }
       </GreenBox>
     </div>
-
   );
 };
 

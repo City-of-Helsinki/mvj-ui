@@ -7,6 +7,7 @@ import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import ContentContainer from '$components/content/ContentContainer';
 import Divider from '$components/content/Divider';
 import RentBasisLayer from './RentBasisLayer';
+import {mapColors} from '$src/constants';
 import {getContentRentBasisGeoJson} from '$src/rentbasis/helpers';
 import {
   getAttributeFieldOptions,
@@ -102,7 +103,7 @@ class SingleRentBasisMap extends Component<Props, State> {
             {
               checked: true,
               component: <RentBasisLayer
-                color='#F00'
+                color={mapColors[0]}
                 financingOptions={financingOptions}
                 geoJSON={geoJSON}
                 indexOptions={indexOptions}

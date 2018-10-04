@@ -2,8 +2,8 @@
 import React, {PureComponent} from 'react';
 import {GeoJSON} from 'react-leaflet';
 
+import {mapColors} from '$src/constants';
 import {formatDate, formatNumber, getLabelOfOption} from '$util/helpers';
-
 
 type Props = {
   areaLocationOptions: Array<Object>,
@@ -23,7 +23,7 @@ class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
   component: any
 
   static defaultProps = {
-    color: '#F00',
+    color: mapColors[0],
   }
 
   componentDidMount() {
