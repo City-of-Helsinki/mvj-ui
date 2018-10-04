@@ -175,7 +175,7 @@ class SingleInfillDevelopmentMap extends Component<Props, State> {
     const layers = infillDevelopmentLeases.map((lease, index) => {
       const leaseId = lease.lease.id;
       const leaseData = allLeases[leaseId];
-      const name = getContentLeaseIdentifier(leaseData);
+      const identifier = getContentLeaseIdentifier(leaseData);
 
       const component = <InfillDevelopmentLeaseLayer
         areaLocationOptions={areaLocationOptions}
@@ -183,6 +183,7 @@ class SingleInfillDevelopmentMap extends Component<Props, State> {
         color={mapColors[index % mapColors.length]}
         geoJSONData={getContentInfillDevelopmentLeaseGeoJson(leaseData)}
         highlighted={Boolean(query.lease && Number(query.lease) === leaseId)}
+        leaseIdentifier={identifier}
         planUnitIntendedUseOptions={planUnitIntendedUseOptions}
         planUnitStateOptions={planUnitStateOptions}
         planUnitTypeOptions={planUnitTypeOptions}
@@ -193,7 +194,7 @@ class SingleInfillDevelopmentMap extends Component<Props, State> {
       return {
         checked: true,
         component: component,
-        name: name,
+        name: identifier,
       };
     });
 

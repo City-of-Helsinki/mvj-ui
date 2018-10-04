@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import ContentContainer from '$components/content/ContentContainer';
+import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -16,7 +17,7 @@ import SubTitle from '$components/content/SubTitle';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getAttributes} from '$src/rentbasis/selectors';
 
-import type {Attributes, RentBasis} from '../types';
+import type {Attributes, RentBasis} from '$src/rentbasis/types';
 
 type Props = {
   attributes: Attributes,
@@ -35,6 +36,8 @@ const RentBasisReadonly = ({attributes, rentBasis}: Props) => {
 
   return (
     <ContentContainer>
+      <h2>Perustiedot</h2>
+      <Divider />
       <GreenBox>
         <Row>
           <Column small={6} medium={4} large={3}>

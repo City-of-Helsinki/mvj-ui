@@ -11,6 +11,7 @@ type Props = {
   color: string,
   geoJSONData: Object,
   highlighted: boolean,
+  leaseIdentifier: string,
   planUnitIntendedUseOptions: Array<Object>,
   planUnitStateOptions: Array<Object>,
   planUnitTypeOptions: Array<Object>,
@@ -19,8 +20,28 @@ type Props = {
 };
 
 class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
+  component: any
+
   static defaultProps = {
     color: '#F00',
+  }
+
+  componentDidMount() {
+    const {highlighted, leaseIdentifier} = this.props;
+
+    if(highlighted) {
+      let popupContent = `<p class='title'><strong>${leaseIdentifier}</strong></p>`;
+      this.component.leafletElement.bindPopup(popupContent);
+      try {
+        setTimeout(() => {
+          this.component.leafletElement.openPopup();
+        }, 100);
+      } catch(e) {
+        console.error(`Failed to open lease popup with error ${e}`);
+      }
+
+      this.component.leafletElement._events.click = [];
+    }
   }
 
   onMouseOver = (e: any) => {
@@ -44,6 +65,7 @@ class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
       color,
       geoJSONData,
       highlighted,
+      leaseIdentifier,
       planUnitIntendedUseOptions,
       planUnitStateOptions,
       planUnitTypeOptions,
@@ -54,6 +76,7 @@ class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
     return(
       <GeoJSON
         key={JSON.stringify(geoJSONData)}
+        ref={(ref) => this.component = ref}
         data={geoJSONData}
         onEachFeature={(feature, layer) => {
           if (feature.properties) {
@@ -79,7 +102,7 @@ class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
             let popupContent = '';
             switch(feature_type) {
               case 'area':
-                popupContent = `<p class='title'><strong>Vuokrakohde</strong></p>
+                popupContent = `<p class='title'><strong>${leaseIdentifier}: Vuokrakohde</strong></p>
                   <p><strong>Id:</strong> ${id}</p>
                   <p><strong>Tunnus:</strong> ${identifier}</p>
                   <p><strong>Määritelmä:</strong> ${getLabelOfOption(areaTypeOptions, type) || '-'}</p>
@@ -87,7 +110,7 @@ class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
                   <p><strong>Sijainti:</strong> ${getLabelOfOption(areaLocationOptions, location) || '-'}</p>`;
                 break;
               case 'plan_unit':
-                popupContent = `<p class='title'><strong>Kaavayksikkö</strong></p>
+                popupContent = `<p class='title'><strong>${leaseIdentifier}: Kaavayksikkö</strong></p>
                   <p><strong>Id:</strong> ${id}</p>
                   <p><strong>Tunnus:</strong> ${identifier}</p>
                   <p><strong>Kokonaisala:</strong> ${(area || area === 0) ? `${formatNumber(area)} m²` : ''}</p>
@@ -103,7 +126,7 @@ class InfillDevelopmentLeaseLayer extends PureComponent<Props> {
                   <p><strong>Kaavayksikön käyttötarkoitus:</strong> ${getLabelOfOption(planUnitIntendedUseOptions, plan_unit_intended_use) || '-'}</p>`;
                 break;
               case 'plot':
-                popupContent = `<p class='title'><strong>${getLabelOfOption(plotTypeOptions, type) || '-'}</strong></p>
+                popupContent = `<p class='title'><strong>${leaseIdentifier}: ${getLabelOfOption(plotTypeOptions, type) || '-'}</strong></p>
                   <p><strong>Id:</strong> ${id}</p>
                   <p><strong>Tunnus:</strong> ${identifier}</p>
                   <p><strong>Kokonaisala:</strong> ${(area || area === 0) ? `${formatNumber(area)} m²` : ''}</p>

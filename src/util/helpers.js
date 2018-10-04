@@ -57,6 +57,17 @@ export const isAllowedLanguage = (language) => {
   });
 };
 
+export const scrollToTopPage = () => {
+  const body = document.getElementsByTagName('body');
+  const html = document.getElementsByTagName('html');
+  if(body.length) {
+    body[0].scrollTop = 0;
+  }
+  if(html.length) {
+    html[0].scrollTop = 0;
+  }
+};
+
 export const getActiveLanguage = () => {
   // const {language} = i18n;
   // let active = null;

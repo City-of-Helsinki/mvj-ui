@@ -38,7 +38,9 @@ import {
   getContentInfillDevelopmentCopy,
   getContentInfillDevelopmentForDb,
 } from '$src/infillDevelopment/helpers';
+import {scrollToTopPage} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
+import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
   getAttributes,
   getCurrentInfillDevelopment,
@@ -53,10 +55,12 @@ import {
   setSessionStorageItem,
 } from '$util/storage';
 
+import type {AreaNoteList} from '$src/areaNote/types';
 import type {Attributes, InfillDevelopment} from '$src/infillDevelopment/types';
 import type {Attributes as LeaseAttributes} from '$src/leases/types';
 
 type Props = {
+  areaNotes: AreaNoteList,
   attributes: Attributes,
   change: Function,
   clearFormValidFlags: Function,
@@ -106,6 +110,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
 
   componentDidMount() {
     const {
+      areaNotes,
       attributes,
       fetchAreaNoteList,
       fetchInfillDevelopmentAttributes,
@@ -143,7 +148,9 @@ class InfillDevelopmentPage extends Component<Props, State> {
     fetchSingleInfillDevelopment(infillDevelopmentId);
     receiveIsSaveClicked(false);
 
-    fetchAreaNoteList();
+    if(isEmpty(areaNotes)) {
+      fetchAreaNoteList();
+    }
 
     hideEditMode();
     window.addEventListener('beforeunload', this.handleLeavePage);
@@ -159,7 +166,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     return null;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props, prevState: State) {
     const {params: {infillDevelopmentId}} = this.props;
     if(isEmpty(prevProps.currentInfillDevelopment) && !isEmpty(this.props.currentInfillDevelopment)) {
       const storedInfillDevelopmentId = getSessionStorageItem('infillDevelopmentId');
@@ -180,6 +187,10 @@ class InfillDevelopmentPage extends Component<Props, State> {
       this.setState({
         activeTab: this.props.location.query.tab,
       });
+    }
+
+    if(prevState.activeTab !== this.state.activeTab) {
+      scrollToTopPage();
     }
   }
 
@@ -435,6 +446,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        areaNotes: getAreaNoteList(state),
         attributes: getAttributes(state),
         currentInfillDevelopment: getCurrentInfillDevelopment(state),
         infillDevelopmentFormValues: getFormValues(FormNames.INFILL_DEVELOPMENT)(state),

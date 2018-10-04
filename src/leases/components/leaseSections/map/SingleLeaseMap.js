@@ -9,6 +9,7 @@ import AreasLayer from './AreasLayer';
 import Divider from '$components/content/Divider';
 import PlanUnitsLayer from './PlanUnitsLayer';
 import PlotsLayer from './PlotsLayer';
+import {mapColors} from '$src/constants';
 import {
   getContentAreasGeoJson,
   getContentPlanUnitsGeoJson,
@@ -137,7 +138,7 @@ class SingleLeaseMap extends Component<Props, State> {
               checked: true,
               component: <PlanUnitsLayer
                 key='plan_units'
-                color='#0F0'
+                color={mapColors[0 % mapColors.length]}
                 defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
                 planUnitsGeoJson={planUnitsGeoJson}
                 planUnitIntendedUseOptions={planUnitIntendedUseOptions}
@@ -151,7 +152,7 @@ class SingleLeaseMap extends Component<Props, State> {
               checked: true,
               component: <PlotsLayer
                 key='plots'
-                color='#F00'
+                color={mapColors[1 % mapColors.length]}
                 defaultPlot={query.plot ? Number(query.plot) : undefined}
                 plotsGeoJson={plotsGeoJson}
                 typeOptions={plotTypeOptions}/>,
@@ -162,7 +163,7 @@ class SingleLeaseMap extends Component<Props, State> {
               component: <AreasLayer
                 key='areas'
                 areasGeoJson={areasGeoJson}
-                color='#00F'
+                color={mapColors[2 % mapColors.length]}
                 defaultArea={query.lease_area ? Number(query.lease_area) : undefined}
                 locationOptions={areaLocationOptions}
                 typeOptions={areaTypeOptions}

@@ -56,6 +56,7 @@ import {FormNames} from '$src/leases/enums';
 import {FormNames as ComponentFormNames} from '$components/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
+import {scrollToTopPage} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
 import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
@@ -229,10 +230,7 @@ class LeasePage extends Component<Props, State> {
     }
 
     if(prevState.activeTab !== this.state.activeTab) {
-      const body = document.getElementsByTagName('body');
-      if(body.length) {
-        body[0].scrollTop = 0;
-      }
+      scrollToTopPage();
     }
 
     if(!isEmpty(prevProps.currentLease) && (prevProps.currentLease !== this.props.currentLease)) {

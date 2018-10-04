@@ -1,10 +1,13 @@
 // @flow
 import get from 'lodash/get';
 import {isDirty} from 'redux-form';
+import isEmpty from 'lodash/isEmpty';
 
 import {FormNames} from './enums';
 import {getIsEditMode} from '$src/rentbasis/selectors';
 import {removeSessionStorageItem} from '$util/storage';
+
+import type {RentBasis} from './types';
 
 const getContentRentRates = (rentBasis: Object) => {
   const items = get(rentBasis, 'rent_rates', []);
@@ -112,6 +115,40 @@ export const getContentCopiedRentBasis = (content: Object) => {
     rent_rates: getContentCopiedRentRates(content),
     property_identifiers: getContentCopiedPropertyIdentifiers(content),
     decisions: getContentCopiedDecisions(content),
+  };
+};
+
+// Functions to get infill development compensation lease areas GeoJSON
+export const getContentRentBasisGeoJson = (rentBasis: RentBasis) => {
+  const features = [];
+  const geometry = rentBasis.geometry;
+  if(!isEmpty(geometry)) {
+    features.push({
+      ...geometry,
+      properties: {
+        id: rentBasis.id,
+        detailed_plan_identifier: rentBasis.detailed_plan_identifier,
+        end_date: rentBasis.end_date,
+        financing: rentBasis.financing,
+        index: rentBasis.index,
+        lease_rights_end_date: rentBasis.lease_rights_end_date,
+        management: rentBasis.management,
+        plot_type: get(rentBasis, 'plot_type.id'),
+        property_identifiers: rentBasis.property_identifiers,
+        start_date: rentBasis.start_date,
+      },
+    });
+  }
+
+  return {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'urn:ogc:def:crs:EPSG::3879',
+      },
+    },
+    features: features,
   };
 };
 
