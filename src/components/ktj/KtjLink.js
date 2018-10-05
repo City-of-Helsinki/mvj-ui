@@ -1,8 +1,10 @@
 // @flow
-import React from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import debounce from 'lodash/debounce';
+import {saveAs} from 'file-saver/FileSaver';
 
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {getApiToken} from '$src/auth/selectors';
 import {displayUIMessage, getApiUrlWithOutVersionSuffix} from '$util/helpers';
 
@@ -17,61 +19,86 @@ type Props = {
   prefix: 'ktjkii' | 'ktjkir',
 }
 
-const KtjLink = ({
-  apiToken,
-  fileKey,
-  fileName = 'ktj_document',
-  identifier,
-  idKey = 'kohdetunnus',
-  label,
-  langCode = 'fi',
-  prefix = 'ktjkir',
-}: Props) => {
+type State = {
+  isLoading: boolean,
+}
 
-  const handleClick =  debounce(() => {
+class KtjLink extends PureComponent<Props, State> {
+  state = {
+    isLoading: false,
+  }
+
+  handleClick = () => {
+    const {
+      apiToken,
+      fileKey,
+      fileName = 'ktj_document',
+      identifier,
+      idKey = 'kohdetunnus',
+      langCode = 'fi',
+      prefix = 'ktjkir',
+    } = this.props;
+    const {isLoading} = this.state;
+    const filename = `${fileName}_${identifier}.pdf`;
+
+    if(isLoading) return;
+
+    this.setState({isLoading: true});
     const apiUrlWithOutVersionSuffix = getApiUrlWithOutVersionSuffix();
+
     const request = new Request(`${apiUrlWithOutVersionSuffix}/${prefix}/tuloste/${fileKey}/pdf?${idKey}=${identifier}&lang=${langCode}`);
     if (apiToken) {
       request.headers.set('Authorization', `Bearer ${apiToken}`);
     }
     request.headers.set('Content-Type', 'application/pdf');
 
-    return fetch(request)
-      .then((response) => {
+    const stopLoader = () => {
+      this.setState({isLoading: false});
+    };
+
+    const fetchFile = async() => {
+      try {
+        const response = await fetch(request);
         switch(response.status) {
           case 200:
-            return response.blob();
+            const blob = await response.blob();
+            saveAs(blob, filename);
+            break;
           default:
+            displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
             break;
         }
-      })
-      .then((blob) => {
-        const filename = `${fileName}_${identifier}.pdf`;
-        if (window.navigator.msSaveOrOpenBlob) { // for IE and Edge
-          window.navigator.msSaveBlob(blob, filename);
-        } else { // for modern browsers
-          const tempLink = document.createElement('a');
-          const fileURL = window.URL.createObjectURL(blob);
-          tempLink.href = fileURL;
-          tempLink.setAttribute('download', filename);
-          tempLink.click();
-        }
-      })
-      .catch((e) => {
+
+        stopLoader();
+      } catch(e) {
         console.error('Error when downloading file: ', e);
         displayUIMessage({title: '', body: 'Tiedoston lataaminen epäonnistui'}, {type: 'error'});
-      });
-  }, 1000, {leading: true});
+        stopLoader();
+      }
+    };
 
-  const handleKeyDown = (e: any) => {
+    fetchFile();
+  };
+
+  handleKeyDown = (e: any) => {
     if(e.keyCode === 13) {
       e.preventDefault();
-      handleClick();
+      this.handleClick();
     }
   };
 
-  return <a onClick={handleClick} onKeyDown={handleKeyDown} tabIndex={0}>{label}</a>;
-};
+  render() {
+    const {label} = this.props,
+      {isLoading} = this.state;
+
+    return <a onClick={this.handleClick} onKeyDown={this.handleKeyDown} tabIndex={0}>
+      {label}
+      <LoaderWrapper className='small-inline-wrapper'>
+        <Loader isLoading={isLoading} className='small' />
+      </LoaderWrapper>
+    </a>;
+  }
+}
 
 export default connect(
   (state) => {
