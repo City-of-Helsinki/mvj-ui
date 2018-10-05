@@ -1,7 +1,7 @@
 // @flow
-import React from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray} from 'redux-form';
+import {change, FieldArray, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import type {Element} from 'react';
@@ -13,7 +13,7 @@ import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {DeleteModalLabels, DeleteModalTitles, RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames, RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -26,7 +26,7 @@ type DueDatesProps = {
 
 const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Element<*> => {
   const handleAdd = () => {
-    fields.push('');
+    fields.push({});
   };
 
   return (
@@ -195,14 +195,12 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
   );
 };
 
-type Props = {
+type BasicInfoEmptyProps = {
   attributes: Attributes,
-  dueDatesType: ?string,
   isSaveClicked: boolean,
-  rentType: ?string,
 }
 
-const BasicInfoEmpty = ({attributes, isSaveClicked}: Props) => {
+const BasicInfoEmpty = ({attributes, isSaveClicked}: BasicInfoEmptyProps) => {
   return (
     <div>
       <Row>
@@ -425,7 +423,12 @@ const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: Basi
   );
 };
 
-const BasicInfoOneTime = ({attributes, isSaveClicked}: Props) => {
+type BasicInfoOneTimeProps = {
+  attributes: Attributes,
+  isSaveClicked: boolean,
+}
+
+const BasicInfoOneTime = ({attributes, isSaveClicked}: BasicInfoOneTimeProps) => {
   return (
     <div>
       <Row>
@@ -487,7 +490,13 @@ const BasicInfoOneTime = ({attributes, isSaveClicked}: Props) => {
   );
 };
 
-const BasicInfoFixed = ({attributes, dueDatesType, isSaveClicked}: Props) => {
+type BasicInfoFixedProps = {
+  attributes: Attributes,
+  dueDatesType: ?string,
+  isSaveClicked: boolean,
+}
+
+const BasicInfoFixed = ({attributes, dueDatesType, isSaveClicked}: BasicInfoFixedProps) => {
   return (
     <div>
       <Row>
@@ -570,7 +579,12 @@ const BasicInfoFixed = ({attributes, dueDatesType, isSaveClicked}: Props) => {
   );
 };
 
-const BasicInfoFree = ({attributes, isSaveClicked}: Props) => {
+type BasicInfoFreeProps = {
+  attributes: Attributes,
+  isSaveClicked: boolean,
+}
+
+const BasicInfoFree = ({attributes, isSaveClicked}: BasicInfoFreeProps) => {
   return (
     <div>
       <Row>
@@ -621,72 +635,105 @@ const BasicInfoFree = ({attributes, isSaveClicked}: Props) => {
   );
 };
 
-const BasicInfoEdit = ({
-  attributes,
-  dueDatesType,
-  isSaveClicked,
-  rentType,
-}: Props) => {
-  return (
-    <div>
-      {!rentType &&
-        <BasicInfoEmpty
-          attributes={attributes}
-          dueDatesType={dueDatesType}
-          isSaveClicked={isSaveClicked}
-          rentType={rentType}
-        />
+type Props = {
+  attributes: Attributes,
+  change: Function,
+  dueDates: Array<Object>,
+  dueDatesType: ?string,
+  field: any,
+  isSaveClicked: boolean,
+  rentType: ?string,
+}
+
+class BasicInfoEdit extends PureComponent<Props> {
+  componentDidUpdate(prevProps: Props) {
+    if(prevProps.dueDatesType === RentDueDateTypes.CUSTOM &&
+    (this.props.dueDatesType === RentDueDateTypes.FIXED || !this.props.dueDatesType)) {
+      this.clearInvalidDueDates();
+    }
+  }
+
+  clearInvalidDueDates = () => {
+    const {change, dueDates, field} = this.props;
+    const clearedDueDates = dueDates.filter((dueDate) => {
+      const month = Number(dueDate.month || 0),
+        day = Number(dueDate.day || 0);
+
+      if(month < 1 || month > 12 || day < 1 || day > 31) {
+        return false;
       }
-      {rentType === RentTypes.INDEX &&
-        <BasicInfoIndex
-          attributes={attributes}
-          dueDatesType={dueDatesType}
-          isIndex={true}
-          isSaveClicked={isSaveClicked}
-          rentType={rentType}
-        />
-      }
-      {rentType === RentTypes.ONE_TIME &&
-        <BasicInfoOneTime
-          attributes={attributes}
-          dueDatesType={dueDatesType}
-          isSaveClicked={isSaveClicked}
-          rentType={rentType}
-        />
-      }
-      {rentType === RentTypes.FIXED &&
-        <BasicInfoFixed
-          attributes={attributes}
-          dueDatesType={dueDatesType}
-          isSaveClicked={isSaveClicked}
-          rentType={rentType}
-        />
-      }
-      {rentType === RentTypes.FREE &&
-        <BasicInfoFree
-          attributes={attributes}
-          dueDatesType={dueDatesType}
-          isSaveClicked={isSaveClicked}
-          rentType={rentType}
-        />
-      }
-      {rentType === RentTypes.MANUAL &&
-        <BasicInfoIndex
-          attributes={attributes}
-          dueDatesType={dueDatesType}
-          isIndex={false}
-          isSaveClicked={isSaveClicked}
-          rentType={rentType}
-        />
-      }
-    </div>
-  );
-};
+      return true;
+    });
+    change(formName, `${field}.due_dates`, clearedDueDates);
+  }
+
+  render() {
+    const {
+      attributes,
+      dueDatesType,
+      isSaveClicked,
+      rentType,
+    } = this.props;
+    return (
+      <div>
+        {!rentType &&
+          <BasicInfoEmpty
+            attributes={attributes}
+            isSaveClicked={isSaveClicked}
+          />
+        }
+        {rentType === RentTypes.INDEX &&
+          <BasicInfoIndex
+            attributes={attributes}
+            dueDatesType={dueDatesType}
+            isIndex={true}
+            isSaveClicked={isSaveClicked}
+          />
+        }
+        {rentType === RentTypes.ONE_TIME &&
+          <BasicInfoOneTime
+            attributes={attributes}
+            isSaveClicked={isSaveClicked}
+          />
+        }
+        {rentType === RentTypes.FIXED &&
+          <BasicInfoFixed
+            attributes={attributes}
+            dueDatesType={dueDatesType}
+            isSaveClicked={isSaveClicked}
+          />
+        }
+        {rentType === RentTypes.FREE &&
+          <BasicInfoFree
+            attributes={attributes}
+            isSaveClicked={isSaveClicked}
+          />
+        }
+        {rentType === RentTypes.MANUAL &&
+          <BasicInfoIndex
+            attributes={attributes}
+            dueDatesType={dueDatesType}
+            isIndex={false}
+            isSaveClicked={isSaveClicked}
+          />
+        }
+      </div>
+    );
+  }
+}
+
+const formName = FormNames.RENTS;
+const selector = formValueSelector(formName);
 
 export default connect(
-  (state) => {
+  (state, props) => {
     return {
       attributes: getAttributes(state),
+      dueDatesType: selector(state, `${props.field}.due_dates_type`),
+      dueDates: selector(state, `${props.field}.due_dates`),
     };
   },
+  {
+    change,
+  }
 )(BasicInfoEdit);

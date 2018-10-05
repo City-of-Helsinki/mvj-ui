@@ -10,6 +10,7 @@ import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
 import {Classification, FormNames} from '$src/leases/enums';
+import {filterSelectOptionByLabel} from '$components/form/filter';
 import {getDistrictOptions} from '$src/district/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes} from '$src/leases/selectors';
@@ -122,6 +123,7 @@ class CreateLeaseForm extends Component<Props> {
           <Column small={4} medium={3}>
             <FormField
               fieldAttributes={get(attributes, 'municipality')}
+              filterOption={filterSelectOptionByLabel}
               name='municipality'
               overrideValues={{
                 label: 'Kunta',
@@ -131,6 +133,7 @@ class CreateLeaseForm extends Component<Props> {
           <Column small={4} medium={3}>
             <FormField
               fieldAttributes={get(attributes, 'district')}
+              filterOption={filterSelectOptionByLabel}
               name='district'
               overrideValues={{
                 label: 'Kaupunginosa',

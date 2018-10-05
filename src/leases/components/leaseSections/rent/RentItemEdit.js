@@ -25,7 +25,6 @@ import type {Attributes} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   contractRentsCollapseState: boolean,
-  dueDatesType: ?string,
   errors: ?Object,
   field: string,
   index: number,
@@ -44,7 +43,6 @@ type Props = {
 const RentItemEdit = ({
   attributes,
   contractRentsCollapseState,
-  dueDatesType,
   errors,
   field,
   index,
@@ -160,7 +158,7 @@ const RentItemEdit = ({
       <FormSection name={field}>
         <BoxContentWrapper>
           <BasicInfoEdit
-            dueDatesType={dueDatesType}
+            field={field}
             isSaveClicked={isSaveClicked}
             rentType={rentType}
           />
@@ -181,6 +179,7 @@ const RentItemEdit = ({
             component={ContractRentsEdit}
             isSaveClicked={isSaveClicked}
             name={`${field}.contract_rents`}
+            rentField={field}
             rentType={rentType}
           />
         </Collapse>
@@ -246,7 +245,6 @@ export default connect(
       return {
         attributes: getAttributes(state),
         contractRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.contract_rents`),
-        dueDatesType: selector(state, `${props.field}.due_dates_type`),
         errors: getErrorsByFormName(state, formName),
         indexAdjustedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.index_adjusted_rents`),
         isSaveClicked: getIsSaveClicked(state),

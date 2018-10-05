@@ -50,7 +50,7 @@ export const getRentExplanationDescription = (explanation: Object, attributes: A
       }
       return `Sopimusvuokra - ${get(explanation, 'subject.intended_use.name')} (${get(explanation, 'subject.amount')} € ${getLabelOfOption(periodOptions, get(explanation, 'subject.period'))})`;
     case RentExplanationSubjectType.FIXED_INITIAL_YEAR_RENT:
-      return 'Kiinteä alkuvuosivuokra';
+      return `Kiinteä alkuvuosivuokra - ${get(explanation, 'subject.intended_use.name')} (${get(explanation, 'subject.amount')} € / vuosi)`;
     case RentExplanationSubjectType.RENT:
       return `${getLabelOfOption(typeOptions, type)}`;
     default:
@@ -119,13 +119,16 @@ const getContentBillingPeriodInvoice = (invoice: BillingPeriodInvoice) => {
   };
 };
 
-const getContentBillingPeriod = (billingPeriods: BillingPeriod) => {
+const getContentBillingPeriod = (billingPeriod: BillingPeriod) => {
+  const totalAmount = billingPeriod.reduce((sum, invoice) => sum + Number(invoice.total_amount), 0);
+
   return {
-    endDate: get(billingPeriods, '[0].billing_period_end_date'),
-    explanations: get(billingPeriods, '[0].explanations'),
-    invoices: billingPeriods.map((billingPeriod) => getContentBillingPeriodInvoice(billingPeriod)),
-    startDate: get(billingPeriods, '[0].billing_period_start_date'),
-    totalAmount: get(billingPeriods, '[0].total_amount'),
+    dueDate: get(billingPeriod, '[0].due_date'),
+    endDate: get(billingPeriod, '[0].billing_period_end_date'),
+    explanations: get(billingPeriod, '[0].explanations'),
+    invoices: billingPeriod.map((invoice) => getContentBillingPeriodInvoice(invoice)),
+    startDate: get(billingPeriod, '[0].billing_period_start_date'),
+    totalAmount: totalAmount,
   };
 };
 
@@ -133,5 +136,5 @@ export const getContentPreviewInvoiceBillingPeriods = (invoices: PreviewInvoices
   if(!invoices) {
     return null;
   }
-  return invoices.map((invoice) => getContentBillingPeriod(invoice));
+  return invoices.map((billingPeriod) => getContentBillingPeriod(billingPeriod));
 };

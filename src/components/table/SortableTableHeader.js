@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import classNames from 'classnames';
+import kebabCase from 'lodash/kebabCase';
 
 import {SortIconBoth, SortIconDesc, SortIconAsc} from '$components/table/Icons';
 import {TableSortOrder} from '$components/enums';
@@ -79,7 +80,7 @@ const SortableTableHeader = ({
           return(
             <th
               key={column.key}
-              className={classNames({'sortable': isSortable})}
+              className={classNames(kebabCase(column.key), {'sortable': isSortable})}
               style={{...columnStyle, minWidth: column.minWidth}}
               onClick={handleColumnClick}
             >

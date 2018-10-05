@@ -37,6 +37,7 @@ const IndexAdjustedRents = ({attributes, indexAdjustedRents}: Props) => {
       ]}
       data={indexAdjustedRents}
       fixedHeader={true}
+      noDataText='Ei indeksitarkistettuja vuokria'
       sortable={true}
     />
   );
