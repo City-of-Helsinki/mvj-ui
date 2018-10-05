@@ -71,7 +71,7 @@ class ContractRent extends PureComponent<Props> {
 
   render() {
     const {attributes, field, isSaveClicked, onRemove, rentType} = this.props;
-    console.log(attributes);
+
     return(
       <BoxItem
         className='no-border-on-first-child'>
@@ -183,6 +183,7 @@ class ContractRent extends PureComponent<Props> {
     );
   }
 }
+
 const formName = FormNames.RENTS;
 const selector = formValueSelector(formName);
 
