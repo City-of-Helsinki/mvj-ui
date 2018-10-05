@@ -7,6 +7,7 @@ type Props = {
   autoBlur: boolean,
   disabled: boolean,
   displayError: boolean,
+  filterOption?: Function,
   input: Object,
   isDirty: boolean,
   options: ?Array<any>,
@@ -24,6 +25,7 @@ const FieldTypeSelect = ({
   autoBlur,
   disabled,
   displayError,
+  filterOption,
   input,
   input: {name, onBlur, onChange, value},
   isDirty,
@@ -64,6 +66,7 @@ const FieldTypeSelect = ({
       clearable={false}
       clearValue={false}
       disabled={disabled}
+      filterOption={filterOption}
       id={name}
       noResultsText={'Ei tuloksia'}
       options={options}

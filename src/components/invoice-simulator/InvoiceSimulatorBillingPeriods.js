@@ -7,7 +7,7 @@ import RentCalculatorExplanation from '$components/rent-calculator/RentCalculato
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceSimulatorInvoice from './InvoiceSimulatorInvoice';
 import SubTitle from '$components/content/SubTitle';
-import {formatDateRange, formatNumber} from '$util/helpers';
+import {formatDate, formatDateRange, formatNumber} from '$util/helpers';
 
 type Props = {
   dueDate: string,
@@ -21,6 +21,7 @@ type Props = {
 }
 
 const InvoiceSimulatorBillingPeriod = ({
+  dueDate,
   endDate,
   explanations,
   invoices,
@@ -38,6 +39,11 @@ const InvoiceSimulatorBillingPeriod = ({
         <div>
           <Column>
             <span className='collapse__header-subtitle'>
+              {formatDate(dueDate) || '-'}
+            </span>
+          </Column>
+          <Column>
+            <span className='collapse__header-subtitle'>
               {`${formatNumber(totalAmount)} €`}
             </span>
           </Column>
@@ -50,6 +56,12 @@ const InvoiceSimulatorBillingPeriod = ({
           <FormTitleAndText
             title='Laskutuskausi'
             text={formatDateRange(startDate, endDate)}
+          />
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <FormTitleAndText
+            title='Eräpäivä'
+            text={formatDate(dueDate)}
           />
         </Column>
         <Column small={6} medium={4} large={2}>

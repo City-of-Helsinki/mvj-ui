@@ -165,6 +165,21 @@ export const RentTypes = {
 };
 
 /**
+ * Index type enumerable.
+ *
+ * @type {{INDEX: string, ONE_TIME: string, FIXED: string, FREE: string, MANUAL: string}}
+ */
+export const IndexTypes = {
+  INDEX_50620: 'type_1',
+  INDEX_4661: 'type_2',
+  INDEX_418_10: 'type_3',
+  INDEX_418_20: 'type_4',
+  INDEX_392: 'type_5',
+  INDEX_100_ROUNDING: 'type_6',
+  INDEX_100: 'type_7',
+};
+
+/**
  * Recipient options enumerable.
  *
  * @type {{ALL: string}}

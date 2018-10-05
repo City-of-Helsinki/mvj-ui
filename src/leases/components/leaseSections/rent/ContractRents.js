@@ -75,6 +75,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
       columns={columns}
       data={contractRents}
       fixedHeader={true}
+      noDataText='Ei sopimusvuokria'
       sortable={true}
     />
   );

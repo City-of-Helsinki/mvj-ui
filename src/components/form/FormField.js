@@ -71,6 +71,7 @@ type InputProps = {
   disableTouched: boolean,
   ErrorComponent: Function | Object,
   fieldType: string,
+  filterOption?: Function,
   input: Object,
   invisibleLabel: boolean,
   isLoading: boolean,
@@ -96,6 +97,7 @@ const FormFieldInput = ({
   disableTouched,
   ErrorComponent,
   fieldType,
+  filterOption,
   input,
   invisibleLabel,
   isLoading,
@@ -121,7 +123,7 @@ const FormFieldInput = ({
       {label && fieldType === 'boolean' && <FormTextTitle required={required} title={label} />}
       {label && fieldType !== 'boolean' && <FormFieldLabel className={invisibleLabel ? 'invisible' : ''} htmlFor={input.name} required={required}>{label}</FormFieldLabel>}
       <div className={classNames('form-field__component', {'has-unit': unit})}>
-        {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, input, isDirty, isLoading, label, language, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
+        {createElement(fieldComponent, {autoBlur, autoComplete, displayError, disabled, filterOption, input, isDirty, isLoading, label, language, optionLabel, placeholder, options, rows, setRefForField, type, valueSelectedCallback})}
         {unit && <span className='form-field__unit'>{unit}</span>}
       </div>
       {displayError && <ErrorComponent {...meta}/>}
@@ -138,6 +140,7 @@ type Props = {
   disableTouched?: boolean,
   ErrorComponent?: any,
   fieldAttributes: Object,
+  filterOption?: Function,
   invisibleLabel?: boolean,
   isLoading?: boolean,
   language?: string,
@@ -216,6 +219,7 @@ class FormField extends PureComponent<Props, State> {
       disableDirty,
       disableTouched,
       ErrorComponent = ErrorBlock,
+      filterOption,
       invisibleLabel,
       isLoading,
       language,
@@ -246,6 +250,7 @@ class FormField extends PureComponent<Props, State> {
         disableTouched={disableTouched}
         ErrorComponent={ErrorComponent}
         fieldType={fieldType}
+        filterOption={filterOption}
         invisibleLabel={invisibleLabel}
         isLoading={isLoading}
         label={label}

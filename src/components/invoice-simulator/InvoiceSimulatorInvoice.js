@@ -41,6 +41,11 @@ const InvoiceSimulatorInvoice = ({
         <div>
           <Column>
             <span className='collapse__header-subtitle'>
+              {formatDate(dueDate) || '-'}
+            </span>
+          </Column>
+          <Column>
+            <span className='collapse__header-subtitle'>
               {`${formatNumber(billedAmount)} €`}
             </span>
           </Column>

@@ -44,8 +44,8 @@ import type {
   InvoiceList,
 } from '$src/invoices/types';
 
-const TABLE_MAX_HEIGHT = 521;
-const TABLE_MAX_HEIGHT_EDIT = 521;
+const TABLE_MIN_HEIGHT = 521;
+const TABLE_MIN_HEIGHT_EDIT = 521;
 const PANEL_WIDTH = 607.5;
 
 type Props = {
@@ -217,19 +217,15 @@ class InvoiceTableAndPanel extends Component<Props, State> {
 
     const {isEditMode} = this.props,
       {openedInvoice} = this.state,
-      {clientHeight: tableHeaderHeight} = this.table.scrollHeaderWrapper,
       {scrollHeight: panelHeight} = this.panel.wrappedInstance.container,
-      tableMaxHeight = isEditMode ? TABLE_MAX_HEIGHT_EDIT : TABLE_MAX_HEIGHT,
+      tableMinHeight = isEditMode ? TABLE_MIN_HEIGHT_EDIT : TABLE_MIN_HEIGHT,
       borderHeight = 2;
     let {scrollHeight: tableHeight} = this.table.scrollBodyTable;
 
     if(openedInvoice) {
-      tableHeight = panelHeight > tableMaxHeight ? panelHeight : tableMaxHeight;
+      tableHeight = panelHeight > tableMinHeight ? panelHeight : tableMinHeight;
     } else {
-      tableHeight += tableHeaderHeight;
-      if((tableHeight + borderHeight) > tableMaxHeight) {
-        tableHeight = tableMaxHeight - borderHeight;
-      }
+      tableHeight = tableMinHeight - borderHeight;
     }
 
     this.setState({
@@ -557,6 +553,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
             defaultSortOrder={TableSortOrder.DESCENDING}
             fixedHeader={true}
             maxHeight={tableHeight}
+            noDataText='Ei laskuja'
             onDataUpdate={this.handleDataUpdate}
             onRowClick={this.handleRowClick}
             onSelectNext={this.openNextInvoice}

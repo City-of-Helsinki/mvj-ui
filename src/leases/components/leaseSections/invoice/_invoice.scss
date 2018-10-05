@@ -1,6 +1,6 @@
 .invoice {
   &__new-invoice {
-    margin-top: rem-calc(5px);
+    margin-top: rem-calc(15px);
     margin-bottom: rem-calc(10px);
 
     &_form {
@@ -47,24 +47,6 @@
     }
   }
 
-  &__contract-rent-table {
-    th.amount {
-      width: 200px;
-    }
-    th.base-year-rent {
-      width: 200px;
-    }
-    th.end-date {
-      width: 100px;
-    }
-    th.intended-use {
-      width: 200px;
-    }
-    th.start-date {
-      width: 100px;
-    }
-  }
-
   &__invoice-table {
     position: relative;
     z-index: 3;
@@ -91,60 +73,10 @@
       @include transition(0.5s, max-width, ease-in-out);
     }
 
-    .table__fixed-header {
-      border: none;
-
-      &_wrapper {
-        height: 1000px;
-        overflow: auto;
-      }
-      table {
-        border: none;
-        box-shadow: none;
-      }
-
-      th.invoiceset {
-        width: 100px;
-      }
-
-      th.billing-period-start-date {
-        width: 155px;
-      }
-
-      th.due-date {
-        width: 80px;
-      }
-
-      th.id {
-        width: 80px;
-      }
-
-      th.total-share {
-        width: 70px;
-      }
-
+    .sortable-table {
       th.recipient-full {
-        width: 200px;
-      }
-
-      table tbody tr {
-        cursor: pointer;
-        outline-offset: -4px;
-
-        &:hover {
-          background-color: #D9EFE4;
-        }
-        &.selected > td {
-          background-color: #D9EFE4 !important;
-        }
-
-        &.active {
-          background-color: #D9EFE4;
-        }
-
-        &.no-data {
-          text-align: center;
-          background-color: $lightest-gray;
+        div {
+          width: 190px;
         }
       }
     }
