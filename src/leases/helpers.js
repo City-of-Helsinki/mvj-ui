@@ -737,12 +737,15 @@ export const getContentLeasePlotsFeatures = (plots: Array<Object>): PlotsFeature
   });
 };
 
-export const getContentPlotsGeoJson = (lease: Lease): PlotsGeoJson => {
+export const getContentPlotsGeoJson = (lease: Lease, inContract: boolean = false): PlotsGeoJson => {
   const plots = [];
   get(lease, 'lease_areas', [])
     .filter((area) => !area.archived_at)
     .forEach((area) => {
-      plots.push(...get(area, 'plots', []));
+      plots.push(
+        ...get(area, 'plots', [])
+          .filter((plot) => plot.in_contract === inContract)
+      );
     });
 
   const features = getContentLeasePlotsFeatures(plots);
@@ -784,12 +787,15 @@ export const getContentPlanUnitFeatures = (planUnits: Array<Object>): PlanUnitsF
   });
 };
 
-export const getContentPlanUnitsGeoJson = (lease: Lease): PlanUnitsGeoJson => {
+export const getContentPlanUnitsGeoJson = (lease: Lease, inContract: boolean = false): PlanUnitsGeoJson => {
   const planUnits = [];
   get(lease, 'lease_areas', [])
     .filter((area) => !area.archived_at)
     .forEach((area) => {
-      planUnits.push(...get(area, 'plan_units', []));
+      planUnits.push(
+        ...get(area, 'plan_units', [])
+          .filter((planUnit => planUnit.in_contract === inContract))
+      );
     });
 
   const features = getContentPlanUnitFeatures(planUnits);
