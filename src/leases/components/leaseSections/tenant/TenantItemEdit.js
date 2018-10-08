@@ -51,12 +51,13 @@ const renderOtherTenants = ({
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.OTHER_TENANT,
-                  deleteModalTitle: DeleteModalTitles.OTHER_TENANT,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.OTHER_TENANT,
+                  confirmationModalTitle: DeleteModalTitles.OTHER_TENANT,
                 });
               };
 

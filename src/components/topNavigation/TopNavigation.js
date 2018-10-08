@@ -7,6 +7,7 @@ import {Link} from 'react-router';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import MainMenuIcon from '../icons/MainMenuIcon';
 import SearchInput from '../inputs/SearchInput';
+import {CancelChangesModalTexts} from '$src/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 import {getRouteById} from '$src/root/routes';
 
@@ -73,11 +74,14 @@ class TopNavigation extends Component<Props, State> {
               e.preventDefault();
 
               dispatch({
-                type: ActionTypes.SHOW_CANCEL_CHANGES_MODAL,
-                cancelChangesFunction: () => {
+                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                confirmationFunction: () => {
                   const {router} = this.context;
                   router.push(target.href);
                 },
+                confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
+                confirmationModalLabel: CancelChangesModalTexts.LABEL,
+                confirmationModalTitle: CancelChangesModalTexts.TITLE,
               });
             }
           };
@@ -87,10 +91,13 @@ class TopNavigation extends Component<Props, State> {
 
             if(hasDirtyPages) {
               dispatch({
-                type: ActionTypes.SHOW_CANCEL_CHANGES_MODAL,
-                cancelChangesFunction: () => {
+                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                confirmationFunction: () => {
                   this.moveSearchPage();
                 },
+                confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
+                confirmationModalLabel: CancelChangesModalTexts.LABEL,
+                confirmationModalTitle: CancelChangesModalTexts.TITLE,
               });
             } else {
               this.moveSearchPage();
@@ -109,10 +116,13 @@ class TopNavigation extends Component<Props, State> {
 
             if(hasDirtyPages) {
               dispatch({
-                type: ActionTypes.SHOW_CANCEL_CHANGES_MODAL,
-                cancelChangesFunction: () => {
+                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                confirmationFunction: () => {
                   onLogout();
                 },
+                confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
+                confirmationModalLabel: CancelChangesModalTexts.LABEL,
+                confirmationModalTitle: CancelChangesModalTexts.TITLE,
               });
             } else {
               onLogout();

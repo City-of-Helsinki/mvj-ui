@@ -98,12 +98,13 @@ class BasisOfRentsEdit extends Component<Props> {
                 {fields && !!fields.length && fields.map((item, index) => {
                   const handleRemove = () => {
                     dispatch({
-                      type: ActionTypes.SHOW_DELETE_MODAL,
-                      deleteFunction: () => {
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
                         fields.remove(index);
                       },
-                      deleteModalLabel: DeleteModalLabels.BASIS_OF_RENT,
-                      deleteModalTitle: DeleteModalTitles.BASIS_OF_RENT,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.BASIS_OF_RENT,
+                      confirmationModalTitle: DeleteModalTitles.BASIS_OF_RENT,
                     });
                   };
 

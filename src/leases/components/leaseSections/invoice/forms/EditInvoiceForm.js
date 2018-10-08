@@ -67,12 +67,13 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
             {fields && !!fields.length && fields.map((payment, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.INVOICE_PAYMENT,
-                  deleteModalTitle: DeleteModalTitles.INVOICE_PAYMENT,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.INVOICE_PAYMENT,
+                  confirmationModalTitle: DeleteModalTitles.INVOICE_PAYMENT,
                 });
               };
 

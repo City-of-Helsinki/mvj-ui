@@ -42,12 +42,13 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Pro
               {fields && !!fields.length && fields.map((discount, index) => {
                 const handleRemove = () => {
                   dispatch({
-                    type: ActionTypes.SHOW_DELETE_MODAL,
-                    deleteFunction: () => {
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
                       fields.remove(index);
                     },
-                    deleteModalLabel: DeleteModalLabels.RENT_ADJUSTMENT,
-                    deleteModalTitle: DeleteModalTitles.RENT_ADJUSTMENT,
+                    confirmationModalButtonText: 'Poista',
+                    confirmationModalLabel: DeleteModalLabels.RENT_ADJUSTMENT,
+                    confirmationModalTitle: DeleteModalTitles.RENT_ADJUSTMENT,
                   });
                 };
 

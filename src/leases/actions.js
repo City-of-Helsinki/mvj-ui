@@ -17,6 +17,7 @@ import type {
   UnarchiveLeaseAreaAction,
   FetchLeasesAction,
   FetchSingleLeaseAction,
+  FetchSingleLeaseWithoutLoaderAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
   FetchLeaseByIdAction,
@@ -29,6 +30,7 @@ import type {
   CreateRelatedLeaseAction,
   DeleteRelatedLeasePayload,
   DeleteRelatedLeaseAction,
+  CopyAreasToContractAction,
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
   ReceiveIsSaveClickedAction,
@@ -55,6 +57,9 @@ export const receiveLeases = (leases: LeaseList): ReceiveLeasesAction =>
 
 export const fetchSingleLease = (id: LeaseId): FetchSingleLeaseAction =>
   createAction('mvj/leases/FETCH_SINGLE')(id);
+
+export const fetchSingleLeaseWithoutLoader = (id: LeaseId): FetchSingleLeaseWithoutLoaderAction =>
+  createAction('mvj/leases/FETCH_SINGLE_WITHOUT_LOADER')(id);
 
 export const receiveSingleLease = (lease: Lease): ReceiveSingleLeaseAction =>
   createAction('mvj/leases/RECEIVE_SINGLE')(lease);
@@ -100,6 +105,9 @@ export const createReleatedLease = (payload: CreateRelatedLeasePayload): CreateR
 
 export const deleteReleatedLease = (payload: DeleteRelatedLeasePayload): DeleteRelatedLeaseAction =>
   createAction('mvj/leases/DELETE_RELATED_LEASE')(payload);
+
+export const copyAreasToContract = (leaseId: LeaseId): CopyAreasToContractAction =>
+  createAction('mvj/leases/COPY_AREAS_TO_CONTRACT')(leaseId);
 
 export const receiveFormValidFlags = (valid: Object): ReceiveFormValidFlagsAction =>
   createAction('mvj/leases/RECEIVE_FORM_VALID_FLAGS')(valid);

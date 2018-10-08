@@ -3,6 +3,7 @@ import React from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import BackButton from '$components/button/BackButton';
+import {CancelChangesModalTexts} from '$src/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 
 
@@ -20,10 +21,13 @@ const ControlButtonBar = ({buttonComponent, infoComponent, onBack}: Props) =>
 
         if(hasDirtyPages) {
           dispatch({
-            type: ActionTypes.SHOW_CANCEL_CHANGES_MODAL,
-            cancelChangesFunction: () => {
+            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+            confirmationFunction: () => {
               onBack();
             },
+            confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
+            confirmationModalLabel: CancelChangesModalTexts.LABEL,
+            confirmationModalTitle: CancelChangesModalTexts.TITLE,
           });
         } else {
           onBack();

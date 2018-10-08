@@ -1,4 +1,5 @@
 // @flow
+import React from 'react';
 /**
  * View modes enumerable.
  *
@@ -22,4 +23,15 @@ export const KeyCodes = {
   ARROW_UP: 38,
   ARROW_RIGHT: 39,
   ARROW_DOWN: 40,
+};
+
+/**
+ * Key code enumerable.
+ *
+ * @type {{BUTTON: string, LABEL: string, TITLE: string}}
+ */
+export const CancelChangesModalTexts = {
+  BUTTON: 'Hylkää muutokset',
+  LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti hylätä muutokset?</span>,
+  TITLE: 'Hylkää muutokset',
 };

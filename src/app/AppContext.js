@@ -3,34 +3,24 @@ import React from 'react';
 const Context = React.createContext();
 
 export const ActionTypes = {
-  HIDE_CANCEL_CHANGES_MODAL: 'HIDE_CANCEL_CHANGES_MODAL',
-  SHOW_CANCEL_CHANGES_MODAL: 'SHOW_CANCEL_CHANGES_MODAL',
-  HIDE_DELETE_MODAL: 'HIDE_DELETE_MODAL',
-  SHOW_DELETE_MODAL: 'SHOW_DELETE_MODAL',
+  HIDE_CONFIRMATION_MODAL: 'HIDE_CONFIRMATION_MODAL',
+  SHOW_CONFIRMATION_MODAL: 'SHOW_CONFIRMATION_MODAL',
 };
 
 const reducer = (state, action) => {
   switch(action.type) {
-    case ActionTypes.HIDE_CANCEL_CHANGES_MODAL:
-      return {...state, isCancelChangesModalOpen: false};
-    case ActionTypes.SHOW_CANCEL_CHANGES_MODAL:
-      const {cancelChangesFunction} = action;
+    case ActionTypes.HIDE_CONFIRMATION_MODAL:
+      return {...state, isConfirmationModalOpen: false};
+    case ActionTypes.SHOW_CONFIRMATION_MODAL:
+      const {confirmationFunction, confirmationModalButtonText, confirmationModalLabel, confirmationModalTitle} = action;
 
       return {
         ...state,
-        cancelChangesFunction: cancelChangesFunction,
-        isCancelChangesModalOpen: true,
-      };
-    case ActionTypes.HIDE_DELETE_MODAL:
-      return {...state, isDeleteModalOpen: false};
-    case ActionTypes.SHOW_DELETE_MODAL:
-      const {deleteFunction, deleteModalLabel, deleteModalTitle} = action;
-      return {
-        ...state,
-        deleteFunction: deleteFunction,
-        deleteModalLabel: deleteModalLabel,
-        deleteModalTitle: deleteModalTitle,
-        isDeleteModalOpen: true,
+        confirmationFunction: confirmationFunction,
+        confirmationModalButtonText: confirmationModalButtonText,
+        confirmationModalLabel: confirmationModalLabel,
+        confirmationModalTitle: confirmationModalTitle,
+        isConfirmationModalOpen: true,
       };
   }
 };
@@ -40,22 +30,20 @@ type Props = {
 }
 
 type AppContextState = {
-  cancelChangesFunction: ?Function,
-  isCancelChangesModalOpen: boolean,
-  deleteFunction: ?Function,
-  deleteModalLabel: ?string,
-  deleteModalTitle: ?string,
-  isDeleteModalOpen: boolean,
+  confirmationFunction: ?Function,
+  confirmationModalButtonText: ?string,
+  confirmationModalLabel: ?string,
+  confirmationModalTitle: ?string,
+  isConfirmationModalOpen: boolean,
 }
 
 export class AppProvider extends React.Component<Props, AppContextState> {
   state = {
-    cancelChangesFunction: null,
-    isCancelChangesModalOpen: false,
-    deleteFunction: null,
-    deleteModalLabel: null,
-    deleteModalTitle: null,
-    isDeleteModalOpen: false,
+    confirmationFunction: null,
+    confirmationModalButtonText: null,
+    confirmationModalLabel: null,
+    confirmationModalTitle: null,
+    isConfirmationModalOpen: false,
 
     dispatch: action => {
       this.setState(state => reducer(state, action));
@@ -63,6 +51,7 @@ export class AppProvider extends React.Component<Props, AppContextState> {
   };
   render() {
     const {state, props: {children}} = this;
+
     return <Context.Provider value={state}>{children}</Context.Provider>;
   }
 }

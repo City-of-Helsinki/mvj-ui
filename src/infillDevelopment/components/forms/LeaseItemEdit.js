@@ -81,12 +81,13 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                 {fields.map((field, index) => {
                   const handleRemove = () => {
                     dispatch({
-                      type: ActionTypes.SHOW_DELETE_MODAL,
-                      deleteFunction: () => {
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
                         fields.remove(index);
                       },
-                      deleteModalLabel: DeleteModalLabels.DECISION,
-                      deleteModalTitle: DeleteModalTitles.DECISION,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.DECISION,
+                      confirmationModalTitle: DeleteModalTitles.DECISION,
                     });
                   };
 
@@ -177,12 +178,13 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
                 {fields.map((field, index) => {
                   const handleRemove = () => {
                     dispatch({
-                      type: ActionTypes.SHOW_DELETE_MODAL,
-                      deleteFunction: () => {
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
                         fields.remove(index);
                       },
-                      deleteModalLabel: DeleteModalLabels.INTENDED_USE,
-                      deleteModalTitle: DeleteModalTitles.INTENDED_USE,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.INTENDED_USE,
+                      confirmationModalTitle: DeleteModalTitles.INTENDED_USE,
                     });
                   };
 
@@ -579,12 +581,13 @@ class LeaseItemEdit extends Component<Props, State> {
                         {attachments.map((file, index) => {
                           const handleRemove = () => {
                             dispatch({
-                              type: ActionTypes.SHOW_DELETE_MODAL,
-                              deleteFunction: () => {
+                              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                              confirmationFunction: () => {
                                 this.handleDeleteInfillDevelopmentFile(file.id);
                               },
-                              deleteModalLabel: DeleteModalLabels.ATTACHMENT,
-                              deleteModalTitle: DeleteModalTitles.ATTACHMENT,
+                              confirmationModalButtonText: 'Poista',
+                              confirmationModalLabel: DeleteModalLabels.ATTACHMENT,
+                              confirmationModalTitle: DeleteModalTitles.ATTACHMENT,
                             });
                           };
 

@@ -73,12 +73,13 @@ const renderContractChanges = ({
               {fields && !!fields.length && fields.map((change, index) => {
                 const handleRemove = () => {
                   dispatch({
-                    type: ActionTypes.SHOW_DELETE_MODAL,
-                    deleteFunction: () => {
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
                       fields.remove(index);
                     },
-                    deleteModalLabel: DeleteModalLabels.CONTRACT_CHANGE,
-                    deleteModalTitle: DeleteModalTitles.CONTRACT_CHANGE,
+                    confirmationModalButtonText: 'Poista',
+                    confirmationModalLabel: DeleteModalLabels.CONTRACT_CHANGE,
+                    confirmationModalTitle: DeleteModalTitles.CONTRACT_CHANGE,
                   });
                 };
 
@@ -216,12 +217,13 @@ const renderMortgageDocuments = ({attributes, fields, isSaveClicked}: MortgageDo
                 {fields.map((doc, index) => {
                   const handleRemove = () => {
                     dispatch({
-                      type: ActionTypes.SHOW_DELETE_MODAL,
-                      deleteFunction: () => {
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
                         fields.remove(index);
                       },
-                      deleteModalLabel: DeleteModalLabels.MORTGAGE_DOCUMENT,
-                      deleteModalTitle: DeleteModalTitles.MORTGAGE_DOCUMENT,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.MORTGAGE_DOCUMENT,
+                      confirmationModalTitle: DeleteModalTitles.MORTGAGE_DOCUMENT,
                     });
                   };
 

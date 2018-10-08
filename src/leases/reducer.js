@@ -49,6 +49,7 @@ const isArchiveFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/ARCHIVE_AREA': () => true,
   'mvj/leases/UNARCHIVE_AREA': () => true,
   'mvj/leases/RECEIVE_SINGLE': () => false,
+  'mvj/leases/COPY_AREAS_TO_CONTRACT': () => true,
   'mvj/leases/NOT_FOUND': () => false,
 }, false);
 

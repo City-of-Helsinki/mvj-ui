@@ -26,7 +26,7 @@ import {getAttributes, getCollapseStateByKey, getIsEditMode} from '$src/leases/s
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
-  area: Object,
+  area: ?Object,
   attributes: Attributes,
   isActive: boolean,
   isEditMode: boolean,
@@ -51,6 +51,9 @@ const LeaseArea = ({
   router,
 }: Props) => {
   const handlePlanUnitContractCollapseToggle = (val: boolean) => {
+    if(!area || !area.id) {
+      return;
+    }
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
@@ -63,6 +66,9 @@ const LeaseArea = ({
   };
 
   const handlePlanUnitCurrentCollapseToggle = (val: boolean) => {
+    if(!area || !area.id) {
+      return;
+    }
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
@@ -75,6 +81,10 @@ const LeaseArea = ({
   };
 
   const handlePlotsContractCollapseToggle = (val: boolean) => {
+    if(!area || !area.id) {
+      return;
+    }
+
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
@@ -87,6 +97,10 @@ const LeaseArea = ({
   };
 
   const handlePlotsCurrentCollapseToggle = (val: boolean) => {
+    if(!area || !area.id) {
+      return;
+    }
+
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
@@ -103,7 +117,7 @@ const LeaseArea = ({
     const tempQuery = {...query};
     delete tempQuery.plan_unit;
     delete tempQuery.plot;
-    tempQuery.lease_area = area.id,
+    tempQuery.lease_area = area ? area.id : undefined,
     tempQuery.tab = 7;
 
     return `${pathname}${getSearchQuery(tempQuery)}`;

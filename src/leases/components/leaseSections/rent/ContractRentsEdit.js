@@ -26,12 +26,13 @@ const ContractRentsEdit = ({fields, rentField, rentType}: Props) => {
               {fields && !!fields.length && fields.map((rent, index) => {
                 const handleRemove = () => {
                   dispatch({
-                    type: ActionTypes.SHOW_DELETE_MODAL,
-                    deleteFunction: () => {
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
                       fields.remove(index);
                     },
-                    deleteModalLabel: DeleteModalLabels.CONTRACT_RENT,
-                    deleteModalTitle: DeleteModalTitles.CONTRACT_RENT,
+                    confirmationModalButtonText: 'Poista',
+                    confirmationModalLabel: DeleteModalLabels.CONTRACT_RENT,
+                    confirmationModalTitle: DeleteModalTitles.CONTRACT_RENT,
                   });
                 };
 

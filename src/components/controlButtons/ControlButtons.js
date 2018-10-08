@@ -3,6 +3,7 @@ import React from 'react';
 import Button from '../button/Button';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import {CancelChangesModalTexts} from '$src/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 
 type Props = {
@@ -56,10 +57,13 @@ const ControlButtons = ({
 
           if(hasDirtyPages) {
             dispatch({
-              type: ActionTypes.SHOW_CANCEL_CHANGES_MODAL,
-              cancelChangesFunction: () => {
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
                 onCancel();
               },
+              confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
+              confirmationModalLabel: CancelChangesModalTexts.LABEL,
+              confirmationModalTitle: CancelChangesModalTexts.TITLE,
             });
           } else {
             onCancel();
@@ -71,10 +75,13 @@ const ControlButtons = ({
 
           if(hasDirtyPages) {
             dispatch({
-              type: ActionTypes.SHOW_CANCEL_CHANGES_MODAL,
-              cancelChangesFunction: () => {
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
                 onCopy();
               },
+              confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
+              confirmationModalLabel: CancelChangesModalTexts.LABEL,
+              confirmationModalTitle: CancelChangesModalTexts.TITLE,
             });
           } else {
             onCopy();

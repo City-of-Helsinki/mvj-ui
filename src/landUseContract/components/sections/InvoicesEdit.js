@@ -50,12 +50,13 @@ const renderInvoices = ({attributes, fields, isSaveClicked}: InvoicesProps): Ele
                 {fields.map((invoice, index) => {
                   const handleRemove = () => {
                     dispatch({
-                      type: ActionTypes.SHOW_DELETE_MODAL,
-                      deleteFunction: () => {
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
                         fields.remove(index);
                       },
-                      deleteModalLabel: DeleteModalLabels.INVOICE,
-                      deleteModalTitle: DeleteModalTitles.INVOICE,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.INVOICE,
+                      confirmationModalTitle: DeleteModalTitles.INVOICE,
                     });
                   };
 

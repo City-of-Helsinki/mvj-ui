@@ -51,6 +51,12 @@ export const deleteReleatedLease = (id: number): Generator<any, any, any> => {
   }));
 };
 
+export const copyAreasToContract = (leaseId: LeaseId): Generator<any, any, any> => {
+  return callApi(new Request(createUrl(`lease/${leaseId}/copy_areas_to_contract/`), {
+    method: 'POST',
+  }));
+};
+
 export const createCharge = (payload: CreateChargePayload): Generator<any, any, any> => {
   const {leaseId, data} = payload;
   const body = JSON.stringify(data);

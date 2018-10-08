@@ -45,12 +45,13 @@ const renderContracts = ({
             {fields && !!fields.length && fields.map((contract, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.CONTRACT,
-                  deleteModalTitle: DeleteModalTitles.CONTRACT,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.CONTRACT,
+                  confirmationModalTitle: DeleteModalTitles.CONTRACT,
                 });
               };
 
