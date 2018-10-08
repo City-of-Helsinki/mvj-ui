@@ -83,7 +83,6 @@ class MapContainer extends Component<Props> {
       <Map
         center={center ? center : undefined}
         bounds={bounds ? bounds : undefined}
-        boundsOptions={{padding: [20, 20]}}
         minZoom={minZoom}
         maxZoom={maxZoom}
         zoom={zoom}

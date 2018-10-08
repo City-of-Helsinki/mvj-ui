@@ -63,12 +63,13 @@ const renderLitigants = ({
             {fields && !!fields.length && fields.map((litigant, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.LITIGANT,
-                  deleteModalTitle: DeleteModalTitles.LITIGANT,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.LITIGANT,
+                  confirmationModalTitle: DeleteModalTitles.LITIGANT,
                 });
               };
 

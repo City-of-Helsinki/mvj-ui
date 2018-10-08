@@ -45,12 +45,13 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.AREA,
-                  deleteModalTitle: DeleteModalTitles.AREA,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.AREA,
+                  confirmationModalTitle: DeleteModalTitles.AREA,
                 });
               };
 

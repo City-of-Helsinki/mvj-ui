@@ -171,52 +171,34 @@ class App extends Component<Props, State> {
       <AppProvider>
         <AppConsumer>
           {({
-            cancelChangesFunction,
-            isCancelChangesModalOpen,
-            deleteFunction,
-            deleteModalLabel,
-            deleteModalTitle,
+            isConfirmationModalOpen,
+            confirmationFunction,
+            confirmationModalButtonText,
+            confirmationModalLabel,
+            confirmationModalTitle,
             dispatch,
-            isDeleteModalOpen,
           }) => {
-            const handleCancelChanges = () => {
-              cancelChangesFunction();
-              handleHideCancelChangesModal();
+            const handleConfirmation = () => {
+              confirmationFunction();
+              handleHideConfirmationModal();
             };
 
-            const handleHideCancelChangesModal = () => {
-              dispatch({type: ActionTypes.HIDE_CANCEL_CHANGES_MODAL});
-            };
-
-            const handleDelete = () => {
-              deleteFunction();
-              handleHideDeleteModal();
-            };
-
-            const handleHideDeleteModal = () => {
-              dispatch({type: ActionTypes.HIDE_DELETE_MODAL});
+            const handleHideConfirmationModal = () => {
+              dispatch({type: ActionTypes.HIDE_CONFIRMATION_MODAL});
             };
 
             return(
               <div className={'app'}>
                 <ConfirmationModal
-                  confirmButtonLabel='Hylkää muutokset'
-                  isOpen={isCancelChangesModalOpen}
-                  label={<span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti hylätä muutokset?</span>}
-                  onCancel={handleHideCancelChangesModal}
-                  onClose={handleHideCancelChangesModal}
-                  onSave={handleCancelChanges}
-                  title='Hylkää muutokset'
+                  confirmButtonLabel={confirmationModalButtonText}
+                  isOpen={isConfirmationModalOpen}
+                  label={confirmationModalLabel}
+                  onCancel={handleHideConfirmationModal}
+                  onClose={handleHideConfirmationModal}
+                  onSave={handleConfirmation}
+                  title={confirmationModalTitle}
                 />
-                <ConfirmationModal
-                  confirmButtonLabel='Poista'
-                  isOpen={isDeleteModalOpen}
-                  label={deleteModalLabel}
-                  onCancel={handleHideDeleteModal}
-                  onClose={handleHideDeleteModal}
-                  onSave={handleDelete}
-                  title={deleteModalTitle}
-                />
+
                 <ReduxToastr
                   newestOnTop={true}
                   position="bottom-right"
@@ -243,6 +225,7 @@ class App extends Component<Props, State> {
                   toggleSideMenu={this.toggleSideMenu}
                   username={get(user, 'profile.name')}
                 />
+
                 <section className="app__content">
                   <SideMenu
                     isOpen={displaySideMenu}

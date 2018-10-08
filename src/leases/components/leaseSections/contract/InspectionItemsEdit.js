@@ -37,12 +37,13 @@ const InspectionItemsEdit = ({
                 {fields.map((inspection, index) => {
                   const handleRemove = () => {
                     dispatch({
-                      type: ActionTypes.SHOW_DELETE_MODAL,
-                      deleteFunction: () => {
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
                         fields.remove(index);
                       },
-                      deleteModalLabel: DeleteModalLabels.INSPECTION,
-                      deleteModalTitle: DeleteModalTitles.INSPECTION,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.INSPECTION,
+                      confirmationModalTitle: DeleteModalTitles.INSPECTION,
                     });
                   };
 

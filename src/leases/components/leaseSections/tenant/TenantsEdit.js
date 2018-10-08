@@ -60,12 +60,13 @@ const renderTenants = ({
             {fields && !!fields.length && fields.map((tenant, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.TENANT,
-                  deleteModalTitle: DeleteModalTitles.TENANT,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.TENANT,
+                  confirmationModalTitle: DeleteModalTitles.TENANT,
                 });
               };
 

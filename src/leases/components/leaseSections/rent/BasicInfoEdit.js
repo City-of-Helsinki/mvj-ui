@@ -124,12 +124,13 @@ const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedI
             {fields && !!fields.length && fields.map((rent, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.FIXED_INITIAL_YEAR_RENT,
-                  deleteModalTitle: DeleteModalTitles.FIXED_INITIAL_YEAR_RENT,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.FIXED_INITIAL_YEAR_RENT,
+                  confirmationModalTitle: DeleteModalTitles.FIXED_INITIAL_YEAR_RENT,
                 });
               };
 

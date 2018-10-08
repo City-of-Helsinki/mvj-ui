@@ -66,12 +66,13 @@ class SaveConditionPanel extends Component<Props, State> {
           const handleDelete = () => {
 
             dispatch({
-              type: ActionTypes.SHOW_DELETE_MODAL,
-              deleteFunction: () => {
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
                 onDelete();
               },
-              deleteModalLabel: DeleteModalLabels.AREA_NOTE,
-              deleteModalTitle: DeleteModalTitles.AREA_NOTE,
+              confirmationModalButtonText: 'Poista',
+              confirmationModalLabel: DeleteModalLabels.AREA_NOTE,
+              confirmationModalTitle: DeleteModalTitles.AREA_NOTE,
             });
           };
 

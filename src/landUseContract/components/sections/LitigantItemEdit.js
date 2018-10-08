@@ -52,12 +52,13 @@ const renderBillingPersons = ({
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.BILLING_PERSON,
-                  deleteModalTitle: DeleteModalTitles.BILLING_PERSON,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.BILLING_PERSON,
+                  confirmationModalTitle: DeleteModalTitles.BILLING_PERSON,
                 });
               };
               return (

@@ -38,12 +38,13 @@ const LeaseHistoryItem = ({
       {({dispatch}) => {
         const handleDelete = () => {
           dispatch({
-            type: ActionTypes.SHOW_DELETE_MODAL,
-            deleteFunction: () => {
+            type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+            confirmationFunction: () => {
               onDelete(id);
             },
-            deleteModalLabel: DeleteModalLabels.RELATED_LEASE,
-            deleteModalTitle: DeleteModalTitles.RELATED_LEASE,
+            confirmationModalButtonText: 'Poista',
+            confirmationModalLabel: DeleteModalLabels.RELATED_LEASE,
+            confirmationModalTitle: DeleteModalTitles.RELATED_LEASE,
           });
         };
 

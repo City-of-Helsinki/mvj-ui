@@ -1,11 +1,12 @@
 // @flow
-import {all, call, fork, put, takeEvery, takeLatest} from 'redux-saga/effects';
+import {all, call, fork, put, select, takeEvery, takeLatest} from 'redux-saga/effects';
 import {push} from 'react-router-redux';
 import {SubmissionError} from 'redux-form';
 
 import {getRouteById} from '$src/root/routes';
 import {
   fetchSingleLease as fetchSingleLeaseAction,
+  fetchSingleLeaseWithoutLoader,
   hideArchiveAreaModal,
   hideEditMode,
   hideUnarchiveAreaModal,
@@ -22,6 +23,7 @@ import {fetchInvoicesByLease, receiveIsCreateInvoicePanelOpen} from '$src/invoic
 import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {displayUIMessage} from '$src/util/helpers';
 import {
+  copyAreasToContract,
   createCharge,
   createLease,
   fetchAttributes,
@@ -31,6 +33,7 @@ import {
   createRelatedLease,
   deleteReleatedLease,
 } from './requests';
+import {getCurrentLease} from './selectors';
 
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
@@ -168,19 +171,11 @@ function* archiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
   try {
     const id = lease.id;
     const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
-
     switch (statusCode) {
       case 200:
-        const {response: {status}, bodyAsJson: bodyAsJsonLease} = yield call(fetchSingleLease, id);
-
-        switch (status) {
-          case 200:
-            yield put(receiveSingleLease(bodyAsJsonLease));
-            yield put(hideArchiveAreaModal());
-            yield put(notFound());
-            displayUIMessage({title: '', body: 'Kohde arkistoitu'});
-            break;
-        }
+        yield put(fetchSingleLeaseWithoutLoader(id));
+        yield put(hideArchiveAreaModal());
+        displayUIMessage({title: '', body: 'Kohde arkistoitu'});
         break;
       case 400:
         yield put(notFound());
@@ -205,16 +200,9 @@ function* unarchiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        const {response: {status}, bodyAsJson: bodyAsJsonLease} = yield call(fetchSingleLease, id);
-
-        switch (status) {
-          case 200:
-            yield put(receiveSingleLease(bodyAsJsonLease));
-            yield put(hideUnarchiveAreaModal());
-            yield put(notFound());
-            displayUIMessage({title: '', body: 'Kohde poistettu arkistosta'});
-            break;
-        }
+        yield put(fetchSingleLeaseWithoutLoader(id));
+        yield put(hideUnarchiveAreaModal());
+        displayUIMessage({title: '', body: 'Kohde poistettu arkistosta'});
         break;
       case 400:
         yield put(notFound());
@@ -242,7 +230,8 @@ function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        yield put(receiveSingleLease(bodyAsJson));
+        const currentLease = yield select(getCurrentLease);
+        yield put(receiveSingleLease({...currentLease, is_invoicing_enabled: true}));
         displayUIMessage({title: '', body: 'Laskutus käynnistetty'});
         break;
       case 400:
@@ -268,7 +257,8 @@ function* stopInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        yield put(receiveSingleLease(bodyAsJson));
+        const currentLease = yield select(getCurrentLease);
+        yield put(receiveSingleLease({...currentLease, is_invoicing_enabled: false}));
         displayUIMessage({title: '', body: 'Laskutus keskeytetty'});
         break;
       case 400:
@@ -293,17 +283,8 @@ function* createReleatedLeaseSaga({payload}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
-        const {response: {status}, bodyAsJson} = yield call(fetchSingleLease, payload.from_lease);
-
-        switch (status) {
-          case 200:
-            yield put(receiveSingleLease(bodyAsJson));
-            displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos luotu'});
-            break;
-          default:
-            yield put(receiveError(new SubmissionError({...bodyAsJson})));
-            break;
-        }
+        yield put(fetchSingleLeaseWithoutLoader(payload.from_lease));
+        displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos luotu'});
         break;
       default:
         yield put(receiveError(new SubmissionError({...bodyDelete})));
@@ -311,6 +292,25 @@ function* createReleatedLeaseSaga({payload}): Generator<any, any, any> {
     }
   } catch (error) {
     console.error('Failed to create related lease with error "%s"', error);
+    yield put(receiveError(error));
+  }
+}
+
+function* deleteReleatedLeaseSaga({payload}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(deleteReleatedLease, payload.id);
+
+    switch (statusCode) {
+      case 204:
+        yield put(fetchSingleLeaseWithoutLoader(payload.leaseId));
+        displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos poistettu'});
+        break;
+      default:
+        yield put(receiveError(new SubmissionError({...bodyDelete})));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to delete related lease with error "%s"', error);
     yield put(receiveError(error));
   }
 }
@@ -337,23 +337,14 @@ function* createChargeSaga({payload}): Generator<any, any, any> {
   }
 }
 
-function* deleteReleatedLeaseSaga({payload}): Generator<any, any, any> {
+function* copyAreasToContractSaga({payload: leaseId}): Generator<any, any, any> {
   try {
-    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(deleteReleatedLease, payload.id);
+    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(copyAreasToContract, leaseId);
 
     switch (statusCode) {
-      case 204:
-        const {response: {status}, bodyAsJson} = yield call(fetchSingleLease, payload.leaseId);
-
-        switch (status) {
-          case 200:
-            yield put(receiveSingleLease(bodyAsJson));
-            displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos poistettu'});
-            break;
-          default:
-            yield put(receiveError(new SubmissionError({...bodyAsJson})));
-            break;
-        }
+      case 200:
+        yield put(fetchSingleLeaseWithoutLoader(leaseId));
+        displayUIMessage({title: '', body: 'Kopioitu sopimukseen'});
         break;
       default:
         yield put(receiveError(new SubmissionError({...bodyDelete})));
@@ -371,6 +362,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/leases/FETCH_ALL', fetchLeasesSaga);
       yield takeLatest('mvj/leases/FETCH_SINGLE', fetchSingleLeaseSaga);
+      yield takeLatest('mvj/leases/FETCH_SINGLE_WITHOUT_LOADER', fetchSingleLeaseSaga);
       yield takeEvery('mvj/leases/FETCH_BY_ID', fetchLeaseByIdSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
@@ -381,6 +373,7 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/CREATE_CHARGE', createChargeSaga);
       yield takeLatest('mvj/leases/CREATE_RELATED_LEASE', createReleatedLeaseSaga);
       yield takeLatest('mvj/leases/DELETE_RELATED_LEASE', deleteReleatedLeaseSaga);
+      yield takeLatest('mvj/leases/COPY_AREAS_TO_CONTRACT', copyAreasToContractSaga);
     }),
   ]);
 }

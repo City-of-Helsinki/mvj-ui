@@ -38,12 +38,13 @@ const renderDecisions = ({
             {fields && !!fields.length && fields.map((decision, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.DECISION,
-                  deleteModalTitle: DeleteModalTitles.DECISION,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.DECISION,
+                  confirmationModalTitle: DeleteModalTitles.DECISION,
                 });
               };
 

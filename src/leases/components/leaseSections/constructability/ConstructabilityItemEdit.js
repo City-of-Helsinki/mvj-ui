@@ -102,12 +102,13 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
                 {fields.map((comment, index) => {
                   const handleRemove = () => {
                     dispatch({
-                      type: ActionTypes.SHOW_DELETE_MODAL,
-                      deleteFunction: () => {
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
                         fields.remove(index);
                       },
-                      deleteModalLabel: DeleteModalLabels.CONSTRUCTABILITY,
-                      deleteModalTitle: DeleteModalTitles.CONSTRUCTABILITY,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.CONSTRUCTABILITY,
+                      confirmationModalTitle: DeleteModalTitles.CONSTRUCTABILITY,
                     });
                   };
 

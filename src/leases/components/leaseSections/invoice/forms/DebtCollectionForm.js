@@ -268,12 +268,13 @@ class DebtCollectionForm extends Component<Props, State> {
                   {sortedCollectionLetters && !!sortedCollectionLetters.length && sortedCollectionLetters.map((collectionLetter, index) => {
                     const handleRemove = () => {
                       dispatch({
-                        type: ActionTypes.SHOW_DELETE_MODAL,
-                        deleteFunction: () => {
+                        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                        confirmationFunction: () => {
                           this.handleDeleteCollectionLetter(collectionLetter.id);
                         },
-                        deleteModalLabel: DeleteModalLabels.COLLECTION_LETTER,
-                        deleteModalTitle: DeleteModalTitles.COLLECTION_LETTER,
+                        confirmationModalButtonText: 'Poista',
+                        confirmationModalLabel: DeleteModalLabels.COLLECTION_LETTER,
+                        confirmationModalTitle: DeleteModalTitles.COLLECTION_LETTER,
                       });
                     };
 
@@ -320,12 +321,13 @@ class DebtCollectionForm extends Component<Props, State> {
                   {sortedCollectionCourtDecisions && !!sortedCollectionCourtDecisions.length && sortedCollectionCourtDecisions.map((collectionCourtDecision, index) => {
                     const handleRemove = () => {
                       dispatch({
-                        type: ActionTypes.SHOW_DELETE_MODAL,
-                        deleteFunction: () => {
+                        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                        confirmationFunction: () => {
                           this.handleDeleteCollectionCourtDecision(collectionCourtDecision.id);
                         },
-                        deleteModalLabel: DeleteModalLabels.COLLECTION_COURT_DECISION,
-                        deleteModalTitle: DeleteModalTitles.COLLECTION_COURT_DECISION,
+                        confirmationModalButtonText: 'Poista',
+                        confirmationModalLabel: DeleteModalLabels.COLLECTION_COURT_DECISION,
+                        confirmationModalTitle: DeleteModalTitles.COLLECTION_COURT_DECISION,
                       });
                     };
 
@@ -391,12 +393,13 @@ class DebtCollectionForm extends Component<Props, State> {
                   {sortedCollectionNotes && !!sortedCollectionNotes.length && sortedCollectionNotes.map((note) => {
                     const handleRemove = () => {
                       dispatch({
-                        type: ActionTypes.SHOW_DELETE_MODAL,
-                        deleteFunction: () => {
+                        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                        confirmationFunction: () => {
                           this.handleDeleteCollectionNote(note.id);
                         },
-                        deleteModalLabel: DeleteModalLabels.COLLECTION_NOTE,
-                        deleteModalTitle: DeleteModalTitles.COLLECTION_NOTE,
+                        confirmationModalButtonText: 'Poista',
+                        confirmationModalLabel: DeleteModalLabels.COLLECTION_NOTE,
+                        confirmationModalTitle: DeleteModalTitles.COLLECTION_NOTE,
                       });
                     };
 

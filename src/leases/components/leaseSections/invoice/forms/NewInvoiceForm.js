@@ -62,12 +62,13 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                 {fields.map((row, index) => {
                   const handleRemove = () => {
                     dispatch({
-                      type: ActionTypes.SHOW_DELETE_MODAL,
-                      deleteFunction: () => {
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
                         fields.remove(index);
                       },
-                      deleteModalLabel: DeleteModalLabels.INVOICE_ROW,
-                      deleteModalTitle: DeleteModalTitles.INVOICE_ROW,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.INVOICE_ROW,
+                      confirmationModalTitle: DeleteModalTitles.INVOICE_ROW,
                     });
                   };
 

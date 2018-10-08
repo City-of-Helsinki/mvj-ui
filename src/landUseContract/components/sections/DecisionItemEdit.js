@@ -64,12 +64,13 @@ const renderDecisionConditions = ({
               {fields && !!fields.length && fields.map((condition, index) => {
                 const handleRemove = () => {
                   dispatch({
-                    type: ActionTypes.SHOW_DELETE_MODAL,
-                    deleteFunction: () => {
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
                       fields.remove(index);
                     },
-                    deleteModalLabel: DeleteModalLabels.CONDITION,
-                    deleteModalTitle: DeleteModalTitles.CONDITION,
+                    confirmationModalButtonText: 'Poista',
+                    confirmationModalLabel: DeleteModalLabels.CONDITION,
+                    confirmationModalTitle: DeleteModalTitles.CONDITION,
                   });
                 };
 

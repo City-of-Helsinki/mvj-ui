@@ -44,12 +44,13 @@ const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked}: Property
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.IDENTIFIER,
-                  deleteModalTitle: DeleteModalTitles.IDENTIFIER,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.IDENTIFIER,
+                  confirmationModalTitle: DeleteModalTitles.IDENTIFIER,
                 });
               };
 
@@ -141,12 +142,13 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.DECISION,
-                  deleteModalTitle: DeleteModalTitles.DECISION,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.DECISION,
+                  confirmationModalTitle: DeleteModalTitles.DECISION,
                 });
               };
 
@@ -257,12 +259,13 @@ const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): E
                 {fields.map((field, index) => {
                   const handleRemove = () => {
                     dispatch({
-                      type: ActionTypes.SHOW_DELETE_MODAL,
-                      deleteFunction: () => {
+                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                      confirmationFunction: () => {
                         fields.remove(index);
                       },
-                      deleteModalLabel: DeleteModalLabels.RENT_RATE,
-                      deleteModalTitle: DeleteModalTitles.RENT_RATE,
+                      confirmationModalButtonText: 'Poista',
+                      confirmationModalLabel: DeleteModalLabels.RENT_RATE,
+                      confirmationModalTitle: DeleteModalTitles.RENT_RATE,
                     });
                   };
 

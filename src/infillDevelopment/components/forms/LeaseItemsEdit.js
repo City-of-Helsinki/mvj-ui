@@ -29,12 +29,13 @@ const LeaseItemsEdit = ({fields, infillDevelopment, isSaveClicked}: Props): Elem
             {!!fields && !!fields.length && fields.map((lease, index) => {
               const handleRemove = () => {
                 dispatch({
-                  type: ActionTypes.SHOW_DELETE_MODAL,
-                  deleteFunction: () => {
+                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                  confirmationFunction: () => {
                     fields.remove(index);
                   },
-                  deleteModalLabel: DeleteModalLabels.LEASE,
-                  deleteModalTitle: DeleteModalTitles.LEASE,
+                  confirmationModalButtonText: 'Poista',
+                  confirmationModalLabel: DeleteModalLabels.LEASE,
+                  confirmationModalTitle: DeleteModalTitles.LEASE,
                 });
               };
 

@@ -6,8 +6,9 @@ import {Link} from 'react-router';
 import classnames from 'classnames';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
-import {getRouteById} from '$src/root/routes';
+import {CancelChangesModalTexts} from '$src/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
+import {getRouteById} from '$src/root/routes';
 
 type Props = {
   isOpen: boolean,
@@ -97,12 +98,15 @@ class SideMenu extends Component<Props, State> {
               e.preventDefault();
 
               dispatch({
-                type: ActionTypes.SHOW_CANCEL_CHANGES_MODAL,
-                cancelChangesFunction: () => {
+                type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                confirmationFunction: () => {
                   const {router} = this.context;
                   router.push(target.href);
                   onLinkClick();
                 },
+                confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
+                confirmationModalLabel: CancelChangesModalTexts.LABEL,
+                confirmationModalTitle: CancelChangesModalTexts.TITLE,
               });
             } else {
               onLinkClick();

@@ -26,6 +26,7 @@ export type ReceiveAttributesAction = Action<'mvj/leases/RECEIVE_ATTRIBUTES', At
 export type FetchLeasesAction = Action<'mvj/leases/FETCH_ALL', string>;
 export type ReceiveLeasesAction = Action<'mvj/leases/RECEIVE_ALL', LeaseList>;
 export type FetchSingleLeaseAction = Action<'mvj/leases/FETCH_SINGLE', LeaseId>;
+export type FetchSingleLeaseWithoutLoaderAction = Action<'mvj/leases/FETCH_SINGLE_WITHOUT_LOADER', LeaseId>;
 export type ReceiveSingleLeaseAction = Action<'mvj/leases/RECEIVE_SINGLE', Lease>;
 export type FetchLeaseByIdAction = Action<'mvj/leases/FETCH_BY_ID', LeaseId>;
 export type ReceiveLeaseByIdAction = Action<'mvj/leases/RECEIVE_BY_ID', Lease>;
@@ -45,6 +46,8 @@ export type ReceiveIsSaveClickedAction = Action<'mvj/leases/RECEIVE_SAVE_CLICKED
 
 export type CreateRelatedLeaseAction = Action<'mvj/leases/CREATE_RELATED_LEASE', CreateRelatedLeasePayload>;
 export type DeleteRelatedLeaseAction = Action<'mvj/leases/DELETE_RELATED_LEASE', DeleteRelatedLeasePayload>;
+
+export type CopyAreasToContractAction = Action<'mvj/leases/COPY_AREAS_TO_CONTRACT', LeaseId>;
 
 export type CreateChargeAction = Action<'mvj/leases/CREATE_CHARGE', CreateChargePayload>;
 

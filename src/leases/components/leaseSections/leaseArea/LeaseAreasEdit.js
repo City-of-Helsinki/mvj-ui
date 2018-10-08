@@ -10,6 +10,7 @@ import isEqual from 'lodash/isEqual';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import ArchiveAreaModal from './ArchiveAreaModal';
+import Button from '$components/button/Button';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
@@ -19,6 +20,7 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {
   archiveLeaseArea,
+  copyAreasToContract,
   hideArchiveAreaModal,
   hideUnarchiveAreaModal,
   receiveFormValidFlags,
@@ -77,12 +79,13 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
               {fields && !!fields.length && fields.map((area, index) => {
                 const handleRemove = () => {
                   dispatch({
-                    type: ActionTypes.SHOW_DELETE_MODAL,
-                    deleteFunction: () => {
+                    type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                    confirmationFunction: () => {
                       fields.remove(index);
                     },
-                    deleteModalLabel: DeleteModalLabels.LEASE_AREA,
-                    deleteModalTitle: DeleteModalTitles.LEASE_AREA,
+                    confirmationModalButtonText: 'Poista',
+                    confirmationModalLabel: DeleteModalLabels.LEASE_AREA,
+                    confirmationModalTitle: DeleteModalTitles.LEASE_AREA,
                   });
                 };
 
@@ -119,6 +122,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
 type Props = {
   archiveLeaseArea: Function,
   change: Function,
+  copyAreasToContract: Function,
   currentLease: Lease,
   decisions: Array<Object>,
   editedActiveAreas: Array<Object>,
@@ -364,63 +368,92 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
 
 
     return (
-      <form>
-        {isArchiveFetching &&
-          <LoaderWrapper className='overlay-wrapper'>
-            <Loader isLoading={isArchiveFetching} />
-          </LoaderWrapper>
-        }
+      <AppConsumer>
+        {({dispatch}) => {
+          const handleCopyAreasToContract = () => {
+            const {copyAreasToContract, currentLease} = this.props;
 
-        <ArchiveAreaModal
-          decisionOptions={decisionOptions}
-          isOpen={isArchiveAreaModalOpen}
-          onArchive={this.handleArchive}
-          onCancel={this.handleHideArchiveAreaModal}
-          onClose={this.handleHideArchiveAreaModal}
-        />
+            dispatch({
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
+                copyAreasToContract(currentLease.id);
+              },
+              confirmationModalButtonText: 'Kopio sopimukseen',
+              confirmationModalLabel: 'Haluatko varmasti kopioda nykyhetken kiinteistöt, määräalat ja kaavayksiköt sopimukseen?',
+              confirmationModalTitle: 'Kopio sopimukseen',
+            });
+          };
 
-        <ConfirmationModal
-          confirmButtonLabel='Poista arkistosta'
-          isOpen={isUnarchiveAreaModalOpen}
-          label='Haluatko varmasti poistaa kohteen arkistosta?'
-          onCancel={this.handleHideUnarchiveAreaModal}
-          onClose={this.handleHideUnarchiveAreaModal}
-          onSave={this.handleUnarchive}
-          title='Poista kohde arkistosta'
-        />
+          return(
+            <form>
+              {isArchiveFetching &&
+                <LoaderWrapper className='overlay-wrapper'>
+                  <Loader isLoading={isArchiveFetching} />
+                </LoaderWrapper>
+              }
 
-        <h2>Vuokra-alue</h2>
-        <RightSubtitle text={<span>{formatNumber(areasSum) || '-'} m<sup>2</sup></span>}/>
-        <Divider />
+              <ArchiveAreaModal
+                decisionOptions={decisionOptions}
+                isOpen={isArchiveAreaModalOpen}
+                onArchive={this.handleArchive}
+                onCancel={this.handleHideArchiveAreaModal}
+                onClose={this.handleHideArchiveAreaModal}
+              />
 
-        <FormSection>
-          <FieldArray
-            archiveLeaseArea={archiveLeaseArea}
-            areasData={activeAreas}
-            component={renderLeaseAreas}
-            decisionOptions={decisionOptions}
-            ref={this.setActiveLeasesRef}
-            isActive={true}
-            name="lease_areas_active"
-            onArchive={this.handleShowArchiveAreaModal}
-            withRef={true}
-          />
+              <ConfirmationModal
+                confirmButtonLabel='Poista arkistosta'
+                isOpen={isUnarchiveAreaModalOpen}
+                label='Haluatko varmasti poistaa kohteen arkistosta?'
+                onCancel={this.handleHideUnarchiveAreaModal}
+                onClose={this.handleHideUnarchiveAreaModal}
+                onSave={this.handleUnarchive}
+                title='Poista kohde arkistosta'
+              />
 
-          {/* Archived lease areas */}
-          <FieldArray
-            areasData={archivedAreas}
-            component={renderLeaseAreas}
-            decisionOptions={decisionOptions}
-            ref={this.setArchivedLeasesRef}
-            isActive={false}
-            name="lease_areas_archived"
-            onArchive={this.handleShowArchiveAreaModal}
-            onUnarchive={this.handleShowUnarchiveAreaModal}
-            onUnarchiveCallback={this.handleUnarchiveCallback}
-            withRef={true}
-          />
-        </FormSection>
-      </form>
+              <h2>Vuokra-alue</h2>
+              <RightSubtitle
+                buttonComponent={
+                  <Button
+                    className='button-green'
+                    onClick={handleCopyAreasToContract}
+                    text='Kopioi sopimukseen'
+                  />
+                }
+                text={<span>{formatNumber(areasSum) || '-'} m<sup>2</sup></span>}
+              />
+              <Divider />
+
+              <FormSection>
+                <FieldArray
+                  archiveLeaseArea={archiveLeaseArea}
+                  areasData={activeAreas}
+                  component={renderLeaseAreas}
+                  decisionOptions={decisionOptions}
+                  ref={this.setActiveLeasesRef}
+                  isActive={true}
+                  name="lease_areas_active"
+                  onArchive={this.handleShowArchiveAreaModal}
+                  withRef={true}
+                />
+
+                {/* Archived lease areas */}
+                <FieldArray
+                  areasData={archivedAreas}
+                  component={renderLeaseAreas}
+                  decisionOptions={decisionOptions}
+                  ref={this.setArchivedLeasesRef}
+                  isActive={false}
+                  name="lease_areas_archived"
+                  onArchive={this.handleShowArchiveAreaModal}
+                  onUnarchive={this.handleShowUnarchiveAreaModal}
+                  onUnarchiveCallback={this.handleUnarchiveCallback}
+                  withRef={true}
+                />
+              </FormSection>
+            </form>
+          );
+        }}
+      </AppConsumer>
     );
   }
 }
@@ -448,6 +481,7 @@ export default flowRight(
     },
     {
       archiveLeaseArea,
+      copyAreasToContract,
       hideArchiveAreaModal,
       hideUnarchiveAreaModal,
       initialize,
