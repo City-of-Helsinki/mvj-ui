@@ -39,10 +39,12 @@ type State = {
   center: ?Array<Object>,
   currentLease: Lease,
   planUnitsGeoJson: PlanUnitsGeoJson,
+  planUnitsContractGeoJson: PlanUnitsGeoJson,
   planUnitIntendedUseOptions: Array<Object>,
   planUnitStateOptions: Array<Object>,
   planUnitTypeOptions: Array<Object>,
   plotsGeoJson: PlotsGeoJson,
+  plotsContractGeoJson: PlotsGeoJson,
   plotDivisionStateOptions: Array<Object>,
   plotTypeOptions: Array<Object>,
 }
@@ -63,10 +65,18 @@ class SingleLeaseMap extends Component<Props, State> {
       features: [],
       type: 'FeatureCollection',
     },
+    planUnitsContractGeoJson: {
+      features: [],
+      type: 'FeatureCollection',
+    },
     planUnitIntendedUseOptions: [],
     planUnitStateOptions: [],
     planUnitTypeOptions: [],
     plotsGeoJson: {
+      features: [],
+      type: 'FeatureCollection',
+    },
+    plotsContractGeoJson: {
       features: [],
       type: 'FeatureCollection',
     },
@@ -84,8 +94,10 @@ class SingleLeaseMap extends Component<Props, State> {
       newState.center = coordinates.length ? getCoordinatesCenter(coordinates) : undefined;
       newState.currentLease = props.currentLease;
       newState.areasGeoJson = getContentAreasGeoJson(props.currentLease);
-      newState.planUnitsGeoJson = getContentPlanUnitsGeoJson(props.currentLease);
-      newState.plotsGeoJson = getContentPlotsGeoJson(props.currentLease);
+      newState.planUnitsGeoJson = getContentPlanUnitsGeoJson(props.currentLease, false);
+      newState.planUnitsContractGeoJson = getContentPlanUnitsGeoJson(props.currentLease, true);
+      newState.plotsGeoJson = getContentPlotsGeoJson(props.currentLease, false);
+      newState.plotsContractGeoJson = getContentPlotsGeoJson(props.currentLease, true);
     }
     if(props.attributes !== state.attributes) {
       newState.attributes = props.attributes;
@@ -117,11 +129,13 @@ class SingleLeaseMap extends Component<Props, State> {
       bounds,
       center,
       planUnitsGeoJson,
+      planUnitsContractGeoJson,
       planUnitIntendedUseOptions,
       planUnitStateOptions,
       planUnitTypeOptions,
       plotDivisionStateOptions,
       plotsGeoJson,
+      plotsContractGeoJson,
       plotTypeOptions,
     } = this.state;
 
@@ -149,21 +163,45 @@ class SingleLeaseMap extends Component<Props, State> {
               name: 'Kaavayksiköt',
             },
             {
+              checked: false,
+              component: <PlanUnitsLayer
+                key='plan_units'
+                color={mapColors[1 % mapColors.length]}
+                defaultPlanUnit={query.plan_unit ? Number(query.plan_unit) : undefined}
+                planUnitsGeoJson={planUnitsContractGeoJson}
+                planUnitIntendedUseOptions={planUnitIntendedUseOptions}
+                planUnitStateOptions={planUnitStateOptions}
+                planUnitTypeOptions={planUnitTypeOptions}
+                plotDivisionStateOptions={plotDivisionStateOptions}
+              />,
+              name: 'Kaavayksiköt sopimuksessa',
+            },
+            {
               checked: true,
               component: <PlotsLayer
                 key='plots'
-                color={mapColors[1 % mapColors.length]}
+                color={mapColors[2 % mapColors.length]}
                 defaultPlot={query.plot ? Number(query.plot) : undefined}
                 plotsGeoJson={plotsGeoJson}
                 typeOptions={plotTypeOptions}/>,
               name: 'Kiinteistöt/määräalat',
             },
             {
+              checked: false,
+              component: <PlotsLayer
+                key='plots'
+                color={mapColors[3 % mapColors.length]}
+                defaultPlot={query.plot ? Number(query.plot) : undefined}
+                plotsGeoJson={plotsContractGeoJson}
+                typeOptions={plotTypeOptions}/>,
+              name: 'Kiinteistöt/määräalat sopimuksessa',
+            },
+            {
               checked: true,
               component: <AreasLayer
                 key='areas'
                 areasGeoJson={areasGeoJson}
-                color={mapColors[2 % mapColors.length]}
+                color={mapColors[4 % mapColors.length]}
                 defaultArea={query.lease_area ? Number(query.lease_area) : undefined}
                 locationOptions={areaLocationOptions}
                 typeOptions={areaTypeOptions}
