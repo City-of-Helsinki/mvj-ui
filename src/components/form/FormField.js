@@ -15,7 +15,6 @@ import FieldTypeLeaseSelect from './FieldTypeLeaseSelect';
 import FieldTypeLessorSelect from './FieldTypeLessorSelect';
 import FieldTypeMultiSelect from './FieldTypeMultiSelect';
 import FieldTypeSelect from './FieldTypeSelect';
-import FieldTypeSwitch from './FieldTypeSwitch';
 import FieldTypeTextArea from './FieldTypeTextArea';
 import FieldTypeUserSelect from './FieldTypeUserSelect';
 import FormFieldLabel from './FormFieldLabel';
@@ -38,7 +37,6 @@ const FieldTypes = {
   'lessor': FieldTypeLessorSelect,
   'multiselect': FieldTypeMultiSelect,
   'string': FieldTypeBasic,
-  'switch': FieldTypeSwitch,
   'textarea': FieldTypeTextArea,
   'user': FieldTypeUserSelect,
 };

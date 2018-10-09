@@ -177,19 +177,37 @@
     font-weight: $semibold;
     margin-bottom: 0;
 
-    &.invoicing-status {
-      .alert {
-        display: inline-block;
-        color: $brick !important;
-        text-align: right;
-        font-weight: $semibold;
-      }
+    .alert {
+      display: inline-block;
+      color: $brick !important;
+      text-align: right;
+      font-weight: $semibold;
+      line-height: rem-calc(33px);
 
-      .success {
+      i {
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        vertical-align: text-bottom;
+        background-image: url(../assets/icons/icon-alert.svg);
         display: inline-block;
-        color: $tram !important;
-        text-align: right;
-        font-weight: $semibold;
+        margin-left: 0.4rem;
+      }
+    }
+
+    .success {
+      display: inline-block;
+      color: $tram !important;
+      text-align: right;
+      font-weight: $semibold;
+      line-height: rem-calc(33px);
+
+      i {
+        height: rem-calc(20px);
+        width: rem-calc(20px);
+        vertical-align: text-bottom;
+        background-image: url(../assets/icons/icon_checked.svg);
+        display: inline-block;
+        margin-left: 0.4rem;
       }
     }
 

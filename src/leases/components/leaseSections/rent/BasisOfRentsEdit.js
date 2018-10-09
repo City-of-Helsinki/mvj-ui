@@ -222,6 +222,7 @@ class BasisOfRentsEdit extends Component<Props> {
               <Row>
                 <Column>
                   <AddButtonSecondary
+                    className={(!fields || !fields.length) ? 'no-top-margin' : ''}
                     label='Lisää vuokranperuste'
                     onClick={this.handleAdd}
                   />

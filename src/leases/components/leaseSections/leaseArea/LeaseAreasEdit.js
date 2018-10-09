@@ -15,8 +15,6 @@ import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
 import LeaseAreaWithArchiveInfoEdit from './LeaseAreaWithArchiveInfoEdit';
-import Loader from '$components/loader/Loader';
-import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {
   archiveLeaseArea,
@@ -33,7 +31,7 @@ import {getDecisionOptions} from '$src/decision/helpers';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
 import {formatNumber} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
-import {getCurrentLease, getIsArchiveAreaModalOpen, getIsArchiveFetching, getIsUnarchiveAreaModalOpen} from '$src/leases/selectors';
+import {getCurrentLease, getIsArchiveAreaModalOpen, getIsUnarchiveAreaModalOpen} from '$src/leases/selectors';
 
 import type {Lease} from '$src/leases/types';
 
@@ -131,7 +129,6 @@ type Props = {
   hideUnarchiveAreaModal: Function,
   initialize: Function,
   isArchiveAreaModalOpen: boolean,
-  isArchiveFetching: boolean,
   isUnarchiveAreaModalOpen: boolean,
   receiveFormValidFlags: Function,
   showArchiveAreaModal: Function,
@@ -362,7 +359,6 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
     const {
       archiveLeaseArea,
       isArchiveAreaModalOpen,
-      isArchiveFetching,
       isUnarchiveAreaModalOpen,
     } = this.props;
 
@@ -386,12 +382,6 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
 
           return(
             <form>
-              {isArchiveFetching &&
-                <LoaderWrapper className='overlay-wrapper'>
-                  <Loader isLoading={isArchiveFetching} />
-                </LoaderWrapper>
-              }
-
               <ArchiveAreaModal
                 decisionOptions={decisionOptions}
                 isOpen={isArchiveAreaModalOpen}
@@ -475,7 +465,6 @@ export default flowRight(
         editedActiveAreas: selector(state, 'lease_areas_active'),
         editedArchivedAreas: selector(state, 'lease_areas_archived'),
         isArchiveAreaModalOpen: getIsArchiveAreaModalOpen(state),
-        isArchiveFetching: getIsArchiveFetching(state),
         isUnarchiveAreaModalOpen: getIsUnarchiveAreaModalOpen(state),
       };
     },

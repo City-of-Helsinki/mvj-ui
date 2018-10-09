@@ -37,7 +37,6 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/CREATE': () => true,
-  'mvj/leases/PATCH': () => true,
   'mvj/leases/FETCH_ALL': () => true,
   'mvj/leases/FETCH_SINGLE': () => true,
   'mvj/leases/NOT_FOUND': () => false,
@@ -45,11 +44,16 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/RECEIVE_SINGLE': () => false,
 }, false);
 
-const isArchiveFetchingReducer: Reducer<boolean> = handleActions({
+const isSavingReducer: Reducer<boolean> = handleActions({
+  'mvj/leases/PATCH': () => true,
   'mvj/leases/ARCHIVE_AREA': () => true,
   'mvj/leases/UNARCHIVE_AREA': () => true,
-  'mvj/leases/RECEIVE_SINGLE': () => false,
+  'mvj/leases/START_INVOICING': () => true,
+  'mvj/leases/STOP_INVOICING': () => true,
+  'mvj/leases/SET_RENT_INFO_COMPLETE': () => true,
+  'mvj/leases/SET_RENT_INFO_UNCOMPLETE': () => true,
   'mvj/leases/COPY_AREAS_TO_CONTRACT': () => true,
+  'mvj/leases/RECEIVE_SINGLE': () => false,
   'mvj/leases/NOT_FOUND': () => false,
 }, false);
 
@@ -156,7 +160,7 @@ export default combineReducers({
   collapseStates: collapseStatesReducer,
   current: currentLeaseReducer,
   isArchiveAreaModalOpen: isArchiveAreaModalOpenReducer,
-  isArchiveFetching: isArchiveFetchingReducer,
+  isSaving: isSavingReducer,
   isFormValidById: isFormValidByIdReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,

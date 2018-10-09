@@ -22,6 +22,7 @@ import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
 import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Rents from './leaseSections/rent/Rents';
 import RentsEdit from './leaseSections/rent/RentsEdit';
@@ -69,6 +70,7 @@ import {
   getIsFormValidById,
   getIsFormValidFlags,
   getIsSaveClicked,
+  getIsSaving,
 } from '$src/leases/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
@@ -123,6 +125,7 @@ type Props = {
   isLeaseInfoFormValid: boolean,
   isRentsFormDirty: boolean,
   isRentsFormValid: boolean,
+  isSaving: boolean,
   isSummaryFormDirty: boolean,
   isSummaryFormValid: boolean,
   isTenantsFormDirty: boolean,
@@ -719,6 +722,7 @@ class LeasePage extends Component<Props, State> {
       isTenantsFormDirty,
       isTenantsFormValid,
       isSaveClicked,
+      isSaving,
     } = this.props;
 
     const areFormsValid = this.validateForms();
@@ -737,6 +741,11 @@ class LeasePage extends Component<Props, State> {
 
     return (
       <PageContainer>
+        {isSaving &&
+          <LoaderWrapper className='overlay-wrapper'>
+            <Loader isLoading={isSaving} />
+          </LoaderWrapper>
+        }
         <ConfirmationModal
           confirmButtonLabel='Palauta muutokset'
           isOpen={isRestoreModalOpen}
@@ -894,6 +903,7 @@ export default flowRight(
         isLeaseInfoFormValid: getIsFormValidById(state, FormNames.LEASE_INFO),
         isRentsFormDirty: isDirty(FormNames.RENTS)(state),
         isRentsFormValid: getIsFormValidById(state, FormNames.RENTS),
+        isSaving: getIsSaving(state),
         isSummaryFormDirty: isDirty(FormNames.SUMMARY)(state),
         isSummaryFormValid: getIsFormValidById(state, FormNames.SUMMARY),
         isTenantsFormDirty: isDirty(FormNames.TENANTS)(state),

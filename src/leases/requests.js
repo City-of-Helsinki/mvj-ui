@@ -66,3 +66,39 @@ export const createCharge = (payload: CreateChargePayload): Generator<any, any, 
     body,
   }));
 };
+
+export const startInvoicing = (leaseId: LeaseId): Generator<any, any, any> => {
+  const body = JSON.stringify({invoicing_enabled: true});
+
+  return callApi(new Request(createUrl(`lease/${leaseId}/set_invoicing_state/`), {
+    method: 'POST',
+    body,
+  }));
+};
+
+export const stopInvoicing = (leaseId: LeaseId): Generator<any, any, any> => {
+  const body = JSON.stringify({invoicing_enabled: false});
+
+  return callApi(new Request(createUrl(`lease/${leaseId}/set_invoicing_state/`), {
+    method: 'POST',
+    body,
+  }));
+};
+
+export const setRentInfoComplete = (leaseId: LeaseId): Generator<any, any, any> => {
+  const body = JSON.stringify({rent_info_complete: true});
+
+  return callApi(new Request(createUrl(`lease/${leaseId}/set_rent_info_completion_state/`), {
+    method: 'POST',
+    body,
+  }));
+};
+
+export const setRentInfoUncomplete = (leaseId: LeaseId): Generator<any, any, any> => {
+  const body = JSON.stringify({rent_info_complete: false});
+
+  return callApi(new Request(createUrl(`lease/${leaseId}/set_rent_info_completion_state/`), {
+    method: 'POST',
+    body,
+  }));
+};
