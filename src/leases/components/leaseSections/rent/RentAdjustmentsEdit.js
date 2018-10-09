@@ -169,6 +169,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Pro
             <Row>
               <Column>
                 <AddButtonSecondary
+                  className={(!fields || !fields.length) ? 'no-top-margin' : ''}
                   label='Lisää alennus/korotus'
                   onClick={handleAdd}
                 />

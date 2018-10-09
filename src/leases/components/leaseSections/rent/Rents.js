@@ -27,7 +27,7 @@ const Rents = ({currentLease}: Props) => {
   const rentsArchived = get(rentsData, 'rentsArchived', []);
 
   return (
-    <div className="rent-section">
+    <div>
       <h2>Vuokrat</h2>
       <RightSubtitle
         text={currentLease.is_rent_info_complete

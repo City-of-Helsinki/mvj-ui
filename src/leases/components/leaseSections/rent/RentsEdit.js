@@ -11,13 +11,13 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import BasisOfRentsEdit from './BasisOfRentsEdit';
+import Button from '$components/button/Button';
 import Divider from '$components/content/Divider';
-import FormField from '$components/form/FormField';
 import FormSectionComponent from '$components/form/FormSection';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
-import {receiveFormValidFlags} from '$src/leases/actions';
+import {receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete} from '$src/leases/actions';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getContentRentsFormData} from '$src/leases/helpers';
 import {getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
@@ -87,9 +87,12 @@ const renderRents = ({
 
 type Props = {
   currentLease: Lease,
+  isRentInfoComplete: boolean,
   isSaveClicked: boolean,
   params: Object,
   receiveFormValidFlags: Function,
+  setRentInfoComplete: Function,
+  setRentInfoUncomplete: Function,
   valid: boolean,
 }
 
@@ -124,56 +127,107 @@ class RentsEdit extends Component<Props, State> {
     }
   }
 
+  setRentInfoComplete = () => {
+    const {currentLease, setRentInfoComplete} = this.props;
+
+    setRentInfoComplete(currentLease.id);
+  }
+
+  setRentInfoUncomplete = () => {
+    const {currentLease, setRentInfoUncomplete} = this.props;
+
+    setRentInfoUncomplete(currentLease.id);
+  }
+
   render() {
-    const {isSaveClicked} = this.props;
+    const {isRentInfoComplete, isSaveClicked} = this.props;
     const {rentsData} = this.state;
     const rents = get(rentsData, 'rents', []),
       rentsArchived = get(rentsData, 'rentsArchived', []);
 
     return (
-      <form>
-        <FormSectionComponent>
-          <h2>Vuokra</h2>
-          <RightSubtitle
-            text={
-              <FormField
-                fieldAttributes={{}}
-                name='is_rent_info_complete'
-                optionLabel='Vuokratiedot kunnossa'
-                overrideValues={{
-                  fieldType: 'switch',
-                }}
-              />
-            }
-          />
-          <Divider />
-          <FieldArray
-            component={renderRents}
-            name='rents.rents'
-            rents={rents}
-            showAddButton={true}
-          />
+      <AppConsumer>
+        {({
+          dispatch,
+        }) => {
+          const handleSetRentInfoComplete = () => {
+            dispatch({
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
+                this.setRentInfoComplete();
+              },
+              confirmationModalButtonText: 'Merkkaa valmiiksi',
+              confirmationModalLabel: 'Haluatko varmasti merkata vuokratiedot valmiiksi?',
+              confirmationModalTitle: 'Merkkaa vuokratiedot valmiiksi',
+            });
+          };
 
-          {/* Archived rents */}
-          <FieldArray
-            component={renderRents}
-            name='rents.rentsArchived'
-            rents={rentsArchived}
-            showAddButton={false}
-          />
+          const handleSetRentInfoUncomplete = () => {
+            dispatch({
+              type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+              confirmationFunction: () => {
+                this.setRentInfoUncomplete();
+              },
+              confirmationModalButtonText: 'Merkkaa keskeneräisiksi',
+              confirmationModalLabel: 'Haluatko varmasti merkata vuokratiedot keskeneräisiksi?',
+              confirmationModalTitle: 'Merkkaa vuokratiedot keskeneräisiksi',
+            });
+          };
 
-          <h2>Vuokranperusteet</h2>
-          <Divider />
-          <GreenBoxEdit>
-            <FieldArray
-              component={BasisOfRentsEdit}
-              isSaveClicked={isSaveClicked}
-              name="basis_of_rents"
-            />
-          </GreenBoxEdit>
+          return(
+            <form>
+              <FormSectionComponent>
+                <h2>Vuokra</h2>
+                <RightSubtitle
+                  buttonComponent={isRentInfoComplete
+                    ? <Button
+                      className='button-red'
+                      onClick={handleSetRentInfoUncomplete}
+                      text='Merkkaa keskeneräisiksi'
+                    />
+                    : <Button
+                      className='button-green'
+                      onClick={handleSetRentInfoComplete}
+                      text='Merkkaa valmiiksi'
+                    />
+                  }
+                  text={isRentInfoComplete
+                    ? <span className="success">Vuokratiedot kunnossa<i /></span>
+                    : <span className="alert">Vaatii toimenpiteitä<i /></span>
+                  }
+                />
 
-        </FormSectionComponent>
-      </form>
+                <Divider />
+                <FieldArray
+                  component={renderRents}
+                  name='rents.rents'
+                  rents={rents}
+                  showAddButton={true}
+                />
+
+                {/* Archived rents */}
+                <FieldArray
+                  component={renderRents}
+                  name='rents.rentsArchived'
+                  rents={rentsArchived}
+                  showAddButton={false}
+                />
+
+                <h2>Vuokranperusteet</h2>
+                <Divider />
+                <GreenBoxEdit>
+                  <FieldArray
+                    component={BasisOfRentsEdit}
+                    isSaveClicked={isSaveClicked}
+                    name="basis_of_rents"
+                  />
+                </GreenBoxEdit>
+
+              </FormSectionComponent>
+            </form>
+          );
+        }}
+      </AppConsumer>
     );
   }
 }
@@ -183,14 +237,18 @@ const formName = FormNames.RENTS;
 export default flowRight(
   connect(
     (state) => {
+      const currentLease = getCurrentLease(state);
       return {
-        currentLease: getCurrentLease(state),
+        currentLease: currentLease,
         errors: getErrorsByFormName(state, formName),
+        isRentInfoComplete: currentLease ? currentLease.is_rent_info_complete : null,
         isSaveClicked: getIsSaveClicked(state),
       };
     },
     {
       receiveFormValidFlags,
+      setRentInfoComplete,
+      setRentInfoUncomplete,
     }
   ),
   reduxForm({

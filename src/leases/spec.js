@@ -13,6 +13,10 @@ import {
   patchLease,
   archiveLeaseArea,
   unarchiveLeaseArea,
+  setRentInfoComplete,
+  setRentInfoUncomplete,
+  startInvoicing,
+  stopInvoicing,
   notFound,
   showEditMode,
   hideEditMode,
@@ -33,7 +37,6 @@ const stateTemplate = {
   collapseStates: {},
   current: {},
   isArchiveAreaModalOpen: false,
-  isArchiveFetching: false,
   isEditMode: false,
   isFetching: false,
   isFetchingAttributes: false,
@@ -50,6 +53,7 @@ const stateTemplate = {
     'tenants-form': true,
   },
   isSaveClicked: false,
+  isSaving: false,
   isUnarchiveAreaModalOpen: false,
   list: {},
 };
@@ -137,28 +141,56 @@ describe('Leases', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to true when editing existing lease', () => {
+      it('should update isSaving flag to true when editing existing lease', () => {
         const dummyLease = {
           foo: 'bar',
         };
         const newState = {...stateTemplate};
-        newState.isFetching = true;
+        newState.isSaving = true;
 
         const state = leasesReducer({}, patchLease(dummyLease));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isArchiveFetching flag to true when archiving lease area', () => {
-        const newState = {...stateTemplate, isArchiveFetching: true};
+      it('should update isSaving flag to true when archiving lease area', () => {
+        const newState = {...stateTemplate, isSaving: true};
 
         const state = leasesReducer({}, archiveLeaseArea());
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isArchiveFetching flag to true when unarchiving lease area', () => {
-        const newState = {...stateTemplate, isArchiveFetching: true};
+      it('should update isSaving flag to true when unarchiving lease area', () => {
+        const newState = {...stateTemplate, isSaving: true};
 
         const state = leasesReducer({}, unarchiveLeaseArea());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true when starting invoicing', () => {
+        const newState = {...stateTemplate, isSaving: true};
+
+        const state = leasesReducer({}, startInvoicing());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true when stoping invoicing', () => {
+        const newState = {...stateTemplate, isSaving: true};
+
+        const state = leasesReducer({}, stopInvoicing());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true when setting rent info complete', () => {
+        const newState = {...stateTemplate, isSaving: true};
+
+        const state = leasesReducer({}, setRentInfoComplete());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaving flag to true when setting rent info uncomplete', () => {
+        const newState = {...stateTemplate, isSaving: true};
+
+        const state = leasesReducer({}, setRentInfoUncomplete());
         expect(state).to.deep.equal(newState);
       });
 

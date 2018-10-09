@@ -50,6 +50,7 @@ const ContractRentsEdit = ({fields, rentField, rentType}: Props) => {
             <Row>
               <Column>
                 <AddButtonSecondary
+                  className={(!fields || !fields.length) ? 'no-top-margin' : ''}
                   label='Lisää sopimusvuokra'
                   onClick={handleAdd}
                 />

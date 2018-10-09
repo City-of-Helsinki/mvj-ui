@@ -5,7 +5,6 @@ import {SubmissionError} from 'redux-form';
 
 import {getRouteById} from '$src/root/routes';
 import {
-  fetchSingleLease as fetchSingleLeaseAction,
   fetchSingleLeaseWithoutLoader,
   hideArchiveAreaModal,
   hideEditMode,
@@ -32,6 +31,10 @@ import {
   patchLease,
   createRelatedLease,
   deleteReleatedLease,
+  startInvoicing,
+  stopInvoicing,
+  setRentInfoComplete,
+  setRentInfoUncomplete,
 } from './requests';
 import {getCurrentLease} from './selectors';
 
@@ -146,7 +149,7 @@ function* patchLeaseSaga({payload: lease}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        yield put(fetchSingleLeaseAction(lease.id));
+        yield put(fetchSingleLeaseWithoutLoader(lease.id));
         yield put(receiveIsSaveClicked(false));
         yield put(hideEditMode());
         displayUIMessage({title: '', body: 'Vuokraus tallennettu'});
@@ -222,11 +225,7 @@ function* unarchiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
 
 function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
   try {
-    const lease = {
-      id: leaseId,
-      is_invoicing_enabled: true,
-    };
-    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(startInvoicing, leaseId);
 
     switch (statusCode) {
       case 200:
@@ -249,11 +248,7 @@ function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
 
 function* stopInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
   try {
-    const lease = {
-      id: leaseId,
-      is_invoicing_enabled: false,
-    };
-    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
+    const {response: {status: statusCode}, bodyAsJson} = yield call(stopInvoicing, leaseId);
 
     switch (statusCode) {
       case 200:
@@ -272,6 +267,58 @@ function* stopInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
     }
   } catch (error) {
     console.error('Failed to stop invoicing with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* setRentInfoCompleteSaga({payload: leaseId}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(setRentInfoComplete, leaseId);
+
+    switch (statusCode) {
+      case 200:
+        const currentLease = yield select(getCurrentLease);
+        yield put(receiveSingleLease({...currentLease, is_rent_info_complete: true}));
+        displayUIMessage({title: '', body: 'Vuokratiedot on merkattu olevan kunnossa'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to set rent info complete with error "%s"', error);
+    yield put(notFound());
+    yield put(receiveError(error));
+  }
+}
+
+function* setRentInfoUncompleteSaga({payload: leaseId}): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(setRentInfoUncomplete, leaseId);
+
+    switch (statusCode) {
+      case 200:
+        const currentLease = yield select(getCurrentLease);
+        yield put(receiveSingleLease({...currentLease, is_rent_info_complete: false}));
+        displayUIMessage({title: '', body: 'Vuokratiedot on merkattu keskeneräisiksi'});
+        break;
+      case 400:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
+        break;
+      case 500:
+        yield put(notFound());
+        yield put(receiveError(new Error(bodyAsJson)));
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to set rent info complete with error "%s"', error);
     yield put(notFound());
     yield put(receiveError(error));
   }
@@ -370,6 +417,8 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/UNARCHIVE_AREA', unarchiveLeaseAreaSaga);
       yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
+      yield takeLatest('mvj/leases/SET_RENT_INFO_COMPLETE', setRentInfoCompleteSaga),
+      yield takeLatest('mvj/leases/SET_RENT_INFO_UNCOMPLETE', setRentInfoUncompleteSaga),
       yield takeLatest('mvj/leases/CREATE_CHARGE', createChargeSaga);
       yield takeLatest('mvj/leases/CREATE_RELATED_LEASE', createReleatedLeaseSaga);
       yield takeLatest('mvj/leases/DELETE_RELATED_LEASE', deleteReleatedLeaseSaga);

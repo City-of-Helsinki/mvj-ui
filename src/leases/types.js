@@ -2,7 +2,22 @@
 
 import type {Action} from '../types';
 
-export type LeaseState = Object;
+export type LeaseState = {
+  attributes: Attributes,
+  byId: Array<Lease>,
+  collapseStates: Object,
+  current: Lease,
+  isArchiveAreaModalOpen: boolean,
+  isSaving: boolean,
+  isFormValidById: Object,
+  isEditMode: boolean,
+  isFetching: boolean,
+  isFetchingById: Array<boolean>,
+  isFetchingAttributes: boolean,
+  isSaveClicked: boolean,
+  isUnarchiveAreaModalOpen: boolean,
+  list: LeaseList,
+};
 
 export type Attributes = Object;
 export type Lease = Object;
@@ -36,6 +51,8 @@ export type ArchiveLeaseAreaAction = Action<'mvj/leases/ARCHIVE_AREA', Lease>;
 export type UnarchiveLeaseAreaAction = Action<'mvj/leases/UNARCHIVE_AREA', Lease>;
 export type StartInvoicingAction = Action<'mvj/leases/START_INVOICING', LeaseId>;
 export type StopInvoicingAction = Action<'mvj/leases/STOP_INVOICING', LeaseId>;
+export type SetRentInfoCompleteAction = Action<'mvj/leases/SET_RENT_INFO_COMPLETE', LeaseId>;
+export type SetRentInfoUncompleteAction = Action<'mvj/leases/SET_RENT_INFO_UNCOMPLETE', LeaseId>;
 export type LeaseNotFoundAction = Action<'mvj/leases/NOT_FOUND', void>;
 export type LeaseNotFoundByIdAction = Action<'mvj/leases/NOT_FOUND_BY_ID', LeaseId>;
 

@@ -156,18 +156,15 @@ class Invoices extends Component<Props> {
                       text='Käynnistä laskutus'
                     />
                   }
-                  className='invoicing-status'
                   text={isInvoicingEnabled
-                    ? <p className="success">Laskutus käynnissä</p>
-                    : <p className="alert">Laskutus ei käynnissä</p>
+                    ? <span className="success">Laskutus käynnissä<i/></span>
+                    : <span className="alert">Laskutus ei käynnissä<i/></span>
                   }
                 />
-
                 : <RightSubtitle
-                  className='invoicing-status'
                   text={isInvoicingEnabled
-                    ? <p className="success">Laskutus käynnissä</p>
-                    : <p className="alert">Laskutus ei käynnissä</p>
+                    ? <span className="success">Laskutus käynnissä <i/></span>
+                    : <span className="alert">Laskutus ei käynnissä<i/></span>
                   }
                 />
               }

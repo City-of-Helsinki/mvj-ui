@@ -24,6 +24,8 @@ import type {
   ReceiveLeaseByIdAction,
   StartInvoicingAction,
   StopInvoicingAction,
+  SetRentInfoCompleteAction,
+  SetRentInfoUncompleteAction,
   HideEditModeAction,
   ShowEditModeAction,
   CreateRelatedLeasePayload,
@@ -87,6 +89,12 @@ export const startInvoicing = (id: LeaseId): StartInvoicingAction =>
 
 export const stopInvoicing = (id: LeaseId): StopInvoicingAction =>
   createAction('mvj/leases/STOP_INVOICING')(id);
+
+export const setRentInfoComplete = (leaseId: LeaseId): SetRentInfoCompleteAction =>
+  createAction('mvj/leases/SET_RENT_INFO_COMPLETE')(leaseId);
+
+export const setRentInfoUncomplete = (leaseId: LeaseId): SetRentInfoUncompleteAction =>
+  createAction('mvj/leases/SET_RENT_INFO_UNCOMPLETE')(leaseId);
 
 export const notFound = (): LeaseNotFoundAction =>
   createAction('mvj/leases/NOT_FOUND')();
