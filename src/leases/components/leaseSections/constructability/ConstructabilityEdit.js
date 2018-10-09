@@ -9,6 +9,7 @@ import type {Element} from 'react';
 import ConstructabilityItemEdit from './ConstructabilityItemEdit';
 import Divider from '$components/content/Divider';
 import FormSection from '$components/form/FormSection';
+import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
@@ -41,7 +42,7 @@ const renderAreas = ({
   return (
     <div>
       {!fields || !fields.length &&
-        <p className='no-margin'>Ei vuokra-alueita</p>
+        <FormText className='no-margin'>Ei vuokra-alueita</FormText>
       }
       {areas && !!areas.length && fields && !!fields.length && fields.map((area, index) => {
 

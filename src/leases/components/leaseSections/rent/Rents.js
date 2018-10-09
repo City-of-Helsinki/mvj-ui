@@ -7,6 +7,7 @@ import get from 'lodash/get';
 
 import BasisOfRents from './BasisOfRents';
 import Divider from '$components/content/Divider';
+import FormText from '$components/form/FormText';
 import GreenBox from '$components/content/GreenBox';
 import RentItem from './RentItem';
 import RightSubtitle from '$components/content/RightSubtitle';
@@ -36,7 +37,7 @@ const Rents = ({currentLease}: Props) => {
       />
       <Divider />
 
-      {!rents || !rents.length && <p className='no-margin'>Ei vuokria</p>}
+      {!rents || !rents.length && <FormText className='no-margin'>Ei vuokria</FormText>}
       {rents && !!rents.length && rents.map((rent) => {
         return (
           <RentItem

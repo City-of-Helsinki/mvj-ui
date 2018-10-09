@@ -9,6 +9,7 @@ import FormTitleAndText from '$components/form/FormTitleAndText';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
+import SubTitle from '$components/content/SubTitle';
 import {getContactFullName} from '$src/contacts/helpers';
 import {formatDate, formatNumber} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
@@ -44,6 +45,7 @@ const TenantItem = ({
                 title='Asiakas'
                 text={contact
                   ? <ExternalLink
+                    className='no-margin'
                     href={`${getRouteById('contacts')}/${contact.id}`}
                     text={getContactFullName(contact)}
                   />
@@ -85,11 +87,7 @@ const TenantItem = ({
             </Column>
           </Row>
         </FormWrapperRight>
-      </FormWrapper>
 
-      <ContactTemplate contact={contact} />
-
-      <FormWrapper>
         <FormWrapperLeft>
           <Row>
             <Column>
@@ -101,6 +99,9 @@ const TenantItem = ({
           </Row>
         </FormWrapperLeft>
       </FormWrapper>
+
+      <SubTitle>Asiakkaan tiedot</SubTitle>
+      <ContactTemplate contact={contact} />
     </div>
   );
 };

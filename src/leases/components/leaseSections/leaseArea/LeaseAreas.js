@@ -32,7 +32,7 @@ const LeaseAreas = ({currentLease, decisions}: Props) => {
       <RightSubtitle text={<span>{formatNumber(areasSum) || '-'} m<sup>2</sup></span>} />
       <Divider />
 
-      {!activeAreas || !activeAreas.length && <FormText>Ei vuokra-alueita</FormText>}
+      {!activeAreas || !activeAreas.length && <FormText className='no-margin'>Ei vuokra-alueita</FormText>}
       {activeAreas && !!activeAreas.length && activeAreas.map((area, index) =>
         <LeaseAreaWithArchiceInfo
           key={index}

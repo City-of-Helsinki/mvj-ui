@@ -5,6 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
+import FormText from '$components/form/FormText';
 import GreenBox from '$components/content/GreenBox';
 import InspectionItem from './InspectionItem';
 import {getContentInspections} from '$src/leases/helpers';
@@ -51,7 +52,7 @@ class Inspections extends PureComponent<Props, State> {
     return (
       <div>
         <GreenBox>
-          {!inspections || !inspections.length && <p>Ei tarkastuksia tai huomautuksia</p>}
+          {!inspections || !inspections.length && <FormText>Ei tarkastuksia tai huomautuksia</FormText>}
           {inspections && !!inspections.length &&
             <BoxItemContainer>
               {inspections.map((inspection) =>

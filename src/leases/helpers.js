@@ -461,30 +461,32 @@ export const getContentConstructability = (lease: Object) =>
     };
   });
 
+export const getContentContactDetails = (contact: Object) => {
+  return {
+    id: contact.id,
+    type: contact.type,
+    contact: getContentContact(contact.contact),
+    start_date: contact.start_date,
+    end_date: contact.end_date,
+  };
+};
+
 export const getContentTenantItem = (tenant: Object) => {
   const contact = get(tenant, 'tenantcontact_set', []).find(x => x.type === TenantContactType.TENANT);
 
-  return contact ? {
-    id: get(contact, 'id'),
-    type: get(contact, 'type'),
-    contact: getContentContact(get(contact, 'contact')),
-    start_date: get(contact, 'start_date'),
-    end_date: get(contact, 'end_date'),
-  } : {};
+  return contact ? getContentContactDetails(contact) : {};
 };
 
-export const getContentTenantContactSet = (tenant: Object) =>
+export const getContentTenantBillingPersons = (tenant: Object) =>
   get(tenant, 'tenantcontact_set', [])
-    .filter((x) => x.type !== TenantContactType.TENANT)
-    .map((contact) => {
-      return {
-        id: get(contact, 'id'),
-        type: get(contact, 'type'),
-        contact: getContentContact(get(contact, 'contact')),
-        start_date: get(contact, 'start_date'),
-        end_date: get(contact, 'end_date'),
-      };
-    })
+    .filter((x) => x.type === TenantContactType.BILLING)
+    .map((contact) => contact ? getContentContactDetails(contact) : {})
+    .sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
+
+export const getContentTenantContactPersons = (tenant: Object) =>
+  get(tenant, 'tenantcontact_set', [])
+    .filter((x) => x.type === TenantContactType.CONTACT)
+    .map((contact) => contact ? getContentContactDetails(contact) : {})
     .sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
 
 export const getContentTenants = (lease: Object) =>
@@ -495,7 +497,8 @@ export const getContentTenants = (lease: Object) =>
       share_denominator: get(tenant, 'share_denominator'),
       reference: get(tenant, 'reference'),
       tenant: getContentTenantItem(tenant),
-      tenantcontact_set: getContentTenantContactSet(tenant),
+      billing_persons: getContentTenantBillingPersons(tenant),
+      contact_persons: getContentTenantContactPersons(tenant),
     };
   }).sort((a, b) => sortStringByKeyDesc(a, b, 'tenant.start_date'));
 
@@ -1131,27 +1134,30 @@ export const addConstructabilityFormValues = (payload: Object, values: Object) =
   return payload;
 };
 
+export const getTenantContactDetailsForDb = (tenant: Object, contactType: TenantContactType.TENANT | TenantContactType.BILLING | TenantContactType.CONTACT) => (
+  {
+    id: tenant.id || undefined,
+    type: contactType,
+    contact: tenant.contact,
+    start_date: tenant.start_date,
+    end_date: tenant.end_date,
+  }
+);
+
 export const getTenantContactSetForDb = (tenant: Object) => {
-  let contacts = [];
+  const contacts = [];
   const tenantData = get(tenant, 'tenant');
-  contacts.push({
-    id: tenantData.id || undefined,
-    type: TenantContactType.TENANT,
-    contact: get(tenantData, 'contact'),
-    start_date: get(tenantData, 'start_date'),
-    end_date: get(tenantData, 'end_date'),
+  contacts.push(getTenantContactDetailsForDb(tenantData, TenantContactType.TENANT));
+
+  const billingPersons = get(tenant, 'billing_persons', []);
+  billingPersons.forEach((billingPerson) => {
+    contacts.push(getTenantContactDetailsForDb(billingPerson, TenantContactType.BILLING));
+  });
+  const contactPersons = get(tenant, 'contact_persons', []);
+  contactPersons.forEach((contactPerson) => {
+    contacts.push(getTenantContactDetailsForDb(contactPerson, TenantContactType.CONTACT));
   });
 
-  const otherPersons = get(tenant, 'tenantcontact_set', []);
-  forEach(otherPersons, (person) => {
-    contacts.push({
-      id: person.id || undefined,
-      type: get(person, 'type'),
-      contact: get(person, 'contact'),
-      start_date: get(person, 'start_date'),
-      end_date: get(person, 'end_date'),
-    });
-  });
   return contacts;
 };
 

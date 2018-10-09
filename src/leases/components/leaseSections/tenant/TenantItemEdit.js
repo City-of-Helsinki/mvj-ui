@@ -20,10 +20,11 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
+import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames, TenantContactType} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
@@ -31,11 +32,13 @@ import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClic
 import type {Attributes} from '$src/leases/types';
 
 type OtherTenantsProps = {
+  contactType: TenantContactType.BILLING | TenantContactType.CONTACT,
   fields: any,
   tenant: Object,
 }
 
 const renderOtherTenants = ({
+  contactType,
   fields,
   tenant,
 }: OtherTenantsProps): Element<*> => {
@@ -64,8 +67,8 @@ const renderOtherTenants = ({
               return (
                 <OtherTenantItemEdit
                   key={index}
+                  contactType={contactType}
                   field={field}
-                  index={index}
                   onRemove={handleRemove}
                   tenant={tenant}
                 />
@@ -74,7 +77,8 @@ const renderOtherTenants = ({
             <Row>
               <Column>
                 <AddButtonSecondary
-                  label='Lisää laskunsaaja tai yhteyshenkilö'
+                  className='no-top-margin'
+                  label={(contactType === TenantContactType.BILLING) ? 'Lisää laskunsaaja' : 'Lisää yhteyshenkilö'}
                   onClick={handleAdd}
                 />
               </Column>
@@ -254,20 +258,7 @@ const TenantItemEdit = ({
               </Column>
             </Row>
           </FormWrapperRight>
-        </FormWrapper>
 
-        <BoxContentWrapper>
-          {!!contact &&
-            <EditButton
-              className='position-topright'
-              onClick={handleEditClick}
-              title='Muokkaa asiakasta'
-            />
-          }
-          <ContactTemplate contact={contact} />
-        </BoxContentWrapper>
-
-        <FormWrapper>
           <FormWrapperLeft>
             <Row>
               <Column>
@@ -285,9 +276,28 @@ const TenantItemEdit = ({
         </FormWrapper>
       </BoxContentWrapper>
 
+      {!!contact &&
+        <SubTitle>Asiakkaan tiedot
+          <EditButton
+            className='inline-button'
+            onClick={handleEditClick}
+            title='Muokkaa asiakasta'
+          />
+        </SubTitle>
+      }
+      <ContactTemplate contact={contact} />
+
       <FieldArray
         component={renderOtherTenants}
-        name={`${field}.tenantcontact_set`}
+        contactType={TenantContactType.BILLING}
+        name={`${field}.billing_persons`}
+        tenant={savedTenant}
+      />
+
+      <FieldArray
+        component={renderOtherTenants}
+        contactType={TenantContactType.CONTACT}
+        name={`${field}.contact_persons`}
         tenant={savedTenant}
       />
     </Collapse>

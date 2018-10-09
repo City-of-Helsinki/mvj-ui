@@ -15,6 +15,7 @@ import FormField from '$components/form/FormField';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
+import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
@@ -167,16 +168,16 @@ const LitigantBillingPersonEdit = ({
           </FormWrapperRight>
         </FormWrapper>
 
-        <BoxContentWrapper>
-          {!!contact &&
+        {!!contact &&
+          <SubTitle>Asiakkaan tiedot
             <EditButton
-              className='position-topright'
+              className='inline-button'
               onClick={handleEditClick}
               title='Muokkaa asiakasta'
             />
-          }
-          <ContactTemplate contact={contact} />
-        </BoxContentWrapper>
+          </SubTitle>
+        }
+        <ContactTemplate contact={contact} />
       </BoxContentWrapper>
     </Collapse>
   );

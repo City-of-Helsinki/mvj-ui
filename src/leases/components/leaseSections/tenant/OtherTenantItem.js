@@ -12,6 +12,7 @@ import FormTitleAndText from '$components/form/FormTitleAndText';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
+import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
@@ -80,6 +81,7 @@ const OtherTenantItem = ({
                 title='Asiakas'
                 text={contact
                   ? <ExternalLink
+                    className='no-margin'
                     href={`${getRouteById('contacts')}/${contact.id}`}
                     text={getContactFullName(contact)}
                   />
@@ -91,12 +93,6 @@ const OtherTenantItem = ({
         </FormWrapperLeft>
         <FormWrapperRight>
           <Row>
-            <Column small={12} medium={6} large={4}>
-              <FormTitleAndText
-                title='Rooli'
-                text={getLabelOfOption(tenantTypeOptions, tenant.type) || '-'}
-              />
-            </Column>
             <Column small={12} medium={6} large={4}>
               <Row>
                 <Column>
@@ -116,6 +112,8 @@ const OtherTenantItem = ({
           </Row>
         </FormWrapperRight>
       </FormWrapper>
+
+      <SubTitle>Asiakkaan tiedot</SubTitle>
       <ContactTemplate
         contact={contact}
       />

@@ -3,6 +3,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 import ContractItem from './ContractItem';
+import FormText from '$components/form/FormText';
 import {getContentContracts} from '$src/landUseContract/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLandUseContract} from '$src/landUseContract/selectors';
@@ -20,7 +21,7 @@ const Contracts = ({attributes, currentLandUseContract}: Props) => {
 
   return (
     <div>
-      {!contracts.length && <p>Ei sopimuksia</p>}
+      {!contracts.length && <FormText className='no-margin'>Ei sopimuksia</FormText>}
       {!!contracts.length && contracts.map((contract, index) => {
         return (
           <ContractItem

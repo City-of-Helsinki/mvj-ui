@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import get from 'lodash/get';
 
 import Divider from '$components/content/Divider';
+import FormText from '$components/form/FormText';
 import Tenant from './Tenant';
 import {getContentTenantsFormData} from '$src/leases/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -27,7 +28,7 @@ class Tenants extends Component<Props> {
         <h2>Vuokralaiset</h2>
         <Divider />
         {(!tenants.length) &&
-          <p className='no-margin'>Ei vuokralaisia</p>
+          <FormText className='no-margin'>Ei vuokralaisia</FormText>
         }
         {!!tenants.length && tenants.map((tenant) =>
           <Tenant
