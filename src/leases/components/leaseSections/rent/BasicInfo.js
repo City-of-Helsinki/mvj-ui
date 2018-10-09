@@ -20,12 +20,54 @@ import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
 
+const formatSeasonalStartDate = (rent: Object) => {
+  if(!rent.seasonal_start_day || !rent.seasonal_start_month) {
+    return null;
+  }
+  return `${rent.seasonal_start_day}.${rent.seasonal_start_month}`;
+};
+
+const formatSeasonalEndDate = (rent: Object) => {
+  if(!rent.seasonal_end_day || !rent.seasonal_end_month) {
+    return null;
+  }
+  return `${rent.seasonal_end_day}.${rent.seasonal_end_month}`;
+};
+
 const formatDueDate = (date: Object) => {
   return `${date.day}.${date.month}`;
 };
 
 const displayDueDates = (dates: Object) => {
   return dates.map((date) => formatDueDate(date)).join(', ');
+};
+
+type SeasonalDatesProps = {
+  rent: Object,
+}
+
+const SeasonalDates = ({
+  rent,
+}: SeasonalDatesProps ) => {
+  const startText = formatSeasonalStartDate(rent);
+  const endText = formatSeasonalEndDate(rent);
+
+  return(
+    <Row>
+      <Column small={6} medium={4} large={2}>
+        <FormTitleAndText
+          title='Kausivuokra alkupvm'
+          text={startText || '-'}
+        />
+      </Column>
+      <Column small={6} medium={4} large={2}>
+        <FormTitleAndText
+          title='Kausivuokra loppupvm'
+          text={endText || '-'}
+        />
+      </Column>
+    </Row>
+  );
 };
 
 type Props = {
@@ -103,6 +145,11 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
           </Column>
         }
       </Row>
+
+      <SeasonalDates
+        rent={rent}
+      />
+
       <Row>
         {(!!rent.elementary_index || !!rent.index_rounding) &&
           <Column small={12} medium={4} large={2}>
@@ -239,6 +286,11 @@ const BasicInfoOneTime = ({attributes, rent}: Props) => {
           />
         </Column>
       </Row>
+
+      <SeasonalDates
+        rent={rent}
+      />
+
       <Row>
         <Column>
           <FormTitleAndText
@@ -305,6 +357,12 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
           </Column>
         }
       </Row>
+
+      <SeasonalDates
+        rent={rent}
+      />
+
+
       <Row>
         <Column>
           <FormTitleAndText

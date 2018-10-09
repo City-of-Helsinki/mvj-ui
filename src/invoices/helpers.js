@@ -65,6 +65,7 @@ export const getContentIncoiveItem = (invoice: Object) => {
   const rows = getContentIncoiceRows(invoice);
   return {
     id: invoice.id,
+    number: invoice.number,
     recipient: get(invoice, 'recipient.id'),
     recipientFull: get(invoice, 'recipient'),
     rows: rows,

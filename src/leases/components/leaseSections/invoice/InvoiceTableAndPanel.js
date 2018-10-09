@@ -151,8 +151,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    if(prevState.invoiceSetOptions !== this.state.invoiceSetOptions ||
-      prevState.receivableTypeOptions !== this.state.receivableTypeOptions) {
+    if(prevState.invoiceAttributes !== this.state.invoiceAttributes) {
       this.setState({
         columns: this.getColumns(),
       });
@@ -401,7 +400,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
         text: 'Eräpäivä',
       },
       {
-        key: 'id',
+        key: 'number',
         ascSortFunction: sortNumberByKeyAsc,
         descSortFunction: sortNumberByKeyDesc,
         dataClassName: 'no-wrap',

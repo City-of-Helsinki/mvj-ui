@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import ReactResizeDetector from 'react-resize-detector';
 import debounce from 'lodash/debounce';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 
 import SortableTableHeader from './SortableTableHeader';
 import SortableTableGroup from './SortableTableGroup';
@@ -48,6 +49,7 @@ type Props = {
 }
 
 type State = {
+  columns: Array<Column>,
   data: Array<Object>,
   scrollHeaderColumnStyles: Array<Object>,
   scrollHeaderWidth: number,
@@ -149,6 +151,7 @@ class SortableTable extends Component<Props, State> {
   thead: any
 
   state = {
+    columns: [],
     data: [],
     scrollHeaderColumnStyles: [],
     scrollHeaderWidth: 0,
@@ -187,13 +190,15 @@ class SortableTable extends Component<Props, State> {
 
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
-    if(props.data !== state.data) {
+    if(props.data !== state.data || props.columns !== state.columns) {
       newState.data = props.data;
+      newState.columns = props.columns;
+
       newState.sortedData = props.sortable
         ? sortData(props.data, props.columns, state.sortKey, state.sortOrder)
         : props.data;
     }
-    return newState;
+    return !isEmpty(newState) ? newState : null;
   }
 
   componentDidMount() {

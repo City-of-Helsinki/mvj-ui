@@ -3,6 +3,7 @@ import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
 import {getFormValues, isValid} from 'redux-form';
+import isEmpty from 'lodash/isEmpty';
 
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
@@ -12,11 +13,15 @@ import ReactResizeDetector from 'react-resize-detector';
 import {receiveIsEditClicked} from '$src/invoices/actions';
 import {KeyCodes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
-import {getIsEditClicked} from '$src/invoices/selectors';
+import {getInvoicesByLease, getIsEditClicked} from '$src/invoices/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
+
+import type {InvoiceList} from '$src/invoices/types';
 
 type Props = {
   editedInvoice: Object,
   invoice: ?Object,
+  invoices: InvoiceList,
   isEditClicked: boolean,
   isEditMode: boolean,
   isOpen: boolean,
@@ -145,6 +150,15 @@ class InvoicePanel extends PureComponent<Props, State> {
     onSave(editedInvoice);
   }
 
+  getCreditedInvoice = () => {
+    const {invoice, invoices} = this.props;
+    if(isEmpty(invoice) || isEmpty(invoices)) {
+      return null;
+    }
+
+    return invoices.find((item) => item.id === (invoice ? invoice.credited_invoice : 0));
+  }
+
   render() {
     const {
       invoice,
@@ -157,6 +171,7 @@ class InvoicePanel extends PureComponent<Props, State> {
       valid,
     } = this.props;
     const {isClosing, isOpening} = this.state;
+    const creditedInvoice = this.getCreditedInvoice();
 
     return(
       <div
@@ -188,6 +203,7 @@ class InvoicePanel extends PureComponent<Props, State> {
           <div className={classNames('invoice-panel__body', {'with-footer': (isEditMode  && invoice && !invoice.sap_id)})}>
             {isEditMode && (!invoice || !invoice.sap_id)
               ? <EditInvoiceForm
+                creditedInvoice={creditedInvoice}
                 invoice={invoice}
                 initialValues={{...invoice}}
                 onCreditedInvoiceClick={onCreditedInvoiceClick}
@@ -195,6 +211,7 @@ class InvoicePanel extends PureComponent<Props, State> {
               />
               :
               <InvoiceTemplate
+                creditedInvoice={creditedInvoice}
                 invoice={invoice}
                 onCreditedInvoiceClick={onCreditedInvoiceClick}
               />
@@ -229,8 +246,11 @@ class InvoicePanel extends PureComponent<Props, State> {
 const formName = FormNames.INVOICE_EDIT;
 export default connect(
   (state) => {
+    const currentLease = getCurrentLease(state);
+
     return {
       editedInvoice: getFormValues(formName)(state),
+      invoices: getInvoicesByLease(state, currentLease.id),
       isEditClicked: getIsEditClicked(state),
       valid: isValid(formName)(state),
     };
