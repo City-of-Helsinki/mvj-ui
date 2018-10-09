@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import {FieldArray, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
@@ -227,8 +226,12 @@ class TenantsEdit extends Component<Props, State> {
           onClose={this.handleClose}
           onSave={this.handleSaveContact}
           onSaveAndAdd={this.handleSaveAndAdd}
+          showSave={contactModalSettings && !contactModalSettings.isNew}
           showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
-          title={get(contactModalSettings, 'isNew') ? 'Uusi asiakas' : 'Muokkaa asiakasta'}
+          title={(contactModalSettings && contactModalSettings.isNew)
+            ? 'Uusi asiakas'
+            : 'Muokkaa asiakasta'
+          }
         />
         <form>
           <FormSection>

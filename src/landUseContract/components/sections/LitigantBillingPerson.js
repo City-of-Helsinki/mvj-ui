@@ -12,6 +12,7 @@ import FormTitleAndText from '$components/form/FormTitleAndText';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
+import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
@@ -75,6 +76,7 @@ const LitigantBillingPerson = ({
                 title='Asiakas'
                 text={contact
                   ? <ExternalLink
+                    className='no-margin'
                     href={`${getRouteById('contacts')}/${contact.id}`}
                     text={getContactFullName(contact)}
                   />
@@ -106,6 +108,7 @@ const LitigantBillingPerson = ({
         </FormWrapperRight>
       </FormWrapper>
 
+      <SubTitle>Asiakkaan tiedot</SubTitle>
       <ContactTemplate contact={contact} />
     </Collapse>
   );

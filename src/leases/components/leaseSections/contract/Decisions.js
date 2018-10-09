@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 
 import DecisionItem from './DecisionItem';
+import FormText from '$components/form/FormText';
 import {getContentDecisions} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -77,7 +78,7 @@ class Decisions extends PureComponent<Props, State> {
 
     return (
       <div>
-        {!decisions || !decisions.length && <p className='no-margin'>Ei päätöksiä</p>}
+        {!decisions || !decisions.length && <FormText className='no-margin'>Ei päätöksiä</FormText>}
         {decisions && !!decisions.length && decisions.map((decision) =>
           <DecisionItem
             key={decision.id}

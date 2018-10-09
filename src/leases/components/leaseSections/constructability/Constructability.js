@@ -5,6 +5,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import ConstructabilityItem from './ConstructabilityItem';
 import Divider from '$components/content/Divider';
+import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
 import {getContentConstructability} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$src/util/helpers';
@@ -93,7 +94,7 @@ class Constructability extends Component<Props, State> {
         <SendEmail />
 
         {!areas || !areas.length &&
-          <p className='no-margin'>Ei vuokra-alueita</p>
+          <FormText className='no-margin'>Ei vuokra-alueita</FormText>
         }
         {areas && !!areas.length && areas.map((area) =>
           <ConstructabilityItem

@@ -15,12 +15,12 @@ import FormField from '$components/form/FormField';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
+import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames, TenantContactType} from '$src/leases/enums';
 import {isTenantActive} from '$src/leases/helpers';
-import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -28,6 +28,7 @@ import type {Attributes} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   collapseState: boolean,
+  contactType: TenantContactType.BILLING | TenantContactType.CONTACT,
   contact: ?Object,
   errors: ?Object,
   field: string,
@@ -47,9 +48,9 @@ const OtherTenantItemEdit = ({
   attributes,
   collapseState,
   contact,
+  contactType,
   errors,
   field,
-  index,
   initializeContactForm,
   isSaveClicked,
   onRemove,
@@ -61,11 +62,14 @@ const OtherTenantItemEdit = ({
   tenantId,
 }: Props) => {
   const getOtherTenantById = (id: number) => {
-    const tenantContactSet = get(tenant, 'tenantcontact_set', []);
+    const tenantContactSet = contactType === TenantContactType.BILLING
+      ? get(tenant, 'billing_persons', [])
+      : get(tenant, 'contact_persons', []);
 
     if(!id) {
       return null;
     }
+
     return tenantContactSet.find((tenant) => tenant.id === id);
   };
 
@@ -114,16 +118,14 @@ const OtherTenantItemEdit = ({
 
   const savedOtherTenant = getOtherTenantById(tenantId),
     isActive = isTenantActive(savedOtherTenant),
-    tenantErrors = get(errors, field),
-    tenantTypeOptions = getAttributeFieldOptions(attributes,
-      'tenants.child.children.tenantcontact_set.child.children.type').filter((x) => x.value !== TenantContactType.TENANT);
+    tenantErrors = get(errors, field);
 
   return (
     <Collapse
       className={classNames('collapse__secondary', {'not-active': !isActive})}
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
-      headerTitle={<h4 className='collapse__header-title edit-row'>Laskunsaaja/yhteyshenkilö {index + 1}</h4>}
+      headerTitle={<h4 className='collapse__header-title edit-row'>{contactType === TenantContactType.BILLING ? 'Laskunsaaja' : 'Yhteyshenkilö'}</h4>}
       onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >
@@ -155,17 +157,6 @@ const OtherTenantItemEdit = ({
           </FormWrapperLeft>
           <FormWrapperRight>
             <Row>
-              <Column small={12} medium={6} large={4}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'tenants.child.children.tenantcontact_set.child.children.type')}
-                  name={`${field}.type`}
-                  overrideValues={{
-                    label: 'Rooli',
-                    options: tenantTypeOptions,
-                  }}
-                />
-              </Column>
               <Column small={6} medium={3} large={2}>
                 <FormField
                   disableTouched={isSaveClicked}
@@ -190,16 +181,16 @@ const OtherTenantItemEdit = ({
           </FormWrapperRight>
         </FormWrapper>
 
-        <BoxContentWrapper>
-          {!!contact &&
+        {!!contact &&
+          <SubTitle>Asiakkaan tiedot
             <EditButton
-              className='position-topright'
+              className='inline-button'
               onClick={handleEditClick}
               title='Muokkaa asiakasta'
             />
-          }
-          <ContactTemplate contact={contact} />
-        </BoxContentWrapper>
+          </SubTitle>
+        }
+        <ContactTemplate contact={contact} />
       </BoxContentWrapper>
     </Collapse>
   );

@@ -20,6 +20,7 @@ import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import LitigantBillingPersonEdit from './LitigantBillingPersonEdit';
+import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
@@ -72,12 +73,11 @@ const renderBillingPersons = ({
             })}
             <Row>
               <Column>
-                {!fields.length &&
-                  <AddButtonSecondary
-                    label='Lisää laskunsaaja'
-                    onClick={handleAdd}
-                  />
-                }
+                <AddButtonSecondary
+                  className='no-top-margin'
+                  label='Lisää laskunsaaja'
+                  onClick={handleAdd}
+                />
               </Column>
             </Row>
           </div>
@@ -249,20 +249,7 @@ const LitigantItemEdit = ({
               </Column>
             </Row>
           </FormWrapperRight>
-        </FormWrapper>
 
-        <BoxContentWrapper>
-          {!!contact &&
-            <EditButton
-              className='position-topright'
-              onClick={handleEditClick}
-              title='Muokkaa asiakasta'
-            />
-          }
-          <ContactTemplate contact={contact} />
-        </BoxContentWrapper>
-
-        <FormWrapper>
           <FormWrapperLeft>
             <Row>
               <Column>
@@ -278,6 +265,17 @@ const LitigantItemEdit = ({
             </Row>
           </FormWrapperLeft>
         </FormWrapper>
+
+        {!!contact &&
+          <SubTitle>Asiakkaan tiedot
+            <EditButton
+              className='inline-button'
+              onClick={handleEditClick}
+              title='Muokkaa asiakasta'
+            />
+          </SubTitle>
+        }
+        <ContactTemplate contact={contact} />
       </BoxContentWrapper>
 
       <FieldArray

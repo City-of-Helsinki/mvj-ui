@@ -41,6 +41,8 @@ const Tenant = ({
 
   const contact = get(tenant, 'tenant.contact');
   const isActive = isTenantActive(get(tenant, 'tenant'));
+  const billingPersons = get(tenant, 'billing_persons', []);
+  const contactPersons = get(tenant, 'contact_persons', []);
 
   return (
     <Collapse
@@ -72,8 +74,19 @@ const Tenant = ({
           contact={contact}
           tenant={tenant}
         />
-        {tenant.tenantcontact_set && !!tenant.tenantcontact_set.length &&
-          tenant.tenantcontact_set.map((person) => {
+        {!!billingPersons.length &&
+          billingPersons.map((person) => {
+            return (
+              <OtherTenantItem
+                key={person.id}
+                tenant={person}
+              />
+            );
+          })
+        }
+
+        {!!contactPersons.length &&
+          contactPersons.map((person) => {
             return (
               <OtherTenantItem
                 key={person.id}

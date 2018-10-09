@@ -9,6 +9,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import Button from '$components/button/Button';
+import FormText from '$components/form/FormText';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RentCalculatorForm from './RentCalculatorForm';
@@ -109,7 +110,7 @@ class RentCalculator extends Component<Props> {
                   </LoaderWrapper>
                 }
                 <div>
-                  {!isFetching && (!rents || !rents.length) && <p className='no-margin'>Ei vuokria</p>}
+                  {!isFetching && (!rents || !rents.length) && <FormText className='no-margin'>Ei vuokria</FormText>}
                   {!!rents && !!rents.length &&
                     <div>
                       {rents.map((rent, index) => {

@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import isEmpty from 'lodash/isEmpty';
 
 import ContractItem from './ContractItem';
+import FormText from '$components/form/FormText';
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getContentContracts} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
@@ -87,7 +88,7 @@ class Contracts extends PureComponent<Props, State> {
 
     return (
       <div>
-        {(!contracts || !contracts.length) && <p>Ei sopimuksia</p>}
+        {(!contracts || !contracts.length) && <FormText className='no-margin'>Ei sopimuksia</FormText>}
         {contracts && !!contracts.length && contracts.map((contract, index) =>
           <ContractItem
             key={index}

@@ -18,7 +18,8 @@ type Props = {
   onClose: Function,
   onSave: Function,
   onSaveAndAdd : Function,
-  showSaveAndAdd: Function,
+  showSave: boolean,
+  showSaveAndAdd: boolean,
   title: string,
 }
 
@@ -30,6 +31,7 @@ const ContactModal = ({
   onClose,
   onSave,
   onSaveAndAdd,
+  showSave = true,
   showSaveAndAdd,
   title,
 }: Props) => {
@@ -55,12 +57,14 @@ const ContactModal = ({
               onClick={onCancel}
               text='Peruuta'
             />
-            <Button
-              className='button-green'
-              disabled={isSaveClicked && !isContactFormValid}
-              onClick={onSave}
-              text='Tallenna'
-            />
+            {showSave &&
+              <Button
+                className='button-green'
+                disabled={isSaveClicked && !isContactFormValid}
+                onClick={onSave}
+                text='Tallenna'
+              />
+            }
             {showSaveAndAdd &&
               <Button
                 className='button-green'

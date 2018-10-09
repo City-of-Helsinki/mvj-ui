@@ -601,6 +601,10 @@
         width: rem-calc(15px) !important;
       }
     }
+
+    &.no-top-margin {
+      margin-top: 0;
+    }
   }
 
   &__add-file-button {
@@ -664,6 +668,10 @@
       .icons {
         fill: $tram_hover;
       }
+    }
+
+    &.inline-button {
+      margin-left: rem-calc(10px);
     }
 
     &.position-topright {
