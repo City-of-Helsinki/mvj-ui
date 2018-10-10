@@ -18,7 +18,8 @@ import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
 import SortableTable from '$components/table/SortableTable';
-import TableControllers from '$components/table/TableControllers';
+import TableFilters from '$components/table/TableFilters';
+import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLandUseContract, fetchLandUseContractAttributes, fetchLandUseContractList} from '$src/landUseContract/actions';
 import {FormNames} from '$src/landUseContract/enums';
@@ -216,6 +217,7 @@ class LandUseContractListPage extends Component<Props, State> {
     const filteredLandUseContracts = selectedStates.length
       ? (landUseContracts.filter((contract) => selectedStates.indexOf(contract.state.toString())  !== -1))
       : landUseContracts;
+    const count = filteredLandUseContracts.length;
 
     return (
       <PageContainer>
@@ -240,41 +242,40 @@ class LandUseContractListPage extends Component<Props, State> {
           }
         />
 
-        {isFetching &&
-          <Row>
-            <Column>
-              <LoaderWrapper><Loader isLoading={!!isFetching} /></LoaderWrapper>
-            </Column>
-          </Row>
-        }
+        <Row>
+          <Column small={12} medium={6}></Column>
+          <Column small={12} medium={6}>
+            <TableFilters
+              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+              filterOptions={stateOptions}
+              filterValue={selectedStates}
+              onFilterChange={this.handleSelectedStatesChange}
+            />
+          </Column>
+        </Row>
 
-        {!isFetching &&
-          <div>
-            <TableControllers
-              buttonSelectorOptions={stateOptions}
-              buttonSelectorValue={selectedStates}
-              onButtonSelectorChange={this.handleSelectedStatesChange}
-              title={`Viimeksi muokattuja`}
-            />
-            <SortableTable
-              columns={[
-                {key: 'identifier', text: 'MA-tunnus'},
-                {key: 'litigants', text: 'Osapuoli', renderer: (val) => val.map((litigant, index) => <ListItem key={index}>{litigant}</ListItem>)},
-                {key: 'plan_number', text: 'Asemakaavan numero'},
-                {key: 'area', text: 'Kohde'},
-                {key: 'project_area', text: 'Hankealue'},
-                {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
-              ]}
-              data={filteredLandUseContracts}
-              onRowClick={this.handleRowClick}
-            />
-            <Pagination
-              activePage={activePage}
-              maxPage={maxPage}
-              onPageClick={this.handlePageClick}
-            />
-          </div>
-        }
+        <TableWrapper>
+          {isFetching &&
+            <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
+          }
+          <SortableTable
+            columns={[
+              {key: 'identifier', text: 'MA-tunnus'},
+              {key: 'litigants', text: 'Osapuoli', renderer: (val) => val.map((litigant, index) => <ListItem key={index}>{litigant}</ListItem>)},
+              {key: 'plan_number', text: 'Asemakaavan numero'},
+              {key: 'area', text: 'Kohde'},
+              {key: 'project_area', text: 'Hankealue'},
+              {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
+            ]}
+            data={filteredLandUseContracts}
+            onRowClick={this.handleRowClick}
+          />
+          <Pagination
+            activePage={activePage}
+            maxPage={maxPage}
+            onPageClick={this.handlePageClick}
+          />
+        </TableWrapper>
       </PageContainer>
     );
   }

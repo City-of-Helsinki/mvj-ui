@@ -16,7 +16,8 @@ import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
 import SortableTable from '$components/table/SortableTable';
-import TableControllers from '$components/table/TableControllers';
+import TableFilters from '$components/table/TableFilters';
+import TableWrapper from '$components/table/TableWrapper';
 import {
   fetchContacts,
   fetchAttributes,
@@ -211,34 +212,40 @@ class ContactListPage extends Component<Props, State> {
             />
           }
         />
-        <TableControllers
-          title={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
-        />
 
-        {isFetching &&
-          <Row><Column><LoaderWrapper><Loader isLoading={!!isFetching} /></LoaderWrapper></Column></Row>
-        }
-        {!isFetching &&
-          <div>
-            <SortableTable
-              columns={[
-                {key: 'type', text: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)},
-                {key: 'first_name', text: 'Etunimi'},
-                {key: 'last_name', text: 'Sukunimi'},
-                {key: 'national_identification_number', text: 'Henkilötunnus'},
-                {key: 'name', text: 'Yrityksen nimi'},
-                {key: 'business_id', text: 'Y-tunnus'},
-              ]}
-              data={contacts}
-              onRowClick={this.handleRowClick}
+        <Row>
+          <Column small={12} medium={6}></Column>
+          <Column small={12} medium={6}>
+            <TableFilters
+              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+              filterOptions={[]}
+              filterValue={[]}
             />
-            <Pagination
-              activePage={activePage}
-              maxPage={maxPage}
-              onPageClick={this.handlePageClick}
-            />
-          </div>
-        }
+          </Column>
+        </Row>
+
+        <TableWrapper>
+          {isFetching &&
+            <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
+          }
+          <SortableTable
+            columns={[
+              {key: 'type', text: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)},
+              {key: 'first_name', text: 'Etunimi'},
+              {key: 'last_name', text: 'Sukunimi'},
+              {key: 'national_identification_number', text: 'Henkilötunnus'},
+              {key: 'name', text: 'Yrityksen nimi'},
+              {key: 'business_id', text: 'Y-tunnus'},
+            ]}
+            data={contacts}
+            onRowClick={this.handleRowClick}
+          />
+          <Pagination
+            activePage={activePage}
+            maxPage={maxPage}
+            onPageClick={this.handlePageClick}
+          />
+        </TableWrapper>
       </PageContainer>
     );
   }

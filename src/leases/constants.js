@@ -24,6 +24,18 @@ export const CreditInvoiceSetOptions = [
  * Rent custom date options
  * @type {[*]}
  */
+export const leaseStateFilterOptions = [
+  {value: 'lease', label: 'Vuokraus'},
+  {value: 'reservation', label: 'Varaus'},
+  {value: 'reserve', label: 'Varanto'},
+  {value: 'permission', label: 'Lupa'},
+  {value: 'application', label: 'Hakemus'},
+];
+
+/**
+ * Rent custom date options
+ * @type {[*]}
+ */
 export const rentCustomDateOptions = [
   {value: '', label: ''},
   {value: '1', label: '1'},

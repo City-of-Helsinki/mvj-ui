@@ -59,7 +59,7 @@ class StyledCheckboxButtons extends Component<Props> {
   }
 
   render () {
-    const {checkboxName, legend, options, selectAllButton, selectAllButtonLabel = 'Kaikki', value} = this.props;
+    const {checkboxName, legend, options, selectAllButton = false, selectAllButtonLabel = 'Kaikki', value} = this.props;
     const areAllSelected = this.areAllOptionsSelected();
 
     return (

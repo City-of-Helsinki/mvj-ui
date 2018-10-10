@@ -18,7 +18,8 @@ import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
 import SearchWrapper from '$components/search/SearchWrapper';
 import SortableTable from '$components/table/SortableTable';
-import TableControllers from '$components/table/TableControllers';
+import TableFilters from '$components/table/TableFilters';
+import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchInfillDevelopmentAttributes, fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
@@ -210,6 +211,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     const filteredInfillDevelopments = selectedStates.length
       ? (infillDevelopments.filter((infillDevelopment) => selectedStates.indexOf(infillDevelopment.state) !== -1))
       : infillDevelopments;
+    const count = filteredInfillDevelopments.length;
 
     return (
       <PageContainer>
@@ -227,38 +229,39 @@ class InfillDevelopmentListPage extends Component<Props, State> {
             />
           }
         />
-        <TableControllers
-          buttonSelectorOptions={stateOptions}
-          buttonSelectorValue={selectedStates}
-          onButtonSelectorChange={this.handleSelectedStatesChange}
-          title={isFetching ? 'Ladataan...' : `Löytyi ${infillDevelopments.length} kpl`}
-        />
-        {isFetching &&
-          <Row>
-            <Column>
-              <LoaderWrapper><Loader isLoading={!!isFetching} /></LoaderWrapper>
-            </Column>
-          </Row>
-        }
-        {!isFetching &&
-          <div>
-            <SortableTable
-              columns={[
-                {key: 'name', text: 'Hankkeen nimi'},
-                {key: 'detailed_plan_identifier', text: 'Asemakaavan nro'},
-                {key: 'leaseIdentifiers', text: 'Vuokratunnus', renderer: (val) => val.length ? val.map((item, index) => <ListItem key={index}>{item}</ListItem>) : '-'},
-                {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
-              ]}
-              data={filteredInfillDevelopments}
-              onRowClick={this.handleRowClick}
+
+        <Row>
+          <Column small={12} medium={6}></Column>
+          <Column small={12} medium={6}>
+            <TableFilters
+              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+              filterOptions={stateOptions}
+              filterValue={selectedStates}
+              onFilterChange={this.handleSelectedStatesChange}
             />
-            <Pagination
-              activePage={activePage}
-              maxPage={maxPage}
-              onPageClick={this.handlePageClick}
-            />
-          </div>
-        }
+          </Column>
+        </Row>
+
+        <TableWrapper>
+          {isFetching &&
+            <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
+          }
+          <SortableTable
+            columns={[
+              {key: 'name', text: 'Hankkeen nimi'},
+              {key: 'detailed_plan_identifier', text: 'Asemakaavan nro'},
+              {key: 'leaseIdentifiers', text: 'Vuokratunnus', renderer: (val) => val.length ? val.map((item, index) => <ListItem key={index}>{item}</ListItem>) : '-'},
+              {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
+            ]}
+            data={filteredInfillDevelopments}
+            onRowClick={this.handleRowClick}
+          />
+          <Pagination
+            activePage={activePage}
+            maxPage={maxPage}
+            onPageClick={this.handlePageClick}
+          />
+        </TableWrapper>
       </PageContainer>
     );
   }

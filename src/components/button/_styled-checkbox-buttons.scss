@@ -1,5 +1,7 @@
 .styled-checkbox-buttons {
-  display:inline-block;
+  display: block;
+  line-height: 1;
+  margin-left: rem-calc(-5px);
 
   legend {
     visibility: hidden;
@@ -18,10 +20,6 @@
     }
   }
 
-  .label:first-child {
-    margin-left: 0;
-  }
-
   .label:last-child {
     margin-right: 0;
   }
@@ -38,13 +36,14 @@
     border: none;
     box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    font-size: rem-calc(13px);
     font-weight: 600;
     display: inline-block;
     text-align: center;
-    height: rem-calc(30px);
-    line-height: rem-calc(30px);
-    border-radius: 0;
-    padding: 0 1rem;
+    height: rem-calc(20px);
+    line-height: rem-calc(20px);
+    border-radius: rem-calc(10px);
+    padding: rem-calc(0 15px);
 
     &:hover {
       background-color: #E6E6E6;
@@ -54,9 +53,9 @@
   }
 
   .checkbox:checked + .option-label {
-    background: $tram;
+    background: $engel;
     border: none;
-    color: $white;
+    color: $black;
   }
 }
 

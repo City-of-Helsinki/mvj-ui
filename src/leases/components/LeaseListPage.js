@@ -11,6 +11,7 @@ import isEmpty from 'lodash/isEmpty';
 import Button from '$components/button/Button';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
+import IconRadioButtons from '$components/button/IconRadioButtons';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import MapIcon from '$components/icons/MapIcon';
@@ -19,8 +20,10 @@ import Pagination from '$components/table/Pagination';
 import SearchWrapper from '$components/search/SearchWrapper';
 import Search from './search/Search';
 import SortableTable from '$components/table/SortableTable';
-import TableControllers from '$components/table/TableControllers';
+import TableFilters from '$components/table/TableFilters';
 import TableIcon from '$components/icons/TableIcon';
+import TableWrapper from '$components/table/TableWrapper';
+import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {
@@ -28,8 +31,9 @@ import {
   fetchAttributes,
   fetchLeases,
 } from '$src/leases/actions';
+import {leaseStateFilterOptions} from '$src/leases/constants';
 import {FormNames} from '$src/leases/enums';
-import {getContentLeases, getLeasesFilteredByDocumentType} from '$src/leases/helpers';
+import {getContentLeases, getLeasesFilteredByLeaseStates} from '$src/leases/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
@@ -63,8 +67,8 @@ type Props = {
 
 type State = {
   activePage: number,
-  documentType: Array<string>,
   isModalOpen: boolean,
+  leaseStates: Array<string>,
   visualizationType: string,
 }
 
@@ -73,8 +77,8 @@ class LeaseListPage extends Component<Props, State> {
 
   state = {
     activePage: 1,
-    documentType: [],
     isModalOpen: false,
+    leaseStates: [],
     visualizationType: 'table',
   }
 
@@ -212,11 +216,19 @@ class LeaseListPage extends Component<Props, State> {
     }
   }
 
+  handleLeaseStatesChange = (values: Array<string>) => {
+    this.setState({leaseStates: values});
+  }
+
+  handleVisualizationTypeChange = (value: string) => {
+    this.setState({visualizationType: value});
+  }
+
   render() {
     const {
       activePage,
-      documentType,
       isModalOpen,
+      leaseStates,
       visualizationType,
     } = this.state;
     const {
@@ -231,8 +243,12 @@ class LeaseListPage extends Component<Props, State> {
     const count = this.getLeasesCount(content);
     const maxPage = this.getLeasesMaxPage(content);
     //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
-    const filteredLeases = getLeasesFilteredByDocumentType(leases, documentType);
+    const filteredLeases = getLeasesFilteredByLeaseStates(leases, leaseStates);
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
+    const visualizationTypeOptions = [
+      {value: 'table', label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
+      {value: 'map', label: 'Kartta', icon: <MapIcon className='icon-medium' />},
+    ];
 
     return (
       <PageContainer>
@@ -256,56 +272,63 @@ class LeaseListPage extends Component<Props, State> {
             />
           }
         />
-        <TableControllers
-          buttonSelectorOptions={stateOptions}
-          buttonSelectorValue={documentType}
-          onButtonSelectorChange={(value) => {
-            this.setState({documentType: value});}
-          }
-          iconSelectorOptions={[
-            {value: 'table', label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
-            {value: 'map', label: 'Kartta', icon: <MapIcon className='icon-medium' />},
-          ]}
-          iconSelectorValue={visualizationType}
-          onIconSelectorChange={
-            (value) => this.setState({visualizationType: value})
-          }
-          title={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
-        />
-        {isFetching && <Row><Column><LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper></Column></Row>}
-        {!isFetching &&
-          <div>
-            {visualizationType === 'table' && (
-              <div>
-                <SortableTable
-                  columns={[
-                    {key: 'identifier', text: 'Vuokratunnus'},
-                    {key: 'real_property_unit', text: 'Vuokrakohde'},
-                    {key: 'address', text: 'Osoite'},
-                    {key: 'tenant', text: 'Vuokralainen'},
-                    {key: 'lessor', text: 'Vuokranantaja'},
-                    {key: 'state', text: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
-                    {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val)},
-                    {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
-                  ]}
-                  data={filteredLeases}
-                  onRowClick={this.handleRowClick}
-                />
-                <Pagination
-                  activePage={activePage}
-                  maxPage={maxPage}
-                  onPageClick={(page) => this.handlePageClick(page)}
-                />
-              </div>
-            )}
-            {visualizationType === 'map' && (
-              <AreaNotesEditMap
-                areaNotes={areaNotes}
-                showEditTools={false}
+
+        <Row>
+          <Column small={12} medium={6}>
+            <VisualisationTypeWrapper>
+              <IconRadioButtons
+                legend={'Kartta/taulukko'}
+                onChange={this.handleVisualizationTypeChange}
+                options={visualizationTypeOptions}
+                radioName='visualization-type-radio'
+                value={visualizationType}
               />
-            )}
-          </div>
-        }
+            </VisualisationTypeWrapper>
+          </Column>
+          <Column small={12} medium={6}>
+            <TableFilters
+              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+              filterOptions={leaseStateFilterOptions}
+              filterValue={leaseStates}
+              onFilterChange={this.handleLeaseStatesChange}
+            />
+          </Column>
+        </Row>
+
+        <TableWrapper>
+          {isFetching &&
+            <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
+          }
+          {visualizationType === 'table' && (
+            <div>
+              <SortableTable
+                columns={[
+                  {key: 'identifier', text: 'Vuokratunnus'},
+                  {key: 'real_property_unit', text: 'Vuokrakohde'},
+                  {key: 'address', text: 'Osoite'},
+                  {key: 'tenant', text: 'Vuokralainen'},
+                  {key: 'lessor', text: 'Vuokranantaja'},
+                  {key: 'state', text: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
+                  {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val)},
+                  {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
+                ]}
+                data={filteredLeases}
+                onRowClick={this.handleRowClick}
+              />
+              <Pagination
+                activePage={activePage}
+                maxPage={maxPage}
+                onPageClick={(page) => this.handlePageClick(page)}
+              />
+            </div>
+          )}
+          {visualizationType === 'map' && (
+            <AreaNotesEditMap
+              areaNotes={areaNotes}
+              showEditTools={false}
+            />
+          )}
+        </TableWrapper>
       </PageContainer>
     );
   }
