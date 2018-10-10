@@ -3,12 +3,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
-import {getFormValues, initialize} from 'redux-form';
+import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import Button from '$components/button/Button';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import IconRadioButtons from '$components/button/IconRadioButtons';
@@ -17,7 +17,6 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import MapIcon from '$components/icons/MapIcon';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
-import SearchWrapper from '$components/search/SearchWrapper';
 import Search from './search/Search';
 import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
@@ -48,6 +47,11 @@ import type {AreaNoteList} from '$src/areaNote/types';
 
 const PAGE_SIZE = 25;
 
+const visualizationTypeOptions = [
+  {value: 'table', label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
+  {value: 'map', label: 'Kartta', icon: <MapIcon className='icon-medium' />},
+];
+
 type Props = {
   areaNotes: AreaNoteList,
   attributes: Object,
@@ -62,7 +66,6 @@ type Props = {
   location: Object,
   router: Object,
   receiveTopNavigationSettings: Function,
-  searchFormValues: Object,
 }
 
 type State = {
@@ -86,11 +89,12 @@ class LeaseListPage extends Component<Props, State> {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       attributes,
       fetchAreaNoteList,
       fetchAttributes,
+      initialize,
       receiveTopNavigationSettings,
     } = this.props;
     const {router: {location: {query}}} = this.props;
@@ -103,25 +107,30 @@ class LeaseListPage extends Component<Props, State> {
 
     const page = query.page ? Number(query.page) : 1;
     this.setState({activePage: page});
-    this.search();
+
 
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
 
     fetchAreaNoteList();
-  }
-
-  componentDidMount = () => {
-    const {initialize, router: {location: {query}}} = this.props;
 
     const searchQuery = {...query};
+
+    const states = searchQuery.state;
+    if(states) {
+      this.setState({leaseStates: states});
+    }
+
     delete searchQuery.page;
+    delete searchQuery.state;
     initialize(FormNames.SEARCH, searchQuery);
+
+    this.search();
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {query, search: currentSearch}, searchFormValues, initialize} = this.props;
+    const {location: {query, search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
     const {activePage} = this.state;
 
@@ -130,14 +139,16 @@ class LeaseListPage extends Component<Props, State> {
 
       const searchQuery = {...query};
       delete searchQuery.page;
-      if(searchQuery !== searchFormValues) {
-        initialize(FormNames.SEARCH, searchQuery);
-      }
 
-      const page = query.page ? Number(query.page) : 1;
-      if(page !== activePage) {
-        this.setState({activePage: page});
+      if(!Object.keys(searchQuery).length) {
+        this.setState({leaseStates: []});
+        initialize(FormNames.SEARCH, {});
       }
+    }
+
+    const page = query.page ? Number(query.page) : 1;
+    if(page !== activePage) {
+      this.setState({activePage: page});
     }
   }
 
@@ -162,6 +173,8 @@ class LeaseListPage extends Component<Props, State> {
       searchQuery.offset = (page - 1) * PAGE_SIZE;
     }
     searchQuery.limit = PAGE_SIZE;
+    delete searchQuery.page;
+
     fetchLeases(getSearchQuery(searchQuery));
   }
 
@@ -169,6 +182,7 @@ class LeaseListPage extends Component<Props, State> {
     const {router} = this.context;
 
     this.setState({activePage: 1});
+
     return router.push({
       pathname: getRouteById('leases'),
       query,
@@ -217,11 +231,33 @@ class LeaseListPage extends Component<Props, State> {
   }
 
   handleLeaseStatesChange = (values: Array<string>) => {
+    const {location: {query}} = this.props;
+
+    const searchQuery = {...query};
+    delete searchQuery.page;
+    searchQuery.state = values;
+
     this.setState({leaseStates: values});
+    this.handleSearchChange(searchQuery);
   }
 
   handleVisualizationTypeChange = (value: string) => {
     this.setState({visualizationType: value});
+  }
+
+  isBasicSearchByDefault = () => {
+    const {location: {query}} = this.props;
+
+    const searchQuery = {...query};
+    delete searchQuery.page;
+
+    if(Object.keys(searchQuery).length === 0) {
+      return true;
+    } else if(Object.keys(searchQuery).length === 1 && searchQuery['identifier'] || searchQuery['state']) {
+      return true;
+    }
+
+    return false;
   }
 
   render() {
@@ -245,10 +281,8 @@ class LeaseListPage extends Component<Props, State> {
     //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
     const filteredLeases = getLeasesFilteredByLeaseStates(leases, leaseStates);
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
-    const visualizationTypeOptions = [
-      {value: 'table', label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
-      {value: 'map', label: 'Kartta', icon: <MapIcon className='icon-medium' />},
-    ];
+
+    const isBasicSearchByDefault = this.isBasicSearchByDefault();
 
     return (
       <PageContainer>
@@ -257,21 +291,23 @@ class LeaseListPage extends Component<Props, State> {
           onClose={this.hideCreateLeaseModal}
           onSubmit={createLease}
         />
-        <SearchWrapper
-          buttonComponent={
-            <Button
-              className='no-margin full-width'
+        <Row>
+          <Column small={12} large={6}>
+            <AddButtonSecondary
+              className='no-top-margin'
+              label='Luo vuokratunnus'
               onClick={this.showCreateLeaseModal}
-              text='Luo vuokratunnus'
             />
-          }
-          searchComponent={
+          </Column>
+          <Column small={12} large={6}>
             <Search
               attributes={attributes}
+              basicSearchByDefault={isBasicSearchByDefault}
               onSearch={this.handleSearchChange}
+              states={leaseStates}
             />
-          }
-        />
+          </Column>
+        </Row>
 
         <Row>
           <Column small={12} medium={6}>
@@ -333,7 +369,6 @@ class LeaseListPage extends Component<Props, State> {
     );
   }
 }
-const formName = FormNames.SEARCH;
 
 export default flowRight(
   connect(
@@ -343,7 +378,6 @@ export default flowRight(
         attributes: getAttributes(state),
         isFetching: getIsFetching(state),
         leases: getLeasesList(state),
-        searchFormValues: getFormValues(formName)(state),
       };
     },
     {

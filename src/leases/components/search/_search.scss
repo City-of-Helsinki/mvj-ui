@@ -1,157 +1,30 @@
 .lease-search {
-  .readme-link {
-    color: $tram;
-    text-decoration: none;
-    font-size: rem-calc(14px);
-  }
-
-  label {
-    line-height: rem-calc(20px);
-  }
-
-  &__row-wrapper {
+  &__row {
     display: flex;
-    flex-flow: row wrap;
+  }
+
+  &__label-column {
+    width: rem-calc(140px);
+  }
+
+  &__input-column {
+    flex: 1 1 0%;
   }
 
   &__label {
-    min-width: rem-calc(90px);
-    text-align: left;
+    line-height: rem-calc(20px);
+    margin: 0;
+    display: block;
+    font-size: rem-calc(14px);
+    color: $dark-gray;
   }
 
-  &__input-wrapper {
-    flex: 1 1 0%;
-  }
-}
-.search {
-
-
-  .search-box {
-    padding-right: 0.6rem;
+  &__search-type-link {
+    font-weight: $semibold !important;
   }
 
-  .tableInfo {
-    width: 100%;
-    display: flex;
-  }
-
-  .advanced-search-row-wrapper {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-
-    .column-text-input-first {
-      flex: 0 0 45%;
-      display: flex;
-    }
-
-    .column-checkbox {
-      flex: 0 0 20%;
-      display: flex;
-    }
-
-    .column-select {
-      flex: 0 0 32%;
-      display: flex;
-    }
-
-    .column-text-input-second {
-      flex: 0 0 55%;
-      display: flex;
-    }
-
-    .Select {
-      position: relative;
-    }
-
-    .Select-menu-outer {
-      width: 270px;
-      max-height: 150px;
-      position: absolute;
-      margin-top: 0.25rem;
-    }
-
-    .Select-menu {
-    	max-height: 148px;
-    }
-
-    .Select-menu::-webkit-scrollbar-track {
-    	border: none;
-    	background-color: none;
-    }
-
-    .Select-menu::-webkit-scrollbar {
-    	width: 10px;
-    	background-color: $white;
-    }
-
-    .Select-menu::-webkit-scrollbar-thumb {
-    	background-color: $medium-gray;
-    }
-
-    label {
-      display: inline-block;
-      color: $dark-gray;
-      line-height: rem-calc(30px);
-      margin-right: rem-calc(10px);
-    }
-
-
-
-    label.label-medium {
-      min-width: 3rem;
-      text-align: right;
-    }
-
-    label.label-small {
-      min-width: 3rem;
-      text-align: left;
-    }
-
-    @include breakpoint(large down) {
-      //display: none;
-      .column-text-input-first {
-        flex: 0 0 60%;
-        display: flex;
-      }
-
-      .column-checkbox {
-        flex: 0 0 40%;
-        display: flex;
-      }
-
-      .column-select {
-        flex: 0 0 100%;
-        display: flex;
-      }
-
-      .column-text-input-second {
-        flex: 0 0 40%;
-        display: flex;
-      }
-
-      label.label-medium {
-        min-width: 5rem;
-        text-align: left;
-      }
-      label.label-small {
-        min-width: 3rem;
-        text-align: left;
-      }
-    }
-
-    .text-input {
-      max-height: rem-calc(30px);
-      margin-right: rem-calc(10px);
-    }
-    .short-input {
-      width: rem-calc(70px);
-      min-width: rem-calc(70px);
-      margin-right: rem-calc(10px);
-    }
-    .nomargin-input {
-      margin-right: 0;
-      width: 100%;
-    }
+  &__clear-link {
+    font-weight: $semibold !important;
+    float: right;
   }
 }
