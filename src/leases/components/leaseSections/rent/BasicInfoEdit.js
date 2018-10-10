@@ -504,10 +504,11 @@ const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: Basi
 
 type BasicInfoOneTimeProps = {
   attributes: Attributes,
+  dueDatesType: ?string,
   isSaveClicked: boolean,
 }
 
-const BasicInfoOneTime = ({attributes, isSaveClicked}: BasicInfoOneTimeProps) => {
+const BasicInfoOneTime = ({attributes, dueDatesType, isSaveClicked}: BasicInfoOneTimeProps) => {
   return (
     <div>
       <Row>
@@ -552,6 +553,40 @@ const BasicInfoOneTime = ({attributes, isSaveClicked}: BasicInfoOneTimeProps) =>
             }}
           />
         </Column>
+        <Column small={6} medium={4} large={2}>
+          <FormField
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'rents.child.children.due_dates_type')}
+            name='due_dates_type'
+            overrideValues={{
+              label: 'Laskutusjako',
+            }}
+          />
+        </Column>
+        {dueDatesType === RentDueDateTypes.CUSTOM &&
+          <Column small={6} medium={4} large={2}>
+            <FieldArray
+              attributes={attributes}
+              component={renderDueDates}
+              isSaveClicked={isSaveClicked}
+              name="due_dates"
+            />
+          </Column>
+        }
+        {dueDatesType === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'rents.child.children.due_dates_per_year')}
+              name='due_dates_per_year'
+              overrideValues={{
+                fieldType: 'choice',
+                label: 'Laskut kpl/vuodessa',
+                options: rentCustomDateOptions,
+              }}
+            />
+          </Column>
+        }
       </Row>
 
       <SeasonalDates
@@ -784,6 +819,7 @@ class BasicInfoEdit extends PureComponent<Props> {
         {rentType === RentTypes.ONE_TIME &&
           <BasicInfoOneTime
             attributes={attributes}
+            dueDatesType={dueDatesType}
             isSaveClicked={isSaveClicked}
           />
         }

@@ -11,7 +11,6 @@ import {
   FormNames,
   LeaseStatus,
   RecipientOptions,
-  RentDueDateTypes,
   TenantContactType,
 } from './enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
@@ -1262,7 +1261,7 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
   const rents = [...rentsCurrent, ...rentsArchived];
 
   payload.rents = rents.map((rent) => {
-    const rentObj: any = {
+    return {
       id: rent.id || undefined,
       type: rent.type,
       start_date: rent.start_date,
@@ -1278,6 +1277,10 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       y_value_start: rent.y_value_start,
       equalization_start_date: rent.equalization_start_date,
       equalization_end_date: rent.equalization_end_date,
+      seasonal_start_day: rent.seasonal_start_day,
+      seasonal_start_month: rent.seasonal_start_month,
+      seasonal_end_day: rent.seasonal_end_day,
+      seasonal_end_month: rent.seasonal_end_month,
       amount: rent.amount,
       note: rent.note,
       is_active: rent.is_active,
@@ -1289,14 +1292,6 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
       yearly_due_dates: getContentRentDueDate(rent.yearly_due_dates),
     };
-
-    if(rent.due_dates_type === RentDueDateTypes.CUSTOM) {
-      rentObj.seasonal_start_day = rent.seasonal_start_day;
-      rentObj.seasonal_start_month = rent.seasonal_start_month;
-      rentObj.seasonal_end_day = rent.seasonal_end_day;
-      rentObj.seasonal_end_month = rent.seasonal_end_month;
-    }
-    return rentObj;
   });
 
   return payload;

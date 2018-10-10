@@ -256,6 +256,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
 };
 
 const BasicInfoOneTime = ({attributes, rent}: Props) => {
+  const dueDatesTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.due_dates_type');
   const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
 
   return (
@@ -285,6 +286,34 @@ const BasicInfoOneTime = ({attributes, rent}: Props) => {
             text={formatNumber(rent.amount) || '-'}
           />
         </Column>
+        <Column small={6} medium={4} large={2}>
+          <FormTitleAndText
+            title='Laskutusjako'
+            text={getLabelOfOption(dueDatesTypeOptions, rent.due_dates_type) || '-'}
+          />
+        </Column>
+        {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
+          <Column small={6} medium={4} large={2}>
+            <FormTitleAndText
+              title='Eräpäivät'
+              text={rent.due_dates && !!rent.due_dates.length
+                ? displayDueDates(rent.due_dates)
+                : 'Ei eräpäiviä'
+              }
+            />
+          </Column>
+        }
+        {rent.due_dates_type === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={2}>
+            <FormTitleAndText
+              title='Eräpäivät'
+              text={rent.yearly_due_dates && !!rent.yearly_due_dates.length
+                ? displayDueDates(rent.yearly_due_dates)
+                : 'Ei eräpäiviä'
+              }
+            />
+          </Column>
+        }
       </Row>
 
       <SeasonalDates
