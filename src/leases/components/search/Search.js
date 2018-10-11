@@ -6,8 +6,6 @@ import {clearFields, formValueSelector, getFormValues, reduxForm} from 'redux-fo
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
-import toArray from 'lodash/toArray';
 
 import FormField from '$components/form/FormField';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
@@ -22,16 +20,20 @@ import type {Attributes} from '$src/leases/types';
 type Props = {
   anyTouched: boolean,
   attributes: Attributes,
+  basicSearchByDefault: boolean,
   change: Function,
   clearFields: Function,
   districts: Array<Object>,
   fetchDistrictsByMunicipality: Function,
   formValues: Object,
+  initialize: Function,
   isFetchingAttributes: boolean,
+  isSearchInitialized: boolean,
   location: Object,
   municipality: string,
   onSearch: Function,
   router: Object,
+  states: Array<Object>,
 }
 
 type State = {
@@ -46,17 +48,10 @@ class Search extends Component<Props, State> {
   }
 
   componentDidMount() {
-    const {router: {location: {query}}} = this.props;
+    const {basicSearchByDefault} = this.props;
     this._isMounted = true;
-    const advancedSearchValues = {...query};
-    delete advancedSearchValues.page;
-    delete advancedSearchValues.identifier;
 
-    if(toArray(advancedSearchValues).length) {
-      this.setState({
-        isBasicSearch: false,
-      });
-    }
+    this.setState({isBasicSearch: basicSearchByDefault});
   }
 
   componentWillUnmount() {
@@ -64,7 +59,7 @@ class Search extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const {clearFields, fetchDistrictsByMunicipality} = this.props;
+    const {clearFields, fetchDistrictsByMunicipality, isSearchInitialized} = this.props;
 
     if(Number(prevProps.municipality) !== Number(this.props.municipality)) {
       if(this.props.municipality) {
@@ -75,74 +70,54 @@ class Search extends Component<Props, State> {
       }
     }
 
-    if(this.props.anyTouched  && (JSON.stringify(prevProps.formValues || {}) !== JSON.stringify(this.props.formValues || {}))) {
-      const {isBasicSearch} = this.state;
-      const {formValues} = this.props;
-
-      let newIsBasicSearch = isBasicSearch;
-      const advancedFormValues = {...formValues};
-      delete advancedFormValues.identifier;
-
-      if(toArray(advancedFormValues).length) {
-        newIsBasicSearch = false;
-      } else {
-        newIsBasicSearch = true;
-      }
-
-      if(newIsBasicSearch !== isBasicSearch) {
-        this.setState({isBasicSearch: newIsBasicSearch});
-        this.onSearchChange();
-      } else {
-        const {location: {query}} = this.props;
-
-        const searchQuery = {...query};
-        delete searchQuery.page;
-
-        if(JSON.stringify(searchQuery) !== JSON.stringify(this.props.formValues)) {
-          this.onSearchChange();
-        }
-      }
+    if(isSearchInitialized && JSON.stringify(prevProps.formValues) !== JSON.stringify(this.props.formValues)) {
+      this.onSearchChange();
     }
   }
 
   onSearchChange = debounce(() => {
-    if(!this._isMounted) { return;}
+    if(!this._isMounted) return;
 
-    const {formValues, onSearch} = this.props;
-    const {isBasicSearch} = this.state;
+    const {formValues, onSearch, states} = this.props;
+    const newValues = {...formValues, state: states.length ? states : undefined};
 
-    const filters = {};
-    if(isBasicSearch) {
-      if(!isEmpty(formValues)) {
-        if(formValues.identifier) {
-          filters.identifier = formValues.identifier;
-        }
-      }
-    } else {
-      if(!isEmpty(formValues)) {
-        if(formValues.type) {
-          filters.type = Number(formValues.type);
-        }
-        if(formValues.municipality) {
-          filters.municipality = Number(formValues.municipality);
-        }
-        if(formValues.district) {
-          filters.district = Number(formValues.district);
-        }
-      }
-    }
-    onSearch(filters);
-  }, 300);
+    onSearch(newValues);
+  }, 500);
 
   toggleSearchType = () => {
-    this.setState({isBasicSearch: !this.state.isBasicSearch});
-    this.onSearchChange();
+    const {formValues, initialize, onSearch, states} = this.props;
+    const isBasicSearch = this.state.isBasicSearch ? true : false;
+
+    this.setState({isBasicSearch: !isBasicSearch});
+
+    if(!isBasicSearch) {
+      const newFormValues = {
+        identifier: formValues.identifier ? formValues.identifier : undefined,
+        state: states.length ? states : undefined,
+      };
+
+      onSearch(newFormValues);
+      initialize(newFormValues);
+    }
   }
 
   handleLinkKeyDown = (e: any) => {
     if(e.keyCode === 13){
       e.preventDefault();
       this.toggleSearchType();
+    }
+  }
+
+  handleClear = () => {
+    const {onSearch} = this.props;
+
+    onSearch({});
+  }
+
+  handleClearKeyDown = (e: any) => {
+    if(e.keyCode === 13){
+      e.preventDefault();
+      this.handleClear();
     }
   }
 
@@ -160,245 +135,304 @@ class Search extends Component<Props, State> {
     const districtOptions = getDistrictOptions(districts);
     const municipalityOptions = getAttributeFieldOptions(attributes, 'municipality');
     const typeOptions = getAttributeFieldOptions(attributes, 'type');
-    const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
 
     return (
       <div className='lease-search'>
-        {isBasicSearch && (
-          <div>
-            <Row>
-              <Column large={12}>
-                <FormField
-                  autoBlur
-                  disableDirty
-                  fieldAttributes={{}}
-                  invisibleLabel
-                  name='identifier'
-                  placeholder='Hae hakusanalla'
-                  overrideValues={{
-                    label: 'Hae hakusanalla',
-                  }}
-                />
-              </Column>
-            </Row>
-          </div>
-        )}
+        <Row>
+          <Column large={12}>
+            <FormField
+              autoBlur
+              disableDirty
+              fieldAttributes={{
+                label: 'Hae hakusanalla',
+                type: 'search',
+              }}
+              invisibleLabel
+              name='identifier'
+            />
+          </Column>
+        </Row>
         {!isBasicSearch && (
           <div>
-            <Row>
-              <Column small={12} medium={6}>
-                <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label' htmlFor='tenant'>Vuokralainen</label>
-                  <div className='lease-search__input-wrapper'>
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{}}
-                      name='tenant'
-                      overrideValues={{
-                        label: '',
-                      }}
-                    />
-                  </div>
-                </div>
-              </Column>
-              <Column small={12} medium={3}>
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Vuokralainen</span>
+              </div>
+              <div className='lease-search__input-column'>
                 <FormField
                   autoBlur
                   disableDirty
-                  fieldAttributes={{}}
-                  invisibleLabel
-                  name='only_past_tentants'
-                  overrideValues={{
-                    label: 'Vain entiset asiakkaat',
-                    fieldType: 'checkbox',
-                    options: [
-                      {value: true, label: 'Vain entiset asiakkaat'},
-                    ],
+                  fieldAttributes={{
+                    label: 'Vuokralainen',
+                    type: 'string',
                   }}
+                  invisibleLabel
+                  name='tenant'
                 />
-              </Column>
-              <Column small={12} medium={3}>
-                <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label' htmlFor='tenant_role'>Rooli</label>
-                  <div className='lease-search__input-wrapper'>
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Rooli</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <Row>
+                  <Column small={12} medium={6}>
                     <FormField
                       autoBlur
                       disableDirty
-                      fieldAttributes={{}}
+                      fieldAttributes={{
+                        label: '',
+                        type: 'multiselect',
+                      }}
+                      invisibleLabel
                       isLoading={isFetchingAttributes}
                       name='tenant_role'
                       overrideValues={{
-                        label: '',
-                        fieldType: 'multiselect',
                         options: tenantTypeOptions,
                       }}
                     />
-                  </div>
-                </div>
-              </Column>
-            </Row>
-            <Row>
-              <Column small={12} medium={6}>
-                <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label' htmlFor='search_type'>Vuokraus</label>
-                  <div className='lease-search__input-wrapper'>
-                    <Row>
-                      <Column>
-                        <FormField
-                          autoBlur
-                          disableDirty
-                          fieldAttributes={{}}
-                          name='search_type'
-                          overrideValues={{
-                            label: '',
-                            fieldType: 'choice',
-                            options: typeOptions,
-                          }}
-                        />
-                      </Column>
-                      <Column>
-                        <FormField
-                          autoBlur
-                          disableDirty
-                          fieldAttributes={{}}
-                          invisibleLabel
-                          name='search_municipality'
-                          overrideValues={{
-                            label: 'Kunta',
-                            fieldType: 'choice',
-                            options: municipalityOptions,
-                          }}
-                        />
-                      </Column>
-                      <Column>
-                        <FormField
-                          autoBlur
-                          disableDirty
-                          disableRequired
-                          fieldAttributes={{}}
-                          invisibleLabel
-                          name='search_district'
-                          overrideValues={{
-                            label: 'Kaupunginosa',
-                            fieldType: 'choice',
-                            options: districtOptions,
-                          }}
-                        />
-                      </Column>
-                      <Column>
-                        <FormField
-                          autoBlur
-                          disableDirty
-                          fieldAttributes={{}}
-                          invisibleLabel
-                          name='sequence'
-                          overrideValues={{
-                            label: 'Juokseva numero',
-                          }}
-                        />
-                      </Column>
-                    </Row>
-                  </div>
-                </div>
-              </Column>
-              <Column small={12} medium={3}>
-                <Row>
-                  <Column>
-                    <FormField
-                      autoBlur
-                      disableDirty
-                      fieldAttributes={{}}
-                      invisibleLabel
-                      name='on_going'
-                      overrideValues={{
-                        label: 'Voimassa',
-                        fieldType: 'checkbox',
-                        options: [
-                          {value: true, label: 'Voimassa'},
-                        ],
-                      }}
-                    />
                   </Column>
-                  <Column>
+                  <Column small={12} medium={6}>
                     <FormField
                       autoBlur
                       disableDirty
-                      fieldAttributes={{}}
+                      fieldAttributes={{
+                        label: 'Vain entiset asiakkaat',
+                        type: 'checkbox',
+                      }}
                       invisibleLabel
-                      name='expired'
+                      name='only_past_tentants'
                       overrideValues={{
-                        label: 'Päättyneet',
-                        fieldType: 'checkbox',
-                        options: [
-                          {value: true, label: 'Päättyneet'},
-                        ],
+                        options: [{value: true, label: 'Vain entiset asiakkaat'}],
                       }}
                     />
                   </Column>
                 </Row>
+              </div>
+            </div>
 
-              </Column>
-              <Column small={12} medium={3}>
-                <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label' htmlFor='search_state'>Tyyppi</label>
-                  <div className='lease-search__input-wrapper'>
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Vuokratunnus</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <Row>
+                  <Column small={3}>
                     <FormField
                       autoBlur
                       disableDirty
-                      fieldAttributes={{}}
-                      isLoading={isFetchingAttributes}
-                      name='search_state'
-                      overrideValues={{
-                        label: '',
-                        fieldType: 'multiselect',
-                        options: stateOptions,
+                      fieldAttributes={{
+                        label: 'Tyyppi',
+                        type: 'choice',
                       }}
+                      invisibleLabel
+                      name='type'
+                      overrideValues={{options: typeOptions}}
                     />
-                  </div>
-                </div>
+                  </Column>
+                  <Column small={3}>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Kunta',
+                        type: 'choice',
+                      }}
+                      invisibleLabel
+                      name='municipality'
+                      overrideValues={{options: municipalityOptions}}
+                    />
+                  </Column>
+                  <Column small={3}>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Kaupunginosa',
+                        type: 'choice',
+                      }}
+                      invisibleLabel
+                      name='district'
+                      overrideValues={{options: districtOptions}}
+                    />
+                  </Column>
+                  <Column small={3}>
+                    <FormField
+                      autoBlur
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Juokseva numero',
+                        type: 'string',
+                      }}
+                      invisibleLabel
+                      name='sequence'
+                    />
+                  </Column>
+                </Row>
+              </div>
+            </div>
 
-              </Column>
-            </Row>
-            <Row>
-              <Column small={12} medium={6}>
-                <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label' htmlFor='property_identifier'>Kiinteistö</label>
-                  <div className='lease-search__input-wrapper'>
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Alkupvm</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <Row>
+                  <Column small={6}>
+                    <FormField
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Vuokrauksen alkupvm alkaen',
+                        type: 'date',
+                      }}
+                      invisibleLabel
+                      name='lease_start_date_start'
+                    />
+                  </Column>
+                  <Column small={6}>
+                    <FormField
+                      className='with-dash'
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Vuokrauksen alkupvm loppuen',
+                        type: 'date',
+                      }}
+                      invisibleLabel
+                      name='lease_start_date_end'
+                    />
+                  </Column>
+                </Row>
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Loppupvm</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <Row>
+                  <Column small={6}>
+                    <FormField
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Vuokrauksen loppupvm alkaen',
+                        type: 'date',
+                      }}
+                      invisibleLabel
+                      name='lease_end_date_start'
+                    />
+                  </Column>
+                  <Column small={6}>
+                    <FormField
+                      className='with-dash'
+                      disableDirty
+                      fieldAttributes={{
+                        label: 'Vuokrauksen loppupvm loppuen',
+                        type: 'date',
+                      }}
+                      invisibleLabel
+                      name='lease_end_date_end'
+                    />
+                  </Column>
+                </Row>
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'></span>
+              </div>
+              <div className='lease-search__input-column'>
+                <Row>
+                  <Column small={6}>
                     <FormField
                       autoBlur
                       disableDirty
-                      fieldAttributes={{}}
-                      name='property_identifier'
+                      fieldAttributes={{
+                        label: 'Voimassa',
+                        type: 'checkbox',
+                      }}
+                      invisibleLabel
+                      name='on_going'
                       overrideValues={{
-                        label: '',
+                        options: [{value: true, label: 'Voimassa'}],
                       }}
                     />
-                  </div>
-                </div>
-              </Column>
-              <Column small={12} medium={6}>
-                <div className='lease-search__row-wrapper'>
-                  <label className='lease-search__label' htmlFor='address'>Osoite</label>
-                  <div className='lease-search__input-wrapper'>
+                  </Column>
+                  <Column small={6}>
                     <FormField
                       autoBlur
                       disableDirty
-                      fieldAttributes={{}}
-                      name='address'
+                      fieldAttributes={{
+                        label: 'Päättyneet',
+                        type: 'checkbox',
+                      }}
+                      invisibleLabel
+                      name='expired'
                       overrideValues={{
-                        label: '',
+                        options: [{value: true, label: 'Päättyneet'}],
                       }}
                     />
-                  </div>
-                </div>
-              </Column>
-            </Row>
+                  </Column>
+                </Row>
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Kiinteistötunnus</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: 'Kiinteistötunnus',
+                    type: 'string',
+                  }}
+                  invisibleLabel
+                  name='property_identifier'
+                />
+              </div>
+            </div>
+
+            <div className='lease-search__row'>
+              <div className='lease-search__label-column'>
+                <span className='lease-search__label'>Vuokrakohteen osoite</span>
+              </div>
+              <div className='lease-search__input-column'>
+                <FormField
+                  autoBlur
+                  disableDirty
+                  fieldAttributes={{
+                    label: 'Vuokrakohteen osoite',
+                    type: 'string',
+                  }}
+                  invisibleLabel
+                  name='address'
+                />
+              </div>
+            </div>
           </div>
         )}
         <Row>
-          <Column large={12}>
-            <a tabIndex={0} onKeyDown={this.handleLinkKeyDown} onClick={this.toggleSearchType} className='readme-link'>{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</a>
+          <Column small={6}>
+            <a
+              tabIndex={0}
+              onKeyDown={this.handleLinkKeyDown}
+              onClick={this.toggleSearchType}
+              className='lease-search__search-type-link'
+            >{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</a>
+          </Column>
+          <Column small={6}>
+            <a
+              tabIndex={0}
+              onKeyDown={this.handleClearKeyDown}
+              onClick={this.handleClear}
+              className='lease-search__clear-link'
+            >Tyhjennä haku</a>
           </Column>
         </Row>
       </div>
@@ -412,7 +446,7 @@ const selector = formValueSelector(formName);
 export default flowRight(
   connect(
     state => {
-      const municipality = selector(state, 'search_municipality');
+      const municipality = selector(state, 'municipality');
 
       return {
         attributes: getAttributes(state),

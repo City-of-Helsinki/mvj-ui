@@ -406,15 +406,15 @@
       "choices": [
         {
             "display_name": "Vireillä",
-            "value": 0
+            "value": "in_hold"
         },
         {
             "display_name": "Neuvottelu",
-            "value": 1
+            "value": "nagotiation"
         },
         {
             "display_name": "Päätös",
-            "value": 2
+            "value": "decision"
         }
       ]
     },

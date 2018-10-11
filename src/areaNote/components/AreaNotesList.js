@@ -1,21 +1,23 @@
 // @flow
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 
-import Button from '$components/button/Button';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
+import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Search from './search/Search';
-import SearchWrapper from '$components/search/SearchWrapper';
 import {fetchAreaNoteList, hideEditMode, initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/areaNote/enums';
 import {getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAreaNoteList, getIsEditMode} from '$src/areaNote/selectors';
+import {getAreaNoteList, getIsEditMode, getIsFetching} from '$src/areaNote/selectors';
 
 import type {AreaNoteList} from '$src/areaNote/types';
 
@@ -26,22 +28,31 @@ type Props = {
   initialize: Function,
   initializeAreaNote: Function,
   isEditMode: boolean,
+  isFetching: boolean,
+  location: Object,
   plansUnderground: ?Array<Object>,
   receiveTopNavigationSettings: Function,
-  router: Object,
   showEditMode: Function,
 }
 
-class AreaNotesList extends Component<Props> {
+type State = {
+  isSearchInitialized: boolean,
+}
+
+class AreaNotesList extends Component<Props, State> {
+  state = {
+    isSearchInitialized: false,
+  }
+
   static contextTypes = {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const {
-      fetchAreaNoteList,
+      initialize,
+      location: {query},
       receiveTopNavigationSettings,
-      router: {location: {query}},
     } = this.props;
 
     receiveTopNavigationSettings({
@@ -50,16 +61,43 @@ class AreaNotesList extends Component<Props> {
       showSearch: false,
     });
 
-    fetchAreaNoteList(getSearchQuery(query));
+    this.search();
+
+    const setSearchFormReadyFlag = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      try {
+        await initialize(FormNames.SEARCH, query);
+
+        setSearchFormReadyFlag();
+      } catch(e) {
+        console.error(`Failed to initialize search form with error, ${e}`);
+      }
+    };
+
+    initializeSearchForm();
   }
 
-  componentDidMount() {
-    const {initialize, router: {location: {query}}} = this.props;
-    initialize(FormNames.SEARCH, query);
+  componentDidUpdate(prevProps) {
+    const {location: {query, search: currentSearch}, initialize} = this.props;
+    const {location: {search: prevSearch}} = prevProps;
+
+    if(currentSearch !== prevSearch) {
+      this.search();
+
+      const searchQuery = {...query};
+
+      if(!Object.keys(searchQuery).length) {
+        initialize(FormNames.SEARCH, {});
+      }
+    }
   }
 
   componentWillUnmount() {
     const {hideEditMode} = this.props;
+
     hideEditMode();
   }
 
@@ -76,9 +114,6 @@ class AreaNotesList extends Component<Props> {
 
   handleSearchChange = (query) => {
     const {router} = this.context;
-    const {fetchAreaNoteList} = this.props;
-
-    fetchAreaNoteList(getSearchQuery(query));
 
     return router.push({
       pathname: getRouteById('areaNotes'),
@@ -86,31 +121,46 @@ class AreaNotesList extends Component<Props> {
     });
   }
 
+  search = () => {
+    const {fetchAreaNoteList, location: {query}} = this.props;
+
+    fetchAreaNoteList(getSearchQuery(query));
+  }
+
   handleHideEdit = () => {
     this.props.hideEditMode();
   }
 
   render() {
-    const {isEditMode} = this.props;
+    const {isEditMode, isFetching} = this.props;
+    const {isSearchInitialized} = this.state;
 
     return (
       <PageContainer>
-        <SearchWrapper
-          buttonComponent={
-            <Button
-              className='no-margin'
+        <Row>
+          <Column small={12} large={6}>
+            <AddButtonSecondary
+              className='no-top-margin'
               disabled={isEditMode}
+              label='Luo muistettava ehto'
               onClick={this.handleCreateButtonClick}
-              text='Luo muistettava ehto'
             />
-          }
-          searchComponent={
+          </Column>
+          <Column small={12} large={6}>
             <Search
-              onSearch={(query) => this.handleSearchChange(query)}
+              isSearchInitialized={isSearchInitialized}
+              onSearch={this.handleSearchChange}
             />
+          </Column>
+        </Row>
+        <div style={{position: 'relative'}}>
+          {isFetching &&
+            <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
           }
-        />
-        <AreaNotesEditMap allowEditing/>
+
+          <AreaNotesEditMap allowEditing/>
+        </div>
+
       </PageContainer>
     );
   }
@@ -122,6 +172,7 @@ export default flowRight(
       return {
         areaNotes: getAreaNoteList(state),
         isEditMode: getIsEditMode(state),
+        isFetching: getIsFetching(state),
       };
     },
     {

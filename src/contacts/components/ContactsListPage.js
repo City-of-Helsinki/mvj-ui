@@ -2,21 +2,21 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {formValueSelector, initialize} from 'redux-form';
+import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 import {Row, Column} from 'react-foundation';
 
-import Button from '$components/button/Button';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
-import SearchWrapper from '$components/search/SearchWrapper';
 import SortableTable from '$components/table/SortableTable';
-import TableControllers from '$components/table/TableControllers';
+import TableFilters from '$components/table/TableFilters';
+import TableWrapper from '$components/table/TableWrapper';
 import {
   fetchContacts,
   fetchAttributes,
@@ -44,16 +44,17 @@ type Props = {
   location: Object,
   receiveTopNavigationSettings: Function,
   router: Object,
-  search: ?string,
 }
 
 type State = {
   activePage: number,
+  isSearchInitialized: boolean,
 }
 
 class ContactListPage extends Component<Props, State> {
   state = {
     activePage: 1,
+    isSearchInitialized: false,
   }
 
   search: any
@@ -62,9 +63,9 @@ class ContactListPage extends Component<Props, State> {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
-    const {attributes, fetchAttributes, receiveTopNavigationSettings} = this.props;
-    const {router: {location: {query}}} = this.props;
+  componentDidMount() {
+    const {attributes, fetchAttributes, initialize, receiveTopNavigationSettings} = this.props;
+    const {location: {query}} = this.props;
 
     receiveTopNavigationSettings({
       linkUrl: getRouteById('contacts'),
@@ -72,37 +73,46 @@ class ContactListPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    const page = query.page ? Number(query.page) : 1;
-    this.setState({activePage: page});
-    this.search();
-
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
-  }
 
-  componentDidMount = () => {
-    const {initialize, router: {location: {query}}} = this.props;
-    const searchQuery = {...query};
-    delete searchQuery.page;
-    initialize(FormNames.SEARCH, searchQuery);
+    this.search();
+
+    const page = query.page ? Number(query.page) : 1;
+    this.setState({activePage: page});
+
+    const setSearchFormReadyFlag = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      try {
+        const searchQuery = {...query};
+        delete searchQuery.page;
+
+        await initialize(FormNames.SEARCH, searchQuery);
+        setSearchFormReadyFlag();
+      } catch(e) {
+        console.error(`Failed to initialize search form with error, ${e}`);
+      }
+    };
+
+    initializeSearchForm();
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {query, search: currentSearch}, search, initialize} = this.props;
+    const {location: {query, search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
-    const {activePage} = this.state;
 
     if(currentSearch !== prevSearch) {
       this.search();
-      if(query.search !== search) {
-        const searchQuery = {...query};
-        delete searchQuery.page;
-        initialize(FormNames.SEARCH, searchQuery);
-      }
-      const page = query.page ? Number(query.page) : 1;
-      if(page !== activePage) {
-        this.setState({activePage: page});
+
+      const searchQuery = {...query};
+      delete searchQuery.page;
+
+      if(!Object.keys(searchQuery).length) {
+        initialize(FormNames.SEARCH, {});
       }
     }
   }
@@ -135,9 +145,11 @@ class ContactListPage extends Component<Props, State> {
 
     const searchQuery = {...query};
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
     if(page > 1) {
       searchQuery.offset = (page - 1) * PAGE_SIZE;
     }
+
     searchQuery.limit = PAGE_SIZE;
     fetchContacts(getSearchQuery(searchQuery));
   }
@@ -154,7 +166,7 @@ class ContactListPage extends Component<Props, State> {
 
   handlePageClick = (page: number) => {
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {location: {query}} = this.props;
 
     if(page > 1) {
       query.page = page;
@@ -180,6 +192,7 @@ class ContactListPage extends Component<Props, State> {
 
   getContactMaxPage = (contactList: ContactList) => {
     const count = this.getContactCount(contactList);
+
     if(!count) {
       return 0;
     }
@@ -188,7 +201,7 @@ class ContactListPage extends Component<Props, State> {
 
   render() {
     const {attributes, contactList, isFetching} = this.props;
-    const {activePage} = this.state;
+    const {activePage, isSearchInitialized} = this.state;
     const typeOptions = getAttributeFieldOptions(attributes, 'type');
 
     const count = this.getContactCount(contactList);
@@ -197,55 +210,59 @@ class ContactListPage extends Component<Props, State> {
 
     return(
       <PageContainer>
-        <SearchWrapper
-          buttonComponent={
-            <Button
-              className='no-margin'
+        <Row>
+          <Column small={12} large={6}>
+            <AddButtonSecondary
+              className='no-top-margin'
+              label='Luo asiakas'
               onClick={this.handleCreateButtonClick}
-              text='Luo asiakas'
             />
-          }
-          searchComponent={
+          </Column>
+          <Column small={12} large={6}>
             <Search
+              isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
             />
-          }
-        />
-        <TableControllers
-          title={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
-        />
+          </Column>
+        </Row>
 
-        {isFetching &&
-          <Row><Column><LoaderWrapper><Loader isLoading={!!isFetching} /></LoaderWrapper></Column></Row>
-        }
-        {!isFetching &&
-          <div>
-            <SortableTable
-              columns={[
-                {key: 'type', text: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)},
-                {key: 'first_name', text: 'Etunimi'},
-                {key: 'last_name', text: 'Sukunimi'},
-                {key: 'national_identification_number', text: 'Henkilötunnus'},
-                {key: 'name', text: 'Yrityksen nimi'},
-                {key: 'business_id', text: 'Y-tunnus'},
-              ]}
-              data={contacts}
-              onRowClick={this.handleRowClick}
+        <Row>
+          <Column small={12} medium={6}></Column>
+          <Column small={12} medium={6}>
+            <TableFilters
+              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+              filterOptions={[]}
+              filterValue={[]}
             />
-            <Pagination
-              activePage={activePage}
-              maxPage={maxPage}
-              onPageClick={this.handlePageClick}
-            />
-          </div>
-        }
+          </Column>
+        </Row>
+
+        <TableWrapper>
+          {isFetching &&
+            <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
+          }
+          <SortableTable
+            columns={[
+              {key: 'type', text: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)},
+              {key: 'first_name', text: 'Etunimi'},
+              {key: 'last_name', text: 'Sukunimi'},
+              {key: 'national_identification_number', text: 'Henkilötunnus'},
+              {key: 'name', text: 'Yrityksen nimi'},
+              {key: 'business_id', text: 'Y-tunnus'},
+            ]}
+            data={contacts}
+            onRowClick={this.handleRowClick}
+          />
+          <Pagination
+            activePage={activePage}
+            maxPage={maxPage}
+            onPageClick={this.handlePageClick}
+          />
+        </TableWrapper>
       </PageContainer>
     );
   }
 }
-
-const formName = FormNames.SEARCH;
-const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
@@ -254,7 +271,6 @@ export default flowRight(
         attributes: getAttributes(state),
         contactList: getContactList(state),
         isFetching: getIsFetching(state),
-        search: selector(state, 'search'),
       };
     },
     {

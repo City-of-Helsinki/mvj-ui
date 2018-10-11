@@ -9,7 +9,7 @@ type Props = {
   value?: string,
 }
 
-class StyledRadioButtons extends Component<Props> {
+class IconRadioButtons extends Component<Props> {
   render () {
     const {legend, options, radioName, value} = this.props;
 
@@ -46,4 +46,4 @@ class StyledRadioButtons extends Component<Props> {
   }
 }
 
-export default StyledRadioButtons;
+export default IconRadioButtons;

@@ -652,19 +652,16 @@ export const getContentBasisOfRents = (lease: Object) =>
   });
 
 export const getFullAddress = (item: Object) => {
-  if(isEmpty(item)) {return null;}
+  if(isEmpty(item)) return null;
 
   return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''}
     ${item.postal_code || ''} ${item.city || ''}`;
 };
 
-export const getLeasesFilteredByDocumentType = (items: Array<Object>, documentTypes: Array<string>): Array<Object> => {
-  if(!documentTypes || !documentTypes.length) {return items;}
+export const getLeasesFilteredByLeaseStates = (items: Array<Object>, states: Array<string>): Array<Object> => {
+  if(!states || !states.length) return items;
 
-  return items.filter((item) => {
-    return documentTypes.indexOf(item.state) !== -1;
-  });
-
+  return items.filter((item) => states.indexOf(item.state) !== -1);
 };
 
 export const getInvoiceRecipientOptions = (lease: Object) =>{

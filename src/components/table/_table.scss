@@ -14,7 +14,7 @@
       height: rem-calc(35px);
       min-width: rem-calc(35px);
       text-align: center;
-      color: $black !important;
+      color: $black;
       text-decoration: none !important;
       background-color: $white;
       border: 1px solid $medium-gray;
@@ -28,6 +28,7 @@
 
       &:hover {
         outline: none !important;
+        color: $black;
       }
     }
 
@@ -47,7 +48,8 @@
         z-index: 1;
         color: $black;
         pointer-events: none;
-        background-color: $engel;
+        background-color: $tram;
+        color: $white;
       }
     }
 
@@ -106,12 +108,12 @@
       margin-bottom: rem-calc(10px);
 
       thead td, thead th {
-        background-color: $engel;
+        background-color: $tram;
         font-size: rem-calc(14px);
     	  font-weight: $semibold;
         white-space: nowrap;
         text-align: left;
-    	  color: $black;
+    	  color: $white;
         padding: 0;
         border: none;
 
@@ -241,6 +243,7 @@
 
         thead th {
           background-color: $white;
+          color: $black;
           font-size: rem-calc(13px);
 
           @include focus();
@@ -276,5 +279,47 @@
         }
       }
     }
+  }
+}
+
+.table {
+  &__table-wrapper {
+    position: relative;
+  }
+
+  &__filters {
+    display: flex;
+
+    &_filter-wrapper {
+      flex: 1 1 0%;
+
+      &_title {
+        font-size: rem-calc(14px);
+        font-weight: 600;
+        padding: 0;
+        display: block;
+        margin: rem-calc(0 0 2px);
+      }
+    }
+
+    &_amount-wrapper {
+      align-self: flex-end;
+      padding-left: rem-calc(20px);
+
+      span {
+        font-size: rem-calc(16px);
+        font-weight: 600;
+        padding: 0;
+        display: block;
+        line-height: 1;
+        margin-bottom: rem-calc(5px);
+      }
+    }
+  }
+
+  &__visualisation-type-wrapper {
+    display: flex;
+    height: 100%;
+    align-items: flex-end;
   }
 }

@@ -1,7 +1,7 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {formValueSelector, reduxForm} from 'redux-form';
+import {getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import debounce from 'lodash/debounce';
 import flowRight from 'lodash/flowRight';
@@ -10,8 +10,9 @@ import FormField from '$components/form/FormField';
 import {FormNames} from '$src/areaNote/enums';
 
 type Props = {
+  formValues: Object,
+  isSearchInitialized: boolean,
   onSearch: Function,
-  search: string,
 }
 
 class Search extends Component<Props> {
@@ -25,36 +26,59 @@ class Search extends Component<Props> {
     this._isMounted = true;
   }
 
-  componentWillUpdate(nextProps: Object) {
-    if(this.props.search !== nextProps.search) {
+  componentDidUpdate(prevProps: Object) {
+    const {isSearchInitialized} = this.props;
+
+    if(isSearchInitialized && JSON.stringify(prevProps.formValues) !== JSON.stringify(this.props.formValues)) {
       this.onSearchChange();
     }
   }
 
   onSearchChange = debounce(() => {
-    if(!this._isMounted) {
-      return;
+    if(!this._isMounted) return;
+
+    const {formValues, onSearch} = this.props;
+    onSearch({...formValues});
+  }, 500);
+
+  handleClear = () => {
+    const {onSearch} = this.props;
+
+    onSearch({});
+  }
+
+  handleClearKeyDown = (e: any) => {
+    if(e.keyCode === 13){
+      e.preventDefault();
+      this.handleClear();
     }
-    const {onSearch, search} = this.props;
-    const filters = {};
-    filters.search = search || undefined;
-    onSearch(filters);
-  }, 300);
+  }
 
   render () {
     return (
-      <div className='search'>
+      <div>
         <Row>
           <Column large={12}>
             <FormField
               disableDirty
-              fieldAttributes={{}}
-              name='search'
-              placeholder='Hae hakusanalla'
-              overrideValues={{
-                label: '',
+              fieldAttributes={{
+                label: 'Hae hakusanalla',
+                type: 'search',
               }}
+              invisibleLabel
+              name='search'
             />
+          </Column>
+        </Row>
+        <Row>
+          <Column small={6}></Column>
+          <Column small={6}>
+            <a
+              tabIndex={0}
+              onKeyDown={this.handleClearKeyDown}
+              onClick={this.handleClear}
+              className='lease-search__clear-link'
+            >Tyhjennä haku</a>
           </Column>
         </Row>
       </div>
@@ -64,15 +88,12 @@ class Search extends Component<Props> {
 
 
 const formName = FormNames.SEARCH;
-const selector = formValueSelector(formName);
+
 export default flowRight(
   connect(
-    state => {
-
-      return {
-        search: selector(state, 'search'),
-      };
-    },
+    state => ({
+      formValues: getFormValues(formName)(state),
+    })
   ),
   reduxForm({
     form: formName,

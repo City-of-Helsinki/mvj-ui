@@ -210,8 +210,6 @@ class CommentPanel extends PureComponent<Props, State> {
                   legend='Suodata kommentteja'
                   onChange={this.handleFilterChange}
                   options={topicFilterOptions}
-                  selectAllButton
-                  selectAllButtonLabel='Kaikki'
                   value={selectedTopics}
                 />
               </div>

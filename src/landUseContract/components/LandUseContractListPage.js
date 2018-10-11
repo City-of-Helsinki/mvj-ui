@@ -6,9 +6,10 @@ import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 
-import Button from '$components/button/Button';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import CreateLandUseContractModal from './createLandUseContract/CreateLandUseContractModal';
 import ListItem from '$components/content/ListItem';
 import Loader from '$components/loader/Loader';
@@ -16,14 +17,14 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
-import SearchWrapper from '$components/search/SearchWrapper';
 import SortableTable from '$components/table/SortableTable';
-import TableControllers from '$components/table/TableControllers';
+import TableFilters from '$components/table/TableFilters';
+import TableWrapper from '$components/table/TableWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {createLandUseContract, fetchLandUseContractAttributes, fetchLandUseContractList} from '$src/landUseContract/actions';
 import {FormNames} from '$src/landUseContract/enums';
 import {getContentLandUseContractList} from '$src/landUseContract/helpers';
-import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
 
@@ -48,6 +49,7 @@ type State = {
   activePage: number,
   count: number,
   isModalOpen: boolean,
+  isSearchInitialized: boolean,
   landUseContracts: Array<Object>,
   maxPage: number,
   selectedStates: Array<string>,
@@ -58,6 +60,7 @@ class LandUseContractListPage extends Component<Props, State> {
     activePage: 1,
     count: 0,
     isModalOpen: false,
+    isSearchInitialized: false,
     landUseContracts: [],
     maxPage: 0,
     selectedStates: [],
@@ -71,8 +74,9 @@ class LandUseContractListPage extends Component<Props, State> {
     const {
       attributes,
       fetchLandUseContractAttributes,
+      initialize,
+      location: {query},
       receiveTopNavigationSettings,
-      router: {location: {query}},
     } = this.props;
 
     receiveTopNavigationSettings({
@@ -81,26 +85,59 @@ class LandUseContractListPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    const page = query.page ? Number(query.page) : 1;
-    if(page <= 1) {
-      this.setState({activePage: 1});
-    } else {
-      this.setState({activePage: page});
-    }
-
-    this.search();
-    this.initializeSearchForm();
-
     if(isEmpty(attributes)) {
       fetchLandUseContractAttributes();
     }
+
+    this.search();
+
+    const page = query.page ? Number(query.page) : 1;
+    this.setState({activePage: page});
+
+    const states = isArray(query.state)
+      ? query.state
+      : query.state ? [query.state] : null;
+    if(states) {
+      this.setState({selectedStates: states});
+    }
+
+    const setSearchFormReadyFlag = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      try {
+        const searchQuery = {...query};
+        delete searchQuery.page;
+        delete searchQuery.state;
+
+        await initialize(FormNames.LAND_USE_CONTRACT_SEARCH, searchQuery);
+
+        setSearchFormReadyFlag();
+      } catch(e) {
+        console.error(`Failed to initialize search form with error, ${e}`);
+      }
+    };
+
+    initializeSearchForm();
   }
 
-  componentDidUpdate = (prevProps) => {
-    if(JSON.stringify(this.props.location.query) !== JSON.stringify(prevProps.location.query)) {
+  componentDidUpdate(prevProps) {
+    const {location: {query, search: currentSearch}, initialize} = this.props;
+    const {location: {search: prevSearch}} = prevProps;
+
+    if(currentSearch !== prevSearch) {
       this.search();
-      this.initializeSearchForm();
+
+      const searchQuery = {...query};
+      delete searchQuery.page;
+
+      if(!Object.keys(searchQuery).length) {
+        this.setState({selectedStates: []});
+        initialize(FormNames.LAND_USE_CONTRACT_SEARCH, {});
+      }
     }
+
     if(prevProps.landUseContractListData !== this.props.landUseContractListData) {
       this.updateTableData();
     }
@@ -109,17 +146,13 @@ class LandUseContractListPage extends Component<Props, State> {
   handleCreateButtonClick = () => {
     const {initialize} = this.props;
 
-    this.setState({
-      isModalOpen: true,
-    });
+    this.setState({isModalOpen: true});
 
     initialize(FormNames.CREATE_LAND_USE_CONTRACT, {});
   }
 
   hideCreateLandUseContractModal = () => {
-    this.setState({
-      isModalOpen: false,
-    });
+    this.setState({isModalOpen: false});
   }
 
   handleCreateLease = (landUseContract: LandUseContract) => {
@@ -139,25 +172,25 @@ class LandUseContractListPage extends Component<Props, State> {
     });
   }
 
-  initializeSearchForm = () => {
-    const {initialize, router: {location: {query}}} = this.props;
-
-    const searchValues = {...query};
-    delete searchValues.page;
-    initialize(FormNames.LAND_USE_CONTRACT_SEARCH, searchValues);
-  }
-
   search = () => {
-    const {fetchLandUseContractList, router: {location: {query}}} = this.props;
-
+    const {fetchLandUseContractList, location: {query}} = this.props;
+    const page = query.page ? Number(query.page) : 1;
     const searchQuery = {...query};
+
     delete searchQuery.page;
-    fetchLandUseContractList(searchQuery);
+
+    if(page > 1) {
+      searchQuery.offset = (page - 1) * PAGE_SIZE;
+    }
+
+    searchQuery.limit = PAGE_SIZE;
+
+    fetchLandUseContractList(getSearchQuery(searchQuery));
   }
 
   handleRowClick = (id) => {
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {location: {query}} = this.props;
 
     return router.push({
       pathname: `${getRouteById('landUseContract')}/${id}`,
@@ -167,7 +200,7 @@ class LandUseContractListPage extends Component<Props, State> {
 
   handlePageClick = (page: number) => {
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {location: {query}} = this.props;
 
     if(page > 1) {
       query.page = page;
@@ -197,6 +230,7 @@ class LandUseContractListPage extends Component<Props, State> {
 
   getLandUseContractListMaxPage = (landUseContractListData: LandUseContractList) => {
     const count = this.getLandUseContractListCount(landUseContractListData);
+
     if(!count) {
       return 0;
     }
@@ -204,18 +238,25 @@ class LandUseContractListPage extends Component<Props, State> {
   }
 
   handleSelectedStatesChange = (states: Array<string>) => {
-    this.setState({
-      selectedStates: states,
-    });
+    const {location: {query}} = this.props;
+    const searchQuery = {...query};
+
+    delete searchQuery.page;
+    searchQuery.state = states;
+
+    this.setState({selectedStates: states});
+
+    this.handleSearchChange(searchQuery);
   }
 
   render() {
     const {attributes, isFetching} = this.props;
-    const {activePage, isModalOpen, landUseContracts, maxPage, selectedStates} = this.state;
+    const {activePage, isModalOpen, isSearchInitialized, landUseContracts, maxPage, selectedStates} = this.state;
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
     const filteredLandUseContracts = selectedStates.length
-      ? (landUseContracts.filter((contract) => selectedStates.indexOf(contract.state.toString())  !== -1))
+      ? (landUseContracts.filter((contract) => selectedStates.indexOf(contract.state)  !== -1))
       : landUseContracts;
+    const count = filteredLandUseContracts.length;
 
     return (
       <PageContainer>
@@ -225,56 +266,57 @@ class LandUseContractListPage extends Component<Props, State> {
           onSubmit={this.handleCreateLease}
         />
 
-        <SearchWrapper
-          buttonComponent={
-            <Button
-              className='no-margin'
+        <Row>
+          <Column small={12} large={6}>
+            <AddButtonSecondary
+              className='no-top-margin'
+              label='Luo maankäyttösopimus'
               onClick={this.handleCreateButtonClick}
-              text='Luo maankäyttösopimus'
             />
-          }
-          searchComponent={
+          </Column>
+          <Column small={12} large={6}>
             <Search
+              isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
+              states={selectedStates}
             />
+          </Column>
+        </Row>
+
+        <Row>
+          <Column small={12} medium={6}></Column>
+          <Column small={12} medium={6}>
+            <TableFilters
+              amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
+              filterOptions={stateOptions}
+              filterValue={selectedStates}
+              onFilterChange={this.handleSelectedStatesChange}
+            />
+          </Column>
+        </Row>
+
+        <TableWrapper>
+          {isFetching &&
+            <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
           }
-        />
-
-        {isFetching &&
-          <Row>
-            <Column>
-              <LoaderWrapper><Loader isLoading={!!isFetching} /></LoaderWrapper>
-            </Column>
-          </Row>
-        }
-
-        {!isFetching &&
-          <div>
-            <TableControllers
-              buttonSelectorOptions={stateOptions}
-              buttonSelectorValue={selectedStates}
-              onButtonSelectorChange={this.handleSelectedStatesChange}
-              title={`Viimeksi muokattuja`}
-            />
-            <SortableTable
-              columns={[
-                {key: 'identifier', text: 'MA-tunnus'},
-                {key: 'litigants', text: 'Osapuoli', renderer: (val) => val.map((litigant, index) => <ListItem key={index}>{litigant}</ListItem>)},
-                {key: 'plan_number', text: 'Asemakaavan numero'},
-                {key: 'area', text: 'Kohde'},
-                {key: 'project_area', text: 'Hankealue'},
-                {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
-              ]}
-              data={filteredLandUseContracts}
-              onRowClick={this.handleRowClick}
-            />
-            <Pagination
-              activePage={activePage}
-              maxPage={maxPage}
-              onPageClick={this.handlePageClick}
-            />
-          </div>
-        }
+          <SortableTable
+            columns={[
+              {key: 'identifier', text: 'MA-tunnus'},
+              {key: 'litigants', text: 'Osapuoli', renderer: (val) => val.map((litigant, index) => <ListItem key={index}>{litigant}</ListItem>)},
+              {key: 'plan_number', text: 'Asemakaavan numero'},
+              {key: 'area', text: 'Kohde'},
+              {key: 'project_area', text: 'Hankealue'},
+              {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
+            ]}
+            data={filteredLandUseContracts}
+            onRowClick={this.handleRowClick}
+          />
+          <Pagination
+            activePage={activePage}
+            maxPage={maxPage}
+            onPageClick={this.handlePageClick}
+          />
+        </TableWrapper>
       </PageContainer>
     );
   }

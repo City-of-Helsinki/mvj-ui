@@ -221,7 +221,7 @@
     "plan_number": "12345",
     "plan_acceptor": 41,
     "plan_lawfulness_date": "2018-06-01",
-    "state": 0,
+    "state": "decision",
 
     "decisions": [
       {
