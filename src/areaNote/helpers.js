@@ -73,64 +73,43 @@ export const convertAreaNoteListToFeatures = (features: Array<Object>): Array<Ob
 };
 
 export const convertAreaNoteListToGeoJson = (areaNotes: Array<Object>) => {
-  const features: Array<Object> = areaNotes.map((areaNote) => {
-    return {
-      type: 'Feature',
-      geometry: areaNote.geometry,
-      properties: {
-        id: areaNote.id,
-        note: areaNote.note,
-      },
-    };
-  });
+  const features: Array<Object> = areaNotes.map((areaNote) => ({
+    type: 'Feature',
+    geometry: areaNote.geometry,
+    properties: {
+      id: areaNote.id,
+      note: areaNote.note,
+    },
+  }));
+
   return {
     type: 'FeatureCollection',
-    crs: {
-      type: 'name',
-      properties: {
-        name: 'urn:ogc:def:crs:EPSG::3879',
-      },
-    },
     features: features,
   };
 };
 
-export const convertFeatureForDraw = (feature: Object) => {
-  const polygons = get(feature, 'geometry.coordinates[0]', []);
+export const convertFeatureToFeatureCollection = (feature: Object) => {
+  const polygons = get(feature, 'geometry.coordinates', []);
 
   return {
     type: 'FeatureCollection',
-    crs: {
-      type: 'name',
-      properties: {
-        name: 'urn:ogc:def:crs:EPSG::3879',
+    features: polygons.map((polygon) => ({
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: polygon,
       },
-    },
-    features: polygons.map((polygon) => {
-      return {
-        type: 'Feature',
-        geometry: {
-          type: 'Polygon',
-          coordinates: [
-            polygon,
-          ],
-        },
-      };
-    }),
+    })),
     properties: feature.properties,
   };
 };
 
-export const getGeometryForDb = (polygons: Array<Object>) => {
-  const coordinates: Array<Object> = polygons.map((polygon: Object) => {
-    return get(convertFeatureGeometryTo3879(polygon.geometry), 'coordinates');
-  });
+export const convertFeatureCollectionToFeature = (polygons: Array<Object>) => {
+  const coordinates: Array<Object> = polygons.map((polygon: Object) => get(polygon.geometry, 'coordinates'));
 
   return {
     geometry: {
-      coordinates: [
-        coordinates,
-      ],
+      coordinates: coordinates,
       type: 'MultiPolygon',
     },
   };

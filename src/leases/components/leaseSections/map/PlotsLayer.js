@@ -23,12 +23,6 @@ type PlotFeature = {
 }
 
 export type PlotsGeoJson = {
-  crs?: {
-    properties: {
-      name: string,
-    },
-    type: string,
-  },
   features: Array<PlotFeature>,
   type: 'FeatureCollection',
 }

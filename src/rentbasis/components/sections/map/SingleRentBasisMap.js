@@ -44,12 +44,6 @@ class SingleRentBasisMap extends Component<Props, State> {
     financingOptions: [],
     geoJSON: {
       type: 'FeatureCollection',
-      crs: {
-        type: 'name',
-        properties: {
-          name: 'urn:ogc:def:crs:EPSG::3879',
-        },
-      },
       features: [],
     },
     indexOptions: [],

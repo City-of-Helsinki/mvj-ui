@@ -16,12 +16,6 @@ type PlanUnitsFeature = {
 }
 
 export type PlanUnitsGeoJson = {
-  crs?: {
-    properties: {
-      name: string,
-    },
-    type: string,
-  },
   features: Array<PlanUnitsFeature>,
   type: 'FeatureCollection',
 }

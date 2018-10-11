@@ -716,12 +716,6 @@ export const getContentAreasGeoJson = (lease: Lease): AreasGeoJson => {
 
   return {
     type: 'FeatureCollection',
-    crs: {
-      type: 'name',
-      properties: {
-        name: 'urn:ogc:def:crs:EPSG::3879',
-      },
-    },
     features: features,
   };
 };
@@ -760,12 +754,6 @@ export const getContentPlotsGeoJson = (lease: Lease, inContract: boolean = false
 
   return {
     type: 'FeatureCollection',
-    crs: {
-      type: 'name',
-      properties: {
-        name: 'urn:ogc:def:crs:EPSG::3879',
-      },
-    },
     features: features,
   };
 };
@@ -810,12 +798,6 @@ export const getContentPlanUnitsGeoJson = (lease: Lease, inContract: boolean = f
 
   return {
     type: 'FeatureCollection',
-    crs: {
-      type: 'name',
-      properties: {
-        name: 'urn:ogc:def:crs:EPSG::3879',
-      },
-    },
     features: features,
   };
 };
