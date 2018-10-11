@@ -567,7 +567,15 @@
         width: rem-calc(15px) !important;
       }
     }
+    &:disabled {
+      color: $dark-gray;
+      text-decoration: none;
+      cursor: not-allowed;
 
+      .icons {
+        fill: $dark-gray;
+      }
+    }
     &.no-top-margin {
       margin-top: 0;
     }

@@ -6,6 +6,7 @@ import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
@@ -72,6 +73,7 @@ type State = {
   activePage: number,
   isModalOpen: boolean,
   leaseStates: Array<string>,
+  isSearchInitialized: boolean,
   visualizationType: string,
 }
 
@@ -82,6 +84,7 @@ class LeaseListPage extends Component<Props, State> {
     activePage: 1,
     isModalOpen: false,
     leaseStates: [],
+    isSearchInitialized: false,
     visualizationType: 'table',
   }
 
@@ -105,28 +108,46 @@ class LeaseListPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    const page = query.page ? Number(query.page) : 1;
-    this.setState({activePage: page});
-
-
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
 
     fetchAreaNoteList();
 
-    const searchQuery = {...query};
+    this.search();
 
-    const states = searchQuery.state;
+    const page = query.page ? Number(query.page) : 1;
+    this.setState({activePage: page});
+
+    const states = isArray(query.state)
+      ? query.state
+      : query.state ? [query.state] : null;
     if(states) {
       this.setState({leaseStates: states});
     }
 
-    delete searchQuery.page;
-    delete searchQuery.state;
-    initialize(FormNames.SEARCH, searchQuery);
+    const setSearchFormReadyFlag = () => {
+      this.setState({isSearchInitialized: true});
+    };
 
-    this.search();
+    const initializeSearchForm = async() => {
+      try {
+        const searchQuery = {...query};
+        delete searchQuery.page;
+        delete searchQuery.state;
+
+        searchQuery.tenant_role = isArray(searchQuery.tenant_role)
+          ? searchQuery.tenant_role
+          : searchQuery.tenant_role ? [searchQuery.tenant_role] : undefined;
+
+        await initialize(FormNames.SEARCH, searchQuery);
+        setSearchFormReadyFlag();
+      } catch(e) {
+        console.error(`Failed to initialize search form with error, ${e}`);
+      }
+    };
+
+    initializeSearchForm();
   }
 
   componentDidUpdate(prevProps) {
@@ -153,25 +174,22 @@ class LeaseListPage extends Component<Props, State> {
   }
 
   showCreateLeaseModal = () => {
-    this.setState({
-      isModalOpen: true,
-    });
+    this.setState({isModalOpen: true});
   }
 
   hideCreateLeaseModal = () => {
-    this.setState({
-      isModalOpen: false,
-    });
+    this.setState({isModalOpen: false});
   }
 
   search = () => {
-    const {fetchLeases, router: {location: {query}}} = this.props;
-
+    const {fetchLeases, location: {query}} = this.props;
     const searchQuery = {...query};
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
     if(page > 1) {
       searchQuery.offset = (page - 1) * PAGE_SIZE;
     }
+
     searchQuery.limit = PAGE_SIZE;
     delete searchQuery.page;
 
@@ -191,7 +209,7 @@ class LeaseListPage extends Component<Props, State> {
 
   handleRowClick = (id) => {
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {location: {query}} = this.props;
 
     return router.push({
       pathname: `${getRouteById('leases')}/${id}`,
@@ -201,7 +219,7 @@ class LeaseListPage extends Component<Props, State> {
 
   handlePageClick = (page: number) => {
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {location: {query}} = this.props;
 
     if(page > 1) {
       query.page = page;
@@ -210,6 +228,7 @@ class LeaseListPage extends Component<Props, State> {
     }
 
     this.setState({activePage: page});
+
     return router.push({
       pathname: getRouteById('leases'),
       query,
@@ -238,6 +257,7 @@ class LeaseListPage extends Component<Props, State> {
     searchQuery.state = values;
 
     this.setState({leaseStates: values});
+
     this.handleSearchChange(searchQuery);
   }
 
@@ -253,7 +273,9 @@ class LeaseListPage extends Component<Props, State> {
 
     if(Object.keys(searchQuery).length === 0) {
       return true;
-    } else if(Object.keys(searchQuery).length === 1 && searchQuery['identifier'] || searchQuery['state']) {
+    } else if(Object.keys(searchQuery).length === 1 && (searchQuery['identifier'] || searchQuery['state'])) {
+      return true;
+    } else if(Object.keys(searchQuery).length === 2 && (searchQuery['identifier'] && searchQuery['state'])) {
       return true;
     }
 
@@ -265,6 +287,7 @@ class LeaseListPage extends Component<Props, State> {
       activePage,
       isModalOpen,
       leaseStates,
+      isSearchInitialized,
       visualizationType,
     } = this.state;
     const {
@@ -303,6 +326,7 @@ class LeaseListPage extends Component<Props, State> {
             <Search
               attributes={attributes}
               basicSearchByDefault={isBasicSearchByDefault}
+              isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
               states={leaseStates}
             />

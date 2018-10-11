@@ -28,6 +28,7 @@ type Props = {
   formValues: Object,
   initialize: Function,
   isFetchingAttributes: boolean,
+  isSearchInitialized: boolean,
   location: Object,
   municipality: string,
   onSearch: Function,
@@ -58,7 +59,7 @@ class Search extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const {clearFields, fetchDistrictsByMunicipality} = this.props;
+    const {clearFields, fetchDistrictsByMunicipality, isSearchInitialized} = this.props;
 
     if(Number(prevProps.municipality) !== Number(this.props.municipality)) {
       if(this.props.municipality) {
@@ -69,7 +70,7 @@ class Search extends Component<Props, State> {
       }
     }
 
-    if(JSON.stringify(prevProps.formValues) !== JSON.stringify(this.props.formValues)) {
+    if(isSearchInitialized && JSON.stringify(prevProps.formValues) !== JSON.stringify(this.props.formValues)) {
       this.onSearchChange();
     }
   }
@@ -417,7 +418,7 @@ class Search extends Component<Props, State> {
           </div>
         )}
         <Row>
-          <Column large={6}>
+          <Column small={6}>
             <a
               tabIndex={0}
               onKeyDown={this.handleLinkKeyDown}
@@ -425,7 +426,7 @@ class Search extends Component<Props, State> {
               className='lease-search__search-type-link'
             >{isBasicSearch ? 'Tarkennettu haku' : 'Yksinkertainen haku'}</a>
           </Column>
-          <Column large={6}>
+          <Column small={6}>
             <a
               tabIndex={0}
               onKeyDown={this.handleClearKeyDown}

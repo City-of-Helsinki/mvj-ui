@@ -6,14 +6,16 @@ import AddIcon from '$components/icons/AddIcon';
 
 type Props = {
   className?: string,
+  disabled?: boolean,
   label: string,
   onClick: Function,
   title?: string,
 }
 
-const AddButtonSecondary = ({className, label, onClick, title}: Props) =>
+const AddButtonSecondary = ({className, disabled = false, label, onClick, title}: Props) =>
   <button
     className={classNames('form__add-button secondary', className)}
+    disabled={disabled}
     onClick={onClick}
     title={title}
     type='button'

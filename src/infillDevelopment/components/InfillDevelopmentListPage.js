@@ -6,17 +6,16 @@ import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
-import isNumber from 'lodash/isNumber';
 
-import Button from '$components/button/Button';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import ListItem from '$components/content/ListItem';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
-import SearchWrapper from '$components/search/SearchWrapper';
 import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
@@ -24,7 +23,7 @@ import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchInfillDevelopmentAttributes, fetchInfillDevelopments, receiveFormInitialValues} from '$src/infillDevelopment/actions';
 import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentInfillDevelopmentList} from '$src/infillDevelopment/helpers';
-import {cloneObject, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
 
@@ -49,6 +48,7 @@ type State = {
   activePage: number,
   count: number,
   infillDevelopments: Array<Object>,
+  isSearchInitialized: boolean,
   maxPage: number,
   selectedStates: Array<string>,
 }
@@ -58,6 +58,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     activePage: 1,
     count: 0,
     infillDevelopments: [],
+    isSearchInitialized: false,
     maxPage: 1,
     selectedStates: [],
   }
@@ -70,6 +71,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     const {
       attributes,
       fetchInfillDevelopmentAttributes,
+      initialize,
       receiveTopNavigationSettings,
       router: {location: {query}},
     } = this.props;
@@ -80,40 +82,66 @@ class InfillDevelopmentListPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    const page = query.page ? Number(query.page) : 1;
-    if(page <= 1) {
-      this.setState({activePage: 1});
-    } else {
-      this.setState({activePage: page});
-    }
-
-    this.handleSearch();
-    this.initializeSearchForm();
-
     if(isEmpty(attributes)) {
       fetchInfillDevelopmentAttributes();
     }
+
+    this.search();
+
+    const page = query.page ? Number(query.page) : 1;
+    this.setState({activePage: page});
+
+    const states = isArray(query.state)
+      ? query.state
+      : query.state ? [query.state] : null;
+    if(states) {
+      this.setState({selectedStates: states});
+    }
+
+    const setSearchFormReadyFlag = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      try {
+        const searchQuery = {...query};
+        delete searchQuery.page;
+        delete searchQuery.state;
+
+        await initialize(FormNames.SEARCH, searchQuery);
+        setSearchFormReadyFlag();
+      } catch(e) {
+        console.error(`Failed to initialize search form with error, ${e}`);
+      }
+    };
+
+    initializeSearchForm();
   }
 
   componentDidUpdate = (prevProps) => {
-    if(JSON.stringify(this.props.location.query) !== JSON.stringify(prevProps.location.query)) {
-      this.handleSearch();
-      this.initializeSearchForm();
+    const {location: {query, search: currentSearch}, initialize} = this.props;
+    const {location: {search: prevSearch}} = prevProps;
+
+    if(currentSearch !== prevSearch) {
+      this.search();
+
+      const searchQuery = {...query};
+      delete searchQuery.page;
+
+      if(!Object.keys(searchQuery).length) {
+        this.setState({selectedStates: []});
+        initialize(FormNames.SEARCH, {});
+      }
     }
+
     if(prevProps.infillDevelopmentList !== this.props.infillDevelopmentList) {
       this.updateTableData();
     }
   }
 
-  initializeSearchForm = () => {
-    const {initialize, router: {location: {query}}} = this.props;
-    initialize(FormNames.SEARCH, query);
-  }
-
   handleCreateButtonClick = () => {
-    const {receiveFormInitialValues} = this.props;
+    const {receiveFormInitialValues, location: {query}} = this.props;
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
 
     receiveFormInitialValues({});
 
@@ -135,23 +163,24 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     });
   }
 
-  handleSearch = () => {
-    const {fetchInfillDevelopments} = this.props;
-    const {router: {location: {query: locationQuery}}} = this.context;
-    const query = cloneObject(locationQuery);
+  search = () => {
+    const {fetchInfillDevelopments, location: {query}} = this.props;
+    const page = query.page ? Number(query.page) : 1;
+    const searchQuery = {...query};
 
-    const page = Number(query.page);
-    if(page && isNumber(page) && query.page <= 1) {
-      query.offset = (page - 1) * PAGE_SIZE;
+    delete searchQuery.page;
+
+    if(page > 1) {
+      searchQuery.offset = (page - 1) * PAGE_SIZE;
     }
 
-    query.limit = PAGE_SIZE;
-    fetchInfillDevelopments(getSearchQuery(query));
+    searchQuery.limit = PAGE_SIZE;
+    fetchInfillDevelopments(getSearchQuery(searchQuery));
   }
 
   handleRowClick = (id) => {
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {location: {query}} = this.props;
 
     return router.push({
       pathname: `${getRouteById('infillDevelopment')}/${id}`,
@@ -161,7 +190,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
   handlePageClick = (page: number) => {
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {location: {query}} = this.props;
 
     if(page > 1) {
       query.page = page;
@@ -179,6 +208,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
   updateTableData = () => {
     const {infillDevelopmentList} = this.props;
+
     this.setState({
       count: this.getInfillDevelopmentCount(infillDevelopmentList),
       infillDevelopments: getContentInfillDevelopmentList(infillDevelopmentList),
@@ -192,6 +222,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
   getInfillDevelopmentMaxPage = (infillDevelopmentList: InfillDevelopmentList) => {
     const count = this.getInfillDevelopmentCount(infillDevelopmentList);
+
     if(!count) {
       return 0;
     }
@@ -199,14 +230,22 @@ class InfillDevelopmentListPage extends Component<Props, State> {
   }
 
   handleSelectedStatesChange = (states: Array<string>) => {
-    this.setState({
-      selectedStates: states,
-    });
+    const {location: {query}} = this.props;
+    const searchQuery = {...query};
+
+    console.log(states);
+
+    delete searchQuery.page;
+    searchQuery.state = states;
+
+    this.setState({selectedStates: states});
+
+    this.handleSearchChange(searchQuery);
   }
 
   render() {
     const {attributes, isFetching} = this.props;
-    const {activePage, infillDevelopments, maxPage, selectedStates} = this.state;
+    const {activePage, infillDevelopments, isSearchInitialized, maxPage, selectedStates} = this.state;
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
     const filteredInfillDevelopments = selectedStates.length
       ? (infillDevelopments.filter((infillDevelopment) => selectedStates.indexOf(infillDevelopment.state) !== -1))
@@ -215,20 +254,22 @@ class InfillDevelopmentListPage extends Component<Props, State> {
 
     return (
       <PageContainer>
-        <SearchWrapper
-          buttonComponent={
-            <Button
-              className='no-margin'
+        <Row>
+          <Column small={12} large={6}>
+            <AddButtonSecondary
+              className='no-top-margin'
+              label='Luo täydennysrakentamiskorvaus'
               onClick={this.handleCreateButtonClick}
-              text='Luo täydennysrakentamiskorvaus'
             />
-          }
-          searchComponent={
+          </Column>
+          <Column small={12} large={6}>
             <Search
+              isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
+              states={selectedStates}
             />
-          }
-        />
+          </Column>
+        </Row>
 
         <Row>
           <Column small={12} medium={6}></Column>
@@ -265,7 +306,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
       </PageContainer>
     );
   }
-
 }
 
 export default flowRight(

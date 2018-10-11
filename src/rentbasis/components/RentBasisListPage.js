@@ -2,19 +2,18 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import {formValueSelector, initialize} from 'redux-form';
+import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
-import Button from '$components/button/Button';
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
-import SearchWrapper from '$components/search/SearchWrapper';
 import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
@@ -42,28 +41,30 @@ type Props = {
   receiveTopNavigationSettings: Function,
   rentBasisListData: RentBasisList,
   router: Object,
-  search: ?string,
 }
 
 type State = {
   activePage: number,
+  isSearchInitialized: boolean,
 }
 
 class RentBasisListPage extends Component<Props, State> {
   state = {
     activePage: 1,
+    isSearchInitialized: false,
   }
 
   static contextTypes = {
     router: PropTypes.object,
   };
 
-  componentWillMount() {
+  componentDidMount() {
     const {
       attributes,
       fetchAttributes,
+      initialize,
+      location: {query},
       receiveTopNavigationSettings,
-      router: {location: {query}},
     } = this.props;
 
     receiveTopNavigationSettings({
@@ -72,38 +73,47 @@ class RentBasisListPage extends Component<Props, State> {
       showSearch: false,
     });
 
-    const page = query.page ? Number(query.page) : 1;
-    this.setState({activePage: page});
-    this.search();
-
     if(isEmpty(attributes)) {
       fetchAttributes();
     }
-  }
 
-  componentDidMount = () => {
-    const {initialize, router: {location: {query}}} = this.props;
+    this.search();
 
-    const searchQuery = {...query};
-    delete searchQuery.page;
-    initialize(FormNames.SEARCH, searchQuery);
+    const page = query.page ? Number(query.page) : 1;
+    this.setState({activePage: page});
+
+    const setSearchFormReadyFlag = () => {
+      this.setState({isSearchInitialized: true});
+    };
+
+    const initializeSearchForm = async() => {
+      try {
+        const searchQuery = {...query};
+        delete searchQuery.page;
+
+        await initialize(FormNames.SEARCH, searchQuery);
+
+        setSearchFormReadyFlag();
+      } catch(e) {
+        console.error(`Failed to initialize search form with error, ${e}`);
+      }
+    };
+
+    initializeSearchForm();
   }
 
   componentDidUpdate(prevProps) {
-    const {location: {query, search: currentSearch}, search, initialize} = this.props;
+    const {location: {query, search: currentSearch}, initialize} = this.props;
     const {location: {search: prevSearch}} = prevProps;
-    const {activePage} = this.state;
 
     if(currentSearch !== prevSearch) {
       this.search();
-      if(query.search !== search) {
-        const searchQuery = {...query};
-        delete searchQuery.page;
-        initialize(FormNames.SEARCH, searchQuery);
-      }
-      const page = query.page ? Number(query.page) : 1;
-      if(page !== activePage) {
-        this.setState({activePage: page});
+
+      const searchQuery = {...query};
+      delete searchQuery.page;
+
+      if(!Object.keys(searchQuery).length) {
+        initialize(FormNames.SEARCH, {});
       }
     }
   }
@@ -120,21 +130,24 @@ class RentBasisListPage extends Component<Props, State> {
   }
 
   search = () => {
-    const {fetchRentBasisList, router: {location: {query}}} = this.props;
-
+    const {fetchRentBasisList, location: {query}} = this.props;
+    const page = query.page ? Number(query.page) : 1;
     const searchQuery = {...query};
-    const page = searchQuery.page ? Number(searchQuery.page) : 1;
+
+    delete searchQuery.page;
+
     if(page > 1) {
       searchQuery.offset = (page - 1) * PAGE_SIZE;
     }
+
     searchQuery.limit = PAGE_SIZE;
+
     fetchRentBasisList(getSearchQuery(searchQuery));
   }
 
   handleCreateButtonClick = () => {
-    const {initializeRentBasis} = this.props;
+    const {initializeRentBasis, location: {query}} = this.props;
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
 
     initializeRentBasis({
       decisions: [{}],
@@ -150,7 +163,7 @@ class RentBasisListPage extends Component<Props, State> {
 
   handleRowClick = (id) => {
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {location: {query}} = this.props;
 
     return router.push({
       pathname: `${getRouteById('rentBasis')}/${id}`,
@@ -160,7 +173,7 @@ class RentBasisListPage extends Component<Props, State> {
 
   handlePageClick = (page: number) => {
     const {router} = this.context;
-    const {router: {location: {query}}} = this.props;
+    const {location: {query}} = this.props;
 
     if(page > 1) {
       query.page = page;
@@ -195,17 +208,16 @@ class RentBasisListPage extends Component<Props, State> {
 
   getRentBasisMaxPage = (rentBasisList: RentBasisList) => {
     const count = this.getRentBasisCount(rentBasisList);
+
     if(!count) {
       return 0;
     }
-    else {
-      return Math.ceil(count/TABLE_PAGE_SIZE);
-    }
+    return Math.ceil(count/TABLE_PAGE_SIZE);
   }
 
   render() {
     const {attributes, isFetching, rentBasisListData} = this.props;
-    const {activePage} = this.state;
+    const {activePage, isSearchInitialized} = this.state;
     const count = this.getRentBasisCount(rentBasisListData);
     const rentBasisList = this.getRentBasisList(rentBasisListData);
     const maxPage = this.getRentBasisMaxPage(rentBasisListData);
@@ -214,20 +226,22 @@ class RentBasisListPage extends Component<Props, State> {
 
     return (
       <PageContainer>
-        <SearchWrapper
-          buttonComponent={
-            <Button
-              className='no-margin'
-              onClick={() => this.handleCreateButtonClick()}
-              text='Luo vuokrausperuste'
+        <Row>
+          <Column small={12} large={6}>
+            <AddButtonSecondary
+              className='no-top-margin'
+              label='Luo vuokrausperuste'
+              onClick={this.handleCreateButtonClick}
             />
-          }
-          searchComponent={
+          </Column>
+          <Column small={12} large={6}>
             <Search
-              onSearch={(query) => this.handleSearchChange(query)}
+              isSearchInitialized={isSearchInitialized}
+              onSearch={this.handleSearchChange}
             />
-          }
-        />
+          </Column>
+        </Row>
+
         <Row>
           <Column small={12} medium={6}></Column>
           <Column small={12} medium={6}>
@@ -264,9 +278,6 @@ class RentBasisListPage extends Component<Props, State> {
   }
 }
 
-const formName = FormNames.SEARCH;
-const selector = formValueSelector(formName);
-
 export default flowRight(
   connect(
     (state) => {
@@ -274,7 +285,6 @@ export default flowRight(
         attributes: getAttributes(state),
         isFetching: getIsFetching(state),
         rentBasisListData: getRentBasisList(state),
-        search: selector(state, 'search'),
       };
     },
     {
