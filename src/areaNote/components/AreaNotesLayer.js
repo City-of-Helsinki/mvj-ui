@@ -4,8 +4,8 @@ import {connect} from 'react-redux';
 import {GeoJSON} from 'react-leaflet';
 
 import {initializeAreaNote, showEditMode} from '$src/areaNote/actions';
-import {convertAreaNoteListToGeoJson, convertFeatureForDraw} from '$src/areaNote/helpers';
-import {getCoordsToLatLng} from '$util/helpers';
+
+import {convertAreaNoteListToGeoJson, convertFeatureToFeatureCollection} from '$src/areaNote/helpers';
 import {getAreaNoteList, getIsEditMode} from '$src/areaNote/selectors';
 
 import type {AreaNoteList} from '$src/areaNote/types';
@@ -43,7 +43,25 @@ class AreaNotesLayer extends Component<Props, State> {
     return null;
   }
 
-  onMouseOver = (e) => {
+  onClick = (e: any, feature: Object) => {
+    const {allowEditing, initializeAreaNote, showEditMode} = this.props;
+    if(!allowEditing) return;
+
+    initializeAreaNote({
+      geoJSON: convertFeatureToFeatureCollection(feature),
+      id: feature.properties.id,
+      isNew: false,
+      note: feature.properties.note,
+    });
+
+    showEditMode();
+
+    e.target.setStyle({
+      fillOpacity: 0.2,
+    });
+  }
+
+  onMouseOver = (e: any) => {
     const {isEditMode} = this.props;
 
     if(!isEditMode) {
@@ -54,7 +72,7 @@ class AreaNotesLayer extends Component<Props, State> {
     }
   }
 
-  onMouseOut = (e) => {
+  onMouseOut = (e: any) => {
     const {isEditMode} = this.props;
 
     if(!isEditMode) {
@@ -64,6 +82,7 @@ class AreaNotesLayer extends Component<Props, State> {
       });
     }
   }
+
   render() {
     const {areaNotesGeoJson} = this.state;
 
@@ -72,7 +91,8 @@ class AreaNotesLayer extends Component<Props, State> {
         // Change key when area notes is changes to force update after editing shapes
         key={JSON.stringify(areaNotesGeoJson)}
         data={areaNotesGeoJson}
-        coordsToLatLng={getCoordsToLatLng(areaNotesGeoJson)}
+        // Add this coodination convert function if want to to use EPSG:3879 projection
+        // coordsToLatLng={getCoordsToLatLng(areaNotesGeoJson)}
         onEachFeature={(feature, layer) => {
           if (feature.properties && feature.properties.note) {
             const popupContent = `<p>
@@ -83,25 +103,7 @@ class AreaNotesLayer extends Component<Props, State> {
           }
 
           layer.on({
-            click: (e) => {
-              const {allowEditing} = this.props;
-              if(!allowEditing) {
-                return;
-              }
-              const {initializeAreaNote, showEditMode} = this.props;
-
-              initializeAreaNote({
-                geoJSON: convertFeatureForDraw(feature),
-                id: feature.properties.id,
-                isNew: false,
-                note: feature.properties.note,
-              });
-
-              showEditMode();
-              e.target.setStyle({
-                fillOpacity: 0.2,
-              });
-            },
+            click: (e) => this.onClick(e, feature),
             mouseover: this.onMouseOver,
             mouseout: this.onMouseOut,
           });
@@ -111,7 +113,6 @@ class AreaNotesLayer extends Component<Props, State> {
         }}
       />
     );
-
   }
 }
 

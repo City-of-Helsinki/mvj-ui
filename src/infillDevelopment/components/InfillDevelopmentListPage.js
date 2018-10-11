@@ -233,8 +233,6 @@ class InfillDevelopmentListPage extends Component<Props, State> {
     const {location: {query}} = this.props;
     const searchQuery = {...query};
 
-    console.log(states);
-
     delete searchQuery.page;
     searchQuery.state = states;
 

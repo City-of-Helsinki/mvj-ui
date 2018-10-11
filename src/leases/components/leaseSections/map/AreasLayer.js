@@ -16,12 +16,6 @@ export type AreasFeature = {
 }
 
 export type AreasGeoJson = {
-  crs?: {
-    properties: {
-      name: string,
-    },
-    type: string,
-  },
   features: Array<AreasFeature>,
   type: 'FeatureCollection',
 }

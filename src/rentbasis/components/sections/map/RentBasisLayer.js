@@ -16,12 +16,6 @@ type RentBasisFeature = {
 }
 
 export type RentBasisGeoJson = {
-  crs?: {
-    properties: {
-      name: string,
-    },
-    type: string,
-  },
   features: Array<RentBasisFeature>,
   type: 'FeatureCollection',
 }

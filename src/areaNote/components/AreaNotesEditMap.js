@@ -11,7 +11,7 @@ import MapContainer from './MapContainer';
 import SaveConditionPanel from './SaveConditionPanel';
 import {createAreaNote, deleteAreaNote, editAreaNote, hideEditMode} from '$src/areaNote/actions';
 import {defaultCoordinates, defaultZoom} from '$src/constants';
-import {convertFeaturesToAreaNoteList, getGeometryForDb} from '$src/areaNote/helpers';
+import {convertFeatureCollectionToFeature} from '$src/areaNote/helpers';
 import {localizeMap} from '$util/helpers';
 import {getInitialAreaNote, getIsEditMode} from '$src/areaNote/selectors';
 
@@ -68,7 +68,9 @@ class AreaNotesEditMap extends Component<Props, State> {
       // Initialize select features for editing
       const geoJSON = {...initialValues.geoJSON};
       if(!isEmpty(geoJSON)) {
-        geoJSON.features = convertFeaturesToAreaNoteList(geoJSON.features);
+        // Add this coodination convert function if want to to use EPSG:3879 projection
+        // geoJSON.features = convertFeaturesToAreaNoteList(geoJSON.features);
+
         const featuresGeoJSON = new L.GeoJSON(geoJSON);
         featuresGeoJSON.eachLayer( (layer) => {
           layer.options.color = SHAPE_COLOR;
@@ -123,7 +125,7 @@ class AreaNotesEditMap extends Component<Props, State> {
     const features = [];
     this.featureGroup.leafletElement.eachLayer((layer) => features.push(layer.toGeoJSON()));
 
-    const payload = getGeometryForDb(features);
+    const payload = convertFeatureCollectionToFeature(features);
     payload.note = note;
 
     if(isNew) {
