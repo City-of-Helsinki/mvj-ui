@@ -409,7 +409,7 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
                     text='Kopioi sopimukseen'
                   />
                 }
-                text={<span>{formatNumber(areasSum) || '-'} m<sup>2</sup></span>}
+                text={<span>Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup></span>}
               />
               <Divider />
 

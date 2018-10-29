@@ -156,9 +156,9 @@ class RentsEdit extends Component<Props, State> {
               confirmationFunction: () => {
                 this.setRentInfoComplete();
               },
-              confirmationModalButtonText: 'Merkkaa valmiiksi',
-              confirmationModalLabel: 'Haluatko varmasti merkata vuokratiedot valmiiksi?',
-              confirmationModalTitle: 'Merkkaa vuokratiedot valmiiksi',
+              confirmationModalButtonText: 'Merkitse valmiiksi',
+              confirmationModalLabel: 'Haluatko varmasti merkitä vuokratiedot valmiiksi?',
+              confirmationModalTitle: 'Merkitse vuokratiedot valmiiksi',
             });
           };
 
@@ -168,9 +168,9 @@ class RentsEdit extends Component<Props, State> {
               confirmationFunction: () => {
                 this.setRentInfoUncomplete();
               },
-              confirmationModalButtonText: 'Merkkaa keskeneräisiksi',
-              confirmationModalLabel: 'Haluatko varmasti merkata vuokratiedot keskeneräisiksi?',
-              confirmationModalTitle: 'Merkkaa vuokratiedot keskeneräisiksi',
+              confirmationModalButtonText: 'Merkitse keskeneräisiksi',
+              confirmationModalLabel: 'Haluatko varmasti merkitä vuokratiedot keskeneräisiksi?',
+              confirmationModalTitle: 'Merkitse vuokratiedot keskeneräisiksi',
             });
           };
 
@@ -183,17 +183,17 @@ class RentsEdit extends Component<Props, State> {
                     ? <Button
                       className='button-red'
                       onClick={handleSetRentInfoUncomplete}
-                      text='Merkkaa keskeneräisiksi'
+                      text='Merkitse keskeneräisiksi'
                     />
                     : <Button
                       className='button-green'
                       onClick={handleSetRentInfoComplete}
-                      text='Merkkaa valmiiksi'
+                      text='Merkitse valmiiksi'
                     />
                   }
                   text={isRentInfoComplete
-                    ? <span className="success">Vuokratiedot kunnossa<i /></span>
-                    : <span className="alert">Vaatii toimenpiteitä<i /></span>
+                    ? <span className="success">Tiedot kunnossa<i /></span>
+                    : <span className="alert">Tiedot keskeneräiset<i /></span>
                   }
                 />
 

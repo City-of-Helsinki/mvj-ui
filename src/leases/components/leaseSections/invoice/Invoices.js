@@ -158,13 +158,13 @@ class Invoices extends Component<Props> {
                   }
                   text={isInvoicingEnabled
                     ? <span className="success">Laskutus käynnissä<i/></span>
-                    : <span className="alert">Laskutus ei käynnissä<i/></span>
+                    : <span className="alert">Laskutus keskeytetty<i/></span>
                   }
                 />
                 : <RightSubtitle
                   text={isInvoicingEnabled
                     ? <span className="success">Laskutus käynnissä <i/></span>
-                    : <span className="alert">Laskutus ei käynnissä<i/></span>
+                    : <span className="alert">Laskutus keskeytetty<i/></span>
                   }
                 />
               }

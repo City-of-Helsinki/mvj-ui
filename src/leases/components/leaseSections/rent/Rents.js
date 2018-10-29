@@ -31,8 +31,8 @@ const Rents = ({currentLease}: Props) => {
       <h2>Vuokrat</h2>
       <RightSubtitle
         text={currentLease.is_rent_info_complete
-          ? <span className="success">Vuokratiedot kunnossa<i /></span>
-          : <span className="alert">Vaatii toimenpiteitä<i /></span>
+          ? <span className="success">Tiedot kunnossa<i /></span>
+          : <span className="alert">Tiedot keskeneräiset<i /></span>
         }
       />
       <Divider />

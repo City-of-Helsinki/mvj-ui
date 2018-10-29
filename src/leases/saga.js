@@ -233,15 +233,14 @@ function* startInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
         yield put(receiveSingleLease({...currentLease, is_invoicing_enabled: true}));
         displayUIMessage({title: '', body: 'Laskutus käynnistetty'});
         break;
-      case 400:
-        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
-        break;
-      case 500:
-        yield put(receiveError(new Error(bodyAsJson)));
+      default:
+        yield put(notFound());
+        yield put(receiveError(new SubmissionError(bodyAsJson)));
         break;
     }
   } catch (error) {
     console.error('Failed to start invoicing with error "%s"', error);
+    yield put(notFound());
     yield put(receiveError(error));
   }
 }
@@ -256,13 +255,9 @@ function* stopInvoicingSaga({payload: leaseId}): Generator<any, any, any> {
         yield put(receiveSingleLease({...currentLease, is_invoicing_enabled: false}));
         displayUIMessage({title: '', body: 'Laskutus keskeytetty'});
         break;
-      case 400:
+      default:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
+        yield put(receiveError(new SubmissionError(bodyAsJson)));
         break;
     }
   } catch (error) {
@@ -282,13 +277,9 @@ function* setRentInfoCompleteSaga({payload: leaseId}): Generator<any, any, any> 
         yield put(receiveSingleLease({...currentLease, is_rent_info_complete: true}));
         displayUIMessage({title: '', body: 'Vuokratiedot on merkattu olevan kunnossa'});
         break;
-      case 400:
+      default:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
+        yield put(receiveError(new SubmissionError(bodyAsJson)));
         break;
     }
   } catch (error) {
@@ -308,13 +299,9 @@ function* setRentInfoUncompleteSaga({payload: leaseId}): Generator<any, any, any
         yield put(receiveSingleLease({...currentLease, is_rent_info_complete: false}));
         displayUIMessage({title: '', body: 'Vuokratiedot on merkattu keskeneräisiksi'});
         break;
-      case 400:
+      default:
         yield put(notFound());
-        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
+        yield put(receiveError(new SubmissionError(bodyAsJson)));
         break;
     }
   } catch (error) {

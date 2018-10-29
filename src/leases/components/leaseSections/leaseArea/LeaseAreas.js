@@ -29,7 +29,7 @@ const LeaseAreas = ({currentLease, decisions}: Props) => {
   return (
     <div>
       <h2>Vuokra-alue</h2>
-      <RightSubtitle text={<span>{formatNumber(areasSum) || '-'} m<sup>2</sup></span>} />
+      <RightSubtitle text={<span>Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup></span>} />
       <Divider />
 
       {!activeAreas || !activeAreas.length && <FormText className='no-margin'>Ei vuokra-alueita</FormText>}
