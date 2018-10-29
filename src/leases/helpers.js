@@ -170,7 +170,8 @@ export const getContentSummary = (lease: Object) => {
   };
 };
 
-export const getContentRelatedLease = (content: Object, path: string = 'from_lease') => get(content, path, {});
+export const getContentRelatedLease = (content: Object, path: string = 'from_lease') =>
+  get(content, path, {});
 
 const compareRelatedLeases = (a, b) => {
   const endDateA = get(a, 'lease.end_date'),
@@ -214,7 +215,7 @@ export const getContentRelatedLeasesFrom = (lease: Object) =>
     .map((relatedLease) => {
       return {
         id: relatedLease.id,
-        lease: getContentRelatedLease(relatedLease.from_lease),
+        lease: getContentRelatedLease(relatedLease, 'from_lease'),
       };
     })
     .sort(compareRelatedLeases);
@@ -224,7 +225,7 @@ export const getContentRelatedLeasesTo = (lease: Object) =>
     .map((relatedLease) => {
       return {
         id: relatedLease.id,
-        lease: getContentRelatedLease(relatedLease.to_lease),
+        lease: getContentRelatedLease(relatedLease, 'to_lease'),
       };
     })
     .sort(compareRelatedLeases);
