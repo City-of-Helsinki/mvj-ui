@@ -213,6 +213,7 @@ const ConstructabilityItem = ({
       }
       headerTitle={<h3 className='collapse__header-title'>{area.identifier || '-'}</h3>}
       onToggle={handleAreaCollapseToggle}
+      showTitleOnOpen
     >
       <Collapse
         className='collapse__secondary'
