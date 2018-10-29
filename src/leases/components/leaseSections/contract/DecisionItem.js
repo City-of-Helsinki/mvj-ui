@@ -63,20 +63,12 @@ const DecisionItem = ({
     <Collapse
       key={decision.id}
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : false}
-      header={
-        <div>
-          <Column>
-            <span className='collapse__header-subtitle'>{formatDate(decision.decision_date) || '-'}</span>
-          </Column>
-          <Column>
-            <span className='collapse__header-subtitle'>{decision.section ? `${decision.section} §` : '-'}</span>
-          </Column>
-          <Column>
-            <span className='collapse__header-subtitle'>{getLabelOfOption(typeOptions, decision.type) || '-'}</span>
-          </Column>
-        </div>
-      }
-      headerTitle={<h3 className='collapse__header-title'>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</h3>}
+      headerTitle={<h3 className='collapse__header-title'>
+        {getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}
+        {decision.decision_date ? <span>&nbsp;&nbsp;{formatDate(decision.decision_date)}</span> : ''}
+        {decision.section ? <span>&nbsp;&nbsp;{decision.section}§</span> : ''}
+        {decision.type ? <span>&nbsp;&nbsp;{getLabelOfOption(typeOptions, decision.type)}</span> : ''}
+      </h3>}
       onToggle={handleDecisionCollapseToggle}
     >
       <Row>

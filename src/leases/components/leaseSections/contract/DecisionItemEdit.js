@@ -14,7 +14,7 @@ import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
 import {getDecisionById} from '$src/decision/helpers';
-import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -74,6 +74,7 @@ const DecisionItemEdit = ({
   };
 
   const decisionMakerOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.decision_maker');
+  const typeOptions = getAttributeFieldOptions(attributes, 'decisions.child.children.type');
   const decisionErrors = get(errors, field),
     savedDecision = getDecisionById(decisionsData, decisionId);
 
@@ -81,7 +82,15 @@ const DecisionItemEdit = ({
     <Collapse
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
-      headerTitle={<h3 className='collapse__header-title'>{savedDecision ? (getLabelOfOption(decisionMakerOptions, get(savedDecision, 'decision_maker')) || '-') : '-'}</h3>}
+      headerTitle={savedDecision
+        ? <h3 className='collapse__header-title'>
+          {getLabelOfOption(decisionMakerOptions, get(savedDecision, 'decision_maker')) || '-'}
+          {savedDecision.decision_date ? <span>&nbsp;&nbsp;{formatDate(savedDecision.decision_date)}</span> : ''}
+          {savedDecision.section ? <span>&nbsp;&nbsp;{savedDecision.section}§</span> : ''}
+          {savedDecision.type ? <span>&nbsp;&nbsp;{getLabelOfOption(typeOptions, savedDecision.type)}</span> : ''}
+        </h3>
+        : <h3 className='collapse__header-title'>-</h3>
+      }
       onRemove={onRemove}
       onToggle={handleDecisionCollapseToggle}
     >
