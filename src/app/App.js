@@ -147,10 +147,10 @@ class App extends Component<Props, State> {
             position="bottom-right"
             preventDuplicates={true}
             progressBar={false}
-            timeOut={5000}
+            timeOut={2000}
             transitionIn="fadeIn"
             transitionOut="fadeOut"
-            closeOnToastrClick={false}
+            closeOnToastrClick={true}
           />
 
           <ApiErrorModal size={Sizes.MEDIUM}
@@ -204,10 +204,10 @@ class App extends Component<Props, State> {
                   position="bottom-right"
                   preventDuplicates={true}
                   progressBar={false}
-                  timeOut={5000}
+                  timeOut={2000}
                   transitionIn="fadeIn"
                   transitionOut="fadeOut"
-                  closeOnToastrClick={false}
+                  closeOnToastrClick={true}
                 />
 
                 <ApiErrorModal size={Sizes.LARGE}
