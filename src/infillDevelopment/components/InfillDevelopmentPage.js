@@ -379,17 +379,7 @@ class InfillDevelopmentPage extends Component<Props, State> {
     const {formatedInfillDevelopment, isRestoreModalOpen} = this.state;
 
     return (
-      <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Palauta muutokset'
-          isOpen={isRestoreModalOpen}
-          label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-          onCancel={this.cancelRestoreUnsavedChanges}
-          onClose={this.cancelRestoreUnsavedChanges}
-          onSave={this.restoreUnsavedChanges}
-          title='Palauta tallentamattomat muutokset'
-        />
-
+      <div style={{width: '100%'}}>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -409,35 +399,48 @@ class InfillDevelopmentPage extends Component<Props, State> {
           infoComponent={<h1>{formatedInfillDevelopment.name}</h1>}
           onBack={this.handleBack}
         />
-        <Tabs
-          active={activeTab}
-          isEditMode={isEditMode}
-          tabs={[
-            {label: 'Perustiedot', isDirty: isInfillDevelopmentFormDirty, hasError: isSaveClicked && !isFormValid},
-            {label: 'Kartta'},
-          ]}
-          onTabClick={this.handleTabClick}
-        />
-        <TabContent active={activeTab}>
-          <TabPane>
-            <ContentContainer>
-              {isEditMode
-                ? <InfillDevelopmentForm
-                  infillDevelopment={formatedInfillDevelopment}
-                />
-                : <InfillDevelopmentTemplate
-                  infillDevelopment={formatedInfillDevelopment}
-                />
-              }
-            </ContentContainer>
-          </TabPane>
-          <TabPane>
-            <ContentContainer>
-              <SingleInfillDevelopmentMap />
-            </ContentContainer>
-          </TabPane>
-        </TabContent>
-      </PageContainer>
+
+        <PageContainer className='with-small-control-bar'>
+          <ConfirmationModal
+            confirmButtonLabel='Palauta muutokset'
+            isOpen={isRestoreModalOpen}
+            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+            onCancel={this.cancelRestoreUnsavedChanges}
+            onClose={this.cancelRestoreUnsavedChanges}
+            onSave={this.restoreUnsavedChanges}
+            title='Palauta tallentamattomat muutokset'
+          />
+
+          <Tabs
+            active={activeTab}
+            isEditMode={isEditMode}
+            tabs={[
+              {label: 'Perustiedot', isDirty: isInfillDevelopmentFormDirty, hasError: isSaveClicked && !isFormValid},
+              {label: 'Kartta'},
+            ]}
+            onTabClick={this.handleTabClick}
+          />
+          <TabContent active={activeTab}>
+            <TabPane>
+              <ContentContainer>
+                {isEditMode
+                  ? <InfillDevelopmentForm
+                    infillDevelopment={formatedInfillDevelopment}
+                  />
+                  : <InfillDevelopmentTemplate
+                    infillDevelopment={formatedInfillDevelopment}
+                  />
+                }
+              </ContentContainer>
+            </TabPane>
+            <TabPane>
+              <ContentContainer>
+                <SingleInfillDevelopmentMap />
+              </ContentContainer>
+            </TabPane>
+          </TabContent>
+        </PageContainer>
+      </div>
     );
   }
 }

@@ -127,7 +127,7 @@ class NewInfillDevelopmentPage extends Component<Props> {
     const {attributes, isFormValid, isSaveClicked} = this.props;
 
     return (
-      <PageContainer>
+      <div style={{width: '100%'}}>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -143,21 +143,24 @@ class NewInfillDevelopmentPage extends Component<Props> {
           infoComponent={<h1>Uusi täydennysrakentamiskorvaus</h1>}
           onBack={this.handleBack}
         />
-        <ContentContainer>
-          {isEmpty(attributes) &&
-            <Row>
-              <Column>
-                <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>
-              </Column>
-            </Row>
-          }
-          {!isEmpty(attributes) &&
-            <InfillDevelopmentForm
-              isFocusedOnMount
-            />
-          }
-        </ContentContainer>
-      </PageContainer>
+
+        <PageContainer className='with-small-control-bar'>
+          <ContentContainer>
+            {isEmpty(attributes) &&
+              <Row>
+                <Column>
+                  <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>
+                </Column>
+              </Row>
+            }
+            {!isEmpty(attributes) &&
+              <InfillDevelopmentForm
+                isFocusedOnMount
+              />
+            }
+          </ContentContainer>
+        </PageContainer>
+      </div>
     );
   }
 }

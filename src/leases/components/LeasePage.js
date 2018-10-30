@@ -740,27 +740,7 @@ class LeasePage extends Component<Props, State> {
     }
 
     return (
-      <PageContainer>
-        {isSaving &&
-          <LoaderWrapper className='overlay-wrapper'>
-            <Loader isLoading={isSaving} />
-          </LoaderWrapper>
-        }
-        <ConfirmationModal
-          confirmButtonLabel='Palauta muutokset'
-          isOpen={isRestoreModalOpen}
-          label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-          onCancel={this.cancelRestoreUnsavedChanges}
-          onClose={this.cancelRestoreUnsavedChanges}
-          onSave={this.restoreUnsavedChanges}
-          title='Palauta tallentamattomat muutokset'
-        />
-
-        <CommentPanel
-          isOpen={isCommentPanelOpen}
-          onClose={this.toggleCommentPanel}
-        />
-
+      <div style={{width: '100%'}}>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -782,90 +762,113 @@ class LeasePage extends Component<Props, State> {
           onBack={this.handleBack}
         />
 
-        <Tabs
-          active={activeTab}
-          isEditMode={isEditMode}
-          tabs={[
-            {label: 'Yhteenveto', isDirty: isSummaryFormDirty, hasError: isSaveClicked && !isSummaryFormValid},
-            {label: 'Vuokra-alue', isDirty: isLeaseAreasFormDirty, hasError: isSaveClicked && !isLeaseAreasFormValid},
-            {label: 'Vuokralaiset', isDirty: isTenantsFormDirty, hasError: isSaveClicked && !isTenantsFormValid},
-            {label: 'Vuokrat', isDirty: isRentsFormDirty, hasError: isSaveClicked && !isRentsFormValid},
-            {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty || isInspectionsFormDirty), hasError: isSaveClicked && (!isContractsFormValid || !isDecisionsFormValid || !isInspectionsFormValid)},
-            {label: 'Rakentamiskelpoisuus', isDirty: isConstructabilityFormDirty, hasError: isSaveClicked && !isConstructabilityFormValid},
-            {label: 'Laskutus'},
-            {label: 'Kartta'},
-          ]}
-          onTabClick={this.handleTabClick}
-        />
+        <PageContainer className='with-control-bar'>
+          {isSaving &&
+            <LoaderWrapper className='overlay-wrapper'>
+              <Loader isLoading={isSaving} />
+            </LoaderWrapper>
+          }
 
-        <TabContent active={activeTab}>
-          <TabPane>
-            <ContentContainer>
-              {isEditMode
-                ? <SummaryEdit />
-                : <Summary />
-              }
-            </ContentContainer>
-          </TabPane>
+          <ConfirmationModal
+            confirmButtonLabel='Palauta muutokset'
+            isOpen={isRestoreModalOpen}
+            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+            onCancel={this.cancelRestoreUnsavedChanges}
+            onClose={this.cancelRestoreUnsavedChanges}
+            onSave={this.restoreUnsavedChanges}
+            title='Palauta tallentamattomat muutokset'
+          />
 
-          <TabPane className="lease-page__tab-content">
-            <ContentContainer>
-              {isEditMode
-                ? <LeaseAreasEdit />
-                : <LeaseAreas />
-              }
-            </ContentContainer>
-          </TabPane>
+          <CommentPanel
+            isOpen={isCommentPanelOpen}
+            onClose={this.toggleCommentPanel}
+          />
 
-          <TabPane className="lease-page__tab-content">
-            <ContentContainer>
-              {isEditMode
-                ? <TenantsEdit />
-                : <Tenants />
-              }
-            </ContentContainer>
-          </TabPane>
+          <Tabs
+            active={activeTab}
+            isEditMode={isEditMode}
+            tabs={[
+              {label: 'Yhteenveto', isDirty: isSummaryFormDirty, hasError: isSaveClicked && !isSummaryFormValid},
+              {label: 'Vuokra-alue', isDirty: isLeaseAreasFormDirty, hasError: isSaveClicked && !isLeaseAreasFormValid},
+              {label: 'Vuokralaiset', isDirty: isTenantsFormDirty, hasError: isSaveClicked && !isTenantsFormValid},
+              {label: 'Vuokrat', isDirty: isRentsFormDirty, hasError: isSaveClicked && !isRentsFormValid},
+              {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty || isInspectionsFormDirty), hasError: isSaveClicked && (!isContractsFormValid || !isDecisionsFormValid || !isInspectionsFormValid)},
+              {label: 'Rakentamiskelpoisuus', isDirty: isConstructabilityFormDirty, hasError: isSaveClicked && !isConstructabilityFormValid},
+              {label: 'Laskutus'},
+              {label: 'Kartta'},
+            ]}
+            onTabClick={this.handleTabClick}
+          />
 
-          <TabPane className="lease-page__tab-content">
-            <ContentContainer>
-              {isEditMode
-                ? <RentsEdit />
-                : <Rents />
-              }
-            </ContentContainer>
-          </TabPane>
+          <TabContent active={activeTab}>
+            <TabPane>
+              <ContentContainer>
+                {isEditMode
+                  ? <SummaryEdit />
+                  : <Summary />
+                }
+              </ContentContainer>
+            </TabPane>
 
-          <TabPane className="lease-page__tab-content">
-            <ContentContainer>
-              {isEditMode
-                ? <DecisionsMainEdit />
-                : <DecisionsMain />
-              }
-            </ContentContainer>
-          </TabPane>
+            <TabPane className="lease-page__tab-content">
+              <ContentContainer>
+                {isEditMode
+                  ? <LeaseAreasEdit />
+                  : <LeaseAreas />
+                }
+              </ContentContainer>
+            </TabPane>
 
-          <TabPane className="lease-page__tab-content">
-            <ContentContainer>
-              {isEditMode
-                ? <ConstructabilityEdit />
-                : <Constructability />
-              }
-            </ContentContainer>
-          </TabPane>
+            <TabPane className="lease-page__tab-content">
+              <ContentContainer>
+                {isEditMode
+                  ? <TenantsEdit />
+                  : <Tenants />
+                }
+              </ContentContainer>
+            </TabPane>
 
-          <TabPane className="lease-page__tab-content">
-            <ContentContainer>
-              <Invoices />
-            </ContentContainer>
-          </TabPane>
+            <TabPane className="lease-page__tab-content">
+              <ContentContainer>
+                {isEditMode
+                  ? <RentsEdit />
+                  : <Rents />
+                }
+              </ContentContainer>
+            </TabPane>
 
-          <TabPane>
-            <ContentContainer>
-              <SingleLeaseMap />
-            </ContentContainer>
-          </TabPane>
-        </TabContent>
-      </PageContainer>
+            <TabPane className="lease-page__tab-content">
+              <ContentContainer>
+                {isEditMode
+                  ? <DecisionsMainEdit />
+                  : <DecisionsMain />
+                }
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane className="lease-page__tab-content">
+              <ContentContainer>
+                {isEditMode
+                  ? <ConstructabilityEdit />
+                  : <Constructability />
+                }
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane className="lease-page__tab-content">
+              <ContentContainer>
+                <Invoices />
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                <SingleLeaseMap />
+              </ContentContainer>
+            </TabPane>
+          </TabContent>
+        </PageContainer>
+      </div>
     );
   }
 }

@@ -41,6 +41,7 @@ const BasisOfRents = ({attributes, currentLease}: Props) => {
           {key: 'year_rent_index', text: 'Alkuvuosivuokra (ind)', renderer: (val) => val ? `${formatNumber(val)} €/v` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         ]}
         data={basisOfRents}
+        fixedHeader={true}
         noDataText='Ei vuokranperusteita'
         sortable={true}
       />
