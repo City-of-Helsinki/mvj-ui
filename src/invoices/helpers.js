@@ -61,6 +61,14 @@ const getInvoiceTotalSharePercentage = (rows: Array<Object>) => {
   return totalShare;
 };
 
+const getContentCreditInvoices = (invoice: Object) =>
+  get(invoice, 'credit_invoices', []).map((item) => ({
+    id: item.id,
+    number: item.number,
+    due_date: item.due_date,
+    total_amount: item.total_amount,
+  }));
+
 export const getContentIncoiveItem = (invoice: Object) => {
   const rows = getContentIncoiceRows(invoice);
   return {
@@ -91,6 +99,7 @@ export const getContentIncoiveItem = (invoice: Object) => {
     description: get(invoice, 'description'),
     totalShare: getInvoiceTotalSharePercentage(rows),
     receivableTypes: getInvoiceReceivableTypes(rows),
+    credit_invoices: getContentCreditInvoices(invoice),
     credited_invoice: get(invoice, 'credited_invoice'),
     invoiceset: get(invoice, 'invoiceset'),
   };
@@ -180,7 +189,7 @@ export const formatNewChargeForDb = (invoice: Object) => {
 };
 
 export const formatCreditInvoiceForDb = (invoice: Object) => {
-  if(!invoice) {return undefined;}
+  if(!invoice) return undefined;
 
   const payload = {};
   if(invoice.type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && invoice.amount) {

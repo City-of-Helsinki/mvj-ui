@@ -56,6 +56,7 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
   const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
   const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
   const payments = get(invoice, 'payments', []);
+  const creditInvoices = get(invoice, 'credit_invoices', []);
   const rows = get(invoice, 'rows', []);
   const sum = getRowsSum(rows);
 
@@ -237,6 +238,47 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
           />
         </Column>
       </Row>
+      {!!creditInvoices.length &&
+        <Row>
+          <Column small={12}>
+            <SubTitle>Hyvityslaskut</SubTitle>
+            {!!creditInvoices.length &&
+              <div>
+                <Row>
+                  <Column small={4}><FormTextTitle title='Laskunumero' /></Column>
+                  <Column small={4}><FormTextTitle title='Summa' /></Column>
+                  <Column small={4}><FormTextTitle title='Eräpäivä' /></Column>
+                </Row>
+                {creditInvoices.map((item) => {
+                  const handleCreditInvoiceClick = () => {
+                    onCreditedInvoiceClick(item.id);
+                  };
+
+                  const handleCreditInvoiceKeyDown = (e: any) => {
+                    if(e.keyCode === 13) {
+                      handleCreditInvoiceClick();
+                    }
+                  };
+                  return (
+                    <Row key={item.id}>
+                      <Column small={4}>
+                        <FormText>
+                          {item.number
+                            ? <a className='no-margin' onKeyDown={handleCreditInvoiceKeyDown} onClick={handleCreditInvoiceClick} tabIndex={0}>{item.number}</a>
+                            : '-'
+                          }
+                        </FormText>
+                      </Column>
+                      <Column small={4}><FormText>{formatNumber(item.total_amount)} €</FormText></Column>
+                      <Column small={4}><FormText>{formatDate(item.due_date)}</FormText></Column>
+                    </Row>
+                  );
+                })}
+              </div>
+            }
+          </Column>
+        </Row>
+      }
       <Row>
         <Column small={12}>
           <SubTitle>Erittely</SubTitle>
