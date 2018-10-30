@@ -136,7 +136,10 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
         <Column small={4}>
           <FormTitleAndText
             title='Laskun osuus'
-            text={`${formatNumber((invoice ? invoice.totalShare : 0) * 100)} %`}
+            text={invoice && invoice.totalShare !== null
+              ? `${formatNumber((invoice ? invoice.totalShare : 0) * 100)} %`
+              : '-'
+            }
           />
         </Column>
         <Column small={4}>

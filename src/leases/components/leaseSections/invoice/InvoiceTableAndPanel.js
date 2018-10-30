@@ -411,7 +411,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
         ascSortFunction: sortNumberByKeyAsc,
         descSortFunction: sortNumberByKeyDesc,
         dataClassName: 'no-wrap',
-        renderer: (val) => `${formatNumber(val * 100)} %`,
+        renderer: (val) => val !== null ? `${formatNumber(val * 100)} %` : '-',
         text: 'Osuus',
       },
       {

@@ -1,6 +1,5 @@
 // @flow
 import get from 'lodash/get';
-import findIndex from 'lodash/findIndex';
 
 import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
 import {formatDecimalNumberForDb, getLabelOfOption, sortStringByKeyAsc} from '$util/helpers';
@@ -41,24 +40,13 @@ const getInvoiceReceivableTypes = (rows: Array<Object>) => {
   return receivableTypes;
 };
 
-const getInvoiceTotalSharePercentage = (rows: Array<Object>) => {
-  let totalShare = 0;
-  const tenants = [];
+const getInvoiceTotalSharePercentage = (invoice: Object) => {
+  if(invoice.total_amount === null ||
+    Number(invoice.total_amount) === 0 ||
+    invoice.billed_amount === null ||
+    Number(invoice.billed_amount) === 0) return null;
 
-  rows.forEach((row) =>{
-    if(findIndex(tenants, (tenant) => get(tenant, 'id') === get(row, 'tenantFull.id')) === -1) {
-      tenants.push(row.tenantFull);
-    }
-  });
-
-  tenants.forEach((row) => {
-    const numerator = get(row, 'share_numerator');
-    const denominator = get(row, 'share_denominator');
-    if(numerator && denominator) {
-      totalShare +=  numerator/denominator;
-    }
-  });
-  return totalShare;
+  return Number(invoice.billed_amount) / Number(invoice.total_amount);
 };
 
 const getContentCreditInvoices = (invoice: Object) =>
@@ -97,7 +85,7 @@ export const getContentIncoiveItem = (invoice: Object) => {
     notes: get(invoice, 'notes'),
     generated: get(invoice, 'generated'),
     description: get(invoice, 'description'),
-    totalShare: getInvoiceTotalSharePercentage(rows),
+    totalShare: getInvoiceTotalSharePercentage(invoice),
     receivableTypes: getInvoiceReceivableTypes(rows),
     credit_invoices: getContentCreditInvoices(invoice),
     credited_invoice: get(invoice, 'credited_invoice'),
