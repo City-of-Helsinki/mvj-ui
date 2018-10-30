@@ -1,6 +1,5 @@
 // @flow
 import get from 'lodash/get';
-import findIndex from 'lodash/findIndex';
 
 import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
 import {formatDecimalNumberForDb, getLabelOfOption, sortStringByKeyAsc} from '$util/helpers';
@@ -41,25 +40,22 @@ const getInvoiceReceivableTypes = (rows: Array<Object>) => {
   return receivableTypes;
 };
 
-const getInvoiceTotalSharePercentage = (rows: Array<Object>) => {
-  let totalShare = 0;
-  const tenants = [];
+const getInvoiceTotalSharePercentage = (invoice: Object) => {
+  if(invoice.total_amount === null ||
+    Number(invoice.total_amount) === 0 ||
+    invoice.billed_amount === null ||
+    Number(invoice.billed_amount) === 0) return null;
 
-  rows.forEach((row) =>{
-    if(findIndex(tenants, (tenant) => get(tenant, 'id') === get(row, 'tenantFull.id')) === -1) {
-      tenants.push(row.tenantFull);
-    }
-  });
-
-  tenants.forEach((row) => {
-    const numerator = get(row, 'share_numerator');
-    const denominator = get(row, 'share_denominator');
-    if(numerator && denominator) {
-      totalShare +=  numerator/denominator;
-    }
-  });
-  return totalShare;
+  return Number(invoice.billed_amount) / Number(invoice.total_amount);
 };
+
+const getContentCreditInvoices = (invoice: Object) =>
+  get(invoice, 'credit_invoices', []).map((item) => ({
+    id: item.id,
+    number: item.number,
+    due_date: item.due_date,
+    total_amount: item.total_amount,
+  }));
 
 export const getContentIncoiveItem = (invoice: Object) => {
   const rows = getContentIncoiceRows(invoice);
@@ -89,8 +85,9 @@ export const getContentIncoiveItem = (invoice: Object) => {
     notes: get(invoice, 'notes'),
     generated: get(invoice, 'generated'),
     description: get(invoice, 'description'),
-    totalShare: getInvoiceTotalSharePercentage(rows),
+    totalShare: getInvoiceTotalSharePercentage(invoice),
     receivableTypes: getInvoiceReceivableTypes(rows),
+    credit_invoices: getContentCreditInvoices(invoice),
     credited_invoice: get(invoice, 'credited_invoice'),
     invoiceset: get(invoice, 'invoiceset'),
   };
@@ -180,7 +177,7 @@ export const formatNewChargeForDb = (invoice: Object) => {
 };
 
 export const formatCreditInvoiceForDb = (invoice: Object) => {
-  if(!invoice) {return undefined;}
+  if(!invoice) return undefined;
 
   const payload = {};
   if(invoice.type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && invoice.amount) {

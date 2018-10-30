@@ -157,6 +157,7 @@ const EditInvoiceForm = ({
   const tenantOptions = getInvoiceTenantOptions(lease);
   const deliveryMethodOptions = getAttributeFieldOptions(invoiceAttributes, 'delivery_method');
   const typeOptions = getAttributeFieldOptions(invoiceAttributes, 'type');
+  const creditInvoices = get(invoice, 'credit_invoices', []);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -261,7 +262,10 @@ const EditInvoiceForm = ({
         <Column small={4}>
           <FormTitleAndText
             title='Laskun osuus'
-            text={`${formatNumber((invoice ? invoice.totalShare : 0) * 100)} %`}
+            text={invoice && invoice.totalShare !== null
+              ? `${formatNumber((invoice ? invoice.totalShare : 0) * 100)} %`
+              : '-'
+            }
           />
         </Column>
         <Column small={4}>
@@ -350,6 +354,47 @@ const EditInvoiceForm = ({
           />
         </Column>
       </Row>
+      {!!creditInvoices.length &&
+        <Row>
+          <Column small={12}>
+            <SubTitle>Hyvityslaskut</SubTitle>
+            {!!creditInvoices.length &&
+              <div>
+                <Row>
+                  <Column small={4}><FormTextTitle title='Laskunumero' /></Column>
+                  <Column small={4}><FormTextTitle title='Summa' /></Column>
+                  <Column small={4}><FormTextTitle title='Eräpäivä' /></Column>
+                </Row>
+                {creditInvoices.map((item) => {
+                  const handleCreditInvoiceClick = () => {
+                    onCreditedInvoiceClick(item.id);
+                  };
+
+                  const handleCreditInvoiceKeyDown = (e: any) => {
+                    if(e.keyCode === 13) {
+                      handleCreditInvoiceClick();
+                    }
+                  };
+                  return (
+                    <Row key={item.id}>
+                      <Column small={4}>
+                        <FormText>
+                          {item.number
+                            ? <a className='no-margin' onKeyDown={handleCreditInvoiceKeyDown} onClick={handleCreditInvoiceClick} tabIndex={0}>{item.number}</a>
+                            : '-'
+                          }
+                        </FormText>
+                      </Column>
+                      <Column small={4}><FormText>{formatNumber(item.total_amount)} €</FormText></Column>
+                      <Column small={4}><FormText>{formatDate(item.due_date)}</FormText></Column>
+                    </Row>
+                  );
+                })}
+              </div>
+            }
+          </Column>
+        </Row>
+      }
       <FieldArray
         attributes={invoiceAttributes}
         component={InvoiceRowsEdit}
