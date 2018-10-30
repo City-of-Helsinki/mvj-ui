@@ -60,6 +60,14 @@
   padding: rem-calc(20px);
   padding-bottom: rem-calc(120px);
 
+  &.with-control-bar {
+    margin-top: 59px;
+  }
+
+  &.with-small-control-bar {
+    margin-top: 50px;
+  }
+
   .button-wrapper {
     text-align: right;
     padding-top: rem-calc(20px);

@@ -560,17 +560,7 @@ class LandUseContractPage extends Component<Props, State> {
     const areFormsValid = this.getAreFormsValid();
 
     return (
-      <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Palauta muutokset'
-          isOpen={isRestoreModalOpen}
-          label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-          onCancel={this.cancelRestoreUnsavedChanges}
-          onClose={this.cancelRestoreUnsavedChanges}
-          onSave={this.restoreUnsavedChanges}
-          title='Palauta tallentamattomat muutokset'
-        />
-
+      <div style={{width: '100%'}}>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -590,84 +580,96 @@ class LandUseContractPage extends Component<Props, State> {
           onBack={this.handleBack}
         />
 
-        <Tabs
-          active={activeTab}
-          isEditMode={isEditMode}
-          tabs={[
-            {label: 'Perustiedot', isDirty: isBasicInformationFormDirty, hasError: isSaveClicked && !isBasicInformationFormValid},
-            {label: 'Osapuolet', isDirty: isLitigantsFormDirty, hasError: isSaveClicked && !isLitigantsFormValid},
-            {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty), hasError: isSaveClicked && (!isDecisionsFormValid || !isContractsFormValid)},
-            {label: 'Korvaukset ja laskutus', isDirty: isCompensationsFormDirty || isInvoicesFormDirty, hasError: isSaveClicked && (!isCompensationsFormValid || !isInvoicesFormValid)},
-            {label: 'Kartta'},
-          ]}
-          onTabClick={(id) => this.handleTabClick(id)}
-        />
-        <TabContent active={activeTab}>
-          <TabPane>
-            <ContentContainer>
-              {!isEditMode
-                ? <BasicInformation />
-                : <BasicInformationEdit />
-              }
-            </ContentContainer>
-          </TabPane>
+        <PageContainer className='with-small-control-bar'>
+          <ConfirmationModal
+            confirmButtonLabel='Palauta muutokset'
+            isOpen={isRestoreModalOpen}
+            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+            onCancel={this.cancelRestoreUnsavedChanges}
+            onClose={this.cancelRestoreUnsavedChanges}
+            onSave={this.restoreUnsavedChanges}
+            title='Palauta tallentamattomat muutokset'
+          />
 
-          <TabPane>
-            <ContentContainer>
-              <h2>Osapuolet</h2>
-              <Divider />
-              {!isEditMode
-                ? <Litigants />
-                : <LitigantsEdit />
-              }
-            </ContentContainer>
-          </TabPane>
+          <Tabs
+            active={activeTab}
+            isEditMode={isEditMode}
+            tabs={[
+              {label: 'Perustiedot', isDirty: isBasicInformationFormDirty, hasError: isSaveClicked && !isBasicInformationFormValid},
+              {label: 'Osapuolet', isDirty: isLitigantsFormDirty, hasError: isSaveClicked && !isLitigantsFormValid},
+              {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty), hasError: isSaveClicked && (!isDecisionsFormValid || !isContractsFormValid)},
+              {label: 'Korvaukset ja laskutus', isDirty: isCompensationsFormDirty || isInvoicesFormDirty, hasError: isSaveClicked && (!isCompensationsFormValid || !isInvoicesFormValid)},
+              {label: 'Kartta'},
+            ]}
+            onTabClick={(id) => this.handleTabClick(id)}
+          />
+          <TabContent active={activeTab}>
+            <TabPane>
+              <ContentContainer>
+                {!isEditMode
+                  ? <BasicInformation />
+                  : <BasicInformationEdit />
+                }
+              </ContentContainer>
+            </TabPane>
 
-          <TabPane>
-            <ContentContainer>
-              <h2>Päätökset</h2>
-              <Divider />
-              {!isEditMode
-                ? <Decisions />
-                : <DecisionsEdit />
-              }
+            <TabPane>
+              <ContentContainer>
+                <h2>Osapuolet</h2>
+                <Divider />
+                {!isEditMode
+                  ? <Litigants />
+                  : <LitigantsEdit />
+                }
+              </ContentContainer>
+            </TabPane>
 
-              <h2>Sopimukset</h2>
-              <Divider />
-              {!isEditMode
-                ? <Contracts />
-                : <ContractsEdit />
-              }
-            </ContentContainer>
-          </TabPane>
+            <TabPane>
+              <ContentContainer>
+                <h2>Päätökset</h2>
+                <Divider />
+                {!isEditMode
+                  ? <Decisions />
+                  : <DecisionsEdit />
+                }
 
-          <TabPane>
-            <ContentContainer>
-              <h2>Korvaukset</h2>
-              <Divider />
-              {!isEditMode
-                ? <Compensations />
-                : <CompensationsEdit />
-              }
+                <h2>Sopimukset</h2>
+                <Divider />
+                {!isEditMode
+                  ? <Contracts />
+                  : <ContractsEdit />
+                }
+              </ContentContainer>
+            </TabPane>
 
-              <h2>Laskutus</h2>
-              <Divider />
-              {!isEditMode
-                ? <Invoices />
-                : <InvoicesEdit />
-              }
-            </ContentContainer>
-          </TabPane>
+            <TabPane>
+              <ContentContainer>
+                <h2>Korvaukset</h2>
+                <Divider />
+                {!isEditMode
+                  ? <Compensations />
+                  : <CompensationsEdit />
+                }
 
-          <TabPane>
-            <ContentContainer>
-              <AreaNotesEditMap
-                showEditTools={false}
-              />
-            </ContentContainer>
-          </TabPane>
-        </TabContent>
-      </PageContainer>
+                <h2>Laskutus</h2>
+                <Divider />
+                {!isEditMode
+                  ? <Invoices />
+                  : <InvoicesEdit />
+                }
+              </ContentContainer>
+            </TabPane>
+
+            <TabPane>
+              <ContentContainer>
+                <AreaNotesEditMap
+                  showEditTools={false}
+                />
+              </ContentContainer>
+            </TabPane>
+          </TabContent>
+        </PageContainer>
+      </div>
     );
   }
 }

@@ -331,17 +331,7 @@ class RentBasisPage extends Component<Props, State> {
     }
 
     return (
-      <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Palauta muutokset'
-          isOpen={isRestoreModalOpen}
-          label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-          onCancel={this.cancelRestoreUnsavedChanges}
-          onClose={this.restoreUnsavedChanges}
-          onSave={this.restoreUnsavedChanges}
-          title='Palauta tallentamattomat muutokset'
-        />
-
+      <div style={{width: '100%'}}>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -363,27 +353,40 @@ class RentBasisPage extends Component<Props, State> {
           }
           onBack={this.handleBack}
         />
-        <Tabs
-          active={activeTab}
-          isEditMode={isEditMode}
-          tabs={[
-            {label: 'Perustiedot', isDirty: isFormDirty, hasError: isSaveClicked && !isFormValid},
-            {label: 'Kartta'},
-          ]}
-          onTabClick={this.handleTabClick}
-        />
-        <TabContent active={activeTab}>
-          <TabPane>
-            {isEditMode
-              ? <RentBasisEdit />
-              : <RentBasisReadonly rentBasis={rentBasis} />
-            }
-          </TabPane>
-          <TabPane>
-            <SingleRentBasisMap />
-          </TabPane>
-        </TabContent>
-      </PageContainer>
+
+        <PageContainer className='with-control-bar'>
+          <ConfirmationModal
+            confirmButtonLabel='Palauta muutokset'
+            isOpen={isRestoreModalOpen}
+            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+            onCancel={this.cancelRestoreUnsavedChanges}
+            onClose={this.restoreUnsavedChanges}
+            onSave={this.restoreUnsavedChanges}
+            title='Palauta tallentamattomat muutokset'
+          />
+
+          <Tabs
+            active={activeTab}
+            isEditMode={isEditMode}
+            tabs={[
+              {label: 'Perustiedot', isDirty: isFormDirty, hasError: isSaveClicked && !isFormValid},
+              {label: 'Kartta'},
+            ]}
+            onTabClick={this.handleTabClick}
+          />
+          <TabContent active={activeTab}>
+            <TabPane>
+              {isEditMode
+                ? <RentBasisEdit />
+                : <RentBasisReadonly rentBasis={rentBasis} />
+              }
+            </TabPane>
+            <TabPane>
+              <SingleRentBasisMap />
+            </TabPane>
+          </TabContent>
+        </PageContainer>
+      </div>
     );
   }
 }

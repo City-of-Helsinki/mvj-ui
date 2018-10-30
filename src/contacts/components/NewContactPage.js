@@ -115,7 +115,7 @@ class NewContactPage extends Component<Props> {
     const {attributes, isContactFormValid, isSaveClicked} = this.props;
 
     return (
-      <PageContainer>
+      <div style={{width: '100%'}}>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -131,21 +131,24 @@ class NewContactPage extends Component<Props> {
           infoComponent={<h1>Uusi asiakas</h1>}
           onBack={this.handleBack}
         />
-        <ContentContainer>
-          {isEmpty(attributes) &&
-            <Row>
-              <Column>
-                <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>
-              </Column>
-            </Row>
-          }
-          {!isEmpty(attributes) &&
-            <GreenBoxEdit className='no-margin'>
-              <ContactForm isFocusedOnMount/>
-            </GreenBoxEdit>
-          }
-        </ContentContainer>
-      </PageContainer>
+
+        <PageContainer className='with-small-control-bar'>
+          <ContentContainer>
+            {isEmpty(attributes) &&
+              <Row>
+                <Column>
+                  <LoaderWrapper><Loader isLoading={true} /></LoaderWrapper>
+                </Column>
+              </Row>
+            }
+            {!isEmpty(attributes) &&
+              <GreenBoxEdit className='no-margin'>
+                <ContactForm isFocusedOnMount/>
+              </GreenBoxEdit>
+            }
+          </ContentContainer>
+        </PageContainer>
+      </div>
     );
   }
 }

@@ -280,17 +280,7 @@ class ContactPage extends Component<Props, State> {
     }
 
     return (
-      <PageContainer>
-        <ConfirmationModal
-          confirmButtonLabel='Palauta muutokset'
-          isOpen={isRestoreModalOpen}
-          label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-          onCancel={this.cancelRestoreUnsavedChanges}
-          onClose={this.cancelRestoreUnsavedChanges}
-          onSave={this.restoreUnsavedChanges}
-          title='Palauta tallentamattomat muutokset'
-        />
-
+      <div style={{width: '100%'}}>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -308,11 +298,23 @@ class ContactPage extends Component<Props, State> {
           infoComponent={<h1>{nameInfo}</h1>}
           onBack={this.handleBack}
         />
-        {isEditMode
-          ? <ContactEdit />
-          : <ContactReadonly contact={contact} />
-        }
-      </PageContainer>
+        <PageContainer className='with-small-control-bar'>
+          <ConfirmationModal
+            confirmButtonLabel='Palauta muutokset'
+            isOpen={isRestoreModalOpen}
+            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+            onCancel={this.cancelRestoreUnsavedChanges}
+            onClose={this.cancelRestoreUnsavedChanges}
+            onSave={this.restoreUnsavedChanges}
+            title='Palauta tallentamattomat muutokset'
+          />
+
+          {isEditMode
+            ? <ContactEdit />
+            : <ContactReadonly contact={contact} />
+          }
+        </PageContainer>
+      </div>
     );
   }
 }

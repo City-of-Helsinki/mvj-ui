@@ -43,9 +43,23 @@
 }
 
 .control-button-bar {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: rem-calc(15px);
+  position: fixed;
+  z-index: 1000;
+  background-color: $light-gray;
+  left: 0;
+  right: 0;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+
+  &__wrapper {
+    display: flex;
+    justify-content: space-between;
+    display: flex;
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 1300px;
+    padding: 10px 20px;
+  }
 
   .back-button-wrapper {
     flex: 0 0 0;

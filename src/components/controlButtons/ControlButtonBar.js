@@ -36,16 +36,18 @@ const ControlButtonBar = ({buttonComponent, infoComponent, onBack}: Props) =>
 
       return(
         <div className='control-button-bar'>
-          {onBack &&
-            <div className='back-button-wrapper'>
-              <BackButton
-                onClick={handleBack}
-              />
-            </div>
-          }
+          <div className='control-button-bar__wrapper'>
+            {onBack &&
+              <div className='back-button-wrapper'>
+                <BackButton
+                  onClick={handleBack}
+                />
+              </div>
+            }
 
-          <div className='info-component-wrapper'>{infoComponent}</div>
-          <div className='control-buttons-wrapper'>{buttonComponent}</div>
+            <div className='info-component-wrapper'>{infoComponent}</div>
+            <div className='control-buttons-wrapper'>{buttonComponent}</div>
+          </div>
         </div>
       );
     }}

@@ -117,7 +117,7 @@ class NewRentBasisPage extends Component<Props> {
     const {isFormValid, isSaveClicked} = this.props;
 
     return (
-      <PageContainer>
+      <div style={{width: '100%'}}>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
@@ -133,12 +133,15 @@ class NewRentBasisPage extends Component<Props> {
           infoComponent={<h1>Uusi vuokrausperuste</h1>}
           onBack={this.handleBack}
         />
-        <ContentContainer>
-          <GreenBoxEdit className='no-margin'>
-            <RentBasisForm isFocusedOnMount />
-          </GreenBoxEdit>
-        </ContentContainer>
-      </PageContainer>
+
+        <PageContainer className='with-small-control-bar'>
+          <ContentContainer>
+            <GreenBoxEdit className='no-margin'>
+              <RentBasisForm isFocusedOnMount />
+            </GreenBoxEdit>
+          </ContentContainer>
+        </PageContainer>
+      </div>
     );
   }
 }
