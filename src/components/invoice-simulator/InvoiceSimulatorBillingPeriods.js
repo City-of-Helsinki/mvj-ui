@@ -2,12 +2,13 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
+import AmountWithVat from '$components/vat/AmountWithVat';
 import Collapse from '$components/collapse/Collapse';
 import RentCalculatorExplanation from '$components/rent-calculator/RentCalculatorExplanation';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceSimulatorInvoice from './InvoiceSimulatorInvoice';
 import SubTitle from '$components/content/SubTitle';
-import {formatDate, formatDateRange, formatNumber} from '$util/helpers';
+import {formatDate, formatDateRange} from '$util/helpers';
 
 type Props = {
   dueDate: string,
@@ -44,7 +45,7 @@ const InvoiceSimulatorBillingPeriod = ({
           </Column>
           <Column>
             <span className='collapse__header-subtitle'>
-              {`${formatNumber(totalAmount)} €`}
+              <AmountWithVat amount={totalAmount} date={dueDate} />
             </span>
           </Column>
         </div>
@@ -67,7 +68,7 @@ const InvoiceSimulatorBillingPeriod = ({
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
             title='Summa yhteensä'
-            text={`${formatNumber(totalAmount)} €`}
+            text={<AmountWithVat amount={totalAmount} date={dueDate} />}
           />
         </Column>
       </Row>

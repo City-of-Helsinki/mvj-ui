@@ -5,6 +5,7 @@ import {initialize} from 'redux-form';
 import ReactResizeDetector from 'react-resize-detector';
 import scrollToComponent from 'react-scroll-to-component';
 
+import AmountWithVat from '$components/vat/AmountWithVat';
 import InvoicePanel from './InvoicePanel';
 import SortableTable from '$components/table/SortableTable';
 import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
@@ -456,14 +457,14 @@ class InvoiceTableAndPanel extends Component<Props, State> {
         key: 'billed_amount',
         ascSortFunction: sortNumberByKeyAsc,
         descSortFunction: sortNumberByKeyDesc,
-        renderer: (val) => val ? `${formatNumber(val || 0)} €` : '-',
+        renderer: (val, row) => <AmountWithVat amount={row.billed_amount || 0} date={row.due_date} />,
         text: 'Laskutettu',
       },
       {
         key: 'outstanding_amount',
         ascSortFunction: sortNumberByKeyAsc,
         descSortFunction: sortNumberByKeyDesc,
-        renderer: (val) => `${formatNumber(val || 0)} €`,
+        renderer: (val, row) => <AmountWithVat amount={row.outstanding_amount || 0} date={row.due_date} />,
         text: 'Maksamatta',
       },
     ];
