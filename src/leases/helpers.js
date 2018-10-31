@@ -167,6 +167,7 @@ export const getContentSummary = (lease: Object) => {
     lease_areas: getContentLeaseAreas(lease).filter((area) => !area.archived_at),
     constructability_areas: getContentConstructability(lease),
     infill_development_compensations: getContentInfillDevelopmentCompensations(lease),
+    is_subject_to_vat: lease.is_subject_to_vat,
   };
 };
 
@@ -850,6 +851,8 @@ export const addSummaryFormValues = (payload: Object, summary: Object) => {
   payload.notice_note = summary.notice_note;
   payload.reference_number = summary.reference_number;
   payload.note = summary.note;
+  payload.is_subject_to_vat = summary.is_subject_to_vat;
+
   return payload;
 };
 

@@ -301,6 +301,17 @@ class SummaryEdit extends Component<Props, State> {
                   />
                 </Column>
               </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'is_subject_to_vat')}
+                    name='is_subject_to_vat'
+                    overrideValues={{label: 'Arvonlisävelvollinen'}}
+                  />
+                </Column>
+              </Row>
+
               <SummaryLeaseInfo />
             </Collapse>
 
