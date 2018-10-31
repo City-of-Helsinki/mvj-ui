@@ -8,7 +8,6 @@ type Props = {
   displayError: boolean,
   input: Object,
   isDirty: boolean,
-  language?: string,
   valueSelectedCallback?: Function,
 }
 
@@ -18,7 +17,6 @@ const FieldTypeAddress = ({
   input,
   input: {name, onBlur, onChange, value},
   isDirty,
-  language,
   valueSelectedCallback,
 }: Props) => {
   return (
@@ -28,7 +26,6 @@ const FieldTypeAddress = ({
         addressDetailsCallBack={valueSelectedCallback}
         id={name}
         name={name}
-        language={language}
         onBlur={onBlur}
         onChange={onChange}
         selected={value}

@@ -117,7 +117,6 @@ const renderPlanUnits = ({
         );
       }}
     </AppConsumer>
-
   );
 };
 
@@ -149,7 +148,9 @@ const renderPlots = ({
     });
   };
 
-  const handleCollapseToggle = (val: boolean) => onCollapseToggle(val);
+  const handleCollapseToggle = (val: boolean) => {
+    onCollapseToggle(val);
+  };
 
   const plotErrors = get(errors, name);
 
@@ -315,9 +316,7 @@ const AddressItems = ({attributes, change, fields, isSaveClicked}: AddressesProp
                   onRemove={handleRemove}
                 />
               );
-            }
-
-            )}
+            })}
             <Row>
               <Column>
                 <AddButtonThird
@@ -459,6 +458,7 @@ class LeaseAreaEdit extends PureComponent<Props> {
   render() {
     const {
       attributes,
+      change,
       errors,
       field,
       geometry,
