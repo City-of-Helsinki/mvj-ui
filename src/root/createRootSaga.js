@@ -23,6 +23,7 @@ import previewInvoicesSaga from '../previewInvoices/saga';
 import rentBasisSaga from '../rentbasis/saga';
 import rentForPeriodSaga from '../rentForPeriod/saga';
 import userSaga from '../users/saga';
+import vatSaga from '../vat/saga';
 
 export default () =>
   // $FlowFixMe
@@ -50,5 +51,6 @@ export default () =>
       fork(rentBasisSaga),
       fork(rentForPeriodSaga),
       fork(userSaga),
+      fork(vatSaga),
     ]);
   };

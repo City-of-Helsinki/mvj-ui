@@ -2,13 +2,14 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
+import AmountWithVat from '$components/vat/AmountWithVat';
 import Collapse from '$components/collapse/Collapse';
 import FormText from '$components/form/FormText';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceSimulatorInvoiceRows from './InvoiceSimulatorInvoiceRows';
 import SubTitle from '$components/content/SubTitle';
 import {getContactFullName} from '$src/contacts/helpers';
-import {formatDate, formatDateRange, formatNumber, getLabelOfOption} from '$util/helpers';
+import {formatDate, formatDateRange, getLabelOfOption} from '$util/helpers';
 
 type Props = {
   billedAmount: number,
@@ -46,7 +47,7 @@ const InvoiceSimulatorInvoice = ({
           </Column>
           <Column>
             <span className='collapse__header-subtitle'>
-              {`${formatNumber(billedAmount)} €`}
+              <AmountWithVat amount={billedAmount} date={dueDate} />
             </span>
           </Column>
         </div>
@@ -69,7 +70,7 @@ const InvoiceSimulatorInvoice = ({
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
             title='Summa'
-            text={`${formatNumber(billedAmount)} €`}
+            text={<AmountWithVat amount={billedAmount} date={dueDate} />}
           />
         </Column>
         <Column small={6} medium={4} large={2}>
@@ -83,6 +84,7 @@ const InvoiceSimulatorInvoice = ({
       <SubTitle>Erittely</SubTitle>
       {!rows.length && <FormText>Ei rivejä</FormText>}
       {!!rows.length && <InvoiceSimulatorInvoiceRows
+        dueDate={dueDate}
         receivableTypeOptions={receivableTypeOptions}
         rows={rows} />
       }

@@ -275,6 +275,15 @@ class Summary extends Component<Props, State> {
                   <ShowMore text={summary.note || '-'} />
                 </Column>
               </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <FormTitleAndText
+                    title='Arvonlisävelvollinen'
+                    text={summary.is_subject_to_vat ? 'Kyllä' : 'Ei'}
+                  />
+                </Column>
+              </Row>
+
               <SummaryLeaseInfo />
             </Collapse>
 

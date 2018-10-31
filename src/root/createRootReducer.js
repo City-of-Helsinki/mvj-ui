@@ -29,6 +29,7 @@ import rentBasisReducer from '../rentbasis/reducer';
 import rentForPeriodReducer from '../rentForPeriod/reducer';
 import topNavigationReducer from '$components/topNavigation/reducer';
 import usersReducer from '../users/reducer';
+import vatReducer from '../vat/reducer';
 
 import type {Reducer} from '../types';
 import type {RootState} from './types';
@@ -63,4 +64,5 @@ export default (): Reducer<RootState> =>
     toastr: toastrReducer,
     topNavigation: topNavigationReducer,
     users: usersReducer,
+    vat: vatReducer,
   });

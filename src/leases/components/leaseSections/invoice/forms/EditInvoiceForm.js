@@ -9,6 +9,7 @@ import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
+import AmountWithVat from '$components/vat/AmountWithVat';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -272,7 +273,7 @@ const EditInvoiceForm = ({
           <FormTitleAndText
             title='Laskutettu määrä'
             text={(invoice && invoice.billed_amount)
-              ? `${formatNumber(invoice.billed_amount)} €`
+              ? <AmountWithVat amount={invoice.billed_amount} date={invoice.due_date} />
               : '-'}
           />
         </Column>
@@ -292,7 +293,7 @@ const EditInvoiceForm = ({
           <FormTitleAndText
             title='Maksamaton määrä'
             text={(invoice && invoice.outstanding_amount)
-              ? `${formatNumber(invoice.outstanding_amount)} €`
+              ? <AmountWithVat amount={invoice.outstanding_amount} date={invoice.due_date} />
               : '-'}
           />
         </Column>
@@ -385,7 +386,9 @@ const EditInvoiceForm = ({
                           }
                         </FormText>
                       </Column>
-                      <Column small={4}><FormText>{formatNumber(item.total_amount)} €</FormText></Column>
+                      <Column small={4}><FormText>
+                        <AmountWithVat amount={item.total_amount} date={item.due_date} />
+                      </FormText></Column>
                       <Column small={4}><FormText>{formatDate(item.due_date)}</FormText></Column>
                     </Row>
                   );

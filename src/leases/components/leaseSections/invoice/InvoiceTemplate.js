@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import AmountWithVat from '$components/vat/AmountWithVat';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -129,7 +130,7 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
           <FormTitleAndText
             title='Laskun pääoma'
             text={invoice && invoice.total_amount
-              ? `${formatNumber(invoice.total_amount)} €`
+              ? <AmountWithVat amount={invoice.total_amount} date={invoice.due_date} />
               : '-'}
           />
         </Column>
@@ -146,7 +147,7 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
           <FormTitleAndText
             title='Laskutettu määrä'
             text={invoice && invoice.billed_amount
-              ? `${formatNumber(invoice.billed_amount)} €`
+              ? <AmountWithVat amount={invoice.billed_amount} date={invoice.due_date} />
               : '-'}
           />
         </Column>
@@ -169,7 +170,10 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
                 return (
                   <Row key={payment.id}>
                     <Column small={6}>
-                      <ListItem>{payment.paid_amount ? `${formatNumber(payment.paid_amount)} €` : '-'}</ListItem>
+                      <ListItem>{payment.paid_amount
+                        ? <AmountWithVat amount={payment.paid_amount} date={get(invoice, 'due_date')} />
+                        : '-'
+                      }</ListItem>
                     </Column>
                     <Column small={6}>
                       <ListItem>{formatDate(payment.paid_date) || '-'}</ListItem>
@@ -184,7 +188,7 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
           <FormTitleAndText
             title='Maksamaton määrä'
             text={invoice && invoice.outstanding_amount
-              ? `${formatNumber(invoice.outstanding_amount)} €`
+              ? <AmountWithVat amount={invoice.outstanding_amount} date={invoice.due_date} />
               : '-'}
           />
         </Column>
@@ -272,7 +276,7 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
                           }
                         </FormText>
                       </Column>
-                      <Column small={4}><FormText>{formatNumber(item.total_amount)} €</FormText></Column>
+                      <Column small={4}><FormText><AmountWithVat amount={item.total_amount} date={item.due_date} /></FormText></Column>
                       <Column small={4}><FormText>{formatDate(item.due_date)}</FormText></Column>
                     </Row>
                   );
@@ -294,15 +298,21 @@ const InvoiceTemplate = ({creditedInvoice, invoice, invoiceAttributes, onCredite
                   <Row key={row.id}>
                     <Column small={4}><FormText>{getContactFullName(contact) || '-'}</FormText></Column>
                     <Column small={2}><FormText>{getLabelOfOption(receivableTypeOptions, row.receivable_type) || '-'}</FormText></Column>
-                    <Column small={4}><FormText>{row.description || '-'}</FormText></Column>
-                    <Column small={2}><FormText className='invoice__rows_amount'>{row.amount ? `${formatNumber(row.amount)} €` : '-'}</FormText></Column>
+                    <Column small={6}><FormText className='align-right'>{row.amount
+                      ? <AmountWithVat amount={row.amount} date={get(invoice, 'due_date')} />
+                      : '-'
+                    }</FormText></Column>
                   </Row>
                 );
               })}
               <Divider className='invoice-divider' />
               <Row>
-                <Column small={10}><FormText><strong>Yhteensä</strong></FormText></Column>
-                <Column small={2}><FormText className='align-right'><strong>{`${formatNumber(sum)} €`}</strong></FormText></Column>
+                <Column small={4}><FormText><strong>Yhteensä</strong></FormText></Column>
+                <Column small={8}>
+                  <FormText className='align-right'>
+                    <strong><AmountWithVat amount={sum} date={get(invoice, 'due_date')} /></strong>
+                  </FormText>
+                </Column>
               </Row>
             </div>
           }
