@@ -53,6 +53,7 @@ import {
 } from '$src/leases/actions';
 import {clearPreviewInvoices} from '$src/previewInvoices/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {fetchVats} from '$src/vat/actions';
 import {FormNames} from '$src/leases/enums';
 import {FormNames as ComponentFormNames} from '$components/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
@@ -72,12 +73,14 @@ import {
   getIsSaveClicked,
   getIsSaving,
 } from '$src/leases/selectors';
+import {getVats} from '$src/vat/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
 import type {Attributes as CommentAttributes, CommentList} from '$src/comments/types';
 import type {Attributes as ContactAttributes} from '$src/contacts/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 import type {Attributes, Lease} from '$src/leases/types';
+import type {VatList} from '$src/vat/types';
 
 type Props = {
   areasFormValues: Object,
@@ -104,6 +107,7 @@ type Props = {
   fetchInvoicesByLease: Function,
   fetchInvoiceSetsByLease: Function,
   fetchSingleLease: Function,
+  fetchVats: Function,
   hideEditMode: Function,
   initialize: Function,
   inspectionsFormValues: Object,
@@ -143,6 +147,7 @@ type Props = {
   showEditMode: Function,
   summaryFormValues: Object,
   tenantsFormValues: Object,
+  vats: VatList,
 }
 
 type State = {
@@ -180,11 +185,13 @@ class LeasePage extends Component<Props, State> {
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
       fetchSingleLease,
+      fetchVats,
       hideEditMode,
       invoiceAttributes,
       location,
       params: {leaseId},
       receiveTopNavigationSettings,
+      vats,
     } = this.props;
 
     receiveTopNavigationSettings({
@@ -211,6 +218,10 @@ class LeasePage extends Component<Props, State> {
 
     if(isEmpty(invoiceAttributes)) {
       fetchInvoiceAttributes();
+    }
+
+    if(isEmpty(vats)) {
+      fetchVats();
     }
 
     fetchCollectionLetterTemplates();
@@ -917,6 +928,7 @@ export default flowRight(
         rentsFormValues: getFormValues(FormNames.RENTS)(state),
         summaryFormValues: getFormValues(FormNames.SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.TENANTS)(state),
+        vats: getVats(state),
       };
     },
     {
@@ -935,6 +947,7 @@ export default flowRight(
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
       fetchSingleLease,
+      fetchVats,
       hideEditMode,
       initialize,
       patchLease,

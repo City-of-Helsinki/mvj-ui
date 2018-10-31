@@ -9,6 +9,7 @@ import type {LeaseState} from '$src/leases/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
 import type {PreviewInvoicesState} from '$src/previewInvoices/types';
 import type {UserState} from '../role/types';
+import type {VatState} from '../vat/types';
 
 export type RootState = {
   api: ApiState,
@@ -20,4 +21,5 @@ export type RootState = {
   penaltyInterest: PenaltyInterestState,
   previewInvoices: PreviewInvoicesState,
   user: UserState,
+  vat: VatState,
 };
