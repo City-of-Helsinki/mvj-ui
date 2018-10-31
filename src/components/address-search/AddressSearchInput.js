@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
+import get from 'lodash/get';
 
 import {KeyCodes} from '$src/enums';
 
@@ -11,11 +12,12 @@ type Language = 'fi' | 'sv';
 
 type Street = {
   id: number,
+  language: Language,
   municipality: string,
   name: {
     fi: string,
     sv: string,
-  }
+  },
 }
 
 type Address = {
@@ -31,7 +33,6 @@ type Address = {
 type Props = {
   addressDetailsCallBack?: Function,
   id?: string,
-  language: Language,
   name?: string,
   onBlur?: Function,
   onChange?: Function,
@@ -124,7 +125,6 @@ class AddressSearchInput extends Component<Props, State> {
 
   filterAddresses = (): Array<Address> => {
     const {addresses, value} = this.state;
-
     return addresses.filter((address) => this.getAddressText(address).toLowerCase().startsWith(value ? value.toLowerCase() : ''));
   }
 
@@ -271,9 +271,8 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   sortStreets = (a: Street, b: Street) => {
-    const {language} = this.props;
-    const aStreet = a.name[language] ? a.name[language].toLowerCase() : '';
-    const bStreet = b.name[language] ? b.name[language].toLowerCase() : '';
+    const aStreet = a.name[a.language] ? a.name[a.language].toLowerCase() : '';
+    const bStreet = b.name[b.language] ? b.name[b.language].toLowerCase() : '';
 
     if(aStreet < bStreet) return -1;
     if(aStreet > bStreet) return 1;
@@ -281,15 +280,36 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   searchStreets = debounce((input: string) => {
-    const {language} = this.props;
+    const fetchFiStreets = () => {
+      const url = `https://api.hel.fi/servicemap/v2/street/?page_size=4&input=${input}&language=fi`;
+      const request = new Request(url);
 
-    const url = `https://api.hel.fi/servicemap/v2/street/?page_size=4&input=${input}&language=${language}`;
-    const request = new Request(url);
+      return fetch(request);
+    };
 
-    fetch(request)
-      .then((response) => response.json())
+    const fetchSvStreets = () => {
+      const url = `https://api.hel.fi/servicemap/v2/street/?page_size=4&input=${input}&language=sv`;
+      const request = new Request(url);
+
+      return fetch(request);
+    };
+
+    const fetchStreets = async() => {
+      const fiResponse = await fetchFiStreets();
+      const svResponse = await fetchSvStreets();
+
+      const fiResults = await fiResponse.json();
+      const svResults = await svResponse.json();
+
+      return [
+        ...fiResults.results.map((street) => ({...street, language: 'fi'})),
+        ...svResults.results.map((street) => ({...street, language: 'sv'})),
+      ];
+    };
+
+    fetchStreets()
       .then((results) => {
-        const streets = results.results.sort(this.sortStreets),
+        const streets = results.sort(this.sortStreets),
           newState: any = {streets: streets};
 
         if(streets.length === 1) {
@@ -308,14 +328,14 @@ class AddressSearchInput extends Component<Props, State> {
       .catch((error) => {
         console.error(`Failed to fetch streets with error ${error}`);
       });
-  }, 300);
+  }, 500);
 
   handleOnChange = (e: any) => {
-    const {language, onChange} = this.props;
+    const {onChange} = this.props;
     const {selectedStreet} = this.state;
     const newValue = e.target.value.toString();
 
-    if(!selectedStreet || (selectedStreet && !newValue.startsWith(selectedStreet.name[language]))) {
+    if(!selectedStreet || (selectedStreet && !newValue.startsWith(selectedStreet.name[selectedStreet.language]))) {
       this.searchStreets(newValue);
     }
 
@@ -329,20 +349,15 @@ class AddressSearchInput extends Component<Props, State> {
     }
   }
 
-  getStreetText = (street: Street) => {
-    const {language} = this.props;
-    return `${street.name[language]}`;
-  };
+  getStreetText = (street: Street) => `${street.name[street.language]}`;
 
-  getFullStreetText = (street: Street) => {
-    const {language} = this.props;
-    return `${street.name[language]}, ${capitalize(street.municipality)}`;
-  };
+  getFullStreetText = (street: Street) => `${street.name[street.language]}, ${capitalize(street.municipality)}`;
 
   sortAddresses = (a: Address, b: Address) => {
     if(a.number === b.number) {
       const aLetter = a.letter ? a.letter : '';
       const bLetter = b.letter ? b.letter : '';
+
       if(aLetter < bLetter) return -1;
       if(aLetter > bLetter) return 1;
       return 0;
@@ -352,9 +367,7 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   searchAddresses = (street: Street) => {
-    const {language} = this.props;
-
-    const url = `https://api.hel.fi/servicemap/v2/address/?street=${street.id}&language=${language}&page=1&page_size=200`;
+    const url = `https://api.hel.fi/servicemap/v2/address/?street=${street.id}&language=${street.language}&page=1&page_size=200`;
     const request = new Request(url);
 
     fetch(request)
@@ -392,13 +405,19 @@ class AddressSearchInput extends Component<Props, State> {
   }
 
   getAddressText = (address: Address) => {
+    const {selectedStreet} = this.state;
     const numberText = `${address.number}${address.letter || ''}${address.number_end ? ` - ${address.number_end}` : ''}`;
-    return `${this.getStreetText(address.street)} ${numberText}`;
+
+    return selectedStreet ? `${this.getStreetText(selectedStreet)} ${numberText}` : '';
   };
 
   getFullAddressText = (address: Address) => {
+    const {selectedStreet} = this.state;
     const numberText = `${address.number}${address.letter || ''}${address.number_end ? ` - ${address.number_end}` : ''}`;
-    return `${this.getStreetText(address.street)} ${numberText}, ${capitalize(address.street.municipality)}`;
+
+    return selectedStreet
+      ? `${this.getStreetText(selectedStreet)} ${numberText}, ${capitalize(address.street.municipality)}`
+      : '';
   };
 
   handleAddressItemClick = (address: Address) => {
@@ -424,6 +443,7 @@ class AddressSearchInput extends Component<Props, State> {
 
   fetchAddressDetails = (address: Address) => {
     const coordinates = address.location.coordinates;
+
     if(coordinates.length >= 2) {
       const url = `https://api.hel.fi/servicemap/v2/administrative_division/?lon=${coordinates[0]}&lat=${coordinates[1]}&type=postcode_area`;
       const request = new Request(url);
@@ -432,12 +452,15 @@ class AddressSearchInput extends Component<Props, State> {
         .then((response) => response.json())
         .then((results) => {
           const details = results.results;
+
           if(details.length) {
-            const {addressDetailsCallBack, language} = this.props;
+            const {addressDetailsCallBack} = this.props;
+            const {selectedStreet} = this.state;
+
             if(addressDetailsCallBack) {
               addressDetailsCallBack({
                 postalCode: details[0].origin_id,
-                city: details[0].name[language],
+                city: details[0].name[get(selectedStreet, 'language')],
               });
             }
           }
@@ -471,7 +494,7 @@ class AddressSearchInput extends Component<Props, State> {
             {!selectedStreet && !streets.length &&
               <li className='no-result-item'>Ei katuja</li>
             }
-            {(!selectedStreet || !addresses.length) && !!streets.length && streets.map((street) => {
+            {(!selectedStreet || !addresses.length) && !!streets.length && streets.map((street, index) => {
               const handleClick = () => {
                 this.handleStreetItemClick(street);
               };
@@ -479,7 +502,7 @@ class AddressSearchInput extends Component<Props, State> {
               const text = this.getFullStreetText(street);
 
               return(
-                <li key={street.id} onClick={handleClick} className={classNames('list-item', {'is-focused': focusedValue === street})}>{text}</li>
+                <li key={index} onClick={handleClick} className={classNames('list-item', {'is-focused': focusedValue === street})}>{text}</li>
               );
             })}
             {selectedStreet && !!addresses.length && !filteredAddresses.length &&

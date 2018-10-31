@@ -26,7 +26,6 @@ type Props = {
   isContactFormValid: boolean,
   isFocusedOnMount?: boolean,
   isSaveClicked: boolean,
-  language?: string,
   receiveContactFormValid: Function,
   type: ?string,
   valid: boolean,
@@ -50,7 +49,6 @@ class ContactForm extends Component<Props> {
     this.firstField = element;
   }
 
-
   componentDidUpdate() {
     const {isContactFormValid, receiveContactFormValid, valid} = this.props;
     if(isContactFormValid !== valid) {
@@ -66,7 +64,7 @@ class ContactForm extends Component<Props> {
   };
 
   render() {
-    const {attributes, isSaveClicked, language, type} = this.props;
+    const {attributes, isSaveClicked, type} = this.props;
     if (isEmpty(attributes)) {
       return null;
     }
@@ -131,7 +129,6 @@ class ContactForm extends Component<Props> {
                     disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'address')}
                     name='address'
-                    language={language === 'sv' ? 'sv' : 'fi'}
                     valueSelectedCallback={this.handleAddressChange}
                     overrideValues={{
                       fieldType: 'address',
@@ -327,7 +324,6 @@ const mapStateToProps = (state: RootState) => {
     isContactFormValid: getIsContactFormValid(state),
     initialValues: getInitialContactFormValues(state),
     isSaveClicked: getIsSaveClicked(state),
-    language: selector(state, 'language'),
     type: selector(state, 'type'),
   };
 };
