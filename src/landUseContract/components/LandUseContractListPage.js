@@ -11,9 +11,9 @@ import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import CreateLandUseContractModal from './createLandUseContract/CreateLandUseContractModal';
-import ListItem from '$components/content/ListItem';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
+import MultiItemCollapse from '$components/table/MultiItemCollapse';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
@@ -302,9 +302,25 @@ class LandUseContractListPage extends Component<Props, State> {
           <SortableTable
             columns={[
               {key: 'identifier', text: 'MA-tunnus'},
-              {key: 'litigants', text: 'Osapuoli', renderer: (val) => val.map((litigant, index) => <ListItem key={index}>{litigant}</ListItem>)},
+              {
+                key: 'litigants',
+                text: 'Osapuoli',
+                disabled: true,
+                renderer: (val) => <MultiItemCollapse
+                  items={val}
+                  itemRenderer={(item) => item}
+                />,
+              },
               {key: 'plan_number', text: 'Asemakaavan numero'},
-              {key: 'area', text: 'Kohde'},
+              {
+                key: 'areas',
+                text: 'Kohde',
+                disabled: true,
+                renderer: (val) => <MultiItemCollapse
+                  items={val}
+                  itemRenderer={(item) => item}
+                />,
+              },
               {key: 'project_area', text: 'Hankealue'},
               {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
             ]}

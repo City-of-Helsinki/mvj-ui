@@ -65,7 +65,7 @@ const InvoiceSimulatorBillingPeriod = ({
             text={formatDate(dueDate)}
           />
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={12} medium={4} large={8}>
           <FormTitleAndText
             title='Summa yhteensä'
             text={<AmountWithVat amount={totalAmount} date={dueDate} />}
@@ -81,6 +81,7 @@ const InvoiceSimulatorBillingPeriod = ({
               return <div key={index}>
                 {explanation.items.map((item, index) => {
                   return <RentCalculatorExplanation
+                    date={dueDate}
                     key={index}
                     explanation={item}
                   />;

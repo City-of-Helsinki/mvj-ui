@@ -120,7 +120,7 @@ const getContentBillingPeriodInvoice = (invoice: BillingPeriodInvoice) => {
 };
 
 const getContentBillingPeriod = (billingPeriod: BillingPeriod) => {
-  const totalAmount = billingPeriod.reduce((sum, invoice) => sum + Number(invoice.total_amount), 0);
+  const totalAmount = billingPeriod.reduce((sum, invoice) => sum + Number(invoice.billed_amount), 0);
 
   return {
     dueDate: get(billingPeriod, '[0].due_date'),

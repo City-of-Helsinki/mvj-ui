@@ -152,7 +152,9 @@ class InvoiceTableAndPanel extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    if(prevState.invoiceAttributes !== this.state.invoiceAttributes) {
+    if(prevState.invoiceAttributes !== this.state.invoiceAttributes
+      || prevState.invoiceSetOptions !== this.state.invoiceSetOptions
+    ) {
       this.setState({
         columns: this.getColumns(),
       });
@@ -457,6 +459,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
         key: 'billed_amount',
         ascSortFunction: sortNumberByKeyAsc,
         descSortFunction: sortNumberByKeyDesc,
+        dataClassName: 'no-wrap',
         renderer: (val, row) => <AmountWithVat amount={row.billed_amount || 0} date={row.due_date} />,
         text: 'Laskutettu',
       },
@@ -464,6 +467,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
         key: 'outstanding_amount',
         ascSortFunction: sortNumberByKeyAsc,
         descSortFunction: sortNumberByKeyDesc,
+        dataClassName: 'no-wrap',
         renderer: (val, row) => <AmountWithVat amount={row.outstanding_amount || 0} date={row.due_date} />,
         text: 'Maksamatta',
       },

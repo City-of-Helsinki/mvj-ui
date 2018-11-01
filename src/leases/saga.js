@@ -359,7 +359,7 @@ function* createChargeSaga({payload}): Generator<any, any, any> {
         yield put(fetchInvoicesByLease(leaseId));
         yield put(fetchInvoiceSetsByLease(leaseId));
         yield put(receiveIsCreateInvoicePanelOpen(false));
-        displayUIMessage({title: '', body: 'Hyvityslasku luotu'});
+        displayUIMessage({title: '', body: 'Laskut luotu'});
         break;
       default:
         yield put(receiveError(new SubmissionError({...bodyAsJson})));

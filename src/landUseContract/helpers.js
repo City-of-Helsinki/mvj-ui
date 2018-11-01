@@ -28,13 +28,16 @@ export const getContentListItemLitigants = (contract: Object) =>
     .filter((litigant) => !isLitigantArchived(litigant))
     .map((litigant) => getContentListItemLitigant(litigant));
 
+export const getContentListItemAreas = (contract: Object) =>
+  get(contract, 'areas', []).map((area) => area.area);
+
 export const getContentLandUseContractListItem = (contract: LandUseContract) => {
   return {
     id: contract.id,
     identifier: getContentLandUseContractIdentifier(contract),
     litigants: getContentListItemLitigants(contract),
     plan_number: contract.plan_number,
-    area: get(contract, 'areas[0].area'),
+    areas: getContentListItemAreas(contract),
     project_area: contract.project_area,
     state: contract.state,
   };

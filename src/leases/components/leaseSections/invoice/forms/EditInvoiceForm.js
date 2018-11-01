@@ -53,7 +53,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
                 <Column small={6}>
                   <FormTextTitle
                     required={get(attributes, 'payments.child.children.paid_amount.required')}
-                    title='Maksettu määrä'
+                    title='Maksettu määrä (alviton)'
                   />
                 </Column>
                 <Column small={6}>
@@ -250,14 +250,11 @@ const EditInvoiceForm = ({
       </Row>
       <Row>
         <Column small={4}>
-          <FormField
-            disableTouched={isEditClicked}
-            fieldAttributes={get(invoiceAttributes, 'total_amount')}
-            name='total_amount'
-            unit='€'
-            overrideValues={{
-              label: 'Laskun pääoma',
-            }}
+          <FormTitleAndText
+            title='Laskun pääoma'
+            text={invoice && invoice.total_amount
+              ? <AmountWithVat amount={invoice.total_amount} date={invoice.due_date} />
+              : '-'}
           />
         </Column>
         <Column small={4}>

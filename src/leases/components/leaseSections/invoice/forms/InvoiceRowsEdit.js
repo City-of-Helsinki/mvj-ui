@@ -50,7 +50,7 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
                   <Column small={3} large={3}>
                     <FormTextTitle
                       required={get(attributes, 'rows.child.children.amount.required')}
-                      title='Määrä'
+                      title='Määrä (alviton)'
                     />
                   </Column>
                 </Row>

@@ -2,6 +2,7 @@
 import React, {PureComponent} from 'react';
 import classNames from 'classnames';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 
 import type {Column} from './SortableTable';
 
@@ -21,9 +22,14 @@ type Props = {
 }
 
 class SortableTableRow extends PureComponent<Props> {
+  component: any
   buttonPressTimer: any;
   isClicked = false;
   isLongPress = false;
+
+  setRef = (el: any) => {
+    this.component = el;
+  }
 
   handleRowClick = () => {
     const {onRowClick, row} = this.props;
@@ -51,8 +57,8 @@ class SortableTableRow extends PureComponent<Props> {
     clearTimeout(this.buttonPressTimer);
   };
 
-  handleKeyUp = (e: any) => {
-    if(e.keyCode === 13) {
+  handleKeyDown = (e: any) => {
+    if(e.target === this.component && e.keyCode === 13) {
       e.preventDefault();
       this.handleRowClick();
     }
@@ -81,8 +87,9 @@ class SortableTableRow extends PureComponent<Props> {
 
     return (
       <tr
+        ref={this.setRef}
         tabIndex={onRowClick ? 0 : undefined}
-        onKeyUp={this.handleKeyUp}
+        onKeyDown={this.handleKeyDown}
         className={classNames(className, {'selected': isClicked})}
       >
         {showRadioButton &&
@@ -97,24 +104,50 @@ class SortableTableRow extends PureComponent<Props> {
             />
           </td>
         }
-        {columns.map(({dataClassName, grouping, key, renderer}) => {
+        {columns.map(({dataClassName, disabled, grouping, key, renderer}) => {
           const hide = groupRow && get(grouping, 'columnsToHide', []).indexOf(key) !== -1;
+          const isDisabled = disabled && isArray(get(row, key)) && get(row, key).length > 1;
+
+          const handleTouchStart = () => {
+            if(!isDisabled) {
+              this.handleButtonPress();
+            }
+          };
+
+          const handleTouchEnd = () => {
+            if(!isDisabled) {
+              this.handleButtonRelease();
+            }
+          };
+
+          const handleMouseDown = () => {
+            if(!isDisabled) {
+              this.handleButtonPress();
+            }
+          };
+
+          const handleMouseRelease = () => {
+            if(!isDisabled) {
+              this.handleButtonRelease();
+            }
+          };
+
           return hide
             ? <td
               key={key}
-              className={dataClassName}
-              onTouchStart={this.handleButtonPress}
-              onTouchEnd={this.handleButtonRelease}
-              onMouseDown={this.handleButtonPress}
+              className={classNames(dataClassName, {'disabled': isDisabled})}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onMouseDown={handleMouseDown}
               onMouseUp={this.handleButtonRelease}
             ></td>
             : <td
               key={key}
-              className={dataClassName}
-              onTouchStart={this.handleButtonPress}
-              onTouchEnd={this.handleButtonRelease}
-              onMouseDown={this.handleButtonPress}
-              onMouseUp={this.handleButtonRelease}
+              className={classNames(dataClassName, {'disabled': isDisabled})}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+              onMouseDown={handleMouseDown}
+              onMouseUp={handleMouseRelease}
             >
               {renderer
                 ? renderer(get(row, key), row)

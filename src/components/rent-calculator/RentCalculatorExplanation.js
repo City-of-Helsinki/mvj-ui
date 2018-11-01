@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 import get from 'lodash/get';
 
+import AmountWithVat from '$components/vat/AmountWithVat';
 import FormText from '$components/form/FormText';
 import RentCalculatorSubItem from './RentCalculatorSubItem';
 import {RentExplanationSubjectType} from '../enums';
@@ -16,10 +17,11 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  date: string,
   explanation: Object,
 }
 
-const RentCalculatorExplanation = ({attributes, explanation}: Props) => {
+const RentCalculatorExplanation = ({attributes, date, explanation}: Props) => {
   const description = getRentExplanationDescription(explanation, attributes);
   const dates = get(explanation, 'date_ranges');
   const amount = getRentExplanationAmount(explanation);
@@ -29,7 +31,7 @@ const RentCalculatorExplanation = ({attributes, explanation}: Props) => {
   return (
     <div>
       <Row>
-        <Column small={6}>
+        <Column small={4}>
           <FormText
             className={classNames({'semibold': subjectType === RentExplanationSubjectType.RENT})}>
             {description || '-'}
@@ -47,10 +49,15 @@ const RentCalculatorExplanation = ({attributes, explanation}: Props) => {
             }
           </div>
         </Column>
-        <Column small={2}>
-          <FormText className={classNames('rent-calculator__explanation_amount', {'semibold': subjectType === RentExplanationSubjectType.RENT})}>
-            {`${formatNumber(amount)} €`}
-          </FormText>
+        <Column small={4}>
+          {subjectType === RentExplanationSubjectType.RENT
+            ? <FormText className={classNames('rent-calculator__explanation_amount', 'semibold')}>
+              <AmountWithVat amount={amount} date={date} />
+            </FormText>
+            : <FormText className='rent-calculator__explanation_amount'>
+              {`${formatNumber(amount)} €`}
+            </FormText>
+          }
         </Column>
       </Row>
       {!!subItems && !!subItems.length &&

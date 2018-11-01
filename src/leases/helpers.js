@@ -39,10 +39,12 @@ export const getContentLeaseIdentifier = (item:Object) => {
   return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
 };
 
-export const getContentLeaseTenant = (lease: Object) => {
-  const tenant = get(lease, 'tenants[0].tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT);
-
-  return tenant ? getContactFullName(tenant.contact) : null;
+export const getContentLeaseTenants = (lease: Object) => {
+  return get(lease, 'tenants', [])
+    .map((item) => {
+      const tenant = get(item, 'tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT);
+      return tenant ? getContactFullName(tenant.contact) : null;
+    });
 };
 
 export const getContentLeaseOption = (lease: Lease) => {
@@ -52,20 +54,26 @@ export const getContentLeaseOption = (lease: Lease) => {
   };
 };
 
-export const getContentLeaseAddress = (lease: Object) => {
-  const address = get(lease, 'lease_areas[0].addresses[0]');
+export const getContentLeaseAreaIdentifiers = (lease: Object) => {
+  return get(lease, 'lease_areas', []).map((area) => area.identifier);
+};
 
-  return address ? getFullAddress(address) : null;
+export const getContentLeaseAddresses = (lease: Object) => {
+  return get(lease, 'lease_areas')
+    .map((area) => [
+      ...get(area, 'addresses', [])
+        .map((address) => getFullAddress(address)),
+    ]);
 };
 
 export const getContentLeaseItem = (lease: Object) => {
   return {
     id: lease.id,
     identifier: getContentLeaseIdentifier(lease),
-    real_property_unit: get(lease, 'lease_areas[0].identifier'),
-    tenant: getContentLeaseTenant(lease),
+    lease_area_identifiers: getContentLeaseAreaIdentifiers(lease),
+    tenants: getContentLeaseTenants(lease),
     lessor: getContactFullName(lease.lessor),
-    address: getContentLeaseAddress(lease),
+    addresses: getContentLeaseAddresses(lease),
     state: lease.state,
     start_date: lease.start_date,
     end_date: lease.end_date,

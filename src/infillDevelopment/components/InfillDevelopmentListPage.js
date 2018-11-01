@@ -10,9 +10,9 @@ import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
-import ListItem from '$components/content/ListItem';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
+import MultiItemCollapse from '$components/table/MultiItemCollapse';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
@@ -289,7 +289,15 @@ class InfillDevelopmentListPage extends Component<Props, State> {
             columns={[
               {key: 'name', text: 'Hankkeen nimi'},
               {key: 'detailed_plan_identifier', text: 'Asemakaavan nro'},
-              {key: 'leaseIdentifiers', text: 'Vuokratunnus', renderer: (val) => val.length ? val.map((item, index) => <ListItem key={index}>{item}</ListItem>) : '-'},
+              {
+                key: 'leaseIdentifiers',
+                text: 'Vuokratunnus',
+                disabled: true,
+                renderer: (val) => <MultiItemCollapse
+                  items={val}
+                  itemRenderer={(item) => item}
+                />,
+              },
               {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
             ]}
             data={filteredInfillDevelopments}
