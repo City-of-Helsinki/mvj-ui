@@ -15,6 +15,7 @@ import {TableSortOrder} from '$components/enums';
 export type Column = {
   dataClassName?: string,
   defaultSortOrder?: string,
+  disabled?: boolean,
   grouping?: {
     key: string,
     columnKeys: Array<string>,

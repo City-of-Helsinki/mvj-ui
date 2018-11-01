@@ -16,6 +16,7 @@ import IconRadioButtons from '$components/button/IconRadioButtons';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import MapIcon from '$components/icons/MapIcon';
+import MultiItemCollapse from '$components/table/MultiItemCollapse';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
@@ -364,9 +365,33 @@ class LeaseListPage extends Component<Props, State> {
               <SortableTable
                 columns={[
                   {key: 'identifier', text: 'Vuokratunnus'},
-                  {key: 'real_property_unit', text: 'Vuokrakohde'},
-                  {key: 'address', text: 'Osoite'},
-                  {key: 'tenant', text: 'Vuokralainen'},
+                  {
+                    key: 'lease_area_identifiers',
+                    text: 'Vuokrakohde',
+                    disabled: true,
+                    renderer: (val) => <MultiItemCollapse
+                      items={val}
+                      itemRenderer={(item) => item}
+                    />,
+                  },
+                  {
+                    key: 'addresses',
+                    text: 'Osoite',
+                    disabled: true,
+                    renderer: (val) => <MultiItemCollapse
+                      items={val}
+                      itemRenderer={(item) => item}
+                    />,
+                  },
+                  {
+                    key: 'tenants',
+                    text: 'Vuokralainen',
+                    disabled: true,
+                    renderer: (val) => <MultiItemCollapse
+                      items={val}
+                      itemRenderer={(item) => item}
+                    />,
+                  },
                   {key: 'lessor', text: 'Vuokranantaja'},
                   {key: 'state', text: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
                   {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val)},

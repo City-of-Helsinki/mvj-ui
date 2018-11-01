@@ -2,7 +2,6 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import scrollToComponent from 'react-scroll-to-component';
-import get from 'lodash/get';
 
 import Button from '$components/button/Button';
 import CreditInvoiceForm from './forms/CreditInvoiceForm';
@@ -20,7 +19,6 @@ import {
 import {creditInvoiceSet} from '$src/invoiceSets/actions';
 import {RecipientOptions} from '$src/leases/enums';
 import {formatNewChargeForDb, formatCreditInvoiceForDb, formatNewInvoiceForDb} from '$src/invoices/helpers';
-import {formatDecimalNumberForDb} from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getIsCreateInvoicePanelOpen, getIsCreditInvoicePanelOpen} from '$src/invoices/selectors';
 
@@ -65,7 +63,7 @@ class CreateAndCreditInvoice extends Component <Props> {
 
     setTimeout(() => {
       scrollToComponent(this.createPanel, {
-        offset: -70,
+        offset: -130,
         align: 'top',
         duration: 450,
       });
@@ -101,16 +99,6 @@ class CreateAndCreditInvoice extends Component <Props> {
         data: formatNewChargeForDb(invoice),
       });
     } else {
-      const rows = get(invoice, 'rows', []);
-      let totalAmount = 0;
-      rows.forEach((row) => {
-        if(row.amount) {
-          totalAmount += formatDecimalNumberForDb(row.amount);
-        }
-
-      });
-      invoice.total_amount = totalAmount;
-      invoice.billed_amount = totalAmount;
       invoice.lease = currentLease.id;
       createInvoice(formatNewInvoiceForDb(invoice));
     }
@@ -123,7 +111,7 @@ class CreateAndCreditInvoice extends Component <Props> {
 
     setTimeout(() => {
       scrollToComponent(this.creditPanel, {
-        offset: -70,
+        offset: -130,
         align: 'top',
         duration: 450,
       });

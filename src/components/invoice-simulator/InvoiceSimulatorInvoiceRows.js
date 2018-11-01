@@ -33,10 +33,10 @@ const InvoiceSimulatorInvoiceRows = ({
   return(
     <div>
       <Row>
-        <Column medium={4}><FormTextTitle title='Vuokralainen' /></Column>
-        <Column medium={2}><FormTextTitle title='Saamislaji' /></Column>
-        <Column medium={2}><FormTextTitle title='Osuus' /></Column>
-        <Column medium={2}><FormTextTitle title='Summa' /></Column>
+        <Column small={6} medium={4}><FormTextTitle title='Vuokralainen' /></Column>
+        <Column small={2} medium={2}><FormTextTitle title='Saamislaji' /></Column>
+        <Column small={2} medium={2}><FormTextTitle title='Osuus' /></Column>
+        <Column small={2} medium={4}><FormTextTitle title='Summa' /></Column>
       </Row>
       {rows.map((row, index) => {
         return(
@@ -44,7 +44,7 @@ const InvoiceSimulatorInvoiceRows = ({
             <Column small={6} medium={4}><FormText>{getContactFullName(row.tenant.contact)}</FormText></Column>
             <Column small={2} medium={2}><FormText>{getLabelOfOption(receivableTypeOptions, row.receivableType)}</FormText></Column>
             <Column small={2} medium={2}><FormText>{row.tenant.shareNumerator} / {row.tenant.shareDenominator}</FormText></Column>
-            <Column small={2} medium={2}><FormText>
+            <Column small={2} medium={4}><FormText>
               <AmountWithVat amount={row.amount} date={dueDate} />
             </FormText></Column>
           </Row>

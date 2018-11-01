@@ -55,7 +55,7 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                   <Column small={3} large={2}>
                     <FormTextTitle
                       required={get(attributes, 'rows.child.children.amount.required')}
-                      title='Määrä'
+                      title='Määrä (alviton)'
                     />
                   </Column>
                 </Row>
@@ -93,7 +93,7 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                           name={`${row}.amount`}
                           unit='€'
                           overrideValues={{
-                            label: 'Määrä',
+                            label: 'Määrä (alviton)',
                           }}
                         />
                       </Column>

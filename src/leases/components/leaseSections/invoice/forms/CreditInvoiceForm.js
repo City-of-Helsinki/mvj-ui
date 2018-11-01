@@ -99,7 +99,7 @@ const CreditInvoiceForm = ({
                       type: 'decimal',
                       required: true,
                       read_only: false,
-                      label: 'Hyvitettävä summa',
+                      label: 'Hyvitettävä summa (alviton)',
                       decimal_places: 2,
                       max_digits: 10,
                     }}

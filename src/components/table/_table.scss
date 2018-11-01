@@ -205,6 +205,10 @@
               > td {
                 cursor: pointer;
                 background-color: #D9EFE4;
+
+                &.disabled {
+                  cursor: default;
+                }
               }
             }
 
@@ -277,6 +281,54 @@
             }
           }
         }
+      }
+    }
+  }
+
+  &__multi-item-collapse {
+    width: 100%;
+    height: 100%;
+    cursor: default;
+    overflow: visible;
+
+    &_header {
+      cursor: pointer;
+      display: flex;
+
+      @include focus();
+
+      &:focus {
+        outline-style: dotted;
+        outline-width: 1px;
+      }
+
+      &:hover {
+        outline: none;
+      }
+
+      &_title {
+        flex: 1 1 0%;
+      }
+
+      .arrow-icon {
+        margin-left: 5px;
+        height: 14px;
+        width: 14px;
+      }
+    }
+
+    &_items {
+      display: none;
+    }
+
+    &.is-open {
+      .sortable-table__multi-item-collapse_header {
+        .arrow-icon {
+          @include transform(rotate(90deg));
+        }
+      }
+      .sortable-table__multi-item-collapse_items {
+        display: block;
       }
     }
   }

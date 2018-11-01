@@ -11,6 +11,7 @@ import isEmpty from 'lodash/isEmpty';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
+import MultiItemCollapse from '$components/table/MultiItemCollapse';
 import PageContainer from '$components/content/PageContainer';
 import Pagination from '$components/table/Pagination';
 import Search from './search/Search';
@@ -198,8 +199,9 @@ class RentBasisListPage extends Component<Props, State> {
     return items.map((item) => {
       return {
         id: item.id,
-        property_identifier: get(item, 'property_identifiers[0].identifier'),
-        build_permission_type: get(item, 'rent_rates[0].build_permission_type.id') || get(item, 'rent_rates[0].build_permission_type'),
+        property_identifiers: get(item, 'property_identifiers').map((item) => item.identifier),
+        build_permission_types: get(item, 'rent_rates').map((rate) =>
+          get(rate, 'build_permission_type.id') || get(rate, 'build_permission_type')),
         start_date: get(item, 'start_date'),
         end_date: get(item, 'end_date'),
       };
@@ -259,8 +261,24 @@ class RentBasisListPage extends Component<Props, State> {
           }
           <SortableTable
             columns={[
-              {key: 'property_identifier', text: 'Kiinteistötunnus'},
-              {key: 'build_permission_type', text: 'Pääkäyttötarkoitus', renderer: (val) => val ? getLabelOfOption(buildPermissionTypeOptions, val) : '-'},
+              {
+                key: 'property_identifiers',
+                text: 'Kiinteistötunnus',
+                disabled: true,
+                renderer: (val) => <MultiItemCollapse
+                  items={val}
+                  itemRenderer={(item) => item}
+                />,
+              },
+              {
+                key: 'build_permission_types',
+                text: 'Pääkäyttötarkoitus',
+                disabled: true,
+                renderer: (val) => <MultiItemCollapse
+                  items={val}
+                  itemRenderer={(item) => item ? getLabelOfOption(buildPermissionTypeOptions, item) : '-'}
+                />,
+              },
               {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val) || '-'},
               {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val) || '-'},
             ]}
