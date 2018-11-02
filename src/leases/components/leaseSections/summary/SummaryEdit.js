@@ -136,6 +136,38 @@ class SummaryEdit extends Component<Props, State> {
                 <Column small={12} medium={6} large={4}>
                   <FormField
                     disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'state')}
+                    name='state'
+                    overrideValues={{
+                      label: 'Tyyppi',
+                    }}
+                  />
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'start_date')}
+                    name='start_date'
+                    overrideValues={{
+                      label: 'Alkupvm',
+                    }}
+                  />
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'end_date')}
+                    name='end_date'
+                    overrideValues={{
+                      label: 'Loppupvm',
+                    }}
+                  />
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <FormField
+                    disableTouched={isSaveClicked}
                     fieldAttributes={get(attributes, 'lessor')}
                     name='lessor'
                     overrideValues={{

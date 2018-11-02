@@ -20,7 +20,6 @@ import Invoices from './leaseSections/invoice/Invoices';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
 import LeaseInfo from './leaseSections/leaseInfo/LeaseInfo';
-import LeaseInfoEdit from './leaseSections/leaseInfo/LeaseInfoEdit';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
@@ -125,8 +124,6 @@ type Props = {
   isInspectionsFormValid: boolean,
   isLeaseAreasFormDirty: boolean,
   isLeaseAreasFormValid: boolean,
-  isLeaseInfoFormDirty: boolean,
-  isLeaseInfoFormValid: boolean,
   isRentsFormDirty: boolean,
   isRentsFormValid: boolean,
   isSaving: boolean,
@@ -135,7 +132,6 @@ type Props = {
   isTenantsFormDirty: boolean,
   isTenantsFormValid: boolean,
   isSaveClicked: boolean,
-  leaseInfoFormValues: Object,
   location: Object,
   params: Object,
   patchLease: Function,
@@ -347,7 +343,6 @@ class LeasePage extends Component<Props, State> {
     destroy(FormNames.DECISIONS);
     destroy(FormNames.INSPECTIONS);
     destroy(FormNames.LEASE_AREAS);
-    destroy(FormNames.LEASE_INFO);
     destroy(FormNames.RENTS);
     destroy(FormNames.SUMMARY);
     destroy(FormNames.TENANTS);
@@ -365,7 +360,6 @@ class LeasePage extends Component<Props, State> {
       lease_areas_active: areas.filter((area) => !area.archived_at),
       lease_areas_archived: areas.filter((area) => area.archived_at),
     });
-    initialize(FormNames.LEASE_INFO, contentHelpers.getContentLeaseInfo(lease));
     initialize(FormNames.RENTS, {
       basis_of_rents: contentHelpers.getContentBasisOfRents(lease),
       is_rent_info_complete: lease.is_rent_info_complete,
@@ -410,11 +404,6 @@ class LeasePage extends Component<Props, State> {
     const storedInspectionsFormValues = getSessionStorageItem(FormNames.INSPECTIONS);
     if(storedInspectionsFormValues) {
       this.bulkChange(FormNames.INSPECTIONS, storedInspectionsFormValues);
-    }
-
-    const storedLeaseInfoFormValues = getSessionStorageItem(FormNames.LEASE_INFO);
-    if(storedLeaseInfoFormValues) {
-      this.bulkChange(FormNames.LEASE_INFO, storedLeaseInfoFormValues);
     }
 
     const storedRentsFormValues = getSessionStorageItem(FormNames.RENTS);
@@ -462,12 +451,10 @@ class LeasePage extends Component<Props, State> {
       isDecisionsFormDirty,
       isInspectionsFormDirty,
       isLeaseAreasFormDirty,
-      isLeaseInfoFormDirty,
       isRentsFormDirty,
       isSummaryFormDirty,
       isTenantsFormDirty,
       isFormValidFlags,
-      leaseInfoFormValues,
       params: {leaseId},
       rentsFormValues,
       summaryFormValues,
@@ -509,13 +496,6 @@ class LeasePage extends Component<Props, State> {
       isDirty = true;
     } else {
       removeSessionStorageItem(FormNames.LEASE_AREAS);
-    }
-
-    if(isLeaseInfoFormDirty) {
-      setSessionStorageItem(FormNames.LEASE_INFO, leaseInfoFormValues);
-      isDirty = true;
-    } else {
-      removeSessionStorageItem(FormNames.LEASE_INFO);
     }
 
     if(isRentsFormDirty) {
@@ -566,7 +546,6 @@ class LeasePage extends Component<Props, State> {
         currentLease,
         decisionsFormValues,
         inspectionsFormValues,
-        leaseInfoFormValues,
         patchLease,
         rentsFormValues,
         summaryFormValues,
@@ -576,7 +555,6 @@ class LeasePage extends Component<Props, State> {
         isDecisionsFormDirty,
         isInspectionsFormDirty,
         isLeaseAreasFormDirty,
-        isLeaseInfoFormDirty,
         isRentsFormDirty,
         isSummaryFormDirty,
         isTenantsFormDirty,
@@ -599,9 +577,6 @@ class LeasePage extends Component<Props, State> {
       if(isLeaseAreasFormDirty) {
         payload = contentHelpers.addAreasFormValues(payload, areasFormValues);
       }
-      if(isLeaseInfoFormDirty) {
-        payload = contentHelpers.addLeaseInfoFormValues(payload, leaseInfoFormValues);
-      }
       if(isRentsFormDirty) {
         payload = contentHelpers.addRentsFormValues(payload, rentsFormValues);
       }
@@ -623,7 +598,6 @@ class LeasePage extends Component<Props, State> {
       isDecisionsFormValid,
       isInspectionsFormValid,
       isLeaseAreasFormValid,
-      isLeaseInfoFormValid,
       isRentsFormValid,
       isSummaryFormValid,
       isTenantsFormValid,
@@ -635,7 +609,6 @@ class LeasePage extends Component<Props, State> {
       isDecisionsFormValid &&
       isInspectionsFormValid &&
       isLeaseAreasFormValid &&
-      isLeaseInfoFormValid &&
       isRentsFormValid &&
       isSummaryFormValid &&
       isTenantsFormValid
@@ -685,7 +658,6 @@ class LeasePage extends Component<Props, State> {
       isDecisionsFormDirty,
       isInspectionsFormDirty,
       isLeaseAreasFormDirty,
-      isLeaseInfoFormDirty,
       isRentsFormDirty,
       isSummaryFormDirty,
       isTenantsFormDirty,
@@ -697,7 +669,6 @@ class LeasePage extends Component<Props, State> {
       isDecisionsFormDirty ||
       isInspectionsFormDirty ||
       isLeaseAreasFormDirty ||
-      isLeaseInfoFormDirty ||
       isRentsFormDirty ||
       isSummaryFormDirty ||
       isTenantsFormDirty
@@ -766,10 +737,7 @@ class LeasePage extends Component<Props, State> {
               onSave={this.saveChanges}
             />
           }
-          infoComponent={isEditMode
-            ? <LeaseInfoEdit />
-            : <LeaseInfo />
-          }
+          infoComponent={<LeaseInfo />}
           onBack={this.handleBack}
         />
 
@@ -913,8 +881,6 @@ export default flowRight(
         isInspectionsFormValid: getIsFormValidById(state, FormNames.INSPECTIONS),
         isLeaseAreasFormDirty: isDirty(FormNames.LEASE_AREAS)(state),
         isLeaseAreasFormValid: getIsFormValidById(state, FormNames.LEASE_AREAS),
-        isLeaseInfoFormDirty: isDirty(FormNames.LEASE_INFO)(state),
-        isLeaseInfoFormValid: getIsFormValidById(state, FormNames.LEASE_INFO),
         isRentsFormDirty: isDirty(FormNames.RENTS)(state),
         isRentsFormValid: getIsFormValidById(state, FormNames.RENTS),
         isSaving: getIsSaving(state),
@@ -924,7 +890,6 @@ export default flowRight(
         isTenantsFormValid: getIsFormValidById(state, FormNames.TENANTS),
         isFetching: getIsFetching(state),
         isSaveClicked: getIsSaveClicked(state),
-        leaseInfoFormValues: getFormValues(FormNames.LEASE_INFO)(state),
         rentsFormValues: getFormValues(FormNames.RENTS)(state),
         summaryFormValues: getFormValues(FormNames.SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.TENANTS)(state),

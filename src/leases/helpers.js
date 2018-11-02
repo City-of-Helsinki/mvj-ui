@@ -154,6 +154,9 @@ const getContentInfillDevelopmentCompensations = (lease: Lease) =>
 
 export const getContentSummary = (lease: Object) => {
   return {
+    state: lease.state,
+    start_date: lease.start_date,
+    end_date: lease.end_date,
     lessor: getContentLessor(lease.lessor),
     preparer: getContentUser(lease.preparer),
     classification: lease.classification,
@@ -831,17 +834,10 @@ export const getLeaseCoordinates = (lease: Lease) => {
   return coordinates;
 };
 
-// Helper functions to add content to patch payload
-export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {
-  return {
-    ...payload,
-    'state': leaseInfo.state,
-    'start_date': leaseInfo.start_date,
-    'end_date': leaseInfo.end_date,
-  };
-};
-
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
+  payload.state = summary.state;
+  payload.start_date = summary.start_date;
+  payload.end_date = summary.end_date;
   payload.lessor = get(summary, 'lessor.value');
   payload.preparer = get(summary, 'preparer.value');
   payload.classification = summary.classification;
@@ -1366,7 +1362,6 @@ export const isAnyLeaseFormDirty = (state: any) => {
     isDirty(FormNames.DECISIONS)(state) ||
     isDirty(FormNames.INSPECTIONS)(state) ||
     isDirty(FormNames.LEASE_AREAS)(state) ||
-    isDirty(FormNames.LEASE_INFO)(state) ||
     isDirty(FormNames.RESTS)(state) ||
     isDirty(FormNames.SUMMARY)(state) ||
     isDirty(FormNames.TENANTS)(state));
@@ -1378,7 +1373,6 @@ export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.DECISIONS);
   removeSessionStorageItem(FormNames.INSPECTIONS);
   removeSessionStorageItem(FormNames.LEASE_AREAS);
-  removeSessionStorageItem(FormNames.LEASE_INFO);
   removeSessionStorageItem(FormNames.RENTS);
   removeSessionStorageItem(FormNames.SUMMARY);
   removeSessionStorageItem(FormNames.TENANTS);
