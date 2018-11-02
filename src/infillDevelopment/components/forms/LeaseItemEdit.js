@@ -171,7 +171,7 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
             {!!fields && !!fields.length &&
               <div>
                 <Row>
-                  <Column small={3} large={2}><FormTextTitle title='Käyttötarkoitu' /></Column>
+                  <Column small={3} large={2}><FormTextTitle title='Käyttötarkoitus' /></Column>
                   <Column small={3} large={2}><FormTextTitle title='k-m²' /></Column>
                   <Column small={3} large={2}><FormTextTitle title='€/k-m²' /></Column>
                 </Row>

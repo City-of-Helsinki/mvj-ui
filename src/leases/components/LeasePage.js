@@ -730,7 +730,7 @@ class LeasePage extends Component<Props, State> {
               isCancelDisabled={false}
               isEditDisabled={false}
               isEditMode={isEditMode}
-              isSaveDisabled={isSaveClicked && (!areFormsValid || activeTab === 6)}
+              isSaveDisabled={activeTab == 6 || (isSaveClicked && !areFormsValid)}
               onCancel={this.cancelChanges}
               onComment={this.toggleCommentPanel}
               onEdit={this.openEditMode}

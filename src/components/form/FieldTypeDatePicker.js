@@ -72,8 +72,8 @@ const FieldTypeDatePicker = ({
         onSelect={handleSelect}
         selected={value ? moment(value) : null}
         dateFormat='DD.MM.YYYY'
-        allowSameDay={false}
-        disabledKeyboardNavigation
+        showYearDropdown
+        dropdownMode="select"
         ref={handleSetReference}
       />
     </div>

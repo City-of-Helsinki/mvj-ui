@@ -205,6 +205,12 @@
   &__datepicker {
     line-height: 1;
 
+    select {
+      height: unset;
+      font-size: 14px;
+      margin: 0;
+    }
+
     .react-datepicker-wrapper {
       width: 100%;
     }
@@ -583,7 +589,6 @@
 
   &__add-file-button {
     display: inline-block;
-    width: 100%;
 
     &__label {
       font-family: $font-family-source;

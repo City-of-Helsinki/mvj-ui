@@ -34,6 +34,7 @@ import {scrollToTopPage} from '$util/helpers';
 import {FormNames} from '$src/rentbasis/enums';
 import {
   clearUnsavedChanges,
+  formatRentBasisForDb,
   getContentCopiedRentBasis,
   getContentRentBasis,
 } from '$src/rentbasis/helpers';
@@ -264,7 +265,7 @@ class RentBasisPage extends Component<Props, State> {
 
     receiveIsSaveClicked(true);
     if(isFormValid) {
-      editRentBasis(editedRentBasis);
+      editRentBasis(formatRentBasisForDb(editedRentBasis));
     }
   }
 

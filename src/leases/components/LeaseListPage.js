@@ -34,7 +34,7 @@ import {
 } from '$src/leases/actions';
 import {leaseStateFilterOptions} from '$src/leases/constants';
 import {FormNames} from '$src/leases/enums';
-import {getContentLeases, getLeasesFilteredByLeaseStates} from '$src/leases/helpers';
+import {getContentLeases} from '$src/leases/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
@@ -296,14 +296,13 @@ class LeaseListPage extends Component<Props, State> {
       attributes,
       createLease,
       leases: content,
+      location: {query},
       isFetching,
     } = this.props;
 
-    const leases = getContentLeases(content);
+    const leases = getContentLeases(content, query);
     const count = this.getLeasesCount(content);
     const maxPage = this.getLeasesMaxPage(content);
-    //TODO: Filter leases by document type on front-end for demo purposes. Move to backend and end points are working
-    const filteredLeases = getLeasesFilteredByLeaseStates(leases, leaseStates);
     const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
 
     const isBasicSearchByDefault = this.isBasicSearchByDefault();
@@ -397,7 +396,7 @@ class LeaseListPage extends Component<Props, State> {
                   {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val)},
                   {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
                 ]}
-                data={filteredLeases}
+                data={leases}
                 onRowClick={this.handleRowClick}
               />
               <Pagination

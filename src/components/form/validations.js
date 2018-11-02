@@ -23,7 +23,7 @@ export const integer = (value: any, error?: string) => (value === null || value 
 
 export const isDate = (value: any, error?: string) => (value === null || value === undefined || moment(value).isValid() ? undefined : (error ? error : 'Arvon tulee olla päivämäärä'));
 
-export const decimalNumber = (value: any, error?: string) => (value === null || value === undefined || !isNaN(value.toString().replace(',', '.')) ? undefined : (error ? error : 'Arvon tulee olla numero'));
+export const decimalNumber = (value: any, error?: string) => (value === null || value === undefined || !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')) ? undefined : (error ? error : 'Arvon tulee olla numero'));
 
 export const min = (value: any, min: number, error?: string) => (value === null || value === undefined || (Number(value) >= min) ? undefined : (error ? error : `Minimiarvo on ${min}`));
 

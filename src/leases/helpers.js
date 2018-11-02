@@ -39,12 +39,11 @@ export const getContentLeaseIdentifier = (item:Object) => {
   return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
 };
 
-export const getContentLeaseTenants = (lease: Object) => {
+export const getContentLeaseTenants = (lease: Object, query: Object = {}) => {
   return get(lease, 'tenants', [])
-    .map((item) => {
-      const tenant = get(item, 'tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT);
-      return tenant ? getContactFullName(tenant.contact) : null;
-    });
+    .map((item) => get(item, 'tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT))
+    .filter((tenant) => query.only_past_tentants === 'true' ? isTenantArchived(tenant) : !isTenantArchived(tenant))
+    .map((tenant) => tenant ? getContactFullName(tenant.contact) : null);
 };
 
 export const getContentLeaseOption = (lease: Lease) => {
@@ -55,23 +54,26 @@ export const getContentLeaseOption = (lease: Lease) => {
 };
 
 export const getContentLeaseAreaIdentifiers = (lease: Object) => {
-  return get(lease, 'lease_areas', []).map((area) => area.identifier);
+  return get(lease, 'lease_areas', [])
+    .filter((area) => !area.archived_at)
+    .map((area) => area.identifier);
 };
 
 export const getContentLeaseAddresses = (lease: Object) => {
   return get(lease, 'lease_areas')
+    .filter((area) => !area.archived_at)
     .map((area) => [
       ...get(area, 'addresses', [])
         .map((address) => getFullAddress(address)),
     ]);
 };
 
-export const getContentLeaseItem = (lease: Object) => {
+export const getContentLeaseItem = (lease: Object, query: Object = {}) => {
   return {
     id: lease.id,
     identifier: getContentLeaseIdentifier(lease),
     lease_area_identifiers: getContentLeaseAreaIdentifiers(lease),
-    tenants: getContentLeaseTenants(lease),
+    tenants: getContentLeaseTenants(lease, query),
     lessor: getContactFullName(lease.lessor),
     addresses: getContentLeaseAddresses(lease),
     state: lease.state,
@@ -80,8 +82,8 @@ export const getContentLeaseItem = (lease: Object) => {
   };
 };
 
-export const getContentLeases = (content: Object) =>
-  get(content, 'results', []).map((item) => getContentLeaseItem(item));
+export const getContentLeases = (content: Object, query: Object) =>
+  get(content, 'results', []).map((item) => getContentLeaseItem(item, query));
 
 export const getContentLeaseInfo = (lease: Object) => {
   return {
@@ -669,12 +671,6 @@ export const getFullAddress = (item: Object) => {
 
   return `${item.address || ''}${(item.postal_code || item.city) ? ', ' : ''}
     ${item.postal_code || ''} ${item.city || ''}`;
-};
-
-export const getLeasesFilteredByLeaseStates = (items: Array<Object>, states: Array<string>): Array<Object> => {
-  if(!states || !states.length) return items;
-
-  return items.filter((item) => states.indexOf(item.state) !== -1);
 };
 
 export const getInvoiceRecipientOptions = (lease: Object) =>{

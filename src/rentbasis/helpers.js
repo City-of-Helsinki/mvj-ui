@@ -4,6 +4,7 @@ import {isDirty} from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 
 import {FormNames} from './enums';
+import {formatDecimalNumberForDb} from '$util/helpers';
 import {getIsEditMode} from '$src/rentbasis/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
@@ -46,7 +47,6 @@ const getContentDecisions = (rentBasis: Object) => {
     };
   });
 };
-
 
 export const getContentRentBasis = (content: Object) => {
   return {
@@ -115,6 +115,56 @@ export const getContentCopiedRentBasis = (content: Object) => {
     rent_rates: getContentCopiedRentRates(content),
     property_identifiers: getContentCopiedPropertyIdentifiers(content),
     decisions: getContentCopiedDecisions(content),
+  };
+};
+
+const formatPropertyIdentifiersForDb = (rentBasis: Object) => {
+  return get(rentBasis, 'property_identifiers', []).map((item) => {
+    return {
+      id: item.id || undefined,
+      identifier: item.identifier,
+    };
+  });
+};
+
+const formatDecisionsForDb = (rentBasis: Object) => {
+  return get(rentBasis, 'decisions', []).map((item) => {
+    return {
+      id: item.id || undefined,
+      reference_number: item.reference_number,
+      decision_maker: item.decision_maker,
+      decision_date: item.decision_date,
+      section: item.section,
+    };
+  });
+};
+
+const formatRentRatesForDb = (rentBasis: Object) => {
+  return get(rentBasis, 'rent_rates', []).map((item) => {
+    return {
+      id: item.id || undefined,
+      build_permission_type: item.build_permission_type,
+      amount: formatDecimalNumberForDb(item.amount),
+      area_unit: item.area_unit,
+    };
+  });
+};
+
+export const formatRentBasisForDb = (rentBasis: Object) => {
+  return {
+    id: rentBasis.id || undefined,
+    plot_type: rentBasis.plot_type,
+    start_date: rentBasis.start_date,
+    end_date: rentBasis.end_date,
+    property_identifiers: formatPropertyIdentifiersForDb(rentBasis),
+    detailed_plan_identifier: rentBasis.detailed_plan_identifier,
+    management: rentBasis.management,
+    financing: rentBasis.financing,
+    lease_rights_end_date: rentBasis.lease_rights_end_date,
+    index: rentBasis.index,
+    note: rentBasis.note,
+    decisions: formatDecisionsForDb(rentBasis),
+    rent_rates: formatRentRatesForDb(rentBasis),
   };
 };
 
