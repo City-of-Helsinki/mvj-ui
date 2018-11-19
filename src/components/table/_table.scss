@@ -100,12 +100,13 @@
   &__container {
     max-width: 100%;
     overflow: hidden;
+    margin-bottom: rem-calc(10px);
 
     table {
       border-collapse: collapse;
       border-spacing: 0;
       box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
-      margin-bottom: rem-calc(10px);
+      margin: 0;
 
       thead td, thead th {
         background-color: $tram;
