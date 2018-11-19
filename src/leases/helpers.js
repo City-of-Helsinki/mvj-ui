@@ -933,8 +933,6 @@ export const addAreasFormValues = (payload: Object, values: Object) => {
       area: formatDecimalNumberForDb(area.area),
       section_area: formatDecimalNumberForDb(area.area),
       addresses: getAddressesForDb(get(area, 'addresses', [])),
-      postal_code: area.postal_code,
-      city: area.city,
       type: area.type,
       location: area.location,
       plots: getPlotsForDb(area),
@@ -1175,13 +1173,13 @@ export const getContentRentAdjustmentsForDb = (rent: Object) =>
     return {
       id: item.id || undefined,
       type: item.type,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      intended_use: item.intended_use,
       start_date: item.start_date,
       end_date: item.end_date,
       full_amount: formatDecimalNumberForDb(item.full_amount),
-      amount_type: get(item, 'amount_type.id') || get(item, 'amount_type'),
+      amount_type: item.amount_type,
       amount_left: formatDecimalNumberForDb(item.amount_left),
-      decision: get(item, 'decision.id') || get(item, 'decision'),
+      decision: item.decision,
       note: item.note,
     };
   });
@@ -1228,14 +1226,14 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
   payload.basis_of_rents = basisOfRents.map((item) => {
     return {
       id: item.id || undefined,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      intended_use: item.intended_use,
       floor_m2: formatDecimalNumberForDb(item.floor_m2),
       index: item.index,
       amount_per_floor_m2_index_100: formatDecimalNumberForDb(item.amount_per_floor_m2_index_100),
-      amount_per_floor_m2_index: item.amount_per_floor_m2_index,
+      amount_per_floor_m2_index: formatDecimalNumberForDb(item.amount_per_floor_m2_index),
       percent: formatDecimalNumberForDb(item.percent),
-      year_rent_index_100: item.year_rent_index_100,
-      year_rent_index: item.year_rent_index,
+      year_rent_index_100: formatDecimalNumberForDb(item.year_rent_index_100),
+      year_rent_index: formatDecimalNumberForDb(item.year_rent_index),
     };
   });
 
@@ -1264,16 +1262,13 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       seasonal_start_month: rent.seasonal_start_month,
       seasonal_end_day: rent.seasonal_end_day,
       seasonal_end_month: rent.seasonal_end_month,
-      amount: rent.amount,
+      amount: formatDecimalNumberForDb(rent.amount),
       note: rent.note,
       is_active: rent.is_active,
-      due_dates: getContentRentDueDate(rent),
-      fixed_initial_year_rents: getContentFixedInitialYearRents(rent),
-      contract_rents: getContentContractRents(rent),
-      index_adjusted_rents: getContentIndexAdjustedRents(rent),
-      rent_adjustments: getContentRentAdjustments(rent),
-      payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
-      yearly_due_dates: getContentRentDueDate(rent.yearly_due_dates),
+      due_dates: getContentRentDueDatesForDb(rent),
+      fixed_initial_year_rents: getContentFixedInitialYearRentsForDb(rent),
+      contract_rents: getContentContractRentsForDb(rent),
+      rent_adjustments: getContentRentAdjustmentsForDb(rent),
     };
   });
 
