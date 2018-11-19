@@ -271,7 +271,7 @@ class LeaseItem extends Component<Props, State> {
           </Column>
           <Column small={6} medium={4} large={2}>
             <FormTitleAndText
-              title='Arvonnousu'
+              title='Arvonnousu (alv 0%)'
               text={leaseData.increase_in_value ? `${formatNumber(leaseData.increase_in_value)} €` : '-'}
             />
           </Column>

@@ -135,7 +135,7 @@ const LeaseArea = ({
       <Row>
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
-            title='Tunnus'
+            title='Kohteen tunnus'
             text={area.identifier || '-'}
           />
         </Column>

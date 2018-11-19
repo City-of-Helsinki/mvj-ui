@@ -781,6 +781,9 @@ class BasicInfoEdit extends PureComponent<Props> {
 
   clearInvalidDueDates = () => {
     const {change, dueDates, field} = this.props;
+
+    if(!dueDates) return;
+
     const clearedDueDates = dueDates.filter((dueDate) => {
       const month = Number(dueDate.month || 0),
         day = Number(dueDate.day || 0);

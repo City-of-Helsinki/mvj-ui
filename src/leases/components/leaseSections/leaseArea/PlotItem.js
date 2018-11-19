@@ -52,7 +52,7 @@ const PlotItem = ({attributes, isAreaActive, plot, router}: Props) => {
       <Row>
         <Column small={12} medium={6} large={6}>
           <FormTitleAndText
-            title='Tunnus'
+            title='Kohteen tunnus'
             text={<strong>{plot.identifier || '-'}</strong>}
           />
         </Column>

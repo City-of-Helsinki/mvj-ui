@@ -53,7 +53,7 @@ const PlanUnitItem = ({
       <Row>
         <Column small={12} medium={9} large={9}>
           <FormTitleAndText
-            title='Tunnus'
+            title='Kohteen tunnus'
             text={planUnit.identifier || '-'}
           />
         </Column>

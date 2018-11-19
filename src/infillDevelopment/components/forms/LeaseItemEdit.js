@@ -517,6 +517,9 @@ class LeaseItemEdit extends Component<Props, State> {
                 fieldAttributes={get(attributes, 'infill_development_compensation_leases.child.children.increase_in_value')}
                 name={`${field}.increase_in_value`}
                 unit='€'
+                overrideValues={{
+                  label: 'Arvonnousu (alv 0%)',
+                }}
               />
             </Column>
             <Column small={6} medium={4} large={2}>

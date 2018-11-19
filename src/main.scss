@@ -79,13 +79,13 @@ html {
 body {
   overflow-y: auto;
   height: calc(100% - 60px);
-  background-color: $light-gray;
+  background-color: #efefef;
 }
 
 #root {
   display: block;
   height: 100%;
   font-family: $font-family-source;
-  background: $light-gray;
+  background-color: #efefef;
   color: $black;
 }

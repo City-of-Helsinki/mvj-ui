@@ -263,7 +263,7 @@ class RentBasisListPage extends Component<Props, State> {
             columns={[
               {
                 key: 'property_identifiers',
-                text: 'Kiinteistötunnus',
+                text: 'Kohteen tunnus',
                 disabled: true,
                 renderer: (val) => <MultiItemCollapse
                   items={val}
