@@ -382,14 +382,14 @@ class Search extends Component<Props, State> {
 
             <div className='lease-search__row'>
               <div className='lease-search__label-column'>
-                <span className='lease-search__label'>Kiinteistötunnus</span>
+                <span className='lease-search__label'>Kohteen tunnus</span>
               </div>
               <div className='lease-search__input-column'>
                 <FormField
                   autoBlur
                   disableDirty
                   fieldAttributes={{
-                    label: 'Kiinteistötunnus',
+                    label: 'Kohteen tunnus',
                     type: 'string',
                   }}
                   invisibleLabel

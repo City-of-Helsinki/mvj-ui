@@ -64,7 +64,7 @@ const PlanUnitItemEdit = ({
               fieldAttributes={get(attributes, 'lease_areas.child.children.plan_units.child.children.identifier')}
               name={`${field}.identifier`}
               overrideValues={{
-                label: 'Tunnus',
+                label: 'Kohteen tunnus',
               }}
             />
           </Column>

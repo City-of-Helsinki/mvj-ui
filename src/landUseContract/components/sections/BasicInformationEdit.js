@@ -41,7 +41,7 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
       {({dispatch}) => {
         return(
           <div>
-            <FormTextTitle title='Kohteet' />
+            <FormTextTitle title='Kohteen tunnus' />
             {fields && !!fields.length && fields.map((field, index) => {
               const handleRemove = () => {
                 dispatch({

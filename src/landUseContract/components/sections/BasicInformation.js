@@ -61,7 +61,7 @@ const BasicInformation = ({
       >
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormTextTitle title='Kohteet' />
+            <FormTextTitle title='Kohteen tunnus' />
             {!!basicInformation.areas && !!basicInformation.areas.length
               ? <ListItems>
                 {basicInformation.areas.map((area, index) =>
