@@ -817,15 +817,15 @@ export const getLeaseCoordinates = (lease: Lease) => {
   areas.forEach((area) => {
     coordinates = [...coordinates, ...getCoordinatesOfGeometry(area.geometry)];
 
-    const plots = get(area, 'plots', []);
-    plots.forEach((plot) => {
-      coordinates = [...coordinates, ...getCoordinatesOfGeometry(plot.geometry)];
-    });
-
-    const planUnits = get(area, 'plan_units', []);
-    planUnits.forEach((planUnit) => {
-      coordinates = [...coordinates, ...getCoordinatesOfGeometry(planUnit.geometry)];
-    });
+    // const plots = get(area, 'plots', []);
+    // plots.forEach((plot) => {
+    //   coordinates = [...coordinates, ...getCoordinatesOfGeometry(plot.geometry)];
+    // });
+    //
+    // const planUnits = get(area, 'plan_units', []);
+    // planUnits.forEach((planUnit) => {
+    //   coordinates = [...coordinates, ...getCoordinatesOfGeometry(planUnit.geometry)];
+    // });
   });
   return coordinates;
 };
