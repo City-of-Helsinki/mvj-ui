@@ -32,6 +32,8 @@ const SortableTableGroup = ({
   selectedRow,
   showRadioButton,
 }: Props) => {
+  const isGroupSelected = Boolean(selectedRow && selectedRow.tableGroupName && (selectedRow.id === row.id));
+
   const isRadioButtonDisabled = () => {
     if(radioButtonDisabledFunction) {
       return radioButtonDisabledFunction(row);
@@ -40,13 +42,24 @@ const SortableTableGroup = ({
     return false;
   };
 
+  const handleClickRadioButton = () => {
+    if(isGroupSelected && onSelectRow) {
+      onSelectRow(null);
+    }
+  };
+
+  const handleKeyDownRadioButton = (e: any) => {
+    if(isGroupSelected && e.keyCode === 32) {
+      e.preventDefault();
+      handleClickRadioButton();
+    }
+  };
+
   const handleSelectGroup = () => {
     if(onSelectRow) {
       onSelectRow(row);
     }
   };
-
-  const isGroupSelected = Boolean(selectedRow && selectedRow.tableGroupName && (selectedRow.id === row.id));
 
   return(
     <TableGroup>
@@ -60,6 +73,8 @@ const SortableTableGroup = ({
               id={`group_${row.id}`}
               name={`group_${row.id}`}
               onChange={handleSelectGroup}
+              onClick={handleClickRadioButton}
+              onKeyDown={handleKeyDownRadioButton}
             />
           </td>
         }

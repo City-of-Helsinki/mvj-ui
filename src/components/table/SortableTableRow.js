@@ -64,6 +64,23 @@ class SortableTableRow extends PureComponent<Props> {
     }
   };
 
+  handleClickRadioButton = () => {
+    const {isSelected, onSelectRow} = this.props;
+
+    if(isSelected && onSelectRow) {
+      onSelectRow(null);
+    }
+  }
+
+  handleKeyDownRadioButton = (e: any) => {
+    const {isSelected} = this.props;
+
+    if(isSelected && e.keyCode === 32) {
+      e.preventDefault();
+      this.handleClickRadioButton();
+    }
+  }
+
   handleSelectRow = () => {
     const {onSelectRow, row} = this.props;
 
@@ -101,6 +118,8 @@ class SortableTableRow extends PureComponent<Props> {
               id={`row_${row.id}`}
               name={`row_${row.id}`}
               onChange={this.handleSelectRow}
+              onClick={this.handleClickRadioButton}
+              onKeyDown={this.handleKeyDownRadioButton}
             />
           </td>
         }

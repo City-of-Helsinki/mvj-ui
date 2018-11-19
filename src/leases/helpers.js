@@ -39,12 +39,11 @@ export const getContentLeaseIdentifier = (item:Object) => {
   return `${get(item, 'identifier.type.identifier')}${get(item, 'identifier.municipality.identifier')}${fixedLengthNumber(get(item, 'identifier.district.identifier'), 2)}-${get(item, 'identifier.sequence')}`;
 };
 
-export const getContentLeaseTenants = (lease: Object) => {
+export const getContentLeaseTenants = (lease: Object, query: Object = {}) => {
   return get(lease, 'tenants', [])
-    .map((item) => {
-      const tenant = get(item, 'tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT);
-      return tenant ? getContactFullName(tenant.contact) : null;
-    });
+    .map((item) => get(item, 'tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT))
+    .filter((tenant) => query.only_past_tentants === 'true' ? isTenantArchived(tenant) : !isTenantArchived(tenant))
+    .map((tenant) => tenant ? getContactFullName(tenant.contact) : null);
 };
 
 export const getContentLeaseOption = (lease: Lease) => {
@@ -55,23 +54,26 @@ export const getContentLeaseOption = (lease: Lease) => {
 };
 
 export const getContentLeaseAreaIdentifiers = (lease: Object) => {
-  return get(lease, 'lease_areas', []).map((area) => area.identifier);
+  return get(lease, 'lease_areas', [])
+    .filter((area) => !area.archived_at)
+    .map((area) => area.identifier);
 };
 
 export const getContentLeaseAddresses = (lease: Object) => {
   return get(lease, 'lease_areas')
+    .filter((area) => !area.archived_at)
     .map((area) => [
       ...get(area, 'addresses', [])
         .map((address) => getFullAddress(address)),
     ]);
 };
 
-export const getContentLeaseItem = (lease: Object) => {
+export const getContentLeaseItem = (lease: Object, query: Object = {}) => {
   return {
     id: lease.id,
     identifier: getContentLeaseIdentifier(lease),
     lease_area_identifiers: getContentLeaseAreaIdentifiers(lease),
-    tenants: getContentLeaseTenants(lease),
+    tenants: getContentLeaseTenants(lease, query),
     lessor: getContactFullName(lease.lessor),
     addresses: getContentLeaseAddresses(lease),
     state: lease.state,
@@ -80,8 +82,8 @@ export const getContentLeaseItem = (lease: Object) => {
   };
 };
 
-export const getContentLeases = (content: Object) =>
-  get(content, 'results', []).map((item) => getContentLeaseItem(item));
+export const getContentLeases = (content: Object, query: Object) =>
+  get(content, 'results', []).map((item) => getContentLeaseItem(item, query));
 
 export const getContentLeaseInfo = (lease: Object) => {
   return {
@@ -154,6 +156,9 @@ const getContentInfillDevelopmentCompensations = (lease: Lease) =>
 
 export const getContentSummary = (lease: Object) => {
   return {
+    state: lease.state,
+    start_date: lease.start_date,
+    end_date: lease.end_date,
     lessor: getContentLessor(lease.lessor),
     preparer: getContentUser(lease.preparer),
     classification: lease.classification,
@@ -668,12 +673,6 @@ export const getFullAddress = (item: Object) => {
     ${item.postal_code || ''} ${item.city || ''}`;
 };
 
-export const getLeasesFilteredByLeaseStates = (items: Array<Object>, states: Array<string>): Array<Object> => {
-  if(!states || !states.length) return items;
-
-  return items.filter((item) => states.indexOf(item.state) !== -1);
-};
-
 export const getInvoiceRecipientOptions = (lease: Object) =>{
   const items = getContentTenants(lease);
 
@@ -818,30 +817,23 @@ export const getLeaseCoordinates = (lease: Lease) => {
   areas.forEach((area) => {
     coordinates = [...coordinates, ...getCoordinatesOfGeometry(area.geometry)];
 
-    const plots = get(area, 'plots', []);
-    plots.forEach((plot) => {
-      coordinates = [...coordinates, ...getCoordinatesOfGeometry(plot.geometry)];
-    });
-
-    const planUnits = get(area, 'plan_units', []);
-    planUnits.forEach((planUnit) => {
-      coordinates = [...coordinates, ...getCoordinatesOfGeometry(planUnit.geometry)];
-    });
+    // const plots = get(area, 'plots', []);
+    // plots.forEach((plot) => {
+    //   coordinates = [...coordinates, ...getCoordinatesOfGeometry(plot.geometry)];
+    // });
+    //
+    // const planUnits = get(area, 'plan_units', []);
+    // planUnits.forEach((planUnit) => {
+    //   coordinates = [...coordinates, ...getCoordinatesOfGeometry(planUnit.geometry)];
+    // });
   });
   return coordinates;
 };
 
-// Helper functions to add content to patch payload
-export const addLeaseInfoFormValues = (payload: Object, leaseInfo: Object) => {
-  return {
-    ...payload,
-    'state': leaseInfo.state,
-    'start_date': leaseInfo.start_date,
-    'end_date': leaseInfo.end_date,
-  };
-};
-
 export const addSummaryFormValues = (payload: Object, summary: Object) => {
+  payload.state = summary.state;
+  payload.start_date = summary.start_date;
+  payload.end_date = summary.end_date;
   payload.lessor = get(summary, 'lessor.value');
   payload.preparer = get(summary, 'preparer.value');
   payload.classification = summary.classification;
@@ -941,8 +933,6 @@ export const addAreasFormValues = (payload: Object, values: Object) => {
       area: formatDecimalNumberForDb(area.area),
       section_area: formatDecimalNumberForDb(area.area),
       addresses: getAddressesForDb(get(area, 'addresses', [])),
-      postal_code: area.postal_code,
-      city: area.city,
       type: area.type,
       location: area.location,
       plots: getPlotsForDb(area),
@@ -1183,13 +1173,13 @@ export const getContentRentAdjustmentsForDb = (rent: Object) =>
     return {
       id: item.id || undefined,
       type: item.type,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      intended_use: item.intended_use,
       start_date: item.start_date,
       end_date: item.end_date,
       full_amount: formatDecimalNumberForDb(item.full_amount),
-      amount_type: get(item, 'amount_type.id') || get(item, 'amount_type'),
+      amount_type: item.amount_type,
       amount_left: formatDecimalNumberForDb(item.amount_left),
-      decision: get(item, 'decision.id') || get(item, 'decision'),
+      decision: item.decision,
       note: item.note,
     };
   });
@@ -1236,14 +1226,14 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
   payload.basis_of_rents = basisOfRents.map((item) => {
     return {
       id: item.id || undefined,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+      intended_use: item.intended_use,
       floor_m2: formatDecimalNumberForDb(item.floor_m2),
       index: item.index,
       amount_per_floor_m2_index_100: formatDecimalNumberForDb(item.amount_per_floor_m2_index_100),
-      amount_per_floor_m2_index: item.amount_per_floor_m2_index,
+      amount_per_floor_m2_index: formatDecimalNumberForDb(item.amount_per_floor_m2_index),
       percent: formatDecimalNumberForDb(item.percent),
-      year_rent_index_100: item.year_rent_index_100,
-      year_rent_index: item.year_rent_index,
+      year_rent_index_100: formatDecimalNumberForDb(item.year_rent_index_100),
+      year_rent_index: formatDecimalNumberForDb(item.year_rent_index),
     };
   });
 
@@ -1272,16 +1262,13 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       seasonal_start_month: rent.seasonal_start_month,
       seasonal_end_day: rent.seasonal_end_day,
       seasonal_end_month: rent.seasonal_end_month,
-      amount: rent.amount,
+      amount: formatDecimalNumberForDb(rent.amount),
       note: rent.note,
       is_active: rent.is_active,
-      due_dates: getContentRentDueDate(rent),
-      fixed_initial_year_rents: getContentFixedInitialYearRents(rent),
-      contract_rents: getContentContractRents(rent),
-      index_adjusted_rents: getContentIndexAdjustedRents(rent),
-      rent_adjustments: getContentRentAdjustments(rent),
-      payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
-      yearly_due_dates: getContentRentDueDate(rent.yearly_due_dates),
+      due_dates: getContentRentDueDatesForDb(rent),
+      fixed_initial_year_rents: getContentFixedInitialYearRentsForDb(rent),
+      contract_rents: getContentContractRentsForDb(rent),
+      rent_adjustments: getContentRentAdjustmentsForDb(rent),
     };
   });
 
@@ -1366,7 +1353,6 @@ export const isAnyLeaseFormDirty = (state: any) => {
     isDirty(FormNames.DECISIONS)(state) ||
     isDirty(FormNames.INSPECTIONS)(state) ||
     isDirty(FormNames.LEASE_AREAS)(state) ||
-    isDirty(FormNames.LEASE_INFO)(state) ||
     isDirty(FormNames.RESTS)(state) ||
     isDirty(FormNames.SUMMARY)(state) ||
     isDirty(FormNames.TENANTS)(state));
@@ -1378,7 +1364,6 @@ export const clearUnsavedChanges = () => {
   removeSessionStorageItem(FormNames.DECISIONS);
   removeSessionStorageItem(FormNames.INSPECTIONS);
   removeSessionStorageItem(FormNames.LEASE_AREAS);
-  removeSessionStorageItem(FormNames.LEASE_INFO);
   removeSessionStorageItem(FormNames.RENTS);
   removeSessionStorageItem(FormNames.SUMMARY);
   removeSessionStorageItem(FormNames.TENANTS);

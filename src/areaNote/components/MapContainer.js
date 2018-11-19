@@ -88,6 +88,7 @@ class MapContainer extends Component<Props> {
         zoom={zoom}
         zoomControl={false}
         crs={CRS}
+        boxZoom={false}
       >
         <LayersControl position='topright'>
           <BaseLayer checked name="Karttasarja">

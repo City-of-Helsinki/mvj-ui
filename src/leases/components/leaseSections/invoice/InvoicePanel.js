@@ -70,13 +70,15 @@ class InvoicePanel extends PureComponent<Props, State> {
   }
 
   handleKeyDown = (e: any) => {
-    const {onKeyDown} = this.props;
+    const {isOpen, onKeyDown} = this.props;
+
+    if(!isOpen) return false;
+
     switch(e.keyCode) {
       case KeyCodes.ARROW_LEFT:
       case KeyCodes.ARROW_RIGHT:
         if(onKeyDown) {
           onKeyDown(e.keyCode);
-          e.preventDefault();
         }
         break;
       default:

@@ -287,10 +287,10 @@ export const formatNumber = (x) => {
 };
 
 export const formatDecimalNumberForDb = (x) => {
-  if(x === null || x === undefined || !isNumber(Number(x))) {
+  if(x === null || x === undefined) {
     return null;
   }
-  return Number(x.toString().replace(',', '.'));
+  return Number(x.toString().replace(',', '.').replace(/\s+/g, ''));
 };
 
 export const formatDateRange = (startDate: any, endDate: any) => {

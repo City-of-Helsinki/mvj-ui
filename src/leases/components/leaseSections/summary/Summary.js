@@ -21,7 +21,7 @@ import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
-import {getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
@@ -44,6 +44,7 @@ type State = {
   managementOptions: Array<Object>,
   noticePeriodOptions: Array<Object>,
   regulationOptions: Array<Object>,
+  stateOptions: Array<Object>,
   statisticalUseOptions: Array<Object>,
   summary: Object,
   supportiveHousingOptions: Array<Object>,
@@ -59,6 +60,7 @@ class Summary extends Component<Props, State> {
     managementOptions: [],
     noticePeriodOptions: [],
     regulationOptions: [],
+    stateOptions: [],
     statisticalUseOptions: [],
     summary: {},
     supportiveHousingOptions: [],
@@ -94,6 +96,7 @@ class Summary extends Component<Props, State> {
       managementOptions: getAttributeFieldOptions(attributes, 'management'),
       noticePeriodOptions: getAttributeFieldOptions(attributes, 'notice_period'),
       regulationOptions: getAttributeFieldOptions(attributes, 'regulation'),
+      stateOptions: getAttributeFieldOptions(attributes, 'state'),
       statisticalUseOptions: getAttributeFieldOptions(attributes, 'statistical_use'),
       supportiveHousingOptions: getAttributeFieldOptions(attributes, 'supportive_housing'),
     });
@@ -138,6 +141,7 @@ class Summary extends Component<Props, State> {
       managementOptions,
       noticePeriodOptions,
       regulationOptions,
+      stateOptions,
       statisticalUseOptions,
       summary,
       supportiveHousingOptions,
@@ -163,6 +167,26 @@ class Summary extends Component<Props, State> {
               headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
               onToggle={this.handleBasicInfoToggle}
             >
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <FormTitleAndText
+                    title='Tyyppi'
+                    text={getLabelOfOption(stateOptions, summary.state) || '-'}
+                  />
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <FormTitleAndText
+                    title='Alkupvm'
+                    text={formatDate(summary.start_date) || '-'}
+                  />
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <FormTitleAndText
+                    title='Loppupvm'
+                    text={formatDate(summary.end_date) || '-'}
+                  />
+                </Column>
+              </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
                   <FormTitleAndText

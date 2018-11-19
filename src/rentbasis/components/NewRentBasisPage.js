@@ -21,6 +21,7 @@ import {
 } from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {FormNames} from '$src/rentbasis/enums';
+import {formatRentBasisForDb} from '$src/rentbasis/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFormValid, getIsSaveClicked} from '$src/rentbasis/selectors';
 
@@ -30,7 +31,7 @@ import type {Attributes} from '$src/rentbasis/types';
 type Props = {
   attributes: Attributes,
   createRentBasis: Function,
-  editedRentBasis: ?Object,
+  editedRentBasis: Object,
   fetchAttributes: Function,
   hideEditMode: Function,
   isFormDirty: boolean,
@@ -109,7 +110,7 @@ class NewRentBasisPage extends Component<Props> {
 
     receiveIsSaveClicked(true);
     if(isFormValid) {
-      createRentBasis(editedRentBasis);
+      createRentBasis(formatRentBasisForDb(editedRentBasis));
     }
   }
 
