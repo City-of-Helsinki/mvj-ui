@@ -6,10 +6,10 @@ import classNames from 'classnames';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import CheckboxInput from '$components/inputs/CheckboxInput';
 import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
 import NewCommentForm from './forms/NewCommentForm';
-import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
 import {createComment} from '$src/comments/actions';
 import {getAttributeFieldOptions, sortStringByKeyDesc} from '$src/util/helpers';
 import {getContentComments} from '$src/leases/helpers';
@@ -205,7 +205,7 @@ class CommentPanel extends PureComponent<Props, State> {
             <h2>Ajankohtaiset</h2>
             {comments && !!comments.length &&
               <div className='filters'>
-                <StyledCheckboxButtons
+                <CheckboxInput
                   checkboxName='checkbox-buttons-document-type'
                   legend='Suodata kommentteja'
                   onChange={this.handleFilterChange}

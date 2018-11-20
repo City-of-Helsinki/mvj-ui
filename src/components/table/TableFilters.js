@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 
-import StyledCheckboxButtons from '$components/button/StyledCheckboxButtons';
+import CheckboxInput from '$components/inputs/CheckboxInput';
 
 type Props = {
   amountText: string,
@@ -27,7 +27,7 @@ const TableFilters = ({
         {!!filterOptions.length &&
           <p className='table__filters_filter-wrapper_title'>Suodatus</p>
         }
-        <StyledCheckboxButtons
+        <CheckboxInput
           checkboxName='lease-type-checkbox'
           legend='Suodata'
           onChange={handleFilterChange}
