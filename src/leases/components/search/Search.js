@@ -79,7 +79,7 @@ class Search extends Component<Props, State> {
     if(!this._isMounted) return;
 
     const {formValues, onSearch, states} = this.props;
-    const newValues = {...formValues, state: states.length ? states : undefined};
+    const newValues = {...formValues, lease_state: states.length ? states : undefined};
 
     onSearch(newValues);
   }, 500);
@@ -93,7 +93,7 @@ class Search extends Component<Props, State> {
     if(!isBasicSearch) {
       const newFormValues = {
         identifier: formValues.identifier ? formValues.identifier : undefined,
-        state: states.length ? states : undefined,
+        lease_state: states.length ? states : undefined,
       };
 
       onSearch(newFormValues);
@@ -167,7 +167,7 @@ class Search extends Component<Props, State> {
                     type: 'string',
                   }}
                   invisibleLabel
-                  name='tenant'
+                  name='tenant_name'
                 />
               </div>
             </div>
@@ -188,7 +188,7 @@ class Search extends Component<Props, State> {
                       }}
                       invisibleLabel
                       isLoading={isFetchingAttributes}
-                      name='tenant_role'
+                      name='tenantcontact_type'
                       overrideValues={{
                         options: tenantTypeOptions,
                       }}
@@ -203,7 +203,7 @@ class Search extends Component<Props, State> {
                         type: 'checkbox',
                       }}
                       invisibleLabel
-                      name='only_past_tentants'
+                      name='only_past_tenants'
                       overrideValues={{
                         options: [{value: true, label: 'Vain entiset asiakkaat'}],
                       }}
@@ -228,7 +228,7 @@ class Search extends Component<Props, State> {
                         type: 'choice',
                       }}
                       invisibleLabel
-                      name='type'
+                      name='lease_type'
                       overrideValues={{options: typeOptions}}
                     />
                   </Column>
@@ -355,7 +355,7 @@ class Search extends Component<Props, State> {
                         type: 'checkbox',
                       }}
                       invisibleLabel
-                      name='on_going'
+                      name='only_active_leases'
                       overrideValues={{
                         options: [{value: true, label: 'Voimassa'}],
                       }}
@@ -370,7 +370,7 @@ class Search extends Component<Props, State> {
                         type: 'checkbox',
                       }}
                       invisibleLabel
-                      name='expired'
+                      name='only_expired_leases'
                       overrideValues={{
                         options: [{value: true, label: 'Päättyneet'}],
                       }}

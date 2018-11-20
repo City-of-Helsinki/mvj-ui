@@ -42,7 +42,7 @@ export const getContentLeaseIdentifier = (item:Object) => {
 export const getContentLeaseTenants = (lease: Object, query: Object = {}) => {
   return get(lease, 'tenants', [])
     .map((item) => get(item, 'tenantcontact_set', []).find((x) => x.type === TenantContactType.TENANT))
-    .filter((tenant) => query.only_past_tentants === 'true' ? isTenantArchived(tenant) : !isTenantArchived(tenant))
+    .filter((tenant) => query.only_past_tenants === 'true' ? isTenantArchived(tenant) : !isTenantArchived(tenant))
     .map((tenant) => tenant ? getContactFullName(tenant.contact) : null);
 };
 

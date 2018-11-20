@@ -120,9 +120,9 @@ class LeaseListPage extends Component<Props, State> {
     const page = query.page ? Number(query.page) : 1;
     this.setState({activePage: page});
 
-    const states = isArray(query.state)
-      ? query.state
-      : query.state ? [query.state] : null;
+    const states = isArray(query.lease_state)
+      ? query.lease_state
+      : query.lease_state ? [query.lease_state] : null;
     if(states) {
       this.setState({leaseStates: states});
     }
@@ -135,7 +135,7 @@ class LeaseListPage extends Component<Props, State> {
       try {
         const searchQuery = {...query};
         delete searchQuery.page;
-        delete searchQuery.state;
+        delete searchQuery.lease_state;
 
         searchQuery.tenant_role = isArray(searchQuery.tenant_role)
           ? searchQuery.tenant_role
@@ -255,7 +255,7 @@ class LeaseListPage extends Component<Props, State> {
 
     const searchQuery = {...query};
     delete searchQuery.page;
-    searchQuery.state = values;
+    searchQuery.lease_state = values;
 
     this.setState({leaseStates: values});
 
@@ -274,9 +274,9 @@ class LeaseListPage extends Component<Props, State> {
 
     if(Object.keys(searchQuery).length === 0) {
       return true;
-    } else if(Object.keys(searchQuery).length === 1 && (searchQuery['identifier'] || searchQuery['state'])) {
+    } else if(Object.keys(searchQuery).length === 1 && (searchQuery['identifier'] || searchQuery['lease_state'])) {
       return true;
-    } else if(Object.keys(searchQuery).length === 2 && (searchQuery['identifier'] && searchQuery['state'])) {
+    } else if(Object.keys(searchQuery).length === 2 && (searchQuery['identifier'] && searchQuery['lease_state'])) {
       return true;
     }
 
