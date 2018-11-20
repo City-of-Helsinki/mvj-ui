@@ -6,8 +6,10 @@ import {
   createComment,
   editComment,
   notFound,
+  clearEditFlags,
   showEditModeById,
   hideEditModeById,
+  receiveIsSaveClicked,
 } from './actions';
 import commentReducer from './reducer';
 
@@ -16,6 +18,7 @@ const stateTemplate = {
   byLease: {},
   isEditModeById: {},
   isFetching: false,
+  isSaveClicked: false,
 };
 
 describe('Comments', () => {
@@ -83,6 +86,15 @@ describe('Comments', () => {
         expect(state).to.deep.equal(newState);
       });
 
+      it('should update clear isEditModeById flags', () => {
+        const leaseId = 0;
+        const newState = {...stateTemplate};
+
+        let state = commentReducer({}, showEditModeById(leaseId));
+        state = commentReducer(state, clearEditFlags());
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isEditModeById flag to true by showEditModeById', () => {
         const leaseId = 0;
         const newState = {...stateTemplate};
@@ -98,6 +110,14 @@ describe('Comments', () => {
         newState.isEditModeById = {[leaseId]: false};
 
         const state = commentReducer({}, hideEditModeById(leaseId));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isSaveClicked flag to true', () => {
+        const newState = {...stateTemplate};
+        newState.isSaveClicked = true;
+
+        const state = commentReducer({}, receiveIsSaveClicked(true));
         expect(state).to.deep.equal(newState);
       });
     });

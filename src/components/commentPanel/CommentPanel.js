@@ -1,19 +1,21 @@
 //@flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {initialize} from 'redux-form';
+import {initialize, isDirty} from 'redux-form';
 import classNames from 'classnames';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import CheckboxInput from '$components/inputs/CheckboxInput';
 import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
 import NewCommentForm from './forms/NewCommentForm';
-import {createComment} from '$src/comments/actions';
+import {clearEditFlags, createComment, receiveIsSaveClicked} from '$src/comments/actions';
+import {CloseCommentPanelTexts, FormNames} from '$components/enums';
 import {getAttributeFieldOptions, sortStringByKeyDesc} from '$src/util/helpers';
 import {getContentComments} from '$src/leases/helpers';
-import {getAttributes, getCommentsByLease} from '$src/comments/selectors';
+import {getAttributes, getCommentsByLease, getEditModeFlags} from '$src/comments/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
 import type {CommentList} from '$src/comments/types';
@@ -21,13 +23,17 @@ import type {Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Object,
+  clearEditFlags: Function,
   commentList: CommentList,
   createComment: Function,
   currentLease: Lease,
+  editModeFlags: Object,
   initialize: Function,
+  isNewCommentFormDirty: boolean,
   isOpen: boolean,
   onClose: Function,
   params: Object,
+  receiveIsSaveClicked: Function,
 }
 
 type State = {
@@ -57,8 +63,10 @@ class CommentPanel extends PureComponent<Props, State> {
     topicFilterOptions: [],
   }
 
-  componentWillMount() {
-    const {attributes, commentList} = this.props;
+  componentDidMount() {
+    const {attributes, commentList, receiveIsSaveClicked} = this.props;
+
+    receiveIsSaveClicked(false);
 
     if(!isEmpty(attributes)) {
       this.updateOptions();
@@ -67,6 +75,8 @@ class CommentPanel extends PureComponent<Props, State> {
     if(!isEmpty(commentList)) {
       this.updateContent();
     }
+
+    this.component.addEventListener('transitionend', this.transitionEnds);
   }
 
   componentDidUpdate(prevProps) {
@@ -78,7 +88,7 @@ class CommentPanel extends PureComponent<Props, State> {
     }
     if(!prevProps.isOpen && this.props.isOpen) {
       this.initializeNewCommentForm();
-      this.setFocusOnCommentForm();
+
       this.setState({
         isOpening: true,
       });
@@ -89,15 +99,21 @@ class CommentPanel extends PureComponent<Props, State> {
     }
   }
 
-  componentDidMount() {
-    this.component.addEventListener('transitionend', this.transitionEnds);
-  }
-
   componentWillUnmount() {
+    const {clearEditFlags} = this.props;
+
+    clearEditFlags();
     this.component.removeEventListener('transitionend', this.transitionEnds);
   }
 
   transitionEnds = () => {
+    const {isClosing} = this.state;
+    const {clearEditFlags} = this.props;
+
+    if(isClosing) {
+      clearEditFlags();
+    }
+
     this.setState({
       isClosing: false,
       isOpening: false,
@@ -106,24 +122,18 @@ class CommentPanel extends PureComponent<Props, State> {
 
   getFilteredComments = (comments: ?Array<Object>) => {
     const {selectedTopics} = this.state;
-    if(!comments || !comments.length) {return [];}
+
+    if(!comments || !comments.length) return [];
 
     const sortedComments = [...comments].sort((a, b) => sortStringByKeyDesc(a, b, 'modified_at'));
 
-    if(!selectedTopics.length) {return sortedComments;}
-    return sortedComments.filter((comment) => selectedTopics.indexOf(comment.topic.toString()) !== -1);
+    if(!selectedTopics.length) return sortedComments;
+
+    return sortedComments.filter((comment) => selectedTopics.indexOf(comment.topic) !== -1);
   }
 
   setComponentRef = (element: any) => {
     this.component = element;
-  }
-
-  setRefForFirstCommentFormField = (element: any) => {
-    this.firstCommentModalField = element;
-  }
-
-  setFocusOnCommentForm = () => {
-    this.firstCommentModalField.focus();
   }
 
   updateContent = () => {
@@ -152,14 +162,12 @@ class CommentPanel extends PureComponent<Props, State> {
       text: text,
       topic: topic,
     });
-
-    this.initializeNewCommentForm();
-    this.setFocusOnCommentForm();
   }
 
   initializeNewCommentForm = () => {
     const {initialize} = this.props;
-    initialize('new-comment-form', {text: '', topic: ''});
+
+    initialize(FormNames.NEW_COMMENT, {text: '', topic: ''});
   }
 
   handleFilterChange = (value: Array<string>) => {
@@ -169,8 +177,11 @@ class CommentPanel extends PureComponent<Props, State> {
   render () {
     const {
       attributes,
+      editModeFlags,
+      isNewCommentFormDirty,
       isOpen,
       onClose,
+      receiveIsSaveClicked,
     } = this.props;
     const {
       comments,
@@ -185,26 +196,48 @@ class CommentPanel extends PureComponent<Props, State> {
     return (
       <div ref={this.setComponentRef} className={classNames('comment-panel', {'is-panel-open': isOpen})}>
         <div hidden={!isOpen && !isClosing && !isOpening}>
-          <div className='comment-panel__title-wrapper'>
+          <div className='comment-panel__wrapper'>
             <div className='comment-panel__title'>
               <h1>Kommentit</h1>
-              <CloseButton
-                className='position-topright'
-                onClick={onClose}
-                title='Sulje'
-              />
+              <AppConsumer>
+                {({dispatch}) => {
+                  const handleClose = () => {
+
+                    if(isNewCommentFormDirty || !isEmpty(editModeFlags)) {
+                      dispatch({
+                        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                        confirmationFunction: () => {
+                          onClose();
+                          receiveIsSaveClicked(false);
+                        },
+                        confirmationModalButtonText: CloseCommentPanelTexts.BUTTON,
+                        confirmationModalLabel: CloseCommentPanelTexts.LABEL,
+                        confirmationModalTitle: CloseCommentPanelTexts.TITLE,
+                      });
+                    } else {
+                      onClose();
+                      receiveIsSaveClicked(false);
+                    }
+                  };
+
+                  return(
+                    <CloseButton
+                      className='position-topright'
+                      onClick={handleClose}
+                      title='Sulje'
+                    />
+                  );
+                }}
+              </AppConsumer>
             </div>
-          </div>
-          <div className='comment-panel__content-wrapper'>
             <NewCommentForm
               attributes={attributes}
               onAddComment={this.createComment}
-              setRefForFirstField={this.setRefForFirstCommentFormField}
             />
 
-            <h2>Ajankohtaiset</h2>
             {comments && !!comments.length &&
               <div className='filters'>
+                <p className='filters-title'>Suodatus</p>
                 <CheckboxInput
                   checkboxName='checkbox-buttons-document-type'
                   legend='Suodata kommentteja'
@@ -257,11 +290,15 @@ export default flowRight(
         attributes: getAttributes(state),
         commentList: getCommentsByLease(state, currentLease.id),
         currentLease: currentLease,
+        editModeFlags: getEditModeFlags(state),
+        isNewCommentFormDirty: isDirty(FormNames.NEW_COMMENT)(state),
       };
     },
     {
+      clearEditFlags,
       createComment,
       initialize,
+      receiveIsSaveClicked,
     },
   ),
 )(CommentPanel);

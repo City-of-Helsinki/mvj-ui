@@ -1,6 +1,6 @@
 // @flow
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
-import {SubmissionError} from 'redux-form';
+import {initialize, SubmissionError} from 'redux-form';
 
 import {
   notFound,
@@ -8,8 +8,10 @@ import {
   hideEditModeById,
   receiveAttributes,
   receiveCommentsByLease,
+  receiveIsSaveClicked,
 } from './actions';
 import {receiveError} from '../api/actions';
+import {FormNames} from '../components/enums';
 import {displayUIMessage} from '$util/helpers';
 import {
   createComment,
@@ -71,6 +73,8 @@ function* createCommentSaga({payload: comment}): Generator<any, any, any> {
     switch (statusCode) {
       case 201:
         yield put(fetchCommentsByLease(bodyAsJson.lease));
+        yield put(receiveIsSaveClicked(false));
+        yield put(initialize(FormNames.NEW_COMMENT, {text: '', topic: ''}));
         displayUIMessage({title: '', body: 'Kommentti luotu'});
         break;
       case 400:

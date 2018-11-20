@@ -10,12 +10,10 @@
   box-shadow: -2px 0 5px 0 rgba(0, 0, 0, 0.09);
   overflow: auto;
 
-  @include transition(0.3s, all, ease-in-out);
+  @include transition(0.3s, right, ease-in-out);
 
-  &__title-wrapper {
-    position: fixed;
-    max-width: 100%;
-    width: rem-calc(500px);
+  &__wrapper {
+    width: 100%;
     padding: rem-calc(92px) rem-calc(20px) rem-calc(20px);
     background-color: $engel-lighter-opaque;
     z-index: 1;
@@ -31,19 +29,17 @@
     }
   }
 
-  &__content-wrapper {
-    max-height: 100%;
-    padding: rem-calc(142px) rem-calc(20px) rem-calc(20px);
-    overflow: auto;
-  }
-
-  h2 {
-    margin-bottom: rem-calc(10px) !important;
-    margin-top: rem-calc(20px) !important;
-  }
-
   .filters {
+    margin-top: rem-calc(20px) !important;
     margin-bottom: rem-calc(15px);
+  }
+
+  .filters-title {
+    font-size: rem-calc(14px);
+    font-weight: 600;
+    padding: 0;
+    display: block;
+    margin: rem-calc(0 0 2px);
   }
 
   .comments {

@@ -8,13 +8,17 @@ import get from 'lodash/get';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import FormSection from '$components/form/FormSection';
+import {receiveIsSaveClicked} from '$src/comments/actions';
+import {FormNames} from '$components/enums';
+import {getIsSaveClicked} from '$src/comments/selectors';
 
 import type {RootState} from '$src/root/types';
 
 type Props = {
   attributes: Object,
+  isSaveClicked: boolean,
   onAddComment: Function,
-  setRefForFirstField: Function,
+  receiveIsSaveClicked: Function,
   text: string,
   topic: string,
   valid: boolean,
@@ -22,14 +26,20 @@ type Props = {
 
 const NewCommentForm = ({
   attributes,
+  isSaveClicked,
   onAddComment,
-  setRefForFirstField,
+  receiveIsSaveClicked,
   text,
   topic,
   valid,
 }: Props) => {
   const handleAddComment = () => {
-    onAddComment(text, topic);
+    receiveIsSaveClicked(true);
+
+    if(valid) {
+      onAddComment(text, topic);
+    }
+
   };
 
   return (
@@ -37,15 +47,16 @@ const NewCommentForm = ({
       <FormSection>
         <FormField
           disableDirty
+          disableTouched={isSaveClicked}
           fieldAttributes={get(attributes, 'topic')}
           name='topic'
-          setRefForField={setRefForFirstField}
           overrideValues={{
             label: 'Aihealue',
           }}
         />
         <FormField
           disableDirty
+          disableTouched={isSaveClicked}
           fieldAttributes={get(attributes, 'text')}
           name='text'
           overrideValues={{
@@ -55,7 +66,7 @@ const NewCommentForm = ({
         />
         <Button
           className={'button-green no-margin'}
-          disabled={!valid}
+          disabled={isSaveClicked && !valid}
           onClick={handleAddComment}
           text='Kommentoi'
         />
@@ -64,11 +75,12 @@ const NewCommentForm = ({
   );
 };
 
-const formName = 'new-comment-form';
+const formName = FormNames.NEW_COMMENT;
 const selector = formValueSelector(formName);
 
 const mapStateToProps = (state: RootState) => {
   return {
+    isSaveClicked: getIsSaveClicked(state),
     text: selector(state, 'text'),
     topic: selector(state, 'topic'),
   };
@@ -76,7 +88,10 @@ const mapStateToProps = (state: RootState) => {
 
 export default flowRight(
   connect(
-    mapStateToProps
+    mapStateToProps,
+    {
+      receiveIsSaveClicked,
+    }
   ),
   reduxForm({
     form: formName,
