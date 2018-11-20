@@ -21,13 +21,13 @@ export const CreditInvoiceSetOptions = [
 ];
 
 /**
- * Rent custom date options
+ * Lease state options for lease list table filter
  * @type {[*]}
  */
 export const leaseStateFilterOptions = [
   {value: 'lease', label: 'Vuokraus'},
   {value: 'reservation', label: 'Varaus'},
-  {value: 'reserve', label: 'Varanto'},
+  {value: 'reserve', label: 'Varanto ja vapaa'},
   {value: 'permission', label: 'Lupa'},
   {value: 'application', label: 'Hakemus'},
 ];

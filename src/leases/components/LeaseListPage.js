@@ -34,7 +34,7 @@ import {
 } from '$src/leases/actions';
 import {leaseStateFilterOptions} from '$src/leases/constants';
 import {FormNames} from '$src/leases/enums';
-import {getContentLeases} from '$src/leases/helpers';
+import {getContentLeases, mapLeaseSearchFilters} from '$src/leases/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
@@ -123,6 +123,7 @@ class LeaseListPage extends Component<Props, State> {
     const states = isArray(query.lease_state)
       ? query.lease_state
       : query.lease_state ? [query.lease_state] : null;
+
     if(states) {
       this.setState({leaseStates: states});
     }
@@ -194,7 +195,7 @@ class LeaseListPage extends Component<Props, State> {
     searchQuery.limit = PAGE_SIZE;
     delete searchQuery.page;
 
-    fetchLeases(getSearchQuery(searchQuery));
+    fetchLeases(getSearchQuery(mapLeaseSearchFilters(searchQuery)));
   }
 
   handleSearchChange = (query) => {
