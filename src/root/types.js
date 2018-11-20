@@ -1,15 +1,16 @@
 // @flow
 
-import type {ApiState} from '../api/types';
-import type {AuthState} from '../auth/types';
+import type {ApiState} from '$src/api/types';
+import type {AuthState} from '$src/auth/types';
 import type {CollectionCourtDecisionState} from '$src/collectionCourtDecision/types';
 import type {CollectionLetterState} from '$src/collectionLetter/types';
-import type {CollectionNoteState} from '../collectionNote/types';
+import type {CollectionNoteState} from '$src/collectionNote/types';
+import type {CommentState} from '$src/comments/types';
 import type {LeaseState} from '$src/leases/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
 import type {PreviewInvoicesState} from '$src/previewInvoices/types';
-import type {UserState} from '../role/types';
-import type {VatState} from '../vat/types';
+import type {UserState} from '$src/role/types';
+import type {VatState} from '$src/vat/types';
 
 export type RootState = {
   api: ApiState,
@@ -17,6 +18,7 @@ export type RootState = {
   collectionCourtDecision: CollectionCourtDecisionState,
   collectionLetter: CollectionLetterState,
   collectionNote: CollectionNoteState,
+  comment: CommentState,
   lease: LeaseState,
   penaltyInterest: PenaltyInterestState,
   previewInvoices: PreviewInvoicesState,

@@ -364,7 +364,7 @@
         font-weight: 600;
         padding: 0;
         display: block;
-        line-height: 1;
+        line-height: rem-calc(20px);
         margin-bottom: rem-calc(5px);
       }
     }

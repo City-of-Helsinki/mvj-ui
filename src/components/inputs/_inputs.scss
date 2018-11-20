@@ -1,0 +1,21 @@
+.inputs {
+  &__checkbox {
+    line-height: 1;
+
+    legend {
+      visibility: hidden;
+      position: absolute;
+    }
+
+    &_checkbox {
+      font-size: 16px;
+      margin: rem-calc(0 5px 0);
+    }
+
+    &_label {
+      display: inline-block;
+      margin: rem-calc(0 10px 5px 0);
+      line-height: rem-calc(20px);
+    }
+  }
+}

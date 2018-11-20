@@ -1,4 +1,5 @@
 // @flow
+import React from 'react';
 /**
  * Component form names enumerable.
  *
@@ -6,6 +7,7 @@
  */
 export const FormNames = {
   INVOICE_SIMULATOR: 'invoice-simulator-form',
+  NEW_COMMENT: 'new-comment-form',
   RENT_CALCULATOR: 'rent-calculator-form',
 };
 
@@ -62,4 +64,15 @@ export const RentSubItemType = {
 export const TableSortOrder = {
   ASCENDING: 'asc',
   DESCENDING: 'desc',
+};
+
+/**
+ * Close comment panel text enumerable.
+ *
+ * @type {{BUTTON: string, LABEL: string, TITLE: string}}
+ */
+export const CloseCommentPanelTexts = {
+  BUTTON: 'Sulje kommentointi',
+  LABEL: <span>Kaikkia muutoksia ei ole tallennettu.<br /> Haluatko varmasti sulkea kommentoinnin?</span>,
+  TITLE: 'Sulje kommentointi',
 };

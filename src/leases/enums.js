@@ -74,6 +74,22 @@ export const DeleteModalTitles = {
   TENANT: 'Poista vuokralainen',
 };
 
+
+/**
+ * LeaseState enumerable.
+ *
+ * @type {{}}
+ */
+export const LeaseState = {
+  LEASE: 'lease',
+  RESERVATION: 'reservation',
+  RESERVE: 'reserve',
+  FREE: 'free',
+  PERMISSION: 'permission',
+  APPLICATION: 'application',
+  TRANSFERRED: 'transferred',
+};
+
 /**
  * Classification enumerable.
  *

@@ -1,14 +1,15 @@
 // @flow
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
+import isArray from 'lodash/isArray';
 import isEmpty from 'lodash/isEmpty';
 import moment from 'moment';
 import {isDirty} from 'redux-form';
 
-
 import {
   ConstructabilityType,
   FormNames,
+  LeaseState,
   LeaseStatus,
   RecipientOptions,
   TenantContactType,
@@ -1342,6 +1343,23 @@ export const isTenantArchived = (tenant: ?Object) => {
   }
 
   return false;
+};
+
+export const mapLeaseSearchFilters = (query: Object) => {
+  const searchQuery = {...query};
+
+  searchQuery.lease_state = isArray(searchQuery.lease_state)
+    ? searchQuery.lease_state
+    : searchQuery.lease_state ? [searchQuery.lease_state] : [];
+
+  searchQuery.lease_state.forEach((state) => {
+    if(state === LeaseState.RESERVE) {
+      searchQuery.lease_state.push(LeaseState.FREE);
+      return false;
+    }
+  });
+
+  return searchQuery;
 };
 
 export const isAnyLeaseFormDirty = (state: any) => {
