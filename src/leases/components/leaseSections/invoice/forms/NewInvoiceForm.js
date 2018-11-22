@@ -20,10 +20,10 @@ import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveIsCreateClicked} from '$src/invoices/actions';
 import {DeleteModalLabels, DeleteModalTitles, FormNames, RecipientOptions} from '$src/leases/enums';
+import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
 import {getAttributes as getInvoiceAttributes, getIsCreateClicked} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
-import {dateGreaterOrEqual} from '$components/form/validations';
 
 import type {Lease} from '$src/leases/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
@@ -161,11 +161,7 @@ const NewInvoiceForm = ({
     }
   };
 
-  const recipientOptions = getInvoiceRecipientOptions(lease),
-    billingPeriodStartDate = get(formValues, 'billing_period_start_date');
-
-  const validateBillingPeriodEndDate = (val: any) =>
-    dateGreaterOrEqual(val, billingPeriodStartDate);
+  const recipientOptions = getInvoiceRecipientOptions(lease);
 
   return (
     <form onSubmit={handleSubmit} className='invoice__new-invoice_form'>
@@ -212,7 +208,6 @@ const NewInvoiceForm = ({
                   disableTouched={isCreateClicked}
                   fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
                   name='billing_period_end_date'
-                  validate={validateBillingPeriodEndDate}
                 />
               </Column>
             </Row>
@@ -285,5 +280,6 @@ export default flowRight(
       recipient: RecipientOptions.ALL,
       rows: [{}],
     },
+    validate: validateInvoiceForm,
   }),
 )(NewInvoiceForm);

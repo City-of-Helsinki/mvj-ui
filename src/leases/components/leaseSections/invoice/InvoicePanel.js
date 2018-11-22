@@ -147,9 +147,21 @@ class InvoicePanel extends PureComponent<Props, State> {
     onResize();
   }
 
+  handleClose = () => {
+    const {onClose, receiveIsEditClicked} = this.props;
+
+    receiveIsEditClicked(false);
+    onClose();
+  }
+
   handleSave = () => {
-    const {editedInvoice, onSave} = this.props;
-    onSave(editedInvoice);
+    const {editedInvoice, onSave, receiveIsEditClicked, valid} = this.props;
+
+    receiveIsEditClicked(true);
+
+    if(valid) {
+      onSave(editedInvoice);
+    }
   }
 
   getCreditedInvoice = () => {

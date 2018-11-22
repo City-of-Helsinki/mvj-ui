@@ -17,6 +17,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValid} from '$src/rentbasis/actions';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/rentbasis/enums';
+import {validateRentBasisForm} from '$src/rentbasis/formValidators';
 import {getAttributes, getIsFormValid, getIsSaveClicked, getRentBasisInitialValues} from '$src/rentbasis/selectors';
 import {referenceNumber} from '$components/form/validations';
 
@@ -526,5 +527,6 @@ export default flowRight(
     destroyOnUnmount: false,
     form: formName,
     enableReinitialize: true,
+    validate: validateRentBasisForm,
   }),
 )(RentBasisForm);
