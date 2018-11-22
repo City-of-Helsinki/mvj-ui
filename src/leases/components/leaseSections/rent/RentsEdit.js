@@ -19,6 +19,7 @@ import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete} from '$src/leases/actions';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {validateRentForm} from '$src/leases/formValidators';
 import {getContentRentsFormData} from '$src/leases/helpers';
 import {getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
@@ -200,7 +201,7 @@ class RentsEdit extends Component<Props, State> {
                 <Divider />
                 <FieldArray
                   component={renderRents}
-                  name='rents.rents'
+                  name='rents'
                   rents={rents}
                   showAddButton={true}
                 />
@@ -208,7 +209,7 @@ class RentsEdit extends Component<Props, State> {
                 {/* Archived rents */}
                 <FieldArray
                   component={renderRents}
-                  name='rents.rentsArchived'
+                  name='rentsArchived'
                   rents={rentsArchived}
                   showAddButton={false}
                 />
@@ -254,6 +255,7 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
+    validate: validateRentForm,
   }),
   withRouter,
 )(RentsEdit);

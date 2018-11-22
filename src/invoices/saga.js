@@ -10,6 +10,7 @@ import {
   receiveInvoiceToCredit,
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditInvoicePanelOpen,
+  receiveIsEditClicked,
   receivePatchedInvoice,
   notFound,
 } from './actions';
@@ -125,6 +126,7 @@ function* patchInvoiceSaga({payload: invoice}): Generator<any, any, any> {
       case 200:
         yield put(fetchInvoicesByLease(bodyAsJson.lease));
         yield put(receivePatchedInvoice(bodyAsJson));
+        yield put(receiveIsEditClicked(false));
         displayUIMessage({title: '', body: 'Lasku tallennettu'});
         break;
       case 400:

@@ -1152,8 +1152,8 @@ export const getTenantContactSetForDb = (tenant: Object) => {
 };
 
 export const addTenantsFormValues = (payload: Object, values: Object) => {
-  const tenantsCurrent = get(values, 'tenants.tenants', []);
-  const tenantsArchived = get(values, 'tenants.tenantsArchived', []);
+  const tenantsCurrent = get(values, 'tenants', []);
+  const tenantsArchived = get(values, 'tenantsArchived', []);
   const tenants = [...tenantsCurrent, ...tenantsArchived];
 
   payload.tenants = tenants.map((tenant) => {
@@ -1238,8 +1238,8 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
     };
   });
 
-  const rentsCurrent = get(values, 'rents.rents', []);
-  const rentsArchived = get(values, 'rents.rentsArchived', []);
+  const rentsCurrent = get(values, 'rents', []);
+  const rentsArchived = get(values, 'rentsArchived', []);
   const rents = [...rentsCurrent, ...rentsArchived];
 
   payload.rents = rents.map((rent) => {

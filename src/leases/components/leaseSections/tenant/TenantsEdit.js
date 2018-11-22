@@ -25,6 +25,7 @@ import {
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {validateTenantForm} from '$src/leases/formValidators';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentTenantsFormData} from '$src/leases/helpers';
 import {
@@ -244,14 +245,14 @@ class TenantsEdit extends Component<Props, State> {
           <FormSection>
             <FieldArray
               component={renderTenants}
-              name="tenants.tenants"
+              name="tenants"
               showAddButton={true}
               tenants={tenants}
             />
             {/* Archived tenants */}
             <FieldArray
               component={renderTenants}
-              name="tenants.tenantsArchived"
+              name="tenantsArchived"
               showAddButton={false}
               tenants={tenantsArchived}
             />
@@ -288,5 +289,6 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
+    validate: validateTenantForm,
   }),
 )(TenantsEdit);

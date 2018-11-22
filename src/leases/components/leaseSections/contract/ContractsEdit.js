@@ -13,6 +13,7 @@ import ContractItemEdit from './ContractItemEdit';
 import FormSection from '$components/form/FormSection';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {validateContractForm} from '$src/leases/formValidators';
 import {getContentContracts} from '$src/leases/helpers';
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
@@ -174,5 +175,6 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
+    validate: validateContractForm,
   }),
 )(ContractsEdit);

@@ -1,5 +1,4 @@
 // @flow
-import type Moment from 'moment';
 import moment from 'moment';
 import isArray from 'lodash/isArray';
 
@@ -7,6 +6,8 @@ const decimalPlaces = (n) => {
   let result= /^-?[0-9]+\.([0-9]+)$/.exec(n);
   return result === null ? 0 : result[1].length;
 };
+
+const isEmptyValue = (value) => (value === null || value === undefined || value === '');
 
 export const required = (value: any, error?: string) => {
   let val = value;
@@ -19,31 +20,34 @@ export const required = (value: any, error?: string) => {
   return (!!val || val === 0) ? undefined : (error ? error : 'Pakollinen kenttä');
 };
 
-export const integer = (value: any, error?: string) => (value === null || value === undefined || (Number.isInteger(Number(value))) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
+export const integer = (value: any, error?: string) => (isEmptyValue(value) || (Number.isInteger(Number(value))) ? undefined : (error ? error : 'Arvon tulee olla kokonaisluku'));
 
-export const isDate = (value: any, error?: string) => (value === null || value === undefined || moment(value).isValid() ? undefined : (error ? error : 'Arvon tulee olla päivämäärä'));
+export const isDate = (value: any, error?: string) => (isEmptyValue(value) || moment(value).isValid() ? undefined : (error ? error : 'Arvon tulee olla päivämäärä'));
 
-export const decimalNumber = (value: any, error?: string) => (value === null || value === undefined || !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')) ? undefined : (error ? error : 'Arvon tulee olla numero'));
+export const decimalNumber = (value: any, error?: string) => (isEmptyValue(value) || !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')) ? undefined : (error ? error : 'Arvon tulee olla numero'));
 
-export const min = (value: any, min: number, error?: string) => (value === null || value === undefined || (Number(value) >= min) ? undefined : (error ? error : `Minimiarvo on ${min}`));
+export const min = (value: any, min: number, error?: string) => (isEmptyValue(value) || (Number(value) >= min) ? undefined : (error ? error : `Minimiarvo on ${min}`));
 
-export const max = (value: any, max: number, error?: string) => (value === null || value === undefined || (Number(value) <= max) ? undefined : (error ? error : `Maksimiarvo on ${max}`));
+export const max = (value: any, max: number, error?: string) => (isEmptyValue(value) || (Number(value) <= max) ? undefined : (error ? error : `Maksimiarvo on ${max}`));
 
 export const maxLength = (value: any, max: number, error?: string) => ((!value || value.length <= max) ? undefined : (error ? error : `Maksimipituus on ${max}`));
 
-export const digitsMaxLength = (value: any, max: number, error?: string) => ((value === null || value === undefined || parseInt(value).toString().length <= max) ? undefined : (error ? error : `Kokonaislukuosan maksimipituus on ${max}`));
+export const digitsMaxLength = (value: any, max: number, error?: string) => ((isEmptyValue(value) || parseInt(value).toString().length <= max) ? undefined : (error ? error : `Kokonaislukuosan maksimipituus on ${max}`));
 
-export const decimalsMaxLength = (value: any, max: number, error?: string) => ((value === null || value === undefined || decimalPlaces(value.toString().replace(',', '.')) <= max) ? undefined : (error ? error : `Desimaaliosan maksimipituus on ${max}`));
+export const decimalsMaxLength = (value: any, max: number, error?: string) => ((isEmptyValue(value) || decimalPlaces(value.toString().replace(',', '.')) <= max) ? undefined : (error ? error : `Desimaaliosan maksimipituus on ${max}`));
 
-export const dateGreaterOrEqual = (date: ?Moment, otherDate: ?Moment, error?: string) => {
-  if(!date || !otherDate) {
+export const dateGreaterOrEqual = (date: ?string, otherDate: ?string, error?: string) => {
+  if(isEmptyValue(date) || isEmptyValue(otherDate)) {
     return undefined;
   }
-  return !moment(otherDate, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']).isAfter(moment(date, ['YYYY-MM-DD', 'DD.MM.YYYY', 'DDMMYYYY']), 'day') ? undefined : (error ? error : 'Loppupäivä ei voi olla ennen alkupäivää');
+
+  return moment(date).isBefore(moment(otherDate), 'day')
+    ? error ? error : 'Loppupvm ei voi olla ennen alkupvm:ää'
+    : undefined;
 };
 
 export const referenceNumber = (value: any, error?: string) => {
-  if(!value) {
+  if(isEmptyValue(value)) {
     return undefined;
   }
   const regex = RegExp('^[Hh][Ee][Ll] [0-9]{4}-[0-9]{6}$');

@@ -18,6 +18,7 @@ import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {
@@ -420,5 +421,6 @@ export default flowRight(
   ),
   reduxForm({
     form: formName,
+    validate: validateInvoiceForm,
   }),
 )(EditInvoiceForm);

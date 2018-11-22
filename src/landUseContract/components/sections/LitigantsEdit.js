@@ -23,6 +23,7 @@ import {
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
+import {validateLitigantForm} from '$src/landUseContract/formValidators';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentLitigants} from '$src/landUseContract/helpers';
 import {
@@ -281,5 +282,6 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
+    validate: validateLitigantForm,
   }),
 )(TenantsEdit);

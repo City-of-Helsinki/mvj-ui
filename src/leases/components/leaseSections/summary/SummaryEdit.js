@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import {reduxForm} from 'redux-form';
+import {formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
@@ -21,6 +21,7 @@ import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/leases/enums';
+import {validateSummaryForm} from '$src/leases/formValidators';
 import {getContentSummary} from '$src/leases/helpers';
 import {getRouteById} from '$src/root/routes';
 import {
@@ -44,6 +45,7 @@ type Props = {
   isSaveClicked: boolean,
   receiveCollapseStates: Function,
   receiveFormValidFlags: Function,
+  startDate: ?string,
   valid: boolean,
 }
 
@@ -261,7 +263,7 @@ class SummaryEdit extends Component<Props, State> {
                     }}
                   />
                 </Column>
-                {/* TODO: Allow to edit vuokrausperuste and täydennysrakentaminen */}
+                {/* TODO: Allow to edit vuokrausperuste */}
                 <Column small={12} medium={6} large={4}>
                   <FormTitleAndText
                     title='Vuokrausperuste'
@@ -408,6 +410,7 @@ class SummaryEdit extends Component<Props, State> {
 }
 
 const formName = FormNames.SUMMARY;
+const selector = formValueSelector(formName);
 
 export default flowRight(
   connect(
@@ -419,6 +422,7 @@ export default flowRight(
         currentLease: getCurrentLease(state),
         errors: getErrorsByFormName(state, formName),
         isSaveClicked: getIsSaveClicked(state),
+        startDate: selector(state, 'start_date'),
       };
     },
     {
@@ -429,5 +433,6 @@ export default flowRight(
   reduxForm({
     form: formName,
     destroyOnUnmount: false,
+    validate: validateSummaryForm,
   }),
 )(SummaryEdit);
