@@ -83,7 +83,7 @@ class ContractRent extends PureComponent<Props> {
           />
           <Row>
             <Column small={6} medium={4} large={2}>
-              <FormTextTitle title='Sopimusvuokra' />
+              <FormTextTitle title='Perusvuosivuokra' />
               <Row>
                 <Column small={6}>
                   <FormField

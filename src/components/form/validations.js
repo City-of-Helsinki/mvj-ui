@@ -2,12 +2,12 @@
 import moment from 'moment';
 import isArray from 'lodash/isArray';
 
+import {isEmptyValue} from '$util/helpers';
+
 const decimalPlaces = (n) => {
   let result= /^-?[0-9]+\.([0-9]+)$/.exec(n);
   return result === null ? 0 : result[1].length;
 };
-
-const isEmptyValue = (value) => (value === null || value === undefined || value === '');
 
 export const required = (value: any, error?: string) => {
   let val = value;

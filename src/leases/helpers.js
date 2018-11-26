@@ -20,7 +20,7 @@ import {
   fixedLengthNumber,
   formatDecimalNumberForDb,
   getCoordinatesOfGeometry,
-  sortByStartDateDesc,
+  sortByStartAndEndDateDesc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
@@ -533,70 +533,80 @@ export const getContentTenantsFormData = (lease: Object) => {
 };
 
 export const getContentPayableRents = (rent: Object) =>
-  get(rent, 'payable_rents', []).map((item) => {
-    return {
-      id: item.id || undefined,
-      amount: item.amount,
-      start_date: item.start_date,
-      end_date: item.end_date,
-      difference_percent: item.difference_percent,
-      calendar_year_rent: item.calendar_year_rent,
-    };
-  });
+  get(rent, 'payable_rents', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        amount: item.amount,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        difference_percent: item.difference_percent,
+        calendar_year_rent: item.calendar_year_rent,
+      };
+    })
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentRentAdjustments = (rent: Object) =>
-  get(rent, 'rent_adjustments', []).map((item) => {
-    return {
-      id: item.id || undefined,
-      type: item.type,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      start_date: item.start_date,
-      end_date: item.end_date,
-      full_amount: item.full_amount,
-      amount_type: get(item, 'amount_type.id') || get(item, 'amount_type'),
-      amount_left: item.amount_left,
-      decision: get(item, 'decision.id') || get(item, 'decision'),
-      note: item.note,
-    };
-  });
+  get(rent, 'rent_adjustments', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        type: item.type,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        start_date: item.start_date,
+        end_date: item.end_date,
+        full_amount: item.full_amount,
+        amount_type: get(item, 'amount_type.id') || get(item, 'amount_type'),
+        amount_left: item.amount_left,
+        decision: get(item, 'decision.id') || get(item, 'decision'),
+        note: item.note,
+      };
+    })
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentIndexAdjustedRents = (rent: Object) =>
-  get(rent, 'index_adjusted_rents', []).map((item) => {
-    return {
-      item: item.id || undefined,
-      amount: item.amount,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      start_date: item.start_date,
-      end_date: item.end_date,
-      factor: item.factor,
-    };
-  });
+  get(rent, 'index_adjusted_rents', [])
+    .map((item) => {
+      return {
+        item: item.id || undefined,
+        amount: item.amount,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        start_date: item.start_date,
+        end_date: item.end_date,
+        factor: item.factor,
+      };
+    })
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentContractRents = (rent: Object) =>
-  get(rent, 'contract_rents', []).map((item) => {
-    return {
-      id: item.id || undefined,
-      amount: item.amount,
-      period: item.period,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      base_amount: item.base_amount,
-      base_amount_period: item.base_amount_period,
-      base_year_rent: item.base_year_rent,
-      start_date: item.start_date,
-      end_date: item.end_date,
-    };
-  });
+  get(rent, 'contract_rents', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        amount: item.amount,
+        period: item.period,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        base_amount: item.base_amount,
+        base_amount_period: item.base_amount_period,
+        base_year_rent: item.base_year_rent,
+        start_date: item.start_date,
+        end_date: item.end_date,
+      };
+    })
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentFixedInitialYearRents = (rent: Object) =>
-  get(rent, 'fixed_initial_year_rents', []).map((item) => {
-    return {
-      id: item.id || undefined,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      amount: item.amount,
-      start_date: item.start_date,
-      end_date: item.end_date,
-    };
-  });
+  get(rent, 'fixed_initial_year_rents', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        amount: item.amount,
+        start_date: item.start_date,
+        end_date: item.end_date,
+      };
+    })
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates') =>
   get(rent, path, []).map((date) => ({
@@ -637,11 +647,11 @@ export const getContentRents = (lease: Object) =>
         contract_rents: getContentContractRents(rent),
         index_adjusted_rents: getContentIndexAdjustedRents(rent),
         rent_adjustments: getContentRentAdjustments(rent),
-        payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
+        payable_rents: getContentPayableRents(rent),
         yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
       };
     })
-    .sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentRentsFormData = (lease: Object) => {
   const rents = getContentRents(lease);

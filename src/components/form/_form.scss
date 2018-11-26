@@ -451,6 +451,17 @@
     }
   }
 
+  &.with-dot {
+    position: relative;
+
+    .form-field__component::before {
+      position: absolute;
+      content: '.';
+      left: rem-calc(-9px);
+      top: rem-calc(5px);
+    }
+  }
+
   &.with-slash {
     position: relative;
 

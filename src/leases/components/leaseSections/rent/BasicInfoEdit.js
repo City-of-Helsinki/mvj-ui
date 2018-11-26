@@ -6,15 +6,14 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
-import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
-import SubTitle from '$components/content/SubTitle';
+import {dayOptions, monthOptions} from '$src/constants';
 import {rentCustomDateOptions} from '$src/leases/constants';
-import {DeleteModalLabels, DeleteModalTitles, FormNames, RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import {FormNames, RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -31,7 +30,7 @@ const SeasonalDates = ({
   return(
     <Row>
       <Column small={6} medium={4} large={2}>
-        <FormTextTitle title='Kausivuokra alkupvm' />
+        <FormTextTitle title='Kausivuokra alkupvm (pv.kk)' />
         <Row>
           <Column small={6}>
             <FormField
@@ -39,24 +38,29 @@ const SeasonalDates = ({
               fieldAttributes={get(attributes, 'rents.child.children.seasonal_start_day')}
               name='seasonal_start_day'
               overrideValues={{
+                fieldType: 'choice',
                 label: '',
+                options: dayOptions,
               }}
             />
           </Column>
           <Column small={6}>
             <FormField
+              className='with-dot'
               disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'rents.child.children.seasonal_start_month')}
               name='seasonal_start_month'
               overrideValues={{
+                fieldType: 'choice',
                 label: '',
+                options: monthOptions,
               }}
             />
           </Column>
         </Row>
       </Column>
       <Column small={6} medium={4} large={2}>
-        <FormTextTitle title='Kausivuokra loppupvm' />
+        <FormTextTitle title='Kausivuokra loppupvm (pv.kk)' />
         <Row>
           <Column small={6}>
             <FormField
@@ -64,17 +68,22 @@ const SeasonalDates = ({
               fieldAttributes={get(attributes, 'rents.child.children.seasonal_end_day')}
               name='seasonal_end_day'
               overrideValues={{
+                fieldType: 'choice',
                 label: '',
+                options: dayOptions,
               }}
             />
           </Column>
           <Column small={6}>
             <FormField
+              className='with-dot'
               disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'rents.child.children.seasonal_end_month')}
               name='seasonal_end_month'
               overrideValues={{
+                fieldType: 'choice',
                 label: '',
+                options: monthOptions,
               }}
             />
           </Column>
@@ -99,7 +108,7 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
     <div>
       <Row>
         <Column>
-          <FormTextTitle title='Eräpäivät' />
+          <FormTextTitle title='Eräpäivät (pv.kk)' />
         </Column>
       </Row>
       {fields && !!fields.length && fields.map((due_date, index) => {
@@ -117,16 +126,25 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
                     fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.day')}
                     invisibleLabel
                     name={`${due_date}.day`}
+                    overrideValues={{
+                      fieldType: 'choice',
+                      options: dayOptions,
+                    }}
                   />
                 </Column>
                 <Column small={6}>
                   <FieldAndRemoveButtonWrapper
                     field={
                       <FormField
+                        className='with-dot'
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.month')}
                         invisibleLabel
                         name={`${due_date}.month`}
+                        overrideValues={{
+                          fieldType: 'choice',
+                          options: monthOptions,
+                        }}
                       />
                     }
                     removeButton={
@@ -152,118 +170,6 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
         </Column>
       </Row>
     </div>
-  );
-};
-
-type FixedInitialYearRentsProps = {
-  attributes: Attributes,
-  fields: any,
-  isSaveClicked: boolean,
-}
-
-const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedInitialYearRentsProps): Element<*> => {
-  const handleAdd = () => {
-    fields.push({});
-  };
-
-  return (
-    <AppConsumer>
-      {({dispatch}) => {
-        return(
-          <div>
-            <Row>
-              <Column>
-                <SubTitle>Kiinteät alkuvuosivuokrat</SubTitle>
-              </Column>
-            </Row>
-            {fields && !!fields.length &&
-              <Row>
-                <Column small={3} medium={3} large={2}>
-                  <FormTextTitle title='Käyttötarkoitus' />
-                </Column>
-                <Column small={3} medium={3} large={2}>
-                  <FormTextTitle title='Kiinteä alkuvuosivuokra' />
-                </Column>
-                <Column small={2} medium={2} large={1}>
-                  <FormTextTitle title='Alkupvm' />
-                </Column>
-                <Column small={2} medium={2} large={1}>
-                  <FormTextTitle title='Loppupvm' />
-                </Column>
-              </Row>
-            }
-            {fields && !!fields.length && fields.map((rent, index) => {
-              const handleRemove = () => {
-                dispatch({
-                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                  confirmationFunction: () => {
-                    fields.remove(index);
-                  },
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.FIXED_INITIAL_YEAR_RENT,
-                  confirmationModalTitle: DeleteModalTitles.FIXED_INITIAL_YEAR_RENT,
-                });
-              };
-
-              return (
-                <div key={index}>
-                  <Row>
-                    <Column small={3} medium={3} large={2}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use')}
-                        invisibleLabel
-                        name={`${rent}.intended_use`}
-                      />
-                    </Column>
-                    <Column small={3} medium={3} large={2}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
-                        invisibleLabel
-                        name={`${rent}.amount`}
-                        unit='€'
-                      />
-                    </Column>
-                    <Column small={2} medium={2} large={1}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.start_date')}
-                        invisibleLabel
-                        name={`${rent}.start_date`}
-                      />
-                    </Column>
-                    <Column small={2} medium={2} large={1}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}
-                        invisibleLabel
-                        name={`${rent}.end_date`}
-                      />
-                    </Column>
-                    <Column>
-                      <RemoveButton
-                        className='third-level'
-                        onClick={handleRemove}
-                        title="Poista alennus/korotus"
-                      />
-                    </Column>
-                  </Row>
-                </div>
-              );
-            })}
-            <Row>
-              <Column>
-                <AddButtonThird
-                  label='Lisää kiinteä alkuvuosivuokra'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
-          </div>
-        );
-      }}
-    </AppConsumer>
   );
 };
 
@@ -476,16 +382,6 @@ const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: Basi
         </Row>
       }
 
-      <Row>
-        <Column small={12}>
-          <FieldArray
-            attributes={attributes}
-            component={renderFixedInitialYearRents}
-            isSaveClicked={isSaveClicked}
-            name="fixed_initial_year_rents"
-          />
-        </Column>
-      </Row>
       <Row>
         <Column>
           <FormField

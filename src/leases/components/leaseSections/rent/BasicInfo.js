@@ -4,11 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import FormText from '$components/form/FormText';
-import FormTextTitle from '$components/form/FormTextTitle';
 import FormTitleAndText from '$components/form/FormTitleAndText';
-import ListItem from '$components/content/ListItem';
-import ListItems from '$components/content/ListItems';
-import SubTitle from '$components/content/SubTitle';
 import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {
   formatDate,
@@ -56,13 +52,13 @@ const SeasonalDates = ({
     <Row>
       <Column small={6} medium={4} large={2}>
         <FormTitleAndText
-          title='Kausivuokra alkupvm'
+          title='Kausivuokra alkupvm (pv.kk)'
           text={startText || '-'}
         />
       </Column>
       <Column small={6} medium={4} large={2}>
         <FormTitleAndText
-          title='Kausivuokra loppupvm'
+          title='Kausivuokra loppupvm (pv.kk)'
           text={endText || '-'}
         />
       </Column>
@@ -81,7 +77,6 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
   const cycleOptions = getAttributeFieldOptions(attributes, 'rents.child.children.cycle');
   const indexTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.index_type');
   const dueDatesTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.due_dates_type');
-  const intendedUseOptions = getAttributeFieldOptions(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use');
 
   return (
     <div>
@@ -203,46 +198,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
           </Column>
         }
       </Row>
-      <SubTitle>Kiinteät alkuvuosivuokrat</SubTitle>
-      {!rent.fixed_initial_year_rents || !rent.fixed_initial_year_rents.length &&
-        <FormText>Ei kiinteitä alkuvuosivuokria</FormText>
-      }
-      {!!rent.fixed_initial_year_rents && !!rent.fixed_initial_year_rents.length &&
-        <ListItems>
-          <Row>
-            <Column small={3} medium={3} large={2}>
-              <FormTextTitle title='Käyttötarkoitus' />
-            </Column>
-            <Column small={3} medium={3} large={2}>
-              <FormTextTitle title='Kiinteä alkuvuosivuokra' />
-            </Column>
-            <Column small={3} medium={3} large={1}>
-              <FormTextTitle title='Alkupvm' />
-            </Column>
-            <Column small={3} medium={3} large={1}>
-              <FormTextTitle title='Loppupvm' />
-            </Column>
-          </Row>
-          {rent.fixed_initial_year_rents.map((item, index) => {
-            return (
-              <Row key={index}>
-                <Column small={3} medium={3} large={2}>
-                  <ListItem>{getLabelOfOption(intendedUseOptions, item.intended_use) || '-'}</ListItem>
-                </Column>
-                <Column small={3} medium={3} large={2}>
-                  <ListItem>{item.amount ? `${formatNumber(item.amount)} €` : '-'}</ListItem>
-                </Column>
-                <Column small={3} medium={3} large={1}>
-                  <ListItem>{formatDate(item.start_date) || '-'}</ListItem>
-                </Column>
-                <Column small={3} medium={3} large={1}>
-                  <ListItem>{formatDate(item.end_date) || '-'}</ListItem>
-                </Column>
-              </Row>
-            );
-          })}
-        </ListItems>
-      }
+
       <Row>
         <Column>
           <FormTitleAndText

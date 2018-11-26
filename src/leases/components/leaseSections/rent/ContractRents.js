@@ -51,7 +51,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
   const getColumns = () => {
     if(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) {
       return [
-        {key: 'amount', text: 'Sopimusvuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'amount', text: 'Perusvuosivuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'intended_use', text: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
         {key: 'base_amount', text: 'Vuokranlaskennan perusteena oleva vuokra', renderer: (val, item) => getBaseAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'base_year_rent ', text: 'Uusi perusvuosivuokra', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
@@ -60,7 +60,7 @@ const ContractRents = ({attributes, contractRents, rentType}: Props) => {
       ];
     } else {
       return [
-        {key: 'amount', text: 'Sopimusvuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
+        {key: 'amount', text: 'Perusvuosivuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
         {key: 'intended_use', text: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
         {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
         {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},

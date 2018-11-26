@@ -8,13 +8,14 @@ import classNames from 'classnames';
 import BasicInfo from './BasicInfo';
 import Collapse from '$components/collapse/Collapse';
 import ContractRents from './ContractRents';
+import FixedInitialYearRents from './FixedInitialYearRents';
 import IndexAdjustedRents from './IndexAdjustedRents';
 import PayableRents from './PayableRents';
 import RentAdjustments from './RentAdjustments';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
 import {FormNames, RentTypes} from '$src/leases/enums';
-import {isRentActive} from '$src/leases/helpers';
+import {isRentActive, isRentArchived} from '$src/leases/helpers';
 import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
@@ -23,6 +24,7 @@ import type {Attributes} from '$src/leases/types';
 type Props = {
   attributes: Attributes,
   contractRentsCollapseState: boolean,
+  fixedInitialYearRentsCollapseState: boolean,
   indexAdjustedRentsCollapseState: boolean,
   payableRentsCollapseState: boolean,
   receiveCollapseStates: Function,
@@ -34,6 +36,7 @@ type Props = {
 const RentItem = ({
   attributes,
   contractRentsCollapseState,
+  fixedInitialYearRentsCollapseState,
   indexAdjustedRentsCollapseState,
   payableRentsCollapseState,
   receiveCollapseStates,
@@ -52,6 +55,19 @@ const RentItem = ({
       },
     });
   };
+
+  const handleFixedInitialYearRentsCollapseToggle = (val: boolean) => {
+    receiveCollapseStates({
+      [ViewModes.READONLY]: {
+        [FormNames.RENTS]: {
+          [rent.id]: {
+            fixed_initial_year_rents: val,
+          },
+        },
+      },
+    });
+  };
+
 
   const handleContractRentsCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
@@ -101,17 +117,18 @@ const RentItem = ({
     });
   };
 
-  const isActive = isRentActive(rent),
+  const active = isRentActive(rent),
+    archived = isRentArchived(rent),
     typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type'),
     rentType = get(rent, 'type');
 
   return (
     <Collapse
-      className={classNames({'not-active': !isActive})}
-      defaultOpen={rentCollapseState !== undefined ? rentCollapseState : isActive}
+      className={classNames({'archived': archived})}
+      defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active}
       header={
         <div>
-          <Column>
+          <Column small={10}>
             <span className='collapse__header-subtitle'>
               {formatDateRange(rent.start_date, rent.end_date) || '-'}
             </span>
@@ -125,6 +142,18 @@ const RentItem = ({
         rent={rent}
         rentType={rentType}
       />
+
+      {(rentType === RentTypes.INDEX ||
+        rentType === RentTypes.MANUAL) &&
+        <Collapse
+          className='collapse__secondary'
+          defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true}
+          headerTitle={<h4 className='collapse__header-title'>Kiinteä alkuvuosivuokra</h4>}
+          onToggle={handleFixedInitialYearRentsCollapseToggle}
+        >
+          <FixedInitialYearRents fixedInitialYearRents={get(rent, 'fixed_initial_year_rents', [])} />
+        </Collapse>
+      }
 
       {(rentType === RentTypes.INDEX ||
         rentType === RentTypes.FIXED ||
@@ -146,7 +175,7 @@ const RentItem = ({
         rentType === RentTypes.MANUAL) &&
         <Collapse
           className='collapse__secondary'
-          defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : true}
+          defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
           headerTitle={<h4 className='collapse__header-title'>Indeksitarkistettu vuokra</h4>}
           onToggle={handleIndexAdjustedRentsCollapseToggle}
         >
@@ -161,13 +190,11 @@ const RentItem = ({
         rentType === RentTypes.MANUAL) &&
         <Collapse
           className='collapse__secondary'
-          defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : true}
+          defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : false}
           headerTitle={<h4 className='collapse__header-title'>Alennukset ja korotukset</h4>}
           onToggle={handleRentAdjustmentsCollapseToggle}
         >
-          <RentAdjustments
-            rentAdjustments={get(rent, 'rent_adjustments', [])}
-          />
+          <RentAdjustments rentAdjustments={get(rent, 'rent_adjustments', [])} />
         </Collapse>
       }
 
@@ -176,7 +203,7 @@ const RentItem = ({
         rentType === RentTypes.MANUAL) &&
         <Collapse
           className='collapse__secondary'
-          defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : true}
+          defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}
           headerTitle={<h4 className='collapse__header-title'>Perittävä vuokra</h4>}
           onToggle={handlePayableRentsCollapseToggle}
         >
@@ -197,6 +224,7 @@ export default connect(
     return {
       attributes: getAttributes(state),
       contractRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.contract_rents`),
+      fixedInitialYearRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.fixed_initial_year_rents`),
       indexAdjustedRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.index_adjusted_rents`),
       payableRentsCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.payable_rents`),
       rentCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.${FormNames.RENTS}.${id}.rent`),
