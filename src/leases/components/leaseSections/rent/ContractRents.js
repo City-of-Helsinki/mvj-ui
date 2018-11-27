@@ -1,19 +1,15 @@
 // @flow
-import React from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
+import {Row, Column} from 'react-foundation';
 
-import SortableTable from '$components/table/SortableTable';
+import BoxItemContainer from '$components/content/BoxItemContainer';
+import ContractRent from './ContractRent';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
+import {Breakpoints} from '$src/foundation/enums';
 import {RentTypes} from '$src/leases/enums';
-import {
-  formatDate,
-  formatNumber,
-  getAttributeFieldOptions,
-  getLabelOfOption,
-  sortByOptionsAsc,
-  sortByOptionsDesc,
-  sortNumberByKeyAsc,
-  sortNumberByKeyDesc,
-} from '$util/helpers';
+import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
@@ -24,62 +20,92 @@ type Props = {
   rentType: string
 }
 
-const ContractRents = ({attributes, contractRents, rentType}: Props) => {
-  const amountPeriodOptions = getAttributeFieldOptions(attributes,
-    'rents.child.children.contract_rents.child.children.period');
-  const baseAmountPeriodOptions = getAttributeFieldOptions(attributes,
-    'rents.child.children.contract_rents.child.children.base_amount_period');
-  const intendedUseOptions = getAttributeFieldOptions(attributes,
-    'rents.child.children.contract_rents.child.children.intended_use');
+type State = {
+  amountPeriodOptions: Array<Object>,
+  attributes: Attributes,
+  baseAmountPeriodOptions: Array<Object>,
+  intendedUseOptions: Array<Object>,
+}
 
-  const getAmount = (rent: Object) => {
-    if(!rent.amount) {
-      return null;
+class ContractRents extends PureComponent<Props, State> {
+  state = {
+    amountPeriodOptions: [],
+    attributes: {},
+    baseAmountPeriodOptions: [],
+    intendedUseOptions: [],
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.attributes !== state.attributes) {
+      newState.attributes = props.attributes;
+      newState.amountPeriodOptions = getAttributeFieldOptions(props.attributes,
+        'rents.child.children.contract_rents.child.children.period');
+      newState.baseAmountPeriodOptions = getAttributeFieldOptions(props.attributes,
+        'rents.child.children.contract_rents.child.children.base_amount_period');
+      newState.intendedUseOptions = getAttributeFieldOptions(props.attributes,
+        'rents.child.children.contract_rents.child.children.intended_use');
     }
+    return newState;
+  }
 
-    return `${formatNumber(rent.amount)} € ${getLabelOfOption(amountPeriodOptions, rent.period)}`;
-  };
+  render() {
+    const {contractRents, rentType} = this.props;
+    const {
+      amountPeriodOptions,
+      baseAmountPeriodOptions,
+      intendedUseOptions,
+    } = this.state;
 
-  const getBaseAmount = (rent: Object) => {
-    if(!rent.base_amount) {
-      return null;
-    }
+    return (
+      <div>
+        <BoxItemContainer>
+          {(!contractRents || !contractRents.length) && <FormText>Ei sopimusvuokria</FormText>}
+          {contractRents && !!contractRents.length &&
+            <Row showFor={Breakpoints.LARGE}>
+              <Column large={2}>
+                <FormTextTitle title='Perusvuosivuokra' />
+              </Column>
+              <Column large={2}>
+                <FormTextTitle title='Käyttötarkoitus' />
+              </Column>
+              {(rentType === RentTypes.INDEX ||
+                rentType === RentTypes.MANUAL) &&
+                <Column large={3}>
+                  <FormTextTitle title='Vuokranlaskennan perusteena oleva vuokra' />
+                </Column>
+              }
+              {(rentType === RentTypes.INDEX ||
+                rentType === RentTypes.MANUAL) &&
+                <Column large={2}>
+                  <FormTextTitle title='Uusi perusvuosivuokra' />
+                </Column>
+              }
+              <Column large={1}>
+                <FormTextTitle title='Alkupvm' />
+              </Column>
+              <Column large={1}>
+                <FormTextTitle title='Loppupvm' />
+              </Column>
+            </Row>
+          }
 
-    return `${formatNumber(rent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, rent.base_amount_period)}`;
-  };
-
-  const getColumns = () => {
-    if(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) {
-      return [
-        {key: 'amount', text: 'Perusvuosivuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'intended_use', text: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
-        {key: 'base_amount', text: 'Vuokranlaskennan perusteena oleva vuokra', renderer: (val, item) => getBaseAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'base_year_rent ', text: 'Uusi perusvuosivuokra', renderer: (val) => val ? `${formatNumber(val)} €` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
-        {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
-      ];
-    } else {
-      return [
-        {key: 'amount', text: 'Perusvuosivuokra', renderer: (val, item) => getAmount(item), ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        {key: 'intended_use', text: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val), ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
-        {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val), defaultSorting: 'desc'},
-        {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
-      ];
-    }
-  };
-
-  const columns = getColumns();
-
-  return (
-    <SortableTable
-      columns={columns}
-      data={contractRents}
-      fixedHeader={true}
-      noDataText='Ei sopimusvuokria'
-      sortable={true}
-    />
-  );
-};
+          {contractRents && !!contractRents.length && contractRents.map((contractRent, index) => {
+            return <ContractRent
+              key={index}
+              amountPeriodOptions={amountPeriodOptions}
+              baseAmountPeriodOptions={baseAmountPeriodOptions}
+              contractRent={contractRent}
+              intendedUseOptions={intendedUseOptions}
+              rentType={rentType}
+            />;
+          })}
+        </BoxItemContainer>
+      </div>
+    );
+  }
+}
 
 export default connect(
   (state) => {

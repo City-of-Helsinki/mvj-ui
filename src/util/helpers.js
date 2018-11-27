@@ -611,8 +611,8 @@ export const sortByStartAndEndDateDesc = (a, b) => {
   const startA = get(a, 'start_date', ''),
     endA = get(a, 'end_date', ''),
     startB = get(b, 'start_date', ''),
-    endB = get(b, 'end_date', '')
-  ;
+    endB = get(b, 'end_date', '');
+
   if(startA > startB) return -1;
   if(startA < startB) return 1;
   if(endA > endB) return -1;

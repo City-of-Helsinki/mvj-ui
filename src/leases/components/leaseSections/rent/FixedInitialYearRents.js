@@ -67,11 +67,11 @@ class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
   render() {
     const {fixedInitialYearRents} = this.props;
     const {intendedUseOptions, largeScreen} = this.state;
-    console.log(fixedInitialYearRents, intendedUseOptions);
+
     return(
       <div>
         <BoxItemContainer>
-          {(!fixedInitialYearRents || !fixedInitialYearRents.length) && <p>Ei kiinteitä alkuvuosivuokria</p>}
+          {(!fixedInitialYearRents || !fixedInitialYearRents.length) && <FormText>Ei kiinteitä alkuvuosivuokria</FormText>}
 
           {fixedInitialYearRents && !!fixedInitialYearRents.length &&
             <Row showFor={Breakpoints.LARGE}>
