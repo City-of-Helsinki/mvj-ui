@@ -1274,7 +1274,7 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       rentData.amount = formatDecimalNumberForDb(rent.amount);
     }
 
-    // Patch due dates seasonal dates  data only if rent type is not free
+    // Patch due dates data only if rent type is not free
     if(rent.type !== RentTypes.FREE) {
       rentData.due_dates_type = rent.due_dates_type;
 
@@ -1283,11 +1283,6 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       } else if (rent.due_dates_type === RentDueDateTypes.FIXED) {
         rentData.due_dates_per_year = rent.due_dates_per_year;
       }
-
-      rentData.seasonal_start_day = rent.seasonal_start_day || null;
-      rentData.seasonal_start_month = rent.seasonal_start_month || null;
-      rentData.seasonal_end_day = rent.seasonal_end_day || null;
-      rentData.seasonal_end_month = rent.seasonal_end_month || null;
     }
 
     // Patch cycle, index type, fixed initial year rents and contract rents data only if rent type is index or manual
@@ -1298,17 +1293,22 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       rentData.contract_rents = getContentContractRentsForDb(rent, rent.type);
 
       // Patch values used for old rents only if rent type is index or manual
-      rentData.elementary_index = rent.elementary_index;
-      rentData.index_rounding = rent.index_rounding;
-      rentData.x_value = rent.x_value;
-      rentData.y_value = rent.y_value;
-      rentData.y_value_start = rent.y_value_start;
-      rentData.equalization_start_date = rent.equalization_start_date;
-      rentData.equalization_end_date = rent.equalization_end_date;
+      // rentData.elementary_index = rent.elementary_index;
+      // rentData.index_rounding = rent.index_rounding;
+      // rentData.x_value = rent.x_value;
+      // rentData.y_value = rent.y_value;
+      // rentData.y_value_start = rent.y_value_start;
+      // rentData.equalization_start_date = rent.equalization_start_date;
+      // rentData.equalization_end_date = rent.equalization_end_date;
     }
 
-    // Patch rent adjustments data only if rent type is index, fixed or manual
+    // Patch seosonal dates and rent adjustments data only if rent type is index, fixed or manual
     if(rent.type === RentTypes.INDEX || rent.type === RentTypes.FIXED || rent.type === RentTypes.MANUAL) {
+      rentData.seasonal_start_day = rent.seasonal_start_day || null;
+      rentData.seasonal_start_month = rent.seasonal_start_month || null;
+      rentData.seasonal_end_day = rent.seasonal_end_day || null;
+      rentData.seasonal_end_month = rent.seasonal_end_month || null;
+
       rentData.rent_adjustments = getContentRentAdjustmentsForDb(rent);
     }
 

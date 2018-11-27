@@ -246,16 +246,20 @@ const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: Basi
             }}
           />
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.index_type')}
-            name='index_type'
-            overrideValues={{
-              label: 'Indeksin tunnusnumero',
-            }}
-          />
-        </Column>
+
+        {isIndex &&
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'rents.child.children.index_type')}
+              name='index_type'
+              overrideValues={{
+                label: 'Indeksin tunnusnumero',
+              }}
+            />
+          </Column>
+        }
+
         <Column small={6} medium={4} large={2}>
           <FormField
             disableTouched={isSaveClicked}
@@ -309,89 +313,6 @@ const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: Basi
           />
         </Column>
       </Row>
-
-      {!isIndex &&
-        <Row>
-          <Column small={12} medium={4} large={2}>
-            <Row>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.elementary_index')}
-                  name='elementary_index'
-                  overrideValues={{
-                    label: 'Perusindeksi',
-                  }}
-                />
-              </Column>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.index_rounding')}
-                  name='index_rounding'
-                  overrideValues={{
-                    label: 'Pyöristys',
-                  }}
-                />
-              </Column>
-            </Row>
-          </Column>
-          <Column small={4} medium={2} large={1}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.x_value')}
-              name='x_value'
-              overrideValues={{
-                label: 'X-luku',
-              }}
-            />
-          </Column>
-          <Column small={4} medium={2} large={1}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.y_value')}
-              name='y_value'
-              overrideValues={{
-                label: 'Y-luku',
-              }}
-            />
-          </Column>
-          <Column small={4} medium={2} large={1}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.y_value_start')}
-              name='y_value_start'
-              overrideValues={{
-                label: 'Y-alkaen',
-              }}
-            />
-          </Column>
-          <Column small={12} medium={4} large={2}>
-            <Row>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.equalization_start_date')}
-                  name='equalization_start_date'
-                  overrideValues={{
-                    label: 'Tasaus alkupvm',
-                  }}
-                />
-              </Column>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.equalization_end_date')}
-                  name='equalization_end_date'
-                  overrideValues={{
-                    label: 'Tasaus loppupvm',
-                  }}
-                />
-              </Column>
-            </Row>
-          </Column>
-        </Row>
-      }
     </div>
   );
 };
@@ -484,13 +405,7 @@ const BasicInfoOneTime = ({attributes, dueDatesType, isSaveClicked}: BasicInfoOn
       </Row>
 
       <Row>
-        <Column small={12} medium={4} large={2}>
-          <SeasonalDates
-            attributes={attributes}
-            isSaveClicked={isSaveClicked}
-          />
-        </Column>
-        <Column small={12} medium={8} large={10}>
+        <Column>
           <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.note')}
