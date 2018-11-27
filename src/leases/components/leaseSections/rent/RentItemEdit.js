@@ -1,7 +1,7 @@
 // @flow
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
-import {FieldArray, formValueSelector, FormSection} from 'redux-form';
+import {change, FieldArray, formValueSelector, FormSection} from 'redux-form';
 import {Column} from 'react-foundation';
 import classNames from 'classnames';
 import get from 'lodash/get';
@@ -26,7 +26,9 @@ import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
+  change: Function,
   contractRentsCollapseState: boolean,
+  contractRents: Array<Object>,
   errors: ?Object,
   field: string,
   fixedInitialYearRentsCollapseState: boolean,
@@ -104,6 +106,20 @@ class RentItemEdit extends PureComponent<Props, State> {
     }
 
     return newState;
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if(prevProps.rentType !== this.props.rentType) {
+      this.addEmptyContractRentIfNeeded();
+    }
+  }
+
+  addEmptyContractRentIfNeeded = () => {
+    const {change, contractRents, field} = this.props;
+
+    if(!contractRents.length) {
+      change(formName, `${field}.contract_rents`, [{}]);
+    }
   }
 
   handleRentCollapseToggle = (val: boolean) => {
@@ -352,6 +368,7 @@ export default connect(
 
     const newProps: any = {
       attributes: getAttributes(state),
+      contractRents: selector(state, `${props.field}.contract_rents`),
       dueDatesType: selector(state, `${props.field}.due_dates_type`),
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),
@@ -368,6 +385,7 @@ export default connect(
     return newProps;
   },
   {
+    change,
     receiveCollapseStates,
   }
 )(RentItemEdit);

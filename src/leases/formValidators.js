@@ -1,6 +1,7 @@
 // @flow
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
+import {RentDueDateTypes, RentTypes} from './enums';
 import {dateGreaterOrEqual} from '$components/form/validations';
 
 export const validateSummaryForm = (values: Object) => {
@@ -150,6 +151,19 @@ const getRentErrors = (rent: Object) => {
   const rentAdjustmentErrors = getRentAdjustmentArrayErrors(get(rent, 'rent_adjustments', []));
   if(rentAdjustmentErrors.length) {
     errors.rent_adjustments = rentAdjustmentErrors;
+  }
+
+  if(rent.type && rent.type !== RentTypes.FREE) {
+    if(rent.due_dates_type !== RentDueDateTypes.CUSTOM &&
+      (rent.seasonal_start_day || rent.seasonal_start_month || rent.seasonal_end_day || rent.seasonal_end_month)) {
+      errors.seasonalDates = 'Kausivuokran voi määrittää vain jos laskutusjako on erikseen määritelty';
+    }else if((rent.seasonal_start_day || rent.seasonal_start_month || rent.seasonal_end_day || rent.seasonal_end_month) &&
+      (!rent.seasonal_start_day || !rent.seasonal_start_month || !rent.seasonal_end_day || !rent.seasonal_end_month)) {
+      errors.seasonalDates = 'Kaikki kausivuokran kentät tulee olla valittuina';
+    } else if((Number(rent.seasonal_end_month) < Number(rent.seasonal_start_month)) ||
+      (Number(rent.seasonal_end_month) === Number(rent.seasonal_start_month) && Number(rent.seasonal_end_day) < Number(rent.seasonal_start_day))) {
+      errors.seasonalDates = 'Kausivuokran alkupvm ei voi olla ennen loppupvm:ää';
+    }
   }
 
   return errors;

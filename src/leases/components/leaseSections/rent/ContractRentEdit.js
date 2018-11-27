@@ -27,6 +27,7 @@ type Props = {
   onRemove: Function,
   rentField: string,
   rentType: string,
+  showRemove: boolean,
 }
 type State = {
   largeScreen: boolean,
@@ -90,7 +91,7 @@ class ContractRent extends PureComponent<Props, State> {
   }
 
   render() {
-    const {attributes, field, isSaveClicked, onRemove, rentType} = this.props;
+    const {attributes, field, isSaveClicked, onRemove, rentType, showRemove} = this.props;
     const {largeScreen} = this.state;
 
     if(largeScreen) {
@@ -194,11 +195,13 @@ class ContractRent extends PureComponent<Props, State> {
             </Row>
           </Column>
           <Column>
-            <RemoveButton
-              className='third-level'
-              onClick={onRemove}
-              title="Poista sopimusvuokra"
-            />
+            {showRemove &&
+              <RemoveButton
+                className='third-level'
+                onClick={onRemove}
+                title="Poista sopimusvuokra"
+              />
+            }
           </Column>
         </Row>
       );
@@ -208,11 +211,13 @@ class ContractRent extends PureComponent<Props, State> {
         <BoxItem
           className='no-border-on-first-child'>
           <BoxContentWrapper>
-            <RemoveButton
-              className='position-topright'
-              onClick={onRemove}
-              title="Poista sopimusvuokra"
-            />
+            {showRemove &&
+              <RemoveButton
+                className='position-topright'
+                onClick={onRemove}
+                title="Poista sopimusvuokra"
+              />
+            }
             <Row>
               <Column small={6} medium={4} large={2}>
                 <FormTextTitle

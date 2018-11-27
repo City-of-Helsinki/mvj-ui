@@ -23,57 +23,63 @@ type Props = {
 }
 
 const ContractRentsEdit = ({attributes, fields, rentField, rentType}: Props) => {
-  const handleAdd = () => fields.push({});
+  const handleAdd = () => {
+    fields.push({});
+  };
+
 
   return (
     <AppConsumer>
       {({dispatch}) => {
         return(
           <div>
-            <Row showFor={Breakpoints.LARGE}>
-              <Column large={2}>
-                <FormTextTitle
-                  title='Perusvuosivuokra'
-                  required={get(attributes, 'rents.child.children.contract_rents.child.children.amount.required')}
-                />
-              </Column>
-              <Column large={2}>
-                <FormTextTitle
-                  title='Käyttötarkoitus'
-                  required={get(attributes, 'rents.child.children.contract_rents.child.children.intended_use.required')}
-                />
-              </Column>
-              {(rentType === RentTypes.INDEX ||
-                rentType === RentTypes.MANUAL) &&
-                <Column large={3}>
-                  <FormTextTitle
-                    title='Vuokranlaskennan perusteena oleva vuokra'
-                    required={get(attributes, 'rents.child.children.contract_rents.child.children.base_amount.required')}
-                  />
-                </Column>
-              }
-              {(rentType === RentTypes.INDEX ||
-                rentType === RentTypes.MANUAL) &&
+            {(fields && !!fields.length) &&
+
+              <Row showFor={Breakpoints.LARGE}>
                 <Column large={2}>
                   <FormTextTitle
-                    title='Uusi perusvuosivuokra'
-                    required={get(attributes, 'rents.child.children.contract_rents.child.children.base_year_rent.required')}
+                    title='Perusvuosivuokra'
+                    required={get(attributes, 'rents.child.children.contract_rents.child.children.amount.required')}
                   />
                 </Column>
-              }
-              <Column large={1}>
-                <FormTextTitle
-                  title='Alkupvm'
-                  required={get(attributes, 'rents.child.children.contract_rents.child.children.start_date.required')}
-                />
-              </Column>
-              <Column large={1}>
-                <FormTextTitle
-                  title='Loppupvm'
-                  required={get(attributes, 'rents.child.children.contract_rents.child.children.end_date.required')}
-                />
-              </Column>
-            </Row>
+                <Column large={2}>
+                  <FormTextTitle
+                    title='Käyttötarkoitus'
+                    required={get(attributes, 'rents.child.children.contract_rents.child.children.intended_use.required')}
+                  />
+                </Column>
+                {(rentType === RentTypes.INDEX ||
+                  rentType === RentTypes.MANUAL) &&
+                  <Column large={3}>
+                    <FormTextTitle
+                      title='Vuokranlaskennan perusteena oleva vuokra'
+                      required={get(attributes, 'rents.child.children.contract_rents.child.children.base_amount.required')}
+                    />
+                  </Column>
+                }
+                {(rentType === RentTypes.INDEX ||
+                  rentType === RentTypes.MANUAL) &&
+                  <Column large={2}>
+                    <FormTextTitle
+                      title='Uusi perusvuosivuokra'
+                      required={get(attributes, 'rents.child.children.contract_rents.child.children.base_year_rent.required')}
+                    />
+                  </Column>
+                }
+                <Column large={1}>
+                  <FormTextTitle
+                    title='Alkupvm'
+                    required={get(attributes, 'rents.child.children.contract_rents.child.children.start_date.required')}
+                  />
+                </Column>
+                <Column large={1}>
+                  <FormTextTitle
+                    title='Loppupvm'
+                    required={get(attributes, 'rents.child.children.contract_rents.child.children.end_date.required')}
+                  />
+                </Column>
+              </Row>
+            }
             <BoxItemContainer>
               {fields && !!fields.length && fields.map((rent, index) => {
                 const handleRemove = () => {
@@ -95,6 +101,7 @@ const ContractRentsEdit = ({attributes, fields, rentField, rentType}: Props) => 
                     onRemove={handleRemove}
                     rentField={rentField}
                     rentType={rentType}
+                    showRemove={!!fields && fields.length > 1}
                   />
                 );
               })}

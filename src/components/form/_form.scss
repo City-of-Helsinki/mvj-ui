@@ -68,6 +68,14 @@
     margin-bottom: 0;
   }
 
+  &__error-field {
+    color: $brick;
+    display: block;
+    font-size: rem-calc(13px);
+    line-height: rem-calc(15px);
+    margin-bottom: rem-calc(10px);
+  }
+
   &__boolean, &__checkbox {
     legend {
       visibility: hidden;

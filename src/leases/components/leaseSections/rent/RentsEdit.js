@@ -37,7 +37,9 @@ const renderRents = ({
   showAddButton,
 }:RentsProps): Element<*> => {
   const handleAdd = () => {
-    fields.push({});
+    fields.push({
+      contract_rents: [{}],
+    });
   };
 
   return (
@@ -236,9 +238,11 @@ class RentsEdit extends Component<Props, State> {
 const formName = FormNames.RENTS;
 
 export default flowRight(
+  withRouter,
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
+
       return {
         currentLease: currentLease,
         errors: getErrorsByFormName(state, formName),
@@ -257,5 +261,4 @@ export default flowRight(
     destroyOnUnmount: false,
     validate: validateRentForm,
   }),
-  withRouter,
 )(RentsEdit);

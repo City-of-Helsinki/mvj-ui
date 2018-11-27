@@ -12,6 +12,8 @@ import {
   LeaseState,
   LeaseStatus,
   RecipientOptions,
+  RentDueDateTypes,
+  RentTypes,
   TenantContactType,
 } from './enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
@@ -1195,19 +1197,25 @@ export const getContentRentAdjustmentsForDb = (rent: Object) =>
     };
   });
 
-export const getContentContractRentsForDb = (rent: Object) =>
+export const getContentContractRentsForDb = (rent: Object, rentType: string) =>
   get(rent, 'contract_rents', []).map((item) => {
-    return {
+    const contractRentData: any = {
       id: item.id || undefined,
       amount: formatDecimalNumberForDb(item.amount),
       period: item.period,
       intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      base_amount: formatDecimalNumberForDb(item.base_amount),
-      base_amount_period: item.base_amount_period,
-      base_year_rent: formatDecimalNumberForDb(item.base_year_rent),
       start_date: item.start_date,
       end_date: item.end_date,
     };
+
+    // Patch these fields only if rent type is index or manual
+    if(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) {
+      contractRentData.base_amount = formatDecimalNumberForDb(item.base_amount);
+      contractRentData.base_amount_period = item.base_amount_period;
+      contractRentData.base_year_rent = formatDecimalNumberForDb(item.base_year_rent);
+    }
+
+    return contractRentData;
   });
 
 export const getContentFixedInitialYearRentsForDb = (rent: Object) =>
@@ -1253,34 +1261,58 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
   const rents = [...rentsCurrent, ...rentsArchived];
 
   payload.rents = rents.map((rent) => {
-    return {
+    const rentData: any = {
       id: rent.id || undefined,
       type: rent.type,
       start_date: rent.start_date,
       end_date: rent.end_date,
-      cycle: rent.cycle,
-      index_type: rent.index_type,
-      due_dates_type: rent.due_dates_type,
-      due_dates_per_year: rent.due_dates_per_year,
-      elementary_index: rent.elementary_index,
-      index_rounding: rent.index_rounding,
-      x_value: rent.x_value,
-      y_value: rent.y_value,
-      y_value_start: rent.y_value_start,
-      equalization_start_date: rent.equalization_start_date,
-      equalization_end_date: rent.equalization_end_date,
-      seasonal_start_day: rent.seasonal_start_day,
-      seasonal_start_month: rent.seasonal_start_month,
-      seasonal_end_day: rent.seasonal_end_day,
-      seasonal_end_month: rent.seasonal_end_month,
-      amount: formatDecimalNumberForDb(rent.amount),
       note: rent.note,
-      is_active: rent.is_active,
-      due_dates: getContentRentDueDatesForDb(rent),
-      fixed_initial_year_rents: getContentFixedInitialYearRentsForDb(rent),
-      contract_rents: getContentContractRentsForDb(rent),
-      rent_adjustments: getContentRentAdjustmentsForDb(rent),
     };
+
+    // Patch amount only if rent type is one time
+    if(rent.type === RentTypes.ONE_TIME) {
+      rentData.amount = formatDecimalNumberForDb(rent.amount);
+    }
+
+    // Patch due dates seasonal dates  data only if rent type is not free
+    if(rent.type !== RentTypes.FREE) {
+      rentData.due_dates_type = rent.due_dates_type;
+
+      if(rent.due_dates_type === RentDueDateTypes.CUSTOM) {
+        rentData.due_dates = getContentRentDueDatesForDb(rent);
+      } else if (rent.due_dates_type === RentDueDateTypes.FIXED) {
+        rentData.due_dates_per_year = rent.due_dates_per_year;
+      }
+
+      rentData.seasonal_start_day = rent.seasonal_start_day || null;
+      rentData.seasonal_start_month = rent.seasonal_start_month || null;
+      rentData.seasonal_end_day = rent.seasonal_end_day || null;
+      rentData.seasonal_end_month = rent.seasonal_end_month || null;
+    }
+
+    // Patch cycle, index type, fixed initial year rents and contract rents data only if rent type is index or manual
+    if(rent.type === RentTypes.INDEX || rent.type === RentTypes.MANUAL) {
+      rentData.cycle = rent.cycle;
+      rentData.index_type = rent.index_type;
+      rentData.fixed_initial_year_rents = getContentFixedInitialYearRentsForDb(rent);
+      rentData.contract_rents = getContentContractRentsForDb(rent, rent.type);
+
+      // Patch values used for old rents only if rent type is index or manual
+      rentData.elementary_index = rent.elementary_index;
+      rentData.index_rounding = rent.index_rounding;
+      rentData.x_value = rent.x_value;
+      rentData.y_value = rent.y_value;
+      rentData.y_value_start = rent.y_value_start;
+      rentData.equalization_start_date = rent.equalization_start_date;
+      rentData.equalization_end_date = rent.equalization_end_date;
+    }
+
+    // Patch rent adjustments data only if rent type is index, fixed or manual
+    if(rent.type === RentTypes.INDEX || rent.type === RentTypes.FIXED || rent.type === RentTypes.MANUAL) {
+      rentData.rent_adjustments = getContentRentAdjustmentsForDb(rent);
+    }
+
+    return rentData;
   });
 
   return payload;
