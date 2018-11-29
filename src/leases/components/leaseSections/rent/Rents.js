@@ -9,6 +9,7 @@ import BasisOfRents from './BasisOfRents';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import GreenBox from '$components/content/GreenBox';
+import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RentItem from './RentItem';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {getContentRentsFormData} from '$src/leases/helpers';
@@ -56,6 +57,12 @@ const Rents = ({currentLease}: Props) => {
           rents={rentsArchived}
         />
       )}
+
+      <h2>Vuokralaskelma</h2>
+      <Divider />
+      <GreenBox>
+        <RentCalculator />
+      </GreenBox>
 
       <h2>Vuokranperusteet</h2>
       <Divider />

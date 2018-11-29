@@ -186,8 +186,8 @@ class Invoices extends Component<Props> {
                 />
               </Collapse>
               <Collapse
-                defaultOpen={rentCalculatorCollapseState !== undefined ? rentCalculatorCollapseState : true}
-                headerTitle={<h3 className='collapse__header-title'>Vuokralaskuri</h3>}
+                defaultOpen={rentCalculatorCollapseState !== undefined ? rentCalculatorCollapseState : false}
+                headerTitle={<h3 className='collapse__header-title'>Vuokralaskelma</h3>}
                 onToggle={this.handleRentCalculatorCollapseToggle}
               >
                 <RentCalculator />

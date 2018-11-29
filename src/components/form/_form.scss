@@ -153,6 +153,50 @@
     }
   }
 
+  &__radio-with-field {
+    fieldset {
+      line-height: 1;
+    }
+
+    legend {
+      visibility: hidden;
+      position: absolute;
+    }
+
+    &_option {
+      display: flex;
+    }
+
+    &_option-label {
+      color: $black !important;
+      display: inline-block;
+      font-size: rem-calc(14px) !important;
+      line-height: rem-calc(20px) !important;
+      max-width: 100%;
+    }
+
+    &_option-text {
+      margin-right: rem-calc(10px);
+    }
+
+    &_option-field {
+      display: block;
+      max-width: 100%;
+    }
+
+    &_option-error-field {
+      display: block;
+    }
+
+    &.is-dirty {
+      .form-field__radio-with-field_option-label {
+        span.form-field__radio-with-field_option-text {
+          background-color: $is-dirty-color;
+        }
+      }
+    }
+  }
+
   &__search {
     position: relative;
 

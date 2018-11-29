@@ -1,15 +1,16 @@
 // @flow
 import type {Selector} from '../types';
-import type {
-  RentForPeriod,
-  RentForPeriodState,
-} from './types';
+import type {RootState} from '../root/types';
+import type {RentForPeriod} from './types';
 
 import type {LeaseId} from '$src/leases/types';
 
-export const getIsFetching: Selector<boolean, void> = (state: RentForPeriodState): boolean =>
+export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.rentForPeriod.isFetching;
 
-export const getRentForPeriodByLease: Selector<RentForPeriod, LeaseId> = (state: RentForPeriodState, leaseId: LeaseId): RentForPeriod => {
+export const getRentForPeriodArrayByLease: Selector<RentForPeriod, LeaseId> = (state: RootState, leaseId: LeaseId): RentForPeriod => {
   return state.rentForPeriod.byLease[leaseId];
 };
+
+export const getIsSaveClicked: Selector<boolean, void> = (state: RootState): boolean =>
+  state.rentForPeriod.isSaveClicked;

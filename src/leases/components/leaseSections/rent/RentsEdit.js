@@ -15,6 +15,7 @@ import Button from '$components/button/Button';
 import Divider from '$components/content/Divider';
 import FormSectionComponent from '$components/form/FormSection';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete} from '$src/leases/actions';
@@ -215,6 +216,12 @@ class RentsEdit extends Component<Props, State> {
                   rents={rentsArchived}
                   showAddButton={false}
                 />
+
+                <h2>Vuokralaskelma</h2>
+                <Divider />
+                <GreenBoxEdit>
+                  <RentCalculator />
+                </GreenBoxEdit>
 
                 <h2>Vuokranperusteet</h2>
                 <Divider />

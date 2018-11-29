@@ -31,13 +31,13 @@ const RentCalculatorExplanation = ({attributes, date, explanation}: Props) => {
   return (
     <div>
       <Row>
-        <Column small={4}>
+        <Column small={6}>
           <FormText
             className={classNames({'semibold': subjectType === RentExplanationSubjectType.RENT})}>
             {description || '-'}
           </FormText>
         </Column>
-        <Column small={4}>
+        <Column small={3}>
           <div className='rent-calculator__explanation_dates'>
             {!!dates && !!dates.length &&
               dates.map((date, index) => {
@@ -49,7 +49,7 @@ const RentCalculatorExplanation = ({attributes, date, explanation}: Props) => {
             }
           </div>
         </Column>
-        <Column small={4}>
+        <Column small={3}>
           {subjectType === RentExplanationSubjectType.RENT
             ? <FormText className={classNames('rent-calculator__explanation_amount', 'semibold')}>
               <AmountWithVat amount={amount} date={date} />

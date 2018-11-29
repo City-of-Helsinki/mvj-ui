@@ -14,6 +14,7 @@ import FieldTypeDatePicker from './FieldTypeDatePicker';
 import FieldTypeLeaseSelect from './FieldTypeLeaseSelect';
 import FieldTypeLessorSelect from './FieldTypeLessorSelect';
 import FieldTypeMultiSelect from './FieldTypeMultiSelect';
+import FieldTypeRadioWithField from './FieldTypeRadioWithField';
 import FieldTypeSearch from './FieldTypeSearch';
 import FieldTypeSelect from './FieldTypeSelect';
 import FieldTypeTextArea from './FieldTypeTextArea';
@@ -37,6 +38,7 @@ const FieldTypes = {
   'lease': FieldTypeLeaseSelect,
   'lessor': FieldTypeLessorSelect,
   'multiselect': FieldTypeMultiSelect,
+  'radio-with-field': FieldTypeRadioWithField,
   'search': FieldTypeSearch,
   'string': FieldTypeBasic,
   'textarea': FieldTypeTextArea,

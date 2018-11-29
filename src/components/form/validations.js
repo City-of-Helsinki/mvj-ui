@@ -54,6 +54,18 @@ export const referenceNumber = (value: any, error?: string) => {
   return regex.test(value) ? undefined : (error ? error : 'Arvon tulee olla muotoa HEL 0000-000000');
 };
 
+export const year = (value: any, error?: string) => {
+  if(isEmptyValue(value)) {
+    return undefined;
+  }
+  const numbers = /^[0-9]+$/;
+  const year = value.toString();
+
+  if (!numbers.test(year) || year.length != 4) return error ? error : 'Vuoden tulee olla 4 numeron mittainen';
+
+  return undefined;
+};
+
 export const genericValidator = (value: any, options: Object) => {
   if(!options) {
     return undefined;

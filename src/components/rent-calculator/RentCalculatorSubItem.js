@@ -26,12 +26,12 @@ const RentCalculatorSubItem = ({attributes, level = 1, subItem}: Props) => {
   return (
     <div>
       <Row>
-        <Column small={4}>
+        <Column small={6}>
           <FormText style={{paddingLeft: (level * 15)}}>
             {description || '-'}
           </FormText>
         </Column>
-        <Column small={4}>
+        <Column small={3}>
           <div>
             {!!dates && !!dates.length &&
               dates.map((date, index) =>
@@ -42,7 +42,7 @@ const RentCalculatorSubItem = ({attributes, level = 1, subItem}: Props) => {
             }
           </div>
         </Column>
-        <Column small={4}>
+        <Column small={3}>
           <FormText className='rent-calculator__sub-item_amount'>
             {amount !== null ? `${formatNumber(amount)} €` : '-'}
           </FormText>

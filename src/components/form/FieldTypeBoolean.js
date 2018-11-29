@@ -59,8 +59,7 @@ const FieldTypeBoolean = ({
             <span>{optionLabel}</span>
           </label>
         );
-      }
-      )}
+      })}
     </fieldset>
   );
 };
