@@ -66,7 +66,6 @@ const FieldTypeRadioWithField = ({
               <div className='form-field__radio-with-field_option-field' style={fieldStyles}>{field}</div>
               <div className='form-field__radio-with-field_option-error-field' style={errorFieldStyles}>{errorField}</div>
             </div>
-
           </div>
         );
       })}

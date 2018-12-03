@@ -34,7 +34,6 @@ const ContractRentsEdit = ({attributes, fields, rentField, rentType}: Props) => 
         return(
           <div>
             {(fields && !!fields.length) &&
-
               <Row showFor={Breakpoints.LARGE}>
                 <Column large={2}>
                   <FormTextTitle
