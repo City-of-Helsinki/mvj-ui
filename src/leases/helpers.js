@@ -1267,7 +1267,7 @@ export const getSavedBasisOfRent = (lease: Lease, id: ?number) => {
   const basisOfRentsArchived = getContentBasisOfRents(lease, true);
   const basisOfRents = [...basisOfRentsActive, ...basisOfRentsArchived];
 
-  if(basisOfRents.length && isEmptyValue(id)) return {};
+  if(basisOfRents.length && isEmptyValue(id)) return null;
   return basisOfRents.find((rent) => rent.id === id);
 };
 
@@ -1278,7 +1278,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
   payload.basis_of_rents = basisOfRents.map((item) => {
     const savedBasisOfRent = getSavedBasisOfRent(currentLease, item.id);
 
-    if(savedBasisOfRent.locked_at && !item.locked_at) {
+    if(savedBasisOfRent && savedBasisOfRent.locked_at && !item.locked_at) {
       const basisOfRentData: any = {
         id: item.id,
       };

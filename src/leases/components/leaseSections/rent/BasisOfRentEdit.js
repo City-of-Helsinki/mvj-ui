@@ -214,7 +214,7 @@ const BasisOfRentEdit = ({
     );
   };
 
-  if(archived) {
+  if(archived && savedBasisOfRent) {
     return <BasisOfRent
       areaUnitOptions={areaUnitOptions}
       basisOfRent={savedBasisOfRent}
@@ -246,7 +246,7 @@ const BasisOfRentEdit = ({
             <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={
-                savedBasisOfRent.locked_at
+                savedBasisOfRent && savedBasisOfRent.locked_at
                   ? {...get(attributes, 'basis_of_rents.child.children.intended_use'), required: false}
                   : get(attributes, 'basis_of_rents.child.children.intended_use')
               }
@@ -265,7 +265,7 @@ const BasisOfRentEdit = ({
                 <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={
-                    savedBasisOfRent.locked_at
+                    savedBasisOfRent && savedBasisOfRent.locked_at
                       ? {...get(attributes, 'basis_of_rents.child.children.area'), required: false}
                       : get(attributes, 'basis_of_rents.child.children.area')
                   }
@@ -279,7 +279,7 @@ const BasisOfRentEdit = ({
                 <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={
-                    savedBasisOfRent.locked_at
+                    savedBasisOfRent && savedBasisOfRent.locked_at
                       ? {...get(attributes, 'basis_of_rents.child.children.area_unit'), required: false}
                       : get(attributes, 'basis_of_rents.child.children.area_unit')
                   }
@@ -296,7 +296,7 @@ const BasisOfRentEdit = ({
               className='with-top-padding'
               disableTouched={isSaveClicked}
               fieldAttributes={
-                savedBasisOfRent.locked_at
+                savedBasisOfRent && savedBasisOfRent.locked_at
                   ? {...get(attributes, 'basis_of_rents.child.children.plans_inspected_at'), required: false, type: 'checkbox-date-time'}
                   : {...get(attributes, 'basis_of_rents.child.children.plans_inspected_at'), type: 'checkbox-date-time'}
               }
@@ -328,7 +328,7 @@ const BasisOfRentEdit = ({
                 <FormField
                   disableTouched={isSaveClicked}
                   fieldAttributes={
-                    savedBasisOfRent.locked_at
+                    savedBasisOfRent && savedBasisOfRent.locked_at
                       ? {...get(attributes, 'basis_of_rents.child.children.amount_per_area'), required: false}
                       : get(attributes, 'basis_of_rents.child.children.amount_per_area')
                   }
@@ -344,7 +344,7 @@ const BasisOfRentEdit = ({
                   className='with-slash'
                   disableTouched={isSaveClicked}
                   fieldAttributes={
-                    savedBasisOfRent.locked_at
+                    savedBasisOfRent && savedBasisOfRent.locked_at
                       ? {...get(attributes, 'basis_of_rents.child.children.area_unit'), required: false}
                       : get(attributes, 'basis_of_rents.child.children.area_unit')
                   }
@@ -360,7 +360,7 @@ const BasisOfRentEdit = ({
             <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={
-                savedBasisOfRent.locked_at
+                savedBasisOfRent && savedBasisOfRent.locked_at
                   ? {...get(attributes, 'basis_of_rents.child.children.index'), required: false}
                   : get(attributes, 'basis_of_rents.child.children.index')
               }
@@ -382,7 +382,7 @@ const BasisOfRentEdit = ({
             <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={
-                savedBasisOfRent.locked_at
+                savedBasisOfRent && savedBasisOfRent.locked_at
                   ? {...get(attributes, 'basis_of_rents.child.children.profit_margin_percentage'), required: false}
                   : get(attributes, 'basis_of_rents.child.children.profit_margin_percentage')
               }
@@ -410,7 +410,7 @@ const BasisOfRentEdit = ({
             <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={
-                savedBasisOfRent.locked_at
+                savedBasisOfRent && savedBasisOfRent.locked_at
                   ? {...get(attributes, 'basis_of_rents.child.children.discount_percentage'), required: false}
                   : get(attributes, 'basis_of_rents.child.children.discount_percentage')
               }
