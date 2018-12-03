@@ -67,12 +67,21 @@ class RentCalculatorForm extends Component<Props, State> {
     if(billingPeriodOptions.length) {
       this.autoselectBillingPeriod(billingPeriodOptions);
     }
+
+    this.setDefaultValues();
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
     if(prevState.billingPeriodOptions !== this.state.billingPeriodOptions) {
       this.autoselectBillingPeriod(this.state.billingPeriodOptions);
     }
+  }
+
+  setDefaultValues = () => {
+    const {change} = this.props;
+
+    change('type', RentCalculatorTypes.YEAR);
+    change('year', new Date().getFullYear().toString());
   }
 
   autoselectBillingPeriod = (billingPeriodOptions: Array<Object>) => {
@@ -99,7 +108,7 @@ class RentCalculatorForm extends Component<Props, State> {
     const {billingPeriodOptions} = this.state;
 
     return (
-      <form onSubmit={this.handleSubmit}>
+      <div onSubmit={this.handleSubmit}>
         <Row>
           <Column>
             <FormField
@@ -208,7 +217,7 @@ class RentCalculatorForm extends Component<Props, State> {
             />
           </Column>
         </Row>
-      </form>
+      </div>
     );
   }
 }
@@ -233,7 +242,6 @@ export default flowRight(
   ),
   reduxForm({
     form: formName,
-    initialValues: {type: RentCalculatorTypes.YEAR, year: new Date().getFullYear().toString()},
     validate: validateRentCalculatorForm,
   }),
 )(RentCalculatorForm);

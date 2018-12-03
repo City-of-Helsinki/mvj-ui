@@ -18,6 +18,7 @@ import {
 } from './enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
 import {getUserFullName} from '$src/users/helpers';
+import {isEmptyValue} from '$util/helpers';
 import {
   fixedLengthNumber,
   formatDecimalNumberForDb,
@@ -664,20 +665,26 @@ export const getContentRentsFormData = (lease: Object) => {
   };
 };
 
-export const getContentBasisOfRents = (lease: Object) =>
-  get(lease, 'basis_of_rents', []).map((item) => {
-    return {
-      id: item.id || undefined,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      floor_m2: item.floor_m2,
-      index: item.index,
-      amount_per_floor_m2_index_100: item.amount_per_floor_m2_index_100,
-      amount_per_floor_m2_index: item.amount_per_floor_m2_index,
-      percent: item.percent,
-      year_rent_index_100: item.year_rent_index_100,
-      year_rent_index: item.year_rent_index,
-    };
-  });
+export const getContentBasisOfRents = (lease: Object, archived: boolean = true) =>
+  get(lease, 'basis_of_rents', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        area: item.area,
+        area_unit: item.area_unit,
+        amount_per_area: item.amount_per_area,
+        index: get(item, 'index.id') || get(item, 'index'),
+        profit_margin_percentage: item.profit_margin_percentage,
+        discount_percentage: item.discount_percentage,
+        plans_inspected_at: item.plans_inspected_at,
+        plans_inspected_by: item.plans_inspected_by,
+        locked_at: item.locked_at,
+        locked_by: item.locked_by,
+        archived_at: item.archived_at,
+      };
+    })
+    .filter((item) => !!item.archived_at === archived);
 
 export const getFullAddress = (item: Object) => {
   if(isEmpty(item)) return null;
@@ -1238,22 +1245,55 @@ export const getContentRentDueDatesForDb = (rent: Object) =>
     };
   });
 
-export const addRentsFormValues = (payload: Object, values: Object) => {
+export const getSavedBasisOfRent = (lease: Lease, id: ?number) => {
+  const basisOfRentsActive = getContentBasisOfRents(lease, false);
+  const basisOfRentsArchived = getContentBasisOfRents(lease, true);
+  const basisOfRents = [...basisOfRentsActive, ...basisOfRentsArchived];
+
+  if(basisOfRents.length && isEmptyValue(id)) return {};
+  return basisOfRents.find((rent) => rent.id === id);
+};
+
+export const addRentsFormValues = (payload: Object, values: Object, currentLease: Lease) => {
   payload.is_rent_info_complete = values.is_rent_info_complete ? true : false;
 
-  const basisOfRents = get(values, 'basis_of_rents', []);
+  const basisOfRents = [...get(values, 'basis_of_rents', []), ...get(values, 'basis_of_rents_archived', [])];
   payload.basis_of_rents = basisOfRents.map((item) => {
-    return {
-      id: item.id || undefined,
-      intended_use: item.intended_use,
-      floor_m2: formatDecimalNumberForDb(item.floor_m2),
-      index: item.index,
-      amount_per_floor_m2_index_100: formatDecimalNumberForDb(item.amount_per_floor_m2_index_100),
-      amount_per_floor_m2_index: formatDecimalNumberForDb(item.amount_per_floor_m2_index),
-      percent: formatDecimalNumberForDb(item.percent),
-      year_rent_index_100: formatDecimalNumberForDb(item.year_rent_index_100),
-      year_rent_index: formatDecimalNumberForDb(item.year_rent_index),
-    };
+    const savedBasisOfRent = getSavedBasisOfRent(currentLease, item.id);
+
+    if(savedBasisOfRent.locked_at && !item.locked_at) {
+      const basisOfRentData: any = {
+        id: item.id,
+      };
+
+      if(get(savedBasisOfRent, 'archived_at') !== item.archived_at) {
+        basisOfRentData.archived_at = item.archived_at;
+      }
+
+      switch (!!item.locked_at) {
+        case true:
+          basisOfRentData.locked_at = item.locked_at;
+          return basisOfRentData;
+        case false:
+          return basisOfRentData;
+      }
+    } else {
+      const basisOfRentData: any = {
+        id: item.id || undefined,
+        intended_use: item.intended_use,
+        area: formatDecimalNumberForDb(item.area),
+        area_unit: item.area_unit,
+        amount_per_area: formatDecimalNumberForDb(item.amount_per_area),
+        index: item.index,
+        profit_margin_percentage: formatDecimalNumberForDb(item.profit_margin_percentage),
+        discount_percentage: formatDecimalNumberForDb(item.discount_percentage),
+        plans_inspected_at: item.plans_inspected_at,
+        locked_at: item.locked_at,
+        archived_at: item.archived_at,
+      };
+
+      return basisOfRentData;
+    }
   });
 
   const rentsCurrent = get(values, 'rents', []);
@@ -1291,15 +1331,6 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
       rentData.index_type = rent.index_type;
       rentData.fixed_initial_year_rents = getContentFixedInitialYearRentsForDb(rent);
       rentData.contract_rents = getContentContractRentsForDb(rent, rent.type);
-
-      // Patch values used for old rents only if rent type is index or manual
-      // rentData.elementary_index = rent.elementary_index;
-      // rentData.index_rounding = rent.index_rounding;
-      // rentData.x_value = rent.x_value;
-      // rentData.y_value = rent.y_value;
-      // rentData.y_value_start = rent.y_value_start;
-      // rentData.equalization_start_date = rent.equalization_start_date;
-      // rentData.equalization_end_date = rent.equalization_end_date;
     }
 
     // Patch seosonal dates and rent adjustments data only if rent type is index, fixed or manual

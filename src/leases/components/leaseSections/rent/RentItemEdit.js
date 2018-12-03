@@ -218,6 +218,11 @@ class RentItemEdit extends PureComponent<Props, State> {
     });
   };
 
+  handleArchive = () => {
+    const {index} = this.props;
+    console.log(index);
+  }
+
   handleRemove = () => {
     const {index, onRemove} = this.props;
 
@@ -262,6 +267,7 @@ class RentItemEdit extends PureComponent<Props, State> {
             </Column>
           </div>
         }
+        onArchive={(archived && savedRent && savedRent.id) ? this.handleArchive : null}
         onRemove={this.handleRemove}
         onToggle={this.handleRentCollapseToggle}
       >

@@ -9,6 +9,7 @@ import FieldTypeAddress from './FieldTypeAddress';
 import FieldTypeBasic from './FieldTypeBasic';
 import FieldTypeBoolean from './FieldTypeBoolean';
 import FieldTypeCheckbox from './FieldTypeCheckbox';
+import FieldTypeCheckboxDateTime from './FieldTypeCheckboxDateTime';
 import FieldTypeContactSelect from './FieldTypeContactSelect';
 import FieldTypeDatePicker from './FieldTypeDatePicker';
 import FieldTypeLeaseSelect from './FieldTypeLeaseSelect';
@@ -30,6 +31,7 @@ const FieldTypes = {
   'boolean': FieldTypeBoolean,
   'choice': FieldTypeSelect,
   'checkbox': FieldTypeCheckbox,
+  'checkbox-date-time': FieldTypeCheckboxDateTime,
   'contact': FieldTypeContactSelect,
   'date': FieldTypeDatePicker,
   'decimal': FieldTypeBasic,

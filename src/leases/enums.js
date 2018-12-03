@@ -15,7 +15,7 @@ export const AreaLocation = {
  */
 export const DeleteModalLabels = {
   ADDRESS: 'Haluatko varmasti poistaa osoitteen?',
-  BASIS_OF_RENT: 'Haluatko varmasti poistaa vuokranperusteen?',
+  BASIS_OF_RENT: 'Haluatko varmasti poistaa vuokralaskurin?',
   COLLECTION_COURT_DECISION: 'Haluatko varmasti poistaa käräjäoikeuden päätöksen?',
   COLLECTION_LETTER: 'Haluatko varmasti poistaa perintäkirjeen?',
   COLLECTION_NOTE: 'Haluatko varmasti poistaa huomautuksen?',
@@ -48,7 +48,7 @@ export const DeleteModalLabels = {
  */
 export const DeleteModalTitles = {
   ADDRESS: 'Poista osoite',
-  BASIS_OF_RENT: 'Poista vuokranperuste',
+  BASIS_OF_RENT: 'Poista vuokralaskuri',
   COLLECTION_COURT_DECISION: 'Poista kärkäoikeuden päätös',
   COLLECTION_LETTER: 'Poista perintäkirje',
   COLLECTION_NOTE: 'Poista huomautus',

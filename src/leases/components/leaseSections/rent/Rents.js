@@ -64,11 +64,9 @@ const Rents = ({currentLease}: Props) => {
         <RentCalculator />
       </GreenBox>
 
-      <h2>Vuokranperusteet</h2>
+      <h2>Vuokralaskuri</h2>
       <Divider />
-      <GreenBox>
-        <BasisOfRents />
-      </GreenBox>
+      <BasisOfRents />
     </div>
   );
 };

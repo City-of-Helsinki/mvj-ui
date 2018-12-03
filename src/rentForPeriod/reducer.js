@@ -26,6 +26,7 @@ const isSaveClickedReducer: Reducer<boolean> = handleActions({
 const byLeaseReducer: Reducer<RentForPeriod> = handleActions({
   ['mvj/rentforperiod/RECEIVE_BY_LEASE']: (state: RentForPeriod, {payload}: ReceiveRentForPeriodByLeaseAction) => {
     const rents = isArray(state[payload.leaseId]) ? [...state[payload.leaseId], payload.rent] : [payload.rent];
+
     return {
       ...state,
       [payload.leaseId]: rents,
@@ -35,7 +36,7 @@ const byLeaseReducer: Reducer<RentForPeriod> = handleActions({
     const rents = isArray(state[payload.leaseId])
       ? state[payload.leaseId].filter((rent) => rent.id !== payload.id)
       : [];
-    console.log('rents', rents, payload);
+
     return {
       ...state,
       [payload.leaseId]: rents,

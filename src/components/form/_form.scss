@@ -108,6 +108,22 @@
     }
   }
 
+  &__checkbox-date-time {
+    color: $black !important;
+    font-size: rem-calc(14px) !important;
+    line-height: rem-calc(20px) !important;
+
+    input {
+      margin-bottom: 0;
+    }
+
+    &.is-dirty {
+      span {
+        background-color: $is-dirty-color;
+      }
+    }
+  }
+
   &__address {
     &.is-dirty {
       input {
@@ -524,6 +540,12 @@
     }
   }
 
+  &.with-top-padding {
+    .form-field__component {
+      padding-top: rem-calc(15px);
+    }
+  }
+
   &__component {
     &.has-unit {
       display: table;
@@ -546,6 +568,25 @@
 }
 
 .form {
+  &__action-button-wrapper {
+    position: absolute;
+    top: rem-calc(-7px);
+    right: 0;
+
+    button {
+      margin-left: rem-calc(5px);
+      margin-right: rem-calc(5px);
+    }
+
+    button:first-child {
+      margin-left: 0;
+    }
+
+    button:last-child {
+      margin-right: 0;
+    }
+  }
+
   &__text {
     font-size: rem-calc(14px);
     line-height: rem-calc(16px);

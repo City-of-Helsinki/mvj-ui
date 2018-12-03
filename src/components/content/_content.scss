@@ -17,6 +17,14 @@
     }
   }
 
+  &__gray-box {
+    display: block;
+    width: 100%;
+    padding: rem-calc(15px) rem-calc(15px) rem-calc(5px);
+    background-color: $medium-gray;
+    position: relative;
+  }
+
   &__list-item {
     font-size: rem-calc(14px);
     line-height: rem-calc(16px);
@@ -269,40 +277,6 @@
         &:hover {
           fill: $tram;
         }
-      }
-
-      .subtitle {
-        font-size: $font-regular;
-        text-align: left;
-        color: $black;
-        line-height: normal;
-        font-weight: $semibold;
-        display: inline-block;
-        margin: 0 0 rem-calc(10px);
-        font-weight: $semibold;
-      }
-    }
-
-    .map-link-button {
-      position: absolute;
-      top: rem-calc(20px);
-      right: rem-calc(20px);
-      display: flex;
-      align-items: center;
-
-      span {
-        color: $black;
-        font-size: $font-small;
-        text-transform: uppercase;
-        line-height: rem-calc(20px);
-        padding-right: 5px;
-        font-weight: 600;
-      }
-
-      i {
-        background-image: url(../assets/icons/map.svg);
-        height: rem-calc(20px);
-        width: rem-calc(20px);
       }
     }
 

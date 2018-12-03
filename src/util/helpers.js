@@ -334,6 +334,11 @@ export const formatDateRange = (startDate: any, endDate: any) => {
   return `${start.format(dateFormat)} - ${end.format(dateFormat)}`;
 };
 
+export const isDecimalNumber = (value: ?string) =>
+  !isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, ''))
+    ? true
+    : false;
+
 /**
  *
  * @param unix
