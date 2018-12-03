@@ -12,6 +12,7 @@ import {
   LeaseState,
   LeaseStatus,
   RecipientOptions,
+  RentCycles,
   RentDueDateTypes,
   RentTypes,
   TenantContactType,
@@ -631,6 +632,8 @@ export const getContentRents = (lease: Object) =>
         index_type: rent.index_type,
         due_dates_type: rent.due_dates_type,
         due_dates_per_year: rent.due_dates_per_year,
+        manual_ratio: rent.manual_ratio,
+        manual_ratio_previous: rent.manual_ratio_previous,
         elementary_index: rent.elementary_index,
         index_rounding: rent.index_rounding,
         x_value: rent.x_value,
@@ -1236,14 +1239,28 @@ export const getContentFixedInitialYearRentsForDb = (rent: Object) =>
     };
   });
 
-export const getContentRentDueDatesForDb = (rent: Object) =>
-  get(rent, 'due_dates', []).map((date) => {
+export const getContentRentDueDatesForDb = (rent: Object) => {
+  const dueDatesType = rent.due_dates_type;
+  const dueDates = get(rent, 'due_dates', []);
+
+  if(dueDatesType === RentDueDateTypes.ONE_TIME) {
+    return dueDates.length
+      ? [{
+        id: dueDates[0].id || undefined,
+        day: dueDates[0].day,
+        month: dueDates[0].month,
+      }]
+      : [];
+  }
+  return dueDates.map((date) => {
     return {
       id: date.id || undefined,
       day: date.day,
       month: date.month,
     };
   });
+};
+
 
 export const getSavedBasisOfRent = (lease: Lease, id: ?number) => {
   const basisOfRentsActive = getContentBasisOfRents(lease, false);
@@ -1333,13 +1350,25 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
       rentData.contract_rents = getContentContractRentsForDb(rent, rent.type);
     }
 
+    if(rent.type === RentTypes.MANUAL) {
+      console.log(rent);
+      switch (rent.cycle) {
+        case RentCycles.JANUARY_TO_DECEMBER:
+          rentData.manual_ratio = formatDecimalNumberForDb(rent.manual_ratio);
+          break;
+        case RentCycles.APRIL_TO_MARCH:
+          rentData.manual_ratio = formatDecimalNumberForDb(rent.manual_ratio);
+          rentData.manual_ratio_previous = formatDecimalNumberForDb(rent.manual_ratio_previous);
+          break;
+      }
+    }
+
     // Patch seosonal dates and rent adjustments data only if rent type is index, fixed or manual
     if(rent.type === RentTypes.INDEX || rent.type === RentTypes.FIXED || rent.type === RentTypes.MANUAL) {
       rentData.seasonal_start_day = rent.seasonal_start_day || null;
       rentData.seasonal_start_month = rent.seasonal_start_month || null;
       rentData.seasonal_end_day = rent.seasonal_end_day || null;
       rentData.seasonal_end_month = rent.seasonal_end_month || null;
-
       rentData.rent_adjustments = getContentRentAdjustmentsForDb(rent);
     }
 

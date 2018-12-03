@@ -74,7 +74,27 @@ export const DeleteModalTitles = {
   TENANT: 'Poista vuokralainen',
 };
 
+/**
+ * Archive basis of rent texts enumerable.
+ *
+ * @type {{}}
+ */
+export const ArchiveBasisOfRentsText = {
+  BUTTON: 'Arkistoi',
+  LABEL: 'Haluatko varmasti arkistoida vuokralaskurin?',
+  TITLE: 'Arkistoi vuokralaskuri',
+};
 
+/**
+ * Archive basis of rent texts enumerable.
+ *
+ * @type {{}}
+ */
+export const UnarchiveBasisOfRentsText = {
+  BUTTON: 'Poista arkistosta',
+  LABEL: 'Haluatko varmasti poistaa vuokralaskurin arkistosta?',
+  TITLE: 'Poista vuokralaskuri arkistosta',
+};
 /**
  * LeaseState enumerable.
  *
@@ -178,6 +198,16 @@ export const RentTypes = {
   FIXED: 'fixed',
   FREE: 'free',
   MANUAL: 'manual',
+};
+
+/**
+ * Rent cycle enumerable.
+ *
+ * @type {{JANUARY_TO_DECEMBER: string, APRIL_TO_MARCH: string}}
+ */
+export const RentCycles = {
+  JANUARY_TO_DECEMBER: 'january_to_december',
+  APRIL_TO_MARCH: 'april_to_march',
 };
 
 /**

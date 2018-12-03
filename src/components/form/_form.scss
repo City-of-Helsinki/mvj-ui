@@ -574,8 +574,8 @@
     right: 0;
 
     button {
-      margin-left: rem-calc(5px);
-      margin-right: rem-calc(5px);
+      margin-left: rem-calc(3px);
+      margin-right: rem-calc(3px);
     }
 
     button:first-child {
@@ -737,6 +737,21 @@
     &:hover {
       .icons {
         fill: $tram_hover;
+      }
+    }
+  }
+
+  &__copy-to-clipboard-button {
+    z-index: 1;
+    cursor: pointer;
+    position: relative;
+    top: 0;
+
+    &:hover {
+      .icons {
+        #Artboard {
+          fill: $tram_hover;
+        }
       }
     }
   }

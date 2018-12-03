@@ -17,7 +17,7 @@ import PayableRents from './PayableRents';
 import RentAdjustmentsEdit from './RentAdjustmentsEdit';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames, RentTypes} from '$src/leases/enums';
+import {FormNames, RentDueDateTypes, RentTypes} from '$src/leases/enums';
 import {isRentActive, isRentArchived} from '$src/leases/helpers';
 import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
@@ -29,6 +29,8 @@ type Props = {
   change: Function,
   contractRentsCollapseState: boolean,
   contractRents: Array<Object>,
+  dueDates: Array<Object>,
+  dueDatesType: string,
   errors: ?Object,
   field: string,
   fixedInitialYearRentsCollapseState: boolean,
@@ -112,13 +114,24 @@ class RentItemEdit extends PureComponent<Props, State> {
     if(prevProps.rentType !== this.props.rentType) {
       this.addEmptyContractRentIfNeeded();
     }
+    if(prevProps.dueDatesType !== this.props.dueDatesType) {
+      this.addEmptyDueDateIfNeeded();
+    }
   }
 
   addEmptyContractRentIfNeeded = () => {
     const {change, contractRents, field} = this.props;
 
-    if(!contractRents.length) {
+    if(!contractRents || !contractRents.length) {
       change(formName, `${field}.contract_rents`, [{}]);
+    }
+  }
+
+  addEmptyDueDateIfNeeded = () => {
+    const {change, dueDates, dueDatesType, field} = this.props;
+
+    if(dueDatesType === RentDueDateTypes.CUSTOM && (!dueDates || !dueDates.length)) {
+      change(formName, `${field}.due_dates`, [{}]);
     }
   }
 
@@ -218,11 +231,6 @@ class RentItemEdit extends PureComponent<Props, State> {
     });
   };
 
-  handleArchive = () => {
-    const {index} = this.props;
-    console.log(index);
-  }
-
   handleRemove = () => {
     const {index, onRemove} = this.props;
 
@@ -267,7 +275,6 @@ class RentItemEdit extends PureComponent<Props, State> {
             </Column>
           </div>
         }
-        onArchive={(archived && savedRent && savedRent.id) ? this.handleArchive : null}
         onRemove={this.handleRemove}
         onToggle={this.handleRentCollapseToggle}
       >
@@ -375,6 +382,7 @@ export default connect(
     const newProps: any = {
       attributes: getAttributes(state),
       contractRents: selector(state, `${props.field}.contract_rents`),
+      dueDates: selector(state, `${props.field}.due_dates`),
       dueDatesType: selector(state, `${props.field}.due_dates_type`),
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),

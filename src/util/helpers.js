@@ -624,3 +624,38 @@ export const sortByStartAndEndDateDesc = (a, b) => {
   if(endA < endB) return 1;
   return 0;
 };
+
+const selectElementContents = (el) => {
+  if (document.createRange && window.getSelection) {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    try {
+      range.selectNodeContents(el);
+      sel.addRange(range);
+    } catch (e) {
+      range.selectNode(el);
+      sel.addRange(range);
+    }
+  }
+};
+
+export const copyElementContentsToClipboard = (el: any) => {
+  const selection = document.getSelection(),
+    selected = selection && selection.rangeCount > 0
+      ? selection.getRangeAt(0)
+      : false;
+
+  if(!document.body) return false;
+
+  document.body.appendChild(el);
+  selectElementContents(el);
+  document.execCommand('copy');
+  document.body.removeChild(el);
+
+  if (selection && selected) {
+    selection.removeAllRanges();
+    selection.addRange(selected);
+  }
+  return true;
+};

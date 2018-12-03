@@ -11,7 +11,7 @@ import BasisOfRentEdit from './BasisOfRentEdit';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import GrayBox from '$components/content/GrayBox';
 import GreenBox from '$components/content/GreenBox';
-import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
+import {ArchiveBasisOfRentsText, DeleteModalLabels, DeleteModalTitles, UnarchiveBasisOfRentsText} from '$src/leases/enums';
 import {getFieldOptions, isEmptyValue, sortByLabelDesc} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
@@ -103,9 +103,9 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                               onUnarchive(index, savedItem);
                             }
                           },
-                          confirmationModalButtonText: 'Poista',
-                          confirmationModalLabel: DeleteModalLabels.BASIS_OF_RENT,
-                          confirmationModalTitle: DeleteModalTitles.BASIS_OF_RENT,
+                          confirmationModalButtonText: UnarchiveBasisOfRentsText.BUTTON,
+                          confirmationModalLabel: UnarchiveBasisOfRentsText.LABEL,
+                          confirmationModalTitle: UnarchiveBasisOfRentsText.TITLE,
                         });
                       };
 
@@ -152,9 +152,9 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                           onArchive(index, savedItem);
                         }
                       },
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.BASIS_OF_RENT,
-                      confirmationModalTitle: DeleteModalTitles.BASIS_OF_RENT,
+                      confirmationModalButtonText: ArchiveBasisOfRentsText.BUTTON,
+                      confirmationModalLabel: ArchiveBasisOfRentsText.LABEL,
+                      confirmationModalTitle: ArchiveBasisOfRentsText.TITLE,
                     });
                   };
 
@@ -165,6 +165,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                     attributes={attributes}
                     field={field}
                     indexOptions={indexOptions}
+                    intendedUseOptions={intendedUseOptions}
                     isSaveClicked={isSaveClicked}
                     onArchive={handleArchive}
                     onRemove={handleRemove}

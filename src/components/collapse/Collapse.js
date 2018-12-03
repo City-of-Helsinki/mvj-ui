@@ -7,6 +7,7 @@ import ReactResizeDetector from 'react-resize-detector';
 
 import AccordionIcon from '../icons/AccordionIcon';
 import ArchiveButton from '../form/ArchiveButton';
+import CopyToClipboardButton from '../form/CopyToClipboardButton';
 import RemoveButton from '../form/RemoveButton';
 import UnarchiveButton from '../form/UnarchiveButton';
 
@@ -18,6 +19,7 @@ type Props = {
   header?: any,
   headerTitle: any,
   onArchive?: Function,
+  onCopyToClipboard?: Function,
   onRemove: Function,
   onToggle: ?Function,
   onUnarchive?: Function,
@@ -138,7 +140,18 @@ class Collapse extends PureComponent<Props, State> {
 
   render() {
     const {contentHeight, isOpen, isCollapsing, isExpanding} = this.state;
-    const {children, className, hasErrors, header, headerTitle, onArchive, onRemove, onUnarchive, showTitleOnOpen} = this.props;
+    const {
+      children,
+      className,
+      hasErrors,
+      header,
+      headerTitle,
+      onArchive,
+      onCopyToClipboard,
+      onRemove,
+      onUnarchive,
+      showTitleOnOpen,
+    } = this.props;
 
     return (
       <div
@@ -171,6 +184,11 @@ class Collapse extends PureComponent<Props, State> {
             </Row>
             <div className='collapse__header_button-wrapper'>
               {!isOpen && hasErrors && <span className='collapse__header_error-badge' />}
+              {onCopyToClipboard &&
+                <CopyToClipboardButton
+                  onClick={onCopyToClipboard}
+                />
+              }
               {onArchive &&
                 <ArchiveButton
                   onClick={onArchive}

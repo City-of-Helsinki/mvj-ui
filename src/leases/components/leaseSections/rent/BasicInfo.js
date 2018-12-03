@@ -5,7 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import FormText from '$components/form/FormText';
 import FormTitleAndText from '$components/form/FormTitleAndText';
-import {RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import {RentCycles, RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {
   formatDate,
   formatNumber,
@@ -146,6 +146,27 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
           </Column>
         }
       </Row>
+
+      {rent.type === RentTypes.MANUAL &&
+        <Row>
+          {(rent.cycle === RentCycles.JANUARY_TO_DECEMBER || rent.cycle === RentCycles.APRIL_TO_MARCH) &&
+            <Column small={6} medium={4} large={2}>
+              <FormTitleAndText
+                title='Käsinlaskentakerroin'
+                text={!isEmptyValue(rent.manual_ratio) ? formatNumber(rent.manual_ratio) : '-'}
+              />
+            </Column>
+          }
+          {rent.cycle === RentCycles.APRIL_TO_MARCH &&
+            <Column small={6} medium={4} large={2}>
+              <FormTitleAndText
+                title='Käsinlaskentakerroin (edellinen)'
+                text={!isEmptyValue(rent.manual_ratio_previous) ? formatNumber(rent.manual_ratio_previous) : '-'}
+              />
+            </Column>
+          }
+        </Row>
+      }
 
       <Row>
         <Column small={12} medium={4} large={2}>

@@ -10,21 +10,32 @@ import ArchiveButton from '$components/form/ArchiveButton';
 import BasisOfRent from './BasisOfRent';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
+import CopyToClipboardButton from '$components/form/CopyToClipboardButton';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import RemoveButton from '$components/form/RemoveButton';
 import {FormNames} from '$src/leases/enums';
 import {getSavedBasisOfRent} from '$src/leases/helpers';
-import {formatDecimalNumberForDb, formatNumber, getLabelOfOption, isDecimalNumber, isEmptyValue} from '$util/helpers';
+import {getUserFullName} from '$src/users/helpers';
+import {
+  copyElementContentsToClipboard,
+  displayUIMessage,
+  formatDate,
+  formatDecimalNumberForDb,
+  formatNumber,
+  getLabelOfOption,
+  isDecimalNumber,
+  isEmptyValue,
+} from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
 
 type Props = {
-  amountPerArea: ?string,
+  amountPerArea: ?number,
   archived: boolean,
-  area: ?string,
+  area: ?number,
   areaUnit: ?string,
   areaUnitOptions: Array<Object>,
   attributes: Attributes,
@@ -34,10 +45,14 @@ type Props = {
   id: ?number,
   index: number,
   indexOptions: Array<Object>,
+  intendedUse: number,
+  intendedUseOptions: Array<Object>,
   isSaveClicked: boolean,
+  lockedAt: ?string,
   onArchive?: Function,
   onRemove: Function,
   onUnarchive?: Function,
+  plansInspectedAt: ?string,
   profitMarginPercentage: ?string,
 }
 
@@ -54,10 +69,14 @@ const BasisOfRentEdit = ({
   id,
   index,
   indexOptions,
+  intendedUse,
+  intendedUseOptions,
   isSaveClicked,
+  lockedAt,
   onArchive,
   onRemove,
   onUnarchive,
+  plansInspectedAt,
   profitMarginPercentage,
 }: Props) => {
   const getIndexValue = () => {
@@ -71,17 +90,35 @@ const BasisOfRentEdit = ({
     return null;
   };
 
-  const getCurrentAmountPerArea = () => {
-    const indexValue = getIndexValue();
-
-    if(!isDecimalNumber(indexValue) || !isDecimalNumber(amountPerArea)) return null;
-    return Number(formatDecimalNumberForDb(indexValue))/100 * Number(formatDecimalNumberForDb(amountPerArea));
+  const getAreaText = (amount: ?number) => {
+    if(isEmptyValue(amount)) return '-';
+    if(isEmptyValue(areaUnit)) return `${formatNumber(amount)} €`;
+    return `${formatNumber(amount)} ${getLabelOfOption(areaUnitOptions, areaUnit)}`;
   };
 
   const getAmountPerAreaText = (amount: ?number) => {
     if(isEmptyValue(amount)) return '-';
     if(isEmptyValue(areaUnit)) return `${formatNumber(amount)} €`;
     return `${formatNumber(amount)} € / ${getLabelOfOption(areaUnitOptions, areaUnit)}`;
+  };
+
+  const getPlansInspectedText = () => {
+    if(!plansInspectedAt || !savedBasisOfRent || !savedBasisOfRent.plans_inspected_at) return '-';
+    if(!savedBasisOfRent.plans_inspected_by) return formatDate(savedBasisOfRent.plans_inspected_at);
+    return `${formatDate(savedBasisOfRent.plans_inspected_at)} ${getUserFullName(savedBasisOfRent.plans_inspected_by)}`;
+  };
+
+  const getLockedText = () => {
+    if(!lockedAt || !savedBasisOfRent || !savedBasisOfRent.locked_at) return '-';
+    if(!savedBasisOfRent.locked_by) return formatDate(savedBasisOfRent.locked_at);
+    return `${formatDate(savedBasisOfRent.locked_at)} ${getUserFullName(savedBasisOfRent.locked_by)}`;
+  };
+
+  const getCurrentAmountPerArea = () => {
+    const indexValue = getIndexValue();
+
+    if(!isDecimalNumber(indexValue) || !isDecimalNumber(amountPerArea)) return null;
+    return Number(formatDecimalNumberForDb(indexValue))/100 * Number(formatDecimalNumberForDb(amountPerArea));
   };
 
   const getBasicAnnualRent = () => {
@@ -113,6 +150,16 @@ const BasisOfRentEdit = ({
     }
   };
 
+  const handleCopyToClipboard = () => {
+    const tableContent = getTableContentForClipBoard(),
+      el = document.createElement('table');
+
+    el.innerHTML = tableContent;
+    if(copyElementContentsToClipboard(el)) {
+      displayUIMessage({title: '', body: 'Vuokralaskuri on kopioitu leikepöydälle.'});
+    }
+  };
+
   const handleUnarchive = () => {
     if(onUnarchive) {
       onUnarchive(savedBasisOfRent);
@@ -120,6 +167,52 @@ const BasisOfRentEdit = ({
   };
 
   const savedBasisOfRent = getSavedBasisOfRent(currentLease, id);
+  const currentAmountPerArea = getCurrentAmountPerArea();
+  const currentAmountPerAreaText = getAmountPerAreaText(currentAmountPerArea);
+  const areaText = getAreaText(area);
+  const amountPerAreaText = getAmountPerAreaText(amountPerArea);
+  const lockedAtText = getLockedText();
+  const plansInspectedAtText = getPlansInspectedText();
+  const basicAnnualRent = getBasicAnnualRent();
+  const initialYearRent = getInitialYearRent();
+  const discountedInitialYearRent = getDiscountedInitialYearRent();
+
+  const getTableContentForClipBoard = () => {
+    return(
+      `<thead>
+        <tr>
+          <th>Käyttötarkoitus</th>
+          <th>Pinta-ala</th>
+          <th>Piirustukset tarkastettu</th>
+          <th>Laskelma lukittu</th>
+          <th>Yksikköhinta (ind 100)</th>
+          <th>Indeksi</th>
+          <th>Yksikköhinta (ind)</th>
+          <th>Tuottoprosentti</th>
+          <th>Perusvuosivuokra (ind 100)</th>
+          <th>Alkuvuosivuokra (ind)</th>
+          <th>Alennusprosentti</th>
+          <th>Alennettu alkuvuosivuokra (ind)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>${getLabelOfOption(intendedUseOptions, intendedUse) || '-'}</td>
+          <td>${areaText}</td>
+          <td>${plansInspectedAtText}</td>
+          <td>${lockedAtText}</td>
+          <td>${amountPerAreaText}</td>
+          <td>${getLabelOfOption(indexOptions, index) || '-'}</td>
+          <td>${currentAmountPerAreaText}</td>
+          <td>${!isEmptyValue(profitMarginPercentage) ? `${formatNumber(profitMarginPercentage)} %` : '-'}</td>
+          <td>${!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}</td>
+          <td>${!isEmptyValue(initialYearRent) ? `${formatNumber(initialYearRent)} €/v` : '-'}</td>
+          <td>${!isEmptyValue(discountPercentage) ? `${formatNumber(discountPercentage)} %` : '-'}</td>
+          <td>${!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}</td>
+        </tr>
+      </tbody>`
+    );
+  };
 
   if(archived) {
     return <BasisOfRent
@@ -132,16 +225,13 @@ const BasisOfRentEdit = ({
     />;
   }
 
-  const currentAmountPerArea = getCurrentAmountPerArea();
-  const currentAmountPerAreaText = getAmountPerAreaText(currentAmountPerArea);
-  const basicAnnualRent = getBasicAnnualRent();
-  const initialYearRent = getInitialYearRent();
-  const discountedInitialYearRent = getDiscountedInitialYearRent();
-
   return(
     <BoxItem>
       <BoxContentWrapper>
         <ActionButtonWrapper>
+          <CopyToClipboardButton
+            onClick={handleCopyToClipboard}
+          />
           {onArchive && !!id &&
             <ArchiveButton onClick={handleArchive}/>
           }
@@ -353,10 +443,13 @@ export default connect(
       area: selector(state, `${props.field}.area`),
       areaUnit: selector(state, `${props.field}.area_unit`),
       currentLease: getCurrentLease(state),
-      discountPercentage: (selector(state, `${props.field}.discount_percentage`)),
+      discountPercentage: selector(state, `${props.field}.discount_percentage`),
       id: selector(state, `${props.field}.id`),
       index: selector(state, `${props.field}.index`),
-      profitMarginPercentage: (selector(state, `${props.field}.profit_margin_percentage`)),
+      intendedUse: selector(state, `${props.field}.intended_use`),
+      lockedAt: selector(state, `${props.field}.locked_at`),
+      plansInspectedAt: selector(state, `${props.field}.plans_inspected_at`),
+      profitMarginPercentage: selector(state, `${props.field}.profit_margin_percentage`),
     };
   },
 )(BasisOfRentEdit);

@@ -205,6 +205,12 @@ const EditInvoiceForm = ({
         </Column>
         <Column small={4}>
           <FormTitleAndText
+            title='Muutettu eräpäivä'
+            text={(invoice && formatDate(invoice.adjusted_date_date)) || '-'}
+          />
+        </Column>
+        <Column small={4}>
+          <FormTitleAndText
             title='Laskutuspvm'
             text={(invoice && formatDate(invoice.invoicing_date)) || '-'}
           />

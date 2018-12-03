@@ -167,7 +167,6 @@ class RentsEdit extends Component<Props, State> {
     const {change, editedArchivedBasisOfRents} = this.props,
       newItems = [...editedArchivedBasisOfRents, {...item, archived_at: new Date().toISOString()}];
 
-    console.log(item);
     change('basis_of_rents_archived', newItems);
   }
 
