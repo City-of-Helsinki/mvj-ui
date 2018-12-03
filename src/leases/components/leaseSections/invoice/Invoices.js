@@ -10,7 +10,6 @@ import Divider from '$components/content/Divider';
 import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
 import CreateAndCreditInvoice from './CreateAndCreditInvoice';
 import CreateCollectionLetter from './CreateCollectionLetter';
-import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RightSubtitle from '$components/content/RightSubtitle';
 import InvoiceTableAndPanel from './InvoiceTableAndPanel';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
@@ -32,7 +31,6 @@ type Props = {
   receiveIsCreateInvoicePanelOpen: Function,
   receiveIsCreditInvoicePanelOpen: Function,
   receiveInvoiceToCredit: Function,
-  rentCalculatorCollapseState: boolean,
   startInvoicing: Function,
   stopInvoicing: Function,
 }
@@ -54,18 +52,6 @@ class Invoices extends Component<Props> {
       [ViewModes.READONLY]: {
         invoices: {
           invoices: val,
-        },
-      },
-    });
-  };
-
-  handleRentCalculatorCollapseToggle = (val: boolean) => {
-    const {receiveCollapseStates} = this.props;
-
-    receiveCollapseStates({
-      [ViewModes.READONLY]: {
-        invoices: {
-          rent_calculator: val,
         },
       },
     });
@@ -107,7 +93,6 @@ class Invoices extends Component<Props> {
       isEditMode,
       isInvoicingEnabled,
       previewInvoicesCollapseState,
-      rentCalculatorCollapseState,
     } = this.props;
 
     return (
@@ -186,13 +171,6 @@ class Invoices extends Component<Props> {
                 />
               </Collapse>
               <Collapse
-                defaultOpen={rentCalculatorCollapseState !== undefined ? rentCalculatorCollapseState : true}
-                headerTitle={<h3 className='collapse__header-title'>Vuokralaskuri</h3>}
-                onToggle={this.handleRentCalculatorCollapseToggle}
-              >
-                <RentCalculator />
-              </Collapse>
-              <Collapse
                 defaultOpen={previewInvoicesCollapseState !== undefined ? previewInvoicesCollapseState : true}
                 headerTitle={<h3 className='collapse__header-title'>Laskujen esikatselu</h3>}
                 onToggle={this.handlePreviewInvoicesCollapseToggle}
@@ -222,7 +200,6 @@ export default connect(
       isEditMode: getIsEditMode(state),
       isInvoicingEnabled: currentLease ? currentLease.is_invoicing_enabled : null,
       previewInvoicesCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.preview_invoices`),
-      rentCalculatorCollapseState: getCollapseStateByKey(state, `${ViewModes.READONLY}.invoices.rent_calculator`),
     };
   },
   {

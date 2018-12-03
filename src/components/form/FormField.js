@@ -9,11 +9,13 @@ import FieldTypeAddress from './FieldTypeAddress';
 import FieldTypeBasic from './FieldTypeBasic';
 import FieldTypeBoolean from './FieldTypeBoolean';
 import FieldTypeCheckbox from './FieldTypeCheckbox';
+import FieldTypeCheckboxDateTime from './FieldTypeCheckboxDateTime';
 import FieldTypeContactSelect from './FieldTypeContactSelect';
 import FieldTypeDatePicker from './FieldTypeDatePicker';
 import FieldTypeLeaseSelect from './FieldTypeLeaseSelect';
 import FieldTypeLessorSelect from './FieldTypeLessorSelect';
 import FieldTypeMultiSelect from './FieldTypeMultiSelect';
+import FieldTypeRadioWithField from './FieldTypeRadioWithField';
 import FieldTypeSearch from './FieldTypeSearch';
 import FieldTypeSelect from './FieldTypeSelect';
 import FieldTypeTextArea from './FieldTypeTextArea';
@@ -29,6 +31,7 @@ const FieldTypes = {
   'boolean': FieldTypeBoolean,
   'choice': FieldTypeSelect,
   'checkbox': FieldTypeCheckbox,
+  'checkbox-date-time': FieldTypeCheckboxDateTime,
   'contact': FieldTypeContactSelect,
   'date': FieldTypeDatePicker,
   'decimal': FieldTypeBasic,
@@ -37,6 +40,7 @@ const FieldTypes = {
   'lease': FieldTypeLeaseSelect,
   'lessor': FieldTypeLessorSelect,
   'multiselect': FieldTypeMultiSelect,
+  'radio-with-field': FieldTypeRadioWithField,
   'search': FieldTypeSearch,
   'string': FieldTypeBasic,
   'textarea': FieldTypeTextArea,

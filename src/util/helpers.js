@@ -13,6 +13,8 @@ import L from 'leaflet';
 import Fraction from 'fraction.js';
 import ToastrIcons from '../components/toastr/ToastrIcons';
 
+import {Breakpoints} from '$src/foundation/enums';
+
 // import i18n from '../root/i18n';
 
 /**
@@ -36,14 +38,31 @@ export const getDocumentWidth = () => {
 export const getFoundationBreakpoint = () => {
   const width = getDocumentWidth();
   if (width < 640)
-    return 'small';
+    return Breakpoints.SMALL;
   if (width < 1024)
-    return 'medium';
+    return Breakpoints.MEDIUM;
   if (width < 1200)
-    return 'large';
+    return Breakpoints.LARGE;
   if (width < 1440)
-    return 'xlarge';
-  return 'xxlarge';
+    return Breakpoints.XLARGE;
+  return Breakpoints.XXLARGE;
+};
+
+/**
+ *
+ * @returns {*}
+ */
+export const isLargeScreen = () => {
+  const breakpoint = getFoundationBreakpoint();
+
+  switch (breakpoint) {
+    case Breakpoints.SMALL:
+      return false;
+    case Breakpoints.MEDIUM:
+      return false;
+    default:
+      return true;
+  }
 };
 
 /**
@@ -117,6 +136,8 @@ export const getSearchQuery = (filters) => {
 
   return query.length ? `?${query.join('&')}` : '';
 };
+
+export const isEmptyValue = (value) => (value === null || value === undefined || value === '');
 
 
 /**
@@ -312,6 +333,11 @@ export const formatDateRange = (startDate: any, endDate: any) => {
 
   return `${start.format(dateFormat)} - ${end.format(dateFormat)}`;
 };
+
+export const isDecimalNumber = (value: ?string) =>
+  !isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, ''))
+    ? true
+    : false;
 
 /**
  *
@@ -584,4 +610,52 @@ const getFileNameByContentDisposition = (contentDisposition) => {
 export const getFileNameFromResponse = (response) => {
   const disposition = response.headers.get('content-disposition');
   return getFileNameByContentDisposition(disposition);
+};
+
+export const sortByStartAndEndDateDesc = (a, b) => {
+  const startA = get(a, 'start_date', ''),
+    endA = get(a, 'end_date', ''),
+    startB = get(b, 'start_date', ''),
+    endB = get(b, 'end_date', '');
+
+  if(startA > startB) return -1;
+  if(startA < startB) return 1;
+  if(endA > endB) return -1;
+  if(endA < endB) return 1;
+  return 0;
+};
+
+const selectElementContents = (el) => {
+  if (document.createRange && window.getSelection) {
+    const range = document.createRange();
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    try {
+      range.selectNodeContents(el);
+      sel.addRange(range);
+    } catch (e) {
+      range.selectNode(el);
+      sel.addRange(range);
+    }
+  }
+};
+
+export const copyElementContentsToClipboard = (el: any) => {
+  const selection = document.getSelection(),
+    selected = selection && selection.rangeCount > 0
+      ? selection.getRangeAt(0)
+      : false;
+
+  if(!document.body) return false;
+
+  document.body.appendChild(el);
+  selectElementContents(el);
+  document.execCommand('copy');
+  document.body.removeChild(el);
+
+  if (selection && selected) {
+    selection.removeAllRanges();
+    selection.addRange(selected);
+  }
+  return true;
 };

@@ -1,22 +1,20 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React from 'react';
 import {connect} from 'react-redux';
-import {change, FieldArray, formValueSelector} from 'redux-form';
+import {change, Field, FieldArray, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import type {Element} from 'react';
 
-import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
+import ErrorField from '$components/form/ErrorField';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
-import SubTitle from '$components/content/SubTitle';
-import {rentCustomDateOptions} from '$src/leases/constants';
-import {DeleteModalLabels, DeleteModalTitles, FormNames, RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import {rentCustomDateOptions, oneTimeRentDueDateTypeOptions} from '$src/leases/constants';
+import {FormNames, RentCycles, RentTypes, RentDueDateTypes} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
-
 import type {Attributes} from '$src/leases/types';
 
 type SeasonalDatesProps = {
@@ -29,58 +27,65 @@ const SeasonalDates = ({
   isSaveClicked,
 }: SeasonalDatesProps ) => {
   return(
-    <Row>
-      <Column small={6} medium={4} large={2}>
-        <FormTextTitle title='Kausivuokra alkupvm' />
-        <Row>
-          <Column small={6}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.seasonal_start_day')}
-              name='seasonal_start_day'
-              overrideValues={{
-                label: '',
-              }}
-            />
-          </Column>
-          <Column small={6}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.seasonal_start_month')}
-              name='seasonal_start_month'
-              overrideValues={{
-                label: '',
-              }}
-            />
-          </Column>
-        </Row>
-      </Column>
-      <Column small={6} medium={4} large={2}>
-        <FormTextTitle title='Kausivuokra loppupvm' />
-        <Row>
-          <Column small={6}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.seasonal_end_day')}
-              name='seasonal_end_day'
-              overrideValues={{
-                label: '',
-              }}
-            />
-          </Column>
-          <Column small={6}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.seasonal_end_month')}
-              name='seasonal_end_month'
-              overrideValues={{
-                label: '',
-              }}
-            />
-          </Column>
-        </Row>
-      </Column>
-    </Row>
+    <div>
+      <Row>
+        <Column small={12}><FormTextTitle title='Kausivuokra ajalla (pv.kk)' /></Column>
+      </Row>
+      <Row>
+        <Column small={3}>
+          <FormField
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'rents.child.children.seasonal_start_day')}
+            name='seasonal_start_day'
+            overrideValues={{
+              label: '',
+            }}
+          />
+        </Column>
+        <Column small={3}>
+          <FormField
+            className='with-dot'
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'rents.child.children.seasonal_start_month')}
+            name='seasonal_start_month'
+            overrideValues={{
+              label: '',
+            }}
+          />
+        </Column>
+        <Column small={3}>
+          <FormField
+            className='with-dash'
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'rents.child.children.seasonal_end_day')}
+            name='seasonal_end_day'
+            overrideValues={{
+              label: '',
+            }}
+          />
+        </Column>
+        <Column small={3}>
+          <FormField
+            className='with-dot'
+            disableTouched={isSaveClicked}
+            fieldAttributes={get(attributes, 'rents.child.children.seasonal_end_month')}
+            name='seasonal_end_month'
+            overrideValues={{
+              label: '',
+            }}
+          />
+        </Column>
+      </Row>
+      <Row>
+        <Column>
+          <Field
+            name="seasonalDates"
+            component={ErrorField}
+            showError={isSaveClicked}
+          />
+        </Column>
+      </Row>
+    </div>
   );
 };
 
@@ -99,7 +104,7 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
     <div>
       <Row>
         <Column>
-          <FormTextTitle title='Eräpäivät' />
+          <FormTextTitle title='Eräpäivät (pv.kk)' />
         </Column>
       </Row>
       {fields && !!fields.length && fields.map((due_date, index) => {
@@ -123,6 +128,7 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
                   <FieldAndRemoveButtonWrapper
                     field={
                       <FormField
+                        className='with-dot'
                         disableTouched={isSaveClicked}
                         fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.month')}
                         invisibleLabel
@@ -155,115 +161,58 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
   );
 };
 
-type FixedInitialYearRentsProps = {
-  attributes: Attributes,
-  fields: any,
-  isSaveClicked: boolean,
-}
-
-const renderFixedInitialYearRents = ({attributes, fields, isSaveClicked}: FixedInitialYearRentsProps): Element<*> => {
+const renderDueDatesOneTime = ({attributes, fields, isSaveClicked}: DueDatesProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
   };
 
   return (
-    <AppConsumer>
-      {({dispatch}) => {
-        return(
-          <div>
-            <Row>
-              <Column>
-                <SubTitle>Kiinteät alkuvuosivuokrat</SubTitle>
-              </Column>
-            </Row>
-            {fields && !!fields.length &&
+    <div>
+      <Row>
+        <Column>
+          <FormTextTitle title='Eräpäivät (pv.kk)' />
+        </Column>
+      </Row>
+      {fields && !!fields.length && fields.map((due_date, index) => {
+        if(index) return null;
+
+        return (
+          <Row key={index}>
+            <Column small={12}>
               <Row>
-                <Column small={3} medium={3} large={2}>
-                  <FormTextTitle title='Käyttötarkoitus' />
+                <Column small={6}>
+                  <FormField
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.day')}
+                    invisibleLabel
+                    name={`${due_date}.day`}
+                  />
                 </Column>
-                <Column small={3} medium={3} large={2}>
-                  <FormTextTitle title='Kiinteä alkuvuosivuokra' />
-                </Column>
-                <Column small={2} medium={2} large={1}>
-                  <FormTextTitle title='Alkupvm' />
-                </Column>
-                <Column small={2} medium={2} large={1}>
-                  <FormTextTitle title='Loppupvm' />
+                <Column small={6}>
+                  <FormField
+                    className='with-dot'
+                    disableTouched={isSaveClicked}
+                    fieldAttributes={get(attributes, 'rents.child.children.due_dates.child.children.month')}
+                    invisibleLabel
+                    name={`${due_date}.month`}
+                  />
                 </Column>
               </Row>
-            }
-            {fields && !!fields.length && fields.map((rent, index) => {
-              const handleRemove = () => {
-                dispatch({
-                  type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                  confirmationFunction: () => {
-                    fields.remove(index);
-                  },
-                  confirmationModalButtonText: 'Poista',
-                  confirmationModalLabel: DeleteModalLabels.FIXED_INITIAL_YEAR_RENT,
-                  confirmationModalTitle: DeleteModalTitles.FIXED_INITIAL_YEAR_RENT,
-                });
-              };
-
-              return (
-                <div key={index}>
-                  <Row>
-                    <Column small={3} medium={3} large={2}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use')}
-                        invisibleLabel
-                        name={`${rent}.intended_use`}
-                      />
-                    </Column>
-                    <Column small={3} medium={3} large={2}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
-                        invisibleLabel
-                        name={`${rent}.amount`}
-                        unit='€'
-                      />
-                    </Column>
-                    <Column small={2} medium={2} large={1}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.start_date')}
-                        invisibleLabel
-                        name={`${rent}.start_date`}
-                      />
-                    </Column>
-                    <Column small={2} medium={2} large={1}>
-                      <FormField
-                        disableTouched={isSaveClicked}
-                        fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}
-                        invisibleLabel
-                        name={`${rent}.end_date`}
-                      />
-                    </Column>
-                    <Column>
-                      <RemoveButton
-                        className='third-level'
-                        onClick={handleRemove}
-                        title="Poista alennus/korotus"
-                      />
-                    </Column>
-                  </Row>
-                </div>
-              );
-            })}
-            <Row>
-              <Column>
-                <AddButtonThird
-                  label='Lisää kiinteä alkuvuosivuokra'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
-          </div>
+            </Column>
+          </Row>
         );
-      }}
-    </AppConsumer>
+      })}
+      {(!fields || !fields.length) &&
+        <Row>
+          <Column>
+            <AddButtonThird
+              label='Lisää eräpäivä'
+              onClick={handleAdd}
+            />
+          </Column>
+        </Row>
+      }
+    </div>
   );
 };
 
@@ -293,12 +242,13 @@ const BasicInfoEmpty = ({attributes, isSaveClicked}: BasicInfoEmptyProps) => {
 
 type BasicInfoIndexProps = {
   attributes: Attributes,
+  cycle: ?string,
   dueDatesType: ?string,
   isIndex: boolean,
   isSaveClicked: boolean,
 }
 
-const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: BasicInfoIndexProps) => {
+const BasicInfoIndex = ({attributes, cycle, dueDatesType, isIndex, isSaveClicked}: BasicInfoIndexProps) => {
   return (
     <div>
       <Row>
@@ -342,16 +292,20 @@ const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: Basi
             }}
           />
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <FormField
-            disableTouched={isSaveClicked}
-            fieldAttributes={get(attributes, 'rents.child.children.index_type')}
-            name='index_type'
-            overrideValues={{
-              label: 'Indeksin tunnusnumero',
-            }}
-          />
-        </Column>
+
+        {isIndex &&
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'rents.child.children.index_type')}
+              name='index_type'
+              overrideValues={{
+                label: 'Indeksin tunnusnumero',
+              }}
+            />
+          </Column>
+        }
+
         <Column small={6} medium={4} large={2}>
           <FormField
             disableTouched={isSaveClicked}
@@ -388,106 +342,43 @@ const BasicInfoIndex = ({attributes, dueDatesType, isIndex, isSaveClicked}: Basi
         }
       </Row>
 
-      <SeasonalDates
-        attributes={attributes}
-        isSaveClicked={isSaveClicked}
-      />
-
       {!isIndex &&
         <Row>
-          <Column small={12} medium={4} large={2}>
-            <Row>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.elementary_index')}
-                  name='elementary_index'
-                  overrideValues={{
-                    label: 'Perusindeksi',
-                  }}
-                />
-              </Column>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.index_rounding')}
-                  name='index_rounding'
-                  overrideValues={{
-                    label: 'Pyöristys',
-                  }}
-                />
-              </Column>
-            </Row>
-          </Column>
-          <Column small={4} medium={2} large={1}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.x_value')}
-              name='x_value'
-              overrideValues={{
-                label: 'X-luku',
-              }}
-            />
-          </Column>
-          <Column small={4} medium={2} large={1}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.y_value')}
-              name='y_value'
-              overrideValues={{
-                label: 'Y-luku',
-              }}
-            />
-          </Column>
-          <Column small={4} medium={2} large={1}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.y_value_start')}
-              name='y_value_start'
-              overrideValues={{
-                label: 'Y-alkaen',
-              }}
-            />
-          </Column>
-          <Column small={12} medium={4} large={2}>
-            <Row>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.equalization_start_date')}
-                  name='equalization_start_date'
-                  overrideValues={{
-                    label: 'Tasaus alkupvm',
-                  }}
-                />
-              </Column>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={get(attributes, 'rents.child.children.equalization_end_date')}
-                  name='equalization_end_date'
-                  overrideValues={{
-                    label: 'Tasaus loppupvm',
-                  }}
-                />
-              </Column>
-            </Row>
-          </Column>
+          {(cycle === RentCycles.JANUARY_TO_DECEMBER || cycle === RentCycles.APRIL_TO_MARCH) &&
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={get(attributes, 'rents.child.children.manual_ratio')}
+                name='manual_ratio'
+                overrideValues={{
+                  label: 'Käsinlaskentakerroin',
+                }}
+              />
+            </Column>
+          }
+          {cycle === RentCycles.APRIL_TO_MARCH &&
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={get(attributes, 'rents.child.children.manual_ratio_previous')}
+                name='manual_ratio_previous'
+                overrideValues={{
+                  label: 'Käsinlaskentakerroin (edellinen)',
+                }}
+              />
+            </Column>
+          }
         </Row>
       }
 
       <Row>
-        <Column small={12}>
-          <FieldArray
+        <Column small={12} medium={4} large={2}>
+          <SeasonalDates
             attributes={attributes}
-            component={renderFixedInitialYearRents}
             isSaveClicked={isSaveClicked}
-            name="fixed_initial_year_rents"
           />
         </Column>
-      </Row>
-      <Row>
-        <Column>
+        <Column small={12} medium={8} large={10}>
           <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.note')}
@@ -560,6 +451,7 @@ const BasicInfoOneTime = ({attributes, dueDatesType, isSaveClicked}: BasicInfoOn
             name='due_dates_type'
             overrideValues={{
               label: 'Laskutusjako',
+              options: oneTimeRentDueDateTypeOptions,
             }}
           />
         </Column>
@@ -567,32 +459,13 @@ const BasicInfoOneTime = ({attributes, dueDatesType, isSaveClicked}: BasicInfoOn
           <Column small={6} medium={4} large={2}>
             <FieldArray
               attributes={attributes}
-              component={renderDueDates}
+              component={renderDueDatesOneTime}
               isSaveClicked={isSaveClicked}
               name="due_dates"
             />
           </Column>
         }
-        {dueDatesType === RentDueDateTypes.FIXED &&
-          <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'rents.child.children.due_dates_per_year')}
-              name='due_dates_per_year'
-              overrideValues={{
-                fieldType: 'choice',
-                label: 'Laskut kpl/vuodessa',
-                options: rentCustomDateOptions,
-              }}
-            />
-          </Column>
-        }
       </Row>
-
-      <SeasonalDates
-        attributes={attributes}
-        isSaveClicked={isSaveClicked}
-      />
 
       <Row>
         <Column>
@@ -684,13 +557,14 @@ const BasicInfoFixed = ({attributes, dueDatesType, isSaveClicked}: BasicInfoFixe
         }
       </Row>
 
-      <SeasonalDates
-        attributes={attributes}
-        isSaveClicked={isSaveClicked}
-      />
-
       <Row>
-        <Column>
+        <Column small={12} medium={4} large={2}>
+          <SeasonalDates
+            attributes={attributes}
+            isSaveClicked={isSaveClicked}
+          />
+        </Column>
+        <Column small={12} medium={8} large={10}>
           <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.note')}
@@ -764,6 +638,7 @@ const BasicInfoFree = ({attributes, isSaveClicked}: BasicInfoFreeProps) => {
 type Props = {
   attributes: Attributes,
   change: Function,
+  cycle: string,
   dueDates: Array<Object>,
   dueDatesType: ?string,
   field: any,
@@ -771,86 +646,62 @@ type Props = {
   rentType: ?string,
 }
 
-class BasicInfoEdit extends PureComponent<Props> {
-  componentDidUpdate(prevProps: Props) {
-    if(prevProps.dueDatesType === RentDueDateTypes.CUSTOM &&
-    (this.props.dueDatesType === RentDueDateTypes.FIXED || !this.props.dueDatesType)) {
-      this.clearInvalidDueDates();
-    }
-  }
-
-  clearInvalidDueDates = () => {
-    const {change, dueDates, field} = this.props;
-
-    if(!dueDates) return;
-
-    const clearedDueDates = dueDates.filter((dueDate) => {
-      const month = Number(dueDate.month || 0),
-        day = Number(dueDate.day || 0);
-
-      if(month < 1 || month > 12 || day < 1 || day > 31) {
-        return false;
+const BasicInfoEdit = ({
+  attributes,
+  cycle,
+  dueDatesType,
+  isSaveClicked,
+  rentType,
+}: Props) => {
+  return (
+    <div>
+      {!rentType &&
+        <BasicInfoEmpty
+          attributes={attributes}
+          isSaveClicked={isSaveClicked}
+        />
       }
-      return true;
-    });
-    change(formName, `${field}.due_dates`, clearedDueDates);
-  }
-
-  render() {
-    const {
-      attributes,
-      dueDatesType,
-      isSaveClicked,
-      rentType,
-    } = this.props;
-    return (
-      <div>
-        {!rentType &&
-          <BasicInfoEmpty
-            attributes={attributes}
-            isSaveClicked={isSaveClicked}
-          />
-        }
-        {rentType === RentTypes.INDEX &&
-          <BasicInfoIndex
-            attributes={attributes}
-            dueDatesType={dueDatesType}
-            isIndex={true}
-            isSaveClicked={isSaveClicked}
-          />
-        }
-        {rentType === RentTypes.ONE_TIME &&
-          <BasicInfoOneTime
-            attributes={attributes}
-            dueDatesType={dueDatesType}
-            isSaveClicked={isSaveClicked}
-          />
-        }
-        {rentType === RentTypes.FIXED &&
-          <BasicInfoFixed
-            attributes={attributes}
-            dueDatesType={dueDatesType}
-            isSaveClicked={isSaveClicked}
-          />
-        }
-        {rentType === RentTypes.FREE &&
-          <BasicInfoFree
-            attributes={attributes}
-            isSaveClicked={isSaveClicked}
-          />
-        }
-        {rentType === RentTypes.MANUAL &&
-          <BasicInfoIndex
-            attributes={attributes}
-            dueDatesType={dueDatesType}
-            isIndex={false}
-            isSaveClicked={isSaveClicked}
-          />
-        }
-      </div>
-    );
-  }
-}
+      {rentType === RentTypes.INDEX &&
+        <BasicInfoIndex
+          attributes={attributes}
+          cycle={cycle}
+          dueDatesType={dueDatesType}
+          isIndex={true}
+          isSaveClicked={isSaveClicked}
+        />
+      }
+      {rentType === RentTypes.ONE_TIME &&
+        <BasicInfoOneTime
+          attributes={attributes}
+          dueDatesType={dueDatesType}
+          isSaveClicked={isSaveClicked}
+        />
+      }
+      {rentType === RentTypes.FIXED &&
+        <BasicInfoFixed
+          attributes={attributes}
+          dueDatesType={dueDatesType}
+          isSaveClicked={isSaveClicked}
+        />
+      }
+      {rentType === RentTypes.FREE &&
+        <BasicInfoFree
+          attributes={attributes}
+          isSaveClicked={isSaveClicked}
+        />
+      }
+      {rentType === RentTypes.MANUAL &&
+        <BasicInfoIndex
+          attributes={attributes}
+          cycle={cycle}
+          dueDatesType={dueDatesType}
+          isIndex={false}
+          isSaveClicked={isSaveClicked}
+        />
+      }
+    </div>
+  );
+};
 
 const formName = FormNames.RENTS;
 const selector = formValueSelector(formName);
@@ -859,6 +710,7 @@ export default connect(
   (state, props) => {
     return {
       attributes: getAttributes(state),
+      cycle: selector(state, `${props.field}.cycle`),
       dueDatesType: selector(state, `${props.field}.due_dates_type`),
       dueDates: selector(state, `${props.field}.due_dates`),
     };

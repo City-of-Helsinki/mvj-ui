@@ -12,15 +12,19 @@ import {
   LeaseState,
   LeaseStatus,
   RecipientOptions,
+  RentCycles,
+  RentDueDateTypes,
+  RentTypes,
   TenantContactType,
 } from './enums';
 import {getContactFullName, getContentContact} from '$src/contacts/helpers';
 import {getUserFullName} from '$src/users/helpers';
+import {isEmptyValue} from '$util/helpers';
 import {
   fixedLengthNumber,
   formatDecimalNumberForDb,
   getCoordinatesOfGeometry,
-  sortByStartDateDesc,
+  sortByStartAndEndDateDesc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
@@ -533,70 +537,80 @@ export const getContentTenantsFormData = (lease: Object) => {
 };
 
 export const getContentPayableRents = (rent: Object) =>
-  get(rent, 'payable_rents', []).map((item) => {
-    return {
-      id: item.id || undefined,
-      amount: item.amount,
-      start_date: item.start_date,
-      end_date: item.end_date,
-      difference_percent: item.difference_percent,
-      calendar_year_rent: item.calendar_year_rent,
-    };
-  });
+  get(rent, 'payable_rents', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        amount: item.amount,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        difference_percent: item.difference_percent,
+        calendar_year_rent: item.calendar_year_rent,
+      };
+    })
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentRentAdjustments = (rent: Object) =>
-  get(rent, 'rent_adjustments', []).map((item) => {
-    return {
-      id: item.id || undefined,
-      type: item.type,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      start_date: item.start_date,
-      end_date: item.end_date,
-      full_amount: item.full_amount,
-      amount_type: get(item, 'amount_type.id') || get(item, 'amount_type'),
-      amount_left: item.amount_left,
-      decision: get(item, 'decision.id') || get(item, 'decision'),
-      note: item.note,
-    };
-  });
+  get(rent, 'rent_adjustments', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        type: item.type,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        start_date: item.start_date,
+        end_date: item.end_date,
+        full_amount: item.full_amount,
+        amount_type: get(item, 'amount_type.id') || get(item, 'amount_type'),
+        amount_left: item.amount_left,
+        decision: get(item, 'decision.id') || get(item, 'decision'),
+        note: item.note,
+      };
+    })
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentIndexAdjustedRents = (rent: Object) =>
-  get(rent, 'index_adjusted_rents', []).map((item) => {
-    return {
-      item: item.id || undefined,
-      amount: item.amount,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      start_date: item.start_date,
-      end_date: item.end_date,
-      factor: item.factor,
-    };
-  });
+  get(rent, 'index_adjusted_rents', [])
+    .map((item) => {
+      return {
+        item: item.id || undefined,
+        amount: item.amount,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        start_date: item.start_date,
+        end_date: item.end_date,
+        factor: item.factor,
+      };
+    })
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentContractRents = (rent: Object) =>
-  get(rent, 'contract_rents', []).map((item) => {
-    return {
-      id: item.id || undefined,
-      amount: item.amount,
-      period: item.period,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      base_amount: item.base_amount,
-      base_amount_period: item.base_amount_period,
-      base_year_rent: item.base_year_rent,
-      start_date: item.start_date,
-      end_date: item.end_date,
-    };
-  });
+  get(rent, 'contract_rents', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        amount: item.amount,
+        period: item.period,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        base_amount: item.base_amount,
+        base_amount_period: item.base_amount_period,
+        base_year_rent: item.base_year_rent,
+        start_date: item.start_date,
+        end_date: item.end_date,
+      };
+    })
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentFixedInitialYearRents = (rent: Object) =>
-  get(rent, 'fixed_initial_year_rents', []).map((item) => {
-    return {
-      id: item.id || undefined,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      amount: item.amount,
-      start_date: item.start_date,
-      end_date: item.end_date,
-    };
-  });
+  get(rent, 'fixed_initial_year_rents', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        amount: item.amount,
+        start_date: item.start_date,
+        end_date: item.end_date,
+      };
+    })
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentRentDueDate = (rent: Object, path?: string = 'due_dates') =>
   get(rent, path, []).map((date) => ({
@@ -618,6 +632,8 @@ export const getContentRents = (lease: Object) =>
         index_type: rent.index_type,
         due_dates_type: rent.due_dates_type,
         due_dates_per_year: rent.due_dates_per_year,
+        manual_ratio: rent.manual_ratio,
+        manual_ratio_previous: rent.manual_ratio_previous,
         elementary_index: rent.elementary_index,
         index_rounding: rent.index_rounding,
         x_value: rent.x_value,
@@ -637,11 +653,11 @@ export const getContentRents = (lease: Object) =>
         contract_rents: getContentContractRents(rent),
         index_adjusted_rents: getContentIndexAdjustedRents(rent),
         rent_adjustments: getContentRentAdjustments(rent),
-        payable_rents: getContentPayableRents(rent).sort(sortByStartDateDesc),
+        payable_rents: getContentPayableRents(rent),
         yearly_due_dates: getContentRentDueDate(rent, 'yearly_due_dates'),
       };
     })
-    .sort((a, b) => sortStringByKeyDesc(a, b, 'start_date'));
+    .sort(sortByStartAndEndDateDesc);
 
 export const getContentRentsFormData = (lease: Object) => {
   const rents = getContentRents(lease);
@@ -652,20 +668,26 @@ export const getContentRentsFormData = (lease: Object) => {
   };
 };
 
-export const getContentBasisOfRents = (lease: Object) =>
-  get(lease, 'basis_of_rents', []).map((item) => {
-    return {
-      id: item.id || undefined,
-      intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      floor_m2: item.floor_m2,
-      index: item.index,
-      amount_per_floor_m2_index_100: item.amount_per_floor_m2_index_100,
-      amount_per_floor_m2_index: item.amount_per_floor_m2_index,
-      percent: item.percent,
-      year_rent_index_100: item.year_rent_index_100,
-      year_rent_index: item.year_rent_index,
-    };
-  });
+export const getContentBasisOfRents = (lease: Object, archived: boolean = true) =>
+  get(lease, 'basis_of_rents', [])
+    .map((item) => {
+      return {
+        id: item.id || undefined,
+        intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
+        area: item.area,
+        area_unit: item.area_unit,
+        amount_per_area: item.amount_per_area,
+        index: get(item, 'index.id') || get(item, 'index'),
+        profit_margin_percentage: item.profit_margin_percentage,
+        discount_percentage: item.discount_percentage,
+        plans_inspected_at: item.plans_inspected_at,
+        plans_inspected_by: item.plans_inspected_by,
+        locked_at: item.locked_at,
+        locked_by: item.locked_by,
+        archived_at: item.archived_at,
+      };
+    })
+    .filter((item) => !!item.archived_at === archived);
 
 export const getFullAddress = (item: Object) => {
   if(isEmpty(item)) return null;
@@ -1185,19 +1207,25 @@ export const getContentRentAdjustmentsForDb = (rent: Object) =>
     };
   });
 
-export const getContentContractRentsForDb = (rent: Object) =>
+export const getContentContractRentsForDb = (rent: Object, rentType: string) =>
   get(rent, 'contract_rents', []).map((item) => {
-    return {
+    const contractRentData: any = {
       id: item.id || undefined,
       amount: formatDecimalNumberForDb(item.amount),
       period: item.period,
       intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
-      base_amount: formatDecimalNumberForDb(item.base_amount),
-      base_amount_period: item.base_amount_period,
-      base_year_rent: formatDecimalNumberForDb(item.base_year_rent),
       start_date: item.start_date,
       end_date: item.end_date,
     };
+
+    // Patch these fields only if rent type is index or manual
+    if(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) {
+      contractRentData.base_amount = formatDecimalNumberForDb(item.base_amount);
+      contractRentData.base_amount_period = item.base_amount_period;
+      contractRentData.base_year_rent = formatDecimalNumberForDb(item.base_year_rent);
+    }
+
+    return contractRentData;
   });
 
 export const getContentFixedInitialYearRentsForDb = (rent: Object) =>
@@ -1211,31 +1239,78 @@ export const getContentFixedInitialYearRentsForDb = (rent: Object) =>
     };
   });
 
-export const getContentRentDueDatesForDb = (rent: Object) =>
-  get(rent, 'due_dates', []).map((date) => {
+export const getContentRentDueDatesForDb = (rent: Object) => {
+  const dueDatesType = rent.due_dates_type;
+  const dueDates = get(rent, 'due_dates', []);
+
+  if(dueDatesType === RentDueDateTypes.ONE_TIME) {
+    return dueDates.length
+      ? [{
+        id: dueDates[0].id || undefined,
+        day: dueDates[0].day,
+        month: dueDates[0].month,
+      }]
+      : [];
+  }
+  return dueDates.map((date) => {
     return {
       id: date.id || undefined,
       day: date.day,
       month: date.month,
     };
   });
+};
 
-export const addRentsFormValues = (payload: Object, values: Object) => {
+
+export const getSavedBasisOfRent = (lease: Lease, id: ?number) => {
+  const basisOfRentsActive = getContentBasisOfRents(lease, false);
+  const basisOfRentsArchived = getContentBasisOfRents(lease, true);
+  const basisOfRents = [...basisOfRentsActive, ...basisOfRentsArchived];
+
+  if(basisOfRents.length && isEmptyValue(id)) return null;
+  return basisOfRents.find((rent) => rent.id === id);
+};
+
+export const addRentsFormValues = (payload: Object, values: Object, currentLease: Lease) => {
   payload.is_rent_info_complete = values.is_rent_info_complete ? true : false;
 
-  const basisOfRents = get(values, 'basis_of_rents', []);
+  const basisOfRents = [...get(values, 'basis_of_rents', []), ...get(values, 'basis_of_rents_archived', [])];
   payload.basis_of_rents = basisOfRents.map((item) => {
-    return {
-      id: item.id || undefined,
-      intended_use: item.intended_use,
-      floor_m2: formatDecimalNumberForDb(item.floor_m2),
-      index: item.index,
-      amount_per_floor_m2_index_100: formatDecimalNumberForDb(item.amount_per_floor_m2_index_100),
-      amount_per_floor_m2_index: formatDecimalNumberForDb(item.amount_per_floor_m2_index),
-      percent: formatDecimalNumberForDb(item.percent),
-      year_rent_index_100: formatDecimalNumberForDb(item.year_rent_index_100),
-      year_rent_index: formatDecimalNumberForDb(item.year_rent_index),
-    };
+    const savedBasisOfRent = getSavedBasisOfRent(currentLease, item.id);
+
+    if(savedBasisOfRent && savedBasisOfRent.locked_at && !item.locked_at) {
+      const basisOfRentData: any = {
+        id: item.id,
+      };
+
+      if(get(savedBasisOfRent, 'archived_at') !== item.archived_at) {
+        basisOfRentData.archived_at = item.archived_at;
+      }
+
+      switch (!!item.locked_at) {
+        case true:
+          basisOfRentData.locked_at = item.locked_at;
+          return basisOfRentData;
+        case false:
+          return basisOfRentData;
+      }
+    } else {
+      const basisOfRentData: any = {
+        id: item.id || undefined,
+        intended_use: item.intended_use,
+        area: formatDecimalNumberForDb(item.area),
+        area_unit: item.area_unit,
+        amount_per_area: formatDecimalNumberForDb(item.amount_per_area),
+        index: item.index,
+        profit_margin_percentage: formatDecimalNumberForDb(item.profit_margin_percentage),
+        discount_percentage: formatDecimalNumberForDb(item.discount_percentage),
+        plans_inspected_at: item.plans_inspected_at,
+        locked_at: item.locked_at,
+        archived_at: item.archived_at,
+      };
+
+      return basisOfRentData;
+    }
   });
 
   const rentsCurrent = get(values, 'rents', []);
@@ -1243,34 +1318,61 @@ export const addRentsFormValues = (payload: Object, values: Object) => {
   const rents = [...rentsCurrent, ...rentsArchived];
 
   payload.rents = rents.map((rent) => {
-    return {
+    const rentData: any = {
       id: rent.id || undefined,
       type: rent.type,
       start_date: rent.start_date,
       end_date: rent.end_date,
-      cycle: rent.cycle,
-      index_type: rent.index_type,
-      due_dates_type: rent.due_dates_type,
-      due_dates_per_year: rent.due_dates_per_year,
-      elementary_index: rent.elementary_index,
-      index_rounding: rent.index_rounding,
-      x_value: rent.x_value,
-      y_value: rent.y_value,
-      y_value_start: rent.y_value_start,
-      equalization_start_date: rent.equalization_start_date,
-      equalization_end_date: rent.equalization_end_date,
-      seasonal_start_day: rent.seasonal_start_day,
-      seasonal_start_month: rent.seasonal_start_month,
-      seasonal_end_day: rent.seasonal_end_day,
-      seasonal_end_month: rent.seasonal_end_month,
-      amount: formatDecimalNumberForDb(rent.amount),
       note: rent.note,
-      is_active: rent.is_active,
-      due_dates: getContentRentDueDatesForDb(rent),
-      fixed_initial_year_rents: getContentFixedInitialYearRentsForDb(rent),
-      contract_rents: getContentContractRentsForDb(rent),
-      rent_adjustments: getContentRentAdjustmentsForDb(rent),
     };
+
+    // Patch amount only if rent type is one time
+    if(rent.type === RentTypes.ONE_TIME) {
+      rentData.amount = formatDecimalNumberForDb(rent.amount);
+    }
+
+    // Patch due dates data only if rent type is not free
+    if(rent.type !== RentTypes.FREE) {
+      rentData.due_dates_type = rent.due_dates_type;
+
+      if(rent.due_dates_type === RentDueDateTypes.CUSTOM) {
+        rentData.due_dates = getContentRentDueDatesForDb(rent);
+      } else if (rent.due_dates_type === RentDueDateTypes.FIXED) {
+        rentData.due_dates_per_year = rent.due_dates_per_year;
+      }
+    }
+
+    // Patch cycle, index type, fixed initial year rents and contract rents data only if rent type is index or manual
+    if(rent.type === RentTypes.INDEX || rent.type === RentTypes.MANUAL) {
+      rentData.cycle = rent.cycle;
+      rentData.index_type = rent.index_type;
+      rentData.fixed_initial_year_rents = getContentFixedInitialYearRentsForDb(rent);
+      rentData.contract_rents = getContentContractRentsForDb(rent, rent.type);
+    }
+
+    if(rent.type === RentTypes.MANUAL) {
+      console.log(rent);
+      switch (rent.cycle) {
+        case RentCycles.JANUARY_TO_DECEMBER:
+          rentData.manual_ratio = formatDecimalNumberForDb(rent.manual_ratio);
+          break;
+        case RentCycles.APRIL_TO_MARCH:
+          rentData.manual_ratio = formatDecimalNumberForDb(rent.manual_ratio);
+          rentData.manual_ratio_previous = formatDecimalNumberForDb(rent.manual_ratio_previous);
+          break;
+      }
+    }
+
+    // Patch seosonal dates and rent adjustments data only if rent type is index, fixed or manual
+    if(rent.type === RentTypes.INDEX || rent.type === RentTypes.FIXED || rent.type === RentTypes.MANUAL) {
+      rentData.seasonal_start_day = rent.seasonal_start_day || null;
+      rentData.seasonal_start_month = rent.seasonal_start_month || null;
+      rentData.seasonal_end_day = rent.seasonal_end_day || null;
+      rentData.seasonal_end_month = rent.seasonal_end_month || null;
+      rentData.rent_adjustments = getContentRentAdjustmentsForDb(rent);
+    }
+
+    return rentData;
   });
 
   return payload;

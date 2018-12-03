@@ -1,18 +1,15 @@
 // @flow
-import React from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
+import get from 'lodash/get';
 
-import SortableTable from '$components/table/SortableTable';
+import BasisOfRent from './BasisOfRent';
+import BoxItemContainer from '$components/content/BoxItemContainer';
+import FormText from '$components/form/FormText';
+import GrayBox from '$components/content/GrayBox';
+import GreenBox from '$components/content/GreenBox';
 import {getContentBasisOfRents} from '$src/leases/helpers';
-import {
-  formatNumber,
-  getAttributeFieldOptions,
-  getLabelOfOption,
-  sortByOptionsAsc,
-  sortByOptionsDesc,
-  sortNumberByKeyAsc,
-  sortNumberByKeyDesc,
-} from '$util/helpers';
+import {getFieldOptions, isEmptyValue} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';
@@ -22,32 +19,94 @@ type Props = {
   currentLease: Lease,
 }
 
-const BasisOfRents = ({attributes, currentLease}: Props) => {
-  const basisOfRents = getContentBasisOfRents(currentLease);
-  const intendedUseOptions = getAttributeFieldOptions(attributes,
-    'basis_of_rents.child.children.intended_use');
+type State = {
+  areaUnitOptions: Array<Object>,
+  attributes: Attributes,
+  basisOfRents: Array<Object>,
+  basisOfRentsArchived: Array<Object>,
+  currentLease: Lease,
+  indexOptions: Array<Object>,
+  intendedUseOptions: Array<Object>,
+}
+class BasisOfRents extends PureComponent<Props, State> {
+  state = {
+    areaUnitOptions: [],
+    attributes: {},
+    basisOfRents: [],
+    basisOfRentsArchived: [],
+    currentLease: {},
+    indexOptions: [],
+    intendedUseOptions: [],
+  }
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
 
-  return (
-    <div>
-      <SortableTable
-        columns={[
-          {key: 'intended_use', text: 'Käyttötarkoitus', renderer: (val) => getLabelOfOption(intendedUseOptions, val) || '-', ascSortFunction: (a, b, key) => sortByOptionsAsc(a, b, key, intendedUseOptions), descSortFunction: (a, b, key) => sortByOptionsDesc(a, b, key, intendedUseOptions)},
-          {key: 'floor_m2', text: 'Pinta-ala', renderer: (val) => val ? `${formatNumber(val)} k-m²` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-          {key: 'index', text: 'Indeksi', renderer: (val) => formatNumber(val) || '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-          {key: 'amount_per_floor_m2_index_100', text: 'Yksikköhinta (ind 100)', renderer: (val) => val ? `${formatNumber(val)} €/k-m²` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-          {key: 'amount_per_floor_m2_index', text: 'Yksikköhinta (ind)', renderer: (val) => val ? `${formatNumber(val)} €/k-m²` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-          {key: 'percent', text: 'Prosenttia', renderer: (val) => val ? `${formatNumber(val)} %` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-          {key: 'year_rent_index_100', text: 'Perusvuosivuokra (ind 100)', renderer: (val) => val ? `${formatNumber(val)} €/v` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-          {key: 'year_rent_index', text: 'Alkuvuosivuokra (ind)', renderer: (val) => val ? `${formatNumber(val)} €/v` : '-', ascSortFunction: sortNumberByKeyAsc, descSortFunction: sortNumberByKeyDesc},
-        ]}
-        data={basisOfRents}
-        fixedHeader={true}
-        noDataText='Ei vuokranperusteita'
-        sortable={true}
-      />
-    </div>
-  );
-};
+    if(props.attributes !== state.attributes) {
+      newState.attributes = props.attributes;
+      newState.areaUnitOptions = getFieldOptions(get(props.attributes, 'basis_of_rents.child.children.area_unit'))
+        .map((item) => ({...item, label: (!isEmptyValue(item.label) ? item.label.replace('^2', '²') : item.label)}));
+      newState.indexOptions = getFieldOptions(get(props.attributes, 'basis_of_rents.child.children.index'));
+      newState.intendedUseOptions = getFieldOptions(get(props.attributes, 'basis_of_rents.child.children.intended_use'));
+    }
+
+    if(props.currentLease !== state.currentLease) {
+      newState.currentLease = props.currentLease;
+      newState.basisOfRents = getContentBasisOfRents(props.currentLease, false);
+      newState.basisOfRentsArchived = getContentBasisOfRents(props.currentLease, true);
+    }
+
+    return newState;
+  }
+
+  render() {
+    const {
+      areaUnitOptions,
+      basisOfRents,
+      basisOfRentsArchived,
+      indexOptions,
+      intendedUseOptions,
+    } = this.state;
+
+    return (
+      <div>
+        <GreenBox>
+          <BoxItemContainer>
+            {(!basisOfRents || !basisOfRents.length) && <FormText>Ei vuokralaskureita</FormText>}
+            {(basisOfRents && !!basisOfRents.length) && basisOfRents.map((basisOfRent, index) => {
+              return(
+                <BasisOfRent
+                  key={index}
+                  areaUnitOptions={areaUnitOptions}
+                  basisOfRent={basisOfRent}
+                  indexOptions={indexOptions}
+                  intendedUseOptions={intendedUseOptions}
+                />
+              );
+            })}
+          </BoxItemContainer>
+        </GreenBox>
+        {basisOfRentsArchived && !!basisOfRentsArchived.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+        {(basisOfRentsArchived && !!basisOfRentsArchived.length) &&
+          <GrayBox>
+            <BoxItemContainer>
+              {basisOfRentsArchived.map((basisOfRent, index) => {
+                return(
+                  <BasisOfRent
+                    key={index}
+                    areaUnitOptions={areaUnitOptions}
+                    basisOfRent={basisOfRent}
+                    indexOptions={indexOptions}
+                    intendedUseOptions={intendedUseOptions}
+                  />
+                );
+              })}
+            </BoxItemContainer>
+          </GrayBox>
+        }
+      </div>
+    );
+  }
+}
 
 export default connect(
   (state) => {

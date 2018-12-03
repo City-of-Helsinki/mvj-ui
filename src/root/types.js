@@ -9,6 +9,7 @@ import type {CommentState} from '$src/comments/types';
 import type {LeaseState} from '$src/leases/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
 import type {PreviewInvoicesState} from '$src/previewInvoices/types';
+import type {RentForPeriodState} from '$src/rentForPeriod/types';
 import type {UserState} from '$src/role/types';
 import type {VatState} from '$src/vat/types';
 
@@ -22,6 +23,7 @@ export type RootState = {
   lease: LeaseState,
   penaltyInterest: PenaltyInterestState,
   previewInvoices: PreviewInvoicesState,
+  rentForPeriod: RentForPeriodState,
   user: UserState,
   vat: VatState,
 };

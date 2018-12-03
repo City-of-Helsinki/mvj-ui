@@ -49,7 +49,7 @@ const RentAdjustments = ({attributes, decisions, rentAdjustments}: Props) => {
           const decision = getDecisionById(decisions, adjustment.decision);
 
           return (
-            <BoxItem  className='no-border-on-first-child' key={index}>
+            <BoxItem className='no-border-on-last-child' key={index}>
               <Row>
                 <Column small={6} medium={4} large={2}>
                   <FormTitleAndText

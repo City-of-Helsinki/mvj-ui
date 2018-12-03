@@ -361,7 +361,8 @@ class LeasePage extends Component<Props, State> {
       lease_areas_archived: areas.filter((area) => area.archived_at),
     });
     initialize(FormNames.RENTS, {
-      basis_of_rents: contentHelpers.getContentBasisOfRents(lease),
+      basis_of_rents: contentHelpers.getContentBasisOfRents(lease, false),
+      basis_of_rents_archived: contentHelpers.getContentBasisOfRents(lease, true),
       is_rent_info_complete: lease.is_rent_info_complete,
       ...contentHelpers.getContentRentsFormData(lease),
     });
@@ -578,7 +579,7 @@ class LeasePage extends Component<Props, State> {
         payload = contentHelpers.addAreasFormValues(payload, areasFormValues);
       }
       if(isRentsFormDirty) {
-        payload = contentHelpers.addRentsFormValues(payload, rentsFormValues);
+        payload = contentHelpers.addRentsFormValues(payload, rentsFormValues, currentLease);
       }
       if(isSummaryFormDirty) {
         payload = contentHelpers.addSummaryFormValues(payload, summaryFormValues);

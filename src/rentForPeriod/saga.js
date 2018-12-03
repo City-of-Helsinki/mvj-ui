@@ -1,9 +1,10 @@
 // @flow
 import {all, call, fork, put, takeLatest} from 'redux-saga/effects';
 
-import {notFound, receiveRentForPeriodByLease} from './actions';
+import {notFound, receiveIsSaveClicked, receiveRentForPeriodByLease} from './actions';
 import {fetchRentForPeriod} from './requests';
 import {receiveError} from '../api/actions';
+
 
 function* fetchRentForPeriodSaga({payload}): Generator<any, any, any> {
   try {
@@ -11,7 +12,16 @@ function* fetchRentForPeriodSaga({payload}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 200:
-        yield put(receiveRentForPeriodByLease({leaseId: payload.leaseId, rent: bodyAsJson}));
+        yield put(receiveRentForPeriodByLease({
+          leaseId: payload.leaseId,
+          rent: {
+            ...bodyAsJson,
+            id: payload.id,
+            allowDelete: payload.allowDelete,
+            rentCalculatorType: payload.rentCalculatorType,
+          },
+        }));
+        yield put(receiveIsSaveClicked(false));
         break;
       case 404:
         yield put(notFound());

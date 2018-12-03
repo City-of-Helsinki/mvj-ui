@@ -3,12 +3,23 @@ import React from 'react';
 /**
  * Component form names enumerable.
  *
- * @type {{RENT_CALCULATOR: string,}}
+ * @type {{INVOICE_SIMULATOR: string, NEW_COMMENT: string, RENT_CALCULATOR: string,}}
  */
 export const FormNames = {
   INVOICE_SIMULATOR: 'invoice-simulator-form',
   NEW_COMMENT: 'new-comment-form',
   RENT_CALCULATOR: 'rent-calculator-form',
+};
+
+/**
+ * Rent calculator type enumerable.
+ *
+ * @type {{YEAR: string, RANGE: string, BILLING_PERIOD: string,}}
+ */
+export const RentCalculatorTypes = {
+  YEAR: 'year',
+  RANGE: 'range',
+  BILLING_PERIOD: 'billing_period',
 };
 
 /**
@@ -75,4 +86,15 @@ export const CloseCommentPanelTexts = {
   BUTTON: 'Sulje kommentointi',
   LABEL: <span>Kaikkia muutoksia ei ole tallennettu.<br /> Haluatko varmasti sulkea kommentoinnin?</span>,
   TITLE: 'Sulje kommentointi',
+};
+
+/**
+ * Close comment panel text enumerable.
+ *
+ * @type {{BUTTON: string, LABEL: string, TITLE: string}}
+ */
+export const DeleteRentForPeriodTexts = {
+  BUTTON: 'Poista vuokralaskelma',
+  LABEL: 'Haluatko varmasti poistaa vuokralaskelman',
+  TITLE: 'Poista vuokralaskelma',
 };

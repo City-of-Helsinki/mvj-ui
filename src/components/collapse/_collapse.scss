@@ -214,6 +214,10 @@
     background-color: $medium-gray;
   }
 
+  &.archived {
+    background-color: $medium-gray;
+  }
+
   &.is-collapsing,
   &.is-expanding
    {

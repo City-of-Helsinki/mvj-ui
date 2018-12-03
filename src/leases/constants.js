@@ -1,5 +1,5 @@
 // @flow
-import {CreditInvoiceOptionsEnum} from './enums';
+import {CreditInvoiceOptionsEnum, RentDueDateTypes} from './enums';
 /**
  * Credit invoice options
  * @type {[*]}
@@ -18,6 +18,15 @@ export const CreditInvoiceSetOptions = [
   {value: CreditInvoiceOptionsEnum.FULL, label: 'Koko laskuryhmä'},
   {value: CreditInvoiceOptionsEnum.RECEIVABLE_TYPE, label: 'Koko saamislaji'},
   {value: CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT, label: 'Summa saamislajista'},
+];
+
+/**
+ * One time rent due date type options
+ * @type {[*]}
+ */
+export const oneTimeRentDueDateTypeOptions = [
+  {value: '', label: ''},
+  {value: RentDueDateTypes.CUSTOM, label: 'Erikseen määritelty'},
 ];
 
 /**

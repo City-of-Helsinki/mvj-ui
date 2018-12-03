@@ -2,12 +2,12 @@
 import moment from 'moment';
 import isArray from 'lodash/isArray';
 
+import {isEmptyValue} from '$util/helpers';
+
 const decimalPlaces = (n) => {
   let result= /^-?[0-9]+\.([0-9]+)$/.exec(n);
   return result === null ? 0 : result[1].length;
 };
-
-const isEmptyValue = (value) => (value === null || value === undefined || value === '');
 
 export const required = (value: any, error?: string) => {
   let val = value;
@@ -52,6 +52,18 @@ export const referenceNumber = (value: any, error?: string) => {
   }
   const regex = RegExp('^[Hh][Ee][Ll] [0-9]{4}-[0-9]{6}$');
   return regex.test(value) ? undefined : (error ? error : 'Arvon tulee olla muotoa HEL 0000-000000');
+};
+
+export const year = (value: any, error?: string) => {
+  if(isEmptyValue(value)) {
+    return undefined;
+  }
+  const numbers = /^[0-9]+$/;
+  const year = value.toString();
+
+  if (!numbers.test(year) || year.length != 4) return error ? error : 'Vuoden tulee olla 4 numeron mittainen';
+
+  return undefined;
 };
 
 export const genericValidator = (value: any, options: Object) => {

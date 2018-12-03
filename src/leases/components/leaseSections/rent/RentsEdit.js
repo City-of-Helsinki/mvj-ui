@@ -2,7 +2,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router';
-import {reduxForm, FieldArray} from 'redux-form';
+import {FieldArray, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
@@ -14,16 +14,17 @@ import BasisOfRentsEdit from './BasisOfRentsEdit';
 import Button from '$components/button/Button';
 import Divider from '$components/content/Divider';
 import FormSectionComponent from '$components/form/FormSection';
-import GreenBoxEdit from '$components/content/GreenBoxEdit';
+import GreenBox from '$components/content/GreenBox';
+import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete} from '$src/leases/actions';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {validateRentForm} from '$src/leases/formValidators';
 import {getContentRentsFormData} from '$src/leases/helpers';
-import {getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
+import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
-import type {Lease} from '$src/leases/types';
+import type {Attributes, Lease} from '$src/leases/types';
 
 type RentsProps = {
   fields: any,
@@ -37,7 +38,9 @@ const renderRents = ({
   showAddButton,
 }:RentsProps): Element<*> => {
   const handleAdd = () => {
-    fields.push({});
+    fields.push({
+      contract_rents: [{}],
+    });
   };
 
   return (
@@ -87,7 +90,11 @@ const renderRents = ({
 };
 
 type Props = {
+  attributes: Attributes,
+  change: Function,
   currentLease: Lease,
+  editedActiveBasisOfRents: Array<Object>,
+  editedArchivedBasisOfRents: Array<Object>,
   isRentInfoComplete: boolean,
   isSaveClicked: boolean,
   params: Object,
@@ -103,19 +110,22 @@ type State = {
 };
 
 class RentsEdit extends Component<Props, State> {
+  activeBasisOfRentsComponent: any
+  archivedBasisOfRentsComponent: any
+
   state = {
     lease: {},
     rentsData: {},
   }
 
   static getDerivedStateFromProps(props, state) {
+    const newState = {};
+
     if(props.currentLease !== state.lease) {
-      return {
-        lease: props.currentLease,
-        rentsData: getContentRentsFormData(props.currentLease),
-      };
+      newState.lease = props.currentLease;
+      newState.rentsData = getContentRentsFormData(props.currentLease);
     }
-    return null;
+    return newState;
   }
 
   componentDidUpdate(prevProps) {
@@ -138,6 +148,38 @@ class RentsEdit extends Component<Props, State> {
     const {currentLease, setRentInfoUncomplete} = this.props;
 
     setRentInfoUncomplete(currentLease.id);
+  }
+
+  setActiveBasisOfRentsRef = (ref: any) => {
+    this.activeBasisOfRentsComponent = ref;
+  }
+
+  setArchivedBasisOfRentsRef = (ref: any) => {
+    this.archivedBasisOfRentsComponent = ref;
+  }
+
+  handleArchive = (index: number, item: Object) => {
+    this.activeBasisOfRentsComponent.getRenderedComponent().wrappedInstance.removeBasisOfRent(index);
+    this.addArchivedItemToUnarchivedItems(item);
+  }
+
+  addArchivedItemToUnarchivedItems = (item: Object) => {
+    const {change, editedArchivedBasisOfRents} = this.props,
+      newItems = [...editedArchivedBasisOfRents, {...item, archived_at: new Date().toISOString()}];
+
+    change('basis_of_rents_archived', newItems);
+  }
+
+  handleUnarchive = (index: number, item: Object) => {
+    this.archivedBasisOfRentsComponent.getRenderedComponent().wrappedInstance.removeBasisOfRent(index);
+    this.addUnarchivedItemToArchivedItems(item);
+  }
+
+  addUnarchivedItemToArchivedItems = (item: Object) => {
+    const {change, editedActiveBasisOfRents} = this.props,
+      newItems = [...editedActiveBasisOfRents, {...item, archived_at: null}];
+
+    change('basis_of_rents', newItems);
   }
 
   render() {
@@ -214,16 +256,32 @@ class RentsEdit extends Component<Props, State> {
                   showAddButton={false}
                 />
 
-                <h2>Vuokranperusteet</h2>
+                <h2>Vuokralaskelma</h2>
                 <Divider />
-                <GreenBoxEdit>
-                  <FieldArray
-                    component={BasisOfRentsEdit}
-                    isSaveClicked={isSaveClicked}
-                    name="basis_of_rents"
-                  />
-                </GreenBoxEdit>
+                <GreenBox>
+                  <RentCalculator />
+                </GreenBox>
 
+                <h2>Vuokralaskuri</h2>
+                <Divider />
+                <FieldArray
+                  ref={this.setActiveBasisOfRentsRef}
+                  archived={false}
+                  component={BasisOfRentsEdit}
+                  isSaveClicked={isSaveClicked}
+                  name="basis_of_rents"
+                  onArchive={this.handleArchive}
+                  withRef={true}
+                />
+                <FieldArray
+                  ref={this.setArchivedBasisOfRentsRef}
+                  archived={true}
+                  component={BasisOfRentsEdit}
+                  isSaveClicked={isSaveClicked}
+                  name="basis_of_rents_archived"
+                  onUnarchive={this.handleUnarchive}
+                  withRef={true}
+                />
               </FormSectionComponent>
             </form>
           );
@@ -234,13 +292,19 @@ class RentsEdit extends Component<Props, State> {
 }
 
 const formName = FormNames.RENTS;
+const selector = formValueSelector(formName);
 
 export default flowRight(
+  withRouter,
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
+
       return {
+        attributes: getAttributes(state),
         currentLease: currentLease,
+        editedActiveBasisOfRents: selector(state, 'basis_of_rents'),
+        editedArchivedBasisOfRents: selector(state, 'basis_of_rents_archived'),
         errors: getErrorsByFormName(state, formName),
         isRentInfoComplete: currentLease ? currentLease.is_rent_info_complete : null,
         isSaveClicked: getIsSaveClicked(state),
@@ -257,5 +321,4 @@ export default flowRight(
     destroyOnUnmount: false,
     validate: validateRentForm,
   }),
-  withRouter,
 )(RentsEdit);

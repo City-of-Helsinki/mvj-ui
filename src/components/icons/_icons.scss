@@ -11,6 +11,12 @@
     }
   }
 
+  &.icons__copy-to-clipboard {
+    #Artboard {
+      fill: $tram;
+    }
+  }
+
   &.icons__archive {
     stroke: none !important;
   }

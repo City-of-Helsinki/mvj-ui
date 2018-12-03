@@ -1,14 +1,15 @@
 // @flow
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {change, formValueSelector, reduxForm} from 'redux-form';
+import {change, Field, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import moment from 'moment';
 import flowRight from 'lodash/flowRight';
 
+import ErrorField from '$components/form/ErrorField';
 import FormField from '$components/form/FormField';
-import {FormNames} from '$components/enums';
-import {formatDateRange} from '../../util/helpers';
+import {FormNames, RentCalculatorTypes} from '$components/enums';
+import {validateRentCalculatorForm} from '$components/formValidations';
+import {formatDateRange} from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getBillingPeriodsByLease} from '$src/billingPeriods/selectors';
 
@@ -19,6 +20,8 @@ type Props = {
   billingPeriod: ?number,
   change: Function,
   onSubmit: Function,
+  showErrors: boolean,
+  type: string,
   valid: boolean,
 }
 
@@ -26,22 +29,6 @@ type State = {
   billingPeriodOptions: Array<Object>,
   billingPeriods: BillingPeriodList,
 }
-
-const validate = values => {
-  const errors = {};
-  if (!values.billing_start_date) {
-    errors.billing_start_date = 'Alkupäivämäärä on pakollinen';
-  }
-
-  if (!values.billing_end_date) {
-    errors.billing_end_date = 'Loppupäivämäärä on pakollinen';
-  } else if(new Date(values.billing_start_date).getFullYear() !== new Date(values.billing_end_date).getFullYear()) {
-    errors.billing_end_date = 'Alku- ja loppupäivämäärän tulee olla samana vuonna';
-  } else if(!moment(values.billing_end_date).isAfter(moment(values.billing_start_date), 'day')) {
-    errors.billing_end_date = 'Loppupäivämäärän tulee olla alkupäivämäärän jälkeen';
-  }
-  return errors;
-};
 
 const getBillingPeriodsOptions = (billingPeriods: BillingPeriodList) => {
   if(!billingPeriods || !billingPeriods.length) {
@@ -66,7 +53,6 @@ class RentCalculatorForm extends Component<Props, State> {
 
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
-
     if(props.billingPeriods !== state.billingPeriods) {
       newState.billingPeriods = props.billingPeriods;
       newState.billingPeriodOptions = getBillingPeriodsOptions(props.billingPeriods);
@@ -75,42 +61,36 @@ class RentCalculatorForm extends Component<Props, State> {
     return newState;
   }
 
-  componentDidUpdate(prevProps: Props, prevState: State) {
-    if(prevProps.billingPeriod !== this.props.billingPeriod) {
-      this.updateDates();
-    }
-
-    if(prevState.billingPeriodOptions !== this.state.billingPeriodOptions) {
-      this.autoselectBillingPeriods(this.state.billingPeriodOptions);
-    }
-  }
-
-  updateBillingPeriodOptions = () => {
+  componentDidMount() {
     const {billingPeriodOptions} = this.state;
 
-    this.autoselectBillingPeriods(billingPeriodOptions);
+    if(billingPeriodOptions.length) {
+      this.autoselectBillingPeriod(billingPeriodOptions);
+    }
+
+    this.setDefaultValues();
   }
 
-  autoselectBillingPeriods = (billingPeriodOptions: Array<Object>) => {
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if(prevState.billingPeriodOptions !== this.state.billingPeriodOptions) {
+      this.autoselectBillingPeriod(this.state.billingPeriodOptions);
+    }
+  }
+
+  setDefaultValues = () => {
+    const {change} = this.props;
+
+    change('type', RentCalculatorTypes.YEAR);
+    change('year', new Date().getFullYear().toString());
+  }
+
+  autoselectBillingPeriod = (billingPeriodOptions: Array<Object>) => {
     const {change} = this.props,
       now = new Date(),
-      selected =  billingPeriodOptions.find((item) => {
-        return new Date(item.startDate) <= now && new Date(item.endDate) >= now;
-      });
+      selected =  billingPeriodOptions.find((item) => new Date(item.startDate) <= now && new Date(item.endDate) >= now);
 
     if(selected) {
       change('billing_period', selected.value);
-      change('billing_start_date', selected.startDate);
-      change('billing_end_date', selected.endDate);
-    }
-  }
-
-  updateDates = () => {
-    const {billingPeriodOptions} = this.state,
-      {billingPeriod, change} = this.props,
-      selected = billingPeriodOptions.find((item) => item.value === billingPeriod);
-
-    if(selected) {
       change('billing_start_date', selected.startDate);
       change('billing_end_date', selected.endDate);
     }
@@ -124,51 +104,120 @@ class RentCalculatorForm extends Component<Props, State> {
   }
 
   render() {
+    const {showErrors, type} = this.props;
     const {billingPeriodOptions} = this.state;
 
     return (
-      <form onSubmit={this.handleSubmit}>
+      <div onSubmit={this.handleSubmit}>
         <Row>
-          <Column small={6}>
+          <Column>
             <FormField
               fieldAttributes={{
-                type: 'choice',
-                required: false,
+                label: 'Laskelman tyyppi',
+                type: 'radio-with-field',
+                required: true,
               }}
-              name='billing_period'
+              name='type'
+              invisibleLabel
               disableDirty
               overrideValues={{
-                label: 'Laskutuskausi',
-                options: billingPeriodOptions,
-              }}
-            />
-          </Column>
-          <Column small={3}>
-            <FormField
-              fieldAttributes={{
-                type: 'date',
-              }}
-              name='billing_start_date'
-              disableDirty
-              overrideValues={{
-                label: 'Alkupvm',
-              }}
-            />
-          </Column>
-          <Column small={3}>
-            <FormField
-              fieldAttributes={{
-                type: 'date',
-              }}
-              name='billing_end_date'
-              disableDirty
-              overrideValues={{
-                label: 'Loppupvm',
+                options: [
+                  {
+                    value: RentCalculatorTypes.YEAR,
+                    label: 'Vuosi',
+                    labelStyles: {minWidth: '115px'},
+                    field: <FormField
+                      fieldAttributes={{
+                        label: 'Vuosi',
+                        type: 'string',
+                      }}
+                      name='year'
+                      disabled={type !== RentCalculatorTypes.YEAR}
+                      disableDirty
+                      invisibleLabel
+                    />,
+                    fieldStyles: {width: '180px'},
+                    errorField: <Field
+                      name='yearErrors'
+                      component={ErrorField}
+                      showError={showErrors}
+                      style={{marginTop: '-10px'}}
+                    />,
+                    errorFieldStyles: {width: '180px'},
+                  },
+                  {
+                    value: RentCalculatorTypes.RANGE,
+                    label: 'Aikaväli',
+                    labelStyles: {minWidth: '115px'},
+                    field: <Row>
+                      <Column small={6}>
+                        <FormField
+                          fieldAttributes={{
+                            label: 'Alkupvm',
+                            type: 'date',
+                          }}
+                          name='billing_start_date'
+                          disabled={type !== RentCalculatorTypes.RANGE}
+                          disableDirty
+                          invisibleLabel
+                        />
+                      </Column>
+                      <Column small={6}>
+                        <FormField
+                          className='with-dash'
+                          fieldAttributes={{
+                            label: 'Loppupvm',
+                            type: 'date',
+                          }}
+                          name='billing_end_date'
+                          disabled={type !== RentCalculatorTypes.RANGE}
+                          disableDirty
+                          invisibleLabel
+                        />
+                      </Column>
+                    </Row>,
+                    fieldStyles: {width: '180px'},
+                    errorField: <Field
+                      name='rangeErrors'
+                      component={ErrorField}
+                      showError={showErrors}
+                      style={{marginTop: '-10px'}}
+                    />,
+                    errorFieldStyles: {width: '180px'},
+                  },
+                  {
+                    value: RentCalculatorTypes.BILLING_PERIOD,
+                    label: 'Laskutuskausi',
+                    labelStyles: {minWidth: '115px'},
+                    field: <FormField
+                      fieldAttributes={{
+                        label: 'Laskutuskausi',
+                        type: 'choice',
+                      }}
+                      name='billing_period'
+                      disabled={type !== RentCalculatorTypes.BILLING_PERIOD}
+                      disableDirty
+                      disableTouched={showErrors}
+                      invisibleLabel
+                      overrideValues={{
+                        options: billingPeriodOptions,
+                      }}
+                    />,
+                    fieldStyles: {width: '180px'},
+                    errorField: <Field
+                      name='billingPeriodErrors'
+                      component={ErrorField}
+                      showError={true}
+                      style={{marginTop: '-10px'}}
+                    />,
+                    errorFieldStyles: {width: '180px'},
+                  },
+                ],
               }}
             />
           </Column>
         </Row>
-      </form>
+      </div>
     );
   }
 }
@@ -182,8 +231,9 @@ export default flowRight(
       const currentLease = getCurrentLease(state);
 
       return {
-        billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
         billingPeriod: selector(state, 'billing_period'),
+        billingPeriods: getBillingPeriodsByLease(state, currentLease.id),
+        type: selector(state, 'type'),
       };
     },
     {
@@ -192,7 +242,6 @@ export default flowRight(
   ),
   reduxForm({
     form: formName,
-    destroyOnUnmount: false,
-    validate,
+    validate: validateRentCalculatorForm,
   }),
 )(RentCalculatorForm);
