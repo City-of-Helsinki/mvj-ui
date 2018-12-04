@@ -12,7 +12,7 @@ import SaveConditionPanel from './SaveConditionPanel';
 import {createAreaNote, deleteAreaNote, editAreaNote, hideEditMode} from '$src/areaNote/actions';
 import {defaultCoordinates, defaultZoom} from '$src/constants';
 import {convertFeatureCollectionToFeature} from '$src/areaNote/helpers';
-import {localizeMap} from '$util/helpers';
+import {localizeMap} from '$util/map';
 import {getInitialAreaNote, getIsEditMode} from '$src/areaNote/selectors';
 
 localizeMap();

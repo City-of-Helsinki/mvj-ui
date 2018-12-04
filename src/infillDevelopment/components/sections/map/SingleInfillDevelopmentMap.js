@@ -15,7 +15,8 @@ import {fetchLeaseById} from '$src/leases/actions';
 import {mapColors} from '$src/constants';
 import {getContentLeaseIdentifier, getLeaseCoordinates} from '$src/leases/helpers';
 import {getContentInfillDevelopmentLeaseGeoJson} from '$src/infillDevelopment/helpers';
-import {getAttributeFieldOptions, getCoordinatesBounds, getCoordinatesCenter} from '$util/helpers';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getCurrentInfillDevelopment} from '$src/infillDevelopment/selectors';
 import {
   getAllLeases,
@@ -39,8 +40,8 @@ type Props = {
 type State = {
   areaLocationOptions: Array<Object>,
   areaTypeOptions: Array<Object>,
-  bounds?: ?Object,
-  center: ?Array<Object>,
+  bounds: ?Array<Object>,
+  center: ?Array<number>,
   currentInfillDevelopment: InfillDevelopment,
   infillDevelopmentLeases: Array<Object>,
   isLoading: boolean,

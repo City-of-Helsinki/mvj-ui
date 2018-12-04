@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {FieldArray, formValueSelector} from 'redux-form';
 import classNames from 'classnames';
@@ -31,8 +32,10 @@ import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClic
 
 import type {Attributes} from '$src/leases/types';
 
+const ContactType = PropTypes.oneOf([TenantContactType.BILLING, TenantContactType.CONTACT]);
+
 type OtherTenantsProps = {
-  contactType: TenantContactType.BILLING | TenantContactType.CONTACT,
+  contactType: ContactType,
   fields: any,
   tenant: Object,
 }

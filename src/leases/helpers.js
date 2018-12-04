@@ -1,4 +1,5 @@
 // @flow
+import PropTypes from 'prop-types';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
@@ -23,11 +24,11 @@ import {isEmptyValue} from '$util/helpers';
 import {
   fixedLengthNumber,
   formatDecimalNumberForDb,
-  getCoordinatesOfGeometry,
   sortByStartAndEndDateDesc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
 } from '$util/helpers';
+import {getCoordinatesOfGeometry} from '$util/map';
 import {getIsEditMode} from './selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
@@ -1146,7 +1147,9 @@ export const addConstructabilityFormValues = (payload: Object, values: Object) =
   return payload;
 };
 
-export const getTenantContactDetailsForDb = (tenant: Object, contactType: TenantContactType.TENANT | TenantContactType.BILLING | TenantContactType.CONTACT) => (
+const ContactType = PropTypes.oneOf([TenantContactType.TENANT, TenantContactType.BILLING, TenantContactType.CONTACT]);
+
+export const getTenantContactDetailsForDb = (tenant: Object, contactType: ContactType) => (
   {
     id: tenant.id || undefined,
     type: contactType,
@@ -1240,10 +1243,10 @@ export const getContentFixedInitialYearRentsForDb = (rent: Object) =>
   });
 
 export const getContentRentDueDatesForDb = (rent: Object) => {
-  const dueDatesType = rent.due_dates_type;
+  const type = rent.type;
   const dueDates = get(rent, 'due_dates', []);
 
-  if(dueDatesType === RentDueDateTypes.ONE_TIME) {
+  if(type === RentTypes.ONE_TIME) {
     return dueDates.length
       ? [{
         id: dueDates[0].id || undefined,
@@ -1340,7 +1343,6 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
     }
 
     if(rent.type === RentTypes.MANUAL) {
-      console.log(rent);
       switch (rent.cycle) {
         case RentCycles.JANUARY_TO_DECEMBER:
           rentData.manual_ratio = formatDecimalNumberForDb(rent.manual_ratio);
@@ -1453,6 +1455,28 @@ export const mapLeaseSearchFilters = (query: Object) => {
   return searchQuery;
 };
 
+export const formatSeasonalStartDate = (rent: Object) => {
+  if(!rent.seasonal_start_day || !rent.seasonal_start_month) {
+    return null;
+  }
+  return `${rent.seasonal_start_day}.${rent.seasonal_start_month}`;
+};
+
+export const formatSeasonalEndDate = (rent: Object) => {
+  if(!rent.seasonal_end_day || !rent.seasonal_end_month) {
+    return null;
+  }
+  return `${rent.seasonal_end_day}.${rent.seasonal_end_month}`;
+};
+
+const formatDueDate = (date: Object) => {
+  return `${date.day}.${date.month}`;
+};
+
+export const formatDueDates = (dates: Array<Object>) => {
+  return dates.map((date) => formatDueDate(date)).join(', ');
+};
+
 export const isAnyLeaseFormDirty = (state: any) => {
   const isEditMode = getIsEditMode(state);
 
@@ -1462,7 +1486,7 @@ export const isAnyLeaseFormDirty = (state: any) => {
     isDirty(FormNames.DECISIONS)(state) ||
     isDirty(FormNames.INSPECTIONS)(state) ||
     isDirty(FormNames.LEASE_AREAS)(state) ||
-    isDirty(FormNames.RESTS)(state) ||
+    isDirty(FormNames.RENTS)(state) ||
     isDirty(FormNames.SUMMARY)(state) ||
     isDirty(FormNames.TENANTS)(state));
 };

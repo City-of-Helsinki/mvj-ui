@@ -7,6 +7,7 @@ import type {CollectionLetterState} from '$src/collectionLetter/types';
 import type {CollectionNoteState} from '$src/collectionNote/types';
 import type {CommentState} from '$src/comments/types';
 import type {LeaseState} from '$src/leases/types';
+import type {LeaseTypeState} from '$src/leaseType/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
 import type {PreviewInvoicesState} from '$src/previewInvoices/types';
 import type {RentForPeriodState} from '$src/rentForPeriod/types';
@@ -21,6 +22,7 @@ export type RootState = {
   collectionNote: CollectionNoteState,
   comment: CommentState,
   lease: LeaseState,
+  leaseType: LeaseTypeState,
   penaltyInterest: PenaltyInterestState,
   previewInvoices: PreviewInvoicesState,
   rentForPeriod: RentForPeriodState,

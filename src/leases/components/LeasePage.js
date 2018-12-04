@@ -50,6 +50,7 @@ import {
   receiveIsSaveClicked,
   showEditMode,
 } from '$src/leases/actions';
+import {fetchLeaseTypes} from '$src/leaseType/actions';
 import {clearPreviewInvoices} from '$src/previewInvoices/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchVats} from '$src/vat/actions';
@@ -72,6 +73,7 @@ import {
   getIsSaveClicked,
   getIsSaving,
 } from '$src/leases/selectors';
+import {getLeaseTypeList} from '$src/leaseType/selectors';
 import {getVats} from '$src/vat/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
@@ -79,6 +81,7 @@ import type {Attributes as CommentAttributes, CommentList} from '$src/comments/t
 import type {Attributes as ContactAttributes} from '$src/contacts/types';
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 import type {Attributes, Lease} from '$src/leases/types';
+import type {LeaseTypeList} from '$src/leaseType/types';
 import type {VatList} from '$src/vat/types';
 
 type Props = {
@@ -105,6 +108,7 @@ type Props = {
   fetchInvoiceAttributes: Function,
   fetchInvoicesByLease: Function,
   fetchInvoiceSetsByLease: Function,
+  fetchLeaseTypes: Function,
   fetchSingleLease: Function,
   fetchVats: Function,
   hideEditMode: Function,
@@ -132,6 +136,7 @@ type Props = {
   isTenantsFormDirty: boolean,
   isTenantsFormValid: boolean,
   isSaveClicked: boolean,
+  leaseTypeList: LeaseTypeList,
   location: Object,
   params: Object,
   patchLease: Function,
@@ -180,10 +185,12 @@ class LeasePage extends Component<Props, State> {
       fetchInvoiceAttributes,
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
+      fetchLeaseTypes,
       fetchSingleLease,
       fetchVats,
       hideEditMode,
       invoiceAttributes,
+      leaseTypeList,
       location,
       params: {leaseId},
       receiveTopNavigationSettings,
@@ -214,6 +221,10 @@ class LeasePage extends Component<Props, State> {
 
     if(isEmpty(invoiceAttributes)) {
       fetchInvoiceAttributes();
+    }
+
+    if(isEmpty(leaseTypeList)) {
+      fetchLeaseTypes();
     }
 
     if(isEmpty(vats)) {
@@ -891,6 +902,7 @@ export default flowRight(
         isTenantsFormValid: getIsFormValidById(state, FormNames.TENANTS),
         isFetching: getIsFetching(state),
         isSaveClicked: getIsSaveClicked(state),
+        leaseTypeList: getLeaseTypeList(state),
         rentsFormValues: getFormValues(FormNames.RENTS)(state),
         summaryFormValues: getFormValues(FormNames.SUMMARY)(state),
         tenantsFormValues: getFormValues(FormNames.TENANTS)(state),
@@ -912,6 +924,7 @@ export default flowRight(
       fetchInvoiceAttributes,
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
+      fetchLeaseTypes,
       fetchSingleLease,
       fetchVats,
       hideEditMode,

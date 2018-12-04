@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {change, Field, FieldArray, formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import AddButtonThird from '$components/form/AddButtonThird';
@@ -11,11 +12,16 @@ import ErrorField from '$components/form/ErrorField';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
+import FormTitleAndText from '$components/form/FormTitleAndText';
 import RemoveButton from '$components/form/RemoveButton';
 import {rentCustomDateOptions, oneTimeRentDueDateTypeOptions} from '$src/leases/constants';
-import {FormNames, RentCycles, RentTypes, RentDueDateTypes} from '$src/leases/enums';
-import {getAttributes} from '$src/leases/selectors';
-import type {Attributes} from '$src/leases/types';
+import {FixedDueDates, FormNames, RentCycles, RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import {formatDueDates} from '$src/leases/helpers';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
+import {getLeaseTypeList} from '$src/leaseType/selectors';
+
+import type {Attributes, Lease} from '$src/leases/types';
+import type {LeaseTypeList} from '$src/leaseType/types';
 
 type SeasonalDatesProps = {
   attributes: Attributes,
@@ -246,9 +252,17 @@ type BasicInfoIndexProps = {
   dueDatesType: ?string,
   isIndex: boolean,
   isSaveClicked: boolean,
+  yearlyDueDates: Array<Object>,
 }
 
-const BasicInfoIndex = ({attributes, cycle, dueDatesType, isIndex, isSaveClicked}: BasicInfoIndexProps) => {
+const BasicInfoIndex = ({
+  attributes,
+  cycle,
+  dueDatesType,
+  isIndex,
+  isSaveClicked,
+  yearlyDueDates,
+}: BasicInfoIndexProps) => {
   return (
     <div>
       <Row>
@@ -282,7 +296,7 @@ const BasicInfoIndex = ({attributes, cycle, dueDatesType, isIndex, isSaveClicked
             }}
           />
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={6} medium={4} large={1}>
           <FormField
             disableTouched={isSaveClicked}
             fieldAttributes={get(attributes, 'rents.child.children.cycle')}
@@ -327,16 +341,27 @@ const BasicInfoIndex = ({attributes, cycle, dueDatesType, isIndex, isSaveClicked
           </Column>
         }
         {dueDatesType === RentDueDateTypes.FIXED &&
-          <Column small={6} medium={4} large={2}>
+          <Column small={6} medium={4} large={1}>
             <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'rents.child.children.due_dates_per_year')}
               name='due_dates_per_year'
               overrideValues={{
                 fieldType: 'choice',
-                label: 'Laskut kpl/vuodessa',
+                label: 'Laskut kpl/v',
                 options: rentCustomDateOptions,
               }}
+            />
+          </Column>
+        }
+        {dueDatesType === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={2}>
+            <FormTitleAndText
+              title='Eräpäivät (pv.kk)'
+              text={yearlyDueDates && !!yearlyDueDates
+                ? formatDueDates(yearlyDueDates)
+                : '-'
+              }
             />
           </Column>
         }
@@ -487,9 +512,15 @@ type BasicInfoFixedProps = {
   attributes: Attributes,
   dueDatesType: ?string,
   isSaveClicked: boolean,
+  yearlyDueDates: Array<Object>,
 }
 
-const BasicInfoFixed = ({attributes, dueDatesType, isSaveClicked}: BasicInfoFixedProps) => {
+const BasicInfoFixed = ({
+  attributes,
+  dueDatesType,
+  isSaveClicked,
+  yearlyDueDates,
+}: BasicInfoFixedProps) => {
   return (
     <div>
       <Row>
@@ -544,14 +575,25 @@ const BasicInfoFixed = ({attributes, dueDatesType, isSaveClicked}: BasicInfoFixe
           </Column>
         }
         {dueDatesType === RentDueDateTypes.FIXED &&
-          <Column small={6} medium={4} large={2}>
+          <Column small={6} medium={4} large={1}>
             <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'rents.child.children.due_dates_per_year')}
               name='due_dates_per_year'
               overrideValues={{
-                label: 'Laskut kpl/vuodessa',
+                label: 'Laskut kpl/v',
               }}
+            />
+          </Column>
+        }
+        {dueDatesType === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={2}>
+            <FormTitleAndText
+              title='Eräpäivät (pv.kk)'
+              text={yearlyDueDates && !!yearlyDueDates
+                ? formatDueDates(yearlyDueDates)
+                : '-'
+              }
             />
           </Column>
         }
@@ -638,21 +680,37 @@ const BasicInfoFree = ({attributes, isSaveClicked}: BasicInfoFreeProps) => {
 type Props = {
   attributes: Attributes,
   change: Function,
+  currentLease: Lease,
   cycle: string,
   dueDates: Array<Object>,
+  dueDatesPerYear: ?number,
   dueDatesType: ?string,
   field: any,
   isSaveClicked: boolean,
+  leaseTypes: LeaseTypeList,
   rentType: ?string,
 }
 
 const BasicInfoEdit = ({
   attributes,
+  currentLease,
   cycle,
+  dueDatesPerYear,
   dueDatesType,
   isSaveClicked,
+  leaseTypes,
   rentType,
 }: Props) => {
+  const getYearlyDueDates = () => {
+    const leaseTypeId = get(currentLease, 'type.id');
+    const leaseType = leaseTypes.find((item) => item.id === leaseTypeId);
+    if(!dueDatesPerYear ||isEmpty(leaseType) || dueDatesType !== RentDueDateTypes.FIXED) return [];
+
+    return FixedDueDates[get(leaseType, 'due_dates_position')][dueDatesPerYear];
+  };
+
+  const yearlyDueDates = getYearlyDueDates();
+
   return (
     <div>
       {!rentType &&
@@ -668,6 +726,7 @@ const BasicInfoEdit = ({
           dueDatesType={dueDatesType}
           isIndex={true}
           isSaveClicked={isSaveClicked}
+          yearlyDueDates={yearlyDueDates}
         />
       }
       {rentType === RentTypes.ONE_TIME &&
@@ -682,6 +741,7 @@ const BasicInfoEdit = ({
           attributes={attributes}
           dueDatesType={dueDatesType}
           isSaveClicked={isSaveClicked}
+          yearlyDueDates={yearlyDueDates}
         />
       }
       {rentType === RentTypes.FREE &&
@@ -697,6 +757,7 @@ const BasicInfoEdit = ({
           dueDatesType={dueDatesType}
           isIndex={false}
           isSaveClicked={isSaveClicked}
+          yearlyDueDates={yearlyDueDates}
         />
       }
     </div>
@@ -710,9 +771,12 @@ export default connect(
   (state, props) => {
     return {
       attributes: getAttributes(state),
+      currentLease: getCurrentLease(state),
       cycle: selector(state, `${props.field}.cycle`),
+      dueDatesPerYear: selector(state, `${props.field}.due_dates_per_year`),
       dueDatesType: selector(state, `${props.field}.due_dates_type`),
       dueDates: selector(state, `${props.field}.due_dates`),
+      leaseTypes: getLeaseTypeList(state),
     };
   },
   {

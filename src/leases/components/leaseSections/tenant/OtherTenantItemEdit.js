@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import {connect} from 'react-redux';
@@ -25,10 +26,12 @@ import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClic
 
 import type {Attributes} from '$src/leases/types';
 
+const ContactType = PropTypes.oneOf([TenantContactType.BILLING, TenantContactType.CONTACT]);
+
 type Props = {
   attributes: Attributes,
   collapseState: boolean,
-  contactType: TenantContactType.BILLING | TenantContactType.CONTACT,
+  contactType: ContactType,
   contact: ?Object,
   errors: ?Object,
   field: string,

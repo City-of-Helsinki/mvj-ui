@@ -1,5 +1,6 @@
 // @flow
 import get from 'lodash/get';
+
 import {
   RentExplanationSubjectType,
   RentSubItemSubjectType,

@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 import FormText from '$components/form/FormText';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {RentCycles, RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import {formatDueDates, formatSeasonalEndDate, formatSeasonalStartDate} from '$src/leases/helpers';
 import {
   formatDate,
   formatNumber,
@@ -16,28 +17,6 @@ import {
 import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/leases/types';
-
-const formatSeasonalStartDate = (rent: Object) => {
-  if(!rent.seasonal_start_day || !rent.seasonal_start_month) {
-    return null;
-  }
-  return `${rent.seasonal_start_day}.${rent.seasonal_start_month}`;
-};
-
-const formatSeasonalEndDate = (rent: Object) => {
-  if(!rent.seasonal_end_day || !rent.seasonal_end_month) {
-    return null;
-  }
-  return `${rent.seasonal_end_day}.${rent.seasonal_end_month}`;
-};
-
-const formatDueDate = (date: Object) => {
-  return `${date.day}.${date.month}`;
-};
-
-const displayDueDates = (dates: Object) => {
-  return dates.map((date) => formatDueDate(date)).join(', ');
-};
 
 type SeasonalDatesProps = {
   rent: Object,
@@ -105,18 +84,20 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
             text={formatDate(rent.end_date) || '-'}
           />
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={6} medium={4} large={1}>
           <FormTitleAndText
             title='Vuokrakausi'
             text={getLabelOfOption(cycleOptions, rent.cycle) || '-'}
           />
         </Column>
-        <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Indeksin tunnusnumero'
-            text={getLabelOfOption(indexTypeOptions, rent.index_type) || '-'}
-          />
-        </Column>
+        {rent.type === RentTypes.INDEX &&
+          <Column small={6} medium={4} large={2}>
+            <FormTitleAndText
+              title='Indeksin tunnusnumero'
+              text={getLabelOfOption(indexTypeOptions, rent.index_type) || '-'}
+            />
+          </Column>
+        }
         <Column small={6} medium={4} large={2}>
           <FormTitleAndText
             title='Laskutusjako'
@@ -128,8 +109,17 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
             <FormTitleAndText
               title='Eräpäivät (pv.kk)'
               text={rent.due_dates && !!rent.due_dates.length
-                ? displayDueDates(rent.due_dates)
+                ? formatDueDates(rent.due_dates)
                 : 'Ei eräpäiviä'
+              }
+            />
+          </Column>
+        }
+        {rent.due_dates_type === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={1}>
+            <FormTitleAndText
+              title='Laskut kpl/v'
+              text={rent.due_dates_per_year || '-'
               }
             />
           </Column>
@@ -139,7 +129,7 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
             <FormTitleAndText
               title='Eräpäivät (pv.kk)'
               text={rent.yearly_due_dates && !!rent.yearly_due_dates.length
-                ? displayDueDates(rent.yearly_due_dates)
+                ? formatDueDates(rent.yearly_due_dates)
                 : 'Ei eräpäiviä'
               }
             />
@@ -270,7 +260,7 @@ const BasicInfoOneTime = ({attributes, rent}: Props) => {
             <FormTitleAndText
               title='Eräpäivät (pv.kk)'
               text={rent.due_dates && !!rent.due_dates.length
-                ? displayDueDates(rent.due_dates)
+                ? formatDueDates(rent.due_dates)
                 : 'Ei eräpäiviä'
               }
             />
@@ -281,7 +271,7 @@ const BasicInfoOneTime = ({attributes, rent}: Props) => {
             <FormTitleAndText
               title='Eräpäivät (pv.kk)'
               text={rent.yearly_due_dates && !!rent.yearly_due_dates.length
-                ? displayDueDates(rent.yearly_due_dates)
+                ? formatDueDates(rent.yearly_due_dates)
                 : 'Ei eräpäiviä'
               }
             />
@@ -337,8 +327,17 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
             <FormTitleAndText
               title='Eräpäivät (pv.kk)'
               text={rent.due_dates && !!rent.due_dates.length
-                ? displayDueDates(rent.due_dates)
+                ? formatDueDates(rent.due_dates)
                 : 'Ei eräpäiviä'
+              }
+            />
+          </Column>
+        }
+        {rent.due_dates_type === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={1}>
+            <FormTitleAndText
+              title='Laskut kpl/v'
+              text={rent.due_dates_per_year || '-'
               }
             />
           </Column>
@@ -348,7 +347,7 @@ const BasicInfoFixed = ({attributes, rent}: Props) => {
             <FormTitleAndText
               title='Eräpäivät (pv.kk)'
               text={rent.yearly_due_dates && !!rent.yearly_due_dates.length
-                ? displayDueDates(rent.yearly_due_dates)
+                ? formatDueDates(rent.yearly_due_dates)
                 : 'Ei eräpäiviä'
               }
             />

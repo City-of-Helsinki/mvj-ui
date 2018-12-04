@@ -9,12 +9,8 @@ import Divider from '$components/content/Divider';
 import RentBasisLayer from './RentBasisLayer';
 import {mapColors} from '$src/constants';
 import {getContentRentBasisGeoJson} from '$src/rentbasis/helpers';
-import {
-  getAttributeFieldOptions,
-  getCoordinatesBounds,
-  getCoordinatesCenter,
-  getCoordinatesOfGeometry,
-} from '$util/helpers';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {getCoordinatesBounds, getCoordinatesCenter, getCoordinatesOfGeometry} from '$util/map';
 import {getAttributes, getRentBasis} from '$src/rentbasis/selectors';
 
 import type {Attributes, RentBasis} from '$src/rentbasis/types';

@@ -201,7 +201,7 @@ const ConstructabilityItemEdit = ({
   const handleAreaCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.CONTRUCTABILITY]: {
+        [FormNames.CONSTRUCTABILITY]: {
           [areaId]: {
             area: val,
           },
@@ -213,7 +213,7 @@ const ConstructabilityItemEdit = ({
   const handlePreconstructionCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.CONTRUCTABILITY]: {
+        [FormNames.CONSTRUCTABILITY]: {
           [areaId]: {
             preconstruction: val,
           },
@@ -225,7 +225,7 @@ const ConstructabilityItemEdit = ({
   const handleDemolitionCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.CONTRUCTABILITY]: {
+        [FormNames.CONSTRUCTABILITY]: {
           [areaId]: {
             demolition: val,
           },
@@ -237,7 +237,7 @@ const ConstructabilityItemEdit = ({
   const handlePollutedLandCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.CONTRUCTABILITY]: {
+        [FormNames.CONSTRUCTABILITY]: {
           [areaId]: {
             polluted_land: val,
           },
@@ -249,7 +249,7 @@ const ConstructabilityItemEdit = ({
   const handleConstructabilityReportCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.CONTRUCTABILITY]: {
+        [FormNames.CONSTRUCTABILITY]: {
           [areaId]: {
             constructability_report: val,
           },
@@ -261,7 +261,7 @@ const ConstructabilityItemEdit = ({
   const handleOtherCollapseToggle = (val: boolean) => {
     receiveCollapseStates({
       [ViewModes.EDIT]: {
-        [FormNames.CONTRUCTABILITY]: {
+        [FormNames.CONSTRUCTABILITY]: {
           [areaId]: {
             other: val,
           },
@@ -541,13 +541,13 @@ export default connect(
     const id = selector(state, `${props.field}.id`);
 
     return {
-      areaCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONTRUCTABILITY}.${id}.area`),
+      areaCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.area`),
       areaId: id,
-      constructabilityReportCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONTRUCTABILITY}.${id}.constructability_report`),
-      demolitionCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONTRUCTABILITY}.${id}.demolition`),
-      otherCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONTRUCTABILITY}.${id}.other`),
-      pollutedLandCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONTRUCTABILITY}.${id}.polluted_land`),
-      preconstructionCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONTRUCTABILITY}.${id}.preconstruction`),
+      constructabilityReportCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.constructability_report`),
+      demolitionCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.demolition`),
+      otherCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.other`),
+      pollutedLandCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.polluted_land`),
+      preconstructionCollapseState: getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.CONSTRUCTABILITY}.${id}.preconstruction`),
     };
   },
   {

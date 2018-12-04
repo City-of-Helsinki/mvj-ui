@@ -16,7 +16,8 @@ import {
   getContentPlotsGeoJson,
   getLeaseCoordinates,
 } from '$src/leases/helpers';
-import {getAttributeFieldOptions, getCoordinatesBounds, getCoordinatesCenter} from '$util/helpers';
+import {getAttributeFieldOptions} from '$util/helpers';
+import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes, Lease} from '$src/leases/types';

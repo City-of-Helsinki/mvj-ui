@@ -11,7 +11,7 @@ import Control from '../../../components-alpha/map/Control';
 import MapSidebar from './MapSidebar';
 
 import {defaultCoordinates, defaultZoom} from '../../../constants';
-import {getAreaCoordinates} from '$util/helpers';
+import {getAreaCoordinates} from '$util/map';
 import {fetchAreas} from '../../actions';
 import {connect} from 'react-redux';
 import {getAreas} from '../../selectors';

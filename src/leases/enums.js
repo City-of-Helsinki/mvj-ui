@@ -1,3 +1,5 @@
+// @flow
+import {getDayMonth} from '../util/date';
 /**
  * Area location enumerable.
  *
@@ -208,6 +210,55 @@ export const RentTypes = {
 export const RentCycles = {
   JANUARY_TO_DECEMBER: 'january_to_december',
   APRIL_TO_MARCH: 'april_to_march',
+};
+
+/**
+ * Credit invoiceset options
+ * @type {[*]}
+ */
+const FirstDayOfEveryMonth = [
+  getDayMonth(1, 1),
+  getDayMonth(1, 2),
+  getDayMonth(1, 3),
+  getDayMonth(1, 4),
+  getDayMonth(1, 5),
+  getDayMonth(1, 6),
+  getDayMonth(1, 7),
+  getDayMonth(1, 8),
+  getDayMonth(1, 9),
+  getDayMonth(1, 10),
+  getDayMonth(1, 11),
+  getDayMonth(1, 12),
+];
+
+/**
+ * Due dates position enumerable.
+ *
+ * @type {{}}
+ */
+export const DueDatesPosition = {
+  START_OF_MONTH: 'start_of_month',
+  MIDDLE_OF_MONTH: 'middle_of_month',
+};
+
+/**
+ * Fixed due dates enumerable.
+ *
+ * @type {{}}
+ */
+export const FixedDueDates = {
+  [DueDatesPosition.START_OF_MONTH]: {
+    '1': [getDayMonth(2, 1)],
+    '2': [getDayMonth(2, 1), getDayMonth(1, 7)],
+    '4': [getDayMonth(2, 1), getDayMonth(1, 4), getDayMonth(1, 7), getDayMonth(1, 10)],
+    '12': FirstDayOfEveryMonth,
+  },
+  [DueDatesPosition.MIDDLE_OF_MONTH]: {
+    '1': [getDayMonth(30, 6)],
+    '2': [getDayMonth(15, 3), getDayMonth(30, 9)],
+    '4': [getDayMonth(1, 3), getDayMonth(15, 4), getDayMonth(15, 7), getDayMonth(15, 10)],
+    '12': FirstDayOfEveryMonth,
+  },
 };
 
 /**
