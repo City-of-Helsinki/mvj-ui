@@ -17,7 +17,8 @@ import type {
   UnarchiveLeaseAreaAction,
   FetchLeasesAction,
   FetchSingleLeaseAction,
-  FetchSingleLeaseWithoutLoaderAction,
+  FetchSingleLeaseAfterEditAction,
+  FetchSingleLeaseAfterEditPayload,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
   FetchLeaseByIdAction,
@@ -60,8 +61,8 @@ export const receiveLeases = (leases: LeaseList): ReceiveLeasesAction =>
 export const fetchSingleLease = (id: LeaseId): FetchSingleLeaseAction =>
   createAction('mvj/leases/FETCH_SINGLE')(id);
 
-export const fetchSingleLeaseWithoutLoader = (id: LeaseId): FetchSingleLeaseWithoutLoaderAction =>
-  createAction('mvj/leases/FETCH_SINGLE_WITHOUT_LOADER')(id);
+export const fetchSingleLeaseAfterEdit = (payload: FetchSingleLeaseAfterEditPayload): FetchSingleLeaseAfterEditAction =>
+  createAction('mvj/leases/FETCH_SINGLE_AFTER_EDIT')(payload);
 
 export const receiveSingleLease = (lease: Lease): ReceiveSingleLeaseAction =>
   createAction('mvj/leases/RECEIVE_SINGLE')(lease);

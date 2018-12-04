@@ -36,12 +36,17 @@ export type DeleteRelatedLeasePayload = {
   leaseId: number,
 }
 
+export type FetchSingleLeaseAfterEditPayload = {
+  leaseId: LeaseId,
+  callbackFuntions?: Array<Object | Function>,
+}
+
 export type FetchAttributesAction = Action<'mvj/leases/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/leases/RECEIVE_ATTRIBUTES', Attributes>;
 export type FetchLeasesAction = Action<'mvj/leases/FETCH_ALL', string>;
 export type ReceiveLeasesAction = Action<'mvj/leases/RECEIVE_ALL', LeaseList>;
 export type FetchSingleLeaseAction = Action<'mvj/leases/FETCH_SINGLE', LeaseId>;
-export type FetchSingleLeaseWithoutLoaderAction = Action<'mvj/leases/FETCH_SINGLE_WITHOUT_LOADER', LeaseId>;
+export type FetchSingleLeaseAfterEditAction = Action<'mvj/leases/FETCH_SINGLE_AFTER_EDIT', FetchSingleLeaseAfterEditPayload>;
 export type ReceiveSingleLeaseAction = Action<'mvj/leases/RECEIVE_SINGLE', Lease>;
 export type FetchLeaseByIdAction = Action<'mvj/leases/FETCH_BY_ID', LeaseId>;
 export type ReceiveLeaseByIdAction = Action<'mvj/leases/RECEIVE_BY_ID', Lease>;
