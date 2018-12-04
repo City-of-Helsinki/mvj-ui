@@ -1278,22 +1278,11 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
   payload.basis_of_rents = basisOfRents.map((item) => {
     const savedBasisOfRent = getSavedBasisOfRent(currentLease, item.id);
 
-    if(savedBasisOfRent && savedBasisOfRent.locked_at && !item.locked_at) {
-      const basisOfRentData: any = {
+    if(savedBasisOfRent && savedBasisOfRent.locked_at) {
+      return {
         id: item.id,
+        locked_at: item.locked_at,
       };
-
-      if(get(savedBasisOfRent, 'archived_at') !== item.archived_at) {
-        basisOfRentData.archived_at = item.archived_at;
-      }
-
-      switch (!!item.locked_at) {
-        case true:
-          basisOfRentData.locked_at = item.locked_at;
-          return basisOfRentData;
-        case false:
-          return basisOfRentData;
-      }
     } else {
       const basisOfRentData: any = {
         id: item.id || undefined,

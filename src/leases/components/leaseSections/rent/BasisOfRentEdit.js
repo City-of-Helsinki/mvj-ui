@@ -232,7 +232,7 @@ const BasisOfRentEdit = ({
           <CopyToClipboardButton
             onClick={handleCopyToClipboard}
           />
-          {onArchive && !!id &&
+          {onArchive && savedBasisOfRent && !savedBasisOfRent.locked_at &&
             <ArchiveButton onClick={handleArchive}/>
           }
           <RemoveButton
