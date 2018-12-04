@@ -132,6 +132,7 @@ const renderDueDates = ({attributes, fields, isSaveClicked}: DueDatesProps): Ele
                 </Column>
                 <Column small={6}>
                   <FieldAndRemoveButtonWrapper
+                    className='absolute-remove-button-position'
                     field={
                       <FormField
                         className='with-dot'
@@ -331,7 +332,7 @@ const BasicInfoIndex = ({
           />
         </Column>
         {dueDatesType === RentDueDateTypes.CUSTOM &&
-          <Column small={6} medium={4} large={2}>
+          <Column small={6} medium={4} large={1}>
             <FieldArray
               attributes={attributes}
               component={renderDueDates}
@@ -481,7 +482,7 @@ const BasicInfoOneTime = ({attributes, dueDatesType, isSaveClicked}: BasicInfoOn
           />
         </Column>
         {dueDatesType === RentDueDateTypes.CUSTOM &&
-          <Column small={6} medium={4} large={2}>
+          <Column small={6} medium={4} large={1}>
             <FieldArray
               attributes={attributes}
               component={renderDueDatesOneTime}

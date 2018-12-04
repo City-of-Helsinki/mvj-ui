@@ -647,6 +647,7 @@
     cursor: pointer;
     display: block;
     text-align: left;
+    white-space: nowrap;
 
     .icons {
       margin-right: rem-calc(5px);
@@ -834,6 +835,17 @@
 
     &_button {
       padding-left: rem-calc(5px);
+    }
+
+    &.absolute-remove-button-position {
+      position: relative;
+
+      .form__field-and-remove-button-wrapper_button {
+        position: absolute;
+        padding-left: 0;
+        right: -22px;
+        top: 0;
+      }
     }
   }
 }
