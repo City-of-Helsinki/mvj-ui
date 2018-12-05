@@ -20,6 +20,7 @@ import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
@@ -77,6 +78,7 @@ const renderContractChanges = ({
                     confirmationFunction: () => {
                       fields.remove(index);
                     },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
                     confirmationModalButtonText: 'Poista',
                     confirmationModalLabel: DeleteModalLabels.CONTRACT_CHANGE,
                     confirmationModalTitle: DeleteModalTitles.CONTRACT_CHANGE,

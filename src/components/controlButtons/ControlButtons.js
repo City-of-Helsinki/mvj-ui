@@ -5,6 +5,8 @@ import Button from '../button/Button';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {CancelChangesModalTexts} from '$src/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
+import {ButtonColors} from '$components/enums';
+console.log(ButtonColors);
 
 type Props = {
   commentAmount?: number,
@@ -61,6 +63,7 @@ const ControlButtons = ({
               confirmationFunction: () => {
                 onCancel();
               },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
               confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
               confirmationModalLabel: CancelChangesModalTexts.LABEL,
               confirmationModalTitle: CancelChangesModalTexts.TITLE,
@@ -79,6 +82,7 @@ const ControlButtons = ({
               confirmationFunction: () => {
                 onCopy();
               },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
               confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
               confirmationModalLabel: CancelChangesModalTexts.LABEL,
               confirmationModalTitle: CancelChangesModalTexts.TITLE,
@@ -94,20 +98,21 @@ const ControlButtons = ({
               ? (
                 <div className='left-buttons'>
                   <Button
-                    className='button-red'
+                    className={ButtonColors.SECONDARY}
                     disabled={isCancelDisabled}
                     onClick={handleCancel}
                     text='Hylkää muutokset'
                   />
                   {showCopyButton &&
                     <Button
+                      className={ButtonColors.NEUTRAL}
                       disabled={isCopyDisabled}
                       onClick={handleCopy}
                       text='Kopioi'
                     />
                   }
                   <Button
-                    className='button-green'
+                    className={ButtonColors.SUCCESS}
                     disabled={isSaveDisabled}
                     onClick={onSave}
                     text='Tallenna'
@@ -116,6 +121,7 @@ const ControlButtons = ({
               ) : (
                 <div className='left-buttons'>
                   <Button
+                    className={ButtonColors.SUCCESS}
                     disabled={isEditDisabled}
                     onClick={onEdit}
                     text='Muokkaa'
@@ -135,7 +141,6 @@ const ControlButtons = ({
         );
       }}
     </AppConsumer>
-
   );
 };
 

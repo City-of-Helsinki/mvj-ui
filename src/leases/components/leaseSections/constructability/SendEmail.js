@@ -8,6 +8,7 @@ import FormTextTitle from '$components/form/FormTextTitle';
 import ListItem from '$components/content/ListItem';
 import SendEmailModal from './SendEmailModal';
 import {formatDateObj} from '$util/helpers';
+import {ButtonColors} from '$components/enums';
 import mockData from './mock-data.json';
 
 const getContentCostructabilityEmails = (content: Object) => {
@@ -85,7 +86,7 @@ class SendEmail extends Component<{}, State> {
         <Row>
           <Column small={12} medium={4} large={3}>
             <Button
-              className='button-green no-margin'
+              className={`${ButtonColors.NEUTRAL} no-margin`}
               onClick={this.handleShowModal}
               style={{marginBottom: 15}}
               text='Lähetä sähköposti'

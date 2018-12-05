@@ -12,6 +12,7 @@ import FormText from '$components/form/FormText';
 import Modal from '$components/modal/Modal';
 import {FormNames} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
+import {ButtonColors} from '$components/enums';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -101,14 +102,13 @@ class ArchiveAreaModal extends Component<Props> {
           </Row>
           <div className='confirmation-modal__footer'>
             <Button
-              className='button-red'
+              className={ButtonColors.SECONDARY}
               onClick={onCancel}
               text='Peruuta'
             />
             <Button
-              className='button-green'
+              className={ButtonColors.SUCCESS}
               disabled={!valid}
-
               onClick={this.handleArchive}
               text='Arkistoi'
             />

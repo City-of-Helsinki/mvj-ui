@@ -31,7 +31,7 @@ export const KeyCodes = {
  * @type {{BUTTON: string, LABEL: string, TITLE: string}}
  */
 export const CancelChangesModalTexts = {
-  BUTTON: 'Hylkää muutokset',
-  LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti hylätä muutokset?</span>,
-  TITLE: 'Hylkää muutokset',
+  BUTTON: 'Poistu tallentamatta',
+  LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti poistua tallentamatta?</span>,
+  TITLE: 'Poistu tallentamatta',
 };

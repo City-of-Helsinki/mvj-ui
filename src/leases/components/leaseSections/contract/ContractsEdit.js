@@ -10,8 +10,8 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import ContractItemEdit from './ContractItemEdit';
-import FormSection from '$components/form/FormSection';
 import {receiveFormValidFlags} from '$src/leases/actions';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {validateContractForm} from '$src/leases/formValidators';
 import {getContentContracts} from '$src/leases/helpers';
@@ -50,6 +50,7 @@ const renderContracts = ({
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.CONTRACT,
                   confirmationModalTitle: DeleteModalTitles.CONTRACT,
@@ -142,15 +143,13 @@ class ContractsEdit extends Component<Props, State> {
 
     return (
       <form>
-        <FormSection>
-          <FieldArray
-            attributes={attributes}
-            component={renderContracts}
-            contractsData={contractsData}
-            decisionOptions={decisionOptions}
-            name="contracts"
-          />
-        </FormSection>
+        <FieldArray
+          attributes={attributes}
+          component={renderContracts}
+          contractsData={contractsData}
+          decisionOptions={decisionOptions}
+          name="contracts"
+        />
       </form>
     );
   }

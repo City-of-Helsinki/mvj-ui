@@ -12,7 +12,7 @@ import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
 import NewCommentForm from './forms/NewCommentForm';
 import {clearEditFlags, createComment, receiveIsSaveClicked} from '$src/comments/actions';
-import {CloseCommentPanelTexts, FormNames} from '$components/enums';
+import {ButtonColors, CloseCommentPanelTexts, FormNames} from '$components/enums';
 import {getAttributeFieldOptions, sortStringByKeyDesc} from '$src/util/helpers';
 import {getContentComments} from '$src/leases/helpers';
 import {getAttributes, getCommentsByLease, getEditModeFlags} from '$src/comments/selectors';
@@ -210,6 +210,7 @@ class CommentPanel extends PureComponent<Props, State> {
                           onClose();
                           receiveIsSaveClicked(false);
                         },
+                        confirmationModalButtonClassName: ButtonColors.ALERT,
                         confirmationModalButtonText: CloseCommentPanelTexts.BUTTON,
                         confirmationModalLabel: CloseCommentPanelTexts.LABEL,
                         confirmationModalTitle: CloseCommentPanelTexts.TITLE,

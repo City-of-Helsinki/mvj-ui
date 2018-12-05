@@ -3,9 +3,9 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import scrollToComponent from 'react-scroll-to-component';
 
+import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import Button from '$components/button/Button';
 import CreditInvoiceForm from './forms/CreditInvoiceForm';
-import FormSection from '$components/form/FormSection';
 import NewInvoiceForm from './forms/NewInvoiceForm';
 import {createCharge} from '$src/leases/actions';
 import {
@@ -17,6 +17,7 @@ import {
   receiveIsCreditInvoicePanelOpen,
 } from '$src/invoices/actions';
 import {creditInvoiceSet} from '$src/invoiceSets/actions';
+import {ButtonColors} from '$components/enums';
 import {RecipientOptions} from '$src/leases/enums';
 import {formatNewChargeForDb, formatCreditInvoiceForDb, formatNewInvoiceForDb} from '$src/invoices/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -175,45 +176,42 @@ class CreateAndCreditInvoice extends Component <Props> {
 
     return (
       <div className='invoice__new-invoice'>
-        <FormSection>
-          <div>
-            {enableCreditInvoice &&
-              <Button
-                className='button-green no-margin'
-                disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
-                onClick={this.handleOpenCreditInvoicePanelButtonClick}
-                text='Hyvitä'
-              />
-            }
-            {enableCreateInvoice &&
-              <Button
-                className='button-green'
-                disabled={isCreateInvoicePanelOpen}
-                onClick={this.handleOpenCreateInvoicePanelButtonClick}
-                text='+ Luo lasku'
-              />
-            }
-          </div>
-          <div ref={this.setCreditPanelRef}>
-            {(isCreditInvoicePanelOpen && enableCreditInvoice) &&
-              <CreditInvoiceForm
-                isInvoiceSet={isInvoiceSet}
-                onClose={this.handleCloseCreditInvoicePanel}
-                onSave={this.handleCreditInvoice}
-                setRefForFirstField={this.handleSetRefForCreditPanelFirstField}
-              />
-            }
-          </div>
-          <div ref={this.setCreatePanelRef}>
-            {(isCreateInvoicePanelOpen && enableCreateInvoice) &&
-              <NewInvoiceForm
-                onClose={this.handleCloseCreateInvoicePanel}
-                onSave={this.handleCreateInvoice}
-                setRefForFirstField={this.handleSetRefForCreatePanelFirstField}
-              />
-            }
-          </div>
-        </FormSection>
+        <div>
+          {enableCreditInvoice &&
+            <Button
+              className={`${ButtonColors.NEUTRAL} no-margin`}
+              disabled={!invoiceToCredit || isCreditInvoicePanelOpen}
+              onClick={this.handleOpenCreditInvoicePanelButtonClick}
+              text='Hyvitä lasku'
+            />
+          }
+          {enableCreateInvoice &&
+            <AddButtonSecondary
+              disabled={isCreateInvoicePanelOpen}
+              label='Luo lasku'
+              onClick={this.handleOpenCreateInvoicePanelButtonClick}
+            />
+          }
+        </div>
+        <div ref={this.setCreditPanelRef}>
+          {(isCreditInvoicePanelOpen && enableCreditInvoice) &&
+            <CreditInvoiceForm
+              isInvoiceSet={isInvoiceSet}
+              onClose={this.handleCloseCreditInvoicePanel}
+              onSave={this.handleCreditInvoice}
+              setRefForFirstField={this.handleSetRefForCreditPanelFirstField}
+            />
+          }
+        </div>
+        <div ref={this.setCreatePanelRef}>
+          {(isCreateInvoicePanelOpen && enableCreateInvoice) &&
+            <NewInvoiceForm
+              onClose={this.handleCloseCreateInvoicePanel}
+              onSave={this.handleCreateInvoice}
+              setRefForFirstField={this.handleSetRefForCreatePanelFirstField}
+            />
+          }
+        </div>
       </div>
     );
   }

@@ -230,21 +230,19 @@ class CreateCollectionLetterForm extends Component<Props, State> {
               name='invoice_ids'
             />
           </Column>
-          <Column small={12}>
-            <div style={{paddingTop: 5, paddingBottom: 10, float: 'right'}}>
-              <FileDownloadButton
-                disabled={!valid}
-                label='Luo perintäkirje'
-                payload={{
-                  template: template,
-                  collection_charge: formatDecimalNumberForDb(collectionCharge),
-                  tenants: tenants,
-                  invoices: invoiceIds,
-                }}
-                // $FlowFixMe
-                url={`${API_URL}/lease/${lease.id}/create_collection_letter/`}
-              />
-            </div>
+          <Column small={12} style={{margin: '10px 0'}}>
+            <FileDownloadButton
+              disabled={!valid}
+              label='Luo perintäkirje'
+              payload={{
+                template: template,
+                collection_charge: formatDecimalNumberForDb(collectionCharge),
+                tenants: tenants,
+                invoices: invoiceIds,
+              }}
+              // $FlowFixMe
+              url={`${API_URL}/lease/${lease.id}/create_collection_letter/`}
+            />
           </Column>
         </Row>
       </form>

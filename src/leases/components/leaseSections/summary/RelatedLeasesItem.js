@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import ExternalLink from '$components/links/ExternalLink';
 import RemoveButton from '$components/form/RemoveButton';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {formatDate, getLabelOfOption} from '$util/helpers';
@@ -42,6 +43,7 @@ const LeaseHistoryItem = ({
             confirmationFunction: () => {
               onDelete(id);
             },
+            confirmationModalButtonClassName: ButtonColors.ALERT,
             confirmationModalButtonText: 'Poista',
             confirmationModalLabel: DeleteModalLabels.RELATED_LEASE,
             confirmationModalTitle: DeleteModalTitles.RELATED_LEASE,

@@ -17,13 +17,13 @@
   }
 
   &:disabled {
-    background-color: $medium-dark-gray !important;
+    background-color: #b7b7b7 !important;
     color: $white !important;
     opacity: 1;
     cursor: not-allowed;
   }
 
-  &.button-green {
+  &.success {
     background-color: $tram;
     color: $white;
 
@@ -32,12 +32,31 @@
     }
   }
 
-  &.button-red {
+  &.alert {
     background-color: $brick;
     color: $white;
 
     &:hover {
       background-color: $brick-lighter;
+    }
+  }
+
+  &.neutral {
+    background-color: $summer;
+    color: $black;
+
+    &:hover {
+      background-color: $summer-lighter;
+    }
+  }
+
+  &.secondary {
+    background-color: $white;
+    color: $black;
+    border: 1px solid #b7b7b7;
+
+    &:hover {
+      background-color: $lightest-gray;
     }
   }
 

@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
+import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
@@ -70,13 +71,6 @@ const LitigantBillingPersonEdit = ({
     showContactModal();
   };
 
-  const handleAddKeyDown = (e: any) => {
-    if(e.keyCode === 13) {
-      e.preventDefault();
-      handleAddClick();
-    }
-  };
-
   const handleEditClick = () => {
     initializeContactForm({...contact});
     receiveContactModalSettings({
@@ -135,7 +129,10 @@ const LitigantBillingPersonEdit = ({
                   </Column>
                   <Column small={3} medium={4} large={4}>
                     <div className='contact-buttons-wrapper'>
-                      <a onKeyDown={handleAddKeyDown} onClick={handleAddClick} tabIndex={0}>Luo asiakas</a>
+                      <AddButtonThird
+                        label='Luo asiakas'
+                        onClick={handleAddClick}
+                      />
                     </div>
                   </Column>
                 </Row>

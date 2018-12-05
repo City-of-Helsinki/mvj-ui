@@ -30,6 +30,7 @@ import {
 } from '$src/infillDevelopment/actions';
 import {fetchLeaseById} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/infillDevelopment/enums';
 import {
   formatDate,
@@ -85,6 +86,7 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                       confirmationFunction: () => {
                         fields.remove(index);
                       },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
                       confirmationModalButtonText: 'Poista',
                       confirmationModalLabel: DeleteModalLabels.DECISION,
                       confirmationModalTitle: DeleteModalTitles.DECISION,
@@ -182,6 +184,7 @@ const renderIntendedUses = ({attributes, fields, isSaveClicked}: IntendedUsesPro
                       confirmationFunction: () => {
                         fields.remove(index);
                       },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
                       confirmationModalButtonText: 'Poista',
                       confirmationModalLabel: DeleteModalLabels.INTENDED_USE,
                       confirmationModalTitle: DeleteModalTitles.INTENDED_USE,
@@ -588,6 +591,7 @@ class LeaseItemEdit extends Component<Props, State> {
                               confirmationFunction: () => {
                                 this.handleDeleteInfillDevelopmentFile(file.id);
                               },
+                              confirmationModalButtonClassName: ButtonColors.ALERT,
                               confirmationModalButtonText: 'Poista',
                               confirmationModalLabel: DeleteModalLabels.ATTACHMENT,
                               confirmationModalTitle: DeleteModalTitles.ATTACHMENT,

@@ -10,6 +10,7 @@ import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 
 import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
@@ -61,6 +62,7 @@ const InvoiceRowsEdit = ({attributes, fields, isEditClicked, tenantOptions}: Pro
                       confirmationFunction: () => {
                         fields.remove(index);
                       },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
                       confirmationModalButtonText: 'Poista',
                       confirmationModalLabel: DeleteModalLabels.INVOICE_ROW,
                       confirmationModalTitle: DeleteModalTitles.INVOICE_ROW,

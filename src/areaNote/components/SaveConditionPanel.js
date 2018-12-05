@@ -8,6 +8,7 @@ import Button from '$components/button/Button';
 import FormFieldLabel from '$components/form/FormFieldLabel';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/areaNote/enums';
+import {ButtonColors} from '$components/enums';
 
 type Props = {
   disableDelete: boolean,
@@ -70,6 +71,7 @@ class SaveConditionPanel extends Component<Props, State> {
               confirmationFunction: () => {
                 onDelete();
               },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
               confirmationModalButtonText: 'Poista',
               confirmationModalLabel: DeleteModalLabels.AREA_NOTE,
               confirmationModalTitle: DeleteModalTitles.AREA_NOTE,
@@ -98,18 +100,18 @@ class SaveConditionPanel extends Component<Props, State> {
                   <Row>
                     <Column>
                       <Button
-                        className='button-red'
+                        className={ButtonColors.ALERT}
                         disabled={disableDelete}
                         onClick={handleDelete}
                         text='Poista'
                       />
                       <Button
-                        className='button-red'
+                        className={ButtonColors.SECONDARY}
                         onClick={onCancel}
                         text='Peruuta'
                       />
                       <Button
-                        className='button-green'
+                        className={ButtonColors.SUCCESS}
                         disabled={disableSave}
                         onClick={this.handleSave}
                         text='Tallenna'

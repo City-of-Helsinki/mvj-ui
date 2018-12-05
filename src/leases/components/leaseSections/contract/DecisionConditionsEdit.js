@@ -12,6 +12,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
 import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 
@@ -60,6 +61,7 @@ const DecisionConditionsEdit = ({
                       confirmationFunction: () => {
                         fields.remove(index);
                       },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
                       confirmationModalButtonText: 'Poista',
                       confirmationModalLabel: DeleteModalLabels.CONDITION,
                       confirmationModalTitle: DeleteModalTitles.CONDITION,

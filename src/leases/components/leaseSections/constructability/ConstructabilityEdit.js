@@ -8,7 +8,6 @@ import type {Element} from 'react';
 
 import ConstructabilityItemEdit from './ConstructabilityItemEdit';
 import Divider from '$components/content/Divider';
-import FormSection from '$components/form/FormSection';
 import FormText from '$components/form/FormText';
 import SendEmail from './SendEmail';
 import {receiveFormValidFlags} from '$src/leases/actions';
@@ -134,22 +133,20 @@ class ConstructabilityEdit extends Component<Props, State> {
 
     return (
       <form onSubmit={handleSubmit}>
-        <FormSection>
-          <h2>Rakentamiskelpoisuus</h2>
-          <Divider />
-          <SendEmail />
+        <h2>Rakentamiskelpoisuus</h2>
+        <Divider />
+        <SendEmail />
 
-          <FieldArray
-            areas={areas}
-            attributes={attributes}
-            component={renderAreas}
-            errors={errors}
-            isSaveClicked={isSaveClicked}
-            locationOptions={locationOptions}
-            name="lease_areas"
-            typeOptions={typeOptions}
-          />
-        </FormSection>
+        <FieldArray
+          areas={areas}
+          attributes={attributes}
+          component={renderAreas}
+          errors={errors}
+          isSaveClicked={isSaveClicked}
+          locationOptions={locationOptions}
+          name="lease_areas"
+          typeOptions={typeOptions}
+        />
       </form>
     );
   }

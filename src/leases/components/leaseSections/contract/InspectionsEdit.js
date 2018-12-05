@@ -4,7 +4,6 @@ import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
 import {FieldArray, reduxForm} from 'redux-form';
 
-import FormSection from '$components/form/FormSection';
 import InspectionItemsEdit from './InspectionItemsEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
@@ -36,14 +35,12 @@ class InspectionsEdit extends Component<Props> {
 
     return (
       <form onSubmit={handleSubmit}>
-        <FormSection>
-          <FieldArray
-            attributes={attributes}
-            component={InspectionItemsEdit}
-            isSaveClicked={isSaveClicked}
-            name="inspections"
-          />
-        </FormSection>
+        <FieldArray
+          attributes={attributes}
+          component={InspectionItemsEdit}
+          isSaveClicked={isSaveClicked}
+          name="inspections"
+        />
       </form>
     );
   }

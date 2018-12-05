@@ -1,7 +1,11 @@
 .invoice {
   &__new-invoice {
-    margin-top: rem-calc(15px);
+    margin-top: 0;
     margin-bottom: rem-calc(10px);
+
+    button:nth-child(2) {
+      margin-top: rem-calc(15px);
+    }
 
     &_form {
       margin-top: rem-calc(15px);

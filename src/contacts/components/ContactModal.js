@@ -6,6 +6,7 @@ import Button from '$components/button/Button';
 import ContactForm from './forms/ContactForm';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import Modal from '$components/modal/Modal';
+import {ButtonColors} from '$components/enums';
 import {getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
 
 import type {RootState} from '$src/root/types';
@@ -53,13 +54,13 @@ const ContactModal = ({
           </GreenBoxEdit>
           <div className='button-wrapper'>
             <Button
-              className='button-red'
+              className={ButtonColors.SECONDARY}
               onClick={onCancel}
               text='Peruuta'
             />
             {showSave &&
               <Button
-                className='button-green'
+                className={ButtonColors.SUCCESS}
                 disabled={isSaveClicked && !isContactFormValid}
                 onClick={onSave}
                 text='Tallenna'
@@ -67,7 +68,7 @@ const ContactModal = ({
             }
             {showSaveAndAdd &&
               <Button
-                className='button-green'
+                className={ButtonColors.SUCCESS}
                 disabled={isSaveClicked && !isContactFormValid}
                 onClick={onSaveAndAdd}
                 text='Tallenna ja Lisää'

@@ -12,10 +12,10 @@ import AddButtonThird from '$components/form/AddButtonThird';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
-import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveFormValid} from '$src/rentbasis/actions';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/rentbasis/enums';
 import {validateRentBasisForm} from '$src/rentbasis/formValidators';
 import {getAttributes, getIsFormValid, getIsSaveClicked, getRentBasisInitialValues} from '$src/rentbasis/selectors';
@@ -49,6 +49,7 @@ const renderPropertyIdentifiers = ({attributes, fields, isSaveClicked}: Property
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.IDENTIFIER,
                   confirmationModalTitle: DeleteModalTitles.IDENTIFIER,
@@ -147,6 +148,7 @@ const renderDecisions = ({attributes, fields, isSaveClicked}: DecisionsProps): E
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.DECISION,
                   confirmationModalTitle: DeleteModalTitles.DECISION,
@@ -264,6 +266,7 @@ const renderRentRates = ({attributes, fields, isSaveClicked}: RentRatesProps): E
                       confirmationFunction: () => {
                         fields.remove(index);
                       },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
                       confirmationModalButtonText: 'Poista',
                       confirmationModalLabel: DeleteModalLabels.RENT_RATE,
                       confirmationModalTitle: DeleteModalTitles.RENT_RATE,
@@ -368,138 +371,136 @@ class RentBasisForm extends Component<Props> {
 
     return (
       <form onSubmit={handleSubmit}>
-        <FormSection>
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'plot_type')}
-                name='plot_type'
-                setRefForField={this.setRefForFirstField}
-                overrideValues={{
-                  label: 'Tonttityyppi',
-                }}
-              />
-            </Column>
-            <Column  small={3} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'start_date')}
-                name='start_date'
-                overrideValues={{
-                  label: 'Alkupvm',
-                }}
-              />
-            </Column>
-            <Column  small={3} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'end_date')}
-                name='end_date'
-                overrideValues={{
-                  label: 'Loppupvm',
-                }}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <FieldArray
-                attributes={attributes}
-                component={renderPropertyIdentifiers}
-                name='property_identifiers'
-                isSaveClicked={isSaveClicked}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                className='align-top'
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'detailed_plan_identifier')}
-                name='detailed_plan_identifier'
-                overrideValues={{
-                  label: 'Asemakaava',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                className='align-top'
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'management')}
-                name='management'
-                overrideValues={{
-                  label: 'Hallintamuoto',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                className='align-top'
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'financing')}
-                name='financing'
-                overrideValues={{
-                  label: 'Rahoitusmuoto',
-                }}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'lease_rights_end_date')}
-                name='lease_rights_end_date'
-                overrideValues={{
-                  label: 'Vuokraoikeus päättyy',
-                }}
-              />
-            </Column>
-            <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'index')}
-                name='index'
-                overrideValues={{
-                  label: 'Indeksi',
-                }}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <FieldArray
-                attributes={attributes}
-                component={renderDecisions}
-                name="decisions"
-                isSaveClicked={isSaveClicked}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <FieldArray
-                attributes={attributes}
-                component={renderRentRates}
-                name="rent_rates"
-                isSaveClicked={isSaveClicked}
-              />
-            </Column>
-          </Row>
-          <Row>
-            <Column>
-              <FormField
-                disableTouched={isSaveClicked}
-                fieldAttributes={get(attributes, 'note')}
-                name='note'
-                overrideValues={{
-                  label: 'Huomautus',
-                }}
-              />
-            </Column>
-          </Row>
-        </FormSection>
+        <Row>
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'plot_type')}
+              name='plot_type'
+              setRefForField={this.setRefForFirstField}
+              overrideValues={{
+                label: 'Tonttityyppi',
+              }}
+            />
+          </Column>
+          <Column  small={3} medium={4} large={2}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'start_date')}
+              name='start_date'
+              overrideValues={{
+                label: 'Alkupvm',
+              }}
+            />
+          </Column>
+          <Column  small={3} medium={4} large={2}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'end_date')}
+              name='end_date'
+              overrideValues={{
+                label: 'Loppupvm',
+              }}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column small={6} medium={4} large={2}>
+            <FieldArray
+              attributes={attributes}
+              component={renderPropertyIdentifiers}
+              name='property_identifiers'
+              isSaveClicked={isSaveClicked}
+            />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              className='align-top'
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'detailed_plan_identifier')}
+              name='detailed_plan_identifier'
+              overrideValues={{
+                label: 'Asemakaava',
+              }}
+            />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              className='align-top'
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'management')}
+              name='management'
+              overrideValues={{
+                label: 'Hallintamuoto',
+              }}
+            />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              className='align-top'
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'financing')}
+              name='financing'
+              overrideValues={{
+                label: 'Rahoitusmuoto',
+              }}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'lease_rights_end_date')}
+              name='lease_rights_end_date'
+              overrideValues={{
+                label: 'Vuokraoikeus päättyy',
+              }}
+            />
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'index')}
+              name='index'
+              overrideValues={{
+                label: 'Indeksi',
+              }}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column>
+            <FieldArray
+              attributes={attributes}
+              component={renderDecisions}
+              name="decisions"
+              isSaveClicked={isSaveClicked}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column>
+            <FieldArray
+              attributes={attributes}
+              component={renderRentRates}
+              name="rent_rates"
+              isSaveClicked={isSaveClicked}
+            />
+          </Column>
+        </Row>
+        <Row>
+          <Column>
+            <FormField
+              disableTouched={isSaveClicked}
+              fieldAttributes={get(attributes, 'note')}
+              name='note'
+              overrideValues={{
+                label: 'Huomautus',
+              }}
+            />
+          </Column>
+        </Row>
       </form>
     );
   }

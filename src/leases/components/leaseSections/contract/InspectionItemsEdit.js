@@ -10,6 +10,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
 import GreenBoxEdit from '$components/content/GreenBoxEdit';
 import RemoveButton from '$components/form/RemoveButton';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 
 import type {Attributes} from '$src/leases/types';
@@ -41,6 +42,7 @@ const InspectionItemsEdit = ({
                       confirmationFunction: () => {
                         fields.remove(index);
                       },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
                       confirmationModalButtonText: 'Poista',
                       confirmationModalLabel: DeleteModalLabels.INSPECTION,
                       confirmationModalTitle: DeleteModalTitles.INSPECTION,

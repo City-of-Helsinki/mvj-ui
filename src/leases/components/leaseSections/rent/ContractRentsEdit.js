@@ -9,6 +9,7 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import ContractRentEdit from './ContractRentEdit';
 import FormTextTitle from '$components/form/FormTextTitle';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, RentTypes} from '$src/leases/enums';
 import {Breakpoints} from '$src/foundation/enums';
 import {getAttributes} from '$src/leases/selectors';
@@ -87,6 +88,7 @@ const ContractRentsEdit = ({attributes, fields, rentField, rentType}: Props) => 
                     confirmationFunction: () => {
                       fields.remove(index);
                     },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
                     confirmationModalButtonText: 'Poista',
                     confirmationModalLabel: DeleteModalLabels.CONTRACT_RENT,
                     confirmationModalTitle: DeleteModalTitles.CONTRACT_RENT,

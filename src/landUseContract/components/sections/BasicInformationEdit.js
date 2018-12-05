@@ -19,6 +19,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getAttributes, getCollapseStateByKey, getIsSaveClicked} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
@@ -49,6 +50,7 @@ const renderAreas = ({attributes, fields, isSaveClicked}: AreasProps): Element<*
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.AREA,
                   confirmationModalTitle: DeleteModalTitles.AREA,

@@ -9,6 +9,7 @@ import FormText from '$components/form/FormText';
 import Modal from '$components/modal/Modal';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {fetchUsers} from '$src/users/actions';
+import {ButtonColors} from '$components/enums';
 import {getUserOptions} from '$src/users/helpers';
 import {getUsers} from '$src/users/selectors';
 
@@ -123,12 +124,12 @@ class SendEmailModal extends Component<Props, State> {
         />
         <div className='constructability__send-email-modal_footer'>
           <Button
-            className='button-red'
+            className={ButtonColors.SECONDARY}
             onClick={onCancel}
             text='Peruuta'
           />
           <Button
-            className='button-green'
+            className={ButtonColors.SUCCESS}
             disabled={!selectedUsers.length}
             onClick={onSend}
             text='Lähetä'

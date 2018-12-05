@@ -8,9 +8,9 @@ import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
-import FormSection from '$components/form/FormSection';
 import DecisionItemEdit from './DecisionItemEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getContentDecisions} from '$src/leases/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -42,6 +42,7 @@ const renderDecisions = ({
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.DECISION,
                   confirmationModalTitle: DeleteModalTitles.DECISION,
@@ -117,13 +118,11 @@ class DecisionsEdit extends Component<Props, State> {
 
     return (
       <form>
-        <FormSection>
-          <FieldArray
-            component={renderDecisions}
-            decisionsData={decisionsData}
-            name="decisions"
-          />
-        </FormSection>
+        <FieldArray
+          component={renderDecisions}
+          decisionsData={decisionsData}
+          name="decisions"
+        />
       </form>
     );
   }

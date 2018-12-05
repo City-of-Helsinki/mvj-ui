@@ -173,6 +173,7 @@ class App extends Component<Props, State> {
           {({
             isConfirmationModalOpen,
             confirmationFunction,
+            confirmationModalButtonClassName,
             confirmationModalButtonText,
             confirmationModalLabel,
             confirmationModalTitle,
@@ -190,6 +191,7 @@ class App extends Component<Props, State> {
             return(
               <div className={'app'}>
                 <ConfirmationModal
+                  confirmButtonClassName={confirmationModalButtonClassName}
                   confirmButtonLabel={confirmationModalButtonText}
                   isOpen={isConfirmationModalOpen}
                   label={confirmationModalLabel}

@@ -12,6 +12,7 @@ import InvoiceTemplate from './InvoiceTemplate';
 import ReactResizeDetector from 'react-resize-detector';
 import {receiveIsEditClicked} from '$src/invoices/actions';
 import {KeyCodes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {FormNames} from '$src/leases/enums';
 import {getInvoicesByLease, getIsEditClicked} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -236,14 +237,14 @@ class InvoicePanel extends PureComponent<Props, State> {
             <div className='invoice-panel__footer'>
               {(!invoice || !invoice.sap_id) &&
                 <Button
-                  className="button-red"
+                  className={ButtonColors.SECONDARY}
                   onClick={onClose}
                   text='Peruuta'
                 />
               }
               {(!invoice || !invoice.sap_id) &&
                 <Button
-                  className="button-green"
+                  className={ButtonColors.SUCCESS}
                   disabled={isEditClicked && !valid}
                   onClick={this.handleSave}
                   text='Tallenna'

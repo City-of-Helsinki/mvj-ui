@@ -17,6 +17,7 @@ import FormField from '$components/form/FormField';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getDecisionById} from '$src/decision/helpers';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
@@ -68,6 +69,7 @@ const renderDecisionConditions = ({
                     confirmationFunction: () => {
                       fields.remove(index);
                     },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
                     confirmationModalButtonText: 'Poista',
                     confirmationModalLabel: DeleteModalLabels.CONDITION,
                     confirmationModalTitle: DeleteModalTitles.CONDITION,

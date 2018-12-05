@@ -7,9 +7,8 @@ import get from 'lodash/get';
 
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
-import FormSection from '$components/form/FormSection';
 import {receiveIsSaveClicked} from '$src/comments/actions';
-import {FormNames} from '$components/enums';
+import {ButtonColors, FormNames} from '$components/enums';
 import {getIsSaveClicked} from '$src/comments/selectors';
 
 import type {RootState} from '$src/root/types';
@@ -44,33 +43,31 @@ const NewCommentForm = ({
 
   return (
     <form>
-      <FormSection>
-        <FormField
-          disableDirty
-          disableTouched={isSaveClicked}
-          fieldAttributes={get(attributes, 'topic')}
-          name='topic'
-          overrideValues={{
-            label: 'Aihealue',
-          }}
-        />
-        <FormField
-          disableDirty
-          disableTouched={isSaveClicked}
-          fieldAttributes={get(attributes, 'text')}
-          name='text'
-          overrideValues={{
-            label: 'Kommentti',
-            fieldType: 'textarea',
-          }}
-        />
-        <Button
-          className={'button-green no-margin'}
-          disabled={isSaveClicked && !valid}
-          onClick={handleAddComment}
-          text='Kommentoi'
-        />
-      </FormSection>
+      <FormField
+        disableDirty
+        disableTouched={isSaveClicked}
+        fieldAttributes={get(attributes, 'topic')}
+        name='topic'
+        overrideValues={{
+          label: 'Aihealue',
+        }}
+      />
+      <FormField
+        disableDirty
+        disableTouched={isSaveClicked}
+        fieldAttributes={get(attributes, 'text')}
+        name='text'
+        overrideValues={{
+          label: 'Kommentti',
+          fieldType: 'textarea',
+        }}
+      />
+      <Button
+        className={`${ButtonColors.SUCCESS} no-margin`}
+        disabled={isSaveClicked && !valid}
+        onClick={handleAddComment}
+        text='Kommentoi'
+      />
     </form>
   );
 };

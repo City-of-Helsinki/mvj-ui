@@ -12,6 +12,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
@@ -46,6 +47,7 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Pro
                     confirmationFunction: () => {
                       fields.remove(index);
                     },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
                     confirmationModalButtonText: 'Poista',
                     confirmationModalLabel: DeleteModalLabels.RENT_ADJUSTMENT,
                     confirmationModalTitle: DeleteModalTitles.RENT_ADJUSTMENT,

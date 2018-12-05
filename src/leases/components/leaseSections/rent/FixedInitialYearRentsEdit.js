@@ -13,6 +13,7 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
+import {ButtonColors} from '$components/enums';
 import {Breakpoints} from '$src/foundation/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {isLargeScreen} from '$util/helpers';
@@ -86,6 +87,7 @@ class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
                       confirmationFunction: () => {
                         fields.remove(index);
                       },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
                       confirmationModalButtonText: 'Poista',
                       confirmationModalLabel: DeleteModalLabels.FIXED_INITIAL_YEAR_RENT,
                       confirmationModalTitle: DeleteModalTitles.FIXED_INITIAL_YEAR_RENT,

@@ -670,7 +670,7 @@
 
     &.third-level {
       font-size: rem-calc(14px) !important;
-      line-height: rem-calc(15px) !important;
+      line-height: rem-calc(20px);
       margin: 0 0 rem-calc(10px);
 
       .icons {
@@ -785,7 +785,8 @@
     cursor: pointer;
     position: relative;
     top: 0;
-    width: rem-calc(21px);
+    width: rem-calc(20px);
+    height: rem-calc(20px);
 
     &:hover {
       .icons {
@@ -811,8 +812,8 @@
       width: rem-calc(20px);
 
       .icons {
-        height: rem-calc(16px);
-        width: rem-calc(16px);
+        height: rem-calc(15px);
+        width: rem-calc(15px);
       }
     }
   }

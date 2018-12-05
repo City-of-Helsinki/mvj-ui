@@ -6,6 +6,7 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import LeaseItemEdit from './LeaseItemEdit';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/infillDevelopment/enums';
 
 import type {InfillDevelopment} from '$src/infillDevelopment/types';
@@ -33,6 +34,7 @@ const LeaseItemsEdit = ({fields, infillDevelopment, isSaveClicked}: Props): Elem
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.LEASE,
                   confirmationModalTitle: DeleteModalTitles.LEASE,
@@ -61,7 +63,6 @@ const LeaseItemsEdit = ({fields, infillDevelopment, isSaveClicked}: Props): Elem
         );
       }}
     </AppConsumer>
-
   );
 };
 

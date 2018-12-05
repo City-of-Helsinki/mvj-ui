@@ -10,10 +10,10 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import FormField from '$components/form/FormField';
-import FormSection from '$components/form/FormSection';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveIsCreditClicked} from '$src/invoices/actions';
 import {CreditInvoiceOptions, CreditInvoiceSetOptions} from '$src/leases/constants';
+import {ButtonColors} from '$components/enums';
 import {CreditInvoiceOptionsEnum, FormNames} from '$src/leases/enums';
 import {getAttributes as getInvoiceAttributes, getIsCreditClicked} from '$src/invoices/selectors';
 
@@ -52,95 +52,93 @@ const CreditInvoiceForm = ({
 
   return (
     <form className='invoice__credit-invoice_form'>
-      <FormSection>
-        <WhiteBox>
-          <BoxContentWrapper>
-            <h3>Hyvitys</h3>
-            <CloseButton
-              className="position-topright"
-              onClick={onClose}
-            />
-            <Row>
+      <WhiteBox>
+        <BoxContentWrapper>
+          <h3>Hyvitys</h3>
+          <CloseButton
+            className="position-topright"
+            onClick={onClose}
+          />
+          <Row>
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isCreditClicked}
+                fieldAttributes={{
+                  type: 'choice',
+                  required: true,
+                  label: 'Hyvityksen tyyppi',
+                }}
+                name='type'
+                setRefForField={setRefForFirstField}
+                overrideValues={{
+                  options: isInvoiceSet ? CreditInvoiceSetOptions : CreditInvoiceOptions,
+                }}
+              />
+            </Column>
+            {(type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE || type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT) &&
               <Column small={6} medium={4} large={2}>
                 <FormField
                   disableTouched={isCreditClicked}
                   fieldAttributes={{
-                    type: 'choice',
+                    ...get(invoiceAttributes, 'rows.child.children.receivable_type'),
                     required: true,
-                    label: 'Hyvityksen tyyppi',
                   }}
-                  name='type'
-                  setRefForField={setRefForFirstField}
+                  name='receivable_type'
                   overrideValues={{
-                    options: isInvoiceSet ? CreditInvoiceSetOptions : CreditInvoiceOptions,
+                    label: 'Saamislaji',
                   }}
                 />
               </Column>
-              {(type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE || type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT) &&
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    disableTouched={isCreditClicked}
-                    fieldAttributes={{
-                      ...get(invoiceAttributes, 'rows.child.children.receivable_type'),
-                      required: true,
-                    }}
-                    name='receivable_type'
-                    overrideValues={{
-                      label: 'Saamislaji',
-                    }}
-                  />
-                </Column>
-              }
-              {type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT &&
-                <Column small={6} medium={4} large={2}>
-                  <FormField
-                    disableTouched={isCreditClicked}
-                    fieldAttributes={{
-                      type: 'decimal',
-                      required: true,
-                      read_only: false,
-                      label: 'Hyvitettävä summa (alviton)',
-                      decimal_places: 2,
-                      max_digits: 10,
-                    }}
-                    name='amount'
-                    unit='€'
-                  />
-                </Column>
-              }
-            </Row>
-            <Row>
-              <Column small={12}>
+            }
+            {type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT &&
+              <Column small={6} medium={4} large={2}>
                 <FormField
                   disableTouched={isCreditClicked}
-                  fieldAttributes={get(invoiceAttributes, 'notes')}
-                  name='notes'
-                  overrideValues={{
-                    label: 'Tiedote',
+                  fieldAttributes={{
+                    type: 'decimal',
+                    required: true,
+                    read_only: false,
+                    label: 'Hyvitettävä summa (alviton)',
+                    decimal_places: 2,
+                    max_digits: 10,
                   }}
+                  name='amount'
+                  unit='€'
                 />
               </Column>
-            </Row>
-            <Row>
-              <Column>
-                <div className='button-wrapper'>
-                  <Button
-                    className='button-red'
-                    onClick={onClose}
-                    text='Peruuta'
-                  />
-                  <Button
-                    className='button-green'
-                    disabled={isCreditClicked && !valid}
-                    onClick={handleSave}
-                    text='Tallenna'
-                  />
-                </div>
-              </Column>
-            </Row>
-          </BoxContentWrapper>
-        </WhiteBox>
-      </FormSection>
+            }
+          </Row>
+          <Row>
+            <Column small={12}>
+              <FormField
+                disableTouched={isCreditClicked}
+                fieldAttributes={get(invoiceAttributes, 'notes')}
+                name='notes'
+                overrideValues={{
+                  label: 'Tiedote',
+                }}
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <div className='button-wrapper'>
+                <Button
+                  className={ButtonColors.SECONDARY}
+                  onClick={onClose}
+                  text='Peruuta'
+                />
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={isCreditClicked && !valid}
+                  onClick={handleSave}
+                  text='Tallenna'
+                />
+              </div>
+            </Column>
+          </Row>
+        </BoxContentWrapper>
+      </WhiteBox>
     </form>
   );
 };
