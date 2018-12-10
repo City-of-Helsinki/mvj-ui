@@ -6,6 +6,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -38,8 +39,8 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
         return(
           <div>
             <BoxItemContainer>
-              {fields && !!fields.length &&
-                <Row showFor={Breakpoints.LARGE}>
+              {fields && !!fields.length && largeScreen &&
+                <Row>
                   <Column large={2}>
                     <FormTextTitle title='Käyttötarkoitus' />
                   </Column>
@@ -71,7 +72,7 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
                 if(largeScreen) {
                   return (
                     <Row key={index}>
-                      <Column small={3} medium={3} large={2}>
+                      <Column large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.intended_use')}
@@ -80,7 +81,7 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
                           overrideValues={{label: 'Käyttötarkoitus'}}
                         />
                       </Column>
-                      <Column small={3} medium={3} large={2}>
+                      <Column large={2}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.amount')}
@@ -90,7 +91,7 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
                           overrideValues={{label: 'Kiinteä alkuvuosivuokra'}}
                         />
                       </Column>
-                      <Column small={3} medium={3} large={1}>
+                      <Column large={1}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.start_date')}
@@ -99,7 +100,7 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
                           overrideValues={{label: 'Alkupvm'}}
                         />
                       </Column>
-                      <Column  small={3} medium={3} large={1}>
+                      <Column  large={1}>
                         <FormField
                           disableTouched={isSaveClicked}
                           fieldAttributes={get(attributes, 'rents.child.children.fixed_initial_year_rents.child.children.end_date')}
@@ -108,8 +109,6 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
                           overrideValues={{label: 'Loppupvm'}}
                         />
                       </Column>
-
-                      {/* Remove button for large screens */}
                       <Column>
                         <RemoveButton
                           className='third-level'
@@ -121,15 +120,15 @@ const FixedInitialYearRentsEdit = ({attributes, fields, isSaveClicked, largeScre
                   );
                 } else {
                   return (
-                    <BoxItem className='no-border-on-first-child' key={index}>
+                    <BoxItem key={index}>
                       <BoxContentWrapper>
-                        <RemoveButton
-                          className='position-topright'
-                          hideFor={Breakpoints.LARGE}
-                          onClick={handleRemove}
-                          title="Poista kiinteä alkuvuosivuokra"
-                        />
-
+                        <ActionButtonWrapper>
+                          <RemoveButton
+                            hideFor={Breakpoints.LARGE}
+                            onClick={handleRemove}
+                            title="Poista kiinteä alkuvuosivuokra"
+                          />
+                        </ActionButtonWrapper>
                         <Row>
                           <Column small={6} medium={3} large={2}>
                             <FormField

@@ -569,9 +569,9 @@
 
 .form {
   &__action-button-wrapper {
-    position: absolute;
-    top: rem-calc(-7px);
-    right: 0;
+    float: right;
+    position: relative;
+    top: rem-calc(-5px);
 
     button {
       margin-left: rem-calc(3px);
@@ -678,6 +678,7 @@
         width: rem-calc(15px) !important;
       }
     }
+
     &:disabled {
       color: $dark-gray;
       text-decoration: none;
@@ -687,6 +688,7 @@
         fill: $dark-gray;
       }
     }
+
     &.no-top-margin {
       margin-top: 0;
     }
@@ -735,9 +737,13 @@
     position: relative;
     top: 0;
 
+    .icons {
+      fill: $black !important;
+    }
+
     &:hover {
       .icons {
-        fill: $tram_hover;
+        fill: $tram !important;
       }
     }
   }
@@ -748,10 +754,16 @@
     position: relative;
     top: 0;
 
+    .icons {
+      #Artboard {
+        fill: $black !important;
+      }
+    }
+
     &:hover {
       .icons {
         #Artboard {
-          fill: $tram_hover;
+          fill: $tram !important;
         }
       }
     }
@@ -763,9 +775,13 @@
     position: relative;
     top: 0;
 
+    .icons {
+      fill: $black !important;
+    }
+
     &:hover {
       .icons {
-        fill: $tram_hover;
+        fill: $tram !important;
       }
     }
 
@@ -788,10 +804,14 @@
     width: rem-calc(20px);
     height: rem-calc(20px);
 
+    #Artboard {
+      fill: $black !important;
+    }
+
     &:hover {
       .icons {
         #Artboard {
-          fill: $tram_hover;
+          fill: $tram !important;
         }
       }
     }
@@ -824,9 +844,13 @@
     position: relative;
     top: 0;
 
+    .icons {
+      fill: $black !important;
+    }
+
     &:hover {
       .icons {
-        fill: $tram_hover;
+        fill: $tram !important;
       }
     }
   }

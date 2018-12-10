@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -55,13 +56,14 @@ const RentAdjustmentsEdit = ({attributes, decisions, fields, isSaveClicked}: Pro
                 };
 
                 return (
-                  <BoxItem className='no-border-on-first-child' key={index}>
+                  <BoxItem key={index}>
                     <BoxContentWrapper>
-                      <RemoveButton
-                        className='position-topright'
-                        onClick={handleRemove}
-                        title="Poista alennus/korotus"
-                      />
+                      <ActionButtonWrapper>
+                        <RemoveButton
+                          onClick={handleRemove}
+                          title="Poista alennus/korotus"
+                        />
+                      </ActionButtonWrapper>
                       <Row>
                         <Column small={6} medium={4} large={2}>
                           <FormField

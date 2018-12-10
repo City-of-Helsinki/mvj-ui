@@ -8,6 +8,7 @@ import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -88,11 +89,12 @@ const renderContractChanges = ({
                 return (
                   <BoxItem key={index}>
                     <BoxContentWrapper>
-                      <RemoveButton
-                        className='position-topright'
-                        onClick={handleRemove}
-                        title="Poista sopimuksen muutos"
-                      />
+                      <ActionButtonWrapper>
+                        <RemoveButton
+                          onClick={handleRemove}
+                          title="Poista sopimuksen muutos"
+                        />
+                      </ActionButtonWrapper>
                       <Row>
                         <Column small={6} medium={4} large={2}>
                           <FormField

@@ -4,6 +4,7 @@ import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import AddButton from '$components/form/AddButton';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxItem from '$components/content/BoxItem';
@@ -157,11 +158,12 @@ const InspectionItemsEdit = ({attributes, fields, isSaveClicked, largeScreen}: P
                   } else {
                     return (
                       <BoxItem key={index}>
-                        <RemoveButton
-                          className='position-topright'
-                          onClick={handleRemove}
-                          title="Poista tarkastus"
-                        />
+                        <ActionButtonWrapper>
+                          <RemoveButton
+                            onClick={handleRemove}
+                            title="Poista tarkastus"
+                          />
+                        </ActionButtonWrapper>
                         <Row>
                           <Column small={6} medium={4} large={2}>
                             <FormField

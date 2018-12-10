@@ -8,6 +8,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import FormField from '$components/form/FormField';
@@ -52,11 +53,12 @@ const PlanUnitItemEdit = ({
   return (
     <BoxItem>
       <BoxContentWrapper>
-        <RemoveButton
-          className='position-topright'
-          onClick={onRemove}
-          title="Poista kaavayksikkö"
-        />
+        <ActionButtonWrapper>
+          <RemoveButton
+            onClick={onRemove}
+            title="Poista kaavayksikkö"
+          />
+        </ActionButtonWrapper>
         <Row>
           <Column small={12} medium={6} large={6}>
             <FormField

@@ -317,7 +317,12 @@
       position: relative;
 
       &:first-child {
-        margin-top: rem-calc(5px);
+        border-top: 1px dashed $black;
+        padding-top: rem-calc(10px);
+      }
+
+      &:last-child {
+        margin-bottom: rem-calc(10px);
       }
 
       &.no-border-on-last-child:last-child {

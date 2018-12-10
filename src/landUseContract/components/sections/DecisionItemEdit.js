@@ -9,6 +9,7 @@ import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -173,11 +174,12 @@ const renderDecisionConditions = ({
                   return(
                     <BoxItem key={index}>
                       <BoxContentWrapper>
-                        <RemoveButton
-                          className='position-topright'
-                          onClick={handleRemove}
-                          title="Poista ehto"
-                        />
+                        <ActionButtonWrapper>
+                          <RemoveButton
+                            onClick={handleRemove}
+                            title="Poista ehto"
+                          />
+                        </ActionButtonWrapper>
                         <Row>
                           <Column small={6} medium={4}>
                             <FormField
@@ -229,6 +231,7 @@ const renderDecisionConditions = ({
             <Row>
               <Column>
                 <AddButtonSecondary
+                  className={!fields.length ? 'no-top-margin' : '-'}
                   label='Lisää ehto'
                   onClick={handleAdd}
                 />

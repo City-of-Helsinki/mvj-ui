@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import FormField from '$components/form/FormField';
@@ -190,15 +191,15 @@ class ContractRent extends PureComponent<Props> {
     } else {
       // For small and medium screens
       return(
-        <BoxItem
-          className='no-border-on-first-child'>
+        <BoxItem>
           <BoxContentWrapper>
             {showRemove &&
-              <RemoveButton
-                className='position-topright'
-                onClick={onRemove}
-                title="Poista sopimusvuokra"
-              />
+              <ActionButtonWrapper>
+                <RemoveButton
+                  onClick={onRemove}
+                  title="Poista sopimusvuokra"
+                />
+              </ActionButtonWrapper>
             }
             <Row>
               <Column small={6} medium={4} large={2}>

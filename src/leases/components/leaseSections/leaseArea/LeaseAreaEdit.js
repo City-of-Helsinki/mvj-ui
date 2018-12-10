@@ -110,6 +110,7 @@ const renderPlanUnits = ({
             <Row>
               <Column>
                 <AddButtonSecondary
+                  className={!fields.length ? 'no-top-margin' : ''}
                   label={buttonTitle}
                   onClick={handleAdd}
                 />
@@ -194,6 +195,7 @@ const renderPlots = ({
             <Row>
               <Column>
                 <AddButtonSecondary
+                  className={!fields.length ? 'no-top-margin' : ''}
                   label={buttonTitle}
                   onClick={handleAdd}
                 />
