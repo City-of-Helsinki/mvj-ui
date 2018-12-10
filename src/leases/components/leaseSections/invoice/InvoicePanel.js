@@ -117,7 +117,8 @@ class InvoicePanel extends PureComponent<Props, State> {
   setFocusOnPanel = () => {
     const {isEditMode} = this.props;
     if(isEditMode) {
-      this.setFocusOnInvoiceForm();
+      // this.setFocusOnInvoiceForm();
+      this.setFocusOnCloseButton();
     } else {
       this.setFocusOnCloseButton();
     }
