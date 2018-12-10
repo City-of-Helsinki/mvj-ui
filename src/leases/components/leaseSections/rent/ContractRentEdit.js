@@ -12,7 +12,7 @@ import BoxItem from '$components/content/BoxItem';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
-import {formatDecimalNumberForDb} from '$util/helpers';
+import {convertStrToDecimalNumber} from '$util/helpers';
 import {FormNames, IndexTypes, RentTypes} from '$src/leases/enums';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
@@ -39,7 +39,7 @@ class ContractRent extends PureComponent<Props> {
       this.props.indexType !== prevProps.indexType
     ) {
       const {amount} = this.props,
-        formatedAmount = formatDecimalNumberForDb(amount);
+        formatedAmount = convertStrToDecimalNumber(amount);
 
       if(!isNaN(formatedAmount) && formatedAmount !== null) {
         this.setCalculatedBaseAmount(formatedAmount);

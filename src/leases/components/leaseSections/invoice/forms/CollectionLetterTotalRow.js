@@ -7,7 +7,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import FormText from '$components/form/FormText';
 import {FormNames} from '$src/leases/enums';
-import {formatDecimalNumberForDb, formatNumber} from '$util/helpers';
+import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getPenaltyInterestByInvoice} from '$src/penaltyInterest/selectors';
 
 type Props = {
@@ -38,7 +38,7 @@ const CollectionLetterTotalRow = ({
 
   const getTotalCollectionCharge = () => {
     let total = 0;
-    const formatedCollectionCharge = formatDecimalNumberForDb(collectionCharge);
+    const formatedCollectionCharge = convertStrToDecimalNumber(collectionCharge);
 
     if(collectionCharge && !isNaN(formatedCollectionCharge)) {
       penaltyInterestArray.forEach(() => {

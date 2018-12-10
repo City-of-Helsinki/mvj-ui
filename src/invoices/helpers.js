@@ -2,7 +2,7 @@
 import get from 'lodash/get';
 
 import {CreditInvoiceOptionsEnum} from '$src/leases/enums';
-import {formatDecimalNumberForDb, getLabelOfOption, sortStringByKeyAsc} from '$util/helpers';
+import {convertStrToDecimalNumber, getLabelOfOption, sortStringAsc} from '$util/helpers';
 
 const getContentIncoicePayments = (invoice: Object) => {
   const payments = get(invoice, 'payments', []);
@@ -113,7 +113,7 @@ const formatInvoicePaymentsForDb = (invoice: Object) => {
   return payments.map((payment) => {
     return {
       id: invoice.id,
-      paid_amount: formatDecimalNumberForDb(get(payment, 'paid_amount')),
+      paid_amount: convertStrToDecimalNumber(get(payment, 'paid_amount')),
       paid_date: get(payment, 'paid_date'),
     };
   });
@@ -136,7 +136,7 @@ export const formatInvoiceRowsForDb = (invoice: Object) => {
     return {
       tenant: get(row, 'tenant'),
       receivable_type: get(row, 'receivable_type'),
-      amount: formatDecimalNumberForDb(get(row, 'amount')),
+      amount: convertStrToDecimalNumber(get(row, 'amount')),
     };
   });
 };
@@ -158,7 +158,7 @@ export const formatChargeRowsForDb = (invoice: Object) => {
   return get(invoice, 'rows', []).map((row) => {
     return {
       receivable_type: get(row, 'receivable_type'),
-      amount: formatDecimalNumberForDb(get(row, 'amount')),
+      amount: convertStrToDecimalNumber(get(row, 'amount')),
     };
   });
 };
@@ -179,7 +179,7 @@ export const formatCreditInvoiceForDb = (invoice: Object) => {
 
   const payload = {};
   if(invoice.type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT && invoice.amount) {
-    payload.amount = formatDecimalNumberForDb(invoice.amount);
+    payload.amount = convertStrToDecimalNumber(invoice.amount);
   }
   if(invoice.type !== CreditInvoiceOptionsEnum.FULL && invoice.receivable_type) {
     payload.receivable_type = invoice.receivable_type;
@@ -192,5 +192,5 @@ export const formatCreditInvoiceForDb = (invoice: Object) => {
 export const formatReceivableTypesString = (receivableTypeOptions: Array<Object>, receivableTypes: Array<Object>) => {
   return receivableTypes.map((receivableType) => {
     return getLabelOfOption(receivableTypeOptions, receivableType);
-  }).sort(sortStringByKeyAsc).join(', ');
+  }).sort(sortStringAsc).join(', ');
 };

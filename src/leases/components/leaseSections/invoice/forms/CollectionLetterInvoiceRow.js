@@ -14,7 +14,7 @@ import LoaderWrapper from '$components/loader/LoaderWrapper';
 import RemoveButton from '$components/form/RemoveButton';
 import {fetchPenaltyInterestByInvoice} from '$src/penaltyInterest/actions';
 import {FormNames} from '$src/leases/enums';
-import {formatDecimalNumberForDb, formatNumber} from '$util/helpers';
+import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getIsFetchingByInvoice, getPenaltyInterestByInvoice} from '$src/penaltyInterest/selectors';
 
 type Props = {
@@ -44,7 +44,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
     if(!penaltyInterest || isEmpty(penaltyInterest)) {
       return 0;
     }
-    const formatedCollectionCharge = formatDecimalNumberForDb(collectionCharge);
+    const formatedCollectionCharge = convertStrToDecimalNumber(collectionCharge);
     return penaltyInterest.outstanding_amount + penaltyInterest.total_interest_amount + (!isNaN(formatedCollectionCharge) ? formatedCollectionCharge : 0);
   }
 
@@ -60,7 +60,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
       selectedInvoices,
       showDeleteButton,
     } = this.props;
-    const formatedCollectionCharge = formatDecimalNumberForDb(collectionCharge),
+    const formatedCollectionCharge = convertStrToDecimalNumber(collectionCharge),
       filteredInvoiceOptions = invoiceOptions.filter((invoice) => selectedInvoices.indexOf(invoice.value) === -1);
 
     return(

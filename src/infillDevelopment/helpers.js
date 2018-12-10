@@ -4,7 +4,7 @@ import {isDirty} from 'redux-form';
 
 import {FormNames} from '$src/infillDevelopment/enums';
 import {getContentLeaseIdentifier, getContentLeaseOption, getContentUser} from '$src/leases/helpers';
-import {formatDecimalNumberForDb} from '$util/helpers';
+import {convertStrToDecimalNumber} from '$util/helpers';
 import {getIsEditMode} from '$src/infillDevelopment/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 import {getContentLeaseAreasFeatures, getContentPlanUnitFeatures, getContentLeasePlotsFeatures} from '$src/leases/helpers';
@@ -89,8 +89,8 @@ export const getContentIntendedUsesForDb = (lease: Object) => {
     return {
       id: item.id,
       intended_use: item.intended_use,
-      floor_m2: formatDecimalNumberForDb(item.floor_m2),
-      amount_per_floor_m2: formatDecimalNumberForDb(item.amount_per_floor_m2),
+      floor_m2: convertStrToDecimalNumber(item.floor_m2),
+      amount_per_floor_m2: convertStrToDecimalNumber(item.amount_per_floor_m2),
     };
   });
 };
@@ -137,11 +137,11 @@ export const getContentLeaseItemForDb = (lease: Object) => {
     lease: get(lease, 'lease.value'),
     decisions: getContentDecisionsForDb(lease),
     intended_uses: getContentIntendedUsesForDb(lease),
-    monetary_compensation_amount: formatDecimalNumberForDb(lease.monetary_compensation_amount),
-    compensation_investment_amount: formatDecimalNumberForDb(lease.compensation_investment_amount),
-    increase_in_value: formatDecimalNumberForDb(lease.increase_in_value),
-    part_of_the_increase_in_value: formatDecimalNumberForDb(lease.part_of_the_increase_in_value),
-    discount_in_rent: formatDecimalNumberForDb(lease.discount_in_rent),
+    monetary_compensation_amount: convertStrToDecimalNumber(lease.monetary_compensation_amount),
+    compensation_investment_amount: convertStrToDecimalNumber(lease.compensation_investment_amount),
+    increase_in_value: convertStrToDecimalNumber(lease.increase_in_value),
+    part_of_the_increase_in_value: convertStrToDecimalNumber(lease.part_of_the_increase_in_value),
+    discount_in_rent: convertStrToDecimalNumber(lease.discount_in_rent),
     year: lease.year,
     sent_to_sap_date: lease.sent_to_sap_date,
     paid_date: lease.paid_date,

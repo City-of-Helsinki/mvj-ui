@@ -45,6 +45,7 @@ class LeaseList extends Component<Props> {
   handleEditClick = (id) => {
     const {router} = this.context;
     const {router: {location: {query}}} = this.props;
+    // $FlowFixMe
     const lang = getActiveLanguage().id;
 
     return router.push({

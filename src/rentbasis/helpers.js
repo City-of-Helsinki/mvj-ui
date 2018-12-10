@@ -4,7 +4,7 @@ import {isDirty} from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 
 import {FormNames} from './enums';
-import {formatDecimalNumberForDb} from '$util/helpers';
+import {convertStrToDecimalNumber} from '$util/helpers';
 import {getIsEditMode} from '$src/rentbasis/selectors';
 import {removeSessionStorageItem} from '$util/storage';
 
@@ -144,7 +144,7 @@ const formatRentRatesForDb = (rentBasis: Object) => {
     return {
       id: item.id || undefined,
       build_permission_type: item.build_permission_type,
-      amount: formatDecimalNumberForDb(item.amount),
+      amount: convertStrToDecimalNumber(item.amount),
       area_unit: item.area_unit,
     };
   });
