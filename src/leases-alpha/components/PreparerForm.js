@@ -162,6 +162,7 @@ class PreparerForm extends Component<Props, State> {
   // Just for demo...
   goBack = () => {
     const {router} = this.context;
+    // $FlowFixMe
     const lang = getActiveLanguage().id;
 
     return router.push({

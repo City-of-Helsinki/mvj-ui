@@ -33,8 +33,8 @@ import {ViewModes} from '$src/enums';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/infillDevelopment/enums';
 import {
+  convertStrToDecimalNumber,
   formatDate,
-  formatDecimalNumberForDb,
   formatNumber,
 } from '$util/helpers';
 import {getContactFullName} from '$src/contacts/helpers';
@@ -335,8 +335,8 @@ class LeaseItemEdit extends Component<Props, State> {
 
   getTotalCompensation = () => {
     const {compensationInvestment, monetaryCompensation} = this.props;
-    const formatedCompensationInvestment = formatDecimalNumberForDb(compensationInvestment);
-    const formatedMonetaryCompensation = formatDecimalNumberForDb(monetaryCompensation);
+    const formatedCompensationInvestment = convertStrToDecimalNumber(compensationInvestment);
+    const formatedMonetaryCompensation = convertStrToDecimalNumber(monetaryCompensation);
 
     return  ((formatedCompensationInvestment && !isNaN(formatedCompensationInvestment)) ? formatedCompensationInvestment : 0)
       + ((formatedMonetaryCompensation  && !isNaN(formatedMonetaryCompensation)) ? formatedMonetaryCompensation : 0);

@@ -1,7 +1,7 @@
+// @flow
 import React from 'react';
 import {Languages} from '../constants';
 import find from 'lodash/find';
-import findIndex from 'lodash/findIndex';
 import forEach from 'lodash/forEach';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
@@ -14,6 +14,8 @@ import ToastrIcons from '../components/toastr/ToastrIcons';
 
 import {Breakpoints} from '$src/foundation/enums';
 
+/* global API_URL */
+
 // import i18n from '../root/i18n';
 
 /**
@@ -22,10 +24,15 @@ import {Breakpoints} from '$src/foundation/enums';
  */
 export const getDocumentWidth = () => {
   return Math.max(
+    // $FlowFixMe
     document.documentElement['clientWidth'],
+    // $FlowFixMe
     document.body['scrollWidth'],
+    // $FlowFixMe
     document.documentElement['scrollWidth'],
+    // $FlowFixMe
     document.body['offsetWidth'],
+    // $FlowFixMe
     document.documentElement['offsetWidth'],
   );
 };
@@ -69,7 +76,7 @@ export const isLargeScreen = () => {
  * @param language
  * @returns {boolean}
  */
-export const isAllowedLanguage = (language) => {
+export const isAllowedLanguage = (language: string) => {
   return !!find(Languages, (item) => {
     return language === item;
   });
@@ -98,6 +105,7 @@ export const getActiveLanguage = () => {
   // });
   //
   // return active;
+  return {};
 };
 
 export const cloneObject = (obj: Object) => {
@@ -112,10 +120,10 @@ export const cloneObject = (obj: Object) => {
   return clone;
 };
 
-export const getSearchQuery = (filters) => {
+export const getSearchQuery = (filters: any) => {
   let query = [];
 
-  forEach(filters, (filter, key) => {
+  forEach(filters, (filter: any, key) => {
     if (!isEmpty(filter) || isNumber(filter)) {
       if (isArray(filter)) {
         const items = [];
@@ -129,6 +137,7 @@ export const getSearchQuery = (filters) => {
         return;
       }
 
+      // $FlowFixMe
       query.push(`${key}=${isArray(filter) ? filter.join(',') : encodeURIComponent(filter)}`);
     }
   });
@@ -136,13 +145,11 @@ export const getSearchQuery = (filters) => {
   return query.length ? `?${query.join('&')}` : '';
 };
 
-export const isEmptyValue = (value) => (value === null || value === undefined || value === '');
-
 /**
  *
  * @param title
  */
-export const setPageTitle = (title) => {
+export const setPageTitle = (title: string) => {
   document.title = `${title}`;
 };
 
@@ -153,7 +160,7 @@ export const setPageTitle = (title) => {
  * @param previousKey
  * @returns {*}
  */
-export const generateFormData = (formData, data, previousKey) => {
+export const generateFormData = (formData: Object, data: Object, previousKey: string) => {
   if (data instanceof Object) {
     Object.keys(data).forEach(key => {
       const value = data[key];
@@ -181,11 +188,13 @@ export const generateFormData = (formData, data, previousKey) => {
  * @param message
  * @param opts
  */
-export const displayUIMessage = (message, opts = {type: 'success'}) => {
+export const displayUIMessage = (message: Object, opts?: Object = {type: 'success'}) => {
   const {title, body} = message;
   const icon = <ToastrIcons name={opts.type} />;
   return toastr[opts.type](title, body, {...opts, icon: icon});
 };
+
+export const isEmptyValue = (value: any): boolean => (value === null || value === undefined || value === '');
 
 /**
  * Format number to fixed length
@@ -207,46 +216,22 @@ export const fixedLengthNumber = (value: ?number, length: number = 2) => {
   return  value.toString();
 };
 
-export const getEpochTime = () =>
-  Math.round(new Date().getTime()/1000.0);
+export const getEpochTime = () => Math.round(new Date().getTime()/1000.0);
 
 export const formatDate = (date: string) => {
-  if (!date) {
-    return '';
-  }
+  if (!date) return '';
 
   const d = isNumber(date) ? moment.unix(date) : moment(date);
   return d.format('DD.MM.YYYY');
 };
 
-export const formatNumberWithThousandSeparator = (x, separator = ' ') => {
-  if(x === null || x === undefined || !isNumber(Number(x))) {
-    return null;
-  }
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator);
-};
+export const formatNumberWithThousandSeparator = (x: any, separator?: string = ' ') => !isEmptyValue(x) ? x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, separator) : '';
 
-export const formatDecimalNumber = (x) => {
-  if(x === null || x === undefined || !isNumber(Number(x))) {
-    return null;
-  }
-  return parseFloat(x).toFixed(2).toString().replace('.', ',');
-};
+export const formatDecimalNumber = (x: ?number) => !isEmptyValue(x) ? parseFloat(x).toFixed(2).toString().replace('.', ',') : null;
 
-export const formatNumber = (x) => {
-  if(x === null || x === undefined || !isNumber(Number(x))) {
-    return null;
-  }
+export const formatNumber = (x: any) => !isEmptyValue(x) ? formatNumberWithThousandSeparator(formatDecimalNumber(x)) : '';
 
-  return formatNumberWithThousandSeparator(formatDecimalNumber(x));
-};
-
-export const formatDecimalNumberForDb = (x) => {
-  if(x === null || x === undefined) {
-    return null;
-  }
-  return Number(x.toString().replace(',', '.').replace(/\s+/g, ''));
-};
+export const convertStrToDecimalNumber = (x: any) => isEmptyValue(x) ? null : Number(x.toString().replace(',', '.').replace(/\s+/g, ''));
 
 export const formatDateRange = (startDate: any, endDate: any) => {
   if (!startDate && !endDate) {
@@ -268,10 +253,7 @@ export const formatDateRange = (startDate: any, endDate: any) => {
   return `${start.format(dateFormat)} - ${end.format(dateFormat)}`;
 };
 
-export const isDecimalNumber = (value: ?string) =>
-  !isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, ''))
-    ? true
-    : false;
+export const isDecimalNumberStr = (value: any) => (!isEmptyValue(value) && !isNaN(value.toString().replace(',', '.').replace(/\s+/g, '')));
 
 /**
  *
@@ -279,7 +261,7 @@ export const isDecimalNumber = (value: ?string) =>
  * @param format
  * @returns {string}
  */
-export const formatDateObj = (unix, format = 'DD.MM.YYYY HH:mm') => {
+export const formatDateObj = (unix: any, format?: string = 'DD.MM.YYYY HH:mm') => {
   return unix ? moment(unix).format(format) : null;
 };
 
@@ -288,7 +270,7 @@ export const formatDateObj = (unix, format = 'DD.MM.YYYY HH:mm') => {
  * @returns {string}
  */
 export const getApiUrlWithOutVersionSuffix = () => {
-  /* global API_URL */
+  // $FlowFixMe
   return API_URL.split('/v1')[0];
 };
 
@@ -299,7 +281,7 @@ export const getApiUrlWithOutVersionSuffix = () => {
  * @param lang
  * @returns {string}
  */
-export const getKtjLink = (id, key, lang = 'fi') => {
+export const getKtjLink = (id: number, key: string, lang?: string = 'fi') => {
   const apiUrlWithOutVersionSuffix = getApiUrlWithOutVersionSuffix();
   return `${apiUrlWithOutVersionSuffix}/ktjkir/tuloste/${key}/pdf?kohdetunnus=${id}&lang=${lang}`;
 };
@@ -315,44 +297,33 @@ export const getReferenceNumberLink = (referenceNumber: ?string) => {
 };
 
 /**
- * Find from collection with ID
- * @param collection
- * @param id
- * @returns {*}
- */
-export const findIndexOfArrayfield = (collection, id) => {
-  return findIndex(collection, {id});
-};
-
-/**
  * Find item from collection with ID
  * @param collection
  * @param id
  * @returns {*}
  */
-export const findItemById = (collection, id) => {
+export const findItemById = (collection: Array<Object>, id: number) => {
   return collection.find((item) => item.id === id);
 };
 
-export const getLabelOfOption = (options: Array<Object>, value: string) => {
-  if(!options || !options.length || value === undefined || value === null) {
-    return null;
-  }
-  const option = options.find(x => x.value.toString() === value.toString());
-  return get(option, 'label', '');
+export const getLabelOfOption = (options: Array<Object>, value: any) => {
+  if(!options || !options.length || value === undefined || value === null)  return '';
+
+  const option = options.find(x => x.value == value);
+  return option ? option.label : '';
 };
 
 /**
  * Get full amount of rent
  * @param rents
  */
-export const getFullRent = (rents) => rents.reduce((total, {amount}) => parseFloat(amount) + total, 0);
+export const getFullRent = (rents: Array<Object>) => rents.reduce((total, {amount}) => parseFloat(amount) + total, 0);
 
 /**
  * Generate a fraction from float
  * @param float
  */
-export const getFractionFromFloat = (float) => new Fraction(float).toFraction(true);
+export const getFractionFromFloat = (float: number) => new Fraction(float).toFraction(true);
 
 /**
  * Get tenants yearly share
@@ -360,7 +331,7 @@ export const getFractionFromFloat = (float) => new Fraction(float).toFraction(tr
  * @param rents
  */
 // TODO: Only if the rent-type is fixed (monthly)
-export const getTenantsYearlyShare = ({share}, rents) => (getFullRent(rents) * 12) * parseFloat(share);
+export const getTenantsYearlyShare = ({share}: any, rents: Array<Object>) => (getFullRent(rents) * 12) * parseFloat(share);
 
 export const addEmptyOption = (options: Array<Object>) =>
   [{value: '', label: ''}, ...options];
@@ -400,37 +371,46 @@ export const getFieldOptions = (fieldAttributes: Object, addEmpty: boolean = tru
   return results;
 };
 
-export const sortNumberByKeyAsc = (a, b, key) => {
+export const sortNumberByKeyAsc = (a: Object, b: Object, key: string) => {
   const keyA = get(a, key),
     keyB = get(b, key);
 
   return Number(keyA) - Number(keyB);
 };
 
-export const sortNumberByKeyDesc = (a, b, key) => {
+export const sortNumberByKeyDesc = (a: Object, b: Object, key: string) => {
   const keyA = get(a, key),
     keyB = get(b, key);
   return Number(keyB) - Number(keyA);
 };
 
-export const sortStringByKeyAsc = (a, b, key?: string = null) => {
-  const keyA = key ? (get(a, key) ? get(a, key).toLowerCase() : '') : a,
-    keyB = key ? (get(b, key) ? get(b, key).toLowerCase() : '') : b;
-
+export const sortStringAsc = (keyA: string, keyB: string) => {
   if(keyA > keyB) return 1;
   if(keyA < keyB) return -1;
   return 0;
 };
 
-export const sortStringByKeyDesc = (a, b, key?: string = null) => {
-  const keyA = key ? (get(a, key) ? get(a, key).toLowerCase() : '') : a,
-    keyB = key ? (get(b, key) ? get(b, key).toLowerCase() : '') : b;
+export const sortStringByKeyAsc = (a: Object, b: Object, key: ?string) => {
+  const keyA = key ? get(a, key) ? get(a, key).toLowerCase() : '' : '';
+  const keyB = key ? get(b, key) ? get(b, key).toLowerCase() : '' : '';
+
+  return sortStringAsc(keyA, keyB);
+};
+
+export const sortStringDesc = (keyA: string, keyB: string) => {
   if(keyA > keyB) return -1;
   if(keyA < keyB) return 1;
   return 0;
 };
 
-export const sortByOptionsAsc = (a: Object, b: Object, key, options: Array<Object>) => {
+export const sortStringByKeyDesc = (a: Object, b: Object, key: ?string) => {
+  const keyA = key ? get(a, key) ? get(a, key).toLowerCase() : '' : '';
+  const keyB = key ? get(b, key) ? get(b, key).toLowerCase() : '' : '';
+
+  return sortStringDesc(keyA, keyB);
+};
+
+export const sortByOptionsAsc = (a: Object, b: Object, key: string, options: Array<Object>) => {
   const keyA = a[key] ? getLabelOfOption(options, a[key]) : '',
     keyB = b[key] ? getLabelOfOption(options, b[key]) : '';
   if(keyA > keyB) return 1;
@@ -438,7 +418,7 @@ export const sortByOptionsAsc = (a: Object, b: Object, key, options: Array<Objec
   return 0;
 };
 
-export const sortByOptionsDesc = (a: Object, b: Object, key, options: Array<Object>) => {
+export const sortByOptionsDesc = (a: Object, b: Object, key: string, options: Array<Object>) => {
   const keyA = a[key] ? getLabelOfOption(options, a[key]) : '',
     keyB = b[key] ? getLabelOfOption(options, b[key]) : '';
   if(keyA > keyB) return -1;
@@ -446,16 +426,16 @@ export const sortByOptionsDesc = (a: Object, b: Object, key, options: Array<Obje
   return 0;
 };
 
-export const sortByLabelAsc = (a, b) =>
+export const sortByLabelAsc = (a: Object, b: Object) =>
   sortStringByKeyAsc(a, b, 'label');
 
-export const sortByLabelDesc = (a, b) =>
+export const sortByLabelDesc = (a: Object, b: Object) =>
   sortStringByKeyDesc(a, b, 'label');
 
-export const sortByStartDateDesc = (a, b) =>
+export const sortByStartDateDesc = (a: Object, b: Object) =>
   sortStringByKeyDesc(a, b, 'start_date');
 
-export const sortByDueDateDesc = (a, b) =>
+export const sortByDueDateDesc = (a: Object, b: Object) =>
   sortStringByKeyDesc(a, b, 'due_date');
 
 const getFileNameByContentDisposition = (contentDisposition) => {
@@ -470,12 +450,12 @@ const getFileNameByContentDisposition = (contentDisposition) => {
   return filename ? decodeURI(filename) : null;
 };
 
-export const getFileNameFromResponse = (response) => {
+export const getFileNameFromResponse = (response: any) => {
   const disposition = response.headers.get('content-disposition');
   return getFileNameByContentDisposition(disposition);
 };
 
-export const sortByStartAndEndDateDesc = (a, b) => {
+export const sortByStartAndEndDateDesc = (a: Object, b: Object) => {
   const startA = get(a, 'start_date', ''),
     endA = get(a, 'end_date', ''),
     startB = get(b, 'start_date', ''),
@@ -514,6 +494,7 @@ export const copyElementContentsToClipboard = (el: any) => {
   document.body.appendChild(el);
   selectElementContents(el);
   document.execCommand('copy');
+  // $FlowFixMe
   document.body.removeChild(el);
 
   if (selection && selected) {

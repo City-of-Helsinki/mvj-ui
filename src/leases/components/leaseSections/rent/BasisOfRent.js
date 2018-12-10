@@ -10,11 +10,11 @@ import RemoveButton from '$components/form/RemoveButton';
 import UnarchiveButton from '$components/form/UnarchiveButton';
 import {getUserFullName} from '$src/users/helpers';
 import {
+  convertStrToDecimalNumber,
   formatDate,
-  formatDecimalNumberForDb,
   formatNumber,
   getLabelOfOption,
-  isDecimalNumber,
+  isDecimalNumberStr,
   isEmptyValue,
 } from '$util/helpers';
 
@@ -49,10 +49,10 @@ const BasisOfRent = ({
   const getCurrentAmountPerArea = () => {
     const indexValue = getIndexValue();
 
-    if(!isDecimalNumber(indexValue) || !isDecimalNumber(basisOfRent.amount_per_area)) return null;
+    if(!isDecimalNumberStr(indexValue) || !isDecimalNumberStr(basisOfRent.amount_per_area)) return null;
 
-    return Number(formatDecimalNumberForDb(indexValue))/100
-      * Number(formatDecimalNumberForDb(basisOfRent.amount_per_area));
+    return Number(convertStrToDecimalNumber(indexValue))/100
+      * Number(convertStrToDecimalNumber(basisOfRent.amount_per_area));
   };
 
   const getAreaText = (amount: ?number) => {
@@ -80,26 +80,26 @@ const BasisOfRent = ({
   };
 
   const getBasicAnnualRent = () => {
-    if(!isDecimalNumber(basisOfRent.amount_per_area) || !isDecimalNumber(basisOfRent.area)) return null;
-    return Number(formatDecimalNumberForDb(basisOfRent.amount_per_area))
-      * Number(formatDecimalNumberForDb(basisOfRent.area));
+    if(!isDecimalNumberStr(basisOfRent.amount_per_area) || !isDecimalNumberStr(basisOfRent.area)) return null;
+    return Number(convertStrToDecimalNumber(basisOfRent.amount_per_area))
+      * Number(convertStrToDecimalNumber(basisOfRent.area));
   };
 
   const getInitialYearRent = () => {
     const currentAmountPerArea = getCurrentAmountPerArea();
 
-    if(!isDecimalNumber(currentAmountPerArea) || !isDecimalNumber(basisOfRent.area)) return null;
-    return Number(formatDecimalNumberForDb(currentAmountPerArea))
-      * Number(formatDecimalNumberForDb(basisOfRent.area))
-      * Number(isDecimalNumber(basisOfRent.profit_margin_percentage) ? Number(formatDecimalNumberForDb(basisOfRent.profit_margin_percentage))/100 + 1 : 1);
+    if(!isDecimalNumberStr(currentAmountPerArea) || !isDecimalNumberStr(basisOfRent.area)) return null;
+    return Number(convertStrToDecimalNumber(currentAmountPerArea))
+      * Number(convertStrToDecimalNumber(basisOfRent.area))
+      * Number(isDecimalNumberStr(basisOfRent.profit_margin_percentage) ? Number(convertStrToDecimalNumber(basisOfRent.profit_margin_percentage))/100 + 1 : 1);
   };
 
   const getDiscountedInitialYearRent = () => {
     const initialYearRent = getInitialYearRent();
 
-    if(!isDecimalNumber(initialYearRent)) return null;
-    return Number(formatDecimalNumberForDb(initialYearRent))
-      * Number(isDecimalNumber(basisOfRent.discount_percentage) ? (100 - Number(formatDecimalNumberForDb(basisOfRent.discount_percentage)))/100 : 1);
+    if(!isDecimalNumberStr(initialYearRent)) return null;
+    return Number(convertStrToDecimalNumber(initialYearRent))
+      * Number(isDecimalNumberStr(basisOfRent.discount_percentage) ? (100 - Number(convertStrToDecimalNumber(basisOfRent.discount_percentage)))/100 : 1);
   };
 
   const areaText = getAreaText(basisOfRent.area);

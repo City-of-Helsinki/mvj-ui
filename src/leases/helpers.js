@@ -22,8 +22,8 @@ import {getContactFullName, getContentContact} from '$src/contacts/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {isEmptyValue} from '$util/helpers';
 import {
+  convertStrToDecimalNumber,
   fixedLengthNumber,
-  formatDecimalNumberForDb,
   sortByStartAndEndDateDesc,
   sortStringByKeyAsc,
   sortStringByKeyDesc,
@@ -903,8 +903,8 @@ const getPlotsForDb = (area: Object) => {
     return {
       id: plot.id || undefined,
       identifier: plot.identifier,
-      area: formatDecimalNumberForDb(plot.area),
-      section_area: formatDecimalNumberForDb(plot.section_area),
+      area: convertStrToDecimalNumber(plot.area),
+      section_area: convertStrToDecimalNumber(plot.section_area),
       postal_code: plot.postal_code,
       city: plot.city,
       type: plot.type,
@@ -929,8 +929,8 @@ const getPlanUnitsForDb = (area: Object) => {
     return {
       id: planunit.id || undefined,
       identifier: planunit.identifier,
-      area: formatDecimalNumberForDb(planunit.area),
-      section_area: formatDecimalNumberForDb(planunit.section_area),
+      area: convertStrToDecimalNumber(planunit.area),
+      section_area: convertStrToDecimalNumber(planunit.section_area),
       postal_code: planunit.postal_code,
       city: planunit.city,
       in_contract: planunit.in_contract,
@@ -954,8 +954,8 @@ export const addAreasFormValues = (payload: Object, values: Object) => {
     return {
       id: area.id || undefined,
       identifier: area.identifier,
-      area: formatDecimalNumberForDb(area.area),
-      section_area: formatDecimalNumberForDb(area.area),
+      area: convertStrToDecimalNumber(area.area),
+      section_area: convertStrToDecimalNumber(area.area),
       addresses: getAddressesForDb(get(area, 'addresses', [])),
       type: area.type,
       location: area.location,
@@ -1202,9 +1202,9 @@ export const getContentRentAdjustmentsForDb = (rent: Object) =>
       intended_use: item.intended_use,
       start_date: item.start_date,
       end_date: item.end_date,
-      full_amount: formatDecimalNumberForDb(item.full_amount),
+      full_amount: convertStrToDecimalNumber(item.full_amount),
       amount_type: item.amount_type,
-      amount_left: formatDecimalNumberForDb(item.amount_left),
+      amount_left: convertStrToDecimalNumber(item.amount_left),
       decision: item.decision,
       note: item.note,
     };
@@ -1214,7 +1214,7 @@ export const getContentContractRentsForDb = (rent: Object, rentType: string) =>
   get(rent, 'contract_rents', []).map((item) => {
     const contractRentData: any = {
       id: item.id || undefined,
-      amount: formatDecimalNumberForDb(item.amount),
+      amount: convertStrToDecimalNumber(item.amount),
       period: item.period,
       intended_use: get(item, 'intended_use.id') || get(item, 'intended_use'),
       start_date: item.start_date,
@@ -1223,9 +1223,9 @@ export const getContentContractRentsForDb = (rent: Object, rentType: string) =>
 
     // Patch these fields only if rent type is index or manual
     if(rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) {
-      contractRentData.base_amount = formatDecimalNumberForDb(item.base_amount);
+      contractRentData.base_amount = convertStrToDecimalNumber(item.base_amount);
       contractRentData.base_amount_period = item.base_amount_period;
-      contractRentData.base_year_rent = formatDecimalNumberForDb(item.base_year_rent);
+      contractRentData.base_year_rent = convertStrToDecimalNumber(item.base_year_rent);
     }
 
     return contractRentData;
@@ -1236,7 +1236,7 @@ export const getContentFixedInitialYearRentsForDb = (rent: Object) =>
     return {
       id: item.id || undefined,
       intended_use: item.intended_use,
-      amount: formatDecimalNumberForDb(item.amount),
+      amount: convertStrToDecimalNumber(item.amount),
       start_date: item.start_date,
       end_date: item.end_date,
     };
@@ -1290,12 +1290,12 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
       const basisOfRentData: any = {
         id: item.id || undefined,
         intended_use: item.intended_use,
-        area: formatDecimalNumberForDb(item.area),
+        area: convertStrToDecimalNumber(item.area),
         area_unit: item.area_unit,
-        amount_per_area: formatDecimalNumberForDb(item.amount_per_area),
+        amount_per_area: convertStrToDecimalNumber(item.amount_per_area),
         index: item.index,
-        profit_margin_percentage: formatDecimalNumberForDb(item.profit_margin_percentage),
-        discount_percentage: formatDecimalNumberForDb(item.discount_percentage),
+        profit_margin_percentage: convertStrToDecimalNumber(item.profit_margin_percentage),
+        discount_percentage: convertStrToDecimalNumber(item.discount_percentage),
         plans_inspected_at: item.plans_inspected_at,
         locked_at: item.locked_at,
         archived_at: item.archived_at,
@@ -1320,7 +1320,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
 
     // Patch amount only if rent type is one time
     if(rent.type === RentTypes.ONE_TIME) {
-      rentData.amount = formatDecimalNumberForDb(rent.amount);
+      rentData.amount = convertStrToDecimalNumber(rent.amount);
     }
 
     // Patch due dates data only if rent type is not free
@@ -1345,11 +1345,11 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
     if(rent.type === RentTypes.MANUAL) {
       switch (rent.cycle) {
         case RentCycles.JANUARY_TO_DECEMBER:
-          rentData.manual_ratio = formatDecimalNumberForDb(rent.manual_ratio);
+          rentData.manual_ratio = convertStrToDecimalNumber(rent.manual_ratio);
           break;
         case RentCycles.APRIL_TO_MARCH:
-          rentData.manual_ratio = formatDecimalNumberForDb(rent.manual_ratio);
-          rentData.manual_ratio_previous = formatDecimalNumberForDb(rent.manual_ratio_previous);
+          rentData.manual_ratio = convertStrToDecimalNumber(rent.manual_ratio);
+          rentData.manual_ratio_previous = convertStrToDecimalNumber(rent.manual_ratio_previous);
           break;
       }
     }

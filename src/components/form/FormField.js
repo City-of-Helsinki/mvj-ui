@@ -12,6 +12,7 @@ import FieldTypeCheckbox from './FieldTypeCheckbox';
 import FieldTypeCheckboxDateTime from './FieldTypeCheckboxDateTime';
 import FieldTypeContactSelect from './FieldTypeContactSelect';
 import FieldTypeDatePicker from './FieldTypeDatePicker';
+import FieldTypeDecimal from './FieldTypeDecimal';
 import FieldTypeLeaseSelect from './FieldTypeLeaseSelect';
 import FieldTypeLessorSelect from './FieldTypeLessorSelect';
 import FieldTypeMultiSelect from './FieldTypeMultiSelect';
@@ -34,7 +35,7 @@ const FieldTypes = {
   'checkbox-date-time': FieldTypeCheckboxDateTime,
   'contact': FieldTypeContactSelect,
   'date': FieldTypeDatePicker,
-  'decimal': FieldTypeBasic,
+  'decimal': FieldTypeDecimal,
   'field': FieldTypeSelect,
   'integer': FieldTypeBasic,
   'lease': FieldTypeLeaseSelect,

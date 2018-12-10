@@ -28,8 +28,8 @@ import {
   getLabelOfOption,
   sortNumberByKeyAsc,
   sortNumberByKeyDesc,
-  sortStringByKeyAsc,
-  sortStringByKeyDesc,
+  sortStringAsc,
+  sortStringDesc,
 } from '$util/helpers';
 import {getCurrentLease, getIsEditMode} from '$src/leases/selectors';
 import {
@@ -310,14 +310,14 @@ class InvoiceTableAndPanel extends Component<Props, State> {
     const valA = getContactFullName(a.recipientFull) ? getContactFullName(a.recipientFull).toLowerCase() : '',
       valB = getContactFullName(a.recipientFull) ? getContactFullName(b.recipientFull).toLowerCase() : '';
 
-    return sortStringByKeyAsc(valA, valB);
+    return sortStringAsc(valA, valB);
   };
 
   sortByRecipientNameDesc = (a, b) => {
     const valA = getContactFullName(a.recipientFull) ? getContactFullName(a.recipientFull).toLowerCase() : '',
       valB = getContactFullName(a.recipientFull) ? getContactFullName(b.recipientFull).toLowerCase() : '';
 
-    return sortStringByKeyDesc(valA, valB);
+    return sortStringDesc(valA, valB);
   };
 
   sortByReceivableTypesAsc = (a, b) => {
@@ -325,7 +325,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
       valA = formatReceivableTypesString(receivableTypeOptions, a.receivableTypes) || '',
       valB = formatReceivableTypesString(receivableTypeOptions, b.receivableTypes) || '';
 
-    return sortStringByKeyAsc(valA, valB);
+    return sortStringAsc(valA, valB);
   };
 
   sortByReceivableTypesDesc = (a, b) => {
@@ -333,7 +333,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
       valA = formatReceivableTypesString(receivableTypeOptions, a.receivableTypes) || '',
       valB = formatReceivableTypesString(receivableTypeOptions, b.receivableTypes) || '';
 
-    return sortStringByKeyDesc(valA, valB);
+    return sortStringDesc(valA, valB);
   };
 
   sortByTypeAsc = (a, b) => {
@@ -341,7 +341,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
       valA = getLabelOfOption(typeOptions, a.type) || '',
       valB = getLabelOfOption(typeOptions, b.type) || '';
 
-    return sortStringByKeyAsc(valA, valB);
+    return sortStringAsc(valA, valB);
   };
 
   sortByTypeDesc = (a, b) => {
@@ -349,7 +349,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
       valA = getLabelOfOption(typeOptions, a.type) || '',
       valB = getLabelOfOption(typeOptions, b.type) || '';
 
-    return sortStringByKeyDesc(valA, valB);
+    return sortStringDesc(valA, valB);
   };
 
   sortByStateAsc = (a, b) => {
@@ -357,7 +357,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
       valA = getLabelOfOption(stateOptions, a.state) || '',
       valB = getLabelOfOption(stateOptions, b.state) || '';
 
-    return sortStringByKeyAsc(valA, valB);
+    return sortStringAsc(valA, valB);
   };
 
   sortByStateDesc = (a, b) => {
@@ -365,7 +365,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
       valA = getLabelOfOption(stateOptions, a.state) || '',
       valB = getLabelOfOption(stateOptions, b.state) || '';
 
-    return sortStringByKeyDesc(valA, valB);
+    return sortStringDesc(valA, valB);
   };
 
   getColumns = () => {

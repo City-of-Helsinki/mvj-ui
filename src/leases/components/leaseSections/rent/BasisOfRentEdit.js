@@ -19,13 +19,13 @@ import {FormNames} from '$src/leases/enums';
 import {getSavedBasisOfRent} from '$src/leases/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {
+  convertStrToDecimalNumber,
   copyElementContentsToClipboard,
   displayUIMessage,
   formatDate,
-  formatDecimalNumberForDb,
   formatNumber,
   getLabelOfOption,
-  isDecimalNumber,
+  isDecimalNumberStr,
   isEmptyValue,
 } from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
@@ -117,31 +117,31 @@ const BasisOfRentEdit = ({
   const getCurrentAmountPerArea = () => {
     const indexValue = getIndexValue();
 
-    if(!isDecimalNumber(indexValue) || !isDecimalNumber(amountPerArea)) return null;
-    return Number(formatDecimalNumberForDb(indexValue))/100 * Number(formatDecimalNumberForDb(amountPerArea));
+    if(!isDecimalNumberStr(indexValue) || !isDecimalNumberStr(amountPerArea)) return null;
+    return Number(convertStrToDecimalNumber(indexValue))/100 * Number(convertStrToDecimalNumber(amountPerArea));
   };
 
   const getBasicAnnualRent = () => {
-    if(!isDecimalNumber(amountPerArea) || !isDecimalNumber(area)) return null;
-    return Number(formatDecimalNumberForDb(amountPerArea))
-      * Number(formatDecimalNumberForDb(area));
+    if(!isDecimalNumberStr(amountPerArea) || !isDecimalNumberStr(area)) return null;
+    return Number(convertStrToDecimalNumber(amountPerArea))
+      * Number(convertStrToDecimalNumber(area));
   };
 
   const getInitialYearRent = () => {
     const currentAmountPerArea = getCurrentAmountPerArea();
 
-    if(!isDecimalNumber(currentAmountPerArea) || !isDecimalNumber(area)) return null;
-    return Number(formatDecimalNumberForDb(currentAmountPerArea))
-      * Number(formatDecimalNumberForDb(area))
-      * Number(isDecimalNumber(profitMarginPercentage) ? Number(formatDecimalNumberForDb(profitMarginPercentage))/100 + 1 : 1);
+    if(!isDecimalNumberStr(currentAmountPerArea) || !isDecimalNumberStr(area)) return null;
+    return Number(convertStrToDecimalNumber(currentAmountPerArea))
+      * Number(convertStrToDecimalNumber(area))
+      * Number(isDecimalNumberStr(profitMarginPercentage) ? Number(convertStrToDecimalNumber(profitMarginPercentage))/100 + 1 : 1);
   };
 
   const getDiscountedInitialYearRent = () => {
     const initialYearRent = getInitialYearRent();
 
-    if(!isDecimalNumber(initialYearRent)) return null;
-    return Number(formatDecimalNumberForDb(initialYearRent))
-      * Number(isDecimalNumber(discountPercentage) ? (100 - Number(formatDecimalNumberForDb(discountPercentage)))/100 : 1);
+    if(!isDecimalNumberStr(initialYearRent)) return null;
+    return Number(convertStrToDecimalNumber(initialYearRent))
+      * Number(isDecimalNumberStr(discountPercentage) ? (100 - Number(convertStrToDecimalNumber(discountPercentage)))/100 : 1);
   };
 
   const handleArchive = () => {

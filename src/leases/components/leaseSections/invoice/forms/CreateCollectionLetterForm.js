@@ -19,7 +19,7 @@ import SubTitle from '$components/content/SubTitle';
 import {InvoiceType} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
 import {getCollectionLetterTemplateOptions} from '$src/collectionLetterTemplate/helpers';
-import {formatDate, formatDateRange, formatDecimalNumberForDb, sortStringByKeyDesc} from '$util/helpers';
+import {convertStrToDecimalNumber, formatDate, formatDateRange, sortStringByKeyDesc} from '$util/helpers';
 import {getInvoiceTenantOptions} from '$src/leases/helpers';
 import {getCollectionLetterTemplates} from '$src/collectionLetterTemplate/selectors';
 import {getInvoicesByLease} from '$src/invoices/selectors';
@@ -236,7 +236,7 @@ class CreateCollectionLetterForm extends Component<Props, State> {
               label='Luo perintäkirje'
               payload={{
                 template: template,
-                collection_charge: formatDecimalNumberForDb(collectionCharge),
+                collection_charge: convertStrToDecimalNumber(collectionCharge),
                 tenants: tenants,
                 invoices: invoiceIds,
               }}

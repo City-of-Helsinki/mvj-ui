@@ -139,6 +139,7 @@ function* createLeaseSaga({payload: lease}): Generator<any, any, any> {
 
     switch (statusCode) {
       case 201:
+      // $FlowFixMe
         const {id} = getActiveLanguage();
         yield put(receiveSingleLease(bodyAsJson));
         // TODO: make this more sane & move to class instead

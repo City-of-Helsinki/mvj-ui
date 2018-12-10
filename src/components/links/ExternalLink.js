@@ -6,7 +6,7 @@ import ExternalLinkIcon from '$components/icons/ExternalLinkIcon';
 
 type Props = {
   className?: string,
-  href: string,
+  href: ?string,
   openInNewTab?: boolean,
   text: string,
 }

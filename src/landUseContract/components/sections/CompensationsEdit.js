@@ -20,7 +20,7 @@ import WhiteBox from '$components/content/WhiteBox';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
-import {formatDecimalNumberForDb, formatNumber} from '$util/helpers';
+import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/landUseContract/selectors';
 
 import type {Attributes} from '$src/landUseContract/types';
@@ -134,10 +134,11 @@ class CompensationsEdit extends Component<Props> {
 
   getTotal = () => {
     const {cashCompensation, landCompensation, otherCompensation, firstInstallmentIncrease} = this.props;
-    return formatDecimalNumberForDb(cashCompensation) +
-      formatDecimalNumberForDb(landCompensation) +
-      formatDecimalNumberForDb(otherCompensation) +
-      formatDecimalNumberForDb(firstInstallmentIncrease);
+
+    return convertStrToDecimalNumber(cashCompensation) +
+      convertStrToDecimalNumber(landCompensation) +
+      convertStrToDecimalNumber(otherCompensation) +
+      convertStrToDecimalNumber(firstInstallmentIncrease);
   };
 
   render() {

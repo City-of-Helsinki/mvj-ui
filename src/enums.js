@@ -1,5 +1,17 @@
 // @flow
 import React from 'react';
+
+/**
+ * Redux form field type enumerable.
+ *
+ * @type {{DATE: string, DECIMAL: string, INTEGER: string,}}
+ */
+export const FieldTypes = {
+  DATE: 'date',
+  DECIMAL: 'decimal',
+  INTEGER: 'integer',
+};
+
 /**
  * View modes enumerable.
  *
