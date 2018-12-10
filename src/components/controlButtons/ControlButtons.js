@@ -6,7 +6,6 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {CancelChangesModalTexts} from '$src/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 import {ButtonColors} from '$components/enums';
-console.log(ButtonColors);
 
 type Props = {
   commentAmount?: number,
