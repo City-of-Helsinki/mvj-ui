@@ -25,14 +25,10 @@
         color: $medium-dark-gray;
       }
 
-
       &.is-focused {
-        outline: none;
-        border: 1px solid $tram;
-        box-shadow: 0 0 0 1px $tram;
+        outline: 2px dotted $tram;
+        outline-offset: 0px;
       }
-
-
 
       &-container {
         width: 100%;
@@ -90,9 +86,8 @@
       }
 
       &.is-focused {
-        outline: none;
-        border: 1px solid $tram;
-        box-shadow: 0 0 0 1px $tram;
+        outline: 2px dotted $tram;
+        outline-offset: 0px;
       }
 
       &-value {

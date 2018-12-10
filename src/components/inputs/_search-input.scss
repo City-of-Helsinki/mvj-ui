@@ -13,10 +13,7 @@
         line-height: normal;
       }
 
-      &:focus {
-        border: 1px solid $tram;
-        box-shadow: 0px 0px 0px 1px #007a3a;
-      }
+      @include focusInput();
     }
 
     .search-icon {

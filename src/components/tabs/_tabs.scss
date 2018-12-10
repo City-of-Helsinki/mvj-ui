@@ -33,9 +33,12 @@
       &:focus {
         border-color: $tram !important;
         outline: none;
+        border-style: dotted;
 
         &::after {
           border-color: $tram !important;
+          border-style: dotted;
+          border-left: none;
         }
       }
 
@@ -57,7 +60,7 @@
       top: -2px;
       right: -6px;
       height: rem-calc(32px);
-      width: 12px;
+      width: 14px;
       transform: skewX(15deg);
       border: 2px solid $medium-gray;
       border-left: none;
@@ -78,10 +81,10 @@
         }
       }
     }
+
     > a::after {
         background-color: $white;
         border-color: $white;
-
     }
   }
 
