@@ -13,7 +13,6 @@ import ArchiveAreaModal from './ArchiveAreaModal';
 import Button from '$components/button/Button';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Divider from '$components/content/Divider';
-import FormSection from '$components/form/FormSection';
 import LeaseAreaWithArchiveInfoEdit from './LeaseAreaWithArchiveInfoEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {
@@ -26,6 +25,7 @@ import {
   showUnarchiveAreaModal,
   unarchiveLeaseArea,
 } from '$src/leases/actions';
+import {ButtonColors} from '$components/enums';
 import {AreaLocation, DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
@@ -81,6 +81,7 @@ class renderLeaseAreas extends PureComponent<AreaItemProps> {
                     confirmationFunction: () => {
                       fields.remove(index);
                     },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
                     confirmationModalButtonText: 'Poista',
                     confirmationModalLabel: DeleteModalLabels.LEASE_AREA,
                     confirmationModalTitle: DeleteModalTitles.LEASE_AREA,
@@ -374,9 +375,10 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
               confirmationFunction: () => {
                 copyAreasToContract(currentLease.id);
               },
-              confirmationModalButtonText: 'Kopio sopimukseen',
+              confirmationModalButtonClassName: ButtonColors.SUCCESS,
+              confirmationModalButtonText: 'Kopioi sopimukseen',
               confirmationModalLabel: 'Haluatko varmasti kopioda nykyhetken kiinteistöt, määräalat ja kaavayksiköt sopimukseen?',
-              confirmationModalTitle: 'Kopio sopimukseen',
+              confirmationModalTitle: 'Kopioi sopimukseen',
             });
           };
 
@@ -391,20 +393,21 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
               />
 
               <ConfirmationModal
-                confirmButtonLabel='Poista arkistosta'
+                confirmButtonClassName={ButtonColors.ALERT}
+                confirmButtonLabel='Siirrä arkistosta'
                 isOpen={isUnarchiveAreaModalOpen}
-                label='Haluatko varmasti poistaa kohteen arkistosta?'
+                label='Haluatko varmasti siirtää kohteen pois arkistosta?'
                 onCancel={this.handleHideUnarchiveAreaModal}
                 onClose={this.handleHideUnarchiveAreaModal}
                 onSave={this.handleUnarchive}
-                title='Poista kohde arkistosta'
+                title='Siirrä arkistosta'
               />
 
               <h2>Vuokra-alue</h2>
               <RightSubtitle
                 buttonComponent={
                   <Button
-                    className='button-green'
+                    className={ButtonColors.NEUTRAL}
                     onClick={handleCopyAreasToContract}
                     text='Kopioi sopimukseen'
                   />
@@ -413,33 +416,31 @@ class LeaseAreasEdit extends PureComponent<Props, State> {
               />
               <Divider />
 
-              <FormSection>
-                <FieldArray
-                  archiveLeaseArea={archiveLeaseArea}
-                  areasData={activeAreas}
-                  component={renderLeaseAreas}
-                  decisionOptions={decisionOptions}
-                  ref={this.setActiveLeasesRef}
-                  isActive={true}
-                  name="lease_areas_active"
-                  onArchive={this.handleShowArchiveAreaModal}
-                  withRef={true}
-                />
+              <FieldArray
+                archiveLeaseArea={archiveLeaseArea}
+                areasData={activeAreas}
+                component={renderLeaseAreas}
+                decisionOptions={decisionOptions}
+                ref={this.setActiveLeasesRef}
+                isActive={true}
+                name="lease_areas_active"
+                onArchive={this.handleShowArchiveAreaModal}
+                withRef={true}
+              />
 
-                {/* Archived lease areas */}
-                <FieldArray
-                  areasData={archivedAreas}
-                  component={renderLeaseAreas}
-                  decisionOptions={decisionOptions}
-                  ref={this.setArchivedLeasesRef}
-                  isActive={false}
-                  name="lease_areas_archived"
-                  onArchive={this.handleShowArchiveAreaModal}
-                  onUnarchive={this.handleShowUnarchiveAreaModal}
-                  onUnarchiveCallback={this.handleUnarchiveCallback}
-                  withRef={true}
-                />
-              </FormSection>
+              {/* Archived lease areas */}
+              <FieldArray
+                areasData={archivedAreas}
+                component={renderLeaseAreas}
+                decisionOptions={decisionOptions}
+                ref={this.setArchivedLeasesRef}
+                isActive={false}
+                name="lease_areas_archived"
+                onArchive={this.handleShowArchiveAreaModal}
+                onUnarchive={this.handleShowUnarchiveAreaModal}
+                onUnarchiveCallback={this.handleUnarchiveCallback}
+                withRef={true}
+              />
             </form>
           );
         }}

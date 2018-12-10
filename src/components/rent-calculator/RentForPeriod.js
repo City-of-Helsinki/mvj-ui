@@ -9,7 +9,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import RentCalculatorRent from './RentCalculatorRent';
 import RentCalculatorTotalRow from './RentCalculatorTotalRow';
 import {RentCalculatorTypeOptions} from '$components/constants';
-import {DeleteRentForPeriodTexts, RentCalculatorTypes} from '$components/enums';
+import {ButtonColors, DeleteRentForPeriodTexts, RentCalculatorTypes} from '$components/enums';
 import {formatDateRange, getLabelOfOption} from '$util/helpers';
 
 type Props = {
@@ -41,6 +41,7 @@ const RentForPeriod = ({onRemove, rentForPeriod}: Props) => {
             confirmationFunction: () => {
               onRemove(rentForPeriod.id);
             },
+            confirmationModalButtonClassName: ButtonColors.ALERT,
             confirmationModalButtonText: DeleteRentForPeriodTexts.BUTTON,
             confirmationModalLabel: DeleteRentForPeriodTexts.LABEL,
             confirmationModalTitle: DeleteRentForPeriodTexts.TITLE,

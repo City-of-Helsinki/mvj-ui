@@ -17,6 +17,7 @@ import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceRowsEdit from './InvoiceRowsEdit';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getContactFullName} from '$src/contacts/helpers';
@@ -72,6 +73,7 @@ const renderPayments = ({attributes, fields, isEditClicked}: PaymentsProps): Ele
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.INVOICE_PAYMENT,
                   confirmationModalTitle: DeleteModalTitles.INVOICE_PAYMENT,

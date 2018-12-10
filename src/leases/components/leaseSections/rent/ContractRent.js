@@ -1,7 +1,6 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React from 'react';
 import {Row, Column} from 'react-foundation';
-import throttle from 'lodash/throttle';
 
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -12,7 +11,6 @@ import {
   formatNumber,
   getLabelOfOption,
   isEmptyValue,
-  isLargeScreen,
 } from '$util/helpers';
 import {RentTypes} from '$src/leases/enums';
 
@@ -21,136 +19,110 @@ type Props = {
   baseAmountPeriodOptions: Array<Object>,
   contractRent: Object,
   intendedUseOptions: Array<Object>,
+  largeScreen: boolean,
   rentType: string,
 }
-type State = {
-  largeScreen: boolean,
-}
 
-class ContractRent extends PureComponent<Props, State> {
-  state = {
-    largeScreen: isLargeScreen(),
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
-  }
-
-  getAmount = () => {
-    const {amountPeriodOptions, contractRent} = this.props;
-
+const ContractRent = ({amountPeriodOptions, baseAmountPeriodOptions, contractRent, intendedUseOptions, largeScreen, rentType}: Props) => {
+  const getAmount = () => {
     if(isEmptyValue(contractRent.amount)) return null;
 
     return `${formatNumber(contractRent.amount)} € ${getLabelOfOption(amountPeriodOptions, contractRent.period)}`;
   };
 
-  getBaseAmount = () => {
-    const {baseAmountPeriodOptions, contractRent} = this.props;
-
+  const getBaseAmount = () => {
     if(isEmptyValue(contractRent.base_amount)) return null;
 
     return `${formatNumber(contractRent.base_amount)} € ${getLabelOfOption(baseAmountPeriodOptions, contractRent.base_amount_period)}`;
   };
 
-  handleResize = throttle(() => {
-    this.setState({largeScreen: isLargeScreen()});
-  }, 100);
+  const amountText = getAmount();
+  const baseAmountText = getBaseAmount();
 
-  render() {
-    const {contractRent, intendedUseOptions, rentType} = this.props;
-    const {largeScreen} = this.state;
-    const amountText = this.getAmount();
-    const baseAmountText = this.getBaseAmount();
-
-    if(largeScreen) {
-      return(
-        <Row>
+  if(largeScreen) {
+    return(
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <FormText>{amountText}</FormText>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <FormText>{getLabelOfOption(intendedUseOptions, contractRent.intended_use)}</FormText>
+        </Column>
+        {(rentType === RentTypes.INDEX ||
+          rentType === RentTypes.MANUAL) &&
           <Column small={6} medium={4} large={2}>
-            <FormText>{amountText}</FormText>
+            <FormText>{baseAmountText}</FormText>
           </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormText>{getLabelOfOption(intendedUseOptions, contractRent.intended_use)}</FormText>
+        }
+        {(rentType === RentTypes.INDEX ||
+          rentType === RentTypes.MANUAL) &&
+          <Column small={6} medium={4} large={2} offsetOnLarge={1}>
+            <FormText>{!isEmptyValue(contractRent.base_year_rent) ? `${formatNumber(contractRent.base_year_rent)} €` : '-'}</FormText>
           </Column>
-          {(rentType === RentTypes.INDEX ||
-            rentType === RentTypes.MANUAL) &&
+        }
+        <Column small={6} medium={4} large={1}>
+          <FormText>{contractRent.start_date ? formatDate(contractRent.start_date) : '-'}</FormText>
+        </Column>
+        <Column small={6} medium={4} large={1}>
+          <FormText>{contractRent.end_date ? formatDate(contractRent.end_date) : '-'}</FormText>
+        </Column>
+      </Row>
+    );
+  } else {
+    // For small and medium screens
+    return(
+      <BoxItem
+        className='no-border-on-last-child'>
+        <BoxContentWrapper>
+          <Row>
             <Column small={6} medium={4} large={2}>
-              <FormText>{baseAmountText}</FormText>
+              <FormTitleAndText
+                title='Perusvuosivuokra'
+                text={amountText || '-'}
+              />
+              <FormText>{}</FormText>
             </Column>
-          }
-          {(rentType === RentTypes.INDEX ||
-            rentType === RentTypes.MANUAL) &&
-            <Column small={6} medium={4} large={2} offsetOnLarge={1}>
-              <FormText>{!isEmptyValue(contractRent.base_year_rent) ? `${formatNumber(contractRent.base_year_rent)} €` : '-'}</FormText>
+            <Column small={6} medium={4} large={2}>
+              <FormTitleAndText
+                title='Käyttötarkoitus'
+                text={getLabelOfOption(intendedUseOptions, contractRent.intended_use)}
+              />
             </Column>
-          }
-          <Column small={6} medium={4} large={1}>
-            <FormText>{contractRent.start_date ? formatDate(contractRent.start_date) : '-'}</FormText>
-          </Column>
-          <Column small={6} medium={4} large={1}>
-            <FormText>{contractRent.end_date ? formatDate(contractRent.end_date) : '-'}</FormText>
-          </Column>
-        </Row>
-      );
-    } else {
-      // For small and medium screens
-      return(
-        <BoxItem
-          className='no-border-on-last-child'>
-          <BoxContentWrapper>
-            <Row>
+            {(rentType === RentTypes.INDEX ||
+              rentType === RentTypes.MANUAL) &&
               <Column small={6} medium={4} large={2}>
                 <FormTitleAndText
-                  title='Perusvuosivuokra'
-                  text={amountText || '-'}
+                  title='Vuokranlaskennan perusteena oleva vuokra'
+                  text={baseAmountText || '-'}
                 />
-                <FormText>{}</FormText>
               </Column>
-              <Column small={6} medium={4} large={2}>
+            }
+            {(rentType === RentTypes.INDEX ||
+              rentType === RentTypes.MANUAL) &&
+              <Column small={6} medium={4} large={2} offsetOnLarge={1}>
                 <FormTitleAndText
-                  title='Käyttötarkoitus'
-                  text={getLabelOfOption(intendedUseOptions, contractRent.intended_use)}
+                  title='Uusi perusvuosivuokra'
+                  text={!isEmptyValue(contractRent.base_year_rent) ? `${formatNumber(contractRent.base_year_rent)} €` : '-'}
                 />
               </Column>
-              {(rentType === RentTypes.INDEX ||
-                rentType === RentTypes.MANUAL) &&
-                <Column small={6} medium={4} large={2}>
-                  <FormTitleAndText
-                    title='Vuokranlaskennan perusteena oleva vuokra'
-                    text={baseAmountText || '-'}
-                  />
-                </Column>
-              }
-              {(rentType === RentTypes.INDEX ||
-                rentType === RentTypes.MANUAL) &&
-                <Column small={6} medium={4} large={2} offsetOnLarge={1}>
-                  <FormTitleAndText
-                    title='Uusi perusvuosivuokra'
-                    text={!isEmptyValue(contractRent.base_year_rent) ? `${formatNumber(contractRent.base_year_rent)} €` : '-'}
-                  />
-                </Column>
-              }
-              <Column small={6} medium={4} large={1}>
-                <FormTitleAndText
-                  title='Alkupvm'
-                  text={contractRent.start_date ? formatDate(contractRent.start_date) : '-'}
-                />
-              </Column>
-              <Column small={6} medium={4} large={1}>
-                <FormTitleAndText
-                  title='Loppupvm'
-                  text={contractRent.end_date ? formatDate(contractRent.end_date) : '-'}
-                />
-              </Column>
-            </Row>
-          </BoxContentWrapper>
-        </BoxItem>
-      );
-    }
+            }
+            <Column small={6} medium={4} large={1}>
+              <FormTitleAndText
+                title='Alkupvm'
+                text={contractRent.start_date ? formatDate(contractRent.start_date) : '-'}
+              />
+            </Column>
+            <Column small={6} medium={4} large={1}>
+              <FormTitleAndText
+                title='Loppupvm'
+                text={contractRent.end_date ? formatDate(contractRent.end_date) : '-'}
+              />
+            </Column>
+          </Row>
+        </BoxContentWrapper>
+      </BoxItem>
+    );
   }
-}
+};
 
 export default ContractRent;

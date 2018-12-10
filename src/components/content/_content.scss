@@ -317,11 +317,22 @@
       position: relative;
 
       &:first-child {
-        margin-top: rem-calc(5px);
+        border-top: 1px dashed $black;
+        padding-top: rem-calc(10px);
+      }
+
+      &:last-child {
+        margin-bottom: rem-calc(10px);
+      }
+
+      &.no-border-on-first-child:first-child {
+        border-top: none;
+        margin-top: 0;
+        padding-top: 0;
       }
 
       &.no-border-on-last-child:last-child {
-        border: none;
+        border-bottom: none;
         margin-bottom: 0;
         padding-bottom: 0;
       }

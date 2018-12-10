@@ -3,8 +3,10 @@ import React, {Component} from 'react';
 
 import Button from '../button/Button';
 import Modal from './Modal';
+import {ButtonColors} from '$components/enums';
 
 type Props = {
+  confirmButtonClassName?: string,
   confirmButtonLabel?: string,
   isOpen: boolean,
   label: any,
@@ -31,6 +33,7 @@ class ConfirmationModal extends Component<Props> {
 
   render() {
     const {
+      confirmButtonClassName,
       confirmButtonLabel = 'Tallenna',
       isOpen,
       label,
@@ -51,13 +54,13 @@ class ConfirmationModal extends Component<Props> {
           <p>{label}</p>
           <div className='confirmation-modal__footer'>
             <Button
-              className='button-red'
+              className={ButtonColors.SECONDARY}
               innerRef={this.setCancelButtonRef}
               onClick={onCancel}
               text='Peruuta'
             />
             <Button
-              className='button-green'
+              className={confirmButtonClassName || ButtonColors.SUCCESS}
               onClick={onSave}
               text={confirmButtonLabel}
             />

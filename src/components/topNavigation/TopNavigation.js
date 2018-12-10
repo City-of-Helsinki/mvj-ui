@@ -8,6 +8,7 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import MainMenuIcon from '../icons/MainMenuIcon';
 import SearchInput from '../inputs/SearchInput';
 import {CancelChangesModalTexts} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 import {getRouteById} from '$src/root/routes';
 
@@ -79,6 +80,7 @@ class TopNavigation extends Component<Props, State> {
                   const {router} = this.context;
                   router.push(target.href);
                 },
+                confirmationModalButtonClassName: ButtonColors.ALERT,
                 confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
                 confirmationModalLabel: CancelChangesModalTexts.LABEL,
                 confirmationModalTitle: CancelChangesModalTexts.TITLE,
@@ -95,6 +97,7 @@ class TopNavigation extends Component<Props, State> {
                 confirmationFunction: () => {
                   this.moveSearchPage();
                 },
+                confirmationModalButtonClassName: ButtonColors.ALERT,
                 confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
                 confirmationModalLabel: CancelChangesModalTexts.LABEL,
                 confirmationModalTitle: CancelChangesModalTexts.TITLE,
@@ -120,6 +123,7 @@ class TopNavigation extends Component<Props, State> {
                 confirmationFunction: () => {
                   onLogout();
                 },
+                confirmationModalButtonClassName: ButtonColors.ALERT,
                 confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
                 confirmationModalLabel: CancelChangesModalTexts.LABEL,
                 confirmationModalTitle: CancelChangesModalTexts.TITLE,
@@ -157,12 +161,6 @@ class TopNavigation extends Component<Props, State> {
                     />
                   </div>
                 }
-                {/* <div className="user-icon-wrapper">
-                  <svg className="userIcon" focusable='false' viewBox="0 0 27 27">
-                    <path d="M9.45 5A7.55 7.55 0 0 1 15 2.62 7.55 7.55 0 0 1 20.55 5a7.55 7.55 0 0 1 2.33 5.55 7.78 7.78 0 0 1-.95 3.73A7.65 7.65 0 0 1 19.36 17a11.38 11.38 0 0 1 5 4.11 10.76 10.76 0 0 1 1.9 6.23H24A8.68 8.68 0 0 0 21.36 21 8.64 8.64 0 0 0 15 18.38 8.63 8.63 0 0 0 8.64 21 8.68 8.68 0 0 0 6 27.38H3.75a10.76 10.76 0 0 1 1.9-6.23 11.38 11.38 0 0 1 5-4.11 7.65 7.65 0 0 1-2.57-2.81 7.78 7.78 0 0 1-1-3.73A7.55 7.55 0 0 1 9.45 5zM19 6.53a5.41 5.41 0 0 0-4-1.65 5.41 5.41 0 0 0-4 1.65 5.41 5.41 0 0 0-1.65 4 5.41 5.41 0 0 0 1.65 4 5.41 5.41 0 0 0 4 1.65 5.41 5.41 0 0 0 4-1.65 5.41 5.41 0 0 0 1.65-4 5.41 5.41 0 0 0-1.65-4z"/>
-                  </svg>
-                  <div className="badge">23</div>
-                </div> */}
 
                 <div className="username-wrapper">
                   <p className="username">{username}</p>

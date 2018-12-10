@@ -5,6 +5,7 @@ import debounce from 'lodash/debounce';
 import {saveAs} from 'file-saver/FileSaver';
 
 import Button from '$components/button/Button';
+import {ButtonColors} from '$components/enums';
 import {displayUIMessage, getFileNameFromResponse} from '$util/helpers';
 import {getApiToken} from '$src/auth/selectors';
 
@@ -58,7 +59,7 @@ const FileDownloadButton = ({
 
   return (
     <Button
-      className='button-green no-margin'
+      className={`${ButtonColors.SUCCESS} no-margin`}
       disabled={disabled}
       onClick={handleClick}
       text={label}

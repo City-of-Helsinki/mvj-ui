@@ -1,5 +1,18 @@
 // @flow
 import React from 'react';
+
+/**
+ * Button color enumerable.
+ *
+ * @type {{SUCCESS: string: ALERT: string, NEUTRAL: string, SECONDARY: string,}}
+ */
+export const ButtonColors = {
+  SUCCESS: 'success',
+  ALERT: 'alert',
+  NEUTRAL: 'neutral',
+  SECONDARY: 'secondary',
+};
+
 /**
  * Component form names enumerable.
  *

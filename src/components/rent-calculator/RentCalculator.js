@@ -12,7 +12,7 @@ import RentCalculatorForm from './RentCalculatorForm';
 import RentForPeriod from './RentForPeriod';
 import {fetchBillingPeriodsByLease} from '$src/billingPeriods/actions';
 import {deleteRentForPeriodByLease, fetchRentForPeriodByLease, receiveIsSaveClicked} from '$src/rentForPeriod/actions';
-import {FormNames, RentCalculatorTypes} from '$components/enums';
+import {ButtonColors, FormNames, RentCalculatorTypes} from '$components/enums';
 import {getBillingPeriodsByLease} from '$src/billingPeriods/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getIsFetching, getIsSaveClicked, getRentForPeriodArrayByLease} from '$src/rentForPeriod/selectors';
@@ -148,7 +148,7 @@ class RentCalculator extends Component<Props> {
           <Column small={12} medium={6} large={8}>
             <div className='rent-calculator__button-wrapper'>
               <Button
-                className='button-green no-margin'
+                className={`${ButtonColors.SUCCESS} no-margin`}
                 disabled={fetching || (saveClicked && !valid)}
                 onClick={this.handleCreateRentsForPeriod}
                 text='Laske'

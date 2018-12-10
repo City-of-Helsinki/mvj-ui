@@ -15,6 +15,7 @@ import InvoiceTableAndPanel from './InvoiceTableAndPanel';
 import {receiveInvoiceToCredit, receiveIsCreateInvoicePanelOpen, receiveIsCreditInvoicePanelOpen} from '$src/invoices/actions';
 import {receiveCollapseStates, startInvoicing, stopInvoicing} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {getInvoiceToCredit} from '$src/invoices/selectors';
 import {getCollapseStateByKey, getCurrentLease, getIsEditMode} from '$src/leases/selectors';
 
@@ -106,6 +107,7 @@ class Invoices extends Component<Props> {
               confirmationFunction: () => {
                 this.startInvoicing();
               },
+              confirmationModalButtonClassName: ButtonColors.SUCCESS,
               confirmationModalButtonText: 'Käynnistä laskutus',
               confirmationModalLabel: 'Haluatko varmasti käynnistää laskutuksen?',
               confirmationModalTitle: 'Käynnistä laskutus',
@@ -118,6 +120,7 @@ class Invoices extends Component<Props> {
               confirmationFunction: () => {
                 this.stopInvoicing();
               },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
               confirmationModalButtonText: 'Keskeytä laskutus',
               confirmationModalLabel: 'Haluatko varmasti keskeyttää laskutuksen?',
               confirmationModalTitle: 'Keskeytä laskutus',
@@ -131,12 +134,12 @@ class Invoices extends Component<Props> {
                 ? <RightSubtitle
                   buttonComponent={isInvoicingEnabled
                     ? <Button
-                      className='button-red'
+                      className={ButtonColors.NEUTRAL}
                       onClick={handleStopInvoicing}
                       text='Keskeytä laskutus'
                     />
                     : <Button
-                      className='button-green'
+                      className={ButtonColors.NEUTRAL}
                       onClick={handleStartInvoicing}
                       text='Käynnistä laskutus'
                     />

@@ -11,7 +11,7 @@ import InvoiceSimulatorForm from './InvoiceSimulatorForm';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import {fetchPreviewInvoices} from '$src/previewInvoices/actions';
-import {FormNames} from '$components/enums';
+import {ButtonColors, FormNames} from '$components/enums';
 import {getContentPreviewInvoiceBillingPeriods} from '$components/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
@@ -83,7 +83,7 @@ class InvoiceSimulator extends Component<Props, State> {
           </Column>
           <Column small={6} medium={9} large={10}>
             <Button
-              className='button-green no-margin'
+              className={`${ButtonColors.SUCCESS} no-margin`}
               disabled={isFetching || !isValid}
               onClick={this.handleCreatePreviewInvoices}
               text='Luo laskut'

@@ -2,6 +2,7 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import flowRight from 'lodash/flowRight';
 
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import ContractRent from './ContractRent';
@@ -11,12 +12,14 @@ import {Breakpoints} from '$src/foundation/enums';
 import {RentTypes} from '$src/leases/enums';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
+import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   contractRents: Array<Object>,
+  largeScreen: boolean,
   rentType: string
 }
 
@@ -51,7 +54,7 @@ class ContractRents extends PureComponent<Props, State> {
   }
 
   render() {
-    const {contractRents, rentType} = this.props;
+    const {contractRents, largeScreen, rentType} = this.props;
     const {
       amountPeriodOptions,
       baseAmountPeriodOptions,
@@ -96,8 +99,9 @@ class ContractRents extends PureComponent<Props, State> {
               key={index}
               amountPeriodOptions={amountPeriodOptions}
               baseAmountPeriodOptions={baseAmountPeriodOptions}
-              contractRent={contractRent}
+              contractRent={contractRent || {}}
               intendedUseOptions={intendedUseOptions}
+              largeScreen={largeScreen}
               rentType={rentType}
             />;
           })}
@@ -107,10 +111,13 @@ class ContractRents extends PureComponent<Props, State> {
   }
 }
 
-export default connect(
-  (state) => {
-    return {
-      attributes: getAttributes(state),
-    };
-  },
+export default flowRight(
+  withWindowResize,
+  connect(
+    (state) => {
+      return {
+        attributes: getAttributes(state),
+      };
+    },
+  ),
 )(ContractRents);

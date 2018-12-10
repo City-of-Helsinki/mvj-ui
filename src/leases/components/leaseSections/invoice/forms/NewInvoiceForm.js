@@ -14,11 +14,11 @@ import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
-import FormSection from '$components/form/FormSection';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveIsCreateClicked} from '$src/invoices/actions';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames, RecipientOptions} from '$src/leases/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
@@ -66,6 +66,7 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                       confirmationFunction: () => {
                         fields.remove(index);
                       },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
                       confirmationModalButtonText: 'Poista',
                       confirmationModalLabel: DeleteModalLabels.INVOICE_ROW,
                       confirmationModalTitle: DeleteModalTitles.INVOICE_ROW,
@@ -165,93 +166,91 @@ const NewInvoiceForm = ({
 
   return (
     <form onSubmit={handleSubmit} className='invoice__new-invoice_form'>
-      <FormSection>
-        <WhiteBox>
-          <BoxContentWrapper>
-            <h3>Luo lasku</h3>
-            <CloseButton
-              className="position-topright"
-              onClick={onClose}
-            />
-            <Row>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isCreateClicked}
-                  fieldAttributes={get(invoiceAttributes, 'recipient')}
-                  name='recipient'
-                  setRefForField={setRefForFirstField}
-                  overrideValues={{
-                    label: 'Vuokralainen',
-                    options: recipientOptions,
-                  }}
+      <WhiteBox>
+        <BoxContentWrapper>
+          <h3>Luo lasku</h3>
+          <CloseButton
+            className="position-topright"
+            onClick={onClose}
+          />
+          <Row>
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={get(invoiceAttributes, 'recipient')}
+                name='recipient'
+                setRefForField={setRefForFirstField}
+                overrideValues={{
+                  label: 'Vuokralainen',
+                  options: recipientOptions,
+                }}
+              />
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={get(invoiceAttributes, 'due_date')}
+                name='due_date'
+                overrideValues={{
+                  label: 'Eräpäivä',
+                }}
+              />
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
+                name='billing_period_start_date'
+              />
+            </Column>
+            <Column small={6} medium={4} large={2}>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
+                name='billing_period_end_date'
+              />
+            </Column>
+          </Row>
+          <Row>
+            <Column>
+              <FormField
+                disableTouched={isCreateClicked}
+                fieldAttributes={recipient === RecipientOptions.ALL
+                  ? {...get(invoiceAttributes, 'notes'), required: true}
+                  : get(invoiceAttributes, 'notes')
+                }
+                name='notes'
+                overrideValues={{
+                  label: 'Tiedote',
+                }}
+              />
+            </Column>
+          </Row>
+          <FieldArray
+            attributes={invoiceAttributes}
+            component={InvoiceRows}
+            isCreateClicked={isCreateClicked}
+            name='rows'
+          />
+          <Row>
+            <Column>
+              <div className='button-wrapper'>
+                <Button
+                  className={ButtonColors.SECONDARY}
+                  onClick={onClose}
+                  text='Peruuta'
                 />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isCreateClicked}
-                  fieldAttributes={get(invoiceAttributes, 'due_date')}
-                  name='due_date'
-                  overrideValues={{
-                    label: 'Eräpäivä',
-                  }}
+                <Button
+                  className={ButtonColors.SUCCESS}
+                  disabled={isCreateClicked && !valid}
+                  onClick={handleSave}
+                  text='Tallenna'
                 />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isCreateClicked}
-                  fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
-                  name='billing_period_start_date'
-                />
-              </Column>
-              <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isCreateClicked}
-                  fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
-                  name='billing_period_end_date'
-                />
-              </Column>
-            </Row>
-            <Row>
-              <Column>
-                <FormField
-                  disableTouched={isCreateClicked}
-                  fieldAttributes={recipient === RecipientOptions.ALL
-                    ? {...get(invoiceAttributes, 'notes'), required: true}
-                    : get(invoiceAttributes, 'notes')
-                  }
-                  name='notes'
-                  overrideValues={{
-                    label: 'Tiedote',
-                  }}
-                />
-              </Column>
-            </Row>
-            <FieldArray
-              attributes={invoiceAttributes}
-              component={InvoiceRows}
-              isCreateClicked={isCreateClicked}
-              name='rows'
-            />
-            <Row>
-              <Column>
-                <div className='button-wrapper'>
-                  <Button
-                    className='button-red'
-                    onClick={onClose}
-                    text='Peruuta'
-                  />
-                  <Button
-                    className='button-green'
-                    disabled={isCreateClicked && !valid}
-                    onClick={handleSave}
-                    text='Tallenna'
-                  />
-                </div>
-              </Column>
-            </Row>
-          </BoxContentWrapper>
-        </WhiteBox>
-      </FormSection>
+              </div>
+            </Column>
+          </Row>
+        </BoxContentWrapper>
+      </WhiteBox>
     </form>
   );
 };

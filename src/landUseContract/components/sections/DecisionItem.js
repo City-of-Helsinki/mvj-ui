@@ -61,13 +61,13 @@ const DecisionItem = ({
             text={formatDate(decision.decision_date) || '-'}
           />
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={6} medium={4} large={1}>
           <FormTitleAndText
             title='Pykälä'
             text={decision.section ? `${decision.section} §` : '-'}
           />
         </Column>
-        <Column small={6} medium={4} large={2}>
+        <Column small={6} medium={8} large={3}>
           <FormTitleAndText
             title='Päätöksen tyyppi'
             text={getLabelOfOption(typeOptions, decision.type) || '-'}

@@ -3,17 +3,19 @@ import React, {PureComponent} from 'react';
 import {change, formValueSelector} from 'redux-form';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
+import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
-import throttle from 'lodash/throttle';
 
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
-import {formatDecimalNumberForDb, isLargeScreen} from '$util/helpers';
+import {formatDecimalNumberForDb} from '$util/helpers';
 import {FormNames, IndexTypes, RentTypes} from '$src/leases/enums';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
+import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
 import type {Attributes} from '$src/leases/types';
 
@@ -24,28 +26,14 @@ type Props = {
   field: string,
   indexType: string,
   isSaveClicked: boolean,
+  largeScreen: boolean,
   onRemove: Function,
   rentField: string,
   rentType: string,
   showRemove: boolean,
 }
-type State = {
-  largeScreen: boolean,
-}
 
-class ContractRent extends PureComponent<Props, State> {
-  state = {
-    largeScreen: isLargeScreen(),
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
-  }
-
+class ContractRent extends PureComponent<Props> {
   componentDidUpdate(prevProps: Props) {
     if(this.props.amount !== prevProps.amount ||
       this.props.indexType !== prevProps.indexType
@@ -58,10 +46,6 @@ class ContractRent extends PureComponent<Props, State> {
       }
     }
   }
-
-  handleResize = throttle(() => {
-    this.setState({largeScreen: isLargeScreen()});
-  }, 100);
 
   setCalculatedBaseAmount = (amount: number) => {
     const {change, field, indexType} = this.props;
@@ -91,8 +75,7 @@ class ContractRent extends PureComponent<Props, State> {
   }
 
   render() {
-    const {attributes, field, isSaveClicked, onRemove, rentType, showRemove} = this.props;
-    const {largeScreen} = this.state;
+    const {attributes, field, isSaveClicked, largeScreen, onRemove, rentType, showRemove} = this.props;
 
     if(largeScreen) {
       return(
@@ -208,15 +191,15 @@ class ContractRent extends PureComponent<Props, State> {
     } else {
       // For small and medium screens
       return(
-        <BoxItem
-          className='no-border-on-first-child'>
+        <BoxItem>
           <BoxContentWrapper>
             {showRemove &&
-              <RemoveButton
-                className='position-topright'
-                onClick={onRemove}
-                title="Poista sopimusvuokra"
-              />
+              <ActionButtonWrapper>
+                <RemoveButton
+                  onClick={onRemove}
+                  title="Poista sopimusvuokra"
+                />
+              </ActionButtonWrapper>
             }
             <Row>
               <Column small={6} medium={4} large={2}>
@@ -335,16 +318,19 @@ class ContractRent extends PureComponent<Props, State> {
 const formName = FormNames.RENTS;
 const selector = formValueSelector(formName);
 
-export default connect(
-  (state, props) => {
-    return {
-      amount: selector(state, `${props.field}.amount`),
-      attributes: getAttributes(state),
-      indexType: selector(state, `${props.rentField}.index_type`),
-      isSaveClicked: getIsSaveClicked(state),
-    };
-  },
-  {
-    change,
-  }
+export default flowRight(
+  withWindowResize,
+  connect(
+    (state, props) => {
+      return {
+        amount: selector(state, `${props.field}.amount`),
+        attributes: getAttributes(state),
+        indexType: selector(state, `${props.rentField}.index_type`),
+        isSaveClicked: getIsSaveClicked(state),
+      };
+    },
+    {
+      change,
+    }
+  ),
 )(ContractRent);

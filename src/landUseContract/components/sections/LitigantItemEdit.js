@@ -10,6 +10,7 @@ import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
@@ -24,6 +25,7 @@ import SubTitle from '$components/content/SubTitle';
 import {initializeContactForm, receiveContactModalSettings, receiveIsSaveClicked, showContactModal} from '$src/contacts/actions';
 import {receiveCollapseStates} from '$src/landUseContract/actions';
 import {ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isLitigantActive} from '$src/landUseContract/helpers';
@@ -57,6 +59,7 @@ const renderBillingPersons = ({
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.BILLING_PERSON,
                   confirmationModalTitle: DeleteModalTitles.BILLING_PERSON,
@@ -132,13 +135,6 @@ const LitigantItemEdit = ({
     showContactModal();
   };
 
-  const handleAddKeyDown = (e:any) => {
-    if(e.keyCode === 13) {
-      e.preventDefault();
-      handleAddClick();
-    }
-  };
-
   const handleEditClick = () => {
     initializeContactForm({...contact});
     receiveContactModalSettings({
@@ -196,7 +192,10 @@ const LitigantItemEdit = ({
                   </Column>
                   <Column small={3} medium={4} large={4}>
                     <div className='contact-buttons-wrapper'>
-                      <a onKeyDown={handleAddKeyDown} onClick={handleAddClick} tabIndex={0}>Luo asiakas</a>
+                      <AddButtonThird
+                        label='Luo asiakas'
+                        onClick={handleAddClick}
+                      />
                     </div>
                   </Column>
                 </Row>

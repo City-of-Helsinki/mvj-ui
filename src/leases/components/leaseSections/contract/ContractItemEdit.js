@@ -8,6 +8,7 @@ import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
@@ -20,6 +21,7 @@ import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
@@ -77,6 +79,7 @@ const renderContractChanges = ({
                     confirmationFunction: () => {
                       fields.remove(index);
                     },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
                     confirmationModalButtonText: 'Poista',
                     confirmationModalLabel: DeleteModalLabels.CONTRACT_CHANGE,
                     confirmationModalTitle: DeleteModalTitles.CONTRACT_CHANGE,
@@ -86,11 +89,12 @@ const renderContractChanges = ({
                 return (
                   <BoxItem key={index}>
                     <BoxContentWrapper>
-                      <RemoveButton
-                        className='position-topright'
-                        onClick={handleRemove}
-                        title="Poista sopimuksen muutos"
-                      />
+                      <ActionButtonWrapper>
+                        <RemoveButton
+                          onClick={handleRemove}
+                          title="Poista sopimuksen muutos"
+                        />
+                      </ActionButtonWrapper>
                       <Row>
                         <Column small={6} medium={4} large={2}>
                           <FormField

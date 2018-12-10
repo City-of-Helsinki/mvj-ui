@@ -228,10 +228,7 @@
         line-height: normal;
       }
 
-      &:focus {
-        border: 1px solid $tram;
-        box-shadow: 0px 0px 0px 1px #007a3a;
-      }
+      @include focusInput();
     }
 
     &_icon {
@@ -472,10 +469,20 @@
       color: $medium-dark-gray;
     }
 
-    &.is-focused {
+    box-shadow: none;
+
+    &.is-focused:not(.is-open) {
+      > .Select-control {
+        outline: 2px dotted $tram !important;
+        outline-offset: 0px;
+        border-color: $medium-gray !important;
+      }
+    }
+
+    &.is-focused.is-open {
       .Select-control {
         outline: none !important;
-        border: 1px solid $tram !important;
+        border-color: $tram !important;
         box-shadow: 0 0 0 1px $tram !important;
       }
     }
@@ -569,9 +576,10 @@
 
 .form {
   &__action-button-wrapper {
-    position: absolute;
-    top: rem-calc(-7px);
-    right: 0;
+    position: relative;
+    top: rem-calc(-5px);
+    padding: rem-calc(5px 0);
+    text-align: right;
 
     button {
       margin-left: rem-calc(3px);
@@ -670,7 +678,7 @@
 
     &.third-level {
       font-size: rem-calc(14px) !important;
-      line-height: rem-calc(15px) !important;
+      line-height: rem-calc(20px);
       margin: 0 0 rem-calc(10px);
 
       .icons {
@@ -678,6 +686,7 @@
         width: rem-calc(15px) !important;
       }
     }
+
     &:disabled {
       color: $dark-gray;
       text-decoration: none;
@@ -687,6 +696,7 @@
         fill: $dark-gray;
       }
     }
+
     &.no-top-margin {
       margin-top: 0;
     }
@@ -735,9 +745,13 @@
     position: relative;
     top: 0;
 
+    .icons {
+      fill: $black !important;
+    }
+
     &:hover {
       .icons {
-        fill: $tram_hover;
+        fill: $tram !important;
       }
     }
   }
@@ -748,10 +762,16 @@
     position: relative;
     top: 0;
 
+    .icons {
+      #Artboard {
+        fill: $black !important;
+      }
+    }
+
     &:hover {
       .icons {
         #Artboard {
-          fill: $tram_hover;
+          fill: $tram !important;
         }
       }
     }
@@ -763,9 +783,13 @@
     position: relative;
     top: 0;
 
+    .icons {
+      fill: $black !important;
+    }
+
     &:hover {
       .icons {
-        fill: $tram_hover;
+        fill: $tram !important;
       }
     }
 
@@ -785,12 +809,17 @@
     cursor: pointer;
     position: relative;
     top: 0;
-    width: rem-calc(21px);
+    width: rem-calc(20px);
+    height: rem-calc(20px);
+
+    #Artboard {
+      fill: $black !important;
+    }
 
     &:hover {
       .icons {
         #Artboard {
-          fill: $tram_hover;
+          fill: $tram !important;
         }
       }
     }
@@ -811,8 +840,8 @@
       width: rem-calc(20px);
 
       .icons {
-        height: rem-calc(16px);
-        width: rem-calc(16px);
+        height: rem-calc(15px);
+        width: rem-calc(15px);
       }
     }
   }
@@ -823,9 +852,13 @@
     position: relative;
     top: 0;
 
+    .icons {
+      fill: $black !important;
+    }
+
     &:hover {
       .icons {
-        fill: $tram_hover;
+        fill: $tram !important;
       }
     }
   }

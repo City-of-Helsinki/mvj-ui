@@ -11,7 +11,6 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import ContactModal from '$src/contacts/components/ContactModal';
 import Divider from '$components/content/Divider';
-import FormSection from '$components/form/FormSection';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import TenantItemEdit from './TenantItemEdit';
@@ -24,6 +23,7 @@ import {
 } from '$src/contacts/actions';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {validateTenantForm} from '$src/leases/formValidators';
 import {getContentContact} from '$src/contacts/helpers';
@@ -65,6 +65,7 @@ const renderTenants = ({
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.TENANT,
                   confirmationModalTitle: DeleteModalTitles.TENANT,
@@ -242,21 +243,19 @@ class TenantsEdit extends Component<Props, State> {
           <h2>Vuokralaiset</h2>
           <Divider />
 
-          <FormSection>
-            <FieldArray
-              component={renderTenants}
-              name="tenants"
-              showAddButton={true}
-              tenants={tenants}
-            />
-            {/* Archived tenants */}
-            <FieldArray
-              component={renderTenants}
-              name="tenantsArchived"
-              showAddButton={false}
-              tenants={tenantsArchived}
-            />
-          </FormSection>
+          <FieldArray
+            component={renderTenants}
+            name="tenants"
+            showAddButton={true}
+            tenants={tenants}
+          />
+          {/* Archived tenants */}
+          <FieldArray
+            component={renderTenants}
+            name="tenantsArchived"
+            showAddButton={false}
+            tenants={tenantsArchived}
+          />
         </form>
       </div>
     );

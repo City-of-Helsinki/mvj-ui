@@ -113,18 +113,20 @@ const BasisOfRent = ({
   const discountedInitialYearRent = getDiscountedInitialYearRent();
 
   return(
-    <BoxItem className='no-border-on-last-child'>
-      <ActionButtonWrapper>
-        {onUnarchive &&
-          <UnarchiveButton onClick={onUnarchive}/>
-        }
-        {onRemove &&
-          <RemoveButton
-            onClick={onRemove}
-            title="Poista vuokranperuste"
-          />
-        }
-      </ActionButtonWrapper>
+    <BoxItem className='no-border-on-first-child no-border-on-last-child'>
+      {(onUnarchive || onRemove) &&
+        <ActionButtonWrapper>
+          {onUnarchive &&
+            <UnarchiveButton onClick={onUnarchive}/>
+          }
+          {onRemove &&
+            <RemoveButton
+              onClick={onRemove}
+              title="Poista vuokranperuste"
+            />
+          }
+        </ActionButtonWrapper>
+      }
       <BoxContentWrapper>
         <Row>
           <Column small={6} medium={4} large={2}>

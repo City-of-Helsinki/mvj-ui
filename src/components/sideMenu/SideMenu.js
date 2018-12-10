@@ -7,6 +7,7 @@ import classnames from 'classnames';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import {CancelChangesModalTexts} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {hasAnyPageDirtyForms} from '$src/helpers';
 import {getRouteById} from '$src/root/routes';
 
@@ -104,6 +105,7 @@ class SideMenu extends Component<Props, State> {
                   router.push(target.href);
                   onLinkClick();
                 },
+                confirmationModalButtonClassName: ButtonColors.ALERT,
                 confirmationModalButtonText: CancelChangesModalTexts.BUTTON,
                 confirmationModalLabel: CancelChangesModalTexts.LABEL,
                 confirmationModalTitle: CancelChangesModalTexts.TITLE,

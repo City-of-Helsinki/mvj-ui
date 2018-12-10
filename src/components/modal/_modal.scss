@@ -68,11 +68,13 @@
       width: rem-calc(500px);
     }
   }
+
   &.modal-large {
     .modal__wrapper {
       width: rem-calc(1300px);
     }
   }
+
   &.modal-center {
     &.modal-open {
       .modal__wrapper {
@@ -81,9 +83,23 @@
       }
     }
   }
+
   &.modal-autoheight {
     .modal__content {
       height: auto;
+    }
+  }
+
+  &__button-wrapper {
+    margin-top: 10px;
+    text-align: right;
+
+    button:first-child {
+      margin-left: 0;
+    }
+
+    button:last-child {
+      margin-right: 0;
     }
   }
 }

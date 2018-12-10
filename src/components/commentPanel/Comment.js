@@ -8,6 +8,7 @@ import EditButton from '$components/button/EditButton';
 import ShowMore from '../showMore/ShowMore';
 import TextAreaInput from '$components/inputs/TextAreaInput';
 import {editComment, hideEditModeById, showEditModeById} from '$src/comments/actions';
+import {ButtonColors} from '$components/enums';
 import {formatDateObj} from '$util/helpers';
 import {getIsEditModeById} from '$src/comments/selectors';
 
@@ -99,12 +100,12 @@ class Comment extends PureComponent<Props, State> {
                 <Column>
                   <div className='comment__button-wrapper'>
                     <Button
-                      className='button-red'
+                      className={ButtonColors.SECONDARY}
                       onClick={this.handleCancelButtonClick}
-                      text='Kumoa'
+                      text='Peruuta'
                     />
                     <Button
-                      className='button-green'
+                      className={ButtonColors.SUCCESS}
                       disabled={!editedText}
                       onClick={this.handleSaveButtonClick}
                       text='Tallenna'

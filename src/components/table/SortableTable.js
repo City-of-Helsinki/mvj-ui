@@ -443,7 +443,7 @@ class SortableTable extends Component<Props, State> {
             />
             <tbody>
               {!sortedData.length &&
-                <tr className='no-data-row'><td colSpan={columns.length}>{noDataText}</td></tr>
+                <tr className='no-data-row'><td colSpan={showRadioButton ? columns.length + 1 : columns.length}>{noDataText}</td></tr>
               }
 
               {!!sortedData.length && sortedData.map((row, index) => {

@@ -13,12 +13,12 @@ import AddButton from '$components/form/AddButton';
 import BasisOfRentsEdit from './BasisOfRentsEdit';
 import Button from '$components/button/Button';
 import Divider from '$components/content/Divider';
-import FormSectionComponent from '$components/form/FormSection';
 import GreenBox from '$components/content/GreenBox';
 import RentCalculator from '$components/rent-calculator/RentCalculator';
 import RentItemEdit from './RentItemEdit';
 import RightSubtitle from '$components/content/RightSubtitle';
 import {receiveFormValidFlags, setRentInfoComplete, setRentInfoUncomplete} from '$src/leases/actions';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {validateRentForm} from '$src/leases/formValidators';
 import {getContentRentsFormData} from '$src/leases/helpers';
@@ -58,6 +58,7 @@ const renderRents = ({
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.RENT,
                   confirmationModalTitle: DeleteModalTitles.RENT,
@@ -199,6 +200,7 @@ class RentsEdit extends Component<Props, State> {
               confirmationFunction: () => {
                 this.setRentInfoComplete();
               },
+              confirmationModalButtonClassName: ButtonColors.SUCCESS,
               confirmationModalButtonText: 'Merkitse valmiiksi',
               confirmationModalLabel: 'Haluatko varmasti merkitä vuokratiedot valmiiksi?',
               confirmationModalTitle: 'Merkitse vuokratiedot valmiiksi',
@@ -211,6 +213,7 @@ class RentsEdit extends Component<Props, State> {
               confirmationFunction: () => {
                 this.setRentInfoUncomplete();
               },
+              confirmationModalButtonClassName: ButtonColors.ALERT,
               confirmationModalButtonText: 'Merkitse keskeneräisiksi',
               confirmationModalLabel: 'Haluatko varmasti merkitä vuokratiedot keskeneräisiksi?',
               confirmationModalTitle: 'Merkitse vuokratiedot keskeneräisiksi',
@@ -219,70 +222,68 @@ class RentsEdit extends Component<Props, State> {
 
           return(
             <form>
-              <FormSectionComponent>
-                <h2>Vuokra</h2>
-                <RightSubtitle
-                  buttonComponent={isRentInfoComplete
-                    ? <Button
-                      className='button-red'
-                      onClick={handleSetRentInfoUncomplete}
-                      text='Merkitse keskeneräisiksi'
-                    />
-                    : <Button
-                      className='button-green'
-                      onClick={handleSetRentInfoComplete}
-                      text='Merkitse valmiiksi'
-                    />
-                  }
-                  text={isRentInfoComplete
-                    ? <span className="success">Tiedot kunnossa<i /></span>
-                    : <span className="alert">Tiedot keskeneräiset<i /></span>
-                  }
-                />
+              <h2>Vuokra</h2>
+              <RightSubtitle
+                buttonComponent={isRentInfoComplete
+                  ? <Button
+                    className={ButtonColors.NEUTRAL}
+                    onClick={handleSetRentInfoUncomplete}
+                    text='Merkitse keskeneräisiksi'
+                  />
+                  : <Button
+                    className={ButtonColors.NEUTRAL}
+                    onClick={handleSetRentInfoComplete}
+                    text='Merkitse valmiiksi'
+                  />
+                }
+                text={isRentInfoComplete
+                  ? <span className="success">Tiedot kunnossa<i /></span>
+                  : <span className="alert">Tiedot keskeneräiset<i /></span>
+                }
+              />
 
-                <Divider />
-                <FieldArray
-                  component={renderRents}
-                  name='rents'
-                  rents={rents}
-                  showAddButton={true}
-                />
+              <Divider />
+              <FieldArray
+                component={renderRents}
+                name='rents'
+                rents={rents}
+                showAddButton={true}
+              />
 
-                {/* Archived rents */}
-                <FieldArray
-                  component={renderRents}
-                  name='rentsArchived'
-                  rents={rentsArchived}
-                  showAddButton={false}
-                />
+              {/* Archived rents */}
+              <FieldArray
+                component={renderRents}
+                name='rentsArchived'
+                rents={rentsArchived}
+                showAddButton={false}
+              />
 
-                <h2>Vuokralaskelma</h2>
-                <Divider />
-                <GreenBox>
-                  <RentCalculator />
-                </GreenBox>
+              <h2>Vuokralaskelma</h2>
+              <Divider />
+              <GreenBox>
+                <RentCalculator />
+              </GreenBox>
 
-                <h2>Vuokralaskuri</h2>
-                <Divider />
-                <FieldArray
-                  ref={this.setActiveBasisOfRentsRef}
-                  archived={false}
-                  component={BasisOfRentsEdit}
-                  isSaveClicked={isSaveClicked}
-                  name="basis_of_rents"
-                  onArchive={this.handleArchive}
-                  withRef={true}
-                />
-                <FieldArray
-                  ref={this.setArchivedBasisOfRentsRef}
-                  archived={true}
-                  component={BasisOfRentsEdit}
-                  isSaveClicked={isSaveClicked}
-                  name="basis_of_rents_archived"
-                  onUnarchive={this.handleUnarchive}
-                  withRef={true}
-                />
-              </FormSectionComponent>
+              <h2>Vuokralaskuri</h2>
+              <Divider />
+              <FieldArray
+                ref={this.setActiveBasisOfRentsRef}
+                archived={false}
+                component={BasisOfRentsEdit}
+                isSaveClicked={isSaveClicked}
+                name="basis_of_rents"
+                onArchive={this.handleArchive}
+                withRef={true}
+              />
+              <FieldArray
+                ref={this.setArchivedBasisOfRentsRef}
+                archived={true}
+                component={BasisOfRentsEdit}
+                isSaveClicked={isSaveClicked}
+                name="basis_of_rents_archived"
+                onUnarchive={this.handleUnarchive}
+                withRef={true}
+              />
             </form>
           );
         }}

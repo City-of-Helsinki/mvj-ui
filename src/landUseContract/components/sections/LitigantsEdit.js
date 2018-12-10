@@ -9,7 +9,6 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import ContactModal from '$src/contacts/components/ContactModal';
-import FormSection from '$components/form/FormSection';
 import LitigantItemEdit from './LitigantItemEdit';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
@@ -22,6 +21,7 @@ import {
 } from '$src/contacts/actions';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {validateLitigantForm} from '$src/landUseContract/formValidators';
 import {getContentContact} from '$src/contacts/helpers';
@@ -67,6 +67,7 @@ const renderLitigants = ({
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.LITIGANT,
                   confirmationModalTitle: DeleteModalTitles.LITIGANT,
@@ -235,21 +236,19 @@ class TenantsEdit extends Component<Props, State> {
           }
         />
         <form>
-          <FormSection>
-            <FieldArray
-              component={renderLitigants}
-              litigants={litigants}
-              name="activeLitigants"
-              showAddButton={true}
-            />
-            {/* Archived tenants */}
-            <FieldArray
-              component={renderLitigants}
-              litigants={litigants}
-              name="archivedLitigants"
-              showAddButton={false}
-            />
-          </FormSection>
+          <FieldArray
+            component={renderLitigants}
+            litigants={litigants}
+            name="activeLitigants"
+            showAddButton={true}
+          />
+          {/* Archived tenants */}
+          <FieldArray
+            component={renderLitigants}
+            litigants={litigants}
+            name="archivedLitigants"
+            showAddButton={false}
+          />
         </form>
       </div>
     );

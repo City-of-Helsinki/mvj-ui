@@ -546,7 +546,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
         />
         <div
           className='invoice__invoice-table_wrapper'
-          style={{minHeight: tableHeight || null, maxWidth: tableWidth || null}}
+          style={{minHeight: formatedInvoices.length ? tableHeight || null : null, maxWidth: tableWidth || null}}
         >
           <SortableTable
             ref={this.setTableRef}

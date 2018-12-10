@@ -93,9 +93,9 @@ export const ArchiveBasisOfRentsText = {
  * @type {{}}
  */
 export const UnarchiveBasisOfRentsText = {
-  BUTTON: 'Poista arkistosta',
-  LABEL: 'Haluatko varmasti poistaa vuokralaskurin arkistosta?',
-  TITLE: 'Poista vuokralaskuri arkistosta',
+  BUTTON: 'Siirrä arkistosta',
+  LABEL: 'Haluatko varmasti siirtää vuokralaskurin pois arkistosta?',
+  TITLE: 'Siirrä arkistosta',
 };
 /**
  * LeaseState enumerable.

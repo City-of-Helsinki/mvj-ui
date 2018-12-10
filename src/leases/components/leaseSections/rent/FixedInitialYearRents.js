@@ -2,7 +2,7 @@
 import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import throttle from 'lodash/throttle';
+import flowRight from 'lodash/flowRight';
 
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
@@ -17,36 +17,27 @@ import {
   getAttributeFieldOptions,
   getLabelOfOption,
   isEmptyValue,
-  isLargeScreen,
 } from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
+import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
 import type {Attributes} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,
   fixedInitialYearRents: Array<Object>,
+  largeScreen: boolean,
 }
 
 type State = {
   attributes: Attributes,
   intendedUseOptions: Array<Object>,
-  largeScreen: boolean,
 }
 
 class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
   state = {
     attributes: {},
     intendedUseOptions: [],
-    largeScreen: isLargeScreen(),
-  }
-
-  componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleResize);
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
@@ -60,13 +51,9 @@ class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
     return null;
   }
 
-  handleResize = throttle(() => {
-    this.setState({largeScreen: isLargeScreen()});
-  }, 100);
-
   render() {
-    const {fixedInitialYearRents} = this.props;
-    const {intendedUseOptions, largeScreen} = this.state;
+    const {fixedInitialYearRents, largeScreen} = this.props;
+    const {intendedUseOptions} = this.state;
 
     return(
       <div>
@@ -112,25 +99,25 @@ class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
                 <BoxItem className='no-border-on-last-child' key={index}>
                   <BoxContentWrapper>
                     <Row>
-                      <Column small={3} medium={3} large={2}>
+                      <Column small={6} medium={3} large={2}>
                         <FormTitleAndText
                           title='Käyttötarkoitus'
                           text={getLabelOfOption(intendedUseOptions, rent.intended_use) || '-'}
                         />
                       </Column>
-                      <Column small={3} medium={3} large={2}>
+                      <Column small={6} medium={3} large={2}>
                         <FormTitleAndText
                           title='Kiinteä alkuvuosivuokra'
                           text={!isEmptyValue(rent.amount) ? `${formatNumber(rent.amount)} €` : '-'}
                         />
                       </Column>
-                      <Column small={3} medium={3} large={1}>
+                      <Column small={6} medium={3} large={1}>
                         <FormTitleAndText
                           title='Alkupvm'
                           text={formatDate(rent.start_date) || '-'}
                         />
                       </Column>
-                      <Column  small={3} medium={3} large={1}>
+                      <Column  small={6} medium={3} large={1}>
                         <FormTitleAndText
                           title='Loppupvm'
                           text={formatDate(rent.end_date) || '-'}
@@ -148,10 +135,13 @@ class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
   }
 }
 
-export default connect(
-  (state) => {
-    return {
-      attributes: getAttributes(state),
-    };
-  },
+export default flowRight(
+  withWindowResize,
+  connect(
+    (state) => {
+      return {
+        attributes: getAttributes(state),
+      };
+    },
+  )
 )(FixedInitialYearRentsEdit);

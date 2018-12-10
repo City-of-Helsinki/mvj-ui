@@ -10,6 +10,7 @@ import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
 import ContractItemEdit from './ContractItemEdit';
 import {receiveFormValidFlags} from '$src/landUseContract/actions';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContract/enums';
 import {getContentContracts} from '$src/landUseContract/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
@@ -44,6 +45,7 @@ const renderContracts = ({attributes, contractsData, errors, fields, isSaveClick
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.CONTRACT,
                   confirmationModalTitle: DeleteModalTitles.CONTRACT,

@@ -6,6 +6,7 @@ import {Row, Column} from 'react-foundation';
 
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
+import {ButtonColors} from '$components/enums';
 import {FormNames} from '$src/leases/enums';
 
 type Props = {
@@ -43,12 +44,12 @@ const NewCollectionNote = ({
       </Row>
       <div className='invoice__new-collection-note_button-wrapper'>
         <Button
-          className='button-red'
+          className={ButtonColors.SECONDARY}
           onClick={onCancel}
           text='Peruuta'
         />
         <Button
-          className='button-green'
+          className={ButtonColors.SUCCESS}
           disabled={!note}
           onClick={handleSave}
           text='Tallenna'

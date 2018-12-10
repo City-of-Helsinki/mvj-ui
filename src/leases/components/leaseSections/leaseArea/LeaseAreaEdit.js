@@ -24,6 +24,7 @@ import SubTitle from '$components/content/SubTitle';
 import {store} from '$src/root/startApp';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getContentPlanUnits, getContentPlots} from '$src/leases/helpers';
 import {getSearchQuery} from '$util/helpers';
@@ -90,6 +91,7 @@ const renderPlanUnits = ({
                     confirmationFunction: () => {
                       fields.remove(index);
                     },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
                     confirmationModalButtonText: 'Poista',
                     confirmationModalLabel: DeleteModalLabels.PLAN_UNIT,
                     confirmationModalTitle: DeleteModalTitles.PLAN_UNIT,
@@ -108,6 +110,7 @@ const renderPlanUnits = ({
             <Row>
               <Column>
                 <AddButtonSecondary
+                  className={!fields.length ? 'no-top-margin' : ''}
                   label={buttonTitle}
                   onClick={handleAdd}
                 />
@@ -173,6 +176,7 @@ const renderPlots = ({
                     confirmationFunction: () => {
                       fields.remove(index);
                     },
+                    confirmationModalButtonClassName: ButtonColors.ALERT,
                     confirmationModalButtonText: 'Poista',
                     confirmationModalLabel: DeleteModalLabels.PLOT,
                     confirmationModalTitle: DeleteModalTitles.PLOT,
@@ -191,6 +195,7 @@ const renderPlots = ({
             <Row>
               <Column>
                 <AddButtonSecondary
+                  className={!fields.length ? 'no-top-margin' : ''}
                   label={buttonTitle}
                   onClick={handleAdd}
                 />
@@ -300,6 +305,7 @@ const AddressItems = ({attributes, change, fields, isSaveClicked}: AddressesProp
                   confirmationFunction: () => {
                     fields.remove(index);
                   },
+                  confirmationModalButtonClassName: ButtonColors.ALERT,
                   confirmationModalButtonText: 'Poista',
                   confirmationModalLabel: DeleteModalLabels.ADDRESS,
                   confirmationModalTitle: DeleteModalTitles.ADDRESS,

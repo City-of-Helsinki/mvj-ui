@@ -193,7 +193,7 @@
 
       &.clickable-row {
         tbody {
-          tr {
+          tr:not(.no-data-row) {
             @include focus();
 
             &:focus {

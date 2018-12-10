@@ -226,7 +226,7 @@ const BasisOfRentEdit = ({
   }
 
   return(
-    <BoxItem>
+    <BoxItem className='no-border-on-first-child'>
       <BoxContentWrapper>
         <ActionButtonWrapper>
           <CopyToClipboardButton

@@ -16,6 +16,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
+import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getFullAddress} from '$src/leases/helpers';
 import {formatNumber, getLabelOfOption} from '$util/helpers';
@@ -106,6 +107,7 @@ const renderComments = ({attributes, fields, isSaveClicked}: CommentProps): Elem
                       confirmationFunction: () => {
                         fields.remove(index);
                       },
+                      confirmationModalButtonClassName: ButtonColors.ALERT,
                       confirmationModalButtonText: 'Poista',
                       confirmationModalLabel: DeleteModalLabels.CONSTRUCTABILITY,
                       confirmationModalTitle: DeleteModalTitles.CONSTRUCTABILITY,

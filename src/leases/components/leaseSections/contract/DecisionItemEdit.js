@@ -116,7 +116,7 @@ const DecisionItemEdit = ({
               }}
             />
           </Column>
-          <Column small={6} medium={4} large={2}>
+          <Column small={6} medium={4} large={1}>
             <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'decisions.child.children.section')}
@@ -127,7 +127,7 @@ const DecisionItemEdit = ({
               }}
             />
           </Column>
-          <Column small={6} medium={4} large={2}>
+          <Column small={6} medium={8} large={3}>
             <FormField
               disableTouched={isSaveClicked}
               fieldAttributes={get(attributes, 'decisions.child.children.type')}

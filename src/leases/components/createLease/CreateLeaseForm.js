@@ -8,7 +8,9 @@ import get from 'lodash/get';
 
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
+import ModalButtonWrapper from '$components/modal/ModalButtonWrapper';
 import {fetchDistrictsByMunicipality} from '$src/district/actions';
+import {ButtonColors} from '$components/enums';
 import {Classification, FormNames} from '$src/leases/enums';
 import {filterSelectOptionByLabel} from '$components/form/filter';
 import {getDistrictOptions} from '$src/district/helpers';
@@ -162,21 +164,19 @@ class CreateLeaseForm extends Component<Props> {
             />
           </Column>
         </Row>
-        <Row style={{marginTop: 5}}>
-          <Column>
-            <Button
-              className='button-green pull-right no-margin'
-              disabled={!valid}
-              onClick={this.handleCreate}
-              text='Luo tunnus'
-            />
-            <Button
-              className='button-red pull-right'
-              onClick={onClose}
-              text='Peruuta'
-            />
-          </Column>
-        </Row>
+        <ModalButtonWrapper>
+          <Button
+            className={ButtonColors.SECONDARY}
+            onClick={onClose}
+            text='Peruuta'
+          />
+          <Button
+            className={ButtonColors.SUCCESS}
+            disabled={!valid}
+            onClick={this.handleCreate}
+            text='Luo tunnus'
+          />
+        </ModalButtonWrapper>
       </form>
     );
   }

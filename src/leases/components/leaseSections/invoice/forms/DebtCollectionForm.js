@@ -24,6 +24,7 @@ import SubTitle from '$components/content/SubTitle';
 import {deleteCollectionCourtDecision, uploadCollectionCourtDecision} from '$src/collectionCourtDecision/actions';
 import {deleteCollectionLetter, uploadCollectionLetter} from '$src/collectionLetter/actions';
 import {createCollectionNote, deleteCollectionNote} from '$src/collectionNote/actions';
+import {ButtonColors} from '$components/enums';
 import {DecisionTypes} from '$src/decision/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
 import {getDecisionOptions} from '$src/decision/helpers';
@@ -272,6 +273,7 @@ class DebtCollectionForm extends Component<Props, State> {
                         confirmationFunction: () => {
                           this.handleDeleteCollectionLetter(collectionLetter.id);
                         },
+                        confirmationModalButtonClassName: ButtonColors.ALERT,
                         confirmationModalButtonText: 'Poista',
                         confirmationModalLabel: DeleteModalLabels.COLLECTION_LETTER,
                         confirmationModalTitle: DeleteModalTitles.COLLECTION_LETTER,
@@ -325,6 +327,7 @@ class DebtCollectionForm extends Component<Props, State> {
                         confirmationFunction: () => {
                           this.handleDeleteCollectionCourtDecision(collectionCourtDecision.id);
                         },
+                        confirmationModalButtonClassName: ButtonColors.ALERT,
                         confirmationModalButtonText: 'Poista',
                         confirmationModalLabel: DeleteModalLabels.COLLECTION_COURT_DECISION,
                         confirmationModalTitle: DeleteModalTitles.COLLECTION_COURT_DECISION,
@@ -397,6 +400,7 @@ class DebtCollectionForm extends Component<Props, State> {
                         confirmationFunction: () => {
                           this.handleDeleteCollectionNote(note.id);
                         },
+                        confirmationModalButtonClassName: ButtonColors.ALERT,
                         confirmationModalButtonText: 'Poista',
                         confirmationModalLabel: DeleteModalLabels.COLLECTION_NOTE,
                         confirmationModalTitle: DeleteModalTitles.COLLECTION_NOTE,
