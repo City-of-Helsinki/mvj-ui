@@ -576,10 +576,10 @@
 
 .form {
   &__action-button-wrapper {
-    float: right;
     position: relative;
     top: rem-calc(-5px);
     padding: rem-calc(5px 0);
+    text-align: right;
 
     button {
       margin-left: rem-calc(3px);
