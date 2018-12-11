@@ -20,35 +20,35 @@ type State = {
   innerValue: ?string,
 }
 
+const formatDecimalNumber = (val: string) => {
+  if(isDecimalNumberStr(val)) {
+    return formatNumber(convertStrToDecimalNumber(val));
+  } else {
+    return val || '';
+  }
+};
+
 class FieldTypeDecimal extends PureComponent<Props, State> {
   state = {
-    innerValue: '',
+    innerValue: formatDecimalNumber(this.props.input.value),
   }
 
-  formatDecimalNumber = (val: string) => {
-    if(isDecimalNumberStr(val)) {
-      return formatNumber(convertStrToDecimalNumber(val));
-    } else {
-      return val;
+  componentDidUpdate(newProps, prevState) {
+    if(this.props.input.value !== prevState.innerValue) {
+      this.setState({innerValue: formatDecimalNumber(this.props.input.value)});
     }
-  }
-
-  componentDidMount() {
-    const {input: {value}} = this.props;
-
-    this.setState({innerValue: this.formatDecimalNumber(value)});
   }
 
   handleBlur = (e: any) => {
     const {input: {onBlur}} = this.props;
-    const formatedNumber = this.formatDecimalNumber(e.target.value);
+    const formatedNumber = formatDecimalNumber(e.target.value);
+
     onBlur(formatedNumber);
     this.setState({innerValue: formatedNumber});
   }
 
   handleChange = (e: any) => {
     const {autoBlur, input: {onChange}} = this.props;
-
     if(autoBlur) {
       this.handleBlur(e);
     } else {
