@@ -291,10 +291,11 @@
     height: 100%;
     cursor: default;
     overflow: visible;
+    display: table;
 
     &_header {
       cursor: pointer;
-      display: flex;
+      display: table-row;
 
       @include focus();
 
@@ -308,7 +309,15 @@
       }
 
       &_title {
-        flex: 1 1 0%;
+        display: table-cell;
+        white-space: nowrap;
+      }
+
+      &_arrow-wrapper {
+        padding-left: rem-calc(10px);
+        display: table-cell;
+        width: 1%;
+        white-space: nowrap;
       }
 
       .arrow-icon {
@@ -319,7 +328,8 @@
     }
 
     &_items {
-      display: none;
+      height: 0;
+      overflow: hidden;
     }
 
     &.is-open {
@@ -329,7 +339,8 @@
         }
       }
       .sortable-table__multi-item-collapse_items {
-        display: block;
+        height: auto;
+        overflow: visible;
       }
     }
   }

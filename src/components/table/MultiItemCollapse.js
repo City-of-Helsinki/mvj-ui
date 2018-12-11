@@ -53,7 +53,7 @@ class MultiItemCollapse extends PureComponent<Props, State> {
           tabIndex={0}
         >
           <span className='sortable-table__multi-item-collapse_header_title'>{itemRenderer(items[0])}</span>
-          <div>
+          <div className='sortable-table__multi-item-collapse_header_arrow-wrapper'>
             <span>({items.length})</span>
             <AccordionIcon className="arrow-icon"/>
           </div>
