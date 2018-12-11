@@ -49,7 +49,7 @@ const PlanUnitItem = ({
     'lease_areas.child.children.plan_units.child.children.plan_unit_intended_use');
 
   return (
-    <BoxItem className='no-border-on-last-child'>
+    <BoxItem className='no-border-on-first-child no-border-on-last-child'>
       <Row>
         <Column small={12} medium={9} large={9}>
           <FormTitleAndText

@@ -108,13 +108,17 @@
       box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.06);
       margin: 0;
 
+      thead {
+        border-bottom: 1px solid $medium-gray;
+      }
+
       thead td, thead th {
-        background-color: $tram;
-        font-size: rem-calc(14px);
+        background-color: $white;
+        font-size: rem-calc(13px);
     	  font-weight: $semibold;
         white-space: nowrap;
         text-align: left;
-    	  color: $white;
+    	  color: $black;
         padding: 0;
         border: none;
 
@@ -164,9 +168,6 @@
 
       &.sortable-table {
         thead td, thead th {
-          background-color: $white;
-          font-size: rem-calc(13px);
-
           &.sortable {
             cursor: pointer;
           }
@@ -183,6 +184,7 @@
               }
             }
           }
+
           &.group-item-row {
             td {
               background-color: $light-gray;
@@ -219,6 +221,18 @@
           }
         }
       }
+
+      &.list-table {
+        thead td, thead th {
+          background-color: $tram;
+          font-size: rem-calc(14px);
+          color: $white;
+
+          .sortable-table-sort-icon {
+            fill: $white;
+          }
+        }
+      }
     }
 
     .scroll-body-wrapper {
@@ -242,13 +256,10 @@
         margin-bottom: 0;
 
         thead {
-          border-bottom: 1px solid $medium-gray;
           z-index: 10;
         }
 
         thead th {
-          background-color: $white;
-          color: $black;
           font-size: rem-calc(13px);
 
           @include focus();
@@ -268,17 +279,21 @@
       .scroll-body-table {
         margin-bottom: 0;
 
-        thead tr {
-          height: 0px;
+        thead {
+          border: none;
 
-          th {
+          tr {
             height: 0px;
 
-            div {
+            th {
               height: 0px;
-              padding-top: 0;
-              padding-bottom: 0;
-              overflow: hidden;
+
+              div {
+                height: 0px;
+                padding-top: 0;
+                padding-bottom: 0;
+                overflow: hidden;
+              }
             }
           }
         }
@@ -291,7 +306,6 @@
     height: 100%;
     cursor: default;
     overflow: visible;
-    display: table;
 
     &_header {
       cursor: pointer;

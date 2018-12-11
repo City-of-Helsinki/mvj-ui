@@ -398,6 +398,7 @@ class LeaseListPage extends Component<Props, State> {
                   {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
                 ]}
                 data={leases}
+                listTable
                 onRowClick={this.handleRowClick}
               />
               <Pagination

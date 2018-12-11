@@ -131,7 +131,7 @@ const RentItem = ({
       defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active}
       header={
         <div>
-          <Column small={10}>
+          <Column small={6} medium={8} large={10}>
             <span className='collapse__header-subtitle'>
               {formatDateRange(rent.start_date, rent.end_date) || '-'}
             </span>

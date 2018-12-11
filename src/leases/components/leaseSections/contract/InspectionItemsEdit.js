@@ -157,7 +157,7 @@ const InspectionItemsEdit = ({attributes, fields, isSaveClicked, largeScreen}: P
                     );
                   } else {
                     return (
-                      <BoxItem key={index}>
+                      <BoxItem key={index} className='no-border-on-first-child'>
                         <ActionButtonWrapper>
                           <RemoveButton
                             onClick={handleRemove}

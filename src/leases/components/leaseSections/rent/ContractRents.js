@@ -8,7 +8,6 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import ContractRent from './ContractRent';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import {Breakpoints} from '$src/foundation/enums';
 import {RentTypes} from '$src/leases/enums';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
@@ -65,8 +64,8 @@ class ContractRents extends PureComponent<Props, State> {
       <div>
         <BoxItemContainer>
           {(!contractRents || !contractRents.length) && <FormText>Ei sopimusvuokria</FormText>}
-          {contractRents && !!contractRents.length &&
-            <Row showFor={Breakpoints.LARGE}>
+          {contractRents && !!contractRents.length && largeScreen &&
+            <Row>
               <Column large={2}>
                 <FormTextTitle title='Perusvuosivuokra' />
               </Column>

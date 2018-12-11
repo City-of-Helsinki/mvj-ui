@@ -251,6 +251,7 @@ class ContactListPage extends Component<Props, State> {
               {key: 'business_id', text: 'Y-tunnus'},
             ]}
             data={contacts}
+            listTable
             onRowClick={this.handleRowClick}
           />
           <Pagination

@@ -80,7 +80,7 @@ class Inspections extends PureComponent<Props, State> {
                 return(
                   <BoxItem
                     key={inspection.id}
-                    className='no-border-on-last-child'>
+                    className='no-border-on-first-child no-border-on-last-child'>
                     <InspectionItem inspection={inspection}/>
                   </BoxItem>
                 );

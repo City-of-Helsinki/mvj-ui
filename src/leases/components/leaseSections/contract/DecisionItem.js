@@ -177,7 +177,7 @@ const DecisionItem = ({
                 );
               } else {
                 return(
-                  <BoxItem key={index} className='no-border-on-last-child'>
+                  <BoxItem key={index} className='no-border-on-first-child no-border-on-last-child'>
                     <Row>
                       <Column small={6} medium={4}>
                         <FormTitleAndText

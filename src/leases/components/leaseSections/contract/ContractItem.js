@@ -232,7 +232,7 @@ const ContractItem = ({
               return (
                 <BoxItem
                   key={change.id}
-                  className='no-border-on-last-child'>
+                  className='no-border-on-first-child no-border-on-last-child'>
                   <Row>
                     <Column small={6} medium={4} large={2}>
                       <FormTitleAndText

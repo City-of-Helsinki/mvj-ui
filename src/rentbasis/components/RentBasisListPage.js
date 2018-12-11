@@ -283,6 +283,7 @@ class RentBasisListPage extends Component<Props, State> {
               {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val) || '-'},
             ]}
             data={rentBasisList}
+            listTable
             onRowClick={this.handleRowClick}
           />
           <Pagination

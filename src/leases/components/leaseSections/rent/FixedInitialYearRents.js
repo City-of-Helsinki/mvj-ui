@@ -10,7 +10,6 @@ import BoxItemContainer from '$components/content/BoxItemContainer';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import FormTitleAndText from '$components/form/FormTitleAndText';
-import {Breakpoints} from '$src/foundation/enums';
 import {
   formatDate,
   formatNumber,
@@ -60,8 +59,8 @@ class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
         <BoxItemContainer>
           {(!fixedInitialYearRents || !fixedInitialYearRents.length) && <FormText>Ei kiinteitä alkuvuosivuokria</FormText>}
 
-          {fixedInitialYearRents && !!fixedInitialYearRents.length &&
-            <Row showFor={Breakpoints.LARGE}>
+          {fixedInitialYearRents && !!fixedInitialYearRents.length && largeScreen &&
+            <Row>
               <Column large={2}>
                 <FormTextTitle title='Käyttötarkoitus' />
               </Column>
@@ -96,7 +95,7 @@ class FixedInitialYearRentsEdit extends PureComponent<Props, State> {
               );
             } else {
               return (
-                <BoxItem className='no-border-on-last-child' key={index}>
+                <BoxItem className='no-border-on-first-child no-border-on-last-child' key={index}>
                   <BoxContentWrapper>
                     <Row>
                       <Column small={6} medium={3} large={2}>

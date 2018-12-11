@@ -48,7 +48,7 @@ const PlotItem = ({attributes, isAreaActive, plot, router}: Props) => {
     'lease_areas.child.children.plots.child.children.type');
 
   return (
-    <BoxItem className='no-border-on-last-child'>
+    <BoxItem className='no-border-on-first-child no-border-on-last-child'>
       <Row>
         <Column small={12} medium={6} large={6}>
           <FormTitleAndText

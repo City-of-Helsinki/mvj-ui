@@ -301,6 +301,7 @@ class InfillDevelopmentListPage extends Component<Props, State> {
               {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val) || '-'},
             ]}
             data={filteredInfillDevelopments}
+            listTable
             onRowClick={this.handleRowClick}
           />
           <Pagination

@@ -325,6 +325,7 @@ class LandUseContractListPage extends Component<Props, State> {
               {key: 'state', text: 'Neuvotteluvaihe', renderer: (val) => getLabelOfOption(stateOptions, val)},
             ]}
             data={filteredLandUseContracts}
+            listTable
             onRowClick={this.handleRowClick}
           />
           <Pagination

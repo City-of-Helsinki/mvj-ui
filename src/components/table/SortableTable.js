@@ -36,6 +36,7 @@ type Props = {
   defaultSortKey?: string,
   defaultSortOrder?: string,
   fixedHeader?: boolean,
+  listTable: boolean,
   maxHeight?: ?number,
   noDataText?: string,
   onDataUpdate?: Function,
@@ -257,10 +258,11 @@ class SortableTable extends Component<Props, State> {
 
   setTableScrollHeaderColumnStyles = () => {
     const ths = [].slice.call(this.thead.querySelectorAll('th'));
+
     const scrollHeaderColumnStyles = ths.map((th) => {
       const rect = th.getBoundingClientRect();
       return {
-        width: rect.width,
+        width: rect.width || null,
       };
     });
     const scrollHeaderWidth = scrollHeaderColumnStyles.reduce((sum, cur) => {
@@ -275,7 +277,7 @@ class SortableTable extends Component<Props, State> {
 
     this.setState({
       scrollHeaderColumnStyles: scrollHeaderColumnStyles,
-      scrollHeaderWidth: scrollHeaderWidth + scrollBarWidth,
+      scrollHeaderWidth: scrollHeaderWidth ? scrollHeaderWidth + scrollBarWidth + 1 : 0,
     });
   }
 
@@ -368,6 +370,7 @@ class SortableTable extends Component<Props, State> {
       clickedRow,
       columns,
       fixedHeader,
+      listTable,
       noDataText,
       onRowClick,
       radioButtonDisabledFunction,
@@ -400,20 +403,23 @@ class SortableTable extends Component<Props, State> {
             <table
               className={classNames(
                 {'sortable-table': sortable},
-                {'scroll-head-table': fixedHeader}
+                {'scroll-head-table': fixedHeader},
+                {'list-table': listTable}
               )}
-              style={{width: scrollHeaderWidth}}
+              style={{width: scrollHeaderWidth || null}}
             >
-              <SortableTableHeader
-                getRef={this.setTheadRef}
-                columns={columns}
-                columnStyles={scrollHeaderColumnStyles}
-                onColumnClick={this.onSortingChange}
-                showRadioButton={showRadioButton}
-                sortable={sortable}
-                sortKey={sortKey}
-                sortOrder={sortOrder}
-              />
+              {!!scrollHeaderWidth &&
+                <SortableTableHeader
+                  getRef={this.setTheadRef}
+                  columns={columns}
+                  columnStyles={scrollHeaderColumnStyles}
+                  onColumnClick={this.onSortingChange}
+                  showRadioButton={showRadioButton}
+                  sortable={sortable}
+                  sortKey={sortKey}
+                  sortOrder={sortOrder}
+                />
+              }
             </table>
           </div>
         }
@@ -427,7 +433,8 @@ class SortableTable extends Component<Props, State> {
             className={classNames(
               {'clickable-row': !!onRowClick},
               {'sortable-table': sortable},
-              {'scroll-body-table': fixedHeader}
+              {'scroll-body-table': scrollHeaderWidth && fixedHeader},
+              {'list-table': listTable}
             )}
             ref={this.setScrollBodyTableRef}
           >

@@ -72,7 +72,7 @@ const ContractRent = ({amountPeriodOptions, baseAmountPeriodOptions, contractRen
     // For small and medium screens
     return(
       <BoxItem
-        className='no-border-on-last-child'>
+        className='no-border-on-first-child no-border-on-last-child'>
         <BoxContentWrapper>
           <Row>
             <Column small={6} medium={4} large={2}>
