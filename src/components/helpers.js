@@ -53,7 +53,7 @@ export const getRentExplanationDescription = (explanation: Object, attributes: A
     case RentExplanationSubjectType.FIXED_INITIAL_YEAR_RENT:
       return `Kiinteä alkuvuosivuokra - ${get(explanation, 'subject.intended_use.name')} (${get(explanation, 'subject.amount')} € / vuosi)`;
     case RentExplanationSubjectType.RENT:
-      return `${getLabelOfOption(typeOptions, type)}`;
+      return `Perittävä vuokra (${getLabelOfOption(typeOptions, type)})`;
     default:
       return null;
   }

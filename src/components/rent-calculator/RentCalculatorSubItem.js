@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -24,8 +24,8 @@ const RentCalculatorSubItem = ({attributes, level = 1, subItem}: Props) => {
   const subItems = get(subItem, 'sub_items', []);
 
   return (
-    <div>
-      <Row>
+    <Fragment>
+      <Row className='rent-calculator__sub-item'>
         <Column small={6}>
           <FormText style={{paddingLeft: (level * 15)}}>
             {description || '-'}
@@ -58,7 +58,7 @@ const RentCalculatorSubItem = ({attributes, level = 1, subItem}: Props) => {
           />
         );
       })}
-    </div>
+    </Fragment>
   );
 };
 

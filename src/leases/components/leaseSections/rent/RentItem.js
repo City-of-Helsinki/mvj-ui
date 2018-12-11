@@ -120,7 +120,10 @@ const RentItem = ({
   const active = isRentActive(rent),
     archived = isRentArchived(rent),
     typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type'),
-    rentType = get(rent, 'type');
+    rentType = get(rent, 'type'),
+    indexAdjustedRents = get(rent, 'index_adjusted_rents', []),
+    rentAdjustments = get(rent, 'rent_adjustments', []),
+    payableRents = get(rent, 'payable_rents', []);
 
   return (
     <Collapse
@@ -171,17 +174,15 @@ const RentItem = ({
         </Collapse>
       }
 
-      {(rentType === RentTypes.INDEX ||
-        rentType === RentTypes.MANUAL) &&
+      {!!indexAdjustedRents.length &&
+        (rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
         <Collapse
           className='collapse__secondary'
           defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
           headerTitle={<h4 className='collapse__header-title'>Indeksitarkistettu vuokra</h4>}
           onToggle={handleIndexAdjustedRentsCollapseToggle}
         >
-          <IndexAdjustedRents
-            indexAdjustedRents={get(rent, 'index_adjusted_rents', [])}
-          />
+          <IndexAdjustedRents indexAdjustedRents={indexAdjustedRents} />
         </Collapse>
       }
 
@@ -191,26 +192,22 @@ const RentItem = ({
         <Collapse
           className='collapse__secondary'
           defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : false}
-          headerTitle={<h4 className='collapse__header-title'>Alennukset ja korotukset</h4>}
+          headerTitle={<h4 className='collapse__header-title'>Alennukset ja korotukset ({rentAdjustments.length})</h4>}
           onToggle={handleRentAdjustmentsCollapseToggle}
         >
-          <RentAdjustments rentAdjustments={get(rent, 'rent_adjustments', [])} />
+          <RentAdjustments rentAdjustments={rentAdjustments} />
         </Collapse>
       }
 
-      {(rentType === RentTypes.INDEX ||
-        rentType === RentTypes.FIXED ||
-        rentType === RentTypes.MANUAL) &&
+      {!!payableRents.length &&
+        (rentType === RentTypes.INDEX || rentType === RentTypes.FIXED || rentType === RentTypes.MANUAL) &&
         <Collapse
           className='collapse__secondary'
           defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}
           headerTitle={<h4 className='collapse__header-title'>Perittävä vuokra</h4>}
           onToggle={handlePayableRentsCollapseToggle}
         >
-
-          <PayableRents
-            payableRents={get(rent, 'payable_rents', [])}
-          />
+          <PayableRents payableRents={payableRents} />
         </Collapse>
       }
     </Collapse>

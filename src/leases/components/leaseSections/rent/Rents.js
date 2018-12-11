@@ -38,7 +38,7 @@ const Rents = ({currentLease}: Props) => {
       />
       <Divider />
 
-      {!rents || !rents.length && <FormText className='no-margin'>Ei vuokria</FormText>}
+      {!rents || !rents.length && <FormText>Ei vuokria</FormText>}
       {rents && !!rents.length && rents.map((rent) => {
         return (
           <RentItem

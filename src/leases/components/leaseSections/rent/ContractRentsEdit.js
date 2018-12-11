@@ -28,7 +28,6 @@ const ContractRentsEdit = ({attributes, fields, rentField, rentType}: Props) => 
     fields.push({});
   };
 
-
   return (
     <AppConsumer>
       {({dispatch}) => {

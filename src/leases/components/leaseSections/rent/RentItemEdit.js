@@ -40,6 +40,7 @@ type Props = {
   onRemove: Function,
   payableRentsCollapseState: boolean,
   receiveCollapseStates: Function,
+  rentAdjustments: Array<Object>,
   rentAdjustmentsCollapseState: boolean,
   rentCollapseState: boolean,
   rentId: number,
@@ -54,6 +55,8 @@ type State = {
   contractRentErrors: ?Object,
   errors: ?Object,
   fixedInitialYearRentErrors: ?Object,
+  indexAdjustedRents: Array<Object>,
+  payableRents: Array<Object>,
   rentAdjustmentsErrors: ?Object,
   rentErrors: ?Object,
   rentId: number,
@@ -75,6 +78,8 @@ class RentItemEdit extends PureComponent<Props, State> {
     contractRentErrors: null,
     errors: null,
     fixedInitialYearRentErrors: null,
+    indexAdjustedRents: [],
+    payableRents: [],
     rentAdjustmentsErrors: null,
     rentErrors: null,
     rentId: -1,
@@ -103,8 +108,10 @@ class RentItemEdit extends PureComponent<Props, State> {
 
       newState.rentId = props.rentId;
       newState.savedRent = savedRent;
-      newState.active = isRentActive(savedRent),
+      newState.active = isRentActive(savedRent);
       newState.archived = isRentArchived(savedRent);
+      newState.indexAdjustedRents = get(savedRent, 'index_adjusted_rents', []);
+      newState.payableRents = get(savedRent, 'payable_rents', []);
     }
 
     return newState;
@@ -245,6 +252,7 @@ class RentItemEdit extends PureComponent<Props, State> {
       indexAdjustedRentsCollapseState,
       isSaveClicked,
       payableRentsCollapseState,
+      rentAdjustments,
       rentAdjustmentsCollapseState,
       rentCollapseState,
       rentType,
@@ -254,6 +262,8 @@ class RentItemEdit extends PureComponent<Props, State> {
       archived,
       contractRentErrors,
       fixedInitialYearRentErrors,
+      indexAdjustedRents,
+      payableRents,
       rentAdjustmentsErrors,
       rentErrors,
       savedRent,
@@ -325,15 +335,15 @@ class RentItemEdit extends PureComponent<Props, State> {
           </Collapse>
         }
 
-        {(rentType === RentTypes.INDEX ||
-          rentType === RentTypes.MANUAL) &&
+        {!!indexAdjustedRents.length &&
+          (rentType === RentTypes.INDEX || rentType === RentTypes.MANUAL) &&
           <Collapse
             className='collapse__secondary'
             defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
             headerTitle={<h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3>}
             onToggle={this.handleIndexAdjustedRentsCollapseToggle}
           >
-            <IndexAdjustedRents indexAdjustedRents={get(savedRent, 'index_adjusted_rents', [])} />
+            <IndexAdjustedRents indexAdjustedRents={indexAdjustedRents} />
           </Collapse>
         }
 
@@ -344,7 +354,7 @@ class RentItemEdit extends PureComponent<Props, State> {
             className='collapse__secondary'
             defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : false}
             hasErrors={isSaveClicked && !isEmpty(rentAdjustmentsErrors)}
-            headerTitle={<h3 className='collapse__header-title'>Alennukset ja korotukset</h3>}
+            headerTitle={<h3 className='collapse__header-title'>Alennukset ja korotukset ({rentAdjustments ? rentAdjustments.length : 0})</h3>}
             onToggle={this.handleRentAdjustmentsCollapseToggle}
           >
             <FieldArray
@@ -355,16 +365,15 @@ class RentItemEdit extends PureComponent<Props, State> {
           </Collapse>
         }
 
-        {(rentType === RentTypes.INDEX ||
-          rentType === RentTypes.FIXED ||
-          rentType === RentTypes.MANUAL) &&
+        {!!payableRents.length &&
+          (rentType === RentTypes.INDEX || rentType === RentTypes.FIXED || rentType === RentTypes.MANUAL) &&
           <Collapse
             className='collapse__secondary'
             defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}
             headerTitle={<h3 className='collapse__header-title'>Perittävä vuokra</h3>}
             onToggle={this.handlePayableRentsCollapseToggle}
           >
-            <PayableRents payableRents={get(savedRent, 'payable_rents', [])} />
+            <PayableRents payableRents={payableRents} />
           </Collapse>
         }
       </Collapse>
@@ -386,9 +395,11 @@ export default connect(
       dueDatesType: selector(state, `${props.field}.due_dates_type`),
       errors: getErrorsByFormName(state, formName),
       isSaveClicked: getIsSaveClicked(state),
+      rentAdjustments: selector(state, `${props.field}.rent_adjustments`),
       rentId: id,
       rentType: selector(state, `${props.field}.type`),
     };
+
     if(id) {
       newProps.fixedInitialYearRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.fixed_initial_year_rents`);
       newProps.indexAdjustedRentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.index_adjusted_rents`);
@@ -396,6 +407,7 @@ export default connect(
       newProps.rentAdjustmentsCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.rent_adjustments`);
       newProps.rentCollapseState = getCollapseStateByKey(state, `${ViewModes.EDIT}.${FormNames.RENTS}.${id}.rent`);
     }
+
     return newProps;
   },
   {

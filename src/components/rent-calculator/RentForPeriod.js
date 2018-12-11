@@ -59,7 +59,7 @@ const RentForPeriod = ({onRemove, rentForPeriod}: Props) => {
                   title='Poista'
                 />
               }
-              {(!rents || !rents.length) && <FormText className='no-margin'>Ei vuokria</FormText>}
+              {(!rents || !rents.length) && <FormText>Ei vuokria</FormText>}
               {!!rents && !!rents.length &&
                 <Row>
                   <Column small={12} large={8}>

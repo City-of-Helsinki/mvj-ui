@@ -1339,7 +1339,6 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
       rentData.cycle = rent.cycle;
       rentData.index_type = rent.index_type;
       rentData.fixed_initial_year_rents = getContentFixedInitialYearRentsForDb(rent);
-      rentData.contract_rents = getContentContractRentsForDb(rent, rent.type);
     }
 
     if(rent.type === RentTypes.MANUAL) {
@@ -1360,6 +1359,7 @@ export const addRentsFormValues = (payload: Object, values: Object, currentLease
       rentData.seasonal_start_month = rent.seasonal_start_month || null;
       rentData.seasonal_end_day = rent.seasonal_end_day || null;
       rentData.seasonal_end_month = rent.seasonal_end_month || null;
+      rentData.contract_rents = getContentContractRentsForDb(rent, rent.type);
       rentData.rent_adjustments = getContentRentAdjustmentsForDb(rent);
     }
 

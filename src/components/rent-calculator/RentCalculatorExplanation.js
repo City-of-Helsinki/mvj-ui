@@ -29,8 +29,8 @@ const RentCalculatorExplanation = ({attributes, date, explanation}: Props) => {
   const subjectType = get(explanation, 'subject.subject_type');
 
   return (
-    <div>
-      <Row>
+    <div className='rent-calculator__explanation'>
+      <Row className='rent-calculator__explanation_row'>
         <Column small={6}>
           <FormText
             className={classNames({'semibold': subjectType === RentExplanationSubjectType.RENT})}>

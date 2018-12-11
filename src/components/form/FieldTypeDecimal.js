@@ -34,7 +34,7 @@ class FieldTypeDecimal extends PureComponent<Props, State> {
   }
 
   componentDidUpdate(newProps, prevState) {
-    if(this.props.input.value !== prevState.innerValue) {
+    if(prevState.innerValue === this.state.innerValue && this.props.input.value !== prevState.innerValue) {
       this.setState({innerValue: formatDecimalNumber(this.props.input.value)});
     }
   }

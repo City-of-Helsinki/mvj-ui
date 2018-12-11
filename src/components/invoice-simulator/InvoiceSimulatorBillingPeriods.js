@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Row, Column} from 'react-foundation';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
@@ -75,10 +75,10 @@ const InvoiceSimulatorBillingPeriod = ({
 
       <SubTitle>Laskelma</SubTitle>
       <Row>
-        <Column small={12} large={6}>
+        <Column small={12} large={8} className='invoice-simulator__explanations'>
           {explanations && explanations.length &&
             explanations.map((explanation, index) => {
-              return <div key={index}>
+              return <Fragment key={index}>
                 {explanation.items.map((item, index) => {
                   return <RentCalculatorExplanation
                     date={dueDate}
@@ -86,7 +86,7 @@ const InvoiceSimulatorBillingPeriod = ({
                     explanation={item}
                   />;
                 })}
-              </div>;
+              </Fragment>;
             })
           }
         </Column>
