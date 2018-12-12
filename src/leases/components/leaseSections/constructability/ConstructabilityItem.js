@@ -8,6 +8,8 @@ import get from 'lodash/get';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTitleAndText from '$components/form/FormTitleAndText';
@@ -195,23 +197,17 @@ const ConstructabilityItem = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {getLabelOfOption(typeOptions, area.type) || '-'}
-            </span>
+            <CollapseHeaderSubtitle>{getLabelOfOption(typeOptions, area.type) || '-'}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {getFullAddress(area)}
-            </span>
+            <CollapseHeaderSubtitle>{getFullAddress(area)}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {formatNumber(area.area)} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location)}
-            </span>
+            <CollapseHeaderSubtitle>{formatNumber(area.area)} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location)}</CollapseHeaderSubtitle>
           </Column>
         </Fragment>
       }
-      headerTitle={<h3 className='collapse__header-title'>{area.identifier || '-'}</h3>}
+      headerTitle={<CollapseHeaderTitle>{area.identifier || '-'}</CollapseHeaderTitle>}
       onToggle={handleAreaCollapseToggle}
       showTitleOnOpen
     >
@@ -219,16 +215,14 @@ const ConstructabilityItem = ({
         className='collapse__secondary'
         defaultOpen={preconstructionCollapseState !== undefined ? preconstructionCollapseState : false}
         headerSubtitles={
-          <Fragment>
-            <Column>
-              <StatusIndicator
-                researchState={area.preconstruction_state}
-                stateOptions={stateOptions}
-              />
-            </Column>
-          </Fragment>
+          <Column>
+            <StatusIndicator
+              researchState={area.preconstruction_state}
+              stateOptions={stateOptions}
+            />
+          </Column>
         }
-        headerTitle={<h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>}
+        headerTitle={<CollapseHeaderTitle>Esirakentaminen, johtosiirrot ja kunnallistekniikka</CollapseHeaderTitle>}
         onToggle={handlePreconstructionCollapseToggle}
         showTitleOnOpen={true}
       >
@@ -239,16 +233,14 @@ const ConstructabilityItem = ({
         className='collapse__secondary'
         defaultOpen={demolitionCollapseState !== undefined ? demolitionCollapseState : false}
         headerSubtitles={
-          <Fragment>
-            <Column>
-              <StatusIndicator
-                researchState={area.demolition_state}
-                stateOptions={stateOptions}
-              />
-            </Column>
-          </Fragment>
+          <Column>
+            <StatusIndicator
+              researchState={area.demolition_state}
+              stateOptions={stateOptions}
+            />
+          </Column>
         }
-        headerTitle={<h4 className='collapse__header-title'>Purku</h4>}
+        headerTitle={<CollapseHeaderTitle>Purku</CollapseHeaderTitle>}
         onToggle={handleDemolitionCollapseToggle}
         showTitleOnOpen={true}
       >
@@ -259,16 +251,14 @@ const ConstructabilityItem = ({
         className='collapse__secondary'
         defaultOpen={pollutedLandCollapseState !== undefined ? pollutedLandCollapseState : false}
         headerSubtitles={
-          <Fragment>
-            <Column>
-              <StatusIndicator
-                researchState={area.polluted_land_state}
-                stateOptions={stateOptions}
-              />
-            </Column>
-          </Fragment>
+          <Column>
+            <StatusIndicator
+              researchState={area.polluted_land_state}
+              stateOptions={stateOptions}
+            />
+          </Column>
         }
-        headerTitle={<h4 className='collapse__header-title'>Pima ja jäte</h4>}
+        headerTitle={<CollapseHeaderTitle>Pima ja jäte</CollapseHeaderTitle>}
         onToggle={handlePollutedLandCollapseToggle}
         showTitleOnOpen={true}
       >
@@ -311,16 +301,14 @@ const ConstructabilityItem = ({
         className='collapse__secondary'
         defaultOpen={constructabilityReportCollapseState !== undefined ? constructabilityReportCollapseState : false}
         headerSubtitles={
-          <Fragment>
-            <Column>
-              <StatusIndicator
-                researchState={area.constructability_report_state}
-                stateOptions={stateOptions}
-              />
-            </Column>
-          </Fragment>
+          <Column>
+            <StatusIndicator
+              researchState={area.constructability_report_state}
+              stateOptions={stateOptions}
+            />
+          </Column>
         }
-        headerTitle={<h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>}
+        headerTitle={<CollapseHeaderTitle>Rakennettavuusselvitys</CollapseHeaderTitle>}
         onToggle={handleConstructabilityReportCollapseToggle}
         showTitleOnOpen={true}
       >
@@ -357,16 +345,14 @@ const ConstructabilityItem = ({
         className='collapse__secondary'
         defaultOpen={otherCollapseState !== undefined ? otherCollapseState : false}
         headerSubtitles={
-          <Fragment>
-            <Column>
-              <StatusIndicator
-                researchState={area.other_state}
-                stateOptions={stateOptions}
-              />
-            </Column>
-          </Fragment>
+          <Column>
+            <StatusIndicator
+              researchState={area.other_state}
+              stateOptions={stateOptions}
+            />
+          </Column>
         }
-        headerTitle={<h4 className='collapse__header-title'>Muut</h4>}
+        headerTitle={<CollapseHeaderTitle>Muut</CollapseHeaderTitle>}
         onToggle={handleOtherCollapseToggle}
         showTitleOnOpen={true}
       >

@@ -1,5 +1,5 @@
 // @flow
-import React, {Fragment, PureComponent} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {change, FieldArray, formValueSelector, FormSection} from 'redux-form';
 import {Column} from 'react-foundation';
@@ -9,8 +9,10 @@ import isEmpty from 'lodash/isEmpty';
 
 import BasicInfoEdit from './BasicInfoEdit';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
-import ContractRentsEdit from './ContractRentsEdit';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
+import ContractRentsEdit from './ContractRentsEdit';
 import FixedInitialYearRentsEdit from './FixedInitialYearRentsEdit';
 import IndexAdjustedRents from './IndexAdjustedRents';
 import PayableRents from './PayableRents';
@@ -275,15 +277,11 @@ class RentItemEdit extends PureComponent<Props, State> {
         className={classNames({'archived': archived})}
         defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active}
         hasErrors={isSaveClicked && !isEmpty(rentErrors)}
-        headerTitle={<h3 className='collapse__header-title'>{getLabelOfOption(typeOptions, get(savedRent, 'type')) || '-'}</h3>}
+        headerTitle={<CollapseHeaderTitle>{getLabelOfOption(typeOptions, get(savedRent, 'type')) || '-'}</CollapseHeaderTitle>}
         headerSubtitles={
-          <Fragment>
-            <Column small={6} medium={8} large={10}>
-              <span className='collapse__header-subtitle'>
-                {formatDateRange(get(savedRent, 'start_date'), get(savedRent, 'end_date')) || '-'}
-              </span>
-            </Column>
-          </Fragment>
+          <Column small={6} medium={8} large={10}>
+            <CollapseHeaderSubtitle>{formatDateRange(get(savedRent, 'start_date'), get(savedRent, 'end_date')) || '-'}</CollapseHeaderSubtitle>
+          </Column>
         }
         onRemove={this.handleRemove}
         onToggle={this.handleRentCollapseToggle}
@@ -304,7 +302,7 @@ class RentItemEdit extends PureComponent<Props, State> {
             className='collapse__secondary'
             defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true}
             hasErrors={isSaveClicked && !isEmpty(fixedInitialYearRentErrors)}
-            headerTitle={<h3 className='collapse__header-title'>Kiinteä alkuvuosivuokra</h3>}
+            headerTitle={<CollapseHeaderTitle>Kiinteä alkuvuosivuokra</CollapseHeaderTitle>}
             onToggle={this.handleFixedInitialYearRentsCollapseToggle}
           >
             <FieldArray
@@ -322,7 +320,7 @@ class RentItemEdit extends PureComponent<Props, State> {
             className='collapse__secondary'
             defaultOpen={contractRentsCollapseState !== undefined ? contractRentsCollapseState : true}
             hasErrors={isSaveClicked && !isEmpty(contractRentErrors)}
-            headerTitle={<h3 className='collapse__header-title'>Sopimusvuokra</h3>}
+            headerTitle={<CollapseHeaderTitle>Sopimusvuokra</CollapseHeaderTitle>}
             onToggle={this.handleContractRentsCollapseToggle}
           >
             <FieldArray
@@ -340,7 +338,7 @@ class RentItemEdit extends PureComponent<Props, State> {
           <Collapse
             className='collapse__secondary'
             defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
-            headerTitle={<h3 className='collapse__header-title'>Indeksitarkistettu vuokra</h3>}
+            headerTitle={<CollapseHeaderTitle>Indeksitarkistettu vuokra</CollapseHeaderTitle>}
             onToggle={this.handleIndexAdjustedRentsCollapseToggle}
           >
             <IndexAdjustedRents indexAdjustedRents={indexAdjustedRents} />
@@ -354,7 +352,7 @@ class RentItemEdit extends PureComponent<Props, State> {
             className='collapse__secondary'
             defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : false}
             hasErrors={isSaveClicked && !isEmpty(rentAdjustmentsErrors)}
-            headerTitle={<h3 className='collapse__header-title'>Alennukset ja korotukset ({rentAdjustments ? rentAdjustments.length : 0})</h3>}
+            headerTitle={<CollapseHeaderTitle>Alennukset ja korotukset ({rentAdjustments ? rentAdjustments.length : 0})</CollapseHeaderTitle>}
             onToggle={this.handleRentAdjustmentsCollapseToggle}
           >
             <FieldArray
@@ -370,7 +368,7 @@ class RentItemEdit extends PureComponent<Props, State> {
           <Collapse
             className='collapse__secondary'
             defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}
-            headerTitle={<h3 className='collapse__header-title'>Perittävä vuokra</h3>}
+            headerTitle={<CollapseHeaderTitle>Perittävä vuokra</CollapseHeaderTitle>}
             onToggle={this.handlePayableRentsCollapseToggle}
           >
             <PayableRents payableRents={payableRents} />

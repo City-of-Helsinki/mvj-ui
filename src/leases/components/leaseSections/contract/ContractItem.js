@@ -7,6 +7,8 @@ import get from 'lodash/get';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import FormTitleAndText from '$components/form/FormTitleAndText';
@@ -72,22 +74,14 @@ const ContractItem = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {formatDate(contract.signing_date) || '-'}
-            </span>
+            <CollapseHeaderSubtitle>{formatDate(contract.signing_date) || '-'}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {isContractActive(contract) ? 'Voimassa' : 'Ei voimassa'}
-            </span>
+            <CollapseHeaderSubtitle>{isContractActive(contract) ? 'Voimassa' : 'Ei voimassa'}</CollapseHeaderSubtitle>
           </Column>
         </Fragment>
       }
-      headerTitle={
-        <h3 className='collapse__header-title'>
-          {getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}
-        </h3>
-      }
+      headerTitle={<CollapseHeaderTitle>{getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}</CollapseHeaderTitle>}
       onToggle={handleContractCollapseToggle}
     >
       <Row>
@@ -219,7 +213,7 @@ const ContractItem = ({
       <Collapse
         className='collapse__secondary'
         defaultOpen={contractChangesCollapseState !== undefined ? contractChangesCollapseState : true}
-        headerTitle={<h4 className='collapse__header-title'>Sopimuksen muutokset</h4>}
+        headerTitle={<CollapseHeaderTitle>Sopimuksen muutokset</CollapseHeaderTitle>}
         onToggle={handleContractChangesCollapseToggle}
       >
         {!contract.contract_changes || !contract.contract_changes.length &&

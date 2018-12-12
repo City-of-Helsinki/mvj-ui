@@ -6,6 +6,8 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import ExternalLink from '$components/links/ExternalLink';
 import FormTitleAndText from '$components/form/FormTitleAndText';
@@ -62,15 +64,12 @@ const OtherTenantItem = ({
         <Fragment>
           <Column></Column>
           <Column>
-            <p className={'collapse__header-subtitle'}>
-              <span>Välillä:</span>
-              {formatDateRange(get(tenant, 'start_date'), get(tenant, 'end_date')) || '-'}
-            </p>
+            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(get(tenant, 'start_date'), get(tenant, 'end_date')) || '-'}</CollapseHeaderSubtitle>
           </Column>
         </Fragment>
       }
 
-      headerTitle={<h4 className='collapse__header-title'>{getLabelOfOption(tenantTypeOptions, tenant.type)}</h4>}
+      headerTitle={<CollapseHeaderTitle>{getLabelOfOption(tenantTypeOptions, tenant.type)}</CollapseHeaderTitle>}
       onToggle={handleCollapseToggle}
     >
       <FormWrapper>

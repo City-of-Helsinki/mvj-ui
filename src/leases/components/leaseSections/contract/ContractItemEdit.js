@@ -15,6 +15,7 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import KtjLink from '$components/ktj/KtjLink';
@@ -68,7 +69,7 @@ const renderContractChanges = ({
             className='collapse__secondary'
             defaultOpen={collapseState !== undefined ? collapseState : true}
             hasErrors={isSaveClicked &&!isEmpty(contractChangeErrors)}
-            headerTitle={<h4 className='collapse__header-title'>{title}</h4>}
+            headerTitle={<CollapseHeaderTitle>{title}</CollapseHeaderTitle>}
             onToggle={handleCollapseToggle}
           >
             <BoxItemContainer>
@@ -353,7 +354,7 @@ const ContractItemEdit = ({
     <Collapse
       defaultOpen={contractCollapseState !== undefined ? contractCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(contractErrors)}
-      headerTitle={<h3 className='collapse__header-title'>{getContractTitle(savedContract) || '-'}</h3>}
+      headerTitle={<CollapseHeaderTitle>{getContractTitle(savedContract) || '-'}</CollapseHeaderTitle>}
       onRemove={onRemove}
       onToggle={handleContractCollapseToggle}
     >

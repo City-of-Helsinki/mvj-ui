@@ -4,6 +4,8 @@ import {Row, Column} from 'react-foundation';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import RentCalculatorExplanation from '$components/rent-calculator/RentCalculatorExplanation';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceSimulatorInvoice from './InvoiceSimulatorInvoice';
@@ -39,18 +41,14 @@ const InvoiceSimulatorBillingPeriod = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {formatDate(dueDate) || '-'}
-            </span>
+            <CollapseHeaderSubtitle>{formatDate(dueDate) || '-'}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
-              <AmountWithVat amount={totalAmount} date={dueDate} />
-            </span>
+            <CollapseHeaderSubtitle><AmountWithVat amount={totalAmount} date={dueDate} /></CollapseHeaderSubtitle>
           </Column>
         </Fragment>
       }
-      headerTitle={<h4 className='collapse__header-title'>{formatDateRange(startDate, endDate)}</h4>}
+      headerTitle={<CollapseHeaderTitle>{formatDateRange(startDate, endDate)}</CollapseHeaderTitle>}
     >
       <Row>
         <Column small={6} medium={4} large={2}>

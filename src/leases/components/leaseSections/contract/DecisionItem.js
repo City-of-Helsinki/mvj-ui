@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -67,12 +68,12 @@ const DecisionItem = ({
     <Collapse
       key={decision.id}
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : false}
-      headerTitle={<h3 className='collapse__header-title'>
+      headerTitle={<CollapseHeaderTitle>
         {getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}
         {decision.decision_date ? <span>&nbsp;&nbsp;{formatDate(decision.decision_date)}</span> : ''}
         {decision.section ? <span>&nbsp;&nbsp;{decision.section}§</span> : ''}
         {decision.type ? <span>&nbsp;&nbsp;{getLabelOfOption(typeOptions, decision.type)}</span> : ''}
-      </h3>}
+      </CollapseHeaderTitle>}
       onToggle={handleDecisionCollapseToggle}
     >
       <Row>
@@ -123,7 +124,7 @@ const DecisionItem = ({
       <Collapse
         className='collapse__secondary'
         defaultOpen={conditionsCollapseState !== undefined ? conditionsCollapseState : true}
-        headerTitle={<h4 className='collapse__header-title'>Ehdot</h4>}
+        headerTitle={<CollapseHeaderTitle>Ehdot</CollapseHeaderTitle>}
         onToggle={handleConditionsCollapseToggle}
       >
         {!decision.conditions || !decision.conditions.length &&

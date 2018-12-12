@@ -11,33 +11,6 @@
     align-items: center;
     justify-content: space-between;
 
-    h3 {
-      line-height: rem-calc(20px) !important;
-    }
-
-    h4 {
-      line-height: rem-calc(20px) !important;
-    }
-
-    &_field-wrapper {
-      display: flex;
-      padding: rem-calc(2px 0);
-
-      label {
-        line-height: rem-calc(20px);
-      }
-    }
-
-    &_field-label-wrapper {
-      flex: 0 0 0;
-    }
-
-    &_field-input-wrapper {
-      flex: 1 1 0%;
-      display: flex;
-      max-width: 200px;
-    }
-
     a {
       .arrow-icon {
         height: rem-calc(14px);
@@ -61,6 +34,11 @@
     .header-info-wrapper {
       flex: 1 1 0%;
       position: relative;
+
+      .columns {
+        display: flex;
+        align-items: center;
+      }
 
       .header-info-link {
         display: inline-block;
@@ -103,21 +81,10 @@
       background-position: 50%;
     }
 
-    &-title {
-      max-width: 100%;
-      white-space: normal;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    &-subtitle {
-      display: inline-block;
-      float: left;
+    &_subtitle {
       font-size: rem-calc(14px);
-      line-height: rem-calc(20px);
-      overflow: hidden;
+      line-height: rem-calc(16px);
       max-width: 100%;
-      white-space: nowrap;
       text-overflow: ellipsis;
       margin: 0;
 
@@ -126,6 +93,19 @@
         display: inline-block;
         padding-right: rem-calc(7.5px);
       }
+    }
+
+    &_title {
+      max-width: 100%;
+      white-space: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: $font-family-source;
+      font-size: rem-calc(20px);
+      line-height: rem-calc(20px);
+      font-weight: $semibold;
+      color: $black;
+      margin: 0;
     }
 
     &-neutral {
@@ -244,18 +224,9 @@
     }
 
     .collapse__header {
-      &-title {
-
-        &.edit-row {
-          line-height: rem-calc(20px);
-        }
-      }
-      &-subtitle {
-        line-height: rem-calc(20px);
-      }
-
-      &_field-wrapper {
-        padding: 0;
+      &_title {
+        font-size: rem-calc(16px);
+        text-transform: uppercase;
       }
 
       .arrow-icon {

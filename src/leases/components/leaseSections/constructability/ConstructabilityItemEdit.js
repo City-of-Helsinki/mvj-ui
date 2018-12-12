@@ -10,6 +10,8 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
@@ -286,23 +288,17 @@ const ConstructabilityItemEdit = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {getLabelOfOption(typeOptions, areaData.type) || '-'}
-            </span>
+            <CollapseHeaderSubtitle>{getLabelOfOption(typeOptions, areaData.type) || '-'}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {getFullAddress(areaData)}
-            </span>
+            <CollapseHeaderSubtitle>{getFullAddress(areaData)}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {formatNumber(areaData.area) || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areaData.location) || '-'}
-            </span>
+            <CollapseHeaderSubtitle>{formatNumber(areaData.area) || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areaData.location) || '-'}</CollapseHeaderSubtitle>
           </Column>
         </Fragment>
       }
-      headerTitle={<h3  className='collapse__header-title'>{areaData.identifier}</h3>}
+      headerTitle={<CollapseHeaderTitle>{areaData.identifier}</CollapseHeaderTitle>}
       onToggle={handleAreaCollapseToggle}
       showTitleOnOpen
     >
@@ -310,7 +306,7 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={preconstructionCollapseState !== undefined ? preconstructionCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(preconstructionErrors)}
-        headerTitle={<h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>}
+        headerTitle={<CollapseHeaderTitle>Esirakentaminen, johtosiirrot ja kunnallistekniikka</CollapseHeaderTitle>}
         onToggle={handlePreconstructionCollapseToggle}
       >
         <Row>
@@ -337,7 +333,7 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={demolitionCollapseState !== undefined ? demolitionCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(demolitionErrors)}
-        headerTitle={<h4 className='collapse__header-title'>Purku</h4>}
+        headerTitle={<CollapseHeaderTitle>Purku</CollapseHeaderTitle>}
         onToggle={handleDemolitionCollapseToggle}
       >
         <Row>
@@ -364,7 +360,7 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={pollutedLandCollapseState !== undefined ? pollutedLandCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(pollutedLandErrors)}
-        headerTitle={<h4 className='collapse__header-title'>Pima ja jäte</h4>}
+        headerTitle={<CollapseHeaderTitle>Pima ja jäte</CollapseHeaderTitle>}
         onToggle={handlePollutedLandCollapseToggle}
       >
         <Row>
@@ -442,7 +438,7 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={constructabilityReportCollapseState !== undefined ? constructabilityReportCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(constructabilityReportErrors)}
-        headerTitle={<h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>}
+        headerTitle={<CollapseHeaderTitle>Rakennettavuusselvitys</CollapseHeaderTitle>}
         onToggle={handleConstructabilityReportCollapseToggle}
       >
         <Row>
@@ -509,7 +505,7 @@ const ConstructabilityItemEdit = ({
         className='collapse__secondary'
         defaultOpen={otherCollapseState !== undefined ? otherCollapseState : false}
         hasErrors={isSaveClicked && !isEmpty(otherErrors)}
-        headerTitle={<h4 className='collapse__header-title'>Muut</h4>}
+        headerTitle={<CollapseHeaderTitle>Muut</CollapseHeaderTitle>}
         onToggle={handleOtherCollapseToggle}
       >
         <Row>

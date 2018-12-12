@@ -36,7 +36,7 @@ type Props = {
   defaultSortKey?: string,
   defaultSortOrder?: string,
   fixedHeader?: boolean,
-  listTable: boolean,
+  listTable?: boolean,
   maxHeight?: ?number,
   noDataText?: string,
   onDataUpdate?: Function,

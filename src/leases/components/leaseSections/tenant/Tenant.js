@@ -6,6 +6,8 @@ import {Column} from 'react-foundation';
 import classNames from 'classnames';
 
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import OtherTenantItem from './OtherTenantItem';
 import TenantItem from './TenantItem';
 import {receiveCollapseStates} from '$src/leases/actions';
@@ -51,22 +53,14 @@ const Tenant = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <p className={'collapse__header-subtitle'}>
-              <span>Osuus murtolukuna:</span>
-              {get(tenant, 'share_numerator', '')} / {get(tenant, 'share_denominator', '')}
-            </p>
+            <CollapseHeaderSubtitle><span>Osuus murtolukuna:</span> {get(tenant, 'share_numerator', '')} / {get(tenant, 'share_denominator', '')}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <p className={'collapse__header-subtitle'}>
-              <span>Välillä:</span>
-              {formatDateRange(get(tenant, 'tenant.start_date'), get(tenant, 'tenant.end_date')) || '-'}
-            </p>
+            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(get(tenant, 'tenant.start_date'), get(tenant, 'tenant.end_date')) || '-'}</CollapseHeaderSubtitle>
           </Column>
         </Fragment>
       }
-      headerTitle={
-        <h3 className='collapse__header-title'>{getContactFullName(contact)}</h3>
-      }
+      headerTitle={<CollapseHeaderTitle>{getContactFullName(contact)}</CollapseHeaderTitle>}
       onToggle={handleCollapseToggle}
     >
       <div>

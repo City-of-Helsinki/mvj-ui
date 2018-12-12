@@ -8,6 +8,7 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormField from '$components/form/FormField';
@@ -131,7 +132,7 @@ class SummaryEdit extends Component<Props, State> {
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
-              headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
+              headerTitle={<CollapseHeaderTitle>Perustiedot</CollapseHeaderTitle>}
               onToggle={this.handleBasicInfoToggle}
             >
               <Row>
@@ -351,7 +352,7 @@ class SummaryEdit extends Component<Props, State> {
 
             <Collapse
               defaultOpen={collapseStateStatistical !== undefined ? collapseStateStatistical : true}
-              headerTitle={<h3 className='collapse__header-title'>Tilastotiedot</h3>}
+              headerTitle={<CollapseHeaderTitle>Tilastotiedot</CollapseHeaderTitle>}
               onToggle={this.handleStatisticalInfoToggle}
             >
               <Row>

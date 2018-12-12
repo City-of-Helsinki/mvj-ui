@@ -6,6 +6,8 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import Divider from '$components/content/Divider';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import LeaseArea from './LeaseArea';
@@ -61,28 +63,20 @@ const LeaseAreaWithArchiveInfo = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <p className='collapse__header-subtitle'>
-              {getLabelOfOption(typeOptions, area.type) || '-'}
-            </p>
+            <CollapseHeaderSubtitle>{getLabelOfOption(typeOptions, area.type) || '-'}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <p className='collapse__header-subtitle'>
-              {getFullAddress(get(area, 'addresses[0]')) || '-'}
-            </p>
+            <CollapseHeaderSubtitle>{getFullAddress(get(area, 'addresses[0]')) || '-'}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <p className='collapse__header-subtitle'>
-              {formatNumber(area.area) || '-'} m<sup>2</sup>
-            </p>
+            <CollapseHeaderSubtitle>{formatNumber(area.area) || '-'} m<sup>2</sup></CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <p className='collapse__header-subtitle'>
-              {getLabelOfOption(locationOptions, area.location) || '-'}
-            </p>
+            <CollapseHeaderSubtitle>{getLabelOfOption(locationOptions, area.location) || '-'}</CollapseHeaderSubtitle>
           </Column>
         </Fragment>
       }
-      headerTitle={<h3 className='collapse__header-title'>{area.identifier || '-'}</h3>}
+      headerTitle={<CollapseHeaderTitle>{area.identifier || '-'}</CollapseHeaderTitle>}
       onToggle={handleAreaCollapseToggle}
     >
       <LeaseArea area={area} isActive={isActive}/>

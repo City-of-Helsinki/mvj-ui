@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import Button from '$components/button/Button';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import DebtCollection from './DebtCollection';
 import Divider from '$components/content/Divider';
 import InvoiceSimulator from '$components/invoice-simulator/InvoiceSimulator';
@@ -160,7 +161,7 @@ class Invoices extends Component<Props> {
               <Divider />
               <Collapse
                 defaultOpen={invoicesCollapseState !== undefined ? invoicesCollapseState : true}
-                headerTitle={<h3 className='collapse__header-title'>Laskut</h3>}
+                headerTitle={<CollapseHeaderTitle>Laskut</CollapseHeaderTitle>}
                 onToggle={this.handleInvoicesCollapseToggle}
               >
                 <InvoiceTableAndPanel
@@ -175,7 +176,7 @@ class Invoices extends Component<Props> {
               </Collapse>
               <Collapse
                 defaultOpen={previewInvoicesCollapseState !== undefined ? previewInvoicesCollapseState : true}
-                headerTitle={<h3 className='collapse__header-title'>Laskujen esikatselu</h3>}
+                headerTitle={<CollapseHeaderTitle>Laskujen esikatselu</CollapseHeaderTitle>}
                 onToggle={this.handlePreviewInvoicesCollapseToggle}
               >
                 <InvoiceSimulator />

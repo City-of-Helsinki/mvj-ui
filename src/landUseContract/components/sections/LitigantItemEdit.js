@@ -13,6 +13,7 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import FormField from '$components/form/FormField';
@@ -169,7 +170,7 @@ const LitigantItemEdit = ({
       className={classNames({'not-active': !isActive})}
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(litigantErrors)}
-      headerTitle={<h3 className='collapse__header-title'>{getContactFullName(get(savedLitigant, 'litigant.contact')) || '-'}</h3>}
+      headerTitle={<CollapseHeaderTitle>{getContactFullName(get(savedLitigant, 'litigant.contact')) || '-'}</CollapseHeaderTitle>}
       onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >

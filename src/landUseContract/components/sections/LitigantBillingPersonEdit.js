@@ -10,6 +10,7 @@ import isEmpty from 'lodash/isEmpty';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import FormField from '$components/form/FormField';
@@ -106,7 +107,7 @@ const LitigantBillingPersonEdit = ({
       className={classNames('collapse__secondary', {'not-active': !isActive})}
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(litigantErrors)}
-      headerTitle={<h4 className='collapse__header-title edit-row'>Laskunsaaja</h4>}
+      headerTitle={<CollapseHeaderTitle>Laskunsaaja</CollapseHeaderTitle>}
       onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >

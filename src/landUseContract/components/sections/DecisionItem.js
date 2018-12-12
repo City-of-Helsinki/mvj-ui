@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import DecisionConditions from './DecisionConditions';
 import ExternalLink from '$components/links/ExternalLink';
 import FormTitleAndText from '$components/form/FormTitleAndText';
@@ -45,7 +46,7 @@ const DecisionItem = ({
   return (
     <Collapse
       defaultOpen={collapseState !== undefined ? collapseState : true}
-      headerTitle={<h3 className='collapse__header-title'>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</h3>}
+      headerTitle={<CollapseHeaderTitle>{getLabelOfOption(decisionMakerOptions, decision.decision_maker) || '-'}</CollapseHeaderTitle>}
       onToggle={handleCollapseToggle}
     >
       <Row>
