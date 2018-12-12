@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Row, Column} from 'react-foundation';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
@@ -38,8 +38,8 @@ const InvoiceSimulatorInvoice = ({
     <Collapse
       className='collapse__third'
       defaultOpen={false}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column>
             <span className='collapse__header-subtitle'>
               {formatDate(dueDate) || '-'}
@@ -50,7 +50,7 @@ const InvoiceSimulatorInvoice = ({
               <AmountWithVat amount={billedAmount} date={dueDate} />
             </span>
           </Column>
-        </div>
+        </Fragment>
       }
       headerTitle={<h4 className='collapse__header-title'>{getContactFullName(recipient)}</h4>}
     >

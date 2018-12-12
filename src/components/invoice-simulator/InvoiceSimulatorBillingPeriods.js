@@ -36,8 +36,8 @@ const InvoiceSimulatorBillingPeriod = ({
     <Collapse
       className='collapse__secondary'
       defaultOpen={false}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column>
             <span className='collapse__header-subtitle'>
               {formatDate(dueDate) || '-'}
@@ -48,7 +48,7 @@ const InvoiceSimulatorBillingPeriod = ({
               <AmountWithVat amount={totalAmount} date={dueDate} />
             </span>
           </Column>
-        </div>
+        </Fragment>
       }
       headerTitle={<h4 className='collapse__header-title'>{formatDateRange(startDate, endDate)}</h4>}
     >

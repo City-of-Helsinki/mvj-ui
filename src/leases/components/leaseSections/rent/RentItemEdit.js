@@ -1,5 +1,5 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {change, FieldArray, formValueSelector, FormSection} from 'redux-form';
 import {Column} from 'react-foundation';
@@ -276,14 +276,14 @@ class RentItemEdit extends PureComponent<Props, State> {
         defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active}
         hasErrors={isSaveClicked && !isEmpty(rentErrors)}
         headerTitle={<h3 className='collapse__header-title'>{getLabelOfOption(typeOptions, get(savedRent, 'type')) || '-'}</h3>}
-        header={
-          <div>
+        headerSubtitles={
+          <Fragment>
             <Column small={6} medium={8} large={10}>
               <span className='collapse__header-subtitle'>
                 {formatDateRange(get(savedRent, 'start_date'), get(savedRent, 'end_date')) || '-'}
               </span>
             </Column>
-          </div>
+          </Fragment>
         }
         onRemove={this.handleRemove}
         onToggle={this.handleRentCollapseToggle}

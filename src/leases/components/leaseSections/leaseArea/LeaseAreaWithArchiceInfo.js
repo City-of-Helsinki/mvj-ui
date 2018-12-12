@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
@@ -58,8 +58,8 @@ const LeaseAreaWithArchiveInfo = ({
     <Collapse
       className={classNames({'not-active': !isActive})}
       defaultOpen={areaCollapseState !== undefined ? areaCollapseState : isActive}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column>
             <p className='collapse__header-subtitle'>
               {getLabelOfOption(typeOptions, area.type) || '-'}
@@ -80,7 +80,7 @@ const LeaseAreaWithArchiveInfo = ({
               {getLabelOfOption(locationOptions, area.location) || '-'}
             </p>
           </Column>
-        </div>
+        </Fragment>
       }
       headerTitle={<h3 className='collapse__header-title'>{area.identifier || '-'}</h3>}
       onToggle={handleAreaCollapseToggle}

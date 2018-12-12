@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -69,8 +69,8 @@ const ContractItem = ({
   return (
     <Collapse
       defaultOpen={contractCollapseState !== undefined ? contractCollapseState : false}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column>
             <span className='collapse__header-subtitle'>
               {formatDate(contract.signing_date) || '-'}
@@ -81,7 +81,7 @@ const ContractItem = ({
               {isContractActive(contract) ? 'Voimassa' : 'Ei voimassa'}
             </span>
           </Column>
-        </div>
+        </Fragment>
       }
       headerTitle={
         <h3 className='collapse__header-title'>
@@ -188,7 +188,7 @@ const ContractItem = ({
         <FormText>Ei panttikirjoja</FormText>
       }
       {contract.mortgage_documents && !!contract.mortgage_documents.length &&
-        <div>
+        <Fragment>
           <Row>
             <Column small={4} medium={4} large={2}>
               <FormTextTitle title='Panttikirjan numero' />
@@ -213,7 +213,7 @@ const ContractItem = ({
               </Column>
             </Row>
           )}
-        </div>
+        </Fragment>
       }
 
       <Collapse

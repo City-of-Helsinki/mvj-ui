@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
@@ -192,8 +192,8 @@ const ConstructabilityItem = ({
   return (
     <Collapse key={area.id}
       defaultOpen={areaCollapseState !== undefined ? areaCollapseState : true}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column>
             <span className='collapse__header-subtitle'>
               {getLabelOfOption(typeOptions, area.type) || '-'}
@@ -209,7 +209,7 @@ const ConstructabilityItem = ({
               {formatNumber(area.area)} m<sup>2</sup> / {getLabelOfOption(locationOptions, area.location)}
             </span>
           </Column>
-        </div>
+        </Fragment>
       }
       headerTitle={<h3 className='collapse__header-title'>{area.identifier || '-'}</h3>}
       onToggle={handleAreaCollapseToggle}
@@ -218,15 +218,15 @@ const ConstructabilityItem = ({
       <Collapse
         className='collapse__secondary'
         defaultOpen={preconstructionCollapseState !== undefined ? preconstructionCollapseState : false}
-        header={
-          <div>
+        headerSubtitles={
+          <Fragment>
             <Column>
               <StatusIndicator
                 researchState={area.preconstruction_state}
                 stateOptions={stateOptions}
               />
             </Column>
-          </div>
+          </Fragment>
         }
         headerTitle={<h4 className='collapse__header-title'>Esirakentaminen, johtosiirrot ja kunnallistekniikka</h4>}
         onToggle={handlePreconstructionCollapseToggle}
@@ -238,15 +238,15 @@ const ConstructabilityItem = ({
       <Collapse
         className='collapse__secondary'
         defaultOpen={demolitionCollapseState !== undefined ? demolitionCollapseState : false}
-        header={
-          <div>
+        headerSubtitles={
+          <Fragment>
             <Column>
               <StatusIndicator
                 researchState={area.demolition_state}
                 stateOptions={stateOptions}
               />
             </Column>
-          </div>
+          </Fragment>
         }
         headerTitle={<h4 className='collapse__header-title'>Purku</h4>}
         onToggle={handleDemolitionCollapseToggle}
@@ -258,117 +258,113 @@ const ConstructabilityItem = ({
       <Collapse
         className='collapse__secondary'
         defaultOpen={pollutedLandCollapseState !== undefined ? pollutedLandCollapseState : false}
-        header={
-          <div>
+        headerSubtitles={
+          <Fragment>
             <Column>
               <StatusIndicator
                 researchState={area.polluted_land_state}
                 stateOptions={stateOptions}
               />
             </Column>
-          </div>
+          </Fragment>
         }
         headerTitle={<h4 className='collapse__header-title'>Pima ja jäte</h4>}
         onToggle={handlePollutedLandCollapseToggle}
         showTitleOnOpen={true}
       >
-        <div>
-          <Row>
-            <Column small={6} medium={3} large={2}>
-              <FormTitleAndText
-                title='Vuokraehdot'
-                text={getLabelOfOption(pollutedLandConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormTitleAndText
-                title='Vuokraehdot pvm'
-                text={formatDate(area.polluted_land_rent_condition_date) || '–'}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormTitleAndText
-                title='PIMA valmistelija'
-                text={getUserFullName(area.polluted_land_planner) || '–'}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormTitleAndText
-                title='ProjectWise numero'
-                text={area.polluted_land_projectwise_number || '-'}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormTitleAndText
-                title='Matti raportti'
-                text={area.polluted_land_matti_report_number || '-'}
-              />
-            </Column>
-          </Row>
-        </div>
+        <Row>
+          <Column small={6} medium={3} large={2}>
+            <FormTitleAndText
+              title='Vuokraehdot'
+              text={getLabelOfOption(pollutedLandConditionStateOptions, area.polluted_land_rent_condition_state) || '-'}
+            />
+          </Column>
+          <Column small={6} medium={3} large={2}>
+            <FormTitleAndText
+              title='Vuokraehdot pvm'
+              text={formatDate(area.polluted_land_rent_condition_date) || '–'}
+            />
+          </Column>
+          <Column small={6} medium={3} large={2}>
+            <FormTitleAndText
+              title='PIMA valmistelija'
+              text={getUserFullName(area.polluted_land_planner) || '–'}
+            />
+          </Column>
+          <Column small={6} medium={3} large={2}>
+            <FormTitleAndText
+              title='ProjectWise numero'
+              text={area.polluted_land_projectwise_number || '-'}
+            />
+          </Column>
+          <Column small={6} medium={3} large={2}>
+            <FormTitleAndText
+              title='Matti raportti'
+              text={area.polluted_land_matti_report_number || '-'}
+            />
+          </Column>
+        </Row>
         <Comments comments={area.descriptionsPollutedLand} />
       </Collapse>
 
       <Collapse
         className='collapse__secondary'
         defaultOpen={constructabilityReportCollapseState !== undefined ? constructabilityReportCollapseState : false}
-        header={
-          <div>
+        headerSubtitles={
+          <Fragment>
             <Column>
               <StatusIndicator
                 researchState={area.constructability_report_state}
                 stateOptions={stateOptions}
               />
             </Column>
-          </div>
+          </Fragment>
         }
         headerTitle={<h4 className='collapse__header-title'>Rakennettavuusselvitys</h4>}
         onToggle={handleConstructabilityReportCollapseToggle}
         showTitleOnOpen={true}
       >
-        <div>
-          <Row>
-            <Column small={6} medium={3} large={2}>
-              <FormTitleAndText
-                title='Selvitys'
-                text={getLabelOfOption(constructabilityReportStateOptions, area.constructability_report_investigation_state) || '-'}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormTitleAndText
-                title='Allekirjoituspvm'
-                text={formatDate(area.constructability_report_signing_date) || '–'}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormTitleAndText
-                title='Allekirjoittaja'
-                text={area.constructability_report_signer || '-'}
-              />
-            </Column>
-            <Column small={6} medium={3} large={2}>
-              <FormTitleAndText
-                title='Geoteknisen palvelun tiedosto'
-                text={area.constructability_report_geotechnical_number || '-'}
-              />
-            </Column>
-          </Row>
-        </div>
+        <Row>
+          <Column small={6} medium={3} large={2}>
+            <FormTitleAndText
+              title='Selvitys'
+              text={getLabelOfOption(constructabilityReportStateOptions, area.constructability_report_investigation_state) || '-'}
+            />
+          </Column>
+          <Column small={6} medium={3} large={2}>
+            <FormTitleAndText
+              title='Allekirjoituspvm'
+              text={formatDate(area.constructability_report_signing_date) || '–'}
+            />
+          </Column>
+          <Column small={6} medium={3} large={2}>
+            <FormTitleAndText
+              title='Allekirjoittaja'
+              text={area.constructability_report_signer || '-'}
+            />
+          </Column>
+          <Column small={6} medium={3} large={2}>
+            <FormTitleAndText
+              title='Geoteknisen palvelun tiedosto'
+              text={area.constructability_report_geotechnical_number || '-'}
+            />
+          </Column>
+        </Row>
         <Comments comments={area.descriptionsReport} />
       </Collapse>
 
       <Collapse
         className='collapse__secondary'
         defaultOpen={otherCollapseState !== undefined ? otherCollapseState : false}
-        header={
-          <div>
+        headerSubtitles={
+          <Fragment>
             <Column>
               <StatusIndicator
                 researchState={area.other_state}
                 stateOptions={stateOptions}
               />
             </Column>
-          </div>
+          </Fragment>
         }
         headerTitle={<h4 className='collapse__header-title'>Muut</h4>}
         onToggle={handleOtherCollapseToggle}

@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {FieldArray, formValueSelector} from 'redux-form';
@@ -283,8 +283,8 @@ const ConstructabilityItemEdit = ({
     <Collapse
       defaultOpen={areaCollapseState !== undefined ? areaCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(areaErrors)}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column>
             <span className='collapse__header-subtitle'>
               {getLabelOfOption(typeOptions, areaData.type) || '-'}
@@ -300,7 +300,7 @@ const ConstructabilityItemEdit = ({
               {formatNumber(areaData.area) || '-'} m<sup>2</sup> / {getLabelOfOption(locationOptions, areaData.location) || '-'}
             </span>
           </Column>
-        </div>
+        </Fragment>
       }
       headerTitle={<h3  className='collapse__header-title'>{areaData.identifier}</h3>}
       onToggle={handleAreaCollapseToggle}

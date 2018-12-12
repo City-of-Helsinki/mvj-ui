@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import get from 'lodash/get';
 import {Column} from 'react-foundation';
@@ -46,8 +46,8 @@ const Litigant = ({
     <Collapse
       className={classNames({'not-active': !isActive})}
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column>
             <p className={'collapse__header-subtitle'}>
               <span>Osuus murtolukuna:</span>
@@ -60,7 +60,7 @@ const Litigant = ({
               {formatDateRange(get(litigant, 'litigant.start_date'), get(litigant, 'litigant.end_date')) || '-'}
             </p>
           </Column>
-        </div>
+        </Fragment>
       }
       headerTitle={<h3 className='collapse__header-title'>{getContactFullName(contact)}</h3>}
       onToggle={handleCollapseToggle}

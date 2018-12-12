@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
@@ -53,8 +53,8 @@ const LitigantBillingPerson = ({
     <Collapse
       className={classNames('collapse__secondary', {'not-active': !isActive})}
       defaultOpen={collapseDefault}
-      header={
-        <div>
+      headerSubtitle={
+        <Fragment>
           <Column></Column>
           <Column>
             <p className={'collapse__header-subtitle'}>
@@ -62,7 +62,7 @@ const LitigantBillingPerson = ({
               {formatDateRange(get(billingPerson, 'start_date'), get(billingPerson, 'end_date')) || '-'}
             </p>
           </Column>
-        </div>
+        </Fragment>
       }
 
       headerTitle={<h4 className='collapse__header-title'>Laskunsaaja</h4>}

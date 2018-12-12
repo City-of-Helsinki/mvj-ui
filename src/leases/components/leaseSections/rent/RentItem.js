@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -129,14 +129,14 @@ const RentItem = ({
     <Collapse
       className={classNames({'archived': archived})}
       defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column small={6} medium={8} large={10}>
             <span className='collapse__header-subtitle'>
               {formatDateRange(rent.start_date, rent.end_date) || '-'}
             </span>
           </Column>
-        </div>
+        </Fragment>
       }
       headerTitle={<h3 className='collapse__header-title'>{getLabelOfOption(typeOptions, rentType) || '-'}</h3>}
       onToggle={handleRentCollapseToggle}

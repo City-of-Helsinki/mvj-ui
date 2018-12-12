@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
@@ -58,8 +58,8 @@ const OtherTenantItem = ({
     <Collapse
       className={classNames('collapse__secondary', {'not-active': !isActive})}
       defaultOpen={collapseDefault}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column></Column>
           <Column>
             <p className={'collapse__header-subtitle'}>
@@ -67,7 +67,7 @@ const OtherTenantItem = ({
               {formatDateRange(get(tenant, 'start_date'), get(tenant, 'end_date')) || '-'}
             </p>
           </Column>
-        </div>
+        </Fragment>
       }
 
       headerTitle={<h4 className='collapse__header-title'>{getLabelOfOption(tenantTypeOptions, tenant.type)}</h4>}
@@ -114,9 +114,7 @@ const OtherTenantItem = ({
       </FormWrapper>
 
       <SubTitle>Asiakkaan tiedot</SubTitle>
-      <ContactTemplate
-        contact={contact}
-      />
+      <ContactTemplate contact={contact} />
     </Collapse>
   );
 };

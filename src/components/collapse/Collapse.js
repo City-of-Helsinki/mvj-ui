@@ -16,7 +16,7 @@ type Props = {
   className?: string,
   defaultOpen: boolean,
   hasErrors: boolean,
-  header?: any,
+  headerSubtitles: any,
   headerTitle: any,
   onArchive?: Function,
   onCopyToClipboard?: Function,
@@ -132,19 +132,13 @@ class Collapse extends PureComponent<Props, State> {
     }
   };
 
-  getChildrenOfHeader = (header: any) => {
-    if(!header) {return null;}
-
-    return header.props.children;
-  }
-
   render() {
     const {contentHeight, isOpen, isCollapsing, isExpanding} = this.state;
     const {
       children,
       className,
       hasErrors,
-      header,
+      headerSubtitles,
       headerTitle,
       onArchive,
       onCopyToClipboard,
@@ -180,7 +174,7 @@ class Collapse extends PureComponent<Props, State> {
                   </a>
                 </Column>
               }
-              {(showTitleOnOpen || !isOpen) && this.getChildrenOfHeader(header)}
+              {(showTitleOnOpen || !isOpen) && headerSubtitles}
             </Row>
             <div className='collapse__header_button-wrapper'>
               {!isOpen && hasErrors && <span className='collapse__header_error-badge' />}
