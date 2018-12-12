@@ -16,7 +16,7 @@ type Props = {
   className?: string,
   defaultOpen: boolean,
   hasErrors: boolean,
-  headerSubtitles: any,
+  headerSubtitles?: any,
   headerTitle: any,
   onArchive?: Function,
   onCopyToClipboard?: Function,
