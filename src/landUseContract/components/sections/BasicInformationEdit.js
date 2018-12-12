@@ -10,6 +10,7 @@ import type {Element} from 'react';
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import Divider from '$components/content/Divider';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
@@ -145,7 +146,7 @@ class BasicInformationEdit extends Component<Props> {
         <Divider />
         <Collapse
           defaultOpen={basicInformationCollapseState !== undefined ? basicInformationCollapseState : true}
-          headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
+          headerTitle={<CollapseHeaderTitle>Perustiedot</CollapseHeaderTitle>}
           onToggle={this.handleBasicInformationCollapseToggle}
         >
           <Row>

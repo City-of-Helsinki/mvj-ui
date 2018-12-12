@@ -9,6 +9,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -202,7 +203,7 @@ const LeaseArea = ({
           <Collapse
             className='collapse__secondary'
             defaultOpen={plotsContractCollapseState !== undefined ? plotsContractCollapseState : true}
-            headerTitle={<h4 className='collapse__header-title'>Kiinteistöt / määräalat sopimuksessa</h4>}
+            headerTitle={<CollapseHeaderTitle>Kiinteistöt / määräalat sopimuksessa</CollapseHeaderTitle>}
             onToggle={handlePlotsContractCollapseToggle}
           >
             <BoxItemContainer>
@@ -223,7 +224,7 @@ const LeaseArea = ({
           <Collapse
             className='collapse__secondary'
             defaultOpen={plotsCurrentCollapseState !== undefined ? plotsCurrentCollapseState : true}
-            headerTitle={<h4 className='collapse__header-title'>Kiinteistöt / määräalat nykyhetkellä</h4>}
+            headerTitle={<CollapseHeaderTitle>Kiinteistöt / määräalat nykyhetkellä</CollapseHeaderTitle>}
             onToggle={handlePlotsCurrentCollapseToggle}
           >
             {!area.plots_current || !area.plots_current.length &&
@@ -247,7 +248,7 @@ const LeaseArea = ({
           <Collapse
             className='collapse__secondary'
             defaultOpen={planUnitsContractCollapseState !== undefined ? planUnitsContractCollapseState : true}
-            headerTitle={<h4 className='collapse__header-title'>Kaavayksiköt sopimuksessa</h4>}
+            headerTitle={<CollapseHeaderTitle>Kaavayksiköt sopimuksessa</CollapseHeaderTitle>}
             onToggle={handlePlanUnitContractCollapseToggle}
           >
             <BoxItemContainer>
@@ -268,7 +269,7 @@ const LeaseArea = ({
           <Collapse
             className='collapse__secondary'
             defaultOpen={planUnitsCurrentCollapseState !== undefined ? planUnitsCurrentCollapseState : true}
-            headerTitle={<h4 className='collapse__header-title'>Kaavayksiköt nykyhetkellä</h4>}
+            headerTitle={<CollapseHeaderTitle>Kaavayksiköt nykyhetkellä</CollapseHeaderTitle>}
             onToggle={handlePlanUnitCurrentCollapseToggle}
           >
             <BoxItemContainer>

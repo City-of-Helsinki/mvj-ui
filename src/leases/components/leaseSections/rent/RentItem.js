@@ -7,6 +7,8 @@ import classNames from 'classnames';
 
 import BasicInfo from './BasicInfo';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ContractRents from './ContractRents';
 import FixedInitialYearRents from './FixedInitialYearRents';
 import IndexAdjustedRents from './IndexAdjustedRents';
@@ -129,16 +131,12 @@ const RentItem = ({
     <Collapse
       className={classNames({'archived': archived})}
       defaultOpen={rentCollapseState !== undefined ? rentCollapseState : active}
-      header={
-        <div>
-          <Column small={6} medium={8} large={10}>
-            <span className='collapse__header-subtitle'>
-              {formatDateRange(rent.start_date, rent.end_date) || '-'}
-            </span>
-          </Column>
-        </div>
+      headerSubtitles={
+        <Column small={6} medium={8} large={10}>
+          <CollapseHeaderSubtitle>{formatDateRange(rent.start_date, rent.end_date) || '-'}</CollapseHeaderSubtitle>
+        </Column>
       }
-      headerTitle={<h3 className='collapse__header-title'>{getLabelOfOption(typeOptions, rentType) || '-'}</h3>}
+      headerTitle={<CollapseHeaderTitle>{getLabelOfOption(typeOptions, rentType) || '-'}</CollapseHeaderTitle>}
       onToggle={handleRentCollapseToggle}
     >
       <BasicInfo
@@ -151,7 +149,7 @@ const RentItem = ({
         <Collapse
           className='collapse__secondary'
           defaultOpen={fixedInitialYearRentsCollapseState !== undefined ? fixedInitialYearRentsCollapseState : true}
-          headerTitle={<h4 className='collapse__header-title'>Kiinteä alkuvuosivuokra</h4>}
+          headerTitle={<CollapseHeaderTitle>Kiinteä alkuvuosivuokra</CollapseHeaderTitle>}
           onToggle={handleFixedInitialYearRentsCollapseToggle}
         >
           <FixedInitialYearRents fixedInitialYearRents={get(rent, 'fixed_initial_year_rents', [])} />
@@ -164,7 +162,7 @@ const RentItem = ({
         <Collapse
           className='collapse__secondary'
           defaultOpen={contractRentsCollapseState !== undefined ? contractRentsCollapseState : true}
-          headerTitle={<h4 className='collapse__header-title'>Sopimusvuokra</h4>}
+          headerTitle={<CollapseHeaderTitle>Sopimusvuokra</CollapseHeaderTitle>}
           onToggle={handleContractRentsCollapseToggle}
         >
           <ContractRents
@@ -179,7 +177,7 @@ const RentItem = ({
         <Collapse
           className='collapse__secondary'
           defaultOpen={indexAdjustedRentsCollapseState !== undefined ? indexAdjustedRentsCollapseState : false}
-          headerTitle={<h4 className='collapse__header-title'>Indeksitarkistettu vuokra</h4>}
+          headerTitle={<CollapseHeaderTitle>Indeksitarkistettu vuokra</CollapseHeaderTitle>}
           onToggle={handleIndexAdjustedRentsCollapseToggle}
         >
           <IndexAdjustedRents indexAdjustedRents={indexAdjustedRents} />
@@ -192,7 +190,7 @@ const RentItem = ({
         <Collapse
           className='collapse__secondary'
           defaultOpen={rentAdjustmentsCollapseState !== undefined ? rentAdjustmentsCollapseState : false}
-          headerTitle={<h4 className='collapse__header-title'>Alennukset ja korotukset ({rentAdjustments.length})</h4>}
+          headerTitle={<CollapseHeaderTitle>Alennukset ja korotukset ({rentAdjustments.length})</CollapseHeaderTitle>}
           onToggle={handleRentAdjustmentsCollapseToggle}
         >
           <RentAdjustments rentAdjustments={rentAdjustments} />
@@ -204,7 +202,7 @@ const RentItem = ({
         <Collapse
           className='collapse__secondary'
           defaultOpen={payableRentsCollapseState !== undefined ? payableRentsCollapseState : false}
-          headerTitle={<h4 className='collapse__header-title'>Perittävä vuokra</h4>}
+          headerTitle={<CollapseHeaderTitle>Perittävä vuokra</CollapseHeaderTitle>}
           onToggle={handlePayableRentsCollapseToggle}
         >
           <PayableRents payableRents={payableRents} />

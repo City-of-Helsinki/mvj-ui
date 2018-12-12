@@ -15,6 +15,7 @@ import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FieldAndRemoveButtonWrapper from '$components/form/FieldAndRemoveButtonWrapper';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
@@ -65,7 +66,7 @@ const renderDecisionConditions = ({
             className='collapse__secondary'
             defaultOpen={collapseState !== undefined ? collapseState : true}
             hasErrors={isSaveClicked && !isEmpty(decisionConditionsErrors)}
-            headerTitle={<h4 className='collapse__header-title'>Ehdot</h4>}
+            headerTitle={<CollapseHeaderTitle>Ehdot</CollapseHeaderTitle>}
             onToggle={onCollapseToggle}
           >
             <BoxItemContainer>
@@ -313,7 +314,7 @@ const DecisionItemEdit = ({
     <Collapse
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
-      headerTitle={<h3 className='collapse__header-title'>{savedDecision ? (getLabelOfOption(decisionMakerOptions, get(savedDecision, 'decision_maker')) || '-') : '-'}</h3>}
+      headerTitle={<CollapseHeaderTitle>{savedDecision ? (getLabelOfOption(decisionMakerOptions, get(savedDecision, 'decision_maker')) || '-') : '-'}</CollapseHeaderTitle>}
       onRemove={handleRemove}
       onToggle={handleDecisionCollapseToggle}
     >

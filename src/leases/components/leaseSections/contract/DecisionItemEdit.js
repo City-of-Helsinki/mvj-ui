@@ -8,6 +8,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import DecisionConditionsEdit from './DecisionConditionsEdit';
 import FormField from '$components/form/FormField';
 import {receiveCollapseStates} from '$src/leases/actions';
@@ -83,13 +84,13 @@ const DecisionItemEdit = ({
       defaultOpen={decisionCollapseState !== undefined ? decisionCollapseState : true}
       hasErrors={isSaveClicked && !isEmpty(decisionErrors)}
       headerTitle={savedDecision
-        ? <h3 className='collapse__header-title'>
+        ? <CollapseHeaderTitle>
           {getLabelOfOption(decisionMakerOptions, get(savedDecision, 'decision_maker')) || '-'}
           {savedDecision.decision_date ? <span>&nbsp;&nbsp;{formatDate(savedDecision.decision_date)}</span> : ''}
           {savedDecision.section ? <span>&nbsp;&nbsp;{savedDecision.section}§</span> : ''}
           {savedDecision.type ? <span>&nbsp;&nbsp;{getLabelOfOption(typeOptions, savedDecision.type)}</span> : ''}
-        </h3>
-        : <h3 className='collapse__header-title'>-</h3>
+        </CollapseHeaderTitle>
+        : <CollapseHeaderTitle>-</CollapseHeaderTitle>
       }
       onRemove={onRemove}
       onToggle={handleDecisionCollapseToggle}

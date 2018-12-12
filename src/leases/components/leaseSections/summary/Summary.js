@@ -5,6 +5,7 @@ import {Row, Column} from 'react-foundation';
 import isEmpty from 'lodash/isEmpty';
 
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
@@ -164,7 +165,7 @@ class Summary extends Component<Props, State> {
           <Column small={12} medium={8} large={9}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              headerTitle={<h3 className='collapse__header-title'>Perustiedot</h3>}
+              headerTitle={<CollapseHeaderTitle>Perustiedot</CollapseHeaderTitle>}
               onToggle={this.handleBasicInfoToggle}
             >
               <Row>
@@ -313,7 +314,7 @@ class Summary extends Component<Props, State> {
 
             <Collapse
               defaultOpen={collapseStateStatistical !== undefined ? collapseStateStatistical : true}
-              headerTitle={<h3 className='collapse__header-title'>Tilastotiedot</h3>}
+              headerTitle={<CollapseHeaderTitle>Tilastotiedot</CollapseHeaderTitle>}
               onToggle={this.handleStatisticalInfoToggle}
             >
               <Row>

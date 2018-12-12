@@ -1,9 +1,11 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {Row, Column} from 'react-foundation';
 
 import AmountWithVat from '$components/vat/AmountWithVat';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormText from '$components/form/FormText';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import InvoiceSimulatorInvoiceRows from './InvoiceSimulatorInvoiceRows';
@@ -38,21 +40,17 @@ const InvoiceSimulatorInvoice = ({
     <Collapse
       className='collapse__third'
       defaultOpen={false}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {formatDate(dueDate) || '-'}
-            </span>
+            <CollapseHeaderSubtitle>{formatDate(dueDate) || '-'}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
-              <AmountWithVat amount={billedAmount} date={dueDate} />
-            </span>
+            <CollapseHeaderSubtitle><AmountWithVat amount={billedAmount} date={dueDate} /></CollapseHeaderSubtitle>
           </Column>
-        </div>
+        </Fragment>
       }
-      headerTitle={<h4 className='collapse__header-title'>{getContactFullName(recipient)}</h4>}
+      headerTitle={<CollapseHeaderTitle>{getContactFullName(recipient)}</CollapseHeaderTitle>}
     >
       <Row>
         <Column small={6} medium={4} large={2}>

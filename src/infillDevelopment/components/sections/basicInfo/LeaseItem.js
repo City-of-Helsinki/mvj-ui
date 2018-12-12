@@ -7,6 +7,7 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
 import Collapse from '$src/components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormText from '$components/form/FormText';
@@ -175,7 +176,7 @@ class LeaseItem extends Component<Props, State> {
       <Collapse
         className='collapse__secondary'
         defaultOpen={collapseState !== undefined ? collapseState : true}
-        headerTitle={<h4 className='collapse__header-title'>{identifier || '-'}</h4>}
+        headerTitle={<CollapseHeaderTitle>{identifier || '-'}</CollapseHeaderTitle>}
         onToggle={this.handleCollapseToggle}
       >
         {isFetching

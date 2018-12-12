@@ -13,6 +13,7 @@ import AddButtonThird from '$components/form/AddButtonThird';
 import AddFileButton from '$components/form/AddFileButton';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$src/components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ExternalLink from '$components/links/ExternalLink';
 import FileDownloadLink from '$components/file/FileDownloadLink';
 import FormField from '$components/form/FormField';
@@ -406,7 +407,7 @@ class LeaseItemEdit extends Component<Props, State> {
       <Collapse
         className='collapse__secondary'
         defaultOpen={collapseState !== undefined ? collapseState : true}
-        headerTitle={<h4 className='collapse__header-title'>{isFetching ? 'Ladataan...' : (identifier || '-')}</h4>}
+        headerTitle={<CollapseHeaderTitle>{isFetching ? 'Ladataan...' : (identifier || '-')}</CollapseHeaderTitle>}
         onRemove={onRemove}
         onToggle={this.handleCollapseToggle}
       >

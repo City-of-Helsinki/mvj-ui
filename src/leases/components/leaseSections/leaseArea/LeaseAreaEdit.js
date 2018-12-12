@@ -15,6 +15,7 @@ import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormField from '$components/form/FormField';
 import FormTextTitle from '$components/form/FormTextTitle';
 import PlanUnitItemEdit from './PlanUnitItemEdit';
@@ -80,7 +81,7 @@ const renderPlanUnits = ({
             className='collapse__secondary'
             defaultOpen={collapseState !== undefined ? collapseState : true}
             hasErrors={isSaveClicked && !isEmpty(planUnitErrors)}
-            headerTitle={<h4 className='collapse__header-title'>{title}</h4>}
+            headerTitle={<CollapseHeaderTitle>{title}</CollapseHeaderTitle>}
             onToggle={handleCollapseToggle}
           >
             <BoxItemContainer>
@@ -165,7 +166,7 @@ const renderPlots = ({
             className='collapse__secondary'
             defaultOpen={collapseState !== undefined ? collapseState : true}
             hasErrors={isSaveClicked && !isEmpty(plotErrors)}
-            headerTitle={<h4 className='collapse__header-title'>{title}</h4>}
+            headerTitle={<CollapseHeaderTitle>{title}</CollapseHeaderTitle>}
             onToggle={handleCollapseToggle}
           >
             <BoxItemContainer>

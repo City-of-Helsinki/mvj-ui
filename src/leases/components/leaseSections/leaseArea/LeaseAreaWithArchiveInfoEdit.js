@@ -9,6 +9,7 @@ import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import Divider from '$components/content/Divider';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
@@ -89,7 +90,7 @@ const LeaseAreaWithArchiveInfoEdit = ({
       className={classNames({'not-active': !isActive})}
       defaultOpen={areaCollapseState !== undefined ? areaCollapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(areaErrors)}
-      headerTitle={<h3 className='collapse__header-title'>{savedArea ? (savedArea.identifier || '-') : '-'}</h3>}
+      headerTitle={<CollapseHeaderTitle>{savedArea ? (savedArea.identifier || '-') : '-'}</CollapseHeaderTitle>}
       onArchive={(isActive && savedArea && savedArea.id) ? handleArchive : null}
       onRemove={onRemove}
       onUnarchive={(!isActive && savedArea && savedArea.id) ? handleUnarchive : null}

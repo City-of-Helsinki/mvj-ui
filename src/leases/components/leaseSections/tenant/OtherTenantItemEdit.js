@@ -11,6 +11,7 @@ import isEmpty from 'lodash/isEmpty';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import FormField from '$components/form/FormField';
@@ -122,7 +123,7 @@ const OtherTenantItemEdit = ({
       className={classNames('collapse__secondary', {'not-active': !isActive})}
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
-      headerTitle={<h4 className='collapse__header-title edit-row'>{contactType === TenantContactType.BILLING ? 'Laskunsaaja' : 'Yhteyshenkilö'}</h4>}
+      headerTitle={<CollapseHeaderTitle>{contactType === TenantContactType.BILLING ? 'Laskunsaaja' : 'Yhteyshenkilö'}</CollapseHeaderTitle>}
       onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >

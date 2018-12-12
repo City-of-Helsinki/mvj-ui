@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
@@ -7,6 +7,8 @@ import get from 'lodash/get';
 import BoxItem from '$components/content/BoxItem';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import FormTitleAndText from '$components/form/FormTitleAndText';
@@ -69,25 +71,17 @@ const ContractItem = ({
   return (
     <Collapse
       defaultOpen={contractCollapseState !== undefined ? contractCollapseState : false}
-      header={
-        <div>
+      headerSubtitles={
+        <Fragment>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {formatDate(contract.signing_date) || '-'}
-            </span>
+            <CollapseHeaderSubtitle>{formatDate(contract.signing_date) || '-'}</CollapseHeaderSubtitle>
           </Column>
           <Column>
-            <span className='collapse__header-subtitle'>
-              {isContractActive(contract) ? 'Voimassa' : 'Ei voimassa'}
-            </span>
+            <CollapseHeaderSubtitle>{isContractActive(contract) ? 'Voimassa' : 'Ei voimassa'}</CollapseHeaderSubtitle>
           </Column>
-        </div>
+        </Fragment>
       }
-      headerTitle={
-        <h3 className='collapse__header-title'>
-          {getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}
-        </h3>
-      }
+      headerTitle={<CollapseHeaderTitle>{getLabelOfOption(typeOptions, contract.type)} {get(contract, 'contract_number')}</CollapseHeaderTitle>}
       onToggle={handleContractCollapseToggle}
     >
       <Row>
@@ -188,7 +182,7 @@ const ContractItem = ({
         <FormText>Ei panttikirjoja</FormText>
       }
       {contract.mortgage_documents && !!contract.mortgage_documents.length &&
-        <div>
+        <Fragment>
           <Row>
             <Column small={4} medium={4} large={2}>
               <FormTextTitle title='Panttikirjan numero' />
@@ -213,13 +207,13 @@ const ContractItem = ({
               </Column>
             </Row>
           )}
-        </div>
+        </Fragment>
       }
 
       <Collapse
         className='collapse__secondary'
         defaultOpen={contractChangesCollapseState !== undefined ? contractChangesCollapseState : true}
-        headerTitle={<h4 className='collapse__header-title'>Sopimuksen muutokset</h4>}
+        headerTitle={<CollapseHeaderTitle>Sopimuksen muutokset</CollapseHeaderTitle>}
         onToggle={handleContractChangesCollapseToggle}
       >
         {!contract.contract_changes || !contract.contract_changes.length &&

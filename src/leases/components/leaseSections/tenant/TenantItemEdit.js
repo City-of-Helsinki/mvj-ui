@@ -14,6 +14,7 @@ import AddButtonSecondary from '$components/form/AddButtonSecondary';
 import AddButtonThird from '$components/form/AddButtonThird';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Collapse from '$components/collapse/Collapse';
+import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import EditButton from '$components/form/EditButton';
 import OtherTenantItemEdit from './OtherTenantItemEdit';
@@ -180,7 +181,7 @@ const TenantItemEdit = ({
       className={classNames({'not-active': !isActive})}
       defaultOpen={collapseState !== undefined ? collapseState : isActive}
       hasErrors={isSaveClicked && !isEmpty(tenantErrors)}
-      headerTitle={<h3 className='collapse__header-title'>{getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}</h3>}
+      headerTitle={<CollapseHeaderTitle>{getContactFullName(get(savedTenant, 'tenant.contact')) || '-'}</CollapseHeaderTitle>}
       onRemove={onRemove}
       onToggle={handleCollapseToggle}
     >
