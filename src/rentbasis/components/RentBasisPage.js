@@ -50,8 +50,9 @@ import {
 } from '$src/rentbasis/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
+import type {Attributes} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
-import type {Attributes, RentBasis} from '$src/rentbasis/types';
+import type {RentBasis} from '$src/rentbasis/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {

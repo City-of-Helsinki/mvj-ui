@@ -54,7 +54,7 @@ import {
 } from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
-import type {Attributes} from '$src/infillDevelopment/types';
+import type {Attributes} from '$src/types';
 import type {Lease, LeaseId} from '$src/leases/types';
 
 type DecisionsProps = {

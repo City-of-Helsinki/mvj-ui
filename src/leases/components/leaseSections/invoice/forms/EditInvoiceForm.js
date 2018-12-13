@@ -31,11 +31,11 @@ import {
 import {getAttributes as getInvoiceAttributes, getIsEditClicked} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type PaymentsProps = {
-  attributes: InvoiceAttributes,
+  attributes: Attributes,
   fields: any,
   isEditClicked: boolean,
 }
@@ -128,7 +128,7 @@ type Props = {
   creditedInvoice: ?Object,
   handleSubmit: Function,
   invoice: ?Object,
-  invoiceAttributes: InvoiceAttributes,
+  invoiceAttributes: Attributes,
   isEditClicked: boolean,
   lease: Lease,
   onCreditedInvoiceClick: Function,

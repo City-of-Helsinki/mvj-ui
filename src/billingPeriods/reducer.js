@@ -3,7 +3,7 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 
 import type {Reducer} from '../types';
-import type {BillingPeriodListMap, ReceiveBillingPeriodsAction} from './types';
+import type {ReceiveBillingPeriodsAction} from './types';
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/billingperiods/FETCH_ALL': () => true,
@@ -11,8 +11,8 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/billingperiods/RECEIVE_ALL': () => false,
 }, false);
 
-const byLeaseReducer: Reducer<BillingPeriodListMap> = handleActions({
-  ['mvj/billingperiods/RECEIVE_ALL']: (state: BillingPeriodListMap, {payload}: ReceiveBillingPeriodsAction) => {
+const byLeaseReducer: Reducer<Object> = handleActions({
+  ['mvj/billingperiods/RECEIVE_ALL']: (state: Object, {payload}: ReceiveBillingPeriodsAction) => {
     return {
       ...state,
       [payload.leaseId]: payload.billingPeriods,

@@ -2,9 +2,8 @@
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 
-import type {Reducer} from '../types';
+import type {Attributes, Reducer} from '../types';
 import type {
-  Attributes,
   Contact,
   ContactList,
   ContactModalSettings,

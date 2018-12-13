@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   fetchCollectionLetterTemplates,
   receiveCollectionLetterTemplates,
@@ -6,21 +8,27 @@ import {
 } from './actions';
 import collectionLetterTemplateReducer from './reducer';
 
-const defaultState = {
+import type {CollectionLetterTemplateState} from './types';
+
+const defaultState: CollectionLetterTemplateState = {
   isFetching: false,
   list: [],
 };
 
+// $FlowFixMe
 describe('collectionLetterTemplate', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
-
+    // $FlowFixMe
     describe('collectionLetterTemplateReducer', () => {
+
+      // $FlowFixMe
       it('should update isFetching flag to true when fetching collectionLetterTemplates', () => {
         const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = collectionLetterTemplateReducer({}, fetchCollectionLetterTemplates(''));
+        const state = collectionLetterTemplateReducer({}, fetchCollectionLetterTemplates());
         expect(state).to.deep.equal(newState);
       });
 
@@ -33,16 +41,14 @@ describe('collectionLetterTemplate', () => {
           },
         ];
 
-        const newState = {...defaultState};
-        newState.list = {dummyCollectionLetterTemplateList};
+        const newState = {...defaultState, list: dummyCollectionLetterTemplateList};
 
-        const state = collectionLetterTemplateReducer({}, receiveCollectionLetterTemplates({dummyCollectionLetterTemplateList}));
+        const state = collectionLetterTemplateReducer({}, receiveCollectionLetterTemplates(dummyCollectionLetterTemplateList));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to false by notFound', () => {
-        const newState = {...defaultState};
-        newState.isFetching = false;
+        const newState = {...defaultState, isFetching: false};
 
         const state = collectionLetterTemplateReducer({}, notFound());
         expect(state).to.deep.equal(newState);

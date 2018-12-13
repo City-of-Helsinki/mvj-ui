@@ -6,7 +6,8 @@ import DecisionItem from './DecisionItem';
 import {getContentDecisions} from '$src/landUseContract/helpers';
 import {getAttributes, getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
-import type {Attributes, LandUseContract} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
+import type {LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Attributes,

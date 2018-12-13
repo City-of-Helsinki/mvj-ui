@@ -15,7 +15,7 @@ import {RentTypes} from '$src/leases/enums';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

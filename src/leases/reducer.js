@@ -3,10 +3,10 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import merge from 'lodash/merge';
 
-import type {Reducer} from '$src/types';
 import {FormNames} from '$src/leases/enums';
+
+import type {Attributes, Reducer} from '$src/types';
 import type {
-  Attributes,
   Lease,
   LeaseList,
   ReceiveAttributesAction,

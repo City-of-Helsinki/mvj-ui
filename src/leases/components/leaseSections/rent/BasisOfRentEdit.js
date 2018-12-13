@@ -30,7 +30,8 @@ import {
 } from '$util/helpers';
 import {getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
   amountPerArea: ?number,

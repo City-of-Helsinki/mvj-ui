@@ -21,7 +21,7 @@ import {isRentActive, isRentArchived} from '$src/leases/helpers';
 import {formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

@@ -13,7 +13,7 @@ import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

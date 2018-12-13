@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   receiveVats,
   fetchVats,
@@ -6,17 +8,23 @@ import {
 } from './actions';
 import vatsReducer from './reducer';
 
-const defaultState = {
+import type {VatState} from './types';
+
+const defaultState: VatState = {
   isFetching: false,
   list: [],
 };
 
+// $FlowFixMe
 describe('Vats', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('vatsReducer', () => {
 
+      // $FlowFixMe
       it('should update vats', () => {
         const dummyVats = [
           {

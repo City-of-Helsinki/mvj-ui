@@ -10,9 +10,11 @@ import isNumber from 'lodash/isNumber';
 import {toastr} from 'react-redux-toastr';
 import moment from 'moment';
 import Fraction from 'fraction.js';
-import ToastrIcons from '../components/toastr/ToastrIcons';
 
+import ToastrIcons from '$components/toastr/ToastrIcons';
 import {Breakpoints} from '$src/foundation/enums';
+
+import type {Attributes} from '$src/types';
 
 /* global API_URL */
 
@@ -503,3 +505,23 @@ export const copyElementContentsToClipboard = (el: any) => {
   }
   return true;
 };
+
+/**
+ * Check has user read permissions to field
+ * @param attributes
+ * @param field
+ * @returns {boolean}
+ */
+
+export const isFieldAllowedToRead = (attributes: Attributes, field: string) =>
+  get(attributes, field) ? true : false;
+
+/**
+* Check has user write permissions to field
+* @param attributes
+* @param field
+* @returns {boolean}
+*/
+
+export const isFieldAllowedToEdit = (attributes: Attributes, field: string) =>
+  get(attributes, `${field}.read_only`) === false ? true : false;

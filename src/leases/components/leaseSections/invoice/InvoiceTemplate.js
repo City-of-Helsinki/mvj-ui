@@ -24,7 +24,7 @@ import {getContactFullName} from '$src/contacts/helpers';
 import {getContentTenantItem} from '$src/leases/helpers';
 import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes} from '$src/types';
 
 const getRowsSum = (rows: Array<Object>) => {
   let sum = 0;
@@ -37,7 +37,7 @@ const getRowsSum = (rows: Array<Object>) => {
 type Props = {
   creditedInvoice: ?Object,
   invoice: ?Object,
-  invoiceAttributes: InvoiceAttributes,
+  invoiceAttributes: Attributes,
   onCreditedInvoiceClick: Function,
 }
 

@@ -19,7 +19,7 @@ import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/help
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

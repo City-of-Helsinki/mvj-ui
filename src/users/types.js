@@ -2,7 +2,10 @@
 
 import type {Action} from '../types';
 
-export type UserState = Object;
+export type UserState = {
+  isFetching: boolean,
+  list: UserList,
+};
 export type UserList = Array<Object>;
 
 export type FetchUsersAction = Action<'mvj/users/FETCH_ALL', string>;

@@ -21,7 +21,8 @@ import {getUserFullName} from '$src/users/helpers';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getCurrentLandUseContract} from '$src/landUseContract/selectors';
 
-import type {Attributes, LandUseContract} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
+import type {LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Attributes,

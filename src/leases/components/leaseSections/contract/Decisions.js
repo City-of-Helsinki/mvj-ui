@@ -9,7 +9,8 @@ import {getContentDecisions} from '$src/leases/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,

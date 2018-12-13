@@ -1,6 +1,6 @@
 // @flow
 
-import type {Action} from '../types';
+import type {Action, Attributes} from '$src/types';
 
 import type {LeaseId} from '$src/leases/types';
 
@@ -12,7 +12,6 @@ export type CommentState = {
   isSaveClicked: boolean,
 };
 
-export type Attributes = Object;
 export type Comment = Object;
 export type CommentList = Array<Object>;
 export type CommentListMap = {[key: string]: Object};

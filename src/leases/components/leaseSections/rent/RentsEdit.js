@@ -24,7 +24,8 @@ import {validateRentForm} from '$src/leases/formValidators';
 import {getContentRentsFormData} from '$src/leases/helpers';
 import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type RentsProps = {
   fields: any,

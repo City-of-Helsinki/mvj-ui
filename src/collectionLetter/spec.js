@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   fetchCollectionLettersByLease,
   receiveCollectionLettersByLease,
@@ -6,20 +8,25 @@ import {
 } from './actions';
 import collectionLetterReducer from './reducer';
 
-const defaultState = {
+import type {CollectionLetterState} from './types';
+const defaultState: CollectionLetterState = {
   byLease: {},
   isFetchingByLease: {},
 };
 
+// $FlowFixMe
 describe('collectionLetter', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('collectionLetterReducer', () => {
+
+      // $FlowFixMe
       it('should update isFetching flag to true when fetching collection letters', () => {
         const lease = 1;
-        const newState = {...defaultState};
-        newState.isFetchingByLease = {[lease]: true};
+        const newState = {...defaultState, isFetchingByLease: {[lease]: true}};
 
         const state = collectionLetterReducer({}, fetchCollectionLettersByLease(lease));
         expect(state).to.deep.equal(newState);
@@ -35,9 +42,7 @@ describe('collectionLetter', () => {
           },
         ];
 
-        const newState = {...defaultState};
-        newState.isFetchingByLease = {[lease]: false};
-        newState.byLease = {[lease]: dummyCollectionLetters};
+        const newState = {...defaultState, isFetchingByLease: {[lease]: false}, byLease: {[lease]: dummyCollectionLetters}};
 
         const state = collectionLetterReducer({}, receiveCollectionLettersByLease({lease: lease, collectionLetters: dummyCollectionLetters}));
         expect(state).to.deep.equal(newState);
@@ -45,8 +50,7 @@ describe('collectionLetter', () => {
 
       it('should update isFetching flag to false by notFoundByLease', () => {
         const lease = 1;
-        const newState = {...defaultState};
-        newState.isFetchingByLease = {[lease]: false};
+        const newState = {...defaultState, isFetchingByLease: {[lease]: false}};
 
         const state = collectionLetterReducer({}, notFoundByLease(lease));
         expect(state).to.deep.equal(newState);

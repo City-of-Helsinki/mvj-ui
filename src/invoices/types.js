@@ -1,10 +1,19 @@
 // @flow
-
-import type {Action} from '../types';
+import type {Action, Attributes} from '$src/types';
 import type {LeaseId} from '$src/leases/types';
 
-export type InvoiceState = Object;
-export type Attributes = Object;
+export type InvoiceState = {
+  attributes: Attributes,
+  byLease: InvoiceListMap,
+  invoiceToCredit: ?string,
+  isCreateClicked: boolean,
+  isCreatePanelOpen: boolean,
+  isCreditClicked: boolean,
+  isCreditPanelOpen: boolean,
+  isEditClicked: boolean,
+  isFetching: boolean,
+  patchedInvoice: ?Invoice,
+};
 export type Invoice = Object;
 export type InvoiceId = number;
 export type InvoiceList = Array<Object>;

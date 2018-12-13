@@ -17,7 +17,8 @@ import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumb
 import {getUserFullName} from '$src/users/helpers';
 import {getAttributes, getIsFetching} from '$src/infillDevelopment/selectors';
 
-import type {Attributes, InfillDevelopment} from '$src/infillDevelopment/types';
+import type {Attributes} from '$src/types';
+import type {InfillDevelopment} from '$src/infillDevelopment/types';
 
 type Props = {
   attributes: Attributes,

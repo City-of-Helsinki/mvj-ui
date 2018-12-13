@@ -19,7 +19,7 @@ import {FormNames, PlotType} from '$src/leases/enums';
 import {getSearchQuery} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

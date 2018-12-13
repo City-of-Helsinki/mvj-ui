@@ -13,7 +13,8 @@ import {ViewModes} from '$src/enums';
 import {FormNames} from '$src/landUseContract/enums';
 import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
-import type {Attributes} from '$src/landUseContract/types';
+
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

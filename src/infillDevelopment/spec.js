@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   fetchInfillDevelopments,
   fetchSingleInfillDevelopment,
@@ -18,7 +20,9 @@ import {
 } from './actions';
 import infillDevelopmentReducer from './reducer';
 
-const baseState = {
+import type {InfillDevelopmentState} from './types';
+
+const defaultState: InfillDevelopmentState = {
   attributes: {},
   collapseStates: {},
   current: {},
@@ -32,12 +36,16 @@ const baseState = {
   list: {},
 };
 
+// $FlowFixMe
 describe('Infill development', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('infillDevelopmentReducer', () => {
 
+      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           id: 1,
@@ -45,7 +53,7 @@ describe('Infill development', () => {
           name: 'Bar',
         };
 
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.attributes = dummyAttributes;
 
         const state =infillDevelopmentReducer({}, receiveInfillDevelopmentAttributes(dummyAttributes));
@@ -53,20 +61,9 @@ describe('Infill development', () => {
       });
 
       it('should update infill development list', () => {
-        const dummyInfillDevelopmentList = [
-          {
-            id: 1,
-            label: 'Foo',
-            name: 'Bar',
-          },
-          {
-            id: 2,
-            label: 'Foo',
-            name: 'Bar',
-          },
-        ];
+        const dummyInfillDevelopmentList = {foo: 'bar'};
 
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.list = dummyInfillDevelopmentList;
 
         const state =infillDevelopmentReducer({}, receiveInfillDevelopments(dummyInfillDevelopmentList));
@@ -80,7 +77,7 @@ describe('Infill development', () => {
           name: 'Bar',
         };
 
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.current = dummyInfillDevelopment;
 
         const state =infillDevelopmentReducer({}, receiveSingleInfillDevelopment(dummyInfillDevelopment));
@@ -94,7 +91,7 @@ describe('Infill development', () => {
           name: 'Bar',
         };
 
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.initialValues = dummyInfillDevelopment;
 
         const state =infillDevelopmentReducer({}, receiveFormInitialValues(dummyInfillDevelopment));
@@ -102,7 +99,7 @@ describe('Infill development', () => {
       });
 
       it('should update isFetching flag to true when fetching infill developments', () => {
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
         const state = infillDevelopmentReducer({}, fetchInfillDevelopments(''));
@@ -110,7 +107,7 @@ describe('Infill development', () => {
       });
 
       it('should update isFetching flag to true when fetching single infill development', () => {
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
         const state = infillDevelopmentReducer({}, fetchSingleInfillDevelopment(1));
@@ -118,30 +115,30 @@ describe('Infill development', () => {
       });
 
       it('should update isFetching flag to true when creating infill development', () => {
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = infillDevelopmentReducer({}, createInfillDevelopment(''));
+        const state = infillDevelopmentReducer({}, createInfillDevelopment({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true when editing infill development', () => {
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = infillDevelopmentReducer({}, editInfillDevelopment(''));
+        const state = infillDevelopmentReducer({}, editInfillDevelopment({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to false by notFound', () => {
-        const newState = {...baseState};
+        const newState = {...defaultState};
 
         const state = infillDevelopmentReducer({}, notFound());
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isEditMode flag to false by hideEditMode', () => {
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.isEditMode = false;
 
         const state = infillDevelopmentReducer({}, hideEditMode());
@@ -149,7 +146,7 @@ describe('Infill development', () => {
       });
 
       it('should update isEditMode flag to true by hideEditMode', () => {
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.isEditMode = true;
 
         const state = infillDevelopmentReducer({}, showEditMode());
@@ -161,7 +158,7 @@ describe('Infill development', () => {
           'infill-development-form': true,
         };
 
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.isFormValidById = dummyFlags;
 
         const state = infillDevelopmentReducer({}, receiveFormValidFlags(dummyFlags));
@@ -172,7 +169,7 @@ describe('Infill development', () => {
         const dummyFlags = {
           'infill-development-form': true,
         };
-        const newState = {...baseState};
+        const newState = {...defaultState};
 
 
         let state = infillDevelopmentReducer({}, receiveFormValidFlags(dummyFlags));
@@ -181,7 +178,7 @@ describe('Infill development', () => {
       });
 
       it('should update isSaveClicked', () => {
-        const newState = {...baseState};
+        const newState = {...defaultState};
         newState.isSaveClicked = true;
 
         const state = infillDevelopmentReducer({}, receiveIsSaveClicked(true));
@@ -189,7 +186,7 @@ describe('Infill development', () => {
       });
 
       it('should update collapseStates', () => {
-        const newState = {...baseState, collapseStates: {foo: 'bar', foo2: 'bar2'}};
+        const newState = {...defaultState, collapseStates: {foo: 'bar', foo2: 'bar2'}};
 
         let state = infillDevelopmentReducer({}, receiveCollapseStates({foo: 'bar'}));
         state = infillDevelopmentReducer(state, receiveCollapseStates({foo2: 'bar2'}));

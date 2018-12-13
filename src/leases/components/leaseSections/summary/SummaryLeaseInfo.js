@@ -18,7 +18,8 @@ import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type StatusIndicatorProps = {
   researchState: string,

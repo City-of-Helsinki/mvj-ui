@@ -1,6 +1,6 @@
 // @flow
 
-import type {Action} from '../types';
+import type {Action, Attributes} from '../types';
 
 export type LeaseState = {
   attributes: Attributes,
@@ -19,7 +19,6 @@ export type LeaseState = {
   list: LeaseList,
 };
 
-export type Attributes = Object;
 export type Lease = Object;
 export type LeaseList = Object;
 export type LeaseId = number;

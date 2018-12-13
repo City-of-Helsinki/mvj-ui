@@ -28,8 +28,9 @@ import {getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$src/u
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getContactList, getIsFetching} from '../selectors';
 
-import type {Attributes, ContactList} from '../types';
-import type {RootState} from '../../root/types';
+import type {Attributes} from '$src/types';
+import type {ContactList} from '../types';
+import type {RootState} from '$src/root/types';
 
 const PAGE_SIZE = 25;
 

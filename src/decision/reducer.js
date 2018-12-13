@@ -5,7 +5,6 @@ import {handleActions} from 'redux-actions';
 import type {Reducer} from '../types';
 import type {
   DecisionListMap,
-  DecisionState,
   ReceiveDecisionsByLeaseAction,
 } from './types';
 
@@ -17,7 +16,7 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 
 
 const byLeaseReducer: Reducer<DecisionListMap> = handleActions({
-  ['mvj/decision/RECEIVE_BY_LEASE']: (state: DecisionState, {payload: list}: ReceiveDecisionsByLeaseAction) => {
+  ['mvj/decision/RECEIVE_BY_LEASE']: (state: DecisionListMap, {payload: list}: ReceiveDecisionsByLeaseAction) => {
     return {
       ...state,
       [list.leaseId]: list.decisions,

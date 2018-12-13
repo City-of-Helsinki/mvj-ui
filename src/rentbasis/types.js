@@ -1,11 +1,17 @@
 // @flow
 
-import type {Action} from '../types';
+import type {Action, Attributes} from '$src/types';
 
-export type RentBasisState = Object;
-
-export type Attributes = Object;
-
+export type RentBasisState = {
+  attributes: Attributes,
+  initialValues: RentBasis,
+  isEditMode: boolean,
+  isFetching: boolean,
+  isFormValid: boolean,
+  isSaveClicked: boolean,
+  list: RentBasisList,
+  rentbasis: RentBasis,
+};
 export type RentBasisId = number;
 export type RentBasis = Object;
 export type RentBasisList = Object;

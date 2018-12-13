@@ -39,11 +39,8 @@ import {
 } from '$src/invoices/selectors';
 import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors';
 
-import type {
-  Attributes as InvoiceAttributes,
-  Invoice,
-  InvoiceList,
-} from '$src/invoices/types';
+import type {Attributes} from '$src/types';
+import type {Invoice, InvoiceList} from '$src/invoices/types';
 
 const TABLE_MIN_HEIGHT = 521;
 const TABLE_MIN_HEIGHT_EDIT = 521;
@@ -54,7 +51,7 @@ type Props = {
   destroy: Function,
   initialize: Function,
   invoices: InvoiceList,
-  invoiceAttributes: InvoiceAttributes,
+  invoiceAttributes: Attributes,
   invoiceToCredit: ?Object,
   invoiceSets: Array<Object>,
   isEditMode: boolean,
@@ -67,7 +64,7 @@ type State = {
   columns: Array<Object>,
   formatedInvoices: Array<Object>,
   invoices: InvoiceList | null,
-  invoiceAttributes: InvoiceAttributes,
+  invoiceAttributes: Attributes,
   invoiceSets: Array<Object>,
   invoiceSetOptions: Array<Object>,
   openedInvoice: ?Invoice,

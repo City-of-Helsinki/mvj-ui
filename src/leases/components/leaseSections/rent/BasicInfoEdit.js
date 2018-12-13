@@ -20,7 +20,8 @@ import {formatDueDates} from '$src/leases/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getLeaseTypeList} from '$src/leaseType/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 import type {LeaseTypeList} from '$src/leaseType/types';
 
 type SeasonalDatesProps = {

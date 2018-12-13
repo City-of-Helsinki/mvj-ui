@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   fetchCollectionNotesByLease,
   receiveCollectionNotesByLease,
@@ -6,16 +8,23 @@ import {
 } from './actions';
 import collectionNoteReducer from './reducer';
 
-const defaultState = {
+import type {CollectionNoteState} from './types';
+
+const defaultState: CollectionNoteState = {
   byLease: {},
   isFetchingByLease: {},
 };
 
+// $FlowFixMe
 describe('collectionNote', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('collectionNoteReducer', () => {
+
+      // $FlowFixMe
       it('should update isFetching flag to true when fetching collection notes', () => {
         const lease = 1;
         const newState = {...defaultState};

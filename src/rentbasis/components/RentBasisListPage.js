@@ -27,7 +27,8 @@ import {formatDate, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} 
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFetching, getRentBasisList} from '$src/rentbasis/selectors';
 
-import type {Attributes, RentBasisList} from '../types';
+import type {Attributes} from '$src/types';
+import type {RentBasisList} from '$src/rentbasis/types';
 
 const PAGE_SIZE = 25;
 

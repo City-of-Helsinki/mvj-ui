@@ -1,4 +1,4 @@
-// @flow
+// @ flow
 
 import type {Selector} from '../types';
 import type {CurrentUser, UserState} from './types';

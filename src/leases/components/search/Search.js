@@ -15,7 +15,7 @@ import {getAttributeFieldOptions} from '$util/helpers';
 import {getDistrictsByMunicipality} from '$src/district/selectors';
 import {getAttributes, getIsFetchingAttributes} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   anyTouched: boolean,

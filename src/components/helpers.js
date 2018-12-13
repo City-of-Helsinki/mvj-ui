@@ -9,7 +9,7 @@ import {
 import {TenantContactType} from '$src/leases/enums';
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 import type {BillingPeriod, BillingPeriodInvoice, PreviewInvoices} from '$src/previewInvoices/types';
 
 export const getRentsTotalAmount = (rents: Array<Object>) => {

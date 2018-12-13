@@ -10,7 +10,8 @@ import BoxItem from '$components/content/BoxItem';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {getAttributes} from '$src/leases/selectors';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
-import type {Attributes} from '$src/leases/types';
+
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

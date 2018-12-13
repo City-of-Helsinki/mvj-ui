@@ -16,7 +16,7 @@ import RemoveButton from '$components/form/RemoveButton';
 import {FormNames} from '$src/leases/enums';
 import {getSearchQuery} from '$util/helpers';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

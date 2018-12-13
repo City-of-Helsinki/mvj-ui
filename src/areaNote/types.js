@@ -1,7 +1,12 @@
 // @flow
 import type {Action} from '../types';
 
-export type AreaNoteState = Object;
+export type AreaNoteState = {
+  initialValues: Object,
+  isEditMode: boolean,
+  isFetching: boolean,
+  list: AreaNoteList,
+};
 
 export type AreaNoteId = number;
 export type AreaNote= Object;

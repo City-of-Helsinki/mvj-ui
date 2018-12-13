@@ -4,8 +4,7 @@ import {handleActions} from 'redux-actions';
 
 import type {Reducer} from '../types';
 import type {
-  MapData,
-  MapDataState,
+  MapDataMap,
   ReceiveMapDataByTypeAction,
 } from './types';
 
@@ -16,8 +15,8 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 }, false);
 
 
-const byTypeReducer: Reducer<MapData> = handleActions({
-  ['mvj/mapdata/RECEIVE_BY_TYPE']: (state: MapDataState, {payload: list}: ReceiveMapDataByTypeAction) => {
+const byTypeReducer: Reducer<MapDataMap> = handleActions({
+  ['mvj/mapdata/RECEIVE_BY_TYPE']: (state: MapDataMap, {payload: list}: ReceiveMapDataByTypeAction) => {
     return {
       ...state,
       [list.type]: list.data,

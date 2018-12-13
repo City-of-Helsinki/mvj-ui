@@ -28,8 +28,8 @@ import {getContentInfillDevelopmentForDb} from '$src/infillDevelopment/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFormValidById, getIsSaveClicked} from '$src/infillDevelopment/selectors';
 
+import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
-import type {Attributes} from '../types';
 
 type Props = {
   attributes: Attributes,

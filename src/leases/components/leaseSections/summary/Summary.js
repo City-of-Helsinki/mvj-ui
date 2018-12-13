@@ -27,7 +27,8 @@ import {getUserFullName} from '$src/users/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
   attributes: Attributes,

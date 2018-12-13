@@ -21,9 +21,8 @@ import {validateRentBasisForm} from '$src/rentbasis/formValidators';
 import {getAttributes, getIsFormValid, getIsSaveClicked, getRentBasisInitialValues} from '$src/rentbasis/selectors';
 import {referenceNumber} from '$components/form/validations';
 
-import type {Attributes} from '$src/rentbasis/types';
+import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
-
 
 type PropertyIdentifiersProps = {
   attributes: Attributes,

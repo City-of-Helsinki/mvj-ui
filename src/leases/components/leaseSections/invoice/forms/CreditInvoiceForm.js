@@ -17,11 +17,11 @@ import {ButtonColors} from '$components/enums';
 import {CreditInvoiceOptionsEnum, FormNames} from '$src/leases/enums';
 import {getAttributes as getInvoiceAttributes, getIsCreditClicked} from '$src/invoices/selectors';
 
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   formValues: Object,
-  invoiceAttributes: InvoiceAttributes,
+  invoiceAttributes: Attributes,
   isCreditClicked: boolean,
   isInvoiceSet: boolean,
   onClose: Function,

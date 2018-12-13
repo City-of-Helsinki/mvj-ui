@@ -13,10 +13,10 @@ import SubTitle from '$components/content/SubTitle';
 import {ButtonColors} from '$components/enums';
 import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
-  attributes: InvoiceAttributes,
+  attributes: Attributes,
   fields: any,
   isEditClicked: boolean,
   tenantOptions: Array<Object>,

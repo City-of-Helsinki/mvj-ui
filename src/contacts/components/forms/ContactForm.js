@@ -15,7 +15,7 @@ import {receiveContactFormValid} from '$src/contacts/actions';
 import {ContactType, FormNames} from '$src/contacts/enums';
 import {getAttributes, getInitialContactFormValues, getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
 
-import type {Attributes} from '$src/contacts/types';
+import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {

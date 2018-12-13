@@ -1,8 +1,17 @@
 // @flow
-import type {Action} from '../types';
+import type {Action, Attributes} from '../types';
 
-export type Attributes = Object;
-export type InfillDevelopmentState = Object;
+export type InfillDevelopmentState = {
+  attributes: Attributes,
+  collapseStates: Object,
+  current: InfillDevelopment,
+  initialValues: InfillDevelopment,
+  isFormValidById: Object,
+  isEditMode: boolean,
+  isFetching: boolean,
+  isSaveClicked: boolean,
+  list: InfillDevelopmentList,
+};
 export type InfillDevelopmentId = number;
 export type InfillDevelopment = Object;
 export type InfillDevelopmentList = Object;

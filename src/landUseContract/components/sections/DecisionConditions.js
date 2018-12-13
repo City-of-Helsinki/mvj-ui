@@ -18,7 +18,7 @@ import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/help
 import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
-import type {Attributes} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

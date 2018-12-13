@@ -1,10 +1,10 @@
 // @flow
+import type {Selector} from '$src/types';
+import type {RootState} from '$src/root/types';
+import type {UserList} from './types';
 
-import type {Selector} from '../types';
-import type {UserState, UserList} from './types';
+export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
+  state.user.isFetching;
 
-export const getIsFetching: Selector<boolean, void> = (state: UserState): boolean =>
-  state.users.isFetching;
-
-export const getUsers: Selector<UserList, void> = (state: UserState): UserList =>
-  state.users.list;
+export const getUsers: Selector<UserList, void> = (state: RootState): UserList =>
+  state.user.list;

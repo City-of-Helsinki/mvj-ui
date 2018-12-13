@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   fetchPenaltyInterestByInvoice,
   receivePenaltyInterestByInvoice,
@@ -6,16 +8,23 @@ import {
 } from './actions';
 import penaltyInterestReducer from './reducer';
 
-const defaultState = {
+import type {PenaltyInterestState} from './types';
+
+const defaultState: PenaltyInterestState = {
   byInvoice: {},
   isFetchingByInvoice: {},
 };
 
+// $FlowFixMe
 describe('PenaltyInterest', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('penaltyInterestReducer', () => {
+
+      // $FlowFixMe
       it('should update isFetchingPenaltyInterestByInvoice flag to true when fetching', () => {
         const invoice = 1;
         const newState = {...defaultState, isFetchingByInvoice: {[invoice]: true}};

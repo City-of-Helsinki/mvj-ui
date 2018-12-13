@@ -22,7 +22,7 @@ import {FormNames} from '$src/leases/enums';
 import {formatDate} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   areaCollapseState: boolean,

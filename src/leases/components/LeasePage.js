@@ -77,10 +77,9 @@ import {getLeaseTypeList} from '$src/leaseType/selectors';
 import {getVats} from '$src/vat/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
-import type {Attributes as CommentAttributes, CommentList} from '$src/comments/types';
-import type {Attributes as ContactAttributes} from '$src/contacts/types';
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {CommentList} from '$src/comments/types';
+import type {Lease} from '$src/leases/types';
 import type {LeaseTypeList} from '$src/leaseType/types';
 import type {VatList} from '$src/vat/types';
 
@@ -90,9 +89,9 @@ type Props = {
   change: Function,
   clearFormValidFlags: Function,
   clearPreviewInvoices: Function,
-  commentAttributes: CommentAttributes,
+  commentAttributes: Attributes,
   comments: CommentList,
-  contactAttributes: ContactAttributes,
+  contactAttributes: Attributes,
   contractsFormValues: Object,
   constructabilityFormValues: Object,
   currentLease: Object,
@@ -114,7 +113,7 @@ type Props = {
   hideEditMode: Function,
   initialize: Function,
   inspectionsFormValues: Object,
-  invoiceAttributes: InvoiceAttributes,
+  invoiceAttributes: Attributes,
   isEditMode: boolean,
   isFetching: boolean,
   isFormValidFlags: Object,

@@ -25,8 +25,8 @@ import {formatRentBasisForDb} from '$src/rentbasis/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFormValid, getIsSaveClicked} from '$src/rentbasis/selectors';
 
+import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
-import type {Attributes} from '$src/rentbasis/types';
 
 type Props = {
   attributes: Attributes,

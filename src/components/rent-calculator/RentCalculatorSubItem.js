@@ -9,7 +9,7 @@ import {formatDateRange, formatNumber} from '$util/helpers';
 import {getRentSubItemAmount, getRentSubItemDescription} from '../helpers';
 import {getAttributes} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

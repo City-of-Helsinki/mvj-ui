@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   receiveAttributes,
   receiveSingleContact,
@@ -21,7 +23,9 @@ import {
 } from './actions';
 import contactReducer from './reducer';
 
-const stateTemplate = {
+import type {ContactState} from './types';
+
+const defaultState: ContactState = {
   attributes: {},
   contactModalSettings: null,
   currentContact: {},
@@ -38,18 +42,23 @@ const stateTemplate = {
   list: {},
 };
 
+// $FlowFixMe
 describe('Contacts', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('contactReducer', () => {
+
+      // $FlowFixMe
       it('should update contact attributes', () => {
         const dummyAttributes = {
           val1: 'Foo',
           val2: 'Bar',
         };
 
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.attributes = dummyAttributes;
 
         const state = contactReducer({}, receiveAttributes(dummyAttributes));
@@ -57,7 +66,7 @@ describe('Contacts', () => {
       });
 
       it('should update isFetching flag to true when fetching contacts', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
         const state = contactReducer({}, fetchContacts(''));
@@ -78,7 +87,7 @@ describe('Contacts', () => {
           },
         ];
 
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.list = {results: dummyContactsList};
 
         const state = contactReducer({}, receiveContacts({results: dummyContactsList}));
@@ -86,7 +95,7 @@ describe('Contacts', () => {
       });
 
       it('should update isFetching flag to true when fetching single contact', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
         const state = contactReducer({}, fetchSingleContact(1));
@@ -100,7 +109,7 @@ describe('Contacts', () => {
           name: 'Bar',
         };
 
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.currentContact = dummyContact;
 
         const state = contactReducer({}, receiveSingleContact(dummyContact));
@@ -108,39 +117,39 @@ describe('Contacts', () => {
       });
 
       it('should update isFetching flag to true by createContact', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = contactReducer({}, createContact());
+        const state = contactReducer({}, createContact({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true by editContact', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = contactReducer({}, editContact());
+        const state = contactReducer({}, editContact({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true by createContactOnModal', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = contactReducer({}, createContactOnModal());
+        const state = contactReducer({}, createContactOnModal({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true by editContactOnModal', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = true;
 
-        const state = contactReducer({}, editContactOnModal());
+        const state = contactReducer({}, editContactOnModal({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to false by notFound', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isFetching = false;
 
         const state = contactReducer({}, notFound());
@@ -154,7 +163,7 @@ describe('Contacts', () => {
           real_estate_ids: ['Bar'],
         };
 
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.initialContactFormValues = dummyContact;
 
         const state = contactReducer({}, initializeContactForm(dummyContact));
@@ -162,7 +171,7 @@ describe('Contacts', () => {
       });
 
       it('should update isContactFormValid flag to true', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isContactFormValid = true;
 
         const state = contactReducer({}, receiveContactFormValid(true));
@@ -170,7 +179,7 @@ describe('Contacts', () => {
       });
 
       it('should update isEditMode flag to true', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isEditMode = true;
 
         const state = contactReducer({}, showEditMode());
@@ -178,7 +187,7 @@ describe('Contacts', () => {
       });
 
       it('should update isEditMode flag to false', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isEditMode = false;
 
         const state = contactReducer({}, hideEditMode());
@@ -186,7 +195,7 @@ describe('Contacts', () => {
       });
 
       it('should update isContactModalOpen flag to true', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isContactModalOpen = true;
 
         const state = contactReducer({}, showContactModal());
@@ -194,7 +203,7 @@ describe('Contacts', () => {
       });
 
       it('should update isContactModalOpen flag to false', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isContactModalOpen = false;
 
         let state = contactReducer({}, showContactModal());
@@ -206,7 +215,7 @@ describe('Contacts', () => {
         const dummySettings = {
           foo: 'bar',
         };
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.contactModalSettings = dummySettings;
 
         const state = contactReducer({}, receiveContactModalSettings(dummySettings));
@@ -214,7 +223,7 @@ describe('Contacts', () => {
       });
 
       it('should update isSaveClicked', () => {
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
         newState.isSaveClicked = true;
 
         const state = contactReducer({}, receiveIsSaveClicked(true));

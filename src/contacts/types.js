@@ -1,9 +1,19 @@
 // @flow
-import type {Action} from '../types';
+import type {Action, Attributes} from '../types';
 
-export type ContactState = Object;
+export type ContactState = {
+  attributes: Attributes,
+  contactModalSettings: ContactModalSettings,
+  currentContact: Contact,
+  initialContactFormValues: Contact,
+  isContactFormValid: boolean,
+  isContactModalOpen: boolean,
+  isEditMode: boolean,
+  isFetching: boolean,
+  isSaveClicked: boolean,
+  list: ContactList,
+};
 
-export type Attributes = Object;
 export type Contact = Object;
 export type ContactId = number;
 export type ContactList = Object;

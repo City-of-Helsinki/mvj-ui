@@ -17,7 +17,8 @@ import {getUserOptions} from '$src/users/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLease, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 
 type AreaProps = {
   areas: Array<Object>,

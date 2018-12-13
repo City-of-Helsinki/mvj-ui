@@ -28,7 +28,8 @@ import {getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsFetching, getLandUseContractList} from '$src/landUseContract/selectors';
 
-import type {Attributes, LandUseContract, LandUseContractList} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
+import type {LandUseContract, LandUseContractList} from '$src/landUseContract/types';
 
 const PAGE_SIZE = 25;
 

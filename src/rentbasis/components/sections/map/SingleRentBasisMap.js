@@ -13,7 +13,8 @@ import {getAttributeFieldOptions} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter, getCoordinatesOfGeometry} from '$util/map';
 import {getAttributes, getRentBasis} from '$src/rentbasis/selectors';
 
-import type {Attributes, RentBasis} from '$src/rentbasis/types';
+import type {Attributes} from '$src/types';
+import type {RentBasis} from '$src/rentbasis/types';
 
 type Props = {
   attributes: Attributes,

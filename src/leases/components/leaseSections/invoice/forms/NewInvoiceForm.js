@@ -25,11 +25,11 @@ import {getInvoiceRecipientOptions} from '$src/leases/helpers';
 import {getAttributes as getInvoiceAttributes, getIsCreateClicked} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
 
 type InvoiceRowsProps = {
-  attributes: InvoiceAttributes,
+  attributes: Attributes,
   fields: any,
   isCreateClicked: boolean,
 }
@@ -131,7 +131,7 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
 type Props = {
   formValues: Object,
   handleSubmit: Function,
-  invoiceAttributes: InvoiceAttributes,
+  invoiceAttributes: Attributes,
   isCreateClicked: boolean,
   lease: Lease,
   onClose: Function,

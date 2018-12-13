@@ -1,7 +1,10 @@
 // @flow
 import type {Action} from '../types';
 
-export type CollectionLetterTemplateState = Object;
+export type CollectionLetterTemplateState = {
+  isFetching: boolean,
+  list: CollectionLetterTemplates,
+};
 export type CollectionLetterTemplates = Array<Object>;
 
 export type FetchCollectionLetterTemplatesAction = Action<'mvj/collectionLetterTemplate/FETCH_ALL', void>;

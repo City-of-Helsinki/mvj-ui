@@ -16,7 +16,7 @@ import {
 } from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type SeasonalDatesProps = {
   rent: Object,

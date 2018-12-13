@@ -24,7 +24,7 @@ import {FormNames} from '$src/leases/enums';
 import {formatNumber, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getIsEditMode} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   area: ?Object,

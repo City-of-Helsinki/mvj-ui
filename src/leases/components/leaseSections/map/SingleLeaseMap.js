@@ -20,7 +20,8 @@ import {getAttributeFieldOptions} from '$util/helpers';
 import {getCoordinatesBounds, getCoordinatesCenter} from '$util/map';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
-import type {Attributes, Lease} from '$src/leases/types';
+import type {Attributes} from '$src/types';
+import type {Lease} from '$src/leases/types';
 import type {AreasGeoJson} from './AreasLayer';
 import type {PlanUnitsGeoJson} from './PlanUnitsLayer';
 import type {PlotsGeoJson} from './PlotsLayer';

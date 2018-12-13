@@ -27,7 +27,8 @@ import {getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getInfillDevelopments, getIsFetching} from '$src/infillDevelopment/selectors';
 
-import type {Attributes, InfillDevelopmentList} from '$src/infillDevelopment/types';
+import type {Attributes} from '$src/types';
+import type {InfillDevelopmentList} from '$src/infillDevelopment/types';
 
 const PAGE_SIZE = 25;
 

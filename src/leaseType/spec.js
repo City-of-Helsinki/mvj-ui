@@ -1,3 +1,4 @@
+// @flow
 import {expect} from 'chai';
 import {
   fetchLeaseTypes,
@@ -6,17 +7,24 @@ import {
 } from './actions';
 import leaseTypeReducer from './reducer';
 
-const defaultStates = {
+import type {LeaseTypeState} from './types';
+
+const defaultStates: LeaseTypeState = {
   isFetching: false,
   list: [],
 };
 
+
+// $FlowFixMe
 describe('Lease types', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('leaseTypeReducer', () => {
 
+      // $FlowFixMe
       it('should update isFetching flag to true when fetching lease types', () => {
         const newState = {...defaultStates};
         newState.isFetching = true;

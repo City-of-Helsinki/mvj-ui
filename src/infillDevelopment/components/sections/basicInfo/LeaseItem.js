@@ -40,7 +40,7 @@ import {
 import {getAttributes, getCollapseStateByKey} from '$src/infillDevelopment/selectors';
 import {getIsFetchingById, getLeaseById} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/infillDevelopment/types';
+import type {Attributes} from '$src/types';
 import type {Lease, LeaseId} from '$src/leases/types';
 
 type Props = {

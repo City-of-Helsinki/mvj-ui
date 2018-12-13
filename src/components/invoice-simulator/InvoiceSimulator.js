@@ -18,14 +18,14 @@ import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 import {getIsFetching, getPreviewInvoices} from '$src/previewInvoices/selectors';
 
-import type {Attributes as InvoiceAttributes} from '$src/invoices/types';
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 import type {PreviewInvoices} from '$src/previewInvoices/types';
 
 type Props = {
   currentLease: Lease,
   fetchPreviewInvoices: Function,
-  invoiceAttributes: InvoiceAttributes,
+  invoiceAttributes: Attributes,
   isFetching: boolean,
   isValid: boolean,
   previewInvoices: PreviewInvoices,
@@ -34,7 +34,7 @@ type Props = {
 
 type State = {
   billingPeriods: Array<Object> | null,
-  invoiceAttributes: InvoiceAttributes,
+  invoiceAttributes: Attributes,
   invoiceReceivableTypeOptions: Array<Object>,
   invoiceTypeOptions: Array<Object>,
   previewInvoices: PreviewInvoices,

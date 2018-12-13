@@ -24,15 +24,16 @@ import {
   getIsFetchingAllLeases,
 } from '$src/leases/selectors';
 
+import type {Attributes} from '$src/types';
 import type {InfillDevelopment} from '$src/infillDevelopment/types';
-import type {Attributes as LeaseAttributes, Lease} from '$src/leases/types';
+import type {Lease} from '$src/leases/types';
 
 type Props = {
   allLeases: Array<Lease>,
   currentInfillDevelopment: InfillDevelopment,
   fetchLeaseById: Function,
   isFetchingAllLeases: Array<boolean>,
-  leaseAttributes: LeaseAttributes,
+  leaseAttributes: Attributes,
   location: Object,
   router: Object,
 }
@@ -46,7 +47,7 @@ type State = {
   infillDevelopmentLeases: Array<Object>,
   isLoading: boolean,
   layers: Array<Object>,
-  leaseAttributes: LeaseAttributes,
+  leaseAttributes: Attributes,
   planUnitIntendedUseOptions: Array<Object>,
   planUnitStateOptions: Array<Object>,
   planUnitTypeOptions: Array<Object>,

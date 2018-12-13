@@ -11,7 +11,7 @@ import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getAttributes} from '$src/contacts/selectors';
 import {ContactType} from '$src/contacts/enums';
 
-import type {Attributes} from '$src/contacts/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   contact: ?Object,

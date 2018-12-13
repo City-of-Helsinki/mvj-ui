@@ -1,13 +1,7 @@
 // @flow
-
-import type {Selector} from '../types';
+import type {Attributes, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
-
-import type {
-  Attributes,
-  CommentId,
-  CommentList,
-} from './types';
+import type {CommentId, CommentList} from './types';
 import type {LeaseId} from '$src/leases/types';
 
 export const getEditModeFlags: Selector<Object, void> = (state: RootState): Object =>

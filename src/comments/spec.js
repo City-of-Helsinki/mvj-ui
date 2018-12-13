@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   receiveAttributes,
   fetchCommentsByLease,
@@ -13,7 +15,9 @@ import {
 } from './actions';
 import commentReducer from './reducer';
 
-const stateTemplate = {
+import type {CommentState} from './types';
+
+const defaultState: CommentState = {
   attributes: {},
   byLease: {},
   isEditModeById: {},
@@ -21,11 +25,16 @@ const stateTemplate = {
   isSaveClicked: false,
 };
 
+// $FlowFixMe
 describe('Comments', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('commentReducer', () => {
+
+      // $FlowFixMe
       it('should update comment attributes', () => {
         const dummyAttributes = {
           val1: 1,
@@ -33,8 +42,7 @@ describe('Comments', () => {
           val3: 'Bar',
         };
 
-        const newState = {...stateTemplate};
-        newState.attributes = dummyAttributes;
+        const newState = {...defaultState, attributes: dummyAttributes};
 
         const state = commentReducer({}, receiveAttributes(dummyAttributes));
         expect(state).to.deep.equal(newState);
@@ -47,40 +55,35 @@ describe('Comments', () => {
           text: 'Foo',
         };
 
-        const newState = {...stateTemplate};
-        newState.byLease = {1: dummyComments};
+        const newState = {...defaultState, byLease: {'1': dummyComments}};
 
         const state = commentReducer({}, receiveCommentsByLease({leaseId: dummyLease, comments: dummyComments}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag when fetching comments', () => {
-        const newState = {...stateTemplate};
-        newState.isFetching = true;
+        const newState = {...defaultState, isFetching: true};
 
         const state = commentReducer({}, fetchCommentsByLease(1));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to when creating new comment', () => {
-        const newState = {...stateTemplate};
-        newState.isFetching = true;
+        const newState = {...defaultState, isFetching: true};
 
         const state = commentReducer({}, createComment({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to when editing existing comment', () => {
-        const newState = {...stateTemplate};
-        newState.isFetching = true;
+        const newState = {...defaultState, isFetching: true};
 
         const state = commentReducer({}, editComment({}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to false by notFound', () => {
-        const newState = {...stateTemplate};
-        newState.isFetching = false;
+        const newState = {...defaultState, isFetching: false};
 
         const state = commentReducer({}, notFound());
         expect(state).to.deep.equal(newState);
@@ -88,7 +91,7 @@ describe('Comments', () => {
 
       it('should update clear isEditModeById flags', () => {
         const leaseId = 0;
-        const newState = {...stateTemplate};
+        const newState = {...defaultState};
 
         let state = commentReducer({}, showEditModeById(leaseId));
         state = commentReducer(state, clearEditFlags());
@@ -97,8 +100,7 @@ describe('Comments', () => {
 
       it('should update isEditModeById flag to true by showEditModeById', () => {
         const leaseId = 0;
-        const newState = {...stateTemplate};
-        newState.isEditModeById = {[leaseId]: true};
+        const newState = {...defaultState, isEditModeById: {[leaseId]: true}};
 
         const state = commentReducer({}, showEditModeById(leaseId));
         expect(state).to.deep.equal(newState);
@@ -106,16 +108,14 @@ describe('Comments', () => {
 
       it('should update isEditModeById flag to false by hideEditModeById', () => {
         const leaseId = 0;
-        const newState = {...stateTemplate};
-        newState.isEditModeById = {[leaseId]: false};
+        const newState = {...defaultState, isEditModeById: {[leaseId]: false}};
 
         const state = commentReducer({}, hideEditModeById(leaseId));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isSaveClicked flag to true', () => {
-        const newState = {...stateTemplate};
-        newState.isSaveClicked = true;
+        const newState = {...defaultState, isSaveClicked: true};
 
         const state = commentReducer({}, receiveIsSaveClicked(true));
         expect(state).to.deep.equal(newState);

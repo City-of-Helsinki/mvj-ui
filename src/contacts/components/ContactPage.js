@@ -36,9 +36,9 @@ import {
 } from '$src/contacts/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
-
+import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
-import type {Attributes, Contact} from '../types';
+import type {Contact} from '../types';
 
 type Props = {
   attributes: Attributes,

@@ -17,7 +17,8 @@ import SubTitle from '$components/content/SubTitle';
 import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
 import {getAttributes} from '$src/rentbasis/selectors';
 
-import type {Attributes, RentBasis} from '$src/rentbasis/types';
+import type {Attributes} from '$src/types';
+import type {RentBasis} from '$src/rentbasis/types';
 
 type Props = {
   attributes: Attributes,

@@ -55,9 +55,9 @@ import {
   setSessionStorageItem,
 } from '$util/storage';
 
+import type {Attributes} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
-import type {Attributes, InfillDevelopment} from '$src/infillDevelopment/types';
-import type {Attributes as LeaseAttributes} from '$src/leases/types';
+import type {InfillDevelopment} from '$src/infillDevelopment/types';
 
 type Props = {
   areaNotes: AreaNoteList,
@@ -77,7 +77,7 @@ type Props = {
   isFormValid: boolean,
   isInfillDevelopmentFormDirty: boolean,
   isSaveClicked: boolean,
-  leaseAttributes: LeaseAttributes,
+  leaseAttributes: Attributes,
   location: Object,
   params: Object,
   receiveFormInitialValues: Function,

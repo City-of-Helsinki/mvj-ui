@@ -20,7 +20,6 @@ import isEmpty from 'lodash/isEmpty';
 import AreaNotesLayer from '$src/areaNote/components/AreaNotesLayer';
 import GeoSearch from '$components/map/GeoSearch';
 import ZoomBox from '$components/map/ZoomBox';
-import {fetchMapDataByType} from '$src/mapData/actions';
 import {initializeAreaNote, showEditMode} from '$src/areaNote/actions';
 import {minZoom, maxZoom} from '$src/constants';
 import {getAreaNoteList, getIsEditMode} from '$src/areaNote/selectors';
@@ -159,7 +158,6 @@ export default flowRight(
       };
     },
     {
-      fetchMapDataByType,
       initializeAreaNote,
       showEditMode,
     },

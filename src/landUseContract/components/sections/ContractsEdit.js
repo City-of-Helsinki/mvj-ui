@@ -16,7 +16,8 @@ import {getContentContracts} from '$src/landUseContract/helpers';
 import {getAttributeFieldOptions} from '$util/helpers';
 import {getAttributes, getCurrentLandUseContract, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
 
-import type {Attributes, LandUseContract} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
+import type {LandUseContract} from '$src/landUseContract/types';
 
 type ContractsProps = {
   attributes: Attributes,

@@ -27,7 +27,7 @@ import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums
 import {getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type ContractChangesProps = {
   attributes: Attributes,

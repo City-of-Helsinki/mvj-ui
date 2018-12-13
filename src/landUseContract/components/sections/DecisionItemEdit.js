@@ -30,7 +30,7 @@ import {getCollapseStateByKey} from '$src/landUseContract/selectors';
 import {referenceNumber} from '$components/form/validations';
 import {withWindowResize} from '$components/resize/WindowResizeHandler';
 
-import type {Attributes} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
 
 type DecisionConditionsProps = {
   attributes: Attributes,

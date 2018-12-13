@@ -26,7 +26,7 @@ import {isLitigantActive} from '$src/landUseContract/helpers';
 import {findItemById} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/landUseContract/selectors';
 
-import type {Attributes} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   attributes: Attributes,

@@ -23,7 +23,7 @@ import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/landUseContr
 import {convertStrToDecimalNumber, formatNumber} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/landUseContract/selectors';
 
-import type {Attributes} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
 
 type InvoicesProps = {
   attributes: Attributes,

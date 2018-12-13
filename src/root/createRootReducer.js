@@ -8,7 +8,7 @@ import {routerReducer} from 'react-router-redux';
 import apiReducer from '../api/reducer';
 import areaNoteReducer from '../areaNote/reducer';
 import authReducer from '../auth/reducer';
-import billingPeriodsReducer from '../billingPeriods/reducer';
+import billingPeriodReducer from '../billingPeriods/reducer';
 import collectionCourtDecisionReducer from '../collectionCourtDecision/reducer';
 import collectionLetterReducer from '../collectionLetter/reducer';
 import collectionLetterTemplateReducer from '../collectionLetterTemplate/reducer';
@@ -40,13 +40,13 @@ export default (): Reducer<RootState> =>
     api: apiReducer,
     areaNote: areaNoteReducer,
     auth: authReducer,
-    billingPeriods: billingPeriodsReducer,
+    billingPeriod: billingPeriodReducer,
     collectionCourtDecision: collectionCourtDecisionReducer,
     collectionLetter: collectionLetterReducer,
     collectionLetterTemplate: collectionLetterTemplateReducer,
     collectionNote: collectionNoteReducer,
     comment: commentsReducer,
-    contacts: contactsReducer,
+    contact: contactsReducer,
     decision: decisionsReducer,
     district: districtsReducer,
     form: formReducer,
@@ -65,6 +65,6 @@ export default (): Reducer<RootState> =>
     routing: routerReducer,
     toastr: toastrReducer,
     topNavigation: topNavigationReducer,
-    users: usersReducer,
+    user: usersReducer,
     vat: vatReducer,
   });

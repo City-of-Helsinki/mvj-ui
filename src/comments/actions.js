@@ -1,11 +1,9 @@
 // @flow
-
 import {createAction} from 'redux-actions';
 
+import type {Attributes} from '$src/types';
 import type {LeaseId} from '$src/leases/types';
-
 import type {
-  Attributes,
   Comment,
   CommentId,
   FetchAttributesAction,

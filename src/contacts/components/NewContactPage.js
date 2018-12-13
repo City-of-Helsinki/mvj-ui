@@ -27,8 +27,9 @@ import {FormNames} from '../enums';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getIsContactFormValid, getIsSaveClicked} from '$src/contacts/selectors';
 
+import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
-import type {Attributes, Contact} from '../types';
+import type {Contact} from '../types';
 
 type Props = {
   attributes: Attributes,

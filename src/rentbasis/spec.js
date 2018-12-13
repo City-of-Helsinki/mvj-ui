@@ -1,3 +1,4 @@
+// @flow
 import {expect} from 'chai';
 import {
   receiveAttributes,
@@ -16,7 +17,9 @@ import {
 } from './actions';
 import rentBasisReducer from './reducer';
 
-const defaultState = {
+import type {RentBasisState} from './types';
+
+const defaultState: RentBasisState = {
   attributes: {},
   initialValues: {
     decisions: [{}],
@@ -31,12 +34,16 @@ const defaultState = {
   rentbasis: {},
 };
 
+// $FlowFixMe
 describe('Rent basis', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('rentBasisReducer', () => {
 
+      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           val1: 'foo',
@@ -52,7 +59,7 @@ describe('Rent basis', () => {
       it('should update isFetching flag to true when fetching rent basis list', () => {
         const newState = {...defaultState, isFetching: true};
 
-        const state = rentBasisReducer({}, fetchRentBasisList());
+        const state = rentBasisReducer({}, fetchRentBasisList(''));
         expect(state).to.deep.equal(newState);
       });
 
@@ -108,7 +115,7 @@ describe('Rent basis', () => {
       it('should update isFetching flag to false by notFound', () => {
         const newState = {...defaultState, isFetching: false};
 
-        let state = rentBasisReducer({}, fetchRentBasisList());
+        let state = rentBasisReducer({}, fetchRentBasisList(''));
         state = rentBasisReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });

@@ -1,11 +1,11 @@
 // @flow
-import type {Selector} from '../types';
-import type {BillingPeriodListMap, BillingPeriodsState} from './types';
+import type {Selector} from '$src/types';
+import type {RootState} from '$src/root/types';
 import type {LeaseId} from '$src/leases/types';
 
-export const getIsFetching: Selector<boolean, void> = (state: BillingPeriodsState): boolean =>
-  state.billingPeriods.isFetching;
+export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
+  state.billingPeriod.isFetching;
 
-export const getBillingPeriodsByLease: Selector<BillingPeriodListMap, LeaseId> = (state: BillingPeriodsState, leaseId: LeaseId): BillingPeriodListMap => {
-  return state.billingPeriods.byLease[leaseId];
+export const getBillingPeriodsByLease: Selector<Object, LeaseId> = (state: RootState, leaseId: LeaseId): Object => {
+  return state.billingPeriod.byLease[leaseId];
 };

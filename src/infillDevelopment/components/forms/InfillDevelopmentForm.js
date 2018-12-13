@@ -20,7 +20,8 @@ import {
 } from '$src/infillDevelopment/selectors';
 import {referenceNumber} from '$components/form/validations';
 
-import type {Attributes, InfillDevelopment} from '$src/infillDevelopment/types';
+import type {Attributes} from '$src/types';
+import type {InfillDevelopment} from '$src/infillDevelopment/types';
 
 type Props = {
   attributes: Attributes,

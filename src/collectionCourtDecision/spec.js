@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   fetchCollectionCourtDecisionsByLease,
   receiveCollectionCourtDecisionsByLease,
@@ -6,20 +8,26 @@ import {
 } from './actions';
 import collectionCourtDecisionReducer from './reducer';
 
-const defaultState = {
+import type {CollectionCourtDecisionState} from './types';
+
+const defaultState: CollectionCourtDecisionState = {
   byLease: {},
   isFetchingByLease: {},
 };
 
+// $FlowFixMe
 describe('collectionCourtDecision', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('collectionCourtDecisionReducer', () => {
+
+      // $FlowFixMe
       it('should update isFetching flag to true when fetching collection court decisions', () => {
         const lease = 1;
-        const newState = {...defaultState};
-        newState.isFetchingByLease = {[lease]: true};
+        const newState = {...defaultState, isFetchingByLease: {[lease]: true}};
 
         const state = collectionCourtDecisionReducer({}, fetchCollectionCourtDecisionsByLease(lease));
         expect(state).to.deep.equal(newState);
@@ -35,9 +43,7 @@ describe('collectionCourtDecision', () => {
           },
         ];
 
-        const newState = {...defaultState};
-        newState.isFetchingByLease = {[lease]: false};
-        newState.byLease = {[lease]: dummyCollectionCourtDecisions};
+        const newState = {...defaultState, isFetchingByLease: {[lease]: false}, byLease: {[lease]: dummyCollectionCourtDecisions}};
 
         const state = collectionCourtDecisionReducer({}, receiveCollectionCourtDecisionsByLease({lease: lease, collectionCourtDecisions: dummyCollectionCourtDecisions}));
         expect(state).to.deep.equal(newState);
@@ -45,8 +51,7 @@ describe('collectionCourtDecision', () => {
 
       it('should update isFetching flag to false by notFoundByLease', () => {
         const lease = 1;
-        const newState = {...defaultState};
-        newState.isFetchingByLease = {[lease]: false};
+        const newState = {...defaultState, isFetchingByLease: {[lease]: false}};
 
         const state = collectionCourtDecisionReducer({}, notFoundByLease(lease));
         expect(state).to.deep.equal(newState);

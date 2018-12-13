@@ -16,7 +16,7 @@ import {ArchiveBasisOfRentsText, DeleteModalLabels, DeleteModalTitles, Unarchive
 import {getFieldOptions, isEmptyValue, sortByLabelDesc} from '$util/helpers';
 import {getAttributes} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   archived: boolean,

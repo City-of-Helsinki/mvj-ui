@@ -3,9 +3,8 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import merge from 'lodash/merge';
 
-import type {Reducer} from '../types';
+import type {Attributes, Reducer} from '../types';
 import type {
-  Attributes,
   InfillDevelopment,
   InfillDevelopmentList,
   ReceiveAttributesAction,

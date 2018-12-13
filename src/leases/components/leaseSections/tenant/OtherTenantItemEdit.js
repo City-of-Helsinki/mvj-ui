@@ -26,7 +26,7 @@ import {FormNames, TenantContactType} from '$src/leases/enums';
 import {isTenantActive} from '$src/leases/helpers';
 import {getAttributes, getCollapseStateByKey, getErrorsByFormName, getIsSaveClicked} from '$src/leases/selectors';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 const ContactType = PropTypes.oneOf([TenantContactType.BILLING, TenantContactType.CONTACT]);
 

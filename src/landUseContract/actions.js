@@ -1,8 +1,8 @@
 // @flow
 import {createAction} from 'redux-actions';
 
+import type {Attributes} from '$src/types';
 import type {
-  Attributes,
   FetchAttributesAction,
   ReceiveAttributesAction,
   LandUseContractId,

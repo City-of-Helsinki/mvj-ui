@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   receiveLandUseContractAttributes,
   fetchLandUseContractList,
@@ -17,7 +19,9 @@ import {
 } from './actions';
 import landUseContractReducer from './reducer';
 
-const baseState = {
+import type {LandUseContractState} from './types';
+
+const baseState: LandUseContractState = {
   attributes: {},
   collapseStates: {},
   current: {},
@@ -35,12 +39,16 @@ const baseState = {
   list: {},
 };
 
+// $FlowFixMe
 describe('Land use contract', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('landUseContractReducer', () => {
 
+      // $FlowFixMe
       it('should update attributes', () => {
         const dummyAttributes = {
           id: 1,
@@ -64,13 +72,11 @@ describe('Land use contract', () => {
       });
 
       it('should update land use contract list', () => {
-        const dummyLandUseContractList = [
-          {
-            id: 1,
-            label: 'Foo',
-            name: 'Bar',
-          },
-        ];
+        const dummyLandUseContractList = {
+          id: 1,
+          label: 'Foo',
+          name: 'Bar',
+        };
 
         const newState = {...baseState};
         newState.list = dummyLandUseContractList;

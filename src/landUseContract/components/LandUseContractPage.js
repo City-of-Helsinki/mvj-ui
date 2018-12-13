@@ -66,8 +66,8 @@ import {
 } from '$src/landUseContract/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 
-import type {Attributes as ContactAttributes} from '$src/contacts/types';
-import type {Attributes, LandUseContract} from '$src/landUseContract/types';
+import type {Attributes} from '$src/types';
+import type {LandUseContract} from '$src/landUseContract/types';
 
 type Props = {
   attributes: Attributes,
@@ -75,7 +75,7 @@ type Props = {
   change: Function,
   clearFormValidFlags: Function,
   compensationsFormValues: Object,
-  contactAttributes: ContactAttributes,
+  contactAttributes: Attributes,
   contractsFormValues: Object,
   currentLandUseContract: LandUseContract,
   decisionsFormValues: Object,

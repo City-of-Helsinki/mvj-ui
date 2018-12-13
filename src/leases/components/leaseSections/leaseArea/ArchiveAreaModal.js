@@ -14,7 +14,7 @@ import {FormNames} from '$src/leases/enums';
 import {getAttributes} from '$src/leases/selectors';
 import {ButtonColors} from '$components/enums';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 type Props = {
   archivedNote: string,

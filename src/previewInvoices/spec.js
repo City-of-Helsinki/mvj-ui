@@ -1,4 +1,6 @@
+// @flow
 import {expect} from 'chai';
+
 import {
   fetchPreviewInvoices,
   receivePreviewInvoices,
@@ -7,17 +9,23 @@ import {
 } from './actions';
 import previewInvoicesReducer from './reducer';
 
-const defaultState = {
+import type {PreviewInvoicesState} from './types';
+
+const defaultState: PreviewInvoicesState = {
   isFetching: false,
   list: null,
 };
 
+// $FlowFixMe
 describe('Preview invoices', () => {
 
+  // $FlowFixMe
   describe('Reducer', () => {
 
+    // $FlowFixMe
     describe('previewInvoicesReducer', () => {
 
+      // $FlowFixMe
       it('should clear preview invoices', () => {
         const dummyPreviewInvoices = [
           {
@@ -27,7 +35,7 @@ describe('Preview invoices', () => {
         ];
         const newState = {...defaultState};
 
-        let state = previewInvoicesReducer({}, receivePreviewInvoices(dummyPreviewInvoices));
+        let state = previewInvoicesReducer({}, receivePreviewInvoices([dummyPreviewInvoices]));
         state = previewInvoicesReducer(state, clearPreviewInvoices());
         expect(state).to.deep.equal(newState);
       });
@@ -39,23 +47,23 @@ describe('Preview invoices', () => {
             label: 'Foo',
           },
         ];
-        const newState = {...defaultState, list: dummyPreviewInvoices};
+        const newState = {...defaultState, list: [dummyPreviewInvoices]};
 
-        const state = previewInvoicesReducer({}, receivePreviewInvoices(dummyPreviewInvoices));
+        const state = previewInvoicesReducer({}, receivePreviewInvoices([dummyPreviewInvoices]));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to true when fetching preview invoices', () => {
         const newState = {...defaultState, isFetching: true};
 
-        const state = previewInvoicesReducer({}, fetchPreviewInvoices());
+        const state = previewInvoicesReducer({}, fetchPreviewInvoices({lease: 1}));
         expect(state).to.deep.equal(newState);
       });
 
       it('should update isFetching flag to false by notFound', () => {
         const newState = {...defaultState, isFetching: false};
 
-        let state = previewInvoicesReducer({}, fetchPreviewInvoices());
+        let state = previewInvoicesReducer({}, fetchPreviewInvoices({lease: 1}));
         state = previewInvoicesReducer(state, notFound());
         expect(state).to.deep.equal(newState);
       });

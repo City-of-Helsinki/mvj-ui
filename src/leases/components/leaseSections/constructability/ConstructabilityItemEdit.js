@@ -25,7 +25,7 @@ import {formatNumber, getLabelOfOption} from '$util/helpers';
 import {getCollapseStateByKey} from '$src/leases/selectors';
 import {referenceNumber} from '$components/form/validations';
 
-import type {Attributes} from '$src/leases/types';
+import type {Attributes} from '$src/types';
 
 const getPreconstructionErrors = (errors: ?Object, area: string) => {
   return {
