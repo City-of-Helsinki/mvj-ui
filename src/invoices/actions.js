@@ -2,10 +2,12 @@
 
 import {createAction} from 'redux-actions';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {
   FetchAttributesAction,
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
+  InvoiceAttributesNotFoundAction,
   Invoice,
   InvoiceListMap,
   FetchInvoicesByLeaseAction,
@@ -28,8 +30,14 @@ import type {LeaseId} from '$src/leases/types';
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/invoices/FETCH_ATTRIBUTES')();
 
-export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAction =>
-  createAction('mvj/invoices/RECEIVE_ATTRIBUTES')(identifiers);
+export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
+  createAction('mvj/invoices/RECEIVE_ATTRIBUTES')(attributes);
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/invoices/RECEIVE_METHODS')(methods);
+
+export const attributesNotFound = (): InvoiceAttributesNotFoundAction =>
+  createAction('mvj/invoices/ATTRIBUTES_NOT_FOUND')();
 
 export const fetchInvoicesByLease = (leaseId: LeaseId): FetchInvoicesByLeaseAction =>
   createAction('mvj/invoices/FETCH_BY_LEASE')(leaseId);

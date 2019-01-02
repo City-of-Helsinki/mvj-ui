@@ -4,18 +4,19 @@ import {connect} from 'react-redux';
 import {FieldArray, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
-import isEmpty from 'lodash/isEmpty';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import Authorization from '$components/authorization/Authorization';
 import AddButton from '$components/form/AddButton';
 import ContractItemEdit from './ContractItemEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames, LeaseContractsFieldPaths} from '$src/leases/enums';
 import {validateContractForm} from '$src/leases/formValidators';
 import {getContentContracts} from '$src/leases/helpers';
 import {getDecisionOptions} from '$src/decision/helpers';
+import {isFieldAllowedToEdit} from '$util/helpers';
 import {getDecisionsByLease} from '$src/decision/selectors';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
@@ -24,16 +25,16 @@ import type {Lease} from '$src/leases/types';
 
 type ContractsProps = {
   attributes: Attributes,
-  contractsData: Array<Object>,
   decisionOptions: Array<Object>,
   fields: any,
+  savedContracts: Array<Object>,
 }
 
 const renderContracts = ({
   attributes,
-  contractsData,
   decisionOptions,
   fields,
+  savedContracts,
 }: ContractsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -61,23 +62,24 @@ const renderContracts = ({
               return <ContractItemEdit
                 key={index}
                 attributes={attributes}
-                contractsData={contractsData}
                 decisionOptions={decisionOptions}
                 field={contract}
                 index={index}
                 onRemove={handleRemove}
+                savedContracts={savedContracts}
               />;
-            }
+            })}
 
-            )}
-            <Row>
-              <Column>
-                <AddButton
-                  label='Lisää sopimus'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
+            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseContractsFieldPaths.CONTRACTS)}>
+              <Row>
+                <Column>
+                  <AddButton
+                    label='Lisää sopimus'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
           </div>
         );
       }}
@@ -94,35 +96,32 @@ type Props = {
 }
 
 type State = {
-  contractsData: Array<Object>,
   currentLease: ?Lease,
   decisionOptions: Array<Object>,
+  savedContracts: Array<Object>,
 }
 
 class ContractsEdit extends Component<Props, State> {
   state = {
     currentLease: null,
-    contractsData: [],
     decisionOptions: [],
+    savedContracts: [],
   }
 
   static getDerivedStateFromProps(props, state) {
-    const retObj = {};
+    const newState = {};
 
     if(props.currentLease !== state.currentLease) {
-      retObj.currentLease = props.currentLease,
-      retObj.contractsData = getContentContracts(props.currentLease);
+      newState.currentLease = props.currentLease,
+      newState.savedContracts = getContentContracts(props.currentLease);
     }
 
     if(props.decisions !== state.decisions) {
-      retObj.decisionOptions = getDecisionOptions(props.decisions);
-      retObj.decisions = props.decisions;
+      newState.decisionOptions = getDecisionOptions(props.decisions);
+      newState.decisions = props.decisions;
     }
 
-    if(!isEmpty(retObj)) {
-      return retObj;
-    }
-    return null;
+    return newState;
   }
 
   componentDidUpdate(prevProps) {
@@ -137,19 +136,16 @@ class ContractsEdit extends Component<Props, State> {
 
   render() {
     const {attributes} = this.props;
-    const {
-      contractsData,
-      decisionOptions,
-    } = this.state;
+    const {decisionOptions, savedContracts} = this.state;
 
     return (
       <form>
         <FieldArray
           attributes={attributes}
           component={renderContracts}
-          contractsData={contractsData}
           decisionOptions={decisionOptions}
           name="contracts"
+          savedContracts={savedContracts}
         />
       </form>
     );

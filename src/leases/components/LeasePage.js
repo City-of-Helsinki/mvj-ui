@@ -7,6 +7,8 @@ import {withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
+import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import CommentPanel from '$components/commentPanel/CommentPanel';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import Constructability from './leaseSections/constructability/Constructability';
@@ -16,6 +18,7 @@ import ControlButtons from '$components/controlButtons/ControlButtons';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import DecisionsMain from './leaseSections/contract/DecisionsMain';
 import DecisionsMainEdit from './leaseSections/contract/DecisionsMainEdit';
+import FullWidthContainer from '$components/content/FullWidthContainer';
 import Invoices from './leaseSections/invoice/Invoices';
 import LeaseAreas from './leaseSections/leaseArea/LeaseAreas';
 import LeaseAreasEdit from './leaseSections/leaseArea/LeaseAreasEdit';
@@ -34,15 +37,16 @@ import TabContent from '$components/tabs/TabContent';
 import TenantsEdit from './leaseSections/tenant/TenantsEdit';
 import Tenants from './leaseSections/tenant/Tenants';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
+import {fetchCollectionCourtDecisionsByLease} from '$src/collectionCourtDecision/actions';
+import {fetchCollectionLettersByLease} from '$src/collectionLetter/actions';
 import {fetchCollectionLetterTemplates} from '$src/collectionLetterTemplate/actions';
-import {fetchAttributes as fetchCommentAttributes, fetchCommentsByLease} from '$src/comments/actions';
-import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
+import {fetchCollectionNotesByLease} from '$src/collectionNote/actions';
+import {fetchCommentsByLease} from '$src/comments/actions';
 import {fetchDecisionsByLease} from '$src/decision/actions';
-import {fetchAttributes as fetchInvoiceAttributes, fetchInvoicesByLease} from '$src/invoices/actions';
+import {fetchInvoicesByLease} from '$src/invoices/actions';
 import {fetchInvoiceSetsByLease} from '$src/invoiceSets/actions';
 import {
   clearFormValidFlags,
-  fetchAttributes,
   fetchSingleLease,
   hideEditMode,
   patchLease,
@@ -54,17 +58,24 @@ import {fetchLeaseTypes} from '$src/leaseType/actions';
 import {clearPreviewInvoices} from '$src/previewInvoices/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchVats} from '$src/vat/actions';
-import {FormNames} from '$src/leases/enums';
+import {
+  FormNames,
+  LeaseAreasFieldPaths,
+  LeaseBasisOfRentsFieldPaths,
+  LeaseContractsFieldPaths,
+  LeaseDecisionsFieldPaths,
+  LeaseInspectionsFieldPaths,
+  LeaseRentsFieldPaths,
+  LeaseTenantsFieldPaths,
+} from '$src/leases/enums';
 import {FormNames as ComponentFormNames} from '$components/enums';
+import {PermissionMissingTexts} from '$src/enums';
 import {clearUnsavedChanges} from '$src/leases/helpers';
 import * as contentHelpers from '$src/leases/helpers';
-import {scrollToTopPage} from '$util/helpers';
+import {isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes as getCommentAttributes, getCommentsByLease} from '$src/comments/selectors';
-import {getAttributes as getContactAttributes} from '$src/contacts/selectors';
-import {getAttributes as getInvoiceAttributes} from '$src/invoices/selectors';
+import {getCommentsByLease} from '$src/comments/selectors';
 import {
-  getAttributes,
   getCurrentLease,
   getIsEditMode,
   getIsFetching,
@@ -76,8 +87,10 @@ import {
 import {getLeaseTypeList} from '$src/leaseType/selectors';
 import {getVats} from '$src/vat/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
+import {withLeasePageAttributes} from '$components/attributes/LeasePageAttributes';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {CommentList} from '$src/comments/types';
 import type {Lease} from '$src/leases/types';
 import type {LeaseTypeList} from '$src/leaseType/types';
@@ -85,26 +98,28 @@ import type {VatList} from '$src/vat/types';
 
 type Props = {
   areasFormValues: Object,
-  attributes: Attributes,
   change: Function,
   clearFormValidFlags: Function,
   clearPreviewInvoices: Function,
+  collectionCourtDecisionMethods: Methods,  // get via withLeasePageAttributes HOC
+  collectionLetterMethods: Methods,         // get via withLeasePageAttributes HOC
+  collectionLetterTemplateMethods: Methods, // get via withLeasePageAttributes HOC
+  collectionNoteMethods: Methods,           // get via withLeasePageAttributes HOC
   commentAttributes: Attributes,
+  commentMethods: Methods,                  // get via withLeasePageAttributes HOC
   comments: CommentList,
-  contactAttributes: Attributes,
   contractsFormValues: Object,
   constructabilityFormValues: Object,
   currentLease: Object,
   decisionsFormValues: Object,
   destroy: Function,
   fetchAreaNoteList: Function,
-  fetchAttributes: Function,
+  fetchCollectionCourtDecisionsByLease: Function,
+  fetchCollectionLettersByLease: Function,
   fetchCollectionLetterTemplates: Function,
-  fetchCommentAttributes: Function,
+  fetchCollectionNotesByLease: Function,
   fetchCommentsByLease: Function,
-  fetchContactAttributes: Function,
   fetchDecisionsByLease: Function,
-  fetchInvoiceAttributes: Function,
   fetchInvoicesByLease: Function,
   fetchInvoiceSetsByLease: Function,
   fetchLeaseTypes: Function,
@@ -113,9 +128,11 @@ type Props = {
   hideEditMode: Function,
   initialize: Function,
   inspectionsFormValues: Object,
-  invoiceAttributes: Attributes,
+  invoiceMethods: Methods,                  // get via withLeasePageAttributes HOC
   isEditMode: boolean,
   isFetching: boolean,
+  isFetchingCommonAttributes: boolean,      // get via withCommonAttributes HOC
+  isFetchingLeasePageAttributes: boolean,   // get via withLeasePageAttributes HOC
   isFormValidFlags: Object,
   isConstructabilityFormDirty: boolean,
   isConstructabilityFormValid: boolean,
@@ -135,6 +152,8 @@ type Props = {
   isTenantsFormDirty: boolean,
   isTenantsFormValid: boolean,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,              // get via withCommonAttributes HOC
+  leaseMethods: Methods,                    // get via withCommonAttributes HOC
   leaseTypeList: LeaseTypeList,
   location: Object,
   params: Object,
@@ -171,24 +190,23 @@ class LeasePage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      attributes,
-      commentAttributes,
-      contactAttributes,
+      collectionCourtDecisionMethods,
+      collectionLetterMethods,
+      collectionLetterTemplateMethods,
+      collectionNoteMethods,
+      commentMethods,
       fetchAreaNoteList,
-      fetchAttributes,
+      fetchCollectionCourtDecisionsByLease,
       fetchCollectionLetterTemplates,
-      fetchCommentAttributes,
+      fetchCollectionNotesByLease,
       fetchCommentsByLease,
-      fetchContactAttributes,
       fetchDecisionsByLease,
-      fetchInvoiceAttributes,
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
       fetchLeaseTypes,
       fetchSingleLease,
       fetchVats,
       hideEditMode,
-      invoiceAttributes,
       leaseTypeList,
       location,
       params: {leaseId},
@@ -206,20 +224,24 @@ class LeasePage extends Component<Props, State> {
       this.setState({activeTab: location.query.tab});
     }
 
-    if(isEmpty(attributes)) {
-      fetchAttributes();
+    if(collectionCourtDecisionMethods.GET) { // Fetch only if user has permissions
+      fetchCollectionCourtDecisionsByLease(leaseId);
     }
 
-    if(isEmpty(commentAttributes)) {
-      fetchCommentAttributes();
+    if(collectionLetterMethods.GET) { // Fetch only if user has permissions
+      fetchCollectionLettersByLease(leaseId);
     }
 
-    if(isEmpty(contactAttributes)) {
-      fetchContactAttributes();
+    if(collectionLetterTemplateMethods.GET) { // Fetch only if user has permissions
+      fetchCollectionLetterTemplates();
     }
 
-    if(isEmpty(invoiceAttributes)) {
-      fetchInvoiceAttributes();
+    if(collectionNoteMethods.GET) { // Fetch only if user has permissions
+      fetchCollectionNotesByLease(leaseId);
+    }
+
+    if(commentMethods.GET) { // Fetch only if user has permissions
+      fetchCommentsByLease(leaseId);
     }
 
     if(isEmpty(leaseTypeList)) {
@@ -230,9 +252,7 @@ class LeasePage extends Component<Props, State> {
       fetchVats();
     }
 
-    fetchCollectionLetterTemplates();
     fetchSingleLease(leaseId);
-    fetchCommentsByLease(leaseId);
     fetchDecisionsByLease(leaseId);
     fetchInvoicesByLease(leaseId);
     fetchInvoiceSetsByLease(leaseId);
@@ -243,7 +263,14 @@ class LeasePage extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps:Props, prevState: State) {
-    const {params: {leaseId}} = this.props;
+    const {
+      fetchCollectionCourtDecisionsByLease,
+      fetchCollectionLettersByLease,
+      fetchCollectionLetterTemplates,
+      fetchCollectionNotesByLease,
+      fetchCommentsByLease,
+      params: {leaseId},
+    } = this.props;
 
     if (prevProps.location !== this.props.location) {
       this.setState({activeTab: this.props.location.query.tab});
@@ -264,6 +291,32 @@ class LeasePage extends Component<Props, State> {
         this.setState({isRestoreModalOpen: true});
       }
     }
+
+    // Fetch collection court decisions when getting new collection court decision methods and user is authorisized to read content
+    if(prevProps.collectionCourtDecisionMethods !== this.props.collectionCourtDecisionMethods && this.props.collectionCourtDecisionMethods.GET) {
+      fetchCollectionCourtDecisionsByLease(leaseId);
+    }
+
+    // Fetch collection letters when getting new collection letter methods and user is authorisized to read content
+    if(prevProps.collectionLetterMethods !== this.props.collectionLetterMethods && this.props.collectionLetterMethods.GET) {
+      fetchCollectionLettersByLease(leaseId);
+    }
+
+    // Fetch collection letter templates when getting new collection letter methods and user is authorisized to read content
+    if(prevProps.collectionLetterTemplateMethods !== this.props.collectionLetterTemplateMethods && this.props.collectionLetterTemplateMethods.GET) {
+      fetchCollectionLetterTemplates();
+    }
+
+    // Fetch collection notes when getting new collection note methods and user is authorisized to read content
+    if(prevProps.collectionNoteMethods !== this.props.collectionNoteMethods && this.props.collectionNoteMethods.GET) {
+      fetchCollectionNotesByLease(leaseId);
+    }
+
+    // Fetch comments when getting new comment methods and user is authorisized to read content
+    if(prevProps.commentMethods !== this.props.commentMethods && this.props.commentMethods.GET) {
+      fetchCommentsByLease(leaseId);
+    }
+
     // Stop autosave timer and clear form data from session storage after saving/cancelling changes
     if(prevProps.isEditMode && !this.props.isEditMode) {
       this.stopAutoSaveTimer();
@@ -686,6 +739,12 @@ class LeasePage extends Component<Props, State> {
     );
   }
 
+  getIsFetchingAttributes = () => {
+    const {isFetchingLeasePageAttributes, isFetchingCommonAttributes} = this.props;
+
+    return isFetchingLeasePageAttributes || isFetchingCommonAttributes;
+  }
+
   render() {
     const {
       activeTab,
@@ -694,8 +753,10 @@ class LeasePage extends Component<Props, State> {
     } = this.state;
 
     const {
+      commentMethods,
       comments,
       currentLease,
+      invoiceMethods,
       isEditMode,
       isFetching,
       isConstructabilityFormDirty,
@@ -716,30 +777,29 @@ class LeasePage extends Component<Props, State> {
       isTenantsFormValid,
       isSaveClicked,
       isSaving,
+      leaseAttributes,
+      leaseMethods,
     } = this.props;
 
     const areFormsValid = this.validateForms();
+    const isFetchingAttributes = this.getIsFetchingAttributes();
 
-    if(isFetching) {
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    }
+    if(isFetching || isFetchingAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
-    if(isEmpty(currentLease)) {
-      return null;
-    }
+    if(!leaseMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LEASE} /></PageContainer>;
+
+    if(isEmpty(currentLease)) return null;
 
     return (
-      <div style={{width: '100%'}}>
+      <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
+              allowComments={commentMethods.GET}
+              allowEdit={leaseMethods.PATCH}
               commentAmount={comments ? comments.length : 0}
-              isCancelDisabled={false}
-              isEditDisabled={false}
+              isCancelDisabled={activeTab == 6}
+              isEditDisabled={activeTab == 6}
               isEditMode={isEditMode}
               isSaveDisabled={activeTab == 6 || (isSaveClicked && !areFormsValid)}
               onCancel={this.cancelChanges}
@@ -759,15 +819,17 @@ class LeasePage extends Component<Props, State> {
             </LoaderWrapper>
           }
 
-          <ConfirmationModal
-            confirmButtonLabel='Palauta muutokset'
-            isOpen={isRestoreModalOpen}
-            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-            onCancel={this.cancelRestoreUnsavedChanges}
-            onClose={this.cancelRestoreUnsavedChanges}
-            onSave={this.restoreUnsavedChanges}
-            title='Palauta tallentamattomat muutokset'
-          />
+          <Authorization allow={leaseMethods.PATCH}>
+            <ConfirmationModal
+              confirmButtonLabel='Palauta muutokset'
+              isOpen={isRestoreModalOpen}
+              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+              onCancel={this.cancelRestoreUnsavedChanges}
+              onClose={this.cancelRestoreUnsavedChanges}
+              onSave={this.restoreUnsavedChanges}
+              title='Palauta tallentamattomat muutokset'
+            />
+          </Authorization>
 
           <CommentPanel
             isOpen={isCommentPanelOpen}
@@ -778,14 +840,53 @@ class LeasePage extends Component<Props, State> {
             active={activeTab}
             isEditMode={isEditMode}
             tabs={[
-              {label: 'Yhteenveto', isDirty: isSummaryFormDirty, hasError: isSaveClicked && !isSummaryFormValid},
-              {label: 'Vuokra-alue', isDirty: isLeaseAreasFormDirty, hasError: isSaveClicked && !isLeaseAreasFormValid},
-              {label: 'Vuokralaiset', isDirty: isTenantsFormDirty, hasError: isSaveClicked && !isTenantsFormValid},
-              {label: 'Vuokrat', isDirty: isRentsFormDirty, hasError: isSaveClicked && !isRentsFormValid},
-              {label: 'Päätökset ja sopimukset', isDirty: (isContractsFormDirty || isDecisionsFormDirty || isInspectionsFormDirty), hasError: isSaveClicked && (!isContractsFormValid || !isDecisionsFormValid || !isInspectionsFormValid)},
-              {label: 'Rakentamiskelpoisuus', isDirty: isConstructabilityFormDirty, hasError: isSaveClicked && !isConstructabilityFormValid},
-              {label: 'Laskutus'},
-              {label: 'Kartta'},
+              {
+                label: 'Yhteenveto',
+                allow: true,
+                isDirty: isSummaryFormDirty,
+                hasError: isSaveClicked && !isSummaryFormValid,
+              },
+              {
+                label: 'Vuokra-alue',
+                allow: isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS),
+                isDirty: isLeaseAreasFormDirty,
+                hasError: isSaveClicked && !isLeaseAreasFormValid,
+              },
+              {
+                label: 'Vuokralaiset',
+                allow: isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS),
+                isDirty: isTenantsFormDirty,
+                hasError: isSaveClicked && !isTenantsFormValid,
+              },
+              {
+                label: 'Vuokrat',
+                allow: isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS ||
+                  isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)),
+                isDirty: isRentsFormDirty,
+                hasError: isSaveClicked && !isRentsFormValid,
+              },
+              {
+                label: 'Päätökset ja sopimukset',
+                allow: isFieldAllowedToRead(leaseAttributes, LeaseDecisionsFieldPaths.DECISIONS) ||
+                  isFieldAllowedToRead(leaseAttributes, LeaseContractsFieldPaths.CONTRACTS) ||
+                  isFieldAllowedToRead(leaseAttributes, LeaseInspectionsFieldPaths.INSPECTIONS),
+                isDirty: (isContractsFormDirty || isDecisionsFormDirty || isInspectionsFormDirty),
+                hasError: isSaveClicked && (!isContractsFormValid || !isDecisionsFormValid || !isInspectionsFormValid),
+              },
+              {
+                label: 'Rakentamiskelpoisuus',
+                allow: isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS),
+                isDirty: isConstructabilityFormDirty,
+                hasError: isSaveClicked && !isConstructabilityFormValid,
+              },
+              {
+                label: 'Laskutus',
+                allow: invoiceMethods.GET,
+              },
+              {
+                label: 'Kartta',
+                allow: leaseMethods.GET,
+              },
             ]}
             onTabClick={this.handleTabClick}
           />
@@ -794,7 +895,10 @@ class LeasePage extends Component<Props, State> {
             <TabPane>
               <ContentContainer>
                 {isEditMode
-                  ? <SummaryEdit />
+                  ? <Authorization
+                    allow={leaseMethods.PATCH}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><SummaryEdit /></Authorization>
                   : <Summary />
                 }
               </ContentContainer>
@@ -803,8 +907,14 @@ class LeasePage extends Component<Props, State> {
             <TabPane className="lease-page__tab-content">
               <ContentContainer>
                 {isEditMode
-                  ? <LeaseAreasEdit />
-                  : <LeaseAreas />
+                  ? <Authorization
+                    allow={leaseMethods.PATCH && isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><LeaseAreasEdit /></Authorization>
+                  : <Authorization
+                    allow={isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><LeaseAreas /></Authorization>
                 }
               </ContentContainer>
             </TabPane>
@@ -812,8 +922,14 @@ class LeasePage extends Component<Props, State> {
             <TabPane className="lease-page__tab-content">
               <ContentContainer>
                 {isEditMode
-                  ? <TenantsEdit />
-                  : <Tenants />
+                  ? <Authorization
+                    allow={leaseMethods.PATCH && isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><TenantsEdit /></Authorization>
+                  : <Authorization
+                    allow={isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><Tenants /></Authorization>
                 }
               </ContentContainer>
             </TabPane>
@@ -821,8 +937,17 @@ class LeasePage extends Component<Props, State> {
             <TabPane className="lease-page__tab-content">
               <ContentContainer>
                 {isEditMode
-                  ? <RentsEdit />
-                  : <Rents />
+                  ? <Authorization
+                    allow={leaseMethods.PATCH &&
+                      (isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS) ||
+                      isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS))}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><RentsEdit /></Authorization>
+                  : <Authorization
+                    allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS) ||
+                      isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.RENTS)}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><Rents /></Authorization>
                 }
               </ContentContainer>
             </TabPane>
@@ -830,8 +955,21 @@ class LeasePage extends Component<Props, State> {
             <TabPane className="lease-page__tab-content">
               <ContentContainer>
                 {isEditMode
-                  ? <DecisionsMainEdit />
-                  : <DecisionsMain />
+                  ? <Authorization
+                    allow={leaseMethods.PATCH &&
+                      isFieldAllowedToRead(leaseAttributes, LeaseDecisionsFieldPaths.DECISIONS) ||
+                      isFieldAllowedToRead(leaseAttributes, LeaseContractsFieldPaths.CONTRACTS) ||
+                      isFieldAllowedToRead(leaseAttributes, LeaseInspectionsFieldPaths.INSPECTIONS)
+                    }
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><DecisionsMainEdit /></Authorization>
+                  : <Authorization
+                    allow={isFieldAllowedToRead(leaseAttributes, LeaseDecisionsFieldPaths.DECISIONS) ||
+                      isFieldAllowedToRead(leaseAttributes, LeaseContractsFieldPaths.CONTRACTS) ||
+                      isFieldAllowedToRead(leaseAttributes, LeaseInspectionsFieldPaths.INSPECTIONS)
+                    }
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><DecisionsMain /></Authorization>
                 }
               </ContentContainer>
             </TabPane>
@@ -839,47 +977,55 @@ class LeasePage extends Component<Props, State> {
             <TabPane className="lease-page__tab-content">
               <ContentContainer>
                 {isEditMode
-                  ? <ConstructabilityEdit />
-                  : <Constructability />
+                  ? <Authorization
+                    allow={leaseMethods.PATCH && isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><ConstructabilityEdit /></Authorization>
+                  : <Authorization
+                    allow={isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.LEASE_AREAS)}
+                    errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                  ><Constructability /></Authorization>
                 }
               </ContentContainer>
             </TabPane>
 
             <TabPane className="lease-page__tab-content">
               <ContentContainer>
-                <Invoices />
+                <Authorization allow={invoiceMethods.GET} errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}>
+                  <Invoices />
+                </Authorization>
               </ContentContainer>
             </TabPane>
 
             <TabPane>
               <ContentContainer>
-                <SingleLeaseMap />
+                <Authorization allow={leaseMethods.GET}>
+                  <SingleLeaseMap />
+                </Authorization>
               </ContentContainer>
             </TabPane>
           </TabContent>
         </PageContainer>
-      </div>
+      </FullWidthContainer>
     );
   }
 }
 
 export default flowRight(
+  withCommonAttributes,
+  withLeasePageAttributes,
   withRouter,
   connect(
     (state) => {
       const currentLease = getCurrentLease(state);
       return {
         areasFormValues: getFormValues(FormNames.LEASE_AREAS)(state),
-        attributes: getAttributes(state),
-        commentAttributes: getCommentAttributes(state),
         comments: getCommentsByLease(state, currentLease.id),
         constructabilityFormValues: getFormValues(FormNames.CONSTRUCTABILITY)(state),
-        contactAttributes: getContactAttributes(state),
         contractsFormValues: getFormValues(FormNames.CONTRACTS)(state),
         currentLease: currentLease,
         decisionsFormValues: getFormValues(FormNames.DECISIONS)(state),
         inspectionsFormValues: getFormValues(FormNames.INSPECTIONS)(state),
-        invoiceAttributes: getInvoiceAttributes(state),
         isEditMode: getIsEditMode(state),
         isFormValidFlags: getIsFormValidFlags(state),
         isConstructabilityFormDirty: isDirty(FormNames.CONSTRUCTABILITY)(state),
@@ -914,13 +1060,12 @@ export default flowRight(
       clearPreviewInvoices,
       destroy,
       fetchAreaNoteList,
-      fetchAttributes,
+      fetchCollectionCourtDecisionsByLease,
+      fetchCollectionLettersByLease,
       fetchCollectionLetterTemplates,
-      fetchCommentAttributes,
+      fetchCollectionNotesByLease,
       fetchCommentsByLease,
-      fetchContactAttributes,
       fetchDecisionsByLease,
-      fetchInvoiceAttributes,
       fetchInvoicesByLease,
       fetchInvoiceSetsByLease,
       fetchLeaseTypes,

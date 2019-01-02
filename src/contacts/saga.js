@@ -7,6 +7,8 @@ import {
   hideContactModal,
   hideEditMode,
   receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
   receiveContacts,
   receiveContactModalSettings,
   receiveSingleContact,
@@ -27,20 +29,22 @@ import {getContactModalSettings} from './selectors';
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
-    const attributes = bodyAsJson.fields;
 
     switch (statusCode) {
       case 200:
+        const attributes = bodyAsJson.fields;
+        const methods = bodyAsJson.methods;
+
         yield put(receiveAttributes(attributes));
+        yield put(receiveMethods(methods));
         break;
-      case 401:
-      case 404:
-      case 500:
-        yield put(notFound());
+      default:
+        yield put(attributesNotFound());
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch identifiers with error "%s"', error);
+    console.error('Failed to fetch contact attributes with error "%s"', error);
+    yield put(attributesNotFound());
     yield put(receiveError(error));
   }
 }

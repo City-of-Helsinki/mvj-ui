@@ -1,7 +1,6 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
-import get from 'lodash/get';
 
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
@@ -15,38 +14,23 @@ type Props = {
   currentLease: Lease,
 }
 
-class Tenants extends Component<Props> {
-  render() {
-    const {currentLease} = this.props;
+const Tenants = ({currentLease}: Props) => {
+  const tenantsData = getContentTenantsFormData(currentLease);
+  const tenants = tenantsData.tenants;
+  const tenantsArchived = tenantsData.tenantsArchived;
 
-    const tenantsData = getContentTenantsFormData(currentLease);
-    const tenants = get(tenantsData, 'tenants', []);
-    const tenantsArchived = get(tenantsData, 'tenantsArchived', []);
+  return (
+    <Fragment>
+      <h2>Vuokralaiset</h2>
+      <Divider />
+      {(!tenants.length) && <FormText>Ei vuokralaisia</FormText>}
+      {!!tenants.length && tenants.map((tenant) => <Tenant key={tenant.id} tenant={tenant} />)}
 
-    return (
-      <div>
-        <h2>Vuokralaiset</h2>
-        <Divider />
-        {(!tenants.length) &&
-          <FormText className='no-margin'>Ei vuokralaisia</FormText>
-        }
-        {!!tenants.length && tenants.map((tenant) =>
-          <Tenant
-            key={tenant.id}
-            tenant={tenant}
-          />
-        )}
-        {!!tenantsArchived.length &&   <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
-        {!!tenantsArchived.length && tenantsArchived.map((tenant) =>
-          <Tenant
-            key={tenant.id}
-            tenant={tenant}
-          />
-        )}
-      </div>
-    );
-  }
-}
+      {!!tenantsArchived.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+      {!!tenantsArchived.length && tenantsArchived.map((tenant) => <Tenant key={tenant.id} tenant={tenant} />)}
+    </Fragment>
+  );
+};
 
 export default connect(
   (state) => {

@@ -4,17 +4,44 @@ import {SubmissionError} from 'redux-form';
 
 import {receiveError} from '$src/api/actions';
 import {
+  receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
   fetchCollectionCourtDecisionsByLease as fetchCollectionCourtDecisionsByLeaseAction,
   receiveCollectionCourtDecisionsByLease,
   notFoundByLease,
 } from './actions';
 import {displayUIMessage} from '../util/helpers';
 import {
+  fetchAttributes,
   fetchCollectionCourtDecisionsByLease,
   uploadCollectionCourtDecision,
   deleteCollectionCourtDecision,
 } from './requests';
 import {getCollectionCourtDecisionsByLease} from './selectors';
+
+function* fetchAttributesSaga(): Generator<any, any, any> {
+  try {
+    const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
+
+    switch (statusCode) {
+      case 200:
+        const attributes = bodyAsJson.fields;
+        const methods = bodyAsJson.methods;
+
+        yield put(receiveAttributes(attributes));
+        yield put(receiveMethods(methods));
+        break;
+      default:
+        yield put(attributesNotFound());
+        break;
+    }
+  } catch (error) {
+    console.error('Failed to fetch attributes with error "%s"', error);
+    yield put(attributesNotFound());
+    yield put(receiveError(error));
+  }
+}
 
 function* fetchCollectionCourtDecisionsByLeaseSaga({payload: lease}): Generator<any, any, any> {
   try {
@@ -79,6 +106,7 @@ function* deleteCollectionCourtDecisionSaga({payload}): Generator<any, any, any>
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
+      yield takeLatest('mvj/collectionCourtDecision/FETCH_ATTRIBUTES', fetchAttributesSaga);
       yield takeLatest('mvj/collectionCourtDecision/FETCH_BY_LEASE', fetchCollectionCourtDecisionsByLeaseSaga);
       yield takeLatest('mvj/collectionCourtDecision/UPLOAD', uploadCollectionCourtDecisionSaga);
       yield takeLatest('mvj/collectionCourtDecision/DELETE', deleteCollectionCourtDecisionSaga);

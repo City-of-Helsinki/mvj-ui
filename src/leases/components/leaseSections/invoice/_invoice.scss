@@ -1,6 +1,6 @@
 .invoice {
   &__new-invoice {
-    margin-top: 0;
+    margin-top: rem-calc(5px);
     margin-bottom: rem-calc(10px);
 
     button:nth-child(2) {
@@ -58,6 +58,7 @@
 
     .fixed-table-container {
       border: none;
+      margin-bottom: 0;
     }
 
     &_loader-wrapper {

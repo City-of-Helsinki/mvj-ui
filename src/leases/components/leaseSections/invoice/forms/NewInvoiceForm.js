@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {FieldArray, formValueSelector, getFormValues, reduxForm} from 'redux-form';
@@ -9,6 +9,7 @@ import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonThird from '$components/form/AddButtonThird';
+import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
@@ -19,9 +20,11 @@ import SubTitle from '$components/content/SubTitle';
 import WhiteBox from '$components/content/WhiteBox';
 import {receiveIsCreateClicked} from '$src/invoices/actions';
 import {ButtonColors} from '$components/enums';
+import {InvoiceFieldPaths, InvoiceFieldTitles, InvoiceRowsFieldPaths, InvoiceRowsFieldTitles} from '$src/invoices/enums';
 import {DeleteModalLabels, DeleteModalTitles, FormNames, RecipientOptions} from '$src/leases/enums';
 import {validateInvoiceForm} from '$src/leases/formValidators';
 import {getInvoiceRecipientOptions} from '$src/leases/helpers';
+import {getFieldAttributes, isFieldAllowedToEdit, isFieldRequired} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes, getIsCreateClicked} from '$src/invoices/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
@@ -35,30 +38,35 @@ type InvoiceRowsProps = {
 }
 
 const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): Element<*> => {
-  const handleAdd = () => fields.push({});
+  const handleAdd = () => {
+    fields.push({});
+  };
 
   return (
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
+          <Fragment>
             <SubTitle>Erittely</SubTitle>
             {!!fields && !!fields.length &&
-              <div>
+              <Fragment>
                 <Row>
                   <Column small={3} large={2}>
-                    <FormTextTitle
-                      required={get(attributes, 'rows.child.children.receivable_type.required')}
-                      title='Saamislaji'
-                    />
+                    <Authorization allow={isFieldAllowedToEdit(attributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                      <FormTextTitle required={isFieldRequired(attributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                        {InvoiceRowsFieldTitles.RECEIVABLE_TYPE}
+                      </FormTextTitle>
+                    </Authorization>
                   </Column>
                   <Column small={3} large={2}>
-                    <FormTextTitle
-                      required={get(attributes, 'rows.child.children.amount.required')}
-                      title='Määrä (alviton)'
-                    />
+                    <Authorization allow={isFieldAllowedToEdit(attributes, InvoiceRowsFieldPaths.AMOUNT)}>
+                      <FormTextTitle required={isFieldRequired(attributes, InvoiceRowsFieldPaths.AMOUNT)}>
+                        {InvoiceRowsFieldTitles.AMOUNT}
+                      </FormTextTitle>
+                    </Authorization>
                   </Column>
                 </Row>
+
                 {fields.map((row, index) => {
                   const handleRemove = () => {
                     dispatch({
@@ -76,55 +84,60 @@ const InvoiceRows = ({attributes, fields, isCreateClicked}: InvoiceRowsProps): E
                   return (
                     <Row key={index}>
                       <Column small={3} large={2}>
-                        <FormField
-                          disableTouched={isCreateClicked}
-                          fieldAttributes={get(attributes, 'rows.child.children.receivable_type')}
-                          invisibleLabel={true}
-                          name={`${row}.receivable_type`}
-                          overrideValues={{
-                            label: 'Saamislaji',
-                          }}
-                        />
+                        <Authorization allow={isFieldAllowedToEdit(attributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                          <FormField
+                            disableTouched={isCreateClicked}
+                            fieldAttributes={getFieldAttributes(attributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}
+                            invisibleLabel={true}
+                            name={`${row}.receivable_type`}
+                            overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
+                          />
+                        </Authorization>
                       </Column>
                       <Column small={2} large={2}>
-                        <FormField
-                          disableTouched={isCreateClicked}
-                          fieldAttributes={get(attributes, 'rows.child.children.amount')}
-                          invisibleLabel={true}
-                          name={`${row}.amount`}
-                          unit='€'
-                          overrideValues={{
-                            label: 'Määrä (alviton)',
-                          }}
-                        />
-                      </Column>
-                      <Column small={1} large={2}>
-                        {fields.length > 1 &&
-                          <RemoveButton
-                            className='third-level'
-                            onClick={handleRemove}
-                            title="Poista rivi"
+                        <Authorization allow={isFieldAllowedToEdit(attributes, InvoiceRowsFieldPaths.AMOUNT)}>
+                          <FormField
+                            disableTouched={isCreateClicked}
+                            fieldAttributes={get(attributes, InvoiceRowsFieldPaths.AMOUNT)}
+                            invisibleLabel={true}
+                            name={`${row}.amount`}
+                            unit='€'
+                            overrideValues={{label: InvoiceRowsFieldTitles.AMOUNT}}
                           />
-                        }
+                        </Authorization>
                       </Column>
+
+                      <Authorization allow={isFieldAllowedToEdit(attributes, InvoiceRowsFieldPaths.ROWS)}>
+                        <Column small={1} large={2}>
+                          {fields.length > 1 &&
+                            <RemoveButton
+                              className='third-level'
+                              onClick={handleRemove}
+                              title="Poista rivi"
+                            />
+                          }
+                        </Column>
+                      </Authorization>
                     </Row>
                   );
                 })}
-              </div>
+              </Fragment>
             }
-            <Row>
-              <Column>
-                <AddButtonThird
-                  label='Lisää rivi'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
-          </div>
+
+            <Authorization allow={isFieldAllowedToEdit(attributes, InvoiceRowsFieldPaths.ROWS)}>
+              <Row>
+                <Column>
+                  <AddButtonThird
+                    label='Lisää rivi'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
+          </Fragment>
         );
       }}
     </AppConsumer>
-
   );
 };
 
@@ -169,69 +182,79 @@ const NewInvoiceForm = ({
       <WhiteBox>
         <BoxContentWrapper>
           <h3>Luo lasku</h3>
-          <CloseButton
-            className="position-topright"
-            onClick={onClose}
-          />
+          <CloseButton className='position-topright' onClick={onClose} />
+
           <Row>
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isCreateClicked}
-                fieldAttributes={get(invoiceAttributes, 'recipient')}
-                name='recipient'
-                setRefForField={setRefForFirstField}
-                overrideValues={{
-                  label: 'Vuokralainen',
-                  options: recipientOptions,
-                }}
-              />
+              <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}>
+                <FormField
+                  disableTouched={isCreateClicked}
+                  fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)}
+                  name='recipient'
+                  setRefForField={setRefForFirstField}
+                  overrideValues={{
+                    label: 'Vuokralainen',
+                    options: recipientOptions,
+                  }}
+                />
+              </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isCreateClicked}
-                fieldAttributes={get(invoiceAttributes, 'due_date')}
-                name='due_date'
-                overrideValues={{
-                  label: 'Eräpäivä',
-                }}
-              />
+              <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}>
+                <FormField
+                  disableTouched={isCreateClicked}
+                  fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)}
+                  name='due_date'
+                  overrideValues={{label: InvoiceFieldTitles.DUE_DATE}}
+                />
+              </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isCreateClicked}
-                fieldAttributes={get(invoiceAttributes, 'billing_period_start_date')}
-                name='billing_period_start_date'
-              />
+              <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}>
+                <FormField
+                  disableTouched={isCreateClicked}
+                  fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)}
+                  name='billing_period_start_date'
+                  overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_START_DATE}}
+                />
+              </Authorization>
             </Column>
             <Column small={6} medium={4} large={2}>
-              <FormField
-                disableTouched={isCreateClicked}
-                fieldAttributes={get(invoiceAttributes, 'billing_period_end_date')}
-                name='billing_period_end_date'
-              />
+              <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}>
+                <FormField
+                  disableTouched={isCreateClicked}
+                  fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_END_DATE)}
+                  name='billing_period_end_date'
+                  overrideValues={{label: InvoiceFieldTitles.BILLING_PERIOD_END_DATE}}
+                />
+              </Authorization>
             </Column>
           </Row>
           <Row>
             <Column>
-              <FormField
-                disableTouched={isCreateClicked}
-                fieldAttributes={recipient === RecipientOptions.ALL
-                  ? {...get(invoiceAttributes, 'notes'), required: true}
-                  : get(invoiceAttributes, 'notes')
-                }
-                name='notes'
-                overrideValues={{
-                  label: 'Tiedote',
-                }}
-              />
+              <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.NOTES)}>
+                <FormField
+                  disableTouched={isCreateClicked}
+                  fieldAttributes={recipient === RecipientOptions.ALL
+                    ? {...getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.NOTES), required: true}
+                    : getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.NOTES)
+                  }
+                  name='notes'
+                  overrideValues={{label: InvoiceFieldTitles.NOTES}}
+                />
+              </Authorization>
             </Column>
           </Row>
-          <FieldArray
-            attributes={invoiceAttributes}
-            component={InvoiceRows}
-            isCreateClicked={isCreateClicked}
-            name='rows'
-          />
+
+          <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.ROWS)}>
+            <FieldArray
+              attributes={invoiceAttributes}
+              component={InvoiceRows}
+              isCreateClicked={isCreateClicked}
+              name='rows'
+            />
+          </Authorization>
+
           <Row>
             <Column>
               <div className='button-wrapper'>

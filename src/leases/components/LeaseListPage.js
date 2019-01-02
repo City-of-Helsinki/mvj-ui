@@ -7,9 +7,10 @@ import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 import isArray from 'lodash/isArray';
-import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import CreateLeaseModal from './createLease/CreateLeaseModal';
 import AreaNotesEditMap from '$src/areaNote/components/AreaNotesEditMap';
 import IconRadioButtons from '$components/button/IconRadioButtons';
@@ -27,27 +28,21 @@ import TableWrapper from '$components/table/TableWrapper';
 import VisualisationTypeWrapper from '$components/table/VisualisationTypeWrapper';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
-import {
-  createLease,
-  fetchAttributes,
-  fetchLeases,
-} from '$src/leases/actions';
+import {createLease, fetchLeases} from '$src/leases/actions';
+import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {leaseStateFilterOptions} from '$src/leases/constants';
-import {FormNames} from '$src/leases/enums';
+import {PermissionMissingTexts} from '$src/enums';
+import {FormNames, LeaseSummaryFieldPaths} from '$src/leases/enums';
 import {getContentLeases, mapLeaseSearchFilters} from '$src/leases/helpers';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {formatDate, getFieldAttributes, getFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
-import {
-  getAttributes,
-  getIsFetching,
-  getLeasesList,
-} from '$src/leases/selectors';
+import {getIsFetching, getLeasesList} from '$src/leases/selectors';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
+import type {Attributes, Methods} from '$src/types';
 import type {LeaseList} from '../types';
 import type {AreaNoteList} from '$src/areaNote/types';
-
-const PAGE_SIZE = 25;
 
 const visualizationTypeOptions = [
   {value: 'table', label: 'Taulukko', icon: <TableIcon className='icon-medium' />},
@@ -56,13 +51,14 @@ const visualizationTypeOptions = [
 
 type Props = {
   areaNotes: AreaNoteList,
-  attributes: Object,
   createLease: Function,
   fetchAreaNoteList: Function,
-  fetchAttributes: Function,
   fetchLeases: Function,
   initialize: Function,
   isFetching: boolean,
+  isFetchingCommonAttributes: boolean,
+  leaseAttributes: Attributes,
+  leaseMethods: Methods,
   leases: LeaseList,
   lessors: Array<Object>,
   location: Object,
@@ -94,13 +90,7 @@ class LeaseListPage extends Component<Props, State> {
   };
 
   componentDidMount() {
-    const {
-      attributes,
-      fetchAreaNoteList,
-      fetchAttributes,
-      initialize,
-      receiveTopNavigationSettings,
-    } = this.props;
+    const {fetchAreaNoteList, initialize, receiveTopNavigationSettings} = this.props;
     const {router: {location: {query}}} = this.props;
 
     receiveTopNavigationSettings({
@@ -108,10 +98,6 @@ class LeaseListPage extends Component<Props, State> {
       pageTitle: 'Vuokraukset',
       showSearch: false,
     });
-
-    if(isEmpty(attributes)) {
-      fetchAttributes();
-    }
 
     fetchAreaNoteList();
 
@@ -189,10 +175,10 @@ class LeaseListPage extends Component<Props, State> {
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     if(page > 1) {
-      searchQuery.offset = (page - 1) * PAGE_SIZE;
+      searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
 
-    searchQuery.limit = PAGE_SIZE;
+    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     delete searchQuery.page;
 
     fetchLeases(getSearchQuery(mapLeaseSearchFilters(searchQuery)));
@@ -247,7 +233,7 @@ class LeaseListPage extends Component<Props, State> {
       return 0;
     }
     else {
-      return Math.ceil(count/PAGE_SIZE);
+      return Math.ceil(count/LIST_TABLE_PAGE_SIZE);
     }
   }
 
@@ -294,8 +280,10 @@ class LeaseListPage extends Component<Props, State> {
     } = this.state;
     const {
       areaNotes,
-      attributes,
       createLease,
+      isFetchingCommonAttributes,
+      leaseAttributes,
+      leaseMethods,
       leases: content,
       location: {query},
       isFetching,
@@ -304,28 +292,35 @@ class LeaseListPage extends Component<Props, State> {
     const leases = getContentLeases(content, query);
     const count = this.getLeasesCount(content);
     const maxPage = this.getLeasesMaxPage(content);
-    const stateOptions = getAttributeFieldOptions(attributes, 'state', false);
-
+    const stateOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseSummaryFieldPaths.STATE), false);
     const isBasicSearchByDefault = this.isBasicSearchByDefault();
+
+    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!leaseMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.LEASE} /></PageContainer>;
 
     return (
       <PageContainer>
-        <CreateLeaseModal
-          isOpen={isModalOpen}
-          onClose={this.hideCreateLeaseModal}
-          onSubmit={createLease}
-        />
+        <Authorization allow={leaseMethods.POST}>
+          <CreateLeaseModal
+            isOpen={isModalOpen}
+            onClose={this.hideCreateLeaseModal}
+            onSubmit={createLease}
+          />
+        </Authorization>
         <Row>
           <Column small={12} large={6}>
-            <AddButtonSecondary
-              className='no-top-margin'
-              label='Luo vuokratunnus'
-              onClick={this.showCreateLeaseModal}
-            />
+            <Authorization allow={leaseMethods.POST}>
+              <AddButtonSecondary
+                className='no-top-margin'
+                label='Luo vuokratunnus'
+                onClick={this.showCreateLeaseModal}
+              />
+            </Authorization>
           </Column>
           <Column small={12} large={6}>
             <Search
-              attributes={attributes}
+              attributes={leaseAttributes}
               basicSearchByDefault={isBasicSearchByDefault}
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
@@ -421,11 +416,11 @@ class LeaseListPage extends Component<Props, State> {
 }
 
 export default flowRight(
+  withCommonAttributes,
   connect(
     (state) => {
       return {
         areaNotes: getAreaNoteList(state),
-        attributes: getAttributes(state),
         isFetching: getIsFetching(state),
         leases: getLeasesList(state),
       };
@@ -433,7 +428,6 @@ export default flowRight(
     {
       createLease,
       fetchAreaNoteList,
-      fetchAttributes,
       fetchLeases,
       initialize,
       receiveTopNavigationSettings,

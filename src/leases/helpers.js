@@ -334,6 +334,10 @@ export const getContentLeaseAreaItem = (area: Object) => {
 export const getContentLeaseAreas = (lease: Object) =>
   get(lease, 'lease_areas', []).map((area) => getContentLeaseAreaItem(area));
 
+
+export const getLeaseAreaById = (lease: Lease, id: ?number) =>
+  id ? getContentLeaseAreas(lease).find((area) => area.id === id) : null;
+
 export const getContentComments = (content: Array<Object>): Array<Object> => {
   if(!content || !content.length) {return [];}
 

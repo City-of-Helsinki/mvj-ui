@@ -2,30 +2,43 @@
 import React from 'react';
 import {Row, Column} from 'react-foundation';
 
+import Authorization from '$components/authorization/Authorization';
 import FormText from '$components/form/FormText';
-import FormTitleAndText from '$components/form/FormTitleAndText';
-import {formatDate} from '$util/helpers';
+import FormTextTitle from '$components/form/FormTextTitle';
+import {LeaseInspectionsFieldPaths, LeaseInspectionsFieldTitles} from '$src/leases/enums';
+import {formatDate, isFieldAllowedToRead} from '$util/helpers';
+
+import type {Attributes} from '$src/types';
 
 type Props = {
+  attributes: Attributes,
   inspection: Object,
   largeScreen?: boolean,
 }
 
-const InspectionItem = ({inspection, largeScreen}: Props) => {
+const InspectionItem = ({attributes, inspection, largeScreen}: Props) => {
   if(largeScreen) {
     return(
       <Row>
         <Column large={2}>
-          <FormText>{inspection.inspector || '–'}</FormText>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.INSPECTOR)}>
+            <FormText>{inspection.inspector || '–'}</FormText>
+          </Authorization>
         </Column>
         <Column large={2}>
-          <FormText className={(inspection.supervision_date && !inspection.supervised_date) ? 'alert' : ''}>{inspection.supervision_date ? <span><i/>{formatDate(inspection.supervision_date)}</span> : '-'}</FormText>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.SUPERVISION_DATE)}>
+            <FormText className={(inspection.supervision_date && !inspection.supervised_date) ? 'alert' : ''}>{inspection.supervision_date ? <span><i/>{formatDate(inspection.supervision_date)}</span> : '-'}</FormText>
+          </Authorization>
         </Column>
         <Column large={2}>
-          <FormText className={inspection.supervised_date ? 'success' : ''}>{inspection.supervised_date ? <span><i/>{formatDate(inspection.supervised_date)}</span> : '-'}</FormText>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.SUPERVISED_DATE)}>
+            <FormText className={inspection.supervised_date ? 'success' : ''}>{inspection.supervised_date ? <span><i/>{formatDate(inspection.supervised_date)}</span> : '-'}</FormText>
+          </Authorization>
         </Column>
         <Column large={6}>
-          <FormText>{inspection.description || '–'}</FormText>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}>
+            <FormText>{inspection.description || '–'}</FormText>
+          </Authorization>
         </Column>
       </Row>
     );
@@ -33,30 +46,28 @@ const InspectionItem = ({inspection, largeScreen}: Props) => {
     return (
       <Row>
         <Column small={6} medium={4}>
-          <FormTitleAndText
-            title='Tarkastaja'
-            text={inspection.inspector || '–'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.INSPECTOR)}>
+            <FormTextTitle>{LeaseInspectionsFieldTitles.INSPECTOR}</FormTextTitle>
+            <FormText>{inspection.inspector || '–'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4}>
-          <FormTitleAndText
-            title='Valvontapvm'
-            text={inspection.supervision_date ? <span><i/>{formatDate(inspection.supervision_date)}</span> : '-'}
-            textClassName={(inspection.supervision_date && !inspection.supervised_date) ? 'alert' : ''}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.SUPERVISION_DATE)}>
+            <FormTextTitle>{LeaseInspectionsFieldTitles.SUPERVISION_DATE}</FormTextTitle>
+            <FormText className={(inspection.supervision_date && !inspection.supervised_date) ? 'alert' : ''}>{inspection.supervision_date ? <span><i/>{formatDate(inspection.supervision_date)}</span> : '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4}>
-          <FormTitleAndText
-            title='Valvottu pvm'
-            text={inspection.supervised_date ? <span><i/>{formatDate(inspection.supervised_date)}</span> : '-'}
-            textClassName={inspection.supervised_date ? 'success' : ''}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.SUPERVISED_DATE)}>
+            <FormTextTitle>{LeaseInspectionsFieldTitles.SUPERVISED_DATE}</FormTextTitle>
+            <FormText className={inspection.supervised_date ? 'success' : ''}>{inspection.supervised_date ? <span><i/>{formatDate(inspection.supervised_date)}</span> : '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={12}>
-          <FormTitleAndText
-            title='Huomautus'
-            text={inspection.description || '–'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInspectionsFieldPaths.DESCRIPTION)}>
+            <FormTextTitle>{LeaseInspectionsFieldTitles.DESCRIPTION}</FormTextTitle>
+            <FormText>{inspection.description || '–'}</FormText>
+          </Authorization>
         </Column>
       </Row>
     );

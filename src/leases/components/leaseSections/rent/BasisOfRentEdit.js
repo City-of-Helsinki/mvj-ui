@@ -7,15 +7,20 @@ import get from 'lodash/get';
 
 import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
 import ArchiveButton from '$components/form/ArchiveButton';
+import Authorization from '$components/authorization/Authorization';
 import BasisOfRent from './BasisOfRent';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import CopyToClipboardButton from '$components/form/CopyToClipboardButton';
 import FormField from '$components/form/FormField';
+import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
-import FormTitleAndText from '$components/form/FormTitleAndText';
 import RemoveButton from '$components/form/RemoveButton';
-import {FormNames} from '$src/leases/enums';
+import {
+  FormNames,
+  LeaseBasisOfRentsFieldPaths,
+  LeaseBasisOfRentsFieldTitles,
+} from '$src/leases/enums';
 import {getSavedBasisOfRent} from '$src/leases/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {
@@ -24,11 +29,15 @@ import {
   displayUIMessage,
   formatDate,
   formatNumber,
+  getFieldAttributes,
   getLabelOfOption,
   isDecimalNumberStr,
   isEmptyValue,
+  isFieldAllowedToEdit,
+  isFieldAllowedToRead,
+  isFieldRequired,
 } from '$util/helpers';
-import {getCurrentLease} from '$src/leases/selectors';
+import {getAttributes as getLeaseAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
@@ -39,7 +48,6 @@ type Props = {
   area: ?number,
   areaUnit: ?string,
   areaUnitOptions: Array<Object>,
-  attributes: Attributes,
   currentLease: Lease,
   discountPercentage: ?string,
   field: string,
@@ -49,6 +57,7 @@ type Props = {
   intendedUse: number,
   intendedUseOptions: Array<Object>,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
   lockedAt: ?string,
   onArchive?: Function,
   onRemove: Function,
@@ -63,7 +72,6 @@ const BasisOfRentEdit = ({
   area,
   areaUnit,
   areaUnitOptions,
-  attributes,
   currentLease,
   discountPercentage,
   field,
@@ -73,6 +81,7 @@ const BasisOfRentEdit = ({
   intendedUse,
   intendedUseOptions,
   isSaveClicked,
+  leaseAttributes,
   lockedAt,
   onArchive,
   onRemove,
@@ -182,34 +191,124 @@ const BasisOfRentEdit = ({
     return(
       `<thead>
         <tr>
-          <th>Käyttötarkoitus</th>
-          <th>Pinta-ala</th>
-          <th>Piirustukset tarkastettu</th>
-          <th>Laskelma lukittu</th>
-          <th>Yksikköhinta (ind 100)</th>
-          <th>Indeksi</th>
-          <th>Yksikköhinta (ind)</th>
-          <th>Tuottoprosentti</th>
-          <th>Perusvuosivuokra (ind 100)</th>
-          <th>Alkuvuosivuokra (ind)</th>
-          <th>Alennusprosentti</th>
-          <th>Alennettu alkuvuosivuokra (ind)</th>
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE)
+        ? `<th>${LeaseBasisOfRentsFieldTitles.INTENDED_USE}</th>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
+        ? `<th>${LeaseBasisOfRentsFieldTitles.AREA}</th>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)
+        ? `<th>${LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</th>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)
+        ? `<th>${LeaseBasisOfRentsFieldTitles.LOCKED_AT}</th>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+        ? `<th>${LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}</th>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)
+        ? `<th>${LeaseBasisOfRentsFieldTitles.INDEX}</th>`
+        : ''
+      }
+          ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX))
+        ? '<th>Yksikköhinta (ind)</th>'
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)
+        ? `<th>${LeaseBasisOfRentsFieldTitles.PROFIT_MARGIN_PERCENTAGE}</th>`
+        : ''
+      }
+          ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA))
+        ? '<th>Perusvuosivuokra (ind 100)</th>'
+        : ''
+      }
+          ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE))
+        ? '<th>Alkuvuosivuokra (ind)</th>'
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+        ? `<th>${LeaseBasisOfRentsFieldTitles.DISCOUNT_PERCENTAGE}</th>`
+        : ''
+      }
+          ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE))
+        ? '<th>Alennettu alkuvuosivuokra (ind)</th>'
+        : ''
+      }
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td>${getLabelOfOption(intendedUseOptions, intendedUse) || '-'}</td>
-          <td>${areaText}</td>
-          <td>${plansInspectedAtText}</td>
-          <td>${lockedAtText}</td>
-          <td>${amountPerAreaText}</td>
-          <td>${getLabelOfOption(indexOptions, index) || '-'}</td>
-          <td>${currentAmountPerAreaText}</td>
-          <td>${!isEmptyValue(profitMarginPercentage) ? `${formatNumber(profitMarginPercentage)} %` : '-'}</td>
-          <td>${!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}</td>
-          <td>${!isEmptyValue(initialYearRent) ? `${formatNumber(initialYearRent)} €/v` : '-'}</td>
-          <td>${!isEmptyValue(discountPercentage) ? `${formatNumber(discountPercentage)} %` : '-'}</td>
-          <td>${!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}</td>
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE)
+        ? `<td>${getLabelOfOption(intendedUseOptions, intendedUse) || '-'}</td>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
+        ? `<td>${areaText}</td>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)
+        ? `<td>${plansInspectedAtText}</td>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)
+        ? `<td>${lockedAtText}</td>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+        ? `<td>${amountPerAreaText}</td>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)
+        ? `<td>${getLabelOfOption(indexOptions, index) || '-'}</td>`
+        : ''
+      }
+          ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX))
+        ? `<td>${currentAmountPerAreaText}</td>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)
+        ? `<td>${!isEmptyValue(profitMarginPercentage) ? `${formatNumber(profitMarginPercentage)} %` : '-'}</td>`
+        : ''
+      }
+          ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA))
+        ? `<td>${!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}</td>`
+        : ''
+      }
+          ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE))
+        ? `<td>${!isEmptyValue(initialYearRent) ? `${formatNumber(initialYearRent)} €/v` : '-'}</td>`
+        : ''
+      }
+          ${isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+        ? `<td>${!isEmptyValue(discountPercentage) ? `${formatNumber(discountPercentage)} %` : '-'}</td>`
+        : ''
+      }
+          ${(isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE) &&
+            isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE))
+        ? `<td>${!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}</td>`
+        : ''
+      }
         </tr>
       </tbody>`
     );
@@ -236,198 +335,266 @@ const BasisOfRentEdit = ({
           {onArchive && savedBasisOfRent && !savedBasisOfRent.locked_at &&
             <ArchiveButton onClick={handleArchive}/>
           }
-          <RemoveButton
-            onClick={onRemove}
-            title="Poista vuokranperuste"
-          />
+          <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
+            <RemoveButton
+              onClick={onRemove}
+              title="Poista vuokranperuste"
+            />
+          </Authorization>
         </ActionButtonWrapper>
 
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={
-                savedBasisOfRent && savedBasisOfRent.locked_at
-                  ? {...get(attributes, 'basis_of_rents.child.children.intended_use'), required: false}
-                  : get(attributes, 'basis_of_rents.child.children.intended_use')
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={savedBasisOfRent && savedBasisOfRent.locked_at
+                  ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE), required: false}
+                  : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE)
+                }
+                disabled={!!get(savedBasisOfRent, 'locked_at')}
+                name={`${field}.intended_use`}
+                overrideValues={{label: LeaseBasisOfRentsFieldTitles.INTENDED_USE}}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization
+              allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) || isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT)}
+              errorComponent={
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+                  <FormTextTitle>{LeaseBasisOfRentsFieldTitles.AREA}</FormTextTitle>
+                  <FormText>{areaText}</FormText>
+                </Authorization>
               }
-              disabled={!!get(savedBasisOfRent, 'locked_at')}
-              name={`${field}.intended_use`}
-              overrideValues={{label: 'Käyttötarkoitus'}}
-            />
+            >
+              <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+                {LeaseBasisOfRentsFieldTitles.AREA}
+              </FormTextTitle>
+              <Row>
+                <Column small={6}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={savedBasisOfRent && savedBasisOfRent.locked_at
+                        ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA), required: false}
+                        : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)
+                      }
+                      disabled={!!get(savedBasisOfRent, 'locked_at')}
+                      name={`${field}.area`}
+                      invisibleLabel
+                      overrideValues={{label: LeaseBasisOfRentsFieldTitles.AREA}}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={6}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={savedBasisOfRent && savedBasisOfRent.locked_at
+                        ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT), required: false}
+                        : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT)
+                      }
+                      disabled={!!get(savedBasisOfRent, 'locked_at')}
+                      name={`${field}.area_unit`}
+                      invisibleLabel
+                      overrideValues={{
+                        label: LeaseBasisOfRentsFieldTitles.AREA_UNIT,
+                        options: areaUnitOptions,
+                      }}
+                    />
+                  </Authorization>
+                </Column>
+              </Row>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTextTitle
-              title='Pinta-ala'
-              required={get(attributes, 'basis_of_rents.child.children.area.required')}
-            />
-            <Row>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={
-                    savedBasisOfRent && savedBasisOfRent.locked_at
-                      ? {...get(attributes, 'basis_of_rents.child.children.area'), required: false}
-                      : get(attributes, 'basis_of_rents.child.children.area')
-                  }
-                  disabled={!!get(savedBasisOfRent, 'locked_at')}
-                  name={`${field}.area`}
-                  invisibleLabel
-                  overrideValues={{label: 'Pinta-ala'}}
-                />
-              </Column>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={
-                    savedBasisOfRent && savedBasisOfRent.locked_at
-                      ? {...get(attributes, 'basis_of_rents.child.children.area_unit'), required: false}
-                      : get(attributes, 'basis_of_rents.child.children.area_unit')
-                  }
-                  disabled={!!get(savedBasisOfRent, 'locked_at')}
-                  name={`${field}.area_unit`}
-                  invisibleLabel
-                  overrideValues={{label: 'Pinta-alan yksikkö', options: areaUnitOptions}}
-                />
-              </Column>
-            </Row>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormField
-              className='with-top-padding'
-              disableTouched={isSaveClicked}
-              fieldAttributes={
-                savedBasisOfRent && savedBasisOfRent.locked_at
-                  ? {...get(attributes, 'basis_of_rents.child.children.plans_inspected_at'), required: false, type: 'checkbox-date-time'}
-                  : {...get(attributes, 'basis_of_rents.child.children.plans_inspected_at'), type: 'checkbox-date-time'}
+            <Authorization
+              allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}
+              errorComponent={
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
+                  <FormTextTitle>{LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</FormTextTitle>
+                  <FormText>{plansInspectedAtText}</FormText>
+                </Authorization>
               }
-              disabled={!!get(savedBasisOfRent, 'locked_at')}
-              invisibleLabel
-              name={`${field}.plans_inspected_at`}
-              overrideValues={{label: 'Piirustukset tarkastettu'}}
-            />
+            >
+              <FormField
+                className='with-top-padding'
+                disableTouched={isSaveClicked}
+                fieldAttributes={savedBasisOfRent && savedBasisOfRent.locked_at
+                  ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), required: false, type: 'checkbox-date-time'}
+                  : {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT), type: 'checkbox-date-time'}
+                }
+                disabled={!!get(savedBasisOfRent, 'locked_at')}
+                invisibleLabel
+                name={`${field}.plans_inspected_at`}
+                overrideValues={{label: LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              className='with-top-padding'
-              disableTouched={isSaveClicked}
-              fieldAttributes={{...get(attributes, 'basis_of_rents.child.children.locked_at'), type: 'checkbox-date-time'}}
-              invisibleLabel
-              name={`${field}.locked_at`}
-              overrideValues={{label: 'Laskelma lukittu'}}
-            />
+            <Authorization
+              allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}
+              errorComponent={
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
+                  <FormTextTitle>{LeaseBasisOfRentsFieldTitles.LOCKED_AT}</FormTextTitle>
+                  <FormText>{lockedAtText}</FormText>
+                </Authorization>
+              }
+            >
+              <FormField
+                className='with-top-padding'
+                disableTouched={isSaveClicked}
+                fieldAttributes={{
+                  ...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT),
+                  type: 'checkbox-date-time',
+                }}
+                invisibleLabel
+                name={`${field}.locked_at`}
+                overrideValues={{label: 'Laskelma lukittu'}}
+              />
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormTextTitle
-              title='Yksikköhinta (ind 100)'
-              required={get(attributes, 'basis_of_rents.child.children.amount_per_area')}
-            />
-            <Row>
-              <Column small={6}>
-                <FormField
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={
-                    savedBasisOfRent && savedBasisOfRent.locked_at
-                      ? {...get(attributes, 'basis_of_rents.child.children.amount_per_area'), required: false}
-                      : get(attributes, 'basis_of_rents.child.children.amount_per_area')
-                  }
-                  disabled={!!get(savedBasisOfRent, 'locked_at')}
-                  name={`${field}.amount_per_area`}
-                  unit='€'
-                  invisibleLabel
-                  overrideValues={{label: 'Yksikköhinta (ind 100)'}}
-                />
-              </Column>
-              <Column small={6}>
-                <FormField
-                  className='with-slash'
-                  disableTouched={isSaveClicked}
-                  fieldAttributes={
-                    savedBasisOfRent && savedBasisOfRent.locked_at
-                      ? {...get(attributes, 'basis_of_rents.child.children.area_unit'), required: false}
-                      : get(attributes, 'basis_of_rents.child.children.area_unit')
-                  }
-                  name={`${field}.area_unit`}
-                  disabled
-                  invisibleLabel
-                  overrideValues={{label: 'Pinta-alan yksikkö', options: areaUnitOptions}}
-                />
-              </Column>
-            </Row>
-          </Column>
-          <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={
-                savedBasisOfRent && savedBasisOfRent.locked_at
-                  ? {...get(attributes, 'basis_of_rents.child.children.index'), required: false}
-                  : get(attributes, 'basis_of_rents.child.children.index')
+            <Authorization
+              allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}
+              errorComponent={
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                  <FormTextTitle>{LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}</FormTextTitle>
+                  <FormText>{amountPerAreaText}</FormText>
+                </Authorization>
               }
-              disabled={!!get(savedBasisOfRent, 'locked_at')}
-              name={`${field}.index`}
-              overrideValues={{
-                label: 'Indeksi',
-                options: indexOptions,
-              }}
-            />
+            >
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                <FormTextTitle required={isFieldRequired(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                  {LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}
+                </FormTextTitle>
+              </Authorization>
+              <Row>
+                <Column small={6}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={savedBasisOfRent && savedBasisOfRent.locked_at
+                        ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA), required: false}
+                        : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+                      }
+                      disabled={!!get(savedBasisOfRent, 'locked_at')}
+                      name={`${field}.amount_per_area`}
+                      unit='€'
+                      invisibleLabel
+                      overrideValues={{label: LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={6}>
+                  <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT)}>
+                    <FormField
+                      className='with-slash'
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={savedBasisOfRent && savedBasisOfRent.locked_at
+                        ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT), required: false}
+                        : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT)
+                      }
+                      name={`${field}.area_unit`}
+                      disabled
+                      invisibleLabel
+                      overrideValues={{
+                        label: LeaseBasisOfRentsFieldTitles.AREA_UNIT,
+                        options: areaUnitOptions,
+                      }}
+                    />
+                  </Authorization>
+                </Column>
+              </Row>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Yksikköhinta (ind)'
-              text={currentAmountPerAreaText}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={savedBasisOfRent && savedBasisOfRent.locked_at
+                  ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), required: false}
+                  : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)
+                }
+                disabled={!!get(savedBasisOfRent, 'locked_at')}
+                name={`${field}.index`}
+                overrideValues={{
+                  label: LeaseBasisOfRentsFieldTitles.INDEX,
+                  options: indexOptions,
+                }}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={
-                savedBasisOfRent && savedBasisOfRent.locked_at
-                  ? {...get(attributes, 'basis_of_rents.child.children.profit_margin_percentage'), required: false}
-                  : get(attributes, 'basis_of_rents.child.children.profit_margin_percentage')
-              }
-              disabled={!!get(savedBasisOfRent, 'locked_at')}
-              name={`${field}.profit_margin_percentage`}
-              unit='%'
-              overrideValues={{
-                label: 'Tuottoprosentti',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
+              <FormTextTitle>Yksikköhinta (ind)</FormTextTitle>
+              <FormText>{currentAmountPerAreaText}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Perusvuosivuokra (ind 100)'
-              text={!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={savedBasisOfRent && savedBasisOfRent.locked_at
+                  ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE), required: false}
+                  :getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)
+                }
+                disabled={!!get(savedBasisOfRent, 'locked_at')}
+                name={`${field}.profit_margin_percentage`}
+                unit='%'
+                overrideValues={{label: LeaseBasisOfRentsFieldTitles.PROFIT_MARGIN_PERCENTAGE}}
+              />
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Alkuvuosivuokra (ind)'
-              text={!isEmptyValue(initialYearRent) ? `${formatNumber(initialYearRent)} €/v` : '-'}
-            />
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+            }>
+              <FormTextTitle>Perusvuosivuokra (ind 100)</FormTextTitle>
+              <FormText>{!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={
-                savedBasisOfRent && savedBasisOfRent.locked_at
-                  ? {...get(attributes, 'basis_of_rents.child.children.discount_percentage'), required: false}
-                  : get(attributes, 'basis_of_rents.child.children.discount_percentage')
-              }
-              disabled={!!get(savedBasisOfRent, 'locked_at')}
-              name={`${field}.discount_percentage`}
-              unit='%'
-              overrideValues={{
-                label: 'Alennusprosentti',
-              }}
-            />
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)
+            }>
+              <FormTextTitle>Alkuvuosivuokra (ind)</FormTextTitle>
+              <FormText>{!isEmptyValue(initialYearRent) ? `${formatNumber(initialYearRent)} €/v` : '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Alennettu alkuvuosivuokra (ind)'
-              text={!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={savedBasisOfRent && savedBasisOfRent.locked_at
+                  ? {...getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE), required: false}
+                  : getFieldAttributes(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+                }
+                disabled={!!get(savedBasisOfRent, 'locked_at')}
+                name={`${field}.discount_percentage`}
+                unit='%'
+                overrideValues={{label: LeaseBasisOfRentsFieldTitles.DISCOUNT_PERCENTAGE}}
+              />
+            </Authorization>
+          </Column>
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+            }>
+              <FormTextTitle>Alennettu alkuvuosivuokra (ind)</FormTextTitle>
+              <FormText>{!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
       </BoxContentWrapper>
@@ -448,6 +615,7 @@ export default connect(
       id: selector(state, `${props.field}.id`),
       index: selector(state, `${props.field}.index`),
       intendedUse: selector(state, `${props.field}.intended_use`),
+      leaseAttributes: getLeaseAttributes(state),
       lockedAt: selector(state, `${props.field}.locked_at`),
       plansInspectedAt: selector(state, `${props.field}.plans_inspected_at`),
       profitMarginPercentage: selector(state, `${props.field}.profit_margin_percentage`),

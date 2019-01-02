@@ -47,3 +47,13 @@ export const CancelChangesModalTexts = {
   LABEL: <span>Lomakkeella on tallentamattomia muutoksia.<br /> Haluatko varmasti poistua tallentamatta?</span>,
   TITLE: 'Poistu tallentamatta',
 };
+
+/**
+ * Permission missing texts enumerable.
+ *
+ * @type {{LEASE: string}}
+ */
+export const PermissionMissingTexts = {
+  GENERAL: 'Ei oikeuksia sisältöön.',
+  LEASE: 'Ei oikeuksia vuokrauksiin.',
+};

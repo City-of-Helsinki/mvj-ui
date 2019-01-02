@@ -3,9 +3,11 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import Authorization from '$components/authorization/Authorization';
 import FormTextTitle from '$components/form/FormTextTitle';
+import {LeaseInfoFieldPaths, LeaseInfoFieldTitles} from '$src/leases/enums';
 import {getContentLeaseInfo, getContentLeaseStatus} from '$src/leases/helpers';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {formatDate, getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -18,34 +20,42 @@ type Props = {
 
 const LeaseInfo = ({attributes, currentLease}: Props) => {
   const leaseInfo = getContentLeaseInfo(currentLease);
-  if(!LeaseInfo) {
-    return null;
-  }
+  const stateOptions = getFieldOptions(getFieldAttributes(attributes, LeaseInfoFieldPaths.STATE));
 
-  const stateOptions = getAttributeFieldOptions(attributes, 'state');
+  if(!LeaseInfo) return null;
 
   return (
     <div className='lease-info'>
       <Row>
         <Column>
-          <FormTextTitle title='Vuokratunnus' />
-          <h1 className='lease-info__identifier'>{leaseInfo.identifier || '-'}</h1>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.IDENTIFIER)}>
+            <FormTextTitle>{LeaseInfoFieldTitles.IDENTIFIER}</FormTextTitle>
+            <h1 className='lease-info__identifier'>{leaseInfo.identifier || '-'}</h1>
+          </Authorization>
         </Column>
         <Column>
-          <FormTextTitle title='Tyyppi' />
-          <p className='lease-info__text'>{getLabelOfOption(stateOptions, leaseInfo.state) || '-'}</p>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.STATE)}>
+            <FormTextTitle>{LeaseInfoFieldTitles.STATE}</FormTextTitle>
+            <p className='lease-info__text'>{getLabelOfOption(stateOptions, leaseInfo.state) || '-'}</p>
+          </Authorization>
         </Column>
         <Column>
-          <FormTextTitle title='Alkupvm' />
-          <p className='lease-info__text'>{formatDate(leaseInfo.start_date) || '-'}</p>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.START_DATE)}>
+            <FormTextTitle>{LeaseInfoFieldTitles.START_DATE}</FormTextTitle>
+            <p className='lease-info__text'>{formatDate(leaseInfo.start_date) || '-'}</p>
+          </Authorization>
         </Column>
         <Column>
-          <FormTextTitle title='Loppupvm' />
-          <p className='lease-info__text'>{formatDate(leaseInfo.end_date) || '-'}</p>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.END_DATE)}>
+            <FormTextTitle>{LeaseInfoFieldTitles.END_DATE}</FormTextTitle>
+            <p className='lease-info__text'>{formatDate(leaseInfo.end_date) || '-'}</p>
+          </Authorization>
         </Column>
         <Column>
-          <FormTextTitle title='Olotila' />
-          <p className='lease-info__text'>{getContentLeaseStatus(currentLease) || '-'}</p>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.START_DATE) && isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.END_DATE)}>
+            <FormTextTitle>{LeaseInfoFieldTitles.STATUS}</FormTextTitle>
+            <p className='lease-info__text'>{getContentLeaseStatus(currentLease) || '-'}</p>
+          </Authorization>
         </Column>
       </Row>
     </div>

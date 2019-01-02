@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import classNames from 'classnames';
+import Authorization from '$components/authorization/Authorization';
 
 type Props = {
   active: ?number,
@@ -26,19 +27,20 @@ const Tabs = ({active, className, isEditMode, tabs, onTabClick}: Props) => {
         };
 
         return(
-          <li key={i}
-            className={classNames({'is-active': Number(active) === i})}>
-            <a aria-selected={Number(active) === i}
-              aria-label={tab.label}
-              onClick={handleTabClick}
-              onKeyDown={handleKeyDown}
-              tabIndex={0}
-            >
-              <span className='tabs__label'>{tab.label}</span>
-              {isEditMode && tab.hasError && <span className='tabs__error-badge' />}
-              {isEditMode && tab.isDirty && !tab.hasError && <span className='tabs__dirty-badge' />}
-            </a>
-          </li>
+          <Authorization key={i} allow={tab.allow}>
+            <li className={classNames({'is-active': Number(active) === i})}>
+              <a aria-selected={Number(active) === i}
+                aria-label={tab.label}
+                onClick={handleTabClick}
+                onKeyDown={handleKeyDown}
+                tabIndex={0}
+              >
+                <span className='tabs__label'>{tab.label}</span>
+                {isEditMode && tab.hasError && <span className='tabs__error-badge' />}
+                {isEditMode && tab.isDirty && !tab.hasError && <span className='tabs__dirty-badge' />}
+              </a>
+            </li>
+          </Authorization>
         );
       })}
     </ul>

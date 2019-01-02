@@ -1,13 +1,17 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
 import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
+import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
-import FormTitleAndText from '$components/form/FormTitleAndText';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import RemoveButton from '$components/form/RemoveButton';
 import UnarchiveButton from '$components/form/UnarchiveButton';
+import {LeaseBasisOfRentsFieldPaths, LeaseBasisOfRentsFieldTitles} from '$src/leases/enums';
 import {getUserFullName} from '$src/users/helpers';
 import {
   convertStrToDecimalNumber,
@@ -16,13 +20,19 @@ import {
   getLabelOfOption,
   isDecimalNumberStr,
   isEmptyValue,
+  isFieldAllowedToEdit,
+  isFieldAllowedToRead,
 } from '$util/helpers';
+import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
+
+import type {Attributes} from '$src/types';
 
 type Props = {
   areaUnitOptions: Array<Object>,
   basisOfRent: Object,
   indexOptions: Array<Object>,
   intendedUseOptions: Array<Object>,
+  leaseAttributes: Attributes,
   onRemove?: Function,
   onUnarchive?: Function,
 }
@@ -32,6 +42,7 @@ const BasisOfRent = ({
   basisOfRent,
   indexOptions,
   intendedUseOptions,
+  leaseAttributes,
   onRemove,
   onUnarchive,
 }: Props) => {
@@ -117,91 +128,106 @@ const BasisOfRent = ({
       {(onUnarchive || onRemove) &&
         <ActionButtonWrapper>
           {onUnarchive &&
-            <UnarchiveButton onClick={onUnarchive}/>
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.ARCHIVED_AT)}>
+              <UnarchiveButton onClick={onUnarchive}/>
+            </Authorization>
           }
           {onRemove &&
-            <RemoveButton
-              onClick={onRemove}
-              title="Poista vuokranperuste"
-            />
+            <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
+              <RemoveButton onClick={onRemove} title="Poista vuokranperuste" />
+            </Authorization>
           }
         </ActionButtonWrapper>
       }
       <BoxContentWrapper>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Käyttötarkoitus'
-              text={getLabelOfOption(intendedUseOptions, basisOfRent.intended_use) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE)}>
+              <FormTextTitle>{LeaseBasisOfRentsFieldTitles.INTENDED_USE}</FormTextTitle>
+              <FormText>{getLabelOfOption(intendedUseOptions, basisOfRent.intended_use) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Pinta-ala'
-              text={areaText}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA)}>
+              <FormTextTitle>{LeaseBasisOfRentsFieldTitles.AREA}</FormTextTitle>
+              <FormText>{areaText}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Piirustukset tarkastettu'
-              text={plansInspectedText}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PLANS_INSPECTED_AT)}>
+              <FormTextTitle>{LeaseBasisOfRentsFieldTitles.PLANS_INSPECTED_AT}</FormTextTitle>
+              <FormText>{plansInspectedText}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Laskelma lukittu'
-              text={lockedText}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.LOCKED_AT)}>
+              <FormTextTitle>{LeaseBasisOfRentsFieldTitles.LOCKED_AT}</FormTextTitle>
+              <FormText>{lockedText}</FormText>
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Yksikköhinta (ind 100)'
-              text={amountPerAreaText}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)}>
+              <FormTextTitle>{LeaseBasisOfRentsFieldTitles.AMOUNT_PER_AREA}</FormTextTitle>
+              <FormText>{amountPerAreaText}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Indeksi'
-              text={getLabelOfOption(indexOptions, basisOfRent.index) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
+              <FormTextTitle>{LeaseBasisOfRentsFieldTitles.INDEX}</FormTextTitle>
+              <FormText>{getLabelOfOption(indexOptions, basisOfRent.index) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Yksikköhinta (ind)'
-              text={currentAmountPerAreaText}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) && isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX)}>
+              <FormTextTitle>Yksikköhinta (ind)</FormTextTitle>
+              <FormText>{currentAmountPerAreaText}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Tuottoprosentti'
-              text={!isEmptyValue(basisOfRent.profit_margin_percentage) ? `${formatNumber(basisOfRent.profit_margin_percentage)} %` : '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)}>
+              <FormTextTitle>{LeaseBasisOfRentsFieldTitles.PROFIT_MARGIN_PERCENTAGE}</FormTextTitle>
+              <FormText>{!isEmptyValue(basisOfRent.profit_margin_percentage) ? `${formatNumber(basisOfRent.profit_margin_percentage)} %` : '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Perusvuosivuokra (ind 100)'
-              text={!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}
-            />
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA)
+            }>
+              <FormTextTitle>Perusvuosivuokra (ind 100)</FormTextTitle>
+              <FormText>{!isEmptyValue(basicAnnualRent) ? `${formatNumber(basicAnnualRent)} €/v` : '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Alkuvuosivuokra (ind)'
-              text={!isEmptyValue(initialYearRent) ? `${formatNumber(initialYearRent)} €/v` : '-'}
-            />
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE)
+            }>
+              <FormTextTitle>Alkuvuosivuokra (ind)</FormTextTitle>
+              <FormText>{!isEmptyValue(initialYearRent) ? `${formatNumber(initialYearRent)} €/v` : '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Alennusprosentti'
-              text={!isEmptyValue(basisOfRent.discount_percentage) ? `${formatNumber(basisOfRent.discount_percentage)} %` : '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)}>
+              <FormTextTitle>{LeaseBasisOfRentsFieldTitles.DISCOUNT_PERCENTAGE}</FormTextTitle>
+              <FormText>{!isEmptyValue(basisOfRent.discount_percentage) ? `${formatNumber(basisOfRent.discount_percentage)} %` : '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Alennettu alkuvuosivuokra (ind)'
-              text={!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}
-            />
+            <Authorization allow={
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.AMOUNT_PER_AREA) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.PROFIT_MARGIN_PERCENTAGE) &&
+              isFieldAllowedToRead(leaseAttributes, LeaseBasisOfRentsFieldPaths.DISCOUNT_PERCENTAGE)
+            }>
+              <FormTextTitle>Alennettu alkuvuosivuokra (ind)</FormTextTitle>
+              <FormText>{!isEmptyValue(discountedInitialYearRent) ? `${formatNumber(discountedInitialYearRent)} €/v` : '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
       </BoxContentWrapper>
@@ -209,4 +235,10 @@ const BasisOfRent = ({
   );
 };
 
-export default BasisOfRent;
+export default connect(
+  (state) => {
+    return {
+      leaseAttributes: getLeaseAttributes(state),
+    };
+  }
+)(BasisOfRent);

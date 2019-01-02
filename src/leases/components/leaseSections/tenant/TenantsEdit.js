@@ -1,13 +1,13 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import flowRight from 'lodash/flowRight';
 import {FieldArray, getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
-import get from 'lodash/get';
 import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import Authorization from '$components/authorization/Authorization';
 import AddButton from '$components/form/AddButton';
 import ContactModal from '$src/contacts/components/ContactModal';
 import Divider from '$components/content/Divider';
@@ -24,40 +24,59 @@ import {
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames as ContactFormNames} from '$src/contacts/enums';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {
+  DeleteModalLabels,
+  DeleteModalTitles,
+  FormNames,
+  LeaseTenantsFieldPaths,
+  LeaseTenantsFieldTitles,
+} from '$src/leases/enums';
 import {validateTenantForm} from '$src/leases/formValidators';
+import {isFieldAllowedToEdit} from '$util/helpers';
 import {getContentContact} from '$src/contacts/helpers';
 import {getContentTenantsFormData} from '$src/leases/helpers';
 import {
+  getMethods as getContactMethods,
   getContactModalSettings,
   getIsContactFormValid,
   getIsContactModalOpen,
   getIsFetching as getIsFetchingContact,
 } from '$src/contacts/selectors';
-import {getCurrentLease} from '$src/leases/selectors';
+import {
+  getAttributes as getLeaseAttributes,
+  getCurrentLease,
+} from '$src/leases/selectors';
 
+import type {Attributes, Methods} from '$src/types';
 import type {ContactModalSettings} from '$src/contacts/types';
 import type {Lease} from '$src/leases/types';
 
 type TenantsProps = {
   fields: any,
+  leaseAttributes: Attributes,
   showAddButton: boolean,
   tenants: Array<Object>,
 }
 
 const renderTenants = ({
   fields,
+  leaseAttributes,
   showAddButton,
   tenants,
 }: TenantsProps): Element<*> => {
-  const handleAdd = () => fields.push({});
+  const handleAdd = () => {
+    fields.push({});
+  };
 
   return (
     <AppConsumer>
       {({dispatch}) => {
         return(
-          <div>
-            {!showAddButton && fields && !!fields.length && <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>}
+          <Fragment>
+            {!showAddButton && fields && !!fields.length &&
+              <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
+            }
+
             {fields && !!fields.length && fields.map((tenant, index) => {
               const handleRemove = () => {
                 dispatch({
@@ -83,17 +102,19 @@ const renderTenants = ({
               );
             })}
             {showAddButton &&
-              <Row>
-                <Column>
-                  <AddButton
-                    className='no-margin'
-                    label='Lisää vuokralainen'
-                    onClick={handleAdd}
-                  />
-                </Column>
-              </Row>
+              <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)}>
+                <Row>
+                  <Column>
+                    <AddButton
+                      className='no-margin'
+                      label='Lisää vuokralainen'
+                      onClick={handleAdd}
+                    />
+                  </Column>
+                </Row>
+              </Authorization>
             }
-          </div>
+          </Fragment>
         );
       }}
     </AppConsumer>
@@ -102,8 +123,9 @@ const renderTenants = ({
 
 type Props = {
   change: Function,
-  contactModalSettings: ContactModalSettings,
   contactFormValues: Object,
+  contactMethods: Methods,
+  contactModalSettings: ContactModalSettings,
   createContact: Function,
   currentLease: Lease,
   editContact: Function,
@@ -112,6 +134,7 @@ type Props = {
   isContactFormValid: boolean,
   isContactModalOpen: boolean,
   isFetchingContact: boolean,
+  leaseAttributes: Attributes,
   receiveContactModalSettings: Function,
   receiveFormValidFlags: Function,
   receiveIsSaveClicked: Function,
@@ -119,14 +142,14 @@ type Props = {
 }
 
 type State = {
-  lease: Lease,
-  tenantsData: Object,
+  currentLease: Lease,
+  savedTenants: Object,
 }
 
-class TenantsEdit extends Component<Props, State> {
+class TenantsEdit extends PureComponent<Props, State> {
   state = {
-    lease: {},
-    tenantsData: {},
+    currentLease: {},
+    savedTenants: {},
   }
 
   componentDidMount() {
@@ -137,10 +160,11 @@ class TenantsEdit extends Component<Props, State> {
   static getDerivedStateFromProps(props, state) {
     if(props.currentLease !== state.lease) {
       return {
-        lease: props.currentLease,
-        tenantsData: getContentTenantsFormData(props.currentLease),
+        currentLease: props.currentLease,
+        savedTenants: getContentTenantsFormData(props.currentLease),
       };
     }
+
     return null;
   }
 
@@ -153,10 +177,8 @@ class TenantsEdit extends Component<Props, State> {
     }
 
     if(contactModalSettings && contactModalSettings.contact) {
-      change(
-        contactModalSettings.field,
-        getContentContact(contactModalSettings.contact)
-      );
+      // Update contact dropdown after creating/patching a contact
+      change(contactModalSettings.field, getContentContact(contactModalSettings.contact));
       receiveContactModalSettings(null);
     }
   }
@@ -186,7 +208,9 @@ class TenantsEdit extends Component<Props, State> {
     } = this.props;
 
     receiveIsSaveClicked(true);
-    if(!isContactFormValid) {return;}
+
+    if(!isContactFormValid) return;
+
     if(contactModalSettings && contactModalSettings.isNew) {
       createContact(contactFormValues);
     } else if(contactModalSettings && !contactModalSettings.isNew){
@@ -199,65 +223,68 @@ class TenantsEdit extends Component<Props, State> {
       contact = {...contactFormValues};
 
     receiveIsSaveClicked(true);
-    if(!isContactFormValid) {return;}
+
+    if(!isContactFormValid) return;
+
     contact.isSelected = true;
     createContact(contact);
   }
 
   render () {
     const {
+      contactMethods,
       contactModalSettings,
       handleSubmit,
       isContactModalOpen,
       isFetchingContact,
+      leaseAttributes,
     } = this.props;
 
-    const {
-      tenantsData,
-    } = this.state;
-    const tenants = get(tenantsData, 'tenants', []),
-      tenantsArchived = get(tenantsData, 'tenantsArchived', []);
+    const {savedTenants} = this.state;
+    const tenants = savedTenants.tenants,
+      tenantsArchived = savedTenants.tenantsArchived;
 
     return (
-      <div>
-        {isFetchingContact &&
-          <LoaderWrapper className='overlay-wrapper'>
-            <Loader isLoading={isFetchingContact} />
-          </LoaderWrapper>
-        }
+      <Fragment>
+        {isFetchingContact && <LoaderWrapper className='overlay-wrapper'><Loader isLoading={isFetchingContact} /></LoaderWrapper>}
 
-        <ContactModal
-          isOpen={isContactModalOpen}
-          onCancel={this.handleCancel}
-          onClose={this.handleClose}
-          onSave={this.handleSave}
-          onSaveAndAdd={this.handleSaveAndAdd}
-          showSave={contactModalSettings && !contactModalSettings.isNew}
-          showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
-          title={(contactModalSettings && contactModalSettings.isNew)
-            ? 'Uusi asiakas'
-            : 'Muokkaa asiakasta'
-          }
-        />
+        <Authorization allow={contactMethods.POST || contactMethods.PATCH}>
+          <ContactModal
+            isOpen={isContactModalOpen}
+            onCancel={this.handleCancel}
+            onClose={this.handleClose}
+            onSave={this.handleSave}
+            onSaveAndAdd={this.handleSaveAndAdd}
+            showSave={contactModalSettings && !contactModalSettings.isNew}
+            showSaveAndAdd={contactModalSettings && contactModalSettings.isNew}
+            title={(contactModalSettings && contactModalSettings.isNew)
+              ? 'Uusi asiakas'
+              : 'Muokkaa asiakasta'
+            }
+          />
+        </Authorization>
+
         <form onSubmit={handleSubmit}>
-          <h2>Vuokralaiset</h2>
+          <h2>{LeaseTenantsFieldTitles.TENANTS}</h2>
           <Divider />
 
           <FieldArray
             component={renderTenants}
-            name="tenants"
+            leaseAttributes={leaseAttributes}
+            name='tenants'
             showAddButton={true}
             tenants={tenants}
           />
-          {/* Archived tenants */}
+
           <FieldArray
             component={renderTenants}
-            name="tenantsArchived"
+            leaseAttributes={leaseAttributes}
+            name='tenantsArchived'
             showAddButton={false}
             tenants={tenantsArchived}
           />
         </form>
-      </div>
+      </Fragment>
     );
   }
 }
@@ -268,12 +295,14 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        contactMethods: getContactMethods(state),
         contactModalSettings: getContactModalSettings(state),
         contactFormValues: getFormValues(ContactFormNames.CONTACT)(state),
         currentLease: getCurrentLease(state),
         isContactFormValid: getIsContactFormValid(state),
         isContactModalOpen: getIsContactModalOpen(state),
         isFetchingContact: getIsFetchingContact(state),
+        leaseAttributes: getLeaseAttributes(state),
       };
     },
     {

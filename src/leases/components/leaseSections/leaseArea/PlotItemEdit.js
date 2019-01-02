@@ -5,18 +5,18 @@ import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import {Link, withRouter} from 'react-router';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import ActionButtonWrapper from '$components/form/ActionButtonWrapper';
+import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import BoxItem from '$components/content/BoxItem';
 import FormField from '$components/form/FormField';
 import KtjLink from '$components/ktj/KtjLink';
 import RemoveButton from '$components/form/RemoveButton';
 import SubTitle from '$components/content/SubTitle';
-import {FormNames, PlotType} from '$src/leases/enums';
-import {getSearchQuery} from '$util/helpers';
+import {FormNames, LeasePlotsFieldPaths, LeasePlotsFieldTitles, PlotType} from '$src/leases/enums';
+import {getFieldAttributes, getSearchQuery, isFieldAllowedToEdit, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -64,130 +64,136 @@ const PlotItemsEdit = ({
     <BoxItem>
       <BoxContentWrapper>
         <ActionButtonWrapper>
-          <RemoveButton
-            onClick={onRemove}
-            title="Poista kiinteistö / määräala"
-          />
+          <Authorization allow={isFieldAllowedToEdit(attributes, LeasePlotsFieldPaths.PLOTS)}>
+            <RemoveButton
+              onClick={onRemove}
+              title="Poista kiinteistö / määräala"
+            />
+          </Authorization>
         </ActionButtonWrapper>
         <Row>
           <Column small={12} medium={6} large={6}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.identifier')}
-              name={`${field}.identifier`}
-              overrideValues={{
-                label: 'Kohteen tunnus',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.IDENTIFIER)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlotsFieldPaths.IDENTIFIER)}
+                name={`${field}.identifier`}
+                overrideValues={{label: LeasePlotsFieldTitles.IDENTIFIER}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.type')}
-              name={`${field}.type`}
-              overrideValues={{
-                label: 'Määritelmä',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.TYPE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlotsFieldPaths.TYPE)}
+                name={`${field}.type`}
+                overrideValues={{label: LeasePlotsFieldTitles.TYPE}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={3} large={3}>
-            {!isEmpty(geometry) && <Link to={mapLinkUrl}>Karttalinkki</Link>}
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.GEOMETRY)}>
+              {!isEmpty(geometry) &&
+                <Link to={mapLinkUrl}>{LeasePlotsFieldTitles.GEOMETRY}</Link>
+              }
+            </Authorization>
           </Column>
         </Row>
 
         <Row>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.area')}
-              name={`${field}.area`}
-              unit='m²'
-              overrideValues={{
-                label: 'Kokonaisala',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.AREA)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlotsFieldPaths.AREA)}
+                name={`${field}.area`}
+                unit='m²'
+                overrideValues={{label: LeasePlotsFieldTitles.AREA}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.section_area')}
-              name={`${field}.section_area`}
-              unit='m²'
-              overrideValues={{
-                label: 'Leikkausala',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.SECTION_AREA)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlotsFieldPaths.SECTION_AREA)}
+                name={`${field}.section_area`}
+                unit='m²'
+                overrideValues={{label: LeasePlotsFieldTitles.SECTION_AREA}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.registration_date')}
-              name={`${field}.registration_date`}
-              overrideValues={{
-                label: 'Rekisteröintipvm',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.REGISTRATION_DATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlotsFieldPaths.REGISTRATION_DATE)}
+                name={`${field}.registration_date`}
+                overrideValues={{label: LeasePlotsFieldTitles.REGISTRATION_DATE}}
+              />
+            </Authorization>
           </Column>
           <Column small={12} medium={6} large={3}>
-            <FormField
-              disableTouched={isSaveClicked}
-              fieldAttributes={get(attributes, 'lease_areas.child.children.plots.child.children.repeal_date')}
-              name={`${field}.repeal_date`}
-              overrideValues={{
-                label: 'Kumoamispvm',
-              }}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.REPEAL_DATE)}>
+              <FormField
+                disableTouched={isSaveClicked}
+                fieldAttributes={getFieldAttributes(attributes, LeasePlotsFieldPaths.REPEAL_DATE)}
+                name={`${field}.repeal_date`}
+                overrideValues={{label: LeasePlotsFieldTitles.REPEAL_DATE}}
+              />
+            </Authorization>
           </Column>
         </Row>
-        {get(savedPlot, 'identifier') &&
-          <SubTitle>Ktj-dokumentit</SubTitle>
-        }
-        {get(savedPlot, 'identifier') &&
-          <Row>
-            {get(savedPlot, 'type') === PlotType.REAL_PROPERTY &&
+        <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.IDENTIFIER)}>
+          {savedPlot && savedPlot.identifier && <SubTitle>Ktj-dokumentit</SubTitle>}
+          {savedPlot && savedPlot.identifier &&
+            <Row>
+              {savedPlot.type === PlotType.REAL_PROPERTY &&
+                <Column small={12} medium={6}>
+                  <KtjLink
+                    fileKey='kiinteistorekisteriote/rekisteriyksikko'
+                    fileName='kiinteistorekisteriote'
+                    identifier={savedPlot.identifier}
+                    idKey='kiinteistotunnus'
+                    label='Kiinteistörekisteriote'
+                    prefix='ktjkii'
+                  />
+                </Column>
+              }
+              {savedPlot.type === PlotType.UNSEPARATED_PARCEL &&
+                <Column small={12} medium={6}>
+                  <KtjLink
+                    fileKey='kiinteistorekisteriote/maaraala'
+                    fileName='kiinteistorekisteriote'
+                    identifier={savedPlot.identifier}
+                    idKey='maaraalatunnus'
+                    label='Kiinteistörekisteriote'
+                    prefix='ktjkii'
+                  />
+                </Column>
+              }
               <Column small={12} medium={6}>
                 <KtjLink
-                  fileKey='kiinteistorekisteriote/rekisteriyksikko'
-                  fileName='kiinteistorekisteriote'
-                  identifier={get(savedPlot, 'identifier')}
-                  idKey='kiinteistotunnus'
-                  label='Kiinteistörekisteriote'
-                  prefix='ktjkii'
+                  fileKey='lainhuutotodistus'
+                  fileName='lainhuutotodistus'
+                  identifier={savedPlot.identifier}
+                  idKey='kohdetunnus'
+                  label='Lainhuutotodistus'
                 />
               </Column>
-            }
-            {get(savedPlot, 'type') === PlotType.UNSEPARATED_PARCEL &&
               <Column small={12} medium={6}>
                 <KtjLink
-                  fileKey='kiinteistorekisteriote/maaraala'
-                  fileName='kiinteistorekisteriote'
-                  identifier={get(savedPlot, 'identifier')}
-                  idKey='maaraalatunnus'
-                  label='Kiinteistörekisteriote'
-                  prefix='ktjkii'
+                  fileKey='rasitustodistus'
+                  fileName='rasitustodistus'
+                  identifier={savedPlot.identifier}
+                  idKey='kohdetunnus'
+                  label='Rasitustodistus'
                 />
               </Column>
-            }
-            <Column small={12} medium={6}>
-              <KtjLink
-                fileKey='lainhuutotodistus'
-                fileName='lainhuutotodistus'
-                identifier={get(savedPlot, 'identifier')}
-                idKey='kohdetunnus'
-                label='Lainhuutotodistus'
-              />
-            </Column>
-            <Column small={12} medium={6}>
-              <KtjLink
-                fileKey='rasitustodistus'
-                fileName='rasitustodistus'
-                identifier={get(savedPlot, 'identifier')}
-                idKey='kohdetunnus'
-                label='Rasitustodistus'
-              />
-            </Column>
-          </Row>
-        }
+            </Row>
+          }
+        </Authorization>
       </BoxContentWrapper>
     </BoxItem>
   );

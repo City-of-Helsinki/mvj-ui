@@ -2,6 +2,10 @@
 import {expect} from 'chai';
 
 import {
+  fetchAttributes,
+  attributesNotFound,
+  receiveAttributes,
+  receiveMethods,
   fetchCollectionLettersByLease,
   receiveCollectionLettersByLease,
   notFoundByLease,
@@ -10,8 +14,11 @@ import collectionLetterReducer from './reducer';
 
 import type {CollectionLetterState} from './types';
 const defaultState: CollectionLetterState = {
+  attributes: {},
   byLease: {},
+  isFetchingAttributes: false,
   isFetchingByLease: {},
+  methods: {},
 };
 
 // $FlowFixMe
@@ -24,6 +31,37 @@ describe('collectionLetter', () => {
     describe('collectionLetterReducer', () => {
 
       // $FlowFixMe
+      it('should update isFetchingAttributes flag to true when fetching attributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = collectionLetterReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = collectionLetterReducer({}, fetchAttributes());
+        state = collectionLetterReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update attributes', () => {
+        const dummyAttributes = {foo: 'bar'};
+        const newState = {...defaultState, attributes: dummyAttributes};
+
+        const state = collectionLetterReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update methods', () => {
+        const dummyMethods = {foo: 'bar'};
+        const newState = {...defaultState, methods: dummyMethods};
+
+        const state = collectionLetterReducer({}, receiveMethods(dummyMethods));
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isFetching flag to true when fetching collection letters', () => {
         const lease = 1;
         const newState = {...defaultState, isFetchingByLease: {[lease]: true}};

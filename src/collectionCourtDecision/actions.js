@@ -1,8 +1,13 @@
 // @flow
 import {createAction} from 'redux-actions';
-import type {LeaseId} from '$src/leases/types';
 
+import type {Attributes, Methods} from '$src/types';
+import type {LeaseId} from '$src/leases/types';
 import type {
+  FetchAttributesAction,
+  ReceiveAttributesAction,
+  ReceiveMethodsAction,
+  CollectionCourtDecisionAttributesNotFoundAction,
   UploadCollectionCourtDecisionPayload,
   DeleteCollectionCourtDecisionPayload,
   FetchCollectionCourtDecisionsByLeaseAction,
@@ -11,6 +16,18 @@ import type {
   UploadCollectionCourtDecisionAction,
   DeleteCollectionCourtDecisionAction,
 } from './types';
+
+export const fetchAttributes = (): FetchAttributesAction =>
+  createAction('mvj/collectionCourtDecision/FETCH_ATTRIBUTES')();
+
+export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
+  createAction('mvj/collectionCourtDecision/RECEIVE_ATTRIBUTES')(attributes);
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/collectionCourtDecision/RECEIVE_METHODS')(methods);
+
+export const attributesNotFound = (): CollectionCourtDecisionAttributesNotFoundAction =>
+  createAction('mvj/collectionCourtDecision/ATTRIBUTES_NOT_FOUND')();
 
 export const fetchCollectionCourtDecisionsByLease = (lease: LeaseId): FetchCollectionCourtDecisionsByLeaseAction =>
   createAction('mvj/collectionCourtDecision/FETCH_BY_LEASE')(lease);

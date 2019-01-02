@@ -2,7 +2,10 @@
 import {expect} from 'chai';
 
 import {
+  fetchAttributes,
   receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
   receiveSingleContact,
   initializeContactForm,
   receiveContactFormValid,
@@ -38,8 +41,10 @@ const defaultState: ContactState = {
   isContactModalOpen: false,
   isEditMode: false,
   isFetching: false,
+  isFetchingAttributes: false,
   isSaveClicked: false,
   list: {},
+  methods: {},
 };
 
 // $FlowFixMe
@@ -52,16 +57,42 @@ describe('Contacts', () => {
     describe('contactReducer', () => {
 
       // $FlowFixMe
+      it('should set isFetchingAttributes flag to true when fething attributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = contactReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should set isFetchingAttributes flag to false by attributeNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = contactReducer({}, fetchAttributes());
+        state = contactReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update contact attributes', () => {
         const dummyAttributes = {
           val1: 'Foo',
           val2: 'Bar',
         };
 
-        const newState = {...defaultState};
-        newState.attributes = dummyAttributes;
+        const newState = {...defaultState, isFetchingAttributes: false, attributes: dummyAttributes};
 
         const state = contactReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update contact methods', () => {
+        const dummyMethods = {
+          val1: 'Foo',
+          val2: 'Bar',
+        };
+
+        const newState = {...defaultState, isFetchingAttributes: false, methods: dummyMethods};
+
+        const state = contactReducer({}, receiveMethods(dummyMethods));
         expect(state).to.deep.equal(newState);
       });
 

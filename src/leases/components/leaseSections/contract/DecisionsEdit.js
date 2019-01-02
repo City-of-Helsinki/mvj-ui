@@ -8,23 +8,28 @@ import type {Element} from 'react';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButton from '$components/form/AddButton';
+import Authorization from '$components/authorization/Authorization';
 import DecisionItemEdit from './DecisionItemEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {ButtonColors} from '$components/enums';
-import {DeleteModalLabels, DeleteModalTitles, FormNames} from '$src/leases/enums';
+import {DeleteModalLabels, DeleteModalTitles, FormNames, LeaseDecisionsFieldPaths} from '$src/leases/enums';
 import {getContentDecisions} from '$src/leases/helpers';
-import {getCurrentLease} from '$src/leases/selectors';
+import {isFieldAllowedToEdit} from '$util/helpers';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type DecisionsProps = {
-  decisionsData: Array<Object>,
+  attributes: Attributes,
   fields: any,
+  savedDecisions: Array<Object>,
 }
 
 const renderDecisions = ({
-  decisionsData,
+  attributes,
   fields,
+  savedDecisions,
 }: DecisionsProps): Element<*> => {
   const handleAdd = () => {
     fields.push({});
@@ -51,29 +56,31 @@ const renderDecisions = ({
 
               return <DecisionItemEdit
                 key={index}
-                decisionsData={decisionsData}
                 index={index}
                 field={decision}
                 onRemove={handleRemove}
+                savedDecisions={savedDecisions}
               />;
             })}
-            <Row>
-              <Column>
-                <AddButton
-                  label='Lisää päätös'
-                  onClick={handleAdd}
-                />
-              </Column>
-            </Row>
+            <Authorization allow={isFieldAllowedToEdit(attributes, LeaseDecisionsFieldPaths.DECISIONS)}>
+              <Row>
+                <Column>
+                  <AddButton
+                    label='Lisää päätös'
+                    onClick={handleAdd}
+                  />
+                </Column>
+              </Row>
+            </Authorization>
           </div>
         );
       }}
     </AppConsumer>
-
   );
 };
 
 type Props = {
+  attributes: Attributes,
   currentLease: Lease,
   receiveFormValidFlags: Function,
   valid: boolean,
@@ -81,21 +88,20 @@ type Props = {
 
 type State = {
   currentLease: ?Lease,
-  decisionsData: Array<Object>,
+  savedDecisions: Array<Object>,
 }
 
 class DecisionsEdit extends Component<Props, State> {
   state = {
     currentLease: null,
-    decisionsData: [],
+    savedDecisions: [],
   }
 
   static getDerivedStateFromProps(props, state) {
     if(props.currentLease !== state.currentLease) {
-      const decisions = getContentDecisions(props.currentLease);
       return {
         currentLease: props.currentLease,
-        decisionsData: decisions,
+        savedDecisions: getContentDecisions(props.currentLease),
       };
     }
     return null;
@@ -112,16 +118,16 @@ class DecisionsEdit extends Component<Props, State> {
   }
 
   render() {
-    const {
-      decisionsData,
-    } = this.state;
+    const {attributes} = this.props;
+    const {savedDecisions} = this.state;
 
     return (
       <form>
         <FieldArray
           component={renderDecisions}
-          decisionsData={decisionsData}
+          attributes={attributes}
           name="decisions"
+          savedDecisions={savedDecisions}
         />
       </form>
     );
@@ -134,6 +140,7 @@ export default flowRight(
   connect(
     (state) => {
       return {
+        attributes: getAttributes(state),
         currentLease: getCurrentLease(state),
       };
     },

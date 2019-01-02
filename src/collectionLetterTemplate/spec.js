@@ -2,6 +2,10 @@
 import {expect} from 'chai';
 
 import {
+  fetchAttributes,
+  attributesNotFound,
+  receiveAttributes,
+  receiveMethods,
   fetchCollectionLetterTemplates,
   receiveCollectionLetterTemplates,
   notFound,
@@ -11,8 +15,11 @@ import collectionLetterTemplateReducer from './reducer';
 import type {CollectionLetterTemplateState} from './types';
 
 const defaultState: CollectionLetterTemplateState = {
+  attributes: {},
   isFetching: false,
+  isFetchingAttributes: false,
   list: [],
+  methods: {},
 };
 
 // $FlowFixMe
@@ -24,6 +31,37 @@ describe('collectionLetterTemplate', () => {
     describe('collectionLetterTemplateReducer', () => {
 
       // $FlowFixMe
+      it('should update isFetchingAttributes flag to true when fetching attributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = collectionLetterTemplateReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = collectionLetterTemplateReducer({}, fetchAttributes());
+        state = collectionLetterTemplateReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update attributes', () => {
+        const dummyAttributes = {foo: 'bar'};
+        const newState = {...defaultState, attributes: dummyAttributes};
+
+        const state = collectionLetterTemplateReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update methods', () => {
+        const dummyMethods = {foo: 'bar'};
+        const newState = {...defaultState, methods: dummyMethods};
+
+        const state = collectionLetterTemplateReducer({}, receiveMethods(dummyMethods));
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update isFetching flag to true when fetching collectionLetterTemplates', () => {
         const newState = {...defaultState};
         newState.isFetching = true;

@@ -3,6 +3,9 @@ import {expect} from 'chai';
 
 import {
   receiveAttributes,
+  receiveMethods,
+  fetchAttributes,
+  attributesNotFound,
   receiveInvoicesByLease,
   receiveIsCreateInvoicePanelOpen,
   receiveIsCreditInvoicePanelOpen,
@@ -31,6 +34,8 @@ const defaultState: InvoiceState = {
   isCreditPanelOpen: false,
   isEditClicked: false,
   isFetching: false,
+  isFetchingAttributes: false,
+  methods: {},
   patchedInvoice: null,
 };
 
@@ -49,10 +54,35 @@ describe('Invoices', () => {
           val1: 'Foo',
           val2: 'Bar',
         };
-        const newState = {...defaultState};
-        newState.attributes = dummyAttributes;
+        const newState = {...defaultState, attributes: dummyAttributes};
 
         const state = invoiceReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update contact methods', () => {
+        const dummyMethods = {
+          val1: 'Foo',
+          val2: 'Bar',
+        };
+        const newState = {...defaultState, methods: dummyMethods};
+
+        const state = invoiceReducer({}, receiveMethods(dummyMethods));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should set isFetchingAttributes flag to true when fetching attributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = invoiceReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should set isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = invoiceReducer({}, fetchAttributes());
+        state = invoiceReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
 

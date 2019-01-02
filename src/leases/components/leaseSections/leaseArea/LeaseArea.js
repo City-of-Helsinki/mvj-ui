@@ -7,10 +7,9 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
+import Authorization from '$components/authorization/Authorization';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
-import FormTitleAndText from '$components/form/FormTitleAndText';
 import FormText from '$components/form/FormText';
 import FormTextTitle from '$components/form/FormTextTitle';
 import ListItem from '$components/content/ListItem';
@@ -20,8 +19,24 @@ import PlotItem from './PlotItem';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
-import {formatNumber, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {
+  FormNames,
+  LeaseAreaAddressesFieldPaths,
+  LeaseAreaAddressesFieldTitles,
+  LeaseAreasFieldPaths,
+  LeaseAreasFieldTitles,
+  LeasePlanUnitsFieldPaths,
+  LeasePlotsFieldPaths,
+} from '$src/leases/enums';
+import {
+  formatNumber,
+  getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
+  getSearchQuery,
+  isEmptyValue,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey, getIsEditMode} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -52,9 +67,8 @@ const LeaseArea = ({
   router,
 }: Props) => {
   const handlePlanUnitContractCollapseToggle = (val: boolean) => {
-    if(!area || !area.id) {
-      return;
-    }
+    if(!area || !area.id) return;
+
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
@@ -67,9 +81,8 @@ const LeaseArea = ({
   };
 
   const handlePlanUnitCurrentCollapseToggle = (val: boolean) => {
-    if(!area || !area.id) {
-      return;
-    }
+    if(!area || !area.id) return;
+
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
         [FormNames.LEASE_AREAS]: {
@@ -82,9 +95,7 @@ const LeaseArea = ({
   };
 
   const handlePlotsContractCollapseToggle = (val: boolean) => {
-    if(!area || !area.id) {
-      return;
-    }
+    if(!area || !area.id) return;
 
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
@@ -98,9 +109,7 @@ const LeaseArea = ({
   };
 
   const handlePlotsCurrentCollapseToggle = (val: boolean) => {
-    if(!area || !area.id) {
-      return;
-    }
+    if(!area || !area.id) return;
 
     receiveCollapseStates({
       [isEditMode ? ViewModes.EDIT : ViewModes.READONLY]: {
@@ -124,169 +133,190 @@ const LeaseArea = ({
     return `${pathname}${getSearchQuery(tempQuery)}`;
   };
 
-  const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
-  const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
+  const locationOptions = getFieldOptions(getFieldAttributes(attributes, LeaseAreasFieldPaths.LOCATION));
+  const typeOptions = getFieldOptions(getFieldAttributes(attributes, LeaseAreasFieldPaths.TYPE));
   const addresses = get(area, 'addresses', []);
   const mapLinkUrl = getMapLinkUrl();
 
-  if(!area){return null;}
+  if(!area) return null;
 
   return (
     <div>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Kohteen tunnus'
-            text={area.identifier || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
+            <FormTextTitle>{LeaseAreasFieldTitles.IDENTIFIER}</FormTextTitle>
+            <FormText>{area.identifier || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Määritelmä'
-            text={getLabelOfOption(typeOptions, area.type) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.TYPE)}>
+            <FormTextTitle>{LeaseAreasFieldTitles.TYPE}</FormTextTitle>
+            <FormText>{getLabelOfOption(typeOptions, area.type) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Pinta-ala'
-            text={(area.area || area.area === 0) ? `${formatNumber(area.area)} m²` : '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
+            <FormTextTitle>{LeaseAreasFieldTitles.AREA}</FormTextTitle>
+            <FormText>{!isEmptyValue(area.area) ? `${formatNumber(area.area)} m²` : '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Sijainti'
-            text={getLabelOfOption(locationOptions, area.location) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.LOCATION)}>
+            <FormTextTitle>{LeaseAreasFieldTitles.LOCATION}</FormTextTitle>
+            <FormText>{getLabelOfOption(locationOptions, area.location) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          {(isActive && !isEmpty(area.geometry)) && <Link to={mapLinkUrl}>Karttalinkki</Link>}
-        </Column>
-      </Row>
-
-      <SubTitle>Osoite</SubTitle>
-      {!addresses || !addresses.length && <FormText>Ei osoitteita</FormText>}
-      {!!addresses.length &&
-        <div>
-          <Row>
-            <Column small={6} large={4}>
-              <FormTextTitle title='Osoite' />
-            </Column>
-            <Column small={3} large={2}>
-              <FormTextTitle title='Postinumero' />
-            </Column>
-            <Column small={3} large={2}>
-              <FormTextTitle title='Kaupunki' />
-            </Column>
-          </Row>
-          <ListItems>
-            {addresses.map((address) => {
-              return (
-                <Row key={address.id}>
-                  <Column small={6} large={4}>
-                    <ListItem>{address.address || '-'}</ListItem>
-                  </Column>
-                  <Column small={3} large={2}>
-                    <ListItem>{address.postal_code || '-'}</ListItem>
-                  </Column>
-                  <Column small={3} large={2}>
-                    <ListItem>{address.city || '-'}</ListItem>
-                  </Column>
-                </Row>
-              );
-            })}
-          </ListItems>
-        </div>
-      }
-
-      <Row>
-        <Column small={12} large={6}>
-          <Collapse
-            className='collapse__secondary'
-            defaultOpen={plotsContractCollapseState !== undefined ? plotsContractCollapseState : true}
-            headerTitle={<CollapseHeaderTitle>Kiinteistöt / määräalat sopimuksessa</CollapseHeaderTitle>}
-            onToggle={handlePlotsContractCollapseToggle}
-          >
-            <BoxItemContainer>
-              {!area.plots_contract || !area.plots_contract.length &&
-                <FormText>Ei kiinteistöjä/määräaloja sopimuksessa</FormText>
-              }
-              {area.plots_contract && !!area.plots_contract.length && area.plots_contract.map((item, index) =>
-                <PlotItem
-                  key={index}
-                  isAreaActive={isActive}
-                  plot={item}
-                />
-              )}
-            </BoxItemContainer>
-          </Collapse>
-        </Column>
-        <Column small={12} large={6}>
-          <Collapse
-            className='collapse__secondary'
-            defaultOpen={plotsCurrentCollapseState !== undefined ? plotsCurrentCollapseState : true}
-            headerTitle={<CollapseHeaderTitle>Kiinteistöt / määräalat nykyhetkellä</CollapseHeaderTitle>}
-            onToggle={handlePlotsCurrentCollapseToggle}
-          >
-            {!area.plots_current || !area.plots_current.length &&
-              <FormText>Ei kiinteistöjä/määräaloja nykyhetkellä</FormText>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.GEOMETRY)}>
+            {(isActive && !isEmpty(area.geometry)) &&
+              <Link to={mapLinkUrl}>{LeaseAreasFieldTitles.GEOMETRY}</Link>
             }
-            <BoxItemContainer>
-              {area.plots_current && !!area.plots_current.length && area.plots_current.map((item, index) =>
-                <PlotItem
-                  key={index}
-                  isAreaActive={isActive}
-                  plot={item}
-                />
-              )}
-            </BoxItemContainer>
-          </Collapse>
+          </Authorization>
         </Column>
       </Row>
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+        <SubTitle>{LeaseAreaAddressesFieldTitles.ADDRESSES}</SubTitle>
+        {!addresses || !addresses.length && <FormText>Ei osoitteita</FormText>}
+        {!!addresses.length &&
+          <div>
+            <Row>
+              <Column small={6} large={4}>
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
+                  <FormTextTitle>{LeaseAreaAddressesFieldTitles.ADDRESS}</FormTextTitle>
+                </Authorization>
+              </Column>
+              <Column small={3} large={2}>
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
+                  <FormTextTitle>{LeaseAreaAddressesFieldTitles.POSTAL_CODE}</FormTextTitle>
+                </Authorization>
+              </Column>
+              <Column small={3} large={2}>
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
+                  <FormTextTitle>{LeaseAreaAddressesFieldTitles.CITY}</FormTextTitle>
+                </Authorization>
+              </Column>
+            </Row>
+            <ListItems>
+              {addresses.map((address) => {
+                return (
+                  <Row key={address.id}>
+                    <Column small={6} large={4}>
+                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESS)}>
+                        <ListItem>{address.address || '-'}</ListItem>
+                      </Authorization>
+                    </Column>
+                    <Column small={3} large={2}>
+                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.POSTAL_CODE)}>
+                        <ListItem>{address.postal_code || '-'}</ListItem>
+                      </Authorization>
+                    </Column>
+                    <Column small={3} large={2}>
+                      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.CITY)}>
+                        <ListItem>{address.city || '-'}</ListItem>
+                      </Authorization>
+                    </Column>
+                  </Row>
+                );
+              })}
+            </ListItems>
+          </div>
+        }
+      </Authorization>
 
-      <Row>
-        <Column small={12} large={6}>
-          <Collapse
-            className='collapse__secondary'
-            defaultOpen={planUnitsContractCollapseState !== undefined ? planUnitsContractCollapseState : true}
-            headerTitle={<CollapseHeaderTitle>Kaavayksiköt sopimuksessa</CollapseHeaderTitle>}
-            onToggle={handlePlanUnitContractCollapseToggle}
-          >
-            <BoxItemContainer>
-              {!area.plan_units_contract || !area.plan_units_contract.length &&
-                <FormText>Ei kaavayksiköitä sopimuksessa</FormText>
+      <Authorization allow={isFieldAllowedToRead(attributes, LeasePlotsFieldPaths.PLOTS)}>
+        <Row>
+          <Column small={12} large={6}>
+            <Collapse
+              className='collapse__secondary'
+              defaultOpen={plotsContractCollapseState !== undefined ? plotsContractCollapseState : true}
+              headerTitle='Kiinteistöt / määräalat sopimuksessa'
+              onToggle={handlePlotsContractCollapseToggle}
+            >
+              <BoxItemContainer>
+                {!area.plots_contract || !area.plots_contract.length &&
+                  <FormText>Ei kiinteistöjä/määräaloja sopimuksessa</FormText>
+                }
+                {area.plots_contract && !!area.plots_contract.length && area.plots_contract.map((item, index) =>
+                  <PlotItem
+                    key={index}
+                    isAreaActive={isActive}
+                    plot={item}
+                  />
+                )}
+              </BoxItemContainer>
+            </Collapse>
+          </Column>
+          <Column small={12} large={6}>
+            <Collapse
+              className='collapse__secondary'
+              defaultOpen={plotsCurrentCollapseState !== undefined ? plotsCurrentCollapseState : true}
+              headerTitle='Kiinteistöt / määräalat nykyhetkellä'
+              onToggle={handlePlotsCurrentCollapseToggle}
+            >
+              {!area.plots_current || !area.plots_current.length &&
+                <FormText>Ei kiinteistöjä/määräaloja nykyhetkellä</FormText>
               }
-              {area.plan_units_contract && !!area.plan_units_contract.length && area.plan_units_contract.map((item, index) =>
-                <PlanUnitItem
-                  key={index}
-                  isAreaActive={isActive}
-                  planUnit={item}
-                />
-              )}
-            </BoxItemContainer>
-          </Collapse>
-        </Column>
-        <Column small={12} large={6}>
-          <Collapse
-            className='collapse__secondary'
-            defaultOpen={planUnitsCurrentCollapseState !== undefined ? planUnitsCurrentCollapseState : true}
-            headerTitle={<CollapseHeaderTitle>Kaavayksiköt nykyhetkellä</CollapseHeaderTitle>}
-            onToggle={handlePlanUnitCurrentCollapseToggle}
-          >
-            <BoxItemContainer>
-              {!area.plan_units_current || !area.plan_units_current.length &&
-                <FormText>Ei kaavayksiköitä nykyhetkellä</FormText>
-              }
-              {area.plan_units_current && !!area.plan_units_current.length && area.plan_units_current.map((item, index) =>
-                <PlanUnitItem
-                  key={index}
-                  isAreaActive={isActive}
-                  planUnit={item}
-                />
-              )}
-            </BoxItemContainer>
-          </Collapse>
-        </Column>
-      </Row>
+              <BoxItemContainer>
+                {area.plots_current && !!area.plots_current.length && area.plots_current.map((item, index) =>
+                  <PlotItem
+                    key={index}
+                    isAreaActive={isActive}
+                    plot={item}
+                  />
+                )}
+              </BoxItemContainer>
+            </Collapse>
+          </Column>
+        </Row>
+      </Authorization>
+
+      <Authorization allow={isFieldAllowedToRead(attributes, LeasePlanUnitsFieldPaths.PLAN_UNITS)}>
+        <Row>
+          <Column small={12} large={6}>
+            <Collapse
+              className='collapse__secondary'
+              defaultOpen={planUnitsContractCollapseState !== undefined ? planUnitsContractCollapseState : true}
+              headerTitle='Kaavayksiköt sopimuksessa'
+              onToggle={handlePlanUnitContractCollapseToggle}
+            >
+              <BoxItemContainer>
+                {!area.plan_units_contract || !area.plan_units_contract.length &&
+                  <FormText>Ei kaavayksiköitä sopimuksessa</FormText>
+                }
+                {area.plan_units_contract && !!area.plan_units_contract.length && area.plan_units_contract.map((item, index) =>
+                  <PlanUnitItem
+                    key={index}
+                    isAreaActive={isActive}
+                    planUnit={item}
+                  />
+                )}
+              </BoxItemContainer>
+            </Collapse>
+          </Column>
+          <Column small={12} large={6}>
+            <Collapse
+              className='collapse__secondary'
+              defaultOpen={planUnitsCurrentCollapseState !== undefined ? planUnitsCurrentCollapseState : true}
+              headerTitle='Kaavayksiköt nykyhetkellä'
+              onToggle={handlePlanUnitCurrentCollapseToggle}
+            >
+              <BoxItemContainer>
+                {!area.plan_units_current || !area.plan_units_current.length &&
+                  <FormText>Ei kaavayksiköitä nykyhetkellä</FormText>
+                }
+                {area.plan_units_current && !!area.plan_units_current.length && area.plan_units_current.map((item, index) =>
+                  <PlanUnitItem
+                    key={index}
+                    isAreaActive={isActive}
+                    planUnit={item}
+                  />
+                )}
+              </BoxItemContainer>
+            </Collapse>
+          </Column>
+        </Row>
+      </Authorization>
     </div>
   );
 };

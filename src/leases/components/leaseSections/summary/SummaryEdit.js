@@ -7,8 +7,8 @@ import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
+import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormField from '$components/form/FormField';
@@ -21,9 +21,14 @@ import RelatedLeasesEdit from './RelatedLeasesEdit';
 import SummaryLeaseInfo from './SummaryLeaseInfo';
 import {receiveCollapseStates, receiveFormValidFlags} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
+import {FormNames, LeaseSummaryFieldTitles, LeaseSummaryFieldPaths} from '$src/leases/enums';
 import {validateSummaryForm} from '$src/leases/formValidators';
 import {getContentSummary} from '$src/leases/helpers';
+import {
+  getFieldAttributes,
+  getReferenceNumberLink,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {
   getAttributes,
@@ -132,137 +137,141 @@ class SummaryEdit extends Component<Props, State> {
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
               hasErrors={isSaveClicked && !isEmpty(errors)}
-              headerTitle={<CollapseHeaderTitle>Perustiedot</CollapseHeaderTitle>}
+              headerTitle='Perustiedot'
               onToggle={this.handleBasicInfoToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'state')}
-                    name='state'
-                    overrideValues={{
-                      label: 'Tyyppi',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.STATE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseSummaryFieldPaths.STATE)}
+                      name='state'
+                      overrideValues={{label: LeaseSummaryFieldTitles.STATE}}
+                    />
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'start_date')}
-                    name='start_date'
-                    overrideValues={{
-                      label: 'Alkupvm',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.START_DATE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseSummaryFieldPaths.START_DATE)}
+                      name='start_date'
+                      overrideValues={{label: LeaseSummaryFieldTitles.START_DATE}}
+                    />
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'end_date')}
-                    name='end_date'
-                    overrideValues={{
-                      label: 'Loppupvm',
-                    }}
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'lessor')}
-                    name='lessor'
-                    overrideValues={{
-                      fieldType: 'lessor',
-                      label: 'Vuokranantaja',
-                    }}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'preparer')}
-                    name='preparer'
-                    overrideValues={{
-                      fieldType: 'user',
-                      label: 'Valmistelija',
-                    }}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'classification')}
-                    name='classification'
-                    overrideValues={{
-                      label: 'Julkisuusluokka',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.END_DATE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseSummaryFieldPaths.END_DATE)}
+                      name='end_date'
+                      overrideValues={{label: LeaseSummaryFieldTitles.END_DATE}}
+                    />
+                  </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'intended_use')}
-                    name='intended_use'
-                    overrideValues={{
-                      label: 'Vuokrauksen käyttötarkoitus',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.LESSOR)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseSummaryFieldPaths.LESSOR)}
+                      name='lessor'
+                      overrideValues={{
+                        fieldType: 'lessor',
+                        label: LeaseSummaryFieldTitles.LESSOR,
+                      }}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.PREPARER)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseSummaryFieldPaths.PREPARER)}
+                      name='preparer'
+                      overrideValues={{
+                        fieldType: 'user',
+                        label: LeaseSummaryFieldTitles.PREPARER,
+                      }}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.CLASSIFICATION)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={getFieldAttributes(attributes, LeaseSummaryFieldPaths.CLASSIFICATION)}
+                      name='classification'
+                      overrideValues={{label: 'Julkisuusluokka'}}
+                    />
+                  </Authorization>
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.INTENDED_USE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.INTENDED_USE)}
+                      name='intended_use'
+                      overrideValues={{label: LeaseSummaryFieldTitles.INTENDED_USE}}
+                    />
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'intended_use_note')}
-                    name='intended_use_note'
-                    overrideValues={{
-                      label: 'Käyttötarkoituksen huomautus',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.INTENDED_USE_NOTE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.INTENDED_USE_NOTE)}
+                      name='intended_use_note'
+                      overrideValues={{label: LeaseSummaryFieldTitles.INTENDED_USE_NOTE}}
+                    />
+                  </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'financing')}
-                    name='financing'
-                    overrideValues={{
-                      label: 'Rahoitusmuoto',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.FINANCING)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.FINANCING)}
+                      name='financing'
+                      overrideValues={{label: LeaseSummaryFieldTitles.FINANCING}}
+                    />
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'management')}
-                    name='management'
-                    overrideValues={{
-                      label: 'Hallintamuoto',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.MANAGEMENT)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.MANAGEMENT)}
+                      name='management'
+                      overrideValues={{label: LeaseSummaryFieldTitles.MANAGEMENT}}
+                    />
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'transferable')}
-                    name='transferable'
-                    overrideValues={{
-                      label: 'Siirto-oikeus',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.TRANSFERABLE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.TRANSFERABLE)}
+                      name='transferable'
+                      overrideValues={{label: LeaseSummaryFieldTitles.TRANSFERABLE}}
+                    />
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'hitas')}
-                    name='hitas'
-                    overrideValues={{
-                      label: 'Hitas',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.HITAS)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.HITAS)}
+                      name='hitas'
+                      overrideValues={{label: LeaseSummaryFieldTitles.HITAS}}
+                    />
+                  </Authorization>
                 </Column>
                 {/* TODO: Allow to edit vuokrausperuste */}
                 <Column small={12} medium={6} large={4}>
@@ -272,78 +281,90 @@ class SummaryEdit extends Component<Props, State> {
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormTextTitle title='Täydennysrakentamiskorvaus' />
-                  {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length &&
-                    <FormText>-</FormText>
-                  }
-                  {infillDevelopmentCompensations && !!infillDevelopmentCompensations.length &&
-                    <ListItems>
-                      {infillDevelopmentCompensations.map((item) =>
-                        <ListItem key={item.id}>
-                          <ExternalLink
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}</FormTextTitle>
+                    {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length
+                      ? <FormText>-</FormText>
+                      : <ListItems>
+                        {infillDevelopmentCompensations.map((item) =>
+                          <ListItem key={item.id}>
+                            <ExternalLink
+                              className='no-margin'
+                              href={`${getRouteById('infillDevelopment')}/${item.id}`}
+                              text={item.name || item.id}
+                            />
+                          </ListItem>
+                        )}
+                      </ListItems>
+                    }
+                  </Authorization>
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.NOTICE_PERIOD)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.NOTICE_PERIOD)}
+                      name='notice_period'
+                      overrideValues={{label: LeaseSummaryFieldTitles.NOTICE_PERIOD}}
+                    />
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={8}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.NOTICE_NOTE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.NOTICE_NOTE)}
+                      name='notice_note'
+                      overrideValues={{label: LeaseSummaryFieldTitles.NOTICE_NOTE}}
+                    />
+                  </Authorization>
+                </Column>
+              </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.REFERENCE_NUMBER)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.REFERENCE_NUMBER)}
+                      name='reference_number'
+                      validate={referenceNumber}
+                      readOnlyValueRenderer={(value) => {
+                        if(value) {
+                          return <FormText><ExternalLink
                             className='no-margin'
-                            href={`${getRouteById('infillDevelopment')}/${item.id}`}
-                            text={item.name || item.id}
-                          />
-                        </ListItem>
-                      )}
-                    </ListItems>
-                  }
-                </Column>
-              </Row>
-              <Row>
-                <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'notice_period')}
-                    name='notice_period'
-                    overrideValues={{
-                      label: 'Irtisanomisaika',
-                    }}
-                  />
+                            href={getReferenceNumberLink(value)}
+                            text={value} /></FormText>;
+                        } else {
+                          return <FormText>-</FormText>;
+                        }
+                      }}
+                      overrideValues={{label: LeaseSummaryFieldTitles.REFERENCE_NUMBER}}
+                    />
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'notice_note')}
-                    name='notice_note'
-                    overrideValues={{
-                      label: 'Irtisanomisajan huomautus',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.NOTE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.NOTE)}
+                      name='note'
+                      overrideValues={{label: LeaseSummaryFieldTitles.NOTE}}
+                    />
+                  </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'reference_number')}
-                    name='reference_number'
-                    validate={referenceNumber}
-                    overrideValues={{
-                      label: 'Diaarinumero',
-                    }}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={8}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'note')}
-                    name='note'
-                    overrideValues={{
-                      label: 'Huomautus',
-                    }}
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'is_subject_to_vat')}
-                    name='is_subject_to_vat'
-                    overrideValues={{label: 'Arvonlisävelvollinen'}}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.IS_SUBJECT_TO_VAT)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.IS_SUBJECT_TO_VAT)}
+                      name='is_subject_to_vat'
+                      overrideValues={{label: LeaseSummaryFieldTitles.IS_SUBJECT_TO_VAT}}
+                    />
+                  </Authorization>
                 </Column>
               </Row>
 
@@ -352,51 +373,51 @@ class SummaryEdit extends Component<Props, State> {
 
             <Collapse
               defaultOpen={collapseStateStatistical !== undefined ? collapseStateStatistical : true}
-              headerTitle={<CollapseHeaderTitle>Tilastotiedot</CollapseHeaderTitle>}
+              headerTitle='Tilastotiedot'
               onToggle={this.handleStatisticalInfoToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'supportive_housing')}
-                    name='supportive_housing'
-                    overrideValues={{
-                      label: 'Erityisasunnot',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.SUPPORTIVE_HOUSING)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.SUPPORTIVE_HOUSING)}
+                      name='supportive_housing'
+                      overrideValues={{label: LeaseSummaryFieldTitles.SUPPORTIVE_HOUSING}}
+                    />
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'statistical_use')}
-                    name='statistical_use'
-                    overrideValues={{
-                      label: 'Tilastollinen pääkäyttötarkoitus',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.STATISTICAL_USE)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.STATISTICAL_USE)}
+                      name='statistical_use'
+                      overrideValues={{label: LeaseSummaryFieldTitles.STATISTICAL_USE}}
+                    />
+                  </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'regulated')}
-                    name='regulated'
-                    overrideValues={{
-                      label: 'Sääntely',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.REGULATED)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.REGULATED)}
+                      name='regulated'
+                      overrideValues={{label: LeaseSummaryFieldTitles.REGULATED}}
+                    />
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormField
-                    disableTouched={isSaveClicked}
-                    fieldAttributes={get(attributes, 'regulation')}
-                    name='regulation'
-                    overrideValues={{
-                      label: 'Sääntelymuoto',
-                    }}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.REGULATION)}>
+                    <FormField
+                      disableTouched={isSaveClicked}
+                      fieldAttributes={get(attributes, LeaseSummaryFieldPaths.REGULATION)}
+                      name='regulation'
+                      overrideValues={{label: LeaseSummaryFieldTitles.REGULATION}}
+                    />
+                  </Authorization>
                 </Column>
               </Row>
             </Collapse>

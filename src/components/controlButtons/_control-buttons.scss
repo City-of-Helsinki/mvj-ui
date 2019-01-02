@@ -2,7 +2,7 @@
   display: flex;
   float: right;
 
-  .comment-button {
+  &__comment-button {
     display: inline-block;
     margin-left: 3rem;
     margin-right: 0;
@@ -15,27 +15,31 @@
     &:hover {
       outline: none;
     }
+
+    .comment-icon {
+      width: rem-calc(30px) !important;
+      height: rem-calc(30px);
+      fill: $black;
+      stroke: $black;
+    }
+
+    .comment-amount {
+      position: absolute;
+      font-size: rem-calc(13px);
+      line-height: 1;
+      padding: rem-calc(4px);
+      color: $white;
+      font-weight: 600;
+      text-align: center;
+      border-radius: 50%;
+      background-color: $brick;
+      top: rem-calc(-6px);
+      right: rem-calc(-10px);
+      min-width: rem-calc(21px);
+    }
   }
-  .commentIcon {
-    width: rem-calc(30px);
-    height: rem-calc(30px);
-    fill: $black;
-  }
-  .circle {
-    position: absolute;
-    font-size: rem-calc(13px);
-    line-height: 1;
-    padding: rem-calc(4px);
-    color: $white;
-    font-weight: 600;
-    text-align: center;
-    border-radius: 50%;
-    background-color: $brick;
-    top: rem-calc(-6px);
-    right: rem-calc(-10px);
-    min-width: rem-calc(21px);
-  }
-  .left-buttons {
+
+  &__left-button-wrapper {
     .mvj-button:last-child {
       margin-right: 0;
     }

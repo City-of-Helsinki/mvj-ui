@@ -2,7 +2,10 @@
 import {expect} from 'chai';
 
 import {
+  fetchAttributes,
   receiveAttributes,
+  receiveMethods,
+  attributesNotFound,
   fetchCommentsByLease,
   receiveCommentsByLease,
   createComment,
@@ -22,7 +25,9 @@ const defaultState: CommentState = {
   byLease: {},
   isEditModeById: {},
   isFetching: false,
+  isFetchingAttributes: false,
   isSaveClicked: false,
+  methods: {},
 };
 
 // $FlowFixMe
@@ -45,6 +50,38 @@ describe('Comments', () => {
         const newState = {...defaultState, attributes: dummyAttributes};
 
         const state = commentReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update comment methods', () => {
+        const dummyMethods = {
+          PATCH: true,
+          DELETE: true,
+          GET: true,
+          HEAD: true,
+          POST: true,
+          OPTIONS: true,
+          PUT: true,
+        };
+
+        const newState = {...defaultState, methods: dummyMethods};
+
+        const state = commentReducer({}, receiveMethods(dummyMethods));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to true when fetching attributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = commentReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = commentReducer({}, fetchAttributes());
+        state = commentReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
 

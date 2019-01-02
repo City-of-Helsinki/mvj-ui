@@ -1,5 +1,5 @@
 // @flow
-import type {Attributes, Selector} from '$src/types';
+import type {Attributes, Methods, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
 import type {Invoice, InvoiceList} from './types';
 import type {LeaseId} from '$src/leases/types';
@@ -22,8 +22,14 @@ export const getIsCreditClicked: Selector<boolean, void> = (state: RootState): b
 export const getIsEditClicked: Selector<boolean, void> = (state: RootState): boolean =>
   state.invoice.isEditClicked;
 
-export const getAttributes: Selector<Attributes, void> = (state: RootState): RootState =>
+export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.invoice.attributes;
+
+export const getMethods: Selector<Methods, void> = (state: RootState): Methods =>
+  state.invoice.methods;
+
+export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.invoice.isFetchingAttributes;
 
 export const getInvoicesByLease: Selector<InvoiceList, LeaseId> = (state: RootState, leaseId: LeaseId): InvoiceList =>
   state.invoice.byLease[leaseId];

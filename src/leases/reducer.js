@@ -5,11 +5,12 @@ import merge from 'lodash/merge';
 
 import {FormNames} from '$src/leases/enums';
 
-import type {Attributes, Reducer} from '$src/types';
+import type {Attributes, Methods, Reducer} from '$src/types';
 import type {
   Lease,
   LeaseList,
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
   ReceiveLeasesAction,
   ReceiveSingleLeaseAction,
   FetchLeaseByIdAction,
@@ -19,16 +20,6 @@ import type {
   ReceiveIsSaveClickedAction,
   ReceiveCollapseStatesAction,
 } from '$src/leases/types';
-
-const isArchiveAreaModalOpenReducer: Reducer<boolean> = handleActions({
-  'mvj/leases/HIDE_ARCHIVE_AREA_MODAL': () => false,
-  'mvj/leases/SHOW_ARCHIVE_AREA_MODAL': () => true,
-}, false);
-
-const isUnarchiveAreaModalOpenReducer: Reducer<boolean> = handleActions({
-  'mvj/leases/HIDE_UNARCHIVE_AREA_MODAL': () => false,
-  'mvj/leases/SHOW_UNARCHIVE_AREA_MODAL': () => true,
-}, false);
 
 const isEditModeReducer: Reducer<boolean> = handleActions({
   'mvj/leases/HIDE_EDIT': () => false,
@@ -46,8 +37,6 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
 
 const isSavingReducer: Reducer<boolean> = handleActions({
   'mvj/leases/PATCH': () => true,
-  'mvj/leases/ARCHIVE_AREA': () => true,
-  'mvj/leases/UNARCHIVE_AREA': () => true,
   'mvj/leases/START_INVOICING': () => true,
   'mvj/leases/STOP_INVOICING': () => true,
   'mvj/leases/SET_RENT_INFO_COMPLETE': () => true,
@@ -81,11 +70,19 @@ const isFetchingByIdReducer: Reducer<Object> = handleActions({
 const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
   'mvj/leases/FETCH_ATTRIBUTES': () => true,
   'mvj/leases/RECEIVE_ATTRIBUTES': () => false,
+  'mvj/leases/RECEIVE_METHODS': () => false,
+  'mvj/leases/ATTRIBUTES_NOT_FOUND': () => false,
 }, false);
 
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/leases/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
+  },
+}, {});
+
+const methodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/leases/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
+    return methods;
   },
 }, {});
 
@@ -157,7 +154,6 @@ export default combineReducers({
   byId: byIdReducer,
   collapseStates: collapseStatesReducer,
   current: currentLeaseReducer,
-  isArchiveAreaModalOpen: isArchiveAreaModalOpenReducer,
   isSaving: isSavingReducer,
   isFormValidById: isFormValidByIdReducer,
   isEditMode: isEditModeReducer,
@@ -165,6 +161,6 @@ export default combineReducers({
   isFetchingById: isFetchingByIdReducer,
   isFetchingAttributes: isFetchingAttributesReducer,
   isSaveClicked: isSaveClickedReducer,
-  isUnarchiveAreaModalOpen: isUnarchiveAreaModalOpenReducer,
   list: leasesListReducer,
+  methods: methodsReducer,
 });

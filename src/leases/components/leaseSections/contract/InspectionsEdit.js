@@ -7,14 +7,9 @@ import {FieldArray, reduxForm} from 'redux-form';
 import InspectionItemsEdit from './InspectionItemsEdit';
 import {receiveFormValidFlags} from '$src/leases/actions';
 import {FormNames} from '$src/leases/enums';
-import {getAttributes, getIsSaveClicked} from '$src/leases/selectors';
-
-import type {Attributes} from '$src/types';
 
 type Props = {
-  attributes: Attributes,
   handleSubmit: Function,
-  isSaveClicked: boolean,
   receiveFormValidFlags: Function,
   valid: boolean,
 }
@@ -31,14 +26,12 @@ class InspectionsEdit extends Component<Props> {
   }
 
   render() {
-    const {attributes, handleSubmit, isSaveClicked} = this.props;
+    const {handleSubmit} = this.props;
 
     return (
       <form onSubmit={handleSubmit}>
         <FieldArray
-          attributes={attributes}
           component={InspectionItemsEdit}
-          isSaveClicked={isSaveClicked}
           name="inspections"
         />
       </form>
@@ -50,12 +43,7 @@ const formName = FormNames.INSPECTIONS;
 
 export default flowRight(
   connect(
-    (state) => {
-      return {
-        attributes: getAttributes(state),
-        isSaveClicked: getIsSaveClicked(state),
-      };
-    },
+    null,
     {
       receiveFormValidFlags,
     }

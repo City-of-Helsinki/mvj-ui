@@ -220,7 +220,7 @@ export const fixedLengthNumber = (value: ?number, length: number = 2) => {
 
 export const getEpochTime = () => Math.round(new Date().getTime()/1000.0);
 
-export const formatDate = (date: string) => {
+export const formatDate = (date: ?string) => {
   if (!date) return '';
 
   const d = isNumber(date) ? moment.unix(date) : moment(date);
@@ -517,6 +517,16 @@ export const isFieldAllowedToRead = (attributes: Attributes, field: string) =>
   get(attributes, field) ? true : false;
 
 /**
+ * Check is field required
+ * @param attributes
+ * @param field
+ * @returns {boolean}
+ */
+
+export const isFieldRequired = (attributes: Attributes, field: string) =>
+  get(attributes, `${field}.required`) ? true : false;
+
+/**
 * Check has user write permissions to field
 * @param attributes
 * @param field
@@ -525,3 +535,12 @@ export const isFieldAllowedToRead = (attributes: Attributes, field: string) =>
 
 export const isFieldAllowedToEdit = (attributes: Attributes, field: string) =>
   get(attributes, `${field}.read_only`) === false ? true : false;
+
+  /**
+  * Get attributes of a field
+  * @param attributes
+  * @param path
+  * @returns {boolean}
+  */
+
+export const getFieldAttributes = (attributes: Attributes, path: string) => get(attributes, path);

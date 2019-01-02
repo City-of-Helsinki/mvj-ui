@@ -5,17 +5,30 @@ import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import Divider from '$components/content/Divider';
-import FormTitleAndText from '$components/form/FormTitleAndText';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import LeaseArea from './LeaseArea';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
+import {
+  FormNames,
+  LeaseAreaAddressesFieldPaths,
+  LeaseAreasFieldPaths,
+  LeaseAreasFieldTitles,
+} from '$src/leases/enums';
 import {getFullAddress} from '$src/leases/helpers';
-import {formatDate, formatNumber, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {
+  formatDate,
+  formatNumber,
+  getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
@@ -53,8 +66,8 @@ const LeaseAreaWithArchiveInfo = ({
     });
   };
 
-  const locationOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.location');
-  const typeOptions = getAttributeFieldOptions(attributes, 'lease_areas.child.children.type');
+  const locationOptions = getFieldOptions(getFieldAttributes(attributes, LeaseAreasFieldPaths.LOCATION));
+  const typeOptions = getFieldOptions(getFieldAttributes(attributes, LeaseAreasFieldPaths.TYPE));
 
   return (
     <Collapse
@@ -63,20 +76,32 @@ const LeaseAreaWithArchiveInfo = ({
       headerSubtitles={
         <Fragment>
           <Column>
-            <CollapseHeaderSubtitle>{getLabelOfOption(typeOptions, area.type) || '-'}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.TYPE)}>
+              <CollapseHeaderSubtitle>{getLabelOfOption(typeOptions, area.type) || '-'}</CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle>{getFullAddress(get(area, 'addresses[0]')) || '-'}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreaAddressesFieldPaths.ADDRESSES)}>
+              <CollapseHeaderSubtitle>{getFullAddress(get(area, 'addresses[0]')) || '-'}</CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle>{formatNumber(area.area) || '-'} m<sup>2</sup></CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
+              <CollapseHeaderSubtitle>{formatNumber(area.area) || '-'} m<sup>2</sup></CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
           <Column>
-            <CollapseHeaderSubtitle>{getLabelOfOption(locationOptions, area.location) || '-'}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
+              <CollapseHeaderSubtitle>{getLabelOfOption(locationOptions, area.location) || '-'}</CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
         </Fragment>
       }
-      headerTitle={<CollapseHeaderTitle>{area.identifier || '-'}</CollapseHeaderTitle>}
+      headerTitle={
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.IDENTIFIER)}>
+          {area.identifier || '-'}
+        </Authorization>
+      }
       onToggle={handleAreaCollapseToggle}
     >
       <LeaseArea area={area} isActive={isActive}/>
@@ -85,22 +110,22 @@ const LeaseAreaWithArchiveInfo = ({
       {!isActive &&
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Arkistoitu'
-              text={formatDate(area.archived_at) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_AT)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.ARCHIVED_AT}</FormTextTitle>
+              <FormText>{formatDate(area.archived_at) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Päätös'
-              text={getLabelOfOption(decisionOptions, area.archived_decision) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.ARCHIVED_DECISION}</FormTextTitle>
+              <FormText>{getLabelOfOption(decisionOptions, area.archived_decision) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={12} medium={4} large={8}>
-            <FormTitleAndText
-              title='Huomautus'
-              text={area.archived_note || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}>
+              <FormTextTitle>{LeaseAreasFieldTitles.ARCHIVED_NOTE}</FormTextTitle>
+              <FormText>{area.archived_note || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
       }

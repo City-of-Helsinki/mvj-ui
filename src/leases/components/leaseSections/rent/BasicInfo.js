@@ -1,52 +1,69 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
+import Authorization from '$components/authorization/Authorization';
 import FormText from '$components/form/FormText';
-import FormTitleAndText from '$components/form/FormTitleAndText';
-import {RentCycles, RentTypes, RentDueDateTypes} from '$src/leases/enums';
+import FormTextTitle from '$components/form/FormTextTitle';
+import {
+  LeaseRentDueDatesFieldPaths,
+  LeaseRentDueDatesFieldTitles,
+  LeaseRentsFieldPaths,
+  LeaseRentsFieldTitles,
+  RentCycles,
+  RentTypes,
+  RentDueDateTypes,
+} from '$src/leases/enums';
 import {formatDueDates, formatSeasonalEndDate, formatSeasonalStartDate} from '$src/leases/helpers';
 import {
   formatDate,
   formatNumber,
-  getAttributeFieldOptions,
+  getFieldAttributes,
+  getFieldOptions,
   getLabelOfOption,
   isEmptyValue,
+  isFieldAllowedToRead,
 } from '$util/helpers';
-import {getAttributes} from '$src/leases/selectors';
+import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
 
 type SeasonalDatesProps = {
+  leaseAttributes: Attributes,
   rent: Object,
 }
 
 const SeasonalDates = ({
+  leaseAttributes,
   rent,
 }: SeasonalDatesProps ) => {
   const startText = formatSeasonalStartDate(rent);
   const endText = formatSeasonalEndDate(rent);
 
   return(
-    <Row>
-      <Column>
-        <FormTitleAndText
-          title='Kausivuokra ajalla (pv.kk)'
-          text={`${startText || ''} - ${endText || ''}`}
-        />
-      </Column>
-    </Row>
+    <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY) ||
+      isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY) ||
+      isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY) ||
+      isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.SEASONAL_END_DAY)}
+    >
+      <Row>
+        <Column>
+          <FormTextTitle>{LeaseRentsFieldTitles.SEASONAL_DATES}</FormTextTitle>
+          <FormText>{`${startText || ''} - ${endText || ''}`}</FormText>
+        </Column>
+      </Row>
+    </Authorization>
   );
 };
 
 type Props = {
-  attributes: Attributes,
+  leaseAttributes: Attributes,
   rent: Object,
   rentType: ?string,
 }
 
-const BasicInfoIndex = ({attributes, rent}: Props) => {
+const BasicInfoIndex = ({leaseAttributes, rent}: Props) => {
   const areOldInfoVisible = () => {
     return !isEmptyValue(rent.elementary_index) ||
       !isEmptyValue(rent.index_rounding) ||
@@ -57,82 +74,79 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
       !isEmptyValue(rent.equalization_end_date);
   };
 
-  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
-  const cycleOptions = getAttributeFieldOptions(attributes, 'rents.child.children.cycle');
-  const indexTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.index_type');
-  const dueDatesTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.due_dates_type');
+  const typeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE));
+  const cycleOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.CYCLE));
+  const indexTypeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.INDEX_TYPE));
+  const dueDatesTypeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE));
   const oldValuesVisible = areOldInfoVisible();
 
   return (
-    <div>
+    <Fragment>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Vuokralaji'
-            text={getLabelOfOption(typeOptions, rent.type) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.TYPE}</FormTextTitle>
+            <FormText>{getLabelOfOption(typeOptions, rent.type) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormTitleAndText
-            title='Alkupvm'
-            text={formatDate(rent.start_date) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.START_DATE}</FormTextTitle>
+            <FormText>{formatDate(rent.start_date) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormTitleAndText
-            title='Loppupvm'
-            text={formatDate(rent.end_date) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.END_DATE}</FormTextTitle>
+            <FormText>{formatDate(rent.end_date) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={1}>
-          <FormTitleAndText
-            title='Vuokrakausi'
-            text={getLabelOfOption(cycleOptions, rent.cycle) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.CYCLE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.CYCLE}</FormTextTitle>
+            <FormText>{getLabelOfOption(cycleOptions, rent.cycle) || '-'}</FormText>
+          </Authorization>
         </Column>
         {rent.type === RentTypes.INDEX &&
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Indeksin tunnusnumero'
-              text={getLabelOfOption(indexTypeOptions, rent.index_type) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.INDEX_TYPE)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.INDEX_TYPE}</FormTextTitle>
+              <FormText>{getLabelOfOption(indexTypeOptions, rent.index_type) || '-'}</FormText>
+            </Authorization>
           </Column>
         }
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Laskutusjako'
-            text={getLabelOfOption(dueDatesTypeOptions, rent.due_dates_type) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.DUE_DATES_TYPE}</FormTextTitle>
+            <FormText>{getLabelOfOption(dueDatesTypeOptions, rent.due_dates_type) || '-'}</FormText>
+          </Authorization>
         </Column>
         {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Eräpäivät (pv.kk)'
-              text={rent.due_dates && !!rent.due_dates.length
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+              <FormTextTitle>{LeaseRentDueDatesFieldTitles.DUE_DATES}</FormTextTitle>
+              <FormText>{rent.due_dates && !!rent.due_dates.length
                 ? formatDueDates(rent.due_dates)
-                : 'Ei eräpäiviä'
-              }
-            />
+                : 'Ei eräpäiviä'}</FormText>
+            </Authorization>
           </Column>
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={1}>
-            <FormTitleAndText
-              title='Laskut kpl/v'
-              text={rent.due_dates_per_year || '-'
-              }
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.DUE_DATES_PER_YEAR}</FormTextTitle>
+              <FormText>{rent.due_dates_per_year || '-'}</FormText>
+            </Authorization>
           </Column>
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Eräpäivät (pv.kk)'
-              text={rent.yearly_due_dates && !!rent.yearly_due_dates.length
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
+              <FormText>{rent.yearly_due_dates && !!rent.yearly_due_dates.length
                 ? formatDueDates(rent.yearly_due_dates)
-                : 'Ei eräpäiviä'
-              }
-            />
+                : 'Ei eräpäiviä'}</FormText>
+            </Authorization>
           </Column>
         }
       </Row>
@@ -141,18 +155,18 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
         <Row>
           {(rent.cycle === RentCycles.JANUARY_TO_DECEMBER || rent.cycle === RentCycles.APRIL_TO_MARCH) &&
             <Column small={6} medium={4} large={2}>
-              <FormTitleAndText
-                title='Käsinlaskentakerroin'
-                text={!isEmptyValue(rent.manual_ratio) ? formatNumber(rent.manual_ratio) : '-'}
-              />
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.MANUAL_RATIO)}>
+                <FormTextTitle>{LeaseRentsFieldTitles.MANUAL_RATIO}</FormTextTitle>
+                <FormText>{!isEmptyValue(rent.manual_ratio) ? formatNumber(rent.manual_ratio) : '-'}</FormText>
+              </Authorization>
             </Column>
           }
           {rent.cycle === RentCycles.APRIL_TO_MARCH &&
             <Column small={6} medium={4} large={2}>
-              <FormTitleAndText
-                title='Käsinlaskentakerroin (edellinen)'
-                text={!isEmptyValue(rent.manual_ratio_previous) ? formatNumber(rent.manual_ratio_previous) : '-'}
-              />
+              <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.MANUAL_RATIO_PREVIOUS)}>
+                <FormTextTitle>{LeaseRentsFieldTitles.MANUAL_RATIO_PREVIOUS}</FormTextTitle>
+                <FormText>{!isEmptyValue(rent.manual_ratio_previous) ? formatNumber(rent.manual_ratio_previous) : '-'}</FormText>
+              </Authorization>
             </Column>
           }
         </Row>
@@ -160,302 +174,316 @@ const BasicInfoIndex = ({attributes, rent}: Props) => {
 
       <Row>
         <Column small={12} medium={4} large={2}>
-          <SeasonalDates rent={rent} />
+          {/* Authorization is implemented inside SeasonalDates component */}
+          <SeasonalDates
+            leaseAttributes={leaseAttributes}
+            rent={rent}
+          />
         </Column>
         <Column small={12} medium={8} large={10}>
-          <FormTitleAndText
-            title='Huomautus'
-            text={rent.note || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.NOTE}</FormTextTitle>
+            <FormText>{rent.note || '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
 
       {oldValuesVisible &&
         <Row>
           <Column small={12} medium={4} large={2}>
-            <FormTitleAndText
-              title='Perusindeksi/pyöristys'
-              text={`${rent.elementary_index || '-'} / ${rent.index_rounding || '-'}`}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.ELEMENTARY_INDEX) ||
+              isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.INDEX_ROUNDING)}
+            >
+              <FormTextTitle>Perusindeksi/pyöristys</FormTextTitle>
+              <FormText>{rent.elementary_index || '-'} / {rent.index_rounding || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={4} medium={2} large={1}>
-            <FormTitleAndText
-              title='X-luku'
-              text={rent.x_value || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.X_VALUE)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.X_VALUE}</FormTextTitle>
+              <FormText>{rent.x_value || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={4} medium={2} large={1}>
-            <FormTitleAndText
-              title='Y-luku'
-              text={rent.y_value || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.Y_VALUE)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.Y_VALUE}</FormTextTitle>
+              <FormText>{rent.y_value || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={4} medium={2} large={1}>
-            <FormTitleAndText
-              title='Y-alkaen'
-              text={rent.y_value_start || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.Y_VALUE_START)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.Y_VALUE_START}</FormTextTitle>
+              <FormText>{rent.y_value_start || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={12} medium={4} large={2}>
             <Row>
               <Column small={6}>
-                <FormTitleAndText
-                  title='Tasaus alkupvm'
-                  text={formatDate(rent.equalization_start_date) || '-'}
-                />
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.EQUALIZATION_START_DATE)}>
+                  <FormTextTitle>{LeaseRentsFieldTitles.EQUALIZATION_START_DATE}</FormTextTitle>
+                  <FormText>{formatDate(rent.equalization_start_date) || '-'}</FormText>
+                </Authorization>
               </Column>
               <Column small={6}>
-                <FormTitleAndText
-                  title='Tasaus loppupvm'
-                  text={formatDate(rent.equalization_end_date) || '-'}
-                />
+                <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.EQUALIZATION_END_DATE)}>
+                  <FormTextTitle>{LeaseRentsFieldTitles.EQUALIZATION_END_DATE}</FormTextTitle>
+                  <FormText>{formatDate(rent.equalization_end_date) || '-'}</FormText>
+                </Authorization>
               </Column>
             </Row>
           </Column>
         </Row>
       }
-    </div>
+    </Fragment>
   );
 };
 
-const BasicInfoOneTime = ({attributes, rent}: Props) => {
-  const dueDatesTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.due_dates_type');
-  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
+const BasicInfoOneTime = ({leaseAttributes, rent}: Props) => {
+  const dueDatesTypeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE));
+  const typeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE));
 
   return (
-    <div>
+    <Fragment>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Vuokralaji'
-            text={getLabelOfOption(typeOptions, rent.type) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.TYPE}</FormTextTitle>
+            <FormText>{getLabelOfOption(typeOptions, rent.type) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormTitleAndText
-            title='Alkupvm'
-            text={formatDate(rent.start_date) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.START_DATE}</FormTextTitle>
+            <FormText>{formatDate(rent.start_date) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormTitleAndText
-            title='Loppupvm'
-            text={formatDate(rent.end_date) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.END_DATE}</FormTextTitle>
+            <FormText>{formatDate(rent.end_date) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Kertakaikkinen vuokra'
-            text={!isEmptyValue(rent.amount) ? `${formatNumber(rent.amount)} €` : '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.AMOUNT)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.AMOUNT}</FormTextTitle>
+            <FormText>{!isEmptyValue(rent.amount) ? `${formatNumber(rent.amount)} €` : '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Laskutusjako'
-            text={getLabelOfOption(dueDatesTypeOptions, rent.due_dates_type) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.DUE_DATES_TYPE}</FormTextTitle>
+            <FormText>{getLabelOfOption(dueDatesTypeOptions, rent.due_dates_type) || '-'}</FormText>
+          </Authorization>
         </Column>
         {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Eräpäivät (pv.kk)'
-              text={rent.due_dates && !!rent.due_dates.length
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+              <FormTextTitle>{LeaseRentDueDatesFieldTitles.DUE_DATES}</FormTextTitle>
+              <FormText>{rent.due_dates && !!rent.due_dates.length
                 ? formatDueDates(rent.due_dates)
-                : 'Ei eräpäiviä'
-              }
-            />
-          </Column>
-        }
-        {rent.due_dates_type === RentDueDateTypes.FIXED &&
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Eräpäivät (pv.kk)'
-              text={rent.yearly_due_dates && !!rent.yearly_due_dates.length
-                ? formatDueDates(rent.yearly_due_dates)
-                : 'Ei eräpäiviä'
-              }
-            />
-          </Column>
-        }
-      </Row>
-
-      <Row>
-        <Column>
-          <FormTitleAndText
-            title='Huomautus'
-            text={rent.note || '-'}
-          />
-        </Column>
-      </Row>
-    </div>
-  );
-};
-
-const BasicInfoFixed = ({attributes, rent}: Props) => {
-  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
-  const dueDatesTypeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.due_dates_type');
-
-  return (
-    <div>
-      <Row>
-        <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Vuokralaji'
-            text={getLabelOfOption(typeOptions, rent.type) || '-'}
-          />
-        </Column>
-        <Column small={3} medium={2} large={1}>
-          <FormTitleAndText
-            title='Alkupvm'
-            text={formatDate(rent.start_date) || '-'}
-          />
-        </Column>
-        <Column small={3} medium={2} large={1}>
-          <FormTitleAndText
-            title='Loppupvm'
-            text={formatDate(rent.end_date) || '-'}
-          />
-        </Column>
-        <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Laskutusjako'
-            text={getLabelOfOption(dueDatesTypeOptions, rent.due_dates_type) || '-'}
-          />
-        </Column>
-        {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
-          <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Eräpäivät (pv.kk)'
-              text={rent.due_dates && !!rent.due_dates.length
-                ? formatDueDates(rent.due_dates)
-                : 'Ei eräpäiviä'
-              }
-            />
+                : 'Ei eräpäiviä'}</FormText>
+            </Authorization>
           </Column>
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={1}>
-            <FormTitleAndText
-              title='Laskut kpl/v'
-              text={rent.due_dates_per_year || '-'
-              }
-            />
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.DUE_DATES_PER_YEAR}</FormTextTitle>
+              <FormText>{rent.due_dates_per_year || '-'}</FormText>
+            </Authorization>
           </Column>
         }
         {rent.due_dates_type === RentDueDateTypes.FIXED &&
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Eräpäivät (pv.kk)'
-              text={rent.yearly_due_dates && !!rent.yearly_due_dates.length
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
+              <FormText>{rent.yearly_due_dates && !!rent.yearly_due_dates.length
                 ? formatDueDates(rent.yearly_due_dates)
-                : 'Ei eräpäiviä'
-              }
-            />
+                : 'Ei eräpäiviä'}</FormText>
+            </Authorization>
+          </Column>
+        }
+      </Row>
+
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
+        <Row>
+          <Column>
+            <FormTextTitle>{LeaseRentsFieldTitles.NOTE}</FormTextTitle>
+            <FormText>{rent.note || '-'}</FormText>
+          </Column>
+        </Row>
+      </Authorization>
+    </Fragment>
+  );
+};
+
+const BasicInfoFixed = ({leaseAttributes, rent}: Props) => {
+  const dueDatesTypeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE));
+  const typeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE));
+
+  return (
+    <Fragment>
+      <Row>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.TYPE}</FormTextTitle>
+            <FormText>{getLabelOfOption(typeOptions, rent.type) || '-'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.START_DATE}</FormTextTitle>
+            <FormText>{formatDate(rent.start_date) || '-'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={3} medium={2} large={1}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.END_DATE}</FormTextTitle>
+            <FormText>{formatDate(rent.end_date) || '-'}</FormText>
+          </Authorization>
+        </Column>
+        <Column small={6} medium={4} large={2}>
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_TYPE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.DUE_DATES_TYPE}</FormTextTitle>
+            <FormText>{getLabelOfOption(dueDatesTypeOptions, rent.due_dates_type) || '-'}</FormText>
+          </Authorization>
+        </Column>
+        {rent.due_dates_type === RentDueDateTypes.CUSTOM &&
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentDueDatesFieldPaths.DUE_DATES)}>
+              <FormTextTitle>{LeaseRentDueDatesFieldTitles.DUE_DATES}</FormTextTitle>
+              <FormText>{rent.due_dates && !!rent.due_dates.length
+                ? formatDueDates(rent.due_dates)
+                : 'Ei eräpäiviä'}</FormText>
+            </Authorization>
+          </Column>
+        }
+        {rent.due_dates_type === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={1}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.DUE_DATES_PER_YEAR)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.DUE_DATES_PER_YEAR}</FormTextTitle>
+              <FormText>{rent.due_dates_per_year || '-'}</FormText>
+            </Authorization>
+          </Column>
+        }
+        {rent.due_dates_type === RentDueDateTypes.FIXED &&
+          <Column small={6} medium={4} large={2}>
+            <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.YEARLY_DUE_DATES)}>
+              <FormTextTitle>{LeaseRentsFieldTitles.YEARLY_DUE_DATES}</FormTextTitle>
+              <FormText>{rent.yearly_due_dates && !!rent.yearly_due_dates.length
+                ? formatDueDates(rent.yearly_due_dates)
+                : 'Ei eräpäiviä'}</FormText>
+            </Authorization>
           </Column>
         }
       </Row>
 
       <Row>
         <Column small={12} medium={4} large={2}>
-          <SeasonalDates rent={rent} />
+          {/* Authorization is implemented inside SeasonalDates component */}
+          <SeasonalDates
+            leaseAttributes={leaseAttributes}
+            rent={rent}
+          />
         </Column>
         <Column small={12} medium={8} large={10}>
-          <FormTitleAndText
-            title='Huomautus'
-            text={rent.note || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.NOTE}</FormTextTitle>
+            <FormText>{rent.note || '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
-    </div>
+    </Fragment>
   );
 };
 
-const BasicInfoFree = ({attributes, rent}: Props) => {
-  const typeOptions = getAttributeFieldOptions(attributes, 'rents.child.children.type');
+const BasicInfoFree = ({leaseAttributes, rent}: Props) => {
+  const typeOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseRentsFieldPaths.TYPE));
 
   return (
-    <div>
+    <Fragment>
       <Row>
         <Column small={6} medium={4} large={2}>
-          <FormTitleAndText
-            title='Vuokralaji'
-            text={getLabelOfOption(typeOptions, rent.type) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.TYPE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.TYPE}</FormTextTitle>
+            <FormText>{getLabelOfOption(typeOptions, rent.type) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormTitleAndText
-            title='Alkupvm'
-            text={formatDate(rent.start_date) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.START_DATE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.START_DATE}</FormTextTitle>
+            <FormText>{formatDate(rent.start_date) || '-'}</FormText>
+          </Authorization>
         </Column>
         <Column small={3} medium={2} large={1}>
-          <FormTitleAndText
-            title='Loppupvm'
-            text={formatDate(rent.end_date) || '-'}
-          />
+          <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.END_DATE)}>
+            <FormTextTitle>{LeaseRentsFieldTitles.END_DATE}</FormTextTitle>
+            <FormText>{formatDate(rent.end_date) || '-'}</FormText>
+          </Authorization>
         </Column>
       </Row>
-      <Row>
-        <Column>
-          <FormTitleAndText
-            title='Huomautus'
-            text={rent.note || '-'}
-          />
-        </Column>
-      </Row>
-    </div>
+
+      <Authorization allow={isFieldAllowedToRead(leaseAttributes, LeaseRentsFieldPaths.NOTE)}>
+        <Row>
+          <Column>
+            <FormTextTitle>{LeaseRentsFieldTitles.NOTE}</FormTextTitle>
+            <FormText>{rent.note || '-'}</FormText>
+          </Column>
+        </Row>
+      </Authorization>
+    </Fragment>
   );
 };
 
-const BasicInfo = ({attributes, rent, rentType}: Props) => {
+const BasicInfo = ({leaseAttributes, rent, rentType}: Props) => {
   return (
-    <div>
+    <Fragment>
       {!rentType &&
         <FormText>Vuokralajia ei ole valittu</FormText>
       }
       {rentType === RentTypes.INDEX &&
         <BasicInfoIndex
-          attributes={attributes}
+          leaseAttributes={leaseAttributes}
           rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.ONE_TIME &&
         <BasicInfoOneTime
-          attributes={attributes}
+          leaseAttributes={leaseAttributes}
           rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.FIXED &&
         <BasicInfoFixed
-          attributes={attributes}
+          leaseAttributes={leaseAttributes}
           rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.FREE &&
         <BasicInfoFree
-          attributes={attributes}
+          leaseAttributes={leaseAttributes}
           rent={rent}
           rentType={rentType}
         />
       }
       {rentType === RentTypes.MANUAL &&
         <BasicInfoIndex
-          attributes={attributes}
+          leaseAttributes={leaseAttributes}
           rent={rent}
           rentType={rentType}
         />
       }
-    </div>
+    </Fragment>
   );
 };
 
 export default connect(
   (state) => {
     return {
-      attributes: getAttributes(state),
+      leaseAttributes: getLeaseAttributes(state),
     };
   },
 )(BasicInfo);

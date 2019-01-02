@@ -6,13 +6,15 @@ import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import FormText from '$components/form/FormText';
 import Modal from '$components/modal/Modal';
-import {FormNames} from '$src/leases/enums';
-import {getAttributes} from '$src/leases/selectors';
+import {FormNames, LeaseAreasFieldPaths, LeaseAreasFieldTitles} from '$src/leases/enums';
 import {ButtonColors} from '$components/enums';
+import {isFieldAllowedToRead} from '$util/helpers';
+import {getAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
 
@@ -21,13 +23,11 @@ type Props = {
   archivedDecision: ?number,
   attributes: Attributes,
   decisionOptions: Array<Object>,
-  isOpen: boolean,
   label: string,
   onArchive: Function,
   onCancel: Function,
   onClose: Function,
-  onSave: Function,
-  title: string,
+  open: boolean,
   valid: boolean,
 }
 
@@ -35,7 +35,7 @@ class ArchiveAreaModal extends Component<Props> {
   firstField: any
 
   componentDidUpdate(prevProps: Props) {
-    if(!prevProps.isOpen && this.props.isOpen) {
+    if(!prevProps.open && this.props.open) {
       if(this.firstField) {
         this.firstField.focus();
       }
@@ -60,9 +60,9 @@ class ArchiveAreaModal extends Component<Props> {
     const {
       attributes,
       decisionOptions,
-      isOpen,
       onCancel,
       onClose,
+      open,
       valid,
     } = this.props;
 
@@ -71,33 +71,34 @@ class ArchiveAreaModal extends Component<Props> {
         <Modal
           className='modal-small modal-autoheight modal-center'
           title='Arkistoi kohde'
-          isOpen={isOpen}
+          isOpen={open}
           onClose={onClose}
         >
           <FormText>Haluatko varmasti arkistoida kohteen?</FormText>
-
           <Row>
             <Column>
-              <FormField
-                setRefForField={this.setRefForFirstField}
-                fieldAttributes={get(attributes, 'lease_areas.child.children.archived_decision')}
-                name='archived_decision'
-                overrideValues={{
-                  label: 'Päätös',
-                  options: decisionOptions,
-                }}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}>
+                <FormField
+                  setRefForField={this.setRefForFirstField}
+                  fieldAttributes={get(attributes, LeaseAreasFieldPaths.ARCHIVED_DECISION)}
+                  name='archived_decision'
+                  overrideValues={{
+                    label: LeaseAreasFieldTitles.ARCHIVED_DECISION,
+                    options: decisionOptions,
+                  }}
+                />
+              </Authorization>
             </Column>
           </Row>
           <Row>
             <Column>
-              <FormField
-                fieldAttributes={get(attributes, 'lease_areas.child.children.archived_note')}
-                name='archived_note'
-                overrideValues={{
-                  label: 'Huomautus',
-                }}
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}>
+                <FormField
+                  fieldAttributes={get(attributes, LeaseAreasFieldPaths.ARCHIVED_NOTE)}
+                  name='archived_note'
+                  overrideValues={{label: LeaseAreasFieldTitles.ARCHIVED_NOTE}}
+                />
+              </Authorization>
             </Column>
           </Row>
           <div className='confirmation-modal__footer'>

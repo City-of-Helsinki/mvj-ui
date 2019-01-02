@@ -2,10 +2,9 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
-import isEmpty from 'lodash/isEmpty';
 
+import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
@@ -19,10 +18,17 @@ import SummaryLeaseInfo from './SummaryLeaseInfo';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
+import {FormNames, LeaseSummaryFieldTitles, LeaseSummaryFieldPaths} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {
+  formatDate,
+  getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
+  getReferenceNumberLink,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCollapseStateByKey, getCurrentLease} from '$src/leases/selectors';
@@ -39,7 +45,9 @@ type Props = {
 }
 
 type State = {
+  attributes: Attributes,
   classificationOptions: Array<Object>,
+  currentLease: Lease,
   financingOptions: Array<Object>,
   hitasOptions: Array<Object>,
   intendedUseOptions: Array<Object>,
@@ -54,7 +62,9 @@ type State = {
 
 class Summary extends Component<Props, State> {
   state = {
+    attributes: {},
     classificationOptions: [],
+    currentLease: {},
     financingOptions: [],
     hitasOptions: [],
     intendedUseOptions: [],
@@ -67,47 +77,30 @@ class Summary extends Component<Props, State> {
     summary: {},
     supportiveHousingOptions: [],
   }
-  componentWillMount() {
-    const {attributes, currentLease} = this.props;
 
-    if(!isEmpty(attributes)) {
-      this.updateOptions(attributes);
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState: any = {};
+
+    if(props.attributes !== state.attributes) {
+      newState.attributes = props.attributes;
+      newState.classificationOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.CLASSIFICATION));
+      newState.financingOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.FINANCING));
+      newState.hitasOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.HITAS));
+      newState.intendedUseOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.INTENDED_USE));
+      newState.managementOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.MANAGEMENT));
+      newState.noticePeriodOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.NOTICE_PERIOD));
+      newState.regulationOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.REGULATION));
+      newState.stateOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.STATE));
+      newState.statisticalUseOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.STATISTICAL_USE));
+      newState.supportiveHousingOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.SUPPORTIVE_HOUSING));
     }
 
-    if(!isEmpty(currentLease)) {
-      this.updateSummary(currentLease);
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    if(prevProps.attributes !== this.props.attributes) {
-      this.updateOptions(this.props.attributes);
+    if(props.currentLease !== state.currentLease) {
+      newState.currentLease = props.currentLease;
+      newState.summary = getContentSummary(props.currentLease);
     }
 
-    if(prevProps.currentLease !== this.props.currentLease) {
-      this.updateSummary(this.props.currentLease);
-    }
-  }
-
-  updateOptions = (attributes: Attributes) => {
-    this.setState({
-      classificationOptions: getAttributeFieldOptions(attributes, 'classification'),
-      financingOptions: getAttributeFieldOptions(attributes, 'financing'),
-      hitasOptions: getAttributeFieldOptions(attributes, 'hitas'),
-      intendedUseOptions: getAttributeFieldOptions(attributes, 'intended_use'),
-      managementOptions: getAttributeFieldOptions(attributes, 'management'),
-      noticePeriodOptions: getAttributeFieldOptions(attributes, 'notice_period'),
-      regulationOptions: getAttributeFieldOptions(attributes, 'regulation'),
-      stateOptions: getAttributeFieldOptions(attributes, 'state'),
-      statisticalUseOptions: getAttributeFieldOptions(attributes, 'statistical_use'),
-      supportiveHousingOptions: getAttributeFieldOptions(attributes, 'supportive_housing'),
-    });
-  }
-
-  updateSummary = (currentLease: Lease) => {
-    this.setState({
-      summary: getContentSummary(currentLease),
-    });
+    return newState;
   }
 
   handleBasicInfoToggle = (val: boolean) => {
@@ -148,105 +141,109 @@ class Summary extends Component<Props, State> {
       summary,
       supportiveHousingOptions,
     } = this.state;
-    const {collapseStateBasic, collapseStateStatistical} = this.props;
+    const {attributes, collapseStateBasic, collapseStateStatistical} = this.props;
     const infillDevelopmentCompensations = summary.infill_development_compensations;
 
     return (
       <div>
         <h2>Yhteenveto</h2>
-        <RightSubtitle
-          className='publicity-label'
-          text={summary.classification
-            ? getLabelOfOption(classificationOptions, summary.classification)
-            : '-'
-          }
-        />
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.CLASSIFICATION)}>
+          <RightSubtitle
+            className='publicity-label'
+            text={summary.classification
+              ? getLabelOfOption(classificationOptions, summary.classification)
+              : '-'
+            }
+          />
+        </Authorization>
         <Divider />
         <Row className='summary__content-wrapper'>
           <Column small={12} medium={8} large={9}>
             <Collapse
               defaultOpen={collapseStateBasic !== undefined ? collapseStateBasic : true}
-              headerTitle={<CollapseHeaderTitle>Perustiedot</CollapseHeaderTitle>}
+              headerTitle='Perustiedot'
               onToggle={this.handleBasicInfoToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Tyyppi'
-                    text={getLabelOfOption(stateOptions, summary.state) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.STATE)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.STATE}</FormTextTitle>
+                    <FormText>{getLabelOfOption(stateOptions, summary.state) || '-'}</FormText>
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Alkupvm'
-                    text={formatDate(summary.start_date) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.START_DATE)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.START_DATE}</FormTextTitle>
+                    <FormText>{formatDate(summary.start_date) || '-'}</FormText>
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Loppupvm'
-                    text={formatDate(summary.end_date) || '-'}
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Vuokranantaja'
-                    text={getContactFullName(summary.lessor) || '-'}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Valmistelija'
-                    text={getUserFullName(summary.preparer) || '-'}
-                  />
-                </Column>
-                <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Julkisuusluokka'
-                    text={getLabelOfOption(classificationOptions, summary.classification) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.END_DATE)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.END_DATE}</FormTextTitle>
+                    <FormText>{formatDate(summary.end_date) || '-'}</FormText>
+                  </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Vuokrauksen käyttötarkoitus'
-                    text={getLabelOfOption(intendedUseOptions, summary.intended_use) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.LESSOR)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.LESSOR}</FormTextTitle>
+                    <FormText>{getContactFullName(summary.lessor) || '-'}</FormText>
+                  </Authorization>
+                </Column>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.PREPARER)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.PREPARER}</FormTextTitle>
+                    <FormText>{getUserFullName(summary.preparer) || '-'}</FormText>
+                  </Authorization>
+                </Column>
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.CLASSIFICATION)}>
+                  <Column small={12} medium={6} large={4}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.CLASSIFICATION}</FormTextTitle>
+                    <FormText>{getLabelOfOption(classificationOptions, summary.classification) || '-'}</FormText>
+                  </Column>
+                </Authorization>
+              </Row>
+              <Row>
+                <Column small={12} medium={6} large={4}>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.INTENDED_USE)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.INTENDED_USE}</FormTextTitle>
+                    <FormText>{getLabelOfOption(intendedUseOptions, summary.intended_use) || '-'}</FormText>
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <FormTextTitle title='Käyttötarkoituksen huomautus' />
-                  <ShowMore text={summary.intended_use_note || '-'} />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.INTENDED_USE_NOTE)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.INTENDED_USE_NOTE}</FormTextTitle>
+                    <ShowMore text={summary.intended_use_note || '-'} />
+                  </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Rahoitusmuoto'
-                    text={getLabelOfOption(financingOptions, summary.financing) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.FINANCING)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.FINANCING}</FormTextTitle>
+                    <FormText>{getLabelOfOption(financingOptions, summary.financing) || '-'}</FormText>
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Hallintamuoto'
-                    text={getLabelOfOption(managementOptions, summary.management) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.MANAGEMENT)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.MANAGEMENT}</FormTextTitle>
+                    <FormText>{getLabelOfOption(managementOptions, summary.management) || '-'}</FormText>
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Siirto-oikeus'
-                    text={summary.transferable ? 'Kyllä' : 'Ei'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.TRANSFERABLE)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.TRANSFERABLE}</FormTextTitle>
+                    <FormText>{summary.transferable ? 'Kyllä' : 'Ei'}</FormText>
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Hitas'
-                    text={getLabelOfOption(hitasOptions, summary.hitas) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.HITAS)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.HITAS}</FormTextTitle>
+                    <FormText>{getLabelOfOption(hitasOptions, summary.hitas) || '-'}</FormText>
+                  </Authorization>
                 </Column>
-                {/* TODO: Get vuokrausperuste and täydennysrakentaminen via API */}
+                {/* TODO: Get vuokrausperuste via API */}
                 <Column small={12} medium={6} large={4}>
                   <FormTitleAndText
                     title='Vuokrausperuste'
@@ -254,59 +251,64 @@ class Summary extends Component<Props, State> {
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormTextTitle title='Täydennysrakentamiskorvaus' />
-                  {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length
-                    ? <FormText>-</FormText>
-                    : <ListItems>
-                      {infillDevelopmentCompensations.map((item) =>
-                        <ListItem key={item.id}>
-                          <ExternalLink
-                            className='no-margin'
-                            href={`${getRouteById('infillDevelopment')}/${item.id}`}
-                            text={item.name || item.id}
-                          />
-                        </ListItem>
-                      )}
-                    </ListItems>
-                  }
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}</FormTextTitle>
+                    {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length
+                      ? <FormText>-</FormText>
+                      : <ListItems>
+                        {infillDevelopmentCompensations.map((item) =>
+                          <ListItem key={item.id}>
+                            <ExternalLink
+                              className='no-margin'
+                              href={`${getRouteById('infillDevelopment')}/${item.id}`}
+                              text={item.name || item.id}
+                            />
+                          </ListItem>
+                        )}
+                      </ListItems>
+                    }
+                  </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Irtisanomisaika'
-                    text={getLabelOfOption(noticePeriodOptions, summary.notice_period) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.NOTICE_PERIOD)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.NOTICE_PERIOD}</FormTextTitle>
+                    <FormText>{getLabelOfOption(noticePeriodOptions, summary.notice_period) || '-'}</FormText>
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <FormTextTitle title='Irtisanomisajan huomautus' />
-                  <ShowMore text={summary.notice_note || '-'} />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.NOTICE_NOTE)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.NOTICE_NOTE}</FormTextTitle>
+                    <ShowMore text={summary.notice_note || '-'} />
+                  </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Diaarinumero'
-                    text={summary.reference_number
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.REFERENCE_NUMBER)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.REFERENCE_NUMBER}</FormTextTitle>
+                    <FormText>{summary.reference_number
                       ? <ExternalLink
+                        className='no-margin'
                         href={getReferenceNumberLink(summary.reference_number)}
                         text={summary.reference_number} />
-                      : '-'
-                    }
-                    textClassName={summary.reference_number ? 'no-margin' : ''}
-                  />
+                      : '-'}</FormText>
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <FormTextTitle title='Huomautus' />
-                  <ShowMore text={summary.note || '-'} />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.NOTE)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.NOTE}</FormTextTitle>
+                    <ShowMore text={summary.note || '-'} />
+                  </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Arvonlisävelvollinen'
-                    text={summary.is_subject_to_vat ? 'Kyllä' : 'Ei'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.IS_SUBJECT_TO_VAT)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.IS_SUBJECT_TO_VAT}</FormTextTitle>
+                    <FormText>{summary.is_subject_to_vat ? 'Kyllä' : 'Ei'}</FormText>
+                  </Authorization>
                 </Column>
               </Row>
 
@@ -315,35 +317,35 @@ class Summary extends Component<Props, State> {
 
             <Collapse
               defaultOpen={collapseStateStatistical !== undefined ? collapseStateStatistical : true}
-              headerTitle={<CollapseHeaderTitle>Tilastotiedot</CollapseHeaderTitle>}
+              headerTitle='Tilastotiedot'
               onToggle={this.handleStatisticalInfoToggle}
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Erityisasunnot'
-                    text={getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.SUPPORTIVE_HOUSING)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.SUPPORTIVE_HOUSING}</FormTextTitle>
+                    <FormText>{getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}</FormText>
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Tilastollinen pääkäyttötarkoitus'
-                    text={getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.STATISTICAL_USE)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.STATISTICAL_USE}</FormTextTitle>
+                    <FormText>{getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}</FormText>
+                  </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Sääntely'
-                    text={summary.regulated ? 'Kyllä' : 'Ei'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.REGULATED)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.REGULATED}</FormTextTitle>
+                    <FormText>{summary.regulated ? 'Kyllä' : 'Ei'}</FormText>
+                  </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <FormTitleAndText
-                    title='Sääntelymuoto'
-                    text={getLabelOfOption(regulationOptions, summary.regulation) || '-'}
-                  />
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.REGULATION)}>
+                    <FormTextTitle>{LeaseSummaryFieldTitles.REGULATION}</FormTextTitle>
+                    <FormText>{getLabelOfOption(regulationOptions, summary.regulation) || '-'}</FormText>
+                  </Authorization>
                 </Column>
               </Row>
             </Collapse>

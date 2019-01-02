@@ -4,8 +4,8 @@ import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {formValueSelector, getFormValues, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import BoxContentWrapper from '$components/content/BoxContentWrapper';
 import Button from '$components/button/Button';
 import CloseButton from '$components/button/CloseButton';
@@ -14,7 +14,14 @@ import WhiteBox from '$components/content/WhiteBox';
 import {receiveIsCreditClicked} from '$src/invoices/actions';
 import {CreditInvoiceOptions, CreditInvoiceSetOptions} from '$src/leases/constants';
 import {ButtonColors} from '$components/enums';
+import {
+  InvoiceFieldPaths,
+  InvoiceFieldTitles,
+  InvoiceRowsFieldPaths,
+  InvoiceRowsFieldTitles,
+} from '$src/invoices/enums';
 import {CreditInvoiceOptionsEnum, FormNames} from '$src/leases/enums';
+import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
 import {getAttributes as getInvoiceAttributes, getIsCreditClicked} from '$src/invoices/selectors';
 
 import type {Attributes} from '$src/types';
@@ -47,7 +54,9 @@ const CreditInvoiceForm = ({
   const handleSave = () => {
     receiveIsCreditClicked(true);
 
-    if(valid) {onSave(formValues);}
+    if(valid) {
+      onSave(formValues);
+    }
   };
 
   return (
@@ -55,10 +64,8 @@ const CreditInvoiceForm = ({
       <WhiteBox>
         <BoxContentWrapper>
           <h3>Hyvitys</h3>
-          <CloseButton
-            className="position-topright"
-            onClick={onClose}
-          />
+          <CloseButton className="position-topright" onClick={onClose} />
+
           <Row>
             <Column small={6} medium={4} large={2}>
               <FormField
@@ -70,24 +77,22 @@ const CreditInvoiceForm = ({
                 }}
                 name='type'
                 setRefForField={setRefForFirstField}
-                overrideValues={{
-                  options: isInvoiceSet ? CreditInvoiceSetOptions : CreditInvoiceOptions,
-                }}
+                overrideValues={{options: isInvoiceSet ? CreditInvoiceSetOptions : CreditInvoiceOptions}}
               />
             </Column>
             {(type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE || type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT) &&
               <Column small={6} medium={4} large={2}>
-                <FormField
-                  disableTouched={isCreditClicked}
-                  fieldAttributes={{
-                    ...get(invoiceAttributes, 'rows.child.children.receivable_type'),
-                    required: true,
-                  }}
-                  name='receivable_type'
-                  overrideValues={{
-                    label: 'Saamislaji',
-                  }}
-                />
+                <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)}>
+                  <FormField
+                    disableTouched={isCreditClicked}
+                    fieldAttributes={{
+                      ...getFieldAttributes(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE),
+                      required: true,
+                    }}
+                    name='receivable_type'
+                    overrideValues={{label: InvoiceRowsFieldTitles.RECEIVABLE_TYPE}}
+                  />
+                </Authorization>
               </Column>
             }
             {type === CreditInvoiceOptionsEnum.RECEIVABLE_TYPE_AMOUNT &&
@@ -110,14 +115,14 @@ const CreditInvoiceForm = ({
           </Row>
           <Row>
             <Column small={12}>
-              <FormField
-                disableTouched={isCreditClicked}
-                fieldAttributes={get(invoiceAttributes, 'notes')}
-                name='notes'
-                overrideValues={{
-                  label: 'Tiedote',
-                }}
-              />
+              <Authorization allow={isFieldAllowedToEdit(invoiceAttributes, InvoiceFieldPaths.NOTES)}>
+                <FormField
+                  disableTouched={isCreditClicked}
+                  fieldAttributes={getFieldAttributes(invoiceAttributes, InvoiceFieldPaths.NOTES)}
+                  name='notes'
+                  overrideValues={{label: InvoiceFieldTitles.NOTES}}
+                />
+              </Authorization>
             </Column>
           </Row>
           <Row>

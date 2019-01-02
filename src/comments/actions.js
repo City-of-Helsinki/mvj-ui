@@ -1,17 +1,19 @@
 // @flow
 import {createAction} from 'redux-actions';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {LeaseId} from '$src/leases/types';
 import type {
   Comment,
   CommentId,
   FetchAttributesAction,
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
   FetchCommentsByLeaseAction,
   CreateCommentAction,
   EditCommentAction,
   ReceiveCommentsByLeaseAction,
+  CommentAttributesNotFoundAction,
   CommentNotFoundAction,
   ClearEditFlagsAction,
   HideEditModeByIdAction,
@@ -19,14 +21,20 @@ import type {
   ReceiveIsSaveClickedAction,
 } from './types';
 
+export const attributesNotFound = (): CommentAttributesNotFoundAction =>
+  createAction('mvj/comments/ATTRIBUTES_NOT_FOUND')();
+
 export const notFound = (): CommentNotFoundAction =>
   createAction('mvj/comments/NOT_FOUND')();
 
 export const fetchAttributes = (): FetchAttributesAction =>
   createAction('mvj/comments/FETCH_ATTRIBUTES')();
 
-export const receiveAttributes = (identifiers: Attributes): ReceiveAttributesAction =>
-  createAction('mvj/comments/RECEIVE_ATTRIBUTES')(identifiers);
+export const receiveAttributes = (attributes: Attributes): ReceiveAttributesAction =>
+  createAction('mvj/comments/RECEIVE_ATTRIBUTES')(attributes);
+
+export const receiveMethods = (methods: Methods): ReceiveMethodsAction =>
+  createAction('mvj/comments/RECEIVE_METHODS')(methods);
 
 export const fetchCommentsByLease = (leaseId: LeaseId): FetchCommentsByLeaseAction =>
   createAction('mvj/comments/FETCH_BY_LEASE')(leaseId);

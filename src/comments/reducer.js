@@ -2,10 +2,11 @@
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 
-import type {Attributes, Reducer} from '$src/types';
+import type {Attributes, Methods, Reducer} from '$src/types';
 import type {
   CommentListMap,
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
   ReceiveCommentsByLeaseAction,
   HideEditModeByIdAction,
   ShowEditModeByIdAction,
@@ -42,6 +43,19 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   },
 }, {});
 
+const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
+  'mvj/comments/FETCH_ATTRIBUTES': () => true,
+  'mvj/comments/RECEIVE_ATTRIBUTES': () => false,
+  'mvj/comments/ATTRIBUTES_NOT_FOUND': () => false,
+}, false);
+
+const methodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/comments/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
+    return methods;
+  },
+}, {});
+
+
 const byLeaseReducer: Reducer<CommentListMap> = handleActions({
   ['mvj/comments/RECEIVE_BY_LEASE']: (state: Object, {payload: list}: ReceiveCommentsByLeaseAction) => {
     return {
@@ -62,5 +76,7 @@ export default combineReducers({
   byLease: byLeaseReducer,
   isEditModeById: isEditModeByIdReducer,
   isFetching: isFetchingReducer,
+  isFetchingAttributes: isFetchingAttributesReducer,
   isSaveClicked: isSaveClickedReducer,
+  methods: methodsReducer,
 });

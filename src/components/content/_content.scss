@@ -1,4 +1,7 @@
 .content {
+  &__full-width-container {
+    width: 100%;
+  }
 
   &__divider {
     border-top: 1px dashed $tram;
@@ -58,97 +61,90 @@
       margin-bottom: rem-calc(15px);
     }
   }
-}
 
-.page-container {
-  font-family: $font-family-source;
-  min-height: calc(100vh - 60px);
-  display: block;
-  width: 100%;
-  padding: rem-calc(20px);
-  padding-bottom: rem-calc(120px);
-
-  &.with-control-bar {
-    margin-top: 59px;
-  }
-
-  &.with-small-control-bar {
-    margin-top: 50px;
-  }
-
-  .button-wrapper {
-    text-align: right;
-    padding-top: rem-calc(20px);
-
-    .mvj-button:last-child {
-      margin-right: 0;
-    }
-  }
-
-  h1 {
+  &__page-container {
     font-family: $font-family-source;
-    font-size: rem-calc(22px);
-    line-height: rem-calc(24px);
-    font-weight: $semibold;
-    color: $black;
-    margin: 0;
-  }
+    min-height: calc(100vh - 60px);
+    display: block;
+    width: 100%;
+    padding: rem-calc(20px);
+    padding-bottom: rem-calc(120px);
 
-  h2 {
-    font-family: $font-family-source;
-    font-size: rem-calc(20px);
-    line-height: rem-calc(22px);
-    font-weight: $semibold;
-    color: $black;
-    text-transform: uppercase;
-    margin: 0;
-  }
-
-  h3 {
-    font-family: $font-family-source;
-    font-size: rem-calc(20px);
-    line-height: rem-calc(22px);
-    font-weight: $semibold;
-    color: $black;
-    margin: 0;
-  }
-
-  h4 {
-    font-family: $font-family-source;
-    font-size: rem-calc(16px);
-    line-height: rem-calc(18px);
-    font-weight: $semibold;
-    color: $black;
-    text-transform: uppercase;
-    margin: 0;
-  }
-
-  label.mvj-form-field-label {
-    font-size: rem-calc(13px);
-    line-height: rem-calc(15px);
-    font-weight: normal;
-    color: $dark-gray;
-  }
-
-  a {
-    display: inline-block;
-    font-size: rem-calc(14px);
-    line-height: rem-calc(16px);
-    font-weight: normal;
-    color: $tram;
-    margin-bottom: rem-calc(10px);
-    vertical-align: top;
-
-    &.no-margin {
-      margin: 0 !important;
-      margin-bottom: 0 !important;
+    &.with-control-bar {
+      margin-top: 59px;
     }
 
-    @include focus();
+    &.with-small-control-bar {
+      margin-top: 50px;
+    }
 
-    &:hover {
-      text-decoration: underline;
-      color: $tram_hover;
+    .button-wrapper {
+      text-align: right;
+      padding-top: rem-calc(20px);
+
+      .mvj-button:last-child {
+        margin-right: 0;
+      }
+    }
+
+    h1 {
+      font-family: $font-family-source;
+      font-size: rem-calc(22px);
+      line-height: rem-calc(24px);
+      font-weight: $semibold;
+      color: $black;
+      margin: 0;
+    }
+
+    h2 {
+      font-family: $font-family-source;
+      font-size: rem-calc(20px);
+      line-height: rem-calc(22px);
+      font-weight: $semibold;
+      color: $black;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    h3 {
+      font-family: $font-family-source;
+      font-size: rem-calc(20px);
+      line-height: rem-calc(22px);
+      font-weight: $semibold;
+      color: $black;
+      margin: 0;
+    }
+
+    h4 {
+      font-family: $font-family-source;
+      font-size: rem-calc(16px);
+      line-height: rem-calc(18px);
+      font-weight: $semibold;
+      color: $black;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    a {
+      display: inline-block;
+      font-size: rem-calc(14px);
+      line-height: rem-calc(16px);
+      font-weight: normal;
+      color: $tram;
+      margin-bottom: rem-calc(10px);
+      vertical-align: top;
+
+      &.no-margin {
+        margin: 0 !important;
+        margin-bottom: 0 !important;
+      }
+
+      @include focus();
+
+      &:hover {
+        text-decoration: underline;
+        color: $tram_hover;
+      }
     }
   }
 }
@@ -265,6 +261,10 @@
 
     &.with-bottom-margin {
       margin-bottom: rem-calc(15px);
+    }
+
+    &.with-top-margin {
+      margin-top: rem-calc(15px);
     }
 
     .map-link {

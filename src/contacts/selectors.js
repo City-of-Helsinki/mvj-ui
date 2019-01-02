@@ -1,5 +1,5 @@
 // @flow
-import type {Attributes, Selector} from '$src/types';
+import type {Attributes, Methods, Selector} from '$src/types';
 import type {RootState} from '$src/root/types';
 import type {Contact, ContactList, ContactModalSettings} from './types';
 
@@ -18,11 +18,17 @@ export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolea
 export const getIsFetching: Selector<boolean, void> = (state: RootState): boolean =>
   state.contact.isFetching;
 
+export const getIsFetchingAttributes: Selector<boolean, void> = (state: RootState): boolean =>
+  state.contact.isFetchingAttributes;
+
 export const getIsSaveClicked: Selector<boolean, void> = (state: RootState): boolean =>
   state.contact.isSaveClicked;
 
 export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.contact.attributes;
+
+export const getMethods: Selector<Attributes, void> = (state: RootState): Methods =>
+  state.contact.methods;
 
 export const getContactList: Selector<ContactList, void> = (state: RootState): ContactList =>
   state.contact.list;

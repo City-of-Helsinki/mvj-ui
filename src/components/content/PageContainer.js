@@ -30,7 +30,7 @@ class PageContainer extends PureComponent<Props> {
 
     return <div
       ref={this.setRef}
-      className={classNames('page-container', className)}
+      className={classNames('content__page-container', className)}
     >
       <ReactResizeDetector
         handleHeight

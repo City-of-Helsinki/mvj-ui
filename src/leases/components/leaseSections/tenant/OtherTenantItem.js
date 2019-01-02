@@ -5,22 +5,33 @@ import get from 'lodash/get';
 import {Row, Column} from 'react-foundation';
 import classNames from 'classnames';
 
+import Authorization from '$components/authorization/Authorization';
 import Collapse from '$components/collapse/Collapse';
 import CollapseHeaderSubtitle from '$components/collapse/CollapseHeaderSubtitle';
-import CollapseHeaderTitle from '$components/collapse/CollapseHeaderTitle';
 import ContactTemplate from '$src/contacts/components/templates/ContactTemplate';
 import ExternalLink from '$components/links/ExternalLink';
-import FormTitleAndText from '$components/form/FormTitleAndText';
+import FormText from '$components/form/FormText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import FormWrapper from '$components/form/FormWrapper';
 import FormWrapperLeft from '$components/form/FormWrapperLeft';
 import FormWrapperRight from '$components/form/FormWrapperRight';
 import SubTitle from '$components/content/SubTitle';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames} from '$src/leases/enums';
+import {
+  FormNames,
+  LeaseTenantContactSetFieldPaths,
+  LeaseTenantContactSetFieldTitles,
+} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {isTenantActive} from '$src/leases/helpers';
-import {formatDate, formatDateRange, getAttributeFieldOptions, getLabelOfOption} from '$util/helpers';
+import {
+  formatDate,
+  formatDateRange,
+  getAttributeFieldOptions,
+  getLabelOfOption,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAttributes, getCollapseStateByKey} from '$src/leases/selectors';
 
@@ -64,56 +75,64 @@ const OtherTenantItem = ({
         <Fragment>
           <Column></Column>
           <Column>
-            <CollapseHeaderSubtitle><span>Välillä:</span> {formatDateRange(get(tenant, 'start_date'), get(tenant, 'end_date')) || '-'}</CollapseHeaderSubtitle>
+            <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE) && isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+              <CollapseHeaderSubtitle>
+                <span>Välillä:</span>
+                {formatDateRange(tenant.start_date, tenant.end_date) || '-'}
+              </CollapseHeaderSubtitle>
+            </Authorization>
           </Column>
         </Fragment>
       }
-
-      headerTitle={<CollapseHeaderTitle>{getLabelOfOption(tenantTypeOptions, tenant.type)}</CollapseHeaderTitle>}
+      headerTitle={
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.TYPE)}>
+          {getLabelOfOption(tenantTypeOptions, tenant.type)}
+        </Authorization>
+      }
       onToggle={handleCollapseToggle}
     >
       <FormWrapper>
         <FormWrapperLeft>
           <Row>
             <Column small={12} medium={6} large={8}>
-              <FormTitleAndText
-                title='Asiakas'
-                text={contact
-                  ? <ExternalLink
-                    className='no-margin'
-                    href={`${getRouteById('contacts')}/${contact.id}`}
-                    text={getContactFullName(contact)}
-                  />
-                  : '-'
-                }
-              />
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+                <FormTextTitle>{LeaseTenantContactSetFieldTitles.CONTACT}</FormTextTitle>
+                <FormText>
+                  {contact
+                    ? <ExternalLink
+                      className='no-margin'
+                      href={`${getRouteById('contacts')}/${contact.id}`}
+                      text={getContactFullName(contact)}
+                    />
+                    : '-'
+                  }
+                </FormText>
+              </Authorization>
             </Column>
           </Row>
         </FormWrapperLeft>
         <FormWrapperRight>
           <Row>
-            <Column small={12} medium={6} large={4}>
-              <Row>
-                <Column>
-                  <FormTitleAndText
-                    title='Alkupvm'
-                    text={formatDate(get(tenant, 'start_date')) || '-'}
-                  />
-                </Column>
-                <Column>
-                  <FormTitleAndText
-                    title='Loppupvm'
-                    text={formatDate(get(tenant, 'end_date')) || '-'}
-                  />
-                </Column>
-              </Row>
+            <Column small={6} medium={3} large={2}>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.START_DATE)}>
+                <FormTextTitle>{LeaseTenantContactSetFieldTitles.START_DATE}</FormTextTitle>
+                <FormText>{formatDate(tenant.start_date)}</FormText>
+              </Authorization>
+            </Column>
+            <Column small={6} medium={3} large={2}>
+              <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.END_DATE)}>
+                <FormTextTitle>{LeaseTenantContactSetFieldTitles.END_DATE}</FormTextTitle>
+                <FormText>{formatDate(tenant.end_date)}</FormText>
+              </Authorization>
             </Column>
           </Row>
         </FormWrapperRight>
       </FormWrapper>
 
-      <SubTitle>Asiakkaan tiedot</SubTitle>
-      <ContactTemplate contact={contact} />
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseTenantContactSetFieldPaths.CONTACT)}>
+        <SubTitle>Asiakkaan tiedot</SubTitle>
+        <ContactTemplate contact={contact} />
+      </Authorization>
     </Collapse>
   );
 };

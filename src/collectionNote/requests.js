@@ -5,6 +5,10 @@ import createUrl from '$src/api/createUrl';
 import type {CollectionNoteId} from './types';
 import type {LeaseId} from '$src/leases/types';
 
+export const fetchAttributes = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('collection_note/'), {method: 'OPTIONS'}));
+};
+
 export const fetchCollectionNotesByLease = (lease: LeaseId): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`collection_note/?lease=${lease}&limit=10000`)));
 };

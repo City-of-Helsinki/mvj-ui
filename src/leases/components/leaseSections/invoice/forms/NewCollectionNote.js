@@ -1,15 +1,21 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 
+import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import {ButtonColors} from '$components/enums';
+import {CollectionNoteFieldPaths, CollectionNoteFieldTitles} from '$src/collectionNote/enums';
 import {FormNames} from '$src/leases/enums';
+import {getFieldAttributes, isFieldAllowedToRead} from '$util/helpers';
+
+import type {Attributes} from '$src/types';
 
 type Props = {
+  collectionNoteAttributes: Attributes,
   field: any,
   note: ?string,
   onCancel: Function,
@@ -17,6 +23,7 @@ type Props = {
 }
 
 const NewCollectionNote = ({
+  collectionNoteAttributes,
   field,
   note,
   onCancel,
@@ -27,19 +34,21 @@ const NewCollectionNote = ({
   };
 
   return(
-    <div>
+    <Fragment>
       <Row>
         <Column small={12}>
-          <FormField
-            disableDirty
-            fieldAttributes={{
-              type: 'textarea',
-              required: true,
-              label: 'Huomautus',
-            }}
-            invisibleLabel={true}
-            name={`${field}.note`}
-          />
+          <Authorization allow={isFieldAllowedToRead(collectionNoteAttributes, CollectionNoteFieldPaths.NOTE)}>
+            <FormField
+              disableDirty
+              fieldAttributes={{
+                ...getFieldAttributes(collectionNoteAttributes, CollectionNoteFieldPaths.NOTE),
+                type: 'textarea',
+              }}
+              invisibleLabel={true}
+              name={`${field}.note`}
+              overrideValues={{label: CollectionNoteFieldTitles.NOTE}}
+            />
+          </Authorization>
         </Column>
       </Row>
       <div className='invoice__new-collection-note_button-wrapper'>
@@ -55,7 +64,7 @@ const NewCollectionNote = ({
           text='Tallenna'
         />
       </div>
-    </div>
+    </Fragment>
   );
 };
 

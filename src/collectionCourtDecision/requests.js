@@ -6,6 +6,10 @@ import createUrl from '$src/api/createUrl';
 import type {CollectionCourtDecisionId, UploadCollectionCourtDecisionPayload} from './types';
 import type {LeaseId} from '$src/leases/types';
 
+export const fetchAttributes = (): Generator<any, any, any> => {
+  return callApi(new Request(createUrl('collection_court_decision/'), {method: 'OPTIONS'}));
+};
+
 export const fetchCollectionCourtDecisionsByLease = (lease: LeaseId): Generator<any, any, any> => {
   return callApi(new Request(createUrl(`collection_court_decision/?lease=${lease}&limit=10000`)));
 };

@@ -2,37 +2,43 @@
 import React from 'react';
 import {connect} from 'react-redux';
 
+import Authorization from '$components/authorization/Authorization';
 import Divider from '$components/content/Divider';
 import FormText from '$components/form/FormText';
 import LeaseAreaWithArchiceInfo from './LeaseAreaWithArchiceInfo';
 import RightSubtitle from '$components/content/RightSubtitle';
+import {LeaseAreasFieldPaths} from '$src/leases/enums';
 import {getDecisionOptions} from '$src/decision/helpers';
 import {getAreasSum, getContentLeaseAreas} from '$src/leases/helpers';
-import {formatNumber}  from '$util/helpers';
-import {getCurrentLease} from '$src/leases/selectors';
+import {formatNumber, isFieldAllowedToRead}  from '$util/helpers';
+import {getAttributes, getCurrentLease} from '$src/leases/selectors';
 import {getDecisionsByLease} from '$src/decision/selectors';
 
+import type {Attributes} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
+  attributes: Attributes,
   currentLease: Lease,
   decisions: Array<Object>,
 }
 
-const LeaseAreas = ({currentLease, decisions}: Props) => {
+const LeaseAreas = ({attributes, currentLease, decisions}: Props) => {
   const areas = getContentLeaseAreas(currentLease);
   const activeAreas = areas.filter((area) => !area.archived_at);
   const archivedAreas = areas.filter((area) => area.archived_at);
   const areasSum = getAreasSum(activeAreas);
   const decisionOptions = getDecisionOptions(decisions);
-
+  console.log(attributes);
   return (
     <div>
       <h2>Vuokra-alue</h2>
-      <RightSubtitle text={<span>Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup></span>} />
+      <Authorization allow={isFieldAllowedToRead(attributes, LeaseAreasFieldPaths.AREA)}>
+        <RightSubtitle text={<span>Kokonaispinta-ala {formatNumber(areasSum) || '-'} m<sup>2</sup></span>} />
+      </Authorization>
       <Divider />
 
-      {!activeAreas || !activeAreas.length && <FormText className='no-margin'>Ei vuokra-alueita</FormText>}
+      {!activeAreas || !activeAreas.length && <FormText>Ei vuokra-alueita</FormText>}
       {activeAreas && !!activeAreas.length && activeAreas.map((area, index) =>
         <LeaseAreaWithArchiceInfo
           key={index}
@@ -62,6 +68,7 @@ export default connect(
     const currentLease = getCurrentLease(state);
 
     return {
+      attributes: getAttributes(state),
       currentLease: currentLease,
       decisions: getDecisionsByLease(state, currentLease.id),
     };

@@ -1,58 +1,69 @@
 // @flow
-import React, {PureComponent} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {change} from 'redux-form';
-import get from 'lodash/get';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import Authorization from '$components/authorization/Authorization';
 import BasisOfRentEdit from './BasisOfRentEdit';
 import BoxItemContainer from '$components/content/BoxItemContainer';
 import GrayBox from '$components/content/GrayBox';
 import GreenBox from '$components/content/GreenBox';
 import {ButtonColors} from '$components/enums';
-import {ArchiveBasisOfRentsText, DeleteModalLabels, DeleteModalTitles, UnarchiveBasisOfRentsText} from '$src/leases/enums';
-import {getFieldOptions, isEmptyValue, sortByLabelDesc} from '$util/helpers';
-import {getAttributes} from '$src/leases/selectors';
+import {
+  ArchiveBasisOfRentsText,
+  DeleteModalLabels,
+  DeleteModalTitles,
+  LeaseBasisOfRentsFieldPaths,
+  UnarchiveBasisOfRentsText,
+} from '$src/leases/enums';
+import {
+  getFieldAttributes,
+  getFieldOptions,
+  isEmptyValue,
+  isFieldAllowedToEdit,
+  sortByLabelDesc,
+} from '$util/helpers';
+import {getAttributes as getLeaseAttributes} from '$src/leases/selectors';
 
 import type {Attributes} from '$src/types';
 
 type Props = {
   archived: boolean,
-  attributes: Attributes,
   change: Function,
   fields: any,
   isSaveClicked: boolean,
+  leaseAttributes: Attributes,
   onArchive?: Function,
   onUnarchive?: Function,
 }
 
 type State = {
   areaUnitOptions: Array<Object>,
-  attributes: Attributes,
   indexOptions: Array<Object>,
   intendedUseOptions: Array<Object>,
+  leaseAttributes: Attributes,
 }
 
 class BasisOfRentsEdit extends PureComponent<Props, State> {
   state = {
     areaUnitOptions: [],
-    attributes: {},
-    currentLease: {},
     indexOptions: [],
     intendedUseOptions: [],
+    leaseAttributes: {},
   }
 
   static getDerivedStateFromProps(props: Props, state: State) {
     const newState = {};
 
-    if(props.attributes !== state.attributes) {
-      newState.attributes = props.attributes;
-      newState.areaUnitOptions = getFieldOptions(get(props.attributes, 'basis_of_rents.child.children.area_unit'), false)
+    if(props.leaseAttributes !== state.leaseAttributes) {
+      newState.leaseAttributes = props.leaseAttributes;
+      newState.areaUnitOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.AREA_UNIT), false)
         .map((item) => ({...item, label: (!isEmptyValue(item.label) ? item.label.replace('^2', '²') : item.label)}));
-      newState.indexOptions = getFieldOptions(get(props.attributes, 'basis_of_rents.child.children.index'), false).sort(sortByLabelDesc);
-      newState.intendedUseOptions = getFieldOptions(get(props.attributes, 'basis_of_rents.child.children.intended_use'));
+      newState.indexOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INDEX), false).sort(sortByLabelDesc);
+      newState.intendedUseOptions = getFieldOptions(getFieldAttributes(props.leaseAttributes, LeaseBasisOfRentsFieldPaths.INTENDED_USE));
     }
 
     return newState;
@@ -69,7 +80,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
   }
 
   render() {
-    const {archived, attributes, fields, isSaveClicked, onArchive, onUnarchive} = this.props;
+    const {archived, fields, isSaveClicked, leaseAttributes, onArchive, onUnarchive} = this.props;
     const {areaUnitOptions, indexOptions, intendedUseOptions} = this.state;
 
     return (
@@ -79,7 +90,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
             if(!fields || !fields.length) return null;
 
             return(
-              <div>
+              <Fragment>
                 <h3 style={{marginTop: 10, marginBottom: 5}}>Arkisto</h3>
                 <GrayBox>
                   <BoxItemContainer>
@@ -116,7 +127,6 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                         key={index}
                         archived={true}
                         areaUnitOptions={areaUnitOptions}
-                        attributes={attributes}
                         field={field}
                         indexOptions={indexOptions}
                         intendedUseOption={intendedUseOptions}
@@ -127,67 +137,69 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
                     })}
                   </BoxItemContainer>
                 </GrayBox>
-              </div>
+              </Fragment>
+            );
+          } else {
+            return(
+              <GreenBox>
+                <BoxItemContainer>
+                  {fields && !!fields.length && fields.map((field, index) => {
+                    const handleRemove = () => {
+                      dispatch({
+                        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                        confirmationFunction: () => {
+                          fields.remove(index);
+                        },
+                        confirmationModalButtonClassName: ButtonColors.ALERT,
+                        confirmationModalButtonText: 'Poista',
+                        confirmationModalLabel: DeleteModalLabels.BASIS_OF_RENT,
+                        confirmationModalTitle: DeleteModalTitles.BASIS_OF_RENT,
+                      });
+                    };
+
+                    const handleArchive = (savedItem: Object) => {
+                      dispatch({
+                        type: ActionTypes.SHOW_CONFIRMATION_MODAL,
+                        confirmationFunction: () => {
+                          if(onArchive) {
+                            onArchive(index, savedItem);
+                          }
+                        },
+                        confirmationModalButtonClassName: ButtonColors.SUCCESS,
+                        confirmationModalButtonText: ArchiveBasisOfRentsText.BUTTON,
+                        confirmationModalLabel: ArchiveBasisOfRentsText.LABEL,
+                        confirmationModalTitle: ArchiveBasisOfRentsText.TITLE,
+                      });
+                    };
+
+                    return <BasisOfRentEdit
+                      key={index}
+                      archived={false}
+                      areaUnitOptions={areaUnitOptions}
+                      field={field}
+                      indexOptions={indexOptions}
+                      intendedUseOptions={intendedUseOptions}
+                      isSaveClicked={isSaveClicked}
+                      onArchive={handleArchive}
+                      onRemove={handleRemove}
+                    />;
+                  })}
+                </BoxItemContainer>
+
+                <Authorization allow={isFieldAllowedToEdit(leaseAttributes, LeaseBasisOfRentsFieldPaths.BASIS_OF_RENTS)}>
+                  <Row>
+                    <Column>
+                      <AddButtonSecondary
+                        className={(!fields || !fields.length) ? 'no-top-margin' : ''}
+                        label='Lisää vuokralaskuri'
+                        onClick={this.handleAdd}
+                      />
+                    </Column>
+                  </Row>
+                </Authorization>
+              </GreenBox>
             );
           }
-
-          return(
-            <GreenBox>
-              <BoxItemContainer>
-                {fields && !!fields.length && fields.map((field, index) => {
-                  const handleRemove = () => {
-                    dispatch({
-                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                      confirmationFunction: () => {
-                        fields.remove(index);
-                      },
-                      confirmationModalButtonClassName: ButtonColors.ALERT,
-                      confirmationModalButtonText: 'Poista',
-                      confirmationModalLabel: DeleteModalLabels.BASIS_OF_RENT,
-                      confirmationModalTitle: DeleteModalTitles.BASIS_OF_RENT,
-                    });
-                  };
-
-                  const handleArchive = (savedItem: Object) => {
-                    dispatch({
-                      type: ActionTypes.SHOW_CONFIRMATION_MODAL,
-                      confirmationFunction: () => {
-                        if(onArchive) {
-                          onArchive(index, savedItem);
-                        }
-                      },
-                      confirmationModalButtonClassName: ButtonColors.SUCCESS,
-                      confirmationModalButtonText: ArchiveBasisOfRentsText.BUTTON,
-                      confirmationModalLabel: ArchiveBasisOfRentsText.LABEL,
-                      confirmationModalTitle: ArchiveBasisOfRentsText.TITLE,
-                    });
-                  };
-
-                  return <BasisOfRentEdit
-                    key={index}
-                    archived={false}
-                    areaUnitOptions={areaUnitOptions}
-                    attributes={attributes}
-                    field={field}
-                    indexOptions={indexOptions}
-                    intendedUseOptions={intendedUseOptions}
-                    isSaveClicked={isSaveClicked}
-                    onArchive={handleArchive}
-                    onRemove={handleRemove}
-                  />;
-                })}
-              </BoxItemContainer>
-              <Row>
-                <Column>
-                  <AddButtonSecondary
-                    className={(!fields || !fields.length) ? 'no-top-margin' : ''}
-                    label='Lisää vuokralaskuri'
-                    onClick={this.handleAdd}
-                  />
-                </Column>
-              </Row>
-            </GreenBox>
-          );
         }}
       </AppConsumer>
     );
@@ -197,7 +209,7 @@ class BasisOfRentsEdit extends PureComponent<Props, State> {
 export default connect(
   (state) => {
     return {
-      attributes: getAttributes(state),
+      leaseAttributes: getLeaseAttributes(state),
     };
   },
   {

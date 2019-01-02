@@ -6,12 +6,12 @@ import {SubmissionError} from 'redux-form';
 import {getRouteById} from '$src/root/routes';
 import {
   fetchSingleLeaseAfterEdit,
-  hideArchiveAreaModal,
   hideEditMode,
-  hideUnarchiveAreaModal,
+  attributesNotFound,
   notFound,
   notFoundById,
   receiveAttributes,
+  receiveMethods,
   receiveIsSaveClicked,
   receiveLeases,
   receiveSingleLease,
@@ -41,18 +41,22 @@ import {getCurrentLease} from './selectors';
 function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
-    const attributes = bodyAsJson.fields;
 
     switch (statusCode) {
       case 200:
+        const attributes = bodyAsJson.fields;
+        const methods = bodyAsJson.methods;
+
         yield put(receiveAttributes(attributes));
+        yield put(receiveMethods(methods));
         break;
-      case 404:
-      case 500:
+      default:
+        yield put(attributesNotFound());
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch identifiers with error "%s"', error);
+    console.error('Failed to fetch attributes with error "%s"', error);
+    yield put(attributesNotFound());
     yield put(receiveError(error));
   }
 }
@@ -89,7 +93,7 @@ function* fetchSingleLeaseSaga({payload: id}): Generator<any, any, any> {
         yield put(notFound());
         yield put(receiveError(new SubmissionError({...bodyAsJson})));
         break;
-      case 500:
+      default:
         yield put(notFound());
         break;
     }
@@ -190,67 +194,6 @@ function* patchLeaseSaga({payload: lease}): Generator<any, any, any> {
             hideEditMode(),
             receiveIsSaveClicked(false),
             () => displayUIMessage({title: '', body: 'Vuokraus tallennettu'}),
-          ],
-        }));
-        break;
-      case 400:
-        yield put(notFound());
-        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to edit lease with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
-function* archiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
-  try {
-    const id = lease.id;
-    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
-    switch (statusCode) {
-      case 200:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: id,
-          callbackFunctions: [
-            hideArchiveAreaModal(),
-            displayUIMessage({title: '', body: 'Kohde arkistoitu'}),
-          ],
-        }));
-        break;
-      case 400:
-        yield put(notFound());
-        yield put(receiveError(new SubmissionError({_error: 'Server error 400', ...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        yield put(receiveError(new Error(bodyAsJson)));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to edit lease with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
-function* unarchiveLeaseAreaSaga({payload: lease}): Generator<any, any, any> {
-  try {
-    const id = lease.id;
-    const {response: {status: statusCode}, bodyAsJson} = yield call(patchLease, lease);
-
-    switch (statusCode) {
-      case 200:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: id,
-          callbackFunctions: [
-            hideUnarchiveAreaModal(),
-            displayUIMessage({title: '', body: 'Kohde poistettu arkistosta'}),
           ],
         }));
         break;
@@ -459,8 +402,6 @@ export default function*(): Generator<any, any, any> {
       yield takeEvery('mvj/leases/FETCH_BY_ID', fetchLeaseByIdSaga);
       yield takeLatest('mvj/leases/CREATE', createLeaseSaga);
       yield takeLatest('mvj/leases/PATCH', patchLeaseSaga);
-      yield takeLatest('mvj/leases/ARCHIVE_AREA', archiveLeaseAreaSaga);
-      yield takeLatest('mvj/leases/UNARCHIVE_AREA', unarchiveLeaseAreaSaga);
       yield takeLatest('mvj/leases/START_INVOICING', startInvoicingSaga);
       yield takeLatest('mvj/leases/STOP_INVOICING', stopInvoicingSaga);
       yield takeLatest('mvj/leases/SET_RENT_INFO_COMPLETE', setRentInfoCompleteSaga),

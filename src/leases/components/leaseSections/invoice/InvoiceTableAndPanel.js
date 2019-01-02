@@ -10,7 +10,13 @@ import InvoicePanel from './InvoicePanel';
 import SortableTable from '$components/table/SortableTable';
 import {clearPatchedInvoice, patchInvoice} from '$src/invoices/actions';
 import {KeyCodes} from '$src/enums';
-import {InvoiceType} from '$src/invoices/enums';
+import {
+  InvoiceFieldPaths,
+  InvoiceFieldTitles,
+  InvoiceRowsFieldPaths,
+  InvoiceRowsFieldTitles,
+  InvoiceType,
+} from '$src/invoices/enums';
 import {FormNames} from '$src/leases/enums';
 import {TableSortOrder} from '$components/enums';
 import {getContactFullName} from '$src/contacts/helpers';
@@ -26,20 +32,22 @@ import {
   formatNumber,
   getAttributeFieldOptions,
   getLabelOfOption,
+  isFieldAllowedToRead,
   sortNumberByKeyAsc,
   sortNumberByKeyDesc,
   sortStringAsc,
   sortStringDesc,
 } from '$util/helpers';
-import {getCurrentLease, getIsEditMode} from '$src/leases/selectors';
+import {getCurrentLease} from '$src/leases/selectors';
 import {
   getAttributes as getInvoiceAttributes,
   getInvoicesByLease,
+  getMethods as getInvoiceMethods,
   getPatchedInvoice,
 } from '$src/invoices/selectors';
 import {getInvoiceSetsByLease} from '$src/invoiceSets/selectors';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {Invoice, InvoiceList} from '$src/invoices/types';
 
 const TABLE_MIN_HEIGHT = 521;
@@ -52,9 +60,9 @@ type Props = {
   initialize: Function,
   invoices: InvoiceList,
   invoiceAttributes: Attributes,
+  invoiceMethods: Methods,
   invoiceToCredit: ?Object,
   invoiceSets: Array<Object>,
-  isEditMode: boolean,
   onInvoiceToCreditChange: Function,
   patchInvoice: Function,
   patchedInvoice: ?Invoice,
@@ -210,14 +218,12 @@ class InvoiceTableAndPanel extends Component<Props, State> {
   }
 
   calculateTableHeight = () => {
-    if(!this.table || !this.panel) {
-      return;
-    }
+    if(!this.table || !this.panel) return;
 
-    const {isEditMode} = this.props,
+    const {invoiceMethods} = this.props,
       {openedInvoice} = this.state,
       {scrollHeight: panelHeight} = this.panel.wrappedInstance.container,
-      tableMinHeight = isEditMode ? TABLE_MIN_HEIGHT_EDIT : TABLE_MIN_HEIGHT,
+      tableMinHeight = invoiceMethods.PATCH ? TABLE_MIN_HEIGHT_EDIT : TABLE_MIN_HEIGHT,
       borderHeight = 2;
     let {scrollHeight: tableHeight} = this.table.scrollBodyTable;
 
@@ -366,10 +372,12 @@ class InvoiceTableAndPanel extends Component<Props, State> {
   };
 
   getColumns = () => {
-    const {invoiceSetOptions, receivableTypeOptions, stateOptions, typeOptions} = this.state;
+    const {invoiceAttributes, invoiceSetOptions, receivableTypeOptions, stateOptions, typeOptions} = this.state;
 
-    return [
-      {
+    const columns = [];
+    console.log(invoiceAttributes);
+    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.INVOICESET)) {
+      columns.push({
         key: 'invoiceset',
         ascSortFunction: sortNumberByKeyAsc,
         descSortFunction: sortNumberByKeyDesc,
@@ -384,37 +392,50 @@ class InvoiceTableAndPanel extends Component<Props, State> {
             'invoiceset',
           ],
         },
-        text: 'Laskuryhmä',
-      },
-      {
+        text: InvoiceFieldTitles.INVOICESET,
+      });
+    }
+
+    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.RECIPIENT)) {
+      columns.push({
         key: 'recipientFull',
         ascSortFunction: this.sortByRecipientNameAsc,
         descSortFunction: this.sortByRecipientNameDesc,
         renderer: (val) => getContactFullName(val) || '-',
-        text: 'Laskunsaaja',
-      },
-      {
+        text: InvoiceFieldTitles.RECIPIENT,
+      });
+    }
+
+    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.DUE_DATE)) {
+      columns.push({
         key: 'due_date',
         dataClassName: 'no-wrap',
         renderer: (val) => formatDate(val),
-        text: 'Eräpäivä',
-      },
-      {
+        text: InvoiceFieldTitles.DUE_DATE,
+      });
+    }
+
+    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.NUMBER)) {
+      columns.push({
         key: 'number',
         ascSortFunction: sortNumberByKeyAsc,
         descSortFunction: sortNumberByKeyDesc,
         dataClassName: 'no-wrap',
         text: 'Laskunro',
-      },
-      {
-        key: 'totalShare',
-        ascSortFunction: sortNumberByKeyAsc,
-        descSortFunction: sortNumberByKeyDesc,
-        dataClassName: 'no-wrap',
-        renderer: (val) => val !== null ? `${formatNumber(val * 100)} %` : '-',
-        text: 'Osuus',
-      },
-      {
+      });
+    }
+
+    columns.push({
+      key: 'totalShare',
+      ascSortFunction: sortNumberByKeyAsc,
+      descSortFunction: sortNumberByKeyDesc,
+      dataClassName: 'no-wrap',
+      renderer: (val) => val !== null ? `${formatNumber(val * 100)} %` : '-',
+      text: InvoiceFieldTitles.SHARE,
+    });
+
+    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLING_PERIOD_START_DATE)) {
+      columns.push({
         key: 'billing_period_start_date',
         dataClassName: 'no-wrap',
         grouping: {
@@ -429,46 +450,63 @@ class InvoiceTableAndPanel extends Component<Props, State> {
           ],
         },
         renderer: (val, invoice) => formatDateRange(invoice.billing_period_start_date, invoice.billing_period_end_date) || '-',
-        text: 'Laskutuskausi',
-      },
-      {
+        text: InvoiceFieldTitles.BILLING_PERIOD,
+      });
+    }
+
+    if(isFieldAllowedToRead(invoiceAttributes, InvoiceRowsFieldPaths.RECEIVABLE_TYPE)) {
+      columns.push({
         key: 'receivableTypes',
         ascSortFunction: this.sortByReceivableTypesAsc,
         descSortFunction: this.sortByReceivableTypesDesc,
         renderer: (val) => formatReceivableTypesString(receivableTypeOptions, val) || '-',
-        text: 'Saamislaji',
-      },
-      {
+        text: InvoiceRowsFieldTitles.RECEIVABLE_TYPE,
+      });
+    }
+
+    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.TYPE)) {
+      columns.push({
         key: 'type',
         ascSortFunction: this.sortByTypeAsc,
         descSortFunction: this.sortByTypeDesc,
         renderer: (val) => getLabelOfOption(typeOptions, val) || '-',
         text: 'Tyyppi',
-      },
-      {
+      });
+    }
+
+    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.STATE)) {
+      columns.push({
         key: 'state',
         ascSortFunction: this.sortByStateAsc,
         descSortFunction: this.sortByStateDesc,
         renderer: (val) => getLabelOfOption(stateOptions, val) || '-',
-        text: 'Laskun tila',
-      },
-      {
+        text: InvoiceFieldTitles.STATE,
+      });
+    }
+
+    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.BILLED_AMOUNT)) {
+      columns.push({
         key: 'billed_amount',
         ascSortFunction: sortNumberByKeyAsc,
         descSortFunction: sortNumberByKeyDesc,
         dataClassName: 'no-wrap',
         renderer: (val, row) => <AmountWithVat amount={row.billed_amount || 0} date={row.due_date} />,
         text: 'Laskutettu',
-      },
-      {
+      });
+    }
+
+    if(isFieldAllowedToRead(invoiceAttributes, InvoiceFieldPaths.OUTSTANDING_AMOUNT)) {
+      columns.push({
         key: 'outstanding_amount',
         ascSortFunction: sortNumberByKeyAsc,
         descSortFunction: sortNumberByKeyDesc,
         dataClassName: 'no-wrap',
         renderer: (val, row) => <AmountWithVat amount={row.outstanding_amount || 0} date={row.due_date} />,
         text: 'Maksamatta',
-      },
-    ];
+      });
+    }
+
+    return columns;
   }
 
   isTableRadioButtonDisabled = (row: Object) => {
@@ -528,7 +566,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
   }
 
   render() {
-    const {invoiceToCredit, isEditMode} = this.props;
+    const {invoiceMethods, invoiceToCredit} = this.props;
     const {columns, formatedInvoices, openedInvoice, tableHeight, tableWidth} = this.state;
 
     return(
@@ -562,7 +600,7 @@ class InvoiceTableAndPanel extends Component<Props, State> {
             onSelectRow={this.handleSelectRow}
             radioButtonDisabledFunction={this.isTableRadioButtonDisabled}
             selectedRow={invoiceToCredit}
-            showRadioButton={true}
+            showRadioButton={invoiceMethods.PATCH}
             sortable={true}
           />
         </div>
@@ -572,7 +610,6 @@ class InvoiceTableAndPanel extends Component<Props, State> {
           invoice={openedInvoice}
           isOpen={!!openedInvoice}
           minHeight={tableHeight}
-          isEditMode={isEditMode}
           onClose={this.handleInvoicePanelClose}
           onCreditedInvoiceClick={this.handleOnCreditedInvoiceClick}
           onKeyDown={this.handleKeyDown}
@@ -592,8 +629,8 @@ export default connect(
     return {
       invoices: getInvoicesByLease(state, currentLease.id),
       invoiceAttributes: getInvoiceAttributes(state),
+      invoiceMethods: getInvoiceMethods(state),
       invoiceSets: getInvoiceSetsByLease(state, currentLease.id),
-      isEditMode: getIsEditMode(state),
       patchedInvoice: getPatchedInvoice(state),
     };
   },

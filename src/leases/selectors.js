@@ -3,16 +3,12 @@ import get from 'lodash/get';
 import isEmpty from 'lodash/isEmpty';
 
 import type {RootState} from '$src/root/types';
-import type {Attributes, Selector} from '$src/types';
+import type {Attributes, Methods, Selector} from '$src/types';
 import type {
   LeaseId,
   Lease,
   LeaseList,
-  LeaseState,
 } from './types';
-
-export const getIsArchiveAreaModalOpen: Selector<boolean, void> = (state: RootState): boolean =>
-  state.lease.isArchiveAreaModalOpen;
 
 export const getIsEditMode: Selector<boolean, void> = (state: RootState): boolean =>
   state.lease.isEditMode;
@@ -23,7 +19,7 @@ export const getIsFetching: Selector<boolean, void> = (state: RootState): boolea
 export const getIsSaving: Selector<boolean, void> = (state: RootState): boolean =>
   state.lease.isSaving;
 
-export const getIsFetchingAllLeases: Selector<Array<boolean>, void> = (state: RootState): Array<boolean> =>
+export const getIsFetchingAllLeases: Selector<Object, void> = (state: RootState): Object =>
   state.lease.isFetchingById;
 
 export const getIsFetchingById: Selector<boolean, LeaseId> = (state: RootState, id: LeaseId): boolean =>
@@ -41,11 +37,11 @@ export const getIsFormValidFlags: Selector<Object, void> = (state: RootState): O
 export const getIsSaveClicked: Selector<boolean, void> = (state: RootState): boolean =>
   state.lease.isSaveClicked;
 
-export const getIsUnarchiveAreaModalOpen: Selector<boolean, void> = (state: RootState): boolean =>
-  state.lease.isUnarchiveAreaModalOpen;
-
-export const getAttributes: Selector<Attributes, void> = (state: RootState): LeaseState =>
+export const getAttributes: Selector<Attributes, void> = (state: RootState): Attributes =>
   state.lease.attributes;
+
+export const getMethods: Selector<Methods, void> = (state: RootState): Methods =>
+  state.lease.methods;
 
 export const getLeasesList: Selector<LeaseList, void> = (state: RootState): LeaseList =>
   state.lease.list;
@@ -53,7 +49,7 @@ export const getLeasesList: Selector<LeaseList, void> = (state: RootState): Leas
 export const getCurrentLease: Selector<Lease, void> = (state: RootState): Lease =>
   state.lease.current;
 
-export const getAllLeases: Selector<Array<Lease>, void> = (state: RootState): Array<Lease> =>
+export const getAllLeases: Selector<Object, void> = (state: RootState): Object =>
   state.lease.byId;
 
 export const getLeaseById: Selector<Lease, LeaseId> = (state: RootState, id: LeaseId): Lease =>

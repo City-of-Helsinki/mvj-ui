@@ -2,9 +2,10 @@
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 
-import type {Attributes, Reducer} from '../types';
+import type {Attributes, Methods, Reducer} from '../types';
 import type {
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
   Invoice,
   InvoiceListMap,
   ReceiveInvoicesByLeaseAction,
@@ -23,6 +24,13 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/invoices/FETCH_BY_LEASE': () => true,
   'mvj/invoices/NOT_FOUND': () => false,
   'mvj/invoices/RECEIVE_BY_LEASE': () => false,
+}, false);
+
+const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
+  'mvj/invoices/FETCH_ATTRIBUTES': () => true,
+  'mvj/invoices/RECEIVE_ATTRIBUTES': () => false,
+  'mvj/invoices/RECEIVE_METHODS': () => false,
+  'mvj/invoices/ATTRIBUTES_NOT_FOUND': () => false,
 }, false);
 
 const isCreatePanelOpenReducer: Reducer<boolean> = handleActions({
@@ -61,6 +69,12 @@ const attributesReducer: Reducer<Attributes> = handleActions({
   },
 }, {});
 
+const methodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/invoices/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
+    return methods;
+  },
+}, {});
+
 const byLeaseReducer: Reducer<InvoiceListMap> = handleActions({
   ['mvj/invoices/RECEIVE_BY_LEASE']: (state: InvoiceListMap, {payload}: ReceiveInvoicesByLeaseAction) => {
     return {
@@ -93,5 +107,7 @@ export default combineReducers({
   isCreditPanelOpen: isCreditPanelOpenReducer,
   isEditClicked: isEditClickedReducer,
   isFetching: isFetchingReducer,
+  isFetchingAttributes: isFetchingAttributesReducer,
+  methods: methodsReducer,
   patchedInvoice: patchedInvoiceReducer,
 });

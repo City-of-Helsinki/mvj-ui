@@ -1,5 +1,5 @@
 // @flow
-import type {Action, Attributes} from '../types';
+import type {Action, Attributes, Methods} from '../types';
 
 export type ContactState = {
   attributes: Attributes,
@@ -10,8 +10,10 @@ export type ContactState = {
   isContactModalOpen: boolean,
   isEditMode: boolean,
   isFetching: boolean,
+  isFetchingAttributes: boolean,
   isSaveClicked: boolean,
   list: ContactList,
+  methods: Methods,
 };
 
 export type Contact = Object;
@@ -23,6 +25,8 @@ export type ContactNotFoundAction = Action<'mvj/contacts/NOT_FOUND', void>;
 
 export type FetchAttributesAction = Action<'mvj/contacts/FETCH_ATTRIBUTES', void>;
 export type ReceiveAttributesAction = Action<'mvj/contacts/RECEIVE_ATTRIBUTES', Attributes>;
+export type ReceiveMethodsAction = Action<'mvj/contacts/RECEIVE_METHODS', Methods>;
+export type ContactAttributesNotFoundAction = Action<'mvj/contacts/ATTRIBUTES_NOT_FOUND', void>;
 
 export type CreateContactAction = Action<'mvj/contacts/CREATE', Contact>;
 export type EditContactAction = Action<'mvj/contacts/EDIT', Contact>;
