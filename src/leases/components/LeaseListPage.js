@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import flowRight from 'lodash/flowRight';
 import {connect} from 'react-redux';
@@ -32,9 +32,23 @@ import {createLease, fetchLeases} from '$src/leases/actions';
 import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
 import {leaseStateFilterOptions} from '$src/leases/constants';
 import {PermissionMissingTexts} from '$src/enums';
-import {FormNames, LeaseSummaryFieldPaths} from '$src/leases/enums';
+import {
+  FormNames,
+  LeaseAreasFieldPaths,
+  LeaseAreaAddressesFieldPaths,
+  LeaseFieldPaths,
+  LeaseFieldTitles,
+  LeaseTenantsFieldPaths,
+} from '$src/leases/enums';
 import {getContentLeases, mapLeaseSearchFilters} from '$src/leases/helpers';
-import {formatDate, getFieldAttributes, getFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {
+  formatDate,
+  getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
+  getSearchQuery,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {getIsFetching, getLeasesList} from '$src/leases/selectors';
@@ -74,7 +88,7 @@ type State = {
   visualizationType: string,
 }
 
-class LeaseListPage extends Component<Props, State> {
+class LeaseListPage extends PureComponent<Props, State> {
   firstLeaseModalField: any
 
   state = {
@@ -223,6 +237,70 @@ class LeaseListPage extends Component<Props, State> {
     });
   }
 
+  getColumns = () => {
+    const {leaseAttributes} = this.props;
+    const stateOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseFieldPaths.STATE), false);
+    const columns = [];
+
+    if(isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.IDENTIFIER)) {
+      columns.push({key: 'identifier', text: LeaseFieldTitles.IDENTIFIER});
+    }
+
+    if(isFieldAllowedToRead(leaseAttributes, LeaseAreasFieldPaths.IDENTIFIER)) {
+      columns.push({
+        key: 'lease_area_identifiers',
+        text: 'Vuokrakohde',
+        disabled: true,
+        renderer: (val) => <MultiItemCollapse
+          items={val}
+          itemRenderer={(item) => item}
+        />,
+      });
+    }
+
+    if(isFieldAllowedToRead(leaseAttributes, LeaseAreaAddressesFieldPaths.ADDRESSES)) {
+      columns.push({
+        key: 'addresses',
+        text: 'Osoite',
+        disabled: true,
+        renderer: (val) => <MultiItemCollapse
+          items={val}
+          itemRenderer={(item) => item}
+        />,
+      });
+    }
+
+    if(isFieldAllowedToRead(leaseAttributes, LeaseTenantsFieldPaths.TENANTS)) {
+      columns.push({
+        key: 'tenants',
+        text: 'Vuokralainen',
+        disabled: true,
+        renderer: (val) => <MultiItemCollapse
+          items={val}
+          itemRenderer={(item) => item}
+        />,
+      });
+    }
+
+    if(isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.LESSOR)) {
+      columns.push({key: 'lessor', text: 'Vuokranantaja'});
+    }
+
+    if(isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.STATE)) {
+      columns.push({key: 'state', text: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)});
+    }
+
+    if(isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.START_DATE)) {
+      columns.push({key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val)});
+    }
+
+    if(isFieldAllowedToRead(leaseAttributes, LeaseFieldPaths.END_DATE)) {
+      columns.push({key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)});
+    }
+
+    return columns;
+  }
+
   getLeasesCount = (leases: LeaseList) => {
     return get(leases, 'count', 0);
   }
@@ -292,8 +370,8 @@ class LeaseListPage extends Component<Props, State> {
     const leases = getContentLeases(content, query);
     const count = this.getLeasesCount(content);
     const maxPage = this.getLeasesMaxPage(content);
-    const stateOptions = getFieldOptions(getFieldAttributes(leaseAttributes, LeaseSummaryFieldPaths.STATE), false);
     const isBasicSearchByDefault = this.isBasicSearchByDefault();
+    const columns = this.getColumns();
 
     if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
 
@@ -356,42 +434,9 @@ class LeaseListPage extends Component<Props, State> {
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
           }
           {visualizationType === 'table' && (
-            <div>
+            <Fragment>
               <SortableTable
-                columns={[
-                  {key: 'identifier', text: 'Vuokratunnus'},
-                  {
-                    key: 'lease_area_identifiers',
-                    text: 'Vuokrakohde',
-                    disabled: true,
-                    renderer: (val) => <MultiItemCollapse
-                      items={val}
-                      itemRenderer={(item) => item}
-                    />,
-                  },
-                  {
-                    key: 'addresses',
-                    text: 'Osoite',
-                    disabled: true,
-                    renderer: (val) => <MultiItemCollapse
-                      items={val}
-                      itemRenderer={(item) => item}
-                    />,
-                  },
-                  {
-                    key: 'tenants',
-                    text: 'Vuokralainen',
-                    disabled: true,
-                    renderer: (val) => <MultiItemCollapse
-                      items={val}
-                      itemRenderer={(item) => item}
-                    />,
-                  },
-                  {key: 'lessor', text: 'Vuokranantaja'},
-                  {key: 'state', text: 'Tyyppi', renderer: (val) => getLabelOfOption(stateOptions, val)},
-                  {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val)},
-                  {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val)},
-                ]}
+                columns={columns}
                 data={leases}
                 listTable
                 onRowClick={this.handleRowClick}
@@ -401,7 +446,7 @@ class LeaseListPage extends Component<Props, State> {
                 maxPage={maxPage}
                 onPageClick={(page) => this.handlePageClick(page)}
               />
-            </div>
+            </Fragment>
           )}
           {visualizationType === 'map' && (
             <AreaNotesEditMap

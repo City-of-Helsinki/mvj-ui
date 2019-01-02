@@ -1,7 +1,7 @@
 // @flow
 const isValid = value => typeof (value) !== 'undefined' && value !== null && value !== '';
 
-export const filterSelectOptionByLabel = (option: Object, filterValue: ?string) => {
+export const filterOptionsByLabel = (option: Object, filterValue: ?string) => {
   if(!filterValue) return true;
 
   const label = option['label'];

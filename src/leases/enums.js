@@ -321,22 +321,26 @@ export const FormNames = {
   TENANTS: 'tenants-form',
 };
 
+
 /**
- * Lease summary field paths enumerable.
+ * Lease field paths enumerable.
  *
  * @type {{}}
  */
-export const LeaseSummaryFieldPaths = {
+export const LeaseFieldPaths = {
   CLASSIFICATION: 'classification',
+  DISTRICT: 'district',
   END_DATE: 'end_date',
   FINANCING: 'financing',
   HITAS: 'hitas',
+  IDENTIFIER: 'identifier',
   INFILL_DEVELOPMENT_COMPENSATIONS: 'infill_development_compensations',
   INTENDED_USE: 'intended_use',
   INTENDED_USE_NOTE: 'intended_use_note',
   IS_SUBJECT_TO_VAT: 'is_subject_to_vat',
   LESSOR: 'lessor',
   MANAGEMENT: 'management',
+  MUNICIPALITY: 'municipality',
   NOTE: 'note',
   NOTICE_NOTE: 'notice_note',
   NOTICE_PERIOD: 'notice_period',
@@ -347,26 +351,31 @@ export const LeaseSummaryFieldPaths = {
   START_DATE: 'start_date',
   STATE: 'state',
   STATISTICAL_USE: 'statistical_use',
+  STATUS: 'status',
   SUPPORTIVE_HOUSING: 'supportive_housing',
   TRANSFERABLE: 'transferable',
+  TYPE: 'type',
 };
 
 /**
- * Lease summary field titles enumerable.
+ * Lease field titles enumerable.
  *
  * @type {{}}
  */
-export const LeaseSummaryFieldTitles = {
+export const LeaseFieldTitles = {
   CLASSIFICATION: 'Julkisuusluokka',
+  DISTRICT: 'Kaupunginosa',
   END_DATE: 'Loppupvm',
   FINANCING: 'Rahoitusmuoto',
   HITAS: 'Hitas',
+  IDENTIFIER: 'Vuokratunnus',
   INFILL_DEVELOPMENT_COMPENSATIONS: 'Täydennysrakentamiskorvaus',
   INTENDED_USE: 'Vuokrauksen käyttötarkoitus',
   INTENDED_USE_NOTE: 'Käyttötarkoituksen huomautus',
   IS_SUBJECT_TO_VAT: 'Arvonlisävelvollinen',
   LESSOR: 'Vuokranantaja',
   MANAGEMENT: 'Hallintamuoto',
+  MUNICIPALITY: 'Kunta',
   NOTE: 'Huomautus',
   NOTICE_NOTE: 'Irtisanomisajan huomautus',
   NOTICE_PERIOD: 'Irtisanomisaika',
@@ -377,8 +386,10 @@ export const LeaseSummaryFieldTitles = {
   START_DATE: 'Alkupvm',
   STATE: 'Tyyppi',
   STATISTICAL_USE: 'Tilastollinen pääkäyttötarkoitus',
+  STATUS: 'Olotila',
   SUPPORTIVE_HOUSING: 'Erityisasunnot',
   TRANSFERABLE: 'Siirto-oikeus',
+  TYPE: 'Vuokrauksen laji',
 };
 
 /**
@@ -565,31 +576,6 @@ export const LeaseConstructabilityDescriptionsFieldTitles = {
   AHJO_REFERENCE_NUMBER: 'AHJO diaarinumero',
   TEXT: 'Huomautus',
   TYPE: 'Tyyppi',
-};
-
-/**
- * Lease info field paths enumerable.
- *
- * @type {{}}
- */
-export const LeaseInfoFieldPaths = {
-  END_DATE: 'end_date',
-  IDENTIFIER: 'identifier',
-  START_DATE: 'start_date',
-  STATE: 'state',
-};
-
-/**
- * Lease info field titles enumerable.
- *
- * @type {{}}
- */
-export const LeaseInfoFieldTitles = {
-  END_DATE: 'Loppupvm',
-  IDENTIFIER: 'Vuokratunnus',
-  STATUS: 'Olotila',
-  START_DATE: 'Alkupvm',
-  STATE: 'Tyyppi',
 };
 
 /**

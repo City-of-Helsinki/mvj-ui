@@ -18,7 +18,7 @@ import SummaryLeaseInfo from './SummaryLeaseInfo';
 import FormTitleAndText from '$components/form/FormTitleAndText';
 import {receiveCollapseStates} from '$src/leases/actions';
 import {ViewModes} from '$src/enums';
-import {FormNames, LeaseSummaryFieldTitles, LeaseSummaryFieldPaths} from '$src/leases/enums';
+import {FormNames, LeaseFieldTitles, LeaseFieldPaths} from '$src/leases/enums';
 import {getContactFullName} from '$src/contacts/helpers';
 import {getContentSummary} from '$src/leases/helpers';
 import {
@@ -83,16 +83,16 @@ class Summary extends Component<Props, State> {
 
     if(props.attributes !== state.attributes) {
       newState.attributes = props.attributes;
-      newState.classificationOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.CLASSIFICATION));
-      newState.financingOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.FINANCING));
-      newState.hitasOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.HITAS));
-      newState.intendedUseOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.INTENDED_USE));
-      newState.managementOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.MANAGEMENT));
-      newState.noticePeriodOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.NOTICE_PERIOD));
-      newState.regulationOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.REGULATION));
-      newState.stateOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.STATE));
-      newState.statisticalUseOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.STATISTICAL_USE));
-      newState.supportiveHousingOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseSummaryFieldPaths.SUPPORTIVE_HOUSING));
+      newState.classificationOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.CLASSIFICATION));
+      newState.financingOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.FINANCING));
+      newState.hitasOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.HITAS));
+      newState.intendedUseOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.INTENDED_USE));
+      newState.managementOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.MANAGEMENT));
+      newState.noticePeriodOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.NOTICE_PERIOD));
+      newState.regulationOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.REGULATION));
+      newState.stateOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.STATE));
+      newState.statisticalUseOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.STATISTICAL_USE));
+      newState.supportiveHousingOptions = getFieldOptions(getFieldAttributes(props.attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING));
     }
 
     if(props.currentLease !== state.currentLease) {
@@ -147,7 +147,7 @@ class Summary extends Component<Props, State> {
     return (
       <div>
         <h2>Yhteenveto</h2>
-        <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.CLASSIFICATION)}>
+        <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.CLASSIFICATION)}>
           <RightSubtitle
             className='publicity-label'
             text={summary.classification
@@ -166,80 +166,80 @@ class Summary extends Component<Props, State> {
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.STATE)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.STATE}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.STATE)}>
+                    <FormTextTitle>{LeaseFieldTitles.STATE}</FormTextTitle>
                     <FormText>{getLabelOfOption(stateOptions, summary.state) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.START_DATE)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.START_DATE}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.START_DATE)}>
+                    <FormTextTitle>{LeaseFieldTitles.START_DATE}</FormTextTitle>
                     <FormText>{formatDate(summary.start_date) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.END_DATE)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.END_DATE}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.END_DATE)}>
+                    <FormTextTitle>{LeaseFieldTitles.END_DATE}</FormTextTitle>
                     <FormText>{formatDate(summary.end_date) || '-'}</FormText>
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.LESSOR)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.LESSOR}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.LESSOR)}>
+                    <FormTextTitle>{LeaseFieldTitles.LESSOR}</FormTextTitle>
                     <FormText>{getContactFullName(summary.lessor) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.PREPARER)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.PREPARER}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.PREPARER)}>
+                    <FormTextTitle>{LeaseFieldTitles.PREPARER}</FormTextTitle>
                     <FormText>{getUserFullName(summary.preparer) || '-'}</FormText>
                   </Authorization>
                 </Column>
-                <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.CLASSIFICATION)}>
+                <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.CLASSIFICATION)}>
                   <Column small={12} medium={6} large={4}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.CLASSIFICATION}</FormTextTitle>
+                    <FormTextTitle>{LeaseFieldTitles.CLASSIFICATION}</FormTextTitle>
                     <FormText>{getLabelOfOption(classificationOptions, summary.classification) || '-'}</FormText>
                   </Column>
                 </Authorization>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.INTENDED_USE)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.INTENDED_USE}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTENDED_USE)}>
+                    <FormTextTitle>{LeaseFieldTitles.INTENDED_USE}</FormTextTitle>
                     <FormText>{getLabelOfOption(intendedUseOptions, summary.intended_use) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.INTENDED_USE_NOTE)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.INTENDED_USE_NOTE}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INTENDED_USE_NOTE)}>
+                    <FormTextTitle>{LeaseFieldTitles.INTENDED_USE_NOTE}</FormTextTitle>
                     <ShowMore text={summary.intended_use_note || '-'} />
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.FINANCING)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.FINANCING}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.FINANCING)}>
+                    <FormTextTitle>{LeaseFieldTitles.FINANCING}</FormTextTitle>
                     <FormText>{getLabelOfOption(financingOptions, summary.financing) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.MANAGEMENT)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.MANAGEMENT}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.MANAGEMENT)}>
+                    <FormTextTitle>{LeaseFieldTitles.MANAGEMENT}</FormTextTitle>
                     <FormText>{getLabelOfOption(managementOptions, summary.management) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.TRANSFERABLE)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.TRANSFERABLE}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.TRANSFERABLE)}>
+                    <FormTextTitle>{LeaseFieldTitles.TRANSFERABLE}</FormTextTitle>
                     <FormText>{summary.transferable ? 'Kyllä' : 'Ei'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.HITAS)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.HITAS}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.HITAS)}>
+                    <FormTextTitle>{LeaseFieldTitles.HITAS}</FormTextTitle>
                     <FormText>{getLabelOfOption(hitasOptions, summary.hitas) || '-'}</FormText>
                   </Authorization>
                 </Column>
@@ -251,8 +251,8 @@ class Summary extends Component<Props, State> {
                   />
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.INFILL_DEVELOPMENT_COMPENSATIONS)}>
+                    <FormTextTitle>{LeaseFieldTitles.INFILL_DEVELOPMENT_COMPENSATIONS}</FormTextTitle>
                     {!infillDevelopmentCompensations || !infillDevelopmentCompensations.length
                       ? <FormText>-</FormText>
                       : <ListItems>
@@ -272,22 +272,22 @@ class Summary extends Component<Props, State> {
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.NOTICE_PERIOD)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.NOTICE_PERIOD}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.NOTICE_PERIOD)}>
+                    <FormTextTitle>{LeaseFieldTitles.NOTICE_PERIOD}</FormTextTitle>
                     <FormText>{getLabelOfOption(noticePeriodOptions, summary.notice_period) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.NOTICE_NOTE)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.NOTICE_NOTE}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.NOTICE_NOTE)}>
+                    <FormTextTitle>{LeaseFieldTitles.NOTICE_NOTE}</FormTextTitle>
                     <ShowMore text={summary.notice_note || '-'} />
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.REFERENCE_NUMBER)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.REFERENCE_NUMBER}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REFERENCE_NUMBER)}>
+                    <FormTextTitle>{LeaseFieldTitles.REFERENCE_NUMBER}</FormTextTitle>
                     <FormText>{summary.reference_number
                       ? <ExternalLink
                         className='no-margin'
@@ -297,16 +297,16 @@ class Summary extends Component<Props, State> {
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={8}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.NOTE)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.NOTE}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.NOTE)}>
+                    <FormTextTitle>{LeaseFieldTitles.NOTE}</FormTextTitle>
                     <ShowMore text={summary.note || '-'} />
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.IS_SUBJECT_TO_VAT)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.IS_SUBJECT_TO_VAT}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.IS_SUBJECT_TO_VAT)}>
+                    <FormTextTitle>{LeaseFieldTitles.IS_SUBJECT_TO_VAT}</FormTextTitle>
                     <FormText>{summary.is_subject_to_vat ? 'Kyllä' : 'Ei'}</FormText>
                   </Authorization>
                 </Column>
@@ -322,28 +322,28 @@ class Summary extends Component<Props, State> {
             >
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.SUPPORTIVE_HOUSING)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.SUPPORTIVE_HOUSING}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.SUPPORTIVE_HOUSING)}>
+                    <FormTextTitle>{LeaseFieldTitles.SUPPORTIVE_HOUSING}</FormTextTitle>
                     <FormText>{getLabelOfOption(supportiveHousingOptions, summary.supportive_housing) || '-'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.STATISTICAL_USE)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.STATISTICAL_USE}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.STATISTICAL_USE)}>
+                    <FormTextTitle>{LeaseFieldTitles.STATISTICAL_USE}</FormTextTitle>
                     <FormText>{getLabelOfOption(statisticalUseOptions, summary.statistical_use) || '-'}</FormText>
                   </Authorization>
                 </Column>
               </Row>
               <Row>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.REGULATED)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.REGULATED}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REGULATED)}>
+                    <FormTextTitle>{LeaseFieldTitles.REGULATED}</FormTextTitle>
                     <FormText>{summary.regulated ? 'Kyllä' : 'Ei'}</FormText>
                   </Authorization>
                 </Column>
                 <Column small={12} medium={6} large={4}>
-                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseSummaryFieldPaths.REGULATION)}>
-                    <FormTextTitle>{LeaseSummaryFieldTitles.REGULATION}</FormTextTitle>
+                  <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.REGULATION)}>
+                    <FormTextTitle>{LeaseFieldTitles.REGULATION}</FormTextTitle>
                     <FormText>{getLabelOfOption(regulationOptions, summary.regulation) || '-'}</FormText>
                   </Authorization>
                 </Column>

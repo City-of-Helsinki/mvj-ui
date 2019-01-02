@@ -5,7 +5,7 @@ import {Row, Column} from 'react-foundation';
 
 import Authorization from '$components/authorization/Authorization';
 import FormTextTitle from '$components/form/FormTextTitle';
-import {LeaseInfoFieldPaths, LeaseInfoFieldTitles} from '$src/leases/enums';
+import {LeaseFieldPaths, LeaseFieldTitles} from '$src/leases/enums';
 import {getContentLeaseInfo, getContentLeaseStatus} from '$src/leases/helpers';
 import {formatDate, getFieldAttributes, getFieldOptions, getLabelOfOption, isFieldAllowedToRead} from '$util/helpers';
 import {getAttributes, getCurrentLease} from '$src/leases/selectors';
@@ -20,7 +20,7 @@ type Props = {
 
 const LeaseInfo = ({attributes, currentLease}: Props) => {
   const leaseInfo = getContentLeaseInfo(currentLease);
-  const stateOptions = getFieldOptions(getFieldAttributes(attributes, LeaseInfoFieldPaths.STATE));
+  const stateOptions = getFieldOptions(getFieldAttributes(attributes, LeaseFieldPaths.STATE));
 
   if(!LeaseInfo) return null;
 
@@ -28,32 +28,32 @@ const LeaseInfo = ({attributes, currentLease}: Props) => {
     <div className='lease-info'>
       <Row>
         <Column>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.IDENTIFIER)}>
-            <FormTextTitle>{LeaseInfoFieldTitles.IDENTIFIER}</FormTextTitle>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.IDENTIFIER)}>
+            <FormTextTitle>{LeaseFieldTitles.IDENTIFIER}</FormTextTitle>
             <h1 className='lease-info__identifier'>{leaseInfo.identifier || '-'}</h1>
           </Authorization>
         </Column>
         <Column>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.STATE)}>
-            <FormTextTitle>{LeaseInfoFieldTitles.STATE}</FormTextTitle>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.STATE)}>
+            <FormTextTitle>{LeaseFieldTitles.STATE}</FormTextTitle>
             <p className='lease-info__text'>{getLabelOfOption(stateOptions, leaseInfo.state) || '-'}</p>
           </Authorization>
         </Column>
         <Column>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.START_DATE)}>
-            <FormTextTitle>{LeaseInfoFieldTitles.START_DATE}</FormTextTitle>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.START_DATE)}>
+            <FormTextTitle>{LeaseFieldTitles.START_DATE}</FormTextTitle>
             <p className='lease-info__text'>{formatDate(leaseInfo.start_date) || '-'}</p>
           </Authorization>
         </Column>
         <Column>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.END_DATE)}>
-            <FormTextTitle>{LeaseInfoFieldTitles.END_DATE}</FormTextTitle>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.END_DATE)}>
+            <FormTextTitle>{LeaseFieldTitles.END_DATE}</FormTextTitle>
             <p className='lease-info__text'>{formatDate(leaseInfo.end_date) || '-'}</p>
           </Authorization>
         </Column>
         <Column>
-          <Authorization allow={isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.START_DATE) && isFieldAllowedToRead(attributes, LeaseInfoFieldPaths.END_DATE)}>
-            <FormTextTitle>{LeaseInfoFieldTitles.STATUS}</FormTextTitle>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.START_DATE) && isFieldAllowedToRead(attributes, LeaseFieldPaths.END_DATE)}>
+            <FormTextTitle>{LeaseFieldTitles.STATUS}</FormTextTitle>
             <p className='lease-info__text'>{getContentLeaseStatus(currentLease) || '-'}</p>
           </Authorization>
         </Column>

@@ -146,6 +146,7 @@ class Search extends Component<Props, State> {
               fieldAttributes={{
                 label: 'Hae hakusanalla',
                 type: 'search',
+                read_only: false,
               }}
               invisibleLabel
               name='identifier'
@@ -165,6 +166,7 @@ class Search extends Component<Props, State> {
                   fieldAttributes={{
                     label: 'Vuokralainen',
                     type: 'string',
+                    read_only: false,
                   }}
                   invisibleLabel
                   name='tenant_name'
@@ -185,6 +187,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: '',
                         type: 'multiselect',
+                        read_only: false,
                       }}
                       invisibleLabel
                       isLoading={isFetchingAttributes}
@@ -201,6 +204,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Vain entiset asiakkaat',
                         type: 'checkbox',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='only_past_tenants'
@@ -226,6 +230,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Tyyppi',
                         type: 'choice',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='lease_type'
@@ -239,6 +244,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Kunta',
                         type: 'choice',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='municipality'
@@ -252,6 +258,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Kaupunginosa',
                         type: 'choice',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='district'
@@ -265,6 +272,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Juokseva numero',
                         type: 'string',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='sequence'
@@ -286,6 +294,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Vuokrauksen alkupvm alkaen',
                         type: 'date',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='lease_start_date_start'
@@ -298,6 +307,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Vuokrauksen alkupvm loppuen',
                         type: 'date',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='lease_start_date_end'
@@ -319,6 +329,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Vuokrauksen loppupvm alkaen',
                         type: 'date',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='lease_end_date_start'
@@ -331,6 +342,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Vuokrauksen loppupvm loppuen',
                         type: 'date',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='lease_end_date_end'
@@ -353,6 +365,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Voimassa',
                         type: 'checkbox',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='only_active_leases'
@@ -368,6 +381,7 @@ class Search extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Päättyneet',
                         type: 'checkbox',
+                        read_only: false,
                       }}
                       invisibleLabel
                       name='only_expired_leases'
@@ -391,6 +405,7 @@ class Search extends Component<Props, State> {
                   fieldAttributes={{
                     label: 'Kohteen tunnus',
                     type: 'string',
+                    read_only: false,
                   }}
                   invisibleLabel
                   name='property_identifier'
@@ -409,6 +424,7 @@ class Search extends Component<Props, State> {
                   fieldAttributes={{
                     label: 'Vuokrakohteen osoite',
                     type: 'string',
+                    read_only: false,
                   }}
                   invisibleLabel
                   name='address'
