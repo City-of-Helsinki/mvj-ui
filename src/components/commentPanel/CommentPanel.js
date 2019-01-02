@@ -7,24 +7,39 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import Authorization from '$components/authorization/Authorization';
 import CheckboxInput from '$components/inputs/CheckboxInput';
 import CloseButton from '$components/button/CloseButton';
 import Comment from './Comment';
+import FormText from '$components/form/FormText';
 import NewCommentForm from './forms/NewCommentForm';
 import {clearEditFlags, createComment, receiveIsSaveClicked} from '$src/comments/actions';
 import {ButtonColors, CloseCommentPanelTexts, FormNames} from '$components/enums';
-import {getAttributeFieldOptions, sortStringByKeyDesc} from '$src/util/helpers';
+import {CommentFieldPaths} from '$src/comments/enums';
+import {
+  getFieldAttributes,
+  getFieldOptions,
+  isFieldAllowedToEdit,
+  sortStringByKeyDesc,
+} from '$src/util/helpers';
 import {getContentComments} from '$src/leases/helpers';
-import {getAttributes, getCommentsByLease, getEditModeFlags} from '$src/comments/selectors';
+import {
+  getAttributes as getCommentAttributes,
+  getCommentsByLease,
+  getEditModeFlags,
+  getMethods as getCommentMethods,
+} from '$src/comments/selectors';
 import {getCurrentLease} from '$src/leases/selectors';
 
+import type {Attributes, Methods} from '$src/types';
 import type {CommentList} from '$src/comments/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
-  attributes: Object,
   clearEditFlags: Function,
+  commentAttributes: Attributes,
   commentList: CommentList,
+  commentMethods: Methods,
   createComment: Function,
   currentLease: Lease,
   editModeFlags: Object,
@@ -37,12 +52,15 @@ type Props = {
 }
 
 type State = {
-  comments: ?Array<Object>,
+  allowEdit: boolean,
+  commentAttributes: Attributes,
+  commentMethods: Methods,
+  comments: Array<Object>,
+  commentList: CommentList,
   isClosing: boolean,
   isOpening: boolean,
   selectedTopics: Array<string>,
   topicOptions: Array<Object>,
-  topicFilterOptions: Array<Object>,
 }
 
 const getCommentsByTopic = (comments: Array<Object>, topic: Object): Array<Object> => {
@@ -55,37 +73,48 @@ class CommentPanel extends PureComponent<Props, State> {
   firstCommentModalField: any
 
   state = {
-    comments: null,
+    allowEdit: false,
+    commentAttributes: {},
+    commentMethods: {},
+    comments: [],
+    commentList: [],
     isClosing: false,
     isOpening: false,
     selectedTopics: [],
     topicOptions: [],
-    topicFilterOptions: [],
+  }
+
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.commentList !== state.commentList) {
+      newState.commentList = props.commentList;
+      newState.comments = getContentComments(props.commentList);
+    }
+
+    if(props.commentAttributes !== state.commentAttributes) {
+      newState.commentAttributes = props.commentAttributes;
+      newState.topicOptions = getFieldOptions(getFieldAttributes(props.commentAttributes, CommentFieldPaths.TOPIC), false);
+    }
+
+    if(props.commentMethods !== state.commentMethods || props.commentAttributes !== state.commentAttributes) {
+      newState.commentAttributes = props.commentAttributes;
+      newState.commentMethods = props.commentMethods;
+      newState.allowEdit = isFieldAllowedToEdit(props.commentAttributes, CommentFieldPaths.TOPIC) && props.commentMethods.PATCH;
+    }
+
+    return newState;
   }
 
   componentDidMount() {
-    const {attributes, commentList, receiveIsSaveClicked} = this.props;
+    const {receiveIsSaveClicked} = this.props;
 
     receiveIsSaveClicked(false);
-
-    if(!isEmpty(attributes)) {
-      this.updateOptions();
-    }
-
-    if(!isEmpty(commentList)) {
-      this.updateContent();
-    }
 
     this.component.addEventListener('transitionend', this.transitionEnds);
   }
 
   componentDidUpdate(prevProps) {
-    if(prevProps.attributes !== this.props.attributes) {
-      this.updateOptions();
-    }
-    if(prevProps.commentList !== this.props.commentList) {
-      this.updateContent();
-    }
     if(!prevProps.isOpen && this.props.isOpen) {
       this.initializeNewCommentForm();
 
@@ -120,35 +149,17 @@ class CommentPanel extends PureComponent<Props, State> {
     });
   }
 
-  getFilteredComments = (comments: ?Array<Object>) => {
-    const {selectedTopics} = this.state;
-
-    if(!comments || !comments.length) return [];
-
+  getFilteredComments = () => {
+    const {comments, selectedTopics} = this.state;
     const sortedComments = [...comments].sort((a, b) => sortStringByKeyDesc(a, b, 'modified_at'));
 
-    if(!selectedTopics.length) return sortedComments;
-
-    return sortedComments.filter((comment) => selectedTopics.indexOf(comment.topic) !== -1);
+    return selectedTopics.length
+      ? sortedComments.filter((comment) => selectedTopics.indexOf(comment.topic) !== -1)
+      : sortedComments;
   }
 
   setComponentRef = (element: any) => {
     this.component = element;
-  }
-
-  updateContent = () => {
-    const {commentList} = this.props;
-    this.setState({
-      comments: getContentComments(commentList),
-    });
-  }
-
-  updateOptions = () => {
-    const {attributes} = this.props;
-    this.setState({
-      topicOptions: getAttributeFieldOptions(attributes, 'topic'),
-      topicFilterOptions: getAttributeFieldOptions(attributes, 'topic', false),
-    });
   }
 
   createComment = (text: string, topic: number) => {
@@ -176,7 +187,7 @@ class CommentPanel extends PureComponent<Props, State> {
 
   render () {
     const {
-      attributes,
+      commentMethods,
       editModeFlags,
       isNewCommentFormDirty,
       isOpen,
@@ -184,14 +195,14 @@ class CommentPanel extends PureComponent<Props, State> {
       receiveIsSaveClicked,
     } = this.props;
     const {
+      allowEdit,
       comments,
       isClosing,
       isOpening,
       selectedTopics,
       topicOptions,
-      topicFilterOptions,
     } = this.state;
-    const filteredComments = this.getFilteredComments(comments);
+    const filteredComments = this.getFilteredComments();
 
     return (
       <div ref={this.setComponentRef} className={classNames('comment-panel', {'is-panel-open': isOpen})}>
@@ -231,42 +242,44 @@ class CommentPanel extends PureComponent<Props, State> {
                 }}
               </AppConsumer>
             </div>
-            <NewCommentForm
-              attributes={attributes}
-              onAddComment={this.createComment}
-            />
 
-            {comments && !!comments.length &&
-              <div className='filters'>
-                <p className='filters-title'>Suodatus</p>
+            <Authorization allow={commentMethods.POST}>
+              <NewCommentForm onAddComment={this.createComment} />
+            </Authorization>
+
+            {comments && !!comments.length && topicOptions && !!topicOptions.length &&
+              <div className='comment-panel__filters'>
+                <span className='comment-panel__filters-title'>Suodatus</span>
+
                 <CheckboxInput
                   checkboxName='checkbox-buttons-document-type'
                   legend='Suodata kommentteja'
                   onChange={this.handleFilterChange}
-                  options={topicFilterOptions}
+                  options={topicOptions}
                   value={selectedTopics}
                 />
               </div>
             }
 
             {!filteredComments || !filteredComments.length &&
-              <div className='comments'>
-                <p className='no-comments-text'>Ei kommentteja</p>
+              <div className='comment-panel__comments'>
+                <FormText>Ei kommentteja</FormText>
               </div>
             }
             {filteredComments && !!filteredComments.length &&
-              <div className='comments'>
+              <div className='comment-panel__comments'>
                 {topicOptions && !!topicOptions.length && topicOptions.map((topic) => {
                   const comments = getCommentsByTopic(filteredComments, topic);
 
-                  if(!comments.length) {return null;}
+                  if(!comments.length) return null;
 
                   return (
-                    <div className='comments-section' key={topic.value}>
+                    <div className='comment-panel__comments-section' key={topic.value}>
                       <h3>{topic.label}</h3>
                       {comments.map((comment) =>
                         <Comment
                           key={comment.id}
+                          allowEdit={allowEdit}
                           comment={comment}
                           user={comment.user}
                         />
@@ -288,8 +301,9 @@ export default flowRight(
     (state) => {
       const currentLease = getCurrentLease(state);
       return {
-        attributes: getAttributes(state),
+        commentAttributes: getCommentAttributes(state),
         commentList: getCommentsByLease(state, currentLease.id),
+        commentMethods: getCommentMethods(state),
         currentLease: currentLease,
         editModeFlags: getEditModeFlags(state),
         isNewCommentFormDirty: isDirty(FormNames.NEW_COMMENT)(state),

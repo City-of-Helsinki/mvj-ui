@@ -29,12 +29,13 @@
     }
   }
 
-  .filters {
+  &__filters {
     margin-top: rem-calc(20px) !important;
     margin-bottom: rem-calc(15px);
   }
 
-  .filters-title {
+  &__filters-title {
+    display: block;
     font-size: rem-calc(14px);
     font-weight: 600;
     padding: 0;
@@ -42,58 +43,55 @@
     margin: rem-calc(0 0 2px);
   }
 
-  .comments {
-    .no-comments-text {
+  &__comments {
+    margin-top: rem-calc(20px);
+  }
+
+  &__comments-section {
+    &_title {
+      font-family: $font-family-source;
+      font-size: rem-calc(20px);
+      line-height: rem-calc(22px);
+      font-weight: $semibold;
+      color: $black;
+      margin: rem-calc(0 0 15px);
+    }
+  }
+
+
+  &__comment {
+    position: relative;
+    margin-bottom: rem-calc(15px);
+
+    &_content-wrapper {
+      padding-right: 25px;
+
+      &.no-padding {
+        padding-right: 0;
+      }
+    }
+
+    &_text {
       font-size: rem-calc(14px);
-      margin-bottom: rem-calc(5px);
       line-height: rem-calc(16px);
+      margin-bottom: rem-calc(5px);
+      padding-left: rem-calc(20px);
     }
 
-    .comment {
-      position: relative;
-      margin-bottom: rem-calc(15px);
+    &_info {
+      font-size: $font-small;
+      margin-bottom: 0px;
 
-      &__content-wrapper {
-        padding-right: 25px;
-
-        &.no-padding {
-          padding-right: 0;
-        }
-      }
-
-      &__text {
-        font-size: rem-calc(14px);
-        line-height: rem-calc(16px);
-        margin-bottom: rem-calc(5px);
-        padding-left: rem-calc(20px);
-      }
-
-      &__info {
-        font-size: $font-small;
-        margin-bottom: 0px;
-
-        &_date {
-          font-weight: $semibold;
-        }
-      }
-
-      &__button-wrapper {
-        text-align: right;
-
-        .mvj-button:last-child {
-          margin-right: 0;
-        }
+      &_date {
+        font-weight: $semibold;
       }
     }
 
-    .comments-section {
-      .comment:last-child {
-        margin-bottom: 0;
-      }
-    }
-    .comments-section:first-child {
-      h3 {
-        margin-top: 0;
+    &_button-wrapper {
+      text-align: right;
+
+      .mvj-button:last-child {
+        margin-right: 0;
       }
     }
   }

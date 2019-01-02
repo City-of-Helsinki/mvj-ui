@@ -14,10 +14,11 @@ import {formatDateObj} from '$util/helpers';
 import {getIsEditModeById} from '$src/comments/selectors';
 
 type Props = {
+  allowEdit: boolean,
   comment: Object,
   editComment: Function,
   hideEditModeById: Function,
-  isEditMode: boolean,
+  editMode: boolean,
   showEditModeById: Function,
   user: Object,
 }
@@ -50,7 +51,7 @@ class Comment extends PureComponent<Props, State> {
     });
   }
 
-  handleSaveButtonClick = () => {
+  handleEdit = () => {
     const {comment, editComment} = this.props;
     const {editedText} = this.state;
 
@@ -59,72 +60,74 @@ class Comment extends PureComponent<Props, State> {
 
   render() {
     const {editedText} = this.state;
-    const {comment, isEditMode, user} = this.props;
+    const {allowEdit, comment, editMode, user} = this.props;
 
-    return (
-      <div className='comment'>
-        {!isEditMode &&
-          <div>
+    if(editMode) {
+      return(
+        <div className='comment-panel__comment'>
+          <div className='comment-panel__comment_content-wrapper no-padding'>
+            <Row>
+              <Column>
+                <TextAreaInput
+                  onChange={this.handleTextFieldChange}
+                  id={`comment_${comment.id}`}
+                  placeholder='Kommentti'
+                  rows={3}
+                  value={editedText}
+                />
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <div className='comment-panel__comment_button-wrapper'>
+                  <Button
+                    className={ButtonColors.SECONDARY}
+                    onClick={this.handleCancelButtonClick}
+                    text='Peruuta'
+                  />
+                  <Button
+                    className={ButtonColors.SUCCESS}
+                    disabled={!editedText}
+                    onClick={this.handleEdit}
+                    text='Tallenna'
+                  />
+                </div>
+              </Column>
+            </Row>
+          </div>
+        </div>
+      );
+    } else {
+      return(
+        <div className='comment-panel__comment'>
+          {allowEdit &&
             <EditButton
               className='position-topright'
               onClick={this.handleEditButtonClick}
               title='Muokkaa kommenttia'
             />
-            <div className='comment__content-wrapper'>
-              <p className='comment__info'>
-                <span className='comment__info_date'>{formatDateObj(comment.modified_at)}</span>
-                &nbsp;
-                <span>{user.last_name} {user.first_name}</span>
-              </p>
-              <div className='comment__text'>
-                <ShowMore text={comment.text} />
-              </div>
+
+          }
+          <div className='comment-panel__comment_content-wrapper'>
+            <p className='comment-panel__comment_info'>
+              <span className='comment-panel__comment_info_date'>{formatDateObj(comment.modified_at)}</span>
+              &nbsp;
+              <span>{user.last_name} {user.first_name}</span>
+            </p>
+            <div className='comment-panel__comment_text'>
+              <ShowMore text={comment.text} />
             </div>
           </div>
-        }
-        {isEditMode &&
-          <div>
-            <div className='comment__content-wrapper no-padding'>
-              <Row>
-                <Column>
-                  <TextAreaInput
-                    onChange={this.handleTextFieldChange}
-                    id={`comment_${comment.id}`}
-                    placeholder='Kommentti'
-                    rows={3}
-                    value={editedText}
-                  />
-                </Column>
-              </Row>
-              <Row>
-                <Column>
-                  <div className='comment__button-wrapper'>
-                    <Button
-                      className={ButtonColors.SECONDARY}
-                      onClick={this.handleCancelButtonClick}
-                      text='Peruuta'
-                    />
-                    <Button
-                      className={ButtonColors.SUCCESS}
-                      disabled={!editedText}
-                      onClick={this.handleSaveButtonClick}
-                      text='Tallenna'
-                    />
-                  </div>
-                </Column>
-              </Row>
-            </div>
-          </div>
-        }
-      </div>
-    );
+        </div>
+      );
+    }
   }
 }
 
 export default connect(
   (state, props) => {
     return {
-      isEditMode: getIsEditModeById(state, props.comment.id),
+      editMode: getIsEditModeById(state, props.comment.id),
     };
   },
   {

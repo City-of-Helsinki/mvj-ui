@@ -3,18 +3,24 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {formValueSelector, reduxForm} from 'redux-form';
 import flowRight from 'lodash/flowRight';
-import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import Button from '$components/button/Button';
 import FormField from '$components/form/FormField';
 import {receiveIsSaveClicked} from '$src/comments/actions';
 import {ButtonColors, FormNames} from '$components/enums';
-import {getIsSaveClicked} from '$src/comments/selectors';
+import {CommentFieldPaths, CommentFieldTitles} from '$src/comments/enums';
+import {getFieldAttributes, isFieldAllowedToEdit} from '$util/helpers';
+import {
+  getAttributes as getCommentAttributes,
+  getIsSaveClicked,
+} from '$src/comments/selectors';
 
+import type {Attributes} from '$src/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
-  attributes: Object,
+  commentAttributes: Attributes,
   isSaveClicked: boolean,
   onAddComment: Function,
   receiveIsSaveClicked: Function,
@@ -24,7 +30,7 @@ type Props = {
 }
 
 const NewCommentForm = ({
-  attributes,
+  commentAttributes,
   isSaveClicked,
   onAddComment,
   receiveIsSaveClicked,
@@ -43,25 +49,27 @@ const NewCommentForm = ({
 
   return (
     <form>
-      <FormField
-        disableDirty
-        disableTouched={isSaveClicked}
-        fieldAttributes={get(attributes, 'topic')}
-        name='topic'
-        overrideValues={{
-          label: 'Aihealue',
-        }}
-      />
-      <FormField
-        disableDirty
-        disableTouched={isSaveClicked}
-        fieldAttributes={get(attributes, 'text')}
-        name='text'
-        overrideValues={{
-          label: 'Kommentti',
-          fieldType: 'textarea',
-        }}
-      />
+      <Authorization allow={isFieldAllowedToEdit(commentAttributes, CommentFieldPaths.TOPIC)}>
+        <FormField
+          disableDirty
+          disableTouched={isSaveClicked}
+          fieldAttributes={getFieldAttributes(commentAttributes, CommentFieldPaths.TOPIC)}
+          name='topic'
+          overrideValues={{label: CommentFieldTitles.TOPIC}}
+        />
+      </Authorization>
+      <Authorization allow={isFieldAllowedToEdit(commentAttributes, CommentFieldPaths.TEXT)}>
+        <FormField
+          disableDirty
+          disableTouched={isSaveClicked}
+          fieldAttributes={getFieldAttributes(commentAttributes, CommentFieldPaths.TEXT)}
+          name='text'
+          overrideValues={{
+            label: CommentFieldTitles.TEXT,
+            fieldType: 'textarea',
+          }}
+        />
+      </Authorization>
       <Button
         className={`${ButtonColors.SUCCESS} no-margin`}
         disabled={isSaveClicked && !valid}
@@ -77,6 +85,7 @@ const selector = formValueSelector(formName);
 
 const mapStateToProps = (state: RootState) => {
   return {
+    commentAttributes: getCommentAttributes(state),
     isSaveClicked: getIsSaveClicked(state),
     text: selector(state, 'text'),
     topic: selector(state, 'topic'),
