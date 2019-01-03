@@ -77,6 +77,7 @@ const RelatedLeaseItem = ({
                   </p>
                   <p>{formatDate(lease.start_date)} - {formatDate(lease.end_date)}</p>
                   <p className="type">{getLabelOfOption(stateOptions, lease.state) || '-'}</p>
+
                   <Authorization allow={relatedLeaseMethods.DELETE}>
                     {onDelete &&
                       <RemoveButton

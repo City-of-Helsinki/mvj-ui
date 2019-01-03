@@ -6,9 +6,10 @@ import {initialize} from 'redux-form';
 import {Row, Column} from 'react-foundation';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import MultiItemCollapse from '$components/table/MultiItemCollapse';
@@ -19,28 +20,41 @@ import SortableTable from '$components/table/SortableTable';
 import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
 
-import {fetchAttributes, fetchRentBasisList, initializeRentBasis} from '$src/rentbasis/actions';
+import {fetchRentBasisList, initializeRentBasis} from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {TABLE_PAGE_SIZE} from '$src/rentbasis/constants';
-import {FormNames} from '$src/rentbasis/enums';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$util/helpers';
+import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import {PermissionMissingTexts} from '$src/enums';
+import {
+  FormNames,
+  RentBasisFieldPaths,
+  RentBasisPropertyIdentifiersFieldPaths,
+  RentBasisRentRatesFieldPaths,
+} from '$src/rentbasis/enums';
+import {
+  formatDate,
+  getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
+  getSearchQuery,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getIsFetching, getRentBasisList} from '$src/rentbasis/selectors';
+import {getIsFetching, getRentBasisList} from '$src/rentbasis/selectors';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Attributes} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {RentBasisList} from '$src/rentbasis/types';
 
-const PAGE_SIZE = 25;
-
 type Props = {
-  attributes: Attributes,
-  fetchAttributes: Function,
   fetchRentBasisList: Function,
   initialize: Function,
   initializeRentBasis: Function,
   isFetching: boolean,
+  isFetchingCommonAttributes: boolean, // get vie withCommonAttributes HOC
   location: Object,
   receiveTopNavigationSettings: Function,
+  rentBasisAttributes: Attributes, // get vie withCommonAttributes HOC
+  rentBasisMethods: Methods, // get vie withCommonAttributes HOC
   rentBasisListData: RentBasisList,
   router: Object,
 }
@@ -62,8 +76,6 @@ class RentBasisListPage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      attributes,
-      fetchAttributes,
       initialize,
       location: {query},
       receiveTopNavigationSettings,
@@ -74,10 +86,6 @@ class RentBasisListPage extends Component<Props, State> {
       pageTitle: 'Vuokrausperusteet',
       showSearch: false,
     });
-
-    if(isEmpty(attributes)) {
-      fetchAttributes();
-    }
 
     this.search();
 
@@ -139,10 +147,10 @@ class RentBasisListPage extends Component<Props, State> {
     delete searchQuery.page;
 
     if(page > 1) {
-      searchQuery.offset = (page - 1) * PAGE_SIZE;
+      searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
 
-    searchQuery.limit = PAGE_SIZE;
+    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
 
     fetchRentBasisList(getSearchQuery(searchQuery));
   }
@@ -215,27 +223,77 @@ class RentBasisListPage extends Component<Props, State> {
     if(!count) {
       return 0;
     }
-    return Math.ceil(count/TABLE_PAGE_SIZE);
+    return Math.ceil(count/LIST_TABLE_PAGE_SIZE);
+  }
+
+  getColumns = () => {
+    const {rentBasisAttributes} = this.props;
+    const columns = [];
+    const buildPermissionTypeOptions = getFieldOptions(getFieldAttributes(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE));
+
+    if(isFieldAllowedToRead(rentBasisAttributes, RentBasisPropertyIdentifiersFieldPaths.PROPERTY_IDENTIFIERS)) {
+      columns.push({
+        key: 'property_identifiers',
+        text: 'Kohteen tunnus',
+        disabled: true,
+        renderer: (val) => <MultiItemCollapse
+          items={val}
+          itemRenderer={(item) => item}
+        />,
+      });
+    }
+
+    if(isFieldAllowedToRead(rentBasisAttributes, RentBasisRentRatesFieldPaths.BUILD_PERMISSION_TYPE)) {
+      columns.push({
+        key: 'build_permission_types',
+        text: 'Pääkäyttötarkoitus',
+        disabled: true,
+        renderer: (val) => <MultiItemCollapse
+          items={val}
+          itemRenderer={(item) => item ? getLabelOfOption(buildPermissionTypeOptions, item) : '-'}
+        />,
+      });
+    }
+
+    if(isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.START_DATE)) {
+      columns.push({key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val) || '-'});
+    }
+
+    if(isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.END_DATE)) {
+      columns.push({key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val) || '-'});
+    }
+
+    return columns;
   }
 
   render() {
-    const {attributes, isFetching, rentBasisListData} = this.props;
+    const {
+      isFetching,
+      isFetchingCommonAttributes,
+      rentBasisListData,
+      rentBasisMethods,
+    } = this.props;
     const {activePage, isSearchInitialized} = this.state;
     const count = this.getRentBasisCount(rentBasisListData);
     const rentBasisList = this.getRentBasisList(rentBasisListData);
     const maxPage = this.getRentBasisMaxPage(rentBasisListData);
+    const columns = this.getColumns();
 
-    const buildPermissionTypeOptions = getAttributeFieldOptions(attributes, 'rent_rates.child.children.build_permission_type');
+    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!rentBasisMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.RENT_BASIS} /></PageContainer>;
 
     return (
       <PageContainer>
         <Row>
           <Column small={12} large={6}>
-            <AddButtonSecondary
-              className='no-top-margin'
-              label='Luo vuokrausperuste'
-              onClick={this.handleCreateButtonClick}
-            />
+            <Authorization allow={rentBasisMethods.POST}>
+              <AddButtonSecondary
+                className='no-top-margin'
+                label='Luo vuokrausperuste'
+                onClick={this.handleCreateButtonClick}
+              />
+            </Authorization>
           </Column>
           <Column small={12} large={6}>
             <Search
@@ -261,28 +319,7 @@ class RentBasisListPage extends Component<Props, State> {
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
           }
           <SortableTable
-            columns={[
-              {
-                key: 'property_identifiers',
-                text: 'Kohteen tunnus',
-                disabled: true,
-                renderer: (val) => <MultiItemCollapse
-                  items={val}
-                  itemRenderer={(item) => item}
-                />,
-              },
-              {
-                key: 'build_permission_types',
-                text: 'Pääkäyttötarkoitus',
-                disabled: true,
-                renderer: (val) => <MultiItemCollapse
-                  items={val}
-                  itemRenderer={(item) => item ? getLabelOfOption(buildPermissionTypeOptions, item) : '-'}
-                />,
-              },
-              {key: 'start_date', text: 'Alkupvm', renderer: (val) => formatDate(val) || '-'},
-              {key: 'end_date', text: 'Loppupvm', renderer: (val) => formatDate(val) || '-'},
-            ]}
+            columns={columns}
             data={rentBasisList}
             listTable
             onRowClick={this.handleRowClick}
@@ -299,16 +336,15 @@ class RentBasisListPage extends Component<Props, State> {
 }
 
 export default flowRight(
+  withCommonAttributes,
   connect(
     (state) => {
       return {
-        attributes: getAttributes(state),
         isFetching: getIsFetching(state),
         rentBasisListData: getRentBasisList(state),
       };
     },
     {
-      fetchAttributes,
       fetchRentBasisList,
       initialize,
       initializeRentBasis,

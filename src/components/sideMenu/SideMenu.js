@@ -23,6 +23,7 @@ type Props = {
   isOpen: boolean,
   leaseMethods: Methods,
   onLinkClick: Function,
+  rentBasisMethods: Methods,
 }
 
 type State = {
@@ -46,9 +47,11 @@ class SideMenu extends Component<Props, State> {
   componentDidUpdate(prevProps: Props) {
     if(!prevProps.isOpen && this.props.isOpen) {
       const linkNode: any = ReactDOM.findDOMNode(this.firstLink);
+
       this.setState({
         isOpening: true,
       });
+
       if(linkNode) {
         linkNode.focus();
       }
@@ -84,14 +87,22 @@ class SideMenu extends Component<Props, State> {
 
   getSideMenuWidth = () => {
     const menuButton = document.getElementsByClassName('top-navigation__title_button');
+
     if(menuButton.length) {
       return menuButton[0].clientWidth;
     }
+
     return null;
   }
 
   render() {
-    const {contactMethods, isFetchingCommonAttributes, isOpen, leaseMethods} = this.props;
+    const {
+      contactMethods,
+      isFetchingCommonAttributes,
+      isOpen,
+      leaseMethods,
+      rentBasisMethods,
+    } = this.props;
     const {isClosing, isOpening} = this.state;
     const width =  this.getSideMenuWidth();
 
@@ -138,10 +149,11 @@ class SideMenu extends Component<Props, State> {
                   <li><Link onClick={handleClick} to={getRouteById('landUseContract')}>Maankäyttösopimukset</Link></li>
                   <li><Link onClick={handleClick} to={getRouteById('areaNotes')}>Muistettavat ehdot</Link></li>
                   <li><Link onClick={handleClick} to={getRouteById('infillDevelopment')}>Täydennysrakentamiskorvaukset</Link></li>
-                  <li><Link onClick={handleClick} to={getRouteById('rentBasis')}>Vuokrausperusteet</Link></li>
+                  <Authorization allow={rentBasisMethods.GET}>
+                    <li><Link onClick={handleClick} to={getRouteById('rentBasis')}>Vuokrausperusteet</Link></li>
+                  </Authorization>
                 </ul>
               }
-
             </div>
           );
         }}

@@ -6,6 +6,7 @@ import isEmpty from 'lodash/isEmpty';
 
 import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
 import {fetchAttributes as fetchLeaseAttributes} from '$src/leases/actions';
+import {fetchAttributes as fetchRentBasisAttributes} from '$src/rentbasis/actions';
 import {
   getAttributes as getContactAttributes,
   getIsFetchingAttributes as getIsFetchingContactAttributes,
@@ -16,6 +17,11 @@ import {
   getIsFetchingAttributes as getIsFetchingLeaseAttributes,
   getMethods as getLeaseMethods,
 } from '$src/leases/selectors';
+import {
+  getAttributes as getRentBasisAttributes,
+  getIsFetchingAttributes as getIsFetchingRentBasisAttributes,
+  getMethods as getRentBasisMethods,
+} from '$src/rentbasis/selectors';
 
 import type {Attributes, Methods} from '$src/types';
 
@@ -25,10 +31,14 @@ function CommonAttributes(WrappedComponent: any) {
     contactMethods: Methods,
     fetchContactAttributes: Function,
     fetchLeaseAttributes: Function,
+    fetchRentBasisAttributes: Function,
     isFetchingContactAttributes: boolean,
     isFetchingLeaseAttributes: boolean,
+    isFetchingRentBasisAttributes: boolean,
     leaseAttributes: Attributes,
     leaseMethods: Methods,
+    rentBasisAttributes: Attributes,
+    rentBasisMethods: Methods,
   }
 
   type State = {
@@ -45,7 +55,9 @@ function CommonAttributes(WrappedComponent: any) {
         contactMethods,
         fetchContactAttributes,
         fetchLeaseAttributes,
+        fetchRentBasisAttributes,
         leaseMethods,
+        rentBasisMethods,
       } = this.props;
 
       if(isEmpty(contactMethods)) {
@@ -55,11 +67,16 @@ function CommonAttributes(WrappedComponent: any) {
       if(isEmpty(leaseMethods)) {
         fetchLeaseAttributes();
       }
+
+      if(isEmpty(rentBasisMethods)) {
+        fetchRentBasisAttributes();
+      }
     }
 
     componentDidUpdate(prevProps: Props) {
       if(this.props.isFetchingLeaseAttributes !== prevProps.isFetchingLeaseAttributes ||
-        this.props.isFetchingContactAttributes !== prevProps.isFetchingContactAttributes) {
+        this.props.isFetchingContactAttributes !== prevProps.isFetchingContactAttributes ||
+        this.props.isFetchingRentBasisAttributes !== prevProps.isFetchingRentBasisAttributes) {
         this.setIsFetchingCommonAttributes();
       }
     }
@@ -68,9 +85,11 @@ function CommonAttributes(WrappedComponent: any) {
       const {
         isFetchingContactAttributes,
         isFetchingLeaseAttributes,
+        isFetchingRentBasisAttributes,
       } = this.props;
       const isFetching = isFetchingContactAttributes ||
-        isFetchingLeaseAttributes;
+        isFetchingLeaseAttributes ||
+        isFetchingRentBasisAttributes;
 
       this.setState({isFetchingCommonAttributes: isFetching});
     }
@@ -89,13 +108,17 @@ const withCommonAttributes = flowRight(
         contactMethods: getContactMethods(state),
         isFetchingContactAttributes: getIsFetchingContactAttributes(state),
         isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
+        isFetchingRentBasisAttributes: getIsFetchingRentBasisAttributes(state),
         leaseAttributes: getLeaseAttributes(state),
         leaseMethods: getLeaseMethods(state),
+        rentBasisAttributes: getRentBasisAttributes(state),
+        rentBasisMethods: getRentBasisMethods(state),
       };
     },
     {
       fetchContactAttributes,
       fetchLeaseAttributes,
+      fetchRentBasisAttributes,
     }
   ),
   CommonAttributes,

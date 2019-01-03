@@ -51,9 +51,10 @@ export const CancelChangesModalTexts = {
 /**
  * Permission missing texts enumerable.
  *
- * @type {{LEASE: string}}
+ * @type {{}}
  */
 export const PermissionMissingTexts = {
   GENERAL: 'Ei oikeuksia sisältöön.',
   LEASE: 'Ei oikeuksia vuokrauksiin.',
+  RENT_BASIS: 'Ei oikeuksia vuokrausperusteisiin.',
 };

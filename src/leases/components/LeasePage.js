@@ -101,11 +101,6 @@ type Props = {
   change: Function,
   clearFormValidFlags: Function,
   clearPreviewInvoices: Function,
-  collectionCourtDecisionMethods: Methods,  // get via withLeasePageAttributes HOC
-  collectionLetterMethods: Methods,         // get via withLeasePageAttributes HOC
-  collectionLetterTemplateMethods: Methods, // get via withLeasePageAttributes HOC
-  collectionNoteMethods: Methods,           // get via withLeasePageAttributes HOC
-  commentAttributes: Attributes,
   commentMethods: Methods,                  // get via withLeasePageAttributes HOC
   comments: CommentList,
   contractsFormValues: Object,
@@ -190,11 +185,6 @@ class LeasePage extends Component<Props, State> {
 
   componentDidMount() {
     const {
-      collectionCourtDecisionMethods,
-      collectionLetterMethods,
-      collectionLetterTemplateMethods,
-      collectionNoteMethods,
-      commentMethods,
       fetchAreaNoteList,
       fetchCollectionCourtDecisionsByLease,
       fetchCollectionLetterTemplates,
@@ -224,25 +214,23 @@ class LeasePage extends Component<Props, State> {
       this.setState({activeTab: location.query.tab});
     }
 
-    if(collectionCourtDecisionMethods.GET) { // Fetch only if user has permissions
-      fetchCollectionCourtDecisionsByLease(leaseId);
-    }
+    fetchSingleLease(leaseId);
 
-    if(collectionLetterMethods.GET) { // Fetch only if user has permissions
-      fetchCollectionLettersByLease(leaseId);
-    }
+    fetchDecisionsByLease(leaseId);
 
-    if(collectionLetterTemplateMethods.GET) { // Fetch only if user has permissions
-      fetchCollectionLetterTemplates();
-    }
+    fetchInvoicesByLease(leaseId);
 
-    if(collectionNoteMethods.GET) { // Fetch only if user has permissions
-      fetchCollectionNotesByLease(leaseId);
-    }
+    fetchInvoiceSetsByLease(leaseId);
 
-    if(commentMethods.GET) { // Fetch only if user has permissions
-      fetchCommentsByLease(leaseId);
-    }
+    fetchCollectionCourtDecisionsByLease(leaseId);
+
+    fetchCollectionLettersByLease(leaseId);
+
+    fetchCollectionLetterTemplates();
+
+    fetchCollectionNotesByLease(leaseId);
+
+    fetchCommentsByLease(leaseId);
 
     if(isEmpty(leaseTypeList)) {
       fetchLeaseTypes();
@@ -252,10 +240,6 @@ class LeasePage extends Component<Props, State> {
       fetchVats();
     }
 
-    fetchSingleLease(leaseId);
-    fetchDecisionsByLease(leaseId);
-    fetchInvoicesByLease(leaseId);
-    fetchInvoiceSetsByLease(leaseId);
     fetchAreaNoteList();
 
     hideEditMode();
@@ -263,14 +247,7 @@ class LeasePage extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps:Props, prevState: State) {
-    const {
-      fetchCollectionCourtDecisionsByLease,
-      fetchCollectionLettersByLease,
-      fetchCollectionLetterTemplates,
-      fetchCollectionNotesByLease,
-      fetchCommentsByLease,
-      params: {leaseId},
-    } = this.props;
+    const {params: {leaseId}} = this.props;
 
     if (prevProps.location !== this.props.location) {
       this.setState({activeTab: this.props.location.query.tab});
@@ -290,31 +267,6 @@ class LeasePage extends Component<Props, State> {
       if(Number(leaseId) === storedLeaseId) {
         this.setState({isRestoreModalOpen: true});
       }
-    }
-
-    // Fetch collection court decisions when getting new collection court decision methods and user is authorisized to read content
-    if(prevProps.collectionCourtDecisionMethods !== this.props.collectionCourtDecisionMethods && this.props.collectionCourtDecisionMethods.GET) {
-      fetchCollectionCourtDecisionsByLease(leaseId);
-    }
-
-    // Fetch collection letters when getting new collection letter methods and user is authorisized to read content
-    if(prevProps.collectionLetterMethods !== this.props.collectionLetterMethods && this.props.collectionLetterMethods.GET) {
-      fetchCollectionLettersByLease(leaseId);
-    }
-
-    // Fetch collection letter templates when getting new collection letter methods and user is authorisized to read content
-    if(prevProps.collectionLetterTemplateMethods !== this.props.collectionLetterTemplateMethods && this.props.collectionLetterTemplateMethods.GET) {
-      fetchCollectionLetterTemplates();
-    }
-
-    // Fetch collection notes when getting new collection note methods and user is authorisized to read content
-    if(prevProps.collectionNoteMethods !== this.props.collectionNoteMethods && this.props.collectionNoteMethods.GET) {
-      fetchCollectionNotesByLease(leaseId);
-    }
-
-    // Fetch comments when getting new comment methods and user is authorisized to read content
-    if(prevProps.commentMethods !== this.props.commentMethods && this.props.commentMethods.GET) {
-      fetchCommentsByLease(leaseId);
     }
 
     // Stop autosave timer and clear form data from session storage after saving/cancelling changes

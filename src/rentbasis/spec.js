@@ -2,6 +2,9 @@
 import {expect} from 'chai';
 import {
   receiveAttributes,
+  receiveMethods,
+  fetchAttributes,
+  attributesNotFound,
   fetchRentBasisList,
   receiveRentBasisList,
   fetchSingleRentBasis,
@@ -29,8 +32,11 @@ const defaultState: RentBasisState = {
   isEditMode: false,
   isFormValid: false,
   isFetching: false,
+  isFetchingAttributes: false,
   isSaveClicked: false,
+  isSaving: false,
   list: {},
+  methods: {},
   rentbasis: {},
 };
 
@@ -53,6 +59,33 @@ describe('Rent basis', () => {
         const newState = {...defaultState, attributes: dummyAttributes};
 
         const state = rentBasisReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update methods', () => {
+        const dummyMethods = {
+          val1: 'foo',
+          val2: 'bar',
+        };
+
+        const newState = {...defaultState, methods: dummyMethods};
+
+        const state = rentBasisReducer({}, receiveMethods(dummyMethods));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to true when fetching attributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = rentBasisReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = rentBasisReducer({}, fetchAttributes());
+        state = rentBasisReducer(state, attributesNotFound());
         expect(state).to.deep.equal(newState);
       });
 

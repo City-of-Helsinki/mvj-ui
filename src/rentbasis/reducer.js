@@ -2,9 +2,10 @@
 import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 
-import type {Attributes, Reducer} from '../types';
+import type {Attributes, Methods, Reducer} from '../types';
 import type {
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
   RentBasis,
   RentBasisList,
   ReceiveRentBasisListAction,
@@ -21,7 +22,6 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/rentbasis/CREATE': () => true,
-  'mvj/rentbasis/EDIT': () => true,
   'mvj/rentbasis/FETCH_ALL': () => true,
   'mvj/rentbasis/FETCH_SINGLE': () => true,
   'mvj/rentbasis/RECEIVE_ALL': () => false,
@@ -29,9 +29,29 @@ const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/rentbasis/NOT_FOUND': () => false,
 }, false);
 
+const isSavingReducer: Reducer<boolean> = handleActions({
+  'mvj/rentbasis/CREATE': () => true,
+  'mvj/rentbasis/EDIT': () => true,
+  'mvj/rentbasis/RECEIVE_SINGLE': () => false,
+  'mvj/rentbasis/NOT_FOUND': () => false,
+}, false);
+
+const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
+  'mvj/rentbasis/FETCH_ATTRIBUTES': () => true,
+  'mvj/rentbasis/RECEIVE_ATTRIBUTES': () => false,
+  'mvj/rentbasis/RECEIVE_METHODS': () => false,
+  'mvj/rentbasis/ATTRIBUTES_NOT_FOUND': () => false,
+}, false);
+
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/rentbasis/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
+  },
+}, {});
+
+const methodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/rentbasis/RECEIVE_METHODS']: (state: Methods, {payload: methods}: ReceiveMethodsAction) => {
+    return methods;
   },
 }, {});
 
@@ -75,7 +95,10 @@ export default combineReducers({
   isEditMode: isEditModeReducer,
   isFormValid: isFormValidReducer,
   isFetching: isFetchingReducer,
+  isFetchingAttributes: isFetchingAttributesReducer,
   isSaveClicked: isSaveClickedReducer,
+  isSaving: isSavingReducer,
   list: rentBasisListReducer,
+  methods: methodsReducer,
   rentbasis: rentBasisReducer,
 });

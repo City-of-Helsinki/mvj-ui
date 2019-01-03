@@ -7,10 +7,14 @@ import {change, getFormValues, isDirty} from 'redux-form';
 import isEmpty from 'lodash/isEmpty';
 import flowRight from 'lodash/flowRight';
 
+import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import ConfirmationModal from '$components/modal/ConfirmationModal';
 import ControlButtonBar from '$components/controlButtons/ControlButtonBar';
 import ControlButtons from '$components/controlButtons/ControlButtons';
+import FullWidthContainer from '$components/content/FullWidthContainer';
 import Loader from '$components/loader/Loader';
+import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
 import RentBasisEdit from './sections/basicInfo/RentBasisEdit';
 import RentBasisInfo from './RentBasisInfo';
@@ -22,7 +26,6 @@ import TabPane from '$components/tabs/TabPane';
 import {fetchAreaNoteList} from '$src/areaNote/actions';
 import {
   editRentBasis,
-  fetchAttributes,
   fetchSingleRentBasis,
   hideEditMode,
   initializeRentBasis,
@@ -30,6 +33,7 @@ import {
   showEditMode,
 } from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
+import {PermissionMissingTexts} from '$src/enums';
 import {scrollToTopPage} from '$util/helpers';
 import {FormNames} from '$src/rentbasis/enums';
 import {
@@ -41,40 +45,42 @@ import {
 import {getRouteById} from '$src/root/routes';
 import {getAreaNoteList} from '$src/areaNote/selectors';
 import {
-  getAttributes,
   getIsEditMode,
   getIsFetching,
   getIsFormValid,
   getIsSaveClicked,
+  getIsSaving,
   getRentBasis,
 } from '$src/rentbasis/selectors';
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Attributes} from '$src/types';
+import type {Methods} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 import type {RentBasis} from '$src/rentbasis/types';
 import type {RootState} from '$src/root/types';
 
 type Props = {
   areaNotes: AreaNoteList,
-  attributes: Attributes,
   change: Function,
   editedRentBasis: Object,
   editRentBasis: Function,
   fetchAreaNoteList: Function,
-  fetchAttributes: Function,
   fetchSingleRentBasis: Function,
   hideEditMode: Function,
   initializeRentBasis: Function,
   isEditMode: boolean,
   isFetching: boolean,
+  isFetchingCommonAttributes: boolean, // Get via withCommonAttributes HOC
   isFormDirty: boolean,
   isFormValid: boolean,
   isSaveClicked: boolean,
+  isSaving: boolean,
   location: Object,
   params: Object,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
+  rentBasisMethods: Methods, // Get via withCommonAttributes HOC
   rentBasisData: RentBasis,
   router: Object,
   showEditMode: Function,
@@ -102,9 +108,7 @@ class RentBasisPage extends Component<Props, State> {
   componentDidMount() {
     const {
       areaNotes,
-      attributes,
       fetchAreaNoteList,
-      fetchAttributes,
       fetchSingleRentBasis,
       hideEditMode,
       location,
@@ -114,6 +118,7 @@ class RentBasisPage extends Component<Props, State> {
     } = this.props;
 
     receiveIsSaveClicked(false);
+
     receiveTopNavigationSettings({
       linkUrl: getRouteById('rentBasis'),
       pageTitle: 'Vuokrausperusteet',
@@ -128,10 +133,6 @@ class RentBasisPage extends Component<Props, State> {
 
     fetchSingleRentBasis(rentBasisId);
 
-    if(isEmpty(attributes)) {
-      fetchAttributes();
-    }
-
     if(isEmpty(areaNotes)) {
       fetchAreaNoteList();
     }
@@ -141,18 +142,16 @@ class RentBasisPage extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
-    const {params: {rentBasisId}} = this.props;
+    const {
+      fetchSingleRentBasis,
+      params: {rentBasisId},
+    } = this.props;
 
     if(isEmpty(prevProps.rentBasisData) && !isEmpty(this.props.rentBasisData)) {
       const storedContactId = getSessionStorageItem('rentBasisId');
       if(Number(rentBasisId) === storedContactId) {
         this.setState({isRestoreModalOpen: true});
       }
-    }
-    // Stop autosave timer and clear form data from session storage after saving/cancelling changes
-    if(prevProps.isEditMode && !this.props.isEditMode) {
-      this.stopAutoSaveTimer();
-      clearUnsavedChanges();
     }
 
     if (prevProps.location !== this.props.location) {
@@ -163,6 +162,11 @@ class RentBasisPage extends Component<Props, State> {
 
     if(prevState.activeTab !== this.state.activeTab) {
       scrollToTopPage();
+    }
+
+    // Fetch rent basis when getting new comment methods and user is authorisized to read content
+    if(prevProps.rentBasisMethods !== this.props.rentBasisMethods && this.props.rentBasisMethods.GET) {
+      fetchSingleRentBasis(rentBasisId);
     }
   }
 
@@ -315,28 +319,29 @@ class RentBasisPage extends Component<Props, State> {
     const {
       isEditMode,
       isFetching,
+      isFetchingCommonAttributes,
       isFormDirty,
       isFormValid,
       isSaveClicked,
+      isSaving,
       rentBasisData,
+      rentBasisMethods,
     } = this.props;
     const {activeTab, isRestoreModalOpen} = this.state;
-
     const rentBasis = getContentRentBasis(rentBasisData);
 
-    if(isFetching) {
-      return (
-        <PageContainer>
-          <Loader isLoading={true} />
-        </PageContainer>
-      );
-    }
+    if(isFetching || isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!rentBasisMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.RENT_BASIS} /></PageContainer>;
 
     return (
-      <div style={{width: '100%'}}>
+      <FullWidthContainer>
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
+              allowComments={false}
+              allowCopy={rentBasisMethods.POST}
+              allowEdit={rentBasisMethods.PATCH}
               isCopyDisabled={false}
               isEditMode={isEditMode}
               isSaveDisabled={isSaveClicked && !isFormValid}
@@ -348,24 +353,28 @@ class RentBasisPage extends Component<Props, State> {
               showCopyButton={true}
             />
           }
-          infoComponent={
-            <RentBasisInfo
-              identifier={rentBasis.id}
-            />
-          }
+          infoComponent={<RentBasisInfo identifier={rentBasis.id}/>}
           onBack={this.handleBack}
         />
 
         <PageContainer className='with-control-bar'>
-          <ConfirmationModal
-            confirmButtonLabel='Palauta muutokset'
-            isOpen={isRestoreModalOpen}
-            label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
-            onCancel={this.cancelRestoreUnsavedChanges}
-            onClose={this.restoreUnsavedChanges}
-            onSave={this.restoreUnsavedChanges}
-            title='Palauta tallentamattomat muutokset'
-          />
+          {isSaving &&
+            <LoaderWrapper className='overlay-wrapper'>
+              <Loader isLoading={isSaving} />
+            </LoaderWrapper>
+          }
+
+          <Authorization allow={rentBasisMethods.PATCH}>
+            <ConfirmationModal
+              confirmButtonLabel='Palauta muutokset'
+              isOpen={isRestoreModalOpen}
+              label='Lomakkeella on tallentamattomia muutoksia. Haluatko palauttaa muutokset?'
+              onCancel={this.cancelRestoreUnsavedChanges}
+              onClose={this.restoreUnsavedChanges}
+              onSave={this.restoreUnsavedChanges}
+              title='Palauta tallentamattomat muutokset'
+            />
+          </Authorization>
 
           <Tabs
             active={activeTab}
@@ -379,7 +388,12 @@ class RentBasisPage extends Component<Props, State> {
           <TabContent active={activeTab}>
             <TabPane>
               {isEditMode
-                ? <RentBasisEdit />
+                ? <Authorization
+                  allow={rentBasisMethods.PATCH}
+                  errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+                >
+                  <RentBasisEdit />
+                </Authorization>
                 : <RentBasisReadonly rentBasis={rentBasis} />
               }
             </TabPane>
@@ -388,7 +402,7 @@ class RentBasisPage extends Component<Props, State> {
             </TabPane>
           </TabContent>
         </PageContainer>
-      </div>
+      </FullWidthContainer>
     );
   }
 }
@@ -396,18 +410,19 @@ class RentBasisPage extends Component<Props, State> {
 const mapStateToProps = (state: RootState) => {
   return {
     areaNotes: getAreaNoteList(state),
-    attributes: getAttributes(state),
     editedRentBasis: getFormValues(FormNames.RENT_BASIS)(state),
     isEditMode: getIsEditMode(state),
     isFetching: getIsFetching(state),
     isFormDirty: isDirty(FormNames.RENT_BASIS)(state),
     isFormValid: getIsFormValid(state),
     isSaveClicked: getIsSaveClicked(state),
+    isSaving: getIsSaving(state),
     rentBasisData: getRentBasis(state),
   };
 };
 
 export default flowRight(
+  withCommonAttributes,
   withRouter,
   connect(
     mapStateToProps,
@@ -415,7 +430,6 @@ export default flowRight(
       change,
       editRentBasis,
       fetchAreaNoteList,
-      fetchAttributes,
       fetchSingleRentBasis,
       hideEditMode,
       initializeRentBasis,
