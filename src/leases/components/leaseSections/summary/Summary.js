@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 
@@ -60,7 +60,7 @@ type State = {
   supportiveHousingOptions: Array<Object>,
 }
 
-class Summary extends Component<Props, State> {
+class Summary extends PureComponent<Props, State> {
   state = {
     attributes: {},
     classificationOptions: [],
@@ -145,7 +145,7 @@ class Summary extends Component<Props, State> {
     const infillDevelopmentCompensations = summary.infill_development_compensations;
 
     return (
-      <div>
+      <Fragment>
         <h2>Yhteenveto</h2>
         <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.CLASSIFICATION)}>
           <RightSubtitle
@@ -350,11 +350,13 @@ class Summary extends Component<Props, State> {
               </Row>
             </Collapse>
           </Column>
-          <Column small={12} medium={4} large={3}>
-            <RelatedLeases />
-          </Column>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.RELATED_LEASES)}>
+            <Column small={12} medium={4} large={3}>
+              <RelatedLeases />
+            </Column>
+          </Authorization>
         </Row>
-      </div>
+      </Fragment>
     );
   }
 }

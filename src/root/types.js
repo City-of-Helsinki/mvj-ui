@@ -20,6 +20,7 @@ import type {LeaseTypeState} from '$src/leaseType/types';
 import type {MapDataState} from '$src/mapData/types';
 import type {PenaltyInterestState} from '$src/penaltyInterest/types';
 import type {PreviewInvoicesState} from '$src/previewInvoices/types';
+import type {RelatedLeaseState} from '$src/relatedLease/types';
 import type {RentBasisState} from '$src/rentbasis/types';
 import type {RentForPeriodState} from '$src/rentForPeriod/types';
 import type {UserState} from '../users/types';
@@ -48,6 +49,7 @@ export type RootState = {
   mapData: MapDataState,
   penaltyInterest: PenaltyInterestState,
   previewInvoices: PreviewInvoicesState,
+  relatedLease: RelatedLeaseState,
   rentBasis: RentBasisState,
   rentForPeriod: RentForPeriodState,
   user: UserState,

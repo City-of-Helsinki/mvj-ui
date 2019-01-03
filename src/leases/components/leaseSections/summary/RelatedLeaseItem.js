@@ -1,8 +1,10 @@
 // @flow
 import React from 'react';
+import {connect} from 'react-redux';
 import classNames from 'classnames';
 
 import {ActionTypes, AppConsumer} from '$src/app/AppContext';
+import Authorization from '$components/authorization/Authorization';
 import ExternalLink from '$components/links/ExternalLink';
 import RemoveButton from '$components/form/RemoveButton';
 import {ButtonColors} from '$components/enums';
@@ -10,26 +12,28 @@ import {DeleteModalLabels, DeleteModalTitles} from '$src/leases/enums';
 import {getContentLeaseIdentifier} from '$src/leases/helpers';
 import {formatDate, getLabelOfOption} from '$util/helpers';
 import {getRouteById} from '$src/root/routes';
+import {getMethods as getRelatedLeaseMethods} from '$src/relatedLease/selectors';
 
+import type {Methods} from '$src/types';
 import type {Lease} from '$src/leases/types';
 
 type Props = {
   active?: boolean,
-  allowDelete?: boolean,
   id?: number,
   indented?: boolean,
   lease: Lease,
   onDelete?: Function,
+  relatedLeaseMethods: Methods,
   stateOptions: Array<Object>,
 }
 
-const LeaseHistoryItem = ({
+const RelatedLeaseItem = ({
   active = false,
-  allowDelete = false,
   id,
   indented = false,
   lease,
-  onDelete = () => console.error('Delete related lease function missing'),
+  onDelete,
+  relatedLeaseMethods,
   stateOptions,
 }: Props) => {
   const identifier = getContentLeaseIdentifier(lease);
@@ -41,7 +45,9 @@ const LeaseHistoryItem = ({
           dispatch({
             type: ActionTypes.SHOW_CONFIRMATION_MODAL,
             confirmationFunction: () => {
-              onDelete(id);
+              if(onDelete) {
+                onDelete(id);
+              }
             },
             confirmationModalButtonClassName: ButtonColors.ALERT,
             confirmationModalButtonText: 'Poista',
@@ -71,13 +77,15 @@ const LeaseHistoryItem = ({
                   </p>
                   <p>{formatDate(lease.start_date)} - {formatDate(lease.end_date)}</p>
                   <p className="type">{getLabelOfOption(stateOptions, lease.state) || '-'}</p>
-                  {allowDelete &&
-                    <RemoveButton
-                      className='related-leases-item_remove-button'
-                      onClick={handleDelete}
-                      title='Poista liitos'
-                    />
-                  }
+                  <Authorization allow={relatedLeaseMethods.DELETE}>
+                    {onDelete &&
+                      <RemoveButton
+                        className='related-leases-item_remove-button'
+                        onClick={handleDelete}
+                        title='Poista liitos'
+                      />
+                    }
+                  </Authorization>
                 </div>
               }
             </div>
@@ -88,4 +96,10 @@ const LeaseHistoryItem = ({
   );
 };
 
-export default LeaseHistoryItem;
+export default connect(
+  (state) => {
+    return {
+      relatedLeaseMethods: getRelatedLeaseMethods(state),
+    };
+  }
+)(RelatedLeaseItem);

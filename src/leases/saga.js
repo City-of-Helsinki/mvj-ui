@@ -29,8 +29,6 @@ import {
   fetchLeases,
   fetchSingleLease,
   patchLease,
-  createRelatedLease,
-  deleteReleatedLease,
   startInvoicing,
   stopInvoicing,
   setRentInfoComplete,
@@ -301,52 +299,6 @@ function* setRentInfoUncompleteSaga({payload: leaseId}): Generator<any, any, any
   }
 }
 
-function* createReleatedLeaseSaga({payload}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(createRelatedLease, payload);
-
-    switch (statusCode) {
-      case 201:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: payload.from_lease,
-          callbackFunctions: [
-            () => displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos luotu'}),
-          ],
-        }));
-        break;
-      default:
-        yield put(receiveError(new SubmissionError({...bodyDelete})));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to create related lease with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
-function* deleteReleatedLeaseSaga({payload}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson: bodyDelete} = yield call(deleteReleatedLease, payload.id);
-
-    switch (statusCode) {
-      case 204:
-        yield put(fetchSingleLeaseAfterEdit({
-          leaseId: payload.leaseId,
-          callbackFunctions: [
-            () => displayUIMessage({title: '', body: 'Vuokratunnusten välinen liitos poistettu'}),
-          ],
-        }));
-        break;
-      default:
-        yield put(receiveError(new SubmissionError({...bodyDelete})));
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to delete related lease with error "%s"', error);
-    yield put(receiveError(error));
-  }
-}
-
 function* createChargeSaga({payload}): Generator<any, any, any> {
   try {
     const {leaseId} = payload;
@@ -407,8 +359,6 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/leases/SET_RENT_INFO_COMPLETE', setRentInfoCompleteSaga),
       yield takeLatest('mvj/leases/SET_RENT_INFO_UNCOMPLETE', setRentInfoUncompleteSaga),
       yield takeLatest('mvj/leases/CREATE_CHARGE', createChargeSaga);
-      yield takeLatest('mvj/leases/CREATE_RELATED_LEASE', createReleatedLeaseSaga);
-      yield takeLatest('mvj/leases/DELETE_RELATED_LEASE', deleteReleatedLeaseSaga);
       yield takeLatest('mvj/leases/COPY_AREAS_TO_CONTRACT', copyAreasToContractSaga);
     }),
   ]);

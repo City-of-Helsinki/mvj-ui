@@ -29,10 +29,6 @@ import type {
   SetRentInfoUncompleteAction,
   HideEditModeAction,
   ShowEditModeAction,
-  CreateRelatedLeasePayload,
-  CreateRelatedLeaseAction,
-  DeleteRelatedLeasePayload,
-  DeleteRelatedLeaseAction,
   CopyAreasToContractAction,
   ReceiveFormValidFlagsAction,
   ClearFormValidFlagsAction,
@@ -104,12 +100,6 @@ export const hideEditMode = (): HideEditModeAction =>
 
 export const showEditMode = (): ShowEditModeAction =>
   createAction('mvj/leases/SHOW_EDIT')();
-
-export const createReleatedLease = (payload: CreateRelatedLeasePayload): CreateRelatedLeaseAction =>
-  createAction('mvj/leases/CREATE_RELATED_LEASE')(payload);
-
-export const deleteReleatedLease = (payload: DeleteRelatedLeasePayload): DeleteRelatedLeaseAction =>
-  createAction('mvj/leases/DELETE_RELATED_LEASE')(payload);
 
 export const copyAreasToContract = (leaseId: LeaseId): CopyAreasToContractAction =>
   createAction('mvj/leases/COPY_AREAS_TO_CONTRACT')(leaseId);

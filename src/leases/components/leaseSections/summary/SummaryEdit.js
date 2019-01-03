@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import {formValueSelector, reduxForm} from 'redux-form';
@@ -59,7 +59,7 @@ type State = {
   summary: Object,
 }
 
-class SummaryEdit extends Component<Props, State> {
+class SummaryEdit extends PureComponent<Props, State> {
   state = {
     summary: {},
   }
@@ -422,9 +422,11 @@ class SummaryEdit extends Component<Props, State> {
               </Row>
             </Collapse>
           </Column>
-          <Column small={12} medium={4} large={3}>
-            <RelatedLeasesEdit />
-          </Column>
+          <Authorization allow={isFieldAllowedToRead(attributes, LeaseFieldPaths.RELATED_LEASES)}>
+            <Column small={12} medium={4} large={3}>
+              <RelatedLeasesEdit />
+            </Column>
+          </Authorization>
         </Row>
       </form>
     );

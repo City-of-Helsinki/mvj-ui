@@ -21,17 +21,10 @@ export type LeaseState = {
 export type Lease = Object;
 export type LeaseList = Object;
 export type LeaseId = number;
-export type CreateRelatedLeasePayload = {
-  from_lease: LeaseId,
-  to_lease: LeaseId,
-}
+
 export type CreateChargePayload = {
   leaseId: LeaseId,
   data: Object,
-}
-export type DeleteRelatedLeasePayload = {
-  id: number,
-  leaseId: number,
 }
 
 export type FetchSingleLeaseAfterEditPayload = {
@@ -63,9 +56,6 @@ export type HideEditModeAction = Action<'mvj/leases/HIDE_EDIT', void>;
 export type ShowEditModeAction = Action<'mvj/leases/SHOW_EDIT', void>;
 
 export type ReceiveIsSaveClickedAction = Action<'mvj/leases/RECEIVE_SAVE_CLICKED', boolean>;
-
-export type CreateRelatedLeaseAction = Action<'mvj/leases/CREATE_RELATED_LEASE', CreateRelatedLeasePayload>;
-export type DeleteRelatedLeaseAction = Action<'mvj/leases/DELETE_RELATED_LEASE', DeleteRelatedLeasePayload>;
 
 export type CopyAreasToContractAction = Action<'mvj/leases/COPY_AREAS_TO_CONTRACT', LeaseId>;
 

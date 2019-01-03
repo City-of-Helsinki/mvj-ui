@@ -10,6 +10,7 @@ import {fetchAttributes as fetchCollectionLetterTemplateAttributes} from '$src/c
 import {fetchAttributes as fetchCollectionNoteAttributes} from '$src/collectionNote/actions';
 import {fetchAttributes as fetchCommentAttributes} from '$src/comments/actions';
 import {fetchAttributes as fetchInvoiceAttributes} from '$src/invoices/actions';
+import {fetchAttributes as fetchRelatedLeaseAttributes} from '$src/relatedLease/actions';
 import {
   getAttributes as getCollectionCourtDecisionAttributes,
   getIsFetchingAttributes as getIsFetchingCollectionCourtDecisionAttributes,
@@ -40,6 +41,11 @@ import {
   getIsFetchingAttributes as getIsFetchingInvoiceAttributes,
   getMethods as getInvoiceMethods,
 } from '$src/invoices/selectors';
+import {
+  getAttributes as getRelatedLeaseAttributes,
+  getIsFetchingAttributes as getIsFetchingRelatedLeaseAttributes,
+  getMethods as getRelatedLeaseMethods,
+} from '$src/relatedLease/selectors';
 
 import type {Attributes, Methods} from '$src/types';
 
@@ -61,6 +67,7 @@ function LeasePageAttributes(WrappedComponent: any) {
     fetchCollectionNoteAttributes: Function,
     fetchCommentAttributes: Function,
     fetchInvoiceAttributes: Function,
+    fetchRelatedLeaseAttributes: Function,
     invoiceAttributes: Attributes,
     invoiceMethods: Methods,
     isFetchingCollectionCourtDecisionAttributes: boolean,
@@ -69,6 +76,9 @@ function LeasePageAttributes(WrappedComponent: any) {
     isFetchingCollectionNoteAttributes: boolean,
     isFetchingCommentAttributes: boolean,
     isFetchingInvoiceAttributes: boolean,
+    isFetchingRelatedLeaseAttributes: boolean,
+    relatedLeaseAttributes: Attributes,
+    relatedLeaseMethods: Methods,
   }
 
   type State = {
@@ -93,6 +103,7 @@ function LeasePageAttributes(WrappedComponent: any) {
         fetchCollectionNoteAttributes,
         fetchCommentAttributes,
         fetchInvoiceAttributes,
+        fetchRelatedLeaseAttributes,
         invoiceMethods,
         isFetchingCollectionCourtDecisionAttributes,
         isFetchingCollectionLetterAttributes,
@@ -100,6 +111,8 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingCollectionNoteAttributes,
         isFetchingCommentAttributes,
         isFetchingInvoiceAttributes,
+        isFetchingRelatedLeaseAttributes,
+        relatedLeaseMethods,
       } = this.props;
 
       if(isEmpty(collectionCourtDecisionMethods) && !isFetchingCollectionCourtDecisionAttributes) {
@@ -125,6 +138,10 @@ function LeasePageAttributes(WrappedComponent: any) {
       if(isEmpty(invoiceMethods) && !isFetchingInvoiceAttributes) {
         fetchInvoiceAttributes();
       }
+
+      if(isEmpty(relatedLeaseMethods) && !isFetchingRelatedLeaseAttributes) {
+        fetchRelatedLeaseAttributes();
+      }
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -133,7 +150,8 @@ function LeasePageAttributes(WrappedComponent: any) {
         this.props.isFetchingCollectionLetterTemplateAttributes !== prevProps.isFetchingCollectionLetterTemplateAttributes ||
         this.props.isFetchingCollectionNoteAttributes !== prevProps.isFetchingCollectionNoteAttributes ||
         this.props.isFetchingCommentAttributes !== prevProps.isFetchingCommentAttributes ||
-        this.props.isFetchingInvoiceAttributes !== prevProps.isFetchingInvoiceAttributes) {
+        this.props.isFetchingInvoiceAttributes !== prevProps.isFetchingInvoiceAttributes ||
+        this.props.isFetchingRelatedLeaseAttributes !== prevProps.isFetchingRelatedLeaseAttributes) {
         this.setIsFetchingCommonAttributes();
       }
     }
@@ -146,13 +164,15 @@ function LeasePageAttributes(WrappedComponent: any) {
         isFetchingCollectionNoteAttributes,
         isFetchingCommentAttributes,
         isFetchingInvoiceAttributes,
+        isFetchingRelatedLeaseAttributes,
       } = this.props;
       const isFetching = isFetchingCollectionCourtDecisionAttributes ||
         isFetchingCollectionLetterAttributes ||
         isFetchingCollectionLetterTemplateAttributes ||
         isFetchingCollectionNoteAttributes ||
         isFetchingCommentAttributes ||
-        isFetchingInvoiceAttributes;
+        isFetchingInvoiceAttributes ||
+        isFetchingRelatedLeaseAttributes;
 
       this.setState({isFetchingLeasePageAttributes: isFetching});
     }
@@ -185,6 +205,9 @@ const withLeasePageAttributes = flowRight(
         isFetchingCollectionNoteAttributes: getIsFetchignCollectionNoteAttributes(state),
         isFetchingCommentAttributes: getIsFetchingCommentAttributes(state),
         isFetchingInvoiceAttributes: getIsFetchingInvoiceAttributes(state),
+        isFetchingRelatedLeaseAttributes: getIsFetchingRelatedLeaseAttributes(state),
+        relatedLeaseAttributes: getRelatedLeaseAttributes(state),
+        relatedLeaseMethods: getRelatedLeaseMethods(state),
       };
     },
     {
@@ -194,6 +217,7 @@ const withLeasePageAttributes = flowRight(
       fetchCollectionNoteAttributes,
       fetchCommentAttributes,
       fetchInvoiceAttributes,
+      fetchRelatedLeaseAttributes,
     }
   ),
   LeasePageAttributes,
