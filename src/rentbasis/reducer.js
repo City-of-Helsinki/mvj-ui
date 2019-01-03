@@ -21,7 +21,6 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
 }, false);
 
 const isFetchingReducer: Reducer<boolean> = handleActions({
-  'mvj/rentbasis/CREATE': () => true,
   'mvj/rentbasis/FETCH_ALL': () => true,
   'mvj/rentbasis/FETCH_SINGLE': () => true,
   'mvj/rentbasis/RECEIVE_ALL': () => false,

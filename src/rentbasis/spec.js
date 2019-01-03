@@ -131,15 +131,15 @@ describe('Rent basis', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to true when creating new rent basis', () => {
-        const newState = {...defaultState, isFetching: true};
+      it('should update isSaving flag to true when creating new rent basis', () => {
+        const newState = {...defaultState, isSaving: true};
 
         const state = rentBasisReducer({}, createRentBasis({}));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to true when editing existing rent basis', () => {
-        const newState = {...defaultState, isFetching: true};
+      it('should update isSaving flag to true when editing existing rent basis', () => {
+        const newState = {...defaultState, isSaving: true};
 
         const state = rentBasisReducer({}, editRentBasis({}));
         expect(state).to.deep.equal(newState);
