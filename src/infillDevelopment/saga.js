@@ -6,9 +6,11 @@ import {SubmissionError} from 'redux-form';
 import {
   fetchSingleInfillDevelopment as fetchSingleInfillDevelopmentAction,
   hideEditMode,
+  attributesNotFound,
   notFound,
   receiveIsSaveClicked,
-  receiveInfillDevelopmentAttributes,
+  receiveAttributes,
+  receiveMethods,
   receiveInfillDevelopments,
   receiveSingleInfillDevelopment,
 } from './actions';
@@ -20,8 +22,6 @@ import {
   fetchAttributes,
   fetchInfillDevelopments,
   fetchSingleInfillDevelopment,
-  uploadInfillDevelopmentFile,
-  deleteInfillDevelopmentFile,
 } from './requests';
 import {getRouteById} from '$src/root/routes';
 
@@ -29,19 +29,20 @@ function* fetchAttributesSaga(): Generator<any, any, any> {
   try {
     const {response: {status: statusCode}, bodyAsJson} = yield call(fetchAttributes);
     const attributes = bodyAsJson.fields;
+    const methods = bodyAsJson.methods;
 
     switch (statusCode) {
       case 200:
-        yield put(receiveInfillDevelopmentAttributes(attributes));
+        yield put(receiveAttributes(attributes));
+        yield put(receiveMethods(methods));
         break;
-      case 401:
-      case 404:
-      case 500:
-        yield put(notFound());
+      default:
+        yield put(attributesNotFound());
         break;
     }
   } catch (error) {
-    console.error('Failed to fetch infill development identifiers with error "%s"', error);
+    console.error('Failed to fetch infill development attributes with error "%s"', error);
+    yield put(attributesNotFound());
     yield put(receiveError(error));
   }
 }
@@ -141,54 +142,6 @@ function* editInfillDevelopmentSaga({payload: infillDevelopment}): Generator<any
   }
 }
 
-function* uploadInfillDevelopmentFileSaga({payload}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(uploadInfillDevelopmentFile, payload);
-
-    switch (statusCode) {
-      case 201:
-        displayUIMessage({title: '', body: 'Tiedosto ladattu'});
-        yield put(fetchSingleInfillDevelopmentAction(payload.id));
-        break;
-      case 404:
-        yield put(notFound());
-        yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to upload a file with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
-function* deleteInfillDevelopmentFileSaga({payload}): Generator<any, any, any> {
-  try {
-    const {response: {status: statusCode}, bodyAsJson} = yield call(deleteInfillDevelopmentFile, payload.fileId);
-
-    switch (statusCode) {
-      case 204:
-        displayUIMessage({title: '', body: 'Tiedosto poistettu'});
-        yield put(fetchSingleInfillDevelopmentAction(payload.id));
-        break;
-      case 404:
-        yield put(notFound());
-        yield put(receiveError(new SubmissionError({...bodyAsJson})));
-        break;
-      case 500:
-        yield put(notFound());
-        break;
-    }
-  } catch (error) {
-    console.error('Failed to delete a file with error "%s"', error);
-    yield put(notFound());
-    yield put(receiveError(error));
-  }
-}
-
 export default function*(): Generator<any, any, any> {
   yield all([
     fork(function*(): Generator<any, any, any> {
@@ -197,8 +150,6 @@ export default function*(): Generator<any, any, any> {
       yield takeLatest('mvj/infillDevelopment/FETCH_SINGLE', fetchSingleInfillDevelopmentSaga);
       yield takeLatest('mvj/infillDevelopment/CREATE', createInfillDevelopmentSaga);
       yield takeLatest('mvj/infillDevelopment/EDIT', editInfillDevelopmentSaga);
-      yield takeLatest('mvj/infillDevelopment/UPLOAD_FILE', uploadInfillDevelopmentFileSaga);
-      yield takeLatest('mvj/infillDevelopment/DELETE_FILE', deleteInfillDevelopmentFileSaga);
     }),
   ]);
 }

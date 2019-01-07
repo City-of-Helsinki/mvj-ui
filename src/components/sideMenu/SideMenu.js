@@ -19,6 +19,7 @@ import type {Methods} from '$src/types';
 
 type Props = {
   contactMethods: Methods,
+  infillDevelopmentMethods: Methods,
   isFetchingCommonAttributes: boolean,
   isOpen: boolean,
   leaseMethods: Methods,
@@ -98,6 +99,7 @@ class SideMenu extends Component<Props, State> {
   render() {
     const {
       contactMethods,
+      infillDevelopmentMethods,
       isFetchingCommonAttributes,
       isOpen,
       leaseMethods,
@@ -148,7 +150,9 @@ class SideMenu extends Component<Props, State> {
                   </Authorization>
                   <li><Link onClick={handleClick} to={getRouteById('landUseContract')}>Maankäyttösopimukset</Link></li>
                   <li><Link onClick={handleClick} to={getRouteById('areaNotes')}>Muistettavat ehdot</Link></li>
-                  <li><Link onClick={handleClick} to={getRouteById('infillDevelopment')}>Täydennysrakentamiskorvaukset</Link></li>
+                  <Authorization allow={infillDevelopmentMethods.GET}>
+                    <li><Link onClick={handleClick} to={getRouteById('infillDevelopment')}>Täydennysrakentamiskorvaukset</Link></li>
+                  </Authorization>
                   <Authorization allow={rentBasisMethods.GET}>
                     <li><Link onClick={handleClick} to={getRouteById('rentBasis')}>Vuokrausperusteet</Link></li>
                   </Authorization>

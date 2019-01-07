@@ -5,6 +5,7 @@ import flowRight from 'lodash/flowRight';
 import isEmpty from 'lodash/isEmpty';
 
 import {fetchAttributes as fetchContactAttributes} from '$src/contacts/actions';
+import {fetchAttributes as fetchInfillDevelopmentAttributes} from '$src/infillDevelopment/actions';
 import {fetchAttributes as fetchLeaseAttributes} from '$src/leases/actions';
 import {fetchAttributes as fetchRentBasisAttributes} from '$src/rentbasis/actions';
 import {
@@ -12,6 +13,11 @@ import {
   getIsFetchingAttributes as getIsFetchingContactAttributes,
   getMethods as getContactMethods,
 } from '$src/contacts/selectors';
+import {
+  getAttributes as getInfillDevelopmentAttributes,
+  getIsFetchingAttributes as getIsFetchingInfillDevelopmentAttributes,
+  getMethods as getInfillDevelopmentMethods,
+} from '$src/infillDevelopment/selectors';
 import {
   getAttributes as getLeaseAttributes,
   getIsFetchingAttributes as getIsFetchingLeaseAttributes,
@@ -30,9 +36,13 @@ function CommonAttributes(WrappedComponent: any) {
     contactAttributes: Attributes,
     contactMethods: Methods,
     fetchContactAttributes: Function,
+    fetchInfillDevelopmentAttributes: Function,
     fetchLeaseAttributes: Function,
     fetchRentBasisAttributes: Function,
+    infillDevelopmentAttributes: Attributes,
+    infillDevelopmentMethods: Methods,
     isFetchingContactAttributes: boolean,
+    isFetchingInfillDevelopmentAttributes: boolean,
     isFetchingLeaseAttributes: boolean,
     isFetchingRentBasisAttributes: boolean,
     leaseAttributes: Attributes,
@@ -54,14 +64,20 @@ function CommonAttributes(WrappedComponent: any) {
       const {
         contactMethods,
         fetchContactAttributes,
+        fetchInfillDevelopmentAttributes,
         fetchLeaseAttributes,
         fetchRentBasisAttributes,
+        infillDevelopmentMethods,
         leaseMethods,
         rentBasisMethods,
       } = this.props;
 
       if(isEmpty(contactMethods)) {
         fetchContactAttributes();
+      }
+
+      if(isEmpty(infillDevelopmentMethods)) {
+        fetchInfillDevelopmentAttributes();
       }
 
       if(isEmpty(leaseMethods)) {
@@ -74,8 +90,9 @@ function CommonAttributes(WrappedComponent: any) {
     }
 
     componentDidUpdate(prevProps: Props) {
-      if(this.props.isFetchingLeaseAttributes !== prevProps.isFetchingLeaseAttributes ||
-        this.props.isFetchingContactAttributes !== prevProps.isFetchingContactAttributes ||
+      if(this.props.isFetchingContactAttributes !== prevProps.isFetchingContactAttributes ||
+        this.props.isFetchingInfillDevelopmentAttributes !== prevProps.isFetchingInfillDevelopmentAttributes ||
+        this.props.isFetchingLeaseAttributes !== prevProps.isFetchingLeaseAttributes ||
         this.props.isFetchingRentBasisAttributes !== prevProps.isFetchingRentBasisAttributes) {
         this.setIsFetchingCommonAttributes();
       }
@@ -84,10 +101,12 @@ function CommonAttributes(WrappedComponent: any) {
     setIsFetchingCommonAttributes = () => {
       const {
         isFetchingContactAttributes,
+        isFetchingInfillDevelopmentAttributes,
         isFetchingLeaseAttributes,
         isFetchingRentBasisAttributes,
       } = this.props;
       const isFetching = isFetchingContactAttributes ||
+        isFetchingInfillDevelopmentAttributes ||
         isFetchingLeaseAttributes ||
         isFetchingRentBasisAttributes;
 
@@ -106,7 +125,10 @@ const withCommonAttributes = flowRight(
       return{
         contactAttributes: getContactAttributes(state),
         contactMethods: getContactMethods(state),
+        infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
+        infillDevelopmentMethods: getInfillDevelopmentMethods(state),
         isFetchingContactAttributes: getIsFetchingContactAttributes(state),
+        isFetchingInfillDevelopmentAttributes: getIsFetchingInfillDevelopmentAttributes(state),
         isFetchingLeaseAttributes: getIsFetchingLeaseAttributes(state),
         isFetchingRentBasisAttributes: getIsFetchingRentBasisAttributes(state),
         leaseAttributes: getLeaseAttributes(state),
@@ -117,6 +139,7 @@ const withCommonAttributes = flowRight(
     },
     {
       fetchContactAttributes,
+      fetchInfillDevelopmentAttributes,
       fetchLeaseAttributes,
       fetchRentBasisAttributes,
     }

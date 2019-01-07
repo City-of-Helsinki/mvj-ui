@@ -13,6 +13,7 @@ import contactSaga from '../contacts/saga';
 import decisionSaga from '../decision/saga';
 import districtSaga from '../district/saga';
 import infillDevelopmentSaga from '../infillDevelopment/saga';
+import infillDevelopmentAttachmentSaga from '../infillDevelopmentAttachment/saga';
 import invoiceSaga from '../invoices/saga';
 import invoiceSetSaga from '../invoiceSets/saga';
 import landUseContractSaga from '../landUseContract/saga';
@@ -43,6 +44,7 @@ export default () =>
       fork(decisionSaga),
       fork(districtSaga),
       fork(infillDevelopmentSaga),
+      fork(infillDevelopmentAttachmentSaga),
       fork(invoiceSaga),
       fork(invoiceSetSaga),
       fork(landUseContractSaga),

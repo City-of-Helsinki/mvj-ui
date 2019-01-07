@@ -1,128 +1,137 @@
 // @flow
-import React from 'react';
+import React, {Fragment} from 'react';
 import {connect} from 'react-redux';
 import {Row, Column} from 'react-foundation';
 import get from 'lodash/get';
 
+import Authorization from '$components/authorization/Authorization';
 import Divider from '$components/content/Divider';
 import ExternalLink from '$components/links/ExternalLink';
 import FormText from '$components/form/FormText';
-import FormTitleAndText from '$components/form/FormTitleAndText';
+import FormTextTitle from '$components/form/FormTextTitle';
 import GreenBox from '$components/content/GreenBox';
 import LeaseItem from './LeaseItem';
-import Loader from '$components/loader/Loader';
-import LoaderWrapper from '$components/loader/LoaderWrapper';
 import SubTitle from '$components/content/SubTitle';
-import {formatDate, getAttributeFieldOptions, getLabelOfOption, getReferenceNumberLink} from '$util/helpers';
+import {
+  InfillDevelopmentCompensationFieldPaths,
+  InfillDevelopmentCompensationFieldTitles,
+  InfillDevelopmentCompensationLeasesFieldPaths,
+  InfillDevelopmentCompensationLeasesFieldTitles,
+} from '$src/infillDevelopment/enums';
+import {
+  formatDate,
+  getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
+  getReferenceNumberLink,
+  isFieldAllowedToRead,
+} from '$util/helpers';
 import {getUserFullName} from '$src/users/helpers';
-import {getAttributes, getIsFetching} from '$src/infillDevelopment/selectors';
+import {
+  getAttributes as getInfillDevelopmentAttributes,
+} from '$src/infillDevelopment/selectors';
 
 import type {Attributes} from '$src/types';
 import type {InfillDevelopment} from '$src/infillDevelopment/types';
 
 type Props = {
-  attributes: Attributes,
   infillDevelopment: InfillDevelopment,
+  infillDevelopmentAttributes: Attributes,
   isFetching: boolean,
 }
 
-const InfillDevelopmentTemplate = ({attributes, infillDevelopment, isFetching}: Props) => {
+const InfillDevelopmentTemplate = ({
+  infillDevelopment,
+  infillDevelopmentAttributes,
+}: Props) => {
   const leases = get(infillDevelopment, 'infill_development_compensation_leases', []);
-  const stateOptions = getAttributeFieldOptions(attributes, 'state');
-  if(isFetching) {
-    return (
-      <div>
-        <h2>Perustiedot</h2>
-        <Divider />
+  const stateOptions = getFieldOptions(getFieldAttributes(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE));
 
-        <GreenBox>
-          <LoaderWrapper><Loader isLoading={isFetching} /></LoaderWrapper>
-        </GreenBox>
-      </div>
-    );
-  }
   return (
-    <div>
+    <Fragment>
       <h2>Perustiedot</h2>
       <Divider />
 
       <GreenBox>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Hankkeen nimi'
-              text={infillDevelopment.name || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.NAME)}>
+              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.NAME}</FormTextTitle>
+              <FormText>{infillDevelopment.name || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Asemakaavan nro.'
-              text={infillDevelopment.detailed_plan_identifier || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.DETAILED_PLAN_IDENTIFIER)}>
+              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.DETAILED_PLAN_IDENTIFIER}</FormTextTitle>
+              <FormText>{infillDevelopment.detailed_plan_identifier || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Diaarinumero'
-              text={infillDevelopment.reference_number
+            <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.REFERENCE_NUMBER)}>
+              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.REFERENCE_NUMBER}</FormTextTitle>
+              <FormText>{infillDevelopment.reference_number
                 ? <ExternalLink
                   href={getReferenceNumberLink(infillDevelopment.reference_number)}
                   text={infillDevelopment.reference_number}
+                  className='no-margin'
                 />
-                : '-'
-              }
-            />
+                : '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Neuvotteluvaihe'
-              text={getLabelOfOption(stateOptions, infillDevelopment.state) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.STATE)}>
+              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.STATE}</FormTextTitle>
+              <FormText>{getLabelOfOption(stateOptions, infillDevelopment.state) || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
         <Row>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Vastuuhenkilö'
-              text={getUserFullName(infillDevelopment.user) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.USER)}>
+              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.USER}</FormTextTitle>
+              <FormText>{getUserFullName(infillDevelopment.user) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={6} medium={4} large={2}>
-            <FormTitleAndText
-              title='Vuokrasopimuksen muutos pvm'
-              text={formatDate(infillDevelopment.lease_contract_change_date) || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.LEASE_CONTRACT_CHANGE_DATE)}>
+              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.LEASE_CONTRACT_CHANGE_DATE}</FormTextTitle>
+              <FormText>{formatDate(infillDevelopment.lease_contract_change_date) || '-'}</FormText>
+            </Authorization>
           </Column>
           <Column small={12} medium={4} large={8}>
-            <FormTitleAndText
-              title='Huomautus'
-              text={infillDevelopment.note || '-'}
-            />
+            <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationFieldPaths.NOTE)}>
+              <FormTextTitle>{InfillDevelopmentCompensationFieldTitles.NOTE}</FormTextTitle>
+              <FormText>{infillDevelopment.note || '-'}</FormText>
+            </Authorization>
           </Column>
         </Row>
-        <SubTitle>Vuokraukset</SubTitle>
-        {!leases.length && <FormText>Ei vuokrauksia</FormText>}
-        {!!leases.length &&
-          <div style={{marginBottom: 10}}>
-            {leases.map((lease) =>
-              <LeaseItem
-                id={lease.id}
-                key={lease.id}
-                leaseData={lease}
-                leaseId={get(lease, 'lease.value')}
-              />
-            )}
-          </div>
-        }
+
+        <Authorization allow={isFieldAllowedToRead(infillDevelopmentAttributes, InfillDevelopmentCompensationLeasesFieldPaths.INFILL_DEVELOPMENT_COMPENSATION_LEASES)}>
+          <SubTitle>{InfillDevelopmentCompensationLeasesFieldTitles.INFILL_DEVELOPMENT_COMPENSATION_LEASES}</SubTitle>
+
+          {!leases.length && <FormText>Ei vuokrauksia</FormText>}
+          {!!leases.length &&
+            <div style={{marginBottom: 10}}>
+              {leases.map((lease) =>
+                <LeaseItem
+                  id={lease.id}
+                  key={lease.id}
+                  leaseData={lease}
+                  leaseId={get(lease, 'lease.value')}
+                />
+              )}
+            </div>
+          }
+        </Authorization>
       </GreenBox>
-    </div>
+    </Fragment>
   );
 };
 
 export default connect(
   (state) => {
     return {
-      attributes: getAttributes(state),
-      isFetching: getIsFetching(state),
+      infillDevelopmentAttributes: getInfillDevelopmentAttributes(state),
     };
   }
 )(InfillDevelopmentTemplate);

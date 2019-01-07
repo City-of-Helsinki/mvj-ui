@@ -6,7 +6,10 @@ import {
   fetchSingleInfillDevelopment,
   hideEditMode,
   notFound,
-  receiveInfillDevelopmentAttributes,
+  fetchAttributes,
+  attributesNotFound,
+  receiveAttributes,
+  receiveMethods,
   receiveInfillDevelopments,
   receiveSingleInfillDevelopment,
   receiveFormInitialValues,
@@ -29,11 +32,14 @@ const defaultState: InfillDevelopmentState = {
   initialValues: {},
   isEditMode: false,
   isFetching: false,
+  isFetchingAttributes: false,
   isFormValidById: {
     'infill-development-form': true,
   },
   isSaveClicked: false,
+  isSaving: false,
   list: {},
+  methods: {},
 };
 
 // $FlowFixMe
@@ -46,6 +52,21 @@ describe('Infill development', () => {
     describe('infillDevelopmentReducer', () => {
 
       // $FlowFixMe
+      it('should update isFetchingAttributes flag to true by fetchAttributes', () => {
+        const newState = {...defaultState, isFetchingAttributes: true};
+
+        const state = infillDevelopmentReducer({}, fetchAttributes());
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update isFetchingAttributes flag to false by attributesNotFound', () => {
+        const newState = {...defaultState, isFetchingAttributes: false};
+
+        let state = infillDevelopmentReducer({}, fetchAttributes());
+        state = infillDevelopmentReducer(state, attributesNotFound());
+        expect(state).to.deep.equal(newState);
+      });
+
       it('should update attributes', () => {
         const dummyAttributes = {
           id: 1,
@@ -53,10 +74,22 @@ describe('Infill development', () => {
           name: 'Bar',
         };
 
-        const newState = {...defaultState};
-        newState.attributes = dummyAttributes;
+        const newState = {...defaultState, attributes: dummyAttributes};
 
-        const state =infillDevelopmentReducer({}, receiveInfillDevelopmentAttributes(dummyAttributes));
+        const state = infillDevelopmentReducer({}, receiveAttributes(dummyAttributes));
+        expect(state).to.deep.equal(newState);
+      });
+
+      it('should update methods', () => {
+        const dummyMethods = {
+          id: 1,
+          label: 'Foo',
+          name: 'Bar',
+        };
+
+        const newState = {...defaultState, methods: dummyMethods};
+
+        const state = infillDevelopmentReducer({}, receiveMethods(dummyMethods));
         expect(state).to.deep.equal(newState);
       });
 
@@ -114,17 +147,17 @@ describe('Infill development', () => {
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to true when creating infill development', () => {
+      it('should update isSaving flag to true when creating infill development', () => {
         const newState = {...defaultState};
-        newState.isFetching = true;
+        newState.isSaving = true;
 
         const state = infillDevelopmentReducer({}, createInfillDevelopment({}));
         expect(state).to.deep.equal(newState);
       });
 
-      it('should update isFetching flag to true when editing infill development', () => {
+      it('should update isSaving flag to true when editing infill development', () => {
         const newState = {...defaultState};
-        newState.isFetching = true;
+        newState.isSaving = true;
 
         const state = infillDevelopmentReducer({}, editInfillDevelopment({}));
         expect(state).to.deep.equal(newState);

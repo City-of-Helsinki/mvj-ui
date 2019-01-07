@@ -55,6 +55,7 @@ export const CancelChangesModalTexts = {
  */
 export const PermissionMissingTexts = {
   GENERAL: 'Ei oikeuksia sisältöön.',
+  INFILL_DEVELOPMENT: 'Ei oikeksia täydennysrakennuskorvauksiin',
   LEASE: 'Ei oikeuksia vuokrauksiin.',
   RENT_BASIS: 'Ei oikeuksia vuokrausperusteisiin.',
 };

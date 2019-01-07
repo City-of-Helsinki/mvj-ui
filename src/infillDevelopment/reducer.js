@@ -3,11 +3,12 @@ import {combineReducers} from 'redux';
 import {handleActions} from 'redux-actions';
 import merge from 'lodash/merge';
 
-import type {Attributes, Reducer} from '../types';
+import type {Attributes, Methods, Reducer} from '../types';
 import type {
   InfillDevelopment,
   InfillDevelopmentList,
   ReceiveAttributesAction,
+  ReceiveMethodsAction,
   ReceiveFormInitialValuesAction,
   ReceiveFormValidFlagsAction,
   ReceiveInfillDevelopmentListAction,
@@ -26,16 +27,34 @@ const isEditModeReducer: Reducer<boolean> = handleActions({
 const isFetchingReducer: Reducer<boolean> = handleActions({
   'mvj/infillDevelopment/FETCH_ALL': () => true,
   'mvj/infillDevelopment/FETCH_SINGLE': () => true,
-  'mvj/infillDevelopment/CREATE': () => true,
-  'mvj/infillDevelopment/EDIT': () => true,
   'mvj/infillDevelopment/NOT_FOUND': () => false,
   'mvj/infillDevelopment/RECEIVE_ALL': () => false,
   'mvj/infillDevelopment/RECEIVE_SINGLE': () => false,
 }, false);
 
+const isSavingReducer: Reducer<boolean> = handleActions({
+  'mvj/infillDevelopment/CREATE': () => true,
+  'mvj/infillDevelopment/EDIT': () => true,
+  'mvj/infillDevelopment/RECEIVE_SINGLE': () => false,
+  'mvj/infillDevelopment/NOT_FOUND': () => false,
+}, false);
+
+const isFetchingAttributesReducer: Reducer<boolean> = handleActions({
+  'mvj/infillDevelopment/FETCH_ATTRIBUTES': () => true,
+  'mvj/infillDevelopment/ATTRIBUTES_NOT_FOUND': () => false,
+  'mvj/infillDevelopment/RECEIVE_ATTRIBUTES': () => false,
+  'mvj/infillDevelopment/RECEIVE_METHODS': () => false,
+}, false);
+
 const attributesReducer: Reducer<Attributes> = handleActions({
   ['mvj/infillDevelopment/RECEIVE_ATTRIBUTES']: (state: Attributes, {payload: attributes}: ReceiveAttributesAction) => {
     return attributes;
+  },
+}, {});
+
+const methodsReducer: Reducer<Methods> = handleActions({
+  ['mvj/infillDevelopment/RECEIVE_METHODS']: (state: Attributes, {payload: methods}: ReceiveMethodsAction) => {
+    return methods;
   },
 }, {});
 
@@ -93,6 +112,9 @@ export default combineReducers({
   isFormValidById: isFormValidByIdReducer,
   isEditMode: isEditModeReducer,
   isFetching: isFetchingReducer,
+  isFetchingAttributes: isFetchingAttributesReducer,
   isSaveClicked: isSaveClickedReducer,
+  isSaving: isSavingReducer,
   list: infillDevelopmentListReducer,
+  methods: methodsReducer,
 });

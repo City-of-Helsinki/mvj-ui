@@ -12,6 +12,7 @@ import type {ContactState} from '$src/contacts/types';
 import type {DecisionState} from '$src/decision/types';
 import type {DistrictState} from '$src/district/types';
 import type {InfillDevelopmentState} from '$src/infillDevelopment/types';
+import type {InfillDevelopmentAttachmentState} from '$src/infillDevelopmentAttachment/types';
 import type {InvoiceState} from '$src/invoices/types';
 import type {InvoiceSetState} from '$src/invoiceSets/types';
 import type {LandUseContractState} from '$src/landUseContract/types';
@@ -41,6 +42,7 @@ export type RootState = {
   district: DistrictState,
   form: Object,
   infillDevelopment: InfillDevelopmentState,
+  infillDevelopmentAttachment: InfillDevelopmentAttachmentState,
   invoice: InvoiceState,
   invoiceSet: InvoiceSetState,
   landUseContract: LandUseContractState,

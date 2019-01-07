@@ -34,8 +34,8 @@ import {
 } from '$src/rentbasis/actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
 import {PermissionMissingTexts} from '$src/enums';
-import {scrollToTopPage} from '$util/helpers';
-import {FormNames} from '$src/rentbasis/enums';
+import {isFieldAllowedToRead, scrollToTopPage} from '$util/helpers';
+import {FormNames, RentBasisFieldPaths} from '$src/rentbasis/enums';
 import {
   clearUnsavedChanges,
   formatRentBasisForDb,
@@ -55,7 +55,7 @@ import {
 import {getSessionStorageItem, removeSessionStorageItem, setSessionStorageItem} from '$util/storage';
 import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Methods} from '$src/types';
+import type {Attributes, Methods} from '$src/types';
 import type {AreaNoteList} from '$src/areaNote/types';
 import type {RentBasis} from '$src/rentbasis/types';
 import type {RootState} from '$src/root/types';
@@ -80,6 +80,7 @@ type Props = {
   params: Object,
   receiveIsSaveClicked: Function,
   receiveTopNavigationSettings: Function,
+  rentBasisAttributes: Attributes, // Get via withCommonAttributes HOC
   rentBasisMethods: Methods, // Get via withCommonAttributes HOC
   rentBasisData: RentBasis,
   router: Object,
@@ -325,6 +326,7 @@ class RentBasisPage extends Component<Props, State> {
       isSaveClicked,
       isSaving,
       rentBasisData,
+      rentBasisAttributes,
       rentBasisMethods,
     } = this.props;
     const {activeTab, isRestoreModalOpen} = this.state;
@@ -339,7 +341,6 @@ class RentBasisPage extends Component<Props, State> {
         <ControlButtonBar
           buttonComponent={
             <ControlButtons
-              allowComments={false}
               allowCopy={rentBasisMethods.POST}
               allowEdit={rentBasisMethods.PATCH}
               isCopyDisabled={false}
@@ -380,8 +381,16 @@ class RentBasisPage extends Component<Props, State> {
             active={activeTab}
             isEditMode={isEditMode}
             tabs={[
-              {label: 'Perustiedot', isDirty: isFormDirty, hasError: isSaveClicked && !isFormValid},
-              {label: 'Kartta'},
+              {
+                label: 'Perustiedot',
+                allow: true,
+                isDirty: isFormDirty,
+                hasError: isSaveClicked && !isFormValid,
+              },
+              {
+                label: 'Kartta',
+                allow: isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY),
+              },
             ]}
             onTabClick={this.handleTabClick}
           />
@@ -398,7 +407,12 @@ class RentBasisPage extends Component<Props, State> {
               }
             </TabPane>
             <TabPane>
-              <SingleRentBasisMap />
+              <Authorization
+                allow={isFieldAllowedToRead(rentBasisAttributes, RentBasisFieldPaths.GEOMETRY)}
+                errorComponent={<AuthorizationError text={PermissionMissingTexts.GENERAL} />}
+              >
+                <SingleRentBasisMap />
+              </Authorization>
             </TabPane>
           </TabContent>
         </PageContainer>
