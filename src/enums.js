@@ -54,6 +54,7 @@ export const CancelChangesModalTexts = {
  * @type {{}}
  */
 export const PermissionMissingTexts = {
+  CONTACT: 'Ei oikeuksia asiakkaisiin',
   GENERAL: 'Ei oikeuksia sisältöön.',
   INFILL_DEVELOPMENT: 'Ei oikeksia täydennysrakennuskorvauksiin',
   LEASE: 'Ei oikeuksia vuokrauksiin.',

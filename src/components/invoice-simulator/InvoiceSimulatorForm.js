@@ -40,6 +40,7 @@ class InvoiceSimulatorForm extends Component<Props> {
               fieldAttributes={{
                 type: 'integer',
                 required: false,
+                read_only: false,
               }}
               name='invoice_simulator_year'
               disableDirty

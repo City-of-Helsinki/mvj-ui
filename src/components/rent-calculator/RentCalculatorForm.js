@@ -116,6 +116,7 @@ class RentCalculatorForm extends Component<Props, State> {
                 label: 'Laskelman tyyppi',
                 type: 'radio-with-field',
                 required: true,
+                read_only: false,
               }}
               name='type'
               invisibleLabel
@@ -130,6 +131,7 @@ class RentCalculatorForm extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Vuosi',
                         type: 'string',
+                        read_only: false,
                       }}
                       name='year'
                       disabled={type !== RentCalculatorTypes.YEAR}
@@ -155,6 +157,7 @@ class RentCalculatorForm extends Component<Props, State> {
                           fieldAttributes={{
                             label: 'Alkupvm',
                             type: 'date',
+                            read_only: false,
                           }}
                           name='billing_start_date'
                           disabled={type !== RentCalculatorTypes.RANGE}
@@ -168,6 +171,7 @@ class RentCalculatorForm extends Component<Props, State> {
                           fieldAttributes={{
                             label: 'Loppupvm',
                             type: 'date',
+                            read_only: false,
                           }}
                           name='billing_end_date'
                           disabled={type !== RentCalculatorTypes.RANGE}
@@ -193,6 +197,7 @@ class RentCalculatorForm extends Component<Props, State> {
                       fieldAttributes={{
                         label: 'Laskutuskausi',
                         type: 'choice',
+                        read_only: false,
                       }}
                       name='billing_period'
                       disabled={type !== RentCalculatorTypes.BILLING_PERIOD}

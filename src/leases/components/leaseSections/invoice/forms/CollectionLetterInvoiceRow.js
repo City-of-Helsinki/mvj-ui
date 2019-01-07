@@ -72,6 +72,7 @@ class CollectionLetterInvoiceRow extends Component<Props> {
               type: 'choice',
               required: true,
               label: 'Perittävä lasku',
+              read_only: false,
             }}
             invisibleLabel={true}
             name={field}

@@ -5,10 +5,11 @@ import {connect} from 'react-redux';
 import {initialize} from 'redux-form';
 import flowRight from 'lodash/flowRight';
 import get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
 import {Row, Column} from 'react-foundation';
 
 import AddButtonSecondary from '$components/form/AddButtonSecondary';
+import Authorization from '$components/authorization/Authorization';
+import AuthorizationError from '$components/authorization/AuthorizationError';
 import Loader from '$components/loader/Loader';
 import LoaderWrapper from '$components/loader/LoaderWrapper';
 import PageContainer from '$components/content/PageContainer';
@@ -19,29 +20,46 @@ import TableFilters from '$components/table/TableFilters';
 import TableWrapper from '$components/table/TableWrapper';
 import {
   fetchContacts,
-  fetchAttributes,
   initializeContactForm,
 } from '../actions';
 import {receiveTopNavigationSettings} from '$components/topNavigation/actions';
-import {FormNames} from '../enums';
-import {getAttributeFieldOptions, getLabelOfOption, getSearchQuery} from '$src/util/helpers';
+import {LIST_TABLE_PAGE_SIZE} from '$src/constants';
+import {PermissionMissingTexts} from '$src/enums';
+import {ContactFieldPaths, FormNames} from '$src/contacts/enums';
+import {
+  getFieldAttributes,
+  getFieldOptions,
+  getLabelOfOption,
+  getSearchQuery,
+  isFieldAllowedToRead,
+} from '$src/util/helpers';
 import {getRouteById} from '$src/root/routes';
-import {getAttributes, getContactList, getIsFetching} from '../selectors';
+import {getContactList, getIsFetching} from '../selectors';
+import {withCommonAttributes} from '$components/attributes/CommonAttributes';
 
-import type {Attributes} from '$src/types';
 import type {ContactList} from '../types';
+import type {Attributes, Methods} from '$src/types';
 import type {RootState} from '$src/root/types';
 
-const PAGE_SIZE = 25;
+const getContactCount = (contactList: ContactList) => get(contactList, 'count', 0);
+
+const getContacts = (contactList: ContactList) => get(contactList, 'results', []);
+
+const getContactMaxPage = (contactList: ContactList) => {
+  const count = getContactCount(contactList);
+
+  return Math.ceil(count/LIST_TABLE_PAGE_SIZE);
+};
 
 type Props = {
-  attributes: Attributes,
+  contactAttributes: Attributes,
   contactList: ContactList,
-  fetchAttributes: Function,
+  contactMethods: Methods, // get via withCommonAttributes HOC
   fetchContacts: Function,
   initializeContactForm: Function,
   initialize: Function,
   isFetching: boolean,
+  isFetchingCommonAttributes: boolean, // get via withCommonAttributes HOC
   location: Object,
   receiveTopNavigationSettings: Function,
   router: Object,
@@ -49,13 +67,25 @@ type Props = {
 
 type State = {
   activePage: number,
+  contactAttributes: Attributes,
+  contactList: ContactList,
+  contacts: Array<Object>,
+  count: number,
   isSearchInitialized: boolean,
+  maxPage: number,
+  typeOptions: Array<Object>,
 }
 
 class ContactListPage extends Component<Props, State> {
   state = {
     activePage: 1,
+    contactAttributes: {},
+    contactList: {},
+    contacts: [],
+    count: 0,
     isSearchInitialized: false,
+    maxPage: 0,
+    typeOptions: [],
   }
 
   search: any
@@ -64,8 +94,26 @@ class ContactListPage extends Component<Props, State> {
     router: PropTypes.object,
   };
 
+  static getDerivedStateFromProps(props: Props, state: State) {
+    const newState = {};
+
+    if(props.contactAttributes !== state.contactAttributes) {
+      newState.contactAttributes = props.contactAttributes;
+      newState.typeOptions = getFieldOptions(getFieldAttributes(props.contactAttributes, ContactFieldPaths.TYPE));
+    }
+
+    if(props.contactList !== state.contactList) {
+      newState.contactList = props.contactList;
+      newState.count = getContactCount(props.contactList);
+      newState.contacts = getContacts(props.contactList);
+      newState.maxPage = getContactMaxPage(props.contactList);
+    }
+
+    return newState;
+  }
+
   componentDidMount() {
-    const {attributes, fetchAttributes, initialize, receiveTopNavigationSettings} = this.props;
+    const {initialize, receiveTopNavigationSettings} = this.props;
     const {location: {query}} = this.props;
 
     receiveTopNavigationSettings({
@@ -73,10 +121,6 @@ class ContactListPage extends Component<Props, State> {
       pageTitle: 'Asiakkaat',
       showSearch: false,
     });
-
-    if(isEmpty(attributes)) {
-      fetchAttributes();
-    }
 
     this.search();
 
@@ -148,10 +192,10 @@ class ContactListPage extends Component<Props, State> {
     const page = searchQuery.page ? Number(searchQuery.page) : 1;
 
     if(page > 1) {
-      searchQuery.offset = (page - 1) * PAGE_SIZE;
+      searchQuery.offset = (page - 1) * LIST_TABLE_PAGE_SIZE;
     }
 
-    searchQuery.limit = PAGE_SIZE;
+    searchQuery.limit = LIST_TABLE_PAGE_SIZE;
     fetchContacts(getSearchQuery(searchQuery));
   }
 
@@ -183,53 +227,66 @@ class ContactListPage extends Component<Props, State> {
     });
   }
 
-  getContactCount = (contactList: ContactList) => {
-    return get(contactList, 'count', 0);
-  }
+  getColumns = () => {
+    const {contactAttributes} = this.props;
+    const {typeOptions} = this.state;
+    const columns = [];
 
-  getContacts = (contactList: ContactList) => {
-    return get(contactList, 'results', []);
-  }
-
-  getContactMaxPage = (contactList: ContactList) => {
-    const count = this.getContactCount(contactList);
-
-    if(!count) {
-      return 0;
+    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.TYPE)) {
+      columns.push({key: 'type', text: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)});
     }
-    return Math.ceil(count/PAGE_SIZE);
+    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.FIRST_NAME)) {
+      columns.push({key: 'first_name', text: 'Etunimi'});
+    }
+    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.LAST_NAME)) {
+      columns.push({key: 'last_name', text: 'Sukunimi'});
+    }
+    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.NATIONAL_IDENTIFICATION_NUMBER)) {
+      columns.push({key: 'national_identification_number', text: 'Henkilötunnus'});
+    }
+    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.NAME)) {
+      columns.push({key: 'name', text: 'Yrityksen nimi'});
+    }
+    if(isFieldAllowedToRead(contactAttributes, ContactFieldPaths.BUSINESS_ID)) {
+      columns.push({key: 'business_id', text: 'Y-tunnus'});
+    }
+
+    return columns;
   }
 
   render() {
-    const {attributes, contactList, isFetching} = this.props;
-    const {activePage, isSearchInitialized} = this.state;
-    const typeOptions = getAttributeFieldOptions(attributes, 'type');
+    const {contactMethods, isFetching, isFetchingCommonAttributes} = this.props;
+    const {
+      activePage,
+      contacts,
+      count,
+      isSearchInitialized,
+      maxPage,
+    } = this.state;
+    const columns = this.getColumns();
 
-    const count = this.getContactCount(contactList);
-    const contacts = this.getContacts(contactList);
-    const maxPage = this.getContactMaxPage(contactList);
+    if(isFetchingCommonAttributes) return <PageContainer><Loader isLoading={true} /></PageContainer>;
+
+    if(!contactMethods.GET) return <PageContainer><AuthorizationError text={PermissionMissingTexts.CONTACT} /></PageContainer>;
 
     return(
       <PageContainer>
         <Row>
           <Column small={12} large={6}>
-            <AddButtonSecondary
-              className='no-top-margin'
-              label='Luo asiakas'
-              onClick={this.handleCreateButtonClick}
-            />
+            <Authorization allow={contactMethods.POST}>
+              <AddButtonSecondary
+                className='no-top-margin'
+                label='Luo asiakas'
+                onClick={this.handleCreateButtonClick}
+              />
+            </Authorization>
           </Column>
           <Column small={12} large={6}>
             <Search
               isSearchInitialized={isSearchInitialized}
               onSearch={this.handleSearchChange}
             />
-          </Column>
-        </Row>
 
-        <Row>
-          <Column small={12} medium={6}></Column>
-          <Column small={12} medium={6}>
             <TableFilters
               amountText={isFetching ? 'Ladataan...' : `Löytyi ${count} kpl`}
               filterOptions={[]}
@@ -243,14 +300,7 @@ class ContactListPage extends Component<Props, State> {
             <LoaderWrapper className='relative-overlay-wrapper'><Loader isLoading={isFetching} /></LoaderWrapper>
           }
           <SortableTable
-            columns={[
-              {key: 'type', text: 'Asiakastyyppi', renderer: (val) => getLabelOfOption(typeOptions, val)},
-              {key: 'first_name', text: 'Etunimi'},
-              {key: 'last_name', text: 'Sukunimi'},
-              {key: 'national_identification_number', text: 'Henkilötunnus'},
-              {key: 'name', text: 'Yrityksen nimi'},
-              {key: 'business_id', text: 'Y-tunnus'},
-            ]}
+            columns={columns}
             data={contacts}
             listTable
             onRowClick={this.handleRowClick}
@@ -267,16 +317,15 @@ class ContactListPage extends Component<Props, State> {
 }
 
 export default flowRight(
+  withCommonAttributes,
   connect(
     (state: RootState) => {
       return {
-        attributes: getAttributes(state),
         contactList: getContactList(state),
         isFetching: getIsFetching(state),
       };
     },
     {
-      fetchAttributes,
       fetchContacts,
       initialize,
       initializeContactForm,

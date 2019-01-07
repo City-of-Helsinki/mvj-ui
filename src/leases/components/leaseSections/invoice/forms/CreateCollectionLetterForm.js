@@ -1,7 +1,7 @@
 // @flow
 /* global API_URL */
 
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {FieldArray, formValueSelector, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -44,7 +44,7 @@ const renderInvoices = ({
   const handleAdd = () => fields.push({});
 
   return(
-    <div>
+    <Fragment>
       {!!fields && !!fields.length &&
         <Row>
           <Column small={4}>
@@ -93,7 +93,7 @@ const renderInvoices = ({
         </Column>
       </Row>
       <CollectionLetterTotalRow collectionCharge={collectionCharge} fields={fields} />
-    </div>
+    </Fragment>
   );
 };
 
@@ -129,7 +129,7 @@ const getInvoiceOptions = (invoices: Array<Object>) => !isEmpty(invoices)
     })
   : [];
 
-class CreateCollectionLetterForm extends Component<Props, State> {
+class CreateCollectionLetterForm extends PureComponent<Props, State> {
   state = {
     collectionLetterTemplates: [],
     collectionLetterTemplateOptions: [],
@@ -183,11 +183,10 @@ class CreateCollectionLetterForm extends Component<Props, State> {
                     type: 'multiselect',
                     required: true,
                     label: 'Vuokralaiset',
+                    read_only: false,
                   }}
                   name='tenants'
-                  overrideValues={{
-                    options: tenantOptions,
-                  }}
+                  overrideValues={{options: tenantOptions}}
                 />
               </Column>
               <Column small={12} medium={4}>
@@ -197,11 +196,10 @@ class CreateCollectionLetterForm extends Component<Props, State> {
                     type: 'choice',
                     required: true,
                     label: 'Maksuvaatimustyyppi',
+                    read_only: false,
                   }}
                   name='template'
-                  overrideValues={{
-                    options: collectionLetterTemplateOptions,
-                  }}
+                  overrideValues={{options: collectionLetterTemplateOptions}}
                 />
               </Column>
               <Column small={12} medium={4}>
@@ -211,6 +209,7 @@ class CreateCollectionLetterForm extends Component<Props, State> {
                     type: 'decimal',
                     required: true,
                     label: 'Perimispalkkio',
+                    read_only: false,
                   }}
                   name='collection_charge'
                   unit='€'

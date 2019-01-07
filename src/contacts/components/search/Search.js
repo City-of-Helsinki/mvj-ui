@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, {Fragment, PureComponent} from 'react';
 import {connect} from 'react-redux';
 import {getFormValues, reduxForm} from 'redux-form';
 import {Row, Column} from 'react-foundation';
@@ -15,7 +15,7 @@ type Props = {
   onSearch: Function,
 }
 
-class Search extends Component<Props> {
+class Search extends PureComponent<Props> {
   _isMounted: boolean;
 
   componentDidMount() {
@@ -56,7 +56,7 @@ class Search extends Component<Props> {
 
   render () {
     return (
-      <div>
+      <Fragment>
         <Row>
           <Column large={12}>
             <FormField
@@ -64,6 +64,7 @@ class Search extends Component<Props> {
               fieldAttributes={{
                 label: 'Hae hakusanalla',
                 type: 'search',
+                read_only: false,
               }}
               invisibleLabel
               name='search'
@@ -71,8 +72,7 @@ class Search extends Component<Props> {
           </Column>
         </Row>
         <Row>
-          <Column small={6}></Column>
-          <Column small={6}>
+          <Column small={12}>
             <a
               tabIndex={0}
               onKeyDown={this.handleClearKeyDown}
@@ -81,7 +81,7 @@ class Search extends Component<Props> {
             >Tyhjennä haku</a>
           </Column>
         </Row>
-      </div>
+      </Fragment>
     );
   }
 }
